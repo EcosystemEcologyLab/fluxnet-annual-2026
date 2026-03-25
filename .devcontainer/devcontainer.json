@@ -1,0 +1,74 @@
+{
+  "name": "fluxnet-annual-2026",
+  "image": "rocker/tidyverse:4.4.2",
+
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+      "packages": "pak,renv,dotenv,languageserver"
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "onCreateCommand": "Rscript -e 'pak::pak(\"EcosystemEcologyLab/fluxnet-package\")'",
+
+  "postCreateCommand": "Rscript -e 'if (file.exists(\"R/pipeline_config.R\")) { source(\"R/pipeline_config.R\"); check_pipeline_config() } else { message(\"R/pipeline_config.R not yet created — skipping pipeline config check.\") }'",
+
+  "postStartCommand": "Rscript -e 'if (file.exists(\".env\")) dotenv::load_dot_env()'",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "reditorsupport.r",
+        "rdebugger.r-debugger",
+        "github.copilot",
+        "eamodio.gitlens",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "r.rterm.linux": "/usr/local/bin/R",
+        "r.lsp.enabled": true,
+        "editor.formatOnSave": true,
+        "editor.rulers": [80],
+        "files.trimTrailingWhitespace": true
+      }
+    }
+  },
+
+  "secrets": {
+    "AMERIFLUX_USER_NAME": {
+      "description": "Your registered AmeriFlux account name. Register at https://ameriflux.lbl.gov/login/",
+      "documentationUrl": "https://github.com/EcosystemEcologyLab/fluxnet-annual-2026/blob/main/.env.example"
+    },
+    "AMERIFLUX_USER_EMAIL": {
+      "description": "Your registered AmeriFlux account email.",
+      "documentationUrl": "https://github.com/EcosystemEcologyLab/fluxnet-annual-2026/blob/main/.env.example"
+    },
+    "AMERIFLUX_INTENDED_USE": {
+      "description": "AmeriFlux intended use code: 1=Synthesis, 2=Model, 3=Remote sensing, 4=Other research, 5=Education, 6=Other. Default: 1 (network synthesis analysis).",
+      "documentationUrl": "https://github.com/EcosystemEcologyLab/fluxnet-annual-2026/blob/main/.env.example"
+    },
+    "FLUXNET_SHUTTLE_VERSION": {
+      "description": "Expected version of fluxnet-shuttle. Default: 0.2.0. Change only if intentionally upgrading.",
+      "documentationUrl": "https://github.com/EcosystemEcologyLab/fluxnet-annual-2026/blob/main/.env.example"
+    },
+    "FLUXNET_SNAPSHOT_MODE": {
+      "description": "Pipeline mode: 'development' (re-queries Shuttle) or 'locked' (uses committed snapshot). Default: development.",
+      "documentationUrl": "https://github.com/EcosystemEcologyLab/fluxnet-annual-2026/blob/main/.env.example"
+    },
+    "FLUXNET_SNAPSHOT_FILE": {
+      "description": "Path to committed snapshot CSV. Required only when FLUXNET_SNAPSHOT_MODE=locked.",
+      "documentationUrl": "https://github.com/EcosystemEcologyLab/fluxnet-annual-2026/blob/main/.env.example"
+    }
+  },
+
+  "remoteEnv": {
+    "RENV_PATHS_CACHE": "/renv/cache"
+  },
+
+  "containerEnv": {
+    "TZ": "UTC"
+  }
+}

@@ -1,10 +1,11 @@
 {
   "name": "fluxnet-annual-2026",
-  "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4.4.2",
+  "image": "ghcr.io/rocker-org/devcontainer/tidyverse:4.4",
 
   "features": {
     "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-      "packages": "pak,renv,dotenv,languageserver,remotes"
+      "packages": "pak,renv,dotenv,languageserver,remotes",
+      "installSystemRequirements": true
     },
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },

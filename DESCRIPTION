@@ -1,0 +1,29 @@
+Package: fluxnetannual2026
+Title: FLUXNET Annual Paper 2026 Analysis Pipeline
+Version: 0.0.1
+Authors@R: c(
+    person("David J.P.", "Moore", email = "davidjpmoore@arizona.edu",
+           role = c("aut", "cre")),
+    person("Trevor", "Keenan", role = "aut"),
+    person("Kim", "Novick", role = "aut")
+  )
+Description: Analysis pipeline for the FLUXNET Annual Paper 2026, a global
+    synthesis of eddy covariance flux tower data coordinated by the FLUXNET
+    Coordination Project.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    dplyr,
+    tidyr,
+    purrr,
+    fs,
+    lubridate,
+    readr,
+    ggplot2,
+    fluxnet
+Suggests:
+    testthat (>= 3.0.0),
+    dotenv
+Config/testthat/edition: 3

@@ -81,6 +81,8 @@ as GitHub Codespace Secrets. For local use, copy `.env.example` to `.env`.
 | `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.2.0`                       |
 | `FLUXNET_SNAPSHOT_MODE`  | `"development"` or `"locked"`                        | `"development"`               |
 | `FLUXNET_SNAPSHOT_FILE`  | Path to locked snapshot CSV                          | — (required if locked)        |
+| `FLUXNET_DATA_ROOT`      | Root directory for all pipeline data I/O             | `"data"`                      |
+| `FLUXNET_EXTRACT_RESOLUTIONS` | Space-separated `flux_extract()` resolution codes | `"y m d"`                |
 
 AmeriFlux intended use codes:
 - 1 = Synthesis / network synthesis analysis (default for this project)

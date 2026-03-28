@@ -25,11 +25,11 @@ manifest <- resolve_snapshot(live_manifest)
 # In development mode, write a snapshot for reproducibility records
 snapshot_mode <- Sys.getenv("FLUXNET_SNAPSHOT_MODE", unset = "development")
 if (snapshot_mode == "development") {
-  write_snapshot(manifest)
+  write_snapshot(manifest, snapshot_dir = file.path(FLUXNET_DATA_ROOT, "snapshots"))
 }
 
 # Download raw data for all sites in the manifest
 flux_download(
   file_list_df = manifest,
-  download_dir = "data/raw"
+  download_dir = file.path(FLUXNET_DATA_ROOT, "raw")
 )

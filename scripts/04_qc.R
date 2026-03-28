@@ -8,10 +8,14 @@ check_pipeline_config()
 source("R/qc.R")
 
 library(fluxnet)
-library(dotenv)
-dotenv::load_dot_env()
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
 
-flux_data <- readRDS("data/processed/flux_data_raw.rds")
+processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
+
+flux_data <- readRDS(file.path(processed_dir, "flux_data_raw.rds"))
 
 # Package-level QC (ustar filtering already applied in distributed data)
 flux_data_qc <- flux_qc(flux_data)
@@ -19,4 +23,4 @@ flux_data_qc <- flux_qc(flux_data)
 # HH/HR flag filtering: keep measured + good gap-fill (_QC <= 1)
 flux_data_qc <- fluxnet_qc_hh(flux_data_qc, max_qc = 1L)
 
-saveRDS(flux_data_qc, "data/processed/flux_data_qc.rds")
+saveRDS(flux_data_qc, file.path(processed_dir, "flux_data_qc.rds"))

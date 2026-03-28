@@ -7,8 +7,10 @@ check_pipeline_config()
 library(ggplot2)
 library(dplyr)
 library(fs)
-library(dotenv)
-dotenv::load_dot_env()
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
 
 fs::dir_create("figures")
 

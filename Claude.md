@@ -16,6 +16,16 @@ R package via `reticulate` to run the FLUXNET Shuttle.
 
 ---
 
+## Lab Principles Source
+
+- Repository: EcosystemEcologyLab/lab-principles
+- Commit: 5cb862187f5c77befc5397c2c50eba178b59c382
+- Copied: 2026-03-27
+- SCIENCE_PRINCIPLES.md v1.0
+- SCIENCE_PRINCIPLES_PIPELINES.md v1.0
+
+---
+
 ## Hard Rules — Read These First
 
 ### 1. Data source for the Annual Paper

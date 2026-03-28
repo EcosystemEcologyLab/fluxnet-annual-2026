@@ -3,20 +3,19 @@
 ## Data source: FLUXNET Shuttle ONLY. See CLAUDE.md Hard Rule #1.
 
 source("R/pipeline_config.R")
+source("R/credentials.R")
 check_pipeline_config()
 
 library(fluxnet)
-library(dotenv)
-dotenv::load_dot_env()
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
 
 creds <- fluxnet_credentials()
 
 # List all available sites from the Shuttle
-live_manifest <- flux_listall(
-  user_name    = creds$user_name,
-  user_email   = creds$user_email,
-  intended_use = creds$intended_use
-)
+live_manifest <- flux_listall()
 
 # In development mode, optionally save a snapshot; in locked mode, use the
 # snapshot CSV instead of the live manifest.
@@ -31,9 +30,6 @@ if (snapshot_mode == "development") {
 
 # Download raw data for all sites in the manifest
 flux_download(
-  manifest     = manifest,
-  user_name    = creds$user_name,
-  user_email   = creds$user_email,
-  intended_use = creds$intended_use,
-  dest_dir     = "data/raw"
+  file_list_df = manifest,
+  download_dir = "data/raw"
 )

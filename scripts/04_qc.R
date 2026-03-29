@@ -1,13 +1,15 @@
-## 04_qc.R — Apply QC filtering
+## 04_qc.R — Apply QC filtering per resolution
 ## Uses: flux_qc(), fluxnet_qc_hh()
 ## See CLAUDE.md QC Flag Reference for flag definitions.
 ##
+## Loops over FLUXNET_EXTRACT_RESOLUTIONS; reads flux_data_raw_<res>.rds and
+## writes flux_data_qc_<res>.rds for each resolution.
+##
 ## Two-stage QC strategy:
 ##   Stage 1 (flux_qc): at DD/MM/WW/YY resolution, _QC values are fractions
-##     0–1. flux_qc() adds qc_flagged (TRUE if p_gapfilled > 1-QC_THRESHOLD_YY)
-##     and p_gapfilled columns, then records with qc_flagged == TRUE are dropped
-##     and logged as exclusions.  Rows with qc_flagged == NA (e.g. ERA5 rows
-##     that have no _QC columns) are kept.
+##     0–1. flux_qc() adds qc_flagged (TRUE if p_gapfilled > 1-threshold) and
+##     p_gapfilled columns; flagged rows are dropped and logged as exclusions.
+##     Rows with qc_flagged == NA are kept. Stage 1 is skipped for HH/HR data.
 ##
 ##   Stage 2 (fluxnet_qc_hh): at HH/HR resolution, _QC values are integers
 ##     0–3. Rows with any _QC > max_qc are dropped. At DD/MM/WW/YY this is a
@@ -29,73 +31,113 @@ if (file.exists(".env")) {
 
 processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
 
-# Initialise both log files so they exist even if nothing is excluded/unknown
+# Initialise log files so they exist even if nothing is excluded/unknown.
 if (!dir.exists("outputs")) dir.create("outputs", recursive = TRUE)
 excl_log_path    <- file.path("outputs", "exclusion_log.csv")
 unknown_log_path <- file.path("outputs", "unknown_log.csv")
 if (!file.exists(excl_log_path)) {
   utils::write.csv(
-    data.frame(site_id=character(), variable=character(), timestamp=character(),
-               reason=character(), threshold=character(), excluded_by=character()),
+    data.frame(site_id = character(), variable = character(),
+               timestamp = character(), reason = character(),
+               threshold = character(), excluded_by = character()),
     excl_log_path, row.names = FALSE
   )
 }
 if (!file.exists(unknown_log_path)) {
   utils::write.csv(
-    data.frame(record_id=character(), reason=character(), logged_by=character()),
+    data.frame(record_id = character(), reason = character(),
+               logged_by = character()),
     unknown_log_path, row.names = FALSE
   )
 }
 
-flux_data <- readRDS(file.path(processed_dir, "flux_data_raw.rds"))
+# Per-resolution fractional QC thresholds (DD/MM/WW/YY).
+# HH/HR data uses integer flag filtering (Stage 2 only).
+qc_threshold_for <- list(
+  yy = QC_THRESHOLD_YY,
+  mm = QC_THRESHOLD_MM,
+  ww = QC_THRESHOLD_WW,
+  dd = QC_THRESHOLD_DD,
+  hh = NA_real_
+)
 
-# --- Stage 1: fractional _QC threshold (DD/MM/WW/YY) ---
-# Derive qc_vars from _QC columns present in the data (strips _QC suffix).
-# flux_qc() aborts on HH data; safe here because flux_read() defaults to YY.
-qc_col_names <- grep("_QC$", names(flux_data), value = TRUE)
-qc_vars      <- sub("_QC$", "", qc_col_names)
-flux_data_qc <- flux_qc(flux_data, qc_vars = qc_vars, max_gapfilled = 1 - QC_THRESHOLD_YY)
+# Resolutions that carry integer _QC flags (Stage 2 only; skip Stage 1).
+hh_suffixes <- c("hh", "hr")
 
-# Drop rows flagged by flux_qc() and log them
-n_before_stage1 <- nrow(flux_data_qc)
-flagged_idx     <- which(!is.na(flux_data_qc$qc_flagged) & flux_data_qc$qc_flagged)
+# Map extract resolution codes to output file suffixes.
+res_to_suffix <- c(y = "yy", m = "mm", w = "ww", d = "dd", h = "hh")
 
-for (i in flagged_idx) {
-  ts_col <- intersect(c("YEAR", "DATE", "DATETIME"), names(flux_data_qc))
-  ts_val <- if (length(ts_col) > 0) as.character(flux_data_qc[[ts_col[[1]]]][i]) else "ALL"
-  log_exclusion(
-    site_id     = flux_data_qc$site_id[i],
-    variable    = "ALL",
-    timestamp   = ts_val,
-    reason      = paste0("flux_qc: p_gapfilled > ", round(1 - QC_THRESHOLD_YY, 2),
-                         " (QC_THRESHOLD_YY = ", QC_THRESHOLD_YY, ")"),
-    threshold   = paste0("QC_THRESHOLD_YY=", QC_THRESHOLD_YY),
-    excluded_by = "04_qc.R"
-  )
+for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
+  suffix   <- res_to_suffix[[res_code]]
+  raw_path <- file.path(processed_dir, paste0("flux_data_raw_", suffix, ".rds"))
+
+  if (!file.exists(raw_path)) {
+    message("No raw file for resolution '", res_code, "' (", suffix,
+            ") — skipping.")
+    next
+  }
+
+  flux_data <- readRDS(raw_path)
+  cat("\n--- 04_qc.R: resolution", toupper(suffix), "---\n")
+
+  is_hh        <- suffix %in% hh_suffixes
+  qc_thresh    <- qc_threshold_for[[suffix]]
+  thresh_label <- paste0("QC_THRESHOLD_", toupper(suffix))
+
+  # --- Stage 1: fractional _QC threshold (coarser resolutions only) ---
+  n_before_stage1 <- nrow(flux_data)
+  if (!is_hh) {
+    qc_col_names <- grep("_QC$", names(flux_data), value = TRUE)
+    qc_vars      <- sub("_QC$", "", qc_col_names)
+    flux_data_qc <- flux_qc(flux_data, qc_vars = qc_vars,
+                            max_gapfilled = 1 - qc_thresh)
+
+    flagged_idx <- which(!is.na(flux_data_qc$qc_flagged) &
+                           flux_data_qc$qc_flagged)
+    for (i in flagged_idx) {
+      ts_col <- intersect(c("YEAR", "DATE", "DATETIME"), names(flux_data_qc))
+      ts_val <- if (length(ts_col) > 0)
+                  as.character(flux_data_qc[[ts_col[[1]]]][i])
+                else "ALL"
+      log_exclusion(
+        site_id     = flux_data_qc$site_id[i],
+        variable    = "ALL",
+        timestamp   = ts_val,
+        reason      = paste0("flux_qc: p_gapfilled > ",
+                             round(1 - qc_thresh, 2), " (",
+                             thresh_label, " = ", qc_thresh, ")"),
+        threshold   = paste0(thresh_label, "=", qc_thresh),
+        excluded_by = "04_qc.R"
+      )
+    }
+    flux_data_qc <- flux_data_qc[
+      is.na(flux_data_qc$qc_flagged) | !flux_data_qc$qc_flagged, ]
+  } else {
+    flux_data_qc <- flux_data
+  }
+  n_after_stage1 <- nrow(flux_data_qc)
+
+  # --- Stage 2: integer _QC flag filter (HH/HR; no-op at coarser res) ---
+  n_before_stage2 <- nrow(flux_data_qc)
+  flux_data_qc    <- fluxnet_qc_hh(flux_data_qc, max_qc = 1L)
+  n_after_stage2  <- nrow(flux_data_qc)
+  n_excluded_hh   <- n_before_stage2 - n_after_stage2
+
+  out_path <- file.path(processed_dir, paste0("flux_data_qc_", suffix, ".rds"))
+  saveRDS(flux_data_qc, out_path)
+
+  cat("Records input:                  ", n_before_stage1, "\n")
+  if (!is_hh) {
+    cat(sprintf("Excluded by flux_qc (stage 1):   %d (%s = %s)\n",
+                n_before_stage1 - n_after_stage1, thresh_label, qc_thresh))
+  }
+  cat("Excluded by fluxnet_qc_hh (s2): ", n_excluded_hh,
+      " (max_qc = 1)\n")
+  cat("Records output:                 ", nrow(flux_data_qc), "\n")
+  cat("Saved:", out_path, "\n")
 }
 
-flux_data_qc  <- flux_data_qc[is.na(flux_data_qc$qc_flagged) | !flux_data_qc$qc_flagged, ]
-n_after_stage1 <- nrow(flux_data_qc)
-
-# --- Stage 2: integer _QC flag filter (HH/HR) ---
-# No-op at YY/DD/MM/WW (all fractions ≤ 1), but retained for when HH data
-# is passed through this script.
-n_before_stage2 <- nrow(flux_data_qc)
-flux_data_qc    <- fluxnet_qc_hh(flux_data_qc, max_qc = 1L)
-n_after_stage2  <- nrow(flux_data_qc)
-n_excluded_hh   <- n_before_stage2 - n_after_stage2
-
-saveRDS(flux_data_qc, file.path(processed_dir, "flux_data_qc.rds"))
-
-# Summary
-n_total_excluded <- (n_before_stage1 - n_after_stage1) + n_excluded_hh
-cat("\n--- 04_qc.R summary ---\n")
-cat("Records input:                  ", n_before_stage1, "\n")
-cat("Excluded by flux_qc (stage 1):  ", n_before_stage1 - n_after_stage1,
-    " (QC_THRESHOLD_YY =", QC_THRESHOLD_YY, ")\n")
-cat("Excluded by fluxnet_qc_hh (s2): ", n_excluded_hh,
-    " (max_qc = 1)\n")
-cat("Records output:                 ", nrow(flux_data_qc), "\n")
+cat("\n--- 04_qc.R: log file summary ---\n")
 cat("exclusion_log.csv:", excl_log_path,
     if (file.exists(excl_log_path))
       paste0("(written, ", nrow(read.csv(excl_log_path)), " row(s))")

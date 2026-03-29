@@ -8,10 +8,14 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 library(lubridate)
-library(dotenv)
-dotenv::load_dot_env()
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
 
-flux_data <- readRDS("data/processed/flux_data_converted.rds")
-badm      <- readRDS("data/processed/badm.rds")
+processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
+
+flux_data <- readRDS(file.path(processed_dir, "flux_data_converted.rds"))
+badm      <- readRDS(file.path(processed_dir, "badm.rds"))
 
 # TODO: add paper-specific analyses here

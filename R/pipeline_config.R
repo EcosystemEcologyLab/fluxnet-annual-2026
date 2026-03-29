@@ -1,3 +1,19 @@
+# Data root directory — set FLUXNET_DATA_ROOT to relocate all pipeline data
+# directories (raw, extracted, processed, snapshots). Useful for HPC scratch
+# filesystems or machines where the repo checkout is read-only.
+# Default: "data" (relative to the project root).
+FLUXNET_DATA_ROOT <- Sys.getenv("FLUXNET_DATA_ROOT", unset = "data")
+
+# Temporal resolutions to extract — space-separated flux_extract() codes.
+# Valid values: y (yearly), m (monthly), w (weekly), d (daily),
+#               h (hourly / half-hourly)
+# Default: "y m d" — YY, MM, DD only. The Annual Paper does not use HH/HR
+# sub-daily data, and excluding h reduces extracted volume by ~95%.
+FLUXNET_EXTRACT_RESOLUTIONS <- strsplit(
+  Sys.getenv("FLUXNET_EXTRACT_RESOLUTIONS", unset = "y m d"),
+  "\\s+"
+)[[1]]
+
 # QC threshold constants — change here to adjust pipeline-wide filtering.
 # DD/WW/MM/YY thresholds: keep records where _QC > threshold.
 # The default of 0.75 is stricter than the FLUXNET2015 published convention
@@ -76,6 +92,21 @@ check_pipeline_config <- function() {
   } else {
     message("fluxnet-shuttle version OK: ", installed_version)
   }
+
+  # --- Data root ---
+  message("Data root: ", FLUXNET_DATA_ROOT)
+
+  # --- Extract resolutions ---
+  valid_resolutions <- c("y", "m", "w", "d", "h")
+  bad_res <- setdiff(FLUXNET_EXTRACT_RESOLUTIONS, valid_resolutions)
+  if (length(bad_res) > 0) {
+    stop(
+      "FLUXNET_EXTRACT_RESOLUTIONS contains invalid value(s): ",
+      paste(bad_res, collapse = ", "),
+      ". Valid values: ", paste(valid_resolutions, collapse = ", "), "."
+    )
+  }
+  message("Extract resolutions: ", paste(FLUXNET_EXTRACT_RESOLUTIONS, collapse = " "))
 
   # --- Snapshot mode ---
   snapshot_mode <- Sys.getenv("FLUXNET_SNAPSHOT_MODE", unset = "development")

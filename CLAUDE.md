@@ -16,6 +16,16 @@ R package via `reticulate` to run the FLUXNET Shuttle.
 
 ---
 
+## Lab Principles Source
+
+- Repository: EcosystemEcologyLab/lab-principles
+- Commit: 5cb862187f5c77befc5397c2c50eba178b59c382
+- Copied: 2026-03-27
+- SCIENCE_PRINCIPLES.md v1.0
+- SCIENCE_PRINCIPLES_PIPELINES.md v1.0
+
+---
+
 ## Hard Rules — Read These First
 
 ### 1. Data source for the Annual Paper
@@ -71,6 +81,8 @@ as GitHub Codespace Secrets. For local use, copy `.env.example` to `.env`.
 | `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.2.0`                       |
 | `FLUXNET_SNAPSHOT_MODE`  | `"development"` or `"locked"`                        | `"development"`               |
 | `FLUXNET_SNAPSHOT_FILE`  | Path to locked snapshot CSV                          | — (required if locked)        |
+| `FLUXNET_DATA_ROOT`      | Root directory for all pipeline data I/O             | `"data"`                      |
+| `FLUXNET_EXTRACT_RESOLUTIONS` | Space-separated `flux_extract()` resolution codes | `"y m d"`                |
 
 AmeriFlux intended use codes:
 - 1 = Synthesis / network synthesis analysis (default for this project)
@@ -241,6 +253,64 @@ Never implement ad-hoc unit conversions inline in analysis scripts.
 All conversions are timestep-aware — `fluxnet_convert_units()` reads
 `temporal_resolution` from the manifest and applies the correct factor
 (1800s for HH, 3600s for HR). It will `stop()` if resolution is missing.
+
+---
+
+## Output Metadata
+
+Every output file (CSV, RDS, figure) must be accompanied by a companion
+`.meta.json` file with the same base name. Use `write_output_metadata()`
+in `R/utils.R` to generate this file — never write metadata manually.
+
+Required fields:
+
+| Field | Content | How to populate |
+|---|---|---|
+| `run_datetime_utc` | ISO 8601 timestamp of pipeline run | `format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")` |
+| `pipeline_version` | Git commit hash at run time | `system("git rev-parse --short HEAD", intern = TRUE)` |
+| `input_sources` | Snapshot CSV path + per-site DOIs from snapshot | from `data/snapshots/` and snapshot `data_citation` field |
+| `r_session_info` | Output of `sessionInfo()` | saved to `outputs/session_info.txt` at end of every run |
+| `notes` | Manual decisions, overrides, or deviations from defaults | free text; empty string if none — field must always be present |
+
+The companion file for `outputs/nee_annual.csv` is `outputs/nee_annual.meta.json`.
+`r_session_info` is always written to `outputs/session_info.txt` — not embedded
+in individual companion files.
+
+---
+
+## Exclusion Logging
+
+Every record excluded from analysis must be logged. Exclusions and unknowns
+are tracked in two separate files, both in `outputs/` (gitignored —
+regenerated each run). Use `log_exclusion()` and `log_unknown()` in
+`R/utils.R` — never drop records without calling these functions.
+
+### outputs/exclusion_log.csv
+
+| Column | Content |
+|---|---|
+| `site_id` | FLUXNET site ID |
+| `variable` | Variable name or `ALL` if whole record is excluded |
+| `timestamp` | Record timestamp or `ALL` if whole site-year is excluded |
+| `reason` | Human-readable reason (e.g. `QC_THRESHOLD_YY=0.75 not met`) |
+| `threshold` | The threshold or rule applied |
+| `excluded_by` | Script name that performed the exclusion |
+
+### outputs/unknown_log.csv
+
+| Column | Content |
+|---|---|
+| `record_id` | Site ID or record identifier |
+| `reason` | Why the record could not be assessed |
+| `logged_by` | Script name |
+
+Both files must be written even if empty (zero-row CSV with headers).
+A summary of exclusion and unknown counts must be printed to the console
+at the end of each QC script run.
+
+**Exclusion vs Unknown:**
+- Failed QC threshold → exclusion log
+- Missing data, failed download, or unassessable record → unknown log
 
 ---
 

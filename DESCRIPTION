@@ -22,8 +22,13 @@ Imports:
     lubridate,
     readr,
     ggplot2,
+    jsonlite,
+    leaflet,
+    plotly,
+    scales,
     fluxnet
 Suggests:
+    rmarkdown,
     testthat (>= 3.0.0),
     dotenv
 Config/testthat/edition: 3

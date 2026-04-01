@@ -4,24 +4,13 @@
 # consecutive Shuttle snapshot CSVs by comparing fluxnet_product_name,
 # first_year/last_year, and product_id fields.
 #
-# OPEN QUESTIONS — pending response from Gilberto's team (support@fluxnet.org):
-#
-#   Q1 (ICOS/TERN product_id stability): Do ICOS/TERN product_id hash values
-#      change when a site is reprocessed, or are they stable across updates
-#      within the same ONEFlux version? Until confirmed, ICOS/TERN reprocessing
-#      cannot be detected via product_id comparison.
-#
-#   Q2 (release increment semantics): What does a release increment (_r2, _r3)
-#      signify for AmeriFlux — new data years, corrected flux values, or
-#      metadata-only changes? Affects whether reprocessed_ameriflux sites
-#      require full re-extraction or metadata refresh only.
-#
-#   Q3 (ICOS/TERN product name convention): Do ICOS and TERN
-#      fluxnet_product_name values follow the same _vX.X_rN convention as
-#      AmeriFlux, making them comparable between snapshots?
-#
-#   Q4 (push notifications): Is there any push-based update notification
-#      mechanism, or is polling listall() the only way to detect changes?
+# Reprocessing detection confirmed for all hubs by Dario Papale (2026-03-30):
+#   - product_id is a checksum-based PID that changes whenever a file is
+#     updated — reliable reprocessing signal for ALL hubs.
+#   - All hubs use the same _vX.X_rN convention in fluxnet_product_name,
+#     making product_name comparison valid across hubs.
+#   - Release increments (e.g. _r2) are not AmeriFlux-specific; the 5 _r2
+#     sites in the 2026-03-28 snapshots are ICOS sites.
 
 
 # Required columns for a valid snapshot CSV (shuttle schema v0.0.1).
@@ -40,11 +29,6 @@
 #'
 #' @param path Path to the snapshot CSV file.
 #' @return A data frame with one row per site-product.
-#'
-#' @note **Schema stability caveat:** column validation is against the shuttle
-#'   v0.0.1 schema. If Gilberto's team renames or removes columns in a future
-#'   release (open question Q4 — contact support@fluxnet.org), this function
-#'   will stop with a missing-column error, which is the intended behaviour.
 #'
 #' @seealso [write_snapshot()], [compare_snapshots()]
 #' @export
@@ -97,8 +81,8 @@ find_previous_snapshot <- function(
 #' Compare two Shuttle snapshots to detect new and updated sites
 #'
 #' Compares a current snapshot against a previous one and classifies sites into
-#' four change categories. Each non-NULL category is a data frame of site rows
-#' taken from the *current* snapshot.
+#' three change categories. Each category is a data frame of site rows taken
+#' from the *current* snapshot.
 #'
 #' @section Change categories:
 #' \describe{
@@ -107,28 +91,19 @@ find_previous_snapshot <- function(
 #'   \item{`extended_data`}{Sites present in both snapshots where `first_year`
 #'     decreased or `last_year` increased — i.e., the temporal coverage
 #'     expanded.}
-#'   \item{`reprocessed_ameriflux`}{AmeriFlux sites present in both snapshots
-#'     where `fluxnet_product_name` changed. Catches release increments
-#'     (_r1 → _r2) and ONEFlux version bumps. Sites already in `extended_data`
-#'     are excluded to avoid double-counting.}
-#'   \item{`reprocessed_icos_tern`}{Always `NULL`. See note below.}
+#'   \item{`reprocessed`}{Sites present in both snapshots where `product_id`
+#'     changed or `fluxnet_product_name` changed (catches release increments
+#'     such as _r1 → _r2 and ONEFlux version bumps). Applies to all hubs:
+#'     `product_id` is a checksum-based PID confirmed to change on file update
+#'     for all hubs; `fluxnet_product_name` follows the same _vX.X_rN
+#'     convention across all hubs (confirmed Dario Papale 2026-03-30). Sites
+#'     already in `extended_data` are excluded to avoid double-counting.}
 #' }
 #'
 #' @param current A data frame from [load_snapshot()] — the newer snapshot.
 #' @param previous A data frame from [load_snapshot()] — the older snapshot.
-#' @return A named list with elements `new_sites`, `extended_data`,
-#'   `reprocessed_ameriflux`, and `reprocessed_icos_tern`.
-#'
-#' @note **ICOS/TERN reprocessing detection is not yet implemented.**
-#'   Open questions Q1 and Q3 (contact support@fluxnet.org) must be resolved
-#'   before ICOS/TERN reprocessing can be detected reliably:
-#'   \itemize{
-#'     \item Q1: Are ICOS/TERN `product_id` hashes stable across updates?
-#'     \item Q3: Do ICOS/TERN `fluxnet_product_name` values follow the
-#'       same `_vX.X_rN` convention as AmeriFlux?
-#'   }
-#'   Until then, `reprocessed_icos_tern` is returned as `NULL` and ICOS/TERN
-#'   reprocessing will not trigger a re-download.
+#' @return A named list with elements `new_sites`, `extended_data`, and
+#'   `reprocessed`.
 #'
 #' @seealso [load_snapshot()], [sites_to_download()]
 #' @export
@@ -144,7 +119,8 @@ compare_snapshots <- function(current, previous) {
       site_id,
       prev_first_year   = first_year,
       prev_last_year    = last_year,
-      prev_product_name = fluxnet_product_name
+      prev_product_name = fluxnet_product_name,
+      prev_product_id   = product_id
     ),
     by = "site_id"
   )
@@ -156,25 +132,22 @@ compare_snapshots <- function(current, previous) {
       .data$last_year > .data$prev_last_year
   )
 
-  # --- reprocessed AmeriFlux: product name changed, not already in extended ---
+  # --- reprocessed: product_id or product_name changed, not already in extended ---
+  # product_id is a checksum-based PID — changes on file update for all hubs.
+  # product_name change catches release increments and ONEFlux version bumps.
   # Sites with extended coverage already trigger a re-download, so excluding
   # them here avoids redundant entries in the log and download list.
-  reprocessed_ameriflux <- dplyr::filter(
+  reprocessed <- dplyr::filter(
     both,
-    .data$data_hub == "AmeriFlux",
-    .data$fluxnet_product_name != .data$prev_product_name,
+    .data$product_id != .data$prev_product_id |
+      .data$fluxnet_product_name != .data$prev_product_name,
     !.data$site_id %in% extended_data$site_id
   )
 
-  # --- reprocessed ICOS/TERN: not yet implemented ---
-  # Requires answers to open questions Q1 and Q3 (support@fluxnet.org).
-  reprocessed_icos_tern <- NULL  # pending Q1 / Q3
-
   list(
-    new_sites             = new_sites,
-    extended_data         = extended_data,
-    reprocessed_ameriflux = reprocessed_ameriflux,
-    reprocessed_icos_tern = reprocessed_icos_tern
+    new_sites     = new_sites,
+    extended_data = extended_data,
+    reprocessed   = reprocessed
   )
 }
 
@@ -182,19 +155,11 @@ compare_snapshots <- function(current, previous) {
 #' Return the union of site IDs that should be (re-)downloaded
 #'
 #' Collects `site_id` values from all actionable change categories returned by
-#' [compare_snapshots()] and returns the deduplicated union. ICOS/TERN
-#' reprocessing is excluded until detection logic is confirmed with Gilberto's
-#' team.
+#' [compare_snapshots()] and returns the deduplicated union.
 #'
 #' @param comparison A named list returned by [compare_snapshots()].
 #' @return A character vector of unique `site_id` values to download, in no
 #'   particular order. May be length zero if nothing has changed.
-#'
-#' @note **ICOS/TERN reprocessing not included in the download set.**
-#'   `reprocessed_icos_tern` is `NULL` and is intentionally excluded until
-#'   open questions Q1 and Q3 are resolved (support@fluxnet.org). Once
-#'   resolved, add `comparison$reprocessed_icos_tern$site_id` to the `c()`
-#'   call below.
 #'
 #' @seealso [compare_snapshots()]
 #' @export
@@ -202,7 +167,6 @@ sites_to_download <- function(comparison) {
   unique(c(
     comparison$new_sites$site_id,
     comparison$extended_data$site_id,
-    comparison$reprocessed_ameriflux$site_id
-    # reprocessed_icos_tern excluded — pending Q1 / Q3 (support@fluxnet.org)
+    comparison$reprocessed$site_id
   ))
 }

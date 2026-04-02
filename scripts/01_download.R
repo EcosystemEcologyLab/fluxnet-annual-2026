@@ -63,6 +63,22 @@ if (snapshot_mode == "development") {
   download_manifest <- manifest
 }
 
+# Apply site filter if set.
+# When active, download ALL matching sites from the full manifest — not just
+# the change-detected subset — so that a filtered test run always has complete
+# data regardless of snapshot history.
+if (length(FLUXNET_SITE_FILTER) > 0) {
+  unknown_ids <- setdiff(FLUXNET_SITE_FILTER, manifest$site_id)
+  if (length(unknown_ids) > 0) {
+    warning(
+      "FLUXNET_SITE_FILTER contains site ID(s) not in the manifest: ",
+      paste(unknown_ids, collapse = ", ")
+    )
+  }
+  download_manifest <- dplyr::filter(manifest, site_id %in% FLUXNET_SITE_FILTER)
+  message("Site filter applied: ", nrow(download_manifest), " site(s) selected for download.")
+}
+
 # Download raw data
 if (nrow(download_manifest) > 0) {
   flux_download(

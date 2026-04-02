@@ -11,10 +11,12 @@ if (file.exists(".env")) {
   dotenv::load_dot_env()
 }
 
+extract_site_ids <- if (length(FLUXNET_SITE_FILTER) > 0) FLUXNET_SITE_FILTER else NULL
+
 flux_extract(
   zip_dir     = file.path(FLUXNET_DATA_ROOT, "raw"),
   output_dir  = file.path(FLUXNET_DATA_ROOT, "extracted"),
-  site_ids    = c("DE-Tha", "US-Bi1", "AU-Wom"),
+  site_ids    = extract_site_ids,
   resolutions = FLUXNET_EXTRACT_RESOLUTIONS
 )
 

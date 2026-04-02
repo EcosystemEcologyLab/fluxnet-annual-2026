@@ -1,3 +1,10 @@
+# Site filter — when set, pipeline restricts downloads (and downstream steps)
+# to only the listed site IDs. Space-separated. Unset = all sites.
+FLUXNET_SITE_FILTER <- {
+  raw <- Sys.getenv("FLUXNET_SITE_FILTER", unset = "")
+  if (nchar(trimws(raw)) == 0) character(0) else strsplit(trimws(raw), "\\s+")[[1]]
+}
+
 # Data root directory — set FLUXNET_DATA_ROOT to relocate all pipeline data
 # directories (raw, extracted, processed, snapshots). Useful for HPC scratch
 # filesystems or machines where the repo checkout is read-only.
@@ -107,6 +114,16 @@ check_pipeline_config <- function() {
     )
   }
   message("Extract resolutions: ", paste(FLUXNET_EXTRACT_RESOLUTIONS, collapse = " "))
+
+  # --- Site filter ---
+  if (length(FLUXNET_SITE_FILTER) > 0) {
+    message(
+      "Site filter active: ", length(FLUXNET_SITE_FILTER), " site(s) — ",
+      paste(FLUXNET_SITE_FILTER, collapse = " ")
+    )
+  } else {
+    message("Site filter: none (all sites)")
+  }
 
   # --- Snapshot mode ---
   snapshot_mode <- Sys.getenv("FLUXNET_SNAPSHOT_MODE", unset = "development")

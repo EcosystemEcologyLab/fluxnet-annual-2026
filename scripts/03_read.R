@@ -60,7 +60,7 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
   message("Reading resolution: ", res_code, " (", inv_res, ") — ",
           nrow(inv_subset), " file(s)")
 
-  flux_data <- flux_read(inv_subset)
+  flux_data <- flux_read(inv_subset, resolution = res_code)
 
   out_path <- file.path(processed_dir, paste0("flux_data_raw_", suffix, ".rds"))
   saveRDS(flux_data, out_path)

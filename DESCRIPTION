@@ -26,7 +26,21 @@ Imports:
     leaflet,
     plotly,
     scales,
-    fluxnet
+    fluxnet,
+    ggtext,
+    colorspace,
+    patchwork,
+    RColorBrewer,
+    Polychrome,
+    rnaturalearth,
+    rnaturalearthdata,
+    sf,
+    terra,
+    svglite,
+    cols4all,
+    plotbiomes,
+    measurements,
+    hexbin
 Suggests:
     rmarkdown,
     testthat (>= 3.0.0),

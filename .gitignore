@@ -10,6 +10,9 @@ data/processed/
 /figures/
 /outputs/
 
+# review/ is intentionally git-tracked for offline figure review
+# (do NOT add /review/ here)
+
 # R
 .Rhistory
 .Rapp.history

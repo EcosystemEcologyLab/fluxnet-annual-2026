@@ -404,6 +404,11 @@ fig_flux_timeseries_by_igbp <- function(data_yy,
     ) |>
     dplyr::filter(!is.na(FLUX), !is.na(year))
 
+  if (nrow(plot_data) == 0L) {
+    warning("No data after IGBP filtering — returning empty plot.", call. = FALSE)
+    return(ggplot2::ggplot() + ggplot2::labs(title = "No data") + fluxnet_theme())
+  }
+
   ts_summary <- plot_data |>
     dplyr::group_by(IGBP, year) |>
     dplyr::summarise(

@@ -95,6 +95,29 @@ selected_sites <- all_sites
 # No filtering; use all processed data
 site_data <- avail
 
+# Normalise timestamps: add integer TIMESTAMP column matching the format
+# expected by ts_year() / ts_month() (chars 1-4 = year, 5-6 = month):
+#   YY  → TIMESTAMP = YYYY         (from YEAR column)
+#   MM  → TIMESTAMP = YYYYMM       (from DATE Date object)
+#   DD  → TIMESTAMP = YYYYMMDD     (from DATE Date object)
+site_data <- setNames(lapply(names(site_data), function(res) {
+  x  <- site_data[[res]]
+  df <- x$data
+  if (!"TIMESTAMP" %in% names(df)) {
+    if (res == "yy" && "YEAR" %in% names(df)) {
+      df <- dplyr::mutate(df, TIMESTAMP = as.integer(.data$YEAR))
+    } else if (res == "mm" && "DATE" %in% names(df)) {
+      df <- dplyr::mutate(df,
+        TIMESTAMP = as.integer(format(.data$DATE, "%Y%m")))
+    } else if (res == "dd" && "DATE" %in% names(df)) {
+      df <- dplyr::mutate(df,
+        TIMESTAMP = as.integer(format(.data$DATE, "%Y%m%d")))
+    }
+  }
+  x$data <- df
+  x
+}), names(site_data))
+
 # ---- IGBP colour palette (from plot_constants.R) -------------------------
 # Sites of the same IGBP class share a colour family.
 # IGBP_order and poster_pal() are sourced from R/plot_constants.R above.
@@ -697,15 +720,18 @@ build_s6 <- function() {
   igbp_colour_scale <- scale_colour_manual(values = IGBP_PAL, name = "IGBP",
                                            na.value = "#888888")
 
+  # Pre-aggregate to mean DOY climatology per site (across all years).
+  # This avoids passing millions of raw daily points to plotly/loess.
   make_panel_dd <- function(y_col, title, ylab) {
     if (!y_col %in% names(df)) return(NULL)
-    sub <- dplyr::select(df, site_id, igbp = .data$igbp, DOY,
-                         y = dplyr::all_of(y_col)) |>
-      dplyr::filter(!is.na(.data$y))
-    p <- ggplot(sub, aes(x = .data$DOY, y = .data$y, colour = .data$igbp)) +
-      geom_point(size = 0.4, alpha = 0.3) +
-      geom_smooth(aes(group = .data$site_id), method = "loess", span = 0.3,
-                  se = FALSE, linewidth = 0.8) +
+    clim_dd <- dplyr::select(df, site_id, igbp = .data$igbp, DOY,
+                              y = dplyr::all_of(y_col)) |>
+      dplyr::filter(!is.na(.data$y)) |>
+      dplyr::group_by(.data$site_id, .data$igbp, .data$DOY) |>
+      dplyr::summarise(y = mean(.data$y, na.rm = TRUE), .groups = "drop")
+    p <- ggplot(clim_dd, aes(x = .data$DOY, y = .data$y,
+                             colour = .data$igbp, group = .data$site_id)) +
+      geom_line(linewidth = 0.5, alpha = 0.6) +
       igbp_colour_scale +
       labs(title = title, x = "Day of year", y = ylab) +
       diag_theme
@@ -714,39 +740,42 @@ build_s6 <- function() {
 
   plots <- Filter(Negate(is.null), list(
     nee = make_panel_dd("NEE_VUT_REF",
-                        "Daily climatology — NEE, all sites (IGBP colour, loess span=0.3)",
+                        "Daily climatology — NEE, all sites — mean by DOY (IGBP colour)",
                         "NEE (gC m\u207b\u00b2 day\u207b\u00b9)"),
     gpp = {
-      # NT and DT on same panel
+      # NT and DT on same panel; pre-aggregate each separately then bind
       if (!any(c("GPP_NT_VUT_REF", "GPP_DT_VUT_REF") %in% names(df))) {
         NULL
       } else {
+        agg_type <- function(col, lbl) {
+          if (!col %in% names(df)) return(NULL)
+          dplyr::transmute(df, site_id, igbp = .data$igbp, DOY,
+                           gpp = .data[[col]], type = lbl) |>
+            dplyr::filter(!is.na(.data$gpp)) |>
+            dplyr::group_by(.data$site_id, .data$igbp, .data$DOY, .data$type) |>
+            dplyr::summarise(gpp = mean(.data$gpp, na.rm = TRUE), .groups = "drop")
+        }
         gpp_dd <- dplyr::bind_rows(
-          if ("GPP_NT_VUT_REF" %in% names(df))
-            dplyr::transmute(df, site_id, igbp = .data$igbp, DOY,
-                             gpp = .data$GPP_NT_VUT_REF, type = "NT"),
-          if ("GPP_DT_VUT_REF" %in% names(df))
-            dplyr::transmute(df, site_id, igbp = .data$igbp, DOY,
-                             gpp = .data$GPP_DT_VUT_REF, type = "DT")
-        ) |> dplyr::filter(!is.na(.data$gpp))
+          agg_type("GPP_NT_VUT_REF", "NT"),
+          agg_type("GPP_DT_VUT_REF", "DT")
+        )
         p <- ggplot(gpp_dd,
                     aes(x = .data$DOY, y = .data$gpp,
-                        colour = .data$igbp)) +
-          geom_point(aes(shape = .data$type), size = 0.4, alpha = 0.25) +
-          geom_smooth(aes(group = interaction(.data$site_id, .data$type),
-                          linetype = .data$type),
-                      method = "loess", span = 0.3, se = FALSE, linewidth = 0.8) +
+                        colour = .data$igbp,
+                        linetype = .data$type,
+                        group = interaction(.data$site_id, .data$type))) +
+          geom_line(linewidth = 0.5, alpha = 0.6) +
           igbp_colour_scale +
           scale_linetype_manual(values = c(NT = "solid", DT = "dashed"),
                                 name = "Partitioning") +
-          labs(title = "Daily climatology — GPP, all sites (IGBP colour, NT solid, DT dashed, loess span=0.3)",
+          labs(title = "Daily climatology — GPP, all sites — mean by DOY (IGBP colour, NT solid, DT dashed)",
                x = "Day of year", y = "GPP (gC m\u207b\u00b2 day\u207b\u00b9)") +
           diag_theme
         plotly_div(p, height = "420px")
       }
     },
     et  = make_panel_dd("LE_F_MDS",
-                        "Daily climatology — ET, all sites (IGBP colour, loess span=0.3)",
+                        "Daily climatology — ET, all sites — mean by DOY (IGBP colour)",
                         "ET (mm day\u207b\u00b9)")
   ))
 

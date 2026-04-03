@@ -1,7 +1,9 @@
 ## 00_diagnostics.R — Self-contained HTML diagnostic report
 ##
 ## Produces outputs/diagnostics.html from data in data/processed/.
-## Selects up to 3 sites at random; seed is recorded in the report footer.
+## Displays ALL sites present in the processed data.
+## Time-series and climatology plots colour sites by IGBP class using the
+## shared palette from R/plot_constants.R.
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -10,6 +12,7 @@
 
 source("R/pipeline_config.R")
 source("R/utils.R")
+source("R/plot_constants.R")
 
 library(dplyr)
 library(tidyr)
@@ -29,9 +32,7 @@ check_pipeline_config()
 
 if (!dir.exists("outputs")) dir.create("outputs", recursive = TRUE)
 
-# ---- Reproducibility ----
-DIAG_SEED    <- as.integer(Sys.time()) %% 99991L
-set.seed(DIAG_SEED)
+# ---- Run metadata ----
 RUN_DATETIME <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
 GIT_HASH     <- tryCatch(
   system("git rev-parse --short HEAD", intern = TRUE),
@@ -88,17 +89,55 @@ if (length(all_sites) == 0) {
   )
 }
 
-selected_sites <- if (length(all_sites) > 3) sample(all_sites, 3) else all_sites
+# Use all sites — no sampling
+selected_sites <- all_sites
 
-# Filter all data to selected sites
-site_data <- lapply(avail, function(x) {
-  x$data <- dplyr::filter(x$data, .data$site_id %in% selected_sites)
+# No filtering; use all processed data
+site_data <- avail
+
+# Normalise timestamps: add integer TIMESTAMP column matching the format
+# expected by ts_year() / ts_month() (chars 1-4 = year, 5-6 = month):
+#   YY  → TIMESTAMP = YYYY         (from YEAR column)
+#   MM  → TIMESTAMP = YYYYMM       (from DATE Date object)
+#   DD  → TIMESTAMP = YYYYMMDD     (from DATE Date object)
+site_data <- setNames(lapply(names(site_data), function(res) {
+  x  <- site_data[[res]]
+  df <- x$data
+  if (!"TIMESTAMP" %in% names(df)) {
+    if (res == "yy" && "YEAR" %in% names(df)) {
+      df <- dplyr::mutate(df, TIMESTAMP = as.integer(.data$YEAR))
+    } else if (res == "mm" && "DATE" %in% names(df)) {
+      df <- dplyr::mutate(df,
+        TIMESTAMP = as.integer(format(.data$DATE, "%Y%m")))
+    } else if (res == "dd" && "DATE" %in% names(df)) {
+      df <- dplyr::mutate(df,
+        TIMESTAMP = as.integer(format(.data$DATE, "%Y%m%d")))
+    }
+  }
+  x$data <- df
   x
-})
+}), names(site_data))
 
-# Site colour palette — defined once, reused in every plot
+# ---- IGBP colour palette (from plot_constants.R) -------------------------
+# Sites of the same IGBP class share a colour family.
+# IGBP_order and poster_pal() are sourced from R/plot_constants.R above.
+IGBP_PAL <- setNames(poster_pal(length(IGBP_order)), IGBP_order)
+
+# Map each site to its IGBP class (for use in section builders)
+site_igbp_lookup <- if (!is.null(snapshot_meta) && "igbp" %in% names(snapshot_meta)) {
+  setNames(
+    as.character(snapshot_meta$igbp[match(selected_sites, snapshot_meta$site_id)]),
+    selected_sites
+  )
+} else {
+  setNames(rep(NA_character_, length(selected_sites)), selected_sites)
+}
+
+# SITE_PAL: per-site colour derived from IGBP colour; grey for unknown IGBP
 SITE_PAL <- setNames(
-  scales::hue_pal()(max(length(selected_sites), 1)),
+  ifelse(!is.na(site_igbp_lookup) & site_igbp_lookup %in% names(IGBP_PAL),
+         IGBP_PAL[site_igbp_lookup],
+         "#888888"),
   selected_sites
 )
 
@@ -182,6 +221,17 @@ diag_theme <- theme_bw(base_size = 11) +
 # Extract year from a TIMESTAMP column (handles YY=YYYY, MM=YYYYMM, DD=YYYYMMDD)
 ts_year <- function(ts) as.integer(substr(as.character(ts), 1, 4))
 ts_month <- function(ts) as.integer(substr(as.character(ts), 5, 6))
+
+# Join IGBP class onto any data frame with a site_id column.
+# Returns df unchanged if snapshot_meta has no igbp column.
+join_igbp <- function(df) {
+  if (is.null(snapshot_meta) || !"igbp" %in% names(snapshot_meta)) return(df)
+  dplyr::left_join(
+    df,
+    dplyr::distinct(snapshot_meta, .data$site_id, .data$igbp),
+    by = "site_id"
+  )
+}
 
 # ============================================================
 # HTML document header and CSS
@@ -282,7 +332,7 @@ build_s1 <- function() {
 
   tbl_html <- df_to_html_table(site_tbl)
 
-  # Site map — plotly geo scatter (no external tile dependency)
+  # Site map — plotly geo scatter coloured by IGBP (no external tile dependency)
   map_html <- if (!is.null(snapshot_meta) &&
                   "location_lat" %in% names(snapshot_meta)) {
     map_df <- dplyr::filter(snapshot_meta, .data$site_id %in% selected_sites)
@@ -295,14 +345,20 @@ build_s1 <- function() {
           paste0("<br>Years: ", map_df$first_year, "\u2013", map_df$last_year)
         else ""
       )
+      # Assign IGBP colours to each point
+      pt_colors <- ifelse(
+        !is.na(map_df$igbp) & map_df$igbp %in% names(IGBP_PAL),
+        IGBP_PAL[map_df$igbp],
+        "#888888"
+      )
       fig <- plotly::plot_geo(map_df,
                               lat = ~location_lat,
                               lon = ~location_long) |>
         plotly::add_markers(
           text       = hover_text,
           hoverinfo  = "text",
-          marker     = list(size = 10, color = "#4fc3f7",
-                            line = list(color = "#1a1a2e", width = 1.5))
+          marker     = list(size = 8, color = pt_colors,
+                            line = list(color = "#1a1a2e", width = 0.8))
         ) |>
         plotly::layout(
           geo    = list(
@@ -495,23 +551,27 @@ build_s3 <- function() {
 # ============================================================
 build_s4 <- function() {
   if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
-  df <- site_data[["yy"]]$data
-
-  # Year column
-  df <- dplyr::mutate(df, yr = ts_year(.data$TIMESTAMP))
+  df <- site_data[["yy"]]$data |>
+    dplyr::mutate(yr = ts_year(.data$TIMESTAMP)) |>
+    join_igbp()
 
   has_col <- function(col) col %in% names(df)
+
+  # Colour by IGBP; group by site so each site draws its own line
+  igbp_colour_scale <- scale_colour_manual(values = IGBP_PAL, name = "IGBP",
+                                           na.value = "#888888")
 
   plots <- list()
 
   # NEE
   if (has_col("NEE_VUT_REF")) {
     p <- ggplot(df, aes(x = .data$yr, y = .data$NEE_VUT_REF,
-                        colour = .data$site_id, group = .data$site_id)) +
-      geom_line(linewidth = 1) + geom_point(size = 2.5) +
-      scale_colour_manual(values = SITE_PAL, name = NULL) +
-      labs(title = "Annual NEE", x = "Year",
-           y = "NEE (gC m\u207b\u00b2 yr\u207b\u00b9)") +
+                        colour = .data$igbp, group = .data$site_id)) +
+      geom_line(linewidth = 0.6, alpha = 0.7) +
+      geom_point(size = 1.5, alpha = 0.7) +
+      igbp_colour_scale +
+      labs(title = "Annual NEE — all sites (coloured by IGBP)",
+           x = "Year", y = "NEE (gC m\u207b\u00b2 yr\u207b\u00b9)") +
       diag_theme
     plots[["nee"]] <- plotly_div(p)
   }
@@ -520,22 +580,23 @@ build_s4 <- function() {
   if (has_col("GPP_NT_VUT_REF") || has_col("GPP_DT_VUT_REF")) {
     gpp_long <- dplyr::bind_rows(
       if (has_col("GPP_NT_VUT_REF"))
-        dplyr::transmute(df, site_id, yr,
+        dplyr::transmute(df, site_id, igbp = .data$igbp, yr,
                          gpp = .data$GPP_NT_VUT_REF, type = "NT"),
       if (has_col("GPP_DT_VUT_REF"))
-        dplyr::transmute(df, site_id, yr,
+        dplyr::transmute(df, site_id, igbp = .data$igbp, yr,
                          gpp = .data$GPP_DT_VUT_REF, type = "DT")
     )
     p <- ggplot(gpp_long,
                 aes(x = .data$yr, y = .data$gpp,
-                    colour = .data$site_id,
+                    colour = .data$igbp,
                     linetype = .data$type,
                     group = interaction(.data$site_id, .data$type))) +
-      geom_line(linewidth = 1) + geom_point(size = 2) +
-      scale_colour_manual(values = SITE_PAL, name = NULL) +
+      geom_line(linewidth = 0.6, alpha = 0.7) +
+      geom_point(size = 1.5, alpha = 0.7) +
+      igbp_colour_scale +
       scale_linetype_manual(values = c(NT = "solid", DT = "dashed"),
                             name = "Partitioning") +
-      labs(title = "Annual GPP (NT solid, DT dashed)",
+      labs(title = "Annual GPP (NT solid, DT dashed) — all sites (coloured by IGBP)",
            x = "Year", y = "GPP (gC m\u207b\u00b2 yr\u207b\u00b9)") +
       diag_theme
     plots[["gpp"]] <- plotly_div(p)
@@ -544,10 +605,11 @@ build_s4 <- function() {
   # ET from LE
   if (has_col("LE_F_MDS")) {
     p <- ggplot(df, aes(x = .data$yr, y = .data$LE_F_MDS,
-                        colour = .data$site_id, group = .data$site_id)) +
-      geom_line(linewidth = 1) + geom_point(size = 2.5) +
-      scale_colour_manual(values = SITE_PAL, name = NULL) +
-      labs(title = "Annual ET (from LE_F_MDS)",
+                        colour = .data$igbp, group = .data$site_id)) +
+      geom_line(linewidth = 0.6, alpha = 0.7) +
+      geom_point(size = 1.5, alpha = 0.7) +
+      igbp_colour_scale +
+      labs(title = "Annual ET (from LE_F_MDS) — all sites (coloured by IGBP)",
            x = "Year", y = "ET (mm yr\u207b\u00b9)") +
       diag_theme
     plots[["et"]] <- plotly_div(p)
@@ -563,11 +625,12 @@ build_s4 <- function() {
 build_s5 <- function() {
   if (is.null(site_data[["mm"]])) return(no_data("No MM data available."))
   df <- site_data[["mm"]]$data |>
-    dplyr::mutate(month = ts_month(.data$TIMESTAMP))
+    dplyr::mutate(month = ts_month(.data$TIMESTAMP)) |>
+    join_igbp()
 
-  # Mean over all years per site × month
+  # Mean over all years per site × month, carry igbp through
   clim <- df |>
-    dplyr::group_by(.data$site_id, .data$month) |>
+    dplyr::group_by(.data$site_id, .data$igbp, .data$month) |>
     dplyr::summarise(
       NEE  = mean(.data$NEE_VUT_REF,  na.rm = TRUE),
       GPP_NT = if ("GPP_NT_VUT_REF" %in% names(df))
@@ -582,11 +645,15 @@ build_s5 <- function() {
   mo_labs <- c("Jan","Feb","Mar","Apr","May","Jun",
                "Jul","Aug","Sep","Oct","Nov","Dec")
 
+  igbp_colour_scale <- scale_colour_manual(values = IGBP_PAL, name = "IGBP",
+                                           na.value = "#888888")
+
   make_panel <- function(aes_y, title, ylab) {
     p <- ggplot(clim, aes(x = .data$month, y = {{ aes_y }},
-                          colour = .data$site_id, group = .data$site_id)) +
-      geom_line(linewidth = 1) + geom_point(size = 2) +
-      scale_colour_manual(values = SITE_PAL, name = NULL) +
+                          colour = .data$igbp, group = .data$site_id)) +
+      geom_line(linewidth = 0.6, alpha = 0.7) +
+      geom_point(size = 1.5, alpha = 0.7) +
+      igbp_colour_scale +
       scale_x_continuous(breaks = 1:12, labels = mo_labs) +
       labs(title = title, x = "Month", y = ylab) +
       diag_theme +
@@ -595,28 +662,30 @@ build_s5 <- function() {
   }
 
   plots <- list()
-  plots[["nee"]] <- make_panel(.data$NEE, "Monthly climatology — NEE",
+  plots[["nee"]] <- make_panel(.data$NEE,
+                               "Monthly climatology — NEE (all sites, coloured by IGBP)",
                                "NEE (gC m\u207b\u00b2 month\u207b\u00b9)")
 
   if (!all(is.na(clim$GPP_NT)) || !all(is.na(clim$GPP_DT))) {
     gpp_long <- dplyr::bind_rows(
-      dplyr::transmute(clim, site_id, month,
+      dplyr::transmute(clim, site_id, igbp = .data$igbp, month,
                        gpp = .data$GPP_NT, type = "NT"),
-      dplyr::transmute(clim, site_id, month,
+      dplyr::transmute(clim, site_id, igbp = .data$igbp, month,
                        gpp = .data$GPP_DT, type = "DT")
     ) |> dplyr::filter(!is.na(.data$gpp))
 
     p_gpp <- ggplot(gpp_long,
                     aes(x = .data$month, y = .data$gpp,
-                        colour = .data$site_id,
+                        colour = .data$igbp,
                         linetype = .data$type,
                         group = interaction(.data$site_id, .data$type))) +
-      geom_line(linewidth = 1) + geom_point(size = 2) +
-      scale_colour_manual(values = SITE_PAL, name = NULL) +
+      geom_line(linewidth = 0.6, alpha = 0.7) +
+      geom_point(size = 1.5, alpha = 0.7) +
+      igbp_colour_scale +
       scale_linetype_manual(values = c(NT = "solid", DT = "dashed"),
                             name = "Partitioning") +
       scale_x_continuous(breaks = 1:12, labels = mo_labs) +
-      labs(title = "Monthly climatology — GPP (NT solid, DT dashed)",
+      labs(title = "Monthly climatology — GPP (NT solid, DT dashed) — all sites (IGBP colour)",
            x = "Month", y = "GPP (gC m\u207b\u00b2 month\u207b\u00b9)") +
       diag_theme +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -624,7 +693,8 @@ build_s5 <- function() {
   }
 
   if (!all(is.na(clim$ET))) {
-    plots[["et"]] <- make_panel(.data$ET, "Monthly climatology — ET",
+    plots[["et"]] <- make_panel(.data$ET,
+                                "Monthly climatology — ET (all sites, coloured by IGBP)",
                                 "ET (mm month\u207b\u00b9)")
   }
 
@@ -636,7 +706,7 @@ build_s5 <- function() {
 # ============================================================
 build_s6 <- function() {
   if (is.null(site_data[["dd"]])) return(no_data("No DD data available."))
-  df <- site_data[["dd"]]$data
+  df <- site_data[["dd"]]$data |> join_igbp()
 
   # Use DOY column if present, otherwise derive from TIMESTAMP
   if (!"DOY" %in% names(df)) {
@@ -647,15 +717,22 @@ build_s6 <- function() {
       )
   }
 
+  igbp_colour_scale <- scale_colour_manual(values = IGBP_PAL, name = "IGBP",
+                                           na.value = "#888888")
+
+  # Pre-aggregate to mean DOY climatology per site (across all years).
+  # This avoids passing millions of raw daily points to plotly/loess.
   make_panel_dd <- function(y_col, title, ylab) {
     if (!y_col %in% names(df)) return(NULL)
-    sub <- dplyr::select(df, site_id, DOY, y = dplyr::all_of(y_col)) |>
-      dplyr::filter(!is.na(.data$y))
-    p <- ggplot(sub, aes(x = .data$DOY, y = .data$y, colour = .data$site_id)) +
-      geom_point(size = 0.5, alpha = 0.4) +
-      geom_smooth(aes(group = .data$site_id), method = "loess", span = 0.3,
-                  se = FALSE, linewidth = 1) +
-      scale_colour_manual(values = SITE_PAL, name = NULL) +
+    clim_dd <- dplyr::select(df, site_id, igbp = .data$igbp, DOY,
+                              y = dplyr::all_of(y_col)) |>
+      dplyr::filter(!is.na(.data$y)) |>
+      dplyr::group_by(.data$site_id, .data$igbp, .data$DOY) |>
+      dplyr::summarise(y = mean(.data$y, na.rm = TRUE), .groups = "drop")
+    p <- ggplot(clim_dd, aes(x = .data$DOY, y = .data$y,
+                             colour = .data$igbp, group = .data$site_id)) +
+      geom_line(linewidth = 0.5, alpha = 0.6) +
+      igbp_colour_scale +
       labs(title = title, x = "Day of year", y = ylab) +
       diag_theme
     plotly_div(p, height = "420px")
@@ -663,39 +740,42 @@ build_s6 <- function() {
 
   plots <- Filter(Negate(is.null), list(
     nee = make_panel_dd("NEE_VUT_REF",
-                        "Daily climatology — NEE (raw points + loess span=0.3)",
+                        "Daily climatology — NEE, all sites — mean by DOY (IGBP colour)",
                         "NEE (gC m\u207b\u00b2 day\u207b\u00b9)"),
     gpp = {
-      # NT and DT on same panel
+      # NT and DT on same panel; pre-aggregate each separately then bind
       if (!any(c("GPP_NT_VUT_REF", "GPP_DT_VUT_REF") %in% names(df))) {
         NULL
       } else {
+        agg_type <- function(col, lbl) {
+          if (!col %in% names(df)) return(NULL)
+          dplyr::transmute(df, site_id, igbp = .data$igbp, DOY,
+                           gpp = .data[[col]], type = lbl) |>
+            dplyr::filter(!is.na(.data$gpp)) |>
+            dplyr::group_by(.data$site_id, .data$igbp, .data$DOY, .data$type) |>
+            dplyr::summarise(gpp = mean(.data$gpp, na.rm = TRUE), .groups = "drop")
+        }
         gpp_dd <- dplyr::bind_rows(
-          if ("GPP_NT_VUT_REF" %in% names(df))
-            dplyr::transmute(df, site_id, DOY,
-                             gpp = .data$GPP_NT_VUT_REF, type = "NT"),
-          if ("GPP_DT_VUT_REF" %in% names(df))
-            dplyr::transmute(df, site_id, DOY,
-                             gpp = .data$GPP_DT_VUT_REF, type = "DT")
-        ) |> dplyr::filter(!is.na(.data$gpp))
+          agg_type("GPP_NT_VUT_REF", "NT"),
+          agg_type("GPP_DT_VUT_REF", "DT")
+        )
         p <- ggplot(gpp_dd,
                     aes(x = .data$DOY, y = .data$gpp,
-                        colour = .data$site_id)) +
-          geom_point(aes(shape = .data$type), size = 0.5, alpha = 0.3) +
-          geom_smooth(aes(group = interaction(.data$site_id, .data$type),
-                          linetype = .data$type),
-                      method = "loess", span = 0.3, se = FALSE, linewidth = 1) +
-          scale_colour_manual(values = SITE_PAL, name = NULL) +
+                        colour = .data$igbp,
+                        linetype = .data$type,
+                        group = interaction(.data$site_id, .data$type))) +
+          geom_line(linewidth = 0.5, alpha = 0.6) +
+          igbp_colour_scale +
           scale_linetype_manual(values = c(NT = "solid", DT = "dashed"),
                                 name = "Partitioning") +
-          labs(title = "Daily climatology — GPP (NT solid, DT dashed, loess span=0.3)",
+          labs(title = "Daily climatology — GPP, all sites — mean by DOY (IGBP colour, NT solid, DT dashed)",
                x = "Day of year", y = "GPP (gC m\u207b\u00b2 day\u207b\u00b9)") +
           diag_theme
         plotly_div(p, height = "420px")
       }
     },
     et  = make_panel_dd("LE_F_MDS",
-                        "Daily climatology — ET (loess span=0.3)",
+                        "Daily climatology — ET, all sites — mean by DOY (IGBP colour)",
                         "ET (mm day\u207b\u00b9)")
   ))
 
@@ -796,11 +876,11 @@ html_footer <- paste0(
   '</main>\n<footer>\n<dl>\n',
   "<dt>Run datetime UTC</dt><dd>", RUN_DATETIME, "</dd>\n",
   "<dt>Git hash</dt><dd>",         GIT_HASH,     "</dd>\n",
-  "<dt>Sites included</dt><dd>",
-  if (length(selected_sites) > 0) paste(selected_sites, collapse = ", ")
+  "<dt>Sites included</dt><dd>",   length(selected_sites), " sites", "</dd>\n",
+  "<dt>Site IDs</dt><dd>",
+  if (length(selected_sites) > 0) paste(sort(selected_sites), collapse = ", ")
   else "(none)",
   "</dd>\n",
-  "<dt>Random seed</dt><dd>",      DIAG_SEED,    "</dd>\n",
   "<dt>FLUXNET_EXTRACT_RESOLUTIONS</dt><dd>",
   paste(FLUXNET_EXTRACT_RESOLUTIONS, collapse = " "), "</dd>\n",
   "<dt>Resolutions in report</dt><dd>",
@@ -831,8 +911,8 @@ write_output_metadata(
                                         paste0("flux_data_", avail[[s]]$stage,
                                                "_", s, ".rds"))))
   ),
-  notes = paste0("Diagnostic report. Random seed: ", DIAG_SEED,
-                 ". Sites: ", paste(selected_sites, collapse = ", "), ".")
+  notes = paste0("Diagnostic report. All sites included (n=", length(selected_sites),
+                 "): ", paste(sort(selected_sites), collapse = ", "), ".")
 )
 
 # Session info

@@ -706,7 +706,17 @@ build_s5 <- function() {
 # ============================================================
 build_s6 <- function() {
   if (is.null(site_data[["dd"]])) return(no_data("No DD data available."))
-  df <- site_data[["dd"]]$data |> join_igbp()
+
+  # Select only columns needed for climatology plots before join — the full DD
+  # data frame is ~1.9 GB (576 cols) and manipulating it whole exhausts memory.
+  flux_cols <- intersect(
+    c("site_id", "TIMESTAMP", "DOY",
+      "NEE_VUT_REF", "GPP_NT_VUT_REF", "GPP_DT_VUT_REF", "LE_F_MDS"),
+    names(site_data[["dd"]]$data)
+  )
+  df <- site_data[["dd"]]$data |>
+    dplyr::select(dplyr::all_of(flux_cols)) |>
+    join_igbp()
 
   # Use DOY column if present, otherwise derive from TIMESTAMP
   if (!"DOY" %in% names(df)) {
@@ -735,7 +745,7 @@ build_s6 <- function() {
       igbp_colour_scale +
       labs(title = title, x = "Day of year", y = ylab) +
       diag_theme
-    plotly_div(p, height = "420px")
+    paste0('<div class="plot-wrap">', plot_to_png(p, 9, 4.5), "</div>")
   }
 
   plots <- Filter(Negate(is.null), list(
@@ -771,7 +781,7 @@ build_s6 <- function() {
           labs(title = "Daily climatology — GPP, all sites — mean by DOY (IGBP colour, NT solid, DT dashed)",
                x = "Day of year", y = "GPP (gC m\u207b\u00b2 day\u207b\u00b9)") +
           diag_theme
-        plotly_div(p, height = "420px")
+        paste0('<div class="plot-wrap">', plot_to_png(p, 9, 4.5), "</div>")
       }
     },
     et  = make_panel_dd("LE_F_MDS",
@@ -896,7 +906,7 @@ out_html <- paste0(
   html_footer
 )
 
-out_path <- file.path("outputs", "diagnostics.html")
+out_path <- file.path("docs", "diagnostics.html")
 writeLines(out_html, out_path, useBytes = FALSE)
 message("Report written: ", out_path,
         " (", round(file.size(out_path) / 1024), " KB)")

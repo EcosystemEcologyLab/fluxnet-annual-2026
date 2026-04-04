@@ -355,3 +355,6 @@ the package is updated. Do not implement workarounds.
 | Extend `flux_qc()` for HH flag filtering and per-resolution thresholds | EcosystemEcologyLab/fluxnet-package (issue posted) |
 | Add unit conversion functions to fluxnet package | EcosystemEcologyLab/fluxnet-package (issue posted) |
 | Response pending from Eric Scott re: #43 download rearchitecture | EcosystemEcologyLab/fluxnet-package#43 |
+
+# Shuttle version monitoring: check https://github.com/fluxnet/shuttle/releases
+# for new releases. Run flux_listall() after upgrading to confirm snapshot format is unchanged.

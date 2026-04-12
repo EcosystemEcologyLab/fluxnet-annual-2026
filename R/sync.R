@@ -11,6 +11,9 @@
 #     making product_name comparison valid across hubs.
 #   - Release increments (e.g. _r2) are not AmeriFlux-specific; the 5 _r2
 #     sites in the 2026-03-28 snapshots are ICOS sites.
+#
+# Shuttle changelog: https://github.com/fluxnet/shuttle/releases
+# Check this page when upgrading FLUXNET_SHUTTLE_VERSION to understand what changed.
 
 
 # Required columns for a valid snapshot CSV (shuttle schema v0.0.1).

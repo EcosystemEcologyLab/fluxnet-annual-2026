@@ -10,6 +10,7 @@
 ##   3 — Daily climatology (DD) — lazy load, freed after use
 ##   4 — Whittaker biome snapshots (local Mac only — requires WorldClim)
 ##   5 — Latitudinal multi-variable ribbon
+##   6 — Environmental response curves (binned flux vs climate)
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -21,6 +22,7 @@ source("R/utils.R")
 source("R/plot_constants.R")
 source("R/figures/fig_climate.R")
 source("R/figures/fig_latitudinal.R")
+source("R/figures/fig_environmental_response.R")
 
 library(dplyr)
 library(tidyr)
@@ -578,6 +580,47 @@ build_whittaker_snapshots <- function() {
 }
 
 # ============================================================
+# Section 6 — Environmental response curves
+# Calls fig_environmental_response() with TA_F and P_F only (no WorldClim or
+# aridity data required in the Codespace).  aridity_index is excluded so the
+# section runs without external data downloads.
+# ============================================================
+build_environmental_response <- function() {
+  if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
+
+  data_yy <- site_data[["yy"]]$data |> join_igbp()
+
+  tryCatch({
+    plots <- fig_environmental_response(
+      data_yy  = data_yy,
+      env_vars = c("TA_F", "P_F")   # aridity_index excluded — requires external data
+    )
+
+    if (length(plots) == 0L) {
+      return(no_data(
+        "No valid env_var \u00d7 flux_var combinations found. ",
+        "Columns TA_F and P_F may not be present in the processed YY data."
+      ))
+    }
+
+    divs <- lapply(names(plots), function(nm) {
+      paste0(
+        '<h3>', nm, '</h3>',
+        '<div class="plot-wrap">',
+        plot_to_png(plots[[nm]], width = 7, height = 5),
+        '</div>'
+      )
+    })
+    paste(unlist(divs), collapse = "\n")
+  }, error = function(e) {
+    no_data(paste0(
+      "Environmental response curves unavailable: ", conditionMessage(e),
+      " &mdash; aridity_index requires CGIAR data (see R/external_data.R)."
+    ))
+  })
+}
+
+# ============================================================
 # Assemble the report
 # ============================================================
 message("Building Section 1 — Annual time series (YY) ...")
@@ -591,6 +634,9 @@ s4 <- section(4, "Whittaker biome snapshots (local Mac only \u2014 requires Worl
               build_whittaker_snapshots())
 message("Building Section 5 — Latitudinal multi-variable ribbon ...")
 s5 <- section(5, "Latitudinal multi-variable ribbon", build_latitudinal_multi())
+message("Building Section 6 — Environmental response curves ...")
+s6 <- section(6, "Environmental response curves (binned flux vs climate)",
+              build_environmental_response())
 
 html_footer <- paste0(
   '</main>\n<footer>\n<dl>\n',
@@ -610,7 +656,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s4, s5, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s4, s5, s6, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

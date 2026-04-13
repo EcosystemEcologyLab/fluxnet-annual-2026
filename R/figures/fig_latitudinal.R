@@ -173,12 +173,12 @@ fig_latitudinal_flux <- function(data_yy,
     p <- p +
       ggplot2::geom_point(
         data = site_summary,
-        ggplot2::aes(x = location_lat, y = mean_flux, shape = IGBP),
+        ggplot2::aes(x = location_lat, y = mean_flux, color = IGBP, shape = IGBP),
         size  = 2.8,
-        color = "black",
         stroke = 0.7,
         inherit.aes = FALSE
       ) +
+      scale_color_igbp() +
       ggplot2::scale_shape_manual(values = shp)
   } else {
     p <- p +

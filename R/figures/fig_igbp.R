@@ -131,10 +131,12 @@ fig_flux_by_igbp <- function(data_yy,
     )
 
   p_flux <- ggplot2::ggplot(plot_data, ggplot2::aes(x = IGBP, y = FLUX)) +
-    ggplot2::geom_jitter(width = 0.25, alpha = 0.35, size = 2.6,
-                         color = "grey40", show.legend = FALSE) +
+    ggplot2::geom_jitter(ggplot2::aes(color = IGBP),
+                         width = 0.25, alpha = 0.35, size = 2.6,
+                         show.legend = FALSE) +
     ggplot2::geom_boxplot(color = "black", fill = NA, outlier.shape = NA,
                           linewidth = 0.9) +
+    scale_color_igbp() +
     ggplot2::labs(x = NULL, y = y_label) +
     base_style +
     ggplot2::theme(
@@ -341,6 +343,7 @@ fig_flux_by_biome_group <- function(data_yy,
                             alpha = 0.4) +
       ggplot2::geom_jitter(ggplot2::aes(color = IGBP), size = 0.8,
                            alpha = 0.3, width = 0.25) +
+      scale_color_igbp() +
       ggplot2::geom_text(
         data = grp_counts,
         ggplot2::aes(x = factor(year), y = y_max * 1.05,

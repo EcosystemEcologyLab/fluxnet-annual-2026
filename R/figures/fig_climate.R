@@ -149,14 +149,10 @@ fig_climate_scatter <- function(data_yy,
     color_scale <- ggplot2::scale_color_discrete()
     aes_col <- NULL
   } else {
-    igbp_lvls <- intersect(IGBP_order, unique(na.omit(data_yy$IGBP)))
-    pal       <- poster_pal(length(igbp_lvls))
-    names(pal) <- igbp_lvls
-    data_yy   <- dplyr::mutate(data_yy,
-                               IGBP = factor(IGBP, levels = IGBP_order))
-    color_scale <- ggplot2::scale_color_manual(
-      values = pal,
-      guide  = ggplot2::guide_legend(ncol = 3, title = "IGBP")
+    data_yy     <- dplyr::mutate(data_yy,
+                                 IGBP = factor(IGBP, levels = IGBP_order))
+    color_scale <- scale_color_igbp(
+      guide = ggplot2::guide_legend(ncol = 3, title = "IGBP")
     )
     aes_col <- ggplot2::aes(color = IGBP)
   }

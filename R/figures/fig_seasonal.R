@@ -262,8 +262,6 @@ fig_seasonal_weekly <- function(data_dd,
       fake_date = lubridate::ymd("2020-01-01") + lubridate::weeks(week)
     )
 
-  pal       <- colorspace::qualitative_hcl(length(eligible), palette = "Dark 3")
-  names(pal) <- eligible
   shape_vec  <- c(16, 17, 15, 3, 7, 8, 18, 0, 1, 2, 4, 5, 6, 9, 10, 11)
   shp        <- stats::setNames(shape_vec[seq_along(eligible)], eligible)
 
@@ -273,10 +271,7 @@ fig_seasonal_weekly <- function(data_dd,
   ) +
     poster_geom_point() +
     poster_geom_line() +
-    ggplot2::scale_color_manual(
-      values = pal,
-      guide  = ggplot2::guide_legend(ncol = 2)
-    ) +
+    scale_color_igbp(guide = ggplot2::guide_legend(ncol = 2)) +
     ggplot2::scale_shape_manual(values = shp) +
     ggplot2::labs(x = "", y = y_label, color = "IGBP", shape = "IGBP") +
     fluxnet_theme() +

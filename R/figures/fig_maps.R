@@ -184,10 +184,6 @@ fig_map_global <- function(metadata,
         na.value = "#2C7FB8"
       )
   } else if (color_by == "igbp") {
-    igbp_levels <- intersect(IGBP_order, unique(stats::na.omit(sites_clean$igbp)))
-    pal <- colorspace::qualitative_hcl(length(igbp_levels), palette = "Dynamic",
-                                        c = 90, l = 60)
-    names(pal) <- igbp_levels
     p <- p +
       ggplot2::geom_point(
         data = sites_clean,
@@ -196,12 +192,7 @@ fig_map_global <- function(metadata,
         shape = 21, color = "black", size = pt_size,
         alpha = pt_alpha, stroke = 0.3
       ) +
-      ggplot2::scale_fill_manual(
-        values   = pal,
-        name     = "IGBP",
-        limits   = igbp_levels,
-        na.value = "grey60"
-      )
+      scale_fill_igbp(name = "IGBP", na.value = "grey60")
   } else {
     # Generic continuous or character column
     p <- p +

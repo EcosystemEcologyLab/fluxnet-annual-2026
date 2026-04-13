@@ -20,7 +20,7 @@ source("R/plot_constants.R")
 #'
 #' @return A ggplot stacked area chart: x = year, y = cumulative site count,
 #'   fill = IGBP class. IGBP classes follow [IGBP_order] and are coloured with
-#'   [scale_igbp_color()].
+#'   [scale_fill_igbp()].
 #'
 #' @examples
 #' \dontrun{
@@ -105,7 +105,7 @@ fig_network_growth <- function(metadata, geo_level = "global") {
                  fill = .data$igbp)
   ) +
     ggplot2::geom_area(position = "stack", alpha = 0.85, colour = NA) +
-    scale_igbp_color(aesthetics = "fill", name = "IGBP") +
+    scale_fill_igbp(name = "IGBP") +
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8),
                                 expand = ggplot2::expansion(mult = c(0, 0.02))) +
     ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),

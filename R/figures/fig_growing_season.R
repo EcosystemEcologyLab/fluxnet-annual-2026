@@ -32,11 +32,10 @@ library(lubridate)
 #' @param x_limits Numeric length-2. x-axis limits.
 #' @param x_breaks Numeric vector. x-axis break positions.
 #' @param x_label Character. x-axis label string.
-#' @param pal Named character vector of colours by IGBP.
 #' @param shp Named integer vector of shapes by IGBP.
 #' @return A ggplot object.
 #' @noRd
-.plot_gsl <- function(df, x_col, x_limits, x_breaks, x_label, pal, shp) {
+.plot_gsl <- function(df, x_col, x_limits, x_breaks, x_label, shp) {
 
   df <- dplyr::filter(
     df,
@@ -128,10 +127,7 @@ library(lubridate)
     ) +
     ggplot2::scale_x_continuous(limits = x_limits, breaks = x_breaks) +
     ggplot2::scale_y_continuous(limits = y_limits, breaks = y_breaks) +
-    ggplot2::scale_color_manual(
-      values = pal,
-      guide  = ggplot2::guide_legend(ncol = 2)
-    ) +
+    scale_color_igbp(guide = ggplot2::guide_legend(ncol = 2)) +
     ggplot2::scale_shape_manual(values = shp) +
     ggplot2::labs(
       x     = x_label,
@@ -335,17 +331,11 @@ fig_growing_season_nee <- function(data_yy,
   if (length(igbp_lvls) == 0L) {
     warning("IGBP not available — plots will not be colour/shape coded.",
             call. = FALSE)
-    # Use a single colour/shape
-    pal <- stats::setNames("grey40", "Unknown")
-    shp <- stats::setNames(16L, "Unknown")
+    shp    <- stats::setNames(16L, "Unknown")
     merged <- dplyr::mutate(merged, IGBP = factor("Unknown"))
   } else {
-    pal <- colorspace::qualitative_hcl(
-      length(igbp_lvls), palette = "Dark 3"
-    )
-    names(pal) <- igbp_lvls
-    shp <- stats::setNames(shape_igbp[seq_along(igbp_lvls)], igbp_lvls)
-    merged <- dplyr::mutate(merged, IGBP = factor(IGBP, levels = igbp_lvls))
+    shp    <- stats::setNames(shape_igbp[seq_along(igbp_lvls)], igbp_lvls)
+    merged <- dplyr::mutate(merged, IGBP = factor(IGBP, levels = IGBP_order))
   }
 
   # --- axis specs (shared) ---------------------------------------------------
@@ -362,7 +352,6 @@ fig_growing_season_nee <- function(data_yy,
     x_limits = x_limits,
     x_breaks = x_breaks,
     x_label  = x_lab_count,
-    pal      = pal,
     shp      = shp
   )
 
@@ -372,7 +361,6 @@ fig_growing_season_nee <- function(data_yy,
     x_limits = x_limits,
     x_breaks = x_breaks,
     x_label  = x_lab_span,
-    pal      = pal,
     shp      = shp
   )
 

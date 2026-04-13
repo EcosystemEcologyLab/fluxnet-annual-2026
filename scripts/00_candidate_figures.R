@@ -8,6 +8,8 @@
 ##   1 — Annual time series (YY)
 ##   2 — Monthly climatology (MM)
 ##   3 — Daily climatology (DD) — lazy load, freed after use
+##   4 — Whittaker biome snapshots (local Mac only — requires WorldClim)
+##   5 — Latitudinal multi-variable ribbon
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -17,10 +19,13 @@
 source("R/pipeline_config.R")
 source("R/utils.R")
 source("R/plot_constants.R")
+source("R/figures/fig_climate.R")
+source("R/figures/fig_latitudinal.R")
 
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(patchwork)
 library(readr)
 library(lubridate)
 library(scales)
@@ -494,6 +499,45 @@ build_s3 <- function() {
 }
 
 # ============================================================
+# Section 4 — Whittaker biome snapshots (requires WorldClim — local Mac only)
+# Four panels at year_cutoff = 2010 / 2015 / 2020 / 2025, assembled 2×2.
+# Entire section is wrapped in tryCatch so the report continues if WorldClim
+# data or the terra / hexbin packages are not available.
+# ============================================================
+build_whittaker_snapshots <- function() {
+  if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
+  if (is.null(snapshot_meta))     return(no_data("No snapshot metadata available."))
+
+  tryCatch({
+    data_yy <- site_data[["yy"]]$data
+    cutoffs <- c(2010L, 2015L, 2020L, 2025L)
+
+    panels <- lapply(cutoffs, function(yr) {
+      fig_whittaker_hexbin(
+        data_yy     = data_yy,
+        metadata    = snapshot_meta,
+        flux_var    = "NEE_VUT_REF",
+        year_cutoff = yr
+      ) + fluxnet_theme(base_size = 11)
+    })
+
+    pw <- (panels[[1]] | panels[[2]]) /
+          (panels[[3]] | panels[[4]]) +
+      patchwork::plot_layout(guides = "collect")
+
+    paste0('<div class="plot-wrap">',
+           plot_to_png(pw, width = 14, height = 10),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0(
+      "Whittaker snapshots unavailable: ", conditionMessage(e),
+      " &mdash; WorldClim data required (see R/external_data.R); ",
+      "designed for local Mac execution."
+    ))
+  })
+}
+
+# ============================================================
 # Assemble the report
 # ============================================================
 message("Building Section 1 — Annual time series (YY) ...")
@@ -502,6 +546,9 @@ message("Building Section 2 — Monthly climatology (MM) ...")
 s2 <- section(2, "Monthly climatology (MM data)", build_s2())
 message("Building Section 3 — Daily climatology (DD) ...")
 s3 <- section(3, "Daily climatology (DD data)",   build_s3())
+message("Building Section 4 — Whittaker biome snapshots ...")
+s4 <- section(4, "Whittaker biome snapshots (local Mac only \u2014 requires WorldClim)",
+              build_whittaker_snapshots())
 
 html_footer <- paste0(
   '</main>\n<footer>\n<dl>\n',
@@ -521,7 +568,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s4, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

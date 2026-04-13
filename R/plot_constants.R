@@ -77,7 +77,66 @@ lab_nee_annual    <- "NEE (g C m<sup>-2</sup> yr<sup>-1</sup>)"
 
 # ---- Colour palettes -------------------------------------------------------
 
-#' Qualitative HCL palette for IGBP classes
+#' Fixed IGBP colour palette — stable across all figures
+#'
+#' Named character vector mapping IGBP codes to hex colours.
+#' Forests: dark → light green; Shrublands: olive; Savannas/Grasslands: gold → yellow;
+#' Wetland: blue; Cropland: orange-brown; Urban: purple; Barren: greys.
+#' Use [scale_fill_igbp()] and [scale_color_igbp()] in ggplot2 figures.
+IGBP_colours <- c(
+  ENF = "#1B5E20",
+  EBF = "#2E7D32",
+  DNF = "#388E3C",
+  DBF = "#66BB6A",
+  MF  = "#A5D6A7",
+  CSH = "#827717",
+  OSH = "#AFA21A",
+  WSA = "#D4A017",
+  SAV = "#F9A825",
+  GRA = "#FDD835",
+  WET = "#1565C0",
+  CRO = "#BF360C",
+  URB = "#6A1B9A",
+  NV  = "#757575",
+  BSV = "#BDBDBD"
+)
+
+#' Pattern assignment by ecological group
+#'
+#' Named character vector mapping IGBP codes to ggpattern pattern strings.
+IGBP_patterns <- c(
+  ENF = "none", EBF = "none", DNF = "none", DBF = "none", MF = "none",
+  CSH = "stripe", OSH = "stripe",
+  WSA = "circle", SAV = "circle", GRA = "circle",
+  WET = "crosshatch",
+  CRO = "horizontal stripe",
+  URB = "none", NV = "none", BSV = "none"
+)
+
+#' Discrete fill scale for IGBP classes
+#'
+#' Uses the fixed [IGBP_colours] palette — stable regardless of which classes
+#' are present in the data.
+#'
+#' @param ... Additional arguments passed to [ggplot2::scale_fill_manual()].
+#' @return A ggplot2 scale object.
+scale_fill_igbp <- function(...) {
+  ggplot2::scale_fill_manual(values = IGBP_colours, ...)
+}
+
+#' Discrete colour scale for IGBP classes
+#'
+#' Uses the fixed [IGBP_colours] palette — stable regardless of which classes
+#' are present in the data.
+#'
+#' @param ... Additional arguments passed to [ggplot2::scale_color_manual()].
+#' @return A ggplot2 scale object.
+scale_color_igbp <- function(...) {
+  ggplot2::scale_color_manual(values = IGBP_colours, ...)
+}
+
+# DEPRECATED — use scale_fill_igbp() or scale_color_igbp() instead
+#' Qualitative HCL palette for IGBP classes (deprecated)
 #'
 #' @param n Integer. Number of colours required.
 #' @return Character vector of hex colour codes.
@@ -110,7 +169,8 @@ scale_country_fill <- function(levels, ...) {
   ggplot2::scale_fill_manual(values = vals, ...)
 }
 
-#' Discrete colour scale for IGBP classes
+# DEPRECATED — use scale_fill_igbp() or scale_color_igbp() instead
+#' Discrete colour scale for IGBP classes (deprecated)
 #'
 #' @param ... Additional arguments passed to
 #'   [colorspace::scale_color_discrete_qualitative()].

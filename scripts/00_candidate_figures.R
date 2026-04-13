@@ -499,6 +499,46 @@ build_s3 <- function() {
 }
 
 # ============================================================
+# Section 5 — Latitudinal multi-variable ribbon
+# Calls fig_latitudinal_multi() for NEE, LE, and H; saves a review PNG.
+# ============================================================
+build_latitudinal_multi <- function() {
+  if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
+  if (is.null(snapshot_meta))     return(no_data("No snapshot metadata available."))
+
+  data_yy <- site_data[["yy"]]$data
+
+  p <- tryCatch(
+    fig_latitudinal_multi(data_yy, metadata = snapshot_meta),
+    error = function(e) {
+      warning("fig_latitudinal_multi() failed: ", conditionMessage(e),
+              call. = FALSE)
+      NULL
+    }
+  )
+
+  if (is.null(p)) return(no_data("Latitudinal multi figure could not be generated."))
+
+  # Save review PNG
+  review_dir <- file.path("review", "figures")
+  if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+  review_path <- file.path(review_dir, "fig_latitudinal_multi.png")
+  ggplot2::ggsave(
+    review_path,
+    plot   = p,
+    width  = 10,
+    height = 14,
+    units  = "in",
+    dpi    = 150
+  )
+  message("Review figure saved: ", review_path)
+
+  paste0('<div class="plot-wrap">',
+         plot_to_png(p, width = 10, height = 14),
+         "</div>")
+}
+
+# ============================================================
 # Section 4 — Whittaker biome snapshots (requires WorldClim — local Mac only)
 # Four panels at year_cutoff = 2010 / 2015 / 2020 / 2025, assembled 2×2.
 # Entire section is wrapped in tryCatch so the report continues if WorldClim
@@ -549,6 +589,8 @@ s3 <- section(3, "Daily climatology (DD data)",   build_s3())
 message("Building Section 4 — Whittaker biome snapshots ...")
 s4 <- section(4, "Whittaker biome snapshots (local Mac only \u2014 requires WorldClim)",
               build_whittaker_snapshots())
+message("Building Section 5 — Latitudinal multi-variable ribbon ...")
+s5 <- section(5, "Latitudinal multi-variable ribbon", build_latitudinal_multi())
 
 html_footer <- paste0(
   '</main>\n<footer>\n<dl>\n',
@@ -568,7 +610,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s4, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s4, s5, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

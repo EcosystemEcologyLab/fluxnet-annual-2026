@@ -432,3 +432,108 @@ fig_map_nee_delta <- function(data_yy,
 
   .apply_region(p, region)
 }
+
+# ---- fig_map_country_sites --------------------------------------------------
+
+#' Country choropleth of FLUXNET site counts at multiple year cutoffs
+#'
+#' Counts FLUXNET sites active (\code{first_year <= cutoff <= last_year}) per
+#' country at each year in \code{year_cutoffs}, then fills world country
+#' polygons by that count.  Three panels (one per cutoff) are assembled into a
+#' patchwork with a shared colour scale.  Requires metadata only -- no flux data.
+#'
+#' Country assignment uses the first two characters of \code{site_id} as an
+#' ISO 3166-1 alpha-2 code, with \code{"UK"} remapped to \code{"GB"} for
+#' FLUXNET convention.  Countries with zero active sites are shown in grey.
+#'
+#' @param metadata Data frame.  Snapshot CSV (one row per site) with columns
+#'   \code{site_id}, \code{first_year}, and \code{last_year}.
+#' @param year_cutoffs Integer vector.  Years at which to count active sites
+#'   (default \code{c(2015L, 2020L, 2025L)}).
+#'
+#' @return A \pkg{patchwork} object with one panel per element of
+#'   \code{year_cutoffs}.  The colour scale is shared across panels.
+#'
+#' @examples
+#' \dontrun{
+#' meta <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260412T024606.csv")
+#' p <- fig_map_country_sites(meta)
+#' print(p)
+#' }
+#'
+#' @export
+fig_map_country_sites <- function(metadata,
+                                   year_cutoffs = c(2015L, 2020L, 2025L)) {
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop("Package 'patchwork' is required. Install with: install.packages('patchwork')",
+         call. = FALSE)
+  }
+
+  .check_meta_cols(metadata, c("site_id", "first_year", "last_year"))
+
+  land         <- .land_sf()
+  year_cutoffs <- as.integer(year_cutoffs)
+
+  # Normalise ISO-2 codes -- FLUXNET "UK" prefix -> ISO "GB"
+  sites <- metadata |>
+    dplyr::select("site_id", "first_year", "last_year") |>
+    dplyr::mutate(
+      iso2       = substr(.data$site_id, 1L, 2L),
+      iso2       = dplyr::case_when(.data$iso2 == "UK" ~ "GB",
+                                    TRUE               ~ .data$iso2),
+      first_year = as.integer(.data$first_year),
+      last_year  = as.integer(.data$last_year)
+    )
+
+  # Shared colour-scale upper bound: max per-country count across all cutoffs
+  all_per_country <- lapply(year_cutoffs, function(yr) {
+    sites |>
+      dplyr::filter(.data$first_year <= yr, .data$last_year >= yr) |>
+      dplyr::count(.data$iso2, name = "n_sites") |>
+      dplyr::pull(.data$n_sites)
+  })
+  scale_max <- max(unlist(all_per_country), na.rm = TRUE)
+  if (!is.finite(scale_max) || scale_max == 0L) scale_max <- 1L
+
+  # One panel per year cutoff
+  panels <- lapply(year_cutoffs, function(yr) {
+    counts <- sites |>
+      dplyr::filter(.data$first_year <= yr, .data$last_year >= yr) |>
+      dplyr::count(.data$iso2, name = "n_sites")
+
+    n_active   <- sum(counts$n_sites)
+    world_data <- dplyr::left_join(land, counts, by = c("iso_a2" = "iso2"))
+
+    ggplot2::ggplot() +
+      ggplot2::theme_void(base_size = 10L) +
+      ggplot2::theme(
+        plot.title      = ggplot2::element_text(hjust = 0.5, face = "bold",
+                                                size  = 10L),
+        plot.subtitle   = ggplot2::element_text(hjust = 0.5, size = 8L,
+                                                color = "grey40"),
+        legend.position = "bottom"
+      ) +
+      ggplot2::geom_sf(
+        data  = world_data,
+        ggplot2::aes(fill = .data$n_sites),
+        color = "white", linewidth = 0.15
+      ) +
+      ggplot2::scale_fill_viridis_c(
+        option    = "viridis",
+        limits    = c(0L, scale_max),
+        na.value  = "grey90",
+        name      = "Active sites",
+        direction = 1L,
+        breaks    = scales::pretty_breaks(n = 4L)
+      ) +
+      ggplot2::labs(
+        title    = as.character(yr),
+        subtitle = paste0("n\u2009=\u2009", n_active, " active sites")
+      ) +
+      ggplot2::coord_sf(expand = FALSE)
+  })
+
+  patchwork::wrap_plots(panels, ncol = 1L) +
+    patchwork::plot_layout(guides = "collect") &
+    ggplot2::theme(legend.position = "bottom")
+}

@@ -54,37 +54,237 @@ library(colorspace)
 
 #' Whittaker biome hexbin of temperature × precipitation coloured by flux
 #'
-#' Plots tower site-years on a Whittaker biome diagram using hexagonal binning,
-#' with each hex coloured by the median of `flux_var`. Requires WorldClim
-#' climate data at tower locations — see `R/external_data.R` for download
-#' instructions.
+#' Plots tower sites on a Whittaker biome diagram using hexagonal binning, with
+#' each hex coloured by the median site-mean of `flux_var`. Climate normals
+#' (MAT and MAP) are extracted from WorldClim raster data at tower locations —
+#' see `R/external_data.R` for download instructions.
 #'
-#' @param data_yy Annual FLUXNET data frame. Must contain `site_id`,
-#'   `flux_var`, and climate columns `TA_F` (°C) and `P_F` (mm yr⁻¹).
-#' @param worldclim_data Unused placeholder. If `NULL` (default), the function
-#'   stops with instructions to load WorldClim data first.
+#' WorldClim data must be present at one of two locations:
+#' \itemize{
+#'   \item `data/wc_worldclim_30s.rds` — a saved RDS of a \pkg{terra} SpatRaster;
+#'   \item `wc_data/bio/*.tif` — WorldClim GeoTIFF bio-variable files.
+#' }
+#' Layers bio1 (Annual Mean Temperature) and bio12 (Annual Precipitation) are
+#' required. **Designed for local Mac execution where WorldClim is available —
+#' do not run in the Codespace.**
+#'
+#' @param data_yy Annual FLUXNET data frame. Must contain `site_id` and
+#'   `flux_var`. Columns `location_lat` and `location_long` are joined from
+#'   `metadata` when absent.
+#' @param metadata Optional data frame with `site_id`, `location_lat`,
+#'   `location_long`, `first_year`, and `last_year` columns. Required when
+#'   `year_cutoff` is set or coordinates are absent from `data_yy`.
 #' @param flux_var Character. Flux variable to summarise per hex
 #'   (default `"NEE_VUT_REF"`).
+#' @param year_cutoff Integer or `NULL`. When set, two filters are applied:
+#'   \enumerate{
+#'     \item Only sites where `first_year <= year_cutoff` AND
+#'           `last_year >= year_cutoff` are kept (site was actively measuring).
+#'     \item Flux records are restricted to years `<= year_cutoff`.
+#'   }
+#'   Requires `first_year` / `last_year` columns in `data_yy` or joinable from
+#'   `metadata`.
 #'
-#' @return Never returns normally when `worldclim_data = NULL`; stops with an
-#'   informative error message.
+#' @return A ggplot object.
 #'
 #' @examples
 #' \dontrun{
-#' # This will stop with an informative message:
-#' fig_whittaker_hexbin(data_yy)
+#' fig_whittaker_hexbin(data_yy, metadata = snapshot_meta, year_cutoff = 2020)
 #' }
 #'
 #' @export
 fig_whittaker_hexbin <- function(data_yy,
-                                 worldclim_data = NULL,
-                                 flux_var = "NEE_VUT_REF") {
-  stop(
-    "WorldClim data not available. ",
-    "Run load_worldclim() first. ",
-    "See R/external_data.R for download instructions.",
-    call. = FALSE
+                                 metadata    = NULL,
+                                 flux_var    = "NEE_VUT_REF",
+                                 year_cutoff = NULL) {
+
+  # --- WorldClim loading (exact pattern for local Mac execution) ---------------
+  if (file.exists("data/wc_worldclim_30s.rds")) {
+    wc <- terra::rast(readRDS("data/wc_worldclim_30s.rds"))
+  } else {
+    tifs <- list.files("wc_data/bio", pattern = "\\.tif$", full.names = TRUE)
+    if (length(tifs) == 0) stop(
+      "WorldClim data not found. See R/external_data.R for download instructions."
+    )
+    wc <- terra::rast(tifs)
+  }
+
+  if (!requireNamespace("hexbin", quietly = TRUE)) {
+    stop(
+      "Package 'hexbin' is required for hexagonal binning. ",
+      "Install with: install.packages('hexbin')",
+      call. = FALSE
+    )
+  }
+
+  # --- column check -----------------------------------------------------------
+  .check_cols_climate(data_yy, c("site_id", flux_var))
+
+  # --- join metadata (coords, first/last year) only for missing columns -------
+  if (!is.null(metadata) && "site_id" %in% names(metadata)) {
+    need             <- c("location_lat", "location_long",
+                          "first_year", "last_year", "igbp")
+    missing_from_data <- setdiff(
+      intersect(need, names(metadata)),
+      names(data_yy)
+    )
+    if (length(missing_from_data) > 0L) {
+      data_yy <- dplyr::left_join(
+        data_yy,
+        dplyr::select(metadata, "site_id",
+                      dplyr::all_of(missing_from_data)),
+        by = "site_id"
+      )
+    }
+  }
+
+  # --- year_cutoff filtering --------------------------------------------------
+  if (!is.null(year_cutoff)) {
+    year_cutoff <- as.integer(year_cutoff)
+
+    if (!all(c("first_year", "last_year") %in% names(data_yy))) {
+      stop(
+        "year_cutoff requires 'first_year' and 'last_year' columns. ",
+        "Supply a metadata argument that contains these columns.",
+        call. = FALSE
+      )
+    }
+
+    # (1) Keep sites actively measuring at year_cutoff
+    data_yy <- dplyr::filter(
+      data_yy,
+      as.integer(.data$first_year) <= year_cutoff,
+      as.integer(.data$last_year)  >= year_cutoff
+    )
+
+    # (2) Restrict flux records to years <= year_cutoff
+    if ("YEAR" %in% names(data_yy)) {
+      data_yy <- dplyr::filter(data_yy,
+                               as.integer(.data$YEAR) <= year_cutoff)
+    } else if ("TIMESTAMP" %in% names(data_yy)) {
+      data_yy <- dplyr::filter(
+        data_yy,
+        as.integer(substr(as.character(.data$TIMESTAMP), 1L, 4L)) <= year_cutoff
+      )
+    }
+  }
+
+  # --- per-site summary: mean flux, retain first coord pair -------------------
+  if (!all(c("location_lat", "location_long") %in% names(data_yy))) {
+    stop(
+      "Columns 'location_lat' and 'location_long' are required. ",
+      "Supply a metadata argument with site coordinates.",
+      call. = FALSE
+    )
+  }
+
+  site_summary <- data_yy |>
+    dplyr::filter(!is.na(.data[[flux_var]])) |>
+    dplyr::group_by(site_id) |>
+    dplyr::summarise(
+      mean_flux     = mean(.data[[flux_var]], na.rm = TRUE),
+      location_lat  = dplyr::first(.data$location_lat),
+      location_long = dplyr::first(.data$location_long),
+      .groups = "drop"
+    ) |>
+    dplyr::filter(!is.na(.data$location_lat), !is.na(.data$location_long))
+
+  if (nrow(site_summary) == 0L) {
+    warning("No sites with valid flux and coordinates after filtering.",
+            call. = FALSE)
+    return(ggplot2::ggplot() + ggplot2::labs(title = "No data") + fluxnet_theme())
+  }
+
+  # --- extract WorldClim bio1 (MAT) and bio12 (MAP) at site locations ---------
+  pts <- terra::vect(
+    data.frame(x = site_summary$location_long,
+               y = site_summary$location_lat),
+    geom = c("x", "y"),
+    crs  = "EPSG:4326"
   )
+  wc_vals <- as.data.frame(terra::extract(wc, pts, ID = FALSE))
+
+  # Identify layers — robust to WorldClim 1.x and 2.x naming conventions
+  bio1_col <- grep(
+    "bio[_.]?0?1([^0-9]|$)",
+    names(wc_vals), value = TRUE, ignore.case = TRUE, perl = TRUE
+  )[1]
+  bio12_col <- grep(
+    "bio[_.]?12([^0-9]|$)",
+    names(wc_vals), value = TRUE, ignore.case = TRUE, perl = TRUE
+  )[1]
+
+  if (is.na(bio1_col) || is.na(bio12_col)) {
+    stop(
+      "Cannot identify bio1 (MAT) and/or bio12 (MAP) in WorldClim layers.\n",
+      "  Layers present: ", paste(head(names(wc_vals), 25), collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  mat_raw <- wc_vals[[bio1_col]]
+  # WorldClim 1.x encodes MAT as °C × 10; 2.x stores °C directly.
+  # Values > 70 in absolute magnitude are implausible temperatures — assume ×10.
+  mat_vals <- if (max(abs(mat_raw), na.rm = TRUE) > 70) mat_raw / 10 else mat_raw
+
+  site_clim <- site_summary |>
+    dplyr::mutate(
+      MAT = mat_vals,
+      MAP = wc_vals[[bio12_col]]
+    ) |>
+    dplyr::filter(!is.na(.data$MAT), !is.na(.data$MAP))
+
+  if (nrow(site_clim) == 0L) {
+    warning("No valid WorldClim values extracted. Returning empty plot.",
+            call. = FALSE)
+    return(ggplot2::ggplot() + ggplot2::labs(title = "No data") + fluxnet_theme())
+  }
+
+  # --- labels and title -------------------------------------------------------
+  flux_label  <- .flux_climate_label(flux_var)
+  cutoff_text <- if (!is.null(year_cutoff))
+    paste0(" \u2014 through ", year_cutoff) else ""
+  title_text  <- paste0("Whittaker biome diagram", cutoff_text)
+
+  # --- plot -------------------------------------------------------------------
+  ggplot2::ggplot(
+    site_clim,
+    ggplot2::aes(x = .data$MAT, y = .data$MAP, z = .data$mean_flux)
+  ) +
+    ggplot2::stat_summary_hex(
+      fun   = median,
+      bins  = 15,
+      alpha = 0.85
+    ) +
+    colorspace::scale_fill_continuous_diverging(
+      palette = "Blue-Red 3",
+      mid     = 0,
+      name    = flux_label,
+      guide   = ggplot2::guide_colorbar(
+        barwidth       = 8,
+        barheight      = 0.7,
+        title.position = "top",
+        title.hjust    = 0.5
+      )
+    ) +
+    ggplot2::geom_point(
+      ggplot2::aes(x = .data$MAT, y = .data$MAP),
+      size        = 1.6,
+      colour      = "grey30",
+      alpha       = 0.55,
+      inherit.aes = FALSE
+    ) +
+    ggplot2::labs(
+      x        = "Mean annual temperature (\u00b0C)",
+      y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
+      title    = title_text,
+      subtitle = paste0("n\u2009=\u2009", nrow(site_clim), " sites")
+    ) +
+    fluxnet_theme() +
+    ggplot2::theme(
+      axis.title.y    = ggtext::element_markdown(),
+      legend.position = "bottom"
+    )
 }
 
 #' Climate scatter plots: precipitation vs NEE and temperature vs GPP

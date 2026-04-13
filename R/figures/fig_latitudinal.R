@@ -5,7 +5,8 @@
 # Reference only — do not edit legacy/ originals.
 #
 # Functions:
-#   fig_latitudinal_flux() — ribbon of flux range by latitude band + site points
+#   fig_latitudinal_flux()  — ribbon of flux range by latitude band + site points
+#   fig_latitudinal_multi() — multi-variable wrapper with vertical patchwork
 
 library(ggplot2)
 library(ggtext)
@@ -193,4 +194,77 @@ fig_latitudinal_flux <- function(data_yy,
   }
 
   p
+}
+
+#' Multi-variable latitudinal ribbon wrapper
+#'
+#' Calls [fig_latitudinal_flux()] for each variable in `flux_vars` and
+#' assembles the results into a vertical patchwork with a shared latitude axis.
+#' Panel titles use axis labels from `R/plot_constants.R` where available,
+#' falling back to the variable name for variables not covered there (e.g.
+#' `LE_F_MDS`, `H_F_MDS`).  Variables absent from `data_yy` are skipped with
+#' a warning rather than stopping.
+#'
+#' @param data_yy Annual FLUXNET data frame passed to [fig_latitudinal_flux()].
+#' @param metadata Site metadata data frame passed to [fig_latitudinal_flux()].
+#'   Must contain `site_id` and `location_lat`; `igbp` is used for point
+#'   shapes when present.
+#' @param flux_vars Character vector. Flux variable names to plot, in panel
+#'   order (default: `c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS")`). Variables
+#'   absent from `data_yy` are skipped with a warning.
+#' @param bin_width Numeric. Latitude band width in degrees, passed to
+#'   [fig_latitudinal_flux()] (default `5`).
+#'
+#' @return A single patchwork object with one panel per available variable.
+#'
+#' @examples
+#' \dontrun{
+#' p <- fig_latitudinal_multi(data_yy, metadata = snapshot_meta)
+#' print(p)
+#' }
+#'
+#' @export
+fig_latitudinal_multi <- function(data_yy,
+                                   metadata,
+                                   flux_vars = c("NEE_VUT_REF",
+                                                  "LE_F_MDS",
+                                                  "H_F_MDS"),
+                                   bin_width = 5) {
+
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop(
+      "Package 'patchwork' is required. ",
+      "Install with: install.packages('patchwork')",
+      call. = FALSE
+    )
+  }
+
+  avail_vars <- intersect(flux_vars, names(data_yy))
+  skipped    <- setdiff(flux_vars, names(data_yy))
+
+  if (length(skipped) > 0L) {
+    warning(
+      "Variable(s) not found in data_yy \u2014 skipped: ",
+      paste(skipped, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  if (length(avail_vars) == 0L) {
+    stop("None of the requested flux_vars are present in data_yy.", call. = FALSE)
+  }
+
+  panels <- lapply(avail_vars, function(var) {
+    p <- fig_latitudinal_flux(
+      data_yy   = data_yy,
+      metadata  = metadata,
+      flux_var  = var,
+      bin_width = bin_width
+    )
+    # Replace the generic "Flux range in X° lat bands" title with variable label
+    p + ggplot2::labs(title = .flux_lat_label(var))
+  })
+
+  patchwork::wrap_plots(panels, ncol = 1) +
+    patchwork::plot_layout(guides = "collect") &
+    ggplot2::theme(legend.position = "right")
 }

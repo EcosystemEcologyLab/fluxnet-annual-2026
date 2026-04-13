@@ -16,6 +16,11 @@
 ##     no-op (all fractions ≤ 1 pass max_qc = 1L) but the call is retained so
 ##     the script is resolution-agnostic.
 
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
+
 source("R/pipeline_config.R")
 check_pipeline_config()
 
@@ -24,10 +29,6 @@ source("R/utils.R")
 
 library(fluxnet)
 library(dplyr)
-if (file.exists(".env")) {
-  library(dotenv)
-  dotenv::load_dot_env()
-}
 
 processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
 

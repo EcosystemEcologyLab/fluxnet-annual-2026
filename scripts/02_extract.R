@@ -1,15 +1,16 @@
 ## 02_extract.R — Extract downloaded archives and discover constituent files
 ## Uses: flux_extract(), flux_discover_files()
 
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
+
 source("R/pipeline_config.R")
 source("R/credentials.R")
 check_pipeline_config()
 
 library(fluxnet)
-if (file.exists(".env")) {
-  library(dotenv)
-  dotenv::load_dot_env()
-}
 
 extract_site_ids <- if (length(FLUXNET_SITE_FILTER) > 0) FLUXNET_SITE_FILTER else NULL
 

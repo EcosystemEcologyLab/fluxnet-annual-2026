@@ -2,6 +2,11 @@
 ## Output files go to figures/. Directory is gitignored.
 ## For review runs, set OUTPUT_DIR env var to redirect (e.g. review/figures/).
 
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
+
 source("R/pipeline_config.R")
 check_pipeline_config()
 
@@ -10,10 +15,6 @@ library(patchwork)
 library(dplyr)
 library(lubridate)
 library(fs)
-if (file.exists(".env")) {
-  library(dotenv)
-  dotenv::load_dot_env()
-}
 
 # Source all figure modules
 source("R/figures/fig_igbp.R")

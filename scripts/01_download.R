@@ -2,15 +2,16 @@
 ## Uses: flux_listall(), flux_download()
 ## Data source: FLUXNET Shuttle ONLY. See CLAUDE.md Hard Rule #1.
 
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
+
 source("R/pipeline_config.R")
 source("R/credentials.R")
 check_pipeline_config()
 
 library(fluxnet)
-if (file.exists(".env")) {
-  library(dotenv)
-  dotenv::load_dot_env()
-}
 
 creds <- fluxnet_credentials()
 

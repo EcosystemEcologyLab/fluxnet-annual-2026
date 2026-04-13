@@ -23,20 +23,19 @@ FLUXNET_EXTRACT_RESOLUTIONS <- strsplit(
 
 # QC threshold constants — change here to adjust pipeline-wide filtering.
 # DD/WW/MM/YY thresholds: keep records where _QC > threshold.
-# The default of 0.75 is stricter than the FLUXNET2015 published convention
-# (0.50). To reproduce FLUXNET2015 figures, set all thresholds to 0.5.
+# Lowered from 0.75 to 0.50 to match FLUXNET published convention — to be revisited with co-authors
 
 #' @export
-QC_THRESHOLD_DD <- 0.75  # daily
+QC_THRESHOLD_DD <- 0.50  # daily
 
 #' @export
-QC_THRESHOLD_WW <- 0.75  # weekly
+QC_THRESHOLD_WW <- 0.50  # weekly
 
 #' @export
-QC_THRESHOLD_MM <- 0.75  # monthly
+QC_THRESHOLD_MM <- 0.50  # monthly
 
 #' @export
-QC_THRESHOLD_YY <- 0.75  # annual
+QC_THRESHOLD_YY <- 0.50  # annual
 
 #' Check pipeline configuration
 #'

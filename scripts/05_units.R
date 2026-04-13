@@ -4,6 +4,11 @@
 ## Loops over FLUXNET_EXTRACT_RESOLUTIONS; reads flux_data_qc_<res>.rds and
 ## writes flux_data_converted_<res>.rds + companion .meta.json for each.
 
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
+
 source("R/pipeline_config.R")
 check_pipeline_config()
 
@@ -11,10 +16,6 @@ source("R/units.R")
 source("R/utils.R")
 
 library(dplyr)
-if (file.exists(".env")) {
-  library(dotenv)
-  dotenv::load_dot_env()
-}
 
 processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
 

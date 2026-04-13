@@ -3,14 +3,15 @@
 ## Loops over FLUXNET_EXTRACT_RESOLUTIONS; saves one flux_data_raw_<res>.rds
 ## per resolution (e.g. flux_data_raw_yy.rds, flux_data_raw_mm.rds, ...).
 
-source("R/pipeline_config.R")
-check_pipeline_config()
-
-library(fluxnet)
 if (file.exists(".env")) {
   library(dotenv)
   dotenv::load_dot_env()
 }
+
+source("R/pipeline_config.R")
+check_pipeline_config()
+
+library(fluxnet)
 
 processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
 

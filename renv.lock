@@ -859,6 +859,11 @@
       "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
       "Repository": "RSPM"
     },
+    "countrycode": {
+      "Package": "countrycode",
+      "Version": "1.7.0",
+      "Source": "Repository"
+    },
     "cpp11": {
       "Package": "cpp11",
       "Version": "0.5.3",

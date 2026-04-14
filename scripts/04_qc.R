@@ -100,7 +100,7 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
   }
 
   message("  Applying QC to ", n_sites, " sites..."); flush(stderr())
-  site_qc_list  <- vector("list", n_sites)
+  site_qc_list  <- list()
   n_excluded_s1 <- 0L
   n_excluded_s2 <- 0L
 
@@ -138,10 +138,13 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
     n_s2_before   <- nrow(site_qc)
     site_qc       <- fluxnet_qc_hh(site_qc, max_qc = 1L)
     n_excluded_s2 <- n_excluded_s2 + (n_s2_before - nrow(site_qc))
-    site_qc_list[[s_i]] <- site_qc
+    site_qc_list[[length(site_qc_list) + 1L]] <- site_qc
 
     if (s_i %% 50L == 0L || s_i == n_sites) {
       message("  Progress: ", s_i, "/", n_sites, " sites"); flush(stderr())
+      combined     <- dplyr::bind_rows(site_qc_list)
+      site_qc_list <- list(combined)
+      rm(combined)
     }
   }
 

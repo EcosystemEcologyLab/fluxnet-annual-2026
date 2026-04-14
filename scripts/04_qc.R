@@ -11,6 +11,11 @@
 ##     p_gapfilled columns; flagged rows are dropped and logged as exclusions.
 ##     Rows with qc_flagged == NA are kept. Stage 1 is skipped for HH/HR data.
 ##
+##     Row exclusion gated on NEE_VUT_REF_QC only — primary variable for the
+##     FLUXNET Annual Paper 2026. Secondary variable QC columns (GPP, RECO,
+##     LE, H) are retained in the output for per-variable filtering downstream
+##     but do not drive row exclusion. See docs/decisions_pending.md.
+##
 ##   Stage 2 (fluxnet_qc_hh): at HH/HR resolution, _QC values are integers
 ##     0–3. Rows with any _QC > max_qc are dropped. At DD/MM/WW/YY this is a
 ##     no-op (all fractions ≤ 1 pass max_qc = 1L) but the call is retained so
@@ -108,8 +113,15 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
   n_sites  <- length(site_ids)
 
   if (!is_hh) {
-    qc_col_names <- grep("_QC$", names(flux_data), value = TRUE)
-    qc_vars      <- sub("_QC$", "", qc_col_names)
+    # Row exclusion gated on NEE_VUT_REF_QC only — primary variable for the
+    # FLUXNET Annual Paper 2026. Secondary variable QC columns (GPP, RECO,
+    # LE, H) are retained in the output for per-variable filtering downstream
+    # but do not drive row exclusion. See docs/decisions_pending.md.
+    qc_vars <- if ("NEE_VUT_REF_QC" %in% names(flux_data)) "NEE_VUT_REF" else character(0L)
+    if (length(qc_vars) == 0L) {
+      message("  NEE_VUT_REF_QC not present in ", toupper(suffix),
+              " data — Stage 1 skipped for this resolution."); flush(stderr())
+    }
   }
 
   chunk_dir <- file.path(processed_dir, paste0("qc_chunks_", suffix))
@@ -124,8 +136,9 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
   for (s_i in seq_along(site_ids)) {
     site_d <- flux_data[flux_data$site_id == site_ids[s_i], , drop = FALSE]
 
-    # Stage 1: fractional threshold (coarser resolutions only)
-    if (!is_hh) {
+    # Stage 1: fractional threshold on NEE_VUT_REF_QC (coarser resolutions only).
+    # qc_vars = "NEE_VUT_REF" — row exclusion gated on primary variable only.
+    if (!is_hh && length(qc_vars) > 0L) {
       site_qc     <- flux_qc(site_d, qc_vars = qc_vars,
                              max_gapfilled = 1 - qc_thresh)
       flagged_idx <- which(!is.na(site_qc$qc_flagged) & site_qc$qc_flagged)
@@ -137,9 +150,9 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
                   else "ALL"
         log_exclusion(
           site_id     = site_qc$site_id[i],
-          variable    = "ALL",
+          variable    = "NEE_VUT_REF",
           timestamp   = ts_val,
-          reason      = paste0("flux_qc: p_gapfilled > ",
+          reason      = paste0("flux_qc: NEE_VUT_REF p_gapfilled > ",
                                round(1 - qc_thresh, 2), " (",
                                thresh_label, " = ", qc_thresh, ")"),
           threshold   = paste0(thresh_label, "=", qc_thresh),

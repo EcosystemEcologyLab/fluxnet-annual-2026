@@ -1,3 +1,22 @@
+## QC design decision — row exclusion gated on NEE_VUT_REF_QC only
+##
+## For coarser-resolution data (DD/MM/WW/YY), stage-1 QC (flux_qc()) is
+## called with qc_vars = "NEE_VUT_REF" rather than all _QC columns.
+## This means a year-row is excluded only when NEE_VUT_REF itself is too
+## heavily gap-filled — the primary variable for the FLUXNET Annual Paper
+## 2026. Secondary variable QC columns (GPP, RECO, LE, H) are retained in
+## the output for per-variable filtering by downstream figure functions but
+## do not drive row exclusion.
+##
+## Rationale: gating on all _QC columns caused 347 of 672 sites (52%) to
+## lose every annual record because a single secondary variable (e.g.,
+## RECO_NT_VUT_REF with high winter gap-fill) contaminated all years, even
+## when NEE was well-observed. See docs/decisions_pending.md.
+##
+## For HH/HR data, stage-2 QC (fluxnet_qc_hh()) still uses all integer
+## _QC columns because at sub-daily resolution all flux variables are
+## independent measurements, not derived/partitioned quantities.
+
 #' Apply QC filtering to half-hourly (HH) or hourly (HR) FLUXNET data
 #'
 #' Filters rows based on the `*_QC` flag system used at HH/HR resolution:

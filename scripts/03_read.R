@@ -116,12 +116,18 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
     next
   }
 
+  out_path <- file.path(processed_dir, paste0("flux_data_raw_", suffix, ".rds"))
+  if (file.exists(out_path)) {
+    message("Resolution '", res_code, "' (", inv_res, ") already complete — skipping: ",
+            out_path)
+    next
+  }
+
   message("Reading resolution: ", res_code, " (", inv_res, ") — ",
           nrow(inv_subset), " file(s)")
 
   flux_data <- flux_read(inv_subset, resolution = res_code)
 
-  out_path <- file.path(processed_dir, paste0("flux_data_raw_", suffix, ".rds"))
   saveRDS(flux_data, out_path)
   message("Saved: ", out_path)
 }

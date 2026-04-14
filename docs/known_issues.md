@@ -31,7 +31,35 @@ US-Bi2 is a California rice paddy (CRO). Extreme positive NEE indicates strong n
 
 ---
 
-## Section 3 — FLUXNET Shuttle issues
+## Section 3 — Sites missing NEE_VUT_REF
+
+Of 672 sites in the current dataset, 142 have no valid `NEE_VUT_REF` values in the
+annual (YY) processed data. These sites pass QC (the `NEE_VUT_REF_QC` gate is only
+triggered when the column is present) but carry `NA` throughout for the primary
+analysis variable.
+
+**Breakdown (as of 2026-04-14):**
+
+| Category | Count |
+|---|---|
+| Sites with 0 valid `NEE_VUT_REF` years | 142 |
+| — of which have valid `NEE_CUT_REF` (Constant U* Threshold alternative) | 36 |
+| — of which have neither `NEE_VUT_REF` nor `NEE_CUT_REF` | 106 |
+
+Full site lists:
+- `outputs/sites_no_nee_vut.csv` — all 142 zero-NEE-VUT sites (gitignored, regenerated each run)
+- `outputs/sites_nee_cut_only.csv` — the 36 sites with valid `NEE_CUT_REF` but not `NEE_VUT_REF`
+
+**Possible causes for the 106 with neither:** ERA5-only rows surviving QC (no FLUXMET
+data in the Shuttle extract), Shuttle extract missing the FLUXMET YY file for the site,
+or the site's annual records were all excluded by stage-1 NEE QC.
+
+**Action:** Report affected site IDs to support@fluxnet.org. See `docs/decisions_pending.md`
+for the open decision on whether to fall back to `NEE_CUT_REF` for the 36 affected sites.
+
+---
+
+## Section 4 — FLUXNET Shuttle issues
 
 Repository: [github.com/fluxnet/shuttle](https://github.com/fluxnet/shuttle)
 Contacts: Danielle Christianson, Dario Papale

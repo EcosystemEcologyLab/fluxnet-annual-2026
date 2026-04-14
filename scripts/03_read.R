@@ -1,7 +1,7 @@
 ## 03_read.R — Read flux data, variable metadata, and BADM
-## Uses: flux_read(), flux_varinfo(), flux_badm()
-## Loops over FLUXNET_EXTRACT_RESOLUTIONS; saves one flux_data_raw_<res>.rds
-## per resolution (e.g. flux_data_raw_yy.rds, flux_data_raw_mm.rds, ...).
+## Reads ERA5 + FLUXMET CSVs directly, one site at a time, for each resolution
+## in FLUXNET_EXTRACT_RESOLUTIONS. Saves a resumable partial every 50 sites;
+## renames to flux_data_raw_<res>.rds on completion.
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -97,65 +97,136 @@ if (file.exists(badm_path) && file.exists(varinfo_path)) {
   message("Saved badm.rds and var_info.rds"); flush(stderr())
 }
 
-# Map extract resolution codes (flux_extract / FLUXNET_EXTRACT_RESOLUTIONS) to
-# the time_resolution labels used by flux_discover_files() in file_inventory.
+# ── Per-site reading helper ────────────────────────────────────────────────────
+# Applies the same timestamp conversion and -9999 → NA replacement that
+# flux_read() does, without loading all files into memory simultaneously.
+read_site_flux <- function(inv_rows, inv_res) {
+  ts_col    <- switch(inv_res,
+    YY = "TIMESTAMP",
+    MM = "TIMESTAMP",
+    WW = c("TIMESTAMP_START", "TIMESTAMP_END"),
+    DD = "TIMESTAMP",
+    HH = c("TIMESTAMP_START", "TIMESTAMP_END"),
+    HR = c("TIMESTAMP_START", "TIMESTAMP_END")
+  )
+  ts_rename <- switch(inv_res,
+    YY = "YEAR", MM = "DATE", WW = "DATE", DD = "DATE",
+    HH = "DATETIME", HR = "DATETIME"
+  )
+  ts_fun <- switch(inv_res,
+    YY = as.integer,
+    MM = lubridate::ym,
+    WW = lubridate::ymd,
+    DD = lubridate::ymd,
+    HH = lubridate::ymd_hm,
+    HR = lubridate::ymd_hm
+  )
+
+  rows <- lapply(seq_len(nrow(inv_rows)), function(i) {
+    tryCatch(
+      readr::read_csv(inv_rows$path[i], show_col_types = FALSE) |>
+        dplyr::mutate(site_id = inv_rows$site_id[i],
+                      dataset  = inv_rows$dataset[i], .before = 1),
+      error = function(e) {
+        warning("Skipping unreadable file: ", inv_rows$path[i],
+                "\n  ", conditionMessage(e))
+        NULL
+      }
+    )
+  })
+  rows <- Filter(Negate(is.null), rows)
+  if (length(rows) == 0L) return(NULL)
+
+  dplyr::bind_rows(rows) |>
+    dplyr::mutate(
+      dplyr::across(dplyr::all_of(ts_col), ts_fun),
+      dplyr::across(dplyr::where(is.numeric), \(x) dplyr::na_if(x, -9999))
+    ) |>
+    dplyr::rename_with(\(col) gsub("TIMESTAMP", ts_rename, col, fixed = TRUE))
+}
+
+# ── Resolution loop ────────────────────────────────────────────────────────────
+# Map extract resolution codes to time_resolution labels in file_inventory.
 res_to_inv <- c(y = "YY", m = "MM", w = "WW", d = "DD", h = "HH")
 
 for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
-  inv_res <- res_to_inv[[res_code]]
-  suffix  <- tolower(inv_res)   # "yy", "mm", "dd", etc.
+  inv_res      <- res_to_inv[[res_code]]
+  suffix       <- tolower(inv_res)
+  out_path     <- file.path(processed_dir, paste0("flux_data_raw_", suffix, ".rds"))
+  partial_path <- file.path(processed_dir, paste0("flux_data_raw_", suffix, "_partial.rds"))
+  sites_path   <- file.path(processed_dir, paste0("flux_data_raw_", suffix, "_done_sites.rds"))
 
-  # HH resolution may appear as "HH" or "HR" depending on inventory version.
-  if (res_code == "h") {
-    rows <- file_inventory$time_resolution %in% c("HH", "HR")
-  } else {
-    rows <- !is.na(file_inventory$time_resolution) &
-            file_inventory$time_resolution == inv_res
-  }
-
-  # Also require files to exist on disk — inventory rows without extracted
-  # files have empty or non-existent paths and cannot be read.
-  inv_subset <- file_inventory[
-    rows & !is.na(file_inventory$path) &
-    nchar(file_inventory$path) > 0 &
-    file.exists(file_inventory$path),
-    , drop = FALSE]
-
-  if (nrow(inv_subset) == 0) {
-    message("No extracted files on disk for resolution '", res_code,
-            "' (", inv_res, ") — skipping.")
-    next
-  }
-
-  out_path <- file.path(processed_dir, paste0("flux_data_raw_", suffix, ".rds"))
   if (file.exists(out_path)) {
     message("Resolution '", res_code, "' (", inv_res, ") already complete — skipping: ",
-            out_path)
+            out_path); flush(stderr())
     next
   }
 
-  # Read in batches so purrr::list_rbind() consolidation never runs silently
-  # for more than a few seconds at a stretch. Without batching, list_rbind()
-  # over 1344 files takes 25+ seconds of silence, triggering the inactivity
-  # timeout in the calling shell.
-  batch_size <- 100L
-  n_rows     <- nrow(inv_subset)
-  n_batches  <- ceiling(n_rows / batch_size)
-  message("Reading resolution: ", res_code, " (", inv_res, ") — ", n_rows,
-          " file(s) in ", n_batches, " batch(es) of ~", batch_size); flush(stderr())
-
-  batch_idx  <- split(seq_len(n_rows), ceiling(seq_len(n_rows) / batch_size))
-  batch_list <- vector("list", n_batches)
-  for (b in seq_along(batch_idx)) {
-    message("  Batch ", b, "/", n_batches, " (rows ",
-            min(batch_idx[[b]]), "\u2013", max(batch_idx[[b]]), ")..."); flush(stderr())
-    batch_list[[b]] <- flux_read(inv_subset[batch_idx[[b]], , drop = FALSE],
-                                 resolution = res_code)
+  # Filter inventory: ERA5 + FLUXMET, correct resolution, file exists on disk.
+  res_rows <- if (res_code == "h") {
+    file_inventory$time_resolution %in% c("HH", "HR")
+  } else {
+    !is.na(file_inventory$time_resolution) & file_inventory$time_resolution == inv_res
   }
-  message("Combining ", n_batches, " batch(es)..."); flush(stderr())
-  flux_data <- dplyr::bind_rows(batch_list)
+  inv_flux <- file_inventory[
+    res_rows &
+    !is.na(file_inventory$dataset) & file_inventory$dataset %in% c("ERA5", "FLUXMET") &
+    !is.na(file_inventory$path) & nchar(file_inventory$path) > 0 &
+    file.exists(file_inventory$path),
+  , drop = FALSE]
+
+  all_sites <- unique(inv_flux$site_id)
+  if (length(all_sites) == 0L) {
+    message("No ERA5/FLUXMET files for resolution '", res_code, "' — skipping."); flush(stderr())
+    next
+  }
+
+  # Resumable: reload partial progress if it exists.
+  done_sites <- if (file.exists(sites_path)) readRDS(sites_path) else character(0)
+  accum      <- if (file.exists(partial_path) && length(done_sites) > 0L) {
+    message("Resuming from partial: ", length(done_sites), " sites already done."); flush(stderr())
+    list(readRDS(partial_path))
+  } else {
+    list()
+  }
+
+  todo_sites <- setdiff(all_sites, done_sites)
+  message("Reading resolution: ", res_code, " (", inv_res, ") — ",
+          length(all_sites), " site(s) total, ", length(done_sites), " done, ",
+          length(todo_sites), " to process"); flush(stderr())
+
+  for (i in seq_along(todo_sites)) {
+    site     <- todo_sites[i]
+    site_inv <- inv_flux[inv_flux$site_id == site, , drop = FALSE]
+    site_dat <- read_site_flux(site_inv, inv_res)
+
+    if (!is.null(site_dat) && nrow(site_dat) > 0L) {
+      accum[[length(accum) + 1L]] <- site_dat
+    }
+    done_sites <- c(done_sites, site)
+
+    # Save progress and collapse accumulator every 50 sites.
+    if (i %% 50L == 0L || i == length(todo_sites)) {
+      message("  Progress: ", length(done_sites), "/", length(all_sites),
+              " sites (", site, ")"); flush(stderr())
+      combined <- dplyr::bind_rows(accum)
+      saveRDS(combined,    partial_path)
+      saveRDS(done_sites,  sites_path)
+      accum <- list(combined)   # collapse to single df to limit memory growth
+      rm(combined)
+    }
+  }
+
+  message("Finalising ", inv_res, " (", nrow(dplyr::bind_rows(accum)), " rows)..."); flush(stderr())
+  flux_data <- dplyr::bind_rows(accum)
+  attr(flux_data, "flux_resolution") <- inv_res
 
   message("Writing ", out_path, "..."); flush(stderr())
   saveRDS(flux_data, out_path)
-  message("Saved: ", out_path); flush(stderr())
+
+  # Remove partial progress files now that the final output is saved.
+  if (file.exists(partial_path)) file.remove(partial_path)
+  if (file.exists(sites_path))   file.remove(sites_path)
+  message("Saved: ", out_path,
+          " (", nrow(flux_data), " rows \u00d7 ", ncol(flux_data), " cols)"); flush(stderr())
 }

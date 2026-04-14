@@ -10,6 +10,11 @@
 ##   3 — Daily climatology (DD) — lazy load, freed after use
 ##   4 — Whittaker biome snapshots (local Mac only — requires WorldClim)
 ##   5 — Latitudinal multi-variable ribbon
+##   6 — Environmental response curves (binned flux vs climate)
+##   7 — Long-record annual time series by continent
+##   8 — Network growth cumulative (metadata only)
+##   9 — Network growth annual new sites (metadata only)
+##  10 — Country site-count choropleth at 2015/2020/2025 (metadata only)
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -21,6 +26,10 @@ source("R/utils.R")
 source("R/plot_constants.R")
 source("R/figures/fig_climate.R")
 source("R/figures/fig_latitudinal.R")
+source("R/figures/fig_environmental_response.R")
+source("R/figures/fig_timeseries.R")
+source("R/figures/fig_network_growth.R")
+source("R/figures/fig_maps.R")
 
 library(dplyr)
 library(tidyr)
@@ -66,6 +75,14 @@ snapshot_meta <- if (length(snapshot_csv) > 0) {
     dplyr::select(site_id, data_hub, igbp,
                   location_lat, location_long,
                   first_year, last_year)
+} else {
+  NULL
+}
+
+# Full snapshot with all columns — used by fig_network_growth() and
+# fig_map_country_sites() which need igbp / first_year / last_year
+snapshot_meta_full <- if (length(snapshot_csv) > 0) {
+  readr::read_csv(snapshot_csv[[1]], show_col_types = FALSE)
 } else {
   NULL
 }
@@ -578,6 +595,178 @@ build_whittaker_snapshots <- function() {
 }
 
 # ============================================================
+# Section 6 — Environmental response curves
+# Calls fig_environmental_response() with TA_F and P_F only (no WorldClim or
+# aridity data required in the Codespace).  aridity_index is excluded so the
+# section runs without external data downloads.
+# ============================================================
+build_environmental_response <- function() {
+  if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
+
+  data_yy <- site_data[["yy"]]$data |> join_igbp()
+
+  tryCatch({
+    plots <- fig_environmental_response(
+      data_yy  = data_yy,
+      env_vars = c("TA_F", "P_F")   # aridity_index excluded — requires external data
+    )
+
+    if (length(plots) == 0L) {
+      return(no_data(
+        "No valid env_var \u00d7 flux_var combinations found. ",
+        "Columns TA_F and P_F may not be present in the processed YY data."
+      ))
+    }
+
+    divs <- lapply(names(plots), function(nm) {
+      paste0(
+        '<h3>', nm, '</h3>',
+        '<div class="plot-wrap">',
+        plot_to_png(plots[[nm]], width = 7, height = 5),
+        '</div>'
+      )
+    })
+    paste(unlist(divs), collapse = "\n")
+  }, error = function(e) {
+    no_data(paste0(
+      "Environmental response curves unavailable: ", conditionMessage(e),
+      " &mdash; aridity_index requires CGIAR data (see R/external_data.R)."
+    ))
+  })
+}
+
+# ============================================================
+# Section 7 — Long-record annual time series by continent
+# Calls save_long_record_sites() to write data/snapshots/long_record_sites.csv
+# and print the table, then fig_long_record_timeseries() for all flux vars.
+# One patchwork per continent; review PNGs saved to review/figures/.
+# ============================================================
+build_long_record_timeseries <- function() {
+  if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
+  if (is.null(snapshot_meta))     return(no_data("No snapshot metadata available."))
+
+  data_yy <- site_data[["yy"]]$data
+
+  # Write long_record_sites.csv and print the table to the terminal
+  tryCatch(
+    save_long_record_sites(n_sites = 5L),
+    error = function(e) {
+      warning("save_long_record_sites() failed: ", conditionMessage(e),
+              call. = FALSE)
+    }
+  )
+
+  plots <- tryCatch(
+    fig_long_record_timeseries(data_yy, metadata = snapshot_meta),
+    error = function(e) {
+      warning("fig_long_record_timeseries() failed: ", conditionMessage(e),
+              call. = FALSE)
+      NULL
+    }
+  )
+
+  if (is.null(plots) || length(plots) == 0L) {
+    return(no_data(
+      "No long-record time series generated. Data may be too sparse or continent mapping failed."
+    ))
+  }
+
+  review_dir <- file.path("review", "figures")
+  if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+
+  divs <- lapply(names(plots), function(cont) {
+    p <- plots[[cont]]
+
+    review_path <- file.path(
+      review_dir,
+      paste0("fig_timeseries_", tolower(gsub("[^A-Za-z0-9]", "_", cont)), ".png")
+    )
+    tryCatch(
+      ggplot2::ggsave(review_path, plot = p, width = 10, height = 12,
+                      units = "in", dpi = 150),
+      error = function(e) {
+        warning("Could not save review PNG for ", cont, ": ",
+                conditionMessage(e), call. = FALSE)
+      }
+    )
+    message("Review figure saved: ", review_path)
+
+    paste0(
+      '<h3>', cont, '</h3>',
+      '<div class="plot-wrap">',
+      plot_to_png(p, width = 10, height = 12),
+      '</div>'
+    )
+  })
+
+  paste(unlist(divs), collapse = "\n")
+}
+
+# ============================================================
+# Section 8 — Network growth (cumulative)
+# fig_network_growth(): cumulative sites by IGBP; metadata only.
+# ============================================================
+build_network_growth <- function() {
+  if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
+  tryCatch({
+    p <- fig_network_growth(snapshot_meta_full)
+    review_dir <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_network_growth.png")
+    ggplot2::ggsave(review_path, plot = p, width = 10, height = 6,
+                    units = "in", dpi = 150)
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 6),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0("Network growth (cumulative) unavailable: ", conditionMessage(e)))
+  })
+}
+
+# ============================================================
+# Section 9 — Network growth (annual new sites)
+# fig_network_growth_annual(): new sites per year; metadata only.
+# ============================================================
+build_network_growth_annual <- function() {
+  if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
+  tryCatch({
+    p <- fig_network_growth_annual(snapshot_meta_full)
+    review_dir <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_network_growth_annual.png")
+    ggplot2::ggsave(review_path, plot = p, width = 10, height = 6,
+                    units = "in", dpi = 150)
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 6),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0("Network growth (annual) unavailable: ", conditionMessage(e)))
+  })
+}
+
+# ============================================================
+# Section 10 — Country site-count choropleth
+# fig_map_country_sites(): site count per country at 2015/2020/2025.
+# ============================================================
+build_country_map <- function() {
+  if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
+  tryCatch({
+    p <- fig_map_country_sites(snapshot_meta_full,
+                               year_cutoffs = c(2015L, 2020L, 2025L))
+    review_dir <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_map_country_sites.png")
+    ggplot2::ggsave(review_path, plot = p, width = 10, height = 14,
+                    units = "in", dpi = 150)
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 14),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0("Country choropleth unavailable: ", conditionMessage(e)))
+  })
+}
+
+# ============================================================
 # Assemble the report
 # ============================================================
 message("Building Section 1 — Annual time series (YY) ...")
@@ -586,11 +775,26 @@ message("Building Section 2 — Monthly climatology (MM) ...")
 s2 <- section(2, "Monthly climatology (MM data)", build_s2())
 message("Building Section 3 — Daily climatology (DD) ...")
 s3 <- section(3, "Daily climatology (DD data)",   build_s3())
+message("Building Section 8 — Network growth (cumulative) ...")
+s8 <- section(8, "Network growth \u2014 cumulative sites by IGBP",
+              build_network_growth())
+message("Building Section 9 — Network growth (annual new sites) ...")
+s9 <- section(9, "Network growth \u2014 new sites per year by IGBP",
+              build_network_growth_annual())
+message("Building Section 10 — Country site-count choropleth ...")
+s10 <- section(10, "Site count per country at 2015\u20132020\u20132025",
+               build_country_map())
 message("Building Section 4 — Whittaker biome snapshots ...")
 s4 <- section(4, "Whittaker biome snapshots (local Mac only \u2014 requires WorldClim)",
               build_whittaker_snapshots())
 message("Building Section 5 — Latitudinal multi-variable ribbon ...")
 s5 <- section(5, "Latitudinal multi-variable ribbon", build_latitudinal_multi())
+message("Building Section 6 — Environmental response curves ...")
+s6 <- section(6, "Environmental response curves (binned flux vs climate)",
+              build_environmental_response())
+message("Building Section 7 — Long-record annual time series by continent ...")
+s7 <- section(7, "Long-record annual time series by continent",
+              build_long_record_timeseries())
 
 html_footer <- paste0(
   '</main>\n<footer>\n<dl>\n',
@@ -610,7 +814,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s4, s5, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s8, s9, s10, s4, s5, s6, s7, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

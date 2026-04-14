@@ -23,17 +23,40 @@ extracted_dir <- file.path(FLUXNET_DATA_ROOT, "extracted")
 
 extract_site_ids <- if (length(FLUXNET_SITE_FILTER) > 0) FLUXNET_SITE_FILTER else NULL
 
-flux_extract(
-  zip_dir     = zip_dir,
-  output_dir  = extracted_dir,
-  site_ids    = extract_site_ids,
-  resolutions = FLUXNET_EXTRACT_RESOLUTIONS
-)
+# Only call flux_extract() if the raw directory exists and contains ZIPs.
+if (!dir.exists(zip_dir)) {
+  message("data/raw/ does not exist — skipping extraction. ",
+          "Run 01_download.R first to populate it.")
+} else {
+  zip_count <- length(list.files(zip_dir, pattern = "\\.zip$"))
+  if (zip_count == 0L) {
+    message("No ZIP files found in ", zip_dir, " — skipping extraction.")
+  } else {
+    message("Extracting ", zip_count, " ZIP file(s) from ", zip_dir, " ...")
+    flux_extract(
+      zip_dir     = zip_dir,
+      output_dir  = extracted_dir,
+      site_ids    = extract_site_ids,
+      resolutions = FLUXNET_EXTRACT_RESOLUTIONS
+    )
+  }
+}
 
-# Discover all extracted files and save inventory to processed/.
+# Discover all extracted files (may be empty on first run before any downloads).
 dir.create(file.path(FLUXNET_DATA_ROOT, "processed"), recursive = TRUE,
            showWarnings = FALSE)
-file_inventory <- flux_discover_files(extracted_dir)
+if (!dir.exists(extracted_dir)) {
+  message("data/extracted/ does not exist — inventory will be empty.")
+  file_inventory <- data.frame(
+    site_id          = character(0),
+    time_resolution  = character(0),
+    dataset          = character(0),
+    path             = character(0),
+    stringsAsFactors = FALSE
+  )
+} else {
+  file_inventory <- flux_discover_files(extracted_dir)
+}
 saveRDS(file_inventory,
         file.path(FLUXNET_DATA_ROOT, "processed", "file_inventory.rds"))
 

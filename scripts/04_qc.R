@@ -85,44 +85,71 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
   qc_thresh    <- qc_threshold_for[[suffix]]
   thresh_label <- paste0("QC_THRESHOLD_", toupper(suffix))
 
-  # --- Stage 1: fractional _QC threshold (coarser resolutions only) ---
+  # --- Stage 1 + 2: per-site loop to avoid memory spike on large frames ---
+  # flux_qc() runs purrr::map2/reduce across all rows at once; for resolutions
+  # like MM (425 k rows) this causes a fatal memory spike. Processing per-site
+  # (~600 rows each) eliminates the spike and provides progress output.
   n_before_stage1 <- nrow(flux_data)
+
+  site_ids <- unique(flux_data$site_id)
+  n_sites  <- length(site_ids)
+
   if (!is_hh) {
     qc_col_names <- grep("_QC$", names(flux_data), value = TRUE)
     qc_vars      <- sub("_QC$", "", qc_col_names)
-    flux_data_qc <- flux_qc(flux_data, qc_vars = qc_vars,
-                            max_gapfilled = 1 - qc_thresh)
-
-    flagged_idx <- which(!is.na(flux_data_qc$qc_flagged) &
-                           flux_data_qc$qc_flagged)
-    for (i in flagged_idx) {
-      ts_col <- intersect(c("YEAR", "DATE", "DATETIME"), names(flux_data_qc))
-      ts_val <- if (length(ts_col) > 0)
-                  as.character(flux_data_qc[[ts_col[[1]]]][i])
-                else "ALL"
-      log_exclusion(
-        site_id     = flux_data_qc$site_id[i],
-        variable    = "ALL",
-        timestamp   = ts_val,
-        reason      = paste0("flux_qc: p_gapfilled > ",
-                             round(1 - qc_thresh, 2), " (",
-                             thresh_label, " = ", qc_thresh, ")"),
-        threshold   = paste0(thresh_label, "=", qc_thresh),
-        excluded_by = "04_qc.R"
-      )
-    }
-    flux_data_qc <- flux_data_qc[
-      is.na(flux_data_qc$qc_flagged) | !flux_data_qc$qc_flagged, ]
-  } else {
-    flux_data_qc <- flux_data
   }
-  n_after_stage1 <- nrow(flux_data_qc)
 
-  # --- Stage 2: integer _QC flag filter (HH/HR; no-op at coarser res) ---
-  n_before_stage2 <- nrow(flux_data_qc)
-  flux_data_qc    <- fluxnet_qc_hh(flux_data_qc, max_qc = 1L)
-  n_after_stage2  <- nrow(flux_data_qc)
-  n_excluded_hh   <- n_before_stage2 - n_after_stage2
+  message("  Applying QC to ", n_sites, " sites..."); flush(stderr())
+  site_qc_list  <- vector("list", n_sites)
+  n_excluded_s1 <- 0L
+  n_excluded_s2 <- 0L
+
+  for (s_i in seq_along(site_ids)) {
+    site_d <- flux_data[flux_data$site_id == site_ids[s_i], , drop = FALSE]
+
+    # Stage 1: fractional threshold (coarser resolutions only)
+    if (!is_hh) {
+      site_qc     <- flux_qc(site_d, qc_vars = qc_vars,
+                             max_gapfilled = 1 - qc_thresh)
+      flagged_idx <- which(!is.na(site_qc$qc_flagged) & site_qc$qc_flagged)
+      n_excluded_s1 <- n_excluded_s1 + length(flagged_idx)
+      for (i in flagged_idx) {
+        ts_col <- intersect(c("YEAR", "DATE", "DATETIME"), names(site_qc))
+        ts_val <- if (length(ts_col) > 0)
+                    as.character(site_qc[[ts_col[[1]]]][i])
+                  else "ALL"
+        log_exclusion(
+          site_id     = site_qc$site_id[i],
+          variable    = "ALL",
+          timestamp   = ts_val,
+          reason      = paste0("flux_qc: p_gapfilled > ",
+                               round(1 - qc_thresh, 2), " (",
+                               thresh_label, " = ", qc_thresh, ")"),
+          threshold   = paste0(thresh_label, "=", qc_thresh),
+          excluded_by = "04_qc.R"
+        )
+      }
+      site_qc <- site_qc[is.na(site_qc$qc_flagged) | !site_qc$qc_flagged, ]
+    } else {
+      site_qc <- site_d
+    }
+
+    # Stage 2: integer flag filter (no-op at coarser resolutions)
+    n_s2_before   <- nrow(site_qc)
+    site_qc       <- fluxnet_qc_hh(site_qc, max_qc = 1L)
+    n_excluded_s2 <- n_excluded_s2 + (n_s2_before - nrow(site_qc))
+    site_qc_list[[s_i]] <- site_qc
+
+    if (s_i %% 50L == 0L || s_i == n_sites) {
+      message("  Progress: ", s_i, "/", n_sites, " sites"); flush(stderr())
+    }
+  }
+
+  flux_data_qc    <- dplyr::bind_rows(site_qc_list)
+  n_after_stage1  <- n_before_stage1 - n_excluded_s1
+  n_before_stage2 <- n_after_stage1
+  n_after_stage2  <- n_after_stage1 - n_excluded_s2
+  n_excluded_hh   <- n_excluded_s2
 
   out_path <- file.path(processed_dir, paste0("flux_data_qc_", suffix, ".rds"))
   saveRDS(flux_data_qc, out_path)

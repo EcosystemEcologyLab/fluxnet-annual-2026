@@ -80,11 +80,21 @@ check_pipeline_config <- function() {
   }
 
   # --- Shuttle version check ---
-  expected_version <- Sys.getenv("FLUXNET_SHUTTLE_VERSION", unset = "0.2.0")
+  expected_version <- Sys.getenv("FLUXNET_SHUTTLE_VERSION", unset = "0.3.7")
+  # Only attempt the shuttle import if Python is already initialised in this
+  # session.  Calling reticulate::import() unconditionally prematurely locks in
+  # a bare Python environment before library(fluxnet) has had a chance to call
+  # reticulate::py_require(), which sets up the correct uv-managed environment.
+  # Initialising the wrong environment first causes a SIGTERM when py_require()
+  # later tries to switch to its managed environment.
   installed_version <- tryCatch(
     {
-      env <- reticulate::import("fluxnet_shuttle", convert = FALSE)
-      reticulate::py_to_r(env$`__version__`)
+      if (reticulate::py_available(initialize = FALSE)) {
+        env <- reticulate::import("fluxnet_shuttle", convert = FALSE)
+        reticulate::py_to_r(env$`__version__`)
+      } else {
+        NA_character_
+      }
     },
     error = function(e) NA_character_
   )

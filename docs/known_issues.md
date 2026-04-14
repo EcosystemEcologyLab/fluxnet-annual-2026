@@ -12,7 +12,7 @@ Maintainer: Eric Scott ([@Aariq](https://github.com/Aariq))
 
 | Issue | Description | Impact | Workaround | Action |
 |---|---|---|---|---|
-| `flux_badm()` calls `quit()` | Function terminates the R session rather than throwing a catchable error when called from within a script | `03_read.R` exits after ~24 seconds without processing BADM data | Call in a subprocess or read BIF files directly | Open GitHub issue on EcosystemEcologyLab/fluxnet |
+| `flux_badm()` calls `quit()` | Function terminates the R session rather than throwing a catchable error when called from within a script | `03_read.R` exits after ~24 seconds without processing BADM data | **Implemented:** `03_read.R` reads BIF CSV files directly via `readr::read_csv()` + `dplyr::bind_rows()`, bypassing `flux_badm()` entirely — same data, no API call | Open GitHub issue on EcosystemEcologyLab/fluxnet |
 
 ---
 

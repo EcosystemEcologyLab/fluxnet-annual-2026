@@ -16,6 +16,7 @@ library(fluxnet)
 processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
 
 file_inventory <- readRDS(file.path(processed_dir, "file_inventory.rds"))
+message("Inventory loaded: ", nrow(file_inventory), " rows"); flush(stderr())
 
 # ── BIF file normalisation ─────────────────────────────────────────────────────
 # flux_badm() requires exactly 5 columns in every BIF file. Some data providers
@@ -59,17 +60,31 @@ if (length(drop_bif_rows) > 0) {
   message(length(drop_bif_rows), " BIF file(s) with missing columns excluded from inventory.")
   file_inventory <- file_inventory[-drop_bif_rows, , drop = FALSE]
 }
+message("BIF normalisation complete (", length(bif_inventory_rows), " files checked, ",
+        length(drop_bif_rows), " dropped)"); flush(stderr())
 
-# BADM and variable metadata are resolution-agnostic — read once outside the
-# loop and share across all resolution outputs.
-bif_paths  <- file_inventory$path[file_inventory$dataset == "BIF"]
-bif_groups <- unique(unlist(lapply(bif_paths[file.exists(bif_paths)], function(p) {
-  readr::read_csv(p, show_col_types = FALSE)$VARIABLE_GROUP
-})))
-badm     <- flux_badm(file_inventory, variable_group = tolower(bif_groups))
+# BADM — read directly from the normalised BIF CSV files on disk.
+# flux_badm() calls quit() and terminates the R session when run from a script;
+# see docs/known_issues.md. Reading the CSVs directly is equivalent and avoids
+# the 15–20 minute API call entirely.
+bif_paths_ok <- file_inventory$path[
+  !is.na(file_inventory$dataset) & file_inventory$dataset == "BIF" &
+  !is.na(file_inventory$path) & nchar(file_inventory$path) > 0 &
+  file.exists(file_inventory$path)
+]
+message("Reading BADM from ", length(bif_paths_ok), " BIF files..."); flush(stderr())
+badm <- dplyr::bind_rows(lapply(bif_paths_ok, function(p) {
+  readr::read_csv(p, show_col_types = FALSE, col_types = readr::cols(.default = "c"))
+}))
+message("BADM complete: ", nrow(badm), " rows"); flush(stderr())
+
+# Variable metadata is resolution-agnostic — read once and share across outputs.
+message("Calling flux_varinfo()..."); flush(stderr())
 var_info <- flux_varinfo(file_inventory)
+message("flux_varinfo() complete: ", nrow(var_info), " rows"); flush(stderr())
 saveRDS(badm,     file.path(processed_dir, "badm.rds"))
 saveRDS(var_info, file.path(processed_dir, "var_info.rds"))
+message("Saved badm.rds and var_info.rds"); flush(stderr())
 
 # Map extract resolution codes (flux_extract / FLUXNET_EXTRACT_RESOLUTIONS) to
 # the time_resolution labels used by flux_discover_files() in file_inventory.

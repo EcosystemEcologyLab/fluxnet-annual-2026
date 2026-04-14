@@ -21,6 +21,13 @@ FLUXNET_EXTRACT_RESOLUTIONS <- strsplit(
   "\\s+"
 )[[1]]
 
+# ZIP cleanup — when TRUE, each ZIP in data/raw/ is deleted immediately after
+# at least one file has been successfully extracted from it. Reduces peak disk
+# usage during batch downloads. Set to FALSE to retain raw ZIPs.
+FLUXNET_DELETE_ZIPS <- isTRUE(as.logical(
+  Sys.getenv("FLUXNET_DELETE_ZIPS", unset = "TRUE")
+))
+
 # QC threshold constants — change here to adjust pipeline-wide filtering.
 # DD/WW/MM/YY thresholds: keep records where _QC > threshold.
 # Lowered from 0.75 to 0.50 to match FLUXNET published convention — to be revisited with co-authors
@@ -113,6 +120,9 @@ check_pipeline_config <- function() {
     )
   }
   message("Extract resolutions: ", paste(FLUXNET_EXTRACT_RESOLUTIONS, collapse = " "))
+
+  # --- ZIP cleanup ---
+  message("Delete ZIPs after extraction: ", FLUXNET_DELETE_ZIPS)
 
   # --- Site filter ---
   if (length(FLUXNET_SITE_FILTER) > 0) {

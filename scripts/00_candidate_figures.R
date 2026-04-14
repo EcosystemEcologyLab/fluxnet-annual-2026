@@ -285,9 +285,11 @@ build_s1 <- function() {
 
   plots <- list()
 
-  # NEE
+  # NEE — filter to years where NEE_VUT_REF is not NA to avoid ERA5-only rows
+  # creating spurious line segments in the plotly time series.
   if (has_col("NEE_VUT_REF")) {
-    p <- ggplot(df, aes(x = .data$yr, y = .data$NEE_VUT_REF,
+    p <- ggplot(dplyr::filter(df, !is.na(.data$NEE_VUT_REF)),
+                aes(x = .data$yr, y = .data$NEE_VUT_REF,
                         colour = .data$igbp, group = .data$site_id)) +
       geom_line(linewidth = 0.6, alpha = 0.7) +
       geom_point(size = 1.5, alpha = 0.7) +
@@ -298,7 +300,7 @@ build_s1 <- function() {
     plots[["nee"]] <- plotly_div(p)
   }
 
-  # GPP — NT solid, DT dashed
+  # GPP — NT solid, DT dashed; drop NA rows so ERA5-only years do not appear.
   if (has_col("GPP_NT_VUT_REF") || has_col("GPP_DT_VUT_REF")) {
     gpp_long <- dplyr::bind_rows(
       if (has_col("GPP_NT_VUT_REF"))
@@ -307,7 +309,7 @@ build_s1 <- function() {
       if (has_col("GPP_DT_VUT_REF"))
         dplyr::transmute(df, site_id, igbp = .data$igbp, yr,
                          gpp = .data$GPP_DT_VUT_REF, type = "DT")
-    )
+    ) |> dplyr::filter(!is.na(.data$gpp))
     p <- ggplot(gpp_long,
                 aes(x = .data$yr, y = .data$gpp,
                     colour = .data$igbp,
@@ -324,9 +326,10 @@ build_s1 <- function() {
     plots[["gpp"]] <- plotly_div(p)
   }
 
-  # ET from LE
+  # ET from LE — filter to non-NA years for the same ERA5 row reason.
   if (has_col("LE_F_MDS")) {
-    p <- ggplot(df, aes(x = .data$yr, y = .data$LE_F_MDS,
+    p <- ggplot(dplyr::filter(df, !is.na(.data$LE_F_MDS)),
+                aes(x = .data$yr, y = .data$LE_F_MDS,
                         colour = .data$igbp, group = .data$site_id)) +
       geom_line(linewidth = 0.6, alpha = 0.7) +
       geom_point(size = 1.5, alpha = 0.7) +

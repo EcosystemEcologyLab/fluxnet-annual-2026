@@ -16,7 +16,22 @@ Maintainer: Eric Scott ([@Aariq](https://github.com/Aariq))
 
 ---
 
-## Section 2 — FLUXNET Shuttle issues
+## Section 2 — Extreme NEE values
+
+Two annual records in `flux_data_converted_yy.rds` have `abs(NEE_VUT_REF) > 2000 gC m⁻² yr⁻¹`.
+Values in this range are physically plausible for high-productivity ecosystems and are **not excluded** by the pipeline.
+Full record list saved to `outputs/nee_extreme_values.csv` (regenerated on each pipeline run).
+
+| site_id | IGBP | Year | NEE_VUT_REF (gC m⁻² yr⁻¹) | data_hub |
+|---|---|---|---|---|
+| US-Bi2 | CRO | 2023 | 2267.34 | AmeriFlux |
+| US-Bi2 | CRO | 2024 | 2316.51 | AmeriFlux |
+
+US-Bi2 is a California rice paddy (CRO). Extreme positive NEE indicates strong net carbon source; may reflect harvest/residue practices. Flag for co-author review before final analysis — check whether CRO sites should use a separate threshold or flag-rather-than-exclude approach.
+
+---
+
+## Section 3 — FLUXNET Shuttle issues
 
 Repository: [github.com/fluxnet/shuttle](https://github.com/fluxnet/shuttle)
 Contacts: Danielle Christianson, Dario Papale

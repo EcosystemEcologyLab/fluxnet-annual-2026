@@ -134,10 +134,26 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
     next
   }
 
-  message("Reading resolution: ", res_code, " (", inv_res, ") — ",
-          nrow(inv_subset), " file(s)")
+  # Read in batches so purrr::list_rbind() consolidation never runs silently
+  # for more than a few seconds at a stretch. Without batching, list_rbind()
+  # over 1344 files takes 25+ seconds of silence, triggering the inactivity
+  # timeout in the calling shell.
+  batch_size <- 100L
+  n_rows     <- nrow(inv_subset)
+  n_batches  <- ceiling(n_rows / batch_size)
+  message("Reading resolution: ", res_code, " (", inv_res, ") — ", n_rows,
+          " file(s) in ", n_batches, " batch(es) of ~", batch_size); flush(stderr())
 
-  flux_data <- flux_read(inv_subset, resolution = res_code)
+  batch_idx  <- split(seq_len(n_rows), ceiling(seq_len(n_rows) / batch_size))
+  batch_list <- vector("list", n_batches)
+  for (b in seq_along(batch_idx)) {
+    message("  Batch ", b, "/", n_batches, " (rows ",
+            min(batch_idx[[b]]), "\u2013", max(batch_idx[[b]]), ")..."); flush(stderr())
+    batch_list[[b]] <- flux_read(inv_subset[batch_idx[[b]], , drop = FALSE],
+                                 resolution = res_code)
+  }
+  message("Combining ", n_batches, " batch(es)..."); flush(stderr())
+  flux_data <- dplyr::bind_rows(batch_list)
 
   message("Writing ", out_path, "..."); flush(stderr())
   saveRDS(flux_data, out_path)

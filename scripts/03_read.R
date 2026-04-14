@@ -17,6 +17,49 @@ processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
 
 file_inventory <- readRDS(file.path(processed_dir, "file_inventory.rds"))
 
+# ── BIF file normalisation ─────────────────────────────────────────────────────
+# flux_badm() requires exactly 5 columns in every BIF file. Some data providers
+# include extra columns (e.g. AU-Dry ships a spurious empty 'SITDryD' column).
+# Pre-scan all BIF files and strip any non-standard columns in-place, logging
+# each affected file as a warning. Files missing required columns are removed
+# from the inventory and logged as unknowns so flux_badm() never sees them.
+BIF_STANDARD_COLS <- c("GROUP_ID", "SITE_ID", "VARIABLE", "VARIABLE_GROUP", "DATAVALUE")
+
+bif_inventory_rows <- which(
+  !is.na(file_inventory$dataset) & file_inventory$dataset == "BIF" &
+  !is.na(file_inventory$path) & nchar(file_inventory$path) > 0 &
+  file.exists(file_inventory$path)
+)
+
+drop_bif_rows <- integer(0)
+
+for (row_i in bif_inventory_rows) {
+  bif_path <- file_inventory$path[row_i]
+  cols     <- names(readr::read_csv(bif_path, n_max = 0L, show_col_types = FALSE))
+  extra    <- setdiff(cols, BIF_STANDARD_COLS)
+  missing  <- setdiff(BIF_STANDARD_COLS, cols)
+
+  if (length(missing) > 0) {
+    warning("BIF file missing required column(s) [", paste(missing, collapse = ", "),
+            "] — excluding from BADM: ", bif_path)
+    drop_bif_rows <- c(drop_bif_rows, row_i)
+    next
+  }
+
+  if (length(extra) > 0) {
+    warning("BIF file has extra column(s) [", paste(extra, collapse = ", "),
+            "] — stripping and rewriting: ", bif_path)
+    bif_data <- readr::read_csv(bif_path, show_col_types = FALSE)
+    bif_data <- bif_data[, BIF_STANDARD_COLS]
+    readr::write_csv(bif_data, bif_path)
+  }
+}
+
+if (length(drop_bif_rows) > 0) {
+  message(length(drop_bif_rows), " BIF file(s) with missing columns excluded from inventory.")
+  file_inventory <- file_inventory[-drop_bif_rows, , drop = FALSE]
+}
+
 # BADM and variable metadata are resolution-agnostic — read once outside the
 # loop and share across all resolution outputs.
 bif_paths  <- file_inventory$path[file_inventory$dataset == "BIF"]

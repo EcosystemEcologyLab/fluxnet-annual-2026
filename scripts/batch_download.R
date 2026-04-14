@@ -61,7 +61,16 @@ cat("Batch size:", BATCH_SIZE, "| Total batches:", n_batches, "\n")
 
 # ── 3. Load or initialise progress file ──────────────────────────────────────
 if (file.exists(progress_path)) {
-  progress <- read_csv(progress_path, show_col_types = FALSE)
+  progress <- read_csv(progress_path, show_col_types = FALSE,
+                       col_types = cols(
+                         batch_num    = col_integer(),
+                         n_sites      = col_integer(),
+                         site_ids     = col_character(),
+                         status       = col_character(),
+                         started_at   = col_character(),
+                         completed_at = col_character(),
+                         disk_free_gb = col_double()
+                       ))
   n_done   <- sum(progress$status == "done", na.rm = TRUE)
   cat("Progress file found:", progress_path, "\n")
   cat("  Completed batches:", n_done, "/", n_batches, "\n\n")

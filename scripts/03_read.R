@@ -23,7 +23,7 @@ file_inventory <- readRDS(file.path(processed_dir, "file_inventory.rds"))
 # Pre-scan all BIF files and strip any non-standard columns in-place, logging
 # each affected file as a warning. Files missing required columns are removed
 # from the inventory and logged as unknowns so flux_badm() never sees them.
-BIF_STANDARD_COLS <- c("GROUP_ID", "SITE_ID", "VARIABLE", "VARIABLE_GROUP", "DATAVALUE")
+BIF_STANDARD_COLS <- c("SITE_ID", "GROUP_ID", "VARIABLE_GROUP", "VARIABLE", "DATAVALUE")
 
 bif_inventory_rows <- which(
   !is.na(file_inventory$dataset) & file_inventory$dataset == "BIF" &

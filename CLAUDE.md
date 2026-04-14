@@ -68,6 +68,34 @@ warns, the warning must be visible in the script output — do not suppress it.
 
 ---
 
+## Autonomy and Permissions
+
+Check the environment before deciding how much autonomy to apply:
+
+**In a GitHub Codespace** (`CODESPACE_NAME` environment variable is set):
+This is a sandboxed environment. Proceed autonomously without asking for
+confirmation on:
+- Bash commands (running scripts, checking logs, disk usage, process status)
+- Reading any file in the repository
+- Writing or editing files in the repository
+- Git operations (add, commit, push)
+- Installing R packages via renv
+- Running pipeline scripts (01 through 07, batch_download, diagnostics,
+  candidate figures)
+
+**On a local machine or HPC** (`CODESPACE_NAME` is not set):
+Apply standard caution — ask before running bash commands that modify files,
+install packages, or push to git. This protects production data on HPC and
+local research files on personal machines.
+
+**Always ask regardless of environment:**
+- Deleting files or directories outside of `data/downloads/` or `data/raw/`
+- Force pushing to git
+- Any action outside the repository directory
+- Making changes to `.devcontainer/devcontainer.json`
+
+---
+
 ## Environment Variables
 
 All configuration is via environment variables. In a Codespace these are set

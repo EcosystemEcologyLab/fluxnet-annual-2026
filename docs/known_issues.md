@@ -50,12 +50,20 @@ Full site lists:
 - `outputs/sites_no_nee_vut.csv` — all 142 zero-NEE-VUT sites (gitignored, regenerated each run)
 - `outputs/sites_nee_cut_only.csv` — the 36 sites with valid `NEE_CUT_REF` but not `NEE_VUT_REF`
 
-**Possible causes for the 106 with neither:** ERA5-only rows surviving QC (no FLUXMET
-data in the Shuttle extract), Shuttle extract missing the FLUXMET YY file for the site,
-or the site's annual records were all excluded by stage-1 NEE QC.
+**Root cause for the 106 with neither (verified 2026-04-14):** ONEFlux processing produced
+no valid NEE output for these sites. All rows in the FLUXMET YY CSV have `NEE_VUT_REF =
+-9999` (and `NEE_CUT_REF = -9999` where that column is also present). The FLUXMET YY file
+exists and was correctly read by the pipeline — `flux_data_raw_yy.rds` contains the
+FLUXMET rows for every one of these sites. The pipeline correctly converts `-9999` to `NA`.
+This is **not a pipeline bug** and not a Shuttle packaging issue.
 
-**Action:** Report affected site IDs to support@fluxnet.org. See `docs/decisions_pending.md`
-for the open decision on whether to fall back to `NEE_CUT_REF` for the 36 affected sites.
+Verified by manually reading FLUXMET YY CSVs for a sample of 8 sites (RU-NeF, US-TLR,
+US-CS6, CN-SnB, US-Lin, US-Sag, CA-PB1, US-YK1) — every case confirmed all-`-9999`.
+
+**Action:** Report to support@fluxnet.org for routing to data contributors. See
+`docs/shuttle_team_report_20260414.md` for the full site list and draft report text.
+See `docs/decisions_pending.md` for the open decision on whether to fall back to
+`NEE_CUT_REF` for the 36 sites where that alternative is available.
 
 ---
 

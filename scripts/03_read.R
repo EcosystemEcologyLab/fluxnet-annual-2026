@@ -63,28 +63,39 @@ if (length(drop_bif_rows) > 0) {
 message("BIF normalisation complete (", length(bif_inventory_rows), " files checked, ",
         length(drop_bif_rows), " dropped)"); flush(stderr())
 
-# BADM — read directly from the normalised BIF CSV files on disk.
+# BADM — read directly from the normalised BIF CSV files on disk (skip if cached).
 # flux_badm() calls quit() and terminates the R session when run from a script;
 # see docs/known_issues.md. Reading the CSVs directly is equivalent and avoids
 # the 15–20 minute API call entirely.
-bif_paths_ok <- file_inventory$path[
-  !is.na(file_inventory$dataset) & file_inventory$dataset == "BIF" &
-  !is.na(file_inventory$path) & nchar(file_inventory$path) > 0 &
-  file.exists(file_inventory$path)
-]
-message("Reading BADM from ", length(bif_paths_ok), " BIF files..."); flush(stderr())
-badm <- dplyr::bind_rows(lapply(bif_paths_ok, function(p) {
-  readr::read_csv(p, show_col_types = FALSE, col_types = readr::cols(.default = "c"))
-}))
-message("BADM complete: ", nrow(badm), " rows"); flush(stderr())
+badm_path    <- file.path(processed_dir, "badm.rds")
+varinfo_path <- file.path(processed_dir, "var_info.rds")
 
-# Variable metadata is resolution-agnostic — read once and share across outputs.
-message("Calling flux_varinfo()..."); flush(stderr())
-var_info <- flux_varinfo(file_inventory)
-message("flux_varinfo() complete: ", nrow(var_info), " rows"); flush(stderr())
-saveRDS(badm,     file.path(processed_dir, "badm.rds"))
-saveRDS(var_info, file.path(processed_dir, "var_info.rds"))
-message("Saved badm.rds and var_info.rds"); flush(stderr())
+if (file.exists(badm_path) && file.exists(varinfo_path)) {
+  message("Cached badm.rds and var_info.rds found — skipping recomputation."); flush(stderr())
+  badm     <- readRDS(badm_path)
+  var_info <- readRDS(varinfo_path)
+  message("Loaded badm: ", nrow(badm), " rows; var_info: ", nrow(var_info), " rows"); flush(stderr())
+} else {
+  bif_paths_ok <- file_inventory$path[
+    !is.na(file_inventory$dataset) & file_inventory$dataset == "BIF" &
+    !is.na(file_inventory$path) & nchar(file_inventory$path) > 0 &
+    file.exists(file_inventory$path)
+  ]
+  message("Reading BADM from ", length(bif_paths_ok), " BIF files..."); flush(stderr())
+  badm <- dplyr::bind_rows(lapply(bif_paths_ok, function(p) {
+    readr::read_csv(p, show_col_types = FALSE, col_types = readr::cols(.default = "c"))
+  }))
+  message("BADM complete: ", nrow(badm), " rows"); flush(stderr())
+
+  # Variable metadata is resolution-agnostic — read once and share across outputs.
+  message("Calling flux_varinfo()..."); flush(stderr())
+  var_info <- flux_varinfo(file_inventory)
+  message("flux_varinfo() complete: ", nrow(var_info), " rows"); flush(stderr())
+  message("Saving badm.rds and var_info.rds..."); flush(stderr())
+  saveRDS(badm,     badm_path)
+  saveRDS(var_info, varinfo_path)
+  message("Saved badm.rds and var_info.rds"); flush(stderr())
+}
 
 # Map extract resolution codes (flux_extract / FLUXNET_EXTRACT_RESOLUTIONS) to
 # the time_resolution labels used by flux_discover_files() in file_inventory.
@@ -128,6 +139,7 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
 
   flux_data <- flux_read(inv_subset, resolution = res_code)
 
+  message("Writing ", out_path, "..."); flush(stderr())
   saveRDS(flux_data, out_path)
-  message("Saved: ", out_path)
+  message("Saved: ", out_path); flush(stderr())
 }

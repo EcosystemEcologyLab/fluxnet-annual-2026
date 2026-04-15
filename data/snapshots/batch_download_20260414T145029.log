@@ -1,0 +1,1223 @@
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+! Use of data downloaded by fluxnet requires you abide by FLUXNET data
+  policies: <https://fluxnet.org/data/data-policy/>
+ℹ Citations for individual sites' datasets are returned by
+  `fluxnet::flux_listall()`
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+=========================================
+  batch_download.R
+  Extract resolutions: y m 
+  Delete ZIPs:         TRUE 
+  Data root:           data 
+=========================================
+
+Fetching site list via flux_listall()...
+Total sites available: 672 
+
+Batch size: 50 | Total batches: 14 
+No progress file — starting fresh.
+
+
+--- START Batch 1/14 (50 sites) ---
+Sites: AR-Bal AR-CCa AR-CCg AR-TF1 AR-TF2 AT-Mmg AT-Neu AT-PsM AT-Zoe AU-Ade AU-APL AU-ASM AU-Boy AU-Col AU-Cow AU-Cpr AU-Ctr AU-Cum AU-DaP AU-DaS AU-Dry AU-Emr AU-Fle AU-Fog AU-Gin AU-GWW AU-How AU-Lit AU-Lon AU-Lox AU-MvA AU-MvB AU-Otw AU-RDF AU-Rgf AU-Rig AU-Rob AU-Sam AU-Sil AU-Sno AU-Stp AU-TTE AU-Tum AU-Wac AU-Wel AU-Wgt AU-Whr AU-Wom AU-Wrr AU-Ya1 
+Disk free before: 23.89 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — AR-Bal AR-CCa AR-CCg AR-TF1 AR-TF2 AT-Mmg AT-Neu AT-PsM AT-Zoe AU-Ade AU-APL AU-ASM AU-Boy AU-Col AU-Cow AU-Cpr AU-Ctr AU-Cum AU-DaP AU-DaS AU-Dry AU-Emr AU-Fle AU-Fog AU-Gin AU-GWW AU-How AU-Lit AU-Lon AU-Lox AU-MvA AU-MvB AU-Otw AU-RDF AU-Rgf AU-Rig AU-Rob AU-Sam AU-Sil AU-Sno AU-Stp AU-TTE AU-Tum AU-Wac AU-Wel AU-Wgt AU-Whr AU-Wom AU-Wrr AU-Ya1
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T145034.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T143139.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (35 + 0) -> 10 -> 5 | ■■■■                              10%
+[working] (33 + 0) -> 10 -> 7 | ■■■■■                             14%
+[working] (31 + 0) -> 10 -> 9 | ■■■■■■                            18%
+[working] (30 + 0) -> 10 -> 10 | ■■■■■■■                           20%
+[working] (25 + 0) -> 10 -> 15 | ■■■■■■■■■■                        30%
+[working] (24 + 0) -> 10 -> 16 | ■■■■■■■■■■■                       32%
+[working] (23 + 0) -> 10 -> 17 | ■■■■■■■■■■■                       34%
+[working] (22 + 0) -> 10 -> 18 | ■■■■■■■■■■■■                      36%
+[working] (21 + 0) -> 10 -> 19 | ■■■■■■■■■■■■                      38%
+[working] (19 + 0) -> 10 -> 21 | ■■■■■■■■■■■■■■                    42%
+[working] (16 + 0) -> 10 -> 24 | ■■■■■■■■■■■■■■■                   48%
+[working] (15 + 0) -> 10 -> 25 | ■■■■■■■■■■■■■■■■                  50%
+[working] (14 + 0) -> 10 -> 26 | ■■■■■■■■■■■■■■■■■                 52%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (10 + 0) -> 10 -> 30 | ■■■■■■■■■■■■■■■■■■■               60%
+[working] (8 + 0) -> 10 -> 32 | ■■■■■■■■■■■■■■■■■■■■              64%
+[working] (7 + 0) -> 10 -> 33 | ■■■■■■■■■■■■■■■■■■■■■             66%
+[working] (6 + 0) -> 10 -> 34 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (5 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■■■■            70%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (1 + 0) -> 10 -> 39 | ■■■■■■■■■■■■■■■■■■■■■■■■          78%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 9 -> 41 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        82%
+[working] (0 + 0) -> 8 -> 42 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        84%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 5 -> 45 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90%
+[working] (0 + 0) -> 4 -> 46 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — AR-Bal AR-CCa AR-CCg AR-TF1 AR-TF2 AT-Mmg AT-Neu AT-PsM AT-Zoe AU-Ade AU-APL AU-ASM AU-Boy AU-Col AU-Cow AU-Cpr AU-Ctr AU-Cum AU-DaP AU-DaS AU-Dry AU-Emr AU-Fle AU-Fog AU-Gin AU-GWW AU-How AU-Lit AU-Lon AU-Lox AU-MvA AU-MvB AU-Otw AU-RDF AU-Rgf AU-Rig AU-Rob AU-Sam AU-Sil AU-Sno AU-Stp AU-TTE AU-Tum AU-Wac AU-Wel AU-Wgt AU-Whr AU-Wom AU-Wrr AU-Ya1
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 50 sites, 2240 site-years across 50 files
+MM / FLUXMET → 50 sites, 439 site-years across 50 files
+YY / ERA5 → 50 sites, 2240 site-years across 50 files
+YY / FLUXMET → 50 sites, 439 site-years across 50 files
+  [ZIP cleanup] Deleted  AMF_AR-Bal_FLUXNET_2012-2013_v1.3_r1.zip  (21.1 MB)  — AR-Bal extracted OK
+  [ZIP cleanup] Deleted  AMF_AR-CCa_FLUXNET_2012-2020_v1.3_r1.zip  (54.4 MB)  — AR-CCa extracted OK
+  [ZIP cleanup] Deleted  AMF_AR-CCg_FLUXNET_2018-2024_v1.3_r1.zip  (61.3 MB)  — AR-CCg extracted OK
+  [ZIP cleanup] Deleted  AMF_AR-TF1_FLUXNET_2016-2018_v1.3_r1.zip  (34.6 MB)  — AR-TF1 extracted OK
+  [ZIP cleanup] Deleted  AMF_AR-TF2_FLUXNET_2016-2018_v1.3_r1.zip  (31.2 MB)  — AR-TF2 extracted OK
+  [ZIP cleanup] Deleted  EUF_AT-Mmg_FLUXNET_2021-2024_v1.3_r1.zip  (50.8 MB)  — AT-Mmg extracted OK
+  [ZIP cleanup] Deleted  EUF_AT-Neu_FLUXNET_2002-2020_v1.3_r1.zip  (178.6 MB)  — AT-Neu extracted OK
+  [ZIP cleanup] Deleted  EUF_AT-PsM_FLUXNET_2015-2019_v1.3_r1.zip  (56.7 MB)  — AT-PsM extracted OK
+  [ZIP cleanup] Deleted  EUF_AT-Zoe_FLUXNET_2014-2024_v1.3_r1.zip  (72 MB)  — AT-Zoe extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Ade_FLUXNET_2007-2009_v1.3_r1.zip  (29.5 MB)  — AU-Ade extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-APL_FLUXNET_2017-2022_v1.3_r1.zip  (58.9 MB)  — AU-APL extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-ASM_FLUXNET_2010-2025_v1.3_r1.zip  (122.5 MB)  — AU-ASM extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Boy_FLUXNET_2017-2025_v1.3_r1.zip  (81.5 MB)  — AU-Boy extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Col_FLUXNET_2017-2019_v1.3_r1.zip  (35.5 MB)  — AU-Col extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Cow_FLUXNET_2009-2025_v1.3_r1.zip  (102.2 MB)  — AU-Cow extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Cpr_FLUXNET_2010-2025_v1.3_r1.zip  (132.9 MB)  — AU-Cpr extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Ctr_FLUXNET_2010-2018_v1.3_r1.zip  (60.8 MB)  — AU-Ctr extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Cum_FLUXNET_2014-2025_v1.3_r1.zip  (94.9 MB)  — AU-Cum extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-DaP_FLUXNET_2008-2013_v1.3_r1.zip  (47.5 MB)  — AU-DaP extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-DaS_FLUXNET_2007-2025_v1.3_r1.zip  (142.9 MB)  — AU-DaS extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Dry_FLUXNET_2009-2025_v1.3_r1.zip  (131 MB)  — AU-Dry extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Emr_FLUXNET_2011-2013_v1.3_r1.zip  (33.7 MB)  — AU-Emr extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Fle_FLUXNET_2022-2025_v1.3_r1.zip  (43.3 MB)  — AU-Fle extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Fog_FLUXNET_2006-2008_v1.3_r1.zip  (30.2 MB)  — AU-Fog extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Gin_FLUXNET_2011-2025_v1.3_r1.zip  (121.3 MB)  — AU-Gin extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-GWW_FLUXNET_2013-2025_v1.3_r1.zip  (114.4 MB)  — AU-GWW extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-How_FLUXNET_2002-2025_v1.3_r1.zip  (190.5 MB)  — AU-How extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Lit_FLUXNET_2015-2025_v1.3_r1.zip  (97.5 MB)  — AU-Lit extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Lon_FLUXNET_2018-2024_v1.3_r1.zip  (61.8 MB)  — AU-Lon extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Lox_FLUXNET_2008-2009_v1.3_r1.zip  (23.1 MB)  — AU-Lox extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-MvA_FLUXNET_2023-2024_v1.3_r1.zip  (23.4 MB)  — AU-MvA extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-MvB_FLUXNET_2024-2024_v1.3_r1.zip  (22.2 MB)  — AU-MvB extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Otw_FLUXNET_2007-2010_v1.3_r1.zip  (22.9 MB)  — AU-Otw extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-RDF_FLUXNET_2011-2013_v1.3_r1.zip  (29 MB)  — AU-RDF extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Rgf_FLUXNET_2015-2025_v1.3_r1.zip  (91.1 MB)  — AU-Rgf extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Rig_FLUXNET_2011-2017_v1.3_r1.zip  (63.9 MB)  — AU-Rig extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Rob_FLUXNET_2013-2025_v1.3_r1.zip  (81.9 MB)  — AU-Rob extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Sam_FLUXNET_2010-2017_v1.3_r1.zip  (67.5 MB)  — AU-Sam extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Sil_FLUXNET_2019-2024_v1.3_r1.zip  (53.5 MB)  — AU-Sil extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Sno_FLUXNET_2024-2025_v1.3_r1.zip  (26.2 MB)  — AU-Sno extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Stp_FLUXNET_2008-2025_v1.3_r1.zip  (128.6 MB)  — AU-Stp extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-TTE_FLUXNET_2012-2025_v1.3_r1.zip  (71.8 MB)  — AU-TTE extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Tum_FLUXNET_2002-2022_v1.3_r1.zip  (64.9 MB)  — AU-Tum extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Wac_FLUXNET_2005-2008_v1.3_r1.zip  (43.4 MB)  — AU-Wac extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Wel_FLUXNET_2024-2025_v1.3_r1.zip  (27 MB)  — AU-Wel extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Wgt_FLUXNET_2024-2025_v1.3_r1.zip  (24 MB)  — AU-Wgt extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Whr_FLUXNET_2011-2025_v1.3_r1.zip  (107.4 MB)  — AU-Whr extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Wom_FLUXNET_2010-2025_v1.3_r1.zip  (119.5 MB)  — AU-Wom extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Wrr_FLUXNET_2013-2021_v1.3_r1.zip  (79.1 MB)  — AU-Wrr extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Ya1_FLUXNET_2023-2025_v1.3_r1.zip  (33.5 MB)  — AU-Ya1 extracted OK
+[ZIP cleanup] Complete: 50 deleted (3497.4 MB freed), 0 kept.
+--- DONE Batch 1/14 (50 sites) | disk free: 23.85 GB (used 0.04 GB net) ---
+
+--- START Batch 2/14 (50 sites) ---
+Sites: AU-Ya2 AU-Ync BE-Bra BE-Dor BE-Lcr BE-Lon BE-Maa BE-Vie BJ-Bfg BJ-Db1 BJ-Nhu BR-CST BR-ITA BR-Ji3 BR-Ma2 BR-Ma3 BR-Npw BR-Sa1 BR-Sa3 BR-SM1 BW-Gum BW-Nxr CA-ARB CA-ARF CA-BOU CA-Ca1 CA-Ca2 CA-Ca3 CA-CF1 CA-CF2 CA-CF3 CA-DB2 CA-DBB CA-DSM CA-EM1 CA-EM2 CA-Gro CA-HPC CA-KLP CA-LP1 CA-LU1 CA-LU2 CA-MA1 CA-MA2 CA-MA3 CA-Man CA-Mer CA-Na1 CA-PB1 CA-PB2 
+Disk free before: 23.85 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — AU-Ya2 AU-Ync BE-Bra BE-Dor BE-Lcr BE-Lon BE-Maa BE-Vie BJ-Bfg BJ-Db1 BJ-Nhu BR-CST BR-ITA BR-Ji3 BR-Ma2 BR-Ma3 BR-Npw BR-Sa1 BR-Sa3 BR-SM1 BW-Gum BW-Nxr CA-ARB CA-ARF CA-BOU CA-Ca1 CA-Ca2 CA-Ca3 CA-CF1 CA-CF2 CA-CF3 CA-DB2 CA-DBB CA-DSM CA-EM1 CA-EM2 CA-Gro CA-HPC CA-KLP CA-LP1 CA-LU1 CA-LU2 CA-MA1 CA-MA2 CA-MA3 CA-Man CA-Mer CA-Na1 CA-PB1 CA-PB2
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T145338.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T145034.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (35 + 0) -> 10 -> 5 | ■■■■                              10%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (29 + 0) -> 10 -> 11 | ■■■■■■■■                          22%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (23 + 0) -> 10 -> 17 | ■■■■■■■■■■■                       34%
+[working] (21 + 0) -> 9 -> 20 | ■■■■■■■■■■■■■                     40%
+[working] (17 + 0) -> 10 -> 23 | ■■■■■■■■■■■■■■■                   46%
+[working] (16 + 0) -> 10 -> 24 | ■■■■■■■■■■■■■■■                   48%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (7 + 0) -> 10 -> 33 | ■■■■■■■■■■■■■■■■■■■■■             66%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (1 + 0) -> 10 -> 39 | ■■■■■■■■■■■■■■■■■■■■■■■■          78%
+[working] (0 + 0) -> 8 -> 42 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        84%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 5 -> 45 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90%
+[working] (0 + 0) -> 2 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — AU-Ya2 AU-Ync BE-Bra BE-Dor BE-Lcr BE-Lon BE-Maa BE-Vie BJ-Bfg BJ-Db1 BJ-Nhu BR-CST BR-ITA BR-Ji3 BR-Ma2 BR-Ma3 BR-Npw BR-Sa1 BR-Sa3 BR-SM1 BW-Gum BW-Nxr CA-ARB CA-ARF CA-BOU CA-Ca1 CA-Ca2 CA-Ca3 CA-CF1 CA-CF2 CA-CF3 CA-DB2 CA-DBB CA-DSM CA-EM1 CA-EM2 CA-Gro CA-HPC CA-KLP CA-LP1 CA-LU1 CA-LU2 CA-MA1 CA-MA2 CA-MA3 CA-Man CA-Mer CA-Na1 CA-PB1 CA-PB2
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 100 sites, 4471 site-years across 100 files
+MM / FLUXMET → 100 sites, 884 site-years across 100 files
+YY / ERA5 → 100 sites, 4471 site-years across 100 files
+YY / FLUXMET → 100 sites, 884 site-years across 100 files
+  [ZIP cleanup] Deleted  AMF_BR-CST_FLUXNET_2014-2015_v1.3_r1.zip  (22.1 MB)  — BR-CST extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-ITA_FLUXNET_2020-2024_v1.3_r1.zip  (43.3 MB)  — BR-ITA extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-Ji3_FLUXNET_2004-2010_v1.3_r1.zip  (34.9 MB)  — BR-Ji3 extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-Ma2_FLUXNET_1999-2016_v1.3_r1.zip  (106 MB)  — BR-Ma2 extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-Ma3_FLUXNET_2008-2018_v1.3_r1.zip  (44.9 MB)  — BR-Ma3 extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-Npw_FLUXNET_2013-2017_v1.3_r1.zip  (36.3 MB)  — BR-Npw extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-Sa1_FLUXNET_2002-2011_v1.3_r1.zip  (64.2 MB)  — BR-Sa1 extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-Sa3_FLUXNET_2000-2004_v1.3_r1.zip  (38.9 MB)  — BR-Sa3 extracted OK
+  [ZIP cleanup] Deleted  AMF_BR-SM1_FLUXNET_2015-2016_v1.3_r1.zip  (23.1 MB)  — BR-SM1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-ARB_FLUXNET_2011-2024_v1.3_r1.zip  (120.4 MB)  — CA-ARB extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-ARF_FLUXNET_2011-2024_v1.3_r1.zip  (126.6 MB)  — CA-ARF extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-BOU_FLUXNET_2018-2020_v1.3_r1.zip  (32.1 MB)  — CA-BOU extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Ca1_FLUXNET_1997-2010_v1.3_r1.zip  (129.7 MB)  — CA-Ca1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Ca2_FLUXNET_2000-2010_v1.3_r1.zip  (114 MB)  — CA-Ca2 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Ca3_FLUXNET_2001-2024_v1.3_r1.zip  (123.8 MB)  — CA-Ca3 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-CF1_FLUXNET_2007-2008_v1.3_r1.zip  (21.9 MB)  — CA-CF1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-CF2_FLUXNET_2008-2011_v1.3_r1.zip  (28.9 MB)  — CA-CF2 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-CF3_FLUXNET_2022-2025_v1.3_r1.zip  (48.9 MB)  — CA-CF3 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-DB2_FLUXNET_2019-2024_v1.3_r1.zip  (68.2 MB)  — CA-DB2 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-DBB_FLUXNET_2015-2024_v1.3_r1.zip  (102.1 MB)  — CA-DBB extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-DSM_FLUXNET_2021-2024_v1.3_r1.zip  (50.6 MB)  — CA-DSM extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-EM1_FLUXNET_2021-2023_v1.3_r1.zip  (38.6 MB)  — CA-EM1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-EM2_FLUXNET_2021-2023_v1.3_r1.zip  (39.3 MB)  — CA-EM2 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Gro_FLUXNET_2003-2014_v1.3_r1.zip  (114.3 MB)  — CA-Gro extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-HPC_FLUXNET_2018-2018_v1.3_r1.zip  (21 MB)  — CA-HPC extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-KLP_FLUXNET_2011-2020_v1.3_r1.zip  (97 MB)  — CA-KLP extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-LP1_FLUXNET_2007-2024_v1.3_r1.zip  (115.1 MB)  — CA-LP1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-LU1_FLUXNET_2020-2023_v1.3_r1.zip  (44.2 MB)  — CA-LU1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-LU2_FLUXNET_2020-2023_v1.3_r1.zip  (40.5 MB)  — CA-LU2 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-MA1_FLUXNET_2009-2011_v1.3_r1.zip  (34 MB)  — CA-MA1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-MA2_FLUXNET_2009-2011_v1.3_r1.zip  (35.5 MB)  — CA-MA2 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-MA3_FLUXNET_2009-2011_v1.3_r1.zip  (35 MB)  — CA-MA3 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Man_FLUXNET_1994-2008_v1.3_r1.zip  (118.9 MB)  — CA-Man extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Mer_FLUXNET_1998-2020_v1.3_r1.zip  (222.2 MB)  — CA-Mer extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Na1_FLUXNET_2003-2005_v1.3_r1.zip  (36.9 MB)  — CA-Na1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-PB1_FLUXNET_2016-2024_v1.3_r1.zip  (51.8 MB)  — CA-PB1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-PB2_FLUXNET_2017-2024_v1.3_r1.zip  (66.5 MB)  — CA-PB2 extracted OK
+  [ZIP cleanup] Deleted  EUF_BE-Lcr_FLUXNET_2019-2022_v1.3_r1.zip  (52.6 MB)  — BE-Lcr extracted OK
+  [ZIP cleanup] Deleted  FLX_BJ-Bfg_FLUXNET_2008-2017_v1.3_r1.zip  (85.4 MB)  — BJ-Bfg extracted OK
+  [ZIP cleanup] Deleted  FLX_BJ-Db1_FLUXNET_2022-2024_v1.3_r1.zip  (33.3 MB)  — BJ-Db1 extracted OK
+  [ZIP cleanup] Deleted  FLX_BJ-Nhu_FLUXNET_2008-2017_v1.3_r1.zip  (90.5 MB)  — BJ-Nhu extracted OK
+  [ZIP cleanup] Deleted  FLX_BW-Gum_FLUXNET_2018-2020_v1.3_r1.zip  (37.9 MB)  — BW-Gum extracted OK
+  [ZIP cleanup] Deleted  FLX_BW-Nxr_FLUXNET_2019-2020_v1.3_r1.zip  (22.5 MB)  — BW-Nxr extracted OK
+  [ZIP cleanup] Deleted  ICOS_BE-Bra_FLUXNET_1999-2024_v1.3_r1.zip  (213.7 MB)  — BE-Bra extracted OK
+  [ZIP cleanup] Deleted  ICOS_BE-Dor_FLUXNET_2011-2024_v1.3_r1.zip  (135.1 MB)  — BE-Dor extracted OK
+  [ZIP cleanup] Deleted  ICOS_BE-Lon_FLUXNET_2004-2024_v1.3_r1.zip  (206.6 MB)  — BE-Lon extracted OK
+  [ZIP cleanup] Deleted  ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1.zip  (94.3 MB)  — BE-Maa extracted OK
+  [ZIP cleanup] Deleted  ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1.zip  (254 MB)  — BE-Vie extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Ya2_FLUXNET_2023-2025_v1.3_r1.zip  (33.1 MB)  — AU-Ya2 extracted OK
+  [ZIP cleanup] Deleted  TERN_AU-Ync_FLUXNET_2012-2025_v1.3_r1.zip  (106.2 MB)  — AU-Ync extracted OK
+[ZIP cleanup] Complete: 50 deleted (3856.9 MB freed), 0 kept.
+--- DONE Batch 2/14 (50 sites) | disk free: 23.8 GB (used 0.05 GB net) ---
+
+--- START Batch 3/14 (50 sites) ---
+Sites: CA-Qc2 CA-Qfo CA-RBM CA-SCB CA-SCC CA-SF1 CA-SF3 CA-SMC CA-TP1 CA-TP3 CA-TPA CA-TPD CD-Ygb CH-Aws CH-Crs CH-Dav CH-For CH-Frk CH-Fru CH-Lae CH-Oe2 CH-Oe3 CH-Rh1 CH-Rh2 CH-Rtb CH-Tnk CL-ACF CL-SDF CL-SDP CN-Aro CN-Ash CN-BeO CN-Dan CN-DaW CN-Din CN-Du2 CN-Dzo CN-GuT CN-Ha2 CN-HaM CN-HaW CN-Jzh CN-Lch CN-Lsh CN-Qng CN-SnB CN-Wnb CN-Xi2 CN-Yan CN-YaS 
+Disk free before: 23.8 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — CA-Qc2 CA-Qfo CA-RBM CA-SCB CA-SCC CA-SF1 CA-SF3 CA-SMC CA-TP1 CA-TP3 CA-TPA CA-TPD CD-Ygb CH-Aws CH-Crs CH-Dav CH-For CH-Frk CH-Fru CH-Lae CH-Oe2 CH-Oe3 CH-Rh1 CH-Rh2 CH-Rtb CH-Tnk CL-ACF CL-SDF CL-SDP CN-Aro CN-Ash CN-BeO CN-Dan CN-DaW CN-Din CN-Du2 CN-Dzo CN-GuT CN-Ha2 CN-HaM CN-HaW CN-Jzh CN-Lch CN-Lsh CN-Qng CN-SnB CN-Wnb CN-Xi2 CN-Yan CN-YaS
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T145510.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T145338.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (33 + 0) -> 10 -> 7 | ■■■■■                             14%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (30 + 0) -> 10 -> 10 | ■■■■■■■                           20%
+[working] (29 + 0) -> 10 -> 11 | ■■■■■■■■                          22%
+[working] (28 + 0) -> 10 -> 12 | ■■■■■■■■                          24%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (24 + 0) -> 10 -> 16 | ■■■■■■■■■■■                       32%
+[working] (23 + 0) -> 10 -> 17 | ■■■■■■■■■■■                       34%
+[working] (22 + 0) -> 10 -> 18 | ■■■■■■■■■■■■                      36%
+[working] (18 + 0) -> 10 -> 22 | ■■■■■■■■■■■■■■                    44%
+[working] (15 + 0) -> 10 -> 25 | ■■■■■■■■■■■■■■■■                  50%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (12 + 0) -> 10 -> 28 | ■■■■■■■■■■■■■■■■■■                56%
+[working] (11 + 0) -> 10 -> 29 | ■■■■■■■■■■■■■■■■■■                58%
+[working] (10 + 0) -> 10 -> 30 | ■■■■■■■■■■■■■■■■■■■               60%
+[working] (9 + 0) -> 10 -> 31 | ■■■■■■■■■■■■■■■■■■■■              62%
+[working] (8 + 0) -> 10 -> 32 | ■■■■■■■■■■■■■■■■■■■■              64%
+[working] (6 + 0) -> 10 -> 34 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (5 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■■■■            70%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 8 -> 42 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        84%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 4 -> 46 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92%
+[working] (0 + 0) -> 2 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — CA-Qc2 CA-Qfo CA-RBM CA-SCB CA-SCC CA-SF1 CA-SF3 CA-SMC CA-TP1 CA-TP3 CA-TPA CA-TPD CD-Ygb CH-Aws CH-Crs CH-Dav CH-For CH-Frk CH-Fru CH-Lae CH-Oe2 CH-Oe3 CH-Rh1 CH-Rh2 CH-Rtb CH-Tnk CL-ACF CL-SDF CL-SDP CN-Aro CN-Ash CN-BeO CN-Dan CN-DaW CN-Din CN-Du2 CN-Dzo CN-GuT CN-Ha2 CN-HaM CN-HaW CN-Jzh CN-Lch CN-Lsh CN-Qng CN-SnB CN-Wnb CN-Xi2 CN-Yan CN-YaS
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 150 sites, 6703 site-years across 150 files
+MM / FLUXMET → 150 sites, 1327 site-years across 150 files
+YY / ERA5 → 150 sites, 6703 site-years across 150 files
+YY / FLUXMET → 150 sites, 1327 site-years across 150 files
+  [ZIP cleanup] Deleted  AMF_CA-Qc2_FLUXNET_2007-2010_v1.3_r1.zip  (46.8 MB)  — CA-Qc2 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-Qfo_FLUXNET_2003-2010_v1.3_r1.zip  (83.6 MB)  — CA-Qfo extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-RBM_FLUXNET_2022-2024_v1.3_r1.zip  (41.2 MB)  — CA-RBM extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-SCB_FLUXNET_2014-2019_v1.3_r1.zip  (54.7 MB)  — CA-SCB extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-SCC_FLUXNET_2013-2024_v1.3_r1.zip  (69.4 MB)  — CA-SCC extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-SF1_FLUXNET_2003-2006_v1.3_r1.zip  (39.7 MB)  — CA-SF1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-SF3_FLUXNET_2001-2006_v1.3_r1.zip  (52.8 MB)  — CA-SF3 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-SMC_FLUXNET_2018-2018_v1.3_r1.zip  (21.4 MB)  — CA-SMC extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-TP1_FLUXNET_2002-2023_v1.3_r1.zip  (156.2 MB)  — CA-TP1 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-TP3_FLUXNET_2002-2023_v1.3_r1.zip  (197.3 MB)  — CA-TP3 extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-TPA_FLUXNET_2020-2023_v1.3_r1.zip  (47.8 MB)  — CA-TPA extracted OK
+  [ZIP cleanup] Deleted  AMF_CA-TPD_FLUXNET_2012-2023_v1.3_r1.zip  (121.3 MB)  — CA-TPD extracted OK
+  [ZIP cleanup] Deleted  AMF_CL-ACF_FLUXNET_2018-2020_v1.3_r1.zip  (39.8 MB)  — CL-ACF extracted OK
+  [ZIP cleanup] Deleted  AMF_CL-SDF_FLUXNET_2014-2021_v1.3_r1.zip  (72 MB)  — CL-SDF extracted OK
+  [ZIP cleanup] Deleted  AMF_CL-SDP_FLUXNET_2014-2021_v1.3_r1.zip  (81.5 MB)  — CL-SDP extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Ash_FLUXNET_2009-2019_v1.3_r2.zip  (111.8 MB)  — CN-Ash extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-BeO_FLUXNET_2012-2020_v1.3_r2.zip  (94.6 MB)  — CN-BeO extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Dan_FLUXNET_2011-2020_v1.3_r1.zip  (65 MB)  — CN-Dan extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-DaW_FLUXNET_2011-2019_v1.3_r1.zip  (48.8 MB)  — CN-DaW extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Din_FLUXNET_2010-2020_v1.3_r2.zip  (73 MB)  — CN-Din extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Du2_FLUXNET_2011-2019_v1.3_r1.zip  (90.5 MB)  — CN-Du2 extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Dzo_FLUXNET_2010-2020_v1.3_r1.zip  (98.7 MB)  — CN-Dzo extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-GuT_FLUXNET_2015-2017_v1.3_r1.zip  (39.6 MB)  — CN-GuT extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Ha2_FLUXNET_2011-2019_v1.3_r1.zip  (84.1 MB)  — CN-Ha2 extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-HaW_FLUXNET_2011-2018_v1.3_r1.zip  (64.7 MB)  — CN-HaW extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Jzh_FLUXNET_2011-2016_v1.3_r1.zip  (66.2 MB)  — CN-Jzh extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Lch_FLUXNET_2008-2020_v1.3_r1.zip  (126.3 MB)  — CN-Lch extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Qng_FLUXNET_2022-2024_v1.3_r1.zip  (27.6 MB)  — CN-Qng extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Wnb_FLUXNET_2021-2021_v1.3_r2.zip  (23.3 MB)  — CN-Wnb extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Xi2_FLUXNET_2011-2020_v1.3_r1.zip  (88.8 MB)  — CN-Xi2 extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Yan_FLUXNET_2016-2018_v1.3_r1.zip  (38.6 MB)  — CN-Yan extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-YaS_FLUXNET_2011-2020_v1.3_r1.zip  (101.4 MB)  — CN-YaS extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Aws_FLUXNET_2006-2024_v1.3_r1.zip  (121.9 MB)  — CH-Aws extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Crs_FLUXNET_2015-2016_v1.3_r1.zip  (26.8 MB)  — CH-Crs extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-For_FLUXNET_2024-2024_v1.3_r1.zip  (21.9 MB)  — CH-For extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Frk_FLUXNET_2013-2014_v1.3_r1.zip  (25.7 MB)  — CH-Frk extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Fru_FLUXNET_2005-2024_v1.3_r1.zip  (209.2 MB)  — CH-Fru extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Lae_FLUXNET_2004-2024_v1.3_r1.zip  (196.9 MB)  — CH-Lae extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Oe2_FLUXNET_2004-2024_v1.3_r1.zip  (198.2 MB)  — CH-Oe2 extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Oe3_FLUXNET_2002-2011_v1.3_r1.zip  (97.2 MB)  — CH-Oe3 extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Rh1_FLUXNET_2018-2021_v1.3_r1.zip  (48.4 MB)  — CH-Rh1 extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Rh2_FLUXNET_2018-2021_v1.3_r1.zip  (48.5 MB)  — CH-Rh2 extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Rtb_FLUXNET_2009-2022_v1.3_r1.zip  (112.4 MB)  — CH-Rtb extracted OK
+  [ZIP cleanup] Deleted  EUF_CH-Tnk_FLUXNET_2024-2024_v1.3_r1.zip  (22.3 MB)  — CH-Tnk extracted OK
+  [ZIP cleanup] Deleted  FLX_CN-Aro_FLUXNET_2013-2024_v1.3_r1.zip  (132.4 MB)  — CN-Aro extracted OK
+  [ZIP cleanup] Deleted  FLX_CN-SnB_FLUXNET_2021-2021_v1.3_r1.zip  (20.3 MB)  — CN-SnB extracted OK
+  [ZIP cleanup] Deleted  ICOS_CD-Ygb_FLUXNET_2020-2024_v1.3_r1.zip  (40.4 MB)  — CD-Ygb extracted OK
+  [ZIP cleanup] Deleted  ICOS_CH-Dav_FLUXNET_1997-2024_v1.3_r1.zip  (269.3 MB)  — CH-Dav extracted OK
+  [ZIP cleanup] Deleted  JPF_CN-HaM_FLUXNET_2001-2014_v1.3_r1.zip  (121.9 MB)  — CN-HaM extracted OK
+  [ZIP cleanup] Deleted  JPF_CN-Lsh_FLUXNET_2002-2006_v1.3_r1.zip  (57.8 MB)  — CN-Lsh extracted OK
+[ZIP cleanup] Complete: 50 deleted (4140 MB freed), 0 kept.
+--- DONE Batch 3/14 (50 sites) | disk free: 23.76 GB (used 0.04 GB net) ---
+
+--- START Batch 4/14 (50 sites) ---
+Sites: CN-Yuc CR-AqC CR-Fsc CZ-BK1 CZ-KrP CZ-LnG CZ-Lnz CZ-RAJ CZ-Stn CZ-wet DE-Akm DE-Amv DE-Brs DE-Etn DE-Fen DE-Geb DE-Gri DE-GsB DE-Gwg DE-Hai DE-Har DE-HoH DE-Hzd DE-Kli DE-Lnf DE-Msr DE-Obe DE-Rns DE-RuC DE-RuM DE-RuR DE-RuS DE-RuW DE-SbM DE-Tha DK-Gds DK-RCW DK-Skj DK-Sor DK-Vng EE-Pts EE-Rng EE-Stg ES-Abr ES-Agu ES-Amo ES-Cnd ES-Crg ES-Gdn ES-HdD 
+Disk free before: 23.76 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — CN-Yuc CR-AqC CR-Fsc CZ-BK1 CZ-KrP CZ-LnG CZ-Lnz CZ-RAJ CZ-Stn CZ-wet DE-Akm DE-Amv DE-Brs DE-Etn DE-Fen DE-Geb DE-Gri DE-GsB DE-Gwg DE-Hai DE-Har DE-HoH DE-Hzd DE-Kli DE-Lnf DE-Msr DE-Obe DE-Rns DE-RuC DE-RuM DE-RuR DE-RuS DE-RuW DE-SbM DE-Tha DK-Gds DK-RCW DK-Skj DK-Sor DK-Vng EE-Pts EE-Rng EE-Stg ES-Abr ES-Agu ES-Amo ES-Cnd ES-Crg ES-Gdn ES-HdD
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T145717.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T145510.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (36 + 0) -> 10 -> 4 | ■■■                                8%
+[working] (35 + 0) -> 10 -> 5 | ■■■■                              10%
+[working] (34 + 0) -> 10 -> 6 | ■■■■■                             12%
+[working] (33 + 0) -> 10 -> 7 | ■■■■■                             14%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (30 + 0) -> 10 -> 10 | ■■■■■■■                           20%
+[working] (29 + 0) -> 10 -> 11 | ■■■■■■■■                          22%
+[working] (28 + 0) -> 10 -> 12 | ■■■■■■■■                          24%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (25 + 0) -> 10 -> 15 | ■■■■■■■■■■                        30%
+[working] (24 + 0) -> 10 -> 16 | ■■■■■■■■■■■                       32%
+[working] (23 + 0) -> 10 -> 17 | ■■■■■■■■■■■                       34%
+[working] (21 + 0) -> 10 -> 19 | ■■■■■■■■■■■■                      38%
+[working] (20 + 0) -> 10 -> 20 | ■■■■■■■■■■■■■                     40%
+[working] (18 + 0) -> 10 -> 22 | ■■■■■■■■■■■■■■                    44%
+[working] (17 + 0) -> 10 -> 23 | ■■■■■■■■■■■■■■■                   46%
+[working] (16 + 0) -> 10 -> 24 | ■■■■■■■■■■■■■■■                   48%
+[working] (14 + 0) -> 10 -> 26 | ■■■■■■■■■■■■■■■■■                 52%
+[working] (12 + 0) -> 10 -> 28 | ■■■■■■■■■■■■■■■■■■                56%
+[working] (11 + 0) -> 10 -> 29 | ■■■■■■■■■■■■■■■■■■                58%
+[working] (10 + 0) -> 10 -> 30 | ■■■■■■■■■■■■■■■■■■■               60%
+[working] (8 + 0) -> 10 -> 32 | ■■■■■■■■■■■■■■■■■■■■              64%
+[working] (6 + 0) -> 10 -> 34 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (5 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■■■■            70%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 9 -> 41 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        82%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 3 -> 47 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94%
+[working] (0 + 0) -> 2 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — CN-Yuc CR-AqC CR-Fsc CZ-BK1 CZ-KrP CZ-LnG CZ-Lnz CZ-RAJ CZ-Stn CZ-wet DE-Akm DE-Amv DE-Brs DE-Etn DE-Fen DE-Geb DE-Gri DE-GsB DE-Gwg DE-Hai DE-Har DE-HoH DE-Hzd DE-Kli DE-Lnf DE-Msr DE-Obe DE-Rns DE-RuC DE-RuM DE-RuR DE-RuS DE-RuW DE-SbM DE-Tha DK-Gds DK-RCW DK-Skj DK-Sor DK-Vng EE-Pts EE-Rng EE-Stg ES-Abr ES-Agu ES-Amo ES-Cnd ES-Crg ES-Gdn ES-HdD
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 200 sites, 8924 site-years across 200 files
+MM / FLUXMET → 200 sites, 1811 site-years across 200 files
+YY / ERA5 → 200 sites, 8924 site-years across 200 files
+YY / FLUXMET → 200 sites, 1811 site-years across 200 files
+  [ZIP cleanup] Deleted  AMF_CR-Fsc_FLUXNET_2015-2018_v1.3_r1.zip  (51.2 MB)  — CR-Fsc extracted OK
+  [ZIP cleanup] Deleted  CNF_CN-Yuc_FLUXNET_2011-2020_v1.3_r2.zip  (96.8 MB)  — CN-Yuc extracted OK
+  [ZIP cleanup] Deleted  EUF_CZ-KrP_FLUXNET_2014-2023_v1.3_r1.zip  (109.7 MB)  — CZ-KrP extracted OK
+  [ZIP cleanup] Deleted  EUF_CZ-LnG_FLUXNET_2019-2024_v1.3_r1.zip  (69.8 MB)  — CZ-LnG extracted OK
+  [ZIP cleanup] Deleted  EUF_CZ-RAJ_FLUXNET_2012-2024_v1.3_r1.zip  (135.5 MB)  — CZ-RAJ extracted OK
+  [ZIP cleanup] Deleted  EUF_CZ-Stn_FLUXNET_2010-2024_v1.3_r1.zip  (152.1 MB)  — CZ-Stn extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-Akm_FLUXNET_2009-2024_v1.3_r1.zip  (107.2 MB)  — DE-Akm extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-Etn_FLUXNET_2024-2024_v1.3_r1.zip  (20.6 MB)  — DE-Etn extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-Lnf_FLUXNET_2002-2024_v1.3_r1.zip  (143.6 MB)  — DE-Lnf extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-Obe_FLUXNET_2008-2024_v1.3_r1.zip  (159.9 MB)  — DE-Obe extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-Rns_FLUXNET_2021-2024_v1.3_r2.zip  (54.3 MB)  — DE-Rns extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-RuC_FLUXNET_2013-2024_v1.3_r1.zip  (112 MB)  — DE-RuC extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-RuM_FLUXNET_2011-2019_v1.3_r1.zip  (95.8 MB)  — DE-RuM extracted OK
+  [ZIP cleanup] Deleted  EUF_DE-SbM_FLUXNET_2023-2024_v1.3_r1.zip  (27 MB)  — DE-SbM extracted OK
+  [ZIP cleanup] Deleted  EUF_EE-Pts_FLUXNET_2022-2024_v1.3_r1.zip  (36.3 MB)  — EE-Pts extracted OK
+  [ZIP cleanup] Deleted  EUF_EE-Rng_FLUXNET_2023-2024_v1.3_r1.zip  (24.3 MB)  — EE-Rng extracted OK
+  [ZIP cleanup] Deleted  EUF_EE-Stg_FLUXNET_2016-2024_v1.3_r1.zip  (87.3 MB)  — EE-Stg extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Abr_FLUXNET_2015-2020_v1.3_r1.zip  (66.1 MB)  — ES-Abr extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Agu_FLUXNET_2006-2024_v1.3_r1.zip  (104 MB)  — ES-Agu extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Amo_FLUXNET_2007-2019_v1.3_r1.zip  (59.8 MB)  — ES-Amo extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Cnd_FLUXNET_2014-2021_v1.3_r1.zip  (59.9 MB)  — ES-Cnd extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Crg_FLUXNET_2021-2024_v1.3_r1.zip  (44.5 MB)  — ES-Crg extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Gdn_FLUXNET_2014-2021_v1.3_r1.zip  (48 MB)  — ES-Gdn extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-HdD_FLUXNET_2024-2024_v1.3_r1.zip  (22.3 MB)  — ES-HdD extracted OK
+  [ZIP cleanup] Deleted  FLX_CR-AqC_FLUXNET_2009-2016_v1.3_r1.zip  (59.1 MB)  — CR-AqC extracted OK
+  [ZIP cleanup] Deleted  ICOS_CZ-BK1_FLUXNET_2004-2024_v1.3_r1.zip  (201.5 MB)  — CZ-BK1 extracted OK
+  [ZIP cleanup] Deleted  ICOS_CZ-Lnz_FLUXNET_2015-2024_v1.3_r1.zip  (104.5 MB)  — CZ-Lnz extracted OK
+  [ZIP cleanup] Deleted  ICOS_CZ-wet_FLUXNET_2006-2024_v1.3_r1.zip  (180 MB)  — CZ-wet extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Amv_FLUXNET_2023-2024_v1.3_r1.zip  (28.6 MB)  — DE-Amv extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Brs_FLUXNET_2023-2024_v1.3_r1.zip  (25.8 MB)  — DE-Brs extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Fen_FLUXNET_2023-2024_v1.3_r1.zip  (24.1 MB)  — DE-Fen extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Geb_FLUXNET_2020-2024_v1.3_r1.zip  (57.9 MB)  — DE-Geb extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Gri_FLUXNET_2004-2024_v1.3_r1.zip  (168.2 MB)  — DE-Gri extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-GsB_FLUXNET_2015-2024_v1.3_r1.zip  (101.9 MB)  — DE-GsB extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Gwg_FLUXNET_2023-2024_v1.3_r1.zip  (22.9 MB)  — DE-Gwg extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Hai_FLUXNET_2000-2024_v1.3_r1.zip  (242.3 MB)  — DE-Hai extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Har_FLUXNET_2020-2024_v1.3_r1.zip  (58 MB)  — DE-Har extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-HoH_FLUXNET_2015-2024_v1.3_r1.zip  (107.8 MB)  — DE-HoH extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Hzd_FLUXNET_2022-2024_v1.3_r1.zip  (40.4 MB)  — DE-Hzd extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Kli_FLUXNET_2018-2024_v1.3_r1.zip  (75.1 MB)  — DE-Kli extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Msr_FLUXNET_2020-2024_v1.3_r1.zip  (55.7 MB)  — DE-Msr extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-RuR_FLUXNET_2011-2024_v1.3_r1.zip  (135.6 MB)  — DE-RuR extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-RuS_FLUXNET_2011-2024_v1.3_r1.zip  (134.5 MB)  — DE-RuS extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-RuW_FLUXNET_2011-2024_v1.3_r1.zip  (99.7 MB)  — DE-RuW extracted OK
+  [ZIP cleanup] Deleted  ICOS_DE-Tha_FLUXNET_1996-2024_v1.3_r1.zip  (252.6 MB)  — DE-Tha extracted OK
+  [ZIP cleanup] Deleted  ICOS_DK-Gds_FLUXNET_2020-2022_v1.3_r1.zip  (32 MB)  — DK-Gds extracted OK
+  [ZIP cleanup] Deleted  ICOS_DK-RCW_FLUXNET_2023-2024_v1.3_r1.zip  (26.2 MB)  — DK-RCW extracted OK
+  [ZIP cleanup] Deleted  ICOS_DK-Skj_FLUXNET_2020-2022_v1.3_r1.zip  (34.2 MB)  — DK-Skj extracted OK
+  [ZIP cleanup] Deleted  ICOS_DK-Sor_FLUXNET_1996-2024_v1.3_r1.zip  (248 MB)  — DK-Sor extracted OK
+  [ZIP cleanup] Deleted  ICOS_DK-Vng_FLUXNET_2020-2023_v1.3_r1.zip  (48.2 MB)  — DK-Vng extracted OK
+[ZIP cleanup] Complete: 50 deleted (4452.8 MB freed), 0 kept.
+--- DONE Batch 4/14 (50 sites) | disk free: 23.7 GB (used 0.06 GB net) ---
+
+--- START Batch 5/14 (50 sites) ---
+Sites: ES-HeB ES-Hen ES-LJu ES-LM1 ES-LM2 ES-LMa ES-Mcd ES-Mzn ES-Pzb ES-TzM ES-VDA ES-Yst FI-Ant FI-Hyy FI-Ken FI-Let FI-Nsv FI-Pap FI-Qvd FI-Rk2 FI-Ruk FI-Sar FI-Sii FI-Sod FI-Var FR-Aur FR-Bil FR-CLt FR-EM2 FR-FBn FR-Fon FR-Gri FR-Hes FR-Lam FR-LGt FR-Lqu FR-Lus FR-Mau FR-Mej FR-Nzn FR-Pue FR-Tou GF-Guy GH-Ank GL-Dsk GL-NuF GL-ZaF GL-ZaH ID-JOP ID-PaB 
+Disk free before: 23.7 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — ES-HeB ES-Hen ES-LJu ES-LM1 ES-LM2 ES-LMa ES-Mcd ES-Mzn ES-Pzb ES-TzM ES-VDA ES-Yst FI-Ant FI-Hyy FI-Ken FI-Let FI-Nsv FI-Pap FI-Qvd FI-Rk2 FI-Ruk FI-Sar FI-Sii FI-Sod FI-Var FR-Aur FR-Bil FR-CLt FR-EM2 FR-FBn FR-Fon FR-Gri FR-Hes FR-Lam FR-LGt FR-Lqu FR-Lus FR-Mau FR-Mej FR-Nzn FR-Pue FR-Tou GF-Guy GH-Ank GL-Dsk GL-NuF GL-ZaF GL-ZaH ID-JOP ID-PaB
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T150017.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T145717.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (35 + 0) -> 10 -> 5 | ■■■■                              10%
+[working] (34 + 0) -> 10 -> 6 | ■■■■■                             12%
+[working] (33 + 0) -> 10 -> 7 | ■■■■■                             14%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (31 + 0) -> 10 -> 9 | ■■■■■■                            18%
+[working] (30 + 0) -> 10 -> 10 | ■■■■■■■                           20%
+[working] (29 + 0) -> 10 -> 11 | ■■■■■■■■                          22%
+[working] (28 + 0) -> 10 -> 12 | ■■■■■■■■                          24%
+[working] (27 + 0) -> 10 -> 13 | ■■■■■■■■■                         26%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (25 + 0) -> 10 -> 15 | ■■■■■■■■■■                        30%
+[working] (24 + 0) -> 10 -> 16 | ■■■■■■■■■■■                       32%
+[working] (23 + 0) -> 10 -> 17 | ■■■■■■■■■■■                       34%
+[working] (21 + 0) -> 10 -> 19 | ■■■■■■■■■■■■                      38%
+[working] (17 + 0) -> 10 -> 23 | ■■■■■■■■■■■■■■■                   46%
+[working] (16 + 0) -> 10 -> 24 | ■■■■■■■■■■■■■■■                   48%
+[working] (15 + 0) -> 10 -> 25 | ■■■■■■■■■■■■■■■■                  50%
+[working] (14 + 0) -> 10 -> 26 | ■■■■■■■■■■■■■■■■■                 52%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (12 + 0) -> 10 -> 28 | ■■■■■■■■■■■■■■■■■■                56%
+[working] (10 + 0) -> 10 -> 30 | ■■■■■■■■■■■■■■■■■■■               60%
+[working] (7 + 0) -> 10 -> 33 | ■■■■■■■■■■■■■■■■■■■■■             66%
+[working] (6 + 0) -> 10 -> 34 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (5 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■■■■            70%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 9 -> 41 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        82%
+[working] (0 + 0) -> 8 -> 42 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        84%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 6 -> 44 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88%
+[working] (0 + 0) -> 5 -> 45 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90%
+[working] (0 + 0) -> 3 -> 47 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94%
+[working] (0 + 0) -> 2 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — ES-HeB ES-Hen ES-LJu ES-LM1 ES-LM2 ES-LMa ES-Mcd ES-Mzn ES-Pzb ES-TzM ES-VDA ES-Yst FI-Ant FI-Hyy FI-Ken FI-Let FI-Nsv FI-Pap FI-Qvd FI-Rk2 FI-Ruk FI-Sar FI-Sii FI-Sod FI-Var FR-Aur FR-Bil FR-CLt FR-EM2 FR-FBn FR-Fon FR-Gri FR-Hes FR-Lam FR-LGt FR-Lqu FR-Lus FR-Mau FR-Mej FR-Nzn FR-Pue FR-Tou GF-Guy GH-Ank GL-Dsk GL-NuF GL-ZaF GL-ZaH ID-JOP ID-PaB
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 250 sites, 11144 site-years across 250 files
+MM / FLUXMET → 250 sites, 2232 site-years across 250 files
+YY / ERA5 → 250 sites, 11144 site-years across 250 files
+YY / FLUXMET → 250 sites, 2232 site-years across 250 files
+  [ZIP cleanup] Deleted  EUF_ES-HeB_FLUXNET_2019-2024_v1.3_r1.zip  (67.8 MB)  — ES-HeB extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Hen_FLUXNET_2019-2024_v1.3_r1.zip  (70.1 MB)  — ES-Hen extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-LJu_FLUXNET_2004-2024_v1.3_r1.zip  (150.4 MB)  — ES-LJu extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-LM1_FLUXNET_2014-2024_v1.3_r1.zip  (111.5 MB)  — ES-LM1 extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-LM2_FLUXNET_2014-2024_v1.3_r1.zip  (113.7 MB)  — ES-LM2 extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Mcd_FLUXNET_2018-2024_v1.3_r1.zip  (73.1 MB)  — ES-Mcd extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Mzn_FLUXNET_2023-2024_v1.3_r1.zip  (26.2 MB)  — ES-Mzn extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Pzb_FLUXNET_2020-2024_v1.3_r1.zip  (55.4 MB)  — ES-Pzb extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-TzM_FLUXNET_2020-2024_v1.3_r1.zip  (51.3 MB)  — ES-TzM extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-VDA_FLUXNET_2022-2024_v1.3_r1.zip  (36.5 MB)  — ES-VDA extracted OK
+  [ZIP cleanup] Deleted  EUF_ES-Yst_FLUXNET_2019-2024_v1.3_r1.zip  (61.6 MB)  — ES-Yst extracted OK
+  [ZIP cleanup] Deleted  EUF_FI-Nsv_FLUXNET_2021-2024_v1.3_r1.zip  (47.4 MB)  — FI-Nsv extracted OK
+  [ZIP cleanup] Deleted  EUF_FI-Pap_FLUXNET_2022-2022_v1.3_r1.zip  (22.5 MB)  — FI-Pap extracted OK
+  [ZIP cleanup] Deleted  EUF_FI-Qvd_FLUXNET_2018-2023_v1.3_r1.zip  (61.7 MB)  — FI-Qvd extracted OK
+  [ZIP cleanup] Deleted  EUF_FI-Rk2_FLUXNET_2020-2023_v1.3_r1.zip  (48.1 MB)  — FI-Rk2 extracted OK
+  [ZIP cleanup] Deleted  EUF_FI-Ruk_FLUXNET_2020-2023_v1.3_r1.zip  (52.8 MB)  — FI-Ruk extracted OK
+  [ZIP cleanup] Deleted  EUF_FI-Sar_FLUXNET_2022-2022_v1.3_r1.zip  (21.9 MB)  — FI-Sar extracted OK
+  [ZIP cleanup] Deleted  EUF_FR-Mau_FLUXNET_2005-2011_v1.3_r1.zip  (68.6 MB)  — FR-Mau extracted OK
+  [ZIP cleanup] Deleted  EUF_FR-Nzn_FLUXNET_2016-2024_v1.3_r1.zip  (90.1 MB)  — FR-Nzn extracted OK
+  [ZIP cleanup] Deleted  EUF_GH-Ank_FLUXNET_2011-2014_v1.3_r1.zip  (35.4 MB)  — GH-Ank extracted OK
+  [ZIP cleanup] Deleted  FLX_ID-JOP_FLUXNET_2014-2024_v1.3_r1.zip  (75.5 MB)  — ID-JOP extracted OK
+  [ZIP cleanup] Deleted  ICOS_ES-LMa_FLUXNET_2020-2024_v1.3_r1.zip  (58.1 MB)  — ES-LMa extracted OK
+  [ZIP cleanup] Deleted  ICOS_FI-Ant_FLUXNET_2022-2022_v1.3_r1.zip  (22.6 MB)  — FI-Ant extracted OK
+  [ZIP cleanup] Deleted  ICOS_FI-Hyy_FLUXNET_1997-2024_v1.3_r1.zip  (267.5 MB)  — FI-Hyy extracted OK
+  [ZIP cleanup] Deleted  ICOS_FI-Ken_FLUXNET_2018-2024_v1.3_r1.zip  (69.2 MB)  — FI-Ken extracted OK
+  [ZIP cleanup] Deleted  ICOS_FI-Let_FLUXNET_2009-2024_v1.3_r1.zip  (144.3 MB)  — FI-Let extracted OK
+  [ZIP cleanup] Deleted  ICOS_FI-Sii_FLUXNET_2018-2024_v1.3_r1.zip  (76.7 MB)  — FI-Sii extracted OK
+  [ZIP cleanup] Deleted  ICOS_FI-Sod_FLUXNET_2023-2024_v1.3_r1.zip  (27 MB)  — FI-Sod extracted OK
+  [ZIP cleanup] Deleted  ICOS_FI-Var_FLUXNET_2016-2024_v1.3_r1.zip  (97.9 MB)  — FI-Var extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Aur_FLUXNET_2005-2024_v1.3_r1.zip  (198.9 MB)  — FR-Aur extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Bil_FLUXNET_2014-2024_v1.3_r1.zip  (112.5 MB)  — FR-Bil extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-CLt_FLUXNET_2019-2024_v1.3_r1.zip  (69.4 MB)  — FR-CLt extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-EM2_FLUXNET_2017-2024_v1.3_r1.zip  (89.3 MB)  — FR-EM2 extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-FBn_FLUXNET_2008-2024_v1.3_r1.zip  (147.1 MB)  — FR-FBn extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Fon_FLUXNET_2019-2024_v1.3_r1.zip  (65.5 MB)  — FR-Fon extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Gri_FLUXNET_2004-2024_v1.3_r1.zip  (206.1 MB)  — FR-Gri extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Hes_FLUXNET_1997-2024_v1.3_r1.zip  (161.6 MB)  — FR-Hes extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Lam_FLUXNET_2021-2024_v1.3_r1.zip  (50.7 MB)  — FR-Lam extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-LGt_FLUXNET_2017-2024_v1.3_r1.zip  (54.2 MB)  — FR-LGt extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Lqu_FLUXNET_2022-2024_v1.3_r1.zip  (31.8 MB)  — FR-Lqu extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Lus_FLUXNET_2022-2024_v1.3_r1.zip  (32.4 MB)  — FR-Lus extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Mej_FLUXNET_2019-2024_v1.3_r1.zip  (71.4 MB)  — FR-Mej extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Pue_FLUXNET_2000-2024_v1.3_r1.zip  (232.4 MB)  — FR-Pue extracted OK
+  [ZIP cleanup] Deleted  ICOS_FR-Tou_FLUXNET_2018-2024_v1.3_r1.zip  (86.4 MB)  — FR-Tou extracted OK
+  [ZIP cleanup] Deleted  ICOS_GF-Guy_FLUXNET_2017-2024_v1.3_r1.zip  (55.3 MB)  — GF-Guy extracted OK
+  [ZIP cleanup] Deleted  ICOS_GL-Dsk_FLUXNET_2020-2024_v1.3_r1.zip  (58.9 MB)  — GL-Dsk extracted OK
+  [ZIP cleanup] Deleted  ICOS_GL-NuF_FLUXNET_2019-2024_v1.3_r1.zip  (39.9 MB)  — GL-NuF extracted OK
+  [ZIP cleanup] Deleted  ICOS_GL-ZaF_FLUXNET_2023-2024_v1.3_r1.zip  (25.1 MB)  — GL-ZaF extracted OK
+  [ZIP cleanup] Deleted  ICOS_GL-ZaH_FLUXNET_2020-2024_v1.3_r1.zip  (30.1 MB)  — GL-ZaH extracted OK
+  [ZIP cleanup] Deleted  JPF_ID-PaB_FLUXNET_2004-2016_v1.3_r1.zip  (85.5 MB)  — ID-PaB extracted OK
+[ZIP cleanup] Complete: 50 deleted (4009.4 MB freed), 0 kept.
+--- DONE Batch 5/14 (50 sites) | disk free: 23.64 GB (used 0.06 GB net) ---
+
+--- START Batch 6/14 (50 sites) ---
+Sites: ID-PaD ID-Pag IE-Cra IL-RmH IL-Yat IT-Arz IT-BCi IT-BFt IT-BsB IT-CA1 IT-CA2 IT-CA3 IT-Cp2 IT-Lsn IT-MBo IT-NiG IT-Niv IT-Noe IT-Ren IT-SR2 IT-Tor IT-TrF JP-Api JP-BBY JP-Fhk JP-Fjy JP-Fmt JP-Hc2 JP-Hc3 JP-KaP JP-Khw JP-Kzw JP-MBF JP-MMF JP-Mse JP-NsC JP-NsM JP-Nuf JP-Om2 JP-Sb1 JP-Sb2 JP-Shn JP-SMF JP-Spp JP-Srk JP-Ta2 JP-Tak JP-Tef JP-Tkb JP-Tmd 
+Disk free before: 23.64 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — ID-PaD ID-Pag IE-Cra IL-RmH IL-Yat IT-Arz IT-BCi IT-BFt IT-BsB IT-CA1 IT-CA2 IT-CA3 IT-Cp2 IT-Lsn IT-MBo IT-NiG IT-Niv IT-Noe IT-Ren IT-SR2 IT-Tor IT-TrF JP-Api JP-BBY JP-Fhk JP-Fjy JP-Fmt JP-Hc2 JP-Hc3 JP-KaP JP-Khw JP-Kzw JP-MBF JP-MMF JP-Mse JP-NsC JP-NsM JP-Nuf JP-Om2 JP-Sb1 JP-Sb2 JP-Shn JP-SMF JP-Spp JP-Srk JP-Ta2 JP-Tak JP-Tef JP-Tkb JP-Tmd
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T150728.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T150017.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (36 + 0) -> 10 -> 4 | ■■■                                8%
+[working] (35 + 0) -> 10 -> 5 | ■■■■                              10%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (31 + 0) -> 10 -> 9 | ■■■■■■                            18%
+[working] (30 + 0) -> 10 -> 10 | ■■■■■■■                           20%
+[working] (28 + 0) -> 10 -> 12 | ■■■■■■■■                          24%
+[working] (27 + 0) -> 10 -> 13 | ■■■■■■■■■                         26%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (25 + 0) -> 10 -> 15 | ■■■■■■■■■■                        30%
+[working] (24 + 0) -> 10 -> 16 | ■■■■■■■■■■■                       32%
+[working] (22 + 0) -> 10 -> 18 | ■■■■■■■■■■■■                      36%
+[working] (21 + 0) -> 10 -> 19 | ■■■■■■■■■■■■                      38%
+[working] (19 + 0) -> 10 -> 21 | ■■■■■■■■■■■■■■                    42%
+[working] (17 + 0) -> 10 -> 23 | ■■■■■■■■■■■■■■■                   46%
+[working] (16 + 0) -> 10 -> 24 | ■■■■■■■■■■■■■■■                   48%
+[working] (14 + 0) -> 10 -> 26 | ■■■■■■■■■■■■■■■■■                 52%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (11 + 0) -> 10 -> 29 | ■■■■■■■■■■■■■■■■■■                58%
+[working] (10 + 0) -> 10 -> 30 | ■■■■■■■■■■■■■■■■■■■               60%
+[working] (9 + 0) -> 10 -> 31 | ■■■■■■■■■■■■■■■■■■■■              62%
+[working] (8 + 0) -> 10 -> 32 | ■■■■■■■■■■■■■■■■■■■■              64%
+[working] (6 + 0) -> 10 -> 34 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (1 + 0) -> 10 -> 39 | ■■■■■■■■■■■■■■■■■■■■■■■■          78%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 4 -> 46 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92%
+[working] (0 + 0) -> 3 -> 47 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — ID-PaD ID-Pag IE-Cra IL-RmH IL-Yat IT-Arz IT-BCi IT-BFt IT-BsB IT-CA1 IT-CA2 IT-CA3 IT-Cp2 IT-Lsn IT-MBo IT-NiG IT-Niv IT-Noe IT-Ren IT-SR2 IT-Tor IT-TrF JP-Api JP-BBY JP-Fhk JP-Fjy JP-Fmt JP-Hc2 JP-Hc3 JP-KaP JP-Khw JP-Kzw JP-MBF JP-MMF JP-Mse JP-NsC JP-NsM JP-Nuf JP-Om2 JP-Sb1 JP-Sb2 JP-Shn JP-SMF JP-Spp JP-Srk JP-Ta2 JP-Tak JP-Tef JP-Tkb JP-Tmd
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 300 sites, 13378 site-years across 300 files
+MM / FLUXMET → 300 sites, 2779 site-years across 300 files
+YY / ERA5 → 300 sites, 13378 site-years across 300 files
+YY / FLUXMET → 300 sites, 2779 site-years across 300 files
+  [ZIP cleanup] Deleted  EUF_IL-RmH_FLUXNET_2015-2020_v1.3_r1.zip  (32.3 MB)  — IL-RmH extracted OK
+  [ZIP cleanup] Deleted  EUF_IL-Yat_FLUXNET_2000-2024_v1.3_r1.zip  (210.7 MB)  — IL-Yat extracted OK
+  [ZIP cleanup] Deleted  EUF_IT-Arz_FLUXNET_2016-2024_v1.3_r1.zip  (88.4 MB)  — IT-Arz extracted OK
+  [ZIP cleanup] Deleted  EUF_IT-BsB_FLUXNET_2021-2024_v1.3_r1.zip  (52.5 MB)  — IT-BsB extracted OK
+  [ZIP cleanup] Deleted  EUF_IT-CA1_FLUXNET_2011-2014_v1.3_r1.zip  (47.9 MB)  — IT-CA1 extracted OK
+  [ZIP cleanup] Deleted  EUF_IT-CA2_FLUXNET_2011-2014_v1.3_r1.zip  (47.8 MB)  — IT-CA2 extracted OK
+  [ZIP cleanup] Deleted  EUF_IT-CA3_FLUXNET_2011-2014_v1.3_r1.zip  (46.5 MB)  — IT-CA3 extracted OK
+  [ZIP cleanup] Deleted  EUF_IT-NiG_FLUXNET_2020-2024_v1.3_r1.zip  (62 MB)  — IT-NiG extracted OK
+  [ZIP cleanup] Deleted  FLX_IT-SR2_FLUXNET_2013-2024_v1.3_r1.zip  (120.8 MB)  — IT-SR2 extracted OK
+  [ZIP cleanup] Deleted  ICOS_IE-Cra_FLUXNET_2020-2024_v1.3_r1.zip  (33.4 MB)  — IE-Cra extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-BCi_FLUXNET_2004-2024_v1.3_r1.zip  (182.2 MB)  — IT-BCi extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-BFt_FLUXNET_2019-2024_v1.3_r1.zip  (62.3 MB)  — IT-BFt extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-Cp2_FLUXNET_2012-2024_v1.3_r1.zip  (109.2 MB)  — IT-Cp2 extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-Lsn_FLUXNET_2016-2024_v1.3_r1.zip  (91.7 MB)  — IT-Lsn extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1.zip  (201.2 MB)  — IT-MBo extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-Niv_FLUXNET_2019-2024_v1.3_r1.zip  (43 MB)  — IT-Niv extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-Noe_FLUXNET_2022-2024_v1.3_r1.zip  (37 MB)  — IT-Noe extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-Ren_FLUXNET_1999-2024_v1.3_r1.zip  (246.8 MB)  — IT-Ren extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-Tor_FLUXNET_2008-2024_v1.3_r1.zip  (162.9 MB)  — IT-Tor extracted OK
+  [ZIP cleanup] Deleted  ICOS_IT-TrF_FLUXNET_2012-2024_v1.3_r1.zip  (112.1 MB)  — IT-TrF extracted OK
+  [ZIP cleanup] Deleted  JPF_ID-PaD_FLUXNET_2001-2017_v1.3_r1.zip  (95.7 MB)  — ID-PaD extracted OK
+  [ZIP cleanup] Deleted  JPF_ID-Pag_FLUXNET_2004-2018_v1.3_r1.zip  (83.6 MB)  — ID-Pag extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Api_FLUXNET_2000-2022_v1.3_r1.zip  (205.3 MB)  — JP-Api extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-BBY_FLUXNET_2014-2020_v1.3_r1.zip  (64.9 MB)  — JP-BBY extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Fhk_FLUXNET_2006-2023_v1.3_r1.zip  (163.1 MB)  — JP-Fhk extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Fjy_FLUXNET_2001-2021_v1.3_r1.zip  (195.8 MB)  — JP-Fjy extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Fmt_FLUXNET_2014-2023_v1.3_r1.zip  (65.7 MB)  — JP-Fmt extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Hc2_FLUXNET_2003-2004_v1.3_r1.zip  (21.7 MB)  — JP-Hc2 extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Hc3_FLUXNET_2005-2008_v1.3_r1.zip  (32.9 MB)  — JP-Hc3 extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-KaP_FLUXNET_1997-1997_v1.3_r1.zip  (20.2 MB)  — JP-KaP extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Khw_FLUXNET_2000-2021_v1.3_r1.zip  (83.7 MB)  — JP-Khw extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Kzw_FLUXNET_2001-2008_v1.3_r1.zip  (83.6 MB)  — JP-Kzw extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-MBF_FLUXNET_2004-2011_v1.3_r1.zip  (82.5 MB)  — JP-MBF extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-MMF_FLUXNET_2004-2011_v1.3_r1.zip  (79.9 MB)  — JP-MMF extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Mse_FLUXNET_2002-2009_v1.3_r1.zip  (83.2 MB)  — JP-Mse extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-NsC_FLUXNET_2004-2015_v1.3_r1.zip  (103.9 MB)  — JP-NsC extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-NsM_FLUXNET_2004-2015_v1.3_r1.zip  (104.7 MB)  — JP-NsM extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Nuf_FLUXNET_2000-2001_v1.3_r1.zip  (28.7 MB)  — JP-Nuf extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Om2_FLUXNET_2022-2023_v1.3_r1.zip  (26.8 MB)  — JP-Om2 extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Sb1_FLUXNET_2007-2010_v1.3_r1.zip  (39.6 MB)  — JP-Sb1 extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Sb2_FLUXNET_2007-2010_v1.3_r1.zip  (39.4 MB)  — JP-Sb2 extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Shn_FLUXNET_2014-2020_v1.3_r1.zip  (41.3 MB)  — JP-Shn extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-SMF_FLUXNET_2002-2014_v1.3_r1.zip  (124.3 MB)  — JP-SMF extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Spp_FLUXNET_2000-2018_v1.3_r1.zip  (180.4 MB)  — JP-Spp extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Srk_FLUXNET_2010-2016_v1.3_r1.zip  (47.8 MB)  — JP-Srk extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Ta2_FLUXNET_2005-2015_v1.3_r1.zip  (82.6 MB)  — JP-Ta2 extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Tak_FLUXNET_1998-2021_v1.3_r1.zip  (169.4 MB)  — JP-Tak extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Tef_FLUXNET_2001-2023_v1.3_r1.zip  (208.9 MB)  — JP-Tef extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Tkb_FLUXNET_2018-2019_v1.3_r1.zip  (23.7 MB)  — JP-Tkb extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Tmd_FLUXNET_2005-2023_v1.3_r1.zip  (162.8 MB)  — JP-Tmd extracted OK
+[ZIP cleanup] Complete: 50 deleted (4736.8 MB freed), 0 kept.
+--- DONE Batch 6/14 (50 sites) | disk free: 23.58 GB (used 0.06 GB net) ---
+
+--- START Batch 7/14 (50 sites) ---
+Sites: JP-Tmk JP-Toc JP-Yms JP-Ynf KE-Aq1 KE-Aq2 KE-Kpt KE-Mkt KH-Kmp KR-AdC KR-CmF KR-CRK KR-GmP KR-GmR KR-GmS KR-HcM KR-Hnm KR-HPK KR-JjM KR-Kw1 KR-Kw2 KR-Nj1 KR-Nj2 KR-PcD KR-ScC KR-SmM KR-TwB KR-TwC KR-UAO KR-WdE ML-Kem MN-Hst MN-Kbu MN-Nkh MN-Udg MX-Aog MX-PMm MX-Tes MY-LHP NL-Hrw NL-Loo NL-Vkp NO-Fns NO-Hur NO-Ikr NZ-ADd NZ-ADw NZ-BFm NZ-BFu NZ-Cla 
+Disk free before: 23.58 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — JP-Tmk JP-Toc JP-Yms JP-Ynf KE-Aq1 KE-Aq2 KE-Kpt KE-Mkt KH-Kmp KR-AdC KR-CmF KR-CRK KR-GmP KR-GmR KR-GmS KR-HcM KR-Hnm KR-HPK KR-JjM KR-Kw1 KR-Kw2 KR-Nj1 KR-Nj2 KR-PcD KR-ScC KR-SmM KR-TwB KR-TwC KR-UAO KR-WdE ML-Kem MN-Hst MN-Kbu MN-Nkh MN-Udg MX-Aog MX-PMm MX-Tes MY-LHP NL-Hrw NL-Loo NL-Vkp NO-Fns NO-Hur NO-Ikr NZ-ADd NZ-ADw NZ-BFm NZ-BFu NZ-Cla
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T151025.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T150728.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (35 + 0) -> 10 -> 5 | ■■■■                              10%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (31 + 0) -> 10 -> 9 | ■■■■■■                            18%
+[working] (30 + 0) -> 10 -> 10 | ■■■■■■■                           20%
+[working] (29 + 0) -> 10 -> 11 | ■■■■■■■■                          22%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (23 + 0) -> 10 -> 17 | ■■■■■■■■■■■                       34%
+[working] (22 + 0) -> 10 -> 18 | ■■■■■■■■■■■■                      36%
+[working] (20 + 0) -> 10 -> 20 | ■■■■■■■■■■■■■                     40%
+[working] (19 + 0) -> 10 -> 21 | ■■■■■■■■■■■■■■                    42%
+[working] (18 + 0) -> 10 -> 22 | ■■■■■■■■■■■■■■                    44%
+[working] (17 + 0) -> 10 -> 23 | ■■■■■■■■■■■■■■■                   46%
+[working] (14 + 0) -> 10 -> 26 | ■■■■■■■■■■■■■■■■■                 52%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (12 + 0) -> 10 -> 28 | ■■■■■■■■■■■■■■■■■■                56%
+[working] (9 + 0) -> 10 -> 31 | ■■■■■■■■■■■■■■■■■■■■              62%
+[working] (6 + 0) -> 10 -> 34 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (5 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■■■■            70%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 5 -> 45 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90%
+[working] (0 + 0) -> 3 -> 47 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94%
+[working] (0 + 0) -> 2 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — JP-Tmk JP-Toc JP-Yms JP-Ynf KE-Aq1 KE-Aq2 KE-Kpt KE-Mkt KH-Kmp KR-AdC KR-CmF KR-CRK KR-GmP KR-GmR KR-GmS KR-HcM KR-Hnm KR-HPK KR-JjM KR-Kw1 KR-Kw2 KR-Nj1 KR-Nj2 KR-PcD KR-ScC KR-SmM KR-TwB KR-TwC KR-UAO KR-WdE ML-Kem MN-Hst MN-Kbu MN-Nkh MN-Udg MX-Aog MX-PMm MX-Tes MY-LHP NL-Hrw NL-Loo NL-Vkp NO-Fns NO-Hur NO-Ikr NZ-ADd NZ-ADw NZ-BFm NZ-BFu NZ-Cla
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 350 sites, 15608 site-years across 350 files
+MM / FLUXMET → 350 sites, 3055 site-years across 350 files
+YY / ERA5 → 350 sites, 15608 site-years across 350 files
+YY / FLUXMET → 350 sites, 3055 site-years across 350 files
+  [ZIP cleanup] Deleted  AMF_MX-Aog_FLUXNET_2016-2018_v1.3_r1.zip  (39 MB)  — MX-Aog extracted OK
+  [ZIP cleanup] Deleted  AMF_MX-PMm_FLUXNET_2017-2018_v1.3_r1.zip  (23.9 MB)  — MX-PMm extracted OK
+  [ZIP cleanup] Deleted  AMF_MX-Tes_FLUXNET_2004-2008_v1.3_r1.zip  (47.4 MB)  — MX-Tes extracted OK
+  [ZIP cleanup] Deleted  EUF_NL-Hrw_FLUXNET_2001-2010_v1.3_r1.zip  (87.9 MB)  — NL-Hrw extracted OK
+  [ZIP cleanup] Deleted  EUF_NL-Vkp_FLUXNET_2014-2024_v1.3_r1.zip  (111.5 MB)  — NL-Vkp extracted OK
+  [ZIP cleanup] Deleted  EUF_NO-Fns_FLUXNET_2017-2024_v1.3_r1.zip  (73.9 MB)  — NO-Fns extracted OK
+  [ZIP cleanup] Deleted  EUF_NO-Ikr_FLUXNET_2019-2022_v1.3_r1.zip  (35 MB)  — NO-Ikr extracted OK
+  [ZIP cleanup] Deleted  FLX_KE-Aq1_FLUXNET_2019-2019_v1.3_r1.zip  (20.3 MB)  — KE-Aq1 extracted OK
+  [ZIP cleanup] Deleted  FLX_KE-Aq2_FLUXNET_2022-2024_v1.3_r1.zip  (31.1 MB)  — KE-Aq2 extracted OK
+  [ZIP cleanup] Deleted  FLX_KE-Kpt_FLUXNET_2018-2024_v1.3_r1.zip  (61.2 MB)  — KE-Kpt extracted OK
+  [ZIP cleanup] Deleted  FLX_KE-Mkt_FLUXNET_2019-2024_v1.3_r1.zip  (55.7 MB)  — KE-Mkt extracted OK
+  [ZIP cleanup] Deleted  FLX_ML-Kem_FLUXNET_2007-2009_v1.3_r1.zip  (33.2 MB)  — ML-Kem extracted OK
+  [ZIP cleanup] Deleted  ICOS_NL-Loo_FLUXNET_1997-2024_v1.3_r1.zip  (251.2 MB)  — NL-Loo extracted OK
+  [ZIP cleanup] Deleted  ICOS_NO-Hur_FLUXNET_2023-2024_v1.3_r1.zip  (23.8 MB)  — NO-Hur extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Tmk_FLUXNET_2001-2003_v1.3_r1.zip  (40.6 MB)  — JP-Tmk extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Toc_FLUXNET_2011-2014_v1.3_r1.zip  (47.6 MB)  — JP-Toc extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Yms_FLUXNET_2000-2023_v1.3_r1.zip  (150.4 MB)  — JP-Yms extracted OK
+  [ZIP cleanup] Deleted  JPF_JP-Ynf_FLUXNET_2013-2022_v1.3_r1.zip  (93.8 MB)  — JP-Ynf extracted OK
+  [ZIP cleanup] Deleted  JPF_KH-Kmp_FLUXNET_2011-2014_v1.3_r1.zip  (30.8 MB)  — KH-Kmp extracted OK
+  [ZIP cleanup] Deleted  JPF_MN-Hst_FLUXNET_2015-2020_v1.3_r1.zip  (65.2 MB)  — MN-Hst extracted OK
+  [ZIP cleanup] Deleted  JPF_MN-Kbu_FLUXNET_2003-2008_v1.3_r1.zip  (71.6 MB)  — MN-Kbu extracted OK
+  [ZIP cleanup] Deleted  JPF_MN-Nkh_FLUXNET_2015-2020_v1.3_r1.zip  (66.8 MB)  — MN-Nkh extracted OK
+  [ZIP cleanup] Deleted  JPF_MN-Udg_FLUXNET_2010-2012_v1.3_r1.zip  (32.9 MB)  — MN-Udg extracted OK
+  [ZIP cleanup] Deleted  JPF_MY-LHP_FLUXNET_2009-2019_v1.3_r1.zip  (70 MB)  — MY-LHP extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-AdC_FLUXNET_2015-2018_v1.3_r1.zip  (49.5 MB)  — KR-AdC extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-CmF_FLUXNET_2012-2019_v1.3_r1.zip  (82.2 MB)  — KR-CmF extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-CRK_FLUXNET_2015-2021_v1.3_r1.zip  (77.5 MB)  — KR-CRK extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-GmP_FLUXNET_2011-2014_v1.3_r1.zip  (35.1 MB)  — KR-GmP extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-GmR_FLUXNET_2017-2019_v1.3_r1.zip  (40.1 MB)  — KR-GmR extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-GmS_FLUXNET_2017-2019_v1.3_r1.zip  (41.9 MB)  — KR-GmS extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-HcM_FLUXNET_2015-2018_v1.3_r1.zip  (51.8 MB)  — KR-HcM extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-Hnm_FLUXNET_2016-2019_v1.3_r1.zip  (51.7 MB)  — KR-Hnm extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-HPK_FLUXNET_2016-2018_v1.3_r1.zip  (36.8 MB)  — KR-HPK extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-JjM_FLUXNET_2015-2018_v1.3_r1.zip  (49.5 MB)  — KR-JjM extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-Kw1_FLUXNET_2016-2020_v1.3_r1.zip  (58.9 MB)  — KR-Kw1 extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-Kw2_FLUXNET_2016-2020_v1.3_r1.zip  (57.5 MB)  — KR-Kw2 extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-Nj1_FLUXNET_2023-2024_v1.3_r1.zip  (27 MB)  — KR-Nj1 extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-Nj2_FLUXNET_2023-2024_v1.3_r1.zip  (28 MB)  — KR-Nj2 extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-PcD_FLUXNET_2015-2018_v1.3_r1.zip  (52.6 MB)  — KR-PcD extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-ScC_FLUXNET_2015-2018_v1.3_r1.zip  (52.1 MB)  — KR-ScC extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-SmM_FLUXNET_2015-2021_v1.3_r1.zip  (58.8 MB)  — KR-SmM extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-TwB_FLUXNET_2024-2024_v1.3_r1.zip  (21.7 MB)  — KR-TwB extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-TwC_FLUXNET_2024-2024_v1.3_r1.zip  (21.1 MB)  — KR-TwC extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-UAO_FLUXNET_2017-2019_v1.3_r1.zip  (38.8 MB)  — KR-UAO extracted OK
+  [ZIP cleanup] Deleted  KOF_KR-WdE_FLUXNET_2015-2018_v1.3_r1.zip  (52.1 MB)  — KR-WdE extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-ADd_FLUXNET_2016-2020_v1.3_r1.zip  (60.6 MB)  — NZ-ADd extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-ADw_FLUXNET_2015-2022_v1.3_r1.zip  (84.9 MB)  — NZ-ADw extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-BFm_FLUXNET_2012-2015_v1.3_r1.zip  (38.1 MB)  — NZ-BFm extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-BFu_FLUXNET_2012-2014_v1.3_r1.zip  (32.1 MB)  — NZ-BFu extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-Cla_FLUXNET_2022-2025_v1.3_r1.zip  (42.1 MB)  — NZ-Cla extracted OK
+[ZIP cleanup] Complete: 50 deleted (2807.3 MB freed), 0 kept.
+--- DONE Batch 7/14 (50 sites) | disk free: 23.55 GB (used 0.03 GB net) ---
+
+--- START Batch 8/14 (50 sites) ---
+Sites: NZ-Kop NZ-Lau NZ-Oxf NZ-ScF PE-QFR PR-xLA RU-Ch2 RU-Ege RU-Fy2 RU-Fy3 RU-Fy4 RU-Fyo RU-Ha1 RU-NeB RU-NeC RU-NeF RU-Sk2 RU-SkP RU-Tur SE-Deg SE-Htm SE-Nor SE-Sto SE-Svb SE-Trb SN-Dhr SN-Nkr TH-Kog TH-Mae UK-Ags UK-AMo UK-BnB UK-CCr UK-Cvn UK-GaB UK-Gnn UK-Gwr UK-HgF UK-HpF US-A10 US-A32 US-A37 US-A39 US-A74 US-ADR US-Akn US-ALQ US-AR1 US-AR2 US-ARb 
+Disk free before: 23.55 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — NZ-Kop NZ-Lau NZ-Oxf NZ-ScF PE-QFR PR-xLA RU-Ch2 RU-Ege RU-Fy2 RU-Fy3 RU-Fy4 RU-Fyo RU-Ha1 RU-NeB RU-NeC RU-NeF RU-Sk2 RU-SkP RU-Tur SE-Deg SE-Htm SE-Nor SE-Sto SE-Svb SE-Trb SN-Dhr SN-Nkr TH-Kog TH-Mae UK-Ags UK-AMo UK-BnB UK-CCr UK-Cvn UK-GaB UK-Gnn UK-Gwr UK-HgF UK-HpF US-A10 US-A32 US-A37 US-A39 US-A74 US-ADR US-Akn US-ALQ US-AR1 US-AR2 US-ARb
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T151206.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T151025.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (36 + 0) -> 10 -> 4 | ■■■                                8%
+[working] (34 + 0) -> 10 -> 6 | ■■■■■                             12%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (28 + 0) -> 10 -> 12 | ■■■■■■■■                          24%
+[working] (27 + 0) -> 10 -> 13 | ■■■■■■■■■                         26%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (24 + 0) -> 10 -> 16 | ■■■■■■■■■■■                       32%
+[working] (20 + 0) -> 10 -> 20 | ■■■■■■■■■■■■■                     40%
+[working] (18 + 0) -> 10 -> 22 | ■■■■■■■■■■■■■■                    44%
+[working] (17 + 0) -> 10 -> 23 | ■■■■■■■■■■■■■■■                   46%
+[working] (12 + 0) -> 10 -> 28 | ■■■■■■■■■■■■■■■■■■                56%
+[working] (10 + 0) -> 10 -> 30 | ■■■■■■■■■■■■■■■■■■■               60%
+[working] (7 + 0) -> 10 -> 33 | ■■■■■■■■■■■■■■■■■■■■■             66%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (1 + 0) -> 10 -> 39 | ■■■■■■■■■■■■■■■■■■■■■■■■          78%
+[working] (0 + 0) -> 6 -> 44 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88%
+[working] (0 + 0) -> 4 -> 46 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — NZ-Kop NZ-Lau NZ-Oxf NZ-ScF PE-QFR PR-xLA RU-Ch2 RU-Ege RU-Fy2 RU-Fy3 RU-Fy4 RU-Fyo RU-Ha1 RU-NeB RU-NeC RU-NeF RU-Sk2 RU-SkP RU-Tur SE-Deg SE-Htm SE-Nor SE-Sto SE-Svb SE-Trb SN-Dhr SN-Nkr TH-Kog TH-Mae UK-Ags UK-AMo UK-BnB UK-CCr UK-Cvn UK-GaB UK-Gnn UK-Gwr UK-HgF UK-HpF US-A10 US-A32 US-A37 US-A39 US-A74 US-ADR US-Akn US-ALQ US-AR1 US-AR2 US-ARb
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 400 sites, 17833 site-years across 400 files
+MM / FLUXMET → 400 sites, 3367 site-years across 400 files
+YY / ERA5 → 400 sites, 17833 site-years across 400 files
+YY / FLUXMET → 400 sites, 3367 site-years across 400 files
+  [ZIP cleanup] Deleted  AMF_PE-QFR_FLUXNET_2018-2022_v1.3_r1.zip  (37.8 MB)  — PE-QFR extracted OK
+  [ZIP cleanup] Deleted  AMF_PR-xLA_FLUXNET_2019-2024_v1.3_r1.zip  (55.7 MB)  — PR-xLA extracted OK
+  [ZIP cleanup] Deleted  AMF_US-A10_FLUXNET_2011-2022_v1.3_r1.zip  (71.7 MB)  — US-A10 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-A32_FLUXNET_2015-2017_v1.3_r1.zip  (33.9 MB)  — US-A32 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-A37_FLUXNET_2024-2024_v1.3_r1.zip  (23.3 MB)  — US-A37 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-A39_FLUXNET_2024-2024_v1.3_r1.zip  (23.4 MB)  — US-A39 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-A74_FLUXNET_2016-2017_v1.3_r1.zip  (27.4 MB)  — US-A74 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ADR_FLUXNET_2011-2017_v1.3_r1.zip  (51.7 MB)  — US-ADR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Akn_FLUXNET_2011-2022_v1.3_r1.zip  (55.3 MB)  — US-Akn extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ALQ_FLUXNET_2015-2025_v1.3_r1.zip  (55 MB)  — US-ALQ extracted OK
+  [ZIP cleanup] Deleted  AMF_US-AR1_FLUXNET_2009-2012_v1.3_r1.zip  (51.3 MB)  — US-AR1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-AR2_FLUXNET_2009-2012_v1.3_r1.zip  (47.9 MB)  — US-AR2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ARb_FLUXNET_2005-2006_v1.3_r1.zip  (26.7 MB)  — US-ARb extracted OK
+  [ZIP cleanup] Deleted  EUF_RU-Ch2_FLUXNET_2014-2021_v1.3_r1.zip  (74 MB)  — RU-Ch2 extracted OK
+  [ZIP cleanup] Deleted  EUF_RU-Fy2_FLUXNET_2015-2024_v1.3_r1.zip  (103.6 MB)  — RU-Fy2 extracted OK
+  [ZIP cleanup] Deleted  EUF_RU-Fy3_FLUXNET_2016-2018_v1.3_r1.zip  (34.6 MB)  — RU-Fy3 extracted OK
+  [ZIP cleanup] Deleted  EUF_RU-Fy4_FLUXNET_2015-2020_v1.3_r1.zip  (60.2 MB)  — RU-Fy4 extracted OK
+  [ZIP cleanup] Deleted  EUF_RU-Fyo_FLUXNET_1998-2024_v1.3_r1.zip  (253.2 MB)  — RU-Fyo extracted OK
+  [ZIP cleanup] Deleted  EUF_RU-Ha1_FLUXNET_2002-2004_v1.3_r1.zip  (34.5 MB)  — RU-Ha1 extracted OK
+  [ZIP cleanup] Deleted  EUF_SE-Trb_FLUXNET_2021-2023_v1.3_r1.zip  (36.4 MB)  — SE-Trb extracted OK
+  [ZIP cleanup] Deleted  EUF_SN-Dhr_FLUXNET_2010-2022_v1.3_r1.zip  (105.7 MB)  — SN-Dhr extracted OK
+  [ZIP cleanup] Deleted  EUF_SN-Nkr_FLUXNET_2018-2024_v1.3_r1.zip  (81.7 MB)  — SN-Nkr extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-Ags_FLUXNET_2023-2024_v1.3_r1.zip  (26.3 MB)  — UK-Ags extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-BnB_FLUXNET_2021-2024_v1.3_r1.zip  (49.7 MB)  — UK-BnB extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-CCr_FLUXNET_2022-2024_v1.3_r1.zip  (41.4 MB)  — UK-CCr extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-Cvn_FLUXNET_2023-2024_v1.3_r1.zip  (25.9 MB)  — UK-Cvn extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-GaB_FLUXNET_2022-2024_v1.3_r1.zip  (40.8 MB)  — UK-GaB extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-Gnn_FLUXNET_2022-2024_v1.3_r1.zip  (41.1 MB)  — UK-Gnn extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-Gwr_FLUXNET_2022-2024_v1.3_r1.zip  (42.3 MB)  — UK-Gwr extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-HgF_FLUXNET_2023-2024_v1.3_r1.zip  (27.3 MB)  — UK-HgF extracted OK
+  [ZIP cleanup] Deleted  EUF_UK-HpF_FLUXNET_2023-2024_v1.3_r1.zip  (29.4 MB)  — UK-HpF extracted OK
+  [ZIP cleanup] Deleted  ICOS_SE-Deg_FLUXNET_2019-2024_v1.3_r1.zip  (62.7 MB)  — SE-Deg extracted OK
+  [ZIP cleanup] Deleted  ICOS_SE-Htm_FLUXNET_2018-2024_v1.3_r1.zip  (76.8 MB)  — SE-Htm extracted OK
+  [ZIP cleanup] Deleted  ICOS_SE-Nor_FLUXNET_2018-2024_v1.3_r1.zip  (74.8 MB)  — SE-Nor extracted OK
+  [ZIP cleanup] Deleted  ICOS_SE-Sto_FLUXNET_2022-2024_v1.3_r1.zip  (38 MB)  — SE-Sto extracted OK
+  [ZIP cleanup] Deleted  ICOS_SE-Svb_FLUXNET_2014-2024_v1.3_r1.zip  (111.4 MB)  — SE-Svb extracted OK
+  [ZIP cleanup] Deleted  ICOS_UK-AMo_FLUXNET_2003-2024_v1.3_r1.zip  (206.9 MB)  — UK-AMo extracted OK
+  [ZIP cleanup] Deleted  JPF_RU-Ege_FLUXNET_2010-2018_v1.3_r1.zip  (75.2 MB)  — RU-Ege extracted OK
+  [ZIP cleanup] Deleted  JPF_RU-NeB_FLUXNET_1999-2000_v1.3_r1.zip  (21.9 MB)  — RU-NeB extracted OK
+  [ZIP cleanup] Deleted  JPF_RU-NeC_FLUXNET_2001-2006_v1.3_r1.zip  (48 MB)  — RU-NeC extracted OK
+  [ZIP cleanup] Deleted  JPF_RU-NeF_FLUXNET_2000-2006_v1.3_r1.zip  (54.6 MB)  — RU-NeF extracted OK
+  [ZIP cleanup] Deleted  JPF_RU-Sk2_FLUXNET_2004-2008_v1.3_r1.zip  (48.9 MB)  — RU-Sk2 extracted OK
+  [ZIP cleanup] Deleted  JPF_RU-SkP_FLUXNET_2004-2014_v1.3_r1.zip  (77.7 MB)  — RU-SkP extracted OK
+  [ZIP cleanup] Deleted  JPF_RU-Tur_FLUXNET_2004-2004_v1.3_r1.zip  (19.7 MB)  — RU-Tur extracted OK
+  [ZIP cleanup] Deleted  JPF_TH-Kog_FLUXNET_2005-2013_v1.3_r1.zip  (45.7 MB)  — TH-Kog extracted OK
+  [ZIP cleanup] Deleted  JPF_TH-Mae_FLUXNET_2005-2016_v1.3_r1.zip  (80.9 MB)  — TH-Mae extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-Kop_FLUXNET_2012-2015_v1.3_r1.zip  (39.9 MB)  — NZ-Kop extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-Lau_FLUXNET_2019-2025_v1.3_r1.zip  (64.7 MB)  — NZ-Lau extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-Oxf_FLUXNET_2006-2010_v1.3_r1.zip  (47.1 MB)  — NZ-Oxf extracted OK
+  [ZIP cleanup] Deleted  TERN_NZ-ScF_FLUXNET_2008-2011_v1.3_r1.zip  (42.2 MB)  — NZ-ScF extracted OK
+[ZIP cleanup] Complete: 50 deleted (2906.3 MB freed), 0 kept.
+--- DONE Batch 8/14 (50 sites) | disk free: 23.51 GB (used 0.04 GB net) ---
+
+--- START Batch 9/14 (50 sites) ---
+Sites: US-ARc US-ASH US-ASM US-Bar US-Bi1 US-Bi2 US-BRG US-BZB US-BZo US-CAK US-CdM US-Ced US-CF1 US-CF2 US-CF3 US-CF4 US-CGG US-ChR US-CLF US-Cms US-CMW US-Cop US-CRK US-CRT US-CS1 US-CS2 US-CS3 US-CS4 US-CS5 US-CS6 US-CS8 US-Cst US-Cwt US-DFC US-DFK US-Dix US-Dk1 US-Dk2 US-Dk3 US-Dmg US-DPW US-DS1 US-DS2 US-DS3 US-EA4 US-EA5 US-EA6 US-EDN US-EKH US-EKN 
+Disk free before: 23.51 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-ARc US-ASH US-ASM US-Bar US-Bi1 US-Bi2 US-BRG US-BZB US-BZo US-CAK US-CdM US-Ced US-CF1 US-CF2 US-CF3 US-CF4 US-CGG US-ChR US-CLF US-Cms US-CMW US-Cop US-CRK US-CRT US-CS1 US-CS2 US-CS3 US-CS4 US-CS5 US-CS6 US-CS8 US-Cst US-Cwt US-DFC US-DFK US-Dix US-Dk1 US-Dk2 US-Dk3 US-Dmg US-DPW US-DS1 US-DS2 US-DS3 US-EA4 US-EA5 US-EA6 US-EDN US-EKH US-EKN
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T151342.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T151206.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (33 + 0) -> 10 -> 7 | ■■■■■                             14%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (19 + 0) -> 8 -> 23 | ■■■■■■■■■■■■■■■                   46%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (7 + 0) -> 10 -> 33 | ■■■■■■■■■■■■■■■■■■■■■             66%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (0 + 0) -> 5 -> 45 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■      90%
+[working] (0 + 0) -> 2 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-ARc US-ASH US-ASM US-Bar US-Bi1 US-Bi2 US-BRG US-BZB US-BZo US-CAK US-CdM US-Ced US-CF1 US-CF2 US-CF3 US-CF4 US-CGG US-ChR US-CLF US-Cms US-CMW US-Cop US-CRK US-CRT US-CS1 US-CS2 US-CS3 US-CS4 US-CS5 US-CS6 US-CS8 US-Cst US-Cwt US-DFC US-DFK US-Dix US-Dk1 US-Dk2 US-Dk3 US-Dmg US-DPW US-DS1 US-DS2 US-DS3 US-EA4 US-EA5 US-EA6 US-EDN US-EKH US-EKN
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 450 sites, 20081 site-years across 450 files
+MM / FLUXMET → 450 sites, 3651 site-years across 450 files
+YY / ERA5 → 450 sites, 20081 site-years across 450 files
+YY / FLUXMET → 450 sites, 3651 site-years across 450 files
+  [ZIP cleanup] Deleted  AMF_US-ARc_FLUXNET_2005-2006_v1.3_r1.zip  (26.6 MB)  — US-ARc extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ASH_FLUXNET_2016-2016_v1.3_r1.zip  (19.2 MB)  — US-ASH extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ASM_FLUXNET_2016-2016_v1.3_r1.zip  (19.3 MB)  — US-ASM extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Bar_FLUXNET_2004-2023_v1.3_r1.zip  (184.2 MB)  — US-Bar extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Bi1_FLUXNET_2016-2024_v1.3_r1.zip  (97 MB)  — US-Bi1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Bi2_FLUXNET_2017-2025_v1.3_r1.zip  (95.4 MB)  — US-Bi2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-BRG_FLUXNET_2017-2020_v1.3_r1.zip  (47 MB)  — US-BRG extracted OK
+  [ZIP cleanup] Deleted  AMF_US-BZB_FLUXNET_2011-2025_v1.3_r1.zip  (143.9 MB)  — US-BZB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-BZo_FLUXNET_2018-2025_v1.3_r1.zip  (84.5 MB)  — US-BZo extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CAK_FLUXNET_2024-2025_v1.3_r1.zip  (24.7 MB)  — US-CAK extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CdM_FLUXNET_2019-2024_v1.3_r1.zip  (65.5 MB)  — US-CdM extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ced_FLUXNET_2005-2014_v1.3_r1.zip  (94.7 MB)  — US-Ced extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CF1_FLUXNET_2017-2021_v1.3_r1.zip  (56.4 MB)  — US-CF1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CF2_FLUXNET_2017-2020_v1.3_r1.zip  (48.8 MB)  — US-CF2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CF3_FLUXNET_2017-2021_v1.3_r1.zip  (50.8 MB)  — US-CF3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CF4_FLUXNET_2017-2021_v1.3_r1.zip  (53.4 MB)  — US-CF4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CGG_FLUXNET_2019-2024_v1.3_r1.zip  (65.9 MB)  — US-CGG extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ChR_FLUXNET_2006-2019_v1.3_r1.zip  (145.5 MB)  — US-ChR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CLF_FLUXNET_2017-2020_v1.3_r1.zip  (32.1 MB)  — US-CLF extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Cms_FLUXNET_1999-2005_v1.3_r1.zip  (45.1 MB)  — US-Cms extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CMW_FLUXNET_2001-2021_v1.3_r1.zip  (210.3 MB)  — US-CMW extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Cop_FLUXNET_2001-2007_v1.3_r1.zip  (33.6 MB)  — US-Cop extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CRK_FLUXNET_2022-2025_v1.3_r1.zip  (48.5 MB)  — US-CRK extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CRT_FLUXNET_2011-2013_v1.3_r1.zip  (41 MB)  — US-CRT extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CS1_FLUXNET_2018-2019_v1.3_r1.zip  (23.1 MB)  — US-CS1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CS2_FLUXNET_2018-2022_v1.3_r1.zip  (42.5 MB)  — US-CS2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CS3_FLUXNET_2019-2020_v1.3_r1.zip  (23.7 MB)  — US-CS3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CS4_FLUXNET_2020-2021_v1.3_r1.zip  (23.4 MB)  — US-CS4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CS5_FLUXNET_2021-2021_v1.3_r1.zip  (21.2 MB)  — US-CS5 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CS6_FLUXNET_2022-2023_v1.3_r1.zip  (24.5 MB)  — US-CS6 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-CS8_FLUXNET_2023-2023_v1.3_r1.zip  (20 MB)  — US-CS8 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Cst_FLUXNET_2013-2017_v1.3_r1.zip  (54.5 MB)  — US-Cst extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Cwt_FLUXNET_2011-2024_v1.3_r1.zip  (41.8 MB)  — US-Cwt extracted OK
+  [ZIP cleanup] Deleted  AMF_US-DFC_FLUXNET_2018-2024_v1.3_r1.zip  (73.4 MB)  — US-DFC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-DFK_FLUXNET_2018-2020_v1.3_r1.zip  (29.1 MB)  — US-DFK extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Dix_FLUXNET_2005-2008_v1.3_r1.zip  (46.7 MB)  — US-Dix extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Dk1_FLUXNET_2001-2008_v1.3_r1.zip  (79.5 MB)  — US-Dk1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Dk2_FLUXNET_2001-2008_v1.3_r1.zip  (82.6 MB)  — US-Dk2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Dk3_FLUXNET_2001-2008_v1.3_r1.zip  (82.3 MB)  — US-Dk3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Dmg_FLUXNET_2021-2025_v1.3_r1.zip  (57.3 MB)  — US-Dmg extracted OK
+  [ZIP cleanup] Deleted  AMF_US-DPW_FLUXNET_2013-2016_v1.3_r1.zip  (36.9 MB)  — US-DPW extracted OK
+  [ZIP cleanup] Deleted  AMF_US-DS1_FLUXNET_2018-2019_v1.3_r1.zip  (26 MB)  — US-DS1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-DS2_FLUXNET_2020-2023_v1.3_r1.zip  (49.6 MB)  — US-DS2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-DS3_FLUXNET_2021-2025_v1.3_r1.zip  (53.7 MB)  — US-DS3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EA4_FLUXNET_2021-2025_v1.3_r1.zip  (40.5 MB)  — US-EA4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EA5_FLUXNET_2021-2022_v1.3_r1.zip  (27.5 MB)  — US-EA5 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EA6_FLUXNET_2023-2023_v1.3_r1.zip  (20.5 MB)  — US-EA6 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EDN_FLUXNET_2018-2024_v1.3_r1.zip  (79.3 MB)  — US-EDN extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EKH_FLUXNET_2022-2024_v1.3_r1.zip  (29.1 MB)  — US-EKH extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EKN_FLUXNET_2023-2024_v1.3_r1.zip  (23.3 MB)  — US-EKN extracted OK
+[ZIP cleanup] Complete: 50 deleted (2845.4 MB freed), 0 kept.
+--- DONE Batch 9/14 (50 sites) | disk free: 23.48 GB (used 0.03 GB net) ---
+
+--- START Batch 10/14 (50 sites) ---
+Sites: US-EKP US-Elm US-EML US-Esm US-EvM US-Fcr US-Fmf US-Fo1 US-Fuf US-Fwf US-GLE US-Ha1 US-HB1 US-HB2 US-HB3 US-HB4 US-HBK US-Hn2 US-Hn3 US-Ho2 US-HRA US-HRC US-Hsm US-HVs US-HWB US-IAB US-IAC US-IAM US-ICh US-ICs US-ICt US-Jo1 US-KFS US-Kon US-KPL US-KS1 US-KS2 US-KS3 US-LA2 US-LA3 US-Lin US-Los US-LS1 US-MBP US-Me1 US-Me3 US-Me6 US-Me7 US-MEF US-MMS 
+Disk free before: 23.48 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-EKP US-Elm US-EML US-Esm US-EvM US-Fcr US-Fmf US-Fo1 US-Fuf US-Fwf US-GLE US-Ha1 US-HB1 US-HB2 US-HB3 US-HB4 US-HBK US-Hn2 US-Hn3 US-Ho2 US-HRA US-HRC US-Hsm US-HVs US-HWB US-IAB US-IAC US-IAM US-ICh US-ICs US-ICt US-Jo1 US-KFS US-Kon US-KPL US-KS1 US-KS2 US-KS3 US-LA2 US-LA3 US-Lin US-Los US-LS1 US-MBP US-Me1 US-Me3 US-Me6 US-Me7 US-MEF US-MMS
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T151604.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T151342.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (36 + 0) -> 10 -> 4 | ■■■                                8%
+[working] (34 + 0) -> 10 -> 6 | ■■■■■                             12%
+[working] (33 + 0) -> 10 -> 7 | ■■■■■                             14%
+[working] (28 + 0) -> 10 -> 12 | ■■■■■■■■                          24%
+[working] (23 + 0) -> 10 -> 17 | ■■■■■■■■■■■                       34%
+[working] (22 + 0) -> 10 -> 18 | ■■■■■■■■■■■■                      36%
+[working] (21 + 0) -> 10 -> 19 | ■■■■■■■■■■■■                      38%
+[working] (19 + 0) -> 10 -> 21 | ■■■■■■■■■■■■■■                    42%
+[working] (18 + 0) -> 10 -> 22 | ■■■■■■■■■■■■■■                    44%
+[working] (16 + 0) -> 9 -> 25 | ■■■■■■■■■■■■■■■■                  50%
+[working] (12 + 0) -> 10 -> 28 | ■■■■■■■■■■■■■■■■■■                56%
+[working] (8 + 0) -> 10 -> 32 | ■■■■■■■■■■■■■■■■■■■■              64%
+[working] (6 + 0) -> 10 -> 34 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (5 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■■■■            70%
+[working] (4 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (1 + 0) -> 10 -> 39 | ■■■■■■■■■■■■■■■■■■■■■■■■          78%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-EKP US-Elm US-EML US-Esm US-EvM US-Fcr US-Fmf US-Fo1 US-Fuf US-Fwf US-GLE US-Ha1 US-HB1 US-HB2 US-HB3 US-HB4 US-HBK US-Hn2 US-Hn3 US-Ho2 US-HRA US-HRC US-Hsm US-HVs US-HWB US-IAB US-IAC US-IAM US-ICh US-ICs US-ICt US-Jo1 US-KFS US-Kon US-KPL US-KS1 US-KS2 US-KS3 US-LA2 US-LA3 US-Lin US-Los US-LS1 US-MBP US-Me1 US-Me3 US-Me6 US-Me7 US-MEF US-MMS
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 500 sites, 22331 site-years across 500 files
+MM / FLUXMET → 500 sites, 4138 site-years across 500 files
+YY / ERA5 → 500 sites, 22331 site-years across 500 files
+YY / FLUXMET → 500 sites, 4138 site-years across 500 files
+  [ZIP cleanup] Deleted  AMF_US-EKP_FLUXNET_2022-2024_v1.3_r1.zip  (35.3 MB)  — US-EKP extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Elm_FLUXNET_2008-2024_v1.3_r1.zip  (139 MB)  — US-Elm extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EML_FLUXNET_2008-2023_v1.3_r1.zip  (138.5 MB)  — US-EML extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Esm_FLUXNET_2008-2024_v1.3_r1.zip  (103 MB)  — US-Esm extracted OK
+  [ZIP cleanup] Deleted  AMF_US-EvM_FLUXNET_2020-2023_v1.3_r1.zip  (46.7 MB)  — US-EvM extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Fcr_FLUXNET_2011-2014_v1.3_r1.zip  (41.9 MB)  — US-Fcr extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Fmf_FLUXNET_2005-2010_v1.3_r1.zip  (65.6 MB)  — US-Fmf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Fo1_FLUXNET_2013-2024_v1.3_r1.zip  (39.6 MB)  — US-Fo1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Fuf_FLUXNET_2005-2010_v1.3_r1.zip  (65 MB)  — US-Fuf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Fwf_FLUXNET_2005-2010_v1.3_r1.zip  (65.5 MB)  — US-Fwf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-GLE_FLUXNET_2005-2020_v1.3_r1.zip  (168 MB)  — US-GLE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ha1_FLUXNET_1991-2025_v1.3_r1.zip  (156 MB)  — US-Ha1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HB1_FLUXNET_2018-2024_v1.3_r1.zip  (77.3 MB)  — US-HB1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HB2_FLUXNET_2018-2024_v1.3_r1.zip  (78.4 MB)  — US-HB2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HB3_FLUXNET_2019-2024_v1.3_r1.zip  (71.7 MB)  — US-HB3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1.zip  (58.7 MB)  — US-HB4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HBK_FLUXNET_2016-2024_v1.3_r1.zip  (85 MB)  — US-HBK extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Hn2_FLUXNET_2015-2018_v1.3_r1.zip  (33.3 MB)  — US-Hn2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Hn3_FLUXNET_2017-2018_v1.3_r1.zip  (24.6 MB)  — US-Hn3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ho2_FLUXNET_1999-2025_v1.3_r1.zip  (149.7 MB)  — US-Ho2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HRA_FLUXNET_2015-2024_v1.3_r1.zip  (78.2 MB)  — US-HRA extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HRC_FLUXNET_2015-2024_v1.3_r1.zip  (77.8 MB)  — US-HRC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Hsm_FLUXNET_2021-2025_v1.3_r1.zip  (64.1 MB)  — US-Hsm extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HVs_FLUXNET_1995-1995_v1.3_r1.zip  (19.4 MB)  — US-HVs extracted OK
+  [ZIP cleanup] Deleted  AMF_US-HWB_FLUXNET_2015-2018_v1.3_r1.zip  (48.1 MB)  — US-HWB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-IAB_FLUXNET_2019-2024_v1.3_r1.zip  (62.1 MB)  — US-IAB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-IAC_FLUXNET_2019-2024_v1.3_r1.zip  (63 MB)  — US-IAC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-IAM_FLUXNET_2019-2024_v1.3_r1.zip  (62.7 MB)  — US-IAM extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ICh_FLUXNET_2007-2025_v1.3_r1.zip  (177 MB)  — US-ICh extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ICs_FLUXNET_2007-2025_v1.3_r1.zip  (178 MB)  — US-ICs extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ICt_FLUXNET_2007-2025_v1.3_r1.zip  (125.9 MB)  — US-ICt extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Jo1_FLUXNET_2010-2022_v1.3_r1.zip  (135 MB)  — US-Jo1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-KFS_FLUXNET_2007-2019_v1.3_r1.zip  (124.7 MB)  — US-KFS extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Kon_FLUXNET_2004-2019_v1.3_r1.zip  (152 MB)  — US-Kon extracted OK
+  [ZIP cleanup] Deleted  AMF_US-KPL_FLUXNET_2021-2024_v1.3_r1.zip  (45.3 MB)  — US-KPL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-KS1_FLUXNET_2002-2003_v1.3_r1.zip  (23.6 MB)  — US-KS1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-KS2_FLUXNET_2003-2006_v1.3_r1.zip  (50 MB)  — US-KS2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-KS3_FLUXNET_2018-2018_v1.3_r1.zip  (21.1 MB)  — US-KS3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-LA2_FLUXNET_2011-2023_v1.3_r1.zip  (50.7 MB)  — US-LA2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-LA3_FLUXNET_2019-2023_v1.3_r1.zip  (38.9 MB)  — US-LA3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Lin_FLUXNET_2009-2010_v1.3_r1.zip  (23.6 MB)  — US-Lin extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Los_FLUXNET_2000-2025_v1.3_r1.zip  (144.9 MB)  — US-Los extracted OK
+  [ZIP cleanup] Deleted  AMF_US-LS1_FLUXNET_2003-2007_v1.3_r1.zip  (63 MB)  — US-LS1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MBP_FLUXNET_2009-2024_v1.3_r1.zip  (141.6 MB)  — US-MBP extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Me1_FLUXNET_2004-2005_v1.3_r1.zip  (22.1 MB)  — US-Me1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Me3_FLUXNET_2004-2009_v1.3_r1.zip  (58.7 MB)  — US-Me3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Me6_FLUXNET_2010-2025_v1.3_r1.zip  (153.9 MB)  — US-Me6 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Me7_FLUXNET_2022-2023_v1.3_r1.zip  (25.4 MB)  — US-Me7 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MEF_FLUXNET_2024-2025_v1.3_r1.zip  (30.1 MB)  — US-MEF extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MMS_FLUXNET_1999-2023_v1.3_r1.zip  (120.7 MB)  — US-MMS extracted OK
+[ZIP cleanup] Complete: 50 deleted (4024.4 MB freed), 0 kept.
+--- DONE Batch 10/14 (50 sites) | disk free: 23.44 GB (used 0.04 GB net) ---
+
+--- START Batch 11/14 (50 sites) ---
+Sites: US-MN1 US-MN2 US-MN3 US-Mo1 US-Mo2 US-Mo3 US-MOz US-Mpj US-MtB US-Myb US-MZA US-NC1 US-NC2 US-NC3 US-NC4 US-Ne1 US-Ne2 US-Ne3 US-NGB US-NGC US-NR1 US-NSa US-NSb US-Oho US-ONA US-OPE US-OWC US-PAS US-PFb US-PFc US-PFd US-PFf US-PFg US-PFh US-PFi US-PFj US-PFk US-PFL US-PFm US-PFn US-PFp US-PFq US-PFr US-PFt US-PLo US-Prr US-PSH US-PSL US-RC1 US-RC2 
+Disk free before: 23.44 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-MN1 US-MN2 US-MN3 US-Mo1 US-Mo2 US-Mo3 US-MOz US-Mpj US-MtB US-Myb US-MZA US-NC1 US-NC2 US-NC3 US-NC4 US-Ne1 US-Ne2 US-Ne3 US-NGB US-NGC US-NR1 US-NSa US-NSb US-Oho US-ONA US-OPE US-OWC US-PAS US-PFb US-PFc US-PFd US-PFf US-PFg US-PFh US-PFi US-PFj US-PFk US-PFL US-PFm US-PFn US-PFp US-PFq US-PFr US-PFt US-PLo US-Prr US-PSH US-PSL US-RC1 US-RC2
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T151725.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T151604.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (31 + 0) -> 10 -> 9 | ■■■■■■                            18%
+[working] (28 + 0) -> 10 -> 12 | ■■■■■■■■                          24%
+[working] (27 + 0) -> 10 -> 13 | ■■■■■■■■■                         26%
+[working] (26 + 0) -> 10 -> 14 | ■■■■■■■■■                         28%
+[working] (23 + 0) -> 9 -> 18 | ■■■■■■■■■■■■                      36%
+[working] (20 + 0) -> 10 -> 20 | ■■■■■■■■■■■■■                     40%
+[working] (18 + 0) -> 10 -> 22 | ■■■■■■■■■■■■■■                    44%
+[working] (15 + 0) -> 9 -> 26 | ■■■■■■■■■■■■■■■■■                 52%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (9 + 0) -> 10 -> 31 | ■■■■■■■■■■■■■■■■■■■■              62%
+[working] (7 + 0) -> 10 -> 33 | ■■■■■■■■■■■■■■■■■■■■■             66%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (1 + 0) -> 10 -> 39 | ■■■■■■■■■■■■■■■■■■■■■■■■          78%
+[working] (0 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■■■■■         80%
+[working] (0 + 0) -> 8 -> 42 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        84%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-MN1 US-MN2 US-MN3 US-Mo1 US-Mo2 US-Mo3 US-MOz US-Mpj US-MtB US-Myb US-MZA US-NC1 US-NC2 US-NC3 US-NC4 US-Ne1 US-Ne2 US-Ne3 US-NGB US-NGC US-NR1 US-NSa US-NSb US-Oho US-ONA US-OPE US-OWC US-PAS US-PFb US-PFc US-PFd US-PFf US-PFg US-PFh US-PFi US-PFj US-PFk US-PFL US-PFm US-PFn US-PFp US-PFq US-PFr US-PFt US-PLo US-Prr US-PSH US-PSL US-RC1 US-RC2
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 550 sites, 24580 site-years across 550 files
+MM / FLUXMET → 550 sites, 4509 site-years across 550 files
+YY / ERA5 → 550 sites, 24580 site-years across 550 files
+YY / FLUXMET → 550 sites, 4509 site-years across 550 files
+  [ZIP cleanup] Deleted  AMF_US-MN1_FLUXNET_2017-2024_v1.3_r1.zip  (83.5 MB)  — US-MN1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MN2_FLUXNET_2017-2024_v1.3_r1.zip  (82.2 MB)  — US-MN2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MN3_FLUXNET_2020-2024_v1.3_r1.zip  (60.8 MB)  — US-MN3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Mo1_FLUXNET_2015-2024_v1.3_r1.zip  (104.6 MB)  — US-Mo1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Mo2_FLUXNET_2018-2024_v1.3_r1.zip  (79.4 MB)  — US-Mo2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Mo3_FLUXNET_2016-2023_v1.3_r1.zip  (87.2 MB)  — US-Mo3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MOz_FLUXNET_2004-2021_v1.3_r1.zip  (174 MB)  — US-MOz extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Mpj_FLUXNET_2008-2025_v1.3_r1.zip  (173 MB)  — US-Mpj extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MtB_FLUXNET_2009-2024_v1.3_r1.zip  (116 MB)  — US-MtB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Myb_FLUXNET_2010-2025_v1.3_r1.zip  (148.6 MB)  — US-Myb extracted OK
+  [ZIP cleanup] Deleted  AMF_US-MZA_FLUXNET_2024-2025_v1.3_r1.zip  (22.4 MB)  — US-MZA extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NC1_FLUXNET_2005-2012_v1.3_r1.zip  (89.1 MB)  — US-NC1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NC2_FLUXNET_2005-2025_v1.3_r1.zip  (194.3 MB)  — US-NC2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NC3_FLUXNET_2013-2021_v1.3_r1.zip  (85.8 MB)  — US-NC3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NC4_FLUXNET_2009-2025_v1.3_r1.zip  (102.6 MB)  — US-NC4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ne1_FLUXNET_2001-2024_v1.3_r1.zip  (111.6 MB)  — US-Ne1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ne2_FLUXNET_2001-2024_v1.3_r1.zip  (108.6 MB)  — US-Ne2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ne3_FLUXNET_2001-2024_v1.3_r1.zip  (110.7 MB)  — US-Ne3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NGB_FLUXNET_2012-2023_v1.3_r1.zip  (71.6 MB)  — US-NGB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NGC_FLUXNET_2017-2023_v1.3_r1.zip  (57.6 MB)  — US-NGC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NR1_FLUXNET_1998-2025_v1.3_r1.zip  (156.9 MB)  — US-NR1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NSa_FLUXNET_2023-2025_v1.3_r1.zip  (31.3 MB)  — US-NSa extracted OK
+  [ZIP cleanup] Deleted  AMF_US-NSb_FLUXNET_2023-2025_v1.3_r1.zip  (31.4 MB)  — US-NSb extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Oho_FLUXNET_2004-2013_v1.3_r1.zip  (106.6 MB)  — US-Oho extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ONA_FLUXNET_2016-2022_v1.3_r1.zip  (75.5 MB)  — US-ONA extracted OK
+  [ZIP cleanup] Deleted  AMF_US-OPE_FLUXNET_2022-2022_v1.3_r1.zip  (23.2 MB)  — US-OPE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-OWC_FLUXNET_2015-2025_v1.3_r1.zip  (56.8 MB)  — US-OWC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PAS_FLUXNET_2021-2022_v1.3_r1.zip  (28.5 MB)  — US-PAS extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFb_FLUXNET_2019-2019_v1.3_r1.zip  (19.9 MB)  — US-PFb extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFc_FLUXNET_2019-2019_v1.3_r1.zip  (19.1 MB)  — US-PFc extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFd_FLUXNET_2019-2019_v1.3_r1.zip  (19.1 MB)  — US-PFd extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFf_FLUXNET_2019-2019_v1.3_r1.zip  (20.1 MB)  — US-PFf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFg_FLUXNET_2019-2019_v1.3_r1.zip  (19.2 MB)  — US-PFg extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFh_FLUXNET_2019-2019_v1.3_r1.zip  (19.6 MB)  — US-PFh extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFi_FLUXNET_2019-2019_v1.3_r1.zip  (19.6 MB)  — US-PFi extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFj_FLUXNET_2019-2019_v1.3_r1.zip  (19.7 MB)  — US-PFj extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFk_FLUXNET_2019-2019_v1.3_r1.zip  (19.7 MB)  — US-PFk extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFL_FLUXNET_2019-2019_v1.3_r1.zip  (19.9 MB)  — US-PFL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFm_FLUXNET_2019-2019_v1.3_r1.zip  (20 MB)  — US-PFm extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFn_FLUXNET_2019-2019_v1.3_r1.zip  (20 MB)  — US-PFn extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFp_FLUXNET_2019-2019_v1.3_r1.zip  (19.7 MB)  — US-PFp extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFq_FLUXNET_2019-2019_v1.3_r1.zip  (20.1 MB)  — US-PFq extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFr_FLUXNET_2019-2019_v1.3_r1.zip  (18.2 MB)  — US-PFr extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PFt_FLUXNET_2019-2019_v1.3_r1.zip  (19.9 MB)  — US-PFt extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PLo_FLUXNET_2022-2023_v1.3_r1.zip  (26.9 MB)  — US-PLo extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Prr_FLUXNET_2010-2022_v1.3_r1.zip  (122.5 MB)  — US-Prr extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PSH_FLUXNET_2016-2016_v1.3_r1.zip  (19.2 MB)  — US-PSH extracted OK
+  [ZIP cleanup] Deleted  AMF_US-PSL_FLUXNET_2016-2016_v1.3_r1.zip  (19.2 MB)  — US-PSL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RC1_FLUXNET_2011-2016_v1.3_r1.zip  (62.2 MB)  — US-RC1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RC2_FLUXNET_2012-2016_v1.3_r1.zip  (56.2 MB)  — US-RC2 extracted OK
+[ZIP cleanup] Complete: 50 deleted (3193.8 MB freed), 0 kept.
+--- DONE Batch 11/14 (50 sites) | disk free: 23.39 GB (used 0.05 GB net) ---
+
+--- START Batch 12/14 (50 sites) ---
+Sites: US-RC4 US-RC5 US-RGA US-RGB US-RGF US-RGo US-RGW US-Rls US-Rms US-Ro1 US-Ro2 US-Ro3 US-Ro4 US-Ro5 US-Ro6 US-Rpf US-RRC US-Rwe US-Rwf US-Rws US-Sag US-SD1 US-SD2 US-Seg US-Ses US-SHC US-Sne US-Snf US-SP1 US-SRC US-SRG US-SRM US-Srr US-SRS US-SSH US-Sta US-StJ US-TKs US-TLR US-Ton US-Tw1 US-Tw2 US-Tw3 US-Tw4 US-Tw5 US-Twt US-Uaf US-UC1 US-UC2 US-UiA 
+Disk free before: 23.39 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-RC4 US-RC5 US-RGA US-RGB US-RGF US-RGo US-RGW US-Rls US-Rms US-Ro1 US-Ro2 US-Ro3 US-Ro4 US-Ro5 US-Ro6 US-Rpf US-RRC US-Rwe US-Rwf US-Rws US-Sag US-SD1 US-SD2 US-Seg US-Ses US-SHC US-Sne US-Snf US-SP1 US-SRC US-SRG US-SRM US-Srr US-SRS US-SSH US-Sta US-StJ US-TKs US-TLR US-Ton US-Tw1 US-Tw2 US-Tw3 US-Tw4 US-Tw5 US-Twt US-Uaf US-UC1 US-UC2 US-UiA
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T151918.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T151725.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (37 + 0) -> 10 -> 3 | ■■■                                6%
+[working] (34 + 0) -> 10 -> 6 | ■■■■■                             12%
+[working] (30 + 0) -> 10 -> 10 | ■■■■■■■                           20%
+[working] (27 + 0) -> 10 -> 13 | ■■■■■■■■■                         26%
+[working] (21 + 0) -> 10 -> 19 | ■■■■■■■■■■■■                      38%
+[working] (18 + 0) -> 10 -> 22 | ■■■■■■■■■■■■■■                    44%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (8 + 0) -> 10 -> 32 | ■■■■■■■■■■■■■■■■■■■■              64%
+[working] (7 + 0) -> 10 -> 33 | ■■■■■■■■■■■■■■■■■■■■■             66%
+[working] (5 + 0) -> 9 -> 36 | ■■■■■■■■■■■■■■■■■■■■■■■           72%
+[working] (3 + 0) -> 10 -> 37 | ■■■■■■■■■■■■■■■■■■■■■■■           74%
+[working] (2 + 0) -> 10 -> 38 | ■■■■■■■■■■■■■■■■■■■■■■■■          76%
+[working] (0 + 0) -> 4 -> 46 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92%
+[working] (0 + 0) -> 3 -> 47 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     94%
+[working] (0 + 0) -> 2 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    96%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+ERROR in 01_download.R — ℹ In index: 1.
+Caused by error in `.f()`:
+! `resp` must be an HTTP response object, not a <httr2_failure> object. 
+Error in purrr::map_chr(failed, httr2::resp_url) : ℹ In index: 1.
+Caused by error in `.f()`:
+! `resp` must be an HTTP response object, not a <httr2_failure> object.
+Calls: tryCatch -> tryCatchList -> tryCatchOne -> <Anonymous>
+In addition: There were 23 warnings (use warnings() to see them)
+Execution halted

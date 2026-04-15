@@ -1,0 +1,20 @@
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+! Use of data downloaded by fluxnet requires you abide by FLUXNET data
+  policies: <https://fluxnet.org/data/data-policy/>
+ℹ Citations for individual sites' datasets are returned by
+  `fluxnet::flux_listall()`
+Error: Files must have consistent column names:
+* File 1 column 1 is: SITE_ID
+* File 21 column 1 is: GROUP_ID
+In addition: Warning messages:
+1: In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+2: In eval(ei, envir) :
+  BIF file has extra column(s) [SITDryD] — stripping and rewriting: data/extracted/TERN_AU-Dry_FLUXNET_2009-2025_v1.3_r1/TERN_AU-Dry_FLUXNET_BIF_2009-2025_v1.3_r1.csv
+Execution halted

@@ -556,6 +556,10 @@ fig_network_subregion_overview <- function(metadata,
     "Functionally active"     = "#2C7FB8",
     "Inactive / high latency" = "#BDBDBD"
   )
+  subregion_labels <- c(
+    "Latin America and the Caribbean" = "Latin America &\nthe Caribbean",
+    "Australia and New Zealand"        = "Australia &\nNew Zealand"
+  )
 
   # --- subregion assignment for all sites (shared between both bars) ----------
   sites <- metadata |>
@@ -630,6 +634,12 @@ fig_network_subregion_overview <- function(metadata,
       breaks = scales::pretty_breaks(n = 5),
       expand = ggplot2::expansion(mult = c(0, 0.04))
     ) +
+    ggplot2::scale_y_discrete(
+      labels = function(x) {
+        x <- dplyr::recode(x, !!!subregion_labels)
+        scales::label_wrap(22)(x)
+      }
+    ) +
     ggplot2::labs(x = "Total sites", y = NULL) +
     fluxnet_theme(base_size = 12) +
     ggplot2::theme(
@@ -682,7 +692,7 @@ fig_network_subregion_overview <- function(metadata,
   if (!is.null(p_map)) {
     pw <- patchwork::wrap_elements(full = p_map) /
           patchwork::wrap_elements(full = bars)
-    pw <- pw + patchwork::plot_layout(heights = c(4, 3))
+    pw <- pw + patchwork::plot_layout(heights = c(1, 2.5))
   } else {
     pw <- bars
   }
@@ -916,6 +926,11 @@ fig_latency_by_subregion <- function(metadata,
   )
   latency_levels <- names(latency_colours)
 
+  subregion_labels <- c(
+    "Latin America and the Caribbean" = "Latin America &\nthe Caribbean",
+    "Australia and New Zealand"        = "Australia &\nNew Zealand"
+  )
+
   # --- compute latency, recode UK → GB, map to subregion ---------------------
   df <- metadata |>
     dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
@@ -1000,6 +1015,12 @@ fig_latency_by_subregion <- function(metadata,
       breaks = scales::pretty_breaks(n = 6),
       expand = ggplot2::expansion(mult = c(0, 0.04))
     ) +
+    ggplot2::scale_y_discrete(
+      labels = function(x) {
+        x <- dplyr::recode(x, !!!subregion_labels)
+        scales::label_wrap(22)(x)
+      }
+    ) +
     ggplot2::labs(
       title   = "Data latency by UN subregion — functionally active sites",
       subtitle = paste0("n\u2009=\u2009", n_active, " sites across ",
@@ -1008,7 +1029,7 @@ fig_latency_by_subregion <- function(metadata,
       y       = NULL,
       caption = caption_text
     ) +
-    fluxnet_theme() +
+    fluxnet_theme(base_size = 12) +
     ggplot2::theme(
       legend.position  = "right",
       axis.text.y      = ggplot2::element_text(size = 11),

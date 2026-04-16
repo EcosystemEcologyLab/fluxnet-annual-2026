@@ -144,8 +144,8 @@ source("R/plot_constants.R")
 #' }
 fig_map_global <- function(metadata,
                             color_by = "data_hub",
-                            pt_size  = 2.4,
-                            pt_alpha = 0.75,
+                            pt_size  = 1.8,
+                            pt_alpha = 0.9,
                             region   = "global") {
   .disable_s2()
   .check_meta_cols(metadata, c("site_id", "location_lat", "location_long",
@@ -176,7 +176,7 @@ fig_map_global <- function(metadata,
         ggplot2::aes(x = location_long, y = location_lat,
                      fill = data_hub),
         shape = 21, color = "black", size = pt_size,
-        alpha = pt_alpha, stroke = 0.3
+        alpha = pt_alpha, stroke = 0.5
       ) +
       ggplot2::scale_fill_manual(
         values = hub_cols,
@@ -190,7 +190,7 @@ fig_map_global <- function(metadata,
         ggplot2::aes(x = location_long, y = location_lat,
                      fill = igbp),
         shape = 21, color = "black", size = pt_size,
-        alpha = pt_alpha, stroke = 0.3
+        alpha = pt_alpha, stroke = 0.5
       ) +
       scale_fill_igbp(name = "IGBP", na.value = "grey60")
   } else {
@@ -253,11 +253,12 @@ fig_map_nee_mean <- function(data_yy,
     flux <- dplyr::filter(flux, !site_id %in% exclude_sites)
   }
 
+  year_col <- if ("YEAR" %in% names(flux)) "YEAR" else "TIMESTAMP"
   site_stats <- flux |>
     dplyr::filter(is.finite(NEE_VUT_REF)) |>
     dplyr::group_by(site_id) |>
     dplyr::summarise(
-      n_years  = dplyr::n_distinct(TIMESTAMP),
+      n_years  = dplyr::n_distinct(.data[[year_col]]),
       mean_nee = mean(NEE_VUT_REF, na.rm = TRUE),
       .groups  = "drop"
     ) |>
@@ -287,10 +288,10 @@ fig_map_nee_mean <- function(data_yy,
   p <- .map_base(land) +
     ggplot2::geom_point(
       data  = plot_data,
-      ggplot2::aes(x = location_long, y = location_lat, color = mean_nee),
-      size  = 2.2, alpha = 0.85
+      ggplot2::aes(x = location_long, y = location_lat, fill = mean_nee),
+      shape = 21, color = "black", size = 1.8, stroke = 0.5, alpha = 0.9
     ) +
-    ggplot2::scale_color_gradient2(
+    ggplot2::scale_fill_gradient2(
       low      = "#2C7BB6",
       mid      = "gray85",
       high     = "#D7191C",
@@ -354,12 +355,13 @@ fig_map_nee_delta <- function(data_yy,
     flux <- dplyr::filter(flux, !site_id %in% exclude_sites)
   }
 
+  year_col <- if ("YEAR" %in% names(flux)) "YEAR" else "TIMESTAMP"
   site_stats <- flux |>
     dplyr::filter(is.finite(NEE_VUT_REF)) |>
-    dplyr::mutate(is_recent = TIMESTAMP %in% recent_years) |>
+    dplyr::mutate(is_recent = .data[[year_col]] %in% recent_years) |>
     dplyr::group_by(site_id) |>
     dplyr::summarise(
-      n_years      = dplyr::n_distinct(TIMESTAMP),
+      n_years      = dplyr::n_distinct(.data[[year_col]]),
       n_recent     = sum(is_recent),
       mean_recent  = if (sum(is_recent) > 0L)
         mean(NEE_VUT_REF[is_recent], na.rm = TRUE) else NA_real_,
@@ -411,10 +413,10 @@ fig_map_nee_delta <- function(data_yy,
   p <- .map_base(land) +
     ggplot2::geom_point(
       data  = plot_data,
-      ggplot2::aes(x = location_long, y = location_lat, color = delta_nee),
-      size  = 2.2, alpha = 0.85
+      ggplot2::aes(x = location_long, y = location_lat, fill = delta_nee),
+      shape = 21, color = "black", size = 1.8, stroke = 0.5, alpha = 0.9
     ) +
-    ggplot2::scale_color_gradient2(
+    ggplot2::scale_fill_gradient2(
       low      = "#2C7BB6",
       mid      = "gray85",
       high     = "#D7191C",
@@ -629,10 +631,12 @@ fig_map_subregion_sites <- function(metadata,
         ggplot2::geom_point(
           data  = active_sites,
           ggplot2::aes(x = .data$location_long, y = .data$location_lat),
-          size   = 0.8,
-          colour = "white",
-          alpha  = 0.75,
-          shape  = 16
+          shape  = 21,
+          fill   = "white",
+          color  = "black",
+          size   = 1.8,
+          stroke = 0.5,
+          alpha  = 0.9
         )
     }
 

@@ -8,13 +8,13 @@
 ##   1 — Annual time series (YY)
 ##   2 — Monthly climatology (MM)
 ##   3 — Daily climatology (DD) — lazy load, freed after use
-##   4 — Whittaker biome snapshots (local Mac only — requires WorldClim)
+##   4 — Whittaker biome snapshots (ERA5 climate, Codespace-safe)
 ##   5 — Latitudinal multi-variable ribbon
 ##   6 — Environmental response curves (binned flux vs climate)
 ##   7 — Long-record annual time series by continent
 ##   8 — Network growth cumulative (metadata only)
 ##   9 — Network growth annual new sites (metadata only)
-##  10 — Country site-count choropleth at 2015/2020/2025 (metadata only)
+##  10 — UN subregion choropleth at 2010/2015/2020/2025 — count + density
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -80,7 +80,7 @@ snapshot_meta <- if (length(snapshot_csv) > 0) {
 }
 
 # Full snapshot with all columns — used by fig_network_growth() and
-# fig_map_country_sites() which need igbp / first_year / last_year
+# fig_map_subregion_sites() which need location_lat/long, first_year, last_year
 snapshot_meta_full <- if (length(snapshot_csv) > 0) {
   readr::read_csv(snapshot_csv[[1]], show_col_types = FALSE)
 } else {
@@ -559,14 +559,14 @@ build_latitudinal_multi <- function() {
 }
 
 # ============================================================
-# Section 4 — Whittaker biome snapshots (requires WorldClim — local Mac only)
-# Four panels at year_cutoff = 2010 / 2015 / 2020 / 2025, assembled 2×2.
-# Entire section is wrapped in tryCatch so the report continues if WorldClim
-# data or the terra / hexbin packages are not available.
+# Section 4 — Whittaker biome snapshots
+# ERA5 version: four panels at year_cutoff = 2010 / 2015 / 2020 / 2025,
+# assembled 2×2.  Uses TA_ERA / P_ERA from the processed YY data — no
+# external WorldClim data required; runs in the Codespace.
+# WorldClim version (local Mac only) is available via source = "worldclim".
 # ============================================================
 build_whittaker_snapshots <- function() {
   if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
-  if (is.null(snapshot_meta))     return(no_data("No snapshot metadata available."))
 
   tryCatch({
     data_yy <- site_data[["yy"]]$data
@@ -575,9 +575,9 @@ build_whittaker_snapshots <- function() {
     panels <- lapply(cutoffs, function(yr) {
       fig_whittaker_hexbin(
         data_yy     = data_yy,
-        metadata    = snapshot_meta,
         flux_var    = "NEE_VUT_REF",
-        year_cutoff = yr
+        year_cutoff = yr,
+        source      = "era5"
       ) + fluxnet_theme(base_size = 11)
     })
 
@@ -585,14 +585,26 @@ build_whittaker_snapshots <- function() {
           (panels[[3]] | panels[[4]]) +
       patchwork::plot_layout(guides = "collect")
 
+    # Save review PNG
+    review_dir  <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_whittaker_hexbin_era5.png")
+    ggplot2::ggsave(
+      review_path,
+      plot   = pw,
+      width  = 14,
+      height = 10,
+      units  = "in",
+      dpi    = 150
+    )
+    message("Review figure saved: ", review_path)
+
     paste0('<div class="plot-wrap">',
            plot_to_png(pw, width = 14, height = 10),
            "</div>")
   }, error = function(e) {
     no_data(paste0(
-      "Whittaker snapshots unavailable: ", conditionMessage(e),
-      " &mdash; WorldClim data required (see R/external_data.R); ",
-      "designed for local Mac execution."
+      "Whittaker ERA5 snapshots unavailable: ", conditionMessage(e)
     ))
   })
 }
@@ -748,25 +760,50 @@ build_network_growth_annual <- function() {
 }
 
 # ============================================================
-# Section 10 — Country site-count choropleth
-# fig_map_country_sites(): site count per country at 2015/2020/2025.
+# Section 10 — UN subregion choropleth
+# fig_map_subregion_sites(): count and density at 2010/2015/2020/2025.
+# Two separate figures (count + density) saved as review PNGs.
 # ============================================================
 build_country_map <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
-  tryCatch({
-    p <- fig_map_country_sites(snapshot_meta_full,
-                               year_cutoffs = c(2015L, 2020L, 2025L))
-    review_dir <- file.path("review", "figures")
-    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
-    review_path <- file.path(review_dir, "fig_map_country_sites.png")
-    ggplot2::ggsave(review_path, plot = p, width = 10, height = 14,
-                    units = "in", dpi = 150)
-    message("Review figure saved: ", review_path)
-    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 14),
-           "</div>")
-  }, error = function(e) {
-    no_data(paste0("Country choropleth unavailable: ", conditionMessage(e)))
-  })
+
+  review_dir <- file.path("review", "figures")
+  if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+
+  cutoffs <- c(2010L, 2015L, 2020L, 2025L)
+
+  make_panel <- function(metric_arg) {
+    tryCatch({
+      p <- fig_map_subregion_sites(
+        snapshot_meta_full,
+        year_cutoffs = cutoffs,
+        metric       = metric_arg,
+        add_dots     = TRUE
+      )
+      review_path <- file.path(
+        review_dir,
+        paste0("fig_map_subregion_sites_", metric_arg, ".png")
+      )
+      ggplot2::ggsave(review_path, plot = p, width = 10, height = 18,
+                      units = "in", dpi = 150)
+      message("Review figure saved: ", review_path)
+      list(html = plot_to_png(p, width = 10, height = 18), ok = TRUE)
+    }, error = function(e) {
+      list(html = no_data(paste0("Subregion choropleth (", metric_arg, ") unavailable: ",
+                                 conditionMessage(e))),
+           ok = FALSE)
+    })
+  }
+
+  r_count   <- make_panel("count")
+  r_density <- make_panel("density")
+
+  paste0(
+    "<h3>Site count per UN subregion</h3>",
+    '<div class="plot-wrap">', r_count$html,   "</div>",
+    "<h3>Site density per UN subregion (sites per 10&#x2076; km&#x00B2;)</h3>",
+    '<div class="plot-wrap">', r_density$html, "</div>"
+  )
 }
 
 # ============================================================
@@ -784,11 +821,11 @@ s8 <- section(8, "Network growth \u2014 cumulative sites by IGBP",
 message("Building Section 9 — Network growth (annual new sites) ...")
 s9 <- section(9, "Network growth \u2014 new sites per year by IGBP",
               build_network_growth_annual())
-message("Building Section 10 — Country site-count choropleth ...")
-s10 <- section(10, "Site count per country at 2015\u20132020\u20132025",
+message("Building Section 10 — UN subregion choropleth ...")
+s10 <- section(10, "UN subregion choropleth \u2014 2010\u20132015\u20132020\u20132025",
                build_country_map())
-message("Building Section 4 — Whittaker biome snapshots ...")
-s4 <- section(4, "Whittaker biome snapshots (local Mac only \u2014 requires WorldClim)",
+message("Building Section 4 — Whittaker biome snapshots (ERA5) ...")
+s4 <- section(4, "Whittaker biome snapshots \u2014 ERA5 climate (Codespace-safe)",
               build_whittaker_snapshots())
 message("Building Section 5 — Latitudinal multi-variable ribbon ...")
 s5 <- section(5, "Latitudinal multi-variable ribbon", build_latitudinal_multi())

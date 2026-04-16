@@ -17,6 +17,7 @@
 ##  10 — UN subregion choropleth at 2010/2015/2020/2025 — count + density
 ##  11 — Deployment duration profile at 2010/2015/2020/2025 (draft)
 ##  12 — Network active proportion over time (draft)
+##  13 — Subregion overview: map + total sites + latency (3-panel)
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -886,6 +887,24 @@ s11 <- section(11, "Deployment duration profile \u2014 record length at snapshot
 message("Building Section 12 — Network active proportion ...")
 s12 <- section(12, "Network size and data currency over time (draft)",
                build_active_proportion())
+message("Building Section 13 — Subregion overview ...")
+s13 <- section(13, "Subregion overview \u2014 map, site counts, latency (2025)",
+               tryCatch({
+                 p <- fig_network_subregion_overview(
+                   metadata = snapshot_meta_full,
+                   data_yy  = if (!is.null(site_data[["yy"]])) site_data[["yy"]]$data else NULL
+                 )
+                 review_dir <- file.path("review", "figures")
+                 if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+                 review_path <- file.path(review_dir, "fig_network_subregion_overview.png")
+                 ggplot2::ggsave(review_path, plot = p, width = 16, height = 10,
+                                 units = "in", dpi = 150)
+                 message("Review figure saved: ", review_path)
+                 paste0('<div class="plot-wrap">',
+                        plot_to_png(p, width = 16, height = 10), "</div>")
+               }, error = function(e) {
+                 no_data(paste0("Subregion overview unavailable: ", conditionMessage(e)))
+               }))
 message("Building Section 10 — UN subregion choropleth ...")
 s10 <- section(10, "UN subregion choropleth \u2014 2010\u20132015\u20132020\u20132025",
                build_country_map())
@@ -919,7 +938,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s10, s4, s5, s6, s7, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s10, s4, s5, s6, s7, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

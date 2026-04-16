@@ -5,9 +5,11 @@
 # Reference only — do not edit legacy/ originals.
 #
 # Functions:
-#   fig_whittaker_hexbin()  — Whittaker biome hexbin (requires WorldClim data)
-#   fig_climate_scatter()   — Precipitation vs NEE + Temperature vs GPP
-#   fig_xy_annual()         — General XY scatter with IGBP shapes
+#   fig_whittaker_hexbin()           — Wrapper (ERA5 by default; source arg to switch)
+#   fig_whittaker_hexbin_era5()      — Whittaker hexbin using TA_ERA/P_ERA (Codespace-safe)
+#   fig_whittaker_hexbin_worldclim() — Whittaker hexbin using WorldClim bio1/bio12 raster
+#   fig_climate_scatter()            — Precipitation vs NEE + Temperature vs GPP
+#   fig_xy_annual()                  — General XY scatter with IGBP shapes
 
 library(ggplot2)
 library(ggtext)
@@ -50,63 +52,285 @@ library(colorspace)
   )
 }
 
+#' Build Whittaker polygon ggplot layers (colour = biome border, fill fixed grey)
+#'
+#' Returns a list of ggplot2 layers that overlay the standard Whittaker biome
+#' polygon boundaries onto a plot whose axes are MAT (°C, x) and MAP (mm yr⁻¹,
+#' y).  The polygon y-coordinates in \pkg{plotbiomes} are in cm; this helper
+#' multiplies by 10 to convert to mm.
+#'
+#' Biomes are encoded as a **colour** aesthetic (polygon border) rather than
+#' fill, so the caller's hex-fill scale is free to encode a separate variable
+#' without a scale conflict.
+#'
+#' @return A list of ggplot2 layers: \code{geom_polygon} + \code{scale_colour_manual}.
+#' @noRd
+.whittaker_border_layers <- function() {
+  if (!requireNamespace("plotbiomes", quietly = TRUE)) {
+    return(list())
+  }
+  wb        <- plotbiomes::Whittaker_biomes
+  wb$precp_mm <- wb$precp_cm * 10L
+
+  biome_cols <- plotbiomes::Ricklefs_colors
+
+  list(
+    ggplot2::geom_polygon(
+      data        = wb,
+      ggplot2::aes(x     = .data$temp_c,
+                   y     = .data$precp_mm,
+                   colour = .data$biome,
+                   group  = .data$biome_id),
+      fill        = "grey94",
+      linewidth   = 0.5,
+      alpha       = 0.55,
+      inherit.aes = FALSE
+    ),
+    ggplot2::scale_colour_manual(
+      name   = "Whittaker biome",
+      values = biome_cols,
+      guide  = ggplot2::guide_legend(
+        ncol     = 2,
+        keywidth = 1.0,
+        keyheight = 0.75,
+        title.hjust = 0
+      )
+    )
+  )
+}
+
 # ---- Exported functions -----------------------------------------------------
 
-#' Whittaker biome hexbin of temperature × precipitation coloured by flux
+#' Whittaker biome hexbin using ERA5 climate extracted at tower locations
 #'
 #' Plots tower sites on a Whittaker biome diagram using hexagonal binning, with
-#' each hex coloured by the median site-mean of `flux_var`. Climate normals
-#' (MAT and MAP) are extracted from WorldClim raster data at tower locations —
-#' see `R/external_data.R` for download instructions.
+#' each hex coloured by the median site-mean of \code{flux_var}.  Climate normals
+#' (MAT and MAP) are derived entirely from ERA5 variables already present in the
+#' annual FLUXNET data (\code{TA_ERA} in K; \code{P_ERA} in mm yr⁻¹), so no
+#' external raster data are needed.  **This version runs in the Codespace.**
 #'
-#' WorldClim data must be present at one of two locations:
-#' \itemize{
-#'   \item `data/wc_worldclim_30s.rds` — a saved RDS of a \pkg{terra} SpatRaster;
-#'   \item `wc_data/bio/*.tif` — WorldClim GeoTIFF bio-variable files.
-#' }
-#' Layers bio1 (Annual Mean Temperature) and bio12 (Annual Precipitation) are
-#' required. **Designed for local Mac execution where WorldClim is available —
-#' do not run in the Codespace.**
+#' Site-level MAT and MAP are computed by averaging \code{TA_ERA - 273.15} and
+#' \code{P_ERA} across all years for each site before plotting.  Sites with
+#' implausibly high precipitation (> 8 000 mm yr⁻¹, indicating ERA5 unit
+#' conversion artifacts) are dropped with a \code{message()} before plotting.
+#' The display is clipped to the Whittaker biome polygon extent (approximately
+#' [-16, 30] °C × [0, 4 500] mm yr⁻¹) using \code{coord_cartesian()}.
 #'
-#' @param data_yy Annual FLUXNET data frame. Must contain `site_id` and
-#'   `flux_var`. Columns `location_lat` and `location_long` are joined from
-#'   `metadata` when absent.
-#' @param metadata Optional data frame with `site_id`, `location_lat`,
-#'   `location_long`, `first_year`, and `last_year` columns. Required when
-#'   `year_cutoff` is set or coordinates are absent from `data_yy`.
+#' The Whittaker biome polygon overlay (from \pkg{plotbiomes}) uses polygon
+#' \emph{border} colour to encode biome identity, leaving the \code{fill}
+#' aesthetic free for the diverging flux colour scale.
+#'
+#' @param data_yy Annual FLUXNET data frame.  Must contain \code{site_id},
+#'   \code{TA_ERA} (K), \code{P_ERA} (mm yr⁻¹), and \code{flux_var}.
 #' @param flux_var Character. Flux variable to summarise per hex
-#'   (default `"NEE_VUT_REF"`).
-#' @param year_cutoff Integer or `NULL`. When set, two filters are applied:
-#'   \enumerate{
-#'     \item Only sites where `first_year <= year_cutoff` AND
-#'           `last_year >= year_cutoff` are kept (site was actively measuring).
-#'     \item Flux records are restricted to years `<= year_cutoff`.
-#'   }
-#'   Requires `first_year` / `last_year` columns in `data_yy` or joinable from
-#'   `metadata`.
+#'   (default \code{"NEE_VUT_REF"}).
+#' @param year_cutoff Integer or \code{NULL}. When set, flux records are
+#'   restricted to years \code{<= year_cutoff} before computing site means.
+#'   Requires a \code{YEAR} column in \code{data_yy}.
 #'
 #' @return A ggplot object.
 #'
 #' @examples
 #' \dontrun{
-#' fig_whittaker_hexbin(data_yy, metadata = snapshot_meta, year_cutoff = 2020)
+#' fig_whittaker_hexbin_era5(data_yy, flux_var = "NEE_VUT_REF")
+#' fig_whittaker_hexbin_era5(data_yy, year_cutoff = 2020)
 #' }
 #'
 #' @export
-fig_whittaker_hexbin <- function(data_yy,
-                                 metadata    = NULL,
-                                 flux_var    = "NEE_VUT_REF",
-                                 year_cutoff = NULL) {
+fig_whittaker_hexbin_era5 <- function(data_yy,
+                                      flux_var    = "NEE_VUT_REF",
+                                      year_cutoff = NULL) {
 
-  # --- WorldClim loading (exact pattern for local Mac execution) ---------------
-  if (file.exists("data/wc_worldclim_30s.rds")) {
-    wc <- terra::rast(readRDS("data/wc_worldclim_30s.rds"))
-  } else {
-    tifs <- list.files("wc_data/bio", pattern = "\\.tif$", full.names = TRUE)
-    if (length(tifs) == 0) stop(
-      "WorldClim data not found. See R/external_data.R for download instructions."
+  if (!requireNamespace("hexbin", quietly = TRUE)) {
+    stop(
+      "Package 'hexbin' is required for hexagonal binning. ",
+      "Install with: install.packages('hexbin')",
+      call. = FALSE
     )
-    wc <- terra::rast(tifs)
+  }
+
+  # --- column check -----------------------------------------------------------
+  .check_cols_climate(data_yy, c("site_id", "TA_ERA", "P_ERA", flux_var))
+
+  # --- year_cutoff filtering --------------------------------------------------
+  if (!is.null(year_cutoff)) {
+    year_cutoff <- as.integer(year_cutoff)
+    if (!"YEAR" %in% names(data_yy)) {
+      stop(
+        "year_cutoff requires a 'YEAR' column in data_yy.",
+        call. = FALSE
+      )
+    }
+    data_yy <- dplyr::filter(data_yy,
+                              as.integer(.data$YEAR) <= year_cutoff)
+  }
+
+  # --- per-site summary: mean ERA5 climate + mean flux ------------------------
+  # TA_ERA is in Kelvin (unit conversion step adds 273.15); subtract to get °C.
+  site_clim <- data_yy |>
+    dplyr::filter(!is.na(.data$TA_ERA),
+                  !is.na(.data$P_ERA),
+                  !is.na(.data[[flux_var]])) |>
+    dplyr::group_by(.data$site_id) |>
+    dplyr::summarise(
+      MAT       = mean(.data$TA_ERA - 273.15, na.rm = TRUE),
+      MAP       = mean(.data$P_ERA,            na.rm = TRUE),
+      mean_flux = mean(.data[[flux_var]],       na.rm = TRUE),
+      .groups   = "drop"
+    )
+
+  # --- filter extreme MAP values (ERA5 unit-conversion artifacts) -------------
+  map_limit <- 8000
+  n_extreme  <- sum(site_clim$MAP > map_limit, na.rm = TRUE)
+  if (n_extreme > 0L) {
+    extreme_ids <- site_clim$site_id[site_clim$MAP > map_limit]
+    message(
+      n_extreme, " site(s) with mean annual P_ERA > ", map_limit,
+      " mm yr\u207b\u00b9 excluded (likely ERA5 unit-conversion artifacts):\n  ",
+      paste(sort(extreme_ids), collapse = ", ")
+    )
+    site_clim <- dplyr::filter(site_clim, .data$MAP <= map_limit)
+  }
+
+  if (nrow(site_clim) == 0L) {
+    warning("No sites with valid ERA5 climate and flux data after filtering.",
+            call. = FALSE)
+    return(ggplot2::ggplot() + ggplot2::labs(title = "No data") + fluxnet_theme())
+  }
+
+  # --- labels and title -------------------------------------------------------
+  flux_label  <- .flux_climate_label(flux_var)
+  cutoff_text <- if (!is.null(year_cutoff))
+    paste0(" \u2014 through ", year_cutoff) else ""
+  title_text  <- paste0("Whittaker biome diagram", cutoff_text)
+  n_sites     <- nrow(site_clim)
+
+  # --- Whittaker biome polygon extent (for coord_cartesian clip) --------------
+  # plotbiomes::Whittaker_biomes: temp_c in [-15.6, 30.0], precp_cm in [0, 444]
+  # Add 10 % buffer; y in mm (precp_cm × 10).
+  clim_xlim <- c(-18, 32)
+  clim_ylim <- c(-100, 4700)
+
+  # --- plot -------------------------------------------------------------------
+  ggplot2::ggplot(
+    site_clim,
+    ggplot2::aes(x = .data$MAT, y = .data$MAP, z = .data$mean_flux)
+  ) +
+    # Whittaker biome polygon borders (colour scale; fill fixed grey)
+    .whittaker_border_layers() +
+    # Hexbin coloured by median flux
+    ggplot2::stat_summary_hex(
+      fun   = median,
+      bins  = 15,
+      alpha = 0.85
+    ) +
+    colorspace::scale_fill_continuous_diverging(
+      palette = "Blue-Red 3",
+      mid     = 0,
+      name    = flux_label,
+      guide   = ggplot2::guide_colorbar(
+        barwidth       = 8,
+        barheight      = 0.7,
+        title.position = "top",
+        title.hjust    = 0.5
+      )
+    ) +
+    # Individual site locations
+    ggplot2::geom_point(
+      ggplot2::aes(x = .data$MAT, y = .data$MAP),
+      size        = 1.6,
+      colour      = "grey30",
+      alpha       = 0.55,
+      inherit.aes = FALSE
+    ) +
+    ggplot2::coord_cartesian(xlim = clim_xlim, ylim = clim_ylim) +
+    ggplot2::labs(
+      x        = "Mean annual temperature (\u00b0C)",
+      y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
+      title    = title_text,
+      subtitle = paste0(
+        "n\u2009=\u2009", n_sites, " sites",
+        " \u2014 Climate from ERA5 (site-extracted)"
+      )
+    ) +
+    fluxnet_theme() +
+    ggplot2::theme(
+      axis.title.y    = ggtext::element_markdown(),
+      legend.position = "bottom"
+    )
+}
+
+
+#' Whittaker biome hexbin using WorldClim bio1 (MAT) and bio12 (MAP)
+#'
+#' Plots tower sites on a Whittaker biome diagram using hexagonal binning, with
+#' each hex coloured by the median site-mean of \code{flux_var}.  Climate normals
+#' are extracted from a WorldClim \pkg{terra} SpatRaster supplied via
+#' \code{worldclim_data}.  Layers bio1 (Annual Mean Temperature, °C or °C × 10)
+#' and bio12 (Annual Precipitation, mm) are required.
+#'
+#' This version requires WorldClim raster data and the \pkg{terra} package.
+#' **Designed for local Mac execution where WorldClim is available — do not run
+#' in the Codespace.**  For a Codespace-compatible alternative, see
+#' \code{\link{fig_whittaker_hexbin_era5}}.
+#'
+#' @param data_yy Annual FLUXNET data frame. Must contain \code{site_id} and
+#'   \code{flux_var}. Columns \code{location_lat} and \code{location_long} are
+#'   joined from \code{metadata} when absent.
+#' @param worldclim_data A \pkg{terra} SpatRaster containing WorldClim bio-variable
+#'   layers, including bio1 (MAT) and bio12 (MAP).  Pass the result of
+#'   \code{terra::rast()} here.  Function stops with an informative message when
+#'   \code{NULL}.
+#' @param metadata Optional data frame with \code{site_id}, \code{location_lat},
+#'   \code{location_long}, \code{first_year}, and \code{last_year} columns.
+#'   Required when \code{year_cutoff} is set or coordinates are absent from
+#'   \code{data_yy}.
+#' @param flux_var Character. Flux variable to summarise per hex
+#'   (default \code{"NEE_VUT_REF"}).
+#' @param year_cutoff Integer or \code{NULL}. When set, two filters are applied:
+#'   \enumerate{
+#'     \item Only sites where \code{first_year <= year_cutoff} AND
+#'           \code{last_year >= year_cutoff} are kept.
+#'     \item Flux records are restricted to years \code{<= year_cutoff}.
+#'   }
+#'   Requires \code{first_year} / \code{last_year} in \code{data_yy} or
+#'   joinable from \code{metadata}.
+#'
+#' @return A ggplot object.
+#'
+#' @examples
+#' \dontrun{
+#' wc <- terra::rast("data/wc_worldclim_30s.rds")
+#' fig_whittaker_hexbin_worldclim(data_yy, worldclim_data = wc,
+#'                                metadata = snapshot_meta, year_cutoff = 2020)
+#' }
+#'
+#' @export
+fig_whittaker_hexbin_worldclim <- function(data_yy,
+                                           worldclim_data = NULL,
+                                           metadata       = NULL,
+                                           flux_var       = "NEE_VUT_REF",
+                                           year_cutoff    = NULL) {
+
+  # --- WorldClim data check ---------------------------------------------------
+  if (is.null(worldclim_data)) {
+    stop(
+      "worldclim_data is NULL. Supply a terra SpatRaster with WorldClim bio ",
+      "layers (bio1 = MAT, bio12 = MAP).\n",
+      "  Example: terra::rast('data/wc_worldclim_30s.rds')\n",
+      "  See R/external_data.R for download instructions.\n",
+      "  For a Codespace-compatible Whittaker figure, use ",
+      "fig_whittaker_hexbin_era5() instead.",
+      call. = FALSE
+    )
+  }
+
+  if (!requireNamespace("terra", quietly = TRUE)) {
+    stop(
+      "Package 'terra' is required for WorldClim raster extraction. ",
+      "Install with: install.packages('terra')",
+      call. = FALSE
+    )
   }
 
   if (!requireNamespace("hexbin", quietly = TRUE)) {
@@ -122,8 +346,8 @@ fig_whittaker_hexbin <- function(data_yy,
 
   # --- join metadata (coords, first/last year) only for missing columns -------
   if (!is.null(metadata) && "site_id" %in% names(metadata)) {
-    need             <- c("location_lat", "location_long",
-                          "first_year", "last_year", "igbp")
+    need              <- c("location_lat", "location_long",
+                           "first_year", "last_year", "igbp")
     missing_from_data <- setdiff(
       intersect(need, names(metadata)),
       names(data_yy)
@@ -180,7 +404,7 @@ fig_whittaker_hexbin <- function(data_yy,
 
   site_summary <- data_yy |>
     dplyr::filter(!is.na(.data[[flux_var]])) |>
-    dplyr::group_by(site_id) |>
+    dplyr::group_by(.data$site_id) |>
     dplyr::summarise(
       mean_flux     = mean(.data[[flux_var]], na.rm = TRUE),
       location_lat  = dplyr::first(.data$location_lat),
@@ -202,7 +426,7 @@ fig_whittaker_hexbin <- function(data_yy,
     geom = c("x", "y"),
     crs  = "EPSG:4326"
   )
-  wc_vals <- as.data.frame(terra::extract(wc, pts, ID = FALSE))
+  wc_vals <- as.data.frame(terra::extract(worldclim_data, pts, ID = FALSE))
 
   # Identify layers — robust to WorldClim 1.x and 2.x naming conventions
   bio1_col <- grep(
@@ -251,6 +475,7 @@ fig_whittaker_hexbin <- function(data_yy,
     site_clim,
     ggplot2::aes(x = .data$MAT, y = .data$MAP, z = .data$mean_flux)
   ) +
+    .whittaker_border_layers() +
     ggplot2::stat_summary_hex(
       fun   = median,
       bins  = 15,
@@ -286,6 +511,66 @@ fig_whittaker_hexbin <- function(data_yy,
       legend.position = "bottom"
     )
 }
+
+
+#' Whittaker biome hexbin — wrapper selecting ERA5 or WorldClim climate source
+#'
+#' Convenience wrapper around \code{\link{fig_whittaker_hexbin_era5}} and
+#' \code{\link{fig_whittaker_hexbin_worldclim}}.  Defaults to the ERA5 version
+#' because it requires no external data and runs in the Codespace.
+#'
+#' @param data_yy Annual FLUXNET data frame.
+#' @param flux_var Character. Flux variable to summarise per hex
+#'   (default \code{"NEE_VUT_REF"}).
+#' @param year_cutoff Integer or \code{NULL}. Passed to the selected function.
+#' @param source Character. \code{"era5"} (default) or \code{"worldclim"}.
+#' @param worldclim_data A \pkg{terra} SpatRaster. Required when
+#'   \code{source = "worldclim"}; ignored for ERA5.
+#' @param metadata Optional data frame with site coordinates / first/last year.
+#'   Passed to \code{fig_whittaker_hexbin_worldclim()} when
+#'   \code{source = "worldclim"}.
+#'
+#' @return A ggplot object.
+#'
+#' @examples
+#' \dontrun{
+#' # Codespace-safe ERA5 version (default)
+#' fig_whittaker_hexbin(data_yy)
+#' fig_whittaker_hexbin(data_yy, source = "era5", year_cutoff = 2020)
+#'
+#' # WorldClim version (local Mac only)
+#' wc <- terra::rast("data/wc_worldclim_30s.rds")
+#' fig_whittaker_hexbin(data_yy, source = "worldclim",
+#'                      worldclim_data = wc, metadata = snapshot_meta)
+#' }
+#'
+#' @export
+fig_whittaker_hexbin <- function(data_yy,
+                                 flux_var       = "NEE_VUT_REF",
+                                 year_cutoff    = NULL,
+                                 source         = "era5",
+                                 worldclim_data = NULL,
+                                 metadata       = NULL) {
+
+  source <- match.arg(source, c("era5", "worldclim"))
+
+  if (source == "era5") {
+    fig_whittaker_hexbin_era5(
+      data_yy     = data_yy,
+      flux_var    = flux_var,
+      year_cutoff = year_cutoff
+    )
+  } else {
+    fig_whittaker_hexbin_worldclim(
+      data_yy        = data_yy,
+      worldclim_data = worldclim_data,
+      metadata       = metadata,
+      flux_var       = flux_var,
+      year_cutoff    = year_cutoff
+    )
+  }
+}
+
 
 #' Climate scatter plots: precipitation vs NEE and temperature vs GPP
 #'

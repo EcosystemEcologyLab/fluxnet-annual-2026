@@ -8,7 +8,7 @@
 ##   1 — Annual time series (YY)
 ##   2 — Monthly climatology (MM)
 ##   3 — Daily climatology (DD) — lazy load, freed after use
-##   4 — Whittaker biome snapshots (local Mac only — requires WorldClim)
+##   4 — Whittaker biome snapshots (ERA5 climate, Codespace-safe)
 ##   5 — Latitudinal multi-variable ribbon
 ##   6 — Environmental response curves (binned flux vs climate)
 ##   7 — Long-record annual time series by continent
@@ -559,14 +559,14 @@ build_latitudinal_multi <- function() {
 }
 
 # ============================================================
-# Section 4 — Whittaker biome snapshots (requires WorldClim — local Mac only)
-# Four panels at year_cutoff = 2010 / 2015 / 2020 / 2025, assembled 2×2.
-# Entire section is wrapped in tryCatch so the report continues if WorldClim
-# data or the terra / hexbin packages are not available.
+# Section 4 — Whittaker biome snapshots
+# ERA5 version: four panels at year_cutoff = 2010 / 2015 / 2020 / 2025,
+# assembled 2×2.  Uses TA_ERA / P_ERA from the processed YY data — no
+# external WorldClim data required; runs in the Codespace.
+# WorldClim version (local Mac only) is available via source = "worldclim".
 # ============================================================
 build_whittaker_snapshots <- function() {
   if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
-  if (is.null(snapshot_meta))     return(no_data("No snapshot metadata available."))
 
   tryCatch({
     data_yy <- site_data[["yy"]]$data
@@ -575,9 +575,9 @@ build_whittaker_snapshots <- function() {
     panels <- lapply(cutoffs, function(yr) {
       fig_whittaker_hexbin(
         data_yy     = data_yy,
-        metadata    = snapshot_meta,
         flux_var    = "NEE_VUT_REF",
-        year_cutoff = yr
+        year_cutoff = yr,
+        source      = "era5"
       ) + fluxnet_theme(base_size = 11)
     })
 
@@ -585,14 +585,26 @@ build_whittaker_snapshots <- function() {
           (panels[[3]] | panels[[4]]) +
       patchwork::plot_layout(guides = "collect")
 
+    # Save review PNG
+    review_dir  <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_whittaker_hexbin_era5.png")
+    ggplot2::ggsave(
+      review_path,
+      plot   = pw,
+      width  = 14,
+      height = 10,
+      units  = "in",
+      dpi    = 150
+    )
+    message("Review figure saved: ", review_path)
+
     paste0('<div class="plot-wrap">',
            plot_to_png(pw, width = 14, height = 10),
            "</div>")
   }, error = function(e) {
     no_data(paste0(
-      "Whittaker snapshots unavailable: ", conditionMessage(e),
-      " &mdash; WorldClim data required (see R/external_data.R); ",
-      "designed for local Mac execution."
+      "Whittaker ERA5 snapshots unavailable: ", conditionMessage(e)
     ))
   })
 }
@@ -787,8 +799,8 @@ s9 <- section(9, "Network growth \u2014 new sites per year by IGBP",
 message("Building Section 10 — Country site-count choropleth ...")
 s10 <- section(10, "Site count per country at 2015\u20132020\u20132025",
                build_country_map())
-message("Building Section 4 — Whittaker biome snapshots ...")
-s4 <- section(4, "Whittaker biome snapshots (local Mac only \u2014 requires WorldClim)",
+message("Building Section 4 — Whittaker biome snapshots (ERA5) ...")
+s4 <- section(4, "Whittaker biome snapshots \u2014 ERA5 climate (Codespace-safe)",
               build_whittaker_snapshots())
 message("Building Section 5 — Latitudinal multi-variable ribbon ...")
 s5 <- section(5, "Latitudinal multi-variable ribbon", build_latitudinal_multi())

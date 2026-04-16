@@ -211,34 +211,44 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #'
 #' For each year in `years`, calculates per-site record length as
 #' `snapshot_year - first_year` — how long the site had been running by that
-#' snapshot year — then classifies each site as "Functionally active" or
-#' "Inactive / high latency" based on whether `last_year` from the snapshot
-#' metadata falls within `active_threshold` years of the snapshot year.
-#' Sites with `first_year > snapshot_year` are excluded from that panel
-#' (they had not started yet).
+#' snapshot year. Sites with `first_year > snapshot_year` are excluded from
+#' that panel. Activity classification uses `last_year` only:
+#' "Functionally active" if `last_year >= snapshot_year - active_threshold`.
 #'
-#' For example: US-Ha1 started in 1991. In the 2010 panel its record length is
-#' 19 years; in the 2025 panel it is 34 years.
+#' For example: US-Ha1 (first_year = 1991) shows 19 years in the 2010 panel
+#' and 34 years in the 2025 panel.
+#'
+#' All panels share the same x and y limits, derived from the final (largest)
+#' snapshot year so that scales are comparable across panels.
+#'
+#' Returns a named list with two layout variants:
+#' - **`vA`**: four panels stacked in a single column (oldest on top). X axis
+#'   on the bottom panel only; y axis title "Sites" on the vertically centred
+#'   panel only; snapshot year as a right-aligned strip title per panel.
+#' - **`vB`**: four panels in a single row (oldest on left). Y axis on the
+#'   leftmost panel only; x axis title on the horizontally centred panel only;
+#'   snapshot year as a centred title per panel.
+#'
+#' Both variants use [patchwork::plot_annotation()] for the outer figure title
+#' and subtitle, and collect the shared legend via
+#' [patchwork::plot_layout(guides = "collect")].
 #'
 #' @param metadata Data frame. Snapshot CSV (one row per site) with columns
 #'   `site_id`, `first_year`, and `last_year`.
-#' @param years Integer vector of length 4. Snapshot years at which to assess
-#'   the network (default `c(2010, 2015, 2020, 2025)`). Assembled as a 2x2
-#'   patchwork via [patchwork::wrap_plots()].
-#' @param active_threshold Integer. A site is "Functionally active" at a given
-#'   snapshot year if `last_year >= snapshot_year - active_threshold`
-#'   (default `4`).
+#' @param years Integer vector of length 4. Snapshot years (default
+#'   `c(2010, 2015, 2020, 2025)`).
+#' @param active_threshold Integer. "Functionally active" if
+#'   `last_year >= snapshot_year - active_threshold` (default `4`).
 #'
-#' @return A patchwork object: 2x2 grid of histograms, one per snapshot year.
-#'   x-axis = record length in years (`snapshot_year - first_year`);
-#'   y-axis = number of sites present by that year; fill = active/inactive
-#'   status (two colours).
+#' @return Named list with elements `vA` (single-column patchwork) and `vB`
+#'   (single-row patchwork).
 #'
 #' @examples
 #' \dontrun{
 #' meta <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260414T153648.csv")
-#' p <- fig_network_duration_profile(meta)
-#' print(p)
+#' figs <- fig_network_duration_profile(meta)
+#' print(figs$vA)
+#' print(figs$vB)
 #' }
 fig_network_duration_profile <- function(metadata,
                                          years = c(2010, 2015, 2020, 2025),
@@ -272,73 +282,194 @@ fig_network_duration_profile <- function(metadata,
 
   if (nrow(site_profile) == 0L) {
     warning(
-      "fig_network_duration_profile: no sites with valid first/last year — returning empty plot.",
+      "fig_network_duration_profile: no sites with valid first/last year — returning empty plots.",
       call. = FALSE
     )
-    empty <- replicate(
-      length(years),
-      ggplot2::ggplot() + fluxnet_theme() + ggplot2::labs(title = "No data"),
-      simplify = FALSE
-    )
-    return(patchwork::wrap_plots(empty, ncol = 2L))
+    empty <- ggplot2::ggplot() + fluxnet_theme() + ggplot2::labs(title = "No data")
+    empties <- replicate(length(years), empty, simplify = FALSE)
+    return(list(
+      vA = patchwork::wrap_plots(empties, ncol = 1L),
+      vB = patchwork::wrap_plots(empties, nrow = 1L)
+    ))
   }
 
+  # --- shared axis limits from the final (largest) snapshot year --------------
+  ref_yr   <- max(years)
+  ref_data <- site_profile |>
+    dplyr::filter(.data$first_year <= ref_yr) |>
+    dplyr::mutate(record_length = ref_yr - .data$first_year)
+
+  x_max <- max(ref_data$record_length)
+  y_max <- ref_data |>
+    dplyr::count(.data$record_length) |>
+    dplyr::pull(.data$n) |>
+    max()
+  x_lim <- c(0, x_max + 1L)   # +1 ensures the rightmost histogram bar renders fully
+  y_lim <- c(0, ceiling(y_max * 1.08))
+
+  # --- colours and annotation text --------------------------------------------
   active_colours <- c(
     "Functionally active"     = "#2196F3",
     "Inactive / high latency" = "#B0BEC5"
   )
+  outer_subtitle <- paste0(
+    "Record length = snapshot_year \u2212 first_year. ",
+    "Functionally active = last_year \u2265 snapshot_year \u2212 ",
+    active_threshold, "."
+  )
 
-  panels <- lapply(years, function(yr) {
-    panel_data <- site_profile |>
+  n_years      <- length(years)
+  mid_idx      <- ceiling(n_years / 2)   # panel index for centred axis title
+
+  # --- per-panel data ---------------------------------------------------------
+  panel_datasets <- lapply(years, function(yr) {
+    site_profile |>
       dplyr::filter(.data$first_year <= yr) |>
       dplyr::mutate(
         record_length = yr - .data$first_year,
-        activity = dplyr::if_else(
-          .data$last_year >= yr - active_threshold,
-          "Functionally active",
-          "Inactive / high latency"
-        ),
         activity = factor(
-          .data$activity,
+          dplyr::if_else(
+            .data$last_year >= yr - active_threshold,
+            "Functionally active",
+            "Inactive / high latency"
+          ),
           levels = c("Functionally active", "Inactive / high latency")
         )
       )
+  })
 
+  # --- panel builder ----------------------------------------------------------
+  # show_x_text:  show x axis tick labels and ticks
+  # show_x_title: show x axis title
+  # show_y_text:  show y axis tick labels and ticks
+  # show_y_title: show y axis title
+  # title_hjust:  hjust for the panel title (year label)
+  # mar:          plot.margin (t, r, b, l) in points
+  make_panel <- function(pd, yr,
+                         show_x_text, show_x_title,
+                         show_y_text, show_y_title,
+                         title_hjust, mar) {
+    n_sites <- nrow(pd)
     ggplot2::ggplot(
-      panel_data,
+      pd,
       ggplot2::aes(x = .data$record_length, fill = .data$activity)
     ) +
-      ggplot2::geom_histogram(binwidth = 1L, colour = "white", linewidth = 0.25,
+      ggplot2::geom_histogram(binwidth = 1L, colour = "white", linewidth = 0.2,
                               position = "stack") +
       ggplot2::scale_fill_manual(values = active_colours, name = NULL,
                                  drop = FALSE) +
       ggplot2::scale_x_continuous(
         breaks = scales::pretty_breaks(n = 6),
-        expand = ggplot2::expansion(mult = c(0, 0.02))
+        expand = ggplot2::expansion(mult = c(0, 0))
       ) +
       ggplot2::scale_y_continuous(
-        breaks = scales::pretty_breaks(n = 5),
-        expand = ggplot2::expansion(mult = c(0, 0.05))
+        breaks = scales::pretty_breaks(n = 4),
+        expand = ggplot2::expansion(mult = c(0, 0))
       ) +
+      ggplot2::coord_cartesian(xlim = x_lim, ylim = y_lim) +
       ggplot2::labs(
-        title = paste0("Snapshot: ", yr,
-                       " (n = ", nrow(panel_data), " sites)"),
-        x     = "Record length (years)",
-        y     = "Sites"
+        title = paste0(yr, "  (n\u2009=\u2009", n_sites, ")"),
+        x     = if (show_x_title) "Record length (years)" else NULL,
+        y     = if (show_y_title) "Sites" else NULL
       ) +
-      fluxnet_theme(base_size = 13) +
-      ggplot2::theme(legend.position = "bottom")
+      fluxnet_theme(base_size = 12) +
+      ggplot2::theme(
+        plot.title      = ggplot2::element_text(size = 11, hjust = title_hjust,
+                                                margin = ggplot2::margin(b = 2)),
+        axis.text.x     = if (show_x_text)  ggplot2::element_text()
+                          else               ggplot2::element_blank(),
+        axis.ticks.x    = if (show_x_text)  ggplot2::element_line()
+                          else               ggplot2::element_blank(),
+        axis.text.y     = if (show_y_text)  ggplot2::element_text()
+                          else               ggplot2::element_blank(),
+        axis.ticks.y    = if (show_y_text)  ggplot2::element_line()
+                          else               ggplot2::element_blank(),
+        legend.position = "bottom",
+        plot.margin     = ggplot2::margin(mar[1], mar[2], mar[3], mar[4],
+                                          unit = "pt")
+      )
+  }
+
+  # --- Version A: single column, oldest on top --------------------------------
+  #   x axis text+title: bottom panel only
+  #   y axis text: all panels (all are leftmost in ncol=1)
+  #   y axis title "Sites": mid_idx panel only (approximately centred)
+  #   year label: right-aligned title
+
+  vA_panels <- lapply(seq_along(years), function(i) {
+    is_top    <- i == 1L
+    is_bottom <- i == n_years
+    is_mid    <- i == mid_idx
+
+    # top margin: 4pt for first panel, 0 for others (panels touch)
+    # bottom margin: 4pt for last panel, 0 for others
+    mar <- c(
+      if (is_top)    4L else 0L,   # top
+      6L,                           # right (room for axis text)
+      if (is_bottom) 4L else 0L,   # bottom
+      4L                            # left
+    )
+
+    make_panel(
+      pd          = panel_datasets[[i]],
+      yr          = years[[i]],
+      show_x_text  = is_bottom,
+      show_x_title = is_bottom,
+      show_y_text  = TRUE,
+      show_y_title = is_mid,
+      title_hjust  = 1,            # right-aligned strip
+      mar          = mar
+    )
   })
 
-  patchwork::wrap_plots(panels, ncol = 2L) +
+  vA <- patchwork::wrap_plots(vA_panels, ncol = 1L) +
+    patchwork::plot_layout(guides = "collect") +
     patchwork::plot_annotation(
       title    = "Deployment duration profile of the FLUXNET network",
-      subtitle = paste0(
-        "Record length = snapshot_year \u2212 first_year. ",
-        "Functionally active = data submitted within ",
-        active_threshold, " years of snapshot year."
-      )
+      subtitle = outer_subtitle
+    ) &
+    ggplot2::theme(legend.position = "bottom")
+
+  # --- Version B: single row, oldest on left ----------------------------------
+  #   y axis text+title: leftmost panel only
+  #   x axis text: all panels (all are bottom in nrow=1)
+  #   x axis title "Record length (years)": mid_idx panel only (approximately centred)
+  #   year label: centred title
+
+  vB_panels <- lapply(seq_along(years), function(i) {
+    is_left <- i == 1L
+    is_mid  <- i == mid_idx
+
+    # left margin: 4pt for first panel, 0 for others (panels touch)
+    # right margin: 4pt for last panel, 0 for others
+    mar <- c(
+      4L,                                    # top
+      if (i == n_years) 4L else 0L,         # right
+      6L,                                    # bottom (room for axis text)
+      if (is_left)      4L else 0L           # left
     )
+
+    make_panel(
+      pd           = panel_datasets[[i]],
+      yr           = years[[i]],
+      show_x_text  = TRUE,
+      show_x_title = is_mid,
+      show_y_text  = is_left,
+      show_y_title = is_left,
+      title_hjust  = 0.5,          # centred strip
+      mar          = mar
+    )
+  })
+
+  vB <- patchwork::wrap_plots(vB_panels, nrow = 1L) +
+    patchwork::plot_layout(guides = "collect") +
+    patchwork::plot_annotation(
+      title    = "Deployment duration profile of the FLUXNET network",
+      subtitle = outer_subtitle
+    ) &
+    ggplot2::theme(legend.position = "bottom")
+
+  list(vA = vA, vB = vB)
 }
 
 # ---- fig_network_active_proportion ------------------------------------------

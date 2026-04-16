@@ -1,0 +1,304 @@
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+! Use of data downloaded by fluxnet requires you abide by FLUXNET data
+  policies: <https://fluxnet.org/data/data-policy/>
+ℹ Citations for individual sites' datasets are returned by
+  `fluxnet::flux_listall()`
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+=========================================
+  batch_download.R
+  Extract resolutions: y m 
+  Delete ZIPs:         TRUE 
+  Data root:           data 
+=========================================
+
+Fetching site list via flux_listall()...
+Total sites available: 672 
+
+Batch size: 50 | Total batches: 14 
+Progress file found: data/snapshots/download_progress.csv 
+  Completed batches: 11 / 14 
+
+[SKIP] Batch 1/14 (50 sites) — already completed
+[SKIP] Batch 2/14 (50 sites) — already completed
+[SKIP] Batch 3/14 (50 sites) — already completed
+[SKIP] Batch 4/14 (50 sites) — already completed
+[SKIP] Batch 5/14 (50 sites) — already completed
+[SKIP] Batch 6/14 (50 sites) — already completed
+[SKIP] Batch 7/14 (50 sites) — already completed
+[SKIP] Batch 8/14 (50 sites) — already completed
+[SKIP] Batch 9/14 (50 sites) — already completed
+[SKIP] Batch 10/14 (50 sites) — already completed
+[SKIP] Batch 11/14 (50 sites) — already completed
+
+--- START Batch 12/14 (50 sites) ---
+Sites: US-RC4 US-RC5 US-RGA US-RGB US-RGF US-RGo US-RGW US-Rls US-Rms US-Ro1 US-Ro2 US-Ro3 US-Ro4 US-Ro5 US-Ro6 US-Rpf US-RRC US-Rwe US-Rwf US-Rws US-Sag US-SD1 US-SD2 US-Seg US-Ses US-SHC US-Sne US-Snf US-SP1 US-SRC US-SRG US-SRM US-Srr US-SRS US-SSH US-Sta US-StJ US-TKs US-TLR US-Ton US-Tw1 US-Tw2 US-Tw3 US-Tw4 US-Tw5 US-Twt US-Uaf US-UC1 US-UC2 US-UiA 
+Disk free before: 19.41 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-RC4 US-RC5 US-RGA US-RGB US-RGF US-RGo US-RGW US-Rls US-Rms US-Ro1 US-Ro2 US-Ro3 US-Ro4 US-Ro5 US-Ro6 US-Rpf US-RRC US-Rwe US-Rwf US-Rws US-Sag US-SD1 US-SD2 US-Seg US-Ses US-SHC US-Sne US-Snf US-SP1 US-SRC US-SRG US-SRM US-Srr US-SRS US-SSH US-Sta US-StJ US-TKs US-TLR US-Ton US-Tw1 US-Tw2 US-Tw3 US-Tw4 US-Tw5 US-Twt US-Uaf US-UC1 US-UC2 US-UiA
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T153635.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T151918.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-RC4 US-RC5 US-RGA US-RGB US-RGF US-RGo US-RGW US-Rls US-Rms US-Ro1 US-Ro2 US-Ro3 US-Ro4 US-Ro5 US-Ro6 US-Rpf US-RRC US-Rwe US-Rwf US-Rws US-Sag US-SD1 US-SD2 US-Seg US-Ses US-SHC US-Sne US-Snf US-SP1 US-SRC US-SRG US-SRM US-Srr US-SRS US-SSH US-Sta US-StJ US-TKs US-TLR US-Ton US-Tw1 US-Tw2 US-Tw3 US-Tw4 US-Tw5 US-Twt US-Uaf US-UC1 US-UC2 US-UiA
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 600 sites, 26827 site-years across 600 files
+MM / FLUXMET → 600 sites, 4937 site-years across 600 files
+YY / ERA5 → 600 sites, 26827 site-years across 600 files
+YY / FLUXMET → 600 sites, 4937 site-years across 600 files
+  [ZIP cleanup] Deleted  AMF_US-RC4_FLUXNET_2012-2016_v1.3_r1.zip  (56.8 MB)  — US-RC4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RC5_FLUXNET_2013-2015_v1.3_r1.zip  (36.2 MB)  — US-RC5 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RGA_FLUXNET_2021-2024_v1.3_r1.zip  (51.5 MB)  — US-RGA extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RGB_FLUXNET_2021-2024_v1.3_r1.zip  (48.8 MB)  — US-RGB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RGF_FLUXNET_2023-2024_v1.3_r1.zip  (28.7 MB)  — US-RGF extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RGo_FLUXNET_2021-2024_v1.3_r1.zip  (50.7 MB)  — US-RGo extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RGW_FLUXNET_2022-2024_v1.3_r1.zip  (40.5 MB)  — US-RGW extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Rls_FLUXNET_2014-2023_v1.3_r1.zip  (106 MB)  — US-Rls extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Rms_FLUXNET_2014-2023_v1.3_r1.zip  (101.1 MB)  — US-Rms extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ro1_FLUXNET_2004-2016_v1.3_r1.zip  (131 MB)  — US-Ro1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ro2_FLUXNET_2008-2016_v1.3_r1.zip  (77.7 MB)  — US-Ro2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ro3_FLUXNET_2004-2007_v1.3_r1.zip  (48.5 MB)  — US-Ro3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ro4_FLUXNET_2014-2025_v1.3_r1.zip  (126.1 MB)  — US-Ro4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ro5_FLUXNET_2017-2024_v1.3_r1.zip  (91.1 MB)  — US-Ro5 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ro6_FLUXNET_2017-2024_v1.3_r1.zip  (90.8 MB)  — US-Ro6 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Rpf_FLUXNET_2008-2024_v1.3_r1.zip  (167 MB)  — US-Rpf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-RRC_FLUXNET_2022-2024_v1.3_r1.zip  (35.8 MB)  — US-RRC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Rwe_FLUXNET_2003-2007_v1.3_r1.zip  (56.5 MB)  — US-Rwe extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Rwf_FLUXNET_2014-2023_v1.3_r1.zip  (102.8 MB)  — US-Rwf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Rws_FLUXNET_2014-2023_v1.3_r1.zip  (103.5 MB)  — US-Rws extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Sag_FLUXNET_1996-1996_v1.3_r1.zip  (18.9 MB)  — US-Sag extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SD1_FLUXNET_2023-2025_v1.3_r1.zip  (34.4 MB)  — US-SD1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SD2_FLUXNET_2023-2025_v1.3_r1.zip  (33.1 MB)  — US-SD2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Seg_FLUXNET_2007-2025_v1.3_r1.zip  (186.1 MB)  — US-Seg extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ses_FLUXNET_2007-2025_v1.3_r1.zip  (179.2 MB)  — US-Ses extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SHC_FLUXNET_2017-2020_v1.3_r1.zip  (47.8 MB)  — US-SHC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Sne_FLUXNET_2016-2020_v1.3_r1.zip  (60.6 MB)  — US-Sne extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Snf_FLUXNET_2018-2020_v1.3_r1.zip  (35.3 MB)  — US-Snf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SP1_FLUXNET_2000-2020_v1.3_r1.zip  (181.3 MB)  — US-SP1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SRC_FLUXNET_2008-2014_v1.3_r1.zip  (58 MB)  — US-SRC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SRG_FLUXNET_2008-2025_v1.3_r1.zip  (191.6 MB)  — US-SRG extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SRM_FLUXNET_2004-2025_v1.3_r1.zip  (238.9 MB)  — US-SRM extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Srr_FLUXNET_2014-2017_v1.3_r1.zip  (46.6 MB)  — US-Srr extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SRS_FLUXNET_2011-2018_v1.3_r1.zip  (89.5 MB)  — US-SRS extracted OK
+  [ZIP cleanup] Deleted  AMF_US-SSH_FLUXNET_2016-2021_v1.3_r1.zip  (59.8 MB)  — US-SSH extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Sta_FLUXNET_2005-2009_v1.3_r1.zip  (39 MB)  — US-Sta extracted OK
+  [ZIP cleanup] Deleted  AMF_US-StJ_FLUXNET_2015-2020_v1.3_r1.zip  (61.9 MB)  — US-StJ extracted OK
+  [ZIP cleanup] Deleted  AMF_US-TKs_FLUXNET_2018-2025_v1.3_r1.zip  (83.2 MB)  — US-TKs extracted OK
+  [ZIP cleanup] Deleted  AMF_US-TLR_FLUXNET_2024-2024_v1.3_r1.zip  (22.1 MB)  — US-TLR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Ton_FLUXNET_2001-2025_v1.3_r1.zip  (237.6 MB)  — US-Ton extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Tw1_FLUXNET_2011-2023_v1.3_r1.zip  (123.1 MB)  — US-Tw1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Tw2_FLUXNET_2012-2013_v1.3_r1.zip  (24.5 MB)  — US-Tw2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Tw3_FLUXNET_2013-2018_v1.3_r1.zip  (66.9 MB)  — US-Tw3 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Tw4_FLUXNET_2013-2024_v1.3_r1.zip  (122 MB)  — US-Tw4 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Tw5_FLUXNET_2018-2019_v1.3_r1.zip  (26.7 MB)  — US-Tw5 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Twt_FLUXNET_2009-2017_v1.3_r1.zip  (74 MB)  — US-Twt extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Uaf_FLUXNET_2003-2025_v1.3_r1.zip  (136.6 MB)  — US-Uaf extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UC1_FLUXNET_2019-2024_v1.3_r1.zip  (70.9 MB)  — US-UC1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UC2_FLUXNET_2019-2024_v1.3_r1.zip  (70.1 MB)  — US-UC2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UiA_FLUXNET_2008-2024_v1.3_r1.zip  (84.6 MB)  — US-UiA extracted OK
+[ZIP cleanup] Complete: 50 deleted (4255.4 MB freed), 0 kept.
+--- DONE Batch 12/14 (50 sites) | disk free: 23.34 GB (used -3.93 GB net) ---
+
+--- START Batch 13/14 (50 sites) ---
+Sites: US-UiB US-UiC US-UiD US-UiE US-UiF US-UiG US-UMd US-UTB US-UTD US-UTE US-UTJ US-UTW US-Vcm US-Vcp US-VT1 US-VT2 US-WCr US-Whs US-Wjs US-WPT US-WT1 US-xAB US-xAE US-xBA US-xBL US-xBN US-xBR US-xCL US-xCP US-xDC US-xDJ US-xDL US-xDS US-xGR US-xHE US-xJE US-xJR US-xKZ US-xLE US-xMB US-xML US-xNG US-xNQ US-xNW US-xPU US-xRM US-xRN US-xSB US-xSC US-xSE 
+Disk free before: 23.34 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-UiB US-UiC US-UiD US-UiE US-UiF US-UiG US-UMd US-UTB US-UTD US-UTE US-UTJ US-UTW US-Vcm US-Vcp US-VT1 US-VT2 US-WCr US-Whs US-Wjs US-WPT US-WT1 US-xAB US-xAE US-xBA US-xBL US-xBN US-xBR US-xCL US-xCP US-xDC US-xDJ US-xDL US-xDS US-xGR US-xHE US-xJE US-xJR US-xKZ US-xLE US-xMB US-xML US-xNG US-xNQ US-xNW US-xPU US-xRM US-xRN US-xSB US-xSC US-xSE
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T153648.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T153635.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 50 site(s) selected for download.
+Downloading data from specified sites.
+[working] (39 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (38 + 0) -> 10 -> 2 | ■■                                 4%
+[working] (35 + 0) -> 10 -> 5 | ■■■■                              10%
+[working] (32 + 0) -> 10 -> 8 | ■■■■■■                            16%
+[working] (27 + 0) -> 10 -> 13 | ■■■■■■■■■                         26%
+[working] (25 + 0) -> 10 -> 15 | ■■■■■■■■■■                        30%
+[working] (22 + 0) -> 10 -> 18 | ■■■■■■■■■■■■                      36%
+[working] (21 + 0) -> 10 -> 19 | ■■■■■■■■■■■■                      38%
+[working] (14 + 0) -> 10 -> 26 | ■■■■■■■■■■■■■■■■■                 52%
+[working] (13 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (9 + 0) -> 10 -> 31 | ■■■■■■■■■■■■■■■■■■■■              62%
+[working] (5 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■■■■            70%
+[working] (0 + 0) -> 7 -> 43 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       86%
+[working] (0 + 0) -> 4 -> 46 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     92%
+[working] (0 + 0) -> 1 -> 49 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    98%
+[working] (0 + 0) -> 0 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 50 site(s) — US-UiB US-UiC US-UiD US-UiE US-UiF US-UiG US-UMd US-UTB US-UTD US-UTE US-UTJ US-UTW US-Vcm US-Vcp US-VT1 US-VT2 US-WCr US-Whs US-Wjs US-WPT US-WT1 US-xAB US-xAE US-xBA US-xBL US-xBN US-xBR US-xCL US-xCP US-xDC US-xDJ US-xDL US-xDS US-xGR US-xHE US-xJE US-xJR US-xKZ US-xLE US-xMB US-xML US-xNG US-xNQ US-xNW US-xPU US-xRM US-xRN US-xSB US-xSC US-xSE
+Snapshot mode: development
+Extracting 50 ZIP file(s) from data/raw ...
+MM / ERA5 → 650 sites, 29062 site-years across 650 files
+MM / FLUXMET → 650 sites, 5327 site-years across 650 files
+YY / ERA5 → 650 sites, 29062 site-years across 650 files
+YY / FLUXMET → 650 sites, 5327 site-years across 650 files
+  [ZIP cleanup] Deleted  AMF_US-UiB_FLUXNET_2008-2024_v1.3_r1.zip  (118.1 MB)  — US-UiB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UiC_FLUXNET_2008-2024_v1.3_r1.zip  (104.9 MB)  — US-UiC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UiD_FLUXNET_2008-2024_v1.3_r1.zip  (82.9 MB)  — US-UiD extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UiE_FLUXNET_2018-2024_v1.3_r1.zip  (80.1 MB)  — US-UiE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UiF_FLUXNET_2018-2023_v1.3_r1.zip  (69.1 MB)  — US-UiF extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UiG_FLUXNET_2018-2023_v1.3_r1.zip  (70.7 MB)  — US-UiG extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UMd_FLUXNET_2007-2025_v1.3_r1.zip  (179 MB)  — US-UMd extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UTB_FLUXNET_2021-2023_v1.3_r1.zip  (30 MB)  — US-UTB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UTD_FLUXNET_2023-2024_v1.3_r1.zip  (25.1 MB)  — US-UTD extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UTE_FLUXNET_2024-2025_v1.3_r1.zip  (27.3 MB)  — US-UTE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UTJ_FLUXNET_2024-2025_v1.3_r1.zip  (27.5 MB)  — US-UTJ extracted OK
+  [ZIP cleanup] Deleted  AMF_US-UTW_FLUXNET_2021-2024_v1.3_r1.zip  (49.9 MB)  — US-UTW extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Vcm_FLUXNET_2007-2025_v1.3_r1.zip  (137.9 MB)  — US-Vcm extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Vcp_FLUXNET_2007-2025_v1.3_r1.zip  (169.3 MB)  — US-Vcp extracted OK
+  [ZIP cleanup] Deleted  AMF_US-VT1_FLUXNET_2023-2025_v1.3_r1.zip  (33.8 MB)  — US-VT1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-VT2_FLUXNET_2023-2025_v1.3_r1.zip  (33.2 MB)  — US-VT2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-WCr_FLUXNET_1999-2025_v1.3_r1.zip  (167.7 MB)  — US-WCr extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Whs_FLUXNET_2007-2025_v1.3_r1.zip  (134.5 MB)  — US-Whs extracted OK
+  [ZIP cleanup] Deleted  AMF_US-Wjs_FLUXNET_2007-2025_v1.3_r1.zip  (176 MB)  — US-Wjs extracted OK
+  [ZIP cleanup] Deleted  AMF_US-WPT_FLUXNET_2011-2013_v1.3_r1.zip  (39.4 MB)  — US-WPT extracted OK
+  [ZIP cleanup] Deleted  AMF_US-WT1_FLUXNET_2023-2024_v1.3_r1.zip  (25.2 MB)  — US-WT1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xAB_FLUXNET_2019-2024_v1.3_r1.zip  (58.4 MB)  — US-xAB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xAE_FLUXNET_2019-2024_v1.3_r1.zip  (70.4 MB)  — US-xAE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xBA_FLUXNET_2019-2024_v1.3_r1.zip  (60.4 MB)  — US-xBA extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xBL_FLUXNET_2019-2024_v1.3_r1.zip  (69.7 MB)  — US-xBL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xBN_FLUXNET_2019-2024_v1.3_r1.zip  (71.3 MB)  — US-xBN extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xBR_FLUXNET_2019-2024_v1.3_r1.zip  (74.1 MB)  — US-xBR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xCL_FLUXNET_2019-2024_v1.3_r1.zip  (72.9 MB)  — US-xCL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xCP_FLUXNET_2019-2024_v1.3_r1.zip  (72.3 MB)  — US-xCP extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xDC_FLUXNET_2019-2024_v1.3_r1.zip  (74.2 MB)  — US-xDC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xDJ_FLUXNET_2019-2024_v1.3_r1.zip  (72.4 MB)  — US-xDJ extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xDL_FLUXNET_2019-2024_v1.3_r1.zip  (65.4 MB)  — US-xDL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xDS_FLUXNET_2019-2024_v1.3_r1.zip  (70.7 MB)  — US-xDS extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xGR_FLUXNET_2019-2024_v1.3_r1.zip  (68.6 MB)  — US-xGR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xHE_FLUXNET_2019-2024_v1.3_r1.zip  (68.6 MB)  — US-xHE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xJE_FLUXNET_2019-2024_v1.3_r1.zip  (72 MB)  — US-xJE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xJR_FLUXNET_2019-2024_v1.3_r1.zip  (75.5 MB)  — US-xJR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xKZ_FLUXNET_2019-2024_v1.3_r1.zip  (74 MB)  — US-xKZ extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xLE_FLUXNET_2019-2024_v1.3_r1.zip  (49.3 MB)  — US-xLE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xMB_FLUXNET_2019-2024_v1.3_r1.zip  (71.2 MB)  — US-xMB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xML_FLUXNET_2019-2024_v1.3_r1.zip  (68.5 MB)  — US-xML extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xNG_FLUXNET_2019-2024_v1.3_r1.zip  (70.2 MB)  — US-xNG extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xNQ_FLUXNET_2019-2024_v1.3_r1.zip  (68.3 MB)  — US-xNQ extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xNW_FLUXNET_2019-2024_v1.3_r1.zip  (66.9 MB)  — US-xNW extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xPU_FLUXNET_2019-2024_v1.3_r1.zip  (53.2 MB)  — US-xPU extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xRM_FLUXNET_2019-2024_v1.3_r1.zip  (72.3 MB)  — US-xRM extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xRN_FLUXNET_2019-2024_v1.3_r1.zip  (56.7 MB)  — US-xRN extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xSB_FLUXNET_2019-2024_v1.3_r1.zip  (69.1 MB)  — US-xSB extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xSC_FLUXNET_2019-2024_v1.3_r1.zip  (61.4 MB)  — US-xSC extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xSE_FLUXNET_2019-2024_v1.3_r1.zip  (70.9 MB)  — US-xSE extracted OK
+[ZIP cleanup] Complete: 50 deleted (3750.5 MB freed), 0 kept.
+--- DONE Batch 13/14 (50 sites) | disk free: 23.3 GB (used 0.04 GB net) ---
+
+--- START Batch 14/14 (22 sites) ---
+Sites: US-xSJ US-xSL US-xSP US-xSR US-xST US-xTE US-xTL US-xTR US-xUK US-xUN US-xWD US-xWR US-xYE US-YK1 US-YK2 US-ZF2 VU-Coc ZA-BfK ZA-BfS ZA-Jks ZA-Spk ZA-Uby 
+Disk free before: 23.3 GB
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 22 site(s) — US-xSJ US-xSL US-xSP US-xSR US-xST US-xTE US-xTL US-xTR US-xUK US-xUN US-xWD US-xWR US-xYE US-YK1 US-YK2 US-ZF2 VU-Coc ZA-BfK ZA-BfS ZA-Jks ZA-Spk ZA-Uby
+Snapshot mode: development
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260414T154430.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T153648.csv
+Update detection — new sites: 0; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+No changed sites detected. Nothing to download.
+Site filter applied: 22 site(s) selected for download.
+Downloading data from specified sites.
+[working] (11 + 0) -> 10 -> 1 | ■■                                 5%
+[working] (8 + 0) -> 10 -> 4 | ■■■■■■                            18%
+[working] (2 + 0) -> 10 -> 10 | ■■■■■■■■■■■■■■■                   45%
+[working] (1 + 0) -> 10 -> 11 | ■■■■■■■■■■■■■■■■                  50%
+[working] (0 + 0) -> 7 -> 15 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (0 + 0) -> 0 -> 22 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter active: 22 site(s) — US-xSJ US-xSL US-xSP US-xSR US-xST US-xTE US-xTL US-xTR US-xUK US-xUN US-xWD US-xWR US-xYE US-YK1 US-YK2 US-ZF2 VU-Coc ZA-BfK ZA-BfS ZA-Jks ZA-Spk ZA-Uby
+Snapshot mode: development
+Extracting 22 ZIP file(s) from data/raw ...
+MM / ERA5 → 672 sites, 30045 site-years across 672 files
+MM / FLUXMET → 672 sites, 5440 site-years across 672 files
+YY / ERA5 → 672 sites, 30045 site-years across 672 files
+YY / FLUXMET → 672 sites, 5440 site-years across 672 files
+  [ZIP cleanup] Deleted  AMF_US-xSJ_FLUXNET_2019-2024_v1.3_r1.zip  (69.6 MB)  — US-xSJ extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xSL_FLUXNET_2019-2024_v1.3_r1.zip  (73.7 MB)  — US-xSL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xSP_FLUXNET_2019-2024_v1.3_r1.zip  (56.5 MB)  — US-xSP extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xSR_FLUXNET_2019-2024_v1.3_r1.zip  (73.8 MB)  — US-xSR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xST_FLUXNET_2019-2024_v1.3_r1.zip  (71.9 MB)  — US-xST extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xTE_FLUXNET_2019-2024_v1.3_r1.zip  (54.4 MB)  — US-xTE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xTL_FLUXNET_2019-2024_v1.3_r1.zip  (63.7 MB)  — US-xTL extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xTR_FLUXNET_2019-2024_v1.3_r1.zip  (74.1 MB)  — US-xTR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xUK_FLUXNET_2019-2024_v1.3_r1.zip  (66.8 MB)  — US-xUK extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xUN_FLUXNET_2019-2024_v1.3_r1.zip  (73 MB)  — US-xUN extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xWD_FLUXNET_2019-2024_v1.3_r1.zip  (72 MB)  — US-xWD extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xWR_FLUXNET_2019-2024_v1.3_r1.zip  (72.2 MB)  — US-xWR extracted OK
+  [ZIP cleanup] Deleted  AMF_US-xYE_FLUXNET_2019-2024_v1.3_r1.zip  (67.3 MB)  — US-xYE extracted OK
+  [ZIP cleanup] Deleted  AMF_US-YK1_FLUXNET_2019-2025_v1.3_r1.zip  (47.5 MB)  — US-YK1 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-YK2_FLUXNET_2019-2025_v1.3_r1.zip  (64.6 MB)  — US-YK2 extracted OK
+  [ZIP cleanup] Deleted  AMF_US-ZF2_FLUXNET_2024-2025_v1.3_r1.zip  (25.1 MB)  — US-ZF2 extracted OK
+  [ZIP cleanup] Deleted  FLX_VU-Coc_FLUXNET_2001-2004_v1.3_r1.zip  (33.5 MB)  — VU-Coc extracted OK
+  [ZIP cleanup] Deleted  SAEON_ZA-BfK_FLUXNET_2020-2024_v1.3_r1.zip  (57.5 MB)  — ZA-BfK extracted OK
+  [ZIP cleanup] Deleted  SAEON_ZA-BfS_FLUXNET_2020-2024_v1.3_r1.zip  (55.1 MB)  — ZA-BfS extracted OK
+  [ZIP cleanup] Deleted  SAEON_ZA-Jks_FLUXNET_2024-2024_v1.3_r1.zip  (22.3 MB)  — ZA-Jks extracted OK
+  [ZIP cleanup] Deleted  SAEON_ZA-Spk_FLUXNET_2023-2024_v1.3_r1.zip  (27.8 MB)  — ZA-Spk extracted OK
+  [ZIP cleanup] Deleted  SAEON_ZA-Uby_FLUXNET_2023-2024_v1.3_r1.zip  (27.7 MB)  — ZA-Uby extracted OK
+[ZIP cleanup] Complete: 22 deleted (1250.1 MB freed), 0 kept.
+--- DONE Batch 14/14 (22 sites) | disk free: 23.29 GB (used 0.01 GB net) ---
+Warning messages:
+1: In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+2: In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+3: In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+4: In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+5: In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+6: In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+
+=========================================
+ All 15/14 batches complete.
+ Running 03_read → 04_qc → 05_units...
+=========================================
+Data root: data
+Extract resolutions: y m
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Error: Files must all have 5 columns:
+i File 21 has 6 columns.
+In addition: Warning message:
+In check_pipeline_config() :
+  fluxnet-shuttle does not appear to be installed. It will be installed automatically on the first call to flux_listall().
+Execution halted

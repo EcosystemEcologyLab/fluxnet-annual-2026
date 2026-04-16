@@ -1,0 +1,11 @@
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+! Use of data downloaded by fluxnet requires you abide by FLUXNET data
+  policies: <https://fluxnet.org/data/data-policy/>
+ℹ Citations for individual sites' datasets are returned by
+  `fluxnet::flux_listall()`

@@ -641,7 +641,7 @@ fig_network_subregion_overview <- function(metadata,
       }
     ) +
     ggplot2::labs(x = "Total sites", y = NULL) +
-    fluxnet_theme(base_size = 12) +
+    fluxnet_theme() +
     ggplot2::theme(
       legend.position = "bottom",
       axis.text.y     = ggplot2::element_text(size = 10),
@@ -676,7 +676,7 @@ fig_network_subregion_overview <- function(metadata,
       expand = ggplot2::expansion(mult = c(0, 0.04))
     ) +
     ggplot2::labs(x = "Functionally active sites", y = NULL) +
-    fluxnet_theme(base_size = 12) +
+    fluxnet_theme() +
     ggplot2::theme(
       legend.position = "bottom",
       axis.text.y     = ggplot2::element_blank(),
@@ -690,9 +690,13 @@ fig_network_subregion_overview <- function(metadata,
     ggplot2::theme(legend.position = "bottom")
 
   if (!is.null(p_map)) {
-    pw <- patchwork::wrap_elements(full = p_map) /
-          patchwork::wrap_elements(full = bars)
-    pw <- pw + patchwork::plot_layout(heights = c(1, 2.5))
+    # Apply zero margin to all map sub-panels so choropleth fills its row fully
+    p_map_adj <- p_map &
+      ggplot2::theme(plot.margin = ggplot2::margin(0, 0, 0, 0))
+
+    pw <- patchwork::wrap_elements(full = p_map_adj, clip = FALSE) /
+          bars
+    pw <- pw + patchwork::plot_layout(heights = c(1, 1))
   } else {
     pw <- bars
   }
@@ -1029,7 +1033,7 @@ fig_latency_by_subregion <- function(metadata,
       y       = NULL,
       caption = caption_text
     ) +
-    fluxnet_theme(base_size = 12) +
+    fluxnet_theme() +
     ggplot2::theme(
       legend.position  = "right",
       axis.text.y      = ggplot2::element_text(size = 11),

@@ -769,15 +769,24 @@ build_network_growth_annual <- function() {
 build_duration_profile <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
   tryCatch({
-    p <- fig_network_duration_profile(metadata = snapshot_meta_full)
-    review_dir  <- file.path("review", "figures")
+    figs <- fig_network_duration_profile(metadata = snapshot_meta_full)
+    review_dir <- file.path("review", "figures")
     if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
-    review_path <- file.path(review_dir, "fig_network_duration_profile.png")
-    ggplot2::ggsave(review_path, plot = p, width = 12, height = 9,
+
+    path_vA <- file.path(review_dir, "fig_network_duration_profile_vA.png")
+    path_vB <- file.path(review_dir, "fig_network_duration_profile_vB.png")
+    ggplot2::ggsave(path_vA, plot = figs$vA, width = 7,  height = 14,
                     units = "in", dpi = 150)
-    message("Review figure saved: ", review_path)
-    paste0('<div class="plot-wrap">', plot_to_png(p, width = 12, height = 9),
-           "</div>")
+    ggplot2::ggsave(path_vB, plot = figs$vB, width = 18, height = 5,
+                    units = "in", dpi = 150)
+    message("Review figures saved: ", path_vA, " | ", path_vB)
+
+    paste0(
+      "<h3>Version A \u2014 stacked vertically</h3>",
+      '<div class="plot-wrap">', plot_to_png(figs$vA, width = 7,  height = 14), "</div>",
+      "<h3>Version B \u2014 side by side</h3>",
+      '<div class="plot-wrap">', plot_to_png(figs$vB, width = 18, height = 5),  "</div>"
+    )
   }, error = function(e) {
     no_data(paste0("Deployment duration profile unavailable: ", conditionMessage(e)))
   })

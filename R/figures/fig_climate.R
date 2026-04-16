@@ -52,73 +52,21 @@ library(colorspace)
   )
 }
 
-#' Build Whittaker polygon ggplot layers (colour = biome border, fill fixed grey)
-#'
-#' Returns a list of ggplot2 layers that overlay the standard Whittaker biome
-#' polygon boundaries onto a plot whose axes are MAT (°C, x) and MAP (mm yr⁻¹,
-#' y).  The polygon y-coordinates in \pkg{plotbiomes} are in cm; this helper
-#' multiplies by 10 to convert to mm.
-#'
-#' Biomes are encoded as a **colour** aesthetic (polygon border) rather than
-#' fill, so the caller's hex-fill scale is free to encode a separate variable
-#' without a scale conflict.
-#'
-#' @return A list of ggplot2 layers: \code{geom_polygon} + \code{scale_colour_manual}.
-#' @noRd
-.whittaker_border_layers <- function() {
-  if (!requireNamespace("plotbiomes", quietly = TRUE)) {
-    return(list())
-  }
-  wb        <- plotbiomes::Whittaker_biomes
-  wb$precp_mm <- wb$precp_cm * 10L
-
-  biome_cols <- plotbiomes::Ricklefs_colors
-
-  list(
-    ggplot2::geom_polygon(
-      data        = wb,
-      ggplot2::aes(x     = .data$temp_c,
-                   y     = .data$precp_mm,
-                   colour = .data$biome,
-                   group  = .data$biome_id),
-      fill        = "grey94",
-      linewidth   = 0.5,
-      alpha       = 0.55,
-      inherit.aes = FALSE
-    ),
-    ggplot2::scale_colour_manual(
-      name   = "Whittaker biome",
-      values = biome_cols,
-      guide  = ggplot2::guide_legend(
-        ncol     = 2,
-        keywidth = 1.0,
-        keyheight = 0.75,
-        title.hjust = 0
-      )
-    )
-  )
-}
-
 # ---- Exported functions -----------------------------------------------------
 
-#' Whittaker biome hexbin using ERA5 climate extracted at tower locations
+#' Hexbin of temperature × precipitation coloured by flux (ERA5 climate)
 #'
-#' Plots tower sites on a Whittaker biome diagram using hexagonal binning, with
-#' each hex coloured by the median site-mean of \code{flux_var}.  Climate normals
-#' (MAT and MAP) are derived entirely from ERA5 variables already present in the
-#' annual FLUXNET data (\code{TA_ERA} in K; \code{P_ERA} in mm yr⁻¹), so no
-#' external raster data are needed.  **This version runs in the Codespace.**
+#' Plots tower sites on a temperature × precipitation scatter using hexagonal
+#' binning, with each hex coloured by the median site-mean of \code{flux_var}.
+#' Climate normals (MAT and MAP) are derived entirely from ERA5 variables
+#' already present in the annual FLUXNET data (\code{TA_ERA} in K;
+#' \code{P_ERA} in mm yr⁻¹), so no external raster data are needed.
+#' **This version runs in the Codespace.**
 #'
 #' Site-level MAT and MAP are computed by averaging \code{TA_ERA - 273.15} and
 #' \code{P_ERA} across all years for each site before plotting.  Sites with
 #' implausibly high precipitation (> 8 000 mm yr⁻¹, indicating ERA5 unit
 #' conversion artifacts) are dropped with a \code{message()} before plotting.
-#' The display is clipped to the Whittaker biome polygon extent (approximately
-#' [-16, 30] °C × [0, 4 500] mm yr⁻¹) using \code{coord_cartesian()}.
-#'
-#' The Whittaker biome polygon overlay (from \pkg{plotbiomes}) uses polygon
-#' \emph{border} colour to encode biome identity, leaving the \code{fill}
-#' aesthetic free for the diverging flux colour scale.
 #'
 #' @param data_yy Annual FLUXNET data frame.  Must contain \code{site_id},
 #'   \code{TA_ERA} (K), \code{P_ERA} (mm yr⁻¹), and \code{flux_var}.
@@ -202,23 +150,14 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
   flux_label  <- .flux_climate_label(flux_var)
   cutoff_text <- if (!is.null(year_cutoff))
     paste0(" \u2014 through ", year_cutoff) else ""
-  title_text  <- paste0("Whittaker biome diagram", cutoff_text)
+  title_text  <- paste0("Temperature \u00d7 precipitation hexbin", cutoff_text)
   n_sites     <- nrow(site_clim)
-
-  # --- Whittaker biome polygon extent (for coord_cartesian clip) --------------
-  # plotbiomes::Whittaker_biomes: temp_c in [-15.6, 30.0], precp_cm in [0, 444]
-  # Add 10 % buffer; y in mm (precp_cm × 10).
-  clim_xlim <- c(-18, 32)
-  clim_ylim <- c(-100, 4700)
 
   # --- plot -------------------------------------------------------------------
   ggplot2::ggplot(
     site_clim,
     ggplot2::aes(x = .data$MAT, y = .data$MAP, z = .data$mean_flux)
   ) +
-    # Whittaker biome polygon borders (colour scale; fill fixed grey)
-    .whittaker_border_layers() +
-    # Hexbin coloured by median flux
     ggplot2::stat_summary_hex(
       fun   = median,
       bins  = 15,
@@ -243,7 +182,6 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
       alpha       = 0.55,
       inherit.aes = FALSE
     ) +
-    ggplot2::coord_cartesian(xlim = clim_xlim, ylim = clim_ylim) +
     ggplot2::labs(
       x        = "Mean annual temperature (\u00b0C)",
       y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
@@ -261,13 +199,13 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
 }
 
 
-#' Whittaker biome hexbin using WorldClim bio1 (MAT) and bio12 (MAP)
+#' Hexbin of temperature × precipitation coloured by flux (WorldClim climate)
 #'
-#' Plots tower sites on a Whittaker biome diagram using hexagonal binning, with
-#' each hex coloured by the median site-mean of \code{flux_var}.  Climate normals
-#' are extracted from a WorldClim \pkg{terra} SpatRaster supplied via
-#' \code{worldclim_data}.  Layers bio1 (Annual Mean Temperature, °C or °C × 10)
-#' and bio12 (Annual Precipitation, mm) are required.
+#' Plots tower sites on a temperature × precipitation scatter using hexagonal
+#' binning, with each hex coloured by the median site-mean of \code{flux_var}.
+#' Climate normals are extracted from a WorldClim \pkg{terra} SpatRaster
+#' supplied via \code{worldclim_data}.  Layers bio1 (Annual Mean Temperature,
+#' °C or °C × 10) and bio12 (Annual Precipitation, mm) are required.
 #'
 #' This version requires WorldClim raster data and the \pkg{terra} package.
 #' **Designed for local Mac execution where WorldClim is available — do not run
@@ -468,14 +406,13 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
   flux_label  <- .flux_climate_label(flux_var)
   cutoff_text <- if (!is.null(year_cutoff))
     paste0(" \u2014 through ", year_cutoff) else ""
-  title_text  <- paste0("Whittaker biome diagram", cutoff_text)
+  title_text  <- paste0("Temperature \u00d7 precipitation hexbin", cutoff_text)
 
   # --- plot -------------------------------------------------------------------
   ggplot2::ggplot(
     site_clim,
     ggplot2::aes(x = .data$MAT, y = .data$MAP, z = .data$mean_flux)
   ) +
-    .whittaker_border_layers() +
     ggplot2::stat_summary_hex(
       fun   = median,
       bins  = 15,

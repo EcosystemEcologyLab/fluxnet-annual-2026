@@ -680,7 +680,8 @@ fig_network_subregion_overview <- function(metadata,
     ggplot2::theme(legend.position = "bottom")
 
   if (!is.null(p_map)) {
-    pw <- patchwork::wrap_elements(full = p_map) | bars
+    pw <- patchwork::wrap_elements(full = p_map) |
+          patchwork::wrap_elements(full = bars)
     pw <- pw + patchwork::plot_layout(widths = c(2, 1))
   } else {
     pw <- bars

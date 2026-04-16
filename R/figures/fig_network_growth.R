@@ -210,23 +210,18 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #' Deployment duration profile histograms at snapshot years
 #'
 #' For each year in `years`, calculates per-site record length as
-#' `n_years_with_valid_NEE` — the count of calendar years in `data_yy` where
-#' `NEE_VUT_REF` is not `NA` for that site — then classifies each site as
-#' "Functionally active" or "Inactive / high latency" based on whether
-#' `last_year` from the snapshot metadata falls within `active_threshold` years
-#' of the snapshot year.
+#' `snapshot_year - first_year` — how long the site had been running by that
+#' snapshot year — then classifies each site as "Functionally active" or
+#' "Inactive / high latency" based on whether `last_year` from the snapshot
+#' metadata falls within `active_threshold` years of the snapshot year.
+#' Sites with `first_year > snapshot_year` are excluded from that panel
+#' (they had not started yet).
 #'
-#' **Why `n_years_with_valid_NEE` rather than nominal record length:**
-#' Nominal record length (last_year - first_year + 1) overstates the
-#' analysis-relevant record for sites with extended gaps or delayed processing.
-#' Counting years with at least one valid NEE observation in the processed YY
-#' data reflects actual data availability for flux synthesis.
+#' For example: US-Ha1 started in 1991. In the 2010 panel its record length is
+#' 19 years; in the 2025 panel it is 34 years.
 #'
 #' @param metadata Data frame. Snapshot CSV (one row per site) with columns
-#'   `site_id` and `last_year`.
-#' @param data_yy Data frame. Processed annual (YY) flux data with columns
-#'   `site_id`, `NEE_VUT_REF`, and `YEAR` (integer). Typically
-#'   `flux_data_converted_yy.rds`.
+#'   `site_id`, `first_year`, and `last_year`.
 #' @param years Integer vector of length 4. Snapshot years at which to assess
 #'   the network (default `c(2010, 2015, 2020, 2025)`). Assembled as a 2x2
 #'   patchwork via [patchwork::wrap_plots()].
@@ -235,17 +230,17 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #'   (default `4`).
 #'
 #' @return A patchwork object: 2x2 grid of histograms, one per snapshot year.
-#'   x-axis = record length (years with valid `NEE_VUT_REF`);
-#'   y-axis = number of sites; fill = active/inactive status.
+#'   x-axis = record length in years (`snapshot_year - first_year`);
+#'   y-axis = number of sites present by that year; fill = active/inactive
+#'   status (two colours).
 #'
 #' @examples
 #' \dontrun{
-#' meta    <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260414T153648.csv")
-#' data_yy <- readRDS("data/processed/flux_data_converted_yy.rds")
-#' p <- fig_network_duration_profile(meta, data_yy)
+#' meta <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260414T153648.csv")
+#' p <- fig_network_duration_profile(meta)
 #' print(p)
 #' }
-fig_network_duration_profile <- function(metadata, data_yy,
+fig_network_duration_profile <- function(metadata,
                                          years = c(2010, 2015, 2020, 2025),
                                          active_threshold = 4L) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
@@ -256,7 +251,7 @@ fig_network_duration_profile <- function(metadata, data_yy,
     )
   }
 
-  required_meta <- c("site_id", "last_year")
+  required_meta <- c("site_id", "first_year", "last_year")
   missing_meta  <- setdiff(required_meta, names(metadata))
   if (length(missing_meta) > 0L) {
     stop(
@@ -265,39 +260,19 @@ fig_network_duration_profile <- function(metadata, data_yy,
       call. = FALSE
     )
   }
-  if (!"NEE_VUT_REF" %in% names(data_yy)) {
-    stop(
-      "fig_network_duration_profile: data_yy missing required column NEE_VUT_REF",
-      call. = FALSE
-    )
-  }
-  if (!"YEAR" %in% names(data_yy)) {
-    stop(
-      "fig_network_duration_profile: data_yy missing required column YEAR",
-      call. = FALSE
-    )
-  }
-
-  # Count calendar years per site with at least one valid NEE_VUT_REF
-  nee_record <- data_yy |>
-    dplyr::filter(!is.na(.data$NEE_VUT_REF)) |>
-    dplyr::distinct(.data$site_id, .data$YEAR) |>
-    dplyr::group_by(.data$site_id) |>
-    dplyr::summarise(n_years_with_valid_NEE = dplyr::n(), .groups = "drop")
 
   site_profile <- metadata |>
     dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
-    dplyr::select("site_id", "last_year") |>
-    dplyr::filter(!is.na(.data$last_year)) |>
-    dplyr::mutate(last_year = as.integer(.data$last_year)) |>
-    dplyr::left_join(nee_record, by = "site_id") |>
+    dplyr::select("site_id", "first_year", "last_year") |>
+    dplyr::filter(!is.na(.data$first_year), !is.na(.data$last_year)) |>
     dplyr::mutate(
-      n_years_with_valid_NEE = tidyr::replace_na(.data$n_years_with_valid_NEE, 0L)
+      first_year = as.integer(.data$first_year),
+      last_year  = as.integer(.data$last_year)
     )
 
   if (nrow(site_profile) == 0L) {
     warning(
-      "fig_network_duration_profile: no sites with valid last_year — returning empty plot.",
+      "fig_network_duration_profile: no sites with valid first/last year — returning empty plot.",
       call. = FALSE
     )
     empty <- replicate(
@@ -315,7 +290,9 @@ fig_network_duration_profile <- function(metadata, data_yy,
 
   panels <- lapply(years, function(yr) {
     panel_data <- site_profile |>
+      dplyr::filter(.data$first_year <= yr) |>
       dplyr::mutate(
+        record_length = yr - .data$first_year,
         activity = dplyr::if_else(
           .data$last_year >= yr - active_threshold,
           "Functionally active",
@@ -329,7 +306,7 @@ fig_network_duration_profile <- function(metadata, data_yy,
 
     ggplot2::ggplot(
       panel_data,
-      ggplot2::aes(x = .data$n_years_with_valid_NEE, fill = .data$activity)
+      ggplot2::aes(x = .data$record_length, fill = .data$activity)
     ) +
       ggplot2::geom_histogram(binwidth = 1L, colour = "white", linewidth = 0.25,
                               position = "stack") +
@@ -344,8 +321,9 @@ fig_network_duration_profile <- function(metadata, data_yy,
         expand = ggplot2::expansion(mult = c(0, 0.05))
       ) +
       ggplot2::labs(
-        title = paste0("Snapshot: ", yr),
-        x     = "Record length (years with valid NEE)",
+        title = paste0("Snapshot: ", yr,
+                       " (n = ", nrow(panel_data), " sites)"),
+        x     = "Record length (years)",
         y     = "Sites"
       ) +
       fluxnet_theme(base_size = 13) +
@@ -356,7 +334,7 @@ fig_network_duration_profile <- function(metadata, data_yy,
     patchwork::plot_annotation(
       title    = "Deployment duration profile of the FLUXNET network",
       subtitle = paste0(
-        "Record length = years with valid NEE_VUT_REF. ",
+        "Record length = snapshot_year \u2212 first_year. ",
         "Functionally active = data submitted within ",
         active_threshold, " years of snapshot year."
       )

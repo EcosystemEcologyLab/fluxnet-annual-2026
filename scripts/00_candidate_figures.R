@@ -768,12 +768,8 @@ build_network_growth_annual <- function() {
 # ============================================================
 build_duration_profile <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
-  if (is.null(site_data[["yy"]]))  return(no_data("No YY data available."))
   tryCatch({
-    p <- fig_network_duration_profile(
-      metadata = snapshot_meta_full,
-      data_yy  = site_data[["yy"]]$data
-    )
+    p <- fig_network_duration_profile(metadata = snapshot_meta_full)
     review_dir  <- file.path("review", "figures")
     if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
     review_path <- file.path(review_dir, "fig_network_duration_profile.png")

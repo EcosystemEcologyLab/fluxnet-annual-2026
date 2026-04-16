@@ -897,11 +897,11 @@ s13 <- section(13, "Subregion overview \u2014 map, site counts, latency (2025)",
                  review_dir <- file.path("review", "figures")
                  if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
                  review_path <- file.path(review_dir, "fig_network_subregion_overview.png")
-                 ggplot2::ggsave(review_path, plot = p, width = 16, height = 10,
+                 ggplot2::ggsave(review_path, plot = p, width = 16, height = 14,
                                  units = "in", dpi = 150)
                  message("Review figure saved: ", review_path)
                  paste0('<div class="plot-wrap">',
-                        plot_to_png(p, width = 16, height = 10), "</div>")
+                        plot_to_png(p, width = 16, height = 14), "</div>")
                }, error = function(e) {
                  no_data(paste0("Subregion overview unavailable: ", conditionMessage(e)))
                }))

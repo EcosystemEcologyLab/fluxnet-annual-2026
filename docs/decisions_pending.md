@@ -32,3 +32,22 @@ They appear in `outputs/sites_nee_cut_only.csv`.
 
 **Action:** Raise with co-authors. Do not implement fallback until decision is reached.
 See `docs/known_issues.md` Section 3 for full counts and file references.
+
+---
+
+## Methods section — sites excluded due to data gaps
+
+Dario Papale confirmed (2026-04-16) that sites with all-missing `NEE_VUT_REF` have gaps
+exceeding 15 consecutive days throughout their record — ONEFlux correctly withholds annual
+estimates in these cases. This needs a paragraph in the paper methods section explaining:
+
+1. The 15-day gap threshold in ONEFlux and why annual estimates are not computed when this
+   threshold is exceeded for all years in a site's record
+2. The number of sites excluded on this basis (106)
+3. The use of `NEE_CUT_REF` as fallback for 36 additional sites where VUT could not be
+   calculated due to insufficient u* threshold statistics
+4. The final site count used in analysis (530 VUT + up to 36 CUT fallback, pending
+   co-author decision on NEE_CUT_REF fallback — see entry above)
+
+Contact Gilberto Pastorello (LBL) for ONEFlux processing documentation to support
+methods writing (flagged by Dario Papale, 2026-04-16).

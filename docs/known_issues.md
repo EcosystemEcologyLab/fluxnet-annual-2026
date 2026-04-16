@@ -1,7 +1,10 @@
 # Known Issues
 
 This file tracks bugs and data quality issues encountered during pipeline development.
-Issues are reported to the relevant maintainers. Last updated: 2026-04-14.
+Issues are reported to the relevant maintainers. Last updated: 2026-04-16.
+
+**ONEFlux contact:** Gilberto Pastorello (LBL) has been flagged by Dario Papale as the
+contact for ONEFlux processing documentation — relevant for methods section writing.
 
 ---
 
@@ -50,15 +53,17 @@ Full site lists:
 - `outputs/sites_no_nee_vut.csv` — all 142 zero-NEE-VUT sites (gitignored, regenerated each run)
 - `outputs/sites_nee_cut_only.csv` — the 36 sites with valid `NEE_CUT_REF` but not `NEE_VUT_REF`
 
-**Root cause for the 106 with neither (verified 2026-04-14):** ONEFlux processing produced
-no valid NEE output for these sites. All rows in the FLUXMET YY CSV have `NEE_VUT_REF =
--9999` (and `NEE_CUT_REF = -9999` where that column is also present). The FLUXMET YY file
-exists and was correctly read by the pipeline — `flux_data_raw_yy.rds` contains the
-FLUXMET rows for every one of these sites. The pipeline correctly converts `-9999` to `NA`.
-This is **not a pipeline bug** and not a Shuttle packaging issue.
+**Root cause for the 106 with neither (confirmed by Dario Papale, 2026-04-16):** ONEFlux
+does not calculate annual values when gaps exceed 15 consecutive days for all years in the
+record. This is expected behaviour — annual NEE estimates are not meaningful when data
+continuity is insufficient. These sites are correctly excluded from annual flux analysis.
 
 Verified by manually reading FLUXMET YY CSVs for a sample of 8 sites (RU-NeF, US-TLR,
 US-CS6, CN-SnB, US-Lin, US-Sag, CA-PB1, US-YK1) — every case confirmed all-`-9999`.
+
+**Root cause for the 36 NEE_CUT only (confirmed by Dario Papale, 2026-04-16):** VUT cannot
+always be calculated at sites where determining a u* threshold is statistically difficult.
+`NEE_CUT_REF` is the appropriate fallback for these sites.
 
 **Action:** Report to support@fluxnet.org for routing to data contributors. See
 `docs/shuttle_team_report_20260414.md` for the full site list and draft report text.
@@ -67,7 +72,31 @@ See `docs/decisions_pending.md` for the open decision on whether to fall back to
 
 ---
 
-## Section 4 — FLUXNET Shuttle issues
+## Section 4 — US-PF* sites: sub-annual campaign towers (CHEESEHEAD 2019)
+
+The 16 US-PF* sites (US-PFb through US-PFt) are temporary research towers deployed as
+part of the CHEESEHEAD 2019 campaign (Chequamegon Heterogeneous Ecosystem Energy-balance
+Study, Wisconsin). All measurement records span approximately June–October 2019 only
+(~4 months per site). They are not year-round permanent towers.
+
+**BIF investigation (2026-04-16):** No `TOWER_SUNSET` or "seasonal operation" BADM
+variable exists in the AmeriFlux BIF schema. All US-PF* sites record
+`FLUX_MEASUREMENTS_OPERATIONS = "Continuous operation"`, which refers to their ~4-month
+deployment window, not to year-round continuous operation. The sub-annual deployment
+is documented in `FLUX_MEASUREMENTS_DATE_START` / `FLUX_MEASUREMENTS_DATE_END` (e.g.,
+`20190624` – `20191018` for most sites).
+
+**Connection to missing NEE_VUT_REF:** The sub-annual deployment explains why these sites
+appear in the 106 all-missing group. A ~4-month record leaves >15 consecutive days of
+gaps in the calendar year; ONEFlux correctly withholds annual NEE estimates in this case
+(see Section 3). This is expected, not a data error.
+
+**Action:** No pipeline change needed. Methods section should note that campaign/temporary
+towers with sub-annual deployments are excluded from annual flux analysis.
+
+---
+
+## Section 5 — FLUXNET Shuttle issues
 
 Repository: [github.com/fluxnet/shuttle](https://github.com/fluxnet/shuttle)
 Contacts: Danielle Christianson, Dario Papale

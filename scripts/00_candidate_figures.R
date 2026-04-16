@@ -15,6 +15,8 @@
 ##   8 — Network growth cumulative (metadata only)
 ##   9 — Network growth annual new sites (metadata only)
 ##  10 — UN subregion choropleth at 2010/2015/2020/2025 — count + density
+##  11 — Deployment duration profile at 2010/2015/2020/2025 (draft)
+##  12 — Network active proportion over time (draft)
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -760,6 +762,58 @@ build_network_growth_annual <- function() {
 }
 
 # ============================================================
+# Section 11 — Deployment duration profile (draft)
+# fig_network_duration_profile(): histograms of record length at four snapshot
+# years, coloured by active/inactive status. Requires data_yy + metadata.
+# ============================================================
+build_duration_profile <- function() {
+  if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
+  if (is.null(site_data[["yy"]]))  return(no_data("No YY data available."))
+  tryCatch({
+    p <- fig_network_duration_profile(
+      metadata = snapshot_meta_full,
+      data_yy  = site_data[["yy"]]$data
+    )
+    review_dir  <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_network_duration_profile.png")
+    ggplot2::ggsave(review_path, plot = p, width = 12, height = 9,
+                    units = "in", dpi = 150)
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', plot_to_png(p, width = 12, height = 9),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0("Deployment duration profile unavailable: ", conditionMessage(e)))
+  })
+}
+
+# ============================================================
+# Section 12 — Network active proportion over time (draft)
+# fig_network_active_proportion(): cumulative sites + % functionally active.
+# Draft candidate for integration into network growth figure.
+# ============================================================
+build_active_proportion <- function() {
+  if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
+  if (is.null(site_data[["yy"]]))  return(no_data("No YY data available."))
+  tryCatch({
+    p <- fig_network_active_proportion(
+      metadata = snapshot_meta_full,
+      data_yy  = site_data[["yy"]]$data
+    )
+    review_dir  <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_network_active_proportion.png")
+    ggplot2::ggsave(review_path, plot = p, width = 10, height = 8,
+                    units = "in", dpi = 150)
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 8),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0("Network active proportion unavailable: ", conditionMessage(e)))
+  })
+}
+
+# ============================================================
 # Section 10 — UN subregion choropleth
 # fig_map_subregion_sites(): count and density at 2010/2015/2020/2025.
 # Two separate figures (count + density) saved as review PNGs.
@@ -821,6 +875,12 @@ s8 <- section(8, "Network growth \u2014 cumulative sites by IGBP",
 message("Building Section 9 — Network growth (annual new sites) ...")
 s9 <- section(9, "Network growth \u2014 new sites per year by IGBP",
               build_network_growth_annual())
+message("Building Section 11 — Deployment duration profile ...")
+s11 <- section(11, "Deployment duration profile \u2014 record length at snapshot years (draft)",
+               build_duration_profile())
+message("Building Section 12 — Network active proportion ...")
+s12 <- section(12, "Network size and data currency over time (draft)",
+               build_active_proportion())
 message("Building Section 10 — UN subregion choropleth ...")
 s10 <- section(10, "UN subregion choropleth \u2014 2010\u20132015\u20132020\u20132025",
                build_country_map())
@@ -854,7 +914,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s8, s9, s10, s4, s5, s6, s7, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s10, s4, s5, s6, s7, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

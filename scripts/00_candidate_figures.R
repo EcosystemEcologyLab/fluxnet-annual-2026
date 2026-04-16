@@ -776,7 +776,7 @@ build_duration_profile <- function() {
 
     path_vA <- file.path(review_dir, "fig_network_duration_profile_vA.png")
     path_vB <- file.path(review_dir, "fig_network_duration_profile_vB.png")
-    ggplot2::ggsave(path_vA, plot = figs$vA, width = 7,  height = 14,
+    ggplot2::ggsave(path_vA, plot = figs$vA, width = 8,  height = 14,
                     units = "in", dpi = 150)
     ggplot2::ggsave(path_vB, plot = figs$vB, width = 18, height = 5,
                     units = "in", dpi = 150)
@@ -784,7 +784,7 @@ build_duration_profile <- function() {
 
     paste0(
       "<h3>Version A \u2014 stacked vertically</h3>",
-      '<div class="plot-wrap">', plot_to_png(figs$vA, width = 7,  height = 14), "</div>",
+      '<div class="plot-wrap">', plot_to_png(figs$vA, width = 8,  height = 14), "</div>",
       "<h3>Version B \u2014 side by side</h3>",
       '<div class="plot-wrap">', plot_to_png(figs$vB, width = 18, height = 5),  "</div>"
     )

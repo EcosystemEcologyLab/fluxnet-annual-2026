@@ -339,18 +339,28 @@ fig_network_duration_profile <- function(metadata,
   })
 
   # --- panel builder ----------------------------------------------------------
-  # show_x_text:  show x axis tick labels and ticks
-  # show_x_title: show x axis title
-  # show_y_text:  show y axis tick labels and ticks
-  # show_y_title: show y axis title
-  # title_hjust:  hjust for the panel title (year label)
-  # mar:          plot.margin (t, r, b, l) in points
+  # show_x_text:       show x axis tick labels and ticks
+  # show_x_title:      show x axis title
+  # show_y_text:       show y axis tick labels and ticks
+  # show_y_title:      show y axis title (text)
+  # title_hjust:       hjust for the panel title (year label, vB only)
+  # mar:               plot.margin (t, r, b, l) in points
+  # inset_label:       if non-NULL, suppress labs(title) and add annotate()
+  #                    at top-left instead
+  # base_size:         passed to fluxnet_theme()
+  # legend_pos:        legend.position value for this panel
+  # legend_text_size:  if non-NULL, override legend text/title size
   make_panel <- function(pd, yr,
                          show_x_text, show_x_title,
                          show_y_text, show_y_title,
-                         title_hjust, mar) {
+                         title_hjust, mar,
+                         inset_label      = NULL,
+                         base_size        = 12,
+                         legend_pos       = "bottom",
+                         legend_text_size = NULL) {
     n_sites <- nrow(pd)
-    ggplot2::ggplot(
+
+    p <- ggplot2::ggplot(
       pd,
       ggplot2::aes(x = .data$record_length, fill = .data$activity)
     ) +
@@ -368,67 +378,99 @@ fig_network_duration_profile <- function(metadata,
       ) +
       ggplot2::coord_cartesian(xlim = x_lim, ylim = y_lim) +
       ggplot2::labs(
-        title = paste0(yr, "  (n\u2009=\u2009", n_sites, ")"),
-        x     = if (show_x_title) "Record length (years)" else NULL,
-        y     = if (show_y_title) "Sites" else NULL
+        title = if (is.null(inset_label))
+                  paste0(yr, "  (n\u2009=\u2009", n_sites, ")")
+                else
+                  NULL,
+        x = if (show_x_title) "Record length (years)" else NULL,
+        y = if (show_y_title) "Sites"                  else NULL
       ) +
-      fluxnet_theme(base_size = 12) +
+      fluxnet_theme(base_size = base_size) +
       ggplot2::theme(
-        plot.title      = ggplot2::element_text(size = 11, hjust = title_hjust,
-                                                margin = ggplot2::margin(b = 2)),
-        axis.text.x     = if (show_x_text)  ggplot2::element_text()
-                          else               ggplot2::element_blank(),
-        axis.ticks.x    = if (show_x_text)  ggplot2::element_line()
-                          else               ggplot2::element_blank(),
-        axis.text.y     = if (show_y_text)  ggplot2::element_text()
-                          else               ggplot2::element_blank(),
-        axis.ticks.y    = if (show_y_text)  ggplot2::element_line()
-                          else               ggplot2::element_blank(),
-        legend.position = "bottom",
-        plot.margin     = ggplot2::margin(mar[1], mar[2], mar[3], mar[4],
-                                          unit = "pt")
+        plot.title   = if (is.null(inset_label))
+                         ggplot2::element_text(size = 11, hjust = title_hjust,
+                                               margin = ggplot2::margin(b = 2))
+                       else
+                         ggplot2::element_blank(),
+        axis.text.x  = if (show_x_text)  ggplot2::element_text()
+                       else               ggplot2::element_blank(),
+        axis.ticks.x = if (show_x_text)  ggplot2::element_line()
+                       else               ggplot2::element_blank(),
+        axis.text.y  = if (show_y_text)  ggplot2::element_text()
+                       else               ggplot2::element_blank(),
+        axis.ticks.y = if (show_y_text)  ggplot2::element_line()
+                       else               ggplot2::element_blank(),
+        legend.position = legend_pos,
+        plot.margin  = ggplot2::margin(mar[1], mar[2], mar[3], mar[4],
+                                       unit = "pt")
       )
+
+    if (!is.null(legend_text_size)) {
+      p <- p + ggplot2::theme(
+        legend.text  = ggplot2::element_text(size = legend_text_size),
+        legend.title = ggplot2::element_text(size = legend_text_size)
+      )
+    }
+
+    if (!is.null(inset_label)) {
+      p <- p + ggplot2::annotate(
+        "text", x = -Inf, y = Inf,
+        label    = inset_label,
+        hjust    = -0.1, vjust = 1.5,
+        size     = 5, fontface = "bold"
+      )
+    }
+
+    p
   }
 
   # --- Version A: single column, oldest on top --------------------------------
   #   x axis text+title: bottom panel only
-  #   y axis text: all panels (all are leftmost in ncol=1)
-  #   y axis title "Sites": mid_idx panel only (approximately centred)
-  #   year label: right-aligned title
+  #   y axis text: all panels; y axis title: shared label outside the stack
+  #   snapshot year + n: bold inset annotation, top-left of each panel
+  #   legend: inside top panel only (top-right), hidden on all others
+
+  vA_base_size <- 18L   # 50% larger than the standard 12pt base
 
   vA_panels <- lapply(seq_along(years), function(i) {
     is_top    <- i == 1L
     is_bottom <- i == n_years
-    is_mid    <- i == mid_idx
-
-    # top margin: 4pt for first panel, 0 for others (panels touch)
-    # bottom margin: 4pt for last panel, 0 for others
-    mar <- c(
-      if (is_top)    4L else 0L,   # top
-      6L,                           # right (room for axis text)
-      if (is_bottom) 4L else 0L,   # bottom
-      4L                            # left
-    )
+    n_sites   <- nrow(panel_datasets[[i]])
 
     make_panel(
-      pd          = panel_datasets[[i]],
-      yr          = years[[i]],
-      show_x_text  = is_bottom,
-      show_x_title = is_bottom,
-      show_y_text  = TRUE,
-      show_y_title = is_mid,
-      title_hjust  = 1,            # right-aligned strip
-      mar          = mar
+      pd               = panel_datasets[[i]],
+      yr               = years[[i]],
+      show_x_text      = is_bottom,
+      show_x_title     = is_bottom,
+      show_y_text      = TRUE,
+      show_y_title     = FALSE,          # shared Y label added outside stack
+      title_hjust      = 1,
+      mar              = c(0L, 5L, 0L, 5L),   # zero top/bottom; panels touch
+      inset_label      = paste0(years[[i]], " (n=", n_sites, ")"),
+      base_size        = vA_base_size,
+      legend_pos       = if (is_top) c(0.75, 0.85) else "none",
+      legend_text_size = if (is_top) 14L else NULL
     )
   })
 
-  vA <- patchwork::wrap_plots(vA_panels, ncol = 1L) +
-    patchwork::plot_layout(guides = "collect") +
+  # Shared Y axis label: narrow ggplot column centred across the full stack
+  vA_y_label <- ggplot2::ggplot() +
+    ggplot2::annotate(
+      "text", x = 0.5, y = 0.5, label = "Sites",
+      angle = 90, size = 7, fontface = "plain"
+    ) +
+    ggplot2::theme_void()
+
+  vA_stack <- patchwork::wrap_plots(vA_panels, ncol = 1L) +
+    patchwork::plot_layout(guides = "keep") &
+    ggplot2::theme(plot.margin = ggplot2::margin(0, 5, 0, 5))
+
+  vA <- (vA_y_label | vA_stack) +
+    patchwork::plot_layout(widths = c(0.04, 1)) +
     patchwork::plot_annotation(
       title    = "Deployment duration profile of the FLUXNET network",
       subtitle = outer_subtitle
-    ) &
-    ggplot2::theme(legend.position = "bottom")
+    )
 
   # --- Version B: single row, oldest on left ----------------------------------
   #   y axis text+title: leftmost panel only

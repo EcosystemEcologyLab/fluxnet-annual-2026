@@ -1005,7 +1005,19 @@ fig_latency_by_subregion <- function(metadata,
   caption_text <- paste0(
     "Functionally active sites only (data submitted within ",
     active_threshold, " years). ",
-    "Latency = ", current_year, " \u2212 last data year."
+    "Latency = ", current_year, " \u2212 last data year. ",
+    "X axis compressed 4\u00d7 above 75 (dotted line)."
+  )
+
+  # --- x-axis break at 75: linear 0–75, 4× compressed above 75 ---------------
+  x_brk  <- 75L
+  x_comp <- 4L
+  x_break_trans <- scales::trans_new(
+    name      = "count_break_75",
+    transform = function(x) ifelse(x <= x_brk, x,
+                                   x_brk + (x - x_brk) / x_comp),
+    inverse   = function(x) ifelse(x <= x_brk, x,
+                                   x_brk + (x - x_brk) * x_comp)
   )
 
   ggplot2::ggplot(
@@ -1014,10 +1026,13 @@ fig_latency_by_subregion <- function(metadata,
   ) +
     ggplot2::geom_bar(position = "stack", width = 0.7, colour = "white",
                       linewidth = 0.2) +
+    ggplot2::geom_vline(xintercept = 75, colour = "grey30",
+                        linetype = "dotted", linewidth = 0.6) +
     ggplot2::scale_fill_manual(values = latency_colours, name = "Latency",
                                drop = FALSE) +
     ggplot2::scale_x_continuous(
-      breaks = scales::pretty_breaks(n = 6),
+      trans  = x_break_trans,
+      breaks = c(0L, 25L, 50L, 75L, 150L, 200L),
       expand = ggplot2::expansion(mult = c(0, 0.04))
     ) +
     ggplot2::scale_y_discrete(

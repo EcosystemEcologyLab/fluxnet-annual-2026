@@ -433,107 +433,246 @@ fig_map_nee_delta <- function(data_yy,
   .apply_region(p, region)
 }
 
-# ---- fig_map_country_sites --------------------------------------------------
+# ---- fig_map_subregion_sites ------------------------------------------------
 
-#' Country choropleth of FLUXNET site counts at multiple year cutoffs
+#' UN subregion choropleth of FLUXNET site counts at multiple year cutoffs
 #'
 #' Counts FLUXNET sites active (\code{first_year <= cutoff <= last_year}) per
-#' country at each year in \code{year_cutoffs}, then fills world country
-#' polygons by that count.  Three panels (one per cutoff) are assembled into a
-#' patchwork with a shared colour scale.  Requires metadata only -- no flux data.
+#' UN M.49 subregion at each year in \code{year_cutoffs}, then fills subregion
+#' polygons by that count or site density.  Panels (one per cutoff) are
+#' assembled into a patchwork with a shared sequential colour scale.
+#' Requires metadata only — no flux data.
 #'
-#' Country assignment uses the first two characters of \code{site_id} as an
-#' ISO 3166-1 alpha-2 code, with \code{"UK"} remapped to \code{"GB"} for
-#' FLUXNET convention.  Countries with zero active sites are shown in grey.
+#' Country polygons are fetched from \pkg{rnaturalearth}, validated with
+#' \code{sf::st_make_valid()}, mapped to UN subregions via
+#' \code{countrycode::countrycode(..., "un.regionsub.name")}, then dissolved
+#' with \code{sf::st_union()}.  Site-to-subregion assignment uses a spatial
+#' join (\code{sf::st_join()}), with \code{sf::st_nearest_feature()} as
+#' fallback for the small number of sites that fall on coastlines outside
+#' polygon boundaries.
 #'
-#' @param metadata Data frame.  Snapshot CSV (one row per site) with columns
-#'   \code{site_id}, \code{first_year}, and \code{last_year}.
-#' @param year_cutoffs Integer vector.  Years at which to count active sites
-#'   (default \code{c(2015L, 2020L, 2025L)}).
+#' @param metadata Data frame. Snapshot CSV (one row per site) with columns
+#'   \code{site_id}, \code{location_lat}, \code{location_long},
+#'   \code{first_year}, and \code{last_year}.
+#' @param year_cutoffs Integer vector. Years at which to count active sites
+#'   (default \code{c(2010L, 2015L, 2020L, 2025L)}).
+#' @param metric Character. \code{"count"} (default) — raw number of active
+#'   sites per subregion; or \code{"density"} — sites per million km\eqn{^2}
+#'   of subregion land area (computed with \code{sf::st_area()}).
+#' @param add_dots Logical. If \code{TRUE} (default), overlay site locations
+#'   as small points on top of the choropleth fill for each panel.
 #'
 #' @return A \pkg{patchwork} object with one panel per element of
-#'   \code{year_cutoffs}.  The colour scale is shared across panels.
+#'   \code{year_cutoffs}. The colour scale is shared across panels.
 #'
 #' @examples
 #' \dontrun{
 #' meta <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260412T024606.csv")
-#' p <- fig_map_country_sites(meta)
-#' print(p)
+#' fig_map_subregion_sites(meta)
+#' fig_map_subregion_sites(meta, metric = "density")
 #' }
 #'
 #' @export
-fig_map_country_sites <- function(metadata,
-                                   year_cutoffs = c(2015L, 2020L, 2025L)) {
-  if (!requireNamespace("patchwork", quietly = TRUE)) {
-    stop("Package 'patchwork' is required. Install with: install.packages('patchwork')",
-         call. = FALSE)
+fig_map_subregion_sites <- function(metadata,
+                                     year_cutoffs = c(2010L, 2015L, 2020L, 2025L),
+                                     metric       = c("count", "density"),
+                                     add_dots     = TRUE) {
+
+  for (pkg in c("patchwork", "countrycode", "rnaturalearth")) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop("Package '", pkg, "' is required. Install with: install.packages('",
+           pkg, "')", call. = FALSE)
+    }
   }
 
-  .check_meta_cols(metadata, c("site_id", "first_year", "last_year"))
+  metric <- match.arg(metric)
+  .disable_s2()
+  .check_meta_cols(metadata,
+                   c("site_id", "location_lat", "location_long",
+                     "first_year", "last_year"))
 
-  land         <- .land_sf()
   year_cutoffs <- as.integer(year_cutoffs)
 
-  # Normalise ISO-2 codes -- FLUXNET "UK" prefix -> ISO "GB"
-  sites <- metadata |>
-    dplyr::select("site_id", "first_year", "last_year") |>
+  # --- Build subregion polygons -----------------------------------------------
+  countries <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
+    sf::st_make_valid()
+
+  countries$subregion <- countrycode::countrycode(
+    countries$name_long, "country.name", "un.regionsub.name", warn = FALSE
+  )
+
+  # Dissolve country polygons into subregion polygons; validate result
+  subregions <- countries |>
+    dplyr::filter(!is.na(.data$subregion)) |>
+    dplyr::group_by(.data$subregion) |>
+    dplyr::summarise(
+      geometry = suppressWarnings(sf::st_union(.data$geometry)),
+      .groups  = "drop"
+    ) |>
+    sf::st_make_valid()
+
+  if (metric == "density") {
+    # st_area() requires s2 or lwgeom for lon/lat data; re-enable s2 temporarily.
+    old_s2 <- sf::sf_use_s2(TRUE)
+    subregions$area_mkm2 <- as.numeric(sf::st_area(subregions)) / 1e12
+    sf::sf_use_s2(old_s2)
+  }
+
+  # --- Assign each site to a subregion via spatial join -----------------------
+  sites_clean <- metadata |>
+    dplyr::filter(
+      !is.na(.data$location_lat), !is.na(.data$location_long),
+      dplyr::between(.data$location_lat,  -90,  90),
+      dplyr::between(.data$location_long, -180, 180)
+    ) |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
     dplyr::mutate(
-      iso2       = substr(.data$site_id, 1L, 2L),
-      iso2       = dplyr::case_when(.data$iso2 == "UK" ~ "GB",
-                                    TRUE               ~ .data$iso2),
       first_year = as.integer(.data$first_year),
       last_year  = as.integer(.data$last_year)
     )
 
-  # Shared colour-scale upper bound: max per-country count across all cutoffs
-  all_per_country <- lapply(year_cutoffs, function(yr) {
-    sites |>
+  sites_sf <- sf::st_as_sf(
+    sites_clean,
+    coords = c("location_long", "location_lat"),
+    crs    = 4326,
+    remove = FALSE
+  )
+
+  # Primary join: point-in-polygon
+  sites_joined <- sf::st_join(sites_sf, subregions["subregion"], left = TRUE)
+
+  # Fallback for coastal/border points that miss all polygons
+  na_idx <- which(is.na(sites_joined$subregion))
+  if (length(na_idx) > 0L) {
+    nearest <- sf::st_nearest_feature(sites_joined[na_idx, ], subregions)
+    sites_joined$subregion[na_idx] <- subregions$subregion[nearest]
+  }
+
+  sites_tbl <- sf::st_drop_geometry(sites_joined)
+
+  # Grey land background — all ne_countries polygons (validated above)
+  bg_land <- countries
+
+  # Shared colour-scale maximum across all cutoffs
+  all_vals <- lapply(year_cutoffs, function(yr) {
+    counts <- sites_tbl |>
       dplyr::filter(.data$first_year <= yr, .data$last_year >= yr) |>
-      dplyr::count(.data$iso2, name = "n_sites") |>
-      dplyr::pull(.data$n_sites)
+      dplyr::count(.data$subregion, name = "n_sites")
+    if (metric == "density") {
+      counts <- dplyr::left_join(
+        counts,
+        sf::st_drop_geometry(subregions[, c("subregion", "area_mkm2")]),
+        by = "subregion"
+      )
+      counts$n_sites / counts$area_mkm2
+    } else {
+      counts$n_sites
+    }
   })
-  scale_max <- max(unlist(all_per_country), na.rm = TRUE)
-  if (!is.finite(scale_max) || scale_max == 0L) scale_max <- 1L
+  scale_max <- max(unlist(all_vals), na.rm = TRUE)
+  if (!is.finite(scale_max) || scale_max == 0) scale_max <- 1
 
-  # One panel per year cutoff
+  legend_name <- if (metric == "density")
+    "Sites per 10\u2076 km\u00b2"
+  else
+    "Active sites"
+
+  # --- One panel per year cutoff ----------------------------------------------
   panels <- lapply(year_cutoffs, function(yr) {
-    counts <- sites |>
+    counts <- sites_tbl |>
       dplyr::filter(.data$first_year <= yr, .data$last_year >= yr) |>
-      dplyr::count(.data$iso2, name = "n_sites")
+      dplyr::count(.data$subregion, name = "n_sites")
 
-    n_active   <- sum(counts$n_sites)
-    world_data <- dplyr::left_join(land, counts, by = c("iso_a2" = "iso2"))
+    n_active  <- sum(counts$n_sites)
+    plot_sub  <- dplyr::left_join(subregions, counts, by = "subregion")
 
-    ggplot2::ggplot() +
+    plot_sub$fill_val <- if (metric == "density") {
+      plot_sub$n_sites / plot_sub$area_mkm2
+    } else {
+      plot_sub$n_sites
+    }
+
+    p <- ggplot2::ggplot() +
       ggplot2::theme_void(base_size = 10L) +
       ggplot2::theme(
         plot.title      = ggplot2::element_text(hjust = 0.5, face = "bold",
                                                 size  = 10L),
         plot.subtitle   = ggplot2::element_text(hjust = 0.5, size = 8L,
                                                 color = "grey40"),
-        legend.position = "bottom"
+        legend.position = "bottom",
+        legend.title    = ggplot2::element_text(size = 9L, hjust = 0.5)
       ) +
+      # Grey background for all land (validated)
+      ggplot2::geom_sf(data = bg_land, fill = "grey90", colour = "white",
+                       linewidth = 0.1) +
+      # Subregion choropleth fill
       ggplot2::geom_sf(
-        data  = world_data,
-        ggplot2::aes(fill = .data$n_sites),
-        color = "white", linewidth = 0.15
+        data  = plot_sub,
+        ggplot2::aes(fill = .data$fill_val),
+        colour    = "white",
+        linewidth = 0.25
       ) +
       ggplot2::scale_fill_viridis_c(
         option    = "viridis",
-        limits    = c(0L, scale_max),
-        na.value  = "grey90",
-        name      = "Active sites",
+        limits    = c(0, scale_max),
+        na.value  = "grey88",
+        name      = legend_name,
         direction = 1L,
-        breaks    = scales::pretty_breaks(n = 4L)
+        breaks    = scales::pretty_breaks(n = 4L),
+        guide     = ggplot2::guide_colorbar(
+          barwidth       = 8,
+          barheight      = 0.6,
+          title.position = "top",
+          title.hjust    = 0.5
+        )
       ) +
       ggplot2::labs(
         title    = as.character(yr),
         subtitle = paste0("n\u2009=\u2009", n_active, " active sites")
       ) +
       ggplot2::coord_sf(expand = FALSE)
+
+    if (add_dots) {
+      active_sites <- sites_tbl |>
+        dplyr::filter(.data$first_year <= yr, .data$last_year >= yr)
+      p <- p +
+        ggplot2::geom_point(
+          data  = active_sites,
+          ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+          size   = 0.8,
+          colour = "white",
+          alpha  = 0.75,
+          shape  = 16
+        )
+    }
+
+    p
   })
 
   patchwork::wrap_plots(panels, ncol = 1L) +
     patchwork::plot_layout(guides = "collect") &
     ggplot2::theme(legend.position = "bottom")
+}
+
+# ---- fig_map_country_sites (deprecated alias) --------------------------------
+
+#' Deprecated: country choropleth of FLUXNET site counts
+#'
+#' This function is deprecated. Use \code{\link{fig_map_subregion_sites}}
+#' instead, which aggregates to UN M.49 subregions rather than individual
+#' countries and supports \code{metric = "count"} or \code{"density"}.
+#'
+#' @inheritParams fig_map_subregion_sites
+#' @return A \pkg{patchwork} object. See \code{\link{fig_map_subregion_sites}}.
+#' @export
+fig_map_country_sites <- function(metadata,
+                                   year_cutoffs = c(2015L, 2020L, 2025L)) {
+  .Deprecated(
+    new = "fig_map_subregion_sites",
+    msg = paste0(
+      "'fig_map_country_sites()' is deprecated. ",
+      "Use 'fig_map_subregion_sites()' instead."
+    )
+  )
+  fig_map_subregion_sites(metadata, year_cutoffs = year_cutoffs)
 }

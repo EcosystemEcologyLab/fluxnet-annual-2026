@@ -454,11 +454,16 @@ fig_map_nee_delta <- function(data_yy,
 #' @param metadata Data frame. Snapshot CSV (one row per site) with columns
 #'   \code{site_id}, \code{location_lat}, \code{location_long},
 #'   \code{first_year}, and \code{last_year}.
-#' @param year_cutoffs Integer vector. Years at which to count active sites
-#'   (default \code{c(2010L, 2015L, 2020L, 2025L)}).
-#' @param metric Character. \code{"count"} (default) — raw number of active
-#'   sites per subregion; or \code{"density"} — sites per million km\eqn{^2}
-#'   of subregion land area (computed with \code{sf::st_area()}).
+#' @param year_cutoffs Integer vector. Years at which to count sites
+#'   (default \code{c(2010L, 2015L, 2020L, 2025L)}).  The filter is
+#'   \code{first_year <= cutoff} — i.e. all sites established by each cutoff
+#'   year, regardless of whether their most recent data has been submitted yet.
+#'   This avoids representing data-submission latency as apparent network
+#'   shrinkage in the most recent panel.
+#' @param metric Character. \code{"count"} (default) — raw number of sites per
+#'   subregion established by the cutoff; or \code{"density"} — sites per
+#'   million km\eqn{^2} of subregion land area (computed with
+#'   \code{sf::st_area()}).
 #' @param add_dots Logical. If \code{TRUE} (default), overlay site locations
 #'   as small points on top of the choropleth fill for each panel.
 #'
@@ -554,33 +559,13 @@ fig_map_subregion_sites <- function(metadata,
   bg_land <- countries
 
   # Shared colour-scale maximum across all cutoffs
-  all_vals <- lapply(year_cutoffs, function(yr) {
-    counts <- sites_tbl |>
-      dplyr::filter(.data$first_year <= yr, .data$last_year >= yr) |>
-      dplyr::count(.data$subregion, name = "n_sites")
-    if (metric == "density") {
-      counts <- dplyr::left_join(
-        counts,
-        sf::st_drop_geometry(subregions[, c("subregion", "area_mkm2")]),
-        by = "subregion"
-      )
-      counts$n_sites / counts$area_mkm2
-    } else {
-      counts$n_sites
-    }
-  })
-  scale_max <- max(unlist(all_vals), na.rm = TRUE)
-  if (!is.finite(scale_max) || scale_max == 0) scale_max <- 1
-
-  legend_name <- if (metric == "density")
-    "Sites per 10\u2076 km\u00b2"
-  else
-    "Active sites"
-
+  # Filter: first_year <= yr only — show all sites established by each cutoff,
+  # not just those with last_year >= yr (avoids confounding data latency with
+  # network size).
   # --- One panel per year cutoff ----------------------------------------------
   panels <- lapply(year_cutoffs, function(yr) {
     counts <- sites_tbl |>
-      dplyr::filter(.data$first_year <= yr, .data$last_year >= yr) |>
+      dplyr::filter(.data$first_year <= yr) |>
       dplyr::count(.data$subregion, name = "n_sites")
 
     n_active  <- sum(counts$n_sites)
@@ -612,29 +597,34 @@ fig_map_subregion_sites <- function(metadata,
         colour    = "white",
         linewidth = 0.25
       ) +
-      ggplot2::scale_fill_viridis_c(
-        option    = "viridis",
-        limits    = c(0, scale_max),
-        na.value  = "grey88",
-        name      = legend_name,
-        direction = 1L,
-        breaks    = scales::pretty_breaks(n = 4L),
-        guide     = ggplot2::guide_colorbar(
-          barwidth       = 8,
-          barheight      = 0.6,
-          title.position = "top",
-          title.hjust    = 0.5
+      (if (metric == "count") {
+        ggplot2::scale_fill_viridis_b(
+          breaks   = c(0, 5, 15, 30, 60, 100),
+          na.value = "grey90",
+          name     = "Number of sites",
+          option   = "viridis"
         )
-      ) +
+      } else {
+        ggplot2::scale_fill_viridis_b(
+          breaks   = c(0, 1, 5, 10, 25, 50),
+          na.value = "grey90",
+          name     = "Sites per million km\u00b2",
+          option   = "viridis"
+        )
+      }) +
       ggplot2::labs(
         title    = as.character(yr),
-        subtitle = paste0("n\u2009=\u2009", n_active, " active sites")
+        subtitle = paste0("n\u2009=\u2009", n_active, " sites established by ", yr),
+        caption  = if (yr >= 2025L)
+          "2025 panel reflects sites established by 2025 \u2014 recent data may not yet be available."
+        else
+          NULL
       ) +
       ggplot2::coord_sf(expand = FALSE)
 
     if (add_dots) {
       active_sites <- sites_tbl |>
-        dplyr::filter(.data$first_year <= yr, .data$last_year >= yr)
+        dplyr::filter(.data$first_year <= yr)
       p <- p +
         ggplot2::geom_point(
           data  = active_sites,

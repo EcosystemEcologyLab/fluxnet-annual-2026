@@ -72,9 +72,12 @@ library(colorspace)
 #'   \code{TA_ERA} (K), \code{P_ERA} (mm yr⁻¹), and \code{flux_var}.
 #' @param flux_var Character. Flux variable to summarise per hex
 #'   (default \code{"NEE_VUT_REF"}).
-#' @param year_cutoff Integer or \code{NULL}. When set, flux records are
-#'   restricted to years \code{<= year_cutoff} before computing site means.
-#'   Requires a \code{YEAR} column in \code{data_yy}.
+#' @param year_cutoff Integer or \code{NULL}. When set, only sites with
+#'   \code{first_year <= year_cutoff} are included (i.e. sites established by
+#'   that year), and flux records are restricted to years
+#'   \code{<= year_cutoff}.  This shows the network as it had grown by each
+#'   cutoff, regardless of whether recent data has been submitted yet.
+#'   Requires \code{YEAR} and \code{first_year} columns in \code{data_yy}.
 #'
 #' @return A ggplot object.
 #'
@@ -101,6 +104,10 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
   .check_cols_climate(data_yy, c("site_id", "TA_ERA", "P_ERA", flux_var))
 
   # --- year_cutoff filtering --------------------------------------------------
+  # Filter: sites established by year_cutoff (first_year <= year_cutoff) AND
+  # flux records up to year_cutoff.  last_year is intentionally not used — we
+  # show all sites that had started by the cutoff year, regardless of whether
+  # recent data has been submitted yet.
   if (!is.null(year_cutoff)) {
     year_cutoff <- as.integer(year_cutoff)
     if (!"YEAR" %in% names(data_yy)) {
@@ -108,6 +115,10 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
         "year_cutoff requires a 'YEAR' column in data_yy.",
         call. = FALSE
       )
+    }
+    if ("first_year" %in% names(data_yy)) {
+      data_yy <- dplyr::filter(data_yy,
+                                as.integer(.data$first_year) <= year_cutoff)
     }
     data_yy <- dplyr::filter(data_yy,
                               as.integer(.data$YEAR) <= year_cutoff)
@@ -152,6 +163,10 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
     paste0(" \u2014 through ", year_cutoff) else ""
   title_text  <- paste0("Temperature \u00d7 precipitation hexbin", cutoff_text)
   n_sites     <- nrow(site_clim)
+  caption_text <- if (!is.null(year_cutoff) && as.integer(year_cutoff) >= 2025L)
+    "2025 panel reflects sites established by 2025 \u2014 recent data may not yet be available."
+  else
+    NULL
 
   # --- plot -------------------------------------------------------------------
   ggplot2::ggplot(
@@ -189,7 +204,8 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
       subtitle = paste0(
         "n\u2009=\u2009", n_sites, " sites",
         " \u2014 Climate from ERA5 (site-extracted)"
-      )
+      ),
+      caption  = caption_text
     ) +
     fluxnet_theme() +
     ggplot2::theme(
@@ -225,13 +241,12 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
 #'   \code{data_yy}.
 #' @param flux_var Character. Flux variable to summarise per hex
 #'   (default \code{"NEE_VUT_REF"}).
-#' @param year_cutoff Integer or \code{NULL}. When set, two filters are applied:
-#'   \enumerate{
-#'     \item Only sites where \code{first_year <= year_cutoff} AND
-#'           \code{last_year >= year_cutoff} are kept.
-#'     \item Flux records are restricted to years \code{<= year_cutoff}.
-#'   }
-#'   Requires \code{first_year} / \code{last_year} in \code{data_yy} or
+#' @param year_cutoff Integer or \code{NULL}. When set, only sites with
+#'   \code{first_year <= year_cutoff} are included (i.e. sites established by
+#'   that year), and flux records are restricted to years
+#'   \code{<= year_cutoff}.  \code{last_year} is not used — this shows the
+#'   network as it had grown by each cutoff, regardless of whether recent data
+#'   has been submitted yet.  Requires \code{first_year} in \code{data_yy} or
 #'   joinable from \code{metadata}.
 #'
 #' @return A ggplot object.
@@ -301,22 +316,25 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
   }
 
   # --- year_cutoff filtering --------------------------------------------------
+  # Filter: sites established by year_cutoff (first_year <= year_cutoff) AND
+  # flux records up to year_cutoff.  last_year is intentionally not used — we
+  # show all sites that had started by the cutoff year, regardless of whether
+  # recent data has been submitted yet.
   if (!is.null(year_cutoff)) {
     year_cutoff <- as.integer(year_cutoff)
 
-    if (!all(c("first_year", "last_year") %in% names(data_yy))) {
+    if (!"first_year" %in% names(data_yy)) {
       stop(
-        "year_cutoff requires 'first_year' and 'last_year' columns. ",
-        "Supply a metadata argument that contains these columns.",
+        "year_cutoff requires a 'first_year' column. ",
+        "Supply a metadata argument that contains this column.",
         call. = FALSE
       )
     }
 
-    # (1) Keep sites actively measuring at year_cutoff
+    # (1) Keep sites established by year_cutoff
     data_yy <- dplyr::filter(
       data_yy,
-      as.integer(.data$first_year) <= year_cutoff,
-      as.integer(.data$last_year)  >= year_cutoff
+      as.integer(.data$first_year) <= year_cutoff
     )
 
     # (2) Restrict flux records to years <= year_cutoff
@@ -404,9 +422,13 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
 
   # --- labels and title -------------------------------------------------------
   flux_label  <- .flux_climate_label(flux_var)
-  cutoff_text <- if (!is.null(year_cutoff))
+  cutoff_text  <- if (!is.null(year_cutoff))
     paste0(" \u2014 through ", year_cutoff) else ""
-  title_text  <- paste0("Temperature \u00d7 precipitation hexbin", cutoff_text)
+  title_text   <- paste0("Temperature \u00d7 precipitation hexbin", cutoff_text)
+  caption_text <- if (!is.null(year_cutoff) && as.integer(year_cutoff) >= 2025L)
+    "2025 panel reflects sites established by 2025 \u2014 recent data may not yet be available."
+  else
+    NULL
 
   # --- plot -------------------------------------------------------------------
   ggplot2::ggplot(
@@ -440,7 +462,8 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
       x        = "Mean annual temperature (\u00b0C)",
       y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
       title    = title_text,
-      subtitle = paste0("n\u2009=\u2009", nrow(site_clim), " sites")
+      subtitle = paste0("n\u2009=\u2009", nrow(site_clim), " sites"),
+      caption  = caption_text
     ) +
     fluxnet_theme() +
     ggplot2::theme(

@@ -888,20 +888,19 @@ message("Building Section 12 — Network active proportion ...")
 s12 <- section(12, "Network size and data currency over time (draft)",
                build_active_proportion())
 message("Building Section 13 — Subregion overview ...")
-s13 <- section(13, "Subregion overview \u2014 map, site counts, latency (2025)",
+s13 <- section(13, "Subregion overview \u2014 site counts and latency by UN subregion (2025)",
                tryCatch({
                  p <- fig_network_subregion_overview(
-                   metadata = snapshot_meta_full,
-                   data_yy  = if (!is.null(site_data[["yy"]])) site_data[["yy"]]$data else NULL
+                   metadata = snapshot_meta_full
                  )
                  review_dir <- file.path("review", "figures")
                  if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
                  review_path <- file.path(review_dir, "fig_network_subregion_overview.png")
-                 ggplot2::ggsave(review_path, plot = p, width = 18, height = 10,
+                 ggplot2::ggsave(review_path, plot = p, width = 12, height = 10,
                                  units = "in", dpi = 150)
                  message("Review figure saved: ", review_path)
                  paste0('<div class="plot-wrap">',
-                        plot_to_png(p, width = 18, height = 10), "</div>")
+                        plot_to_png(p, width = 12, height = 10), "</div>")
                }, error = function(e) {
                  no_data(paste0("Subregion overview unavailable: ", conditionMessage(e)))
                }))

@@ -474,50 +474,42 @@ fig_network_duration_profile <- function(metadata,
 
 # ---- fig_network_subregion_overview -----------------------------------------
 
-#' Three-panel subregion overview: map, total sites, and data latency
+#' Two-panel subregion bar overview: total sites and data latency
 #'
-#' Combines three panels into a single patchwork figure summarising the
-#' FLUXNET network by UN M.49 subregion at a snapshot year:
+#' Combines two horizontal stacked bar panels side by side, sharing a common
+#' Y axis (UN M.49 subregion), to summarise the FLUXNET network at a snapshot
+#' year.  The companion geographic figure is [fig_map_subregion_sites()].
 #'
-#' - **Left** — 2025 choropleth map produced by
-#'   [fig_map_subregion_sites()] (must be sourced from
-#'   `R/figures/fig_maps.R` before calling this function).
-#' - **Middle** — Horizontal stacked bar showing *all* sites in `metadata`,
-#'   classified as "Functionally active" (`current_year - last_year <=
-#'   active_threshold`) or "Inactive / high latency".
-#' - **Right** — Horizontal stacked bar of functionally active sites only,
-#'   using the traffic-light latency palette from [fig_latency_by_subregion()].
+#' - **Left** — All sites in `metadata`, classified as "Functionally active"
+#'   (`current_year - last_year <= active_threshold`) or
+#'   "Inactive / high latency". Y-axis labels shown here only.
+#' - **Right** — Functionally active sites only, filled by traffic-light
+#'   latency bins (same palette as [fig_latency_by_subregion()]).
+#'   Y-axis labels suppressed so the two panels appear joined.
 #'
-#' Both bar panels share the same subregion factor order (total sites,
-#' descending from top). Y-axis labels (subregion names) appear on the middle
-#' panel only; the right panel suppresses them so the two bars appear joined.
+#' Subregion order is descending total-site count (highest at top).
 #' Subregion assignment uses `countrycode::countrycode(iso2, "iso2c",
 #' "un.regionsub.name")` on the first two characters of `site_id`. FLUXNET
 #' "UK-*" sites are silently recoded from "UK" to "GB" before lookup.
 #'
 #' @param metadata Data frame. Snapshot CSV (one row per site) with columns
-#'   `site_id`, `last_year`, `location_lat`, `location_long`, and `first_year`
-#'   (the latter two are required by the map panel).
-#' @param data_yy Data frame. Annual (YY) flux data. Currently unused;
-#'   included for API consistency. Pass `NULL` if not available.
+#'   `site_id` and `last_year`.
 #' @param current_year Integer. Reference year for latency calculation
 #'   (default `2026L`).
 #' @param active_threshold Integer. Maximum latency (inclusive) for a site to
 #'   be considered functionally active (default `4L`).
 #'
-#' @return A patchwork object with three panels (map | total-sites bar |
-#'   active-latency bar) at approximate width ratio 2:1:1.
+#' @return A patchwork object: two bar panels side by side with shared legends
+#'   at the bottom.
 #'
 #' @examples
 #' \dontrun{
-#' source("R/figures/fig_maps.R")
 #' meta <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260414T153648.csv")
-#' p <- fig_network_subregion_overview(meta, data_yy = NULL)
+#' p <- fig_network_subregion_overview(meta)
 #' ggplot2::ggsave("review/figures/fig_network_subregion_overview.png",
-#'                 p, width = 16, height = 10, units = "in", dpi = 150)
+#'                 p, width = 12, height = 10, units = "in", dpi = 150)
 #' }
 fig_network_subregion_overview <- function(metadata,
-                                           data_yy          = NULL,
                                            current_year     = 2026L,
                                            active_threshold = 4L) {
   for (pkg in c("patchwork", "countrycode")) {
@@ -525,13 +517,6 @@ fig_network_subregion_overview <- function(metadata,
       stop("Package '", pkg, "' is required. Install with: install.packages('",
            pkg, "')", call. = FALSE)
     }
-  }
-  if (!exists("fig_map_subregion_sites", mode = "function")) {
-    stop(
-      "fig_map_subregion_sites() is not loaded. ",
-      "Source R/figures/fig_maps.R before calling fig_network_subregion_overview().",
-      call. = FALSE
-    )
   }
 
   required_meta <- c("site_id", "last_year")
@@ -561,7 +546,7 @@ fig_network_subregion_overview <- function(metadata,
     "Australia and New Zealand"        = "Australia &\nNew Zealand"
   )
 
-  # --- subregion assignment for all sites (shared between both bars) ----------
+  # --- subregion assignment for all sites (shared between both panels) --------
   sites <- metadata |>
     dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
     dplyr::select("site_id", "last_year") |>
@@ -589,8 +574,7 @@ fig_network_subregion_overview <- function(metadata,
     )
   }
 
-  # Subregion order: ascending total count so highest is at top after y-axis
-  # (ggplot2 factor levels: level 1 = bottom, level n = top)
+  # Subregion order: ascending total count so highest is at top
   subregion_order <- sites |>
     dplyr::count(.data$subregion, name = "total") |>
     dplyr::arrange(.data$total) |>
@@ -601,18 +585,7 @@ fig_network_subregion_overview <- function(metadata,
     subregion = factor(.data$subregion, levels = subregion_order)
   )
 
-  # --- Left panel: 2025 choropleth map ----------------------------------------
-  p_map <- tryCatch(
-    fig_map_subregion_sites(metadata, year_cutoffs = 2025L,
-                            metric = "count", add_dots = TRUE),
-    error = function(e) {
-      warning("fig_network_subregion_overview: map panel failed: ",
-              conditionMessage(e), call. = FALSE)
-      NULL
-    }
-  )
-
-  # --- Middle panel: all sites, active vs inactive ----------------------------
+  # --- Left panel: all sites, active vs inactive ------------------------------
   middle_data <- dplyr::mutate(
     sites,
     status = factor(
@@ -684,30 +657,16 @@ fig_network_subregion_overview <- function(metadata,
       plot.margin     = ggplot2::margin(t = 4, r = 4, b = 4, l = 0, unit = "pt")
     )
 
-  # --- Assemble ---------------------------------------------------------------
-  bars <- (p_middle | p_right) +
-    patchwork::plot_layout(widths = c(1, 1), guides = "collect") &
-    ggplot2::theme(legend.position = "bottom")
-
-  if (!is.null(p_map)) {
-    # Apply zero margin to all map sub-panels so choropleth fills its row fully
-    p_map_adj <- p_map &
-      ggplot2::theme(plot.margin = ggplot2::margin(0, 0, 0, 0))
-
-    pw <- patchwork::wrap_elements(full = p_map_adj, clip = FALSE) /
-          bars
-    pw <- pw + patchwork::plot_layout(heights = c(1, 1))
-  } else {
-    pw <- bars
-  }
-
-  pw +
+  # --- Assemble: two bars side by side, shared legends -----------------------
+  (p_middle | p_right) +
+    patchwork::plot_layout(widths = c(1, 1), guides = "collect") +
     patchwork::plot_annotation(
       title = paste0(
-        "FLUXNET network coverage and data latency by UN subregion (",
+        "FLUXNET network by UN subregion \u2014 site counts and data latency (",
         current_year - 1L, ")"
       )
-    )
+    ) &
+    ggplot2::theme(legend.position = "bottom")
 }
 
 # ---- fig_network_active_proportion ------------------------------------------

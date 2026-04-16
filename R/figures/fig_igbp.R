@@ -25,8 +25,8 @@ source("R/plot_constants.R")
 }
 
 # Join IGBP (and optionally lat/lon) from metadata onto data if the column is
-# absent. Metadata must contain site_id and IGBP. Warns if IGBP is still
-# missing after the join.
+# absent. Metadata may use either "IGBP" or "igbp" (snapshot CSV uses lowercase).
+# After joining, always provides an uppercase "IGBP" column.
 .ensure_igbp <- function(data, metadata = NULL) {
   if (!"IGBP" %in% names(data)) {
     if (is.null(metadata)) {
@@ -37,9 +37,20 @@ source("R/plot_constants.R")
       )
       data$IGBP <- NA_character_
     } else {
+      # Normalise: rename lowercase igbp → IGBP in a metadata copy
+      meta_work <- metadata
+      if ("igbp" %in% names(meta_work) && !"IGBP" %in% names(meta_work)) {
+        meta_work <- dplyr::rename(meta_work, IGBP = "igbp")
+      }
+      # Also normalise lat/lon column names (snapshot uses lowercase)
+      if ("location_lat"  %in% names(meta_work) && !"LOCATION_LAT"  %in% names(meta_work))
+        meta_work <- dplyr::rename(meta_work, LOCATION_LAT  = "location_lat")
+      if ("location_long" %in% names(meta_work) && !"LOCATION_LONG" %in% names(meta_work))
+        meta_work <- dplyr::rename(meta_work, LOCATION_LONG = "location_long")
+
       meta_cols <- intersect(c("site_id", "IGBP", "LOCATION_LAT", "LOCATION_LONG"),
-                             names(metadata))
-      data <- dplyr::left_join(data, metadata[, meta_cols, drop = FALSE],
+                             names(meta_work))
+      data <- dplyr::left_join(data, meta_work[, meta_cols, drop = FALSE],
                                by = "site_id")
     }
   }
@@ -208,9 +219,12 @@ fig_flux_by_igbp_timeslice <- function(data_yy,
 
   y_label <- .flux_y_label(flux_var)
 
+  # Support both YEAR (pipeline default) and TIMESTAMP (legacy)
+  year_col <- if ("YEAR" %in% names(data_yy)) "YEAR" else "TIMESTAMP"
+
   # Build dynamic time-bin breaks from the data
-  year_min <- min(as.integer(data_yy$TIMESTAMP), na.rm = TRUE)
-  year_max <- max(as.integer(data_yy$TIMESTAMP), na.rm = TRUE)
+  year_min <- min(as.integer(data_yy[[year_col]]), na.rm = TRUE)
+  year_max <- max(as.integer(data_yy[[year_col]]), na.rm = TRUE)
   bin_start <- floor(year_min / bin_width) * bin_width
   bin_end   <- ceiling(year_max / bin_width) * bin_width
   breaks    <- seq(bin_start, bin_end, by = bin_width)
@@ -221,7 +235,7 @@ fig_flux_by_igbp_timeslice <- function(data_yy,
     dplyr::filter(IGBP %in% IGBP_order) |>
     dplyr::mutate(
       FLUX      = .data[[flux_var]],
-      year      = as.integer(TIMESTAMP),
+      year      = as.integer(.data[[year_col]]),
       TimeSlice = cut(year, breaks = breaks, labels = labels, right = TRUE),
       IGBP      = factor(IGBP, levels = IGBP_order)
     ) |>
@@ -299,6 +313,9 @@ fig_flux_by_biome_group <- function(data_yy,
 
   y_label <- .flux_y_label(flux_var)
 
+  # Support both YEAR (pipeline default) and TIMESTAMP (legacy)
+  year_col <- if ("YEAR" %in% names(data_yy)) "YEAR" else "TIMESTAMP"
+
   group_map <- list(
     Forest          = c("DBF", "ENF", "MF", "EBF", "DNF"),
     ShrubOpens      = c("OSH", "CSH", "WSA", "SAV"),
@@ -309,7 +326,7 @@ fig_flux_by_biome_group <- function(data_yy,
   plot_data <- data_yy |>
     dplyr::mutate(
       FLUX  = .data[[flux_var]],
-      year  = as.integer(TIMESTAMP),
+      year  = as.integer(.data[[year_col]]),
       Group = dplyr::case_when(
         IGBP %in% group_map$Forest        ~ "Forest",
         IGBP %in% group_map$ShrubOpens    ~ "ShrubOpens",
@@ -398,11 +415,14 @@ fig_flux_timeseries_by_igbp <- function(data_yy,
 
   y_label <- .flux_y_label(flux_var)
 
+  # Support both YEAR (pipeline default) and TIMESTAMP (legacy)
+  year_col <- if ("YEAR" %in% names(data_yy)) "YEAR" else "TIMESTAMP"
+
   plot_data <- data_yy |>
     dplyr::filter(IGBP %in% IGBP_order) |>
     dplyr::mutate(
       FLUX = .data[[flux_var]],
-      year = as.integer(TIMESTAMP),
+      year = as.integer(.data[[year_col]]),
       IGBP = factor(IGBP, levels = IGBP_order)
     ) |>
     dplyr::filter(!is.na(FLUX), !is.na(year))

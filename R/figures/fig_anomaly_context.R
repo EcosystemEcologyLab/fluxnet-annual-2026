@@ -291,9 +291,11 @@ source("R/plot_constants.R")
 #'   (default \code{"Northern America"}).  Matched against
 #'   \code{countrycode::countrycode(iso2, "iso2c", "un.regionsub.name")}.
 #' @param recent_years Integer vector. Years shown in the right (recent) zone
-#'   (default \code{2017:2025}).
-#' @param min_sites Integer. Minimum number of sites with at least one valid
-#'   \code{NEE_VUT_REF} year required to proceed (default \code{5}).
+#'   (default \code{2019:2024}).
+#' @param min_sites Integer. Minimum number of sites required to proceed
+#'   (default \code{5}).
+#' @param min_nee_years Integer. Minimum number of valid \code{NEE_VUT_REF}
+#'   years a site must have to be included (default \code{8L}).
 #' @param flux_vars Character vector. Flux variable column names to plot as
 #'   stacked panels in top-to-bottom order
 #'   (default: \code{c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS")}).
@@ -326,8 +328,9 @@ fig_anomaly_context <- function(
     igbp,
     gez_filter,
     subregion     = "Northern America",
-    recent_years  = 2017:2025,
+    recent_years  = 2019:2024,
     min_sites     = 5L,
+    min_nee_years = 8L,
     flux_vars     = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS")
 ) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
@@ -465,7 +468,7 @@ fig_anomaly_context <- function(
     dplyr::mutate(
       n_years_valid_nee = dplyr::coalesce(as.integer(.data$n_years_valid_nee), 0L)
     ) |>
-    dplyr::filter(.data$n_years_valid_nee > 0L) |>
+    dplyr::filter(.data$n_years_valid_nee >= min_nee_years) |>
     dplyr::select("site_id", "data_hub", "igbp", "gez_name",
                   "location_lat", "n_years_valid_nee") |>
     dplyr::arrange(dplyr::desc(.data$n_years_valid_nee))
@@ -474,10 +477,11 @@ fig_anomaly_context <- function(
 
   if (n_sites < min_sites) {
     stop(
-      "Only ", n_sites, " site(s) with valid NEE found for IGBP=", igbp,
+      "Only ", n_sites, " site(s) with >= ", min_nee_years,
+      " valid NEE years found for IGBP=", igbp,
       ", subregion='", subregion, "', GEZ=[",
       paste(gez_filter, collapse = ", "), "]",
-      " (minimum required: ", min_sites, ").\n",
+      " (minimum required: ", min_sites, " sites).\n",
       "Sites found: ",
       if (n_sites > 0L)
         paste(meta_final$site_id, collapse = ", ")

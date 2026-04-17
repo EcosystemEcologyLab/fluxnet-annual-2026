@@ -18,6 +18,7 @@
 ##  11 — Deployment duration profile at 2010/2015/2020/2025 (draft)
 ##  12 — Network active proportion over time (draft)
 ##  13 — Subregion overview: map + total sites + latency (3-panel)
+##  14 — Diagnostic timeseries by UN subregion — top 5 sites, NEE/LE/H panels
 ##
 ## Package requirements (all in renv.lock): ggplot2, dplyr, tidyr, readr,
 ## lubridate, scales, grDevices, jsonlite, plotly.
@@ -721,6 +722,68 @@ build_long_record_timeseries <- function() {
 }
 
 # ============================================================
+# Section 14 — Diagnostic timeseries by UN subregion
+# fig_timeseries_by_subregion(): top 5 sites per UN subregion by
+# n_years_valid_nee; three panels (NEE / LE / H), shared x-axis.
+# One PNG per qualifying subregion saved to review/figures/timeseries/.
+# ============================================================
+build_timeseries_by_subregion <- function() {
+  if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
+  if (is.null(snapshot_meta))     return(no_data("No snapshot metadata available."))
+
+  data_yy <- site_data[["yy"]]$data
+
+  review_dir <- file.path("review", "figures", "timeseries")
+  if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+
+  plots <- tryCatch(
+    fig_timeseries_by_subregion(data_yy, metadata = snapshot_meta),
+    error = function(e) {
+      warning("fig_timeseries_by_subregion() failed: ", conditionMessage(e),
+              call. = FALSE)
+      NULL
+    }
+  )
+
+  if (is.null(plots) || length(plots) == 0L) {
+    return(no_data(
+      "No subregion timeseries generated. ",
+      "Data may be too sparse or subregion mapping failed."
+    ))
+  }
+
+  divs <- lapply(names(plots), function(subreg) {
+    p <- plots[[subreg]]
+
+    subreg_clean <- tolower(gsub("[^A-Za-z0-9_]", "",
+                                  gsub("\\s+", "_", subreg)))
+    review_path <- file.path(
+      review_dir,
+      paste0("fig_timeseries_", subreg_clean, ".png")
+    )
+
+    tryCatch(
+      ggplot2::ggsave(review_path, plot = p, width = 10, height = 12,
+                      units = "in", dpi = 150),
+      error = function(e) {
+        warning("Could not save review PNG for ", subreg, ": ",
+                conditionMessage(e), call. = FALSE)
+      }
+    )
+    message("Review figure saved: ", review_path)
+
+    paste0(
+      "<h3>", subreg, "</h3>",
+      '<div class="plot-wrap">',
+      plot_to_png(p, width = 10, height = 12),
+      "</div>"
+    )
+  })
+
+  paste(unlist(divs), collapse = "\n")
+}
+
+# ============================================================
 # Section 8 — Network growth (cumulative)
 # fig_network_growth(): cumulative sites by IGBP; metadata only.
 # ============================================================
@@ -918,6 +981,9 @@ s6 <- section(6, "Environmental response curves (binned flux vs climate)",
 message("Building Section 7 — Long-record annual time series by continent ...")
 s7 <- section(7, "Long-record annual time series by continent",
               build_long_record_timeseries())
+message("Building Section 14 — Diagnostic timeseries by UN subregion ...")
+s14 <- section(14, "Diagnostic timeseries by UN subregion \u2014 top 5 sites, NEE / LE / H (review only)",
+               build_timeseries_by_subregion())
 
 html_footer <- paste0(
   '</main>\n<footer>\n<dl>\n',
@@ -937,7 +1003,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s10, s4, s5, s6, s7, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s10, s4, s5, s6, s7, s14, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

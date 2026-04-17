@@ -1,11 +1,11 @@
 # scripts/generate_gez_anomaly_figures.R
 #
 # Generates anomaly context figures for all qualifying
-# GEZ × UN subregion × IGBP combinations.
+# IGBP × UN subregion × GEZ combinations.
 #
 # Qualifying criteria:
-#   - Forest IGBPs only: ENF, EBF, DNF, DBF, MF
-#   - At least 3 sites with >= 8 valid NEE years in the combination
+#   - ALL IGBP classes (no forest-only restriction)
+#   - At least 4 sites with >= 8 valid NEE years in the combination
 #
 # Output: review/figures/anomalies/fig_anomaly_{igbp}_{subregion_clean}_{gez_clean}.png
 #
@@ -32,13 +32,12 @@ check_pipeline_config()
 
 # ---- Constants ---------------------------------------------------------------
 
-FOREST_IGBPS    <- c("ENF", "EBF", "DNF", "DBF", "MF")
-MIN_SITES       <- 3L
-MIN_NEE_YEARS   <- 8L
-RECENT_YEARS    <- 2019:2024
-FIGURE_WIDTH    <- 10   # inches
-FIGURE_HEIGHT   <- 12   # inches
-FIGURE_DPI      <- 150
+MIN_SITES     <- 4L
+MIN_NEE_YEARS <- 8L
+RECENT_YEARS  <- 2019:2024
+FIGURE_WIDTH  <- 10   # inches
+FIGURE_HEIGHT <- 12   # inches
+FIGURE_DPI    <- 150
 
 # ---- Load data ---------------------------------------------------------------
 
@@ -92,31 +91,31 @@ candidates <- readr::read_csv(candidates_path, show_col_types = FALSE)
 
 # ---- Determine qualifying combinations ---------------------------------------
 
-# Filter to forest IGBPs and sites with >= MIN_NEE_YEARS valid NEE years
-forest_sites <- candidates |>
+qualifying_sites <- candidates |>
   dplyr::filter(
-    .data$igbp %in% FOREST_IGBPS,
     .data$n_years_valid_nee >= MIN_NEE_YEARS,
     !is.na(.data$un_subregion),
     !is.na(.data$gez_name)
   )
 
-# Count sites per igbp × un_subregion × gez_name combination
-combo_counts <- forest_sites |>
+combo_counts <- qualifying_sites |>
   dplyr::group_by(.data$igbp, .data$un_subregion, .data$gez_name) |>
   dplyr::summarise(
-    n_sites_8yr = dplyr::n(),
-    .groups     = "drop"
+    n_sites_qualifying = dplyr::n(),
+    .groups            = "drop"
   ) |>
-  dplyr::filter(.data$n_sites_8yr >= MIN_SITES) |>
+  dplyr::filter(.data$n_sites_qualifying >= MIN_SITES) |>
   dplyr::arrange(.data$igbp, .data$un_subregion, .data$gez_name)
 
 # ---- Print summary table before generating -----------------------------------
 
 cat("\n")
-cat("=================================================================\n")
-cat("  QUALIFYING COMBINATIONS (forest IGBP, >= 3 sites, >= 8 NEE yr)\n")
-cat("=================================================================\n\n")
+cat("================================================================\n")
+cat(sprintf(
+  "  QUALIFYING COMBINATIONS (all IGBP, >= %d sites, >= %d NEE yr)\n",
+  MIN_SITES, MIN_NEE_YEARS
+))
+cat("================================================================\n\n")
 
 if (nrow(combo_counts) == 0L) {
   cat("  No qualifying combinations found.\n\n")
@@ -124,16 +123,16 @@ if (nrow(combo_counts) == 0L) {
   quit(save = "no", status = 0)
 }
 
-cat(sprintf("  %-6s  %-30s  %-35s  %s\n",
-            "IGBP", "un_subregion", "gez_name", "n_sites_8yr"))
-cat("  ", strrep("-", 82), "\n", sep = "")
+cat(sprintf("  %-6s  %-30s  %-38s  %s\n",
+            "igbp", "un_subregion", "gez_name", "n_sites_qualifying"))
+cat("  ", strrep("-", 86), "\n", sep = "")
 for (i in seq_len(nrow(combo_counts))) {
   r <- combo_counts[i, ]
-  cat(sprintf("  %-6s  %-30s  %-35s  %d\n",
-              r$igbp, r$un_subregion, r$gez_name, r$n_sites_8yr))
+  cat(sprintf("  %-6s  %-30s  %-38s  %d\n",
+              r$igbp, r$un_subregion, r$gez_name, r$n_sites_qualifying))
 }
 cat("\n")
-cat(sprintf("  Total combinations to generate: %d\n\n", nrow(combo_counts)))
+cat(sprintf("  Figures to generate: %d\n\n", nrow(combo_counts)))
 
 # ---- Set up output directory -------------------------------------------------
 
@@ -152,20 +151,15 @@ clean_name <- function(x) {
 
 # ---- Generate one figure per qualifying combination -------------------------
 
-n_ok  <- 0L
-n_err <- 0L
+failures <- list()   # named list: fig_name -> reason string
+n_ok     <- 0L
 
 for (i in seq_len(nrow(combo_counts))) {
   r         <- combo_counts[i, ]
   igbp_i    <- r$igbp
   subreg_i  <- r$un_subregion
   gez_i     <- r$gez_name
-  n_sites_i <- r$n_sites_8yr
-
-  message(sprintf(
-    "Generating: %s \u00d7 %s \u00d7 %s (n=%d sites)",
-    igbp_i, subreg_i, gez_i, n_sites_i
-  ))
+  n_sites_i <- r$n_sites_qualifying
 
   fig_name <- sprintf(
     "fig_anomaly_%s_%s_%s.png",
@@ -175,57 +169,68 @@ for (i in seq_len(nrow(combo_counts))) {
   )
   fig_path <- file.path(out_dir, fig_name)
 
+  message(sprintf(
+    "Generating [%d/%d]: %s \u00d7 %s \u00d7 %s (n=%d sites)",
+    i, nrow(combo_counts), igbp_i, subreg_i, gez_i, n_sites_i
+  ))
+
   p <- tryCatch(
     fig_anomaly_context(
-      data_yy      = data_yy,
-      metadata     = snapshot_meta,
-      gez_lookup   = gez_lookup,
-      igbp         = igbp_i,
-      gez_filter   = gez_i,
-      subregion    = subreg_i,
-      recent_years = RECENT_YEARS,
-      min_sites    = MIN_SITES,
+      data_yy       = data_yy,
+      metadata      = snapshot_meta,
+      gez_lookup    = gez_lookup,
+      igbp          = igbp_i,
+      gez_filter    = gez_i,
+      subregion     = subreg_i,
+      recent_years  = RECENT_YEARS,
+      min_sites     = MIN_SITES,
       min_nee_years = MIN_NEE_YEARS
     ),
     error = function(e) {
-      warning(
-        sprintf("fig_anomaly_context() failed for %s x %s x %s: %s",
-                igbp_i, subreg_i, gez_i, conditionMessage(e)),
-        call. = FALSE
-      )
+      failures[[fig_name]] <<- conditionMessage(e)
       NULL
     }
   )
 
-  if (is.null(p)) {
-    n_err <- n_err + 1L
-    next
-  }
+  if (is.null(p)) next
 
-  tryCatch(
+  save_ok <- tryCatch({
     ggplot2::ggsave(
       fig_path, plot = p,
       width = FIGURE_WIDTH, height = FIGURE_HEIGHT,
-      units = "in", dpi = FIGURE_DPI
-    ),
-    error = function(e) {
-      warning("Could not save figure ", fig_path, ": ", conditionMessage(e),
-              call. = FALSE)
-      n_err <<- n_err + 1L
-    }
-  )
+      units = "in", dpi = FIGURE_DPI,
+      bg    = "white"
+    )
+    TRUE
+  }, error = function(e) {
+    failures[[fig_name]] <<- paste("ggsave failed:", conditionMessage(e))
+    FALSE
+  })
 
-  message("  Saved: ", fig_path)
-  n_ok <- n_ok + 1L
+  if (save_ok) {
+    message("  Saved: ", fig_path)
+    n_ok <- n_ok + 1L
+  }
 }
 
 # ---- Final summary -----------------------------------------------------------
 
+n_fail <- length(failures)
+
 cat("\n")
-cat("=================================================================\n")
+cat("================================================================\n")
 cat("  DONE\n")
-cat("=================================================================\n")
-cat(sprintf("  Figures generated successfully: %d\n", n_ok))
-cat(sprintf("  Figures failed:                 %d\n", n_err))
-cat(sprintf("  Output directory:               %s\n", out_dir))
-cat("\n")
+cat("================================================================\n")
+cat(sprintf("  Successfully generated: %d / %d\n", n_ok, nrow(combo_counts)))
+
+if (n_fail > 0L) {
+  cat(sprintf("  Failed:                 %d\n\n", n_fail))
+  cat("  Failed combinations:\n")
+  for (nm in names(failures)) {
+    cat(sprintf("    %s\n      Reason: %s\n", nm, failures[[nm]]))
+  }
+} else {
+  cat("  Failed:                 0\n")
+}
+
+cat(sprintf("  Output directory:       %s\n\n", out_dir))

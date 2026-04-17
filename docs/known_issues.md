@@ -106,3 +106,18 @@ Contacts: Danielle Christianson, Dario Papale
 | `httr2_failure` on batch download | HTTP request failures during download of batches 12 and 13 — `resp` is not an HTTP response object | Some sites may not download on first attempt | Re-run `batch_download.R` — resumable design handles retries | Report to support@fluxnet.org |
 | AU-Dry BIF column order | `TERN_AU-Dry_FLUXNET_BIF_2009-2025_v1.3_r1.csv` has columns in unexpected order causing read failure | Site excluded from read stage | Fixed in `03_read.R` with column reordering | Report to TERN data contributor |
 | Windows file paths in `VARIABLE_GROUP` | 3 BIF files contain Windows-style file paths appearing as `VARIABLE_GROUP` values | Inflates group count and adds processing overhead | Filtered in `03_read.R` with regex guard | Report to support@fluxnet.org with affected site IDs |
+
+---
+
+## Future enhancements
+
+### FAO GEZ shapefile
+
+FAO GEZ shapefile stored at `data/external/gez/` — download from
+https://data.apps.fao.org/catalog/dataset/2fb209d0-fd34-4e5e-a3d8-a13c241eb61b
+if not present (file: `gez2010.zip`, extract to `data/external/gez/gez_2010_wgs84.shp`).
+
+The site-level GEZ lookup is pre-computed in `data/snapshots/site_gez_lookup.csv`
+(columns: `site_id`, `gez_name`, `gez_code`) and committed to the repository.
+Regenerate by re-running the GEZ join block in `scripts/07_figures.R` or via
+the inline code used in `R/figures/fig_anomaly_context.R`.

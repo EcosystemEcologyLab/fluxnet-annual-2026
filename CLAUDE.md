@@ -196,6 +196,12 @@ Do not skip steps or run them out of order. Each script sources
 - Plotting: `ggplot2`
 - Do not introduce new package dependencies without discussion
 
+### Figures
+- All review figures saved to `review/figures/` must use a **white (opaque)
+  background** — pass `bg = "white"` to every `ggsave()` call. Transparent
+  backgrounds are only acceptable when a figure is explicitly requested for
+  overlay or compositing use.
+
 ### Functions
 - Every function in `R/` must have a roxygen2 documentation header
 - Every function must have at least one test in `tests/testthat/`

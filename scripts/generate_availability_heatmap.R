@@ -198,7 +198,7 @@ p5 <- build_availability_heatmap(
 )
 path5 <- file.path(out_dir, "fig_availability_5yr.png")
 ggplot2::ggsave(path5, plot = p5, width = 18, height = 12,
-                units = "in", dpi = 150)
+                units = "in", dpi = 150, bg = "white")
 message("Saved: ", path5)
 
 cat("Generating >=10 NEE-year availability heatmap...\n")
@@ -210,7 +210,7 @@ p10 <- build_availability_heatmap(
 )
 path10 <- file.path(out_dir, "fig_availability_10yr.png")
 ggplot2::ggsave(path10, plot = p10, width = 18, height = 12,
-                units = "in", dpi = 150)
+                units = "in", dpi = 150, bg = "white")
 message("Saved: ", path10)
 
 cat("\nDone.\n")

@@ -1,0 +1,673 @@
+site_id,gez_name,gez_code
+AR-Bal,Subtropical humid forest,21
+AR-CCa,Subtropical humid forest,21
+AR-CCg,Subtropical humid forest,21
+AR-TF1,NA,NA
+AR-TF2,Temperate oceanic forest,31
+AT-Mmg,Temperate mountain system,35
+AT-Neu,Temperate mountain system,35
+AT-PsM,Temperate mountain system,35
+AT-Zoe,Temperate mountain system,35
+AU-APL,Temperate mountain system,35
+AU-ASM,Tropical desert,15
+AU-Ade,Tropical dry forest,13
+AU-Boy,Subtropical steppe,23
+AU-Col,Subtropical dry forest,22
+AU-Cow,Tropical rainforest,11
+AU-Cpr,Subtropical steppe,23
+AU-Ctr,Tropical rainforest,11
+AU-Cum,Subtropical humid forest,21
+AU-DaP,Tropical dry forest,13
+AU-DaS,Tropical dry forest,13
+AU-Dry,Tropical shrubland,14
+AU-Emr,Tropical shrubland,14
+AU-Fle,Tropical shrubland,14
+AU-Fog,Tropical dry forest,13
+AU-GWW,Subtropical desert,24
+AU-Gin,Subtropical dry forest,22
+AU-How,Tropical dry forest,13
+AU-Lit,Tropical dry forest,13
+AU-Lon,Tropical desert,15
+AU-Lox,Subtropical steppe,23
+AU-MvA,Subtropical steppe,23
+AU-MvB,Subtropical steppe,23
+AU-Otw,Temperate oceanic forest,31
+AU-RDF,Tropical dry forest,13
+AU-Rgf,Subtropical steppe,23
+AU-Rig,Subtropical steppe,23
+AU-Rob,Tropical rainforest,11
+AU-Sam,Subtropical humid forest,21
+AU-Sil,Temperate mountain system,35
+AU-Sno,Temperate mountain system,35
+AU-Stp,Tropical desert,15
+AU-TTE,Tropical desert,15
+AU-Tum,Temperate mountain system,35
+AU-Wac,Temperate mountain system,35
+AU-Wel,Subtropical steppe,23
+AU-Wgt,Temperate mountain system,35
+AU-Whr,Subtropical steppe,23
+AU-Wom,Subtropical steppe,23
+AU-Wrr,Temperate mountain system,35
+AU-Ya1,Subtropical humid forest,21
+AU-Ya2,Subtropical humid forest,21
+AU-Ync,Subtropical steppe,23
+BE-Bra,Temperate oceanic forest,31
+BE-Dor,Temperate oceanic forest,31
+BE-Lcr,Temperate oceanic forest,31
+BE-Lon,Temperate oceanic forest,31
+BE-Maa,Temperate oceanic forest,31
+BE-Vie,Temperate oceanic forest,31
+BJ-Bfg,Tropical moist forest,12
+BJ-Db1,Tropical rainforest,11
+BJ-Nhu,Tropical moist forest,12
+BR-CST,Tropical dry forest,13
+BR-ITA,Tropical moist forest,12
+BR-Ji3,Tropical rainforest,11
+BR-Ma2,Tropical rainforest,11
+BR-Ma3,Tropical rainforest,11
+BR-Npw,Tropical moist forest,12
+BR-SM1,Subtropical humid forest,21
+BR-Sa1,Tropical rainforest,11
+BR-Sa3,Tropical rainforest,11
+BW-Gum,Tropical dry forest,13
+BW-Nxr,Tropical dry forest,13
+CA-ARB,Boreal tundra woodland,42
+CA-ARF,Boreal tundra woodland,42
+CA-BOU,Boreal coniferous forest,41
+CA-CF1,Boreal tundra woodland,42
+CA-CF2,Boreal tundra woodland,42
+CA-CF3,Boreal tundra woodland,42
+CA-Ca1,Temperate oceanic forest,31
+CA-Ca2,Temperate oceanic forest,31
+CA-Ca3,Temperate oceanic forest,31
+CA-DB2,Temperate oceanic forest,31
+CA-DBB,Temperate oceanic forest,31
+CA-DSM,Temperate oceanic forest,31
+CA-EM1,Temperate steppe,33
+CA-EM2,Temperate steppe,33
+CA-Gro,Temperate continental forest,32
+CA-HPC,Polar,50
+CA-KLP,Boreal tundra woodland,42
+CA-LP1,Temperate mountain system,35
+CA-LU1,Boreal tundra woodland,42
+CA-LU2,Boreal tundra woodland,42
+CA-MA1,Temperate steppe,33
+CA-MA2,Temperate steppe,33
+CA-MA3,Temperate steppe,33
+CA-Man,Boreal coniferous forest,41
+CA-Mer,Temperate continental forest,32
+CA-Na1,Temperate continental forest,32
+CA-PB1,Boreal tundra woodland,42
+CA-PB2,Boreal tundra woodland,42
+CA-Qc2,Boreal coniferous forest,41
+CA-Qfo,Boreal coniferous forest,41
+CA-RBM,NA,NA
+CA-SCB,Boreal tundra woodland,42
+CA-SCC,Boreal tundra woodland,42
+CA-SF1,Boreal coniferous forest,41
+CA-SF3,Boreal coniferous forest,41
+CA-SMC,Boreal tundra woodland,42
+CA-TP1,Temperate continental forest,32
+CA-TP3,Temperate continental forest,32
+CA-TPA,Temperate continental forest,32
+CA-TPD,Temperate continental forest,32
+CD-Ygb,Tropical rainforest,11
+CH-Aws,Temperate mountain system,35
+CH-Crs,Temperate oceanic forest,31
+CH-Dav,Temperate mountain system,35
+CH-For,Temperate oceanic forest,31
+CH-Frk,Temperate mountain system,35
+CH-Fru,Temperate oceanic forest,31
+CH-Lae,Temperate oceanic forest,31
+CH-Oe2,Temperate oceanic forest,31
+CH-Oe3,Temperate oceanic forest,31
+CH-Rh1,Temperate oceanic forest,31
+CH-Rh2,Temperate oceanic forest,31
+CH-Rtb,Temperate mountain system,35
+CH-Tnk,Temperate oceanic forest,31
+CL-ACF,Temperate oceanic forest,31
+CL-SDF,Temperate oceanic forest,31
+CL-SDP,Temperate oceanic forest,31
+CN-Aro,Temperate mountain system,35
+CN-Ash,Subtropical mountain system,25
+CN-BeO,Temperate continental forest,32
+CN-DaW,Subtropical mountain system,25
+CN-Dan,Subtropical mountain system,25
+CN-Din,Subtropical humid forest,21
+CN-Du2,Temperate mountain system,35
+CN-Dzo,Tropical moist forest,12
+CN-GuT,Temperate mountain system,35
+CN-Ha2,Temperate mountain system,35
+CN-HaM,Temperate mountain system,35
+CN-HaW,Temperate mountain system,35
+CN-Jzh,Temperate continental forest,32
+CN-Lch,Temperate continental forest,32
+CN-Lsh,Temperate continental forest,32
+CN-Qng,Subtropical mountain system,25
+CN-SnB,NA,NA
+CN-Wnb,Temperate desert,34
+CN-Xi2,Temperate steppe,33
+CN-YaS,Temperate mountain system,35
+CN-Yan,Temperate mountain system,35
+CN-Yuc,Temperate continental forest,32
+CR-AqC,Tropical rainforest,11
+CR-Fsc,Tropical moist forest,12
+CZ-BK1,Temperate mountain system,35
+CZ-KrP,Temperate mountain system,35
+CZ-LnG,Temperate continental forest,32
+CZ-Lnz,Temperate continental forest,32
+CZ-RAJ,Temperate continental forest,32
+CZ-Stn,Temperate continental forest,32
+CZ-wet,Temperate continental forest,32
+DE-Akm,Temperate oceanic forest,31
+DE-Amv,Temperate oceanic forest,31
+DE-Brs,Temperate oceanic forest,31
+DE-Etn,Temperate oceanic forest,31
+DE-Fen,Temperate mountain system,35
+DE-Geb,Temperate continental forest,32
+DE-Gri,Temperate oceanic forest,31
+DE-GsB,Temperate oceanic forest,31
+DE-Gwg,Temperate mountain system,35
+DE-Hai,Temperate oceanic forest,31
+DE-Har,Temperate oceanic forest,31
+DE-HoH,Temperate oceanic forest,31
+DE-Hzd,Temperate oceanic forest,31
+DE-Kli,Temperate oceanic forest,31
+DE-Lnf,Temperate oceanic forest,31
+DE-Msr,Temperate oceanic forest,31
+DE-Obe,Temperate mountain system,35
+DE-Rns,Temperate oceanic forest,31
+DE-RuC,Temperate mountain system,35
+DE-RuM,Temperate oceanic forest,31
+DE-RuR,Temperate mountain system,35
+DE-RuS,Temperate oceanic forest,31
+DE-RuW,Temperate mountain system,35
+DE-SbM,Temperate mountain system,35
+DE-Tha,Temperate oceanic forest,31
+DK-Gds,Temperate oceanic forest,31
+DK-RCW,Temperate oceanic forest,31
+DK-Skj,Temperate oceanic forest,31
+DK-Sor,Temperate oceanic forest,31
+DK-Vng,Temperate oceanic forest,31
+EE-Pts,Temperate continental forest,32
+EE-Rng,Temperate continental forest,32
+EE-Stg,Temperate continental forest,32
+ES-Abr,Subtropical dry forest,22
+ES-Agu,Subtropical dry forest,22
+ES-Amo,Subtropical dry forest,22
+ES-Cnd,Subtropical dry forest,22
+ES-Crg,Subtropical dry forest,22
+ES-Gdn,Subtropical dry forest,22
+ES-HdD,Subtropical dry forest,22
+ES-HeB,Subtropical dry forest,22
+ES-Hen,Subtropical dry forest,22
+ES-LJu,Subtropical dry forest,22
+ES-LM1,Subtropical dry forest,22
+ES-LM2,Subtropical dry forest,22
+ES-LMa,Subtropical dry forest,22
+ES-Mcd,Subtropical dry forest,22
+ES-Mzn,Subtropical dry forest,22
+ES-Pzb,Subtropical dry forest,22
+ES-TzM,Subtropical dry forest,22
+ES-VDA,Subtropical dry forest,22
+ES-Yst,Subtropical dry forest,22
+FI-Ant,Boreal coniferous forest,41
+FI-Hyy,Boreal coniferous forest,41
+FI-Ken,Boreal mountain system,43
+FI-Let,Boreal coniferous forest,41
+FI-Nsv,Boreal coniferous forest,41
+FI-Pap,Boreal coniferous forest,41
+FI-Qvd,Temperate continental forest,32
+FI-Rk2,Boreal coniferous forest,41
+FI-Ruk,Boreal coniferous forest,41
+FI-Sar,Boreal coniferous forest,41
+FI-Sii,Boreal coniferous forest,41
+FI-Sod,Boreal coniferous forest,41
+FI-Var,Boreal coniferous forest,41
+FR-Aur,Temperate oceanic forest,31
+FR-Bil,Temperate oceanic forest,31
+FR-CLt,Temperate mountain system,35
+FR-EM2,Temperate oceanic forest,31
+FR-FBn,Subtropical dry forest,22
+FR-Fon,Temperate oceanic forest,31
+FR-Gri,Temperate oceanic forest,31
+FR-Hes,Temperate oceanic forest,31
+FR-LGt,Temperate oceanic forest,31
+FR-Lam,Temperate oceanic forest,31
+FR-Lqu,Temperate mountain system,35
+FR-Lus,Temperate oceanic forest,31
+FR-Mau,Temperate oceanic forest,31
+FR-Mej,Temperate oceanic forest,31
+FR-Nzn,Temperate oceanic forest,31
+FR-Pue,Subtropical dry forest,22
+FR-Tou,Temperate oceanic forest,31
+GF-Guy,Tropical rainforest,11
+GH-Ank,Tropical rainforest,11
+GL-Dsk,Polar,50
+GL-NuF,Polar,50
+GL-ZaF,Polar,50
+GL-ZaH,Polar,50
+ID-JOP,Tropical rainforest,11
+ID-PaB,Tropical rainforest,11
+ID-PaD,Tropical rainforest,11
+ID-Pag,Tropical rainforest,11
+IE-Cra,Temperate oceanic forest,31
+IL-RmH,Subtropical steppe,23
+IL-Yat,Tropical desert,15
+IT-Arz,Temperate oceanic forest,31
+IT-BCi,Subtropical dry forest,22
+IT-BFt,Temperate oceanic forest,31
+IT-BsB,Temperate mountain system,35
+IT-CA1,Subtropical dry forest,22
+IT-CA2,Subtropical dry forest,22
+IT-CA3,Subtropical dry forest,22
+IT-Cp2,Subtropical dry forest,22
+IT-Lsn,Temperate oceanic forest,31
+IT-MBo,Temperate oceanic forest,31
+IT-NiG,Temperate mountain system,35
+IT-Niv,Temperate mountain system,35
+IT-Noe,Subtropical dry forest,22
+IT-Ren,Temperate mountain system,35
+IT-SR2,Subtropical dry forest,22
+IT-Tor,Temperate mountain system,35
+IT-TrF,Temperate mountain system,35
+JP-Api,Temperate mountain system,35
+JP-BBY,Temperate continental forest,32
+JP-Fhk,Temperate mountain system,35
+JP-Fjy,Subtropical mountain system,25
+JP-Fmt,Subtropical humid forest,21
+JP-Hc2,Subtropical humid forest,21
+JP-Hc3,Subtropical humid forest,21
+JP-KaP,Subtropical humid forest,21
+JP-Khw,Subtropical humid forest,21
+JP-Kzw,Temperate mountain system,35
+JP-MBF,Temperate mountain system,35
+JP-MMF,Temperate mountain system,35
+JP-Mse,Subtropical humid forest,21
+JP-NsC,Subtropical mountain system,25
+JP-NsM,Subtropical mountain system,25
+JP-Nuf,Subtropical humid forest,21
+JP-Om2,Subtropical humid forest,21
+JP-SMF,Subtropical humid forest,21
+JP-Sb1,Temperate mountain system,35
+JP-Sb2,Temperate mountain system,35
+JP-Shn,Subtropical mountain system,25
+JP-Spp,Temperate continental forest,32
+JP-Srk,Temperate mountain system,35
+JP-Ta2,Subtropical humid forest,21
+JP-Tak,Temperate mountain system,35
+JP-Tef,Temperate mountain system,35
+JP-Tkb,Subtropical humid forest,21
+JP-Tmd,Temperate continental forest,32
+JP-Tmk,Temperate continental forest,32
+JP-Toc,Temperate continental forest,32
+JP-Yms,Subtropical humid forest,21
+JP-Ynf,Subtropical humid forest,21
+KE-Aq1,Tropical mountain system,16
+KE-Aq2,Tropical mountain system,16
+KE-Kpt,Tropical mountain system,16
+KE-Mkt,Tropical mountain system,16
+KH-Kmp,Tropical moist forest,12
+KR-AdC,Temperate continental forest,32
+KR-CRK,Temperate continental forest,32
+KR-CmF,Temperate continental forest,32
+KR-GmP,Temperate continental forest,32
+KR-GmR,Temperate continental forest,32
+KR-GmS,Temperate continental forest,32
+KR-HPK,Subtropical humid forest,21
+KR-HcM,Temperate continental forest,32
+KR-Hnm,Subtropical humid forest,21
+KR-JjM,Subtropical humid forest,21
+KR-Kw1,Temperate continental forest,32
+KR-Kw2,Temperate continental forest,32
+KR-Nj1,Temperate continental forest,32
+KR-Nj2,Temperate continental forest,32
+KR-PcD,Temperate continental forest,32
+KR-ScC,Temperate continental forest,32
+KR-SmM,Temperate continental forest,32
+KR-TwB,Temperate continental forest,32
+KR-TwC,Temperate continental forest,32
+KR-UAO,Temperate continental forest,32
+KR-WdE,Subtropical humid forest,21
+ML-Kem,Tropical shrubland,14
+MN-Hst,Temperate steppe,33
+MN-Kbu,Temperate steppe,33
+MN-Nkh,Boreal mountain system,43
+MN-Udg,Boreal mountain system,43
+MX-Aog,Tropical dry forest,13
+MX-PMm,Tropical moist forest,12
+MX-Tes,Tropical dry forest,13
+MY-LHP,Tropical rainforest,11
+NL-Hrw,Temperate oceanic forest,31
+NL-Loo,Temperate oceanic forest,31
+NL-Vkp,Temperate oceanic forest,31
+NO-Fns,Boreal mountain system,43
+NO-Hur,Boreal coniferous forest,41
+NO-Ikr,Boreal mountain system,43
+NZ-ADd,Temperate oceanic forest,31
+NZ-ADw,Temperate oceanic forest,31
+NZ-BFm,Temperate oceanic forest,31
+NZ-BFu,Temperate oceanic forest,31
+NZ-Cla,Temperate oceanic forest,31
+NZ-Kop,Subtropical humid forest,21
+NZ-Lau,Temperate oceanic forest,31
+NZ-Oxf,Temperate oceanic forest,31
+NZ-ScF,Subtropical humid forest,21
+PE-QFR,Tropical rainforest,11
+PR-xLA,Tropical moist forest,12
+RU-Ch2,Boreal tundra woodland,42
+RU-Ege,Boreal coniferous forest,41
+RU-Fy2,Temperate continental forest,32
+RU-Fy3,Temperate continental forest,32
+RU-Fy4,Temperate continental forest,32
+RU-Fyo,Temperate continental forest,32
+RU-Ha1,Boreal mountain system,43
+RU-NeB,Boreal coniferous forest,41
+RU-NeC,Boreal coniferous forest,41
+RU-NeF,Boreal coniferous forest,41
+RU-Sk2,Boreal coniferous forest,41
+RU-SkP,Boreal coniferous forest,41
+RU-Tur,Boreal mountain system,43
+SE-Deg,Boreal coniferous forest,41
+SE-Htm,Temperate oceanic forest,31
+SE-Nor,Temperate continental forest,32
+SE-Sto,Boreal mountain system,43
+SE-Svb,Boreal coniferous forest,41
+SE-Trb,Boreal coniferous forest,41
+SN-Dhr,Tropical shrubland,14
+SN-Nkr,Tropical dry forest,13
+TH-Kog,Tropical moist forest,12
+TH-Mae,Tropical moist forest,12
+UK-AMo,Temperate oceanic forest,31
+UK-Ags,Temperate oceanic forest,31
+UK-BnB,Temperate oceanic forest,31
+UK-CCr,Temperate oceanic forest,31
+UK-Cvn,Temperate oceanic forest,31
+UK-GaB,Temperate oceanic forest,31
+UK-Gnn,Temperate oceanic forest,31
+UK-Gwr,Temperate oceanic forest,31
+UK-HgF,Temperate oceanic forest,31
+UK-HpF,Temperate oceanic forest,31
+US-A10,Polar,50
+US-A32,Temperate steppe,33
+US-A37,Temperate steppe,33
+US-A39,Subtropical steppe,23
+US-A74,Temperate steppe,33
+US-ADR,Subtropical desert,24
+US-ALQ,Temperate continental forest,32
+US-AR1,Temperate steppe,33
+US-AR2,Temperate steppe,33
+US-ARb,Temperate steppe,33
+US-ARc,Temperate steppe,33
+US-ASH,Subtropical dry forest,22
+US-ASM,Subtropical dry forest,22
+US-Akn,Subtropical humid forest,21
+US-BRG,Temperate continental forest,32
+US-BZB,Boreal tundra woodland,42
+US-BZo,Boreal tundra woodland,42
+US-Bar,Temperate mountain system,35
+US-Bi1,Subtropical dry forest,22
+US-Bi2,Subtropical dry forest,22
+US-CAK,Boreal tundra woodland,42
+US-CF1,Temperate desert,34
+US-CF2,Temperate desert,34
+US-CF3,Temperate desert,34
+US-CF4,Temperate desert,34
+US-CGG,Subtropical mountain system,25
+US-CLF,Temperate mountain system,35
+US-CMW,Subtropical desert,24
+US-CRK,Subtropical humid forest,21
+US-CRT,Temperate continental forest,32
+US-CS1,Temperate continental forest,32
+US-CS2,Temperate continental forest,32
+US-CS3,Temperate continental forest,32
+US-CS4,Temperate continental forest,32
+US-CS5,Temperate continental forest,32
+US-CS6,Temperate continental forest,32
+US-CS8,Temperate continental forest,32
+US-CdM,Temperate desert,34
+US-Ced,Temperate continental forest,32
+US-ChR,Temperate mountain system,35
+US-Cms,Polar,50
+US-Cop,Temperate desert,34
+US-Cst,Subtropical humid forest,21
+US-Cwt,Temperate mountain system,35
+US-DFC,Temperate continental forest,32
+US-DFK,Temperate continental forest,32
+US-DPW,Subtropical humid forest,21
+US-DS1,Subtropical dry forest,22
+US-DS2,Subtropical dry forest,22
+US-DS3,Subtropical dry forest,22
+US-Dix,Temperate continental forest,32
+US-Dk1,Subtropical humid forest,21
+US-Dk2,Subtropical humid forest,21
+US-Dk3,Subtropical humid forest,21
+US-Dmg,Subtropical dry forest,22
+US-EA4,Subtropical steppe,23
+US-EA5,Subtropical steppe,23
+US-EA6,Subtropical steppe,23
+US-EDN,Subtropical mountain system,25
+US-EKH,Subtropical mountain system,25
+US-EKN,Subtropical mountain system,25
+US-EKP,Subtropical mountain system,25
+US-EML,Boreal mountain system,43
+US-Elm,Tropical moist forest,12
+US-Esm,Tropical moist forest,12
+US-EvM,Tropical moist forest,12
+US-Fcr,Boreal tundra woodland,42
+US-Fmf,Subtropical mountain system,25
+US-Fo1,Polar,50
+US-Fuf,Subtropical mountain system,25
+US-Fwf,Subtropical mountain system,25
+US-GLE,Temperate mountain system,35
+US-HB1,Subtropical humid forest,21
+US-HB2,Subtropical humid forest,21
+US-HB3,Subtropical humid forest,21
+US-HB4,Subtropical humid forest,21
+US-HBK,Temperate mountain system,35
+US-HRA,Subtropical humid forest,21
+US-HRC,Subtropical humid forest,21
+US-HVs,Polar,50
+US-HWB,Temperate mountain system,35
+US-Ha1,Temperate mountain system,35
+US-Hn2,Temperate desert,34
+US-Hn3,Temperate desert,34
+US-Ho2,Temperate continental forest,32
+US-Hsm,Subtropical dry forest,22
+US-IAB,Temperate steppe,33
+US-IAC,Temperate steppe,33
+US-IAM,Temperate steppe,33
+US-ICh,Polar,50
+US-ICs,Polar,50
+US-ICt,Polar,50
+US-Jo1,Subtropical desert,24
+US-KFS,Temperate steppe,33
+US-KPL,Boreal mountain system,43
+US-KS1,Subtropical humid forest,21
+US-KS2,Subtropical humid forest,21
+US-KS3,Subtropical humid forest,21
+US-Kon,Temperate steppe,33
+US-LA2,Subtropical humid forest,21
+US-LA3,Subtropical humid forest,21
+US-LS1,Subtropical desert,24
+US-Lin,Subtropical dry forest,22
+US-Los,Temperate continental forest,32
+US-MBP,Temperate continental forest,32
+US-MEF,Temperate mountain system,35
+US-MMS,Temperate continental forest,32
+US-MN1,Temperate steppe,33
+US-MN2,Temperate steppe,33
+US-MN3,Temperate steppe,33
+US-MOz,Temperate continental forest,32
+US-MZA,Temperate continental forest,32
+US-Me1,Temperate mountain system,35
+US-Me3,Temperate mountain system,35
+US-Me6,Temperate mountain system,35
+US-Me7,Temperate mountain system,35
+US-Mo1,Temperate steppe,33
+US-Mo2,Temperate steppe,33
+US-Mo3,Temperate steppe,33
+US-Mpj,Subtropical steppe,23
+US-MtB,Subtropical desert,24
+US-Myb,Subtropical dry forest,22
+US-NC1,Subtropical humid forest,21
+US-NC2,Subtropical humid forest,21
+US-NC3,Subtropical humid forest,21
+US-NC4,Subtropical humid forest,21
+US-NGB,Polar,50
+US-NGC,Boreal tundra woodland,42
+US-NR1,Temperate mountain system,35
+US-NSa,Subtropical dry forest,22
+US-NSb,Subtropical dry forest,22
+US-Ne1,Temperate steppe,33
+US-Ne2,Temperate steppe,33
+US-Ne3,Temperate steppe,33
+US-ONA,Subtropical humid forest,21
+US-OPE,Subtropical humid forest,21
+US-OWC,Temperate continental forest,32
+US-Oho,Temperate continental forest,32
+US-PAS,Subtropical humid forest,21
+US-PFL,Temperate continental forest,32
+US-PFb,Temperate continental forest,32
+US-PFc,Temperate continental forest,32
+US-PFd,Temperate continental forest,32
+US-PFf,Temperate continental forest,32
+US-PFg,Temperate continental forest,32
+US-PFh,Temperate continental forest,32
+US-PFi,Temperate continental forest,32
+US-PFj,Temperate continental forest,32
+US-PFk,Temperate continental forest,32
+US-PFm,Temperate continental forest,32
+US-PFn,Temperate continental forest,32
+US-PFp,Temperate continental forest,32
+US-PFq,Temperate continental forest,32
+US-PFr,Temperate continental forest,32
+US-PFt,Temperate continental forest,32
+US-PLo,Temperate continental forest,32
+US-PSH,Subtropical dry forest,22
+US-PSL,Subtropical dry forest,22
+US-Prr,Boreal mountain system,43
+US-RC1,Temperate desert,34
+US-RC2,Temperate desert,34
+US-RC4,Temperate mountain system,35
+US-RC5,Temperate desert,34
+US-RGA,Subtropical humid forest,21
+US-RGB,Subtropical dry forest,22
+US-RGF,Subtropical dry forest,22
+US-RGW,Subtropical humid forest,21
+US-RGo,Subtropical dry forest,22
+US-RRC,Subtropical humid forest,21
+US-Rls,Temperate desert,34
+US-Rms,Temperate desert,34
+US-Ro1,Temperate steppe,33
+US-Ro2,Temperate steppe,33
+US-Ro3,Temperate steppe,33
+US-Ro4,Temperate steppe,33
+US-Ro5,Temperate steppe,33
+US-Ro6,Temperate steppe,33
+US-Rpf,Boreal mountain system,43
+US-Rwe,Temperate desert,34
+US-Rwf,Temperate desert,34
+US-Rws,Temperate desert,34
+US-SD1,Temperate continental forest,32
+US-SD2,Temperate continental forest,32
+US-SHC,Subtropical mountain system,25
+US-SP1,Subtropical humid forest,21
+US-SRC,Subtropical desert,24
+US-SRG,Subtropical desert,24
+US-SRM,Subtropical desert,24
+US-SRS,Subtropical desert,24
+US-SSH,Temperate mountain system,35
+US-Sag,Polar,50
+US-Seg,Subtropical steppe,23
+US-Ses,Subtropical steppe,23
+US-Sne,Subtropical dry forest,22
+US-Snf,Subtropical dry forest,22
+US-Srr,Subtropical mountain system,25
+US-StJ,Subtropical humid forest,21
+US-Sta,Temperate desert,34
+US-TKs,Polar,50
+US-TLR,Subtropical humid forest,21
+US-Ton,Subtropical mountain system,25
+US-Tw1,Subtropical dry forest,22
+US-Tw2,Subtropical dry forest,22
+US-Tw3,Subtropical dry forest,22
+US-Tw4,Subtropical dry forest,22
+US-Tw5,Subtropical dry forest,22
+US-Twt,Subtropical dry forest,22
+US-UC1,Temperate mountain system,35
+US-UC2,Temperate mountain system,35
+US-UMd,Temperate continental forest,32
+US-UTB,Temperate desert,34
+US-UTD,Temperate desert,34
+US-UTE,Temperate desert,34
+US-UTJ,Temperate desert,34
+US-UTW,Temperate desert,34
+US-Uaf,Boreal tundra woodland,42
+US-UiA,Temperate steppe,33
+US-UiB,Temperate steppe,33
+US-UiC,Temperate steppe,33
+US-UiD,Temperate steppe,33
+US-UiE,Temperate steppe,33
+US-UiF,Temperate steppe,33
+US-UiG,Temperate steppe,33
+US-VT1,Temperate steppe,33
+US-VT2,Temperate steppe,33
+US-Vcm,Temperate mountain system,35
+US-Vcp,Temperate mountain system,35
+US-WCr,Temperate continental forest,32
+US-WPT,Temperate continental forest,32
+US-WT1,Subtropical steppe,23
+US-Whs,Subtropical desert,24
+US-Wjs,Subtropical steppe,23
+US-YK1,Polar,50
+US-YK2,Polar,50
+US-ZF2,Temperate steppe,33
+US-xAB,Temperate mountain system,35
+US-xAE,Temperate steppe,33
+US-xBA,Polar,50
+US-xBL,Temperate mountain system,35
+US-xBN,Boreal mountain system,43
+US-xBR,Temperate mountain system,35
+US-xCL,Subtropical steppe,23
+US-xCP,Temperate steppe,33
+US-xDC,Temperate steppe,33
+US-xDJ,Boreal tundra woodland,42
+US-xDL,Subtropical humid forest,21
+US-xDS,Subtropical humid forest,21
+US-xGR,Temperate mountain system,35
+US-xHE,Boreal mountain system,43
+US-xJE,Subtropical humid forest,21
+US-xJR,Subtropical desert,24
+US-xKZ,Temperate steppe,33
+US-xLE,Subtropical humid forest,21
+US-xMB,Temperate desert,34
+US-xML,Temperate mountain system,35
+US-xNG,Temperate steppe,33
+US-xNQ,Temperate desert,34
+US-xNW,Temperate mountain system,35
+US-xPU,Tropical mountain system,16
+US-xRM,Temperate mountain system,35
+US-xRN,Temperate mountain system,35
+US-xSB,Subtropical humid forest,21
+US-xSC,Temperate mountain system,35
+US-xSE,Subtropical humid forest,21
+US-xSJ,Subtropical mountain system,25
+US-xSL,Temperate steppe,33
+US-xSP,Subtropical mountain system,25
+US-xSR,Subtropical desert,24
+US-xST,Temperate continental forest,32
+US-xTE,Subtropical mountain system,25
+US-xTL,Polar,50
+US-xTR,Temperate continental forest,32
+US-xUK,Temperate steppe,33
+US-xUN,Temperate continental forest,32
+US-xWD,Temperate steppe,33
+US-xWR,Temperate mountain system,35
+US-xYE,Temperate mountain system,35
+VU-Coc,Tropical rainforest,11
+ZA-BfK,Tropical desert,15
+ZA-BfS,Tropical desert,15
+ZA-Jks,Subtropical dry forest,22
+ZA-Spk,Subtropical mountain system,25
+ZA-Uby,Tropical moist forest,12

@@ -2,9 +2,10 @@
 # Long-record annual time series figures for the FLUXNET Annual Paper 2026.
 #
 # Functions:
-#   save_long_record_sites()       — select top sites per continent by record
-#                                    span, write data/snapshots/long_record_sites.csv
-#   fig_long_record_timeseries()   — annual time series panels per continent
+#   save_long_record_sites()          — select top sites per continent by record
+#                                       span, write data/snapshots/long_record_sites.csv
+#   fig_long_record_timeseries()      — annual time series panels per continent
+#   fig_timeseries_by_subregion()     — diagnostic annual time series panels by UN subregion
 
 library(ggplot2)
 library(ggtext)
@@ -358,6 +359,336 @@ fig_long_record_timeseries <- function(
     warning(
       "fig_long_record_timeseries(): no plots generated — ",
       "check that data_yy contains flux_vars for sites in selected continents.",
+      call. = FALSE
+    )
+  }
+
+  out
+}
+
+#' Map site ISO-2 prefix to UN subregion name
+#'
+#' Applies `countrycode::countrycode()` with a pre-substitution for FLUXNET
+#' site ID conventions that differ from ISO 3166-1 alpha-2 (notably `UK` → `GB`
+#' for United Kingdom sites).  Returns `NA` for unrecognised codes.
+#'
+#' @param iso2 Character vector of two-letter country prefixes.
+#' @return Character vector of UN subregion names (same length as `iso2`).
+#' @noRd
+.iso2_to_subregion <- function(iso2) {
+  if (!requireNamespace("countrycode", quietly = TRUE)) {
+    stop(
+      "Package 'countrycode' is required for subregion assignment. ",
+      "Install with: install.packages('countrycode')",
+      call. = FALSE
+    )
+  }
+  # FLUXNET convention: "UK" is used for United Kingdom sites; ISO 3166-1 is "GB"
+  iso2_norm <- dplyr::case_when(
+    iso2 == "UK" ~ "GB",
+    TRUE         ~ iso2
+  )
+  countrycode::countrycode(iso2_norm, origin = "iso2c",
+                           destination = "un.regionsub.name", warn = FALSE)
+}
+
+#' Diagnostic annual time series by UN subregion
+#'
+#' @description
+#' **Diagnostic figure — not a final paper figure.**
+#'
+#' Selects the top `n_sites` sites per UN subregion by `n_years_valid_nee`
+#' (count of years with non-NA `NEE_VUT_REF` in `data_yy`) and plots three
+#' vertically stacked panels of annual flux time series: NEE (top), LE
+#' (middle), H (bottom) — or whichever variables from `flux_vars` are present.
+#' Panels share the x-axis (year); only years where a flux variable is non-NA
+#' are plotted, excluding ERA5-only pre-flux years.  Site identity is shown by
+#' line type; IGBP class by colour via [scale_color_igbp()].
+#'
+#' Only subregions with at least `min_sites` sites having ≥ 1 valid NEE year
+#' are included.  Excluded subregions are listed in a `message()` at the start
+#' of the run.
+#'
+#' @param data_yy Annual FLUXNET data frame.  Must contain `site_id`, a year
+#'   column (`TIMESTAMP` or `YEAR`), `NEE_VUT_REF` (used for site selection),
+#'   and the columns named in `flux_vars`.
+#' @param metadata Site metadata data frame.  Must contain `site_id` and
+#'   `igbp`.
+#' @param min_sites Integer.  Minimum number of sites with ≥ 1 valid NEE year
+#'   required to include a subregion (default `3`).
+#' @param n_sites Integer.  Number of top sites (by `n_years_valid_nee`) to
+#'   select per qualifying subregion (default `5`).
+#' @param flux_vars Character vector of flux variable column names to plot as
+#'   stacked panels in top-to-bottom order (default: `NEE_VUT_REF`,
+#'   `LE_F_MDS`, `H_F_MDS`).  Variables absent from `data_yy` are skipped
+#'   with a warning.
+#'
+#' @return A named list of \pkg{patchwork} objects, one per qualifying
+#'   subregion.  Names are the UN subregion names (e.g. `"Northern America"`).
+#'   Each patchwork stacks one panel per available `flux_var`.
+#'
+#' @note These are diagnostic figures for review and site selection
+#'   assessment — not intended as final paper figures.  Subregions with fewer
+#'   than `min_sites` sites with valid NEE are excluded and listed in a
+#'   `message()` at the start of the run.
+#'
+#' @examples
+#' \dontrun{
+#' plots <- fig_timeseries_by_subregion(data_yy, metadata = snapshot_meta)
+#' plots[["Northern America"]]
+#' }
+#'
+#' @export
+fig_timeseries_by_subregion <- function(
+    data_yy,
+    metadata,
+    min_sites = 3L,
+    n_sites   = 5L,
+    flux_vars = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS")
+) {
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop(
+      "Package 'patchwork' is required. ",
+      "Install with: install.packages('patchwork')",
+      call. = FALSE
+    )
+  }
+
+  # ---- Column checks ----------------------------------------------------------
+  if (!"site_id" %in% names(data_yy)) {
+    stop("data_yy must contain a 'site_id' column.", call. = FALSE)
+  }
+  if (!"NEE_VUT_REF" %in% names(data_yy)) {
+    stop(
+      "data_yy must contain 'NEE_VUT_REF' — used to count valid NEE years ",
+      "for site selection.",
+      call. = FALSE
+    )
+  }
+
+  year_col <- if ("TIMESTAMP" %in% names(data_yy)) {
+    "TIMESTAMP"
+  } else if ("YEAR" %in% names(data_yy)) {
+    "YEAR"
+  } else {
+    stop(
+      "data_yy must contain a 'TIMESTAMP' or 'YEAR' column for the x-axis.",
+      call. = FALSE
+    )
+  }
+
+  meta_required <- c("site_id", "igbp")
+  missing_meta  <- setdiff(meta_required, names(metadata))
+  if (length(missing_meta) > 0L) {
+    stop(
+      "metadata is missing required column(s): ",
+      paste(missing_meta, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  # ---- Count valid NEE years per site from data_yy ----------------------------
+  nee_counts <- data_yy |>
+    dplyr::select("site_id",
+                  year        = dplyr::all_of(year_col),
+                  "NEE_VUT_REF") |>
+    dplyr::mutate(year = as.integer(.data$year)) |>
+    dplyr::group_by(.data$site_id) |>
+    dplyr::summarise(
+      n_years_valid_nee = sum(!is.na(.data$NEE_VUT_REF)),
+      .groups = "drop"
+    ) |>
+    dplyr::filter(.data$n_years_valid_nee >= 1L)
+
+  # ---- Assign UN subregion and IGBP to each site ------------------------------
+  igbp_lookup <- metadata |>
+    dplyr::select("site_id", "igbp") |>
+    dplyr::distinct()
+
+  site_meta <- nee_counts |>
+    dplyr::mutate(
+      iso2      = substr(.data$site_id, 1L, 2L),
+      subregion = .iso2_to_subregion(.data$iso2)
+    ) |>
+    dplyr::left_join(igbp_lookup, by = "site_id") |>
+    dplyr::filter(!is.na(.data$subregion))
+
+  # ---- Identify qualifying and excluded subregions ----------------------------
+  subregion_counts <- site_meta |>
+    dplyr::group_by(.data$subregion) |>
+    dplyr::summarise(n_sites_avail = dplyr::n(), .groups = "drop")
+
+  qualifying <- subregion_counts |>
+    dplyr::filter(.data$n_sites_avail >= as.integer(min_sites))
+  excluded   <- subregion_counts |>
+    dplyr::filter(.data$n_sites_avail <  as.integer(min_sites))
+
+  message(
+    "--- fig_timeseries_by_subregion: subregion inclusion ---\n",
+    "  Qualifying (>= ", min_sites, " sites with valid NEE): ",
+    if (nrow(qualifying) > 0L)
+      paste(sort(qualifying$subregion), collapse = "; ")
+    else
+      "(none)"
+  )
+  if (nrow(excluded) > 0L) {
+    excl_detail <- paste0(excluded$subregion, " (n=", excluded$n_sites_avail, ")")
+    message(
+      "  Excluded  (< ",  min_sites, " sites with valid NEE): ",
+      paste(sort(excl_detail), collapse = "; ")
+    )
+  }
+
+  if (nrow(qualifying) == 0L) {
+    warning(
+      "No qualifying subregions found — all have fewer than ", min_sites,
+      " sites with valid NEE.",
+      call. = FALSE
+    )
+    return(list())
+  }
+
+  # ---- Select top n_sites per qualifying subregion by n_years_valid_nee ------
+  selected_sites <- site_meta |>
+    dplyr::filter(.data$subregion %in% qualifying$subregion) |>
+    dplyr::group_by(.data$subregion) |>
+    dplyr::slice_max(order_by = .data$n_years_valid_nee,
+                     n = as.integer(n_sites), with_ties = FALSE) |>
+    dplyr::ungroup()
+
+  # ---- Filter flux_vars to those present in data_yy --------------------------
+  avail_vars <- intersect(flux_vars, names(data_yy))
+  skipped    <- setdiff(flux_vars, names(data_yy))
+  if (length(skipped) > 0L) {
+    warning(
+      "flux_var(s) not found in data_yy \u2014 skipped: ",
+      paste(skipped, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  if (length(avail_vars) == 0L) {
+    warning(
+      "None of the requested flux_vars are present in data_yy. ",
+      "Returning empty list.",
+      call. = FALSE
+    )
+    return(list())
+  }
+
+  # ---- Join site metadata onto filtered data_yy ------------------------------
+  data_join <- data_yy |>
+    dplyr::filter(.data$site_id %in% selected_sites$site_id) |>
+    dplyr::left_join(
+      dplyr::select(selected_sites, "site_id", "subregion", "igbp",
+                    "n_years_valid_nee"),
+      by = "site_id"
+    ) |>
+    dplyr::mutate(
+      IGBP = factor(.data$igbp, levels = IGBP_order),
+      year = as.integer(.data[[year_col]])
+    )
+
+  # Line types — up to 5 distinct styles for up to 5 sites per subregion
+  lt_palette <- c("solid", "dashed", "dotted", "dotdash", "longdash")
+
+  # ---- Build one patchwork per qualifying subregion --------------------------
+  out <- list()
+  subregions_in_data <- sort(unique(na.omit(data_join$subregion)))
+
+  for (subreg in subregions_in_data) {
+    df_sub        <- dplyr::filter(data_join, .data$subregion == subreg)
+    sites_in_sub  <- sort(unique(df_sub$site_id))
+    n_s           <- length(sites_in_sub)
+
+    # Fixed linetype assignment for this subregion
+    lt_map <- stats::setNames(lt_palette[seq_len(n_s)], sites_in_sub)
+
+    # Only include variables that have at least one non-NA row in this subregion
+    avail_in_sub <- avail_vars[vapply(avail_vars, function(fv) {
+      fv %in% names(df_sub) && any(!is.na(df_sub[[fv]]))
+    }, logical(1L))]
+
+    if (length(avail_in_sub) == 0L) next
+
+    panels <- list()
+
+    for (i in seq_along(avail_in_sub)) {
+      fv        <- avail_in_sub[[i]]
+      is_bottom <- (i == length(avail_in_sub))
+
+      # Exclude ERA5-only rows (years where this flux variable is NA)
+      df_fv <- dplyr::filter(df_sub, !is.na(.data[[fv]]))
+
+      igbp_lvls <- intersect(IGBP_order, unique(na.omit(df_fv$IGBP)))
+      y_label   <- .flux_ts_label(fv)
+
+      p <- ggplot2::ggplot(
+        df_fv,
+        ggplot2::aes(
+          x        = .data$year,
+          y        = .data[[fv]],
+          colour   = .data$IGBP,
+          linetype = .data$site_id,
+          group    = .data$site_id
+        )
+      ) +
+        ggplot2::geom_line(linewidth = poster_linewidth * 0.9, alpha = 0.85) +
+        scale_color_igbp(
+          limits = igbp_lvls,
+          guide  = ggplot2::guide_legend(
+            title         = "IGBP",
+            ncol          = 1,
+            override.aes  = list(linetype = "solid")
+          )
+        ) +
+        ggplot2::scale_linetype_manual(
+          values = lt_map,
+          name   = "Site",
+          guide  = ggplot2::guide_legend(title = "Site", ncol = 1)
+        ) +
+        ggplot2::labs(
+          y = y_label,
+          x = if (is_bottom) "Year" else NULL
+        ) +
+        fluxnet_theme() +
+        ggplot2::theme(axis.title.y = ggtext::element_markdown())
+
+      # Shared x-axis: hide x-axis text and ticks on all but the bottom panel,
+      # and tighten the margin so panels visually abut.
+      if (!is_bottom) {
+        p <- p + ggplot2::theme(
+          axis.text.x  = ggplot2::element_blank(),
+          axis.ticks.x = ggplot2::element_blank(),
+          plot.margin  = ggplot2::margin(t = 5, r = 5, b = 0, l = 5, unit = "pt")
+        )
+      } else {
+        p <- p + ggplot2::theme(
+          plot.margin = ggplot2::margin(t = 0, r = 5, b = 5, l = 5, unit = "pt")
+        )
+      }
+
+      panels[[fv]] <- p
+    }
+
+    if (length(panels) == 0L) next
+
+    pw <- patchwork::wrap_plots(panels, ncol = 1) +
+      patchwork::plot_layout(guides = "collect") +
+      patchwork::plot_annotation(
+        title = paste0(subreg, " (n=", n_s, ")"),
+        theme = ggplot2::theme(
+          plot.title = ggplot2::element_text(face = "bold", size = 14)
+        )
+      ) &
+      ggplot2::theme(legend.position = "right")
+
+    out[[subreg]] <- pw
+  }
+
+  if (length(out) == 0L) {
+    warning(
+      "fig_timeseries_by_subregion(): no plots generated \u2014 ",
+      "check that data_yy contains flux_vars for sites in qualifying subregions.",
       call. = FALSE
     )
   }

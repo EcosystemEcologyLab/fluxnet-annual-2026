@@ -26,13 +26,20 @@ snap_file <- sort(
 )[[1]]
 metadata <- readr::read_csv(snap_file, show_col_types = FALSE)
 
+site_aridity <- readr::read_csv(
+  file.path(FLUXNET_DATA_ROOT, "snapshots", "site_aridity.csv"),
+  show_col_types = FALSE
+)
+
 message("Building fig_environmental_response_era5 ...")
-p <- fig_environmental_response_era5(data_yy, metadata = metadata)
+p <- fig_environmental_response_era5(data_yy, metadata = metadata,
+                                     aridity_data = site_aridity)
 
 out_dir <- file.path("review", "figures", "climate")
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 out_path <- file.path(out_dir, "fig_environmental_response_era5.png")
 
-ggplot2::ggsave(out_path, plot = p, width = 14, height = 12,
+# 4 columns (TA, P, VPD, AI) × 3 rows (NEE, LE, H)
+ggplot2::ggsave(out_path, plot = p, width = 18, height = 12,
                 units = "in", dpi = 150, bg = "white")
 message("Saved: ", out_path)

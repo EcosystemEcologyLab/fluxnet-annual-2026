@@ -4,9 +4,9 @@
 # Functions:
 #   fig_environmental_response()           — response curves of flux_vars across binned
 #                                            env_vars (median + IQR ribbon or IGBP lines)
-#   fig_environmental_response_era5()      — 3×3 patchwork using ERA5 climate predictors
+#   fig_environmental_response_era5()      — 3×4 patchwork using ERA5 climate predictors
 #                                            and site-year observations (not site means)
-#   fig_environmental_response_worldclim() — 3×2 patchwork using WorldClim bio1/bio12
+#   fig_environmental_response_worldclim() — 3×3 patchwork using WorldClim bio1/bio12
 #                                            site-level constants (MAT and MAP)
 
 library(ggplot2)
@@ -380,19 +380,20 @@ fig_environmental_response <- function(
 #' @noRd
 .era5_response_label <- function(var) {
   switch(var,
-    TA_ERA_C = "Mean Annual Temperature (\u00b0C)",
-    P_ERA    = "Precipitation \u2014 ERA5 (mm yr<sup>-1</sup>)",
-    VPD_ERA  = "VPD \u2014 ERA5 (kPa)",
+    TA_ERA_C      = "Mean Annual Temperature (\u00b0C)",
+    P_ERA         = "Precipitation \u2014 ERA5 (mm yr<sup>-1</sup>)",
+    VPD_ERA       = "VPD \u2014 ERA5 (kPa)",
+    aridity_index = "Aridity Index (CGIAR)",
     var
   )
 }
 
 #' Binned flux vs ERA5 climate response curves — site-year observations
 #'
-#' Produces a 3\u00d73 \pkg{patchwork} response figure. Rows are flux variables
+#' Produces a 3\u00d74 \pkg{patchwork} response figure. Rows are flux variables
 #' (NEE, LE, H by default); columns are ERA5 climate predictors (temperature
-#' in \u00b0C, precipitation, VPD). Each observation is **one site in one year** —
-#' no site-level means are computed.
+#' in \u00b0C, precipitation, VPD, and aridity index). Each observation is
+#' **one site in one year** — no site-level means are computed.
 #'
 #' \code{TA_ERA} (stored in Kelvin after unit conversion) is converted to
 #' Celsius internally before plotting.  Physically implausible ERA5 values are
@@ -416,10 +417,15 @@ fig_environmental_response <- function(
 #' @param metadata Data frame with \code{site_id} and \code{igbp} (or
 #'   \code{IGBP}) for IGBP colour coding.  If \code{NULL}, IGBP lines are
 #'   omitted and only the overall ribbon and median are drawn.
+#' @param aridity_data \code{NULL} or a data frame with \code{site_id} and
+#'   \code{aridity_index} columns (e.g. from
+#'   \code{data/snapshots/site_aridity.csv}).  Required when
+#'   \code{"aridity_index"} appears in \code{env_vars}.
 #' @param flux_vars Character vector of flux column names (y-axis).
 #' @param env_vars Character vector of ERA5 climate column names (x-axis).
 #'   Use \code{"TA_ERA_C"} for temperature in \u00b0C (computed internally from
-#'   \code{TA_ERA}).
+#'   \code{TA_ERA}).  Include \code{"aridity_index"} to add a fourth column
+#'   (requires \code{aridity_data}).
 #' @param n_bins Integer.  Number of equal-frequency quantile bins (default 15).
 #'
 #' @return A \pkg{patchwork} ggplot object (\code{length(flux_vars)} rows \u00d7
@@ -439,10 +445,11 @@ fig_environmental_response <- function(
 #' @export
 fig_environmental_response_era5 <- function(
     data_yy,
-    metadata  = NULL,
-    flux_vars = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS"),
-    env_vars  = c("TA_ERA_C", "P_ERA", "VPD_ERA"),
-    n_bins    = 15L
+    metadata     = NULL,
+    aridity_data = NULL,
+    flux_vars    = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS"),
+    env_vars     = c("TA_ERA_C", "P_ERA", "VPD_ERA", "aridity_index"),
+    n_bins       = 15L
 ) {
   n_bins <- as.integer(n_bins)
 
@@ -503,6 +510,24 @@ fig_environmental_response_era5 <- function(
 
   if (igbp_present) {
     df <- dplyr::mutate(df, IGBP = factor(.data$IGBP, levels = IGBP_order))
+  }
+
+  # ---- Join aridity index (site-level constant) ------------------------------
+  if (!is.null(aridity_data) && "aridity_index" %in% env_vars) {
+    if (!all(c("site_id", "aridity_index") %in% names(aridity_data))) {
+      stop("aridity_data must contain 'site_id' and 'aridity_index' columns.",
+           call. = FALSE)
+    }
+    df <- dplyr::left_join(
+      df,
+      dplyr::select(aridity_data, "site_id", "aridity_index"),
+      by = "site_id"
+    )
+    n_ai <- sum(!is.na(df$aridity_index))
+    message(sprintf(
+      "fig_environmental_response_era5(): %d of %d FLUXMET rows matched aridity index",
+      n_ai, nrow(df)
+    ))
   }
 
   # ---- Build one panel per (env_var \u00d7 flux_var) --------------------------------
@@ -650,17 +675,19 @@ fig_environmental_response_era5 <- function(
   switch(var,
     mat_worldclim = "Mean Annual Temperature \u2014 WorldClim (\u00b0C)",
     map_worldclim = "Annual Precipitation \u2014 WorldClim (mm yr<sup>-1</sup>)",
+    aridity_index = "Aridity Index (CGIAR)",
     var
   )
 }
 
 #' Binned flux vs WorldClim climate response curves — site-year observations
 #'
-#' Produces a 3\u00d72 \pkg{patchwork} response figure. Rows are flux variables
+#' Produces a 3\u00d73 \pkg{patchwork} response figure. Rows are flux variables
 #' (NEE, LE, H by default); columns are WorldClim site-level climate normals
-#' (bio1 = MAT in \u00b0C; bio12 = MAP in mm yr\u207b\u00b9). Each y-axis observation is
-#' **one site in one year**; the x-axis value is the site-level WorldClim
-#' constant (identical for all years at a site).
+#' (bio1 = MAT in \u00b0C; bio12 = MAP in mm yr\u207b\u00b9) plus aridity index when
+#' \code{aridity_data} is supplied. Each y-axis observation is **one site in
+#' one year**; the x-axis value is the site-level constant (identical for all
+#' years at a site).
 #'
 #' \code{worldclim_data} must be a data frame (or path to a CSV) with columns
 #' \code{site_id}, \code{mat_worldclim}, and \code{map_worldclim}, as produced
@@ -681,14 +708,19 @@ fig_environmental_response_era5 <- function(
 #' @param worldclim_data Data frame with \code{site_id},
 #'   \code{mat_worldclim} (bio1, \u00b0C), and \code{map_worldclim} (bio12, mm).
 #'   Alternatively, a character path to a CSV file with those columns.
+#' @param aridity_data \code{NULL} or a data frame with \code{site_id} and
+#'   \code{aridity_index} columns (e.g. from
+#'   \code{data/snapshots/site_aridity.csv}).  When supplied, a third column
+#'   (aridity index) is added to the patchwork.
 #' @param flux_vars Character vector of flux column names (y-axis).
 #' @param metadata Data frame with \code{site_id} and \code{igbp} (or
 #'   \code{IGBP}) for IGBP colour coding.  If \code{NULL}, IGBP lines are
 #'   omitted.
 #' @param n_bins Integer.  Number of equal-frequency quantile bins (default 15).
 #'
-#' @return A \pkg{patchwork} ggplot object (3 rows \u00d7 2 columns) with the
-#'   IGBP legend collected at the bottom.
+#' @return A \pkg{patchwork} ggplot object (3 rows \u00d7 2\u20133 columns, depending
+#'   on whether \code{aridity_data} is supplied) with the IGBP legend
+#'   collected at the bottom.
 #'
 #' @examples
 #' \dontrun{
@@ -704,9 +736,10 @@ fig_environmental_response_era5 <- function(
 fig_environmental_response_worldclim <- function(
     data_yy,
     worldclim_data,
-    flux_vars = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS"),
-    metadata  = NULL,
-    n_bins    = 15L
+    aridity_data  = NULL,
+    flux_vars     = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS"),
+    metadata      = NULL,
+    n_bins        = 15L
 ) {
   n_bins <- as.integer(n_bins)
 
@@ -744,6 +777,24 @@ fig_environmental_response_worldclim <- function(
     n_matched, nrow(df)
   ))
 
+  # ---- Join aridity index (site-level constant) ------------------------------
+  if (!is.null(aridity_data)) {
+    if (!all(c("site_id", "aridity_index") %in% names(aridity_data))) {
+      stop("aridity_data must contain 'site_id' and 'aridity_index' columns.",
+           call. = FALSE)
+    }
+    df <- dplyr::left_join(
+      df,
+      dplyr::select(aridity_data, "site_id", "aridity_index"),
+      by = "site_id"
+    )
+    n_ai <- sum(!is.na(df$aridity_index))
+    message(sprintf(
+      "fig_environmental_response_worldclim(): %d of %d FLUXMET rows matched aridity index",
+      n_ai, nrow(df)
+    ))
+  }
+
   # ---- Join IGBP from metadata -----------------------------------------------
   if (!is.null(metadata)) {
     igbp_src <- if ("IGBP" %in% names(metadata)) "IGBP" else
@@ -767,7 +818,8 @@ fig_environmental_response_worldclim <- function(
     df <- dplyr::mutate(df, IGBP = factor(.data$IGBP, levels = IGBP_order))
   }
 
-  env_vars <- c("mat_worldclim", "map_worldclim")
+  env_vars <- c("mat_worldclim", "map_worldclim",
+                if (!is.null(aridity_data)) "aridity_index")
 
   # ---- Build one panel per (env_var x flux_var) -----------------------------
   make_panel <- function(ev, fv) {

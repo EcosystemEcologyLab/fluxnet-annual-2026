@@ -95,6 +95,24 @@ fig_network_growth <- function(metadata, geo_level = "global") {
   year_max  <- max(sites$last_year,  na.rm = TRUE)
   all_years <- seq(year_min, year_max)
 
+  # ---- % functionally active: sites with last_year >= (year - 4) ------------
+  # Denominator: all sites established by each year (first_year <= year).
+  # Numerator:   those that also have last_year >= (year - 4), i.e. submitted
+  #              data within the preceding 4 years.
+  active_df <- data.frame(
+    year       = all_years,
+    pct_active = vapply(all_years, function(yr) {
+      n_total  <- sum(sites$first_year <= yr, na.rm = TRUE)
+      n_active <- sum(sites$first_year <= yr &
+                      sites$last_year  >= (yr - 4L), na.rm = TRUE)
+      if (n_total == 0L) NA_real_ else 100 * n_active / n_total
+    }, numeric(1L))
+  )
+  # Map 0–100 % onto primary-axis range 480–680 so the active line sits in the
+  # lower portion of the stacked area chart without obscuring the IGBP classes.
+  ai_lo <- 480; ai_hi <- 680
+  active_df$y_primary <- active_df$pct_active * (ai_hi - ai_lo) / 100 + ai_lo
+
   entries <- sites |>
     dplyr::count(.data$igbp, .data$first_year, name = "new_sites")
 
@@ -115,11 +133,27 @@ fig_network_growth <- function(metadata, geo_level = "global") {
                  fill = .data$igbp)
   ) +
     ggplot2::geom_area(position = "stack", alpha = 0.85, colour = NA) +
+    # Functionally active % — dashed black line on secondary axis
+    ggplot2::geom_line(
+      data        = active_df,
+      ggplot2::aes(x = .data$year, y = .data$y_primary),
+      colour      = "black",
+      linetype    = "dashed",
+      linewidth   = 0.9,
+      inherit.aes = FALSE
+    ) +
     scale_fill_igbp(name = "IGBP") +
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 8),
                                 expand = ggplot2::expansion(mult = c(0, 0.02))) +
-    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 6),
-                                expand = ggplot2::expansion(mult = c(0, 0.05))) +
+    ggplot2::scale_y_continuous(
+      breaks   = scales::pretty_breaks(n = 6),
+      expand   = ggplot2::expansion(mult = c(0, 0.05)),
+      sec.axis = ggplot2::sec_axis(
+        transform = ~ (. - 480) * 100 / (680 - 480),
+        name      = "% Functionally active sites",
+        breaks    = seq(0, 100, 25)
+      )
+    ) +
     ggplot2::labs(
       title    = "Cumulative FLUXNET network growth by IGBP class",
       subtitle = paste0("n = ", nrow(sites), " sites; ",

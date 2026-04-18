@@ -378,9 +378,9 @@ fig_environmental_response <- function(
 #' @noRd
 .era5_response_label <- function(var) {
   switch(var,
-    TA_ERA  = "Temperature \u2014 ERA5 (K)",
-    P_ERA   = "Precipitation \u2014 ERA5 (mm yr<sup>-1</sup>)",
-    VPD_ERA = "VPD \u2014 ERA5 (kPa)",
+    TA_ERA_C = "Mean Annual Temperature (\u00b0C)",
+    P_ERA    = "Precipitation \u2014 ERA5 (mm yr<sup>-1</sup>)",
+    VPD_ERA  = "VPD \u2014 ERA5 (kPa)",
     var
   )
 }
@@ -388,9 +388,14 @@ fig_environmental_response <- function(
 #' Binned flux vs ERA5 climate response curves — site-year observations
 #'
 #' Produces a 3\u00d73 \pkg{patchwork} response figure. Rows are flux variables
-#' (NEE, GPP, RECO by default); columns are ERA5 climate predictors
-#' (temperature, precipitation, VPD). Each observation is **one site in one
-#' year** — no site-level means are computed.
+#' (NEE, LE, H by default); columns are ERA5 climate predictors (temperature
+#' in \u00b0C, precipitation, VPD). Each observation is **one site in one year** —
+#' no site-level means are computed.
+#'
+#' \code{TA_ERA} (stored in Kelvin after unit conversion) is converted to
+#' Celsius internally before plotting.  Physically implausible ERA5 values are
+#' filtered and reported to the console before binning:
+#' P_ERA > 5000 mm, VPD_ERA > 5 kPa, TA_ERA_C outside \[-30, 40\] \u00b0C.
 #'
 #' Binning is performed on site-year ERA5 values directly.  Each panel shows:
 #' \itemize{
@@ -411,6 +416,8 @@ fig_environmental_response <- function(
 #'   omitted and only the overall ribbon and median are drawn.
 #' @param flux_vars Character vector of flux column names (y-axis).
 #' @param env_vars Character vector of ERA5 climate column names (x-axis).
+#'   Use \code{"TA_ERA_C"} for temperature in \u00b0C (computed internally from
+#'   \code{TA_ERA}).
 #' @param n_bins Integer.  Number of equal-frequency quantile bins (default 15).
 #'
 #' @return A \pkg{patchwork} ggplot object (\code{length(flux_vars)} rows \u00d7
@@ -431,8 +438,8 @@ fig_environmental_response <- function(
 fig_environmental_response_era5 <- function(
     data_yy,
     metadata  = NULL,
-    flux_vars = c("NEE_VUT_REF", "GPP_NT_VUT_REF", "RECO_NT_VUT_REF"),
-    env_vars  = c("TA_ERA", "P_ERA", "VPD_ERA"),
+    flux_vars = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS"),
+    env_vars  = c("TA_ERA_C", "P_ERA", "VPD_ERA"),
     n_bins    = 15L
 ) {
   n_bins <- as.integer(n_bins)
@@ -443,6 +450,35 @@ fig_environmental_response_era5 <- function(
   } else {
     df <- data_yy
   }
+
+  # ---- Kelvin to Celsius conversion -----------------------------------------
+  if ("TA_ERA" %in% names(df)) {
+    df <- dplyr::mutate(df, TA_ERA_C = .data$TA_ERA - 273.15)
+  }
+
+  # ---- Filter ERA5 outliers — report removals to console --------------------
+  n_before   <- nrow(df)
+  out_precip <- !is.na(df$P_ERA)    & df$P_ERA    > 5000
+  out_vpd    <- !is.na(df$VPD_ERA)  & df$VPD_ERA  > 5
+  out_temp   <- !is.na(df$TA_ERA_C) &
+                  (df$TA_ERA_C < -30 | df$TA_ERA_C > 40)
+  out_any    <- out_precip | out_vpd | out_temp
+
+  message(sprintf(
+    paste0("fig_environmental_response_era5(): ERA5 outlier filter\n",
+           "  P_ERA > 5000 mm:           %d site-years\n",
+           "  VPD_ERA > 5 kPa:           %d site-years\n",
+           "  TA_ERA_C outside [-30,40]: %d site-years\n",
+           "  Total removed: %d of %d FLUXMET site-years"),
+    sum(out_precip), sum(out_vpd), sum(out_temp),
+    sum(out_any), n_before
+  ))
+
+  df <- dplyr::filter(df,
+    is.na(.data$P_ERA)    | .data$P_ERA    <= 5000,
+    is.na(.data$VPD_ERA)  | .data$VPD_ERA  <= 5,
+    is.na(.data$TA_ERA_C) | (.data$TA_ERA_C >= -30 & .data$TA_ERA_C <= 40)
+  )
 
   # ---- Join IGBP from metadata -----------------------------------------------
   if (!is.null(metadata)) {

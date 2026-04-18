@@ -25,6 +25,8 @@ library(dplyr)
     NEE  = lab_nee_annual,
     GPP  = lab_gpp_annual,
     RECO = lab_reco_annual,
+    LE   = "Latent Heat Flux (W m<sup>-2</sup>)",
+    H    = "Sensible Heat Flux (W m<sup>-2</sup>)",
     flux_var
   )
 }
@@ -260,8 +262,8 @@ fig_latitudinal_multi <- function(data_yy,
       flux_var  = var,
       bin_width = bin_width
     )
-    # Replace the generic "Flux range in X° lat bands" title with variable label
-    p + ggplot2::labs(title = .flux_lat_label(var))
+    # Remove panel title; y-axis label (from .flux_lat_label) carries the units.
+    p + ggplot2::labs(title = NULL)
   })
 
   patchwork::wrap_plots(panels, ncol = 1) +

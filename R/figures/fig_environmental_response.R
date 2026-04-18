@@ -530,8 +530,30 @@ fig_environmental_response_era5 <- function(
     ))
   }
 
+  # ---- Confirm TA_ERA_C is annual mean in °C ----------------------------------
+  if ("TA_ERA_C" %in% env_vars && "TA_ERA_C" %in% names(df)) {
+    ta_range <- range(df$TA_ERA_C, na.rm = TRUE)
+    message(sprintf(
+      "fig_environmental_response_era5(): TA_ERA_C range = [%.1f, %.1f] °C (annual mean)",
+      ta_range[1], ta_range[2]
+    ))
+  }
+
+  # ---- x-axis clipping limits per env_var ------------------------------------
+  .clip_xlim <- function(ev) {
+    switch(ev,
+      TA_ERA_C      = c(-5,  NA),
+      P_ERA         = c(NA,  4000),
+      VPD_ERA       = c(NA,  2),
+      aridity_index = c(NA,  2.5),
+      c(NA, NA)
+    )
+  }
+
   # ---- Build one panel per (env_var \u00d7 flux_var) --------------------------------
-  make_panel <- function(ev, fv) {
+  # show_legend = TRUE: IGBP legend inside plot (bottom-right panel only).
+  # show_legend = FALSE: legend suppressed on all other panels.
+  make_panel <- function(ev, fv, show_legend = FALSE) {
     if (!ev %in% names(df) || !fv %in% names(df)) return(NULL)
 
     keep_cols <- c(ev, fv, if (igbp_present) "IGBP")
@@ -614,15 +636,21 @@ fig_environmental_response_era5 <- function(
           alpha     = 0.85
         ) +
         scale_color_igbp(
-          guide = ggplot2::guide_legend(
-            ncol         = 5,
-            title        = "IGBP",
-            override.aes = list(linewidth = 2)
-          )
+          guide = if (show_legend) {
+            ggplot2::guide_legend(
+              ncol         = 3,
+              title        = "IGBP",
+              override.aes = list(linewidth = 2)
+            )
+          } else {
+            "none"
+          }
         )
     }
 
-    p +
+    # Build final panel with axis clipping and enlarged text
+    xlim <- .clip_xlim(ev)
+    p_final <- p +
       ggplot2::labs(
         x = .era5_response_label(ev),
         y = .flux_response_label(fv)
@@ -630,17 +658,37 @@ fig_environmental_response_era5 <- function(
       fluxnet_theme(base_size = 11) +
       ggplot2::theme(
         axis.title.x = ggtext::element_markdown(),
-        axis.title.y = ggtext::element_markdown()
+        axis.title.y = ggtext::element_markdown(),
+        axis.text    = ggplot2::element_text(size = 20),
+        axis.title   = ggplot2::element_text(size = 22)
       )
+
+    if (!all(is.na(xlim))) {
+      p_final <- p_final +
+        ggplot2::coord_cartesian(xlim = xlim)
+    }
+
+    if (show_legend) {
+      p_final + ggplot2::theme(
+        legend.position      = c(0.98, 0.98),
+        legend.justification = c(1, 1),
+        legend.background    = ggplot2::element_rect(fill = "white", colour = NA)
+      )
+    } else {
+      p_final + ggplot2::theme(legend.position = "none")
+    }
   }
 
   # ---- Assemble panels in row-major order (flux_var rows, env_var cols) -----
+  # IGBP legend appears only in the bottom-right panel (last flux_var × last env_var).
   panels <- vector("list", length(flux_vars) * length(env_vars))
   k <- 0L
   for (fv in flux_vars) {
     for (ev in env_vars) {
       k <- k + 1L
-      panels[[k]] <- make_panel(ev, fv)
+      is_br <- (fv == flux_vars[length(flux_vars)]) &&
+               (ev == env_vars[length(env_vars)])
+      panels[[k]] <- make_panel(ev, fv, show_legend = is_br)
     }
   }
   panels <- Filter(Negate(is.null), panels)
@@ -650,18 +698,16 @@ fig_environmental_response_era5 <- function(
          call. = FALSE)
   }
 
-  # plot_layout(axes = "collect") suppresses redundant axis labels:
-  # y-axis labels appear only on the leftmost column; x-axis labels only on
-  # the bottom row.  guides = "collect" merges the IGBP legend into one.
-  col_labels <- vapply(env_vars, .era5_response_label, character(1L))
+  # plot_layout(axes = "collect") suppresses redundant axis labels.
+  # guides are NOT collected — each panel manages its own legend.
+  col_labels  <- vapply(env_vars, .era5_response_label, character(1L))
   caption_str <- paste(col_labels, collapse = "  \u2022  ")
 
-  (patchwork::wrap_plots(panels,
-                         nrow = length(flux_vars),
-                         ncol = length(env_vars)) +
-    patchwork::plot_layout(axes = "collect", guides = "collect") +
-    patchwork::plot_annotation(caption = caption_str)) &
-    ggplot2::theme(legend.position = "bottom")
+  patchwork::wrap_plots(panels,
+                        nrow = length(flux_vars),
+                        ncol = length(env_vars)) +
+    patchwork::plot_layout(axes = "collect") +
+    patchwork::plot_annotation(caption = caption_str)
 }
 
 # ---- WorldClim variant ------------------------------------------------------

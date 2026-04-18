@@ -2,10 +2,12 @@
 # Binned flux vs environment response curves for the FLUXNET Annual Paper 2026.
 #
 # Functions:
-#   fig_environmental_response()      — response curves of flux_vars across binned
-#                                       env_vars (median + IQR ribbon or IGBP lines)
-#   fig_environmental_response_era5() — 3×3 patchwork using ERA5 climate predictors
-#                                       and site-year observations (not site means)
+#   fig_environmental_response()           — response curves of flux_vars across binned
+#                                            env_vars (median + IQR ribbon or IGBP lines)
+#   fig_environmental_response_era5()      — 3×3 patchwork using ERA5 climate predictors
+#                                            and site-year observations (not site means)
+#   fig_environmental_response_worldclim() — 3×2 patchwork using WorldClim bio1/bio12
+#                                            site-level constants (MAT and MAP)
 
 library(ggplot2)
 library(ggtext)
@@ -627,6 +629,267 @@ fig_environmental_response_era5 <- function(
   # y-axis labels appear only on the leftmost column; x-axis labels only on
   # the bottom row.  guides = "collect" merges the IGBP legend into one.
   col_labels <- vapply(env_vars, .era5_response_label, character(1L))
+  caption_str <- paste(col_labels, collapse = "  \u2022  ")
+
+  (patchwork::wrap_plots(panels,
+                         nrow = length(flux_vars),
+                         ncol = length(env_vars)) +
+    patchwork::plot_layout(axes = "collect", guides = "collect") +
+    patchwork::plot_annotation(caption = caption_str)) &
+    ggplot2::theme(legend.position = "bottom")
+}
+
+# ---- WorldClim variant ------------------------------------------------------
+
+#' Map WorldClim predictor column to axis label
+#'
+#' @param var Character. Predictor column name.
+#' @return Character label (HTML safe for element_markdown).
+#' @noRd
+.worldclim_response_label <- function(var) {
+  switch(var,
+    mat_worldclim = "Mean Annual Temperature \u2014 WorldClim (\u00b0C)",
+    map_worldclim = "Annual Precipitation \u2014 WorldClim (mm yr<sup>-1</sup>)",
+    var
+  )
+}
+
+#' Binned flux vs WorldClim climate response curves — site-year observations
+#'
+#' Produces a 3\u00d72 \pkg{patchwork} response figure. Rows are flux variables
+#' (NEE, LE, H by default); columns are WorldClim site-level climate normals
+#' (bio1 = MAT in \u00b0C; bio12 = MAP in mm yr\u207b\u00b9). Each y-axis observation is
+#' **one site in one year**; the x-axis value is the site-level WorldClim
+#' constant (identical for all years at a site).
+#'
+#' \code{worldclim_data} must be a data frame (or path to a CSV) with columns
+#' \code{site_id}, \code{mat_worldclim}, and \code{map_worldclim}, as produced
+#' by \code{scripts/step1_extract_worldclim.R} and saved to
+#' \code{data/snapshots/site_worldclim.csv}.
+#'
+#' Binning is performed on the WorldClim values.  Each panel shows:
+#' \itemize{
+#'   \item Light grey points — individual site-year flux observations
+#'   \item Grey IQR ribbon — 25th\u201375th percentile across all site-years per bin
+#'   \item Dark grey median line — overall bin median
+#'   \item IGBP-coloured lines — per-IGBP bin median (requires \code{metadata})
+#' }
+#'
+#' @param data_yy Annual FLUXNET data frame (e.g.
+#'   \code{flux_data_converted_yy.rds}).  FLUXMET rows are selected
+#'   automatically via the \code{dataset} column.
+#' @param worldclim_data Data frame with \code{site_id},
+#'   \code{mat_worldclim} (bio1, \u00b0C), and \code{map_worldclim} (bio12, mm).
+#'   Alternatively, a character path to a CSV file with those columns.
+#' @param flux_vars Character vector of flux column names (y-axis).
+#' @param metadata Data frame with \code{site_id} and \code{igbp} (or
+#'   \code{IGBP}) for IGBP colour coding.  If \code{NULL}, IGBP lines are
+#'   omitted.
+#' @param n_bins Integer.  Number of equal-frequency quantile bins (default 15).
+#'
+#' @return A \pkg{patchwork} ggplot object (3 rows \u00d7 2 columns) with the
+#'   IGBP legend collected at the bottom.
+#'
+#' @examples
+#' \dontrun{
+#' wc <- readr::read_csv("data/snapshots/site_worldclim.csv")
+#' p  <- fig_environmental_response_worldclim(data_yy, worldclim_data = wc,
+#'                                            metadata = snapshot_meta)
+#' ggplot2::ggsave("review/figures/climate/fig_environmental_response_worldclim.png",
+#'                 plot = p, width = 10, height = 12, units = "in",
+#'                 dpi = 150, bg = "white")
+#' }
+#'
+#' @export
+fig_environmental_response_worldclim <- function(
+    data_yy,
+    worldclim_data,
+    flux_vars = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS"),
+    metadata  = NULL,
+    n_bins    = 15L
+) {
+  n_bins <- as.integer(n_bins)
+
+  # ---- Accept path or data frame for worldclim_data -------------------------
+  if (is.character(worldclim_data)) {
+    worldclim_data <- readr::read_csv(worldclim_data, show_col_types = FALSE)
+  }
+  if (!is.data.frame(worldclim_data) ||
+      !all(c("site_id", "mat_worldclim", "map_worldclim") %in%
+           names(worldclim_data))) {
+    stop(
+      "worldclim_data must be a data frame (or CSV path) with columns: ",
+      "site_id, mat_worldclim, map_worldclim.",
+      call. = FALSE
+    )
+  }
+
+  # ---- FLUXMET rows carry both ERA5 climate values and measured fluxes ------
+  if ("dataset" %in% names(data_yy)) {
+    df <- dplyr::filter(data_yy, .data$dataset == "FLUXMET")
+  } else {
+    df <- data_yy
+  }
+
+  # ---- Join WorldClim site-level constants ----------------------------------
+  df <- dplyr::left_join(
+    df,
+    dplyr::select(worldclim_data, "site_id", "mat_worldclim", "map_worldclim"),
+    by = "site_id"
+  )
+
+  n_matched <- sum(!is.na(df$mat_worldclim))
+  message(sprintf(
+    "fig_environmental_response_worldclim(): %d of %d FLUXMET rows matched WorldClim",
+    n_matched, nrow(df)
+  ))
+
+  # ---- Join IGBP from metadata -----------------------------------------------
+  if (!is.null(metadata)) {
+    igbp_src <- if ("IGBP" %in% names(metadata)) "IGBP" else
+                if ("igbp" %in% names(metadata)) "igbp" else NULL
+    if (!is.null(igbp_src)) {
+      df <- dplyr::left_join(
+        df,
+        dplyr::distinct(metadata, .data$site_id,
+                        IGBP = .data[[igbp_src]]),
+        by = "site_id"
+      )
+    }
+  }
+
+  if (!"IGBP" %in% names(df) && "igbp" %in% names(df)) {
+    df <- dplyr::rename(df, IGBP = "igbp")
+  }
+  igbp_present <- "IGBP" %in% names(df) && any(!is.na(df$IGBP))
+
+  if (igbp_present) {
+    df <- dplyr::mutate(df, IGBP = factor(.data$IGBP, levels = IGBP_order))
+  }
+
+  env_vars <- c("mat_worldclim", "map_worldclim")
+
+  # ---- Build one panel per (env_var x flux_var) -----------------------------
+  make_panel <- function(ev, fv) {
+    if (!ev %in% names(df) || !fv %in% names(df)) return(NULL)
+
+    keep_cols <- c(ev, fv, if (igbp_present) "IGBP")
+    df_pair <- df |>
+      dplyr::select(dplyr::all_of(keep_cols)) |>
+      dplyr::filter(!is.na(.data[[ev]]), !is.na(.data[[fv]]))
+
+    if (nrow(df_pair) < n_bins * 2L) {
+      warning("Insufficient data for '", ev, "' vs '", fv, "' \u2014 skipping.",
+              call. = FALSE)
+      return(NULL)
+    }
+
+    # Equal-frequency binning on the WorldClim predictor
+    df_pair <- df_pair |>
+      dplyr::mutate(env_bin = dplyr::ntile(.data[[ev]], n_bins))
+
+    bin_mids <- df_pair |>
+      dplyr::group_by(.data$env_bin) |>
+      dplyr::summarise(
+        bin_mid = stats::median(.data[[ev]], na.rm = TRUE),
+        .groups = "drop"
+      )
+    df_pair <- dplyr::left_join(df_pair, bin_mids, by = "env_bin")
+
+    # Overall IQR ribbon + median (all site-years pooled)
+    overall_summ <- df_pair |>
+      dplyr::group_by(.data$env_bin, .data$bin_mid) |>
+      dplyr::summarise(
+        flux_med = stats::median(.data[[fv]], na.rm = TRUE),
+        flux_q25 = stats::quantile(.data[[fv]], 0.25, na.rm = TRUE),
+        flux_q75 = stats::quantile(.data[[fv]], 0.75, na.rm = TRUE),
+        .groups  = "drop"
+      )
+
+    p <- ggplot2::ggplot() +
+      # Individual site-year observations — small, light grey
+      ggplot2::geom_point(
+        data = df_pair,
+        ggplot2::aes(x = .data[[ev]], y = .data[[fv]]),
+        color = "#cccccc",
+        size  = 0.6,
+        alpha = 0.25
+      ) +
+      # Overall IQR ribbon
+      ggplot2::geom_ribbon(
+        data = overall_summ,
+        ggplot2::aes(x    = .data$bin_mid,
+                     ymin = .data$flux_q25,
+                     ymax = .data$flux_q75),
+        fill  = "#999999",
+        alpha = 0.30
+      ) +
+      # Overall median line
+      ggplot2::geom_line(
+        data = overall_summ,
+        ggplot2::aes(x = .data$bin_mid, y = .data$flux_med),
+        color     = "#444444",
+        linewidth = 0.7
+      )
+
+    # Per-IGBP median lines
+    if (igbp_present) {
+      igbp_summ <- df_pair |>
+        dplyr::filter(!is.na(.data$IGBP)) |>
+        dplyr::group_by(.data$env_bin, .data$bin_mid, .data$IGBP) |>
+        dplyr::summarise(
+          flux_med = stats::median(.data[[fv]], na.rm = TRUE),
+          .groups  = "drop"
+        )
+
+      p <- p +
+        ggplot2::geom_line(
+          data = igbp_summ,
+          ggplot2::aes(x     = .data$bin_mid,
+                       y     = .data$flux_med,
+                       color = .data$IGBP,
+                       group = .data$IGBP),
+          linewidth = poster_linewidth,
+          alpha     = 0.85
+        ) +
+        scale_color_igbp(
+          guide = ggplot2::guide_legend(
+            ncol         = 5,
+            title        = "IGBP",
+            override.aes = list(linewidth = 2)
+          )
+        )
+    }
+
+    p +
+      ggplot2::labs(
+        x = .worldclim_response_label(ev),
+        y = .flux_response_label(fv)
+      ) +
+      fluxnet_theme(base_size = 11) +
+      ggplot2::theme(
+        axis.title.x = ggtext::element_markdown(),
+        axis.title.y = ggtext::element_markdown()
+      )
+  }
+
+  # ---- Assemble panels in row-major order (flux_var rows, env_var cols) -----
+  panels <- vector("list", length(flux_vars) * length(env_vars))
+  k <- 0L
+  for (fv in flux_vars) {
+    for (ev in env_vars) {
+      k <- k + 1L
+      panels[[k]] <- make_panel(ev, fv)
+    }
+  }
+  panels <- Filter(Negate(is.null), panels)
+
+  if (length(panels) == 0L) {
+    stop("fig_environmental_response_worldclim(): no valid panels.",
+         call. = FALSE)
+  }
+
+  col_labels <- vapply(env_vars, .worldclim_response_label, character(1L))
   caption_str <- paste(col_labels, collapse = "  \u2022  ")
 
   (patchwork::wrap_plots(panels,

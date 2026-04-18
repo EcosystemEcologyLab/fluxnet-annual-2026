@@ -2,8 +2,10 @@
 # Binned flux vs environment response curves for the FLUXNET Annual Paper 2026.
 #
 # Functions:
-#   fig_environmental_response() — response curves of flux_vars across binned
-#                                  env_vars (median + IQR ribbon or IGBP lines)
+#   fig_environmental_response()      — response curves of flux_vars across binned
+#                                       env_vars (median + IQR ribbon or IGBP lines)
+#   fig_environmental_response_era5() — 3×3 patchwork using ERA5 climate predictors
+#                                       and site-year observations (not site means)
 
 library(ggplot2)
 library(ggtext)
@@ -365,4 +367,229 @@ fig_environmental_response <- function(
   }
 
   out
+}
+
+# ---- ERA5 variant -----------------------------------------------------------
+
+#' Map ERA5 column name to axis label
+#'
+#' @param var Character. ERA5 column name.
+#' @return Character label (HTML safe for element_markdown).
+#' @noRd
+.era5_response_label <- function(var) {
+  switch(var,
+    TA_ERA  = "Temperature \u2014 ERA5 (K)",
+    P_ERA   = "Precipitation \u2014 ERA5 (mm yr<sup>-1</sup>)",
+    VPD_ERA = "VPD \u2014 ERA5 (kPa)",
+    var
+  )
+}
+
+#' Binned flux vs ERA5 climate response curves — site-year observations
+#'
+#' Produces a 3\u00d73 \pkg{patchwork} response figure. Rows are flux variables
+#' (NEE, GPP, RECO by default); columns are ERA5 climate predictors
+#' (temperature, precipitation, VPD). Each observation is **one site in one
+#' year** — no site-level means are computed.
+#'
+#' Binning is performed on site-year ERA5 values directly.  Each panel shows:
+#' \itemize{
+#'   \item Light grey points — individual site-year observations
+#'   \item Grey IQR ribbon — 25th\u201375th percentile across all site-years per bin
+#'   \item Dark grey median line — overall median per bin
+#'   \item IGBP-coloured lines — per-IGBP bin median (requires \code{metadata})
+#' }
+#'
+#' FLUXMET rows from \code{data_yy} are used because they carry both ERA5
+#' climate values and measured fluxes in the same row.
+#'
+#' @param data_yy Annual FLUXNET data frame (e.g.
+#'   \code{flux_data_converted_yy.rds}).  Must contain a \code{dataset} column;
+#'   FLUXMET rows are selected automatically.
+#' @param metadata Data frame with \code{site_id} and \code{igbp} (or
+#'   \code{IGBP}) for IGBP colour coding.  If \code{NULL}, IGBP lines are
+#'   omitted and only the overall ribbon and median are drawn.
+#' @param flux_vars Character vector of flux column names (y-axis).
+#' @param env_vars Character vector of ERA5 climate column names (x-axis).
+#' @param n_bins Integer.  Number of equal-frequency quantile bins (default 15).
+#'
+#' @return A \pkg{patchwork} ggplot object (\code{length(flux_vars)} rows \u00d7
+#'   \code{length(env_vars)} columns) with the IGBP legend collected at the
+#'   bottom.
+#'
+#' @examples
+#' \dontrun{
+#' data_yy <- readRDS("data/processed/flux_data_converted_yy.rds")
+#' snap    <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_*.csv")
+#' p <- fig_environmental_response_era5(data_yy, metadata = snap)
+#' ggplot2::ggsave("review/figures/climate/fig_environmental_response_era5.png",
+#'                 plot = p, width = 14, height = 12, units = "in",
+#'                 dpi = 150, bg = "white")
+#' }
+#'
+#' @export
+fig_environmental_response_era5 <- function(
+    data_yy,
+    metadata  = NULL,
+    flux_vars = c("NEE_VUT_REF", "GPP_NT_VUT_REF", "RECO_NT_VUT_REF"),
+    env_vars  = c("TA_ERA", "P_ERA", "VPD_ERA"),
+    n_bins    = 15L
+) {
+  n_bins <- as.integer(n_bins)
+
+  # ---- FLUXMET rows carry both ERA5 climate values and measured fluxes ------
+  if ("dataset" %in% names(data_yy)) {
+    df <- dplyr::filter(data_yy, .data$dataset == "FLUXMET")
+  } else {
+    df <- data_yy
+  }
+
+  # ---- Join IGBP from metadata -----------------------------------------------
+  if (!is.null(metadata)) {
+    igbp_src <- if ("IGBP" %in% names(metadata)) "IGBP" else
+                if ("igbp" %in% names(metadata)) "igbp" else NULL
+    if (!is.null(igbp_src)) {
+      df <- dplyr::left_join(
+        df,
+        dplyr::distinct(metadata, .data$site_id,
+                        IGBP = .data[[igbp_src]]),
+        by = "site_id"
+      )
+    }
+  }
+
+  if (!"IGBP" %in% names(df) && "igbp" %in% names(df)) {
+    df <- dplyr::rename(df, IGBP = "igbp")
+  }
+  igbp_present <- "IGBP" %in% names(df) && any(!is.na(df$IGBP))
+
+  if (igbp_present) {
+    df <- dplyr::mutate(df, IGBP = factor(.data$IGBP, levels = IGBP_order))
+  }
+
+  # ---- Build one panel per (env_var \u00d7 flux_var) --------------------------------
+  make_panel <- function(ev, fv) {
+    if (!ev %in% names(df) || !fv %in% names(df)) return(NULL)
+
+    keep_cols <- c(ev, fv, if (igbp_present) "IGBP")
+    df_pair <- df |>
+      dplyr::select(dplyr::all_of(keep_cols)) |>
+      dplyr::filter(!is.na(.data[[ev]]), !is.na(.data[[fv]]))
+
+    if (nrow(df_pair) < n_bins * 2L) {
+      warning("Insufficient data for '", ev, "' vs '", fv, "' \u2014 skipping.",
+              call. = FALSE)
+      return(NULL)
+    }
+
+    # Equal-frequency binning on the ERA5 predictor
+    df_pair <- df_pair |>
+      dplyr::mutate(env_bin = dplyr::ntile(.data[[ev]], n_bins))
+
+    bin_mids <- df_pair |>
+      dplyr::group_by(.data$env_bin) |>
+      dplyr::summarise(
+        bin_mid = stats::median(.data[[ev]], na.rm = TRUE),
+        .groups = "drop"
+      )
+    df_pair <- dplyr::left_join(df_pair, bin_mids, by = "env_bin")
+
+    # Overall IQR ribbon + median (all site-years pooled)
+    overall_summ <- df_pair |>
+      dplyr::group_by(.data$env_bin, .data$bin_mid) |>
+      dplyr::summarise(
+        flux_med = stats::median(.data[[fv]], na.rm = TRUE),
+        flux_q25 = stats::quantile(.data[[fv]], 0.25, na.rm = TRUE),
+        flux_q75 = stats::quantile(.data[[fv]], 0.75, na.rm = TRUE),
+        .groups  = "drop"
+      )
+
+    p <- ggplot2::ggplot() +
+      # Individual site-year observations — small, light grey
+      ggplot2::geom_point(
+        data = df_pair,
+        ggplot2::aes(x = .data[[ev]], y = .data[[fv]]),
+        color = "#cccccc",
+        size  = 0.6,
+        alpha = 0.25
+      ) +
+      # Overall IQR ribbon
+      ggplot2::geom_ribbon(
+        data = overall_summ,
+        ggplot2::aes(x    = .data$bin_mid,
+                     ymin = .data$flux_q25,
+                     ymax = .data$flux_q75),
+        fill  = "#999999",
+        alpha = 0.30
+      ) +
+      # Overall median line
+      ggplot2::geom_line(
+        data = overall_summ,
+        ggplot2::aes(x = .data$bin_mid, y = .data$flux_med),
+        color     = "#444444",
+        linewidth = 0.7
+      )
+
+    # Per-IGBP median lines
+    if (igbp_present) {
+      igbp_summ <- df_pair |>
+        dplyr::filter(!is.na(.data$IGBP)) |>
+        dplyr::group_by(.data$env_bin, .data$bin_mid, .data$IGBP) |>
+        dplyr::summarise(
+          flux_med = stats::median(.data[[fv]], na.rm = TRUE),
+          .groups  = "drop"
+        )
+
+      p <- p +
+        ggplot2::geom_line(
+          data = igbp_summ,
+          ggplot2::aes(x     = .data$bin_mid,
+                       y     = .data$flux_med,
+                       color = .data$IGBP,
+                       group = .data$IGBP),
+          linewidth = poster_linewidth,
+          alpha     = 0.85
+        ) +
+        scale_color_igbp(
+          guide = ggplot2::guide_legend(
+            ncol         = 5,
+            title        = "IGBP",
+            override.aes = list(linewidth = 2)
+          )
+        )
+    }
+
+    p +
+      ggplot2::labs(
+        x = .era5_response_label(ev),
+        y = .flux_response_label(fv)
+      ) +
+      fluxnet_theme(base_size = 11) +
+      ggplot2::theme(
+        axis.title.x = ggtext::element_markdown(),
+        axis.title.y = ggtext::element_markdown()
+      )
+  }
+
+  # ---- Assemble panels in row-major order (flux_var rows, env_var cols) -----
+  panels <- vector("list", length(flux_vars) * length(env_vars))
+  k <- 0L
+  for (fv in flux_vars) {
+    for (ev in env_vars) {
+      k <- k + 1L
+      panels[[k]] <- make_panel(ev, fv)
+    }
+  }
+  panels <- Filter(Negate(is.null), panels)
+
+  if (length(panels) == 0L) {
+    stop("fig_environmental_response_era5(): no valid panels could be built.",
+         call. = FALSE)
+  }
+
+  patchwork::wrap_plots(panels,
+                        nrow   = length(flux_vars),
+                        ncol   = length(env_vars),
+                        guides = "collect") &
+    ggplot2::theme(legend.position = "bottom")
 }

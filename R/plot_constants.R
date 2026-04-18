@@ -201,6 +201,11 @@ fluxnet_theme <- function(base_size = 16) {
       axis.ticks.length   = grid::unit(-4, "pt"),
       axis.ticks.length.x = grid::unit(-4, "pt"),
       axis.ticks.length.y = grid::unit(-4, "pt"),
+      # Render HTML superscripts/subscripts in axis titles globally.
+      # Plain-text labels are unaffected; HTML labels (e.g. "mm yr<sup>-1</sup>")
+      # render correctly without per-function element_markdown() overrides.
+      axis.title.x        = ggtext::element_markdown(),
+      axis.title.y        = ggtext::element_markdown(),
       legend.position     = "bottom"
     )
 }

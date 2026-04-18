@@ -157,19 +157,16 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
     return(ggplot2::ggplot() + ggplot2::labs(title = "No data") + fluxnet_theme())
   }
 
-  # --- labels and title -------------------------------------------------------
-  flux_label  <- .flux_climate_label(flux_var)
-  cutoff_text <- if (!is.null(year_cutoff))
-    paste0(" \u2014 through ", year_cutoff) else ""
-  title_text  <- paste0("Temperature \u00d7 precipitation hexbin", cutoff_text)
-  n_sites     <- nrow(site_clim)
-  caption_text <- if (!is.null(year_cutoff) && as.integer(year_cutoff) >= 2025L)
-    "2025 panel reflects sites established by 2025 \u2014 recent data may not yet be available."
-  else
-    NULL
+  # --- symmetric colour limits: 5th–95th percentile, zero-centred ------------
+  nee_lims <- quantile(site_clim$mean_flux, probs = c(0.05, 0.95), na.rm = TRUE)
+  nee_max  <- max(abs(nee_lims))
+
+  # --- labels -----------------------------------------------------------------
+  flux_label <- .flux_climate_label(flux_var)
+  n_sites    <- nrow(site_clim)
 
   # --- plot -------------------------------------------------------------------
-  ggplot2::ggplot(
+  p <- ggplot2::ggplot(
     site_clim,
     ggplot2::aes(x = .data$MAT, y = .data$MAP, z = .data$mean_flux)
   ) +
@@ -181,6 +178,8 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
     colorspace::scale_fill_continuous_diverging(
       palette = "Blue-Red 3",
       mid     = 0,
+      limits  = c(-nee_max, nee_max),
+      oob     = scales::squish,
       name    = flux_label,
       guide   = ggplot2::guide_colorbar(
         barwidth       = 8,
@@ -200,18 +199,24 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
     ggplot2::labs(
       x        = "Mean annual temperature (\u00b0C)",
       y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
-      title    = title_text,
-      subtitle = paste0(
-        "n\u2009=\u2009", n_sites, " sites",
-        " \u2014 Climate from ERA5 (site-extracted)"
-      ),
-      caption  = caption_text
+      subtitle = paste0("n\u2009=\u2009", n_sites, " sites",
+                        " \u2014 Climate from ERA5 (site-extracted)")
     ) +
     fluxnet_theme() +
-    ggplot2::theme(
-      axis.title.y    = ggtext::element_markdown(),
-      legend.position = "bottom"
+    ggplot2::theme(legend.position = "bottom")
+
+  # --- year annotation (inset top-left, used for snapshot panels) -------------
+  if (!is.null(year_cutoff)) {
+    p <- p + ggplot2::annotate(
+      "text",
+      x        = -Inf, y = Inf,
+      label    = as.character(year_cutoff),
+      hjust    = -0.1, vjust = 1.5,
+      size     = 4, fontface = "bold"
     )
+  }
+
+  p
 }
 
 
@@ -420,18 +425,16 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
     return(ggplot2::ggplot() + ggplot2::labs(title = "No data") + fluxnet_theme())
   }
 
-  # --- labels and title -------------------------------------------------------
-  flux_label  <- .flux_climate_label(flux_var)
-  cutoff_text  <- if (!is.null(year_cutoff))
-    paste0(" \u2014 through ", year_cutoff) else ""
-  title_text   <- paste0("Temperature \u00d7 precipitation hexbin", cutoff_text)
-  caption_text <- if (!is.null(year_cutoff) && as.integer(year_cutoff) >= 2025L)
-    "2025 panel reflects sites established by 2025 \u2014 recent data may not yet be available."
-  else
-    NULL
+  # --- symmetric colour limits: 5th–95th percentile, zero-centred ------------
+  nee_lims <- quantile(site_clim$mean_flux, probs = c(0.05, 0.95), na.rm = TRUE)
+  nee_max  <- max(abs(nee_lims))
+
+  # --- labels -----------------------------------------------------------------
+  flux_label <- .flux_climate_label(flux_var)
+  n_sites    <- nrow(site_clim)
 
   # --- plot -------------------------------------------------------------------
-  ggplot2::ggplot(
+  p <- ggplot2::ggplot(
     site_clim,
     ggplot2::aes(x = .data$MAT, y = .data$MAP, z = .data$mean_flux)
   ) +
@@ -443,6 +446,8 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
     colorspace::scale_fill_continuous_diverging(
       palette = "Blue-Red 3",
       mid     = 0,
+      limits  = c(-nee_max, nee_max),
+      oob     = scales::squish,
       name    = flux_label,
       guide   = ggplot2::guide_colorbar(
         barwidth       = 8,
@@ -461,15 +466,24 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
     ggplot2::labs(
       x        = "Mean annual temperature (\u00b0C)",
       y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
-      title    = title_text,
-      subtitle = paste0("n\u2009=\u2009", nrow(site_clim), " sites"),
-      caption  = caption_text
+      subtitle = paste0("n\u2009=\u2009", n_sites, " sites",
+                        " \u2014 Climate from WorldClim 2.1")
     ) +
     fluxnet_theme() +
-    ggplot2::theme(
-      axis.title.y    = ggtext::element_markdown(),
-      legend.position = "bottom"
+    ggplot2::theme(legend.position = "bottom")
+
+  # --- year annotation (inset top-left, used for snapshot panels) -------------
+  if (!is.null(year_cutoff)) {
+    p <- p + ggplot2::annotate(
+      "text",
+      x        = -Inf, y = Inf,
+      label    = as.character(year_cutoff),
+      hjust    = -0.1, vjust = 1.5,
+      size     = 4, fontface = "bold"
     )
+  }
+
+  p
 }
 
 

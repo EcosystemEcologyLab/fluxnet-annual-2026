@@ -93,6 +93,18 @@ source("R/plot_constants.R")
   df_hist   <- dplyr::filter(df_all, .data$.year <  min(recent_years))
   df_recent <- dplyr::filter(df_all, .data$.year %in% recent_years)
 
+  # ---- Restrict left zone to sites present in the right zone ----------------
+  # Sites with no valid flux observations in recent_years are excluded from
+  # both zones so that the historical distribution reflects the same network
+  # of sites that appear in the recent period.
+  recent_sites   <- unique(df_recent$site_id)
+  n_recent_sites <- length(recent_sites)
+  message(sprintf(
+    "  [%s] Left zone restricted to %d site(s) with data in recent period (%d\u2013%d)",
+    flux_var, n_recent_sites, min(recent_years), max(recent_years)
+  ))
+  df_hist <- dplyr::filter(df_hist, .data$site_id %in% recent_sites)
+
   if (nrow(df_hist) == 0L) {
     warning(
       "No historical data found for flux variable '", flux_var, "'. ",
@@ -554,6 +566,7 @@ fig_anomaly_context <- function(
   )
 
   pw <- patchwork::wrap_plots(panels, ncol = 1) +
+    patchwork::plot_layout(guides = "collect") +
     patchwork::plot_annotation(
       title = fig_title,
       theme = ggplot2::theme(
@@ -562,7 +575,7 @@ fig_anomaly_context <- function(
       )
     )
 
-  pw
+  pw & ggplot2::theme(legend.position = "bottom")
 }
 
 # ---- fig_anomaly_context_kg -------------------------------------------------
@@ -845,6 +858,7 @@ fig_anomaly_context_kg <- function(
   )
 
   pw <- patchwork::wrap_plots(panels, ncol = 1) +
+    patchwork::plot_layout(guides = "collect") +
     patchwork::plot_annotation(
       title = fig_title,
       theme = ggplot2::theme(
@@ -853,5 +867,5 @@ fig_anomaly_context_kg <- function(
       )
     )
 
-  pw
+  pw & ggplot2::theme(legend.position = "bottom")
 }

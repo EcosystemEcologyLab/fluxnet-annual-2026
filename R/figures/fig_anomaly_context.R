@@ -181,7 +181,7 @@ source("R/plot_constants.R")
     ggplot2::geom_ribbon(
       data = ribbon_hist_df,
       ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
-      fill = "steelblue", alpha = 0.2, inherit.aes = FALSE
+      fill = "grey70", alpha = 0.2, inherit.aes = FALSE
     ) +
     # Historical jitter: individual site-year values (plotted first, behind box)
     ggplot2::geom_jitter(
@@ -221,7 +221,7 @@ source("R/plot_constants.R")
       ggplot2::geom_ribbon(
         data = ribbon_rec_df,
         ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
-        fill = "steelblue", alpha = 0.2, inherit.aes = FALSE
+        fill = "grey70", alpha = 0.2, inherit.aes = FALSE
       ) +
       ggplot2::geom_errorbar(
         data = recent_stats,
@@ -235,7 +235,7 @@ source("R/plot_constants.R")
       ) +
       ggplot2::scale_color_gradient2(
         low      = "#2166AC",
-        mid      = "white",
+        mid      = "#F7A900",
         high     = "#B2182B",
         midpoint = 50,
         limits   = c(0, 100),

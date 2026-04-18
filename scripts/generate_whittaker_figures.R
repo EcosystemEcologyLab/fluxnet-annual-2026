@@ -1,5 +1,5 @@
 ## generate_whittaker_figures.R
-## Regenerate all four Whittaker hexbin review PNGs with:
+## Regenerate all three Whittaker hexbin review PNGs with:
 ##   - symmetric diverging colour scale (5th-95th pct, squished)
 ##   - markdown axis labels (via fluxnet_theme)
 ##   - vertical-stack 4-panel snapshots with inset year labels
@@ -52,7 +52,9 @@ data_yy_full <- dplyr::left_join(
 message("Loading WorldClim raster ...")
 wc_rast <- load_worldclim()
 
-cutoffs <- c(2010L, 2015L, 2020L, 2025L)
+# Snapshot years correspond to major FLUXNET data releases:
+# La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+cutoffs <- c(2007L, 2015L, 2025L)
 
 # ============================================================
 # 1. ERA5 — single panel (all sites, all years)
@@ -68,9 +70,9 @@ ggplot2::ggsave(out_era5, plot = p_era5, width = 9, height = 7,
 message("Saved: ", out_era5)
 
 # ============================================================
-# 2. ERA5 — 4-panel vertical stack (2010 / 2015 / 2020 / 2025)
+# 2. ERA5 — 3-panel vertical stack (2007 / 2015 / 2025)
 # ============================================================
-message("\n── ERA5 4-panel snapshots ──")
+message("\n── ERA5 3-panel snapshots ──")
 panels_era5 <- lapply(cutoffs, function(yr) {
   message("  year_cutoff = ", yr)
   fig_whittaker_hexbin_era5(data_yy_full, flux_var = "NEE_VUT_REF",
@@ -87,7 +89,7 @@ pw_era5_snap <-
 
 out_era5_snap <- file.path(out_dir, "fig_whittaker_hexbin_era5_snapshots.png")
 ggplot2::ggsave(out_era5_snap, plot = pw_era5_snap,
-                width = 8, height = 20,
+                width = 8, height = 15,
                 units = "in", dpi = 150, bg = "white")
 message("Saved: ", out_era5_snap)
 
@@ -107,9 +109,9 @@ ggplot2::ggsave(out_wc, plot = p_wc, width = 9, height = 7,
 message("Saved: ", out_wc)
 
 # ============================================================
-# 4. WorldClim — 4-panel vertical stack (2010 / 2015 / 2020 / 2025)
+# 4. WorldClim — 3-panel vertical stack (2007 / 2015 / 2025)
 # ============================================================
-message("\n── WorldClim 4-panel snapshots ──")
+message("\n── WorldClim 3-panel snapshots ──")
 panels_wc <- lapply(cutoffs, function(yr) {
   message("  year_cutoff = ", yr)
   fig_whittaker_hexbin_worldclim(
@@ -132,7 +134,7 @@ pw_wc_snap <-
 out_wc_snap <- file.path(out_dir,
                           "fig_whittaker_hexbin_worldclim_snapshots.png")
 ggplot2::ggsave(out_wc_snap, plot = pw_wc_snap,
-                width = 8, height = 20,
+                width = 8, height = 15,
                 units = "in", dpi = 150, bg = "white")
 message("Saved: ", out_wc_snap)
 

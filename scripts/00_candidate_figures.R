@@ -564,9 +564,9 @@ build_latitudinal_multi <- function() {
 
 # ============================================================
 # Section 4 — Whittaker biome snapshots
-# ERA5 version: four panels at year_cutoff = 2010 / 2015 / 2020 / 2025,
-# assembled 2×2.  Uses TA_ERA / P_ERA from the processed YY data — no
-# external WorldClim data required; runs in the Codespace.
+# ERA5 version: three panels at year_cutoff = 2007 / 2015 / 2025,
+# assembled as vertical stack.  Uses TA_ERA / P_ERA from the processed YY
+# data — no external WorldClim data required; runs in the Codespace.
 # WorldClim version (local Mac only) is available via source = "worldclim".
 # ============================================================
 build_whittaker_snapshots <- function() {
@@ -574,7 +574,9 @@ build_whittaker_snapshots <- function() {
 
   tryCatch({
     data_yy <- site_data[["yy"]]$data
-    cutoffs <- c(2010L, 2015L, 2020L, 2025L)
+    # Snapshot years correspond to major FLUXNET data releases:
+    # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+    cutoffs <- c(2007L, 2015L, 2025L)
 
     panels <- lapply(cutoffs, function(yr) {
       fig_whittaker_hexbin(
@@ -585,9 +587,10 @@ build_whittaker_snapshots <- function() {
       ) + fluxnet_theme(base_size = 11)
     })
 
-    pw <- (panels[[1]] | panels[[2]]) /
-          (panels[[3]] | panels[[4]]) +
-      patchwork::plot_layout(guides = "collect")
+    pw <- (patchwork::wrap_plots(panels, ncol = 1) +
+      patchwork::plot_layout(axes = "collect", guides = "collect")) &
+      ggplot2::theme(legend.position = "bottom",
+                     plot.margin     = ggplot2::margin(0, 5, 0, 5))
 
     # Save review PNG
     review_dir  <- file.path("review", "figures")
@@ -596,15 +599,16 @@ build_whittaker_snapshots <- function() {
     ggplot2::ggsave(
       review_path,
       plot   = pw,
-      width  = 14,
-      height = 10,
+      width  = 8,
+      height = 15,
       units  = "in",
-      dpi    = 150
+      dpi    = 150,
+      bg     = "white"
     )
     message("Review figure saved: ", review_path)
 
     paste0('<div class="plot-wrap">',
-           plot_to_png(pw, width = 14, height = 10),
+           plot_to_png(pw, width = 8, height = 15),
            "</div>")
   }, error = function(e) {
     no_data(paste0(
@@ -884,7 +888,7 @@ build_active_proportion <- function() {
 
 # ============================================================
 # Section 10 — UN subregion choropleth
-# fig_map_subregion_sites(): count and density at 2010/2015/2020/2025.
+# fig_map_subregion_sites(): count and density at 2007/2015/2025.
 # Two separate figures (count + density) saved as review PNGs.
 # ============================================================
 build_country_map <- function() {
@@ -893,7 +897,9 @@ build_country_map <- function() {
   review_dir <- file.path("review", "figures")
   if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
 
-  cutoffs <- c(2010L, 2015L, 2020L, 2025L)
+  # Snapshot years correspond to major FLUXNET data releases:
+  # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+  cutoffs <- c(2007L, 2015L, 2025L)
 
   make_panel <- function(metric_arg) {
     tryCatch({
@@ -968,7 +974,7 @@ s13 <- section(13, "Subregion overview \u2014 site counts and latency by UN subr
                  no_data(paste0("Subregion overview unavailable: ", conditionMessage(e)))
                }))
 message("Building Section 10 — UN subregion choropleth ...")
-s10 <- section(10, "UN subregion choropleth \u2014 2010\u20132015\u20132020\u20132025",
+s10 <- section(10, "UN subregion choropleth \u2014 2007\u20132015\u20132025",
                build_country_map())
 message("Building Section 4 — Whittaker biome snapshots (ERA5) ...")
 s4 <- section(4, "Whittaker biome snapshots \u2014 ERA5 climate (Codespace-safe)",

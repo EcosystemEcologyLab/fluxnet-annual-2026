@@ -78,7 +78,7 @@ source("R/plot_constants.R")
 #' @param year_col Character. Name of the year column in `df_sites`
 #'   ("TIMESTAMP" or "YEAR").
 #' @param is_bottom_panel Logical. If TRUE, show x-axis labels and ticks.
-#' @param is_nee Logical. If TRUE, add horizontal dashed line at y = 0.
+#' @param is_nee Logical. Reserved for future use; currently unused.
 #'
 #' @return A ggplot2 object, or NULL if historical data are absent.
 #' @noRd
@@ -106,9 +106,12 @@ source("R/plot_constants.R")
   hist_vals <- df_hist[[flux_var]]
   lt_p05    <- unname(quantile(hist_vals, 0.05, na.rm = TRUE))
   lt_p25    <- unname(quantile(hist_vals, 0.25, na.rm = TRUE))
+  lt_p40    <- unname(quantile(hist_vals, 0.40, na.rm = TRUE))
   lt_med    <- unname(quantile(hist_vals, 0.50, na.rm = TRUE))
+  lt_p60    <- unname(quantile(hist_vals, 0.60, na.rm = TRUE))
   lt_p75    <- unname(quantile(hist_vals, 0.75, na.rm = TRUE))
   lt_p95    <- unname(quantile(hist_vals, 0.95, na.rm = TRUE))
+  lt_ecdf   <- stats::ecdf(hist_vals)
 
   hist_min_yr <- min(df_hist$.year, na.rm = TRUE)
   hist_max_yr <- max(df_hist$.year, na.rm = TRUE)
@@ -128,79 +131,63 @@ source("R/plot_constants.R")
   x_labels <- c(hist_label, as.character(sort(recent_years)))
   vline_x  <- 1.5  # separator between historical and recent zones
 
-  # ---- Historical jitter data -----------------------------------------------
+  # ---- Left zone: historical jitter data ------------------------------------
   df_hist_mapped <- dplyr::mutate(df_hist, .x = x_hist)
 
-  # ---- Historical boxplot (custom 5th\u201395th whiskers) -----------------------
-  box_df <- data.frame(
-    .x     = x_hist,
-    ymin   = lt_p05,
-    lower  = lt_p25,
-    middle = lt_med,
-    upper  = lt_p75,
-    ymax   = lt_p95
-  )
-
-  # ---- Recent year statistics — with percentile position --------------------
-  # Percentile: where does each annual median sit within the long-term
-  # site-year distribution?  ecdf() gives P(X <= x) on [0,1]; multiply by 100.
-  lt_ecdf <- stats::ecdf(hist_vals)
-
+  # ---- Right zone: individual site-year points with percentile fill ---------
+  # Percentile: where does each site-year value sit within the long-term
+  # distribution?  ecdf() gives P(X <= x) on [0, 1]; multiply by 100.
   if (nrow(df_recent) > 0L) {
-    recent_stats <- df_recent |>
-      dplyr::group_by(.year) |>
-      dplyr::summarise(
-        yr_med = median(.data[[flux_var]], na.rm = TRUE),
-        yr_lo  = unname(quantile(.data[[flux_var]], 0.025, na.rm = TRUE)),
-        yr_hi  = unname(quantile(.data[[flux_var]], 0.975, na.rm = TRUE)),
-        .groups = "drop"
-      ) |>
+    df_recent_mapped <- df_recent |>
       dplyr::mutate(
-        .x          = unname(yr_to_x[as.character(.data$.year)]),
-        percentile  = lt_ecdf(.data$yr_med) * 100
+        .x         = unname(yr_to_x[as.character(.data$.year)]),
+        percentile = lt_ecdf(.data[[flux_var]]) * 100
       )
   } else {
-    recent_stats <- NULL
+    df_recent_mapped <- NULL
   }
 
-  # ---- Ribbon data (long-term 5th–95th envelope, spans both zones) ----------
-  ribbon_hist_df <- data.frame(
-    x    = c(x_min, vline_x),
-    ymin = lt_p05,
-    ymax = lt_p95
-  )
-  ribbon_rec_df <- data.frame(
-    x    = c(vline_x, x_max),
-    ymin = lt_p05,
-    ymax = lt_p95
-  )
+  # ---- Gradient ribbon data — full width (both zones) -----------------------
+  # Three overlapping bands: darkest near median, lightest at extremes.
+  make_band <- function(ylo, yhi) {
+    data.frame(x = c(x_min, x_max), ymin = ylo, ymax = yhi)
+  }
+  band_outer  <- make_band(lt_p05, lt_p95)  # 5th–95th  — lightest
+  band_middle <- make_band(lt_p25, lt_p75)  # 25th–75th — medium
+  band_core   <- make_band(lt_p40, lt_p60)  # 40th–60th — darkest
 
   # ---- Build ggplot ----------------------------------------------------------
   p <- ggplot2::ggplot() +
-    # Left zone — historical ribbon (behind points and box)
+    # Gradient ribbon — outermost band (lightest)
     ggplot2::geom_ribbon(
-      data = ribbon_hist_df,
+      data = band_outer,
       ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
-      fill = "grey70", alpha = 0.2, inherit.aes = FALSE
+      fill = "grey85", alpha = 0.5, inherit.aes = FALSE
     ) +
-    # Historical jitter: individual site-year values (plotted first, behind box)
+    # Gradient ribbon — middle band
+    ggplot2::geom_ribbon(
+      data = band_middle,
+      ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
+      fill = "grey60", alpha = 0.5, inherit.aes = FALSE
+    ) +
+    # Gradient ribbon — core band (darkest)
+    ggplot2::geom_ribbon(
+      data = band_core,
+      ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
+      fill = "grey40", alpha = 0.5, inherit.aes = FALSE
+    ) +
+    # Long-term median reference line — all panels
+    ggplot2::geom_hline(
+      yintercept = lt_med, linetype = "dotted",
+      color = "black", linewidth = 0.6
+    ) +
+    # Left zone: individual site-year jitter — neutral grey, no colour encoding
     ggplot2::geom_jitter(
       data  = df_hist_mapped,
       ggplot2::aes(x = .x, y = .data[[flux_var]]),
-      color = "grey50", alpha = 0.3, width = 0.25, height = 0,
+      shape = 21, fill = "grey30", color = "black",
+      stroke = 0.4, alpha = 0.5, width = 0.25, height = 0,
       show.legend = FALSE
-    ) +
-    # Historical boxplot: whiskers to 5th\u201395th percentile (on top of points)
-    ggplot2::geom_errorbar(
-      data = box_df,
-      ggplot2::aes(x = .x, ymin = ymin, ymax = ymax),
-      width = 0.3, linewidth = 0.8, color = "black"
-    ) +
-    # Historical boxplot: IQR box with transparent fill so points show through
-    ggplot2::geom_crossbar(
-      data = box_df,
-      ggplot2::aes(x = .x, y = middle, ymin = lower, ymax = upper),
-      width = 0.5, linewidth = 0.7, fill = NA, color = "black"
     ) +
     # Zone separator
     ggplot2::geom_vline(
@@ -208,32 +195,15 @@ source("R/plot_constants.R")
       color = "grey40", linewidth = 0.5
     )
 
-  # y = 0 reference line (NEE panel only)
-  if (is_nee) {
-    p <- p + ggplot2::geom_hline(
-      yintercept = 0L, linetype = "dashed", color = "grey60", linewidth = 0.4
-    )
-  }
-
-  # Recent zone elements (ribbon + percentile-coloured points + CIs)
-  if (!is.null(recent_stats) && nrow(recent_stats) > 0L) {
+  # Right zone: individual site-year points, fill = percentile in long-term dist
+  if (!is.null(df_recent_mapped) && nrow(df_recent_mapped) > 0L) {
     p <- p +
-      ggplot2::geom_ribbon(
-        data = ribbon_rec_df,
-        ggplot2::aes(x = x, ymin = ymin, ymax = ymax),
-        fill = "grey70", alpha = 0.2, inherit.aes = FALSE
-      ) +
-      ggplot2::geom_errorbar(
-        data = recent_stats,
-        ggplot2::aes(x = .x, ymin = yr_lo, ymax = yr_hi, color = percentile),
-        width = 0.25, linewidth = 0.7, show.legend = FALSE
-      ) +
       ggplot2::geom_point(
-        data = recent_stats,
-        ggplot2::aes(x = .x, y = yr_med, color = percentile),
-        size = 3
+        data = df_recent_mapped,
+        ggplot2::aes(x = .x, y = .data[[flux_var]], fill = percentile),
+        shape = 21, color = "black", stroke = 0.5, size = 2.5
       ) +
-      ggplot2::scale_color_gradient2(
+      ggplot2::scale_fill_gradient2(
         low      = "#2166AC",
         mid      = "#F7A900",
         high     = "#B2182B",
@@ -281,22 +251,24 @@ source("R/plot_constants.R")
 #' Each panel is divided into two zones by a vertical dashed line:
 #' \describe{
 #'   \item{Left zone — long-term context}{
-#'     Individual site-year values plotted first as jittered grey points
-#'     (alpha = 0.3), then a steelblue ribbon from the 5th to 95th percentile
-#'     (alpha = 0.2), then a boxplot overlaid on top with a transparent fill so
-#'     points remain visible.  Whiskers span the 5th\u201395th percentile; box spans
-#'     the IQR; median bar is visible.  The x-axis label shows the historical
+#'     A three-band gradient ribbon spans the full x-extent of the panel,
+#'     darkest near the median (40th\u201360th percentile band in grey40) and fading
+#'     outwards (25th\u201375th in grey60, 5th\u201395th in grey85).  Individual
+#'     site-year values are jittered on top as open circles (shape 21,
+#'     fill = "grey30", alpha = 0.5).  The x-axis label shows the historical
 #'     year range.
 #'   }
 #'   \item{Right zone — recent years}{
-#'     The long-term 5th\u201395th percentile envelope is drawn as a shaded ribbon
-#'     (steelblue, alpha = 0.2).  Per-year medians are plotted as points (size 3)
-#'     with 95\% CI error bars (2.5th\u201397.5th percentile across sites), coloured
-#'     by their percentile position within the long-term distribution:
-#'     blue (\u2248 0th) \u2192 white (50th) \u2192 red (\u2248 100th), using a diverging scale
-#'     with midpoint = 50.
+#'     The same gradient ribbon continues into the right zone, providing a
+#'     consistent distributional reference.  Each individual site-year
+#'     observation is plotted as a filled circle (shape 21, size 2.5) coloured
+#'     by its percentile within the long-term distribution:
+#'     blue (\u2248 0th) \u2192 amber (50th) \u2192 red (\u2248 100th) using a diverging fill
+#'     scale with midpoint = 50.  Multiple sites per year appear as separate
+#'     points at the same x position.
 #'   }
 #' }
+#' A horizontal dotted line marks the long-term median on every panel.
 #'
 #' @param data_yy Data frame. Converted annual flux data (FLUXMET rows only).
 #'   Must contain \code{site_id}, a year column (\code{TIMESTAMP} or

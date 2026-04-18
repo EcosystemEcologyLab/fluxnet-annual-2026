@@ -7,7 +7,7 @@
 #   - ALL IGBP classes (no forest-only restriction)
 #   - At least 4 sites with >= 8 valid NEE years in the combination
 #
-# Output: review/figures/anomalies/fig_anomaly_{igbp}_{subregion_clean}_{gez_clean}.png
+# Output: review/figures/Anomalies_GEZ/fig_anomaly_{igbp}_{subregion_clean}_{gez_clean}.png
 #
 # Run after 05_units.R has produced flux_data_converted_yy.rds.
 
@@ -136,7 +136,7 @@ cat(sprintf("  Figures to generate: %d\n\n", nrow(combo_counts)))
 
 # ---- Set up output directory -------------------------------------------------
 
-out_dir <- file.path("review", "figures", "anomalies")
+out_dir <- file.path("review", "figures", "Anomalies_GEZ")
 fs::dir_create(out_dir)
 
 # ---- Helper: sanitise a string for use in a file name -----------------------

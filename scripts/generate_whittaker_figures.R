@@ -95,6 +95,7 @@ message("Saved: ", out_era5_snap)
 
 # ============================================================
 # 3. WorldClim — single panel (all sites, all years)
+#    Legend: upper left inside the plotting area.
 # ============================================================
 message("\n── WorldClim single panel ──")
 p_wc <- fig_whittaker_hexbin_worldclim(
@@ -102,7 +103,11 @@ p_wc <- fig_whittaker_hexbin_worldclim(
   worldclim_data = wc_rast,
   metadata       = snapshot_meta,
   flux_var       = "NEE_VUT_REF"
-)
+) +
+  ggplot2::theme(
+    legend.position     = c(0.02, 0.98),
+    legend.justification = c(0, 1)
+  )
 out_wc <- file.path(out_dir, "fig_whittaker_hexbin_worldclim.png")
 ggplot2::ggsave(out_wc, plot = p_wc, width = 9, height = 7,
                 units = "in", dpi = 150, bg = "white")
@@ -110,26 +115,34 @@ message("Saved: ", out_wc)
 
 # ============================================================
 # 4. WorldClim — 3-panel vertical stack (2007 / 2015 / 2025)
+#    Legend: upper-left of top panel only; suppressed on others.
 # ============================================================
 message("\n── WorldClim 3-panel snapshots ──")
-panels_wc <- lapply(cutoffs, function(yr) {
+panels_wc <- lapply(seq_along(cutoffs), function(i) {
+  yr <- cutoffs[[i]]
   message("  year_cutoff = ", yr)
-  fig_whittaker_hexbin_worldclim(
+  p <- fig_whittaker_hexbin_worldclim(
     data_yy        = data_yy_full,
     worldclim_data = wc_rast,
     metadata       = snapshot_meta,
     flux_var       = "NEE_VUT_REF",
     year_cutoff    = yr
   )
+  if (i == 1L) {
+    # Top panel: legend inside upper-left, below the year annotation
+    p + ggplot2::theme(
+      legend.position      = c(0.02, 0.88),
+      legend.justification = c(0, 1)
+    )
+  } else {
+    p + ggplot2::theme(legend.position = "none")
+  }
 })
 
 pw_wc_snap <-
   (patchwork::wrap_plots(panels_wc, ncol = 1) +
-     patchwork::plot_layout(axes = "collect", guides = "collect")) &
-  ggplot2::theme(
-    legend.position = "bottom",
-    plot.margin     = ggplot2::margin(0, 5, 0, 5)
-  )
+     patchwork::plot_layout(axes = "collect")) &
+  ggplot2::theme(plot.margin = ggplot2::margin(0, 5, 0, 5))
 
 out_wc_snap <- file.path(out_dir,
                           "fig_whittaker_hexbin_worldclim_snapshots.png")

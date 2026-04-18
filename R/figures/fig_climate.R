@@ -453,7 +453,8 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
         barwidth       = 8,
         barheight      = 0.7,
         title.position = "top",
-        title.hjust    = 0.5
+        title.hjust    = 0.5,
+        title.theme    = ggtext::element_markdown()
       )
     ) +
     ggplot2::geom_point(
@@ -469,8 +470,7 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
       subtitle = paste0("n\u2009=\u2009", n_sites, " sites",
                         " \u2014 Climate from WorldClim 2.1")
     ) +
-    fluxnet_theme() +
-    ggplot2::theme(legend.position = "bottom")
+    fluxnet_theme()
 
   # --- year annotation (inset top-left, used for snapshot panels) -------------
   if (!is.null(year_cutoff)) {

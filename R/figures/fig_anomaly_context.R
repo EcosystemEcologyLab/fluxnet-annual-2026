@@ -592,3 +592,294 @@ fig_anomaly_context <- function(
 
   pw
 }
+
+# ---- fig_anomaly_context_kg -------------------------------------------------
+
+#' Anomaly context figure — recent flux vs long-term distribution (KG variant)
+#'
+#' Identical to [fig_anomaly_context()] but filters sites by Koppen-Geiger
+#' climate class rather than FAO GEZ zone.  Accepts any level of KG
+#' classification (main group, second level, or full third-level code) via
+#' the \code{kg_filter} and \code{kg_col} arguments.
+#'
+#' @param data_yy Data frame. Converted annual flux data (FLUXMET rows only).
+#'   Must contain \code{site_id}, a year column (\code{TIMESTAMP} or
+#'   \code{YEAR}), \code{NEE_VUT_REF} (used for site selection), and the
+#'   columns named in \code{flux_vars}.
+#' @param metadata Data frame. Site metadata from the FLUXNET Shuttle snapshot.
+#'   Must contain \code{site_id}, \code{igbp}, \code{data_hub}, and
+#'   \code{location_lat}.
+#' @param kg_lookup Data frame. Per-site KG classification, columns
+#'   \code{site_id}, \code{kg_main} (1-char), \code{kg_second} (2-char),
+#'   \code{kg_class} (3-char full code).  See
+#'   \code{data/snapshots/long_record_site_candidates_gez_kg.csv}.
+#' @param igbp Character scalar. IGBP class code to filter to (e.g.
+#'   \code{"ENF"}).
+#' @param kg_filter Character scalar. KG code to filter to (e.g. \code{"C"},
+#'   \code{"Cf"}, or \code{"Cfb"}).  Must match the column specified by
+#'   \code{kg_col}.
+#' @param kg_col Character scalar. Column in \code{kg_lookup} to match against
+#'   \code{kg_filter}: one of \code{"kg_main"}, \code{"kg_second"}, or
+#'   \code{"kg_class"} (default \code{"kg_main"}).
+#' @param subregion Character scalar. UN subregion name to filter to
+#'   (default \code{"Northern America"}).  Matched against
+#'   \code{countrycode::countrycode(iso2, "iso2c", "un.regionsub.name")}.
+#' @param recent_years Integer vector. Years shown in the right (recent) zone
+#'   (default \code{2019:2024}).
+#' @param min_sites Integer. Minimum number of sites required to proceed
+#'   (default \code{4L}).
+#' @param min_nee_years Integer. Minimum number of valid \code{NEE_VUT_REF}
+#'   years a site must have to be included (default \code{8L}).
+#' @param flux_vars Character vector. Flux variable column names to plot as
+#'   stacked panels in top-to-bottom order
+#'   (default: \code{c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS")}).
+#'
+#' @return A \pkg{patchwork} object with one panel per available flux variable
+#'   stacked vertically with a shared x-axis.  Returns \code{invisible(NULL)}
+#'   if no panels could be built.
+#'
+#' @export
+fig_anomaly_context_kg <- function(
+    data_yy,
+    metadata,
+    kg_lookup,
+    igbp,
+    kg_filter,
+    kg_col        = "kg_main",
+    subregion     = "Northern America",
+    recent_years  = 2019:2024,
+    min_sites     = 4L,
+    min_nee_years = 8L,
+    flux_vars     = c("NEE_VUT_REF", "LE_F_MDS", "H_F_MDS")
+) {
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop(
+      "Package 'patchwork' is required. ",
+      "Install with: install.packages('patchwork')",
+      call. = FALSE
+    )
+  }
+  if (!requireNamespace("countrycode", quietly = TRUE)) {
+    stop(
+      "Package 'countrycode' is required. ",
+      "Install with: install.packages('countrycode')",
+      call. = FALSE
+    )
+  }
+
+  # ---- Input validation -------------------------------------------------------
+  if (!is.character(igbp) || length(igbp) != 1L) {
+    stop("igbp must be a single character string.", call. = FALSE)
+  }
+  if (!is.character(kg_filter) || length(kg_filter) != 1L) {
+    stop("kg_filter must be a single character string.", call. = FALSE)
+  }
+  valid_kg_cols <- c("kg_main", "kg_second", "kg_class")
+  if (!kg_col %in% valid_kg_cols) {
+    stop(
+      "kg_col must be one of: ", paste(valid_kg_cols, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  required_meta <- c("site_id", "igbp", "data_hub", "location_lat")
+  miss_meta <- setdiff(required_meta, names(metadata))
+  if (length(miss_meta) > 0L) {
+    stop(
+      "metadata is missing required column(s): ",
+      paste(miss_meta, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  required_kg <- c("site_id", kg_col)
+  miss_kg <- setdiff(required_kg, names(kg_lookup))
+  if (length(miss_kg) > 0L) {
+    stop(
+      "kg_lookup is missing required column(s): ",
+      paste(miss_kg, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  if (!"site_id" %in% names(data_yy)) {
+    stop("data_yy must contain a 'site_id' column.", call. = FALSE)
+  }
+
+  year_col <- if ("TIMESTAMP" %in% names(data_yy)) {
+    "TIMESTAMP"
+  } else if ("YEAR" %in% names(data_yy)) {
+    "YEAR"
+  } else {
+    stop(
+      "data_yy must contain a 'TIMESTAMP' or 'YEAR' column.",
+      call. = FALSE
+    )
+  }
+
+  # ---- Site selection ---------------------------------------------------------
+
+  # Normalise metadata to one row per site
+  meta_work <- metadata |>
+    dplyr::select(dplyr::all_of(c("site_id", "igbp", "data_hub", "location_lat"))) |>
+    dplyr::distinct()
+
+  # Filter by IGBP (case-insensitive)
+  igbp_lower <- tolower(igbp)
+  meta_igbp <- meta_work |>
+    dplyr::filter(tolower(.data$igbp) == igbp_lower)
+
+  if (nrow(meta_igbp) == 0L) {
+    stop("No sites found for IGBP = '", igbp, "'.", call. = FALSE)
+  }
+
+  # Filter by UN subregion
+  subregion_target <- subregion
+  meta_igbp <- meta_igbp |>
+    dplyr::mutate(
+      .iso2      = substr(.data$site_id, 1L, 2L),
+      .subregion = .anom_iso2_to_subregion(.data$.iso2)
+    ) |>
+    dplyr::filter(.data$.subregion == subregion_target)
+
+  if (nrow(meta_igbp) == 0L) {
+    stop(
+      "No ", igbp, " sites found in subregion '", subregion, "'.",
+      call. = FALSE
+    )
+  }
+
+  # Join KG lookup and filter by kg_filter
+  kg_lookup_slim <- kg_lookup |>
+    dplyr::select(dplyr::all_of(c("site_id", kg_col))) |>
+    dplyr::distinct()
+
+  meta_kg <- meta_igbp |>
+    dplyr::left_join(kg_lookup_slim, by = "site_id") |>
+    dplyr::filter(.data[[kg_col]] == kg_filter)
+
+  if (nrow(meta_kg) == 0L) {
+    stop(
+      "No ", igbp, " sites in '", subregion, "' match KG filter ",
+      kg_col, " == '", kg_filter, "'.",
+      call. = FALSE
+    )
+  }
+
+  # Count valid NEE years per site
+  if ("NEE_VUT_REF" %in% names(data_yy)) {
+    nee_counts <- data_yy |>
+      dplyr::filter(.data$site_id %in% meta_kg$site_id) |>
+      dplyr::group_by(.data$site_id) |>
+      dplyr::summarise(
+        n_years_valid_nee = sum(!is.na(.data$NEE_VUT_REF)),
+        .groups = "drop"
+      )
+  } else {
+    nee_counts <- dplyr::tibble(
+      site_id           = meta_kg$site_id,
+      n_years_valid_nee = 0L
+    )
+  }
+
+  meta_final <- meta_kg |>
+    dplyr::left_join(nee_counts, by = "site_id") |>
+    dplyr::mutate(
+      n_years_valid_nee = dplyr::coalesce(as.integer(.data$n_years_valid_nee), 0L)
+    ) |>
+    dplyr::filter(.data$n_years_valid_nee >= min_nee_years) |>
+    dplyr::select("site_id", "data_hub", "igbp",
+                  dplyr::all_of(kg_col),
+                  "location_lat", "n_years_valid_nee") |>
+    dplyr::arrange(dplyr::desc(.data$n_years_valid_nee))
+
+  n_sites <- nrow(meta_final)
+
+  if (n_sites < min_sites) {
+    stop(
+      "Only ", n_sites, " site(s) with >= ", min_nee_years,
+      " valid NEE years found for IGBP=", igbp,
+      ", subregion='", subregion, "', ", kg_col, "='", kg_filter, "'",
+      " (minimum required: ", min_sites, " sites).\n",
+      "Sites found: ",
+      if (n_sites > 0L)
+        paste(meta_final$site_id, collapse = ", ")
+      else
+        "(none)",
+      call. = FALSE
+    )
+  }
+
+  # Print selected sites
+  cat("\n--- fig_anomaly_context_kg: selected sites ---\n")
+  cat(sprintf(
+    "IGBP: %s | subregion: %s | %s: %s | n_sites: %d\n",
+    igbp, subregion, kg_col, kg_filter, n_sites
+  ))
+  print(
+    as.data.frame(meta_final),
+    row.names = FALSE
+  )
+  cat("\n")
+
+  # ---- Filter data_yy to selected sites --------------------------------------
+  df_sites <- data_yy |>
+    dplyr::filter(.data$site_id %in% meta_final$site_id)
+
+  # ---- Build flux variable panels --------------------------------------------
+  avail_vars <- intersect(flux_vars, names(df_sites))
+  skipped    <- setdiff(flux_vars, names(df_sites))
+  if (length(skipped) > 0L) {
+    warning(
+      "flux_var(s) not found in data_yy \u2014 skipped: ",
+      paste(skipped, collapse = ", "),
+      call. = FALSE
+    )
+  }
+  if (length(avail_vars) == 0L) {
+    warning("None of the requested flux_vars are present in data_yy.", call. = FALSE)
+    return(invisible(NULL))
+  }
+
+  panels   <- list()
+  n_panels <- length(avail_vars)
+  nee_vars <- c("NEE_VUT_REF", "NEE_CUT_REF", "NEE_VUT_MEAN", "NEE_CUT_MEAN")
+
+  for (i in seq_along(avail_vars)) {
+    fv     <- avail_vars[[i]]
+    is_bot <- (i == n_panels)
+    is_nee <- fv %in% nee_vars
+
+    p <- .build_anom_panel(
+      df_sites        = df_sites,
+      flux_var        = fv,
+      recent_years    = recent_years,
+      year_col        = year_col,
+      is_bottom_panel = is_bot,
+      is_nee          = is_nee
+    )
+    if (!is.null(p)) panels[[fv]] <- p
+  }
+
+  if (length(panels) == 0L) {
+    warning(
+      "fig_anomaly_context_kg(): no panels built. Check data availability.",
+      call. = FALSE
+    )
+    return(invisible(NULL))
+  }
+
+  # ---- Assemble patchwork ----------------------------------------------------
+  fig_title <- sprintf(
+    "%s \u2014 %s \u2014 KG %s=%s (n=%d sites)",
+    igbp, subregion, kg_col, kg_filter, n_sites
+  )
+
+  pw <- patchwork::wrap_plots(panels, ncol = 1) +
+    patchwork::plot_annotation(
+      title = fig_title,
+      theme = ggplot2::theme(
+        plot.title = ggplot2::element_text(face = "bold", size = 13,
+                                           hjust = 0.5)
+      )
+    )
+
+  pw
+}

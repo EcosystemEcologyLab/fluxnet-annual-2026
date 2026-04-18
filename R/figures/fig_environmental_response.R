@@ -623,9 +623,16 @@ fig_environmental_response_era5 <- function(
          call. = FALSE)
   }
 
-  patchwork::wrap_plots(panels,
-                        nrow   = length(flux_vars),
-                        ncol   = length(env_vars),
-                        guides = "collect") &
+  # plot_layout(axes = "collect") suppresses redundant axis labels:
+  # y-axis labels appear only on the leftmost column; x-axis labels only on
+  # the bottom row.  guides = "collect" merges the IGBP legend into one.
+  col_labels <- vapply(env_vars, .era5_response_label, character(1L))
+  caption_str <- paste(col_labels, collapse = "  \u2022  ")
+
+  (patchwork::wrap_plots(panels,
+                         nrow = length(flux_vars),
+                         ncol = length(env_vars)) +
+    patchwork::plot_layout(axes = "collect", guides = "collect") +
+    patchwork::plot_annotation(caption = caption_str)) &
     ggplot2::theme(legend.position = "bottom")
 }

@@ -562,10 +562,26 @@ fig_map_subregion_sites <- function(metadata,
   # Grey land background — all ne_countries polygons (validated above)
   bg_land <- countries
 
-  # Shared colour-scale maximum across all cutoffs
-  # Filter: first_year <= yr only — show all sites established by each cutoff,
-  # not just those with last_year >= yr (avoids confounding data latency with
-  # network size).
+  # --- Shared colour scale: compute breaks from the maximum year cutoff -------
+  # All panels use the same limits/breaks so visual comparison is valid across
+  # the three snapshot years.
+  fill_max_yr <- max(year_cutoffs)
+  counts_max  <- sites_tbl |>
+    dplyr::filter(.data$first_year <= fill_max_yr) |>
+    dplyr::count(.data$subregion, name = "n_sites")
+
+  if (metric == "density") {
+    sub_max      <- dplyr::left_join(subregions, counts_max, by = "subregion")
+    fill_max_val <- max(sub_max$n_sites / sub_max$area_mkm2, na.rm = TRUE)
+  } else {
+    fill_max_val <- max(counts_max$n_sites, na.rm = TRUE)
+  }
+  fill_max_val <- max(fill_max_val, 1)   # guard against degenerate case
+
+  # Pretty breaks spanning [0, fill_max_val]
+  shared_breaks <- pretty(c(0, fill_max_val), n = 5L)
+  shared_breaks <- shared_breaks[shared_breaks >= 0 & shared_breaks <= fill_max_val]
+
   # --- One panel per year cutoff ----------------------------------------------
   panels <- lapply(year_cutoffs, function(yr) {
     counts <- sites_tbl |>
@@ -601,16 +617,19 @@ fig_map_subregion_sites <- function(metadata,
         colour    = "white",
         linewidth = 0.25
       ) +
+      # Shared scale across all panels — breaks and limits from max year cutoff
       (if (metric == "count") {
         ggplot2::scale_fill_viridis_b(
-          breaks   = c(0, 5, 15, 30, 60, 100),
+          breaks   = shared_breaks,
+          limits   = c(0, fill_max_val),
           na.value = "grey90",
           name     = "Number of sites",
           option   = "viridis"
         )
       } else {
         ggplot2::scale_fill_viridis_b(
-          breaks   = c(0, 1, 5, 10, 25, 50),
+          breaks   = shared_breaks,
+          limits   = c(0, fill_max_val),
           na.value = "grey90",
           name     = "Sites per million km\u00b2",
           option   = "viridis"

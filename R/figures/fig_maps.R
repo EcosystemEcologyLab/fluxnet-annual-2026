@@ -457,7 +457,7 @@ fig_map_nee_delta <- function(data_yy,
 #'   \code{site_id}, \code{location_lat}, \code{location_long},
 #'   \code{first_year}, and \code{last_year}.
 #' @param year_cutoffs Integer vector. Years at which to count sites
-#'   (default \code{c(2010L, 2015L, 2020L, 2025L)}).  The filter is
+#'   (default \code{c(2007L, 2015L, 2025L)}).  The filter is
 #'   \code{first_year <= cutoff} — i.e. all sites established by each cutoff
 #'   year, regardless of whether their most recent data has been submitted yet.
 #'   This avoids representing data-submission latency as apparent network
@@ -481,7 +481,9 @@ fig_map_nee_delta <- function(data_yy,
 #'
 #' @export
 fig_map_subregion_sites <- function(metadata,
-                                     year_cutoffs = c(2010L, 2015L, 2020L, 2025L),
+                                     # Snapshot years correspond to major FLUXNET data releases:
+                                     # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+                                     year_cutoffs = c(2007L, 2015L, 2025L),
                                      metric       = c("count", "density"),
                                      add_dots     = TRUE) {
 
@@ -660,7 +662,9 @@ fig_map_subregion_sites <- function(metadata,
 #' @return A \pkg{patchwork} object. See \code{\link{fig_map_subregion_sites}}.
 #' @export
 fig_map_country_sites <- function(metadata,
-                                   year_cutoffs = c(2015L, 2020L, 2025L)) {
+                                   # Snapshot years correspond to major FLUXNET data releases:
+                                   # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+                                   year_cutoffs = c(2007L, 2015L, 2025L)) {
   .Deprecated(
     new = "fig_map_subregion_sites",
     msg = paste0(

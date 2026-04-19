@@ -180,10 +180,13 @@ fig_choropleth_datasets <- function(site_lists, add_dots = TRUE) {
   shared_breaks  <- shared_breaks[shared_breaks >= 0 &
                                     shared_breaks <= fill_max_val]
 
-  # Panel title: "Marconi 2000 (n=35)"
+  # Panel title: "Marconi 2000 (N=35, Site Years=96)"
+  site_years_vec <- attr(site_lists, "site_years")
   panel_titles <- vapply(names(site_lists), function(nm) {
     lbl <- unique(site_lists[[nm]]$dataset)[[1L]]
-    paste0(lbl, " (n=", nrow(site_lists[[nm]]), ")")
+    sy  <- site_years_vec[[nm]]
+    sy_str <- if (!is.null(sy) && !is.na(sy)) paste0(", Site Years=", sy) else ""
+    paste0(lbl, " (N=", nrow(site_lists[[nm]]), sy_str, ")")
   }, character(1L))
 
   panels <- lapply(names(site_lists), function(nm) {
@@ -287,8 +290,9 @@ fig_duration_datasets <- function(site_lists) {
   )
   y_lim <- c(0, ceiling(bin_max * 1.08))
 
-  n_panels <- length(site_lists)
-  base_sz  <- 14L
+  n_panels       <- length(site_lists)
+  base_sz        <- 14L
+  site_years_vec <- attr(site_lists, "site_years")
 
   panels <- lapply(seq_along(site_lists), function(i) {
     nm        <- names(site_lists)[[i]]
@@ -296,6 +300,8 @@ fig_duration_datasets <- function(site_lists) {
     is_bottom <- i == n_panels
     n_total   <- nrow(site_lists[[nm]])
     lbl       <- unique(site_lists[[nm]]$dataset)[[1L]]
+    sy        <- site_years_vec[[nm]]
+    sy_str    <- if (!is.null(sy) && !is.na(sy)) paste0(", Site Years=", sy) else ""
 
     ggplot2::ggplot(
       df,
@@ -316,7 +322,7 @@ fig_duration_datasets <- function(site_lists) {
       ggplot2::coord_cartesian(xlim = x_lim, ylim = y_lim) +
       ggplot2::annotate(
         "text", x = -Inf, y = Inf,
-        label    = paste0(lbl, " (n=", n_total, ")"),
+        label    = paste0(lbl, " (N=", n_total, sy_str, ")"),
         hjust    = -0.07, vjust = 1.5,
         size     = 5.5, fontface = "bold"
       ) +
@@ -476,6 +482,8 @@ fig_whittaker_datasets <- function(site_lists,
   )
 
   # --- Per-panel builder ------------------------------------------------------
+  site_years_vec <- attr(site_lists, "site_years")
+
   .whittaker_panel <- function(nm, dataset_df) {
     pd <- dataset_df |>
       dplyr::left_join(
@@ -495,6 +503,8 @@ fig_whittaker_datasets <- function(site_lists,
     n_climate  <- nrow(pd)
     n_nee      <- sum(!is.na(pd$mean_flux))
     lbl        <- unique(dataset_df$dataset)[[1L]]
+    sy         <- site_years_vec[[nm]]
+    sy_str     <- if (!is.null(sy) && !is.na(sy)) paste0(", Site Years=", sy) else ""
 
     ggplot2::ggplot(
       pd,
@@ -531,7 +541,7 @@ fig_whittaker_datasets <- function(site_lists,
       ) +
       ggplot2::annotate(
         "text", x = -Inf, y = Inf,
-        label    = paste0(lbl, " (n=", n_total, ")"),
+        label    = paste0(lbl, " (N=", n_total, sy_str, ")"),
         hjust    = -0.07, vjust = 1.5,
         size     = 4.5, fontface = "bold"
       ) +

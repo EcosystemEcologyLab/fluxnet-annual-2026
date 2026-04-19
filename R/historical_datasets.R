@@ -93,11 +93,13 @@ DATASET_DISPLAY_LABELS <- c(
 #' # $shuttle [1] 672
 #' }
 load_historical_site_lists <- function(
-  shuttle_snapshot = NULL,
-  marconi_path     = "data/lists/Marconi_to_Modern_SiteIDs.xlsx",
-  la_thuile_path   = "data/snapshots/sites_la_thuile_clean.csv",
-  fluxnet2015_path = "data/snapshots/sites_fluxnet2015_clean.csv",
-  long_record_path = "data/snapshots/long_record_site_candidates_gez_kg.csv"
+  shuttle_snapshot      = NULL,
+  marconi_path          = "data/lists/Marconi_to_Modern_SiteIDs.xlsx",
+  la_thuile_path        = "data/snapshots/sites_la_thuile_clean.csv",
+  fluxnet2015_path      = "data/snapshots/sites_fluxnet2015_clean.csv",
+  long_record_path      = "data/snapshots/long_record_site_candidates_gez_kg.csv",
+  la_thuile_xlsx_path   = "data/lists/LaThuileList.xlsx",
+  fluxnet2015_xlsx_path = "data/lists/FLUXNET2015.xlsx"
 ) {
   for (pkg in c("countrycode", "readxl", "dplyr", "readr")) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -256,6 +258,51 @@ load_historical_site_lists <- function(
       "in_shuttle", "un_subregion", "dataset"
     )
 
+  # --- Compute site-years per dataset ------------------------------------------
+  # Marconi: sum of (last_year - first_year + 1) from the raw data
+  marconi_sy <- as.integer(sum(
+    marconi_raw$last_year - marconi_raw$first_year + 1L,
+    na.rm = TRUE
+  ))
+
+  # La Thuile: count 1s across year indicator columns in raw xlsx
+  la_thuile_sy <- tryCatch({
+    lt_xlsx   <- readxl::read_excel(la_thuile_xlsx_path)
+    yr_cols   <- names(lt_xlsx)[grepl("^\\d{4}$", names(lt_xlsx))]
+    as.integer(sum(as.matrix(lt_xlsx[, yr_cols]), na.rm = TRUE))
+  }, error = function(e) {
+    message("site-years: could not read ", la_thuile_xlsx_path,
+            " \u2014 ", conditionMessage(e))
+    NA_integer_
+  })
+
+  # FLUXNET2015: count non-NA cells across two-digit year columns in raw xlsx.
+  # Column names are "91 ", "92 ", ..., "14 " where the trailing space is a
+  # non-breaking space (U+00A0). Match with ^[0-9]{2} to avoid \s vs \xa0 issue.
+  fluxnet2015_sy <- tryCatch({
+    fx_xlsx <- readxl::read_excel(fluxnet2015_xlsx_path)
+    yr_cols <- names(fx_xlsx)[grepl("^[0-9]{2}", names(fx_xlsx))]
+    as.integer(sum(!is.na(as.matrix(fx_xlsx[, yr_cols]))))
+  }, error = function(e) {
+    message("site-years: could not read ", fluxnet2015_xlsx_path,
+            " \u2014 ", conditionMessage(e))
+    NA_integer_
+  })
+
+  # Shuttle: sum of (last_year - first_year + 1) for all sites in snapshot
+  shuttle_sy <- as.integer(sum(
+    shuttle_snap$last_year - shuttle_snap$first_year + 1L,
+    na.rm = TRUE
+  ))
+
+  site_years_vec <- c(
+    marconi     = marconi_sy,
+    la_thuile   = la_thuile_sy,
+    fluxnet2015 = fluxnet2015_sy,
+    shuttle     = shuttle_sy
+  )
+
+  # --- Assemble list -----------------------------------------------------------
   site_lists <- list(
     marconi     = marconi,
     la_thuile   = la_thuile,
@@ -263,18 +310,21 @@ load_historical_site_lists <- function(
     shuttle     = shuttle_full
   )
 
+  attr(site_lists, "site_years") <- site_years_vec
+
   # --- Print summary table ----------------------------------------------------
   cat("\n--- Historical dataset summary ---\n")
-  cat(sprintf("  %-16s %6s %12s %12s\n",
-              "Dataset", "Total", "In Shuttle", "Fallback meta"))
-  cat(strrep("-", 52), "\n")
+  cat(sprintf("  %-16s %6s %12s %12s %12s\n",
+              "Dataset", "Total", "In Shuttle", "Fallback", "Site Years"))
+  cat(strrep("-", 66), "\n")
   for (nm in names(site_lists)) {
     df         <- site_lists[[nm]]
     n_total    <- nrow(df)
     n_in       <- sum(df$in_shuttle, na.rm = TRUE)
     n_fallback <- n_total - n_in
-    cat(sprintf("  %-16s %6d %12d %12d\n",
-                nm, n_total, n_in, n_fallback))
+    n_sy       <- site_years_vec[[nm]]
+    cat(sprintf("  %-16s %6d %12d %12d %12d\n",
+                nm, n_total, n_in, n_fallback, n_sy))
   }
   cat("\n")
 

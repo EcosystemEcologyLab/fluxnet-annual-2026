@@ -256,10 +256,10 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #' snapshot year so that scales are comparable across panels.
 #'
 #' Returns a named list with two layout variants:
-#' - **`vA`**: four panels stacked in a single column (oldest on top). X axis
+#' - **`vA`**: three panels stacked in a single column (oldest on top). X axis
 #'   on the bottom panel only; y axis title "Sites" on the vertically centred
 #'   panel only; snapshot year as a right-aligned strip title per panel.
-#' - **`vB`**: four panels in a single row (oldest on left). Y axis on the
+#' - **`vB`**: three panels in a single row (oldest on left). Y axis on the
 #'   leftmost panel only; x axis title on the horizontally centred panel only;
 #'   snapshot year as a centred title per panel.
 #'
@@ -269,8 +269,8 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #'
 #' @param metadata Data frame. Snapshot CSV (one row per site) with columns
 #'   `site_id`, `first_year`, and `last_year`.
-#' @param years Integer vector of length 4. Snapshot years (default
-#'   `c(2010, 2015, 2020, 2025)`).
+#' @param years Integer vector of length 3. Snapshot years (default
+#'   `c(2007, 2015, 2025)`).
 #' @param active_threshold Integer. "Functionally active" if
 #'   `last_year >= snapshot_year - active_threshold` (default `4`).
 #'
@@ -285,7 +285,7 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #' print(figs$vB)
 #' }
 fig_network_duration_profile <- function(metadata,
-                                         years = c(2010, 2015, 2020, 2025),
+                                         years = c(2007, 2015, 2025), # Snapshot years correspond to major FLUXNET data releases: La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
                                          active_threshold = 4L) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
     stop(

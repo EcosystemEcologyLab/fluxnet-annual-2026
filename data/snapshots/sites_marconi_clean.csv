@@ -1,0 +1,36 @@
+site_id,marconi_code,marconi_name,location_lat,location_long,igbp,dataset,coords_source
+UK-Gri,AB,"Griffin, Aberfeldy, Scotland",56.60721969604492,-3.798059940338135,ENF,Marconi,marconi_xlsx
+US-Atq,AT,"Atqasuk, Alaska",70.46959686279297,-157.4089965820312,WET,Marconi,marconi_xlsx
+US-Brw,BA/BW,"Barrow, Alaska",71.32250213623047,-156.6259002685547,WET,Marconi,marconi_xlsx
+US-HVa,HP,"Happy Valley, Alaska",69.13330078125,-148.8329925537109,WET,Marconi,marconi_xlsx
+US-Blo,BL,"Blodgett Forest, California",38.89519882202148,-120.6327514648438,ENF,Marconi,marconi_xlsx
+US-NR1,NW/NR,"Niwot Ridge Forest, Colorado",40.03290176391602,-105.5459976196289,ENF,Marconi,shuttle_snapshot
+BE-Bra,BR,Brasschaat (De Inslag Forest),51.30920028686523,4.520559787750244,MF,Marconi,shuttle_snapshot
+US-Bo1,BV/BN,"Bondville, Illinois",40.00619888305664,-88.29039764404297,CRO,Marconi,marconi_xlsx
+IT-Cpz,CP,Castelporziano,41.7052001953125,12.37609958648682,EBF,Marconi,marconi_xlsx
+US-Dk3,DU,"Duke Forest - loblolly pine, NC",35.97819900512695,-79.09420013427734,ENF,Marconi,shuttle_snapshot
+SE-Fla,FL,"Flakaliden, Sweden",64.11280059814453,19.45689964294434,ENF,Marconi,marconi_xlsx
+IS-Gun,GU,"Gunnarsholt, Iceland",63.83330154418945,-20.21669960021973,DBF,Marconi,marconi_xlsx
+FR-Hes,HE,"Hesse Forest, Sarrebourg",48.67419815063477,7.064620018005371,DBF,Marconi,shuttle_snapshot
+US-Ho1,HL,"Howland Forest (main tower), Maine",45.2041015625,-68.74019622802734,ENF,Marconi,marconi_xlsx
+US-Ha1,HV/HF,"Harvard Forest, Massachusetts",42.53779983520508,-72.17150115966797,DBF,Marconi,shuttle_snapshot
+FI-Hyy,HY,"Hyytiala, Finland",61.8474006652832,24.2947998046875,ENF,Marconi,shuttle_snapshot
+CA-Ojp,JP,"Jack Pine, Saskatchewan",53.91630172729492,-104.6920013427734,ENF,Marconi,marconi_xlsx
+NL-Loo,LO,"Loobos, Netherlands",52.16790008544922,5.743959903717041,ENF,Marconi,shuttle_snapshot
+US-LWW,LW,"Little Washita Watershed, Oklahoma",34.96039962768555,-97.97889709472656,GRA,Marconi,marconi_xlsx
+BR-Ma2,MA/MN,"Manaus - ZF2 K34, Brazil",-2.609100103378296,-60.20930099487305,EBF,Marconi,shuttle_snapshot
+US-Me2,ME,"Metolius - mature ponderosa pine, OR",44.45230102539062,-121.5574035644531,ENF,Marconi,marconi_xlsx
+CA-Obs,NB/OBS,BOREAS NSA - Old Black Spruce,53.98720169067383,-105.1179962158203,ENF,Marconi,marconi_xlsx
+SE-Nor,NO,"Norunda, Sweden",60.08649826049805,17.4795036315918,ENF,Marconi,shuttle_snapshot
+US-Pon,PO,"Ponca City/Shidler, Oklahoma",36.76670074462891,-97.13330078125,CRO,Marconi,marconi_xlsx
+US-SO2,Sko,"Sky Oaks, Old Stand, California",33.3739013671875,-116.6228866577148,CSH,Marconi,marconi_xlsx
+US-SO3,Sky,"Sky Oaks, Young Stand, California",33.37720108032227,-116.622688293457,CSH,Marconi,marconi_xlsx
+DK-Sor,SO,"Soroe, LilleBogeskov, Denmark",55.48690032958984,11.64579963684082,DBF,Marconi,shuttle_snapshot
+DE-Tha,TH,"Tharandt, Anchor Station, Germany",50.96360015869141,13.5669002532959,ENF,Marconi,shuttle_snapshot
+US-Upa,UP,"Upad, Alaska",70.28150177001953,-148.8849945068359,WET,Marconi,marconi_xlsx
+BE-Vie,VI/VB,"Vielsalm, Belgium",50.30550003051758,5.996829986572266,MF,Marconi,shuttle_snapshot
+US-WBW,WB,"Walker Branch Watershed, Tennessee",35.95880126953125,-84.28739929199219,DBF,Marconi,marconi_xlsx
+DE-Bay,WE,"Bayreuth, Waldstein/WeidenBrunnen",50.14189910888672,11.86690044403076,ENF,Marconi,marconi_xlsx
+US-PFa,WL,"Park Falls/WLEF, Wisconsin",45.94589996337891,-90.27230072021484,MF,Marconi,marconi_xlsx
+US-WCr,WC,"Willow Creek, Wisconsin",45.80590057373047,-90.07990264892578,DBF,Marconi,shuttle_snapshot
+US-Wrc,WR,"Wind River Crane Site, Washington",45.82049942016602,-121.9520034790039,ENF,Marconi,marconi_xlsx

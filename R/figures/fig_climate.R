@@ -182,10 +182,10 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
       oob     = scales::squish,
       name    = flux_label,
       guide   = ggplot2::guide_colorbar(
-        barwidth       = 8,
-        barheight      = 0.7,
         title.position = "top",
-        title.hjust    = 0.5
+        barwidth       = 15,
+        barheight      = 0.8,
+        direction      = "horizontal"
       )
     ) +
     # Individual site locations
@@ -450,10 +450,10 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
       oob     = scales::squish,
       name    = flux_label,
       guide   = ggplot2::guide_colorbar(
-        barwidth       = 8,
-        barheight      = 0.7,
         title.position = "top",
-        title.hjust    = 0.5,
+        barwidth       = 15,
+        barheight      = 0.8,
+        direction      = "horizontal",
         title.theme    = ggtext::element_markdown()
       )
     ) +

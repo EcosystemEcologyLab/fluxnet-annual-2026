@@ -109,6 +109,79 @@ Contacts: Danielle Christianson, Dario Papale
 
 ---
 
+## Section 6 — MM data structure: dual ERA5/FLUXMET rows; only 11.4% of rows carry valid NEE
+
+**Discovered:** 2026-04-19 during `compute_site_year_presence()` implementation.
+
+### What was found
+
+The monthly (MM) processed data (`flux_data_converted_mm.rds`) contains **two `dataset`
+values per site per month**: `ERA5` and `FLUXMET`. Each calendar month therefore appears
+**twice** for most sites — once for ERA5 climate variables (TA, SW\_IN, VPD, P, etc.)
+and once for FLUXMET flux variables (NEE, GPP, LE, H, etc.).
+
+Consequence: only 11.4% of MM rows have a non-NA `NEE_VUT_REF`:
+
+```
+Total MM rows:         422,631
+NEE_VUT_REF non-NA:     48,066  (11.4%)
+NEE_VUT_REF NA:        374,565  (88.6%)
+```
+
+**Example — US-Ha1 (948 rows, 540 unique dates):**
+
+| dataset | rows | date range | NEE non-NA |
+|---|---|---|---|
+| ERA5    | 540  | 1981-01 – 2025-12 | 0   |
+| FLUXMET | 408  | 1991-01 – 2025-12 | 396 |
+
+ERA5 rows span the full ERA5 record (back to 1981); FLUXMET rows begin only when the
+tower was first commissioned. ERA5 rows carry `NA` for all flux variables — they exist
+solely to provide climate forcing.
+
+### Why this matters for `compute_site_year_presence()`
+
+`compute_site_year_presence()` (added 2026-04-19 in `R/utils.R`) groups MM data by
+`site_id × year` and counts rows with non-NA `NEE_VUT_REF`. Because ERA5 rows are all-NA
+for NEE, they do not inflate the valid-month count. Spot-check of US-Ha1 confirmed the
+function returns correct per-year counts (396 valid months, active in all years 1991–2025).
+
+However, the following questions have **not been fully verified** before the presence CSV
+can be treated as authoritative input to `is_functionally_active()`:
+
+1. **Are the 44 MM zero-NEE sites the same as the 142 YY zero-NEE sites (Section 3)?**
+   It is not confirmed whether MM and YY gap patterns are consistent across sites.
+
+2. **Do all 672 sites have FLUXMET rows, or only ERA5 rows for some?**
+   44 sites have zero non-NA NEE across all MM rows. It is not confirmed whether these
+   are sites with no FLUXMET download vs sites where `NEE_VUT_REF` is genuinely absent
+   (sub-annual campaign towers, 15-day gap rule, etc.).
+
+3. **Is the implicit ERA5-NA assumption safe to rely on?**
+   The current implementation does not filter to `dataset == "FLUXMET"`. It is correct
+   now because ERA5 rows are all-NA for NEE, but fragile: if any future pipeline stage
+   adds non-NA values to ERA5 rows, those months would be incorrectly counted as valid.
+
+### Current state
+
+`data/snapshots/site_year_data_presence.csv` was committed on 2026-04-19 (commit c6d186b).
+It yields **373 functionally active sites for 2025** vs 431 from the old `last_year >= 2021`
+definition. The 58-site difference has not been audited to confirm it reflects genuine data
+currency gaps rather than ERA5/FLUXMET row-structure artefacts.
+
+### Action needed
+
+- [ ] Cross-check the 44 zero-NEE MM sites against the 142 zero-NEE YY sites (Section 3)
+      to confirm MM and YY gaps are consistent.
+- [ ] Verify whether each of the 44 sites has FLUXMET rows or only ERA5 rows in MM data.
+- [ ] Add `dataset == "FLUXMET"` filter to `compute_site_year_presence()` to make intent
+      explicit and guard against future ERA5 column changes.
+- [ ] Recompute and recommit `site_year_data_presence.csv` after the filter is added.
+- [ ] Audit a sample of the 58 sites that lost active status under the new definition to
+      confirm these are genuine data-currency differences, not filtering artefacts.
+
+---
+
 ## Future enhancements
 
 ### FAO GEZ shapefile

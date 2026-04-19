@@ -90,7 +90,8 @@ library(colorspace)
 #' @export
 fig_whittaker_hexbin_era5 <- function(data_yy,
                                       flux_var    = "NEE_VUT_REF",
-                                      year_cutoff = NULL) {
+                                      year_cutoff = NULL,
+                                      metadata    = NULL) {
 
   if (!requireNamespace("hexbin", quietly = TRUE)) {
     stop(
@@ -205,15 +206,43 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
     fluxnet_theme() +
     ggplot2::theme(legend.position = "bottom")
 
-  # --- year annotation (inset top-left, used for snapshot panels) -------------
+  # --- year annotation (inset top-left) and N/site-years (top-right) ----------
   if (!is.null(year_cutoff)) {
-    p <- p + ggplot2::annotate(
-      "text",
-      x        = -Inf, y = Inf,
-      label    = as.character(year_cutoff),
-      hjust    = -0.1, vjust = 1.5,
-      size     = 4, fontface = "bold"
-    )
+    # Compute site-years from metadata when available
+    n_site_years <- NA_integer_
+    if (!is.null(metadata) &&
+        all(c("site_id", "first_year", "last_year") %in% names(metadata))) {
+      meta_q <- metadata |>
+        dplyr::filter(
+          !is.na(.data$first_year), !is.na(.data$last_year),
+          as.integer(.data$first_year) <= year_cutoff
+        )
+      n_meta       <- nrow(meta_q)
+      n_site_years <- as.integer(sum(
+        pmin(as.integer(meta_q$last_year), year_cutoff) -
+          as.integer(meta_q$first_year) + 1L,
+        na.rm = TRUE
+      ))
+    } else {
+      n_meta <- n_sites
+    }
+
+    p <- p +
+      ggplot2::annotate(
+        "text", x = -Inf, y = Inf,
+        label = as.character(year_cutoff),
+        hjust = -0.1, vjust = 1.5,
+        size  = 4, fontface = "bold"
+      ) +
+      ggplot2::annotate(
+        "text", x = Inf, y = Inf,
+        label = if (!is.na(n_site_years))
+          paste0("n = ", n_meta, "\nsite-years = ", n_site_years)
+        else
+          paste0("n = ", n_meta),
+        hjust = 1.1, vjust = 1.5,
+        size  = 3.5
+      )
   }
 
   p
@@ -472,15 +501,41 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
     ) +
     fluxnet_theme()
 
-  # --- year annotation (inset top-left, used for snapshot panels) -------------
+  # --- year annotation (inset top-left) and N/site-years (top-right) ----------
   if (!is.null(year_cutoff)) {
-    p <- p + ggplot2::annotate(
-      "text",
-      x        = -Inf, y = Inf,
-      label    = as.character(year_cutoff),
-      hjust    = -0.1, vjust = 1.5,
-      size     = 4, fontface = "bold"
-    )
+    n_site_years <- NA_integer_
+    n_meta       <- n_sites
+    if (!is.null(metadata) &&
+        all(c("site_id", "first_year", "last_year") %in% names(metadata))) {
+      meta_q <- metadata |>
+        dplyr::filter(
+          !is.na(.data$first_year), !is.na(.data$last_year),
+          as.integer(.data$first_year) <= year_cutoff
+        )
+      n_meta       <- nrow(meta_q)
+      n_site_years <- as.integer(sum(
+        pmin(as.integer(meta_q$last_year), year_cutoff) -
+          as.integer(meta_q$first_year) + 1L,
+        na.rm = TRUE
+      ))
+    }
+
+    p <- p +
+      ggplot2::annotate(
+        "text", x = -Inf, y = Inf,
+        label = as.character(year_cutoff),
+        hjust = -0.1, vjust = 1.5,
+        size  = 4, fontface = "bold"
+      ) +
+      ggplot2::annotate(
+        "text", x = Inf, y = Inf,
+        label = if (!is.na(n_site_years))
+          paste0("n = ", n_meta, "\nsite-years = ", n_site_years)
+        else
+          paste0("n = ", n_meta),
+        hjust = 1.1, vjust = 1.5,
+        size  = 3.5
+      )
   }
 
   p
@@ -532,7 +587,8 @@ fig_whittaker_hexbin <- function(data_yy,
     fig_whittaker_hexbin_era5(
       data_yy     = data_yy,
       flux_var    = flux_var,
-      year_cutoff = year_cutoff
+      year_cutoff = year_cutoff,
+      metadata    = metadata
     )
   } else {
     fig_whittaker_hexbin_worldclim(

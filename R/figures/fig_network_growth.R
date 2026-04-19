@@ -256,10 +256,10 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #' snapshot year so that scales are comparable across panels.
 #'
 #' Returns a named list with two layout variants:
-#' - **`vA`**: three panels stacked in a single column (oldest on top). X axis
+#' - **`vA`**: four panels stacked in a single column (oldest on top). X axis
 #'   on the bottom panel only; y axis title "Sites" on the vertically centred
-#'   panel only; snapshot year as a right-aligned strip title per panel.
-#' - **`vB`**: three panels in a single row (oldest on left). Y axis on the
+#'   panel only; snapshot year as a bold inset annotation per panel.
+#' - **`vB`**: four panels in a single row (oldest on left). Y axis on the
 #'   leftmost panel only; x axis title on the horizontally centred panel only;
 #'   snapshot year as a centred title per panel.
 #'
@@ -269,8 +269,8 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #'
 #' @param metadata Data frame. Snapshot CSV (one row per site) with columns
 #'   `site_id`, `first_year`, and `last_year`.
-#' @param years Integer vector of length 3. Snapshot years (default
-#'   `c(2007, 2015, 2025)`).
+#' @param years Integer vector of length 4. Snapshot years (default
+#'   `c(2000, 2007, 2015, 2025)`).
 #' @param active_threshold Integer. "Functionally active" if
 #'   `last_year >= snapshot_year - active_threshold` (default `4`).
 #'
@@ -285,7 +285,7 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #' print(figs$vB)
 #' }
 fig_network_duration_profile <- function(metadata,
-                                         years = c(2007, 2015, 2025), # Snapshot years correspond to major FLUXNET data releases: La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+                                         years = c(2000, 2007, 2015, 2025), # Snapshot years: ~Marconi (2000), La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
                                          active_threshold = 4L) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
     stop(
@@ -392,7 +392,12 @@ fig_network_duration_profile <- function(metadata,
                          base_size        = 12,
                          legend_pos       = "bottom",
                          legend_text_size = NULL) {
-    n_sites <- nrow(pd)
+    n_sites      <- nrow(pd)
+    n_site_years <- sum(
+      pmin(pd$last_year, yr) - pd$first_year + 1L,
+      na.rm = TRUE
+    )
+    stats_lbl <- paste0("n = ", n_sites, "\nsite-years = ", n_site_years)
 
     p <- ggplot2::ggplot(
       pd,
@@ -455,6 +460,14 @@ fig_network_duration_profile <- function(metadata,
       )
     }
 
+    # Top-right annotation: n and site-years for this snapshot year
+    p <- p + ggplot2::annotate(
+      "text", x = Inf, y = Inf,
+      label = stats_lbl,
+      hjust = 1.1, vjust = 1.5,
+      size  = 4
+    )
+
     p
   }
 
@@ -480,7 +493,7 @@ fig_network_duration_profile <- function(metadata,
       show_y_title     = FALSE,          # shared Y label added outside stack
       title_hjust      = 1,
       mar              = c(0L, 5L, 0L, 5L),   # zero top/bottom; panels touch
-      inset_label      = paste0(years[[i]], " (n=", n_sites, ")"),
+      inset_label      = as.character(years[[i]]),
       base_size        = vA_base_size,
       legend_pos       = if (is_top) c(0.75, 0.85) else "none",
       legend_text_size = if (is_top) 14L else NULL

@@ -481,9 +481,8 @@ fig_map_nee_delta <- function(data_yy,
 #'
 #' @export
 fig_map_subregion_sites <- function(metadata,
-                                     # Snapshot years correspond to major FLUXNET data releases:
-                                     # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
-                                     year_cutoffs = c(2007L, 2015L, 2025L),
+                                     # Snapshot years: ~Marconi (2000), La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+                                     year_cutoffs = c(2000L, 2007L, 2015L, 2025L),
                                      metric       = c("count", "density"),
                                      add_dots     = TRUE) {
 
@@ -584,11 +583,15 @@ fig_map_subregion_sites <- function(metadata,
 
   # --- One panel per year cutoff ----------------------------------------------
   panels <- lapply(year_cutoffs, function(yr) {
-    counts <- sites_tbl |>
-      dplyr::filter(.data$first_year <= yr) |>
-      dplyr::count(.data$subregion, name = "n_sites")
+    active_sites <- sites_tbl |> dplyr::filter(.data$first_year <= yr)
+    counts <- dplyr::count(active_sites, .data$subregion, name = "n_sites")
 
-    n_active  <- sum(counts$n_sites)
+    n_active     <- nrow(active_sites)
+    n_site_years <- sum(
+      pmin(as.integer(active_sites$last_year), yr) -
+        as.integer(active_sites$first_year) + 1L,
+      na.rm = TRUE
+    )
     plot_sub  <- dplyr::left_join(subregions, counts, by = "subregion")
 
     plot_sub$fill_val <- if (metric == "density") {
@@ -643,7 +646,13 @@ fig_map_subregion_sites <- function(metadata,
         else
           NULL
       ) +
-      ggplot2::coord_sf(expand = FALSE)
+      ggplot2::coord_sf(expand = FALSE) +
+      ggplot2::annotate(
+        "text", x = Inf, y = Inf,
+        label = paste0("n = ", n_active, "\nsite-years = ", n_site_years),
+        hjust = 1.1, vjust = 1.5,
+        size  = 3.5
+      )
 
     if (add_dots) {
       active_sites <- sites_tbl |>
@@ -681,9 +690,8 @@ fig_map_subregion_sites <- function(metadata,
 #' @return A \pkg{patchwork} object. See \code{\link{fig_map_subregion_sites}}.
 #' @export
 fig_map_country_sites <- function(metadata,
-                                   # Snapshot years correspond to major FLUXNET data releases:
-                                   # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
-                                   year_cutoffs = c(2007L, 2015L, 2025L)) {
+                                   # Snapshot years: ~Marconi (2000), La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+                                   year_cutoffs = c(2000L, 2007L, 2015L, 2025L)) {
   .Deprecated(
     new = "fig_map_subregion_sites",
     msg = paste0(

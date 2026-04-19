@@ -14,8 +14,8 @@
 ##   7 — Long-record annual time series by continent
 ##   8 — Network growth cumulative (metadata only)
 ##   9 — Network growth annual new sites (metadata only)
-##  10 — UN subregion choropleth at 2010/2015/2020/2025 — count + density
-##  11 — Deployment duration profile at 2010/2015/2020/2025 (draft)
+##  10 — UN subregion choropleth at 2000/2007/2015/2025 — count + density
+##  11 — Deployment duration profile at 2000/2007/2015/2025 (draft)
 ##  12 — Network active proportion over time (draft)
 ##  13 — Subregion overview: map + total sites + latency (3-panel)
 ##  14 — Diagnostic timeseries by UN subregion — top 5 sites, NEE/LE/H panels
@@ -564,7 +564,7 @@ build_latitudinal_multi <- function() {
 
 # ============================================================
 # Section 4 — Whittaker biome snapshots
-# ERA5 version: three panels at year_cutoff = 2007 / 2015 / 2025,
+# ERA5 version: four panels at year_cutoff = 2000 / 2007 / 2015 / 2025,
 # assembled as vertical stack.  Uses TA_ERA / P_ERA from the processed YY
 # data — no external WorldClim data required; runs in the Codespace.
 # WorldClim version (local Mac only) is available via source = "worldclim".
@@ -574,16 +574,16 @@ build_whittaker_snapshots <- function() {
 
   tryCatch({
     data_yy <- site_data[["yy"]]$data
-    # Snapshot years correspond to major FLUXNET data releases:
-    # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
-    cutoffs <- c(2007L, 2015L, 2025L)
+    # Snapshot years: ~Marconi (2000), La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+    cutoffs <- c(2000L, 2007L, 2015L, 2025L)
 
     panels <- lapply(cutoffs, function(yr) {
       fig_whittaker_hexbin(
         data_yy     = data_yy,
         flux_var    = "NEE_VUT_REF",
         year_cutoff = yr,
-        source      = "era5"
+        source      = "era5",
+        metadata    = snapshot_meta_full
       ) + fluxnet_theme(base_size = 11)
     })
 
@@ -593,14 +593,14 @@ build_whittaker_snapshots <- function() {
                      plot.margin     = ggplot2::margin(0, 5, 0, 5))
 
     # Save review PNG
-    review_dir  <- file.path("review", "figures")
+    review_dir  <- file.path("review", "figures", "climate")
     if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
-    review_path <- file.path(review_dir, "fig_whittaker_hexbin_era5.png")
+    review_path <- file.path(review_dir, "fig_whittaker_hexbin_era5_snapshots.png")
     ggplot2::ggsave(
       review_path,
       plot   = pw,
       width  = 8,
-      height = 15,
+      height = 20,
       units  = "in",
       dpi    = 150,
       bg     = "white"
@@ -608,7 +608,7 @@ build_whittaker_snapshots <- function() {
     message("Review figure saved: ", review_path)
 
     paste0('<div class="plot-wrap">',
-           plot_to_png(pw, width = 8, height = 15),
+           plot_to_png(pw, width = 8, height = 20),
            "</div>")
   }, error = function(e) {
     no_data(paste0(
@@ -831,29 +831,29 @@ build_network_growth_annual <- function() {
 
 # ============================================================
 # Section 11 — Deployment duration profile (draft)
-# fig_network_duration_profile(): histograms of record length at three snapshot
-# years (2007/2015/2025), coloured by active/inactive status. Requires data_yy + metadata.
+# fig_network_duration_profile(): histograms of record length at four snapshot
+# years (2000/2007/2015/2025), coloured by active/inactive status.
 # ============================================================
 build_duration_profile <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
   tryCatch({
     figs <- fig_network_duration_profile(metadata = snapshot_meta_full)
-    review_dir <- file.path("review", "figures")
+    review_dir <- file.path("review", "figures", "network")
     if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
 
     path_vA <- file.path(review_dir, "fig_network_duration_profile_vA.png")
     path_vB <- file.path(review_dir, "fig_network_duration_profile_vB.png")
-    ggplot2::ggsave(path_vA, plot = figs$vA, width = 8,  height = 14,
+    ggplot2::ggsave(path_vA, plot = figs$vA, width = 8,  height = 18,
                     units = "in", dpi = 150)
-    ggplot2::ggsave(path_vB, plot = figs$vB, width = 18, height = 5,
+    ggplot2::ggsave(path_vB, plot = figs$vB, width = 24, height = 5,
                     units = "in", dpi = 150)
     message("Review figures saved: ", path_vA, " | ", path_vB)
 
     paste0(
       "<h3>Version A \u2014 stacked vertically</h3>",
-      '<div class="plot-wrap">', plot_to_png(figs$vA, width = 8,  height = 14), "</div>",
+      '<div class="plot-wrap">', plot_to_png(figs$vA, width = 8,  height = 18), "</div>",
       "<h3>Version B \u2014 side by side</h3>",
-      '<div class="plot-wrap">', plot_to_png(figs$vB, width = 18, height = 5),  "</div>"
+      '<div class="plot-wrap">', plot_to_png(figs$vB, width = 24, height = 5),  "</div>"
     )
   }, error = function(e) {
     no_data(paste0("Deployment duration profile unavailable: ", conditionMessage(e)))
@@ -888,18 +888,17 @@ build_active_proportion <- function() {
 
 # ============================================================
 # Section 10 — UN subregion choropleth
-# fig_map_subregion_sites(): count and density at 2007/2015/2025.
+# fig_map_subregion_sites(): count and density at 2000/2007/2015/2025.
 # Two separate figures (count + density) saved as review PNGs.
 # ============================================================
 build_country_map <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
 
-  review_dir <- file.path("review", "figures")
+  review_dir <- file.path("review", "figures", "maps")
   if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
 
-  # Snapshot years correspond to major FLUXNET data releases:
-  # La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
-  cutoffs <- c(2007L, 2015L, 2025L)
+  # Snapshot years: ~Marconi (2000), La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
+  cutoffs <- c(2000L, 2007L, 2015L, 2025L)
 
   make_panel <- function(metric_arg) {
     tryCatch({
@@ -909,14 +908,13 @@ build_country_map <- function() {
         metric       = metric_arg,
         add_dots     = TRUE
       )
-      review_path <- file.path(
-        review_dir,
-        paste0("fig_map_subregion_sites_", metric_arg, ".png")
-      )
-      ggplot2::ggsave(review_path, plot = p, width = 10, height = 18,
+      fname <- if (metric_arg == "count") "fig_map_country_sites.png"
+               else paste0("fig_map_subregion_sites_", metric_arg, ".png")
+      review_path <- file.path(review_dir, fname)
+      ggplot2::ggsave(review_path, plot = p, width = 10, height = 24,
                       units = "in", dpi = 150)
       message("Review figure saved: ", review_path)
-      list(html = plot_to_png(p, width = 10, height = 18), ok = TRUE)
+      list(html = plot_to_png(p, width = 10, height = 24), ok = TRUE)
     }, error = function(e) {
       list(html = no_data(paste0("Subregion choropleth (", metric_arg, ") unavailable: ",
                                  conditionMessage(e))),
@@ -951,7 +949,7 @@ message("Building Section 9 — Network growth (annual new sites) ...")
 s9 <- section(9, "Network growth \u2014 new sites per year by IGBP",
               build_network_growth_annual())
 message("Building Section 11 — Deployment duration profile ...")
-s11 <- section(11, "Deployment duration profile \u2014 record length at snapshot years (draft)",
+s11 <- section(11, "Deployment duration profile \u2014 record length at snapshot years 2000/2007/2015/2025 (draft)",
                build_duration_profile())
 message("Building Section 12 — Network active proportion ...")
 s12 <- section(12, "Network size and data currency over time (draft)",
@@ -974,7 +972,7 @@ s13 <- section(13, "Subregion overview \u2014 site counts and latency by UN subr
                  no_data(paste0("Subregion overview unavailable: ", conditionMessage(e)))
                }))
 message("Building Section 10 — UN subregion choropleth ...")
-s10 <- section(10, "UN subregion choropleth \u2014 2007\u20132015\u20132025",
+s10 <- section(10, "UN subregion choropleth \u2014 2000\u20132007\u20132015\u20132025",
                build_country_map())
 message("Building Section 4 — Whittaker biome snapshots (ERA5) ...")
 s4 <- section(4, "Whittaker biome snapshots \u2014 ERA5 climate (Codespace-safe)",

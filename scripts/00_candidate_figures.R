@@ -831,8 +831,8 @@ build_network_growth_annual <- function() {
 
 # ============================================================
 # Section 11 — Deployment duration profile (draft)
-# fig_network_duration_profile(): histograms of record length at four snapshot
-# years, coloured by active/inactive status. Requires data_yy + metadata.
+# fig_network_duration_profile(): histograms of record length at three snapshot
+# years (2007/2015/2025), coloured by active/inactive status. Requires data_yy + metadata.
 # ============================================================
 build_duration_profile <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))

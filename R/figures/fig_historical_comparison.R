@@ -223,10 +223,11 @@ fig_choropleth_datasets <- function(site_lists, add_dots = TRUE) {
 #'
 #' Fill colours encode current Shuttle activity status (assessed relative to
 #' the 2025 Shuttle snapshot regardless of panel):
-#' - **Functionally active** (blue): site is in the Shuttle AND
-#'   `last_year >= 2021`.
-#' - **Inactive / high latency** (grey): site is in the Shuttle but
-#'   `last_year < 2021`.
+#' - **Functionally active** (blue): site is in the Shuttle AND functionally
+#'   active (\u22653 months valid NEE in any year within 2022\u20132025 when
+#'   `presence_df` is supplied; `last_year >= 2021` otherwise).
+#' - **Inactive / high latency** (grey): site is in the Shuttle but not
+#'   functionally active.
 #' - **Historical only** (amber): site is not in the Shuttle.
 #'
 #' Sites without a determinable record length (non-Shuttle historical sites
@@ -234,6 +235,10 @@ fig_choropleth_datasets <- function(site_lists, add_dots = TRUE) {
 #' in the inset label.
 #'
 #' @param site_lists Named list from [load_historical_site_lists()].
+#' @param presence_df Data frame or `NULL`. Output of
+#'   [compute_site_year_presence()]. When supplied, activity status is
+#'   determined by NEE data presence (\u22653 months in the 4-year window
+#'   2022\u20132025); when `NULL`, falls back to `last_year >= 2021`.
 #'
 #' @return A patchwork of four vertically stacked panels sharing the x-axis.
 #'
@@ -244,7 +249,7 @@ fig_choropleth_datasets <- function(site_lists, add_dots = TRUE) {
 #' ggplot2::ggsave("fig_duration_all_datasets.png", p,
 #'                 width = 8, height = 14, units = "in", dpi = 150, bg = "white")
 #' }
-fig_duration_datasets <- function(site_lists) {
+fig_duration_datasets <- function(site_lists, presence_df = NULL) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
     stop("Package 'patchwork' is required.", call. = FALSE)
   }
@@ -257,16 +262,22 @@ fig_duration_datasets <- function(site_lists) {
 
   # Build per-dataset plot data (exclude NA record_length)
   plot_data <- lapply(names(site_lists), function(nm) {
-    df <- site_lists[[nm]]
+    df           <- site_lists[[nm]]
+    active_flags <- is_functionally_active(
+      df$site_id,
+      reference_year   = 2025L,
+      presence_df      = presence_df,
+      active_threshold = 4L,
+      last_year_vec    = df$last_year
+    )
     df |>
       dplyr::filter(!is.na(.data$record_length)) |>
       dplyr::mutate(
         activity = factor(
           dplyr::case_when(
-            !.data$in_shuttle                                   ~ "Historical only",
-            .data$in_shuttle & !is.na(.data$last_year) &
-              .data$last_year >= 2021L                         ~ "Functionally active",
-            TRUE                                               ~ "Inactive / high latency"
+            !.data$in_shuttle                               ~ "Historical only",
+            .data$in_shuttle & active_flags[.data$site_id] ~ "Functionally active",
+            TRUE                                            ~ "Inactive / high latency"
           ),
           levels = c("Functionally active", "Inactive / high latency",
                      "Historical only")

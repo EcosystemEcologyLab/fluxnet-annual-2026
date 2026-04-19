@@ -91,6 +91,23 @@ snapshot_meta_full <- if (length(snapshot_csv) > 0) {
   NULL
 }
 
+# Monthly NEE presence cache — used by is_functionally_active() across all
+# network growth figures. Generated from flux_data_converted_mm.rds if the
+# cached CSV is absent.
+presence_csv_path <- file.path(snapshots_dir, "site_year_data_presence.csv")
+site_year_presence <- if (file.exists(presence_csv_path)) {
+  readr::read_csv(presence_csv_path, show_col_types = FALSE)
+} else {
+  mm_path <- file.path(processed_dir, "flux_data_converted_mm.rds")
+  if (file.exists(mm_path)) {
+    message("site_year_presence: cache absent — computing from MM data ...")
+    compute_site_year_presence(readRDS(mm_path), out_path = presence_csv_path)
+  } else {
+    message("site_year_presence: MM data not found — falling back to last_year metadata.")
+    NULL
+  }
+}
+
 # Prefer converted > qc > raw for each resolution
 load_best <- function(suffix) {
   for (stage in c("converted", "qc", "raw")) {
@@ -794,8 +811,8 @@ build_timeseries_by_subregion <- function() {
 build_network_growth <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
   tryCatch({
-    p <- fig_network_growth(snapshot_meta_full)
-    review_dir <- file.path("review", "figures")
+    p <- fig_network_growth(snapshot_meta_full, presence_df = site_year_presence)
+    review_dir <- file.path("review", "figures", "network")
     if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
     review_path <- file.path(review_dir, "fig_network_growth.png")
     ggplot2::ggsave(review_path, plot = p, width = 10, height = 6,
@@ -837,7 +854,8 @@ build_network_growth_annual <- function() {
 build_duration_profile <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
   tryCatch({
-    figs <- fig_network_duration_profile(metadata = snapshot_meta_full)
+    figs <- fig_network_duration_profile(metadata     = snapshot_meta_full,
+                                         presence_df  = site_year_presence)
     review_dir <- file.path("review", "figures", "network")
     if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
 
@@ -870,10 +888,11 @@ build_active_proportion <- function() {
   if (is.null(site_data[["yy"]]))  return(no_data("No YY data available."))
   tryCatch({
     p <- fig_network_active_proportion(
-      metadata = snapshot_meta_full,
-      data_yy  = site_data[["yy"]]$data
+      metadata    = snapshot_meta_full,
+      data_yy     = site_data[["yy"]]$data,
+      presence_df = site_year_presence
     )
-    review_dir  <- file.path("review", "figures")
+    review_dir  <- file.path("review", "figures", "network")
     if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
     review_path <- file.path(review_dir, "fig_network_active_proportion.png")
     ggplot2::ggsave(review_path, plot = p, width = 10, height = 8,
@@ -883,6 +902,30 @@ build_active_proportion <- function() {
            "</div>")
   }, error = function(e) {
     no_data(paste0("Network active proportion unavailable: ", conditionMessage(e)))
+  })
+}
+
+# ============================================================
+# Section 13b — Latency by subregion (functionally active sites only)
+# fig_latency_by_subregion(): horizontal stacked bars coloured by latency bin.
+# ============================================================
+build_latency_by_subregion <- function() {
+  if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
+  tryCatch({
+    p <- fig_latency_by_subregion(
+      metadata    = snapshot_meta_full,
+      presence_df = site_year_presence
+    )
+    review_dir  <- file.path("review", "figures", "network")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_latency_by_subregion.png")
+    ggplot2::ggsave(review_path, plot = p, width = 10, height = 8,
+                    units = "in", dpi = 150, bg = "white")
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 8),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0("Latency by subregion unavailable: ", conditionMessage(e)))
   })
 }
 
@@ -958,9 +1001,10 @@ message("Building Section 13 — Subregion overview ...")
 s13 <- section(13, "Subregion overview \u2014 site counts and latency by UN subregion (2025)",
                tryCatch({
                  p <- fig_network_subregion_overview(
-                   metadata = snapshot_meta_full
+                   metadata    = snapshot_meta_full,
+                   presence_df = site_year_presence
                  )
-                 review_dir <- file.path("review", "figures")
+                 review_dir <- file.path("review", "figures", "network")
                  if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
                  review_path <- file.path(review_dir, "fig_network_subregion_overview.png")
                  ggplot2::ggsave(review_path, plot = p, width = 12, height = 10,
@@ -971,6 +1015,9 @@ s13 <- section(13, "Subregion overview \u2014 site counts and latency by UN subr
                }, error = function(e) {
                  no_data(paste0("Subregion overview unavailable: ", conditionMessage(e)))
                }))
+message("Building Section 13b — Latency by subregion ...")
+s13b <- section("13b", "Latency by subregion \u2014 functionally active sites (2025)",
+                build_latency_by_subregion())
 message("Building Section 10 — UN subregion choropleth ...")
 s10 <- section(10, "UN subregion choropleth \u2014 2000\u20132007\u20132015\u20132025",
                build_country_map())
@@ -1007,7 +1054,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s10, s4, s5, s6, s7, s14, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s13b, s10, s4, s5, s6, s7, s14, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

@@ -122,3 +122,138 @@ write_log_row <- function(path, row) {
     utils::write.csv(row, path, row.names = FALSE, quote = TRUE)
   }
 }
+
+# ---- Data-presence helpers ---------------------------------------------------
+
+#' Compute monthly NEE data presence per site per year
+#'
+#' Groups monthly flux data by site and year, counts months with non-NA
+#' `NEE_VUT_REF`, and flags each site-year as having sufficient data.
+#' The result is saved to `out_path` for caching and used by
+#' [is_functionally_active()] to assess data currency without relying
+#' solely on snapshot `last_year` metadata.
+#'
+#' @param data_mm Data frame. Monthly (MM resolution) flux data with columns
+#'   `site_id`, `DATE` (Date class, first day of each month), and
+#'   `NEE_VUT_REF` (numeric, NA-filled where data are absent).
+#' @param min_months Integer. Minimum number of months with non-NA
+#'   `NEE_VUT_REF` for a site-year to be flagged `has_data = TRUE`
+#'   (default `3L`).
+#' @param out_path Character. Path to write the output CSV
+#'   (default `"data/snapshots/site_year_data_presence.csv"`).
+#'
+#' @return Data frame with columns `site_id` (character), `year` (integer),
+#'   `n_months_valid` (integer), `has_data` (logical). Also writes
+#'   this data frame to `out_path`.
+#'
+#' @examples
+#' \dontrun{
+#' mm       <- readRDS("data/processed/flux_data_converted_mm.rds")
+#' presence <- compute_site_year_presence(mm)
+#' head(presence)
+#' }
+compute_site_year_presence <- function(data_mm,
+                                        min_months = 3L,
+                                        out_path   = "data/snapshots/site_year_data_presence.csv") {
+  for (pkg in c("dplyr", "readr")) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop("Package '", pkg, "' is required. Install with: install.packages('",
+           pkg, "')", call. = FALSE)
+    }
+  }
+
+  required_cols <- c("site_id", "DATE", "NEE_VUT_REF")
+  missing_cols  <- setdiff(required_cols, names(data_mm))
+  if (length(missing_cols) > 0L) {
+    stop(
+      "compute_site_year_presence: data_mm missing required column(s): ",
+      paste(missing_cols, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  presence <- data_mm |>
+    dplyr::mutate(year = as.integer(format(.data$DATE, "%Y"))) |>
+    dplyr::group_by(.data$site_id, .data$year) |>
+    dplyr::summarise(
+      n_months_valid = as.integer(sum(!is.na(.data$NEE_VUT_REF))),
+      .groups        = "drop"
+    ) |>
+    dplyr::mutate(has_data = .data$n_months_valid >= as.integer(min_months))
+
+  readr::write_csv(presence, out_path)
+  message(
+    "compute_site_year_presence: ",
+    sum(presence$has_data), " / ", nrow(presence),
+    " site-years have \u2265", min_months, " valid NEE months. ",
+    "Written to: ", out_path
+  )
+
+  presence
+}
+
+#' Test whether sites are functionally active at a reference year
+#'
+#' A site is *functionally active* in reference year `Y` if it has valid
+#' NEE data (at least `min_months` non-NA `NEE_VUT_REF` months, as recorded
+#' in `presence_df`) in at least one year within the window
+#' `[Y − (active_threshold − 1), Y]`.
+#'
+#' When `presence_df` is `NULL` the function falls back to the simpler
+#' metadata-based test: `last_year >= reference_year − active_threshold`.
+#' Pass `last_year_vec` (parallel to `site_ids`) to enable the fallback.
+#'
+#' @param site_ids Character vector of FLUXNET site IDs to assess.
+#' @param reference_year Integer. The reference year `Y`.
+#' @param presence_df Data frame or `NULL`. Output of
+#'   [compute_site_year_presence()], with columns `site_id`, `year`,
+#'   and `has_data`. When `NULL`, the `last_year_vec` fallback is used.
+#' @param active_threshold Integer. Window length: sites are assessed over
+#'   `[reference_year − (active_threshold − 1), reference_year]`
+#'   (default `4L`).
+#' @param last_year_vec Integer vector (parallel to `site_ids`). Required
+#'   when `presence_df` is `NULL`; ignored otherwise.
+#'
+#' @return Named logical vector (names = `site_ids`). `TRUE` if the site is
+#'   functionally active at `reference_year`.
+#'
+#' @examples
+#' \dontrun{
+#' presence <- readr::read_csv("data/snapshots/site_year_data_presence.csv")
+#' meta     <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260414T153648.csv")
+#' flags    <- is_functionally_active(meta$site_id, 2025L, presence)
+#' mean(flags)   # fraction of sites active
+#' }
+is_functionally_active <- function(site_ids,
+                                    reference_year,
+                                    presence_df      = NULL,
+                                    active_threshold = 4L,
+                                    last_year_vec    = NULL) {
+  yr     <- as.integer(reference_year)
+  thresh <- as.integer(active_threshold)
+
+  # Fallback: metadata-only test (last_year >= reference_year - active_threshold)
+  if (is.null(presence_df)) {
+    if (is.null(last_year_vec)) {
+      stop(
+        "is_functionally_active: supply either presence_df or last_year_vec",
+        call. = FALSE
+      )
+    }
+    result        <- as.integer(last_year_vec) >= yr - thresh
+    names(result) <- site_ids
+    return(result)
+  }
+
+  # NEE presence-based test: window = [Y - (threshold - 1), Y]
+  window <- seq.int(yr - (thresh - 1L), yr)
+
+  # Sites with at least one window year flagged has_data == TRUE
+  active_ids <- unique(
+    presence_df$site_id[presence_df$year %in% window & presence_df$has_data]
+  )
+
+  result        <- site_ids %in% active_ids
+  names(result) <- site_ids
+  result
+}

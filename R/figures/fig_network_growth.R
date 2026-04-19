@@ -71,7 +71,7 @@ source("R/plot_constants.R")
 #' p <- fig_network_growth(meta)
 #' print(p)
 #' }
-fig_network_growth <- function(metadata, geo_level = "global") {
+fig_network_growth <- function(metadata, geo_level = "global", presence_df = NULL) {
   if (!geo_level %in% "global") {
     message(
       "fig_network_growth: geo_level = '", geo_level, "' is not yet supported. ",
@@ -95,17 +95,26 @@ fig_network_growth <- function(metadata, geo_level = "global") {
   year_max  <- max(sites$last_year,  na.rm = TRUE)
   all_years <- seq(year_min, year_max)
 
-  # ---- % functionally active: sites with last_year >= (year - 4) ------------
+  # ---- % functionally active: NEE presence or last_year fallback -------------
   # Denominator: all sites established by each year (first_year <= year).
-  # Numerator:   those that also have last_year >= (year - 4), i.e. submitted
-  #              data within the preceding 4 years.
+  # Numerator:   those functionally active per is_functionally_active().
   active_df <- data.frame(
     year       = all_years,
     pct_active = vapply(all_years, function(yr) {
-      n_total  <- sum(sites$first_year <= yr, na.rm = TRUE)
-      n_active <- sum(sites$first_year <= yr &
-                      sites$last_year  >= (yr - 4L), na.rm = TRUE)
-      if (n_total == 0L) NA_real_ else 100 * n_active / n_total
+      established <- sites$first_year <= yr
+      n_total     <- sum(established, na.rm = TRUE)
+      if (n_total == 0L) return(NA_real_)
+      n_active <- sum(
+        is_functionally_active(
+          sites$site_id[established],
+          reference_year   = yr,
+          presence_df      = presence_df,
+          active_threshold = 4L,
+          last_year_vec    = sites$last_year[established]
+        ),
+        na.rm = TRUE
+      )
+      100 * n_active / n_total
     }, numeric(1L))
   )
   # Map 0–100 % onto primary-axis range 480–680 so the active line sits in the
@@ -286,7 +295,8 @@ fig_network_growth_annual <- function(metadata, geo_level = "global") {
 #' }
 fig_network_duration_profile <- function(metadata,
                                          years = c(2000, 2007, 2015, 2025), # Snapshot years: ~Marconi (2000), La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
-                                         active_threshold = 4L) {
+                                         active_threshold = 4L,
+                                         presence_df      = NULL) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
     stop(
       "Package 'patchwork' is required for fig_network_duration_profile(). ",
@@ -348,8 +358,12 @@ fig_network_duration_profile <- function(metadata,
   )
   outer_subtitle <- paste0(
     "Record length = snapshot_year \u2212 first_year. ",
-    "Functionally active = last_year \u2265 snapshot_year \u2212 ",
-    active_threshold, "."
+    if (!is.null(presence_df))
+      paste0("Functionally active = \u22653 months valid NEE in any year within ",
+             "[y\u2212", active_threshold - 1L, ", y].")
+    else
+      paste0("Functionally active = last_year \u2265 snapshot_year \u2212 ",
+             active_threshold, ".")
   )
 
   n_years      <- length(years)
@@ -357,13 +371,20 @@ fig_network_duration_profile <- function(metadata,
 
   # --- per-panel data ---------------------------------------------------------
   panel_datasets <- lapply(years, function(yr) {
-    site_profile |>
-      dplyr::filter(.data$first_year <= yr) |>
+    pd <- site_profile |> dplyr::filter(.data$first_year <= yr)
+    active_flags <- is_functionally_active(
+      pd$site_id,
+      reference_year   = yr,
+      presence_df      = presence_df,
+      active_threshold = active_threshold,
+      last_year_vec    = pd$last_year
+    )
+    pd |>
       dplyr::mutate(
         record_length = yr - .data$first_year,
         activity = factor(
           dplyr::if_else(
-            .data$last_year >= yr - active_threshold,
+            active_flags[.data$site_id],
             "Functionally active",
             "Inactive / high latency"
           ),
@@ -600,7 +621,8 @@ fig_network_duration_profile <- function(metadata,
 #' }
 fig_network_subregion_overview <- function(metadata,
                                            current_year     = 2026L,
-                                           active_threshold = 4L) {
+                                           active_threshold = 4L,
+                                           presence_df      = NULL) {
   for (pkg in c("patchwork", "countrycode")) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       stop("Package '", pkg, "' is required. Install with: install.packages('",
@@ -674,11 +696,21 @@ fig_network_subregion_overview <- function(metadata,
     subregion = factor(.data$subregion, levels = subregion_order)
   )
 
+  # --- compute activity flags (NEE presence or last_year fallback) ------------
+  active_flags <- is_functionally_active(
+    sites$site_id,
+    reference_year   = as.integer(current_year) - 1L,
+    presence_df      = presence_df,
+    active_threshold = active_threshold,
+    last_year_vec    = sites$last_year
+  )
+  sites <- dplyr::mutate(sites, is_active = active_flags[.data$site_id])
+
   # --- Left panel: all sites, active vs inactive ------------------------------
   middle_data <- dplyr::mutate(
     sites,
     status = factor(
-      dplyr::if_else(.data$latency <= active_threshold,
+      dplyr::if_else(.data$is_active,
                      "Functionally active", "Inactive / high latency"),
       levels = c("Functionally active", "Inactive / high latency")
     )
@@ -712,7 +744,7 @@ fig_network_subregion_overview <- function(metadata,
 
   # --- Right panel: active sites by latency bin --------------------------------
   right_data <- sites |>
-    dplyr::filter(.data$latency >= 0L, .data$latency <= active_threshold) |>
+    dplyr::filter(.data$latency >= 0L, .data$is_active) |>
     dplyr::mutate(
       latency_bin = factor(
         dplyr::case_when(
@@ -791,7 +823,8 @@ fig_network_subregion_overview <- function(metadata,
 #' print(p)
 #' }
 fig_network_active_proportion <- function(metadata, data_yy,
-                                          active_threshold = 4L) {
+                                          active_threshold = 4L,
+                                          presence_df      = NULL) {
   if (!requireNamespace("patchwork", quietly = TRUE)) {
     stop(
       "Package 'patchwork' is required for fig_network_active_proportion(). ",
@@ -831,14 +864,24 @@ fig_network_active_proportion <- function(metadata, data_yy,
   year_range <- 1990:2025
 
   annual_stats <- do.call(rbind, lapply(year_range, function(yr) {
-    cum_sites    <- sum(sites$first_year <= yr)
-    active_sites <- sum(sites$first_year <= yr &
-                          sites$last_year  >= yr - active_threshold)
+    established  <- sites$first_year <= yr
+    cum_sites    <- sum(established)
+    if (cum_sites == 0L) {
+      return(data.frame(year = yr, cumulative_sites = 0L, pct_active = NA_real_))
+    }
+    active_sites <- sum(
+      is_functionally_active(
+        sites$site_id[established],
+        reference_year   = yr,
+        presence_df      = presence_df,
+        active_threshold = active_threshold,
+        last_year_vec    = sites$last_year[established]
+      )
+    )
     data.frame(
       year             = yr,
       cumulative_sites = cum_sites,
-      pct_active       = if (cum_sites > 0L) 100 * active_sites / cum_sites
-                         else NA_real_
+      pct_active       = 100 * active_sites / cum_sites
     )
   }))
 
@@ -892,9 +935,13 @@ fig_network_active_proportion <- function(metadata, data_yy,
       title    = "FLUXNET network size and data currency over time",
       subtitle = paste0(
         "Top: cumulative sites with first_year \u2264 year. ",
-        "Bottom: % with last_year \u2265 year \u2212 ", active_threshold,
-        " (functionally active). ",
-        "Draft for integration into network growth figure."
+        "Bottom: % functionally active",
+        if (!is.null(presence_df))
+          paste0(" (\u22653 months valid NEE in any year within [y\u2212",
+                 active_threshold - 1L, ", y]).")
+        else
+          paste0(" (last_year \u2265 year \u2212 ", active_threshold, ")."),
+        " Draft for integration into network growth figure."
       )
     )
 }
@@ -951,7 +998,8 @@ fig_network_active_proportion <- function(metadata, data_yy,
 #' }
 fig_latency_by_subregion <- function(metadata,
                                      current_year     = 2026L,
-                                     active_threshold = 4L) {
+                                     active_threshold = 4L,
+                                     presence_df      = NULL) {
   if (!requireNamespace("countrycode", quietly = TRUE)) {
     stop(
       "Package 'countrycode' is required for fig_latency_by_subregion(). ",
@@ -1015,8 +1063,15 @@ fig_latency_by_subregion <- function(metadata,
   }
 
   # --- filter to functionally active sites and bin latency -------------------
+  active_flags <- is_functionally_active(
+    df$site_id,
+    reference_year   = as.integer(current_year) - 1L,
+    presence_df      = presence_df,
+    active_threshold = active_threshold,
+    last_year_vec    = df$last_year
+  )
   active <- df |>
-    dplyr::filter(.data$latency >= 0L, .data$latency <= active_threshold) |>
+    dplyr::filter(.data$latency >= 0L, active_flags[.data$site_id]) |>
     dplyr::mutate(
       latency_bin = dplyr::case_when(
         .data$latency <= 1L ~ "0\u20131 years",

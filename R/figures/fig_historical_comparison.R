@@ -363,9 +363,9 @@ fig_duration_datasets <- function(site_lists) {
 #'
 #' Each panel plots sites on a MAT × MAP climate space (WorldClim 2.1 bio1 and
 #' bio12) with hexagonal binning coloured by median NEE from Shuttle flux data
-#' where available. Sites not in the Shuttle have `mean_flux = NA`; their hexes
-#' appear grey (`na.value = "grey75"`) if no Shuttle co-occupant contributes a
-#' valid NEE value.
+#' where available. Sites not in the Shuttle have `mean_flux = NA`; hexes with
+#' no Shuttle flux data are not rendered (NA bins are dropped by
+#' `stat_summary_hex`).
 #'
 #' Climate source priority:
 #' 1. `site_worldclim.csv` (pre-computed for all 672 Shuttle sites)
@@ -512,7 +512,7 @@ fig_whittaker_datasets <- function(site_lists,
         mid      = 0,
         limits   = c(-nee_max, nee_max),
         oob      = scales::squish,
-        na.value = "grey75",
+        na.value = NA,          # NA bins not rendered (no hex plotted)
         name     = lab_nee_annual,
         guide    = ggplot2::guide_colorbar(
           title.position = "top",
@@ -540,8 +540,7 @@ fig_whittaker_datasets <- function(site_lists,
         y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
         subtitle = paste0(
           n_climate, " sites with climate data; ",
-          n_nee, " with NEE (Shuttle). ",
-          n_climate - n_nee, " climate-space only (grey hexes)."
+          n_nee, " with Shuttle NEE"
         )
       ) +
       fluxnet_theme() +

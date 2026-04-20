@@ -932,6 +932,30 @@ build_latency_by_subregion <- function() {
 }
 
 # ============================================================
+# Section 13c — Latency by subregion, percentage version
+# fig_latency_by_subregion_pct(): same design as 13b but x = % with N= labels.
+# ============================================================
+build_latency_by_subregion_pct <- function() {
+  if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
+  tryCatch({
+    p <- fig_latency_by_subregion_pct(
+      metadata    = snapshot_meta_full,
+      presence_df = site_year_presence
+    )
+    review_dir  <- file.path("review", "figures", "network")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    review_path <- file.path(review_dir, "fig_latency_by_subregion_pct.png")
+    ggplot2::ggsave(review_path, plot = p, width = 10, height = 8,
+                    units = "in", dpi = 150, bg = "white")
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 8),
+           "</div>")
+  }, error = function(e) {
+    no_data(paste0("Latency by subregion (%) unavailable: ", conditionMessage(e)))
+  })
+}
+
+# ============================================================
 # Section 10 — UN subregion choropleth
 # fig_map_subregion_sites(): count and density at 2000/2007/2015/2025.
 # Two separate figures (count + density) saved as review PNGs.
@@ -1020,6 +1044,9 @@ s13 <- section(13, "Subregion overview \u2014 site counts and latency by UN subr
 message("Building Section 13b — Latency by subregion ...")
 s13b <- section("13b", "Latency by subregion \u2014 functionally active sites (2025)",
                 build_latency_by_subregion())
+message("Building Section 13c — Latency by subregion (%) ...")
+s13c <- section("13c", "Latency by subregion \u2014 percentage with N= annotations (2025)",
+                build_latency_by_subregion_pct())
 message("Building Section 10 — UN subregion choropleth ...")
 s10 <- section(10, "UN subregion choropleth \u2014 2000\u20132007\u20132015\u20132025",
                build_country_map())
@@ -1056,7 +1083,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s13b, s10, s4, s5, s6, s7, s14, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s13b, s13c, s10, s4, s5, s6, s7, s14, html_footer)
 
 out_path <- file.path("outputs", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

@@ -5,12 +5,12 @@
 ## Outputs (review/figures/network/):
 ##   fig_dur01_ShuttleFull.png           — FLUXNET Shuttle 2025 (full network)
 ##   fig_dur02_Marconi.png               — Marconi 2000
-##   fig_dur03_LaThuile.png              — La Thuile 2007         [commented]
-##   fig_dur04_FLUXNET2015.png           — FLUXNET2015            [commented]
+##   fig_dur03_LaThuile.png              — La Thuile 2007
+##   fig_dur04_FLUXNET2015.png           — FLUXNET2015
 ##   fig_dur05_ShuttleSnapshot2000.png   — Shuttle snapshot 2000
 ##   fig_dur06_ShuttleSnapshot2007.png   — Shuttle snapshot 2007
 ##   fig_dur07_ShuttleSnapshot2015.png   — Shuttle snapshot 2015
-##   fig_dur08_HistoricalStack.png       — Dur02/Dur03/Dur04 stacked [commented]
+##   fig_dur08_HistoricalStack.png       — Dur02/Dur03/Dur04 stacked
 ##   fig_dur09_ShuttleSnapshotsStack.png — Dur05/Dur06/Dur07 stacked
 ##
 ## NOTE on data sources: Dur02-04 use non-Shuttle historical site lists for
@@ -147,10 +147,38 @@ save_dur <- function(p, name, s = style) {
 }
 
 # ---- Stack helper ------------------------------------------------------------
+# Assembles three duration histogram panels into a single stacked figure.
+# Layout rules:
+#   - X axis (ticks, labels, title) on bottom panel only
+#   - Y axis title on middle panel only (visually centres "Sites" label)
+#   - Y axis ticks and labels on all three panels
+#   - Zero vertical margins between panels so they touch
+#   - No legend (fig_duration_historical() already sets legend.position="none")
 .make_dur_stack <- function(p_top, p_mid, p_bot, s = style) {
-  patchwork::wrap_plots(p_top, p_mid, p_bot, ncol = 1) +
-    patchwork::plot_layout(axes = "collect") &
-    ggplot2::theme(plot.margin = ggplot2::margin(0, 5, 0, 5))
+  no_x_no_ytitle <- ggplot2::theme(
+    axis.text.x  = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    axis.title.x = ggplot2::element_blank(),
+    axis.title.y = ggplot2::element_blank(),
+    plot.margin  = ggplot2::margin(0, 5, 0, 5)
+  )
+  no_x <- ggplot2::theme(
+    axis.text.x  = ggplot2::element_blank(),
+    axis.ticks.x = ggplot2::element_blank(),
+    axis.title.x = ggplot2::element_blank(),
+    plot.margin  = ggplot2::margin(0, 5, 0, 5)
+  )
+  bot_theme <- ggplot2::theme(
+    axis.title.y = ggplot2::element_blank(),
+    plot.margin  = ggplot2::margin(0, 5, 0, 5)
+  )
+
+  patchwork::wrap_plots(
+    p_top + no_x_no_ytitle,
+    p_mid + no_x,
+    p_bot + bot_theme,
+    ncol = 1
+  )
 }
 
 # ============================================================
@@ -180,35 +208,31 @@ dur02 <- fig_duration_historical(
 )
 save_dur(dur02, "fig_dur02_Marconi")
 
-# NOTE: Script stops here for Dur01/Dur02 review run.
-# Remove the stop() call below to generate Dur03-09 when ready.
-stop("Review stop after Dur02 — remove this line to generate Dur03-09.")
-
 # ============================================================
 # Dur03 — La Thuile 2007
 # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
 # ============================================================
-# message("\n── Dur03: La Thuile 2007 ──")
-# dur03 <- fig_duration_historical(
-#   site_meta     = sites_la_thuile,
-#   snapshot_year = 2007L,
-#   detail_label  = "La Thuile 2007",
-#   style         = style
-# )
-# save_dur(dur03, "fig_dur03_LaThuile")
+message("\n── Dur03: La Thuile 2007 ──")
+dur03 <- fig_duration_historical(
+  site_meta     = sites_la_thuile,
+  snapshot_year = 2007L,
+  detail_label  = "La Thuile 2007",
+  style         = style
+)
+save_dur(dur03, "fig_dur03_LaThuile")
 
 # ============================================================
 # Dur04 — FLUXNET2015
 # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
 # ============================================================
-# message("\n── Dur04: FLUXNET2015 ──")
-# dur04 <- fig_duration_historical(
-#   site_meta     = sites_fluxnet2015,
-#   snapshot_year = 2015L,
-#   detail_label  = "FLUXNET2015",
-#   style         = style
-# )
-# save_dur(dur04, "fig_dur04_FLUXNET2015")
+message("\n── Dur04: FLUXNET2015 ──")
+dur04 <- fig_duration_historical(
+  site_meta     = sites_fluxnet2015,
+  snapshot_year = 2015L,
+  detail_label  = "FLUXNET2015",
+  style         = style
+)
+save_dur(dur04, "fig_dur04_FLUXNET2015")
 
 # ============================================================
 # Dur05 — Shuttle snapshot 2000
@@ -261,18 +285,18 @@ save_dur(dur07, "fig_dur07_ShuttleSnapshot2015")
 # ============================================================
 # Dur08 — historical datasets stack (Dur02 / Dur03 / Dur04)
 # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
-# Uncomment after Dur03 and Dur04 are enabled above.
 # ============================================================
-# message("\n── Dur08: historical datasets stack ──")
-# dur08 <- .make_dur_stack(dur02, dur03, dur04)
-# ggplot2::ggsave(
-#   file.path(out_dir, "fig_dur08_HistoricalStack.png"),
-#   plot   = dur08,
-#   width  = style$width_in,
-#   height = style$height_in * 3,
-#   units  = "in", dpi = 150, bg = "white"
-# )
-# message("Saved: ", file.path(out_dir, "fig_dur08_HistoricalStack.png"))
+message("\n── Dur08: historical datasets stack (Dur02/03/04) ──")
+dur08 <- .make_dur_stack(dur02, dur03, dur04)
+path08 <- file.path(out_dir, "fig_dur08_HistoricalStack.png")
+ggplot2::ggsave(
+  path08,
+  plot   = dur08,
+  width  = style$width_in,
+  height = style$height_in * 3,
+  units  = "in", dpi = 150, bg = "white"
+)
+message("Saved: ", path08)
 
 # ============================================================
 # Dur09 — Shuttle snapshots stack (Dur05 / Dur06 / Dur07)
@@ -289,5 +313,4 @@ ggplot2::ggsave(
 )
 message("Saved: ", path09)
 
-message("\nDone. Dur01-02, Dur05-07, Dur09 generated.",
-        "\nDur03, Dur04, and Dur08 remain commented — uncomment to generate.")
+message("\nDone. All 9 figures generated: Dur01-09.")

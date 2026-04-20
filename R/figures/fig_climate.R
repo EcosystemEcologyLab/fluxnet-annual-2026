@@ -31,21 +31,21 @@ library(colorspace)
 #'   \item{xlim}{MAT axis limits in °C.}
 #'   \item{ylim}{MAP axis limits in mm yr⁻¹.}
 #'   \item{width_in, height_in}{Default ggsave dimensions in inches.}
-#'   \item{xlab, ylab, fill_lab}{Axis and legend titles (Unicode superscripts).}
 #'   \item{legend_pos, legend_just}{Legend position and justification (NDC).}
 #'   \item{detail_x, detail_y}{Inset detail-text anchor (NDC fractions).}
 #'   \item{nee_lims}{Colour-scale limits; computed at runtime when \code{NULL}.}
 #' }
+#' @note Axis and legend labels are \code{expression()} objects constructed at
+#'   plot-build time in \code{\link{fig_whittaker_worldclim}} — they are not
+#'   stored here, because R expressions cannot be stored in a plain list and
+#'   retrieved as expressions.
 #' @export
 WHITTAKER_STYLE <- list(
   xlim        = c(-15, 35),
   ylim        = c(0, 4000),
   width_in    = 14,
   height_in   = 7,
-  xlab        = "Mean Annual Temperature (\u00b0C)",
-  ylab        = "Mean Annual Precipitation (mm yr\u207b\u00b9)",
-  fill_lab    = "NEE (g\u00a0C\u00a0m\u207b\u00b2\u00a0yr\u207b\u00b9)",
-  legend_pos  = c(0.02, 0.72),
+  legend_pos  = c(0.02, 0.88),
   legend_just = c(0, 1),
   detail_x    = 0.02,
   detail_y    = 0.98,
@@ -264,8 +264,12 @@ fig_whittaker_worldclim <- function(
       mid      = 0,
       limits   = style$nee_lims,
       oob      = scales::squish,
-      na.value = NA,
-      guide    = ggplot2::guide_colorbar(
+      na.value = NA
+      # guide set separately below via guides() so expression() title works
+    ) +
+    ggplot2::guides(
+      fill = ggplot2::guide_colorbar(
+        title          = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
         title.position = "top",
         barwidth       = 15,
         barheight      = 0.8,
@@ -291,29 +295,48 @@ fig_whittaker_worldclim <- function(
       ylim = style$ylim
     ) +
     ggplot2::labs(
-      x    = expression("Mean Annual Temperature (" * degree * "C)"),
-      y    = expression("Mean Annual Precipitation (mm yr" ^ {-1} * ")"),
-      fill = expression("NEE (g C m" ^ {-2} * " yr" ^ {-1} * ")")
+      x = expression("Mean Annual Temperature (" * degree * "C)"),
+      y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
     ) +
-    fluxnet_theme() +
-    ggplot2::theme(
-      # Font sizes
-      axis.title   = ggplot2::element_text(size = 24),
-      axis.text    = ggplot2::element_text(size = 22),
-      legend.text  = ggplot2::element_text(size = 20),
-      legend.title = ggplot2::element_text(size = 22),
-      # Legend position — upper-left inside panel
-      legend.position        = "inside",
-      legend.position.inside = c(0.02, 0.88),
-      legend.justification   = c(0, 1),
-      legend.background      = ggplot2::element_rect(fill = "white", color = NA)
-    )
+    .whittaker_theme(style)
 
   p
 }
 
 
 # ---- Internal helpers -------------------------------------------------------
+
+#' Build the ggplot2 theme for Whittaker figures
+#'
+#' Uses \code{element_text()} (NOT \code{element_markdown()}) for axis titles so
+#' that \code{expression()} plotmath labels render correctly.  \code{fluxnet_theme()}
+#' sets \code{element_markdown()} globally, which coerces expressions to raw
+#' strings; this function bypasses that by building from \code{theme_classic()}.
+#'
+#' @param style Named list — the \code{WHITTAKER_STYLE} passed to the parent call.
+#' @return A ggplot2 theme object.
+#' @noRd
+.whittaker_theme <- function(style) {
+  ggplot2::theme_classic(base_size = 16) +
+    ggplot2::theme(
+      panel.border           = ggplot2::element_rect(color = "black", fill = NA,
+                                                     linewidth = 0.8),
+      panel.background       = ggplot2::element_blank(),
+      axis.text              = ggplot2::element_text(color = "black", size = 22),
+      axis.ticks             = ggplot2::element_line(color = "black"),
+      axis.ticks.length      = grid::unit(-4, "pt"),
+      axis.ticks.length.x    = grid::unit(-4, "pt"),
+      axis.ticks.length.y    = grid::unit(-4, "pt"),
+      # element_text (NOT element_markdown) — required for plotmath expressions
+      axis.title             = ggplot2::element_text(size = 24),
+      legend.text            = ggplot2::element_text(size = 20),
+      legend.title           = ggplot2::element_text(size = 22),
+      legend.position        = "inside",
+      legend.position.inside = style$legend_pos,
+      legend.justification   = style$legend_just,
+      legend.background      = ggplot2::element_rect(fill = "white", color = NA)
+    )
+}
 
 #' Check that required columns exist in a data frame
 #'

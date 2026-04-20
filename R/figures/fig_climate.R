@@ -244,8 +244,7 @@ fig_whittaker_worldclim <- function(
   # --- inset detail text (top-left) -------------------------------------------
   detail_str <- paste0(
     if (!is.null(detail_label)) paste0(detail_label, "\n") else "",
-    "N\u00a0=\u00a0", n_sites, " sites\u00a0|\u00a0", n_site_years,
-    " site-years"
+    "N = ", n_sites, " sites | ", n_site_years, " site-years"
   )
 
   # --- build plot -------------------------------------------------------------
@@ -266,7 +265,6 @@ fig_whittaker_worldclim <- function(
       limits   = style$nee_lims,
       oob      = scales::squish,
       na.value = NA,
-      name     = style$fill_lab,
       guide    = ggplot2::guide_colorbar(
         title.position = "top",
         barwidth       = 15,
@@ -283,24 +281,32 @@ fig_whittaker_worldclim <- function(
     ) +
     ggplot2::annotate(
       "text",
-      x        = -Inf, y = Inf,
-      label    = detail_str,
-      hjust    = -0.07, vjust = 1.3,
-      size     = 4.0
+      x     = -Inf, y = Inf,
+      label = detail_str,
+      hjust = -0.07, vjust = 1.3,
+      size  = 6.5                          # ≈ 18 pt (size * 2.835)
     ) +
     ggplot2::coord_cartesian(
       xlim = style$xlim,
       ylim = style$ylim
     ) +
     ggplot2::labs(
-      x = style$xlab,
-      y = style$ylab
+      x    = expression("Mean Annual Temperature (" * degree * "C)"),
+      y    = expression("Mean Annual Precipitation (mm yr" ^ {-1} * ")"),
+      fill = expression("NEE (g C m" ^ {-2} * " yr" ^ {-1} * ")")
     ) +
     fluxnet_theme() +
     ggplot2::theme(
-      legend.position      = style$legend_pos,
-      legend.justification = style$legend_just,
-      legend.background    = ggplot2::element_rect(fill = "white", color = NA)
+      # Font sizes
+      axis.title   = ggplot2::element_text(size = 24),
+      axis.text    = ggplot2::element_text(size = 22),
+      legend.text  = ggplot2::element_text(size = 20),
+      legend.title = ggplot2::element_text(size = 22),
+      # Legend position — upper-left inside panel
+      legend.position        = "inside",
+      legend.position.inside = c(0.02, 0.88),
+      legend.justification   = c(0, 1),
+      legend.background      = ggplot2::element_rect(fill = "white", color = NA)
     )
 
   p

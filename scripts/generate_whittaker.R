@@ -3,15 +3,19 @@
 ## Run from repo root: Rscript scripts/generate_whittaker.R
 ##
 ## Outputs (review/figures/whittaker/):
-##   fig_whit01.png  — FLUXNET Shuttle 2025 (full network)
-##   fig_whit02.png  — Marconi 2000
-##   fig_whit03.png  — La Thuile 2007
-##   fig_whit04.png  — FLUXNET2015
-##   fig_whit05.png  — Shuttle snapshot 2000
-##   fig_whit06.png  — Shuttle snapshot 2007
-##   fig_whit07.png  — Shuttle snapshot 2015
-##   fig_whit08_historical_stack.png   — Whit02 / Whit03 / Whit04 stacked
-##   fig_whit09_shuttle_snapshots_stack.png — Whit05 / Whit06 / Whit07 stacked
+##   fig_whit01_ShuttleFull.png              — FLUXNET Shuttle 2025 (full network)
+##   fig_whit02_Marconi.png                  — Marconi 2000
+##   fig_whit03_LaThuile.png                 — La Thuile 2007
+##   fig_whit04_FLUXNET2015.png              — FLUXNET2015
+##   fig_whit05_ShuttleSnapshot2000.png      — Shuttle snapshot 2000
+##   fig_whit06_ShuttleSnapshot2007.png      — Shuttle snapshot 2007
+##   fig_whit07_ShuttleSnapshot2015.png      — Shuttle snapshot 2015
+##   fig_whit08_HistoricalDatasets_stack.png — Whit02 / Whit03 / Whit04 stacked
+##   fig_whit09_ShuttleSnapshots_stack.png   — Whit05 / Whit06 / Whit07 stacked
+##
+## Candidates updated:
+##   review/figures/candidates/fig_05_whittaker_current.png  ← fig_whit01
+##   review/figures/candidates/fig_06_whittaker_snapshots.png ← fig_whit09
 ##
 ## Replaces: scripts/generate_whittaker_figures.R
 ##           scripts/generate_worldclim_figures.R
@@ -49,10 +53,10 @@ snap_file <- sort(
 shuttle_meta <- readr::read_csv(snap_file, show_col_types = FALSE)
 
 # Historical site lists
-sites_marconi    <- readr::read_csv("data/snapshots/sites_marconi_clean.csv",
-                                    show_col_types = FALSE)
-sites_la_thuile  <- readr::read_csv("data/snapshots/sites_la_thuile_clean.csv",
-                                    show_col_types = FALSE)
+sites_marconi     <- readr::read_csv("data/snapshots/sites_marconi_clean.csv",
+                                     show_col_types = FALSE)
+sites_la_thuile   <- readr::read_csv("data/snapshots/sites_la_thuile_clean.csv",
+                                     show_col_types = FALSE)
 sites_fluxnet2015 <- readr::read_csv("data/snapshots/sites_fluxnet2015_clean.csv",
                                      show_col_types = FALSE)
 
@@ -87,7 +91,7 @@ whit01 <- fig_whittaker_worldclim(
   detail_label = "FLUXNET Shuttle 2025",
   style        = shared_style
 )
-save_whit(whit01, "fig_whit01")
+save_whit(whit01, "fig_whit01_ShuttleFull")
 
 # ============================================================
 # Whit02 — Marconi 2000
@@ -99,7 +103,7 @@ whit02 <- fig_whittaker_worldclim(
   detail_label = "Marconi 2000",
   style        = shared_style
 )
-save_whit(whit02, "fig_whit02")
+save_whit(whit02, "fig_whit02_Marconi")
 
 # ============================================================
 # Whit03 — La Thuile 2007
@@ -111,7 +115,7 @@ whit03 <- fig_whittaker_worldclim(
   detail_label = "La Thuile 2007",
   style        = shared_style
 )
-save_whit(whit03, "fig_whit03")
+save_whit(whit03, "fig_whit03_LaThuile")
 
 # ============================================================
 # Whit04 — FLUXNET2015
@@ -123,7 +127,7 @@ whit04 <- fig_whittaker_worldclim(
   detail_label = "FLUXNET2015",
   style        = shared_style
 )
-save_whit(whit04, "fig_whit04")
+save_whit(whit04, "fig_whit04_FLUXNET2015")
 
 # ============================================================
 # Whit05 — Shuttle snapshot 2000
@@ -136,7 +140,7 @@ whit05 <- fig_whittaker_worldclim(
   detail_label = "Shuttle snapshot 2000",
   style        = shared_style
 )
-save_whit(whit05, "fig_whit05")
+save_whit(whit05, "fig_whit05_ShuttleSnapshot2000")
 
 # ============================================================
 # Whit06 — Shuttle snapshot 2007
@@ -149,7 +153,7 @@ whit06 <- fig_whittaker_worldclim(
   detail_label = "Shuttle snapshot 2007",
   style        = shared_style
 )
-save_whit(whit06, "fig_whit06")
+save_whit(whit06, "fig_whit06_ShuttleSnapshot2007")
 
 # ============================================================
 # Whit07 — Shuttle snapshot 2015
@@ -162,7 +166,7 @@ whit07 <- fig_whittaker_worldclim(
   detail_label = "Shuttle snapshot 2015",
   style        = shared_style
 )
-save_whit(whit07, "fig_whit07")
+save_whit(whit07, "fig_whit07_ShuttleSnapshot2015")
 
 # ============================================================
 # Stacked figure helpers
@@ -173,25 +177,21 @@ save_whit(whit07, "fig_whit07")
 # ============================================================
 
 .make_stack <- function(p_top, p_mid, p_bot) {
-  # Top panel: keep legend at upper-left (from shared_style$legend_pos)
-  p1 <- p_top
-
-  # Middle and bottom panels: no legend, no x-axis title (collected by patchwork)
   p2 <- p_mid + ggplot2::theme(legend.position = "none")
   p3 <- p_bot + ggplot2::theme(legend.position = "none")
 
-  patchwork::wrap_plots(p1, p2, p3, ncol = 1) +
+  patchwork::wrap_plots(p_top, p2, p3, ncol = 1) +
     patchwork::plot_layout(axes = "collect") &
     ggplot2::theme(plot.margin = ggplot2::margin(0, 5, 0, 5))
 }
 
 # ============================================================
-# Whit08 — historical stack (Marconi / La Thuile / FLUXNET2015)
+# Whit08 — historical datasets stack (Marconi / La Thuile / FLUXNET2015)
 # ============================================================
-message("\n── Whit08: historical stack (Whit02 / Whit03 / Whit04) ──")
+message("\n── Whit08: historical datasets stack (Whit02 / Whit03 / Whit04) ──")
 whit08 <- .make_stack(whit02, whit03, whit04)
 
-path08 <- file.path(out_dir, "fig_whit08_historical_stack.png")
+path08 <- file.path(out_dir, "fig_whit08_HistoricalDatasets_stack.png")
 ggplot2::ggsave(path08, plot = whit08,
                 width  = shared_style$width_in,
                 height = shared_style$height_in * 3,
@@ -199,12 +199,12 @@ ggplot2::ggsave(path08, plot = whit08,
 message("Saved: ", path08)
 
 # ============================================================
-# Whit09 — Shuttle snapshot stack (2000 / 2007 / 2015)
+# Whit09 — Shuttle snapshots stack (2000 / 2007 / 2015)
 # ============================================================
-message("\n── Whit09: Shuttle snapshot stack (Whit05 / Whit06 / Whit07) ──")
+message("\n── Whit09: Shuttle snapshots stack (Whit05 / Whit06 / Whit07) ──")
 whit09 <- .make_stack(whit05, whit06, whit07)
 
-path09 <- file.path(out_dir, "fig_whit09_shuttle_snapshots_stack.png")
+path09 <- file.path(out_dir, "fig_whit09_ShuttleSnapshots_stack.png")
 ggplot2::ggsave(path09, plot = whit09,
                 width  = shared_style$width_in,
                 height = shared_style$height_in * 3,
@@ -213,20 +213,20 @@ message("Saved: ", path09)
 
 # ============================================================
 # Copy canonical outputs to review/figures/candidates/
-# fig_05 → fig_whit01 (Shuttle current)
-# fig_06 → fig_whit09 (Shuttle snapshot stack)
+# fig_05 → Whit01 (Shuttle current)
+# fig_06 → Whit09 (Shuttle snapshot stack)
 # ============================================================
 cand_dir <- file.path("review", "figures", "candidates")
 if (!dir.exists(cand_dir)) dir.create(cand_dir, recursive = TRUE)
 
-file.copy(file.path(out_dir, "fig_whit01.png"),
+file.copy(file.path(out_dir, "fig_whit01_ShuttleFull.png"),
           file.path(cand_dir, "fig_05_whittaker_current.png"),
           overwrite = TRUE)
-message("Copied fig_whit01 → candidates/fig_05_whittaker_current.png")
+message("Copied fig_whit01_ShuttleFull → candidates/fig_05_whittaker_current.png")
 
 file.copy(path09,
           file.path(cand_dir, "fig_06_whittaker_snapshots.png"),
           overwrite = TRUE)
-message("Copied fig_whit09 → candidates/fig_06_whittaker_snapshots.png")
+message("Copied fig_whit09_ShuttleSnapshots_stack → candidates/fig_06_whittaker_snapshots.png")
 
 message("\nAll 9 Whittaker figures done.")

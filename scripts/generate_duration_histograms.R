@@ -1,26 +1,24 @@
 ## scripts/generate_duration_histograms.R
-## Generates all 9 canonical deployment duration histogram figures.
+## Generates all 8 canonical deployment duration histogram figures.
 ## Run from repo root: Rscript scripts/generate_duration_histograms.R
 ##
 ## Outputs (review/figures/network/):
-##   fig_dur01_ShuttleFull.png           — FLUXNET Shuttle 2025 (full network)
-##   fig_dur02_Marconi.png               — Marconi 2000
-##   fig_dur03_LaThuile.png              — La Thuile 2007
-##   fig_dur04_FLUXNET2015.png           — FLUXNET2015
-##   fig_dur05_ShuttleSnapshot2000.png   — Shuttle snapshot 2000
-##   fig_dur06_ShuttleSnapshot2007.png   — Shuttle snapshot 2007
-##   fig_dur07_ShuttleSnapshot2015.png   — Shuttle snapshot 2015
-##   fig_dur08_HistoricalStack.png       — Dur02/Dur03/Dur04 stacked
-##   fig_dur09_ShuttleSnapshotsStack.png — Dur05/Dur06/Dur07 stacked
+##   fig_dur01_ShuttleFull.png         — FLUXNET Shuttle 2025 (full network)
+##   fig_dur02_Marconi.png             — Marconi 2000
+##   fig_dur03_LaThuile.png            — La Thuile 2007
+##   fig_dur04_FLUXNET2015.png         — FLUXNET2015
+##   fig_dur05_ShuttleSnapshot2000.png — Shuttle snapshot 2000
+##   fig_dur06_ShuttleSnapshot2007.png — Shuttle snapshot 2007
+##   fig_dur07_ShuttleSnapshot2015.png — Shuttle snapshot 2015
+##   fig_dur08_HistoricalOverlay.png   — Shuttle snapshots vs historical datasets (3-panel overlay)
 ##
-## NOTE on data sources: Dur02-04 use non-Shuttle historical site lists for
-## development/comparison purposes only — clearly labelled per CLAUDE.md §1.
+## NOTE on data sources: Dur02-04 and Dur08 use non-Shuttle historical site
+## lists for development/comparison purposes only — labelled per CLAUDE.md §1.
 ##
 ## Architecture mirrors scripts/generate_whittaker.R:
-##   - Shared xlim/ylim computed once from all 7 datasets (Dur01–07)
-##   - Single core function fig_duration_historical() for all panels
-##   - Stack figures assembled via .make_dur_stack() — Dur08/Dur09 disabled
-##     pending review of individual panels; re-enable section at end of file
+##   - Shared xlim/ylim for Dur01–07 computed once from all 7 datasets
+##   - Single core function fig_duration_historical() for Dur01–07
+##   - Dur08 overlay assembled via fig_duration_overlay() in R/figures/fig_network_growth.R
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -154,41 +152,6 @@ save_dur <- function(p, name, s = style) {
   invisible(path)
 }
 
-# ---- Stack helper ------------------------------------------------------------
-# Assembles three duration histogram panels into a single stacked figure.
-# Layout rules:
-#   - X axis (ticks, labels, title) on bottom panel only
-#   - Y axis title on middle panel only (visually centres "Sites" label)
-#   - Y axis ticks and labels on all three panels
-#   - Zero vertical margins between panels so they touch
-#   - No legend (fig_duration_historical() already sets legend.position="none")
-.make_dur_stack <- function(p_top, p_mid, p_bot, s = style) {
-  no_x_no_ytitle <- ggplot2::theme(
-    axis.text.x  = ggplot2::element_blank(),
-    axis.ticks.x = ggplot2::element_blank(),
-    axis.title.x = ggplot2::element_blank(),
-    axis.title.y = ggplot2::element_blank(),
-    plot.margin  = ggplot2::margin(0, 5, 0, 5)
-  )
-  no_x <- ggplot2::theme(
-    axis.text.x  = ggplot2::element_blank(),
-    axis.ticks.x = ggplot2::element_blank(),
-    axis.title.x = ggplot2::element_blank(),
-    plot.margin  = ggplot2::margin(0, 5, 0, 5)
-  )
-  bot_theme <- ggplot2::theme(
-    axis.title.y = ggplot2::element_blank(),
-    plot.margin  = ggplot2::margin(0, 5, 0, 5)
-  )
-
-  patchwork::wrap_plots(
-    p_top + no_x_no_ytitle,
-    p_mid + no_x,
-    p_bot + bot_theme,
-    ncol = 1
-  )
-}
-
 # ============================================================
 # Dur01 — FLUXNET Shuttle 2025 (full network)
 # ============================================================
@@ -291,36 +254,29 @@ dur07 <- fig_duration_historical(
 save_dur(dur07, "fig_dur07_ShuttleSnapshot2015")
 
 # ============================================================
-# Dur08 / Dur09 — stacked figures
-# DISABLED: re-enable after reviewing Dur01–07 individual panels.
-# Uncomment both blocks below and rerun this script to regenerate.
+# Dur08 — Shuttle snapshots vs historical datasets (3-panel overlay)
+# NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
 # ============================================================
+message("\n── Dur08: historical overlay ──")
+dur08 <- fig_duration_overlay(
+  shuttle_meta      = shuttle_meta,
+  sites_marconi     = sites_marconi,
+  sites_la_thuile   = sites_la_thuile,
+  sites_fluxnet2015 = sites_fluxnet2015
+)
+path08 <- file.path(out_dir, "fig_dur08_HistoricalOverlay.png")
+ggplot2::ggsave(path08, plot = dur08,
+                width = 14, height = 18, units = "in", dpi = 150, bg = "white")
+message("Saved: ", path08)
 
-# # Dur08 — historical datasets stack (Dur02 / Dur03 / Dur04)
-# # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
-# message("\n── Dur08: historical datasets stack (Dur02/03/04) ──")
-# dur08 <- .make_dur_stack(dur02, dur03, dur04)
-# path08 <- file.path(out_dir, "fig_dur08_HistoricalStack.png")
-# ggplot2::ggsave(
-#   path08,
-#   plot   = dur08,
-#   width  = style$width_in,
-#   height = style$height_in * 3,
-#   units  = "in", dpi = 150, bg = "white"
-# )
-# message("Saved: ", path08)
+# Delete legacy stack PNGs superseded by the overlay figure
+for (legacy in c("fig_dur08_HistoricalStack.png",
+                 "fig_dur09_ShuttleSnapshotsStack.png")) {
+  f <- file.path(out_dir, legacy)
+  if (file.exists(f)) {
+    file.remove(f)
+    message("Deleted legacy file: ", f)
+  }
+}
 
-# # Dur09 — Shuttle snapshots stack (Dur05 / Dur06 / Dur07)
-# message("\n── Dur09: Shuttle snapshots stack (Dur05/06/07) ──")
-# dur09 <- .make_dur_stack(dur05, dur06, dur07)
-# path09 <- file.path(out_dir, "fig_dur09_ShuttleSnapshotsStack.png")
-# ggplot2::ggsave(
-#   path09,
-#   plot   = dur09,
-#   width  = style$width_in,
-#   height = style$height_in * 3,
-#   units  = "in", dpi = 150, bg = "white"
-# )
-# message("Saved: ", path09)
-
-message("\nDone. Dur01-07 regenerated. Dur08/Dur09 stacks skipped — re-enable above.")
+message("\nDone. All 8 figures generated: Dur01-08.")

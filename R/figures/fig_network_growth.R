@@ -244,6 +244,228 @@ fig_duration_historical <- function(site_meta,
   p
 }
 
+# ---- fig_duration_overlay ---------------------------------------------------
+
+#' Three-panel overlay: Shuttle snapshots vs historical datasets
+#'
+#' Produces a patchwork figure with three vertically stacked panels, one per
+#' historical reference year (2000, 2007, 2015). Each panel overlays two
+#' histograms:
+#' \itemize{
+#'   \item \strong{Shuttle snapshot} (grey filled bars): sites from the Shuttle
+#'     dataset with \code{first_year <= snapshot_year}; record length =
+#'     \code{snapshot_year - first_year}.
+#'   \item \strong{Historical dataset} (red outline bars): Marconi (2000),
+#'     La Thuile (2007), or FLUXNET2015 (2015); same record-length definition.
+#' }
+#'
+#' All panels share a common Y axis limit derived from the maximum 1-year bin
+#' count across all six datasets within \code{xlim = c(0, 20)}. The X axis is
+#' clipped to 20 years because none of the historical datasets or pre-2015
+#' Shuttle snapshots contain longer records.
+#'
+#' NOTE: historical site lists are comparison/illustration data only —
+#' non-Shuttle primary data (see CLAUDE.md §1).
+#'
+#' @param shuttle_meta Data frame. Shuttle snapshot CSV (one row per site)
+#'   with columns \code{site_id} and \code{first_year}.
+#' @param sites_marconi Data frame. Marconi site list with \code{site_id} and
+#'   \code{first_year} (joined from \code{data/snapshots/years_marconi.csv}).
+#' @param sites_la_thuile Data frame. La Thuile site list with \code{site_id}
+#'   and \code{first_year}.
+#' @param sites_fluxnet2015 Data frame. FLUXNET2015 site list with
+#'   \code{site_id} and \code{first_year}.
+#' @param base_size Integer. Base font size passed to \code{\link{fluxnet_theme}}
+#'   (default \code{36L}).
+#'
+#' @return A patchwork object: three vertically stacked histogram panels with a
+#'   shared legend at the bottom and single X/Y axis labels.
+#'
+#' @examples
+#' \dontrun{
+#' shuttle <- readr::read_csv(
+#'   "data/snapshots/fluxnet_shuttle_snapshot_20260414T154430.csv"
+#' )
+#' marconi <- readr::read_csv("data/snapshots/sites_marconi_clean.csv") |>
+#'   dplyr::left_join(readr::read_csv("data/snapshots/years_marconi.csv"),
+#'                    by = "site_id")
+#' # ... load la_thuile and fluxnet2015 similarly ...
+#' p <- fig_duration_overlay(shuttle, marconi, la_thuile, fluxnet2015)
+#' print(p)
+#' }
+#' @export
+fig_duration_overlay <- function(shuttle_meta,
+                                 sites_marconi,
+                                 sites_la_thuile,
+                                 sites_fluxnet2015,
+                                 base_size = 36L) {
+
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop(
+      "Package 'patchwork' is required for fig_duration_overlay(). ",
+      "Install with: install.packages('patchwork')",
+      call. = FALSE
+    )
+  }
+
+  for (arg in list(shuttle_meta, sites_marconi, sites_la_thuile, sites_fluxnet2015)) {
+    missing_cols <- setdiff(c("site_id", "first_year"), names(arg))
+    if (length(missing_cols) > 0L) {
+      stop(
+        "fig_duration_overlay: input data frame missing column(s): ",
+        paste(missing_cols, collapse = ", "),
+        call. = FALSE
+      )
+    }
+  }
+
+  # Helper: filter to snapshot year, deduplicate, compute record length
+  .mk <- function(df, snap_yr) {
+    df |>
+      dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
+      dplyr::filter(!is.na(.data$first_year),
+                    as.integer(.data$first_year) <= snap_yr) |>
+      dplyr::mutate(record_length = snap_yr - as.integer(.data$first_year))
+  }
+
+  s2000  <- .mk(shuttle_meta,      2000L)
+  s2007  <- .mk(shuttle_meta,      2007L)
+  s2015  <- .mk(shuttle_meta,      2015L)
+  d_marc <- .mk(sites_marconi,     2000L)
+  d_lath <- .mk(sites_la_thuile,   2007L)
+  d_f15  <- .mk(sites_fluxnet2015, 2015L)
+
+  # Shared Y limit: max 1-year bin count within [0, 20] across all 6 datasets
+  .max_in_range <- function(df) {
+    r <- df$record_length[df$record_length >= 0L & df$record_length <= 20L]
+    if (length(r) == 0L) return(0L)
+    max(tabulate(r + 1L))   # tabulate is 1-indexed; +1 maps 0-year records to bin 1
+  }
+  ylim_max <- ceiling(max(
+    .max_in_range(s2000), .max_in_range(s2007), .max_in_range(s2015),
+    .max_in_range(d_marc), .max_in_range(d_lath), .max_in_range(d_f15)
+  ) * 1.08)
+
+  annot_size <- base_size * 0.28
+
+  # Legend key ordering: ggplot2 sorts factor levels alphabetically.
+  # "Historical dataset" (H) sorts before "Shuttle snapshot" (S), so
+  # override.aes index 1 = Historical, index 2 = Shuttle.
+  fill_guide <- ggplot2::guide_legend(
+    override.aes = list(
+      fill      = c(NA,        "grey70"),  # 1=Historical: no fill; 2=Shuttle: grey
+      colour    = c("#E74C3C", "grey50"),  # 1=Historical: red;    2=Shuttle: grey50
+      linewidth = c(1.2,        0.3)       # 1=Historical: thick;  2=Shuttle: thin
+    )
+  )
+
+  # Internal panel builder — returns a ggplot; axis suppression applied after
+  .make_panel <- function(shuttle_df, hist_df,
+                          inset_line1, inset_line2,
+                          show_x, show_y_title,
+                          top_mar, bot_mar) {
+
+    p <- ggplot2::ggplot() +
+      # Background: Shuttle snapshot — grey filled bars
+      ggplot2::geom_histogram(
+        data = shuttle_df,
+        ggplot2::aes(x      = .data$record_length,
+                     fill   = "Shuttle snapshot",
+                     colour = "Shuttle snapshot"),
+        binwidth = 1, boundary = 0, linewidth = 0.3
+      ) +
+      # Foreground: historical dataset — red outline, no fill
+      ggplot2::geom_histogram(
+        data = hist_df,
+        ggplot2::aes(x      = .data$record_length,
+                     fill   = "Historical dataset",
+                     colour = "Historical dataset"),
+        binwidth = 1, boundary = 0, linewidth = 1.2
+      ) +
+      ggplot2::scale_fill_manual(
+        values = c("Shuttle snapshot"   = "grey70",
+                   "Historical dataset" = NA),
+        name  = NULL,
+        guide = fill_guide
+      ) +
+      ggplot2::scale_colour_manual(
+        values = c("Shuttle snapshot"   = "grey50",
+                   "Historical dataset" = "#E74C3C"),
+        name  = NULL,
+        guide = "none"   # merged into fill legend via override.aes above
+      ) +
+      ggplot2::scale_x_continuous(
+        breaks = seq(0, 20, by = 5),
+        expand = ggplot2::expansion(mult = c(0, 0.01))
+      ) +
+      ggplot2::scale_y_continuous(
+        breaks = scales::pretty_breaks(n = 4),
+        expand = ggplot2::expansion(mult = c(0, 0.02))
+      ) +
+      ggplot2::coord_cartesian(xlim = c(0, 20), ylim = c(0, ylim_max)) +
+      ggplot2::labs(x = "Record length (years)", y = "Sites") +
+      fluxnet_theme(base_size = base_size) +
+      ggplot2::annotate(
+        "text", x = Inf, y = Inf,
+        label    = paste0(inset_line1, "\n", inset_line2),
+        hjust = 1.05, vjust = 1.35,
+        size  = annot_size, fontface = "bold"
+      ) +
+      ggplot2::theme(
+        legend.position = "none",
+        plot.margin     = ggplot2::margin(top_mar, 5, bot_mar, 5)
+      )
+
+    # Suppress axis elements only via element_blank() to avoid theme merge
+    # conflicts with the element_markdown() axis titles in fluxnet_theme().
+    if (!show_x) {
+      p <- p + ggplot2::theme(
+        axis.text.x  = ggplot2::element_blank(),
+        axis.ticks.x = ggplot2::element_blank(),
+        axis.title.x = ggplot2::element_blank()
+      )
+    }
+    if (!show_y_title) {
+      p <- p + ggplot2::theme(axis.title.y = ggplot2::element_blank())
+    }
+
+    p
+  }
+
+  n_fmt <- function(n) paste0("n\u2009=\u2009", n)   # thin-space before =
+
+  p1 <- .make_panel(
+    s2000, d_marc,
+    "2000",
+    paste0("Shuttle 2000 (", n_fmt(nrow(s2000)), ")  \u2502  ",
+           "Marconi (", n_fmt(nrow(d_marc)), ")"),
+    show_x = FALSE, show_y_title = FALSE, top_mar = 5, bot_mar = 0
+  )
+  p2 <- .make_panel(
+    s2007, d_lath,
+    "2007",
+    paste0("Shuttle 2007 (", n_fmt(nrow(s2007)), ")  \u2502  ",
+           "La Thuile (", n_fmt(nrow(d_lath)), ")"),
+    show_x = FALSE, show_y_title = TRUE, top_mar = 0, bot_mar = 0
+  )
+  p3 <- .make_panel(
+    s2015, d_f15,
+    "2015",
+    paste0("Shuttle 2015 (", n_fmt(nrow(s2015)), ")  \u2502  ",
+           "FLUXNET2015 (", n_fmt(nrow(d_f15)), ")"),
+    show_x = TRUE, show_y_title = FALSE, top_mar = 0, bot_mar = 5
+  )
+
+  (p1 / p2 / p3) +
+    patchwork::plot_layout(guides = "collect") &
+    ggplot2::theme(
+      legend.position  = "bottom",
+      legend.direction = "horizontal",
+      legend.text      = ggplot2::element_text(size = as.integer(base_size) - 4L),
+      legend.key.size  = grid::unit(18, "pt")
+    )
+}
+
 # ---- fig_network_growth -----------------------------------------------------
 
 #' Cumulative site growth stacked area chart

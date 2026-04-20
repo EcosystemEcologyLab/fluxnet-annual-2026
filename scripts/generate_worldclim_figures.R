@@ -79,8 +79,8 @@ ggplot2::ggsave(out_wc, plot = p_wc, width = 9, height = 7,
                 units = "in", dpi = 150, bg = "white")
 message("Saved: ", out_wc)
 
-# ---- Whittaker WorldClim — 3-panel snapshots --------------------------------
-message("\n── Whittaker WorldClim — 3-panel snapshots ──")
+# ---- Whittaker WorldClim — 4-panel snapshots --------------------------------
+message("\n── Whittaker WorldClim — 4-panel snapshots ──")
 
 # Join first_year from snapshot onto data_yy (needed for year_cutoff filtering)
 data_yy_with_meta <- dplyr::left_join(
@@ -89,27 +89,47 @@ data_yy_with_meta <- dplyr::left_join(
   by = "site_id"
 )
 
-# Snapshot years correspond to major FLUXNET data releases:
-# La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
-cutoffs <- c(2007L, 2015L, 2025L)
-panels_snap <- lapply(cutoffs, function(yr) {
+# Snapshot years: Marconi/early network (2000), La Thuile (2007),
+# FLUXNET2015 (2015), Shuttle/modern (2025)
+cutoffs <- c(2000L, 2007L, 2015L, 2025L)
+panels_snap <- lapply(seq_along(cutoffs), function(i) {
+  yr <- cutoffs[[i]]
   message("  year_cutoff = ", yr)
-  fig_whittaker_hexbin_worldclim(
+  p <- fig_whittaker_hexbin_worldclim(
     data_yy        = data_yy_with_meta,
     worldclim_data = wc_rast,
     metadata       = snapshot_meta,
     flux_var       = "NEE_VUT_REF",
     year_cutoff    = yr
   ) + fluxnet_theme(base_size = 11)
+  if (i == 1L) {
+    # Top panel (2000): vertical colorbar inside upper-left
+    p +
+      ggplot2::guides(
+        fill = ggplot2::guide_colorbar(
+          title.position = "top",
+          barwidth       = 0.8,
+          barheight      = 5,
+          direction      = "vertical"
+        )
+      ) +
+      ggplot2::theme(
+        legend.position      = c(0.02, 0.88),
+        legend.justification = c(0, 1),
+        legend.background    = ggplot2::element_rect(fill = "white", color = NA)
+      )
+  } else {
+    p + ggplot2::theme(legend.position = "none")
+  }
 })
 
-pw_snap <- (patchwork::wrap_plots(panels_snap, ncol = 1) +
-  patchwork::plot_layout(axes = "collect", guides = "collect")) &
-  ggplot2::theme(legend.position = "bottom",
-                 plot.margin     = ggplot2::margin(0, 5, 0, 5))
+pw_snap <-
+  patchwork::wrap_plots(panels_snap, ncol = 1) +
+  patchwork::plot_layout(axes = "collect") &
+  ggplot2::theme(plot.margin = ggplot2::margin(0, 5, 0, 5))
 
 out_snap <- file.path(out_dir, "fig_whittaker_hexbin_worldclim_snapshots.png")
-ggplot2::ggsave(out_snap, plot = pw_snap, width = 8, height = 15,
+ggplot2::ggsave(out_snap, plot = pw_snap, width = 8, height = 20,
                 units = "in", dpi = 150, bg = "white")
 message("Saved: ", out_snap)
 

@@ -58,22 +58,24 @@ IGBP_order <- c(
 shape_igbp <- c(16, 15, 17, 18, 1, 2, 0, 5, 6, 7, 9, 10, 8, 4, 3)
 
 # ---- Axis labels -----------------------------------------------------------
-# Labels use ggtext HTML superscripts — render with element_markdown().
+# Labels use Unicode superscript characters (e.g. \u207b\u00b2 = ⁻², \u207b\u00b9 = ⁻¹).
+# These render correctly in element_text(), element_markdown(), and colorbar
+# guide titles — no HTML <sup> tags required.
 # Units reflect post-conversion values from fluxnet_convert_units().
 
-lab_precip_annual <- "Precipitation (mm y<sup>-1</sup>)"
+lab_precip_annual <- "Precipitation (mm yr\u207b\u00b9)"
 lab_temp_annual   <- "Temperature (\u00b0C)"
 
-lab_gpp_daily     <- "GPP (g C m<sup>-2</sup> d<sup>-1</sup>)"
-lab_reco_daily    <- "RECO (g C m<sup>-2</sup> d<sup>-1</sup>)"
-lab_nee_daily     <- "NEE (g C m<sup>-2</sup> d<sup>-1</sup>)"
+lab_gpp_daily     <- "GPP (g C m\u207b\u00b2 d\u207b\u00b9)"
+lab_reco_daily    <- "RECO (g C m\u207b\u00b2 d\u207b\u00b9)"
+lab_nee_daily     <- "NEE (g C m\u207b\u00b2 d\u207b\u00b9)"
 
-lab_nee_weekly    <- "NEE (g C m<sup>-2</sup> wk<sup>-1</sup>)"
-lab_nee_monthly   <- "NEE (g C m<sup>-2</sup> m<sup>-1</sup>)"
+lab_nee_weekly    <- "NEE (g C m\u207b\u00b2 wk\u207b\u00b9)"
+lab_nee_monthly   <- "NEE (g C m\u207b\u00b2 mo\u207b\u00b9)"
 
-lab_gpp_annual    <- "GPP (g C m<sup>-2</sup> yr<sup>-1</sup>)"
-lab_reco_annual   <- "RECO (g C m<sup>-2</sup> yr<sup>-1</sup>)"
-lab_nee_annual    <- "NEE (g C m<sup>-2</sup> yr<sup>-1</sup>)"
+lab_gpp_annual    <- "GPP (g C m\u207b\u00b2 yr\u207b\u00b9)"
+lab_reco_annual   <- "RECO (g C m\u207b\u00b2 yr\u207b\u00b9)"
+lab_nee_annual    <- "NEE (g C m\u207b\u00b2 yr\u207b\u00b9)"
 
 # ---- Colour palettes -------------------------------------------------------
 

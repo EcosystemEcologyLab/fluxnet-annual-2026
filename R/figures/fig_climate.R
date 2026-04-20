@@ -199,7 +199,7 @@ fig_whittaker_hexbin_era5 <- function(data_yy,
     ) +
     ggplot2::labs(
       x        = "Mean annual temperature (\u00b0C)",
-      y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
+      y        = "Mean annual precipitation (mm yr\u207b\u00b9)",
       subtitle = paste0("n\u2009=\u2009", n_sites, " sites",
                         " \u2014 Climate from ERA5 (site-extracted)")
     ) +
@@ -495,7 +495,7 @@ fig_whittaker_hexbin_worldclim <- function(data_yy,
     ) +
     ggplot2::labs(
       x        = "Mean annual temperature (\u00b0C)",
-      y        = "Mean annual precipitation (mm yr<sup>-1</sup>)",
+      y        = "Mean annual precipitation (mm yr\u207b\u00b9)",
       subtitle = paste0("n\u2009=\u2009", n_sites, " sites",
                         " \u2014 Climate from WorldClim 2.1")
     ) +

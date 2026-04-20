@@ -94,14 +94,22 @@ DUR_STYLE <- list(
 #' of \code{style$bin_width}) and anchored at zero via \code{boundary = 0}.
 #'
 #' @param site_meta Data frame.  Must contain \code{site_id},
-#'   \code{first_year}, and \code{last_year}.  Historical dataset CSVs
-#'   (Marconi, La Thuile, FLUXNET2015) do not currently include these columns;
-#'   enrich them before running \code{Dur02}–\code{Dur04}.
+#'   \code{first_year}, and \code{last_year}.
 #' @param snapshot_year Integer.  Year against which record length is computed:
 #'   \code{record_length = snapshot_year - first_year}.  Sites with
 #'   \code{first_year > snapshot_year} are excluded.
 #' @param detail_label Character scalar or \code{NULL}.  Dataset label shown in
 #'   the top-right inset text.
+#' @param is_shuttle Logical.  If \code{TRUE}, site-years are counted from
+#'   \code{presence_df} (rows where \code{has_data = TRUE} and
+#'   \code{year <= snapshot_year}).  If \code{FALSE} (default), site-years are
+#'   computed as \code{sum(last_year - first_year + 1)} across all sites in the
+#'   filtered dataset — the appropriate formula for historical site lists whose
+#'   records are fully contained within their snapshot window.
+#' @param presence_df Data frame or \code{NULL}.  Required when
+#'   \code{is_shuttle = TRUE}.  Must contain columns \code{site_id},
+#'   \code{year} (integer), and \code{has_data} (logical).  Typically
+#'   \code{data/snapshots/site_year_data_presence.csv}.
 #' @param style Named list.  Visual parameters; defaults to
 #'   \code{\link{DUR_STYLE}}.  Set \code{style$xlim} and \code{style$ylim}
 #'   before calling — compute them once from all 9 datasets in the generate
@@ -125,6 +133,8 @@ DUR_STYLE <- list(
 fig_duration_historical <- function(site_meta,
                                      snapshot_year,
                                      detail_label = NULL,
+                                     is_shuttle   = FALSE,
+                                     presence_df  = NULL,
                                      style        = DUR_STYLE) {
 
   required_cols <- c("site_id", "first_year", "last_year")
@@ -132,9 +142,7 @@ fig_duration_historical <- function(site_meta,
   if (length(missing_cols) > 0L) {
     stop(
       "fig_duration_historical: site_meta is missing required column(s): ",
-      paste(missing_cols, collapse = ", "), ". ",
-      "Historical site CSVs (Marconi, La Thuile, FLUXNET2015) do not include ",
-      "first_year/last_year — enrich them before generating Dur02-04.",
+      paste(missing_cols, collapse = ", "),
       call. = FALSE
     )
   }
@@ -165,11 +173,28 @@ fig_duration_historical <- function(site_meta,
              ggplot2::labs(title = "No data"))
   }
 
-  detail_text <- if (!is.null(detail_label)) {
-    paste0(detail_label, "\nN = ", n_sites, " sites")
+  # Compute site-years: Shuttle uses presence_df (observed valid data);
+  # historical datasets use span formula (last_year - first_year + 1).
+  n_site_years <- if (is_shuttle) {
+    if (is.null(presence_df)) {
+      stop(
+        "fig_duration_historical: is_shuttle = TRUE requires presence_df.",
+        call. = FALSE
+      )
+    }
+    sum(
+      presence_df$site_id %in% sites$site_id &
+        presence_df$year   <= as.integer(snapshot_year) &
+        presence_df$has_data
+    )
   } else {
-    paste0("N = ", n_sites, " sites")
+    sum(sites$last_year - sites$first_year + 1L, na.rm = TRUE)
   }
+
+  detail_text <- paste0(
+    if (!is.null(detail_label)) paste0(detail_label, "\n") else "",
+    "N = ", n_sites, " sites | ", n_site_years, " site-years"
+  )
   annot_size <- style$base_size * 0.25   # mm; ≈ base_size pt for base_size = 24
 
   # X-axis breaks aligned to bin edges (multiples of bin_width from 0)

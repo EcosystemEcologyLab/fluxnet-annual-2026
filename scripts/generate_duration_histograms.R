@@ -4,19 +4,14 @@
 ##
 ## Outputs (review/figures/network/):
 ##   fig_dur01_ShuttleFull.png           — FLUXNET Shuttle 2025 (full network)
-##   fig_dur02_Marconi.png               — Marconi 2000           [BLOCKED]
-##   fig_dur03_LaThuile.png              — La Thuile 2007         [BLOCKED]
-##   fig_dur04_FLUXNET2015.png           — FLUXNET2015            [BLOCKED]
+##   fig_dur02_Marconi.png               — Marconi 2000
+##   fig_dur03_LaThuile.png              — La Thuile 2007         [commented]
+##   fig_dur04_FLUXNET2015.png           — FLUXNET2015            [commented]
 ##   fig_dur05_ShuttleSnapshot2000.png   — Shuttle snapshot 2000
 ##   fig_dur06_ShuttleSnapshot2007.png   — Shuttle snapshot 2007
 ##   fig_dur07_ShuttleSnapshot2015.png   — Shuttle snapshot 2015
-##   fig_dur08_HistoricalStack.png       — Dur02/Dur03/Dur04 stacked [BLOCKED]
+##   fig_dur08_HistoricalStack.png       — Dur02/Dur03/Dur04 stacked [commented]
 ##   fig_dur09_ShuttleSnapshotsStack.png — Dur05/Dur06/Dur07 stacked
-##
-## Blocked figures:
-##   Dur02-04: historical CSVs (Marconi, La Thuile, FLUXNET2015) lack
-##             first_year/last_year columns — enrich before unblocking.
-##   Dur08:    depends on Dur02-04.
 ##
 ## NOTE on data sources: Dur02-04 use non-Shuttle historical site lists for
 ## development/comparison purposes only — clearly labelled per CLAUDE.md §1.
@@ -83,6 +78,16 @@ sites_fluxnet2015 <- readr::read_csv("data/snapshots/sites_fluxnet2015_clean.csv
   dplyr::left_join(readr::read_csv("data/snapshots/years_fluxnet2015.csv",
                                     show_col_types = FALSE),
                    by = "site_id")
+
+# Shuttle site-year presence table — used by Shuttle figures (is_shuttle = TRUE)
+# to count observed valid site-years rather than estimating from first/last year.
+presence_df <- readr::read_csv(
+  file.path(FLUXNET_DATA_ROOT, "snapshots", "site_year_data_presence.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::mutate(year = as.integer(.data$year),
+                has_data = as.logical(.data$has_data))
+message("Loaded presence_df: ", nrow(presence_df), " rows")
 
 # ---- Compute shared axis limits ----------------------------------------------
 # xlim: 0 to max record length across all datasets at their respective snapshot
@@ -156,6 +161,8 @@ dur01 <- fig_duration_historical(
   site_meta     = shuttle_meta,
   snapshot_year = 2025L,
   detail_label  = "FLUXNET Shuttle 2025",
+  is_shuttle    = TRUE,
+  presence_df   = presence_df,
   style         = style
 )
 save_dur(dur01, "fig_dur01_ShuttleFull")
@@ -213,6 +220,8 @@ dur05 <- fig_duration_historical(
   site_meta     = shuttle_2000,
   snapshot_year = 2000L,
   detail_label  = "Shuttle snapshot 2000",
+  is_shuttle    = TRUE,
+  presence_df   = presence_df,
   style         = style
 )
 save_dur(dur05, "fig_dur05_ShuttleSnapshot2000")
@@ -227,6 +236,8 @@ dur06 <- fig_duration_historical(
   site_meta     = shuttle_2007,
   snapshot_year = 2007L,
   detail_label  = "Shuttle snapshot 2007",
+  is_shuttle    = TRUE,
+  presence_df   = presence_df,
   style         = style
 )
 save_dur(dur06, "fig_dur06_ShuttleSnapshot2007")
@@ -241,6 +252,8 @@ dur07 <- fig_duration_historical(
   site_meta     = shuttle_2015,
   snapshot_year = 2015L,
   detail_label  = "Shuttle snapshot 2015",
+  is_shuttle    = TRUE,
+  presence_df   = presence_df,
   style         = style
 )
 save_dur(dur07, "fig_dur07_ShuttleSnapshot2015")

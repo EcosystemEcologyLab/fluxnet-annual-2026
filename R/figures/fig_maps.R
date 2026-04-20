@@ -699,17 +699,18 @@ fig_map_subregion_sites <- function(metadata,
 #' }
 #' @export
 MAP_STYLE <- list(
-  width_in    = 14,
-  height_in   = 7,
-  base_size   = 24,
-  legend_pos  = c(0.02, 0.88),
-  legend_just = c(0, 1),
-  detail_x    = 0.02,
-  detail_y    = 0.98,
+  width_in      = 14,
+  height_in     = 7,
+  base_size     = 24,
+  legend_pos    = c(0.02, 0.02),
+  legend_just   = c(0, 0),
+  detail_x      = 0.02,
+  detail_y      = 0.02,
+  detail_vjust  = -0.5,
   # Colour scale breaks clipped to avoid US dominance.
   # Compute from 95th percentile of per-subregion site counts across all datasets.
-  breaks      = NULL,
-  na_fill     = "grey90"
+  breaks        = NULL,
+  na_fill       = "grey90"
 )
 
 # ---- fig_map_historical -------------------------------------------------------
@@ -849,7 +850,8 @@ fig_map_historical <- function(site_meta,
       legend.direction     = "horizontal",
       legend.title         = ggplot2::element_text(size  = style$base_size * 0.7,
                                                    hjust = 0.5),
-      legend.text          = ggplot2::element_text(size  = style$base_size * 0.65)
+      legend.text          = ggplot2::element_text(size  = style$base_size * 0.65),
+      legend.margin        = ggplot2::margin(4, 4, 4, 4)
     ) +
     # Grey background for all land
     ggplot2::geom_sf(data = countries, fill = "grey90", colour = "white",
@@ -883,16 +885,19 @@ fig_map_historical <- function(site_meta,
       size   = 1.5,
       stroke = 0.4
     ) +
-    # Inset detail text: top-left corner
+    # Inset detail text: bottom-left corner
     ggplot2::annotate(
       "text",
-      x        = -Inf, y = Inf,
-      label    = detail_text,
-      hjust    = -0.05, vjust = 1.3,
-      size     = annot_size,
-      fontface = "bold"
+      x     = -Inf, y = -Inf,
+      label = detail_text,
+      hjust = -0.05, vjust = -0.5,
+      size  = annot_size,
+      color = "black",
+      fontface = "plain"
     ) +
-    ggplot2::coord_sf(expand = FALSE)
+    # Crop southern extent: remove empty ocean below lowest sites while
+    # retaining AU, NZ, southern Africa, and southern South America.
+    ggplot2::coord_sf(ylim = c(-55, 85), expand = FALSE)
 }
 
 # ---- fig_map_country_sites (deprecated alias) --------------------------------

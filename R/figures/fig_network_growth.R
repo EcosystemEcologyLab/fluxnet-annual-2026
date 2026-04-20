@@ -629,6 +629,172 @@ fig_siteyears_by_year <- function(presence_df,
     fluxnet_theme(base_size = base_size)
 }
 
+# ---- fig_siteyears_by_year_igbp ---------------------------------------------
+
+#' Site-years per calendar year: IGBP-stacked Shuttle area with historical overlays
+#'
+#' Variant of \code{\link{fig_siteyears_by_year}} in which the Shuttle
+#' background is a stacked area chart coloured by IGBP class rather than a
+#' plain grey fill. Historical dataset lines (Marconi, La Thuile, FLUXNET2015)
+#' and all other visual elements are identical to the base function.
+#'
+#' The IGBP class for each site is taken from \code{shuttle_meta} (the
+#' \code{igbp} column of the Shuttle snapshot CSV). Sites in \code{presence_df}
+#' that cannot be matched to an IGBP class are silently dropped.
+#'
+#' NOTE: historical site lists are comparison/illustration data only —
+#' non-Shuttle primary data (see CLAUDE.md §1).
+#'
+#' @param presence_df Data frame. \code{data/snapshots/site_year_data_presence.csv}
+#'   with columns \code{site_id}, \code{year} (integer), and \code{has_data}
+#'   (logical).
+#' @param shuttle_meta Data frame. Shuttle snapshot CSV (one row per site) with
+#'   columns \code{site_id} and \code{igbp}.
+#' @param sites_marconi Data frame. Marconi site list joined with
+#'   \code{years_marconi.csv}; must contain \code{site_id}, \code{first_year},
+#'   and \code{last_year}.
+#' @param sites_la_thuile Data frame. La Thuile site list; same columns.
+#' @param sites_fluxnet2015 Data frame. FLUXNET2015 site list; same columns.
+#' @param year_range Integer vector. Calendar years to display (default
+#'   \code{1991:2024}).
+#' @param base_size Integer. Base font size for \code{\link{fluxnet_theme}}
+#'   (default \code{36L}).
+#'
+#' @return A ggplot object.
+#'
+#' @examples
+#' \dontrun{
+#' presence <- readr::read_csv("data/snapshots/site_year_data_presence.csv")
+#' shuttle  <- readr::read_csv(
+#'   "data/snapshots/fluxnet_shuttle_snapshot_20260414T154430.csv"
+#' )
+#' # ... load marconi, la_thuile, fluxnet2015 ...
+#' p <- fig_siteyears_by_year_igbp(presence, shuttle, marconi, la_thuile, f15)
+#' print(p)
+#' }
+#' @export
+fig_siteyears_by_year_igbp <- function(presence_df,
+                                        shuttle_meta,
+                                        sites_marconi,
+                                        sites_la_thuile,
+                                        sites_fluxnet2015,
+                                        year_range = 1991:2024,
+                                        base_size  = 36L) {
+
+  yr_min <- min(year_range)
+  yr_max <- max(year_range)
+
+  # ---- Shuttle: site-years per year per IGBP class -------------------------
+  igbp_lookup <- shuttle_meta |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
+    dplyr::select("site_id", "igbp") |>
+    dplyr::filter(!is.na(.data$igbp), .data$igbp %in% IGBP_order)
+
+  shuttle_igbp_annual <- presence_df |>
+    dplyr::filter(.data$has_data,
+                  .data$year >= yr_min,
+                  .data$year <= yr_max) |>
+    dplyr::left_join(igbp_lookup, by = "site_id") |>
+    dplyr::filter(!is.na(.data$igbp)) |>
+    dplyr::mutate(igbp = factor(.data$igbp, levels = IGBP_order)) |>
+    dplyr::count(.data$year, .data$igbp, name = "n") |>
+    # Ensure all year × IGBP combinations are present so stacking is complete
+    tidyr::complete(year, igbp, fill = list(n = 0L))
+
+  # ---- Historical: expand site records to one row per active year ----------
+  # Identical logic to fig_siteyears_by_year() — base R, no purrr dependency.
+  .expand_years <- function(df) {
+    valid <- df |>
+      dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
+      dplyr::filter(!is.na(.data$first_year), !is.na(.data$last_year)) |>
+      dplyr::mutate(first_year = as.integer(.data$first_year),
+                    last_year  = as.integer(.data$last_year))
+    if (nrow(valid) == 0L) {
+      return(data.frame(year = integer(0L), n = integer(0L)))
+    }
+    do.call(rbind, Map(
+      function(fy, ly) data.frame(year = seq.int(fy, ly)),
+      valid$first_year, valid$last_year
+    )) |>
+      dplyr::filter(.data$year >= yr_min, .data$year <= yr_max) |>
+      dplyr::count(.data$year, name = "n")
+  }
+
+  hist_colours <- c(
+    "Marconi"     = "#2ECC71",
+    "La Thuile"   = "#E74C3C",
+    "FLUXNET2015" = "#3498DB"
+  )
+
+  hist_all <- dplyr::bind_rows(
+    dplyr::mutate(.expand_years(sites_marconi),     dataset = "Marconi"),
+    dplyr::mutate(.expand_years(sites_la_thuile),   dataset = "La Thuile"),
+    dplyr::mutate(.expand_years(sites_fluxnet2015), dataset = "FLUXNET2015")
+  ) |>
+    dplyr::mutate(dataset = factor(.data$dataset, levels = names(hist_colours)))
+
+  peak_labels <- hist_all |>
+    dplyr::group_by(.data$dataset) |>
+    dplyr::slice_max(.data$n, n = 1L, with_ties = FALSE) |>
+    dplyr::ungroup()
+
+  ggplot2::ggplot() +
+    # Vertical release-year reference lines (behind all data)
+    ggplot2::geom_vline(
+      xintercept = c(2000L, 2007L, 2015L),
+      linetype   = "dashed", colour = "grey55", linewidth = 0.7
+    ) +
+    # Shuttle background: IGBP-stacked area
+    ggplot2::geom_area(
+      data = shuttle_igbp_annual,
+      ggplot2::aes(x = .data$year, y = .data$n, fill = .data$igbp),
+      position  = "stack",
+      alpha     = 0.8,
+      colour    = NA       # no bar outlines — too busy with 15 classes
+    ) +
+    scale_fill_igbp(name = "IGBP") +
+    # Historical dataset lines
+    ggplot2::geom_line(
+      data = hist_all,
+      ggplot2::aes(x      = .data$year,
+                   y      = .data$n,
+                   colour = .data$dataset),
+      linewidth = 1.5
+    ) +
+    # Direct labels at peak year
+    ggplot2::geom_label(
+      data = peak_labels,
+      ggplot2::aes(x      = .data$year,
+                   y      = .data$n,
+                   label  = .data$dataset,
+                   colour = .data$dataset),
+      fill        = "white",
+      size        = base_size * 0.22,
+      linewidth   = 0.5,
+      fontface    = "bold",
+      vjust       = -0.4,
+      show.legend = FALSE
+    ) +
+    ggplot2::scale_colour_manual(values = hist_colours, guide = "none") +
+    ggplot2::scale_x_continuous(
+      limits = c(yr_min, yr_max),
+      breaks = seq(1990L, 2025L, by = 5L),
+      expand = ggplot2::expansion(mult = c(0.01, 0.01))
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = scales::pretty_breaks(n = 6),
+      expand = ggplot2::expansion(mult = c(0, 0.18))
+    ) +
+    ggplot2::labs(x = "Year", y = "Site-years per year") +
+    fluxnet_theme(base_size = base_size) +
+    ggplot2::theme(
+      legend.position  = "right",
+      legend.text      = ggplot2::element_text(size = as.integer(base_size) - 10L),
+      legend.title     = ggplot2::element_text(size = as.integer(base_size) - 8L),
+      legend.key.size  = grid::unit(14, "pt")
+    )
+}
+
 # ---- fig_network_growth -----------------------------------------------------
 
 #' Cumulative site growth stacked area chart

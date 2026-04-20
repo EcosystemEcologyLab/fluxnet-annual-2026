@@ -1,5 +1,5 @@
 ## scripts/generate_duration_histograms.R
-## Generates all 9 canonical deployment duration histogram figures.
+## Generates all 10 canonical deployment duration histogram figures.
 ## Run from repo root: Rscript scripts/generate_duration_histograms.R
 ##
 ## Outputs (review/figures/network/):
@@ -12,8 +12,9 @@
 ##   fig_dur07_ShuttleSnapshot2015.png — Shuttle snapshot 2015
 ##   fig_dur08_HistoricalOverlay.png   — Shuttle snapshots vs historical datasets (3-panel overlay)
 ##   fig_dur09_SiteYearsByYear.png     — Site-years per calendar year, Shuttle vs historical
+##   fig_dur10_SiteYearsByYear_IGBP.png — Site-years per calendar year, Shuttle coloured by IGBP
 ##
-## NOTE on data sources: Dur02-04, Dur08-09 use non-Shuttle historical site
+## NOTE on data sources: Dur02-04, Dur08-10 use non-Shuttle historical site
 ## lists for development/comparison purposes only — labelled per CLAUDE.md §1.
 ##
 ## Architecture mirrors scripts/generate_whittaker.R:
@@ -298,4 +299,21 @@ ggplot2::ggsave(path09, plot = dur09,
                 width = 14, height = 7, units = "in", dpi = 150, bg = "white")
 message("Saved: ", path09)
 
-message("\nDone. All 9 figures generated: Dur01-09.")
+# ============================================================
+# Dur10 — Site-years by calendar year, Shuttle coloured by IGBP
+# NOTE: comparison figure only — non-Shuttle historical data (see CLAUDE.md §1)
+# ============================================================
+message("\n── Dur10: site-years by calendar year (IGBP) ──")
+dur10 <- fig_siteyears_by_year_igbp(
+  presence_df       = presence_df,
+  shuttle_meta      = shuttle_meta,
+  sites_marconi     = sites_marconi,
+  sites_la_thuile   = sites_la_thuile,
+  sites_fluxnet2015 = sites_fluxnet2015
+)
+path10 <- file.path(out_dir, "fig_dur10_SiteYearsByYear_IGBP.png")
+ggplot2::ggsave(path10, plot = dur10,
+                width = 14, height = 7, units = "in", dpi = 150, bg = "white")
+message("Saved: ", path10)
+
+message("\nDone. All 10 figures generated: Dur01-10.")

@@ -1,1 +1,14 @@
-Figure 7 — Latitudinal distribution of annual carbon and energy fluxes across the FLUXNET network. Panels show NEE (g C m⁻² yr⁻¹), Latent Heat Flux LE (W m⁻²), and Sensible Heat Flux H (W m⁻²) by 5° latitude band. Ribbon shows min-max range, points show site-mean flux. Based on 530 sites with valid NEE_VUT_REF after QC. Data source: FLUXNET Shuttle v0.3.7, April 2026.
+Figure 7 — Latitudinal Distribution of Annual Carbon and Energy Fluxes
+
+This figure shows annual NEE, Latent Heat Flux (LE), and Sensible Heat Flux (H)
+binned by 5-degree latitude bands across the FLUXNET network.
+
+Each panel shows the min-max range as a ribbon and site-mean flux as points
+per latitude band. Panels from top to bottom: NEE (g C m⁻² yr⁻¹), LE (W m⁻²),
+H (W m⁻²). Points are coloured by IGBP class.
+
+Based on 530 sites with valid NEE_VUT_REF after QC (NEE_VUT_REF_QC threshold
+= 0.50, gating on primary variable only).
+
+Data source: FLUXNET Shuttle v0.3.7, April 2026.
+Function: fig_latitudinal_multi() in R/figures/fig_latitudinal.R

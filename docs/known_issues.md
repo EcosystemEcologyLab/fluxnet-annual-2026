@@ -1,7 +1,7 @@
 # Known Issues
 
 This file tracks bugs and data quality issues encountered during pipeline development.
-Issues are reported to the relevant maintainers. Last updated: 2026-04-16.
+Issues are reported to the relevant maintainers. Last updated: 2026-04-20.
 
 **ONEFlux contact:** Gilberto Pastorello (LBL) has been flagged by Dario Papale as the
 contact for ONEFlux processing documentation — relevant for methods section writing.
@@ -15,7 +15,7 @@ Maintainer: Eric Scott ([@Aariq](https://github.com/Aariq))
 
 | Issue | Description | Impact | Workaround | Action |
 |---|---|---|---|---|
-| `flux_badm()` calls `quit()` | Function terminates the R session rather than throwing a catchable error when called from within a script | `03_read.R` exits after ~24 seconds without processing BADM data | **Implemented:** `03_read.R` reads BIF CSV files directly via `readr::read_csv()` + `dplyr::bind_rows()`, bypassing `flux_badm()` entirely — same data, no API call | Open GitHub issue on EcosystemEcologyLab/fluxnet |
+| `flux_badm()` calls `quit()` | Function terminates the R session rather than throwing a catchable error when called from within a script | `03_read.R` exits after ~24 seconds without processing BADM data | **Implemented:** `03_read.R` reads BIF CSV files directly via `readr::read_csv()` + `dplyr::bind_rows()`, bypassing `flux_badm()` entirely — same data, no API call | **RESOLVED** — workaround in place; GitHub issue filed on EcosystemEcologyLab/fluxnet |
 
 ---
 
@@ -104,7 +104,7 @@ Contacts: Danielle Christianson, Dario Papale
 | Issue | Description | Impact | Workaround | Action |
 |---|---|---|---|---|
 | `httr2_failure` on batch download | HTTP request failures during download of batches 12 and 13 — `resp` is not an HTTP response object | Some sites may not download on first attempt | Re-run `batch_download.R` — resumable design handles retries | Report to support@fluxnet.org |
-| AU-Dry BIF column order | `TERN_AU-Dry_FLUXNET_BIF_2009-2025_v1.3_r1.csv` has columns in unexpected order causing read failure | Site excluded from read stage | Fixed in `03_read.R` with column reordering | Report to TERN data contributor |
+| AU-Dry BIF column order | `TERN_AU-Dry_FLUXNET_BIF_2009-2025_v1.3_r1.csv` has columns in unexpected order causing read failure | Site excluded from read stage | Fixed in `03_read.R` with column reordering | **RESOLVED** — fixed in `03_read.R`; reported to TERN data contributor |
 | Windows file paths in `VARIABLE_GROUP` | 3 BIF files contain Windows-style file paths appearing as `VARIABLE_GROUP` values | Inflates group count and adds processing overhead | Filtered in `03_read.R` with regex guard | Report to support@fluxnet.org with affected site IDs |
 
 ---
@@ -179,6 +179,15 @@ currency gaps rather than ERA5/FLUXMET row-structure artefacts.
 - [ ] Recompute and recommit `site_year_data_presence.csv` after the filter is added.
 - [ ] Audit a sample of the 58 sites that lost active status under the new definition to
       confirm these are genuine data-currency differences, not filtering artefacts.
+
+---
+
+## Section 7 — Pipeline analysis bugs (resolved)
+
+| Issue | Description | Impact | Fix | Resolved |
+|---|---|---|---|---|
+| QC gating applied to all `_QC` variables | Row exclusion in `04_qc.R` evaluated `_QC` thresholds across all columns (NEE, GPP, RECO, LE, H), causing 347/672 sites (52%) to lose all annual records when any secondary variable had high gap-fill | Over-exclusion of valid sites | Fixed: row exclusion now gated on `NEE_VUT_REF_QC` only; secondary variable QC columns retained for per-variable downstream filtering | **RESOLVED 2026-04-20** — implemented in `R/qc.R` and `scripts/04_qc.R` |
+| Unit conversion applied to pre-integrated annual/monthly data | `fluxnet_convert_units()` applied the µmol CO₂ m⁻² s⁻¹ → gC m⁻² per-period factor to YY and MM carbon flux variables that are already expressed in gC m⁻² per period, producing an ~800× overcorrection | All annual and monthly NEE/GPP/RECO values inflated by ~800× in outputs and figures | Fixed in commit 31e653b: YY and MM carbon flux variables passed through unchanged; conversion applied only at HH/HR/DD resolutions | **RESOLVED 2026-04-20** — all pre-fix figure outputs must be regenerated |
 
 ---
 

@@ -80,7 +80,7 @@ presence_df <- readr::read_csv(
 # xlim: 0 to max record length across all datasets at their respective snapshot
 #       years. Currently computed from Shuttle only (historical CSVs lack
 #       first_year). Revisit when Dur02-04 data is enriched.
-# ylim: 0 to max bin count across datasets, with DUR_STYLE$bin_width = 5.
+# ylim: 0 to max bin count across datasets, with DUR_STYLE$bin_width = 3.
 
 message("\nComputing shared axis limits...")
 
@@ -138,12 +138,10 @@ save_dur <- function(p, name, s = style) {
 # ============================================================
 message("\n── Dur01: FLUXNET Shuttle 2025 ──")
 dur01 <- fig_duration_historical(
-  site_meta    = shuttle_meta,
+  site_meta     = shuttle_meta,
   snapshot_year = 2025L,
-  detail_label = "FLUXNET Shuttle 2025",
-  is_shuttle   = TRUE,
-  presence_df  = presence_df,
-  style        = style
+  detail_label  = "FLUXNET Shuttle 2025",
+  style         = style
 )
 save_dur(dur01, "fig_dur01_ShuttleFull")
 
@@ -198,8 +196,6 @@ save_dur(dur01, "fig_dur01_ShuttleFull")
 #   site_meta     = shuttle_2000,
 #   snapshot_year = 2000L,
 #   detail_label  = "Shuttle snapshot 2000",
-#   is_shuttle    = TRUE,
-#   presence_df   = presence_df,
 #   style         = style
 # )
 # save_dur(dur05, "fig_dur05_ShuttleSnapshot2000")
@@ -212,8 +208,6 @@ save_dur(dur01, "fig_dur01_ShuttleFull")
 #   site_meta     = shuttle_2007,
 #   snapshot_year = 2007L,
 #   detail_label  = "Shuttle snapshot 2007",
-#   is_shuttle    = TRUE,
-#   presence_df   = presence_df,
 #   style         = style
 # )
 # save_dur(dur06, "fig_dur06_ShuttleSnapshot2007")
@@ -226,8 +220,6 @@ save_dur(dur01, "fig_dur01_ShuttleFull")
 #   site_meta     = shuttle_2015,
 #   snapshot_year = 2015L,
 #   detail_label  = "Shuttle snapshot 2015",
-#   is_shuttle    = TRUE,
-#   presence_df   = presence_df,
 #   style         = style
 # )
 # save_dur(dur07, "fig_dur07_ShuttleSnapshot2015")

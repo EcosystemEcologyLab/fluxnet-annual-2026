@@ -1164,18 +1164,17 @@ fig_latency_by_subregion <- function(metadata,
 
 #' Data latency by UN subregion — percentage version with N= annotations
 #'
-#' Identical to [fig_latency_by_subregion()] in data preparation and visual
-#' design, with two differences: (1) the x axis shows each latency bin as a
-#' percentage of total functionally active sites within that subregion rather
-#' than a raw count, and (2) each bar is annotated at the right edge with the
-#' absolute site count `(N=...)`.
+#' Like [fig_latency_by_subregion()] but shows all sites in each subregion
+#' as percentages. Sites with latency 0–4 years use the traffic-light palette;
+#' sites with latency > 4 years are shown in grey (`"4+ years"` bin). Each bar
+#' is annotated at the right edge with the total site count `(N=...)`.
 #'
 #' @inheritParams fig_latency_by_subregion
 #'
 #' @return A ggplot object: horizontal stacked bar chart, x-axis = percentage
-#'   of functionally active sites (0–100%), y-axis = UN subregion ordered by
-#'   total active sites (descending from top), fill = latency bin
-#'   (traffic-light palette), right-edge `(N=...)` annotations.
+#'   of all sites (0–100%), y-axis = UN subregion ordered by total sites
+#'   (descending from top), fill = latency bin (traffic-light palette plus
+#'   grey for 4+ years), right-edge `(N=...)` annotations.
 #'
 #' @examples
 #' \dontrun{
@@ -1209,7 +1208,8 @@ fig_latency_by_subregion_pct <- function(metadata,
     "0\u20131 years" = "#2ECC71",
     "1\u20132 years" = "#F39C12",
     "2\u20133 years" = "#E67E22",
-    "3\u20134 years" = "#E74C3C"
+    "3\u20134 years" = "#E74C3C",
+    "4+ years"       = "#95A5A6"
   )
   latency_levels <- names(latency_colours)
 
@@ -1249,61 +1249,55 @@ fig_latency_by_subregion_pct <- function(metadata,
     )
   }
 
-  # --- filter to functionally active sites and bin latency -------------------
-  active_flags <- is_functionally_active(
-    df$site_id,
-    reference_year   = as.integer(current_year) - 1L,
-    presence_df      = presence_df,
-    active_threshold = active_threshold,
-    last_year_vec    = df$last_year
-  )
-  active <- df |>
-    dplyr::filter(.data$latency >= 0L, active_flags[.data$site_id]) |>
+  # --- bin latency for all sites with non-negative latency -------------------
+  # Sites with latency > 4 years are shown in grey ("4+ years").
+  all_sites <- df |>
+    dplyr::filter(.data$latency >= 0L) |>
     dplyr::mutate(
       latency_bin = dplyr::case_when(
         .data$latency <= 1L ~ "0\u20131 years",
         .data$latency <= 2L ~ "1\u20132 years",
         .data$latency <= 3L ~ "2\u20133 years",
-        .data$latency <= 4L ~ "3\u20134 years"
+        .data$latency <= 4L ~ "3\u20134 years",
+        TRUE                ~ "4+ years"
       ),
       latency_bin = factor(.data$latency_bin, levels = latency_levels)
     )
 
-  if (nrow(active) == 0L) {
-    warning("fig_latency_by_subregion_pct: no functionally active sites — returning empty plot.",
+  if (nrow(all_sites) == 0L) {
+    warning("fig_latency_by_subregion_pct: no sites with valid latency — returning empty plot.",
             call. = FALSE)
     return(ggplot2::ggplot() + fluxnet_theme() +
              ggplot2::labs(title = "Latency by subregion (%) — no data"))
   }
 
-  # --- order subregions by total active sites, ascending so highest is top ---
-  subregion_order <- active |>
+  # --- order subregions by total sites, ascending so highest is top ----------
+  subregion_order <- all_sites |>
     dplyr::count(.data$subregion, name = "total") |>
     dplyr::arrange(.data$total) |>
     dplyr::pull(.data$subregion)
 
-  active <- dplyr::mutate(
-    active,
+  all_sites <- dplyr::mutate(
+    all_sites,
     subregion = factor(.data$subregion, levels = subregion_order)
   )
 
-  n_active    <- nrow(active)
-  n_subregion <- dplyr::n_distinct(active$subregion)
+  n_total     <- nrow(all_sites)
+  n_subregion <- dplyr::n_distinct(all_sites$subregion)
 
   caption_text <- paste0(
-    "Functionally active sites only (data submitted within ",
-    active_threshold, " years). ",
-    "Latency = ", current_year, " \u2212 last data year."
+    "All sites. Latency = ", current_year, " \u2212 last data year. ",
+    "Grey = \u22654 years latency (data not submitted within 4 years)."
   )
 
   # --- compute per-subregion percentages and totals --------------------------
-  counts <- active |>
+  counts <- all_sites |>
     dplyr::count(.data$subregion, .data$latency_bin, .drop = FALSE) |>
     dplyr::group_by(.data$subregion) |>
     dplyr::mutate(pct = .data$n / sum(.data$n) * 100) |>
     dplyr::ungroup()
 
-  subregion_totals <- active |>
+  subregion_totals <- all_sites |>
     dplyr::count(.data$subregion, name = "n_sites") |>
     dplyr::mutate(subregion = factor(.data$subregion, levels = subregion_order))
 
@@ -1333,10 +1327,10 @@ fig_latency_by_subregion_pct <- function(metadata,
       }
     ) +
     ggplot2::labs(
-      title    = "Data latency by UN subregion — functionally active sites",
-      subtitle = paste0("n\u2009=\u2009", n_active, " sites across ",
+      title    = "Data latency by UN subregion — all sites",
+      subtitle = paste0("n\u2009=\u2009", n_total, " sites across ",
                         n_subregion, " subregions"),
-      x        = "% of functionally active sites",
+      x        = "% of sites",
       y        = NULL,
       caption  = caption_text
     ) +

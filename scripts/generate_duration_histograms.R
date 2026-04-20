@@ -17,9 +17,10 @@
 ## development/comparison purposes only — clearly labelled per CLAUDE.md §1.
 ##
 ## Architecture mirrors scripts/generate_whittaker.R:
-##   - Shared xlim/ylim computed once from all available datasets
+##   - Shared xlim/ylim computed once from all 7 datasets (Dur01–07)
 ##   - Single core function fig_duration_historical() for all panels
-##   - Stack figures assembled via .make_dur_stack()
+##   - Stack figures assembled via .make_dur_stack() — Dur08/Dur09 disabled
+##     pending review of individual panels; re-enable section at end of file
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -90,10 +91,10 @@ presence_df <- readr::read_csv(
 message("Loaded presence_df: ", nrow(presence_df), " rows")
 
 # ---- Compute shared axis limits ----------------------------------------------
-# xlim: 0 to max record length across all datasets at their respective snapshot
-#       years. Shuttle 2025 drives the upper bound; snapshot years give shorter
-#       records. Historical datasets use their native first_year from lookup tables.
-# ylim: 0 to max bin count across all Shuttle snapshot years, with bin_width=3.
+# xlim: 0 to max record length across all 7 datasets at their respective
+#       snapshot years. Shuttle 2025 drives the upper bound.
+# ylim: 0 to max bin count across all 7 datasets (Dur01–07) so individual
+#       panels share identical axes regardless of dataset size.
 
 message("\nComputing shared axis limits...")
 
@@ -109,10 +110,12 @@ max_record_length <- max(
   na.rm = TRUE
 )
 
-# Max bin count: maximum across all four Shuttle snapshot years (2000/2007/2015/2025)
+# Max bin count: maximum across all 7 datasets (4 Shuttle snapshots +
+# Marconi/La Thuile/FLUXNET2015) so every panel shares the same y axis.
 .max_bin_count <- function(first_years, snapshot_yr,
                            bin_width = DUR_STYLE$bin_width) {
-  records <- snapshot_yr - first_years[first_years <= snapshot_yr]
+  fy      <- as.integer(first_years)
+  records <- snapshot_yr - fy[!is.na(fy) & fy <= snapshot_yr]
   if (length(records) == 0L) return(0L)
   max_r  <- max(records) + bin_width
   breaks <- seq(0, max_r, by = bin_width)
@@ -121,10 +124,15 @@ max_record_length <- max(
 }
 
 max_bin_count <- max(
+  # Shuttle snapshot years (Dur01, Dur05, Dur06, Dur07)
   .max_bin_count(shuttle_sites$first_year, 2025L),
   .max_bin_count(shuttle_sites$first_year, 2015L),
   .max_bin_count(shuttle_sites$first_year, 2007L),
-  .max_bin_count(shuttle_sites$first_year, 2000L)
+  .max_bin_count(shuttle_sites$first_year, 2000L),
+  # Historical datasets (Dur02, Dur03, Dur04)
+  .max_bin_count(sites_marconi$first_year,     2000L),
+  .max_bin_count(sites_la_thuile$first_year,   2007L),
+  .max_bin_count(sites_fluxnet2015$first_year, 2015L)
 )
 
 # Apply computed limits to a copy of DUR_STYLE — passed to every call
@@ -283,34 +291,36 @@ dur07 <- fig_duration_historical(
 save_dur(dur07, "fig_dur07_ShuttleSnapshot2015")
 
 # ============================================================
-# Dur08 — historical datasets stack (Dur02 / Dur03 / Dur04)
-# NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
+# Dur08 / Dur09 — stacked figures
+# DISABLED: re-enable after reviewing Dur01–07 individual panels.
+# Uncomment both blocks below and rerun this script to regenerate.
 # ============================================================
-message("\n── Dur08: historical datasets stack (Dur02/03/04) ──")
-dur08 <- .make_dur_stack(dur02, dur03, dur04)
-path08 <- file.path(out_dir, "fig_dur08_HistoricalStack.png")
-ggplot2::ggsave(
-  path08,
-  plot   = dur08,
-  width  = style$width_in,
-  height = style$height_in * 3,
-  units  = "in", dpi = 150, bg = "white"
-)
-message("Saved: ", path08)
 
-# ============================================================
-# Dur09 — Shuttle snapshots stack (Dur05 / Dur06 / Dur07)
-# ============================================================
-message("\n── Dur09: Shuttle snapshots stack (Dur05/06/07) ──")
-dur09 <- .make_dur_stack(dur05, dur06, dur07)
-path09 <- file.path(out_dir, "fig_dur09_ShuttleSnapshotsStack.png")
-ggplot2::ggsave(
-  path09,
-  plot   = dur09,
-  width  = style$width_in,
-  height = style$height_in * 3,
-  units  = "in", dpi = 150, bg = "white"
-)
-message("Saved: ", path09)
+# # Dur08 — historical datasets stack (Dur02 / Dur03 / Dur04)
+# # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
+# message("\n── Dur08: historical datasets stack (Dur02/03/04) ──")
+# dur08 <- .make_dur_stack(dur02, dur03, dur04)
+# path08 <- file.path(out_dir, "fig_dur08_HistoricalStack.png")
+# ggplot2::ggsave(
+#   path08,
+#   plot   = dur08,
+#   width  = style$width_in,
+#   height = style$height_in * 3,
+#   units  = "in", dpi = 150, bg = "white"
+# )
+# message("Saved: ", path08)
 
-message("\nDone. All 9 figures generated: Dur01-09.")
+# # Dur09 — Shuttle snapshots stack (Dur05 / Dur06 / Dur07)
+# message("\n── Dur09: Shuttle snapshots stack (Dur05/06/07) ──")
+# dur09 <- .make_dur_stack(dur05, dur06, dur07)
+# path09 <- file.path(out_dir, "fig_dur09_ShuttleSnapshotsStack.png")
+# ggplot2::ggsave(
+#   path09,
+#   plot   = dur09,
+#   width  = style$width_in,
+#   height = style$height_in * 3,
+#   units  = "in", dpi = 150, bg = "white"
+# )
+# message("Saved: ", path09)
+
+message("\nDone. Dur01-07 regenerated. Dur08/Dur09 stacks skipped — re-enable above.")

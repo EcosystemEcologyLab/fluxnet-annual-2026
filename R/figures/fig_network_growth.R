@@ -59,7 +59,7 @@ source("R/plot_constants.R")
 #'   \item{width_in, height_in}{Default ggsave dimensions in inches.}
 #'   \item{base_size}{Base font size passed to \code{\link{fluxnet_theme}}.}
 #'   \item{bin_width}{Histogram bin width in years.  Bins are anchored at zero
-#'     (\code{boundary = 0}) so edges fall at 0, 3, 6, \ldots}
+#'     (\code{boundary = 0}) so edges fall at 0, 1, 2, \ldots}
 #'   \item{xlim, ylim}{\code{NULL} — set at runtime from the maximum record
 #'     length and maximum bin count across all 9 datasets so that every panel
 #'     shares identical axes.}
@@ -71,7 +71,7 @@ DUR_STYLE <- list(
   width_in  = 14,
   height_in = 7,
   base_size = 24,
-  bin_width = 3,          # years; bins anchored at 0 → edges at 0, 3, 6, …
+  bin_width = 1,          # years; bins anchored at 0 → edges at 0, 1, 2, …
   xlim      = NULL,       # set at runtime: 0 to max record length across all datasets
   ylim      = NULL,       # set at runtime: 0 to max bin count across all datasets
   detail_x  = 0.02,

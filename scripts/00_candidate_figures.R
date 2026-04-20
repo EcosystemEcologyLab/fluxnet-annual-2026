@@ -185,19 +185,14 @@ site_igbp_lookup <- if (!is.null(snapshot_meta) && "igbp" %in% names(snapshot_me
 # Helper functions
 # ============================================================
 
-# Render a ggplot to an inline base64 PNG img tag (used for static DD plots).
-# Resolution is 150 dpi — appropriate for typical screen viewing.
-plot_to_png <- function(p, width = 8, height = 4.5) {
-  tmp <- tempfile(fileext = ".png")
-  on.exit(unlink(tmp), add = TRUE)
-  grDevices::png(tmp, width = width, height = height, units = "in",
-                 res = 150, bg = "white")
-  print(p)
-  grDevices::dev.off()
-  b64 <- jsonlite::base64_enc(readBin(tmp, "raw", file.info(tmp)$size))
-  paste0('<img src="data:image/png;base64,', b64,
-         '" style="width:100%;max-width:', round(width * 150),
-         'px;height:auto;display:block">')
+# Return an <img> tag pointing at an already-saved review PNG.
+# path is repo-relative (e.g. "review/figures/foo.png"); the HTML lives at
+# review/candidate_figures.html, so strip the leading "review/" to get a
+# path relative to the HTML file.
+img_tag <- function(path) {
+  rel <- sub("^review/", "", path)
+  paste0('<img src="', rel,
+         '" style="width:100%;max-width:100%;height:auto;display:block">')
 }
 
 # Convert a ggplot (or plotly figure) to an interactive plotly HTML div.
@@ -494,7 +489,14 @@ build_s3 <- function() {
       igbp_colour_scale +
       labs(title = title, x = "Day of year", y = ylab) +
       fluxnet_theme(base_size = 11)
-    paste0('<div class="plot-wrap">', plot_to_png(p, 9, 4.5), "</div>")
+    review_dir  <- file.path("review", "figures")
+    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
+    slug        <- tolower(sub("[^A-Za-z].*", "", y_col))
+    review_path <- file.path(review_dir, paste0("fig_dd_", slug, ".png"))
+    ggplot2::ggsave(review_path, plot = p, width = 9, height = 4.5,
+                    units = "in", dpi = 150, bg = "white")
+    message("Review figure saved: ", review_path)
+    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
   }
 
   plots <- Filter(Negate(is.null), list(
@@ -529,7 +531,11 @@ build_s3 <- function() {
           labs(title = "Daily climatology \u2014 GPP, all sites \u2014 mean by DOY (IGBP colour, NT solid, DT dashed)",
                x = "Day of year", y = "GPP (gC m\u207b\u00b2 day\u207b\u00b9)") +
           fluxnet_theme(base_size = 11)
-        paste0('<div class="plot-wrap">', plot_to_png(p, 9, 4.5), "</div>")
+        review_path <- file.path("review", "figures", "fig_dd_gpp.png")
+        ggplot2::ggsave(review_path, plot = p, width = 9, height = 4.5,
+                        units = "in", dpi = 150, bg = "white")
+        message("Review figure saved: ", review_path)
+        paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
       }
     },
     et = make_panel_dd("LE_F_MDS",
@@ -576,9 +582,7 @@ build_latitudinal_multi <- function() {
   )
   message("Review figure saved: ", review_path)
 
-  paste0('<div class="plot-wrap">',
-         plot_to_png(p, width = 10, height = 14),
-         "</div>")
+  paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
 }
 
 # ============================================================
@@ -626,9 +630,7 @@ build_whittaker_snapshots <- function() {
     )
     message("Review figure saved: ", review_path)
 
-    paste0('<div class="plot-wrap">',
-           plot_to_png(pw, width = 8, height = 20),
-           "</div>")
+    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
   }, error = function(e) {
     no_data(paste0(
       "Whittaker ERA5 snapshots unavailable: ", conditionMessage(e)
@@ -660,11 +662,19 @@ build_environmental_response <- function() {
       ))
     }
 
+    env_review_dir <- file.path("review", "figures", "envresponse")
+    if (!dir.exists(env_review_dir)) dir.create(env_review_dir, recursive = TRUE)
     divs <- lapply(names(plots), function(nm) {
+      fname       <- paste0("fig_envresponse_",
+                            tolower(gsub("[^A-Za-z0-9]", "_", nm)), ".png")
+      review_path <- file.path(env_review_dir, fname)
+      ggplot2::ggsave(review_path, plot = plots[[nm]], width = 7, height = 5,
+                      units = "in", dpi = 150, bg = "white")
+      message("Review figure saved: ", review_path)
       paste0(
         '<h3>', nm, '</h3>',
         '<div class="plot-wrap">',
-        plot_to_png(plots[[nm]], width = 7, height = 5),
+        img_tag(review_path),
         '</div>'
       )
     })
@@ -736,7 +746,7 @@ build_long_record_timeseries <- function() {
     paste0(
       '<h3>', cont, '</h3>',
       '<div class="plot-wrap">',
-      plot_to_png(p, width = 10, height = 12),
+      img_tag(review_path),
       '</div>'
     )
   })
@@ -798,7 +808,7 @@ build_timeseries_by_subregion <- function() {
     paste0(
       "<h3>", subreg, "</h3>",
       '<div class="plot-wrap">',
-      plot_to_png(p, width = 10, height = 12),
+      img_tag(review_path),
       "</div>"
     )
   })
@@ -820,8 +830,7 @@ build_network_growth <- function() {
     ggplot2::ggsave(review_path, plot = p, width = 10, height = 6,
                     units = "in", dpi = 150)
     message("Review figure saved: ", review_path)
-    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 6),
-           "</div>")
+    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
   }, error = function(e) {
     no_data(paste0("Network growth (cumulative) unavailable: ", conditionMessage(e)))
   })
@@ -841,8 +850,7 @@ build_network_growth_annual <- function() {
     ggplot2::ggsave(review_path, plot = p, width = 10, height = 6,
                     units = "in", dpi = 150)
     message("Review figure saved: ", review_path)
-    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 6),
-           "</div>")
+    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
   }, error = function(e) {
     no_data(paste0("Network growth (annual) unavailable: ", conditionMessage(e)))
   })
@@ -871,9 +879,9 @@ build_duration_profile <- function() {
 
     paste0(
       "<h3>Version A \u2014 stacked vertically</h3>",
-      '<div class="plot-wrap">', plot_to_png(figs$vA, width = 8,  height = 18), "</div>",
+      '<div class="plot-wrap">', img_tag(path_vA), "</div>",
       "<h3>Version B \u2014 side by side</h3>",
-      '<div class="plot-wrap">', plot_to_png(figs$vB, width = 24, height = 5),  "</div>"
+      '<div class="plot-wrap">', img_tag(path_vB), "</div>"
     )
   }, error = function(e) {
     no_data(paste0("Deployment duration profile unavailable: ", conditionMessage(e)))
@@ -900,8 +908,7 @@ build_active_proportion <- function() {
     ggplot2::ggsave(review_path, plot = p, width = 10, height = 8,
                     units = "in", dpi = 150)
     message("Review figure saved: ", review_path)
-    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 8),
-           "</div>")
+    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
   }, error = function(e) {
     no_data(paste0("Network active proportion unavailable: ", conditionMessage(e)))
   })
@@ -924,8 +931,7 @@ build_latency_by_subregion <- function() {
     ggplot2::ggsave(review_path, plot = p, width = 10, height = 8,
                     units = "in", dpi = 150, bg = "white")
     message("Review figure saved: ", review_path)
-    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 8),
-           "</div>")
+    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
   }, error = function(e) {
     no_data(paste0("Latency by subregion unavailable: ", conditionMessage(e)))
   })
@@ -948,8 +954,7 @@ build_latency_by_subregion_pct <- function() {
     ggplot2::ggsave(review_path, plot = p, width = 10, height = 8,
                     units = "in", dpi = 150, bg = "white")
     message("Review figure saved: ", review_path)
-    paste0('<div class="plot-wrap">', plot_to_png(p, width = 10, height = 8),
-           "</div>")
+    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
   }, error = function(e) {
     no_data(paste0("Latency by subregion (%) unavailable: ", conditionMessage(e)))
   })
@@ -983,7 +988,7 @@ build_country_map <- function() {
       ggplot2::ggsave(review_path, plot = p, width = 10, height = 24,
                       units = "in", dpi = 150)
       message("Review figure saved: ", review_path)
-      list(html = plot_to_png(p, width = 10, height = 24), ok = TRUE)
+      list(html = img_tag(review_path), ok = TRUE)
     }, error = function(e) {
       list(html = no_data(paste0("Subregion choropleth (", metric_arg, ") unavailable: ",
                                  conditionMessage(e))),
@@ -1037,7 +1042,7 @@ s13 <- section(13, "Subregion overview \u2014 site counts and latency by UN subr
                                  units = "in", dpi = 150)
                  message("Review figure saved: ", review_path)
                  paste0('<div class="plot-wrap">',
-                        plot_to_png(p, width = 12, height = 10), "</div>")
+                        img_tag(review_path), "</div>")
                }, error = function(e) {
                  no_data(paste0("Subregion overview unavailable: ", conditionMessage(e)))
                }))
@@ -1085,7 +1090,7 @@ html_footer <- paste0(
 
 out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s13b, s13c, s10, s4, s5, s6, s7, s14, html_footer)
 
-out_path <- file.path("outputs", "candidate_figures.html")
+out_path <- file.path("review", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)
 message("Report written: ", out_path,
         " (", round(file.size(out_path) / 1024), " KB)")

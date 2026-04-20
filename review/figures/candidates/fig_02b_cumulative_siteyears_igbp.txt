@@ -1,0 +1,23 @@
+Figure 2b — Cumulative FLUXNET Site-Years by IGBP Class with Historical Dataset Overlays
+
+Stacked area chart showing cumulative site-years accumulated by the FLUXNET Shuttle
+network from 1991 to 2024, coloured by IGBP ecosystem class. Each year's contribution
+is the count of Shuttle sites with valid data in that year (≥3 months valid NEE from
+monthly data, or valid annual NEE) summed cumulatively.
+
+Overlaid lines show cumulative site-years contributed by each historical dataset:
+- Marconi (green): 35 sites, 97 site-years, active 1992-2000
+- La Thuile (red): 252 sites, 965 site-years, active 1991-2007
+- FLUXNET2015 (blue): 212 sites, 1532 site-years, active 1991-2014
+
+Vertical dashed lines mark the publication year of each historical release (2000,
+2007, 2015). The gap between the historical lines and the Shuttle background at
+each release year shows the additional data the Shuttle captures retrospectively.
+
+IGBP colours from plot_constants.R. Functionally active site-years from
+data/snapshots/site_year_data_presence.csv.
+
+Data sources: FLUXNET Shuttle v0.3.7 April 2026; Marconi (Falge et al. 2001);
+La Thuile 2007; FLUXNET2015 (Pastorello et al. 2020).
+Function: fig_cumulative_siteyears_igbp() in R/figures/fig_network_growth.R
+Script: scripts/generate_duration_histograms.R

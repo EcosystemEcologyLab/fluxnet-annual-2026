@@ -1,1 +1,20 @@
-Figure 2 — FLUXNET network record length distribution at four snapshot years (2000/2007/2015/2025), corresponding to the Marconi, La Thuile, FLUXNET2015, and Shuttle/modern datasets. Four panels stacked vertically, shared axes. Record length = snapshot_year - first_year for each site active by that year. Sites classified as Functionally active (blue) if they have valid NEE data within 4 years of the snapshot year, or Inactive/high latency (grey) otherwise. Data source: FLUXNET Shuttle snapshot v0.3.7, April 2026.
+Figure 2 — FLUXNET Network Record Length: Historical Datasets vs Shuttle Snapshots
+
+Three-panel figure comparing record length distributions between historical FLUXNET
+datasets (outline, red) and Shuttle snapshots at the same time point (filled grey):
+- Top panel: Marconi 2000 vs Shuttle snapshot 2000
+- Middle panel: La Thuile 2007 vs Shuttle snapshot 2007
+- Bottom panel: FLUXNET2015 vs Shuttle snapshot 2015
+
+Record length = snapshot_year - first_year for each site. 1-year bins. X axis
+clipped to 0-20 years to use full width. Y axis shared across all panels.
+
+The grey filled bars show what the Shuttle contains at each historical time point.
+The red outline bars show what was actually published in each historical release.
+The gap between them reflects sites operating at the time that were not included
+in the historical release due to data policy or processing constraints.
+
+Data sources: Marconi (Falge et al. 2001, 35 sites), La Thuile 2007 (252 sites),
+FLUXNET2015 (Pastorello et al. 2020, 212 sites), FLUXNET Shuttle v0.3.7 April 2026.
+Function: fig_duration_overlay() in R/figures/fig_network_growth.R
+Script: scripts/generate_duration_histograms.R

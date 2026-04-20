@@ -584,11 +584,8 @@ build_latitudinal_multi <- function() {
 
 # ============================================================
 # Section 4 — Whittaker biome snapshots
-# WorldClim version: three Shuttle snapshot panels at year_cutoff =
-# 2000 / 2007 / 2015, assembled as vertical stack (fig_whit09).
-# Uses fig_whittaker_worldclim() from R/figures/fig_climate.R with the
-# pre-computed site_worldclim.csv — no live raster extraction required
-# as long as all sites are already in that CSV.
+# DEPRECATED — now handled by scripts/generate_whittaker.R
+# Canonical outputs: review/figures/whittaker/fig_whit01-09_*.png
 # ============================================================
 build_whittaker_snapshots <- function() {
   if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
@@ -873,9 +870,9 @@ build_network_growth_annual <- function() {
 }
 
 # ============================================================
-# Section 11 — Deployment duration profile (draft)
-# fig_network_duration_profile(): histograms of record length at four snapshot
-# years (2000/2007/2015/2025), coloured by active/inactive status.
+# Section 11 — Deployment duration profile
+# DEPRECATED — now handled by scripts/generate_duration_histograms.R
+# Canonical outputs: review/figures/network/fig_dur01-09_*.png
 # ============================================================
 build_duration_profile <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
@@ -978,8 +975,8 @@ build_latency_by_subregion_pct <- function() {
 
 # ============================================================
 # Section 10 — UN subregion choropleth
-# fig_map_subregion_sites(): count and density at 2000/2007/2015/2025.
-# Two separate figures (count + density) saved as review PNGs.
+# DEPRECATED — now handled by scripts/generate_maps.R
+# Canonical outputs: review/figures/maps/fig_map01-09_*.png
 # ============================================================
 build_country_map <- function() {
   if (is.null(snapshot_meta_full)) return(no_data("No snapshot metadata available."))
@@ -1038,9 +1035,10 @@ s8 <- section(8, "Network growth \u2014 cumulative sites by IGBP",
 message("Building Section 9 — Network growth (annual new sites) ...")
 s9 <- section(9, "Network growth \u2014 new sites per year by IGBP",
               build_network_growth_annual())
-message("Building Section 11 — Deployment duration profile ...")
-s11 <- section(11, "Deployment duration profile \u2014 record length at snapshot years 2000/2007/2015/2025 (draft)",
-               build_duration_profile())
+# DEPRECATED — now handled by scripts/generate_duration_histograms.R
+# message("Building Section 11 — Deployment duration profile ...")
+# s11 <- section(11, "Deployment duration profile \u2014 record length at snapshot years 2000/2007/2015/2025 (draft)",
+#                build_duration_profile())
 message("Building Section 12 — Network active proportion ...")
 s12 <- section(12, "Network size and data currency over time (draft)",
                build_active_proportion())
@@ -1068,12 +1066,14 @@ s13b <- section("13b", "Latency by subregion \u2014 functionally active sites (2
 message("Building Section 13c — Latency by subregion (%) ...")
 s13c <- section("13c", "Latency by subregion \u2014 percentage with N= annotations (2025)",
                 build_latency_by_subregion_pct())
-message("Building Section 10 — UN subregion choropleth ...")
-s10 <- section(10, "UN subregion choropleth \u2014 2000\u20132007\u20132015\u20132025",
-               build_country_map())
-message("Building Section 4 — Whittaker biome snapshots (WorldClim) ...")
-s4 <- section(4, "Whittaker biome snapshots \u2014 WorldClim climate (Shuttle 2000/2007/2015)",
-              build_whittaker_snapshots())
+# DEPRECATED — now handled by scripts/generate_maps.R
+# message("Building Section 10 — UN subregion choropleth ...")
+# s10 <- section(10, "UN subregion choropleth \u2014 2000\u20132007\u20132015\u20132025",
+#                build_country_map())
+# DEPRECATED — now handled by scripts/generate_whittaker.R
+# message("Building Section 4 — Whittaker biome snapshots (WorldClim) ...")
+# s4 <- section(4, "Whittaker biome snapshots \u2014 WorldClim climate (Shuttle 2000/2007/2015)",
+#               build_whittaker_snapshots())
 message("Building Section 5 — Latitudinal multi-variable ribbon ...")
 s5 <- section(5, "Latitudinal multi-variable ribbon", build_latitudinal_multi())
 message("Building Section 6 — Environmental response curves ...")

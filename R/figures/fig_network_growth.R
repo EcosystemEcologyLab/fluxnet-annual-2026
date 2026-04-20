@@ -46,6 +46,234 @@ source("R/plot_constants.R")
     )
 }
 
+# ---- DUR_STYLE --------------------------------------------------------------
+
+#' Shared visual parameters for all duration histogram figures
+#'
+#' A named list used as the default \code{style} argument to
+#' \code{\link{fig_duration_historical}}.  Override individual elements by
+#' passing a modified copy.
+#'
+#' @format A named list:
+#' \describe{
+#'   \item{width_in, height_in}{Default ggsave dimensions in inches.}
+#'   \item{base_size}{Base font size passed to \code{\link{fluxnet_theme}}.}
+#'   \item{bin_width}{Histogram bin width in years.}
+#'   \item{xlim, ylim}{\code{NULL} — set at runtime from the maximum record
+#'     length and maximum bin count across all 9 datasets so that every panel
+#'     shares identical axes.}
+#'   \item{active_fill}{Bar fill for functionally active sites (Shuttle only).}
+#'   \item{inactive_fill}{Bar fill for inactive/high-latency sites (Shuttle only).}
+#'   \item{historical_fill}{Bar fill for historical dataset figures
+#'     (\code{is_shuttle = FALSE}).}
+#'   \item{legend_pos, legend_just}{Legend position and justification (NDC);
+#'     used only when \code{is_shuttle = TRUE}.}
+#'   \item{detail_x, detail_y}{Inset detail-text NDC anchor (for reference;
+#'     text is placed top-right via \code{annotate()}).}
+#' }
+#' @export
+DUR_STYLE <- list(
+  width_in        = 14,
+  height_in       = 7,
+  base_size       = 24,
+  bin_width       = 5,        # years
+  xlim            = NULL,     # set at runtime: 0 to max record length across all datasets
+  ylim            = NULL,     # set at runtime: 0 to max bin count across all datasets
+  active_fill     = "#2C7FB8",
+  inactive_fill   = "#BDBDBD",
+  historical_fill = "#7F8C8D",
+  legend_pos      = c(0.98, 0.98),
+  legend_just     = c(1, 1),
+  detail_x        = 0.02,
+  detail_y        = 0.98
+)
+
+# ---- fig_duration_historical ------------------------------------------------
+
+#' Single-panel deployment duration histogram for any FLUXNET site list
+#'
+#' Computes per-site record length as \code{snapshot_year - first_year} and
+#' plots a histogram using a shared bin width and axis limits.  Designed to be
+#' called nine times from \code{scripts/generate_duration_histograms.R} with
+#' identical \code{style$xlim} and \code{style$ylim} so all panels are directly
+#' comparable.
+#'
+#' When \code{is_shuttle = TRUE}, bars are split into "Functionally active"
+#' (blue) and "Inactive / high latency" (grey) using
+#' \code{\link{is_functionally_active}} from \code{R/utils.R}.  When
+#' \code{is_shuttle = FALSE} (historical datasets), all bars use a single
+#' \code{style$historical_fill} colour with no legend.
+#'
+#' @param site_meta Data frame.  Must contain \code{site_id},
+#'   \code{first_year}, and \code{last_year}.  Historical dataset CSVs
+#'   (Marconi, La Thuile, FLUXNET2015) do not currently include these columns;
+#'   enrich them before running \code{Dur02}–\code{Dur04}.
+#' @param snapshot_year Integer.  Year against which record length is computed:
+#'   \code{record_length = snapshot_year - first_year}.  Sites with
+#'   \code{first_year > snapshot_year} are excluded.
+#' @param detail_label Character scalar or \code{NULL}.  Dataset label shown in
+#'   the top-right inset text.
+#' @param is_shuttle Logical.  If \code{TRUE} (Shuttle panels), bars are split
+#'   by active/inactive status.  If \code{FALSE} (historical panels), a single
+#'   colour is used.
+#' @param presence_df Data frame or \code{NULL}.  \code{site_year_data_presence.csv}
+#'   with columns \code{site_id}, \code{year}, \code{has_data}.  Used only when
+#'   \code{is_shuttle = TRUE} to classify activity via NEE data presence.
+#'   Falls back to \code{last_year} classification when \code{NULL}.
+#' @param style Named list.  Visual parameters; defaults to
+#'   \code{\link{DUR_STYLE}}.  Set \code{style$xlim} and \code{style$ylim}
+#'   before calling — compute them once from all 9 datasets in the generate
+#'   script.
+#'
+#' @return A ggplot object.
+#'
+#' @examples
+#' \dontrun{
+#' meta        <- readr::read_csv(
+#'   "data/snapshots/fluxnet_shuttle_snapshot_20260414T154430.csv"
+#' )
+#' presence_df <- readr::read_csv("data/snapshots/site_year_data_presence.csv")
+#' style       <- DUR_STYLE
+#' style$xlim  <- c(0, 80)
+#' style$ylim  <- c(0, 120)
+#' p <- fig_duration_historical(meta, 2025L, "FLUXNET Shuttle 2025",
+#'                               is_shuttle = TRUE, presence_df = presence_df,
+#'                               style = style)
+#' print(p)
+#' }
+#' @export
+fig_duration_historical <- function(site_meta,
+                                     snapshot_year,
+                                     detail_label = NULL,
+                                     is_shuttle   = FALSE,
+                                     presence_df  = NULL,
+                                     style        = DUR_STYLE) {
+
+  required_cols <- c("site_id", "first_year", "last_year")
+  missing_cols  <- setdiff(required_cols, names(site_meta))
+  if (length(missing_cols) > 0L) {
+    stop(
+      "fig_duration_historical: site_meta is missing required column(s): ",
+      paste(missing_cols, collapse = ", "), ". ",
+      "Historical site CSVs (Marconi, La Thuile, FLUXNET2015) do not include ",
+      "first_year/last_year — enrich them before generating Dur02-04.",
+      call. = FALSE
+    )
+  }
+
+  sites <- site_meta |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
+    dplyr::select("site_id", "first_year", "last_year") |>
+    dplyr::filter(
+      !is.na(.data$first_year), !is.na(.data$last_year),
+      as.integer(.data$first_year) <= as.integer(snapshot_year)
+    ) |>
+    dplyr::mutate(
+      first_year    = as.integer(.data$first_year),
+      last_year     = as.integer(.data$last_year),
+      record_length = as.integer(snapshot_year) - .data$first_year
+    )
+
+  n_sites <- nrow(sites)
+
+  if (n_sites == 0L) {
+    warning(
+      "fig_duration_historical: no sites with first_year <= snapshot_year (",
+      snapshot_year, ") — returning empty plot.",
+      call. = FALSE
+    )
+    return(ggplot2::ggplot() +
+             fluxnet_theme(style$base_size) +
+             ggplot2::labs(title = "No data"))
+  }
+
+  # Activity classification
+  if (is_shuttle) {
+    active_flags <- is_functionally_active(
+      sites$site_id,
+      reference_year   = as.integer(snapshot_year),
+      presence_df      = presence_df,
+      active_threshold = 4L,
+      last_year_vec    = sites$last_year
+    )
+    sites <- dplyr::mutate(
+      sites,
+      activity = factor(
+        dplyr::if_else(
+          active_flags[.data$site_id],
+          "Functionally active",
+          "Inactive / high latency"
+        ),
+        levels = c("Functionally active", "Inactive / high latency")
+      )
+    )
+    fill_colours <- c(
+      "Functionally active"     = style$active_fill,
+      "Inactive / high latency" = style$inactive_fill
+    )
+  } else {
+    sites <- dplyr::mutate(sites, activity = "Historical")
+    fill_colours <- c("Historical" = style$historical_fill)
+  }
+
+  detail_text <- if (!is.null(detail_label)) {
+    paste0(detail_label, "\nN = ", n_sites, " sites")
+  } else {
+    paste0("N = ", n_sites, " sites")
+  }
+  annot_size <- style$base_size * 0.25   # mm; ≈ base_size pt for base_size = 24
+
+  p <- ggplot2::ggplot(
+    sites,
+    ggplot2::aes(x = .data$record_length, fill = .data$activity)
+  ) +
+    ggplot2::geom_histogram(
+      binwidth  = style$bin_width,
+      colour    = "white",
+      linewidth = 0.2,
+      position  = "stack"
+    ) +
+    ggplot2::scale_fill_manual(
+      values = fill_colours, name = NULL, drop = FALSE
+    ) +
+    ggplot2::scale_x_continuous(
+      breaks = scales::pretty_breaks(n = 6),
+      expand = ggplot2::expansion(mult = c(0, 0))
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = scales::pretty_breaks(n = 5),
+      expand = ggplot2::expansion(mult = c(0, 0.02))
+    ) +
+    ggplot2::labs(
+      x = "Record length (years)",
+      y = "Sites"
+    ) +
+    fluxnet_theme(style$base_size) +
+    ggplot2::theme(
+      legend.position      = if (is_shuttle) style$legend_pos else "none",
+      legend.justification = if (is_shuttle) style$legend_just else NULL
+    ) +
+    # Detail text: top-right
+    ggplot2::annotate(
+      "text",
+      x = Inf, y = Inf,
+      label    = detail_text,
+      hjust    = 1.05, vjust = 1.4,
+      size     = annot_size,
+      fontface = "bold"
+    )
+
+  # Apply shared axis limits when set
+  if (!is.null(style$xlim) || !is.null(style$ylim)) {
+    p <- p + ggplot2::coord_cartesian(
+      xlim = style$xlim,
+      ylim = style$ylim
+    )
+  }
+
+  p
+}
+
 # ---- fig_network_growth -----------------------------------------------------
 
 #' Cumulative site growth stacked area chart

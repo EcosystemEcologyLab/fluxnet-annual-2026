@@ -678,6 +678,223 @@ fig_map_subregion_sites <- function(metadata,
     ggplot2::theme(legend.position = "bottom")
 }
 
+# ---- MAP_STYLE --------------------------------------------------------------
+
+#' Shared visual parameters for all historical choropleth map figures
+#'
+#' A named list used as the default \code{style} argument to
+#' \code{\link{fig_map_historical}}.  Override individual elements by
+#' passing a modified copy.
+#'
+#' @format A named list:
+#' \describe{
+#'   \item{width_in, height_in}{Default ggsave dimensions in inches.}
+#'   \item{base_size}{Base font size for \code{theme_void} (points).}
+#'   \item{legend_pos, legend_just}{Legend position and justification (NDC).}
+#'   \item{detail_x, detail_y}{Inset detail-text anchor (NDC fractions).}
+#'   \item{breaks}{Colour scale breaks; \code{NULL} — set at runtime via
+#'     \code{scale_breaks} argument.  Computed from 95th percentile of
+#'     per-subregion site counts across all datasets before first call.}
+#'   \item{na_fill}{Fill colour for subregions with no sites.}
+#' }
+#' @export
+MAP_STYLE <- list(
+  width_in    = 14,
+  height_in   = 7,
+  base_size   = 24,
+  legend_pos  = c(0.02, 0.88),
+  legend_just = c(0, 1),
+  detail_x    = 0.02,
+  detail_y    = 0.98,
+  # Colour scale breaks clipped to avoid US dominance.
+  # Compute from 95th percentile of per-subregion site counts across all datasets.
+  breaks      = NULL,
+  na_fill     = "grey90"
+)
+
+# ---- fig_map_historical -------------------------------------------------------
+
+#' Single-panel UN subregion choropleth for any FLUXNET site list
+#'
+#' Counts sites per UN M.49 subregion, fills subregion polygons by that count,
+#' and overlays individual site locations as dots.  Designed to be called nine
+#' times from \code{scripts/generate_maps.R} with a shared \code{scale_breaks}
+#' vector so all panels are directly comparable across datasets and snapshot
+#' years.
+#'
+#' Country polygons are fetched from \pkg{rnaturalearth}, mapped to UN
+#' subregions via \code{countrycode::countrycode()}, and dissolved with
+#' \code{sf::st_union()}.  Site-to-subregion assignment uses a spatial join
+#' with \code{sf::st_nearest_feature()} fallback for coastal sites.
+#'
+#' @param site_meta Data frame.  Must contain \code{site_id},
+#'   \code{location_lat}, and \code{location_long}.  If \code{year_cutoff}
+#'   is non-\code{NULL}, also requires \code{first_year}.
+#' @param detail_label Character scalar or \code{NULL}.  Dataset label shown
+#'   in the top-left inset text (e.g. \code{"FLUXNET Shuttle 2025"}).
+#' @param year_cutoff Integer or \code{NULL}.  If set, filters
+#'   \code{site_meta} to rows where \code{first_year <= year_cutoff}.
+#' @param scale_breaks Numeric vector or \code{NULL}.  Shared colour scale
+#'   breaks passed to \code{\link[ggplot2]{scale_fill_viridis_b}}.  Compute
+#'   once in the calling script from the 95th percentile of per-subregion
+#'   site counts across all datasets and pass the same vector to every call.
+#'   Falls back to \code{pretty()} breaks when \code{NULL}.
+#' @param style Named list.  Visual parameters; defaults to
+#'   \code{\link{MAP_STYLE}}.
+#'
+#' @return A ggplot object.
+#'
+#' @examples
+#' \dontrun{
+#' meta   <- readr::read_csv(
+#'   "data/snapshots/fluxnet_shuttle_snapshot_20260414T154430.csv"
+#' )
+#' breaks <- c(0, 5, 15, 30, 50, 100)
+#' p <- fig_map_historical(meta, "FLUXNET Shuttle 2025", scale_breaks = breaks)
+#' print(p)
+#' }
+#' @export
+fig_map_historical <- function(site_meta,
+                                detail_label = NULL,
+                                year_cutoff  = NULL,
+                                scale_breaks = NULL,
+                                style        = MAP_STYLE) {
+
+  for (pkg in c("countrycode", "rnaturalearth")) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop("Package '", pkg, "' is required. Install with: install.packages('",
+           pkg, "')", call. = FALSE)
+    }
+  }
+
+  .disable_s2()
+  .check_meta_cols(site_meta, c("site_id", "location_lat", "location_long"))
+
+  if (!is.null(year_cutoff)) {
+    .check_meta_cols(site_meta, "first_year")
+    site_meta <- dplyr::filter(
+      site_meta,
+      as.integer(.data$first_year) <= as.integer(year_cutoff)
+    )
+  }
+
+  sites_clean <- site_meta |>
+    dplyr::filter(
+      !is.na(.data$location_lat), !is.na(.data$location_long),
+      dplyr::between(.data$location_lat,   -90,  90),
+      dplyr::between(.data$location_long, -180, 180)
+    ) |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE)
+
+  n_sites <- nrow(sites_clean)
+
+  # Build subregion polygons (country polygons dissolved to UN M.49 subregions)
+  countries <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
+    sf::st_make_valid()
+
+  countries$subregion <- countrycode::countrycode(
+    countries$name_long, "country.name", "un.regionsub.name", warn = FALSE
+  )
+
+  subregions <- countries |>
+    dplyr::filter(!is.na(.data$subregion)) |>
+    dplyr::group_by(.data$subregion) |>
+    dplyr::summarise(
+      geometry = suppressWarnings(sf::st_union(.data$geometry)),
+      .groups  = "drop"
+    ) |>
+    sf::st_make_valid()
+
+  # Assign each site to a subregion via spatial join + nearest-feature fallback
+  sites_sf <- sf::st_as_sf(
+    sites_clean,
+    coords = c("location_long", "location_lat"),
+    crs    = 4326,
+    remove = FALSE
+  )
+
+  sites_joined <- sf::st_join(sites_sf, subregions["subregion"], left = TRUE)
+
+  na_idx <- which(is.na(sites_joined$subregion))
+  if (length(na_idx) > 0L) {
+    nearest <- sf::st_nearest_feature(sites_joined[na_idx, ], subregions)
+    sites_joined$subregion[na_idx] <- subregions$subregion[nearest]
+  }
+
+  sites_tbl <- sf::st_drop_geometry(sites_joined)
+  counts    <- dplyr::count(sites_tbl, .data$subregion, name = "n_sites")
+  plot_sub  <- dplyr::left_join(subregions, counts, by = "subregion")
+
+  # Colour scale breaks — fall back to pretty() if not supplied
+  if (is.null(scale_breaks)) {
+    fill_max     <- max(counts$n_sites, 1L)
+    scale_breaks <- pretty(c(0, fill_max), n = 5L)
+    scale_breaks <- scale_breaks[scale_breaks >= 0 & scale_breaks <= fill_max]
+  }
+  fill_limits <- c(0, max(scale_breaks))
+
+  # Inset detail text (top-left)
+  detail_text <- if (!is.null(detail_label)) {
+    paste0(detail_label, "\nN = ", n_sites, " sites")
+  } else {
+    paste0("N = ", n_sites, " sites")
+  }
+  annot_size <- style$base_size * 0.25   # mm; ≈ base_size pt for base_size = 24
+
+  ggplot2::ggplot() +
+    ggplot2::theme_void(base_size = style$base_size) +
+    ggplot2::theme(
+      legend.position      = style$legend_pos,
+      legend.justification = style$legend_just,
+      legend.direction     = "horizontal",
+      legend.title         = ggplot2::element_text(size  = style$base_size * 0.7,
+                                                   hjust = 0.5),
+      legend.text          = ggplot2::element_text(size  = style$base_size * 0.65)
+    ) +
+    # Grey background for all land
+    ggplot2::geom_sf(data = countries, fill = "grey90", colour = "white",
+                     linewidth = 0.1) +
+    # UN subregion choropleth fill
+    ggplot2::geom_sf(
+      data  = plot_sub,
+      ggplot2::aes(fill = .data$n_sites),
+      colour = "white", linewidth = 0.25
+    ) +
+    ggplot2::scale_fill_viridis_b(
+      breaks   = scale_breaks,
+      limits   = fill_limits,
+      oob      = scales::squish,
+      na.value = style$na_fill,
+      name     = "Sites",
+      option   = "viridis",
+      guide    = ggplot2::guide_colorsteps(
+        title.position = "top",
+        barwidth       = ggplot2::unit(10, "lines"),
+        barheight      = ggplot2::unit(0.8, "lines")
+      )
+    ) +
+    # Site location dots
+    ggplot2::geom_point(
+      data  = sites_clean,
+      ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+      shape  = 21,
+      fill   = "white",
+      color  = "black",
+      size   = 1.5,
+      stroke = 0.4
+    ) +
+    # Inset detail text: top-left corner
+    ggplot2::annotate(
+      "text",
+      x        = -Inf, y = Inf,
+      label    = detail_text,
+      hjust    = -0.05, vjust = 1.3,
+      size     = annot_size,
+      fontface = "bold"
+    ) +
+    ggplot2::coord_sf(expand = FALSE)
+}
+
 # ---- fig_map_country_sites (deprecated alias) --------------------------------
 
 #' Deprecated: country choropleth of FLUXNET site counts

@@ -1,0 +1,253 @@
+site_id,site_name,location_lat,location_long,igbp,dataset,coords_source
+AT-Neu,Austria – Neustift/Stubai Valley,47.116668701171875,11.317500114440918,GRA,LaThuile,measured
+AU-Fog,Australia – Fogg Dam,-12.542499542236328,131.3070068359375,WET,LaThuile,measured
+AU-How,Australia – Howard Springs,-12.49429988861084,131.15199279785156,WSA,LaThuile,measured
+AU-Tum,Australia – Tumbarumba,-35.65570068359375,148.15199279785156,EBF,LaThuile,measured
+AU-Wac,Australia – Wallaby Creek,-37.42900085449219,145.18699645996094,EBF,LaThuile,measured
+BE-Bra,Belgium – Brasschaat (De Inslag Forest),51.309200286865234,4.520559787750244,MF,LaThuile,measured
+BE-Jal,Belgium – Jalhay,50.563899993896484,6.073329925537109,MF,LaThuile,measured
+BE-Lon,Belgium – Lonzee,50.55220031738281,4.744939804077148,CRO,LaThuile,measured
+BE-Vie,Belgium – Vielsalm,50.30550003051758,5.996829986572266,MF,LaThuile,measured
+BR-Ban,Brazil – Ecotone Bananal Island,-9.824419975280762,-50.15909957885742,EBF,LaThuile,measured
+BR-Cax,Brazil – Caxiuana Forest-Almeirim,-1.7197200059890747,-51.45899963378906,EBF,LaThuile,measured
+BR-Ji1,Brazil – Rond.- Faz. Nossa Senhora-i Parana-pasture,-10.761799812316895,-62.357200622558594,GRA,LaThuile,measured
+BR-Ji2,Brazil – Rond.- Rebio Jaru Ji Parana- Tower A,-10.083200454711914,-61.93090057373047,EBF,LaThuile,measured
+BR-Ma2,Brazil – Manaus – ZF2 K34,-2.609100103378296,-60.20930099487305,EBF,LaThuile,measured
+BR-Sa1,Brazil – Santarem-Km67-Primary Forest,-2.8566699028015137,-54.958900451660156,EBF,LaThuile,measured
+BR-Sa2,Brazil – Santarem-Km77-Pasture,-3.011899948120117,-54.5364990234375,CRO,LaThuile,measured
+BR-Sa3,Brazil – Santarem-Km83-Logged Forest,-3.0180299282073975,-54.97140121459961,EBF,LaThuile,measured
+BR-Sp1,Brazil – Sao Paulo Cerrado,-21.61949920654297,-47.649898529052734,WSA,LaThuile,measured
+BW-Ghg,Botswana – Ghanzi Grass Site,-21.510000228881836,21.739999771118164,SAV,LaThuile,measured
+BW-Ghm,Botswana – Ghanzi Mixed Site,-21.200000762939453,21.75,WSA,LaThuile,measured
+BW-Ma1,Botswana – Maun- Mopane Woodland,-19.91550064086914,23.56049919128418,WSA,LaThuile,measured
+CA-Ca1,Canada – British Columbia- Campbell River – Mature Forest Site,49.8671989440918,-125.33399963378906,ENF,LaThuile,measured
+CA-Ca2,Canada – British Columbia- Campbell River – Clearcut Site,49.87049865722656,-125.29100036621094,ENF,LaThuile,measured
+CA-Ca3,Canada – British Columbia- Campbell River – Young Plantation Site,49.53459930419922,-124.9000015258789,ENF,LaThuile,measured
+CA-Gro,Canada – Ontario- Groundhog River-Mat. Boreal Mixed Wood,48.21670150756836,-82.15560150146484,MF,LaThuile,measured
+CA-Let,Canada – Lethbridge,49.70930099487305,-112.94000244140625,GRA,LaThuile,measured
+CA-Man,Canada – BOREAS NSA – Old Black Spruce,55.879600524902344,-98.48079681396484,ENF,LaThuile,measured
+CA-Mer,Canada – Eastern Peatland- Mer Bleue,45.409400939941406,-75.51860046386719,WET,LaThuile,measured
+CA-NS1,Canada – UCI-1850 burn site,55.87919998168945,-98.48390197753906,ENF,LaThuile,measured
+CA-NS2,Canada – UCI-1930 burn site,55.905799865722656,-98.52469635009766,ENF,LaThuile,measured
+CA-NS3,Canada – UCI-1964 burn site,55.91170120239258,-98.3822021484375,ENF,LaThuile,measured
+CA-NS4,Canada – UCI-1964 burn site wet,55.91170120239258,-98.3822021484375,ENF,LaThuile,measured
+CA-NS5,Canada – UCI-1981 burn site,55.86309814453125,-98.48500061035156,ENF,LaThuile,measured
+CA-NS6,Canada – UCI-1989 burn site,55.91669845581055,-98.96440124511719,OSH,LaThuile,measured
+CA-NS7,Canada – UCI-1998 burn site,56.635799407958984,-99.94830322265625,OSH,LaThuile,measured
+CA-Oas,Canada – Sask.- SSA Old Aspen,53.62889862060547,-106.197998046875,DBF,LaThuile,measured
+CA-Obs,Canada – Sask.- SSA Old Black Spruce,53.98720169067383,-105.11799621582031,ENF,LaThuile,measured
+CA-Ojp,Canada – Sask.- SSA Old Jack Pine,53.91630172729492,-104.69200134277344,ENF,LaThuile,measured
+CA-Qcu,Canada – Quebec Boreal Cutover Site,49.2671012878418,-74.0364990234375,ENF,LaThuile,measured
+CA-Qfo,Canada – Quebec Mature Boreal Forest Site,49.692501068115234,-74.34210205078125,ENF,LaThuile,measured
+CA-SF1,Canada – Sask.- Fire 1977,54.48500061035156,-105.81800079345703,ENF,LaThuile,measured
+CA-SF2,Canada – Sask.- Fire 1989,54.25389862060547,-105.87799835205078,ENF,LaThuile,measured
+CA-SF3,Canada – Sask.- Fire 1998,54.09159851074219,-106.00499725341797,OSH,LaThuile,measured
+CA-SJ1,Canada – Sask.- 1994 Harv. Jack Pine,53.90800094604492,-104.65599822998047,ENF,LaThuile,measured
+CA-SJ2,Canada – Sask.- 2002 Harvested Jack Pine,53.94499969482422,-104.64900207519531,ENF,LaThuile,measured
+CA-SJ3,Canada – Sask.- SSA 1975 Harv. Yng Jack Pine,53.87580108642578,-104.6449966430664,ENF,LaThuile,measured
+CA-TP1,Canada – Ontario- Turkey Point Seedling White Pine,42.6609001159668,-80.55950164794922,ENF,LaThuile,measured
+CA-TP2,Canada – Ontario- Turkey Point Young White Pine,42.77439880371094,-80.45880126953125,ENF,LaThuile,measured
+CA-TP3,Canada – Ontario- Turkey Point Middle-aged White Pine,42.7067985534668,-80.348297119140625,ENF,LaThuile,measured
+CA-TP4,Canada – Ontario- Turkey Point Mature White Pine,42.709800720214844,-80.3573989868164,ENF,LaThuile,measured
+CA-WP1,Canada – Western Peatland- LaBiche-Black Spruce/Larch Fen,54.953800201416016,-112.46700286865234,WET,LaThuile,measured
+CA-WP2,Canada – Poor Fen,55.537498474121094,-112.33399963378906,WET,LaThuile,measured
+CA-WP3,Canada – Rich Fen,54.470001220703125,-113.31999969482422,WET,LaThuile,measured
+CG-Tch,Republic of Congo – Tchizalamou,-4.289169788360596,11.656399726867676,OSH,LaThuile,measured
+CH-Oe1,Switzerland – Oensingen1 grass,47.28559875488281,7.732140064239502,GRA,LaThuile,measured
+CH-Oe2,Switzerland – Oensingen2 crop,47.28630065917969,7.734330177307129,CRO,LaThuile,measured
+CN-Anh,China – Anhui Huaining,33,117,DBF,LaThuile,measured
+CN-Bed,China – Beijing Daxing,39.530601501464844,116.25199890136719,EBF,LaThuile,measured
+CN-Cha,China – Changbaishan,42.40250015258789,128.0959930419922,MF,LaThuile,measured
+CN-Do1,China – Dongtan 1,31.516700744628906,121.96099853515625,WET,LaThuile,measured
+CN-Do2,China – Dongtan 2,31.584699630737305,121.90299987792969,WET,LaThuile,measured
+CN-Do3,China – Dongtan 3,31.51689910888672,121.97200012207031,WET,LaThuile,measured
+CN-Du1,China – Duolun_cropland,42.04560089111328,116.6709976196289,CRO,LaThuile,measured
+CN-Du2,China – Duolun_grassland,42.04669952392578,116.28399658203125,GRA,LaThuile,measured
+CN-HaM,China – Haibei Alpine Tibet site,37.369998931884766,101.18000030517578,GRA,LaThuile,measured
+CN-Hny,China – Hunan Yueyang,29.309999465942383,112.51000213623047,DBF,LaThuile,measured
+CN-Ku1,China – Kubuqi_populus forest,40.538299560546875,108.69400024414062,EBF,LaThuile,measured
+CN-Ku2,China – Kubuqi_shrubland,40.38079833984375,108.54900360107422,OSH,LaThuile,measured
+CN-Xfs,China – Xilinhot Inner Mongolia fenced typical steppe,44.1341667175293,116.32861328125,TBD,LaThuile,measured
+CN-Xi1,China – Xilinhot fenced steppe (X06),43.545833587646484,116.67778015136719,GRA,LaThuile,measured
+CN-Xi2,China – Xilinhot grassland site (X03),43.55440139770508,116.6709976196289,GRA,LaThuile,measured
+CZ-BK1,Czech Republic – Bily Kriz- Beskidy Mountains,49.502601623535156,18.538400650024414,ENF,LaThuile,measured
+CZ-BK2,Czech Republic – Bily Kriz- grassland,49.49530029296875,18.544700622558594,GRA,LaThuile,measured
+CZ-wet,Czech Republic – CZECHWET,49.025001525878906,14.772000312805176,WET,LaThuile,measured
+DE-Bay,Germany – Bayreuth-Waldstein/WeidenBrunnen,50.14189910888672,11.866900444030762,ENF,LaThuile,measured
+DE-Geb,Germany – Gebesee,51.100101470947266,10.914299964904785,CRO,LaThuile,measured
+DE-Gri,Germany – Grillenburg- grass station,50.949501037597656,13.512499809265137,GRA,LaThuile,measured
+DE-Hai,Germany – Hainich,51.07929992675781,10.45199966430664,DBF,LaThuile,measured
+DE-Har,Germany – Hartheim,47.93439865112305,7.60099983215332,ENF,LaThuile,measured
+DE-Kli,Germany – Klingenberg – cropland,50.89289855957031,13.522500038146973,CRO,LaThuile,measured
+DE-Meh,Germany – Mehrstedt 1,51.275299072265625,10.655500411987305,GRA,LaThuile,measured
+DE-Tha,Germany – Anchor Station Tharandt – old spruce,50.963600158691406,13.566900253295898,ENF,LaThuile,measured
+DE-Wet,Germany – Wetzstein,50.45349884033203,11.457500457763672,ENF,LaThuile,measured
+DK-Fou,Denmark – Foulum,56.48419952392578,9.587220191955566,CRO,LaThuile,measured
+DK-Lva,Denmark – Lille Valby (Rimi),55.68330001831055,12.08329963684082,GRA,LaThuile,measured
+DK-Ris,Denmark – Risbyholm,55.53030014038086,12.097200393676758,CRO,LaThuile,measured
+DK-Sor,Denmark – Soroe- LilleBogeskov,55.486900329589844,11.64579963684082,DBF,LaThuile,measured
+ES-ES1,Spain – El Saler,39.34600067138672,-0.31880998611450195,ENF,LaThuile,measured
+ES-ES2,Spain – El Saler-Sueca,39.2755012512207,-0.3152199983596802,CRO,LaThuile,measured
+ES-LJu,Spain – Llano de los Juanes,36.928199768066406,-2.750469923019409,OSH,LaThuile,measured
+ES-LMa,Spain – Las Majadas del Tietar,39.94150161743164,-5.773359775543213,SAV,LaThuile,measured
+ES-VDA,Spain – Vall d’Alinya,42.152198791503906,1.4485000371932983,GRA,LaThuile,measured
+FI-Hyy,Finland – Hyytiala,61.8474006652832,24.2947998046875,ENF,LaThuile,measured
+FI-Kaa,Finland – Kaamanen wetland,69.14070129394531,27.295000076293945,WET,LaThuile,measured
+FI-Sii,Finland – Siikaneva fen,61.83300018310547,24.19300079345703,GRA,LaThuile,measured
+FI-Sod,Finland – Sodankyla,67.36190032958984,26.637800216674805,ENF,LaThuile,measured
+FR-Aur,France – Aurade,43.549400329589844,1.1077799797058105,CRO,LaThuile,measured
+FR-Fon,France – Fontainebleau,48.47629928588867,2.7801499366760254,DBF,LaThuile,measured
+FR-Gri,France – Grignon (after 6/5/2005),48.84400177001953,1.952430009841919,CRO,LaThuile,measured
+FR-Hes,France – Hesse Forest- Sarrebourg,48.674198150634766,7.064620018005371,DBF,LaThuile,measured
+FR-Lam,France – Lamasquere,43.49330139160156,1.237220048904419,CRO,LaThuile,measured
+FR-LBr,France – Le Bray (after 6/28/1998),44.717098236083984,-0.7692999839782715,ENF,LaThuile,measured
+FR-Lq1,France – Laqueuille,45.644100189208984,2.737030029296875,GRA,LaThuile,measured
+FR-Lq2,France – Laqueuille extensive,45.639198303222656,2.737030029296875,GRA,LaThuile,measured
+FR-Pue,France – Puechabon,43.74140167236328,3.595829963684082,EBF,LaThuile,measured
+GF-Guy,French Guyana – Guyaflux,5.277699947357178,-52.92879867553711,EBF,LaThuile,measured
+HU-Bug,Hungary – Bugacpuszta,46.69110107421875,19.601299285888672,GRA,LaThuile,measured
+HU-Mat,Hungary – Matra,47.846900939941406,19.72599983215332,GRA,LaThuile,measured
+ID-Pag,Indonesia – Palangkaraya,2.3450000286102295,114.03600311279297,EBF,LaThuile,measured
+IE-Ca1,Ireland – Carlow1,52.85879898071289,-6.918139934539795,CRO,LaThuile,measured
+IE-Dri,Ireland – Dripsey,51.986698150634766,-8.751810073852539,GRA,LaThuile,measured
+IL-Yat,Israel – Yatir,31.344999313354492,35.05149841308594,ENF,LaThuile,measured
+IS-Gun,Iceland – Gunnarsholt,63.83330154418945,-20.216699600219727,DBF,LaThuile,measured
+IT-Amp,Italy – Amplero,41.90409851074219,13.605199813842773,GRA,LaThuile,measured
+IT-BCi,Italy – Borgo Cioffi,40.523799896240234,14.95740032196045,CRO,LaThuile,measured
+IT-Be2,Italy – Beano 2,46.00310134887695,13.025699615478516,GRA,LaThuile,measured
+IT-Bon,Italy – Bonis,39.47779846191406,16.534700393676758,ENF,LaThuile,measured
+IT-Cas,Italy – Castellaro,45.06284713745117,8.668539047241211,CRO,LaThuile,measured
+IT-Col,Italy – Collelongo- Selva Piana,41.84939956665039,13.58810043334961,DBF,LaThuile,measured
+IT-Cpz,Italy – Castelporziano,41.7052001953125,12.376099586486816,EBF,LaThuile,measured
+IT-Lav,Italy – Lavarone (after 3/2002),45.955299377441406,11.281200408935547,ENF,LaThuile,measured
+IT-Lec,Italy – Lecceto,43.30459976196289,11.270600318908691,EBF,LaThuile,measured
+IT-LMa,Italy – La Mandria,45.581298828125,7.154630184173584,GRA,LaThuile,measured
+IT-Mal,Italy – Malga Arpaco,46.11669921875,11.702799797058105,GRA,LaThuile,measured
+IT-MBo,Italy – Monte Bondone,46.01559829711914,11.046699523925781,GRA,LaThuile,measured
+IT-Noe,Italy – Sardinia/Arca di Noè,40.60599899291992,8.151000022888184,CSH,LaThuile,measured
+IT-Non,Italy – Nonantola,44.68980026245117,11.088700294494629,DBF,LaThuile,measured
+IT-Pia,Italy – Island of Pianosa,42.583900451660156,10.078399658203125,OSH,LaThuile,measured
+IT-PT1,Italy – Zerbolo-Parco Ticino- Canarazzo,45.20090103149414,9.061039924621582,DBF,LaThuile,measured
+IT-Ren,Italy – Renon/Ritten (Bolzano),46.587799072265625,11.434700012207031,ENF,LaThuile,measured
+IT-Ro1,Italy – Roccarespampani 1,42.40810012817383,11.930000305175781,DBF,LaThuile,measured
+IT-Ro2,Italy – Roccarespampani 2,42.39030075073242,11.920900344848633,DBF,LaThuile,measured
+IT-SRo,Italy – San Rossore,43.72785949707031,10.284440040588379,ENF,LaThuile,measured
+IT-Vig,Italy – Vigevano,45.31666564941406,8.850000381469727,DBF,LaThuile,measured
+JP-Mas,"Japan – Mase paddy flux site, Tsukuba, Japan (MSE)",36.05397033691406,140.02691650390625,CRO,LaThuile,measured
+JP-Tak,Japan – Takayama,36.14619827270508,137.42300415039062,DBF,LaThuile,measured
+JP-Tef,Japan – Teshio Experimental Forest,45.056339263916016,142.106201171875,MF,LaThuile,measured
+JP-Tom,Japan – Tomakomai National Forest,42.739498138427734,141.514892578125,MF,LaThuile,measured
+KR-Hnm,Korea – Haenam,34.54999923706055,126.56999969482422,CRO,LaThuile,measured
+KR-Kw1,Korea – Gwangneung Coniferous Forest,37.748600006103516,127.16300201416016,MF,LaThuile,measured
+NL-Ca1,Netherlands – Cabauw,51.97100067138672,4.927000045776367,GRA,LaThuile,measured
+NL-Haa,Netherlands – Haastrecht,52.00310134887695,4.805500030517578,GRA,LaThuile,measured
+NL-Hor,Netherlands – Horstermeer,52.028900146484375,5.067500114440918,GRA,LaThuile,measured
+NL-Lan,Netherlands – Langerak,51.9536018371582,4.902900218963623,CRO,LaThuile,measured
+NL-Loo,Netherlands – Loobos,52.16790008544922,5.743959903717041,ENF,LaThuile,measured
+NL-Lut,Netherlands – Lutjewad,53.39889907836914,6.355999946594238,CRO,LaThuile,measured
+NL-Mol,Netherlands – Molenweg,51.650001525878906,4.638999938964844,CRO,LaThuile,measured
+PL-wet,Poland – Polwet,52.76219940185547,16.30940055847168,WET,LaThuile,measured
+PT-Esp,Portugal – Espirra,38.639400482177734,-8.601799964904785,EBF,LaThuile,measured
+PT-Mi1,Portugal – Mitra (Evora),38.54069900512695,-8.000399589538574,EBF,LaThuile,measured
+PT-Mi2,Portugal – Mitra IV Tojal,38.47650146484375,-8.024550437927246,GRA,LaThuile,measured
+RU-Che,Russia – Cherskii,68.61470031738281,161.33900451660156,MF,LaThuile,measured
+RU-Cok,Russia – Chokurdakh,70.61669921875,147.88299560546875,OSH,LaThuile,measured
+RU-Fyo,Russia – Fyodorovskoye wet spruce stand,56.461669921875,32.92388916015625,ENF,LaThuile,measured
+RU-Ha1,Russia – Ubs Nur- Hakasija-grassland,54.72529983520508,90.002197265625,GRA,LaThuile,measured
+RU-Ha2,Russia – Ubs Nur- Hakasija-recovering grassland,54.773101806640625,89.95670318603516,GRA,LaThuile,measured
+RU-Ha3,Russia – Ubs Nur-Hakasija- Site 3,54.704551696777344,89.077850341796875,GRA,LaThuile,measured
+RU-Zot,Russia – Zotino,60.80080032348633,89.350799560546875,ENF,LaThuile,measured
+SE-Abi,Sweden – Abisko,68.36238861083984,18.794750213623047,DBF,LaThuile,measured
+SE-Deg,Sweden – Degero,64.18329620361328,19.549999237060547,WET,LaThuile,measured
+SE-Faj,Sweden – Fajemyr (NECC),56.265499114990234,13.553500175476074,WET,LaThuile,measured
+SE-Fla,Sweden – Flakaliden,64.11280059814453,19.456899642944336,ENF,LaThuile,measured
+SE-Nor,Sweden – Norunda,60.08649826049805,17.479503631591797,ENF,LaThuile,measured
+SE-Sk1,Sweden – Skyttorp1 young,60.125,17.918100357055664,ENF,LaThuile,measured
+SE-Sk2,Sweden – Skyttorp,60.129669189453125,17.840059280395508,ENF,LaThuile,measured
+SE-St1,Sweden – Stordalen Forest- Mountain Birch,68.36669921875,19.049694061279297,DBF,LaThuile,measured
+SK-Tat,Slovak Republic – Tatra,49.12080001831055,20.16349983215332,ENF,LaThuile,measured
+TW-Tar,Taiwan – TARI (TWTARI),24.031200408935547,120.68800354003906,CRO,LaThuile,measured
+UK-AMo,UK – Auchencorth Moss- Scotland,55.79169845581055,-3.2388899326324463,WET,LaThuile,measured
+UK-EBu,UK – Easter Bush- Scotland,55.86600112915039,-3.205780029296875,GRA,LaThuile,measured
+UK-ESa,UK – East Saltoun,55.90694046020508,-2.858609914779663,CRO,LaThuile,measured
+UK-Gri,UK – Griffin- Aberfeldy-Scotland,56.60721969604492,-3.7980599403381348,ENF,LaThuile,measured
+UK-Ham,UK – Hampshire,51.153533935546875,-0.858299970626831,DBF,LaThuile,measured
+UK-Her,UK – Hertfordshire,51.78379821777344,-0.4760800004005432,CRO,LaThuile,measured
+UK-PL3,UK – Pang/ Lambourne (forest),51.45000076293945,-1.2666699886322021,DBF,LaThuile,measured
+UK-Tad,UK – Tadham Moor,51.20709991455078,-2.8286399841308594,GRA,LaThuile,measured
+US-ARb,USA – OK – ARM Southern Great Plains burn site- Lamont,35.54970169067383,-98.04019927978516,GRA,LaThuile,measured
+US-ARc,USA – OK – ARM Southern Great Plains control site- Lamont,35.54648971557617,-98.04000091552734,GRA,LaThuile,measured
+US-ARM,USA – OK – ARM Southern Great Plains site- Lamont,36.60580062866211,-97.488800048828125,CRO,LaThuile,measured
+US-Atq,USA – AK – Atqasuk,70.46959686279297,-157.40899658203125,WET,LaThuile,measured
+US-Aud,USA – AZ – Audubon Research Ranch,31.590700149536133,-110.51000213623047,GRA,LaThuile,measured
+US-Bar,USA – NH – Bartlett Experimental Forest,44.06460189819336,-71.28807830810547,DBF,LaThuile,measured
+US-Bkg,USA – SD – Brookings,44.345298767089844,-96.83619689941406,GRA,LaThuile,measured
+US-Blo,USA – CA – Blodgett Forest,38.895198822021484,-120.63275146484375,ENF,LaThuile,measured
+US-Bn1,"USA – AK – Bonanza Creek, 1920 Burn site near Delta Junction",63.9197998046875,-145.3780059814453,ENF,LaThuile,measured
+US-Bn2,"USA – AK – Bonanza Creek, 1987 Burn site near Delta Junction",63.9197998046875,-145.3780059814453,DBF,LaThuile,measured
+US-Bn3,"USA – AK – Bonanza Creek, 1999 Burn site near Delta Junction",63.922698974609375,-145.74400329589844,OSH,LaThuile,measured
+US-Bo1,USA – IL – Bondville,40.00619888305664,-88.29039764404297,CRO,LaThuile,measured
+US-Bo2,USA – IL – Bondville (companion site),40.00899887084961,-88.29000091552734,CRO,LaThuile,measured
+US-Brw,USA – AK – Barrow,71.32250213623047,-156.6259002685547,WET,LaThuile,measured
+US-CaV,USA – WV – Canaan Valley,39.06330108642578,-79.4207992553711,GRA,LaThuile,measured
+US-Dk1,USA – NC – Duke Forest-open field,35.97119903564453,-79.09339904785156,GRA,LaThuile,measured
+US-Dk2,USA – NC – Duke Forest-hardwoods,35.97359848022461,-79.10040283203125,DBF,LaThuile,measured
+US-Dk3,USA – NC – Duke Forest – loblolly pine,35.97819900512695,-79.09420013427734,ENF,LaThuile,measured
+US-Fmf,USA – AZ – Flagstaff – Managed Forest,35.142601013183594,-111.72730255126953,ENF,LaThuile,measured
+US-FPe,USA – MT – Fort Peck,48.307701110839844,-105.10189819335938,GRA,LaThuile,measured
+US-FR2,USA – TX – Freeman Ranch- Mesquite Juniper,29.949499130249023,-97.99620056152344,WSA,LaThuile,measured
+US-Fuf,USA – AZ – Flagstaff – Unmanaged Forest,35.0890007019043,-111.76200103759766,ENF,LaThuile,measured
+US-Fwf,USA – AZ – Flagstaff – Wildfire,35.44540023803711,-111.77179718017578,GRA,LaThuile,measured
+US-Goo,USA – MS – Goodwin Creek,34.25469970703125,-89.87349700927734,GRA,LaThuile,measured
+US-Ha1,USA – MA – Harvard Forest EMS Tower (HFR1),42.53779983520508,-72.17150115966797,DBF,LaThuile,measured
+US-Ha2,USA – MA – Harvard Forest Hemlock Site,42.53929901123047,-72.17790222167969,ENF,LaThuile,measured
+US-Ho1,USA – ME – Howland Forest (main tower),45.2041015625,-68.74019622802734,ENF,LaThuile,measured
+US-Ho2,USA – ME – Howland Forest (west tower),45.20909881591797,-68.74700164794922,ENF,LaThuile,measured
+US-IB1,USA – IL – Fermi National Accelerator Laboratory- Batavia (Agricultural site),41.85929870605469,-88.22270202636719,CRO,LaThuile,measured
+US-IB2,USA – IL – Fermi National Accelerator Laboratory- Batavia (Prairie site),41.840599060058594,-88.240997314453125,GRA,LaThuile,measured
+US-Ivo,USA – AK – Ivotuk,68.48650360107422,-155.75,WET,LaThuile,measured
+US-KS1,USA – FL – Kennedy Space Center (slash pine),28.45829963684082,-80.6708984375,ENF,LaThuile,measured
+US-KS2,USA – FL – Kennedy Space Center (scrub oak),28.608600616455078,-80.67150115966797,CSH,LaThuile,measured
+US-Los,USA – WI – Lost Creek,46.082698822021484,-89.97920227050781,CSH,LaThuile,measured
+US-LPH,USA – MA – Little Prospect Hill,42.541900634765625,-72.18499755859375,DBF,LaThuile,measured
+US-Me1,USA – OR – Metolius – Eyerly burn,44.57939910888672,-121.5,ENF,LaThuile,measured
+US-Me2,USA – OR – Metolius-intermediate aged ponderosa pine,44.452301025390625,-121.55740356445312,ENF,LaThuile,measured
+US-Me3,USA – OR – Metolius-second young aged pine,44.315399169921875,-121.60780334472656,ENF,LaThuile,measured
+US-Me4,USA – OR – Metolius-old aged ponderosa pine,44.49919891357422,-121.62239837646484,ENF,LaThuile,measured
+US-MMS,USA – IN – Morgan Monroe State Forest,39.32310104370117,-86.41310119628906,DBF,LaThuile,measured
+US-MOz,USA – MO – Missouri Ozark Site,38.74409866333008,-92.19999694824219,DBF,LaThuile,measured
+US-NC1,USA – NC – NC_Clearcut,35.811500549316406,-76.71150207519531,OSH,LaThuile,measured
+US-NC2,USA – NC – NC_Loblolly Plantation,35.8031005859375,-76.66790008544922,ENF,LaThuile,measured
+US-Ne1,USA – NE – Mead – irrigated continuous maize site,41.16510009765625,-96.47660064697266,CRO,LaThuile,measured
+US-Ne2,USA – NE – Mead – irrigated maize-soybean rotation site,41.16490173339844,-96.47010040283203,CRO,LaThuile,measured
+US-Ne3,USA – NE – Mead – rainfed maize-soybean rotation site,41.1796989440918,-96.439697265625,CRO,LaThuile,measured
+US-NR1,USA – CO – Niwot Ridge Forest (LTER NWT1),40.032901763916016,-105.5459976196289,ENF,LaThuile,measured
+US-Oho,USA – OH – Oak Openings,41.554500579833984,-83.84380340576172,DBF,LaThuile,measured
+US-PFa,USA – WI – Park Falls/WLEF,45.945899963378906,-90.27230072021484,MF,LaThuile,measured
+US-SO2,USA – CA – Sky Oaks- Old Stand,33.3739013671875,-116.62288665771484,CSH,LaThuile,measured
+US-SO3,USA – CA – Sky Oaks- Young Stand,33.377201080322266,-116.62268829345703,CSH,LaThuile,measured
+US-SO4,USA – CA – Sky Oaks- New Stand,33.3843994140625,-116.64025115966797,CSH,LaThuile,measured
+US-SP1,USA – FL – Slashpine-Austin Cary- 65yrs nat regen,29.738100051879883,-82.21880340576172,ENF,LaThuile,measured
+US-SP2,"USA – FL – Slashpine-Mize-clearcut-3yr,regen",29.764799118041992,-82.24479675292969,ENF,LaThuile,measured
+US-SP3,USA – FL – Slashpine-Donaldson-mid-rot- 12yrs,29.75480079650879,-82.163299560546875,ENF,LaThuile,measured
+US-SP4,USA – FL – Slashpine-Rayonier-mid-rot- 12yrs,29.802799224853516,-82.2031021118164,ENF,LaThuile,measured
+US-SRM,USA – AZ – Santa Rita Mesquite,31.821399688720703,-110.86599731445312,WSA,LaThuile,measured
+US-Syv,USA – MI – Sylvania Wilderness Area,46.242000579833984,-89.34770202636719,MF,LaThuile,measured
+US-Ton,USA – CA – Tonzi Ranch,38.43159866333008,-120.96600341796875,WSA,LaThuile,measured
+US-UMB,USA – MI – Univ. of Mich. Biological Station,45.55979919433594,-84.71379852294922,DBF,LaThuile,measured
+US-Var,USA – CA – Vaira Ranch- Ione,38.413299560546875,-120.95072937011719,GRA,LaThuile,measured
+US-WBW,USA – TN – Walker Branch Watershed,35.95880126953125,-84.28739929199219,DBF,LaThuile,measured
+US-WCr,USA – WI – Willow Creek,45.80590057373047,-90.07990264892578,DBF,LaThuile,measured
+US-Wi0,USA – WI – Young red pine (YRP),46.61880111694336,-91.0813980102539,ENF,LaThuile,measured
+US-Wi1,USA – WI – Intermediate hardwood (IHW),46.730499267578125,-91.23290252685547,DBF,LaThuile,measured
+US-Wi2,USA – WI – Intermediate red pine (IRP),46.6869010925293,-91.152801513671875,ENF,LaThuile,measured
+US-Wi4,USA – WI – Mature red pine (MRP),46.73929977416992,-91.16629791259766,ENF,LaThuile,measured
+US-Wi5,USA – WI – Mixed young jack pine (MYJP),46.653099060058594,-91.08580017089844,ENF,LaThuile,measured
+US-Wi6,USA – WI – Pine barrens #1 (PB1),46.624900817871094,-91.29820251464844,OSH,LaThuile,measured
+US-Wi7,USA – WI – Red pine clearcut (RPCC),46.64910125732422,-91.06929779052734,OSH,LaThuile,measured
+US-Wi8,USA – WI – Young hardwood clearcut (YHW),46.7223014831543,-91.25240325927734,DBF,LaThuile,measured
+US-Wi9,USA – WI – Young Jack pine (YJP),46.61880111694336,-91.0813980102539,ENF,LaThuile,measured
+US-Wkg,USA – AZ – Walnut Gulch Kendall Grasslands,31.736499786376953,-109.94200134277344,GRA,LaThuile,measured
+US-Wrc,USA – WA – Wind River Crane Site,45.820499420166016,-121.9520034790039,ENF,LaThuile,measured
+VU-Coc,Vanuatu – CocoFlux,-15.442700386047363,167.19200134277344,EBF,LaThuile,measured
+ZA-Kru,South Africa – Skukuza- Kruger National Park,-25.019699096679688,31.49690055847168,SAV,LaThuile,measured

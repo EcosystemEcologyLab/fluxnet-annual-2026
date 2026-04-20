@@ -1,0 +1,213 @@
+site_id,site_name,location_lat,location_long,igbp,dataset,coords_source
+AR-SLu,San Luis,-33.4648,-66.4598,MF,FLUXNET2015,measured
+AR-Vir,Virasoro,-28.2395,-56.1886,ENF,FLUXNET2015,measured
+AT-Neu,Neustift,47.1167,11.3175,GRA,FLUXNET2015,measured
+AU-Ade,Adelaide River,-13.0769,131.1178,WSA,FLUXNET2015,measured
+AU-ASM,Alice Springs,-22.283,133.249,SAV,FLUXNET2015,measured
+AU-Cpr,Calperum,-34.0021,140.5891,SAV,FLUXNET2015,measured
+AU-Cum,Cumberland Plain,-33.6152,150.7236,EBF,FLUXNET2015,measured
+AU-DaP,Daly River Pasture,-14.0633,131.3181,GRA,FLUXNET2015,measured
+AU-DaS,Daly River Savanna,-14.1593,131.3881,SAV,FLUXNET2015,measured
+AU-Dry,Dry River,-15.2588,132.3706,SAV,FLUXNET2015,measured
+AU-Emr,Emerald,-23.8587,148.4746,GRA,FLUXNET2015,measured
+AU-Fog,Fogg Dam,-12.5452,131.3072,WET,FLUXNET2015,measured
+AU-Gin,Gingin,-31.3764,115.7138,WSA,FLUXNET2015,measured
+AU-GWW,"Great Western Woodlands, Western Australia, Australia",-30.1913,120.6541,SAV,FLUXNET2015,measured
+AU-How,Howard Springs,-12.4943,131.1523,WSA,FLUXNET2015,measured
+AU-Lox,Loxton,-34.4704,140.6551,DBF,FLUXNET2015,measured
+AU-RDF,"Red Dirt Melon Farm, Northern Territory",-14.5636,132.4776,WSA,FLUXNET2015,measured
+AU-Rig,Riggs Creek,-36.6499,145.5759,GRA,FLUXNET2015,measured
+AU-Rob,"Robson Creek, Queensland, Australia",-17.1175,145.6301,EBF,FLUXNET2015,measured
+AU-Stp,Sturt Plains,-17.1507,133.3502,GRA,FLUXNET2015,measured
+AU-TTE,Ti Tree East,-22.287,133.64,GRA,FLUXNET2015,measured
+AU-Tum,Tumbarumba,-35.6566,148.1517,EBF,FLUXNET2015,measured
+AU-Wac,Wallaby Creek,-37.4259,145.1878,EBF,FLUXNET2015,measured
+AU-Whr,Whroo,-36.6732,145.0294,EBF,FLUXNET2015,measured
+AU-Wom,Wombat,-37.4222,144.0944,EBF,FLUXNET2015,measured
+AU-Ync,Jaxa,-34.9893,146.2907,GRA,FLUXNET2015,measured
+BE-Bra,Brasschaat,51.3076,4.5198,MF,FLUXNET2015,measured
+BE-Lon,Lonzee,50.5516,4.7462,CRO,FLUXNET2015,measured
+BE-Vie,Vielsalm,50.3049,5.9981,MF,FLUXNET2015,measured
+BR-Sa1,Santarem-Km67-Primary Forest,-2.8567,-54.9589,EBF,FLUXNET2015,measured
+BR-Sa3,Santarem-Km83-Logged Forest,-3.018,-54.9714,EBF,FLUXNET2015,measured
+CA-Gro,"Ontario - Groundhog River, Boreal Mixedwood Forest",48.2167,-82.1556,MF,FLUXNET2015,measured
+CA-Man,Manitoba - Northern Old Black Spruce (former BOREAS Northern Study Area),55.8796,-98.4808,ENF,FLUXNET2015,measured
+CA-NS1,UCI-1850 burn site,55.8792,-98.4839,ENF,FLUXNET2015,measured
+CA-NS2,UCI-1930 burn site,55.9058,-98.5247,ENF,FLUXNET2015,measured
+CA-NS3,UCI-1964 burn site,55.9117,-98.3822,ENF,FLUXNET2015,measured
+CA-NS4,UCI-1964 burn site wet,55.9144,-98.3806,ENF,FLUXNET2015,measured
+CA-NS5,UCI-1981 burn site,55.8631,-98.485,ENF,FLUXNET2015,measured
+CA-NS6,UCI-1989 burn site,55.9167,-98.9644,OSH,FLUXNET2015,measured
+CA-NS7,UCI-1998 burn site,56.6358,-99.9483,OSH,FLUXNET2015,measured
+CA-Oas,"Saskatchewan - Western Boreal, Mature Aspen",53.6289,-106.1978,DBF,FLUXNET2015,measured
+CA-Obs,"Saskatchewan - Western Boreal, Mature Black Spruce",53.9872,-105.1178,ENF,FLUXNET2015,measured
+CA-Qfo,"Quebec - Eastern Boreal, Mature Black Spruce",49.6925,-74.3421,ENF,FLUXNET2015,measured
+CA-SF1,"Saskatchewan - Western Boreal, forest burned in 1977",54.485,-105.8176,ENF,FLUXNET2015,measured
+CA-SF2,"Saskatchewan - Western Boreal, forest burned in 1989",54.2539,-105.8775,ENF,FLUXNET2015,measured
+CA-SF3,"Saskatchewan - Western Boreal, forest burned in 1998",54.0916,-106.0053,OSH,FLUXNET2015,measured
+CA-TP1,Ontario - Turkey Point 2002 Plantation White Pine,42.6609,-80.5595,ENF,FLUXNET2015,measured
+CA-TP2,Ontario - Turkey Point 1989 Plantation White Pine,42.7744,-80.4588,ENF,FLUXNET2015,measured
+CA-TP3,Ontario - Turkey Point 1974 Plantation White Pine,42.7068,-80.3483,ENF,FLUXNET2015,measured
+CA-TP4,Ontario - Turkey Point 1939 Plantation White Pine,42.7102,-80.3574,ENF,FLUXNET2015,measured
+CA-TPD,Ontario - Turkey Point Mature Deciduous,42.6353,-80.5577,DBF,FLUXNET2015,measured
+CG-Tch,Tchizalamou,-4.2892,11.6564,SAV,FLUXNET2015,measured
+CH-Cha,Chamau,47.2102,8.4104,GRA,FLUXNET2015,measured
+CH-Dav,Davos,46.8153,9.8559,ENF,FLUXNET2015,measured
+CH-Fru,Früebüel ,47.1158,8.5378,GRA,FLUXNET2015,measured
+CH-Lae,Laegern,47.4783,8.3644,MF,FLUXNET2015,measured
+CH-Oe1,Oensingen grassland,47.2858,7.7319,GRA,FLUXNET2015,measured
+CH-Oe2,Oensingen crop,47.2864,7.7337,CRO,FLUXNET2015,measured
+CN-Cha,Changbaishan,42.4025,128.0958,MF,FLUXNET2015,measured
+CN-Cng,Changling,44.5934,123.5092,GRA,FLUXNET2015,measured
+CN-Dan,Dangxiong,30.4978,91.0664,GRA,FLUXNET2015,measured
+CN-Din,Dinghushan,23.1733,112.5361,EBF,FLUXNET2015,measured
+CN-Du2,Duolun_grassland (D01),42.0467,116.2836,GRA,FLUXNET2015,measured
+CN-Du3,Duolun Degraded Meadow,42.0551,116.2809,GRA,FLUXNET2015,measured
+CN-Ha2,Haibei Shrubland,37.6086,101.3269,WET,FLUXNET2015,measured
+CN-HaM,Haibei Alpine Tibet site,37.37,101.18,GRA,FLUXNET2015,measured
+CN-Qia,Qianyanzhou,26.7414,115.0581,ENF,FLUXNET2015,measured
+CN-Sw2,Siziwang Grazed (SZWG),41.7902,111.8971,GRA,FLUXNET2015,measured
+CZ-BK1,Bily Kriz forest,49.5021,18.5369,ENF,FLUXNET2015,measured
+CZ-BK2,Bily Kriz grassland,49.4944,18.5429,GRA,FLUXNET2015,measured
+CZ-wet,Trebon (CZECHWET),49.0247,14.7704,WET,FLUXNET2015,measured
+DE-Akm,Anklam,53.8662,13.6834,WET,FLUXNET2015,measured
+DE-Geb,Gebesee,51.0997,10.9146,CRO,FLUXNET2015,measured
+DE-Gri,Grillenburg,50.95,13.5126,GRA,FLUXNET2015,measured
+DE-Hai,Hainich,51.0792,10.4522,DBF,FLUXNET2015,measured
+DE-Kli,Klingenberg,50.8931,13.5224,CRO,FLUXNET2015,measured
+DE-Lkb,Lackenberg,49.0996,13.3047,ENF,FLUXNET2015,measured
+DE-Lnf,Leinefelde,51.3282,10.3678,DBF,FLUXNET2015,measured
+DE-Obe,Oberbärenburg,50.7867,13.7213,ENF,FLUXNET2015,measured
+DE-RuR,Rollesbroich,50.6219,6.3041,GRA,FLUXNET2015,measured
+DE-RuS,Selhausen Juelich,50.8659,6.4471,CRO,FLUXNET2015,measured
+DE-Seh,Selhausen,50.8706,6.4497,CRO,FLUXNET2015,measured
+DE-SfN,Schechenfilz Nord,47.8064,11.3275,WET,FLUXNET2015,measured
+DE-Spw,Spreewald,51.8922,14.0337,WET,FLUXNET2015,measured
+DE-Tha,Tharandt,50.9626,13.5651,ENF,FLUXNET2015,measured
+DE-Zrk,Zarnekow,53.8759,12.889,WET,FLUXNET2015,measured
+DK-Eng,Enghave,55.6905,12.1918,GRA,FLUXNET2015,measured
+DK-Fou,Foulum,56.4842,9.5872,CRO,FLUXNET2015,measured
+DK-Sor,Soroe,55.4859,11.6446,DBF,FLUXNET2015,measured
+ES-Amo,Amoladeras,36.8336,-2.2523,OSH,FLUXNET2015,measured
+ES-LgS,Laguna Seca,37.0979,-2.9658,OSH,FLUXNET2015,measured
+ES-LJu,Llano de los Juanes,36.9266,-2.7521,OSH,FLUXNET2015,measured
+ES-Ln2,Lanjaron-Salvage logging,36.9695,-3.4758,OSH,FLUXNET2015,measured
+FI-Hyy,Hyytiala,61.8474,24.2948,ENF,FLUXNET2015,measured
+FI-Jok,Jokioinen,60.8986,23.5134,CRO,FLUXNET2015,measured
+FI-Let,Lettosuo,60.6418,23.9595,ENF,FLUXNET2015,measured
+FI-Lom,Lompolojankka,67.9972,24.2092,WET,FLUXNET2015,measured
+FI-Sod,Sodankyla,67.3624,26.6386,ENF,FLUXNET2015,measured
+FR-Fon,Fontainebleau-Barbeau,48.4764,2.7801,DBF,FLUXNET2015,measured
+FR-Gri,Grignon,48.8442,1.9519,CRO,FLUXNET2015,measured
+FR-LBr,Le Bray,44.7171,-0.7693,ENF,FLUXNET2015,measured
+FR-Pue,Puechabon,43.7413,3.5957,EBF,FLUXNET2015,measured
+GF-Guy,Guyaflux (French Guiana),5.2788,-52.9249,EBF,FLUXNET2015,measured
+GH-Ank,Ankasa,5.2685,-2.6942,EBF,FLUXNET2015,measured
+GL-NuF,Nuuk Fen,64.1308,-51.3861,WET,FLUXNET2015,measured
+GL-ZaF,Zackenberg Fen,74.4814,-20.5545,WET,FLUXNET2015,measured
+GL-ZaH,Zackenberg Heath,74.4733,-20.5503,GRA,FLUXNET2015,measured
+IT-BCi,Borgo Cioffi,40.5237,14.9574,CRO,FLUXNET2015,measured
+IT-CA1,Castel d'Asso1,42.3804,12.0266,DBF,FLUXNET2015,measured
+IT-CA2,Castel d'Asso2,42.3772,12.026,CRO,FLUXNET2015,measured
+IT-CA3,Castel d'Asso3,42.38,12.0222,DBF,FLUXNET2015,measured
+IT-Col,Collelongo,41.8494,13.5881,DBF,FLUXNET2015,measured
+IT-Cp2,Castelporziano2,41.7043,12.3573,EBF,FLUXNET2015,measured
+IT-Cpz,Castelporziano,41.7052,12.3761,EBF,FLUXNET2015,measured
+IT-Isp,Ispra ABC-IS,45.8126,8.6336,DBF,FLUXNET2015,measured
+IT-La2,Lavarone2,45.9542,11.2853,ENF,FLUXNET2015,measured
+IT-Lav,Lavarone,45.9562,11.2813,ENF,FLUXNET2015,measured
+IT-MBo,Monte Bondone,46.0147,11.0458,GRA,FLUXNET2015,measured
+IT-Noe,Arca di Noe - Le Prigionette,40.6062,8.1517,CSH,FLUXNET2015,measured
+IT-PT1,Parco Ticino forest,45.2009,9.061,DBF,FLUXNET2015,measured
+IT-Ren,Renon,46.5869,11.4337,ENF,FLUXNET2015,measured
+IT-Ro1,Roccarespampani 1,42.4081,11.93,DBF,FLUXNET2015,measured
+IT-Ro2,Roccarespampani 2,42.3903,11.9209,DBF,FLUXNET2015,measured
+IT-SR2,San Rossore 2,43.732,10.2909,ENF,FLUXNET2015,measured
+IT-SRo,San Rossore,43.7279,10.2844,ENF,FLUXNET2015,measured
+IT-Tor,Torgnon,45.8444,7.5781,GRA,FLUXNET2015,measured
+JP-MBF,Moshiri Birch Forest Site,44.3869,142.3186,DBF,FLUXNET2015,measured
+JP-SMF,Seto Mixed Forest Site,35.2617,137.0788,MF,FLUXNET2015,measured
+MY-PSO,Pasoh Forest Reserve (PSO),2.973,102.3062,EBF,FLUXNET2015,measured
+NL-Hor,Horstermeer,52.2403,5.0713,GRA,FLUXNET2015,measured
+NL-Loo,Loobos,52.1666,5.7436,ENF,FLUXNET2015,measured
+PA-SPn,Sardinilla Plantation,9.3181,-79.6346,DBF,FLUXNET2015,measured
+PA-SPs,Sardinilla-Pasture,9.3138,-79.6314,GRA,FLUXNET2015,measured
+RU-Che,Cherski,68.613,161.3414,WET,FLUXNET2015,measured
+RU-Cok,Chokurdakh,70.8291,147.4943,OSH,FLUXNET2015,measured
+RU-Fyo,Fyodorovskoye,56.4615,32.9221,ENF,FLUXNET2015,measured
+RU-Ha1,Hakasia steppe,54.7252,90.0022,GRA,FLUXNET2015,measured
+RU-Sam,Samoylov,72.3738,126.4958,GRA,FLUXNET2015,measured
+RU-SkP,Yakutsk Spasskaya Pad larch,62.255,129.168,DNF,FLUXNET2015,measured
+RU-Tks,Tiksi,71.5943,128.8878,GRA,FLUXNET2015,measured
+RU-Vrk,Seida/Vorkuta,67.0547,62.9405,CSH,FLUXNET2015,measured
+SD-Dem,Demokeya,13.2829,30.4783,SAV,FLUXNET2015,measured
+SE-St1,Stordalen grassland,68.3541,19.0503,WET,FLUXNET2015,measured
+SJ-Adv,Adventdalen,78.186,15.923,WET,FLUXNET2015,measured
+SJ-Blv,"Bayelva, Spitsbergen",78.9216,11.8311,SNO,FLUXNET2015,measured
+SN-Dhr,Dahra,15.4028,-15.4322,SAV,FLUXNET2015,measured
+US-AR1,ARM USDA UNL OSU Woodward Switchgrass 1,36.4267,-99.42,GRA,FLUXNET2015,measured
+US-AR2,ARM USDA UNL OSU Woodward Switchgrass 2,36.6358,-99.5975,GRA,FLUXNET2015,measured
+US-ARb,ARM Southern Great Plains burn site- Lamont,35.5497,-98.0402,GRA,FLUXNET2015,measured
+US-ARc,ARM Southern Great Plains control site- Lamont,35.5465,-98.04,GRA,FLUXNET2015,measured
+US-ARM,ARM Southern Great Plains site- Lamont,36.6058,-97.4888,CRO,FLUXNET2015,measured
+US-Atq,Atqasuk,70.4696,-157.4089,WET,FLUXNET2015,measured
+US-Blo,Blodgett Forest,38.8953,-120.6328,ENF,FLUXNET2015,measured
+US-Cop,Corral Pocket,38.09,-109.39,GRA,FLUXNET2015,measured
+US-CRT,Curtice Walter-Berger cropland,41.6285,-83.3471,CRO,FLUXNET2015,measured
+US-GBT,GLEES Brooklyn Tower,41.3658,-106.2397,ENF,FLUXNET2015,measured
+US-GLE,GLEES,41.3665,-106.2399,ENF,FLUXNET2015,measured
+US-Goo,Goodwin Creek,34.2547,-89.8735,GRA,FLUXNET2015,measured
+US-Ha1,Harvard Forest EMS Tower (HFR1),42.5378,-72.1715,DBF,FLUXNET2015,measured
+US-IB2,Fermi National Accelerator Laboratory- Batavia (Prairie site),41.8406,-88.241,GRA,FLUXNET2015,measured
+US-Ivo,Ivotuk,68.4865,-155.7503,WET,FLUXNET2015,measured
+US-KS1,Kennedy Space Center (slash pine),28.4583,-80.6709,ENF,FLUXNET2015,measured
+US-KS2,Kennedy Space Center (scrub oak),28.6086,-80.6715,CSH,FLUXNET2015,measured
+US-Lin,Lindcove Orange Orchard,36.3566,-119.0922,CRO,FLUXNET2015,measured
+US-Los,Lost Creek,46.0827,-89.9792,WET,FLUXNET2015,measured
+US-LWW,Little Washita Watershed,34.9604,-97.9789,GRA,FLUXNET2015,measured
+US-Me1,Metolius - Eyerly burn,44.5794,-121.5,ENF,FLUXNET2015,measured
+US-Me2,Metolius mature ponderosa pine,44.4526,-121.5589,ENF,FLUXNET2015,measured
+US-Me3,Metolius-second young aged pine,44.3154,-121.6078,ENF,FLUXNET2015,measured
+US-Me4,Metolius-old aged ponderosa pine,44.4992,-121.6224,ENF,FLUXNET2015,measured
+US-Me5,Metolius-first young aged pine,44.4372,-121.5668,ENF,FLUXNET2015,measured
+US-Me6,Metolius Young Pine Burn,44.3233,-121.6078,ENF,FLUXNET2015,measured
+US-MMS,Morgan Monroe State Forest,39.3232,-86.4131,DBF,FLUXNET2015,measured
+US-Myb,Mayberry Wetland,38.0499,-121.765,WET,FLUXNET2015,measured
+US-Ne1,Mead - irrigated continuous maize site,41.1651,-96.4766,CRO,FLUXNET2015,measured
+US-Ne2,Mead - irrigated maize-soybean rotation site,41.1649,-96.4701,CRO,FLUXNET2015,measured
+US-Ne3,Mead - rainfed maize-soybean rotation site,41.1797,-96.4397,CRO,FLUXNET2015,measured
+US-NR1,Niwot Ridge Forest (LTER NWT1),40.0329,-105.5464,ENF,FLUXNET2015,measured
+US-Oho,Oak Openings,41.5545,-83.8438,DBF,FLUXNET2015,measured
+US-ORv,Olentangy River Wetland Research Park,40.0201,-83.0183,WET,FLUXNET2015,measured
+US-PFa,Park Falls/WLEF,45.9459,-90.2723,MF,FLUXNET2015,measured
+US-Prr,Poker Flat Research Range Black Spruce Forest,65.1237,-147.4876,ENF,FLUXNET2015,measured
+US-SRC,Santa Rita Creosote,31.9083,-110.8395,OSH,FLUXNET2015,measured
+US-SRG,Santa Rita Grassland,31.7894,-110.8277,GRA,FLUXNET2015,measured
+US-SRM,Santa Rita Mesquite,31.8214,-110.8661,WSA,FLUXNET2015,measured
+US-Sta,Saratoga,41.3966,-106.8024,OSH,FLUXNET2015,measured
+US-Syv,Sylvania Wilderness Area,46.242,-89.3477,MF,FLUXNET2015,measured
+US-Ton,Tonzi Ranch,38.4309,-120.966,WSA,FLUXNET2015,measured
+US-Tw1,Twitchell Wetland West Pond,38.1074,-121.6469,WET,FLUXNET2015,measured
+US-Tw2,Twitchell Corn,38.0969,-121.6365,CRO,FLUXNET2015,measured
+US-Tw3,Twitchell Alfalfa,38.1152,-121.6469,CRO,FLUXNET2015,measured
+US-Tw4,Twitchell East End Wetland,38.1027,-121.6413,WET,FLUXNET2015,measured
+US-Twt,Twitchell Island,38.1087,-121.6531,CRO,FLUXNET2015,measured
+US-UMB,Univ. of Mich. Biological Station,45.5598,-84.7138,DBF,FLUXNET2015,measured
+US-UMd,UMBS Disturbance,45.5625,-84.6975,DBF,FLUXNET2015,measured
+US-Var,Vaira Ranch- Ione,38.4133,-120.9508,GRA,FLUXNET2015,measured
+US-WCr,Willow Creek,45.8059,-90.0799,DBF,FLUXNET2015,measured
+US-Whs,Walnut Gulch Lucky Hills Shrub,31.7438,-110.0522,OSH,FLUXNET2015,measured
+US-Wi0,Young red pine (YRP),46.6188,-91.0814,ENF,FLUXNET2015,measured
+US-Wi1,Intermediate hardwood (IHW),46.7305,-91.2329,DBF,FLUXNET2015,measured
+US-Wi2,Intermediate red pine (IRP),46.6869,-91.1528,ENF,FLUXNET2015,measured
+US-Wi3,Mature hardwood (MHW),46.6347,-91.0987,DBF,FLUXNET2015,measured
+US-Wi4,Mature red pine (MRP),46.7393,-91.1663,ENF,FLUXNET2015,measured
+US-Wi5,Mixed young jack pine (MYJP),46.6531,-91.0858,ENF,FLUXNET2015,measured
+US-Wi6,Pine barrens #1 (PB1),46.6249,-91.2982,OSH,FLUXNET2015,measured
+US-Wi7,Red pine clearcut (RPCC),46.6491,-91.0693,OSH,FLUXNET2015,measured
+US-Wi8,Young hardwood clearcut (YHW),46.7223,-91.2524,DBF,FLUXNET2015,measured
+US-Wi9,Young Jack pine (YJP),46.7385,-91.0746,ENF,FLUXNET2015,measured
+US-Wkg,Walnut Gulch Kendall Grasslands,31.7365,-109.9419,GRA,FLUXNET2015,measured
+US-WPT,Winous Point North Marsh,41.4646,-82.9962,WET,FLUXNET2015,measured
+ZA-Kru,Skukuza,-25.0197,31.4969,SAV,FLUXNET2015,measured
+ZM-Mon,Mongu,-15.4391,23.2525,DBF,FLUXNET2015,measured

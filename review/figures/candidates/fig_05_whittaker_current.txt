@@ -1,1 +1,31 @@
-Figure 5 — FLUXNET site distribution in Whittaker biome climate space, current network (530 sites with valid NEE). X axis: mean annual temperature (°C, WorldClim v2.1 bio1, 1970-2000 baseline, 2.5 arc-minute resolution). Y axis: mean annual precipitation (mm yr⁻¹, WorldClim v2.1 bio12). Hexagonal bins show median annual NEE (g C m⁻² yr⁻¹). Diverging colour scale centred on zero, clipped to 5th-95th percentile. Horizontal legend bar. Data sources: FLUXNET Shuttle v0.3.7; WorldClim v2.1 (Fick & Hijmans 2017).
+Figure 5 — FLUXNET Network Coverage of Whittaker Biome Climate Space (Current Network)
+
+This figure shows the distribution of all 530 FLUXNET sites with valid NEE data
+in Whittaker biome climate space.
+
+X axis: Mean Annual Temperature (°C) from WorldClim v2.1 bioclimatic variable
+bio1 (1970-2000 baseline, 2.5 arc-minute resolution, Fick & Hijmans 2017).
+
+Y axis: Mean Annual Precipitation (mm yr⁻¹) from WorldClim v2.1 bioclimatic
+variable bio12 (same source).
+
+Hexagonal bins show the median annual NEE_VUT_REF (g C m⁻² yr⁻¹) across all
+site-years within each climate bin. Positive values indicate net carbon source,
+negative values indicate net carbon sink. The diverging colour scale is centred
+on zero and clipped symmetrically to the 5th-95th percentile of the full Shuttle
+NEE distribution to prevent extreme values from compressing the colour range.
+Site-years with no NEE data are shown as grey hexbins.
+
+Inset text shows the dataset label, number of sites, and total site-years with
+valid NEE data.
+
+Data sources:
+- Flux data: FLUXNET Shuttle v0.3.7, April 2026 (672 sites downloaded,
+  530 with valid NEE_VUT_REF after QC gating on NEE_VUT_REF_QC >= 0.50)
+- Climate data: WorldClim v2.1 (Fick, S.E. and R.J. Hijmans, 2017.
+  WorldClim 2: new 1-km spatial resolution climate surfaces for global
+  land areas. International Journal of Climatology 37(12): 4302-4315)
+
+Function: fig_whittaker_worldclim() in R/figures/fig_climate.R
+Script: scripts/generate_whittaker.R
+Commit with message: "Update fig_05 candidate — fresh Whit01 copy and accurate txt description"

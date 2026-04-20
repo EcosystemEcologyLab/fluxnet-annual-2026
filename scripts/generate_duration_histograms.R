@@ -56,19 +56,38 @@ snap_file <- sort(
 message("Using snapshot: ", snap_file)
 shuttle_meta <- readr::read_csv(snap_file, show_col_types = FALSE)
 
-# NOTE: Historical site lists are comparison-only — non-Shuttle data.
-# NOTE: These CSVs lack first_year/last_year — Dur02-04 remain BLOCKED.
-# sites_marconi     <- readr::read_csv("data/snapshots/sites_marconi_clean.csv",
-#                                      show_col_types = FALSE)
-# sites_la_thuile   <- readr::read_csv("data/snapshots/sites_la_thuile_clean.csv",
-#                                      show_col_types = FALSE)
-# sites_fluxnet2015 <- readr::read_csv("data/snapshots/sites_fluxnet2015_clean.csv",
-#                                      show_col_types = FALSE)
+# NOTE: Historical site lists are comparison-only — non-Shuttle data (see CLAUDE.md §1).
+# first_year/last_year sourced from separate year lookup tables in data/snapshots/,
+# built from data/lists/ source files (see scripts/build_year_lookup_tables.R).
+
+# Marconi 2000 — first_year = first year contributed to Marconi synthesis (proxy for
+# establishment; conservative — may underestimate by 0-2 years)
+sites_marconi <- readr::read_csv("data/snapshots/sites_marconi_clean.csv",
+                                  show_col_types = FALSE) |>
+  dplyr::left_join(readr::read_csv("data/snapshots/years_marconi.csv",
+                                    show_col_types = FALSE),
+                   by = "site_id")
+
+# La Thuile 2007 — first_year = actual site establishment year from metadata
+# (most accurate of the three historical sources)
+sites_la_thuile <- readr::read_csv("data/snapshots/sites_la_thuile_clean.csv",
+                                    show_col_types = FALSE) |>
+  dplyr::left_join(readr::read_csv("data/snapshots/years_la_thuile.csv",
+                                    show_col_types = FALSE),
+                   by = "site_id")
+
+# FLUXNET2015 — first_year = first year in release year matrix (conservative —
+# may underestimate by 0-2 years due to matrix starting at 1991)
+sites_fluxnet2015 <- readr::read_csv("data/snapshots/sites_fluxnet2015_clean.csv",
+                                      show_col_types = FALSE) |>
+  dplyr::left_join(readr::read_csv("data/snapshots/years_fluxnet2015.csv",
+                                    show_col_types = FALSE),
+                   by = "site_id")
 
 # ---- Compute shared axis limits ----------------------------------------------
 # xlim: 0 to max record length across all datasets at their respective snapshot
 #       years. Shuttle 2025 drives the upper bound; snapshot years give shorter
-#       records. Revisit upper bound when Dur02-04 are unblocked.
+#       records. Historical datasets use their native first_year from lookup tables.
 # ylim: 0 to max bin count across all Shuttle snapshot years, with bin_width=3.
 
 message("\nComputing shared axis limits...")
@@ -143,21 +162,23 @@ save_dur(dur01, "fig_dur01_ShuttleFull")
 
 # ============================================================
 # Dur02 — Marconi 2000
-# BLOCKED: sites_marconi_clean.csv lacks first_year/last_year.
 # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
 # ============================================================
-# message("\n── Dur02: Marconi 2000 ──")
-# dur02 <- fig_duration_historical(
-#   site_meta     = sites_marconi,
-#   snapshot_year = 2000L,
-#   detail_label  = "Marconi 2000",
-#   style         = style
-# )
-# save_dur(dur02, "fig_dur02_Marconi")
+message("\n── Dur02: Marconi 2000 ──")
+dur02 <- fig_duration_historical(
+  site_meta     = sites_marconi,
+  snapshot_year = 2000L,
+  detail_label  = "Marconi 2000",
+  style         = style
+)
+save_dur(dur02, "fig_dur02_Marconi")
+
+# NOTE: Script stops here for Dur01/Dur02 review run.
+# Remove the stop() call below to generate Dur03-09 when ready.
+stop("Review stop after Dur02 — remove this line to generate Dur03-09.")
 
 # ============================================================
 # Dur03 — La Thuile 2007
-# BLOCKED: sites_la_thuile_clean.csv lacks first_year/last_year.
 # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
 # ============================================================
 # message("\n── Dur03: La Thuile 2007 ──")
@@ -171,7 +192,6 @@ save_dur(dur01, "fig_dur01_ShuttleFull")
 
 # ============================================================
 # Dur04 — FLUXNET2015
-# BLOCKED: sites_fluxnet2015_clean.csv lacks first_year/last_year.
 # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
 # ============================================================
 # message("\n── Dur04: FLUXNET2015 ──")
@@ -227,8 +247,8 @@ save_dur(dur07, "fig_dur07_ShuttleSnapshot2015")
 
 # ============================================================
 # Dur08 — historical datasets stack (Dur02 / Dur03 / Dur04)
-# BLOCKED: depends on Dur02-04 (historical CSVs lack first_year/last_year).
 # NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
+# Uncomment after Dur03 and Dur04 are enabled above.
 # ============================================================
 # message("\n── Dur08: historical datasets stack ──")
 # dur08 <- .make_dur_stack(dur02, dur03, dur04)
@@ -256,6 +276,5 @@ ggplot2::ggsave(
 )
 message("Saved: ", path09)
 
-message("\nDone. Dur01, Dur05-07, Dur09 generated.",
-        "\nDur02-04 and Dur08 remain BLOCKED pending first_year/last_year",
-        " enrichment in historical site CSVs.")
+message("\nDone. Dur01-02, Dur05-07, Dur09 generated.",
+        "\nDur03, Dur04, and Dur08 remain commented — uncomment to generate.")

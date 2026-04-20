@@ -702,11 +702,11 @@ MAP_STYLE <- list(
   width_in      = 14,
   height_in     = 7,
   base_size     = 24,
-  legend_pos    = c(0.02, 0.02),
+  legend_pos    = c(0.02, 0.12),
   legend_just   = c(0, 0),
   detail_x      = 0.02,
   detail_y      = 0.02,
-  detail_vjust  = -0.5,
+  detail_vjust  = -0.3,
   # Colour scale breaks clipped to avoid US dominance.
   # Compute from 95th percentile of per-subregion site counts across all datasets.
   breaks        = NULL,
@@ -885,12 +885,12 @@ fig_map_historical <- function(site_meta,
       size   = 1.5,
       stroke = 0.4
     ) +
-    # Inset detail text: bottom-left corner
+    # Inset detail text: very bottom-left; legend sits above at y=0.12
     ggplot2::annotate(
       "text",
       x     = -Inf, y = -Inf,
       label = detail_text,
-      hjust = -0.05, vjust = -0.5,
+      hjust = -0.05, vjust = -0.3,
       size  = annot_size,
       color = "black",
       fontface = "plain"

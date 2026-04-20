@@ -1,0 +1,1 @@
+Figure 6 — FLUXNET network coverage of Whittaker biome climate space at four snapshot years (2000/2007/2015/2025). Each panel shows sites established by that year (first_year <= snapshot_year). Climate axes and NEE colour scale as per Figure 5. Data sources: FLUXNET Shuttle v0.3.7; WorldClim v2.1.

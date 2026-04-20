@@ -1,0 +1,1 @@
+Figure 3 — FLUXNET site density by UN subregion, current network (2025). Fill colour shows number of sites established by 2025 (first_year <= 2025). Site locations shown as white-filled points with black outlines. Binned viridis colour scale. UN subregion boundaries from Natural Earth. Data source: FLUXNET Shuttle snapshot v0.3.7, April 2026.

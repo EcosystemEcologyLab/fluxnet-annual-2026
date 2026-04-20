@@ -91,19 +91,21 @@ snapshot_meta_full <- if (length(snapshot_csv) > 0) {
   NULL
 }
 
-# Monthly NEE presence cache — used by is_functionally_active() across all
-# network growth figures. Generated from flux_data_converted_mm.rds if the
+# Site-year NEE presence cache — used by is_functionally_active() across all
+# network growth figures. Generated from YY (primary) + MM fallback if the
 # cached CSV is absent.
 presence_csv_path <- file.path(snapshots_dir, "site_year_data_presence.csv")
 site_year_presence <- if (file.exists(presence_csv_path)) {
   readr::read_csv(presence_csv_path, show_col_types = FALSE)
 } else {
+  yy_path <- file.path(processed_dir, "flux_data_converted_yy.rds")
   mm_path <- file.path(processed_dir, "flux_data_converted_mm.rds")
-  if (file.exists(mm_path)) {
-    message("site_year_presence: cache absent — computing from MM data ...")
-    compute_site_year_presence(readRDS(mm_path), out_path = presence_csv_path)
+  if (file.exists(yy_path) && file.exists(mm_path)) {
+    message("site_year_presence: cache absent — computing from YY + MM data ...")
+    compute_site_year_presence(readRDS(yy_path), readRDS(mm_path),
+                               out_path = presence_csv_path)
   } else {
-    message("site_year_presence: MM data not found — falling back to last_year metadata.")
+    message("site_year_presence: YY/MM data not found — falling back to last_year metadata.")
     NULL
   }
 }

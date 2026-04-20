@@ -125,34 +125,37 @@ write_log_row <- function(path, row) {
 
 # ---- Data-presence helpers ---------------------------------------------------
 
-#' Compute monthly NEE data presence per site per year
+#' Compute NEE data presence per site per year
 #'
-#' Groups monthly flux data by site and year, counts months with non-NA
-#' `NEE_VUT_REF`, and flags each site-year as having sufficient data.
-#' The result is saved to `out_path` for caching and used by
-#' [is_functionally_active()] to assess data currency without relying
-#' solely on snapshot `last_year` metadata.
+#' Two-step lookup: (1) a site-year has data if annual (YY) `NEE_VUT_REF` is
+#' non-NA; (2) for site-years absent or NA in the YY data, fall back to monthly
+#' (MM) data and require at least `min_months` months with non-NA
+#' `NEE_VUT_REF`. The result is saved to `out_path` for caching and used by
+#' [is_functionally_active()] to assess data currency without relying solely on
+#' snapshot `last_year` metadata.
 #'
+#' @param data_yy Data frame. Annual (YY resolution) flux data with columns
+#'   `site_id`, `TIMESTAMP` (integer year), and `NEE_VUT_REF`.
 #' @param data_mm Data frame. Monthly (MM resolution) flux data with columns
 #'   `site_id`, `DATE` (Date class, first day of each month), and
-#'   `NEE_VUT_REF` (numeric, NA-filled where data are absent).
-#' @param min_months Integer. Minimum number of months with non-NA
-#'   `NEE_VUT_REF` for a site-year to be flagged `has_data = TRUE`
-#'   (default `3L`).
+#'   `NEE_VUT_REF`. Used only for site-years not resolved by `data_yy`.
+#' @param min_months Integer. Minimum months with non-NA `NEE_VUT_REF` in the
+#'   MM fallback for `has_data = TRUE` (default `3L`).
 #' @param out_path Character. Path to write the output CSV
 #'   (default `"data/snapshots/site_year_data_presence.csv"`).
 #'
 #' @return Data frame with columns `site_id` (character), `year` (integer),
-#'   `n_months_valid` (integer), `has_data` (logical). Also writes
-#'   this data frame to `out_path`.
+#'   `has_data` (logical). Also writes this data frame to `out_path`.
 #'
 #' @examples
 #' \dontrun{
+#' yy       <- readRDS("data/processed/flux_data_converted_yy.rds")
 #' mm       <- readRDS("data/processed/flux_data_converted_mm.rds")
-#' presence <- compute_site_year_presence(mm)
+#' presence <- compute_site_year_presence(yy, mm)
 #' head(presence)
 #' }
-compute_site_year_presence <- function(data_mm,
+compute_site_year_presence <- function(data_yy,
+                                        data_mm,
                                         min_months = 3L,
                                         out_path   = "data/snapshots/site_year_data_presence.csv") {
   for (pkg in c("dplyr", "readr")) {
@@ -162,31 +165,53 @@ compute_site_year_presence <- function(data_mm,
     }
   }
 
-  required_cols <- c("site_id", "DATE", "NEE_VUT_REF")
-  missing_cols  <- setdiff(required_cols, names(data_mm))
-  if (length(missing_cols) > 0L) {
-    stop(
-      "compute_site_year_presence: data_mm missing required column(s): ",
-      paste(missing_cols, collapse = ", "),
-      call. = FALSE
+  # Step 1 — YY primary: non-NA annual NEE means data is present
+  # YY files use YEAR as the timestamp column (integer year)
+  yy_ts_col <- if ("TIMESTAMP" %in% names(data_yy)) "TIMESTAMP" else "YEAR"
+  yy_presence <- data_yy |>
+    dplyr::transmute(
+      site_id  = .data$site_id,
+      year     = as.integer(.data[[yy_ts_col]]),
+      has_data = !is.na(.data$NEE_VUT_REF)
     )
-  }
 
-  presence <- data_mm |>
+  # Step 2 — MM fallback: for site-years where YY NEE is NA or absent,
+  # check whether >= min_months months have non-NA NEE_VUT_REF
+  mm_presence <- data_mm |>
     dplyr::mutate(year = as.integer(format(.data$DATE, "%Y"))) |>
     dplyr::group_by(.data$site_id, .data$year) |>
     dplyr::summarise(
       n_months_valid = as.integer(sum(!is.na(.data$NEE_VUT_REF))),
       .groups        = "drop"
     ) |>
-    dplyr::mutate(has_data = .data$n_months_valid >= as.integer(min_months))
+    dplyr::mutate(has_data = .data$n_months_valid >= as.integer(min_months)) |>
+    dplyr::select("site_id", "year", "has_data")
+
+  # Rows resolved by YY (has_data TRUE or FALSE where YY row exists)
+  yy_true <- dplyr::filter(yy_presence, .data$has_data)
+
+  # Site-years NOT already TRUE in YY: check MM fallback
+  yy_false_or_absent <- dplyr::anti_join(
+    dplyr::bind_rows(
+      dplyr::filter(yy_presence, !.data$has_data),
+      dplyr::anti_join(mm_presence, yy_presence, by = c("site_id", "year"))
+    ),
+    yy_true,
+    by = c("site_id", "year")
+  ) |>
+    dplyr::select("site_id", "year") |>
+    dplyr::left_join(mm_presence, by = c("site_id", "year")) |>
+    dplyr::mutate(has_data = dplyr::coalesce(.data$has_data, FALSE))
+
+  presence <- dplyr::bind_rows(yy_true, yy_false_or_absent) |>
+    dplyr::arrange(.data$site_id, .data$year)
 
   readr::write_csv(presence, out_path)
   message(
     "compute_site_year_presence: ",
     sum(presence$has_data), " / ", nrow(presence),
-    " site-years have \u2265", min_months, " valid NEE months. ",
-    "Written to: ", out_path
+    " site-years have data (YY primary, MM \u2265", min_months,
+    " months fallback). Written to: ", out_path
   )
 
   presence

@@ -1,5 +1,5 @@
 ## scripts/generate_duration_histograms.R
-## Generates all 8 canonical deployment duration histogram figures.
+## Generates all 9 canonical deployment duration histogram figures.
 ## Run from repo root: Rscript scripts/generate_duration_histograms.R
 ##
 ## Outputs (review/figures/network/):
@@ -11,14 +11,17 @@
 ##   fig_dur06_ShuttleSnapshot2007.png — Shuttle snapshot 2007
 ##   fig_dur07_ShuttleSnapshot2015.png — Shuttle snapshot 2015
 ##   fig_dur08_HistoricalOverlay.png   — Shuttle snapshots vs historical datasets (3-panel overlay)
+##   fig_dur09_SiteYearsByYear.png     — Site-years per calendar year, Shuttle vs historical
 ##
-## NOTE on data sources: Dur02-04 and Dur08 use non-Shuttle historical site
+## NOTE on data sources: Dur02-04, Dur08-09 use non-Shuttle historical site
 ## lists for development/comparison purposes only — labelled per CLAUDE.md §1.
 ##
 ## Architecture mirrors scripts/generate_whittaker.R:
 ##   - Shared xlim/ylim for Dur01–07 computed once from all 7 datasets
 ##   - Single core function fig_duration_historical() for Dur01–07
-##   - Dur08 overlay assembled via fig_duration_overlay() in R/figures/fig_network_growth.R
+##   - Dur08 overlay assembled via fig_duration_overlay()
+##   - Dur09 time series assembled via fig_siteyears_by_year()
+##   Both in R/figures/fig_network_growth.R
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -279,4 +282,20 @@ for (legacy in c("fig_dur08_HistoricalStack.png",
   }
 }
 
-message("\nDone. All 8 figures generated: Dur01-08.")
+# ============================================================
+# Dur09 — Site-years per calendar year (Shuttle vs historical)
+# NOTE: comparison figure only — non-Shuttle data (see CLAUDE.md §1)
+# ============================================================
+message("\n── Dur09: site-years by calendar year ──")
+dur09 <- fig_siteyears_by_year(
+  presence_df       = presence_df,
+  sites_marconi     = sites_marconi,
+  sites_la_thuile   = sites_la_thuile,
+  sites_fluxnet2015 = sites_fluxnet2015
+)
+path09 <- file.path(out_dir, "fig_dur09_SiteYearsByYear.png")
+ggplot2::ggsave(path09, plot = dur09,
+                width = 14, height = 7, units = "in", dpi = 150, bg = "white")
+message("Saved: ", path09)
+
+message("\nDone. All 9 figures generated: Dur01-09.")

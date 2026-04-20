@@ -8,7 +8,7 @@
 ##   1 — Annual time series (YY)
 ##   2 — Monthly climatology (MM)
 ##   3 — Daily climatology (DD) — lazy load, freed after use
-##   4 — Whittaker biome snapshots (ERA5 climate, Codespace-safe)
+##   4 — Whittaker biome snapshots (WorldClim climate, Shuttle 2000/2007/2015)
 ##   5 — Latitudinal multi-variable ribbon
 ##   6 — Environmental response curves (binned flux vs climate)
 ##   7 — Long-record annual time series by continent
@@ -584,53 +584,72 @@ build_latitudinal_multi <- function() {
 
 # ============================================================
 # Section 4 — Whittaker biome snapshots
-# ERA5 version: four panels at year_cutoff = 2000 / 2007 / 2015 / 2025,
-# assembled as vertical stack.  Uses TA_ERA / P_ERA from the processed YY
-# data — no external WorldClim data required; runs in the Codespace.
-# WorldClim version (local Mac only) is available via source = "worldclim".
+# WorldClim version: three Shuttle snapshot panels at year_cutoff =
+# 2000 / 2007 / 2015, assembled as vertical stack (fig_whit09).
+# Uses fig_whittaker_worldclim() from R/figures/fig_climate.R with the
+# pre-computed site_worldclim.csv — no live raster extraction required
+# as long as all sites are already in that CSV.
 # ============================================================
 build_whittaker_snapshots <- function() {
   if (is.null(site_data[["yy"]])) return(no_data("No YY data available."))
 
   tryCatch({
     data_yy <- site_data[["yy"]]$data
-    # Snapshot years: ~Marconi (2000), La Thuile (2007), FLUXNET2015 (2015), Shuttle/modern (2025)
-    cutoffs <- c(2000L, 2007L, 2015L, 2025L)
 
-    panels <- lapply(cutoffs, function(yr) {
-      fig_whittaker_hexbin(
-        data_yy     = data_yy,
-        flux_var    = "NEE_VUT_REF",
-        year_cutoff = yr,
-        source      = "era5",
-        metadata    = snapshot_meta_full
-      ) + fluxnet_theme(base_size = 11)
-    })
+    if (is.null(snapshot_meta_full)) {
+      return(no_data("snapshot_meta_full not available — cannot filter by first_year."))
+    }
 
-    pw <- (patchwork::wrap_plots(panels, ncol = 1) +
-      patchwork::plot_layout(axes = "collect", guides = "collect")) &
-      ggplot2::theme(legend.position = "bottom",
-                     plot.margin     = ggplot2::margin(0, 5, 0, 5))
+    # Shared NEE limits from full Shuttle data
+    nee_q   <- quantile(data_yy$NEE_VUT_REF, probs = c(0.05, 0.95), na.rm = TRUE)
+    nee_max <- max(abs(nee_q))
+    st      <- WHITTAKER_STYLE
+    st$nee_lims <- c(-nee_max, nee_max)
 
-    # Save review PNG
-    review_dir  <- file.path("review", "figures", "climate")
-    if (!dir.exists(review_dir)) dir.create(review_dir, recursive = TRUE)
-    review_path <- file.path(review_dir, "fig_whittaker_hexbin_era5_snapshots.png")
-    ggplot2::ggsave(
-      review_path,
-      plot   = pw,
-      width  = 8,
-      height = 20,
-      units  = "in",
-      dpi    = 150,
-      bg     = "white"
-    )
-    message("Review figure saved: ", review_path)
+    cutoffs <- c(2000L, 2007L, 2015L)
+    labels  <- c("Shuttle snapshot 2000", "Shuttle snapshot 2007",
+                 "Shuttle snapshot 2015")
 
-    paste0('<div class="plot-wrap">', img_tag(review_path), "</div>")
+    panels <- mapply(function(yr, lbl) {
+      fig_whittaker_worldclim(
+        data_yy      = data_yy,
+        site_meta    = snapshot_meta_full,
+        year_cutoff  = yr,
+        detail_label = lbl,
+        style        = st
+      )
+    }, cutoffs, labels, SIMPLIFY = FALSE)
+
+    # Stack: legend on top panel only; collect axes
+    p_top <- panels[[1]]
+    p_mid <- panels[[2]] + ggplot2::theme(legend.position = "none")
+    p_bot <- panels[[3]] + ggplot2::theme(legend.position = "none")
+
+    pw <- patchwork::wrap_plots(p_top, p_mid, p_bot, ncol = 1) +
+      patchwork::plot_layout(axes = "collect") &
+      ggplot2::theme(plot.margin = ggplot2::margin(0, 5, 0, 5))
+
+    # Save to whittaker/ (canonical output) and copy to candidates/
+    whit_dir <- file.path("review", "figures", "whittaker")
+    if (!dir.exists(whit_dir)) dir.create(whit_dir, recursive = TRUE)
+    whit09_path <- file.path(whit_dir, "fig_whit09_shuttle_snapshots_stack.png")
+    ggplot2::ggsave(whit09_path, plot = pw,
+                    width  = st$width_in,
+                    height = st$height_in * 3,
+                    units  = "in", dpi = 150, bg = "white")
+    message("Saved: ", whit09_path)
+
+    # Copy to candidates/ as fig_06
+    cand_dir <- file.path("review", "figures", "candidates")
+    if (!dir.exists(cand_dir)) dir.create(cand_dir, recursive = TRUE)
+    file.copy(whit09_path, file.path(cand_dir, "fig_06_whittaker_snapshots.png"),
+              overwrite = TRUE)
+    message("Copied to candidates/fig_06_whittaker_snapshots.png")
+
+    paste0('<div class="plot-wrap">', img_tag(whit09_path), "</div>")
   }, error = function(e) {
     no_data(paste0(
-      "Whittaker ERA5 snapshots unavailable: ", conditionMessage(e)
+      "Whittaker snapshots unavailable: ", conditionMessage(e)
     ))
   })
 }
@@ -1052,8 +1071,8 @@ s13c <- section("13c", "Latency by subregion \u2014 percentage with N= annotatio
 message("Building Section 10 — UN subregion choropleth ...")
 s10 <- section(10, "UN subregion choropleth \u2014 2000\u20132007\u20132015\u20132025",
                build_country_map())
-message("Building Section 4 — Whittaker biome snapshots (ERA5) ...")
-s4 <- section(4, "Whittaker biome snapshots \u2014 ERA5 climate (Codespace-safe)",
+message("Building Section 4 — Whittaker biome snapshots (WorldClim) ...")
+s4 <- section(4, "Whittaker biome snapshots \u2014 WorldClim climate (Shuttle 2000/2007/2015)",
               build_whittaker_snapshots())
 message("Building Section 5 — Latitudinal multi-variable ribbon ...")
 s5 <- section(5, "Latitudinal multi-variable ribbon", build_latitudinal_multi())

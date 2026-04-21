@@ -80,6 +80,31 @@ if (length(FLUXNET_SITE_FILTER) > 0) {
   message("Site filter applied: ", nrow(download_manifest), " site(s) selected for download.")
 }
 
+# Extend download queue with any sites absent from data/extracted/.
+# This covers fresh clones where the snapshot diff only sees changed sites,
+# leaving the majority of the network undownloaded despite being in the snapshot.
+extracted_dir <- file.path(FLUXNET_DATA_ROOT, "extracted")
+sites_to_check <- if (length(FLUXNET_SITE_FILTER) > 0) FLUXNET_SITE_FILTER else manifest$site_id
+already_extracted <- if (dir.exists(extracted_dir)) {
+  list.dirs(extracted_dir, full.names = FALSE, recursive = FALSE)
+} else {
+  character(0)
+}
+new_to_queue <- setdiff(
+  setdiff(sites_to_check, already_extracted),
+  download_manifest$site_id
+)
+if (length(new_to_queue) > 0) {
+  message(
+    length(new_to_queue),
+    " site(s) in snapshot have no extracted data; adding to download queue."
+  )
+  download_manifest <- dplyr::bind_rows(
+    download_manifest,
+    dplyr::filter(manifest, site_id %in% new_to_queue)
+  )
+}
+
 # Download raw data
 if (nrow(download_manifest) > 0) {
   flux_download(

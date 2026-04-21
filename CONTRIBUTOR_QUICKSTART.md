@@ -60,23 +60,21 @@ FLUXNET_DELETE_ZIPS=TRUE
 
 > `.env` is gitignored — never commit it.
 
-### 4. Install the Python shuttle
+> **Note on `.env` vs `.Renviron`:** This project uses `.env` +
+> `dotenv::load_dot_env()` rather than `.Renviron`. This is intentional —
+> it keeps local configuration consistent with Codespace Secrets (which also
+> set environment variables) and allows the same file to be used by non-R
+> tooling. Variables are loaded at the top of each pipeline script.
 
-The pipeline uses `reticulate` to call the FLUXNET Python shuttle library.
-Install it once:
+### 4. Python requirement
 
-```r
-reticulate::py_install("git+https://github.com/fluxnet/shuttle.git", pip = TRUE)
-```
+`fluxnet-shuttle` requires **Python 3.11–3.13**. Python 3.14 is not
+supported.
 
-Verify:
-
-```r
-reticulate::py_run_string(
-  "import importlib.metadata; print(importlib.metadata.version('fluxnet-shuttle'))"
-)
-# Should print: 0.3.7 (or higher)
-```
+You do not need to install `fluxnet-shuttle` manually. It is installed
+automatically into a `"fluxnet"` virtualenv the first time you call
+`flux_listall()` (inside `scripts/01_download.R`). As long as a supported
+Python version is on your PATH, no extra steps are needed.
 
 ---
 

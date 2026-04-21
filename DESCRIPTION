@@ -40,9 +40,9 @@ Imports:
     cols4all,
     plotbiomes,
     measurements,
-    hexbin
+    hexbin,
+    dotenv
 Suggests:
     rmarkdown,
-    testthat (>= 3.0.0),
-    dotenv
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3

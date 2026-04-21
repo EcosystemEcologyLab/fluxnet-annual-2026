@@ -86,7 +86,10 @@ if (length(FLUXNET_SITE_FILTER) > 0) {
 extracted_dir <- file.path(FLUXNET_DATA_ROOT, "extracted")
 sites_to_check <- if (length(FLUXNET_SITE_FILTER) > 0) FLUXNET_SITE_FILTER else manifest$site_id
 already_extracted <- if (dir.exists(extracted_dir)) {
-  list.dirs(extracted_dir, full.names = FALSE, recursive = FALSE)
+  # Directories are named e.g. "AMF_US-Ha1_FLUXNET_2008-2012_v1.3_r1".
+  # Extract the embedded site ID (CC-XXX pattern) from each directory name.
+  dirs <- list.dirs(extracted_dir, full.names = FALSE, recursive = FALSE)
+  unique(regmatches(dirs, regexpr("[A-Z]{2}-[A-Za-z0-9]+", dirs)))
 } else {
   character(0)
 }

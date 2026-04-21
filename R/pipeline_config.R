@@ -80,18 +80,18 @@ check_pipeline_config <- function() {
   }
 
   # --- Shuttle version check ---
-  expected_version <- Sys.getenv("FLUXNET_SHUTTLE_VERSION", unset = "0.3.7")
-  # Only attempt the shuttle import if Python is already initialised in this
-  # session.  Calling reticulate::import() unconditionally prematurely locks in
-  # a bare Python environment before library(fluxnet) has had a chance to call
-  # reticulate::py_require(), which sets up the correct uv-managed environment.
-  # Initialising the wrong environment first causes a SIGTERM when py_require()
-  # later tries to switch to its managed environment.
+  expected_version <- Sys.getenv("FLUXNET_SHUTTLE_VERSION", unset = "0.3.7.post1")
+  # Use the CLI executable rather than importing the Python module: the
+  # fluxnet_shuttle module does not expose a __version__ attribute, so the
+  # import approach always returns NA.  fluxnet:::fluxnet_shuttle_executable()
+  # returns the path to the binary installed in the 'fluxnet' virtualenv.
   installed_version <- tryCatch(
     {
-      if (reticulate::py_available(initialize = FALSE)) {
-        env <- reticulate::import("fluxnet_shuttle", convert = FALSE)
-        reticulate::py_to_r(env$`__version__`)
+      exe <- fluxnet:::fluxnet_shuttle_executable()
+      if (!is.null(exe) && nzchar(exe) && file.exists(exe)) {
+        raw <- system2(exe, "--version", stdout = TRUE, stderr = FALSE)
+        # Output: "fluxnet-shuttle 0.3.7.post1" — extract the version token
+        trimws(sub("^.*\\s+", "", raw[1]))
       } else {
         NA_character_
       }

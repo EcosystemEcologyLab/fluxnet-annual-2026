@@ -252,10 +252,10 @@ All DD/WW/MM/YY thresholds are set as named constants in `R/pipeline_config.R`.
 Change them there to adjust pipeline-wide filtering.
 
 ```r
-QC_THRESHOLD_DD <- 0.75   # daily
-QC_THRESHOLD_WW <- 0.75   # weekly
-QC_THRESHOLD_MM <- 0.75   # monthly
-QC_THRESHOLD_YY <- 0.75   # annual
+QC_THRESHOLD_DD <- 0.50   # daily
+QC_THRESHOLD_WW <- 0.50   # weekly
+QC_THRESHOLD_MM <- 0.50   # monthly
+QC_THRESHOLD_YY <- 0.50   # annual
 ```
 
 - HH/HR analysis: keep records where `_QC <= 1`
@@ -263,9 +263,14 @@ QC_THRESHOLD_YY <- 0.75   # annual
 - ERA-Interim fills: flag but do not drop by default (`_F_QC == 2` is marked)
 - USTAR filtering: already applied in the distributed data — do not re-apply
 
-The FLUXNET published convention for coarse resolutions is `> 0.5`.
-The stricter default of `> 0.75` is intentional for this synthesis paper.
-To reproduce FLUXNET2015 published figures, set all thresholds to `0.5`.
+The FLUXNET published convention for coarse resolutions is `> 0.5`. The default
+for this synthesis paper is also `0.50` — row exclusion is gated on
+`NEE_VUT_REF_QC` only (not all QC columns), so the effective filter is already
+conservative. The decision to use 0.50 rather than 0.75 is documented in
+`docs/decisions_pending.md` (resolved 2026-04-20) and confirmed in
+`docs/methods_requirements.md` §5.3. To reproduce FLUXNET2015 published figures,
+no threshold change is needed; to apply a stricter filter, raise all thresholds
+to `0.75` in `R/pipeline_config.R`.
 
 ---
 

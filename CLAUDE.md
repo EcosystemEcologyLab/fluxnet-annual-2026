@@ -106,7 +106,7 @@ as GitHub Codespace Secrets. For local use, copy `.env.example` to `.env`.
 | `AMERIFLUX_USER_NAME`    | Registered AmeriFlux account name                    | — (required)                  |
 | `AMERIFLUX_USER_EMAIL`   | Registered AmeriFlux account email                   | — (required)                  |
 | `AMERIFLUX_INTENDED_USE` | AmeriFlux intended use code (1–6)                    | `1` (Synthesis)               |
-| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.2.0`                       |
+| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.3.7`                       |
 | `FLUXNET_SNAPSHOT_MODE`  | `"development"` or `"locked"`                        | `"development"`               |
 | `FLUXNET_SNAPSHOT_FILE`  | Path to locked snapshot CSV                          | — (required if locked)        |
 | `FLUXNET_DATA_ROOT`      | Root directory for all pipeline data I/O             | `"data"`                      |
@@ -396,4 +396,5 @@ the package is updated. Do not implement workarounds.
 | Response pending from Eric Scott re: #43 download rearchitecture | EcosystemEcologyLab/fluxnet-package#43 |
 
 # Shuttle version monitoring: check https://github.com/fluxnet/shuttle/releases
-# for new releases. Run flux_listall() after upgrading to confirm snapshot format is unchanged.
+# for new releases. Current pin: 0.3.7 (tagged release, 2026-04-07 — bulk-download batching fix).
+# Run flux_listall() after upgrading to confirm snapshot format is unchanged.

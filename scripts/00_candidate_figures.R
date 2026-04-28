@@ -1104,7 +1104,7 @@ html_footer <- paste0(
   "</dl>\n</footer>\n</body>\n</html>"
 )
 
-out_html <- paste0(html_head, s1, s2, s3, s8, s9, s11, s12, s13, s13b, s13c, s10, s4, s5, s6, s7, s14, html_footer)
+out_html <- paste0(html_head, s1, s2, s3, s8, s9, s12, s13, s13b, s13c, s5, s6, s7, s14, html_footer)
 
 out_path <- file.path("review", "candidate_figures.html")
 writeLines(out_html, out_path, useBytes = FALSE)

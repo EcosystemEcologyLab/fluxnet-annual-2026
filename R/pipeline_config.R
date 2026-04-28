@@ -82,7 +82,9 @@ check_pipeline_config <- function() {
   # --- Shuttle version check ---
   # Pinned to the tagged 0.3.7 release (https://github.com/fluxnet/shuttle/releases/tag/0.3.7)
   # released 2026-04-07; addresses bulk-download batching.
-  expected_version <- Sys.getenv("FLUXNET_SHUTTLE_VERSION", unset = "0.3.7")
+  # Note: the 0.3.7 git tag self-reports as "0.3.7.post0+dirty" — the +dirty suffix is
+  # embedded in the package metadata at that tag, not a local build artefact.
+  expected_version <- Sys.getenv("FLUXNET_SHUTTLE_VERSION", unset = "0.3.7.post0+dirty")
   # Use the CLI executable rather than importing the Python module: the
   # fluxnet_shuttle module does not expose a __version__ attribute, so the
   # import approach always returns NA.  fluxnet:::fluxnet_shuttle_executable()
@@ -92,7 +94,7 @@ check_pipeline_config <- function() {
       exe <- fluxnet:::fluxnet_shuttle_executable()
       if (!is.null(exe) && nzchar(exe) && file.exists(exe)) {
         raw <- system2(exe, "--version", stdout = TRUE, stderr = FALSE)
-        # Output: "fluxnet-shuttle 0.3.7" — extract the version token
+        # Output: "fluxnet-shuttle 0.3.7.post0+dirty" — extract the version token
         trimws(sub("^.*\\s+", "", raw[1]))
       } else {
         NA_character_

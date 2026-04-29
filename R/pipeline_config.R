@@ -91,7 +91,7 @@ check_pipeline_config <- function() {
   # returns the path to the binary installed in the 'fluxnet' virtualenv.
   installed_version <- tryCatch(
     {
-      exe <- fluxnet:::fluxnet_shuttle_executable()
+      exe <- fluxnet::flux_install_shuttle()
       if (!is.null(exe) && nzchar(exe) && file.exists(exe)) {
         raw <- system2(exe, "--version", stdout = TRUE, stderr = FALSE)
         # Output: "fluxnet-shuttle 0.3.7.post0+dirty" — extract the version token
@@ -103,16 +103,14 @@ check_pipeline_config <- function() {
     error = function(e) NA_character_
   )
 
-  if (is.na(installed_version)) {
+  if (!identical(installed_version, expected_version)) {
     warning(
-      "fluxnet-shuttle does not appear to be installed. ",
-      "It will be installed automatically on the first call to flux_listall()."
-    )
-    ok <- FALSE
-  } else if (!identical(installed_version, expected_version)) {
-    warning(
-      "Installed fluxnet-shuttle version (", installed_version, ") ",
-      "does not match FLUXNET_SHUTTLE_VERSION (", expected_version, "). ",
+      "Installed fluxnet-shuttle version (",
+      installed_version,
+      ") ",
+      "does not match FLUXNET_SHUTTLE_VERSION (",
+      expected_version,
+      "). ",
       "Results may differ from the expected pipeline run."
     )
     ok <- FALSE

@@ -7,6 +7,7 @@ BJ-Bfg,Unaffiliated,DBF,Sub-Saharan Africa,Africa,2008,2017,9,3,33.3,TRUE,Tropic
 SN-Dhr,CarboAfrica;European Fluxes Database;GHG-Europe,GRA,Sub-Saharan Africa,Africa,2010,2022,12,3,25,TRUE,Tropical shrubland,14,Aw,Aw,A,28.160667419433594,387,0.1584,Arid
 ZA-BfS,EFTEON SAEON;European Fluxes Database,OSH,Sub-Saharan Africa,Africa,2020,2024,4,2,50,FALSE,Tropical desert,15,Bsh,Bs,B,18.018667221069336,437,0.233,Semi-arid
 BJ-Db1,Unaffiliated,CRO,Sub-Saharan Africa,Africa,2022,2024,2,2,100,FALSE,Tropical rainforest,11,NA,NA,NA,27.347333908081055,1194,0.8524,Humid
+SD-Dem,NA,SAV,Northern Africa,Africa,2007,2009,2,2,100,FALSE,Tropical shrubland,14,NA,NA,NA,27.495332717895508,291,0.1167,Arid
 ZA-Uby,EFTEON SAEON;European Fluxes Database,GRA,Sub-Saharan Africa,Africa,2023,2024,1,1,100,FALSE,Tropical moist forest,12,Aw,Aw,A,22.23200035095215,793,0.5601,Dry sub-humid
 ZA-Spk,EFTEON SAEON;European Fluxes Database,GRA,Sub-Saharan Africa,Africa,2023,2024,1,1,100,FALSE,Subtropical mountain system,25,Cwb,Cw,C,17.641332626342773,801,0.5687,Dry sub-humid
 ZA-Jks,EFTEON SAEON;European Fluxes Database,GRA,Sub-Saharan Africa,Africa,2024,2024,0,1,NA,FALSE,Subtropical dry forest,22,Csb,Cs,C,15.134833335876465,839,0.6355,Dry sub-humid
@@ -14,6 +15,7 @@ ML-Kem,CarboAfrica,WSA,Sub-Saharan Africa,Africa,2007,2009,2,1,50,FALSE,Tropical
 KE-Mkt,Unaffiliated,CRO,Sub-Saharan Africa,Africa,2019,2024,5,1,20,FALSE,Tropical mountain system,16,Bsh,Bs,B,21.652833938598633,645,0.421,Semi-arid
 KE-Kpt,Unaffiliated,GRA,Sub-Saharan Africa,Africa,2018,2024,6,1,16.7,TRUE,Tropical mountain system,16,NA,NA,NA,18.98699951171875,572,0.3797,Semi-arid
 BW-Gum,Unaffiliated,WET,Sub-Saharan Africa,Africa,2018,2020,2,1,50,FALSE,Tropical dry forest,13,Bsh,Bs,B,23.19183349609375,462,0.2209,Semi-arid
+ZM-Mon,CarboAfrica;EFTEON SAEON;European Fluxes Database,DBF,Sub-Saharan Africa,Africa,2007,2009,2,1,50,FALSE,Tropical moist forest,12,NA,NA,NA,22.174333572387695,877,0.4583,Semi-arid
 GH-Ank,CarboAfrica;European Fluxes Database,EBF,Sub-Saharan Africa,Africa,2011,2014,3,1,33.3,FALSE,Tropical rainforest,11,NA,NA,NA,26.374834060668945,1874,1.4441,Humid
 US-Ha1,AmeriFlux;LTER;Phenocam,DBF,Northern America,Americas,1991,2025,34,33,97.1,TRUE,Temperate mountain system,35,Dfb,Df,D,7.120166778564453,1103,1.3047,Humid
 US-MMS,AmeriFlux;Phenocam,DBF,Northern America,Americas,1999,2023,24,25,104.2,TRUE,Temperate continental forest,32,Cfa,Cf,C,11.230833053588867,1092,1.0892,Humid
@@ -204,7 +206,7 @@ CA-EM1,AmeriFlux,WET,Northern America,Americas,2021,2023,2,2,100,FALSE,Temperate
 CA-EM2,AmeriFlux,WET,Northern America,Americas,2021,2023,2,2,100,FALSE,Temperate steppe,33,Dfb,Df,D,1.3348332643508911,480,0.6595,Humid
 CA-Na1,AmeriFlux;Fluxnet-Canada,ENF,Northern America,Americas,2003,2005,2,2,100,FALSE,Temperate continental forest,32,Dfb,Df,D,3.251166820526123,1147,1.6822,Humid
 CA-Qc2,AmeriFlux;Fluxnet-Canada,MF,Northern America,Americas,2007,2010,3,2,66.7,FALSE,Boreal coniferous forest,41,NA,NA,NA,-0.3213333785533905,965,1.6634,Humid
-CA-RBM,AmeriFlux,WET,Northern America,Americas,2022,2024,2,2,100,FALSE,NA,NA,Csb,Cs,C,10.431547164916992,1180,1.4918,Humid
+CA-RBM,AmeriFlux,WET,Northern America,Americas,2022,2024,2,2,100,FALSE,Temperate oceanic forest,31,Csb,Cs,C,10.431547164916992,1180,1.4918,Humid
 CL-ACF,AmeriFlux,ENF,Latin America and the Caribbean,Americas,2018,2020,2,2,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,7.387666702270508,1914,2.7265,Humid
 MX-Aog,AmeriFlux;MexFlux,DBF,Latin America and the Caribbean,Americas,2016,2018,2,2,100,FALSE,Tropical dry forest,13,Bsh,Bs,B,23.72516632080078,689,0.3655,Semi-arid
 PR-xLA,AmeriFlux;NEON;Phenocam,GRA,Latin America and the Caribbean,Americas,2019,2024,5,2,40,FALSE,Tropical moist forest,12,Am,Am,A,26.04716682434082,1047,0.5993,Dry sub-humid
@@ -230,7 +232,8 @@ US-xBA,AmeriFlux;NEON;Phenocam,WET,Northern America,Americas,2019,2024,5,2,40,FA
 US-xNW,AmeriFlux;NEON;Phenocam,ENF,Northern America,Americas,2019,2024,5,2,40,FALSE,Temperate mountain system,35,Dfc,Df,D,0.8305000066757202,623,0.6583,Humid
 US-xPU,AmeriFlux;NEON,EBF,Northern America,Americas,2019,2024,5,2,40,FALSE,Tropical mountain system,16,Cfb,Cf,C,13.239333152770996,2155,1.9884,Humid
 US-YK2,AmeriFlux,WET,Northern America,Americas,2019,2025,6,2,33.3,FALSE,Polar,50,NA,NA,NA,-0.9526666402816772,530,1.2022,Humid
-AR-TF1,AmeriFlux,WET,Latin America and the Caribbean,Americas,2016,2018,2,1,50,FALSE,NA,NA,NA,NA,NA,5.317324638366699,658,1.2126,Humid
+PA-SPs,European Fluxes Database,GRA,Latin America and the Caribbean,Americas,2007,2010,3,2,66.7,FALSE,Tropical rainforest,11,NA,NA,NA,26.112333297729492,2671,1.7327,Humid
+AR-TF1,AmeriFlux,WET,Latin America and the Caribbean,Americas,2016,2018,2,1,50,FALSE,Temperate oceanic forest,31,NA,NA,NA,5.317324638366699,658,1.2126,Humid
 AR-TF2,AmeriFlux,WET,Latin America and the Caribbean,Americas,2016,2018,2,1,50,FALSE,Temperate oceanic forest,31,NA,NA,NA,3.1710000038146973,596,0.9117,Humid
 CA-LU1,AmeriFlux,OSH,Northern America,Americas,2020,2023,3,1,33.3,FALSE,Boreal tundra woodland,42,Dfc,Df,D,-1.9755001068115232,350,0.5538,Dry sub-humid
 CA-PB2,AmeriFlux,WET,Northern America,Americas,2017,2024,7,1,14.3,FALSE,Boreal tundra woodland,42,Dfc,Df,D,-3.964999914169311,524,1.0873,Humid
@@ -266,6 +269,7 @@ US-VT1,AmeriFlux,CRO,Northern America,Americas,2023,2025,2,1,50,FALSE,Temperate 
 US-VT2,AmeriFlux,CRO,Northern America,Americas,2023,2025,2,1,50,FALSE,Temperate steppe,33,Cfa,Cf,C,10.449333190917969,973,0.9919,Humid
 US-WT1,AmeriFlux,CRO,Northern America,Americas,2023,2024,1,1,100,FALSE,Subtropical steppe,23,BSk,BS,B,14.193666458129885,491,0.2564,Semi-arid
 US-ZF2,AmeriFlux,CRO,Northern America,Americas,2024,2025,1,1,100,FALSE,Temperate steppe,33,Dfa,Df,D,10.060999870300291,963,0.9901,Humid
+PA-SPn,European Fluxes Database,DBF,Latin America and the Caribbean,Americas,2007,2009,2,1,50,FALSE,Tropical rainforest,11,NA,NA,NA,26.112333297729492,2671,1.7236,Humid
 JP-Yms,AsiaFlux;JapanFlux,DBF,Eastern Asia,Asia,2000,2023,23,22,95.7,TRUE,Subtropical humid forest,21,Cfa,Cf,C,14.484833717346191,1502,1.4419,Humid
 JP-Tak,AsiaFlux;JapanFlux,DBF,Eastern Asia,Asia,1998,2021,23,22,95.7,TRUE,Temperate mountain system,35,Dfb,Df,D,7.130833148956299,1804,2.2982,Humid
 JP-Api,AsiaFlux;JapanFlux,DBF,Eastern Asia,Asia,2000,2022,22,22,100,TRUE,Temperate mountain system,35,Dfa,Df,D,6.664833068847656,1478,2.2808,Humid
@@ -275,33 +279,41 @@ JP-Fjy,AsiaFlux;JapanFlux,ENF,Eastern Asia,Asia,2001,2021,20,20,100,FALSE,Subtro
 JP-Fhk,AsiaFlux;JapanFlux,DNF,Eastern Asia,Asia,2006,2023,17,18,105.9,FALSE,Temperate mountain system,35,Cfa,Cf,C,9.71833324432373,1693,1.7596,Humid
 JP-Spp,AsiaFlux;JapanFlux,DBF,Eastern Asia,Asia,2000,2018,18,16,88.9,FALSE,Temperate continental forest,32,Dfb,Df,D,7.402833461761475,1239,1.5962,Humid
 ID-PaD,AsiaFlux;JapanFlux,EBF,South-eastern Asia,Asia,2001,2017,16,12,75,FALSE,Tropical rainforest,11,NA,NA,NA,27.514667510986328,2396,1.7673,Humid
-CN-Aro,ChinaFLUX,GRA,Eastern Asia,Asia,2013,2024,11,11,100,FALSE,Temperate mountain system,35,Bwk,Bw,B,-0.3504999876022339,411,0.4271,Semi-arid
+CN-Dmn,ChinaFLUX,CRO,Eastern Asia,Asia,2012,2024,12,12,100,FALSE,Temperate desert,34,NA,NA,NA,6.0341668128967285,222,0.1769,Arid
 CN-Ash,ChinaFLUX,EBF,Eastern Asia,Asia,2009,2019,10,11,110,FALSE,Subtropical mountain system,25,NA,NA,NA,13.547333717346191,988,1.0039,Humid
+CN-Aro,ChinaFLUX,GRA,Eastern Asia,Asia,2013,2024,11,11,100,FALSE,Temperate mountain system,35,Bwk,Bw,B,-0.3504999876022339,411,0.4271,Semi-arid
 JP-Ta2,AsiaFlux;JapanFlux,ENF,Eastern Asia,Asia,2005,2015,10,10,100,FALSE,Subtropical humid forest,21,Dfb,Df,D,9.504833221435549,1765,2.0335,Humid
 JP-NsM,AsiaFlux;JapanFlux,GRA,Eastern Asia,Asia,2004,2015,11,10,90.9,FALSE,Subtropical mountain system,25,Cfa,Cf,C,12.100167274475098,1326,1.5157,Humid
 JP-NsC,AsiaFlux;JapanFlux,GRA,Eastern Asia,Asia,2004,2015,11,10,90.9,FALSE,Subtropical mountain system,25,Cfa,Cf,C,12.100167274475098,1326,1.5157,Humid
 ID-PaB,AsiaFlux;JapanFlux,OSH,South-eastern Asia,Asia,2004,2016,12,10,83.3,FALSE,Tropical rainforest,11,Am,Am,A,27.514667510986328,2396,1.7677,Humid
+CN-Zha,ChinaFLUX,WET,Eastern Asia,Asia,2012,2024,12,10,83.3,FALSE,Temperate desert,34,NA,NA,NA,7.112333297729492,188,0.1429,Arid
+CN-Sdq,ChinaFLUX,OSH,Eastern Asia,Asia,2013,2024,11,10,90.9,FALSE,Temperate desert,34,NA,NA,NA,8.812833786010742,41,0.0235,Hyper-arid
 JP-SMF,AsiaFlux;JapanFlux,MF,Eastern Asia,Asia,2002,2014,12,9,75,FALSE,Subtropical humid forest,21,Cfa,Cf,C,14.7698335647583,2065,1.929,Humid
 CN-YaS,ChinaFLUX,OSH,Eastern Asia,Asia,2011,2020,9,9,100,FALSE,Temperate mountain system,35,NA,NA,NA,7.767166614532471,309,0.263,Semi-arid
 CN-BeO,ChinaFLUX,MF,Eastern Asia,Asia,2012,2020,8,9,112.5,FALSE,Temperate continental forest,32,NA,NA,NA,12.214500427246094,546,0.4569,Semi-arid
 JP-Mse,AsiaFlux;JapanFlux,CRO,Eastern Asia,Asia,2002,2009,7,8,114.3,FALSE,Subtropical humid forest,21,Cfa,Cf,C,14.178333282470703,1307,1.3345,Humid
 CN-Lch,NA,CRO,Eastern Asia,Asia,2008,2020,12,8,66.7,FALSE,Temperate continental forest,32,NA,NA,NA,13.210000038146973,475,0.3938,Semi-arid
+CN-Huz,ChinaFLUX,BSV,Eastern Asia,Asia,2015,2024,9,8,88.9,FALSE,Temperate desert,34,NA,NA,NA,5.605499744415283,260,0.2151,Semi-arid
 CN-Dzo,ChinaFLUX,EBF,Eastern Asia,Asia,2010,2020,10,8,80,FALSE,Tropical moist forest,12,NA,NA,NA,24.09083366394043,1647,1.201,Humid
 TH-Mae,AsiaFlux;JapanFlux,DBF,South-eastern Asia,Asia,2005,2016,11,7,63.6,FALSE,Tropical moist forest,12,Aw,Aw,A,25.05699920654297,1122,0.7922,Humid
 JP-Kzw,AsiaFlux;JapanFlux,MF,Eastern Asia,Asia,2001,2008,7,7,100,FALSE,Temperate mountain system,35,Dfb,Df,D,7.257166862487793,1589,1.8858,Humid
 CN-HaM,AsiaFlux;JapanFlux,GRA,Eastern Asia,Asia,2001,2014,13,7,53.8,FALSE,Temperate mountain system,35,NA,NA,NA,-0.715499997138977,468,0.5328,Dry sub-humid
+CN-HeM,ChinaFLUX,DBF,Eastern Asia,Asia,2013,2024,11,7,63.6,FALSE,Temperate desert,34,NA,NA,NA,8.822999954223633,41,0.0235,Hyper-arid
 KR-CmF,NA,CRO,Eastern Asia,Asia,2012,2019,7,6,85.7,FALSE,Temperate continental forest,32,Dwa,Dw,D,11.098166465759276,1281,1.4999,Humid
 KR-CRK,AsiaFlux;KoFlux,CRO,Eastern Asia,Asia,2015,2021,6,6,100,FALSE,Temperate continental forest,32,Dwa,Dw,D,9.687999725341797,1248,1.5444,Humid
 JP-Ynf,AsiaFlux;JapanFlux,EBF,Eastern Asia,Asia,2013,2022,9,6,66.7,FALSE,Subtropical humid forest,21,Cfa,Cf,C,21.611631393432617,2150,1.6116,Humid
 JP-MMF,AsiaFlux;JapanFlux,MF,Eastern Asia,Asia,2004,2011,7,6,85.7,FALSE,Temperate mountain system,35,Af,Af,A,4.5881667137146,1156,1.8384,Humid
 ID-Pag,AsiaFlux;JapanFlux,EBF,South-eastern Asia,Asia,2004,2018,14,6,42.9,FALSE,Tropical rainforest,11,Am,Am,A,27.44983291625977,2401,1.7578,Humid
+CN-You,ChinaFLUX,GRA,Eastern Asia,Asia,2015,2024,9,6,66.7,FALSE,Temperate mountain system,35,NA,NA,NA,-4.382333278656006,452,0.5986,Dry sub-humid
 CN-Du2,ChinaFLUX,GRA,Eastern Asia,Asia,2011,2019,8,6,75,FALSE,Temperate mountain system,35,NA,NA,NA,2.7023332118988037,399,0.3846,Semi-arid
+CN-Dsh,ChinaFLUX,GRA,Eastern Asia,Asia,2013,2024,11,6,54.5,FALSE,Temperate mountain system,35,NA,NA,NA,-3.5808334350585938,345,0.381,Semi-arid
 KR-Kw1,NA,ENF,Eastern Asia,Asia,2016,2020,4,5,125,FALSE,Temperate continental forest,32,Dwa,Dw,D,10.409832954406738,1301,1.5592,Humid
 MY-LHP,AsiaFlux;JapanFlux,EBF,South-eastern Asia,Asia,2009,2019,10,5,50,FALSE,Tropical rainforest,11,Af,Af,A,26.56999969482422,3088,2.2873,Humid
 MN-Kbu,AsiaFlux;JapanFlux,GRA,Eastern Asia,Asia,2003,2008,5,5,100,FALSE,Temperate steppe,33,BSk,BS,B,0.09216662496328354,250,0.2716,Semi-arid
 JP-Tmd,AsiaFlux;JapanFlux,GRA,Eastern Asia,Asia,2005,2023,18,5,27.8,FALSE,Temperate continental forest,32,Dfb,Df,D,6.387499809265137,1206,1.8952,Humid
 JP-MBF,AsiaFlux,DBF,Eastern Asia,Asia,2004,2011,7,5,71.4,FALSE,Temperate mountain system,35,Af,Af,A,4.020999908447266,1174,1.9387,Humid
 CN-Yuc,ChinaFLUX,CRO,Eastern Asia,Asia,2011,2020,9,5,55.6,FALSE,Temperate continental forest,32,NA,NA,NA,13.144166946411133,607,0.5157,Dry sub-humid
+CN-Nmn,ChinaFLUX,CRO,Eastern Asia,Asia,2015,2019,4,5,125,FALSE,Temperate steppe,33,NA,NA,NA,7.171000003814697,431,0.3542,Semi-arid
 CN-Jzh,ChinaFLUX,CRO,Eastern Asia,Asia,2011,2016,5,5,100,FALSE,Temperate continental forest,32,NA,NA,NA,9.2866668701171875,549,0.4624,Semi-arid
 CN-Ha2,ChinaFLUX,OSH,Eastern Asia,Asia,2011,2019,8,5,62.5,FALSE,Temperate mountain system,35,NA,NA,NA,-0.715499997138977,468,0.5357,Dry sub-humid
 KR-SmM,NA,MF,Eastern Asia,Asia,2015,2021,6,4,66.7,FALSE,Temperate continental forest,32,Dwa,Dw,D,10.119832992553713,1262,1.547,Humid
@@ -315,6 +327,9 @@ JP-Toc,JapanFlux,DBF,Eastern Asia,Asia,2011,2014,3,4,133.3,FALSE,Temperate conti
 JP-Fmt,JapanFlux,MF,Eastern Asia,Asia,2014,2023,9,4,44.4,FALSE,Subtropical humid forest,21,Cfa,Cf,C,14.649499893188477,1516,1.4191,Humid
 CN-Lsh,AsiaFlux;JapanFlux,DNF,Eastern Asia,Asia,2002,2006,4,4,100,FALSE,Temperate continental forest,32,Cfc,Cf,C,3.0406665802001953,587,0.6747,Humid
 ID-JOP,AsiaFlux,EBF,South-eastern Asia,Asia,2014,2024,10,4,40,FALSE,Tropical rainforest,11,Af,Af,A,26.526832580566406,2569,1.9641,Humid
+CN-Sb2,Unaffiliated,ENF,Eastern Asia,Asia,2020,2024,4,4,100,FALSE,Temperate mountain system,35,NA,NA,NA,0.34766653180122375,460,0.5178,Dry sub-humid
+CN-Sb1,Unaffiliated,DNF,Eastern Asia,Asia,2020,2024,4,4,100,FALSE,Temperate mountain system,35,NA,NA,NA,0.6023333072662354,446,0.4871,Semi-arid
+CN-Jng,ChinaFLUX,GRA,Eastern Asia,Asia,2018,2024,6,4,66.7,FALSE,Temperate mountain system,35,NA,NA,NA,-3.2333333492279053,481,0.6238,Dry sub-humid
 KR-Hnm,AsiaFlux;KoFlux,CRO,Eastern Asia,Asia,2016,2019,3,3,100,FALSE,Subtropical humid forest,21,Cfa,Cf,C,13.831666946411133,1307,1.2551,Humid
 KR-HcM,AsiaFlux;KoFlux,MF,Eastern Asia,Asia,2015,2018,3,3,100,FALSE,Temperate continental forest,32,Dwa,Dw,D,9.42650032043457,1297,1.603,Humid
 KR-GmS,AsiaFlux;KoFlux,CRO,Eastern Asia,Asia,2017,2019,2,3,150,FALSE,Temperate continental forest,32,Dfa,Df,D,12.999500274658203,1217,1.1413,Humid
@@ -322,6 +337,7 @@ JP-Tmk,AsiaFlux;JapanFlux,DNF,Eastern Asia,Asia,2001,2003,2,3,150,FALSE,Temperat
 JP-Srk,AsiaFlux;JapanFlux,DBF,Eastern Asia,Asia,2010,2016,6,3,50,FALSE,Temperate mountain system,35,Dfa,Df,D,7.834000110626221,1534,1.9879,Humid
 JP-BBY,AsiaFlux;JapanFlux,WET,Eastern Asia,Asia,2014,2020,6,3,50,FALSE,Temperate continental forest,32,Dfb,Df,D,7.184000015258789,1154,1.5873,Humid
 CN-GuT,ChinaFLUX,GRA,Eastern Asia,Asia,2015,2017,2,3,150,FALSE,Temperate mountain system,35,NA,NA,NA,-1.5640000104904177,568,0.704,Humid
+CN-Dda,ChinaFLUX,GRA,Eastern Asia,Asia,2011,2014,3,3,100,FALSE,Temperate desert,34,NA,NA,NA,4.534999847412109,261,0.2031,Semi-arid
 KR-WdE,AsiaFlux;KoFlux,EBF,Eastern Asia,Asia,2015,2018,3,2,66.7,FALSE,Subtropical humid forest,21,Cfb,Cf,C,12.675833702087402,1490,1.5699,Humid
 KR-UAO,AsiaFlux;KoFlux,CRO,Eastern Asia,Asia,2017,2019,2,2,100,FALSE,Temperate continental forest,32,Dwa,Dw,D,11.081666946411133,1137,1.2242,Humid
 KR-Nj2,AsiaFlux;KoFlux,CRO,Eastern Asia,Asia,2023,2024,1,2,200,FALSE,Temperate continental forest,32,Cfa,Cf,C,13.38249969482422,1306,1.3092,Humid
@@ -330,6 +346,7 @@ KR-AdC,AsiaFlux;KoFlux,ENF,Eastern Asia,Asia,2015,2018,3,2,66.7,FALSE,Temperate 
 JP-Nuf,JapanFlux,DBF,Eastern Asia,Asia,2000,2001,1,2,200,FALSE,Subtropical humid forest,21,Cfa,Cf,C,15.454667091369627,1969,1.7256,Humid
 JP-Hc3,JapanFlux,CRO,Eastern Asia,Asia,2005,2008,3,2,66.7,FALSE,Subtropical humid forest,21,Cfa,Cf,C,15.023263931274414,1423,1.3065,Humid
 CN-Xi2,ChinaFLUX,GRA,Eastern Asia,Asia,2011,2020,9,2,22.2,FALSE,Temperate steppe,33,NA,NA,NA,1.5538333654403689,322,0.3104,Semi-arid
+CN-Erg,ChinaFLUX,GRA,Eastern Asia,Asia,2016,2019,3,2,66.7,FALSE,Temperate steppe,33,NA,NA,NA,-2.1570000648498535,360,0.4642,Semi-arid
 KR-TwC,NA,ENF,Eastern Asia,Asia,2024,2024,0,1,NA,FALSE,Temperate continental forest,32,Dwa,Dw,D,10.447333335876465,1318,1.53,Humid
 KR-Nj1,NA,CRO,Eastern Asia,Asia,2023,2024,1,1,100,FALSE,Temperate continental forest,32,Cfa,Cf,C,13.38249969482422,1306,1.3092,Humid
 KR-HPK,AsiaFlux;KoFlux,CRO,Eastern Asia,Asia,2016,2018,2,1,50,FALSE,Subtropical humid forest,21,Cfa,Cf,C,13.849431991577148,1301,1.2716,Humid
@@ -337,6 +354,7 @@ KR-GmP,NA,CRO,Eastern Asia,Asia,2011,2014,3,1,33.3,FALSE,Temperate continental f
 JP-Om2,AsiaFlux;JapanFlux,GRA,Eastern Asia,Asia,2022,2023,1,1,100,FALSE,Subtropical humid forest,21,Cfa,Cf,C,16.378332138061523,1372,1.0885,Humid
 CN-Yan,NA,OSH,Eastern Asia,Asia,2016,2018,2,1,50,FALSE,Temperate mountain system,35,NA,NA,NA,8.402667045593262,321,0.2792,Semi-arid
 CN-Wnb,ChinaFLUX,BSV,Eastern Asia,Asia,2021,2021,0,1,NA,FALSE,Temperate desert,34,NA,NA,NA,8.397333145141602,127,0.0875,Arid
+CN-Mxn,ChinaFLUX,MF,Eastern Asia,Asia,2015,2019,4,1,25,FALSE,Subtropical humid forest,21,NA,NA,NA,9.098166465759276,798,1.1401,Humid
 CN-HaW,ChinaFLUX,WET,Eastern Asia,Asia,2011,2018,7,1,14.3,FALSE,Temperate mountain system,35,NA,NA,NA,-0.715499997138977,468,0.5328,Dry sub-humid
 NL-Loo,European Fluxes Database;ICOS,ENF,Western Europe,Europe,1997,2024,27,28,103.7,TRUE,Temperate oceanic forest,31,Cfb,Cf,C,9.42733383178711,826,1.2644,Humid
 DE-Tha,European Fluxes Database;ICOS,ENF,Western Europe,Europe,1996,2024,28,28,100,TRUE,Temperate oceanic forest,31,Cfb,Cf,C,8.4399995803833,737,1.034,Humid
@@ -359,6 +377,8 @@ BE-Lon,European Fluxes Database;ICOS,CRO,Western Europe,Europe,2004,2024,20,19,9
 AT-Neu,CarboEuropeIP;European Fluxes Database;GHG-Europe,GRA,Western Europe,Europe,2002,2020,18,19,105.6,FALSE,Temperate mountain system,35,Dfb,Df,D,5.017166614532471,997,1.4915,Humid
 FR-Gri,European Fluxes Database;ICOS,CRO,Western Europe,Europe,2004,2024,20,18,90,FALSE,Temperate oceanic forest,31,BSk,BS,B,10.659832954406738,626,0.7931,Humid
 CZ-wet,European Fluxes Database;ICOS,WET,Eastern Europe,Europe,2006,2024,18,18,100,FALSE,Temperate continental forest,32,Dfb,Df,D,8.060500144958496,632,0.9064,Humid
+IT-Lav,CarboEuroFlux;CarboEuropeIP;CarboItaly;European Fluxes Database;GHG-Europe,ENF,Southern Europe,Europe,2003,2020,17,18,105.9,FALSE,Temperate mountain system,35,NA,NA,NA,7.721833229064941,575,0.6942,Humid
+CH-Cha,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,GRA,Western Europe,Europe,2005,2024,19,18,94.7,FALSE,Temperate oceanic forest,31,NA,NA,NA,9.59850025177002,1194,1.6485,Humid
 DE-Obe,CarboEuropeIP;European Fluxes Database,ENF,Western Europe,Europe,2008,2024,16,17,106.2,FALSE,Temperate mountain system,35,Cfb,Cf,C,5.958333492279053,809,1.2171,Humid
 CH-Fru,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,GRA,Western Europe,Europe,2005,2024,19,17,89.5,FALSE,Temperate oceanic forest,31,NA,NA,NA,8.465167045593262,1398,2.176,Humid
 IT-MBo,European Fluxes Database;ICOS,GRA,Southern Europe,Europe,2003,2024,21,16,76.2,FALSE,Temperate oceanic forest,31,Dfc,Df,D,6.305333614349365,407,0.4801,Semi-arid
@@ -372,6 +392,7 @@ DE-RuR,European Fluxes Database;ICOS,GRA,Western Europe,Europe,2011,2024,13,13,1
 CZ-RAJ,European Fluxes Database,ENF,Eastern Europe,Europe,2012,2024,12,13,108.3,FALSE,Temperate continental forest,32,NA,NA,NA,6.935500144958496,606,0.8746,Humid
 CH-Rtb,European Fluxes Database,GRA,Western Europe,Europe,2009,2022,13,13,100,FALSE,Temperate mountain system,35,Dfb,Df,D,7.677666664123535,1275,1.8613,Humid
 IT-TrF,European Fluxes Database;ICOS,DNF,Southern Europe,Europe,2012,2024,12,12,100,FALSE,Temperate mountain system,35,Dfc,Df,D,4.298999786376953,1092,1.6882,Humid
+IT-SRo,CarboEuroFlux;CarboEuropeIP;CarboExtreme;European Fluxes Database;Medeflu,ENF,Southern Europe,Europe,1999,2012,13,12,92.3,FALSE,Subtropical dry forest,22,NA,NA,NA,14.048333168029783,886,0.8992,Humid
 ES-LJu,NA,OSH,Southern Europe,Europe,2004,2024,20,12,60,FALSE,Subtropical dry forest,22,NA,NA,NA,11.326833724975586,527,0.4386,Semi-arid
 DE-RuS,European Fluxes Database;ICOS,CRO,Western Europe,Europe,2011,2024,13,11,84.6,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,10.143166542053224,714,0.9556,Humid
 IT-SR2,European Fluxes Database;ICOS,ENF,Southern Europe,Europe,2013,2024,11,11,100,FALSE,Subtropical dry forest,22,Csa,Cs,C,14.048333168029783,886,0.8992,Humid
@@ -381,6 +402,7 @@ DE-HoH,European Fluxes Database;ICOS,DBF,Western Europe,Europe,2015,2024,9,10,11
 NL-Vkp,European Fluxes Database,GRA,Western Europe,Europe,2014,2024,10,10,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,9.641833305358888,798,1.1829,Humid
 ES-LM2,European Fluxes Database,SAV,Southern Europe,Europe,2014,2024,10,10,100,FALSE,Subtropical dry forest,22,NA,NA,NA,15.864666938781738,465,0.3683,Semi-arid
 CZ-KrP,European Fluxes Database,CRO,Eastern Europe,Europe,2014,2023,9,10,111.1,FALSE,Temperate mountain system,35,NA,NA,NA,7.723666667938232,576,0.7438,Humid
+CH-Oe1,CarboEuropeIP;European Fluxes Database;GreenGrass;Swiss FluxNet,GRA,Western Europe,Europe,2002,2011,9,10,111.1,FALSE,Temperate oceanic forest,31,NA,NA,NA,9.313166618347168,977,1.3408,Humid
 CH-Aws,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,GRA,Western Europe,Europe,2006,2024,18,10,55.6,FALSE,Temperate mountain system,35,NA,NA,NA,-1.4706666469573977,1158,1.7938,Humid
 SE-Svb,European Fluxes Database;ICOS,ENF,Northern Europe,Europe,2014,2024,10,9,90,FALSE,Boreal coniferous forest,41,Dfc,Df,D,1.4963332414627075,622,1.3401,Humid
 FI-Var,European Fluxes Database;ICOS,ENF,Northern Europe,Europe,2016,2024,8,9,112.5,FALSE,Boreal coniferous forest,41,Dfc,Df,D,-0.7744999527931213,576,1.4792,Humid
@@ -392,6 +414,7 @@ CH-Oe3,European Fluxes Database,GRA,Western Europe,Europe,2002,2011,9,9,100,FALS
 FR-EM2,European Fluxes Database;ICOS,CRO,Western Europe,Europe,2017,2024,7,8,114.3,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,9.984833717346191,666,0.9209,Humid
 RU-Fy2,European Fluxes Database,ENF,Eastern Europe,Europe,2015,2024,9,8,88.9,FALSE,Temperate continental forest,32,Dfb,Df,D,4.535333156585693,695,1.1466,Humid
 FR-Nzn,European Fluxes Database,GRA,Western Europe,Europe,2016,2024,8,8,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,11.512499809265137,918,1.2508,Humid
+FR-LBr,CarboEuroFlux;CarboEuropeIP;CarboExtreme;EuroFlux;European Fluxes Database;GHG-Europe,ENF,Western Europe,Europe,1998,2008,10,8,80,FALSE,Temperate oceanic forest,31,NA,NA,NA,12.545499801635742,909,1.0612,Humid
 EE-Stg,European Fluxes Database,ENF,Northern Europe,Europe,2016,2024,8,8,100,FALSE,Temperate continental forest,32,Dfb,Df,D,5.449166774749756,659,1.1,Humid
 IT-Lsn,European Fluxes Database;ICOS,OSH,Southern Europe,Europe,2016,2024,8,7,87.5,FALSE,Temperate oceanic forest,31,Cfa,Cf,C,13.3236665725708,970,1.1425,Humid
 FR-Tou,European Fluxes Database;ICOS,GRA,Western Europe,Europe,2018,2024,6,7,116.7,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,13.04699993133545,693,0.7041,Humid
@@ -403,11 +426,14 @@ SE-Nor,European Fluxes Database;ICOS,ENF,Northern Europe,Europe,2018,2024,6,6,10
 SE-Htm,European Fluxes Database;ICOS,ENF,Northern Europe,Europe,2018,2024,6,6,100,FALSE,Temperate oceanic forest,31,Dfb,Df,D,7.055833339691162,864,1.4569,Humid
 FR-Mej,European Fluxes Database;ICOS,GRA,Western Europe,Europe,2019,2024,5,6,120,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,11.532833099365234,742,0.9462,Humid
 FI-Sii,European Fluxes Database;ICOS,WET,Northern Europe,Europe,2018,2024,6,6,100,FALSE,Boreal coniferous forest,41,Dfc,Df,D,3.191833257675171,665,1.2971,Humid
+SE-Ros,European Fluxes Database,ENF,Northern Europe,Europe,2014,2020,6,6,100,FALSE,Boreal coniferous forest,41,NA,NA,NA,1.8536666631698608,644,1.3049,Humid
+NO-And,NA,WET,Northern Europe,Europe,2008,2014,6,6,100,FALSE,Boreal mountain system,43,NA,NA,NA,3.7373106479644775,1202,2.8538,Humid
 NL-Hrw,European Fluxes Database,GRA,Western Europe,Europe,2001,2010,9,6,66.7,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,9.689000129699709,800,1.1819,Humid
 ES-Mcd,European Fluxes Database,EBF,Southern Europe,Europe,2018,2024,6,6,100,FALSE,Subtropical dry forest,22,NA,NA,NA,17.003000259399414,427,0.322,Semi-arid
 ES-Hen,European Fluxes Database,ENF,Southern Europe,Europe,2019,2024,5,6,120,FALSE,Subtropical dry forest,22,BSk,BS,B,15.595333099365234,329,0.2199,Semi-arid
 ES-HeB,European Fluxes Database,ENF,Southern Europe,Europe,2019,2024,5,6,120,FALSE,Subtropical dry forest,22,BSk,BS,B,15.262666702270508,339,0.2363,Semi-arid
 DE-RuM,European Fluxes Database,CRO,Western Europe,Europe,2011,2019,8,6,75,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,10.116666793823242,719,0.9964,Humid
+DE-Hte,EuroFlux;European Fluxes Database,WET,Western Europe,Europe,2009,2018,9,6,66.7,FALSE,Temperate oceanic forest,31,NA,NA,NA,8.5703706741333,584,0.9258,Humid
 SE-Deg,European Fluxes Database;ICOS,WET,Northern Europe,Europe,2019,2024,5,5,100,FALSE,Boreal coniferous forest,41,Dfc,Df,D,1.8295000791549685,608,1.3212,Humid
 IT-BFt,European Fluxes Database;ICOS,DBF,Southern Europe,Europe,2019,2024,5,5,100,FALSE,Temperate oceanic forest,31,BSk,BS,B,12.965999603271484,678,0.7621,Humid
 FR-Fon,European Fluxes Database;ICOS,DBF,Western Europe,Europe,2019,2024,5,5,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,10.64716625213623,627,0.8134,Humid
@@ -426,20 +452,28 @@ FI-Rk2,European Fluxes Database,ENF,Northern Europe,Europe,2020,2023,3,4,133.3,F
 ES-Yst,NA,ENF,Southern Europe,Europe,2019,2024,5,4,80,FALSE,Subtropical dry forest,22,Csa,Cs,C,12.617833137512209,451,0.3185,Semi-arid
 ES-Pzb,European Fluxes Database,GRA,Southern Europe,Europe,2020,2024,4,4,100,FALSE,Subtropical dry forest,22,Csa,Cs,C,14.789999961853027,571,0.4154,Semi-arid
 ES-Gdn,European Fluxes Database;GHG-Europe,SAV,Southern Europe,Europe,2014,2021,7,4,57.1,FALSE,Subtropical dry forest,22,NA,NA,NA,16.734500885009766,368,0.2401,Semi-arid
+CZ-BK2,CarboEuropeIP;Carbomont;European Fluxes Database;GHG-Europe,GRA,Eastern Europe,Europe,2006,2012,6,4,66.7,FALSE,Temperate mountain system,35,NA,NA,NA,5.575500011444092,1003,1.7292,Humid
 BE-Lcr,European Fluxes Database,DBF,Western Europe,Europe,2019,2022,3,4,133.3,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,10.481499671936035,782,1.0873,Humid
 AT-PsM,European Fluxes Database;LTER,WET,Western Europe,Europe,2015,2019,4,4,100,FALSE,Temperate mountain system,35,Dfb,Df,D,5.060333251953125,1165,1.2787,Humid
+AT-Nsd,European Fluxes Database;LTER,WET,Western Europe,Europe,2018,2022,4,4,100,FALSE,Temperate continental forest,32,NA,NA,NA,10.212499618530272,576,0.6714,Humid
 FR-Lam,European Fluxes Database;ICOS,CRO,Western Europe,Europe,2021,2024,3,3,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,12.656000137329102,771,0.8122,Humid
 DK-Vng,European Fluxes Database;ICOS,CRO,Northern Europe,Europe,2020,2023,3,3,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,7.793666839599609,822,1.3362,Humid
 DE-Hzd,European Fluxes Database;ICOS,DBF,Western Europe,Europe,2022,2024,2,3,150,FALSE,Temperate oceanic forest,31,Dfb,Df,D,8.241000175476074,759,1.0455,Humid
 DE-Geb,European Fluxes Database;ICOS,CRO,Western Europe,Europe,2020,2024,4,3,75,FALSE,Temperate continental forest,32,Cfb,Cf,C,8.939499855041504,500,0.6897,Humid
 UK-BnB,European Fluxes Database,GRA,Northern Europe,Europe,2021,2024,3,3,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,9.328499794006348,1138,1.9463,Humid
+SE-Hmr,European Fluxes Database,WET,Northern Europe,Europe,2020,2023,3,3,100,FALSE,Boreal coniferous forest,41,NA,NA,NA,1.7665001153945925,635,1.3591,Humid
+SE-HfM,European Fluxes Database,WET,Northern Europe,Europe,2020,2023,3,3,100,FALSE,Boreal coniferous forest,41,NA,NA,NA,1.7665001153945925,635,1.3591,Humid
+RU-Che,European Fluxes Database;PAGE21;TCOS-Siberia,WET,Eastern Europe,Europe,2013,2021,8,3,37.5,FALSE,Boreal tundra woodland,42,NA,NA,NA,-11.518667221069336,171,0.3793,Semi-arid
 NO-Fns,European Fluxes Database,SNO,Northern Europe,Europe,2017,2024,7,3,42.9,FALSE,Boreal mountain system,43,ET,ET,E,-2.128333330154419,1264,3.2604,Humid
 IT-NiG,European Fluxes Database,GRA,Southern Europe,Europe,2020,2024,4,3,75,FALSE,Temperate mountain system,35,NA,NA,NA,-0.49316659569740295,1440,2.4105,Humid
 IT-CA3,European Fluxes Database;GHG-Europe,DBF,Southern Europe,Europe,2011,2014,3,3,100,FALSE,Subtropical dry forest,22,NA,NA,NA,14.48900032043457,332,0.3064,Semi-arid
 IT-CA2,European Fluxes Database;GHG-Europe,CRO,Southern Europe,Europe,2011,2014,3,3,100,FALSE,Subtropical dry forest,22,NA,NA,NA,14.48900032043457,332,0.2999,Semi-arid
 IT-BsB,European Fluxes Database,DBF,Southern Europe,Europe,2021,2024,3,3,100,FALSE,Temperate mountain system,35,NA,NA,NA,7.318999767303467,986,0.9857,Humid
 FI-Nsv,European Fluxes Database,CVM,Northern Europe,Europe,2021,2024,3,3,100,FALSE,Boreal coniferous forest,41,Dfc,Df,D,2.506166458129883,607,1.2251,Humid
+ES-MtB,European Fluxes Database,OSH,Southern Europe,Europe,2021,2024,3,3,100,FALSE,Subtropical dry forest,22,NA,NA,NA,17.85947036743164,500,0.3556,Semi-arid
+ES-FtD,European Fluxes Database,WET,Southern Europe,Europe,2021,2024,3,3,100,FALSE,Subtropical dry forest,22,NA,NA,NA,17.96299934387207,511,0.3636,Semi-arid
 ES-Crg,European Fluxes Database,CSH,Southern Europe,Europe,2021,2024,3,3,100,FALSE,Subtropical dry forest,22,NA,NA,NA,12.764833450317385,410,0.3481,Semi-arid
+DE-Spw,NA,WET,Western Europe,Europe,2010,2015,5,3,60,FALSE,Temperate continental forest,32,NA,NA,NA,9.0823335647583,553,0.7534,Humid
 DE-Rns,European Fluxes Database,CRO,Western Europe,Europe,2021,2024,3,3,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,8.846166610717773,655,0.9207,Humid
 CH-Rh2,European Fluxes Database,GRA,Western Europe,Europe,2018,2021,3,3,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,7.799999713897705,1351,2.3046,Humid
 CH-Rh1,European Fluxes Database,GRA,Western Europe,Europe,2018,2021,3,3,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,7.799999713897705,1351,2.3046,Humid
@@ -460,13 +494,16 @@ SE-Trb,European Fluxes Database,WET,Northern Europe,Europe,2021,2023,2,2,100,FAL
 RU-Fy4,European Fluxes Database,WET,Eastern Europe,Europe,2015,2020,5,2,40,FALSE,Temperate continental forest,32,NA,NA,NA,4.512833595275879,690,1.1376,Humid
 RU-Ch2,European Fluxes Database;PAGE21,WET,Eastern Europe,Europe,2014,2021,7,2,28.6,FALSE,Boreal tundra woodland,42,NA,NA,NA,-11.518667221069336,171,0.3815,Semi-arid
 IT-CA1,European Fluxes Database;GHG-Europe,DBF,Southern Europe,Europe,2011,2014,3,2,66.7,FALSE,Subtropical dry forest,22,NA,NA,NA,14.48900032043457,332,0.2999,Semi-arid
+FI-Jok,European Fluxes Database;GHG-Europe,CRO,Northern Europe,Europe,2000,2003,3,2,66.7,FALSE,Boreal coniferous forest,41,NA,NA,NA,4.152833461761475,612,1.0987,Humid
 ES-VDA,CarboEuropeIP;Carbomont;European Fluxes Database,GRA,Southern Europe,Europe,2022,2024,2,2,100,FALSE,Subtropical dry forest,22,NA,NA,NA,7.90233325958252,974,1.0477,Humid
 EE-Pts,European Fluxes Database;GHG-Europe,WET,Northern Europe,Europe,2022,2024,2,2,100,FALSE,Temperate continental forest,32,Dfb,Df,D,6.125833034515381,684,1.0753,Humid
+DE-Seh,CarboEuropeIP;European Fluxes Database,CRO,Western Europe,Europe,2007,2010,3,2,66.7,FALSE,Temperate oceanic forest,31,NA,NA,NA,10.143166542053224,714,0.9512,Humid
+DE-Lkb,NA,ENF,Western Europe,Europe,2009,2013,4,2,50,FALSE,Temperate mountain system,35,NA,NA,NA,4.425333499908447,1332,2.2662,Humid
 CH-Crs,European Fluxes Database,GRA,Western Europe,Europe,2015,2016,1,2,200,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,8.440500259399414,1016,1.2984,Humid
 AT-Zoe,European Fluxes Database;LTER,MF,Western Europe,Europe,2014,2024,10,2,20,FALSE,Temperate mountain system,35,Dfb,Df,D,7.267666816711426,936,1.4725,Humid
 NO-Hur,European Fluxes Database;ICOS,ENF,Northern Europe,Europe,2023,2024,1,1,100,FALSE,Boreal coniferous forest,41,NA,NA,NA,4.293333530426025,765,1.4425,Humid
 FI-Sod,European Fluxes Database;ICOS,ENF,Northern Europe,Europe,2023,2024,1,1,100,FALSE,Boreal coniferous forest,41,Dfc,Df,D,-0.8236667513847351,514,1.2008,Humid
-FI-Ant,European Fluxes Database;ICOS,CRO,Northern Europe,Europe,2022,2022,0,1,NA,FALSE,Boreal coniferous forest,41,NA,NA,NA,2.816833257675171,607,1.1934,Humid
+FI-Ant,European Fluxes Database;ICOS,GRA,Northern Europe,Europe,2022,2022,0,1,NA,FALSE,Boreal coniferous forest,41,NA,NA,NA,2.816833257675171,607,1.1934,Humid
 DK-Gds,European Fluxes Database;ICOS,ENF,Northern Europe,Europe,2020,2022,2,1,50,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,7.440999984741211,795,1.3299,Humid
 DE-Gwg,European Fluxes Database;ICOS,GRA,Western Europe,Europe,2023,2024,1,1,100,FALSE,Temperate mountain system,35,Dfb,Df,D,6.117166519165039,1331,2.0112,Humid
 DE-Fen,European Fluxes Database;ICOS,GRA,Western Europe,Europe,2023,2024,1,1,100,FALSE,Temperate mountain system,35,Dfb,Df,D,7.899666786193848,1131,1.5774,Humid
@@ -474,9 +511,11 @@ DE-Brs,European Fluxes Database;ICOS,CRO,Western Europe,Europe,2023,2024,1,1,100
 UK-HpF,European Fluxes Database,CRO,Northern Europe,Europe,2023,2024,1,1,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,9.678333282470703,581,0.8132,Humid
 UK-HgF,European Fluxes Database,GRA,Northern Europe,Europe,2023,2024,1,1,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,9.872833251953123,616,0.8812,Humid
 UK-Cvn,European Fluxes Database,GRA,Northern Europe,Europe,2023,2024,1,1,100,FALSE,Temperate oceanic forest,31,Cfb,Cf,C,10.004833221435549,551,0.7827,Humid
+SE-Srj,European Fluxes Database,WET,Northern Europe,Europe,2020,2023,3,1,33.3,FALSE,Boreal coniferous forest,41,NA,NA,NA,1.8295000791549685,608,1.3278,Humid
 NO-Ikr,European Fluxes Database,WET,Northern Europe,Europe,2019,2022,3,1,33.3,FALSE,Boreal mountain system,43,Dfc,Df,D,-2.486999988555908,429,1.1909,Humid
 FI-Sar,European Fluxes Database,CRO,Northern Europe,Europe,2022,2022,0,1,NA,FALSE,Boreal coniferous forest,41,NA,NA,NA,2.7890000343322754,606,1.2007,Humid
 FI-Pap,European Fluxes Database,CRO,Northern Europe,Europe,2022,2022,0,1,NA,FALSE,Boreal coniferous forest,41,NA,NA,NA,2.816833257675171,607,1.1931,Humid
+ES-Srn,European Fluxes Database,EBF,Southern Europe,Europe,2023,2024,1,1,100,FALSE,Subtropical dry forest,22,NA,NA,NA,11.212166786193848,421,0.3536,Semi-arid
 ES-Mzn,European Fluxes Database,EBF,Southern Europe,Europe,2023,2024,1,1,100,FALSE,Subtropical dry forest,22,NA,NA,NA,11.321332931518556,424,0.3816,Semi-arid
 EE-Rng,European Fluxes Database;GHG-Europe,WET,Northern Europe,Europe,2023,2024,1,1,100,FALSE,Temperate continental forest,32,Dfb,Df,D,5.238500118255615,647,1.084,Humid
 DE-SbM,European Fluxes Database,WET,Western Europe,Europe,2023,2024,1,1,100,FALSE,Temperate mountain system,35,Cfb,Cf,C,5.118666648864746,1500,2.5785,Humid
@@ -485,47 +524,47 @@ CH-Tnk,European Fluxes Database,CRO,Western Europe,Europe,2024,2024,0,1,NA,FALSE
 AU-How,OzFlux,WSA,Australia and New Zealand,Oceania,2002,2025,23,20,87,TRUE,Tropical dry forest,13,NA,NA,NA,27.093000411987305,1647,0.8719,Humid
 AU-DaS,OzFlux,WSA,Australia and New Zealand,Oceania,2007,2025,18,16,88.9,TRUE,Tropical dry forest,13,NA,NA,NA,27.1336669921875,1140,0.5692,Dry sub-humid
 AU-Stp,OzFlux,GRA,Australia and New Zealand,Oceania,2008,2025,17,14,82.4,TRUE,Tropical desert,15,NA,NA,NA,26.384166717529297,641,0.2741,Semi-arid
-AU-Cpr,TERN,WSA,Australia and New Zealand,Oceania,2010,2025,15,13,86.7,FALSE,Subtropical steppe,23,NA,NA,NA,17.387332916259766,268,0.1442,Arid
 AU-Cow,OzFlux,EBF,Australia and New Zealand,Oceania,2009,2025,16,13,81.2,TRUE,Tropical rainforest,11,NA,NA,NA,24.188499450683594,3105,2.333,Humid
+AU-Cpr,TERN,WSA,Australia and New Zealand,Oceania,2010,2025,15,13,86.7,FALSE,Subtropical steppe,23,NA,NA,NA,17.387332916259766,268,0.1442,Arid
 AU-Cum,TERN,EBF,Australia and New Zealand,Oceania,2014,2025,11,12,109.1,FALSE,Subtropical humid forest,21,NA,NA,NA,17.332666397094727,843,0.6305,Dry sub-humid
 AU-Gin,OzFlux,EBF,Australia and New Zealand,Oceania,2011,2025,14,12,85.7,FALSE,Subtropical dry forest,22,NA,NA,NA,18.438499450683594,699,0.3746,Semi-arid
-AU-Rob,OzFlux,EBF,Australia and New Zealand,Oceania,2013,2025,12,11,91.7,FALSE,Tropical rainforest,11,NA,NA,NA,20.53066635131836,2634,1.8353,Humid
 AU-GWW,OzFlux,EBF,Australia and New Zealand,Oceania,2013,2025,12,11,91.7,FALSE,Subtropical desert,24,NA,NA,NA,18.808500289916992,264,0.125,Arid
+AU-Rob,OzFlux,EBF,Australia and New Zealand,Oceania,2013,2025,12,11,91.7,FALSE,Tropical rainforest,11,NA,NA,NA,20.53066635131836,2634,1.8353,Humid
 AU-ASM,TERN,SAV,Australia and New Zealand,Oceania,2010,2025,15,11,73.3,FALSE,Tropical desert,15,NA,NA,NA,22.61933326721191,366,0.1457,Arid
 AU-Ync,OzFlux,GRA,Australia and New Zealand,Oceania,2012,2025,13,10,76.9,FALSE,Subtropical steppe,23,NA,NA,NA,16.570833206176758,435,0.273,Semi-arid
 AU-Dry,OzFlux,WSA,Australia and New Zealand,Oceania,2009,2025,16,9,56.2,TRUE,Tropical shrubland,14,NA,NA,NA,26.81366729736328,854,0.4025,Semi-arid
 AU-Whr,OzFlux,EBF,Australia and New Zealand,Oceania,2011,2025,14,8,57.1,FALSE,Subtropical steppe,23,NA,NA,NA,14.91433334350586,581,0.4179,Semi-arid
 AU-Ctr,OzFlux,EBF,Australia and New Zealand,Oceania,2010,2018,8,7,87.5,FALSE,Tropical rainforest,11,NA,NA,NA,22.73316764831543,3102,2.3844,Humid
-NZ-Lau,OzFlux,GRA,Australia and New Zealand,Oceania,2019,2025,6,6,100,FALSE,Temperate oceanic forest,31,NA,NA,NA,9.46833324432373,591,0.687,Humid
 AU-Boy,TERN,EBF,Australia and New Zealand,Oceania,2017,2025,8,6,75,FALSE,Subtropical steppe,23,NA,NA,NA,16.42133331298828,469,0.2709,Semi-arid
 AU-Lit,TERN,WSA,Australia and New Zealand,Oceania,2015,2025,10,6,60,FALSE,Tropical dry forest,13,NA,NA,NA,26.29700088500977,1585,0.8601,Humid
 NZ-ADw,OzFlux,GRA,Australia and New Zealand,Oceania,2015,2022,7,6,85.7,FALSE,Temperate oceanic forest,31,NA,NA,NA,11.748000144958496,660,0.6452,Dry sub-humid
-AU-Sam,OzFlux,GRA,Australia and New Zealand,Oceania,2010,2017,7,6,85.7,FALSE,Subtropical humid forest,21,NA,NA,NA,19.305500030517575,1233,0.8177,Humid
 AU-Rgf,OzFlux,CVM,Australia and New Zealand,Oceania,2015,2025,10,6,60,FALSE,Subtropical steppe,23,NA,NA,NA,16.651166915893555,456,0.2639,Semi-arid
+AU-Sam,OzFlux,GRA,Australia and New Zealand,Oceania,2010,2017,7,6,85.7,FALSE,Subtropical humid forest,21,NA,NA,NA,19.305500030517575,1233,0.8177,Humid
+NZ-Lau,OzFlux,GRA,Australia and New Zealand,Oceania,2019,2025,6,6,100,FALSE,Temperate oceanic forest,31,NA,NA,NA,9.46833324432373,591,0.687,Humid
+AU-Sil,OzFlux,GRA,Australia and New Zealand,Oceania,2019,2024,5,5,100,FALSE,Temperate mountain system,35,NA,NA,NA,7.790666580200195,827,1.0133,Humid
 AU-Rig,OzFlux,GRA,Australia and New Zealand,Oceania,2011,2017,6,5,83.3,FALSE,Subtropical steppe,23,NA,NA,NA,15.114333152770996,618,0.4302,Semi-arid
 NZ-Oxf,OzFlux,GRA,Australia and New Zealand,Oceania,2006,2010,4,5,125,FALSE,Temperate oceanic forest,31,NA,NA,NA,10.900166511535645,903,0.9434,Humid
-AU-Sil,OzFlux,GRA,Australia and New Zealand,Oceania,2019,2024,5,5,100,FALSE,Temperate mountain system,35,NA,NA,NA,7.790666580200195,827,1.0133,Humid
-NZ-ScF,OzFlux,GRA,Australia and New Zealand,Oceania,2008,2011,3,4,133.3,FALSE,Subtropical humid forest,21,NA,NA,NA,14.23366641998291,1269,1.3041,Humid
-NZ-Kop,OzFlux,WET,Australia and New Zealand,Oceania,2012,2015,3,4,133.3,FALSE,Subtropical humid forest,21,NA,NA,NA,14.024499893188477,1337,1.3337,Humid
-NZ-ADd,OzFlux,GRA,Australia and New Zealand,Oceania,2016,2020,4,4,100,FALSE,Temperate oceanic forest,31,NA,NA,NA,11.748000144958496,660,0.6413,Dry sub-humid
-AU-Wom,TERN,EBF,Australia and New Zealand,Oceania,2010,2025,15,4,26.7,FALSE,Subtropical steppe,23,NA,NA,NA,10.663833618164062,1070,1.0042,Humid
 AU-APL,OzFlux,WET,Australia and New Zealand,Oceania,2017,2022,5,4,80,FALSE,Temperate mountain system,35,NA,NA,NA,6.072166919708252,1655,1.8931,Humid
 AU-DaP,OzFlux,GRA,Australia and New Zealand,Oceania,2008,2013,5,4,80,FALSE,Tropical dry forest,13,NA,NA,NA,27.198333740234375,1174,0.5918,Dry sub-humid
+NZ-Kop,OzFlux,WET,Australia and New Zealand,Oceania,2012,2015,3,4,133.3,FALSE,Subtropical humid forest,21,NA,NA,NA,14.024499893188477,1337,1.3337,Humid
+NZ-ScF,OzFlux,GRA,Australia and New Zealand,Oceania,2008,2011,3,4,133.3,FALSE,Subtropical humid forest,21,NA,NA,NA,14.23366641998291,1269,1.3041,Humid
+AU-Wom,TERN,EBF,Australia and New Zealand,Oceania,2010,2025,15,4,26.7,FALSE,Subtropical steppe,23,NA,NA,NA,10.663833618164062,1070,1.0042,Humid
+NZ-ADd,OzFlux,GRA,Australia and New Zealand,Oceania,2016,2020,4,4,100,FALSE,Temperate oceanic forest,31,NA,NA,NA,11.748000144958496,660,0.6413,Dry sub-humid
 AU-Fle,OzFlux,WSA,Australia and New Zealand,Oceania,2022,2025,3,3,100,FALSE,Tropical shrubland,14,NA,NA,NA,23.47833251953125,664,0.3659,Semi-arid
 AU-Otw,OzFlux,GRA,Australia and New Zealand,Oceania,2007,2010,3,3,100,FALSE,Temperate oceanic forest,31,NA,NA,NA,13.79383373260498,876,0.7709,Humid
 AU-Lon,OzFlux,GRA,Australia and New Zealand,Oceania,2018,2024,6,3,50,FALSE,Tropical desert,15,NA,NA,NA,23.60183334350586,419,0.1818,Arid
 VU-Coc,NA,EBF,Melanesia,Oceania,2001,2004,3,2,66.7,FALSE,Tropical rainforest,11,NA,NA,NA,25.53616714477539,2897,2.0899,Humid
-AU-Wrr,OzFlux,EBF,Australia and New Zealand,Oceania,2013,2021,8,2,25,FALSE,Temperate mountain system,35,NA,NA,NA,9.822500228881836,1555,1.6191,Humid
-AU-Wel,OzFlux,GRA,Australia and New Zealand,Oceania,2024,2025,1,2,200,FALSE,Subtropical steppe,23,NA,NA,NA,16.652000427246094,652,0.4266,Semi-arid
 AU-Ya1,OzFlux,GRA,Australia and New Zealand,Oceania,2023,2025,2,2,100,FALSE,Subtropical humid forest,21,NA,NA,NA,17.332666397094727,843,0.6282,Dry sub-humid
+NZ-Cla,OzFlux,GRA,Australia and New Zealand,Oceania,2022,2025,3,2,66.7,FALSE,Temperate oceanic forest,31,NA,NA,NA,10.782833099365234,790,0.8078,Humid
 NZ-BFm,OzFlux,GRA,Australia and New Zealand,Oceania,2012,2015,3,2,66.7,FALSE,Temperate oceanic forest,31,NA,NA,NA,11.03616714477539,788,0.765,Humid
 AU-Emr,OzFlux,GRA,Australia and New Zealand,Oceania,2011,2013,2,2,100,FALSE,Tropical shrubland,14,NA,NA,NA,22.7189998626709,628,0.3341,Semi-arid
 AU-Ya2,OzFlux,GRA,Australia and New Zealand,Oceania,2023,2025,2,2,100,FALSE,Subtropical humid forest,21,NA,NA,NA,17.398000717163086,847,0.624,Dry sub-humid
-NZ-Cla,OzFlux,GRA,Australia and New Zealand,Oceania,2022,2025,3,2,66.7,FALSE,Temperate oceanic forest,31,NA,NA,NA,10.782833099365234,790,0.8078,Humid
-NZ-BFu,OzFlux,GRA,Australia and New Zealand,Oceania,2012,2014,2,1,50,FALSE,Temperate oceanic forest,31,NA,NA,NA,11.03616714477539,788,0.765,Humid
-AU-RDF,OzFlux,WSA,Australia and New Zealand,Oceania,2011,2013,2,1,50,FALSE,Tropical dry forest,13,NA,NA,NA,26.997499465942383,955,0.4674,Semi-arid
-AU-Fog,OzFlux,GRA,Australia and New Zealand,Oceania,2006,2008,2,1,50,FALSE,Tropical dry forest,13,NA,NA,NA,27.035999298095703,1466,0.7933,Humid
-AU-Sno,OzFlux,EBF,Australia and New Zealand,Oceania,2024,2025,1,1,100,FALSE,Temperate mountain system,35,NA,NA,NA,6.3441667556762695,1664,1.7852,Humid
+AU-Wel,OzFlux,GRA,Australia and New Zealand,Oceania,2024,2025,1,2,200,FALSE,Subtropical steppe,23,NA,NA,NA,16.652000427246094,652,0.4266,Semi-arid
+AU-Wrr,OzFlux,EBF,Australia and New Zealand,Oceania,2013,2021,8,2,25,FALSE,Temperate mountain system,35,NA,NA,NA,9.822500228881836,1555,1.6191,Humid
 AU-Ade,OzFlux,WSA,Australia and New Zealand,Oceania,2007,2009,2,1,50,FALSE,Tropical dry forest,13,NA,NA,NA,27.22916603088379,1409,0.7246,Humid
-AU-MvB,OzFlux,CRO,Australia and New Zealand,Oceania,2024,2024,0,1,NA,FALSE,Subtropical steppe,23,NA,NA,NA,18.441499710083008,620,0.3594,Semi-arid
 AU-MvA,OzFlux,CRO,Australia and New Zealand,Oceania,2023,2024,1,1,100,FALSE,Subtropical steppe,23,NA,NA,NA,18.55683326721191,626,0.3707,Semi-arid
+AU-MvB,OzFlux,CRO,Australia and New Zealand,Oceania,2024,2024,0,1,NA,FALSE,Subtropical steppe,23,NA,NA,NA,18.441499710083008,620,0.3594,Semi-arid
+AU-RDF,OzFlux,WSA,Australia and New Zealand,Oceania,2011,2013,2,1,50,FALSE,Tropical dry forest,13,NA,NA,NA,26.997499465942383,955,0.4674,Semi-arid
+NZ-BFu,OzFlux,GRA,Australia and New Zealand,Oceania,2012,2014,2,1,50,FALSE,Temperate oceanic forest,31,NA,NA,NA,11.03616714477539,788,0.765,Humid
+AU-Sno,OzFlux,EBF,Australia and New Zealand,Oceania,2024,2025,1,1,100,FALSE,Temperate mountain system,35,NA,NA,NA,6.3441667556762695,1664,1.7852,Humid
+AU-Fog,OzFlux,GRA,Australia and New Zealand,Oceania,2006,2008,2,1,50,FALSE,Tropical dry forest,13,NA,NA,NA,27.035999298095703,1466,0.7933,Humid

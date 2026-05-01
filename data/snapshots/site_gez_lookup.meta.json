@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-04-30T23:25:24Z",
+  "pipeline_version": "71bfff6",
+  "input_sources": {
+    "snapshot": "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
+    "gez_shapefile": "data/external/gez/gez_2010_wgs84.shp (FAO Global Ecological Zones 2010)"
+  },
+  "notes": "Rebuilt for 716-site Apr-28 snapshot. s2 disabled for GEZ polygon validation. 3 sites (AR-TF1, CA-RBM, CN-SnB) fell outside st_within polygons; assigned via st_nearest_feature fallback. All 44 net-new ICOS sites present with valid GEZ assignments."
+}

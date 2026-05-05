@@ -1254,7 +1254,7 @@
     },
     "fluxnet": {
       "Package": "fluxnet",
-      "Version": "0.3.0.9000",
+      "Version": "0.3.1",
       "Source": "GitHub",
       "Title": "Download, Read, and Visualize FLUXNET Data",
       "Authors@R": "c( person(c(\"Eric\", \"R.\"), \"Scott\", , \"ericrscott@arizona.edu\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-7430-7879\")), person(c(\"David\", \"J.P.\"), \"Moore\", role = \"aut\", comment = c(ORCID = \"0000-0002-6462-3288\")), person(\"Arizona Board of Regents on behalf of The University of Arizona\", role = \"cph\", comment = c(ROR = \"https://ror.org/0054f1w39\")) )",
@@ -1295,9 +1295,9 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "fluxnet-package",
       "RemoteUsername": "EcosystemEcologyLab",
-      "RemotePkgRef": "EcosystemEcologyLab/fluxnet-package",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "655270d5122873a5151628d4bf8c116fca5cd2c5",
+      "RemotePkgRef": "EcosystemEcologyLab/fluxnet-package@v0.3.1",
+      "RemoteRef": "v0.3.1",
+      "RemoteSha": "e0adf7b0d2a83ea3ba7d321eddfbafbc7404b270",
       "NeedsCompilation": "no",
       "Author": "Eric R. Scott [aut, cre] (ORCID: <https://orcid.org/0000-0002-7430-7879>), David J.P. Moore [aut] (ORCID: <https://orcid.org/0000-0002-6462-3288>), Arizona Board of Regents on behalf of The University of Arizona [cph] (ROR: <https://ror.org/0054f1w39>)",
       "Maintainer": "Eric R. Scott <ericrscott@arizona.edu>"

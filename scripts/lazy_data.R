@@ -50,6 +50,8 @@ fs::file_copy(path = copy$path, new_path = copy$new_path)
 # Because the ERA5 and FLUXMET data have a different structure, they have to be
 # opened separately and combined.
 
+# This would be sped up greatly with a known schema
+
 daily_era5 <- open_csv_dataset(
   "data/hive/resolution=DD/dataset=ERA5/",
   na = c("", "NA", "-9999")
@@ -57,6 +59,7 @@ daily_era5 <- open_csv_dataset(
 
 daily_fluxmet <- open_csv_dataset(
   "data/hive/resolution=DD/dataset=FLUXMET/",
+  unify_schemas = TRUE,
   na = c("", "NA", "-9999")
 )
 
@@ -73,3 +76,22 @@ daily_nee_qc <- daily |>
   collect()
 
 daily_nee_qc
+
+
+# Do timestamp wrangling then read in
+daily_materialized <- daily |>
+  dplyr::mutate(
+    DATE = lubridate::ymd(TIMESTAMP),
+    .after = TIMESTAMP,
+  ) |>
+  as_tibble()
+
+str_arrow <- str(daily_materialized)
+
+rm(daily_materialized)
+
+daily_rds <- readRDS("data/processed/flux_data_raw_dd.rds")
+
+str_rds <- str(daily_rds)
+
+waldo::compare(str_arrow, str_rds)

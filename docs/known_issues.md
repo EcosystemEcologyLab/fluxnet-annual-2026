@@ -1,7 +1,7 @@
 # Known Issues
 
 This file tracks bugs and data quality issues encountered during pipeline development.
-Issues are reported to the relevant maintainers. Last updated: 2026-04-20.
+Issues are reported to the relevant maintainers. Last updated: 2026-04-30.
 
 **ONEFlux contact:** Gilberto Pastorello (LBL) has been flagged by Dario Papale as the
 contact for ONEFlux processing documentation — relevant for methods section writing.
@@ -21,16 +21,31 @@ Maintainer: Eric Scott ([@Aariq](https://github.com/Aariq))
 
 ## Section 2 — Extreme NEE values
 
-Two annual records in `flux_data_converted_yy.rds` have `abs(NEE_VUT_REF) > 2000 gC m⁻² yr⁻¹`.
-Values in this range are physically plausible for high-productivity ecosystems and are **not excluded** by the pipeline.
-Full record list saved to `outputs/nee_extreme_values.csv` (regenerated on each pipeline run).
+Eleven annual records in `flux_data_converted_yy.rds` (716-site dataset, April 2026)
+have `abs(NEE_VUT_REF) > 2000 gC m⁻² yr⁻¹`. Values are **not excluded** by the pipeline;
+they are passed through unchanged from the FLUXNET Shuttle source files. Two sites account
+for all 11 records:
 
-| site_id | IGBP | Year | NEE_VUT_REF (gC m⁻² yr⁻¹) | data_hub |
-|---|---|---|---|---|
-| US-Bi2 | CRO | 2023 | 2267.34 | AmeriFlux |
-| US-Bi2 | CRO | 2024 | 2316.51 | AmeriFlux |
+| site_id | IGBP | Years | NEE range (gC m⁻² yr⁻¹) | data_hub | Priority |
+|---|---|---|---|---|---|
+| IT-Lav | ENF | 2009–2020 (9 years) | −2,018 to −2,419 | ICOS-ETC | **High** |
+| US-Bi2 | CRO | 2023–2024 (2 years) | +2,267 to +2,317 | AmeriFlux | Lower |
 
-US-Bi2 is a California rice paddy (CRO). Extreme positive NEE indicates strong net carbon source; may reflect harvest/residue practices. Flag for co-author review before final analysis — check whether CRO sites should use a separate threshold or flag-rather-than-exclude approach.
+**IT-Lav** — annual `NEE_VUT_REF` values −1,617 to −2,419 gC m⁻² yr⁻¹ across 2003–2020
+are 5–10× the typical literature range for temperate spruce forest. Values verified to
+come directly from the FLUXNET Shuttle (snapshot 2026-04-14), not from pipeline processing.
+Flagged with Dario Papale (ICOS-ETC) for clarification on 2026-04-30. Pending response —
+interpret figure outputs at this site with caution.
+
+**US-Bi2** — annual `NEE_VUT_REF` values +992 to +2,317 gC m⁻² yr⁻¹ across 2018–2024.
+Directionally plausible (harvested bioenergy crop is a net carbon source) but at the high
+end of literature. Source values verified. Lower priority than IT-Lav but worth noting.
+Flag for co-author review before final analysis — check whether CRO sites should use a
+separate threshold or flag-rather-than-exclude approach.
+
+**Percentile impact (YY, all 716 sites):** Excluding both sites shifts p5 from −798 to
+−777 gC m⁻² yr⁻¹ and p95 from 225 to 222 gC m⁻² yr⁻¹ — modest effect on the bulk
+distribution. Min/max are materially affected (−2,420 → −1,903; +2,317 → +1,211).
 
 ---
 
@@ -188,6 +203,26 @@ currency gaps rather than ERA5/FLUXMET row-structure artefacts.
 |---|---|---|---|---|
 | QC gating applied to all `_QC` variables | Row exclusion in `04_qc.R` evaluated `_QC` thresholds across all columns (NEE, GPP, RECO, LE, H), causing 347/672 sites (52%) to lose all annual records when any secondary variable had high gap-fill | Over-exclusion of valid sites | Fixed: row exclusion now gated on `NEE_VUT_REF_QC` only; secondary variable QC columns retained for per-variable downstream filtering | **RESOLVED 2026-04-20** — implemented in `R/qc.R` and `scripts/04_qc.R` |
 | Unit conversion applied to pre-integrated annual/monthly data | `fluxnet_convert_units()` applied the µmol CO₂ m⁻² s⁻¹ → gC m⁻² per-period factor to YY and MM carbon flux variables that are already expressed in gC m⁻² per period, producing an ~800× overcorrection | All annual and monthly NEE/GPP/RECO values inflated by ~800× in outputs and figures | Fixed in commit 31e653b: YY and MM carbon flux variables passed through unchanged; conversion applied only at HH/HR/DD resolutions | **RESOLVED 2026-04-20** — all pre-fix figure outputs must be regenerated |
+
+---
+
+## Section 8 — Technical debt: `read_bifvarinfo_units()` long-format parser
+
+`read_bifvarinfo_units()` in `R/units.R` does not parse the long-format BIFVARINFO
+files used by 731 site-files in the dataset. These files store unit information as row
+values in a `VARIABLE`/`DATAVALUE` column structure (e.g., `VARIABLE_GROUP=GRP_VAR_INFO`,
+`VARIABLE=VAR_INFO_UNIT`, `DATAVALUE=gC m-2 y-1`) rather than as dedicated column
+headers (`VAR_INFO_VARNAME`, `VAR_INFO_UNIT`) expected by the current parser.
+
+The hardcoded fallback is correct for all current variable classes — annual carbon is
+assumed pre-integrated (pass-through), energy variables assumed W m⁻², temperatures °C
+(converted to K) — so **pipeline outputs are unaffected**. However, the parser should
+be fixed before any new variable class is added with non-default native units, as the
+fallback would silently apply incorrect assumptions for an unrecognised class.
+
+Track as technical debt. Fix: extend `read_bifvarinfo_units()` to detect the long-format
+schema by checking for `VARIABLE` and `DATAVALUE` column names and pivot accordingly
+before extracting unit assignments.
 
 ---
 

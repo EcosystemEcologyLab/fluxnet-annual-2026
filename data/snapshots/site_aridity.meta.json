@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-04-30T22:58:36Z",
+  "pipeline_version": "71bfff6",
+  "input_sources": {
+    "snapshot": "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
+    "aridity": "data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif (CGIAR Aridity Index v3.1; raw values / 10000 for true AI)"
+  },
+  "notes": "Rebuilt for 716-site Apr-28 snapshot (44 net-new ICOS sites added). Part 1 of step2_extract_aridity.R run as inline R; Part 2 (site_candidates_full.csv) deferred until dependency files updated."
+}

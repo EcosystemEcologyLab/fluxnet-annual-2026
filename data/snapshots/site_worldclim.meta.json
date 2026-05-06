@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-04-30T22:58:35Z",
+  "pipeline_version": "71bfff6",
+  "input_sources": {
+    "snapshot": "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
+    "worldclim": "data/external/worldclim/climate/wc2.1_2.5m/ (bio1 MAT, bio12 MAP; 2.5 arc-min resolution; 1970-2000 baseline)"
+  },
+  "notes": "Rebuilt for 716-site Apr-28 snapshot (44 net-new ICOS sites added). All 716 sites extracted without NA."
+}

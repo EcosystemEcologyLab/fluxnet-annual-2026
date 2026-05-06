@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-04-30T23:33:13Z",
+  "pipeline_version": "71bfff6",
+  "input_sources": {
+    "gez_candidates": "data/snapshots/long_record_site_candidates_gez.csv",
+    "badm": "data/processed/badm.rds"
+  },
+  "notes": "Rebuilt for 716-site Apr-28 snapshot. 569 sites total, 417 with KG, 152 without KG (CLIMATE_KOEPPEN absent from BADM). Of 39 net-new ICOS sites in candidates: see pipeline log for KG coverage detail. AU-* and NZ-* TERN sites systematically missing KG (not in BADM). Many ICOS sites also missing — expected for sites where CLIMATE_KOEPPEN is not populated in BIF files."
+}

@@ -2,7 +2,11 @@
 # to only the listed site IDs. Space-separated. Unset = all sites.
 FLUXNET_SITE_FILTER <- {
   raw <- Sys.getenv("FLUXNET_SITE_FILTER", unset = "")
-  if (nchar(trimws(raw)) == 0) character(0) else strsplit(trimws(raw), "\\s+")[[1]]
+  if (nchar(trimws(raw)) == 0) {
+    character(0)
+  } else {
+    strsplit(trimws(raw), "\\s+")[[1]]
+  }
 }
 
 # Data root directory — set FLUXNET_DATA_ROOT to relocate all pipeline data
@@ -33,16 +37,16 @@ FLUXNET_DELETE_ZIPS <- isTRUE(as.logical(
 # Lowered from 0.75 to 0.50 to match FLUXNET published convention — to be revisited with co-authors
 
 #' @export
-QC_THRESHOLD_DD <- 0.50  # daily
+QC_THRESHOLD_DD <- 0.50 # daily
 
 #' @export
-QC_THRESHOLD_WW <- 0.50  # weekly
+QC_THRESHOLD_WW <- 0.50 # weekly
 
 #' @export
-QC_THRESHOLD_MM <- 0.50  # monthly
+QC_THRESHOLD_MM <- 0.50 # monthly
 
 #' @export
-QC_THRESHOLD_YY <- 0.50  # annual
+QC_THRESHOLD_YY <- 0.50 # annual
 
 #' Check pipeline configuration
 #'
@@ -132,7 +136,7 @@ check_pipeline_config <- function() {
   # returns the path to the binary installed in the 'fluxnet' virtualenv.
   installed_version <- tryCatch(
     {
-      exe <- fluxnet:::fluxnet_shuttle_executable()
+      exe <- fluxnet::flux_install_shuttle()
       if (!is.null(exe) && nzchar(exe) && file.exists(exe)) {
         raw <- system2(exe, "--version", stdout = TRUE, stderr = FALSE)
         # Output: "fluxnet-shuttle 0.3.7.post0+dirty" — extract the version token
@@ -144,13 +148,7 @@ check_pipeline_config <- function() {
     error = function(e) NA_character_
   )
 
-  if (is.na(installed_version)) {
-    warning(
-      "fluxnet-shuttle does not appear to be installed. ",
-      "It will be installed automatically on the first call to flux_listall()."
-    )
-    ok <- FALSE
-  } else if (!identical(installed_version, expected_version)) {
+  if (!identical(installed_version, expected_version)) {
     warning(
       "Installed fluxnet-shuttle version (",
       installed_version,

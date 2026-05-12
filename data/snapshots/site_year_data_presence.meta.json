@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-05-12T21:53:58Z",
+  "pipeline_version": "858733d",
+  "input_sources": [
+    "data/processed/flux_data_raw_mm.rds"
+  ],
+  "notes": "Regenerated 2026-05-12 with broader multi-variable presence definition (agreed 2026-05-07). A site-year is present (n_months_present > 0) if at least one of the 12 flux columns has a non-NA value in at least one month of that year. No QC filtering applied. Flux columns checked: NEE_VUT_REF, NEE_CUT_REF, GPP_NT_VUT_REF, GPP_DT_VUT_REF, GPP_NT_CUT_REF, GPP_DT_CUT_REF, RECO_NT_VUT_REF, RECO_DT_VUT_REF, RECO_NT_CUT_REF, RECO_DT_CUT_REF, LE_F_MDS, H_F_MDS. Schema: site_id, year (integer), n_months_present (integer 0-12), has_data (logical). One row per site-year for every year in each site first_year:last_year range; gap years with n_months_present = 0 are included explicitly. Source RDS md5: d7df8a352954f90b5c97d5019b30928a. Previous NEE-only file archived to data/snapshots/archive_20260507/site_year_data_presence_pre_regeneration.csv."
+}

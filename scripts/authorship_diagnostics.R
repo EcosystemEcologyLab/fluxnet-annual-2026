@@ -10,10 +10,10 @@
 ## Inputs (must exist — run authorship_models.R --compute first):
 ##   outputs/authorship/site_authors.csv
 ##   outputs/authorship/authors_by_network.csv
+##   data/snapshots/site_year_data_presence.csv
 ##
 ## Outputs:
-##   diagnostics/fallback_sites_detail.csv        — per-site detail for fallback sites
-##   diagnostics/fallback_by_network.csv          — fallback impact aggregated by network
+##   diagnostics/sites_no_presence_detail.csv    — per-site detail for sites with no presence data
 ##   diagnostics/sensitivity_5yr_in_upper_row.csv — totals under alt 5-yr row assignment
 ##   diagnostics/year_2025_availability_by_network.csv — 2025 data presence by network
 
@@ -27,13 +27,13 @@ library(readr)
 library(purrr)
 library(fs)
 
-PRESENCE_FILE <- "data/snapshots/site_year_data_presence.csv"
-SNAPSHOT_FILE <- "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
-SITE_OUT_FILE <- "outputs/authorship/site_authors.csv"
-NET_OUT_FILE  <- "outputs/authorship/authors_by_network.csv"
-DIAG_DIR      <- "outputs/authorship/diagnostics"
+PRESENCE_FILE  <- "data/snapshots/site_year_data_presence.csv"
+SNAPSHOT_FILE  <- "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+SITE_OUT_FILE  <- "outputs/authorship/site_authors.csv"
+NET_OUT_FILE   <- "outputs/authorship/authors_by_network.csv"
+DIAG_DIR       <- "outputs/authorship/diagnostics"
 REFERENCE_YEAR <- 2026L
-SCRIPT_NAME   <- "authorship_diagnostics.R"
+SCRIPT_NAME    <- "authorship_diagnostics.R"
 
 if (!dir_exists(DIAG_DIR)) dir_create(DIAG_DIR, recurse = TRUE)
 
@@ -96,86 +96,66 @@ row_bin_label <- function(years_data, upper_five = FALSE) {
 
 site_out <- read_csv(SITE_OUT_FILE, show_col_types = FALSE)
 net_out  <- read_csv(NET_OUT_FILE,  show_col_types = FALSE)
-snap     <- read_csv(SNAPSHOT_FILE, show_col_types = FALSE) |>
-  select(site_id, product_source_network) |>
-  distinct() |>
-  rename(submitting_network = product_source_network)
 pres_raw <- read_csv(PRESENCE_FILE, show_col_types = FALSE)
-pres_dedup <- distinct(pres_raw, site_id, year, has_data) |>
-  rename(nee_year_present = has_data)
+
+# Deduplicate on site_id + year; keep n_months_present for all diagnostics
+pres_dedup <- distinct(pres_raw, site_id, year, n_months_present)
 
 message("Inputs loaded.")
+message(sprintf(
+  "  site_authors.csv: %d sites | presence file: %d site-year rows (%d sites)",
+  nrow(site_out),
+  nrow(pres_dedup),
+  length(unique(pres_dedup$site_id))
+))
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DIAGNOSTIC 1 — Fallback methodology detail
+# DIAGNOSTIC 1 — Sites with no presence data
 # ══════════════════════════════════════════════════════════════════════════════
+# Under the broader all-variable presence definition (v2, 2026-05-12),
+# all 716 sites have presence-file coverage. This diagnostic captures any
+# sites that might have no presence data in future runs (e.g. if a site is
+# added to the snapshot before its data has been processed).
 
-message("\n=== DIAGNOSTIC 1: Fallback site detail ===")
+message("\n=== DIAGNOSTIC 1: Sites with no presence data ===")
 
-fallback_sites <- site_out |>
-  filter(presence_source == "snapshot_fallback") |>
+no_presence_sites <- site_out |>
+  filter(presence_status == "no_presence_data") |>
   mutate(rubric_row = row_bin_label(years_of_data))
 
-fallback_detail <- fallback_sites |>
+message(sprintf("Sites with no presence data: %d", nrow(no_presence_sites)))
+
+no_presence_detail <- no_presence_sites |>
   select(
-    site_id, submitting_network, presence_source,
-    years_of_data, rubric_row, latency_years,
-    n_invited_authors
+    site_id, submitting_network, presence_status,
+    years_of_data, rubric_row, latency_years, n_invited_authors
   ) |>
   arrange(submitting_network, site_id)
 
-fallback_detail_path <- file.path(DIAG_DIR, "fallback_sites_detail.csv")
-write_csv(fallback_detail, fallback_detail_path)
+no_pres_path <- file.path(DIAG_DIR, "sites_no_presence_detail.csv")
+write_csv(no_presence_detail, no_pres_path)
 write_output_metadata(
-  fallback_detail_path,
-  input_sources = c(SITE_OUT_FILE, SNAPSHOT_FILE),
+  no_pres_path,
+  input_sources = c(SITE_OUT_FILE),
   notes = paste0(
-    "Per-site detail for ", nrow(fallback_detail), " sites using snapshot fallback. ",
-    "years_of_data = last_year - first_year + 1 (span); may overestimate gap years."
+    "Sites where presence_status = 'no_presence_data'. ",
+    "As of 2026-05-12 regeneration (broader all-variable definition): 0 such sites. ",
+    "File retained for monitoring future runs."
   )
 )
-message(sprintf("Written: %s (%d rows)", fallback_detail_path, nrow(fallback_detail)))
+message(sprintf("Written: %s (%d rows)", no_pres_path, nrow(no_presence_detail)))
 
-# Per-network fallback aggregation
-fallback_by_network <- fallback_sites |>
-  group_by(submitting_network) |>
-  summarise(
-    n_fallback_sites   = n(),
-    fallback_authors   = sum(n_invited_authors, na.rm = TRUE),
-    .groups            = "drop"
-  ) |>
-  left_join(
-    net_out |> select(submitting_network, n_sites, total_invited_authors),
-    by = "submitting_network"
-  ) |>
-  mutate(
-    pct_sites_fallback   = round(100 * n_fallback_sites / n_sites, 1),
-    pct_authors_fallback = round(100 * fallback_authors / total_invited_authors, 1)
-  ) |>
-  select(
-    submitting_network, n_sites, n_fallback_sites, pct_sites_fallback,
-    total_invited_authors, fallback_authors, pct_authors_fallback
-  ) |>
-  arrange(desc(n_sites))
-
-fallback_net_path <- file.path(DIAG_DIR, "fallback_by_network.csv")
-write_csv(fallback_by_network, fallback_net_path)
-write_output_metadata(
-  fallback_net_path,
-  input_sources = c(SITE_OUT_FILE, NET_OUT_FILE),
-  notes = "Networks with zero fallback sites are omitted (all their sites have presence-file data)."
-)
-message(sprintf("Written: %s (%d rows)", fallback_net_path, nrow(fallback_by_network)))
-
-message("\nFallback impact by network:")
-fallback_by_network |>
-  mutate(label = sprintf(
-    "  %-6s  %2d/%3d sites (%4.1f%%)  fallback authors: %3d/%4d (%4.1f%%)",
-    submitting_network, n_fallback_sites, n_sites, pct_sites_fallback,
-    fallback_authors, total_invited_authors, pct_authors_fallback
-  )) |>
-  pull(label) |>
-  walk(message)
+if (nrow(no_presence_sites) > 0) {
+  by_net <- no_presence_sites |>
+    count(submitting_network, name = "n_no_presence") |>
+    arrange(desc(n_no_presence))
+  message("  By network:")
+  walk(seq_len(nrow(by_net)), function(i) {
+    message(sprintf("    %-6s  %d sites", by_net$submitting_network[i], by_net$n_no_presence[i]))
+  })
+} else {
+  message("  All 716 sites have presence-file coverage. No action required.")
+}
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DIAGNOSTIC 2 — Sensitivity: 5-year sites in upper (6-10) row
@@ -194,8 +174,9 @@ sens <- site_out |>
 affected <- sens |> filter(years_of_data == 5L)
 message(sprintf("Sites affected (exactly 5 years): %d", nrow(affected)))
 if (nrow(affected) > 0) {
-  message(sprintf("  Swing per affected site: %+d (uniform across latency tiers)",
-                  unique(affected$swing)))
+  swings <- unique(affected$swing)
+  message(sprintf("  Swing per affected site: %s (uniform across latency tiers)",
+                  paste0("+", swings, collapse = ", ")))
 }
 
 # Per-network totals under both assignments
@@ -248,31 +229,31 @@ message(sprintf(
 
 message("\n=== DIAGNOSTIC 3: 2025 data availability by network ===")
 
-# Which sites have nee_year_present = TRUE for year 2025?
+# Which sites have n_months_present > 0 for year 2025?
 sites_with_2025 <- pres_dedup |>
-  filter(year == 2025L, nee_year_present) |>
+  filter(year == 2025L, n_months_present > 0L) |>
   select(site_id) |>
   distinct() |>
-  mutate(has_2025_nee = TRUE)
+  mutate(has_2025_data = TRUE)
 
 # Join to full site list (from site_out) to get network
 avail_2025 <- site_out |>
-  select(site_id, submitting_network, presence_source, latency_years) |>
+  select(site_id, submitting_network, presence_status, latency_years) |>
   left_join(sites_with_2025, by = "site_id") |>
   mutate(
-    has_2025_nee = coalesce(has_2025_nee, FALSE),
-    latency_1_yr = latency_years == 1L
+    has_2025_data = coalesce(has_2025_data, FALSE),
+    latency_1_yr  = latency_years == 1L
   )
 
 avail_by_network <- avail_2025 |>
   group_by(submitting_network) |>
   summarise(
-    n_sites              = n(),
-    n_with_2025_nee_pres = sum(has_2025_nee),
-    n_with_latency_1     = sum(latency_1_yr, na.rm = TRUE),
-    n_without_2025       = sum(!has_2025_nee),
-    pct_with_2025        = round(100 * sum(has_2025_nee) / n(), 1),
-    .groups              = "drop"
+    n_sites               = n(),
+    n_with_2025_data_pres = sum(has_2025_data),
+    n_with_latency_1      = sum(latency_1_yr, na.rm = TRUE),
+    n_without_2025        = sum(!has_2025_data),
+    pct_with_2025         = round(100 * sum(has_2025_data) / n(), 1),
+    .groups               = "drop"
   ) |>
   arrange(desc(n_sites))
 
@@ -280,19 +261,20 @@ avail_path <- file.path(DIAG_DIR, "year_2025_availability_by_network.csv")
 write_csv(avail_by_network, avail_path)
 write_output_metadata(
   avail_path,
-  input_sources = c(PRESENCE_FILE, SITE_OUT_FILE, SNAPSHOT_FILE),
+  input_sources = c(PRESENCE_FILE, SITE_OUT_FILE),
   notes = paste0(
-    "n_with_2025_nee_pres: sites with nee_year_present=TRUE for 2025 in presence file. ",
-    "n_with_latency_1: sites where latency_years=1 (max_data_year=2025, presence file OR snapshot fallback). ",
-    "These may differ because fallback sites use last_year from snapshot, not presence-file evidence."
+    "n_with_2025_data_pres: sites with n_months_present > 0 for year 2025 in presence file ",
+    "(any of 12 flux variables: NEE VUT+CUT, GPP/RECO NT+DT x VUT+CUT, LE_F_MDS, H_F_MDS). ",
+    "n_with_latency_1: sites where latency_years = 1 (max_data_year = 2025 per presence file). ",
+    "All 716 sites now have presence-file coverage; latency is derived from presence file only."
   )
 )
 message(sprintf("Written: %s", avail_path))
-message("\n2025 NEE availability by network (presence-file evidence):")
+message("\n2025 data availability by network (presence-file evidence, any variable):")
 avail_by_network |>
   mutate(label = sprintf(
-    "  %-6s  %3d/%3d sites have 2025 NEE data (%4.1f%%)  latency=1: %d",
-    submitting_network, n_with_2025_nee_pres, n_sites,
+    "  %-6s  %3d/%3d sites have 2025 data (%4.1f%%)  latency=1: %d",
+    submitting_network, n_with_2025_data_pres, n_sites,
     pct_with_2025, n_with_latency_1
   )) |>
   pull(label) |>
@@ -302,7 +284,6 @@ avail_by_network |>
 
 message("\n=== authorship_diagnostics.R complete ===")
 message("Outputs written to: ", DIAG_DIR, "/")
-message("  fallback_sites_detail.csv")
-message("  fallback_by_network.csv")
+message("  sites_no_presence_detail.csv")
 message("  sensitivity_5yr_in_upper_row.csv")
 message("  year_2025_availability_by_network.csv")

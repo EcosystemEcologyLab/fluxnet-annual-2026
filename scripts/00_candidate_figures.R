@@ -99,7 +99,7 @@ site_year_presence <- if (file.exists(presence_csv_path)) {
   mm_path <- file.path(processed_dir, "flux_data_converted_mm.rds")
   if (file.exists(yy_path) && file.exists(mm_path)) {
     message("site_year_presence: cache absent — computing from YY + MM data ...")
-    compute_site_year_presence(readRDS(yy_path), readRDS(mm_path),
+    compute_site_year_presence(readRDS(mm_path),
                                out_path = presence_csv_path)
   } else {
     message("site_year_presence: YY/MM data not found — falling back to last_year metadata.")

@@ -27,3 +27,4 @@ renv/staging/
 Thumbs.db
 
 data/hive
+data/duckdb/fluxnet.duckdb

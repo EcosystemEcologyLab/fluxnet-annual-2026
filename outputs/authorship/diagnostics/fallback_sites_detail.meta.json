@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-05-12T20:38:31Z",
+  "pipeline_version": "6b5d8d7",
+  "input_sources": [
+    "outputs/authorship/site_authors.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+  ],
+  "notes": "Per-site detail for 88 sites using snapshot fallback. years_of_data = last_year - first_year + 1 (span); may overestimate gap years."
+}

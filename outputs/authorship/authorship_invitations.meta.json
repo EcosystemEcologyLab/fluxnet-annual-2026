@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-05-20T15:45:42Z",
+  "pipeline_version": "ab6a44e",
+  "input_sources": [
+    "outputs/authorship/site_authors.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
+    "data/processed/badm.rds"
+  ],
+  "notes": "Long-format authorship invitation list: one row per contact person per site. Source priority: (1) FLUXNET Shuttle snapshot team_member_name/role/email (semicolon-delimited, 713 sites); (2) BADM GRP_TEAM/TEAM_MEMBER fallback for sites missing snapshot contacts; (3) NA row with contact_source='missing' for sites with no contacts in either source. n_invited_authors_for_site from site_authors.csv (locked rubric 2026-05-07, reference year 2026). Sort order within site: PI, CO-PI, DATA/DataManager, all others (alpha secondary). n_contacts_for_site = 0 for 'missing' sites."
+}

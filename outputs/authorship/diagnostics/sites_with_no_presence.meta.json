@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-05-12T22:28:32Z",
+  "pipeline_version": "858733d",
+  "input_sources": [
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+  ],
+  "notes": "Sites in the snapshot whose presence file shows n_months_present = 0 for all years. These sites have no non-NA values in any of the 12 flux variables across any month. They are retained in site_authors.csv with n_invited_authors = NA and presence_status = 'no_presence_data' rather than silently excluded. Decision on how to treat these sites is required before finalising the author list."
+}

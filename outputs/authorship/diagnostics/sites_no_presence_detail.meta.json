@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-05-12T22:28:44Z",
+  "pipeline_version": "858733d",
+  "input_sources": [
+    "outputs/authorship/site_authors.csv"
+  ],
+  "notes": "Sites where presence_status = 'no_presence_data'. As of 2026-05-12 regeneration (broader all-variable definition): 0 such sites. File retained for monitoring future runs."
+}

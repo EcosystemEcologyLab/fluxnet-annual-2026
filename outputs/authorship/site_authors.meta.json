@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-05-12T22:28:32Z",
+  "pipeline_version": "858733d",
+  "input_sources": [
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+  ],
+  "notes": "Locked authorship rubric (2026-05-07): 3 latency tiers x 5 data-volume bins, fully monotone 5x3 matrix, author counts 2-8. Reference year: 2026. Presence definition (2026-05-12): any non-NA value in NEE_VUT_REF, NEE_CUT_REF, GPP_NT/DT_VUT/CUT_REF, RECO_NT/DT_VUT/CUT_REF, LE_F_MDS, H_F_MDS per month. No QC filtering. No snapshot fallback — all 716 sites have presence-file data. years_of_data: count of years with n_months_present > 0. years_full_year: years with n_months_present = 12. years_partial_year: years with 0 < n_months_present < 12. Exactly 5 years -> '<5' rubric row (lower tier) — Decision-A, label gap deferred. submitting_network = product_source_network from snapshot (9 codes). presence_status: 'verified' = years_of_data > 0; 'no_presence_data' = all months zero."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-05-12T20:38:31Z",
+  "pipeline_version": "6b5d8d7",
+  "input_sources": [
+    "outputs/authorship/site_authors.csv",
+    "outputs/authorship/authors_by_network.csv"
+  ],
+  "notes": "Networks with zero fallback sites are omitted (all their sites have presence-file data)."
+}

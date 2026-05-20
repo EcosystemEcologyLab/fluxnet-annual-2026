@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-05-12T22:28:33Z",
+  "pipeline_version": "858733d",
+  "input_sources": [
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+  ],
+  "notes": "Bar chart: total invited authors by product_source_network (9 codes), sorted by site count descending. Locked rubric 2026-05-07. Broader presence definition 2026-05-12. base_size=24, 14x7 inches, 300 dpi."
+}

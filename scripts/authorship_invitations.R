@@ -344,8 +344,51 @@ if (length(badm_extra_site_ids) > 0) {
 
 source_contacts <- bind_rows(snap_long, badm_fallback_contacts, badm_extra_contacts)
 
+# ── Step 4b: Deduplicate exact-duplicate contacts ─────────────────────────────
+#
+# The snapshot's semicolon-delimited fields sometimes carry the same name+email
+# more than once per site. Remove rows where (site_id, contact_name,
+# contact_email) are identical, keeping the first occurrence. Since bind_rows
+# orders snapshot rows first, the kept row always carries contact_source =
+# "snapshot". badm_extra contacts are pre-filtered against snapshot contacts so
+# they will never duplicate a snapshot row.
+
+n_before_dedup <- nrow(source_contacts)
+
+dups_by_site <- source_contacts |>
+  group_by(site_id, contact_name, contact_email) |>
+  filter(n() > 1L) |>
+  ungroup() |>
+  distinct(site_id, contact_name, .keep_all = FALSE) |>
+  count(site_id, name = "n_dups_removed")
+
+source_contacts <- source_contacts |>
+  distinct(site_id, contact_name, contact_email, .keep_all = TRUE)
+
+n_removed <- n_before_dedup - nrow(source_contacts)
+
+if (n_removed > 0L) {
+  message(sprintf(
+    "\nDeduplication: removed %d exact-duplicate contact rows across %d site(s).",
+    n_removed, nrow(dups_by_site)
+  ))
+  message("  All duplicates are from contact_source='snapshot' (repeated entries in snapshot semicolon fields).")
+  message("  Top sites by duplicates removed:")
+  dups_by_site |>
+    arrange(desc(n_dups_removed)) |>
+    slice_head(n = 10L) |>
+    mutate(label = sprintf("    %s: %d duplicate(s) removed", site_id, n_dups_removed)) |>
+    pull(label) |>
+    walk(message)
+  if (nrow(dups_by_site) > 10L)
+    message(sprintf("    ... and %d more sites (see full run log for complete list)",
+                    nrow(dups_by_site) - 10L))
+} else {
+  message("\nDeduplication: no duplicate contacts found.")
+}
+
 message(sprintf(
-  "\nTotal source contacts: %d rows, %d sites",
+  "\nTotal source contacts after dedup: %d rows, %d sites",
   nrow(source_contacts), n_distinct(source_contacts$site_id)
 ))
 message(sprintf(
@@ -422,11 +465,10 @@ message(sprintf(
   sum(invitations$contact_source == "badm_extra"),
   sum(invitations$contact_source == "missing")
 ))
-message(
-  "  Note: CN-SnB and JP-Api (snapshot=0) are counted as badm_fallback.",
-  sprintf(" Expected: 4233 baseline + %d badm_extra = %d",
-          nrow(badm_extra_contacts), 4233L + nrow(badm_extra_contacts))
-)
+message(sprintf(
+  "  (%d exact-duplicate snapshot rows removed during dedup)",
+  n_removed
+))
 
 message("\nContact source breakdown (sites):")
 invitations |>

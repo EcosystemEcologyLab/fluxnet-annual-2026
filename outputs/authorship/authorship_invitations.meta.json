@@ -1,10 +1,10 @@
 {
-  "run_datetime_utc": "2026-05-20T15:45:42Z",
-  "pipeline_version": "ab6a44e",
+  "run_datetime_utc": "2026-05-20T16:31:29Z",
+  "pipeline_version": "1d37c7f",
   "input_sources": [
     "outputs/authorship/site_authors.csv",
     "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
     "data/processed/badm.rds"
   ],
-  "notes": "Long-format authorship invitation list: one row per contact person per site. Source priority: (1) FLUXNET Shuttle snapshot team_member_name/role/email (semicolon-delimited, 713 sites); (2) BADM GRP_TEAM/TEAM_MEMBER fallback for sites missing snapshot contacts; (3) NA row with contact_source='missing' for sites with no contacts in either source. n_invited_authors_for_site from site_authors.csv (locked rubric 2026-05-07, reference year 2026). Sort order within site: PI, CO-PI, DATA/DataManager, all others (alpha secondary). n_contacts_for_site = 0 for 'missing' sites."
+  "notes": "Long-format authorship invitation list: one row per contact person per site. contact_source values: (1) 'snapshot' — FLUXNET Shuttle snapshot team_member_name/role/email, semicolon-delimited (713 sites); (2) 'badm_fallback' — BADM GRP_TEAM/TEAM_MEMBER records for sites absent from snapshot (CN-SnB, JP-Api); (3) 'badm_extra' — additional contacts known to BADM but absent from snapshot for sites that do have snapshot contacts (8 contacts across 7 sites); (4) 'missing' — site has no contact data in any source (SD-Dem). badm_extra contacts are included so PIs can see all known team members; the PI selects which contacts to invite. BADM role strings used as-is (no normalization). n_invited_authors_for_site from site_authors.csv (locked rubric 2026-05-07, reference year 2026). Sort order within site: PI, CO-PI, DATA/DataManager, all others (alpha secondary). n_contacts_for_site = 0 for 'missing' sites."
 }

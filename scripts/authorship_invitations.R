@@ -8,13 +8,15 @@
 ## members to invite as co-authors; n_invited_authors_for_site is the
 ## allocation the PI is working with.
 ##
-## Contact data source priority:
-##   1. FLUXNET Shuttle snapshot team_member_name/role/email (semicolon lists)
-##      — primary; covers 713 of 716 sites.
-##   2. BADM GRP_TEAM / TEAM_MEMBER records — fallback for the 3 sites missing
-##      from snapshot contact fields.
-##   3. contact_source = "missing" — row with NA contact fields, included so
-##      all 716 sites appear at least once.
+## Contact data source values (contact_source column):
+##   "snapshot"     — primary contact from the FLUXNET Shuttle snapshot
+##                    (semicolon-delimited team_member_* fields); 713 sites.
+##   "badm_fallback"— used for sites with no snapshot contact data; those
+##                    sites' only known contacts come from BADM (CN-SnB, JP-Api).
+##   "badm_extra"   — additional contact known to BADM but absent from the
+##                    snapshot for a site that does have snapshot contacts.
+##                    Included so PIs can see all known team members.
+##   "missing"      — site has no contact data in any source (SD-Dem).
 ##
 ## Usage:
 ##   Rscript scripts/authorship_invitations.R
@@ -57,6 +59,7 @@ SCRIPT_NAME       <- "authorship_invitations.R"
 
 # Role priority for within-site sort.
 # Lower integer = appears first (PI is most likely co-author candidate).
+# BADM role strings are used as-is (e.g. "DataManager", "CO-PI", "Technician").
 role_priority <- function(role) {
   case_when(
     role == "PI"                       ~ 1L,
@@ -78,10 +81,10 @@ message(sprintf("  site_authors : %d sites", nrow(site_authors)))
 message(sprintf("  snapshot     : %d rows",  nrow(snap)))
 message(sprintf("  badm         : %d rows",  nrow(badm)))
 
-# ── Step 1: Expand snapshot contact fields ─────────────────────────────────────
+# ── Step 1: Expand snapshot contact fields ────────────────────────────────────
 #
-# The snapshot carries one row per site; team_member_name, team_member_role, and
-# team_member_email are semicolon-delimited strings. We expand to long format.
+# The snapshot carries one row per site; team_member_name, team_member_role,
+# and team_member_email are semicolon-delimited strings. Expand to long format.
 
 snap_raw <- snap |>
   select(site_id, team_member_name, team_member_role, team_member_email) |>
@@ -107,8 +110,6 @@ expand_one_site <- function(site_id, names_str, roles_str, emails_str) {
   rols <- split_safe(roles_str)
   emls <- split_safe(emails_str)
 
-  # Number of contacts is driven by the name field length.
-  # Pad shorter vectors so all three have the same length.
   n <- max(length(nms), length(rols), length(emls), na.rm = TRUE)
   pad <- function(v) c(v, rep(NA_character_, n - length(v)))
   if (all(is.na(nms)))  nms  <- rep(NA_character_, n)
@@ -160,21 +161,18 @@ message(sprintf(
 ))
 
 if (nrow(badm_team_missing) > 0) {
-  badm_wide <- badm_team_missing |>
+  badm_wide_fallback <- badm_team_missing |>
     pivot_wider(
       id_cols     = c(SITE_ID, GROUP_ID),
       names_from  = VARIABLE,
       values_from = DATAVALUE,
-      values_fn   = first   # guard against rare duplicates
+      values_fn   = first
     )
-
-  # Ensure all expected name/email/role columns exist
   for (col in c("TEAM_MEMBER_NAME", "TEAM_MEMBER_EMAIL", "TEAM_MEMBER_ROLE",
                  "TEAM_CONTACT_NAME", "TEAM_CONTACT_EMAIL")) {
-    if (!col %in% names(badm_wide)) badm_wide[[col]] <- NA_character_
+    if (!col %in% names(badm_wide_fallback)) badm_wide_fallback[[col]] <- NA_character_
   }
-
-  badm_contacts <- badm_wide |>
+  badm_fallback_contacts <- badm_wide_fallback |>
     mutate(
       contact_name   = coalesce(TEAM_MEMBER_NAME,  TEAM_CONTACT_NAME),
       contact_email  = coalesce(TEAM_MEMBER_EMAIL, TEAM_CONTACT_EMAIL),
@@ -184,51 +182,184 @@ if (nrow(badm_team_missing) > 0) {
     filter(!is.na(contact_name)) |>
     select(site_id = SITE_ID, contact_name, contact_email, contact_role, contact_source)
 } else {
-  badm_contacts <- tibble(
-    site_id        = character(),
-    contact_name   = character(),
-    contact_email  = character(),
-    contact_role   = character(),
+  badm_fallback_contacts <- tibble(
+    site_id = character(), contact_name = character(),
+    contact_email = character(), contact_role = character(),
     contact_source = character()
   )
 }
 
-sites_from_badm   <- unique(badm_contacts$site_id)
-sites_still_na    <- setdiff(snapshot_missing, sites_from_badm)
+sites_from_badm <- unique(badm_fallback_contacts$site_id)
+sites_still_na  <- setdiff(snapshot_missing, sites_from_badm)
 
 message(sprintf("BADM fallback found contacts for: %s",
   if (length(sites_from_badm) == 0) "none" else paste(sites_from_badm, collapse = ", ")))
 message(sprintf("Sites with no contacts anywhere (will get NA row): %s",
   if (length(sites_still_na)  == 0) "none" else paste(sites_still_na,  collapse = ", ")))
 
-if (length(sites_from_badm) > 0) {
-  message(sprintf("  BADM fallback contact counts:"))
-  badm_contacts |>
-    count(site_id, name = "n") |>
-    mutate(label = sprintf("    %s: %d contacts", site_id, n)) |>
+# ── Step 2b: Identify sites where BADM has contacts not in snapshot ────────────
+#
+# Pre-compute per-site contact counts from both sources. These counts also feed
+# the coverage_comparison diagnostic output (Step 7). We compute them here so
+# they are available for the badm_extra extraction below.
+
+snap_counts <- snap_raw |>
+  mutate(
+    n_contacts_snapshot = if_else(
+      !is.na(team_member_name) & team_member_name != "",
+      as.integer(lengths(strsplit(team_member_name, ";", fixed = TRUE))),
+      0L
+    )
+  ) |>
+  select(site_id, n_contacts_snapshot)
+
+badm_name_records <- badm |>
+  filter(
+    VARIABLE_GROUP %in% c("GRP_TEAM", "TEAM_MEMBER", "TEAM_CONTACT"),
+    VARIABLE       %in% c("TEAM_MEMBER_NAME", "TEAM_CONTACT_NAME")
+  )
+
+badm_counts <- badm_name_records |>
+  group_by(site_id = SITE_ID) |>
+  summarise(n_contacts_badm = n_distinct(GROUP_ID), .groups = "drop")
+
+# Sites where BADM has more contacts AND snapshot already has ≥ 1 contact.
+# Sites with snapshot = 0 (CN-SnB, JP-Api) are already captured as
+# badm_fallback above — including them here would produce duplicate rows.
+badm_extra_site_ids <- site_authors |>
+  select(site_id) |>
+  left_join(snap_counts, by = "site_id") |>
+  left_join(badm_counts, by = "site_id") |>
+  mutate(
+    n_contacts_snapshot = coalesce(n_contacts_snapshot, 0L),
+    n_contacts_badm     = coalesce(n_contacts_badm,     0L)
+  ) |>
+  filter(n_contacts_badm > n_contacts_snapshot, n_contacts_snapshot > 0L) |>
+  pull(site_id)
+
+message(sprintf(
+  "\n%d sites where BADM has contacts not in snapshot (snapshot > 0): %s",
+  length(badm_extra_site_ids),
+  paste(badm_extra_site_ids, collapse = ", ")
+))
+message(
+  "  Note: CN-SnB and JP-Api (snapshot=0) are already captured as",
+  "badm_fallback and excluded here to avoid duplicate rows."
+)
+
+# ── Step 3: Extract BADM-extra contacts ───────────────────────────────────────
+#
+# For each badm_extra site, pull all BADM contacts and filter to those
+# whose name AND email are absent from the snapshot list for that site.
+# Role strings are used as-is from BADM — no normalization applied.
+
+if (length(badm_extra_site_ids) > 0) {
+  badm_extra_raw <- badm |>
+    filter(
+      SITE_ID %in% badm_extra_site_ids,
+      VARIABLE_GROUP %in% c("GRP_TEAM", "TEAM_MEMBER", "TEAM_CONTACT"),
+      VARIABLE %in% c("TEAM_MEMBER_NAME", "TEAM_MEMBER_EMAIL", "TEAM_MEMBER_ROLE",
+                       "TEAM_CONTACT_NAME", "TEAM_CONTACT_EMAIL")
+    ) |>
+    pivot_wider(
+      id_cols     = c(SITE_ID, GROUP_ID),
+      names_from  = VARIABLE,
+      values_from = DATAVALUE,
+      values_fn   = first
+    )
+
+  for (col in c("TEAM_MEMBER_NAME", "TEAM_MEMBER_EMAIL", "TEAM_MEMBER_ROLE",
+                 "TEAM_CONTACT_NAME", "TEAM_CONTACT_EMAIL")) {
+    if (!col %in% names(badm_extra_raw)) badm_extra_raw[[col]] <- NA_character_
+  }
+
+  badm_extra_all <- badm_extra_raw |>
+    mutate(
+      contact_name  = coalesce(TEAM_MEMBER_NAME,  TEAM_CONTACT_NAME),
+      contact_email = coalesce(TEAM_MEMBER_EMAIL, TEAM_CONTACT_EMAIL),
+      contact_role  = TEAM_MEMBER_ROLE
+    ) |>
+    filter(!is.na(contact_name)) |>
+    select(site_id = SITE_ID, contact_name, contact_email, contact_role)
+
+  # Normalized snapshot name/email lookup (case-insensitive, trimmed) per site
+  snap_lookup <- snap_raw |>
+    filter(site_id %in% badm_extra_site_ids) |>
+    mutate(
+      norm_names  = map(team_member_name, ~ {
+        if (is.na(.x) || .x == "") character(0L)
+        else trimws(tolower(strsplit(.x, ";", fixed = TRUE)[[1]]))
+      }),
+      norm_emails = map(team_member_email, ~ {
+        if (is.na(.x) || .x == "") character(0L)
+        else trimws(tolower(strsplit(.x, ";", fixed = TRUE)[[1]]))
+      })
+    ) |>
+    select(site_id, norm_names, norm_emails)
+
+  # A BADM contact is "extra" if their name AND email are both absent from snapshot.
+  # Using both fields guards against edge cases where names differ slightly between
+  # sources (different encodings, middle initials, etc.) but emails agree.
+  badm_extra_contacts <- badm_extra_all |>
+    left_join(snap_lookup, by = "site_id") |>
+    filter(pmap_lgl(
+      list(contact_name, contact_email, norm_names, norm_emails),
+      function(nm, em, snap_nms, snap_ems) {
+        nm_norm   <- trimws(tolower(nm))
+        em_norm   <- trimws(tolower(coalesce(em, "")))
+        name_hit  <- nm_norm %in% snap_nms
+        email_hit <- em_norm != "" && em_norm %in% snap_ems
+        !name_hit && !email_hit
+      }
+    )) |>
+    mutate(contact_source = "badm_extra") |>
+    select(site_id, contact_name, contact_email, contact_role, contact_source)
+
+  message(sprintf(
+    "BADM-extra contacts identified: %d across %d sites",
+    nrow(badm_extra_contacts), n_distinct(badm_extra_contacts$site_id)
+  ))
+  badm_extra_contacts |>
+    mutate(label = sprintf(
+      "  %-8s  %-30s  %-35s  %s",
+      site_id, contact_name,
+      coalesce(contact_email, "(no email)"),
+      coalesce(contact_role, "(no role)")
+    )) |>
     pull(label) |>
     walk(message)
+} else {
+  badm_extra_contacts <- tibble(
+    site_id = character(), contact_name = character(),
+    contact_email = character(), contact_role = character(),
+    contact_source = character()
+  )
 }
 
-# ── Step 3: Combine all source contacts ───────────────────────────────────────
+# ── Step 4: Combine all source contacts ───────────────────────────────────────
 #
-# source_contacts holds every real contact (snapshot + BADM fallback).
-# Sites absent here will produce a single NA row after the left_join in Step 4.
+# source_contacts holds every real contact across all three sources.
+# Sites absent from source_contacts produce a single NA row after the
+# left_join in Step 5 (contact_source will be set to "missing").
 
-source_contacts <- bind_rows(snap_long, badm_contacts)
+source_contacts <- bind_rows(snap_long, badm_fallback_contacts, badm_extra_contacts)
 
 message(sprintf(
   "\nTotal source contacts: %d rows, %d sites",
   nrow(source_contacts), n_distinct(source_contacts$site_id)
 ))
+message(sprintf(
+  "  By source: snapshot=%d  badm_fallback=%d  badm_extra=%d",
+  sum(source_contacts$contact_source == "snapshot"),
+  sum(source_contacts$contact_source == "badm_fallback"),
+  sum(source_contacts$contact_source == "badm_extra")
+))
 
-# ── Step 4: Join rubric scores and compute n_contacts_for_site ────────────────
+# ── Step 5: Join rubric scores and compute n_contacts_for_site ────────────────
 #
 # Left-join from site_authors ensures all 716 sites appear.
-# Sites with no contacts in source_contacts produce one row with NA contact
-# fields; contact_source is set to "missing" for these.
+# n_contacts_for_site = 0 for "missing" sites (no contacts in any source).
 
-# n_contacts_for_site = actual contacts found (0 for "missing" sites)
 n_contacts_tbl <- source_contacts |>
   count(site_id, name = "n_contacts_for_site")
 
@@ -242,17 +373,18 @@ invitations <- site_authors |>
     contact_source      = if_else(is.na(contact_source), "missing", contact_source)
   )
 
-# ── Step 5: Role-priority sort ────────────────────────────────────────────────
+# ── Step 6: Role-priority sort ────────────────────────────────────────────────
 #
-# Within each site: PI → CO-PI → DATA/DataManager → all others (alphabetical
-# secondary sort on contact_name to make output deterministic).
+# Within each site: PI → CO-PI → DATA/DataManager → all others.
+# Secondary sort on contact_name makes output deterministic.
+# BADM-extra contacts slot into this hierarchy by their BADM role string.
 
 invitations <- invitations |>
   mutate(.priority = role_priority(contact_role)) |>
   arrange(site_id, .priority, contact_name) |>
   select(-.priority)
 
-# ── Step 6: Final column selection ────────────────────────────────────────────
+# ── Step 7: Final column selection ────────────────────────────────────────────
 
 invitations <- invitations |>
   select(
@@ -270,7 +402,6 @@ invitations <- invitations |>
 
 message("\n=== SANITY CHECKS ===")
 
-# 1. All 716 sites present
 expected_sites <- sort(site_authors$site_id)
 found_sites    <- sort(unique(invitations$site_id))
 absent         <- setdiff(expected_sites, found_sites)
@@ -278,26 +409,25 @@ absent         <- setdiff(expected_sites, found_sites)
 if (length(absent) == 0L) {
   message(sprintf("PASS  All %d sites appear in output.", length(expected_sites)))
 } else {
-  message(sprintf("FAIL  %d site(s) missing from output: %s",
+  message(sprintf("FAIL  %d site(s) missing: %s",
                   length(absent), paste(absent, collapse = ", ")))
 }
 
-# 2. Row count = sum of n_contacts_for_site (counting "missing" rows as 1)
-#    For missing sites the row IS the sentinel, so we count it.
-total_rows          <- nrow(invitations)
-expected_row_count  <- sum(pmax(invitations |>
-  distinct(site_id, n_contacts_for_site) |>
-  pull(n_contacts_for_site), 1L))
+total_rows <- nrow(invitations)
+message(sprintf("Total rows: %d", total_rows))
+message(sprintf(
+  "  = %d snapshot + %d badm_fallback + %d badm_extra + %d missing-sentinel",
+  sum(invitations$contact_source == "snapshot"),
+  sum(invitations$contact_source == "badm_fallback"),
+  sum(invitations$contact_source == "badm_extra"),
+  sum(invitations$contact_source == "missing")
+))
+message(
+  "  Note: CN-SnB and JP-Api (snapshot=0) are counted as badm_fallback.",
+  sprintf(" Expected: 4233 baseline + %d badm_extra = %d",
+          nrow(badm_extra_contacts), 4233L + nrow(badm_extra_contacts))
+)
 
-if (total_rows == expected_row_count) {
-  message(sprintf("PASS  Row count %d matches expected (sum of max(contacts,1) per site).",
-                  total_rows))
-} else {
-  message(sprintf("WARN  Row count %d vs expected %d — check for duplicate site rows.",
-                  total_rows, expected_row_count))
-}
-
-# 3. Contact source breakdown
 message("\nContact source breakdown (sites):")
 invitations |>
   distinct(site_id, contact_source) |>
@@ -306,33 +436,12 @@ invitations |>
   pull(label) |>
   walk(message)
 
-message(sprintf("\nTotal rows in authorship_invitations.csv: %d", total_rows))
-
 # ── Diagnostic: Snapshot vs BADM contact count comparison ────────────────────
+#
+# Uses the counts computed in Step 2b. The diagnostic is the unchanged raw
+# comparison — it is NOT modified by the decision to merge badm_extra contacts.
 
 message("\n=== DIAGNOSTIC: CONTACT COVERAGE COMPARISON ===")
-
-# Snapshot counts (all 716 sites)
-snap_counts <- snap_raw |>
-  mutate(
-    n_contacts_snapshot = if_else(
-      !is.na(team_member_name) & team_member_name != "",
-      as.integer(lengths(strsplit(team_member_name, ";", fixed = TRUE))),
-      0L
-    )
-  ) |>
-  select(site_id, n_contacts_snapshot)
-
-# BADM counts (all 716 sites where data exists)
-badm_name_records <- badm |>
-  filter(
-    VARIABLE_GROUP %in% c("GRP_TEAM", "TEAM_MEMBER", "TEAM_CONTACT"),
-    VARIABLE       %in% c("TEAM_MEMBER_NAME", "TEAM_CONTACT_NAME")
-  )
-
-badm_counts <- badm_name_records |>
-  group_by(site_id = SITE_ID) |>
-  summarise(n_contacts_badm = n_distinct(GROUP_ID), .groups = "drop")
 
 coverage_comparison <- site_authors |>
   select(site_id, submitting_network) |>
@@ -348,22 +457,9 @@ coverage_comparison <- site_authors |>
 
 sites_badm_richer <- coverage_comparison |> filter(badm_has_more)
 message(sprintf(
-  "Sites where BADM has more contacts than snapshot: %d",
+  "Sites where BADM has more contacts than snapshot: %d (all merged into output as badm_extra or badm_fallback)",
   nrow(sites_badm_richer)
 ))
-
-if (nrow(sites_badm_richer) > 0) {
-  sites_badm_richer |>
-    slice_head(n = 20) |>
-    mutate(label = sprintf(
-      "  %s [%s]  snapshot=%d  badm=%d  diff=%+d",
-      site_id, submitting_network, n_contacts_snapshot, n_contacts_badm, difference
-    )) |>
-    pull(label) |>
-    walk(message)
-  if (nrow(sites_badm_richer) > 20)
-    message(sprintf("  ... and %d more (see diagnostic CSV)", nrow(sites_badm_richer) - 20))
-}
 
 # ── Write outputs ─────────────────────────────────────────────────────────────
 
@@ -377,12 +473,16 @@ write_output_metadata(
   input_sources = c(SITE_AUTHORS_FILE, SNAPSHOT_FILE, BADM_FILE),
   notes = paste0(
     "Long-format authorship invitation list: one row per contact person per site. ",
-    "Source priority: (1) FLUXNET Shuttle snapshot team_member_name/role/email ",
-    "(semicolon-delimited, 713 sites); (2) BADM GRP_TEAM/TEAM_MEMBER fallback for ",
-    "sites missing snapshot contacts; (3) NA row with contact_source='missing' for ",
-    "sites with no contacts in either source. ",
-    "n_invited_authors_for_site from site_authors.csv (locked rubric 2026-05-07, ",
-    "reference year 2026). ",
+    "contact_source values: ",
+    "(1) 'snapshot' — FLUXNET Shuttle snapshot team_member_name/role/email, semicolon-delimited (713 sites); ",
+    "(2) 'badm_fallback' — BADM GRP_TEAM/TEAM_MEMBER records for sites absent from snapshot (CN-SnB, JP-Api); ",
+    "(3) 'badm_extra' — additional contacts known to BADM but absent from snapshot for sites that do ",
+    "have snapshot contacts (", nrow(badm_extra_contacts), " contacts across ",
+    n_distinct(badm_extra_contacts$site_id), " sites); ",
+    "(4) 'missing' — site has no contact data in any source (SD-Dem). ",
+    "badm_extra contacts are included so PIs can see all known team members; ",
+    "the PI selects which contacts to invite. BADM role strings used as-is (no normalization). ",
+    "n_invited_authors_for_site from site_authors.csv (locked rubric 2026-05-07, reference year 2026). ",
     "Sort order within site: PI, CO-PI, DATA/DataManager, all others (alpha secondary). ",
     "n_contacts_for_site = 0 for 'missing' sites."
   )
@@ -398,20 +498,19 @@ write_output_metadata(
   diag_path,
   input_sources = c(SNAPSHOT_FILE, BADM_FILE),
   notes = paste0(
-    "Per-site comparison of contact record counts from two sources. ",
+    "Per-site comparison of contact record counts from two sources (audit trail). ",
     "n_contacts_snapshot: semicolon-delimited entries in team_member_name field. ",
     "n_contacts_badm: distinct GROUP_IDs with TEAM_MEMBER_NAME or TEAM_CONTACT_NAME ",
     "in BADM GRP_TEAM/TEAM_MEMBER/TEAM_CONTACT groups. ",
-    "badm_has_more=TRUE indicates BADM has additional contacts not in the snapshot; ",
-    "these are not automatically included in authorship_invitations.csv (snapshot is ",
-    "primary). Sorted: badm_has_more DESC, difference DESC."
+    "badm_has_more=TRUE indicates BADM has additional contacts; these are now included ",
+    "in authorship_invitations.csv as contact_source='badm_extra' (or 'badm_fallback' ",
+    "for sites with snapshot=0). This file is the raw audit trail — it is not modified ",
+    "by the merge decision. Sorted: badm_has_more DESC, difference DESC."
   )
 )
 message(sprintf("Written: %s  (%d rows)", diag_path, nrow(coverage_comparison)))
 
 message(sprintf(
-  "\nauthorship_invitations.R complete: %d rows, %d sites, %d total contacts.",
-  nrow(invitations),
-  n_distinct(invitations$site_id),
-  sum(invitations$n_contacts_for_site > 0)   # sites with at least 1 contact
+  "\nauthorship_invitations.R complete: %d rows, %d sites.",
+  nrow(invitations), n_distinct(invitations$site_id)
 ))

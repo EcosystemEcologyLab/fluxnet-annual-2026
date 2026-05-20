@@ -746,8 +746,9 @@ CH-Oe2,EUF,8,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,28
 CH-Oe2,EUF,8,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,28
 CH-Oe2,EUF,8,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,28
 CH-Oe2,EUF,8,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,28
-CH-Oe3,EUF,3,PI,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,2
-CH-Oe3,EUF,3,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,2
+CH-Oe3,EUF,3,PI,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,3
+CH-Oe3,EUF,3,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,3
+CH-Oe3,EUF,3,AFFILIATED,Sonja Paul,sonjamarit.paul@agroscope.admin.ch,badm_extra,3
 CH-Rh1,EUF,2,PI,Sonja Paul,sonjamarit.paul@agroscope.admin.ch,snapshot,3
 CH-Rh1,EUF,2,FluxContact,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,3
 CH-Rh1,EUF,2,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,3
@@ -780,10 +781,11 @@ CN-Ash,CNF,4,FluxContact,Jing Zhang,zhangjing1@xtbg.ac.cn,snapshot,5
 CN-Ash,CNF,4,FluxContact,Yingxiang Yu,yuyingxiang@xtbg.ac.cn,snapshot,5
 CN-Ash,CNF,4,FluxContact,Zhexin Fan,fanzexin@xtbg.org.cn,snapshot,5
 CN-BeO,CNF,3,PI,Xin Jia,xinjia@bjfu.edu.cn,snapshot,1
-CN-DaW,CNF,2,PI,Yongtao He,heyt@igsnrr.ac.cn,snapshot,4
-CN-DaW,CNF,2,FluxContact,Ben Niu,niub@igsnrr.ac.cn,snapshot,4
-CN-DaW,CNF,2,FluxContact,Peili Shi,shipl@igsnrr.ac.cn,snapshot,4
-CN-DaW,CNF,2,FluxContact,Xianzhou Zhang,zhangxz@igsnrr.ac.cn,snapshot,4
+CN-DaW,CNF,2,PI,Yongtao He,heyt@igsnrr.ac.cn,snapshot,5
+CN-DaW,CNF,2,FluxContact,Ben Niu,niub@igsnrr.ac.cn,snapshot,5
+CN-DaW,CNF,2,SCI,Mingyuan Du,dumy@ms.xjb.ac.cn,badm_extra,5
+CN-DaW,CNF,2,FluxContact,Peili Shi,shipl@igsnrr.ac.cn,snapshot,5
+CN-DaW,CNF,2,FluxContact,Xianzhou Zhang,zhangxz@igsnrr.ac.cn,snapshot,5
 CN-Dan,CNF,3,PI,Peili Shi,shipl@igsnrr.ac.cn,snapshot,4
 CN-Dan,CNF,3,FluxContact,Ben Niu,niub@igsnrr.ac.cn,snapshot,4
 CN-Dan,CNF,3,FluxContact,Xianzhou Zhang,zhangxz@igsnrr.ac.cn,snapshot,4
@@ -2518,7 +2520,8 @@ JP-NsC,JPF,4,PI,Shoji Matsuura,matsuura.shoji596@naro.go.jp,snapshot,2
 JP-NsC,JPF,4,PI,Shoji Matsuura,matsuura.shoji596@naro.go.jp,snapshot,2
 JP-NsM,JPF,4,PI,Shoji Matsuura,matsuura.shoji596@naro.go.jp,snapshot,2
 JP-NsM,JPF,4,PI,Shoji Matsuura,matsuura.shoji596@naro.go.jp,snapshot,2
-JP-Nuf,JPF,2,PI,Md. Abdul Awal,awalma7@bau.edu.bd,snapshot,1
+JP-Nuf,JPF,2,PI,Md. Abdul Awal,awalma7@bau.edu.bd,snapshot,2
+JP-Nuf,JPF,2,PI,Takeshi Ohta,takeshi_1956@grace.ocn.ne.jp,badm_extra,2
 JP-Om2,JPF,3,PI,Masahito Ueyama,mueyama@omu.ac.jp,snapshot,2
 JP-Om2,JPF,3,PI,Masahito Ueyama,mueyama@omu.ac.jp,snapshot,2
 JP-SMF,JPF,4,PI,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,4
@@ -2640,8 +2643,10 @@ KR-GmS,KOF,2,PI,Mingu Kang,hyekky@korea.kr,snapshot,6
 KR-GmS,KOF,2,PI,Mingu Kang,hyekky@korea.kr,snapshot,6
 KR-GmS,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,6
 KR-GmS,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,6
-KR-HPK,KOF,2,PI,Joon Kim,joon@snu.ac.kr,snapshot,2
-KR-HPK,KOF,2,PI,Joon Kim,joon@snu.ac.kr,snapshot,2
+KR-HPK,KOF,2,PI,Joon Kim,joon@snu.ac.kr,snapshot,4
+KR-HPK,KOF,2,PI,Joon Kim,joon@snu.ac.kr,snapshot,4
+KR-HPK,KOF,2,PI,Seunghoon Lee,shlee@ncam.kr,badm_extra,4
+KR-HPK,KOF,2,SCI,Minseok Kang,ms-kang@gwnu.ac.kr,badm_extra,4
 KR-HcM,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,6
 KR-HcM,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,6
 KR-HcM,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,6
@@ -2658,8 +2663,9 @@ KR-JjM,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,6
 KR-JjM,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,6
 KR-JjM,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,6
 KR-JjM,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,6
-KR-Kw1,KOF,2,FluxContact,A Reum Kim,bgvib@korea.kr,snapshot,2
-KR-Kw1,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,2
+KR-Kw1,KOF,2,PI,Minseok Kang,ms-kang@gwnu.ac.kr,badm_extra,3
+KR-Kw1,KOF,2,FluxContact,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-Kw1,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
 KR-Kw2,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,4
 KR-Kw2,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,4
 KR-Kw2,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,4
@@ -2839,9 +2845,10 @@ RU-Che,EUF,3,FluxContact,Mathias Goeckede,mgoeck@bgc-jena.mpg.de,snapshot,27
 RU-Che,EUF,3,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,27
 RU-Che,EUF,3,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,27
 RU-Che,EUF,3,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,27
-RU-Ege,JPF,3,PI,Trofim Maximov,t.c.maximov@ibpc.ysn.ru,snapshot,3
-RU-Ege,JPF,3,DataManager,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,3
-RU-Ege,JPF,3,FluxContact,Tetsuya Hiyama,hiyama@nagoya-u.jp,snapshot,3
+RU-Ege,JPF,3,PI,Trofim Maximov,t.c.maximov@ibpc.ysn.ru,snapshot,4
+RU-Ege,JPF,3,DataManager,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,4
+RU-Ege,JPF,3,SCI-ANC,Takeshi Ohta,takeshi_1956@grace.ocn.ne.jp,badm_extra,4
+RU-Ege,JPF,3,FluxContact,Tetsuya Hiyama,hiyama@nagoya-u.jp,snapshot,4
 RU-Fy2,EUF,5,PI,Andrej Varlagin,varlagin@sevin.ru,snapshot,1
 RU-Fy3,EUF,2,PI,Vadim Mamkin,vadimmamkin@gmail.com,snapshot,5
 RU-Fy3,EUF,2,DataManager,Juliya Kurbatova,kurbatova.j@gmail.com,snapshot,5
@@ -3996,11 +4003,12 @@ US-xBN,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapsho
 US-xBN,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
 US-xBN,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
 US-xBN,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
-US-xBR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
-US-xBR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
-US-xBR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
-US-xBR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
-US-xBR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xBR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,6
+US-xBR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,6
+US-xBR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,6
+US-xBR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,6
+US-xBR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,6
+US-xBR,AMF,5,NA,NEON User Inquiries,neon-ameriflux-inquiry@battelleecology.org,badm_extra,6
 US-xCL,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
 US-xCL,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
 US-xCL,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5

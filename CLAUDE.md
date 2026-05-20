@@ -90,9 +90,24 @@ local research files on personal machines.
 
 **Always ask regardless of environment:**
 - Deleting files or directories outside of `data/downloads/` or `data/raw/`
+  (Renames within the repository are autonomous; renames that move files out of
+  the repository follow the "outside the repository directory" rule.)
 - Force pushing to git
 - Any action outside the repository directory
 - Making changes to `.devcontainer/devcontainer.json`
+- Deleting or moving files in `data/snapshots/` (these are authoritative
+  manifests and the only committable part of `data/`)
+- Modifying `renv.lock` directly, or running `renv::snapshot()` /
+  `renv::restore()` (these change the package environment and can leave the
+  Codespace in a broken state)
+
+**Long-running pipeline scripts:**
+When launching long-running pipeline scripts (reprocessing scripts 02–05,
+batch downloads, full figure regeneration), use the established
+`nohup` + `disown` pattern and log to a file in `logs/`. Do not run these
+scripts in the foreground; Codespace terminal idle timeouts can interrupt them.
+Report the PID and log path after launching, then monitor periodically rather
+than blocking.
 
 ---
 

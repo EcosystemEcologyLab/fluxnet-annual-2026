@@ -1,6 +1,18 @@
 > Technical bugs and data quality issues with external dependencies (fluxnet R package,
 > FLUXNET Shuttle) are tracked in [docs/known_issues.md](known_issues.md), not here.
 
+## Authorship rubric — 5-year data-volume boundary — RESOLVED 2026-05-20
+
+**Decision (2026-05-20):** Sites with exactly 5 years of data are placed in the **<5 row (lower
+author count)** of the locked authorship rubric. This was the implementation at the 2026-05-07
+team meeting and is formally confirmed as final policy. The rubric label is understood as "≤5
+years". The alternative (moving 5-year sites to the "6–10" row, +50 authors) was considered and
+rejected. No code or data change is required; `scripts/authorship_models.R` already implements
+`years_data <= 5L ~ row 1` and `outputs/authorship/site_authors.csv` reflects this. Tracked as
+FOLLOWUP-A in the authorship report; all authorship followup tasks are now resolved.
+
+---
+
 ## QC gating — RESOLVED 2026-04-20
 
 ~~US-Ha1 (Harvard Forest) excluded entirely at QC_THRESHOLD_YY = 0.75 — all 35 FLUXMET YY

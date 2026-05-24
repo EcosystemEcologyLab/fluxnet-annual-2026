@@ -175,6 +175,26 @@ reticulate::virtualenv_remove("fluxnet")
 
 ---
 
+## renv Profile Selection
+
+This project uses renv profiles to maintain separate lockfiles for
+different environments.
+
+At the start of every session, detect the environment and activate
+the correct profile before doing anything else:
+
+- If `CODESPACE_NAME` is set: activate the codespace profile
+  `renv::activate(profile = 'codespace')`
+
+- If `CODESPACE_NAME` is not set (local machine): activate the macos profile
+  `renv::activate(profile = 'macos')`
+
+Never run `renv::snapshot()` without first confirming which profile is
+active. Never commit a lockfile change without noting which profile
+it applies to in the commit message.
+
+---
+
 ## Pipeline Execution Order
 
 Scripts in `scripts/` are numbered and must be run in order:

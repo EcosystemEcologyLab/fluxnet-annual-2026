@@ -50,6 +50,7 @@ files_strings <- map(files_resolutions, \(x) {
 cli_progress_step("Opening DuckDB connection")
 dir_create("data/duckdb")
 con <- dbConnect(duckdb(), dbdir = "data/duckdb/fluxnet.duckdb")
+tables <- dbListTables(con)
 
 # Ingest CSVs using a series of SQL commands.  `union_by_name = true` is
 # necessary since FLUXMET CSVs have different numbers of columns. Site IDs, data
@@ -58,7 +59,7 @@ con <- dbConnect(duckdb(), dbdir = "data/duckdb/fluxnet.duckdb")
 # ingest.
 
 # Create annual table if annual data exists
-if (!is.null(files_strings$YY)) {
+if (!is.null(files_strings$YY) & !"annual" %in% tables) {
   cli_progress_step("Reading in annual data CSVs")
   dbExecute(
     con,
@@ -84,7 +85,7 @@ if (!is.null(files_strings$YY)) {
 }
 
 # Create monthly data table if monthly data exists
-if (!is.null(files_strings$MM)) {
+if (!is.null(files_strings$MM) & !"monthly" %in% tables) {
   cli_progress_step("Reading in monthly data CSVs")
   dbExecute(
     con,
@@ -111,7 +112,7 @@ if (!is.null(files_strings$MM)) {
 }
 
 # Create weekly table if weekly data exists
-if (!is.null(files_strings$WW)) {
+if (!is.null(files_strings$WW) & !"weekly" %in% tables) {
   cli_progress_step("Reading in weekly data CSVs")
   dbExecute(
     con,
@@ -138,7 +139,7 @@ if (!is.null(files_strings$WW)) {
 }
 
 # Create daily table if daily data exists
-if (!is.null(files_strings$DD)) {
+if (!is.null(files_strings$DD) & !"daily" %in% tables) {
   cli_progress_step("Reading in daily data CSVs")
   dbExecute(
     con,
@@ -165,7 +166,7 @@ if (!is.null(files_strings$DD)) {
 }
 
 # Create hourly table if hourly data exists
-if (!is.null(files_strings$HH)) {
+if (!is.null(files_strings$HH) & !"hourly" %in% tables) {
   cli_progress_step("Reading in hourly/half-hourly data CSVs")
   dbExecute(
     con,

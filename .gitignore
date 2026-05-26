@@ -26,6 +26,8 @@ renv/staging/
 .DS_Store
 Thumbs.db
 
+# DuckDB things
 data/hive
 data/duckdb/fluxnet.duckdb
 data/duckdb/fluxnet.duckdb.wal
+*.tmp

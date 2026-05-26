@@ -14,6 +14,7 @@ library(glue)
 library(purrr)
 library(dplyr)
 library(fluxnet)
+library(cli) # for nicely formatted messages
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -23,6 +24,7 @@ if (file.exists(".env")) {
 # Check what data files are extracted.  Using `flux_discover_files()` for this
 # is ideal because it deduplicates and chooses the most recent release for each
 # site.
+cli_progress_step("Discovering CSV files")
 manifest <- flux_discover_files(
   data_dir = path(Sys.getenv("FLUXNET_DATA_ROOT"), "extracted")
 )
@@ -44,9 +46,8 @@ files_strings <- map(files_resolutions, \(x) {
 # TODO: create temporary database for ingesting CSVs but then upsert them into a
 # different, permanent database.
 
-# TODO: add cli messages to make more verbose
-
 # Initialize database connection on disk
+cli_progress_step("Opening DuckDB connection")
 dir_create("data/duckdb")
 con <- dbConnect(duckdb(), dbdir = "data/duckdb/fluxnet.duckdb")
 
@@ -58,6 +59,7 @@ con <- dbConnect(duckdb(), dbdir = "data/duckdb/fluxnet.duckdb")
 
 # Create annual table if annual data exists
 if (!is.null(files_strings$YY)) {
+  cli_progress_step("Reading in annual data CSVs")
   dbExecute(
     con,
     glue(
@@ -83,6 +85,7 @@ if (!is.null(files_strings$YY)) {
 
 # Create monthly data table if monthly data exists
 if (!is.null(files_strings$MM)) {
+  cli_progress_step("Reading in monthly data CSVs")
   dbExecute(
     con,
     glue(
@@ -109,6 +112,7 @@ if (!is.null(files_strings$MM)) {
 
 # Create weekly table if weekly data exists
 if (!is.null(files_strings$WW)) {
+  cli_progress_step("Reading in weekly data CSVs")
   dbExecute(
     con,
     glue(
@@ -135,6 +139,7 @@ if (!is.null(files_strings$WW)) {
 
 # Create daily table if daily data exists
 if (!is.null(files_strings$DD)) {
+  cli_progress_step("Reading in daily data CSVs")
   dbExecute(
     con,
     glue(
@@ -161,6 +166,7 @@ if (!is.null(files_strings$DD)) {
 
 # Create hourly table if hourly data exists
 if (!is.null(files_strings$HH)) {
+  cli_progress_step("Reading in hourly/half-hourly data CSVs")
   dbExecute(
     con,
     glue(
@@ -184,5 +190,5 @@ if (!is.null(files_strings$HH)) {
     )
   )
 }
-
+cli_progress_step("Done! Closing connection.")
 dbDisconnect(con)

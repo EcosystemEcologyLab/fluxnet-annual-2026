@@ -52,6 +52,24 @@ dir_create("data/duckdb")
 con <- dbConnect(duckdb(), dbdir = "data/duckdb/fluxnet.duckdb")
 tables <- dbListTables(con)
 
+# Add the manifest to the database—useful to compare with updated manifest to
+# update data.
+
+if (!"manifest" %in% tables) {
+  cli_progress_step("Recording CSV manifest in database")
+  tmp <- withr::local_tempfile(fileext = ".csv")
+  readr::write_csv(flux_manifest, tmp)
+  dbExecute(
+    con,
+    glue(
+      "
+      CREATE TABLE manifest AS
+      SELECT * FROM read_csv('{tmp}')
+      "
+    )
+  )
+}
+
 # Ingest CSVs using a series of SQL commands.  `union_by_name = true` is
 # necessary since FLUXMET CSVs have different numbers of columns. Site IDs, data
 # hub, and dataset (ERA5 or FLUXMET) is extracted from filenames, -9999 is

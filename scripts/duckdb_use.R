@@ -32,8 +32,16 @@ subset
 
 subset |> collect()
 
+# Example 2: Join in manifest and filter by lat/lon
+
+manifest <- tbl(con, "manifest")
+
+super_south <- 
+  left_join(daily, manifest, by = "site_id") |> 
+  filter(location_lat < -45) |>
+  collect()
+
 # Close connection
 connections::connection_close(con)
 
-# TODO:
-# - Test joining in metadata in a tibble (from flux_listall())
+

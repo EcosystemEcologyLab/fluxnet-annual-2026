@@ -100,7 +100,9 @@ if (!is.null(files_strings$YY) & !"annual" %in% tables) {
           nullstr = ['NA', '-9999'],
           parallel = true,
           types = {{'TIMESTAMP': 'INTEGER'}}
-        ) 
+        );
+      ALTER TABLE annual
+        ADD PRIMARY KEY (site_id, dataset, TIMESTAMP);
     "
     )
   )
@@ -127,7 +129,9 @@ if (!is.null(files_strings$MM) & !"monthly" %in% tables) {
           parallel = true,
           types = {{'TIMESTAMP': 'DATE'}},
           dateformat = '%Y%m'
-        ) 
+        );
+      ALTER TABLE monthly
+        ADD PRIMARY KEY (site_id, dataset, TIMESTAMP); 
     "
     )
   )
@@ -154,7 +158,9 @@ if (!is.null(files_strings$WW) & !"weekly" %in% tables) {
           parallel = true,
           types = {{'TIMESTAMP_START': 'DATE', 'TIMESTAMP_END': 'DATE'}},
           dateformat = '%Y%m%d'
-        ) 
+        );
+      ALTER TABLE weekly
+        ADD PRIMARY KEY (site_id, dataset, TIMESTAMP_START);
     "
     )
   )
@@ -181,7 +187,9 @@ if (!is.null(files_strings$DD) & !"daily" %in% tables) {
           parallel = true,
           types = {{'TIMESTAMP': 'DATE'}},
           dateformat = '%Y%m%d'
-        ) 
+        );
+      ALTER TABLE daily
+        ADD PRIMARY KEY (site_id, dataset, TIMESTAMP);
     "
     )
   )
@@ -208,7 +216,9 @@ if (!is.null(files_strings$HH) & !"hourly" %in% tables) {
           parallel = true,
           types = {{'TIMESTAMP_START': 'DATETIME', 'TIMESTAMP_END': 'DATETIME'}},
           timestampformat = '%Y%m%d%H%M'
-        ) 
+        );
+      ALTER TABLE hourly
+        ADD PRIMARY KEY (site_id, dataset, TIMESTAMP_START);
     "
     )
   )

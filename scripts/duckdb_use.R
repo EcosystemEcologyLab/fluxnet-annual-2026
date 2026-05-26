@@ -32,5 +32,8 @@ subset
 
 subset |> collect()
 
+# Close connection
+connections::connection_close(con)
+
 # TODO:
 # - Test joining in metadata in a tibble (from flux_listall())

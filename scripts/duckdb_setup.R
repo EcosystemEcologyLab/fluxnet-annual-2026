@@ -64,7 +64,11 @@ if (!"manifest" %in% tables) {
     glue(
       "
       CREATE TABLE manifest AS
-      SELECT * FROM read_csv('{tmp}')
+      SELECT * FROM read_csv(
+        '{tmp}',
+        nullstr = ['NA'],
+        types = {{'location_lat': 'DOUBLE', 'location_long': 'DOUBLE'}}
+      )
       "
     )
   )

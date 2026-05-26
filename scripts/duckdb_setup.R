@@ -108,7 +108,7 @@ if (!is.null(files_strings$MM)) {
 }
 
 # Create weekly table if weekly data exists
-if( !is.null(files_strings$WW)) {
+if (!is.null(files_strings$WW)) {
   dbExecute(
     con,
     glue(
@@ -186,38 +186,3 @@ if (!is.null(files_strings$HH)) {
 }
 
 dbDisconnect(con)
-
-# After database is created, in a fresh R session:
-
-library(dplyr)
-library(duckdb)
-con <- dbConnect(duckdb(), dbdir = "data/duckdb/fluxnet.duckdb")
-
-# List available tables
-dbListTables(con)
-
-# Access a table without loading it into memory
-daily <- tbl(con, "daily")
-daily
-
-# Perform filtering, subetting, and calculations with dplyr all without pulling
-# into memory.
-subset <- daily |>
-  rename(DATE = TIMESTAMP) |>
-  filter(DATE > as.Date("2020-01-01")) |>
-  filter(dataset == "FLUXMET") |>
-  select(DATE, site_id, NEE_VUT_REF, NEE_VUT_REF_QC) |>
-  mutate(NEE_QC_OK = NEE_VUT_REF_QC > 0.5)
-
-subset
-
-# "Materialize" the table into memory with `collect()`
-
-subset |> collect()
-
-# TODO:
-# - Test joining in metadata in a tibble (from flux_listall())
-# - Add tables for yearly, monthly, weekly, hourly/half-hourly data
-# - Consider writing out to hive-partitioned parquet files instead of .duckdb file
-# - Figure out what to do when new data needs to be added (might be easier with parquet files)
-

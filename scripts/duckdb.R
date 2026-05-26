@@ -29,6 +29,10 @@ manifest <- flux_discover_files(
 flux_manifest <- manifest |>
   filter(dataset %in% c("ERA5", "FLUXMET"))
 
+# Treat HR and HH the same
+flux_manifest <- flux_manifest |>
+  mutate(time_resolution = replace_values(time_resolution, "HR" ~ "HH"))
+
 files_resolutions <- split(flux_manifest$path, flux_manifest$time_resolution)
 
 # Convert vector of file paths to comma separated string for input to SQL
@@ -36,6 +40,11 @@ files_resolutions <- split(flux_manifest$path, flux_manifest$time_resolution)
 files_strings <- map(files_resolutions, \(x) {
   glue_collapse(glue("'{x}'"), sep = ", ")
 })
+
+# TODO: create temporary database for ingesting CSVs but then upsert them into a
+# different, permanent database.
+
+# TODO: add cli messages to make more verbose
 
 # Initialize database connection on disk
 dir_create("data/duckdb")
@@ -98,6 +107,32 @@ if (!is.null(files_strings$MM)) {
   )
 }
 
+# Create weekly table if weekly data exists
+if( !is.null(files_strings$WW)) {
+  dbExecute(
+    con,
+    glue(
+      "
+      CREATE TABLE weekly AS
+      SELECT *,
+        split_part(parse_filename(path), '_', 1) as data_hub,
+        split_part(parse_filename(path), '_', 2) as site_id,
+        split_part(parse_filename(path), '_', 4) as dataset,
+      FROM 
+        read_csv(
+          [{files_strings$WW}],
+          union_by_name = true,
+          filename = 'path',
+          nullstr = ['NA', '-9999'],
+          parallel = true,
+          types = {{'TIMESTAMP_START': 'DATE', 'TIMESTAMP_END': 'DATE'}},
+          dateformat = '%Y%m%d'
+        ) 
+    "
+    )
+  )
+}
+
 # Create daily table if daily data exists
 if (!is.null(files_strings$DD)) {
   dbExecute(
@@ -123,6 +158,33 @@ if (!is.null(files_strings$DD)) {
     )
   )
 }
+
+# Create hourly table if hourly data exists
+if (!is.null(files_strings$HH)) {
+  dbExecute(
+    con,
+    glue(
+      "
+      CREATE TABLE hourly AS
+      SELECT *,
+        split_part(parse_filename(path), '_', 1) as data_hub,
+        split_part(parse_filename(path), '_', 2) as site_id,
+        split_part(parse_filename(path), '_', 4) as dataset,
+      FROM 
+        read_csv(
+          [{files_strings$HH}],
+          union_by_name = true,
+          filename = 'path',
+          nullstr = ['NA', '-9999'],
+          parallel = true,
+          types = {{'TIMESTAMP_START': 'DATETIME', 'TIMESTAMP_END': 'DATETIME'}},
+          timestampformat = '%Y%m%d%H%M'
+        ) 
+    "
+    )
+  )
+}
+
 dbDisconnect(con)
 
 # After database is created, in a fresh R session:

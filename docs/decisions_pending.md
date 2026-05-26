@@ -101,6 +101,39 @@ methods writing (flagged by Dario Papale, 2026-04-16).
 
 ---
 
+## flux_download() version-pinning gap — DEFERRED
+
+`flux_download()` bootstraps an ephemeral `uv` environment and runs the shuttle at git HEAD
+(observed HEAD = tag 0.3.8 on 2026-05-25), bypassing the pinned `fluxnet_annual_2026` venv
+used by `flux_listall()` and `check_pipeline_config()`. Downloads therefore run on an unpinned,
+moving shuttle version — defeating the version lock established for the paper.
+
+This ties to the in-flight rearchitecture in [fluxnet-package#43](https://github.com/EcosystemEcologyLab/fluxnet-package/issues/43)
+("route flux_download() through the shuttle Python API"). The download itself functions correctly;
+the concern is reproducibility: if the dataset is locked and then re-downloaded later, a different
+shuttle version may be used.
+
+**Decision:** Deferred to a post-manuscript reproducibility pass, before final dataset lock.
+Before locking: confirm with package maintainers (#43) whether `flux_download()` can be pinned
+to a specific shuttle commit, or record the actual shuttle commit used at download time in
+run metadata.
+
+---
+
+## Representativeness analysis climate axis — DEFERRED
+
+The network representativeness analysis is not yet defined in scope (no assigned figure number
+or methods specification as of 2026-05-26). When it is eventually defined, **use Köppen-Geiger**
+for the climate-variability axis, not CRU. Köppen-Geiger classifications are already extracted
+at all sites (`data/snapshots/` — see `long_record_site_candidates_gez_kg.csv`) and are on-disk
+and reproducible via the existing pipeline. CRU adds a data dependency without a clear advantage
+for this comparison axis.
+
+**Decision:** Climate axis = Köppen-Geiger. Recording now so the decision is not lost when the
+analysis is eventually scoped.
+
+---
+
 ## DD data download — OPEN
 
 Daily (DD) resolution data has not been downloaded via the Shuttle. Required for:

@@ -121,7 +121,7 @@ as GitHub Codespace Secrets. For local use, copy `.env.example` to `.env`.
 | `AMERIFLUX_USER_NAME`    | Registered AmeriFlux account name                    | — (required)                  |
 | `AMERIFLUX_USER_EMAIL`   | Registered AmeriFlux account email                   | — (required)                  |
 | `AMERIFLUX_INTENDED_USE` | AmeriFlux intended use code (1–6)                    | `1` (Synthesis)               |
-| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.3.7.post0+dirty`           |
+| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.3.7`                       |
 | `FLUXNET_SNAPSHOT_MODE`  | `"development"` or `"locked"`                        | `"development"`               |
 | `FLUXNET_SNAPSHOT_FILE`  | Path to locked snapshot CSV                          | — (required if locked)        |
 | `FLUXNET_DATA_ROOT`      | Root directory for all pipeline data I/O             | `"data"`                      |
@@ -172,6 +172,25 @@ To force reinstall of fluxnet-shuttle:
 reticulate::virtualenv_remove("fluxnet")
 # Then re-run flux_listall() to rebuild
 ```
+
+---
+
+## Session Start — Multi-Machine Sync
+
+This repository is worked on from both the local mini and the Codespace; either machine may
+have pushed commits since the last session. At the start of every session, before doing
+anything else:
+
+1. **Check working tree status:** `git status`
+2. **If the working tree is clean** (no modified tracked files, or only gitignored/untracked
+   files): run `git pull` to bring the branch up to date with origin.
+3. **If there are uncommitted modifications to tracked files:** do not pull blindly. Report
+   the modified files and their likely authority (e.g., locally-regenerated snapshot outputs
+   vs. drafting changes). Stash, commit, or explicitly handle the conflict first, then pull.
+
+The snapshot files (`data/snapshots/*.csv`, `*.meta.json`), `outputs/session_info.txt`, and
+`renv/profile` are frequently modified locally and represent separate commit decisions — flag
+them rather than overwriting with a pull.
 
 ---
 
@@ -431,6 +450,8 @@ the package is updated. Do not implement workarounds.
 | Response pending from Eric Scott re: #43 download rearchitecture | EcosystemEcologyLab/fluxnet-package#43 |
 
 # Shuttle version monitoring: check https://github.com/fluxnet/shuttle/releases
-# for new releases. Current pin: 0.3.7.post0+dirty — the 0.3.7 git tag self-reports this string
-# (the +dirty suffix is embedded in the package metadata at that tag, not a local build artefact).
+# for new releases. Current pin: 0.3.7 — use 0.3.7 as the value for FLUXNET_SHUTTLE_VERSION.
+# The installable git tag is 0.3.7; the shuttle may self-report 0.3.7.post0+dirty in certain
+# builds (e.g. the Codespace) but the underlying commit (3f3bd767) is identical. Use 0.3.7 as
+# the env var value for both installation and version-checking.
 # Run flux_listall() after upgrading to confirm snapshot format is unchanged.

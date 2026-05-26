@@ -121,6 +121,9 @@ Contacts: Danielle Christianson, Dario Papale
 | `httr2_failure` on batch download | HTTP request failures during download of batches 12 and 13 — `resp` is not an HTTP response object | Some sites may not download on first attempt | Re-run `batch_download.R` — resumable design handles retries | Report to support@fluxnet.org |
 | AU-Dry BIF column order | `TERN_AU-Dry_FLUXNET_BIF_2009-2025_v1.3_r1.csv` has columns in unexpected order causing read failure | Site excluded from read stage | Fixed in `03_read.R` with column reordering | **RESOLVED** — fixed in `03_read.R`; reported to TERN data contributor |
 | Windows file paths in `VARIABLE_GROUP` | 3 BIF files contain Windows-style file paths appearing as `VARIABLE_GROUP` values | Inflates group count and adds processing overhead | Filtered in `03_read.R` with regex guard | Report to support@fluxnet.org with affected site IDs |
+| TERN hub silently dropped on 2026-05-25 | `flux_listall()` dropped all 52 TERN (AU/NZ OzFlux) sites from the manifest (716→668) when TERN's upstream returned HTTP 404; no R-level warning was raised | Paper site set changes silently — violates spirit of Hard Rule #5 | Pass `log_file =` to every `flux_listall()` call and inspect log for `N errors`; or assert `all(c("AmeriFlux","ICOS","TERN") %in% manifest$data_hub)` after call | Report HTTP 404 to TERN and shuttle maintainers; add hub-presence assertion to `scripts/01_download.R` |
+
+**Note on hub-drop behaviour:** `flux_listall()` delegates to the fluxnet-shuttle CLI, which fetches each hub independently. When a hub's upstream returns an error, the shuttle logs `get_all_sites: N results, 1 errors` and silently drops that hub — the R function does not propagate the error count. The TERN 404 is at `https://dap.tern.org.au/thredds/fileServer/ecosystem_process/fluxnet/BIF_all_sites.csv`; it is present across shuttle versions 0.3.7, 0.3.8, and HEAD — upgrading does not fix it. To detect hub drops: always pass `log_file = "logs/shuttle_listall.log"` to `flux_listall()` and grep for `errors`, or add a post-call hub assertion (see Workaround column).
 
 ---
 
@@ -194,7 +197,9 @@ the site is correctly allocated 8 invited authors (≥21 yr, ≤2 yr latency).
 | Issue | Description | Impact | Fix | Resolved |
 |---|---|---|---|---|
 | QC gating applied to all `_QC` variables | Row exclusion in `04_qc.R` evaluated `_QC` thresholds across all columns (NEE, GPP, RECO, LE, H), causing 347/672 sites (52%) to lose all annual records when any secondary variable had high gap-fill | Over-exclusion of valid sites | Fixed: row exclusion now gated on `NEE_VUT_REF_QC` only; secondary variable QC columns retained for per-variable downstream filtering | **RESOLVED 2026-04-20** — implemented in `R/qc.R` and `scripts/04_qc.R` |
-| Unit conversion applied to pre-integrated annual/monthly data | `fluxnet_convert_units()` applied the µmol CO₂ m⁻² s⁻¹ → gC m⁻² per-period factor to YY and MM carbon flux variables that are already expressed in gC m⁻² per period, producing an ~800× overcorrection | All annual and monthly NEE/GPP/RECO values inflated by ~800× in outputs and figures | Fixed in commit 31e653b: YY and MM carbon flux variables passed through unchanged; conversion applied only at HH/HR/DD resolutions | **RESOLVED 2026-04-20** — all pre-fix figure outputs must be regenerated |
+| Unit conversion applied to pre-integrated annual/monthly data | `fluxnet_convert_units()` applied the µmol CO₂ m⁻² s⁻¹ → gC m⁻² per-period factor to YY and MM carbon flux variables that are already expressed in gC m⁻² per period, producing an ~800× overcorrection | All annual and monthly NEE/GPP/RECO values inflated by ~800× in outputs and figures | Fixed in commit 31e653b: DD/WW/MM/YY carbon flux variables passed through unchanged; conversion applied only at HH and HR resolutions | **RESOLVED 2026-04-20** — all pre-fix figure outputs must be regenerated |
+
+**Context — coarse-resolution carbon data are pre-integrated:** At DD, WW, MM, and YY resolutions, FLUXNET Shuttle carbon flux variables (NEE, GPP, RECO) are expressed as period-integrated totals (gC m⁻² period⁻¹), not as instantaneous rates (µmol CO₂ m⁻² s⁻¹). The pre-fix code applied the HH/HR rate-to-integral conversion factor (~1800–3600 s × molar mass of C) to the already-integrated YY and MM values, producing ~800× overcorrected outputs. Fixed in commit 31e653b (2026-04-14): DD/WW/MM/YY carbon data now passes through unchanged; conversion is applied only at HH and HR resolutions. All pipeline outputs and figures generated before that commit must be regenerated. Verified in `R/units.R`: `.infer_source_unit()` returns `"gC m-2 d-1"` for DD carbon variables, so no µmol conversion is triggered at any coarse resolution.
 
 ---
 
@@ -227,6 +232,8 @@ https://data.apps.fao.org/catalog/dataset/2fb209d0-fd34-4e5e-a3d8-a13c241eb61b
 if not present (file: `gez2010.zip`, extract to `data/external/gez/gez_2010_wgs84.shp`).
 
 The site-level GEZ lookup is pre-computed in `data/snapshots/site_gez_lookup.csv`
-(columns: `site_id`, `gez_name`, `gez_code`) and committed to the repository.
-Regenerate by re-running the GEZ join block in `scripts/07_figures.R` or via
-the inline code used in `R/figures/fig_anomaly_context.R`.
+(columns: `site_id`, `gez_name`, `gez_code`, `gez_method`) and committed to the repository.
+Regenerate by running `scripts/step3_extract_gez.R`. Direct download URL for the shapefile:
+`https://storage.googleapis.com/fao-maps-catalog-data/uuid/2fb209d0-fd34-4e5e-a3d8-a13c241eb61b/resources/gez2010.zip`
+(61.6 MB; extract to `data/external/gez/gez_2010_wgs84.shp`).
+Three sites require nearest-feature fallback (outside all polygons): AR-TF1, CA-RBM, CN-SnB.

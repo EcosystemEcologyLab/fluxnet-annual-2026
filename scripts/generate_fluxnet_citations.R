@@ -4,8 +4,23 @@
 ##
 ## Usage:
 ##   source("scripts/generate_fluxnet_citations.R")
+##
+##   # Provide site IDs directly
 ##   generate_fluxnet_citations(
 ##     site_ids       = c("US-MMS", "DE-Tha", "AU-How", "ZA-Jks"),
+##     output_prefix  = "outputs/citations/fluxnet_2026"
+##   )
+##
+##   # Provide site IDs via CSV (column named "site_id" by default)
+##   generate_fluxnet_citations(
+##     site_ids_csv   = "data/my_sites.csv",
+##     output_prefix  = "outputs/citations/fluxnet_2026"
+##   )
+##
+##   # CSV with a different column name
+##   generate_fluxnet_citations(
+##     site_ids_csv   = "data/analysis_sites.csv",
+##     site_id_col    = "SITE_ID",
 ##     output_prefix  = "outputs/citations/fluxnet_2026"
 ##   )
 ##
@@ -378,7 +393,7 @@ build_review_flags <- function(flags_named, sites_df) {
 
   # No-author ICOS/JPF sites — those flagged in entries
   no_author_ids <- names(flags_named)[
-    sapply(flags_named, function(f) grepl("No author block", f))
+    vapply(flags_named, function(f) grepl("No author block", f), logical(1L))
   ]
   if (length(no_author_ids) > 0L) {
     lines <- c(lines,
@@ -397,7 +412,9 @@ build_review_flags <- function(flags_named, sites_df) {
   }
 
   # All per-site flags
-  non_na_ids <- names(flags_named)[!sapply(flags_named, grepl, pattern = "No author block")]
+  non_na_ids <- names(flags_named)[
+    !vapply(flags_named, function(f) grepl("No author block", f), logical(1L))
+  ]
   if (length(non_na_ids) > 0L) {
     lines <- c(lines, "## Per-site flags", "")
     for (sid in sort(non_na_ids)) {
@@ -450,17 +467,46 @@ find_latest_snapshot <- function() {
 
 #' Generate FLUXNET citations, acknowledgments, and review flags
 #'
-#' @param site_ids character vector of FLUXNET site IDs to cite
-#' @param snapshot_path path to snapshot CSV; defaults to most recent committed snapshot
-#' @param output_prefix file path prefix for outputs (no extension)
-#' @return invisibly: list with paths bib, ack, flags, and summary counts
+#' @param site_ids Character vector of FLUXNET site IDs to cite.  Exactly one
+#'   of \code{site_ids} or \code{site_ids_csv} must be provided.
+#' @param snapshot_path Path to the snapshot CSV; defaults to the most recent
+#'   committed snapshot.
+#' @param output_prefix File path prefix for outputs (no extension).
+#' @param site_ids_csv Optional path to a CSV file containing a column of site
+#'   IDs.  The column is identified by \code{site_id_col}.  Duplicate and
+#'   \code{NA} values are dropped automatically.  Cannot be used together with
+#'   \code{site_ids}.
+#' @param site_id_col Column name in \code{site_ids_csv} that holds the site
+#'   IDs.  Defaults to \code{"site_id"}.
+#' @return Invisibly: list with paths \code{bib}, \code{ack}, \code{flags},
+#'   and summary counts.
 generate_fluxnet_citations <- function(
-    site_ids,
+    site_ids      = NULL,
     snapshot_path = find_latest_snapshot(),
-    output_prefix
+    output_prefix,
+    site_ids_csv  = NULL,
+    site_id_col   = "site_id"
 ) {
-  stopifnot(is.character(site_ids), length(site_ids) > 0L,
-            is.character(output_prefix), length(output_prefix) == 1L)
+  stopifnot(is.character(output_prefix), length(output_prefix) == 1L)
+
+  # ── Resolve site IDs from CSV or vector ─────────────────────────────────
+  if (!is.null(site_ids) && !is.null(site_ids_csv))
+    stop("Provide either site_ids or site_ids_csv, not both.", call. = FALSE)
+  if (is.null(site_ids) && is.null(site_ids_csv))
+    stop("Provide either site_ids (character vector) or site_ids_csv (CSV path).",
+         call. = FALSE)
+  if (!is.null(site_ids_csv)) {
+    if (!file.exists(site_ids_csv))
+      stop("site_ids_csv not found: ", site_ids_csv, call. = FALSE)
+    csv_data <- readr::read_csv(site_ids_csv, show_col_types = FALSE)
+    if (!site_id_col %in% names(csv_data))
+      stop("Column '", site_id_col, "' not found in ", site_ids_csv,
+           ". Available columns: ", paste(names(csv_data), collapse = ", "),
+           call. = FALSE)
+    site_ids <- unique(na.omit(csv_data[[site_id_col]]))
+    message("  Read ", length(site_ids), " site IDs from ", basename(site_ids_csv))
+  }
+  stopifnot(is.character(site_ids), length(site_ids) > 0L)
 
   message("Snapshot: ", basename(snapshot_path))
   snap  <- readr::read_csv(snapshot_path, show_col_types = FALSE)

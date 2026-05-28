@@ -212,6 +212,41 @@ Never run `renv::snapshot()` without first confirming which profile is
 active. Never commit a lockfile change without noting which profile
 it applies to in the commit message.
 
+### Updating the codespace lockfile from a local machine
+
+The codespace profile library (`renv/profiles/codespace/renv/`) is empty on the
+local mini — packages are only installed inside the GitHub Codespace. This means
+`renv::activate(profile = "codespace"); renv::snapshot()` will produce an empty
+or incorrect lockfile when run locally.
+
+**Correct procedure for adding new packages to both lockfiles:**
+
+1. Install the package locally and confirm it works.
+2. Update the **macos lockfile** normally:
+   ```r
+   renv::activate(profile = "macos")
+   renv::snapshot(prompt = FALSE)
+   ```
+3. Copy the new package entry/entries into the **codespace lockfile** using
+   Python's `json` module (which preserves the verbose-DESCRIPTION format that
+   the codespace lockfile uses):
+   ```python
+   import json
+   with open("renv/profiles/macos/renv.lock") as f:
+       mac = json.load(f)
+   with open("renv/profiles/codespace/renv.lock") as f:
+       cs = json.load(f)
+   for pkg in ["new_pkg", "its_dep"]:
+       cs["Packages"][pkg] = mac["Packages"][pkg]
+   cs["Packages"] = dict(sorted(cs["Packages"].items()))
+   with open("renv/profiles/codespace/renv.lock", "w") as f:
+       json.dump(cs, f, indent=2, ensure_ascii=False)
+       f.write("\n")
+   ```
+4. Verify: `git diff --stat renv/profiles/codespace/renv.lock` should show
+   only insertions (no deletions to existing entries).
+5. Commit both lockfiles together, noting both profiles in the commit message.
+
 ---
 
 ## Pipeline Execution Order
@@ -262,6 +297,25 @@ Do not skip steps or run them out of order. Each script sources
 - Functions that combine sites must check for temporal resolution mismatch
   and stop with a clear error if HH and HR data are mixed without explicit
   aggregation
+
+### R 4.1+ backslash-escape gotcha
+
+In R 4.1+, `"\\_"` is a recognised escape sequence (soft hyphen / non-breaking
+underscore), **not** a backslash followed by an underscore. This means:
+
+```r
+# WRONG — "\\\\_" in R 4.1+ is parsed as \\ (one backslash) + \_ (soft hyphen)
+gsub("\\\\_", "_", title, fixed = TRUE)   # does NOT match a literal \_
+
+# CORRECT — use a regex that matches one literal backslash then any character
+gsub("\\\\(.)", "\\1", title, perl = TRUE)   # strips any LaTeX backslash escape
+```
+
+This affects any code that tries to unescape LaTeX strings read from `.bib`
+files or other LaTeX sources. The regex approach above strips all `\x` sequences
+(e.g. `\_` → `_`, `\-` → `-`, `\&` → `&`) and is the canonical fix in this repo.
+Discovered in `R/parse_bib_to_apa.R` (2026-05-28); applies anywhere LaTeX
+escape sequences appear in character data.
 
 ---
 

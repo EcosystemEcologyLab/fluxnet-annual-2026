@@ -141,6 +141,32 @@ analysis is eventually scoped.
 
 ---
 
+## DuckDB schema-translation patches in 07_figures.R — MAINTENANCE REFACTOR (deferred)
+
+`scripts/07_figures.R` (adopted as canonical in commit below) contains two inline
+schema-translation patches that paper over differences between the RDS and DuckDB
+column schemas:
+
+1. `YEAR = as.integer(TIMESTAMP)` — added post-collect on the annual frame because
+   DuckDB's `annual_converted` uses `TIMESTAMP` (integer year) where the RDS pipeline's
+   `flux_read()` used `YEAR`. Figure functions that expect a `YEAR` column work via
+   this alias.
+
+2. `DOY = lubridate::yday(TIMESTAMP)` — added post-collect on the daily frame because
+   `daily_converted` stores `TIMESTAMP` as a DuckDB DATE (no pre-computed DOY column).
+   `fig_seasonal_cycle()` and `fig_seasonal_weekly()` need a `DOY` column.
+
+**Action (deferred):** Move these upstream — either as post-conversion column additions
+in `05_units.R` (add `YEAR` to annual_converted and `DOY` to daily_converted as computed
+columns during the compute() step), or as a helper function sourced by both 05 and 07.
+Doing this in 05_units.R would make the schema consistent with what figure functions
+expect, removing the need for translation patches in 07_figures.R.
+
+This is a maintenance refactor, not a correctness issue — the current patches work.
+Schedule for the next pipeline maintenance pass, not before final paper analysis.
+
+---
+
 ## DD data download — OPEN
 
 Daily (DD) resolution data has not been downloaded via the Shuttle. Required for:

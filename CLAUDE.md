@@ -269,9 +269,21 @@ Scripts in `scripts/` are numbered and must be run in order:
                          Row exclusion uses NEE_VUT_REF_QC for VUT sites and
                          NEE_CUT_REF_QC for CUT-only sites (per-site fallback,
                          not per-row). See commit ad7464f.
-05_units.R             → fluxnet_convert_units()
+05_units.R             → reads *_qc tables from DuckDB, applies unit conversions
+                         in DuckDB SQL (no R materialisation), writes *_converted
+                         tables. Same rules as R/units.R: carbon at DD/MM/WW/YY
+                         passes through unchanged (pre-integrated); HH/HR carbon
+                         converted. LE → mm H₂O; H/SW_IN → MJ m⁻²; TA → K;
+                         VPD → kPa. Leap-year-aware spp for YY.
 06_analysis.R          → paper-specific analyses
-07_figures.R           → figure generation
+07_figures.R           → reads from DuckDB *_converted tables (annual_converted,
+                         daily_converted, etc.) via a single shared connection.
+                         Fails loudly if any *_converted table is absent — run
+                         03b → 04 → 05 first. Includes DD figures (seasonal
+                         cycle, seasonal weekly, growing-season NEE) now that the
+                         DuckDB path avoids the 16 GB RDS OOM. Per-figure profiler
+                         records elapsed time, memory delta, and rows collected.
+                         Old RDS scripts preserved in legacy/ for reference.
 ```
 
 Do not skip steps or run them out of order. Each script sources

@@ -194,7 +194,26 @@ the site is correctly allocated 8 invited authors (≥21 yr, ≤2 yr latency).
 
 ---
 
-## Section 7 — CUT QC not filtered at pipeline level (open)
+## Section 7 — site_candidates_full.csv stale after 759-site re-extraction (open)
+
+`data/snapshots/site_candidates_full.csv` was rebuilt by `step2_extract_aridity.R`
+on 2026-06-02 but contains only 569 rows, not 759. It left-joins from
+`data/snapshots/long_record_site_candidates_gez_kg.csv`, which was built against the
+716-site April 2026 dataset and has not been updated. The 43 new sites added in the
+Jun 1 snapshot are absent from `site_candidates_full.csv`.
+
+**Impact:** Any figure or analysis that filters on `currently_selected` or uses
+candidate status (anomaly figures, long-record site selection) will not include the
+43 new sites.
+
+**Action:** After `03_read.R` runs on the 759-site dataset and produces updated NEE
+presence data, rebuild `long_record_site_candidates_gez_kg.csv` and then re-run
+`step2_extract_aridity.R` to regenerate `site_candidates_full.csv`. This step falls
+between the pipeline rerun (scripts 03–07) and the final figure generation pass.
+
+---
+
+## Section 8 — CUT QC not filtered at pipeline level (open)
 
 `04_qc.R` gates row exclusion exclusively on `NEE_VUT_REF_QC >= QC_THRESHOLD_YY` (by
 design). For the ~36 CUT-only sites (`NEE_CUT_REF` present, `NEE_VUT_REF` absent),

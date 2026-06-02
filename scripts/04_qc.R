@@ -11,10 +11,12 @@
 ##     p_gapfilled columns; flagged rows are dropped and logged as exclusions.
 ##     Rows with qc_flagged == NA are kept. Stage 1 is skipped for HH/HR data.
 ##
-##     Row exclusion gated on NEE_VUT_REF_QC only — primary variable for the
-##     FLUXNET Annual Paper 2026. Secondary variable QC columns (GPP, RECO,
-##     LE, H) are retained in the output for per-variable filtering downstream
-##     but do not drive row exclusion. See docs/decisions_pending.md.
+##     Row exclusion uses VUT QC for sites that have NEE_VUT_REF (the majority),
+##     and CUT QC for the ~36 sites where NEE_VUT_REF is absent (CUT-only sites).
+##     When both are present, VUT is the reference and VUT QC is the gate.
+##     Secondary variable QC columns (GPP, RECO, LE, H) are retained in the
+##     output for per-variable filtering downstream but do not drive row exclusion.
+##     See docs/decisions_pending.md and docs/known_issues.md Section 8.
 ##
 ##   Stage 2 (fluxnet_qc_hh): at HH/HR resolution, _QC values are integers
 ##     0–3. Rows with any _QC > max_qc are dropped. At DD/MM/WW/YY this is a
@@ -113,14 +115,13 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
   n_sites  <- length(site_ids)
 
   if (!is_hh) {
-    # Row exclusion gated on NEE_VUT_REF_QC only — primary variable for the
-    # FLUXNET Annual Paper 2026. Secondary variable QC columns (GPP, RECO,
-    # LE, H) are retained in the output for per-variable filtering downstream
-    # but do not drive row exclusion. See docs/decisions_pending.md.
-    qc_vars <- if ("NEE_VUT_REF_QC" %in% names(flux_data)) "NEE_VUT_REF" else character(0L)
-    if (length(qc_vars) == 0L) {
-      message("  NEE_VUT_REF_QC not present in ", toupper(suffix),
-              " data — Stage 1 skipped for this resolution."); flush(stderr())
+    # Per-site QC gate is determined inside the loop (VUT preferred, CUT fallback).
+    # Check dataset-level presence so we can warn early if neither column exists.
+    has_vut_qc <- "NEE_VUT_REF_QC" %in% names(flux_data)
+    has_cut_qc <- "NEE_CUT_REF_QC" %in% names(flux_data)
+    if (!has_vut_qc && !has_cut_qc) {
+      message("  Neither NEE_VUT_REF_QC nor NEE_CUT_REF_QC present in ",
+              toupper(suffix), " data — Stage 1 will be skipped."); flush(stderr())
     }
   }
 
@@ -136,30 +137,50 @@ for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
   for (s_i in seq_along(site_ids)) {
     site_d <- flux_data[flux_data$site_id == site_ids[s_i], , drop = FALSE]
 
-    # Stage 1: fractional threshold on NEE_VUT_REF_QC (coarser resolutions only).
-    # qc_vars = "NEE_VUT_REF" — row exclusion gated on primary variable only.
-    if (!is_hh && length(qc_vars) > 0L) {
-      site_qc     <- flux_qc(site_d, qc_vars = qc_vars,
-                             max_gapfilled = 1 - qc_thresh)
-      flagged_idx <- which(!is.na(site_qc$qc_flagged) & site_qc$qc_flagged)
-      n_excluded_s1 <- n_excluded_s1 + length(flagged_idx)
-      for (i in flagged_idx) {
-        ts_col <- intersect(c("YEAR", "DATE", "DATETIME"), names(site_qc))
-        ts_val <- if (length(ts_col) > 0)
-                    as.character(site_qc[[ts_col[[1]]]][i])
-                  else "ALL"
-        log_exclusion(
-          site_id     = site_qc$site_id[i],
-          variable    = "NEE_VUT_REF",
-          timestamp   = ts_val,
-          reason      = paste0("flux_qc: NEE_VUT_REF p_gapfilled > ",
-                               round(1 - qc_thresh, 2), " (",
-                               thresh_label, " = ", qc_thresh, ")"),
-          threshold   = paste0(thresh_label, "=", qc_thresh),
-          excluded_by = "04_qc.R"
-        )
+    # Stage 1: per-site NEE QC gate (coarser resolutions only).
+    # VUT preferred when NEE_VUT_REF_QC has any non-NA values for this site.
+    # CUT fallback for the ~36 sites where VUT processing was not possible.
+    # When both are present, VUT is used and CUT QC is not applied redundantly.
+    if (!is_hh) {
+      site_qc_var <- if (
+        "NEE_VUT_REF_QC" %in% names(site_d) &&
+        any(!is.na(site_d$NEE_VUT_REF_QC))
+      ) {
+        "NEE_VUT_REF"
+      } else if (
+        "NEE_CUT_REF_QC" %in% names(site_d) &&
+        any(!is.na(site_d$NEE_CUT_REF_QC))
+      ) {
+        "NEE_CUT_REF"
+      } else {
+        character(0L)
       }
-      site_qc <- site_qc[is.na(site_qc$qc_flagged) | !site_qc$qc_flagged, ]
+
+      if (length(site_qc_var) > 0L) {
+        site_qc     <- flux_qc(site_d, qc_vars = site_qc_var,
+                               max_gapfilled = 1 - qc_thresh)
+        flagged_idx <- which(!is.na(site_qc$qc_flagged) & site_qc$qc_flagged)
+        n_excluded_s1 <- n_excluded_s1 + length(flagged_idx)
+        for (i in flagged_idx) {
+          ts_col <- intersect(c("YEAR", "DATE", "DATETIME"), names(site_qc))
+          ts_val <- if (length(ts_col) > 0)
+                      as.character(site_qc[[ts_col[[1]]]][i])
+                    else "ALL"
+          log_exclusion(
+            site_id     = site_qc$site_id[i],
+            variable    = site_qc_var,
+            timestamp   = ts_val,
+            reason      = paste0("flux_qc: ", site_qc_var, " p_gapfilled > ",
+                                 round(1 - qc_thresh, 2), " (",
+                                 thresh_label, " = ", qc_thresh, ")"),
+            threshold   = paste0(thresh_label, "=", qc_thresh),
+            excluded_by = "04_qc.R"
+          )
+        }
+        site_qc <- site_qc[is.na(site_qc$qc_flagged) | !site_qc$qc_flagged, ]
+      } else {
+        site_qc <- site_d
+      }
     } else {
       site_qc <- site_d
     }

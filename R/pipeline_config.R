@@ -83,11 +83,11 @@ check_pipeline_config <- function() {
   expected_version <- Sys.getenv("FLUXNET_SHUTTLE_VERSION", unset = "0.3.7.post1")
   # Use the CLI executable rather than importing the Python module: the
   # fluxnet_shuttle module does not expose a __version__ attribute, so the
-  # import approach always returns NA.  fluxnet:::fluxnet_shuttle_executable()
-  # returns the path to the binary installed in the 'fluxnet' virtualenv.
+  # import approach always returns NA. `fluxnet::flux_install_shuttle()` returns
+  # the path to the binary installed in the 'fluxnet' virtualenv.
   installed_version <- tryCatch(
     {
-      exe <- fluxnet:::fluxnet_shuttle_executable()
+      exe <- fluxnet::flux_install_shuttle()
       if (!is.null(exe) && nzchar(exe) && file.exists(exe)) {
         raw <- system2(exe, "--version", stdout = TRUE, stderr = FALSE)
         # Output: "fluxnet-shuttle 0.3.7.post1" — extract the version token

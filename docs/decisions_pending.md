@@ -101,22 +101,29 @@ methods writing (flagged by Dario Papale, 2026-04-16).
 
 ---
 
-## flux_download() version-pinning gap — DEFERRED
+## flux_download() version-pinning — DEFERRED BY DESIGN
 
-`flux_download()` bootstraps an ephemeral `uv` environment and runs the shuttle at git HEAD
-(observed HEAD = tag 0.3.8 on 2026-05-25), bypassing the pinned `fluxnet_annual_2026` venv
-used by `flux_listall()` and `check_pipeline_config()`. Downloads therefore run on an unpinned,
-moving shuttle version — defeating the version lock established for the paper.
+`flux_download()` bootstraps an ephemeral `uv` environment at call time rather than using the
+pinned `fluxnet_annual_2026` venv. The actual shuttle commit used at download time is not
+captured in run logs. This is a known reproducibility gap documented in `known_issues.md`.
 
-This ties to the in-flight rearchitecture in [fluxnet-package#43](https://github.com/EcosystemEcologyLab/fluxnet-package/issues/43)
-("route flux_download() through the shuttle Python API"). The download itself functions correctly;
-the concern is reproducibility: if the dataset is locked and then re-downloaded later, a different
-shuttle version may be used.
+**Decision:** Not pinning now — deliberately. Pinning will be applied at paper-lock time, when
+the full download is frozen and the commit used needs to be traceable. Doing it earlier adds
+maintenance overhead without benefit: the dataset is still being assembled and shuttle updates
+between now and lock are expected.
 
-**Decision:** Deferred to a post-manuscript reproducibility pass, before final dataset lock.
-Before locking: confirm with package maintainers (#43) whether `flux_download()` can be pinned
-to a specific shuttle commit, or record the actual shuttle commit used at download time in
-run metadata.
+**At paper-lock time, resolve the following:**
+1. Confirm which shuttle commit `flux_download()` actually used (inspect the `uv` cache or
+   add `--version` capture to the download log).
+2. Decide the env-var design: whether `FLUXNET_SHUTTLE_VERSION` covers both the install
+   reference (for the venv) and the version-check target, or whether a separate variable is
+   needed for each. The two formats (`0.3.7` vs `0.3.7.post0+dirty`) are already divergent
+   and the check in `check_pipeline_config()` needs to handle this cleanly.
+3. Record the locked shuttle commit in the paper's Methods section alongside the snapshot PID.
+
+Note: fluxnet-package#43 ("route flux_download() through the shuttle Python API") was resolved
+by PR #60 (merged 2026-04-28). The download routing itself is no longer the issue; the
+version-capture gap remains.
 
 ---
 

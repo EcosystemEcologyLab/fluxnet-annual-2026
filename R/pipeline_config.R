@@ -88,40 +88,6 @@ check_pipeline_config <- function() {
   }
 
   # --- Shuttle version check ---
-  # Site filter — when set, pipeline restricts downloads (and downstream steps)
-  # to only the listed site IDs. Space-separated. Unset = all sites.
-  FLUXNET_SITE_FILTER <- {
-    raw <- Sys.getenv("FLUXNET_SITE_FILTER", unset = "")
-    if (nchar(trimws(raw)) == 0) {
-      character(0)
-    } else {
-      strsplit(trimws(raw), "\\s+")[[1]]
-    }
-  }
-
-  # Data root directory — set FLUXNET_DATA_ROOT to relocate all pipeline data
-  # directories (raw, extracted, processed, snapshots). Useful for HPC scratch
-  # filesystems or machines where the repo checkout is read-only.
-  # Default: "data" (relative to the project root).
-  FLUXNET_DATA_ROOT <- Sys.getenv("FLUXNET_DATA_ROOT", unset = "data")
-
-  # Temporal resolutions to extract — space-separated flux_extract() codes.
-  # Valid values: y (yearly), m (monthly), w (weekly), d (daily),
-  #               h (hourly / half-hourly)
-  # Default: "y m d" — YY, MM, DD only. The Annual Paper does not use HH/HR
-  # sub-daily data, and excluding h reduces extracted volume by ~95%.
-  FLUXNET_EXTRACT_RESOLUTIONS <- strsplit(
-    Sys.getenv("FLUXNET_EXTRACT_RESOLUTIONS", unset = "y m d"),
-    "\\s+"
-  )[[1]]
-
-  # ZIP cleanup — when TRUE, each ZIP in data/raw/ is deleted immediately after
-  # at least one file has been successfully extracted from it. Reduces peak disk
-  # usage during batch downloads. Set to FALSE to retain raw ZIPs.
-  FLUXNET_DELETE_ZIPS <- isTRUE(as.logical(
-    Sys.getenv("FLUXNET_DELETE_ZIPS", unset = "TRUE")
-  ))
-
   # Pinned to the tagged 0.3.7 release (https://github.com/fluxnet/shuttle/releases/tag/0.3.7)
   # released 2026-04-07; addresses bulk-download batching.
   # Note: the 0.3.7 git tag self-reports as "0.3.7.post0+dirty" — the +dirty suffix is

@@ -63,6 +63,9 @@ stage_1_tables <- tables[tables %in% c("annual", "monthly", "weekly", "daily")]
 
 for (table in stage_1_tables) {
   data <- tbl(con, table)
+
+  # TODO: if no NEE_VUT_REF_QC for a particular site, fall back on NEE_CUT_REF_QC
+
   qc_col <- "NEE_VUT_REF_QC"
 
   threshold <- switch(

@@ -167,15 +167,84 @@ Schedule for the next pipeline maintenance pass, not before final paper analysis
 
 ---
 
-## DD data download — OPEN
+## DD data OOM blocker — RESOLVED 2026-06-02
 
-Daily (DD) resolution data has not been downloaded via the Shuttle. Required for:
-- Seasonal cycle figures
-- Growing season length figures
+~~Daily (DD) resolution data OOM blocker.~~ The 16 GB vector memory ceiling on the local
+Mac mini caused `03_read.R` to crash at site 150/759 during DD read. The DuckDB pipeline
+(`03b_create_database.R`) resolves this structurally — DuckDB reads all 14M daily rows
+directly from CSVs without R materialisation. DD figures (seasonal cycle, seasonal weekly,
+growing-season NEE) are now in the canonical figure set and promoted to candidates.
 
-**Action:** Add `"d"` to `FLUXNET_EXTRACT_RESOLUTIONS` and re-run `01_download.R` /
-`02_extract.R`. Coordinate with co-authors on which seasonal/growing season figures are
-in scope before downloading (significant additional storage).
+`known_issues.md` Section 6 can be marked resolved.
+
+---
+
+## Next actions — paper-critical, ordered by priority (updated 2026-06-02)
+
+### Priority 1 — Fig 01 is_functionally_active() recomputation (OPEN)
+
+Fig 01 network growth figure includes a second Y axis showing functionally active sites.
+This line was computed using the old `last_year >= 2021` definition prior to the
+`presence_df` refactor. `is_functionally_active()` and its docstring were corrected today
+(commits ee84552, R/utils.R); the figure itself was not regenerated.
+
+**Action:** Recompute the functionally active line using `is_functionally_active()` (≥3
+months valid flux data in at least one year within last 4 years, from `site_year_data_presence.csv`).
+Regenerate Fig 01. The presence CSV was produced by `03_read.R` on the 759-site dataset;
+treat it as authoritative — the any-flux definition was confirmed correct in known_issues.md §6.
+
+### Priority 2 — Fig 07 / Fig 08 style harmonisation (OPEN)
+
+Fig 07 (latitudinal gradient) font size and style have not been confirmed to match the
+canonical figure series (Whit01–09, Map01–09, Dur01–09). Fig 08 (environmental response)
+axis labels, font sizes, and panel layout have not been reviewed against `MAP_STYLE`,
+`DUR_STYLE`, and `WHITTAKER_STYLE` constants in `R/figures/`.
+
+**Action:** Apply the style review pass to Fig 07 and Fig 08 together. Regenerate once
+confirmed. Current outputs in `review/figures/latitudinal/` and
+`review/figures/envresponse/`.
+
+### Priority 3 — Rebuild site_candidates_full.csv at 759 sites (OPEN)
+
+`data/snapshots/site_candidates_full.csv` has 569 rows (from the 716-site April lineage).
+`long_record_site_candidates_gez_kg.csv` is also stale. Any figure that joins on candidate
+status (`currently_selected`, long-record site selection, anomaly stratification) will use
+the wrong site set until this is rebuilt.
+
+**Action:** After `03_read.R` has produced updated NEE presence data for 759 sites, rebuild
+`long_record_site_candidates_gez_kg.csv` and re-run `step2_extract_aridity.R` to regenerate
+`site_candidates_full.csv`. Tracked in known_issues.md §7. This is a prerequisite for
+anomaly figures and long-record time series.
+
+### Priority 4 — Manuscript drafting
+
+Figures are stable and candidates are promoted. The 759-site, DuckDB-canonical, TERN-inclusive
+pipeline has run end-to-end. Figures can now be referenced with confidence in the manuscript.
+CUT QC fallback and VUT/CUT coalesce in map and Whittaker figures are implemented and validated.
+
+---
+
+## Deferred items — do not action without revisiting
+
+### Schema-translation refactor (low priority, next maintenance pass)
+Move `YEAR = as.integer(TIMESTAMP)` (annual) and `DOY = lubridate::yday(TIMESTAMP)` (daily)
+upstream into `05_units.R` as post-compute column additions, or into a shared helper.
+Currently working as inline patches in `07_figures.R`; no correctness issue.
+See: DuckDB schema-translation patches entry above.
+
+### flux_download() version pinning (deferred-by-design, paper-lock prerequisite)
+Not pinning now; will be applied deliberately at paper-lock time. The env-var format conflict
+(`0.3.7` install tag vs `0.3.7.post0+dirty` self-report) is part of the same decision.
+See: decisions_pending.md flux_download() entry; docs/known_issues.md §5.
+
+### Representativeness analysis climate axis (scope undefined)
+When eventually scoped, use Köppen-Geiger (already extracted at all sites). CRU is not needed.
+
+### fluxnet package DuckDB rewrite (out of our control)
+If/when the package rewrites flux_read/flux_qc/flux_units with DuckDB internals, much of
+today's plumbing (03b_create_database.R, DuckDB 04 and 05) will be superseded by package
+function calls. The methodological decisions (QC rule, CUT fallback, figure logic) are
+package-rewrite-proof and will remain valid.
 
 ---
 
@@ -187,6 +256,7 @@ reviewed against the canonical Whittaker/Map/Dur style standards established dur
 
 **Action:** Review against `MAP_STYLE`, `DUR_STYLE`, and `WHITTAKER_STYLE` constants in
 `R/figures/`. Update to match before submission. Assign to the same style pass as Fig 07.
+See Priority 2 above.
 
 ---
 
@@ -197,6 +267,7 @@ confirmed to match the canonical figure series (Whit01–09, Map01–09, Dur01�
 
 **Action:** Apply same font size and style review as the Whittaker/Map/Dur series.
 Regenerate once confirmed. See `review/figures/latitudinal/` for current output.
+See Priority 2 above.
 
 ---
 
@@ -206,7 +277,4 @@ Fig 01 network growth figure includes a second Y axis showing the number of func
 active sites. This line was computed using the old `last_year >= 2021` definition prior
 to the `presence_df` refactor.
 
-**Action:** Recompute the functionally active line using `is_functionally_active()` (≥3
-months valid NEE in at least one year within last 4 years). Regenerate Fig 01 after
-`site_year_data_presence.csv` is confirmed finalized — see outstanding verification
-steps in `known_issues.md` Section 6 before treating that CSV as authoritative input.
+**Action:** See Priority 1 above.

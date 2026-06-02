@@ -138,6 +138,7 @@ a specific site-year), that decision must be stored in a human override file.
 | `data/overrides/` | Yes | Human override files |
 | `data/raw/` | No | Downloaded source data |
 | `data/extracted/` | No | Unzipped/parsed source data |
-| `data/processed/` | No | Pipeline outputs |
+| `data/processed/` | No | Pipeline outputs (RDS files from 03_read, 05_units) |
+| `data/duckdb/` | No | DuckDB database created by 03b_create_database.R; contains all-resolution flux data (annual, monthly, weekly, daily, hourly) plus QC'd tables added by 04_qc.R. Multi-GB; gitignored; regenerable from extracted CSVs. |
 | `outputs/` | No | Final analysis outputs and logs |
 | `figures/` | No | Generated figures |

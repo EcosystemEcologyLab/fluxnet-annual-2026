@@ -121,7 +121,7 @@ as GitHub Codespace Secrets. For local use, copy `.env.example` to `.env`.
 | `AMERIFLUX_USER_NAME`    | Registered AmeriFlux account name                    | — (required)                  |
 | `AMERIFLUX_USER_EMAIL`   | Registered AmeriFlux account email                   | — (required)                  |
 | `AMERIFLUX_INTENDED_USE` | AmeriFlux intended use code (1–6)                    | `1` (Synthesis)               |
-| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.3.7`                       |
+| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.3.7.post0+dirty`           |
 | `FLUXNET_SNAPSHOT_MODE`  | `"development"` or `"locked"`                        | `"development"`               |
 | `FLUXNET_SNAPSHOT_FILE`  | Path to locked snapshot CSV                          | — (required if locked)        |
 | `FLUXNET_DATA_ROOT`      | Root directory for all pipeline data I/O             | `"data"`                      |
@@ -254,13 +254,24 @@ or incorrect lockfile when run locally.
 Scripts in `scripts/` are numbered and must be run in order:
 
 ```
-01_download.R   → flux_listall() + flux_download()
-02_extract.R    → flux_extract() + flux_discover_files()
-03_read.R       → flux_read() + flux_varinfo() + flux_badm()
-04_qc.R         → flux_qc() + fluxnet_qc_hh()
-05_units.R      → fluxnet_convert_units()
-06_analysis.R   → paper-specific analyses
-07_figures.R    → figure generation
+01_download.R          → flux_listall() + flux_download()
+02_extract.R           → flux_extract() + flux_discover_files()
+03_read.R              → flux_read() + flux_varinfo() + flux_badm()
+03b_create_database.R  → creates data/duckdb/fluxnet.duckdb by reading all
+                         extracted CSVs directly into DuckDB tables (annual,
+                         monthly, weekly, daily, hourly). Avoids the in-memory
+                         accumulation that caused a 16 GB OOM on DD resolution.
+                         Run after 03_read.R; prerequisite for the DuckDB-based
+                         04_qc.R. (sources duckdb_setup.R + duckdb_update.R)
+04_qc.R                → reads DuckDB tables, applies QC threshold (>= 0.50)
+                         per site, writes filtered copies (annual_qc, monthly_qc,
+                         weekly_qc, daily_qc, hourly_qc) back into the database.
+                         Row exclusion uses NEE_VUT_REF_QC for VUT sites and
+                         NEE_CUT_REF_QC for CUT-only sites (per-site fallback,
+                         not per-row). See commit ad7464f.
+05_units.R             → fluxnet_convert_units()
+06_analysis.R          → paper-specific analyses
+07_figures.R           → figure generation
 ```
 
 Do not skip steps or run them out of order. Each script sources
@@ -372,10 +383,17 @@ QC_THRESHOLD_YY <- 0.50   # annual
 - USTAR filtering: already applied in the distributed data — do not re-apply
 
 The FLUXNET published convention for coarse resolutions is `> 0.5`. The default
-for this synthesis paper is also `0.50` — row exclusion is gated on
-`NEE_VUT_REF_QC` only (not all QC columns), so the effective filter is already
-conservative. The decision to use 0.50 rather than 0.75 is documented in
-`docs/decisions_pending.md` (resolved 2026-04-20) and confirmed in
+for this synthesis paper is also `0.50`. Row exclusion is per-site:
+- Sites with any non-NA `NEE_VUT_REF_QC` values: gated on `NEE_VUT_REF_QC >= 0.50`
+- CUT-only sites (where `NEE_VUT_REF_QC` is entirely NA across all of that site's
+  rows): gated on `NEE_CUT_REF_QC >= 0.50` as a fallback
+
+The fallback is **per-site, not per-row** — VUT and CUT QC are not mixed within
+a single site. Exclusion logs record which QC column drove each exclusion
+(`NEE_VUT_REF_QC` or `NEE_CUT_REF_QC`). Secondary variable QC columns (GPP, RECO,
+LE, H) are retained in output tables but do not drive row exclusion. Implementation
+in `scripts/04_qc.R` (commit ad7464f). The decision to use 0.50 rather than 0.75
+is documented in `docs/decisions_pending.md` (resolved 2026-04-20) and confirmed in
 `docs/methods_requirements.md` §5.3. To reproduce FLUXNET2015 published figures,
 no threshold change is needed; to apply a stricter filter, raise all thresholds
 to `0.75` in `R/pipeline_config.R`.
@@ -497,15 +515,15 @@ the package is updated. Do not implement workarounds.
 
 | Item | Tracked in |
 |------|-----------|
-| Route `flux_download()` through shuttle Python API for reliable bulk downloads and credential passing | EcosystemEcologyLab/fluxnet-package#43 |
 | Pin internal fluxnet-shuttle install to v0.2.0 tag | EcosystemEcologyLab/fluxnet-package (issue posted) |
 | Extend `flux_qc()` for HH flag filtering and per-resolution thresholds | EcosystemEcologyLab/fluxnet-package (issue posted) |
 | Add unit conversion functions to fluxnet package | EcosystemEcologyLab/fluxnet-package (issue posted) |
-| Response pending from Eric Scott re: #43 download rearchitecture | EcosystemEcologyLab/fluxnet-package#43 |
 
 # Shuttle version monitoring: check https://github.com/fluxnet/shuttle/releases
-# for new releases. Current pin: 0.3.7 — use 0.3.7 as the value for FLUXNET_SHUTTLE_VERSION.
-# The installable git tag is 0.3.7; the shuttle may self-report 0.3.7.post0+dirty in certain
-# builds (e.g. the Codespace) but the underlying commit (3f3bd767) is identical. Use 0.3.7 as
-# the env var value for both installation and version-checking.
+# for new releases. Current pin: tag 0.3.7 (commit 3f3bd767), which self-reports
+# as "0.3.7.post0+dirty" — this string is embedded in the package metadata at that
+# tag, not a local build artefact. pipeline_config.R defaults FLUXNET_SHUTTLE_VERSION
+# to "0.3.7.post0+dirty" to match the self-reported string; the env vars table above
+# reflects this. The install reference (the tag name) and the version-check string
+# differ; resolving this cleanly is part of the paper-lock task in decisions_pending.md.
 # Run flux_listall() after upgrading to confirm snapshot format is unchanged.

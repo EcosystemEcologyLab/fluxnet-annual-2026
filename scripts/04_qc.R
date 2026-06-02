@@ -1,15 +1,14 @@
 ## 04_qc.R — Apply QC filtering per resolution
-## Uses: flux_qc(), fluxnet_qc_hh()
 ## See CLAUDE.md QC Flag Reference for flag definitions.
-##
-## Loops over FLUXNET_EXTRACT_RESOLUTIONS; reads flux_data_raw_<res>.rds and
-## writes flux_data_qc_<res>.rds for each resolution.
+## 
+## Creates a copy of each resolution's table with rows filtered out by QC 
+## variable(s).
 ##
 ## Two-stage QC strategy:
-##   Stage 1 (flux_qc): at DD/MM/WW/YY resolution, _QC values are fractions
-##     0–1. flux_qc() adds qc_flagged (TRUE if p_gapfilled > 1-threshold) and
-##     p_gapfilled columns; flagged rows are dropped and logged as exclusions.
-##     Rows with qc_flagged == NA are kept. Stage 1 is skipped for HH/HR data.
+##   Stage 1: at DD/MM/WW/YY resolution, _QC values are fractions 0–1.
+##     `qc_flagged` (TRUE if p_gapfilled > 1-threshold) and `p_gapfilled` columns
+##     are added; flagged rows are dropped and logged as exclusions. Rows with
+##     qc_flagged == NA are kept. Stage 1 is skipped for HH/HR data.
 ##
 ##     Row exclusion uses VUT QC for sites that have NEE_VUT_REF (the majority),
 ##     and CUT QC for the ~36 sites where NEE_VUT_REF is absent (CUT-only sites).
@@ -18,7 +17,7 @@
 ##     output for per-variable filtering downstream but do not drive row exclusion.
 ##     See docs/decisions_pending.md and docs/known_issues.md Section 8.
 ##
-##   Stage 2 (fluxnet_qc_hh): at HH/HR resolution, _QC values are integers
+##   Stage 2: at HH/HR resolution, _QC values are integers
 ##     0–3. Rows with any _QC > max_qc are dropped. At DD/MM/WW/YY this is a
 ##     no-op (all fractions ≤ 1 pass max_qc = 1L) but the call is retained so
 ##     the script is resolution-agnostic.
@@ -27,17 +26,18 @@ if (file.exists(".env")) {
   library(dotenv)
   dotenv::load_dot_env()
 }
+# library(fluxnet)
+library(dplyr)
+library(duckdb)
 
 source("R/pipeline_config.R")
 check_pipeline_config()
 
-source("R/qc.R")
+# source("R/qc.R")
 source("R/utils.R")
 
-library(fluxnet)
-library(dplyr)
-
-processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
+db_path <- file.path(FLUXNET_DATA_ROOT, "duckdb/fluxnet.duckdb")
+con <- dbConnect(duckdb(), db_path)
 
 # Initialise log files so they exist even if nothing is excluded/unknown.
 if (!dir.exists("outputs")) dir.create("outputs", recursive = TRUE)
@@ -59,184 +59,112 @@ if (!file.exists(unknown_log_path)) {
   )
 }
 
-# Per-resolution fractional QC thresholds (DD/MM/WW/YY).
-# HH/HR data uses integer flag filtering (Stage 2 only).
-qc_threshold_for <- list(
-  yy = QC_THRESHOLD_YY,
-  mm = QC_THRESHOLD_MM,
-  ww = QC_THRESHOLD_WW,
-  dd = QC_THRESHOLD_DD,
-  hh = NA_real_
-)
 
-# Resolutions that carry integer _QC flags (Stage 2 only; skip Stage 1).
-hh_suffixes <- c("hh", "hr")
+tables <- dbListTables(con)
+stage_1_tables <- tables[tables %in% c("annual", "monthly", "weekly", "daily")]
 
-# Map extract resolution codes to output file suffixes.
-res_to_suffix <- c(y = "yy", m = "mm", w = "ww", d = "dd", h = "hh")
+for (table in stage_1_tables) {
+  data <- tbl(con, table)
 
-for (res_code in FLUXNET_EXTRACT_RESOLUTIONS) {
-  suffix   <- res_to_suffix[[res_code]]
-  raw_path <- file.path(processed_dir, paste0("flux_data_raw_", suffix, ".rds"))
+  # TODO: if no NEE_VUT_REF_QC for a particular site, fall back on NEE_CUT_REF_QC
 
-  out_path <- file.path(processed_dir, paste0("flux_data_qc_", suffix, ".rds"))
+  qc_col <- "NEE_VUT_REF_QC"
 
-  if (file.exists(out_path)) {
-    message("QC output already exists for resolution '", res_code, "' (", suffix,
-            ") — skipping: ", out_path)
-    next
+  threshold <- switch(
+    table,
+    "annual" = QC_THRESHOLD_YY,
+    "monthly" = QC_THRESHOLD_MM,
+    "weekly" = QC_THRESHOLD_WW,
+    "daily" = QC_THRESHOLD_DD
+  )
+
+  suffix <- switch(
+    table,
+    "annual" = "YY",
+    "monthly" = "MM",
+    "weekly" = "WW",
+    "daily" = "DD"
+  )
+
+  if (!qc_col %in% colnames(data)) {
+    cli::cli_warn(c(
+      "!" = "QC column {.var {qc_col}} not found in {table} data",
+      i = "Stage 1 skipped for this resolution."
+    ))
+    data_qc <- data
+    data_qc$p_gapfilled <- NA_real_
+    data_qc$qc_flagged <- NA
+    return(data)
+  } else {
+    data_qc <- data |>
+      mutate(
+        p_gapfilled = 1 - .data[[qc_col]],
+        qc_flagged = p_gapfilled > threshold
+      )
   }
 
-  if (!file.exists(raw_path)) {
-    message("No raw file for resolution '", res_code, "' (", suffix,
-            ") — skipping.")
-    next
+  # This copies the entire QC-filtered table into the database.  Maybe not the
+  # best way to do things?  Probably better to just use SQL to create the
+  # `qc_flagged` column in each table and then downstream scripts can just start
+  # with `filter(!qc_flagged)`.
+
+  # If qc table already exists, delete it
+  qc_name <- glue::glue("{table}_qc")
+  if (qc_name %in% tables) {
+    dbExecute(con, glue::glue("DROP TABLE {qc_name}"))
   }
+  data_qc |>
+    filter(is.na(qc_flagged) | !qc_flagged) |>
+    dplyr::compute(name = glue::glue("{table}_qc"), temporary = FALSE)
 
-  flux_data <- readRDS(raw_path)
-  cat("\n--- 04_qc.R: resolution", toupper(suffix), "---\n")
+  excluded <- data_qc |>
+    filter(qc_flagged) |>
+    select(site_id, starts_with("TIMESTAMP")) |>
+    collect()
 
-  is_hh        <- suffix %in% hh_suffixes
-  qc_thresh    <- qc_threshold_for[[suffix]]
-  thresh_label <- paste0("QC_THRESHOLD_", toupper(suffix))
-
-  # --- Stage 1 + 2: per-site loop with disk-based chunk accumulation ---
-  # flux_qc() runs purrr::map2/reduce across all rows at once; for resolutions
-  # like MM (425 k rows) this causes a fatal memory spike. Processing per-site
-  # (~600 rows each) eliminates the spike and provides progress output.
-  #
-  # Every 50 sites the current batch is bound and written to a numbered chunk
-  # RDS in a temporary directory, then the in-memory accumulator is cleared.
-  # After the loop, the raw frame is freed before the chunks are read back and
-  # combined sequentially, keeping peak memory below ~1.5 GB at all resolutions.
-  n_before_stage1 <- nrow(flux_data)
-
-  site_ids <- unique(flux_data$site_id)
-  n_sites  <- length(site_ids)
-
-  if (!is_hh) {
-    # Per-site QC gate is determined inside the loop (VUT preferred, CUT fallback).
-    # Check dataset-level presence so we can warn early if neither column exists.
-    has_vut_qc <- "NEE_VUT_REF_QC" %in% names(flux_data)
-    has_cut_qc <- "NEE_CUT_REF_QC" %in% names(flux_data)
-    if (!has_vut_qc && !has_cut_qc) {
-      message("  Neither NEE_VUT_REF_QC nor NEE_CUT_REF_QC present in ",
-              toupper(suffix), " data — Stage 1 will be skipped."); flush(stderr())
-    }
-  }
-
-  chunk_dir <- file.path(processed_dir, paste0("qc_chunks_", suffix))
-  if (!dir.exists(chunk_dir)) dir.create(chunk_dir)
-  chunk_n       <- 0L
-  accum         <- list()
-  n_excluded_s1 <- 0L
-  n_excluded_s2 <- 0L
-
-  message("  Applying QC to ", n_sites, " sites..."); flush(stderr())
-
-  for (s_i in seq_along(site_ids)) {
-    site_d <- flux_data[flux_data$site_id == site_ids[s_i], , drop = FALSE]
-
-    # Stage 1: per-site NEE QC gate (coarser resolutions only).
-    # VUT preferred when NEE_VUT_REF_QC has any non-NA values for this site.
-    # CUT fallback for the ~36 sites where VUT processing was not possible.
-    # When both are present, VUT is used and CUT QC is not applied redundantly.
-    if (!is_hh) {
-      site_qc_var <- if (
-        "NEE_VUT_REF_QC" %in% names(site_d) &&
-        any(!is.na(site_d$NEE_VUT_REF_QC))
-      ) {
-        "NEE_VUT_REF"
-      } else if (
-        "NEE_CUT_REF_QC" %in% names(site_d) &&
-        any(!is.na(site_d$NEE_CUT_REF_QC))
-      ) {
-        "NEE_CUT_REF"
-      } else {
-        character(0L)
-      }
-
-      if (length(site_qc_var) > 0L) {
-        site_qc     <- flux_qc(site_d, qc_vars = site_qc_var,
-                               max_gapfilled = 1 - qc_thresh)
-        flagged_idx <- which(!is.na(site_qc$qc_flagged) & site_qc$qc_flagged)
-        n_excluded_s1 <- n_excluded_s1 + length(flagged_idx)
-        for (i in flagged_idx) {
-          ts_col <- intersect(c("YEAR", "DATE", "DATETIME"), names(site_qc))
-          ts_val <- if (length(ts_col) > 0)
-                      as.character(site_qc[[ts_col[[1]]]][i])
-                    else "ALL"
-          log_exclusion(
-            site_id     = site_qc$site_id[i],
-            variable    = site_qc_var,
-            timestamp   = ts_val,
-            reason      = paste0("flux_qc: ", site_qc_var, " p_gapfilled > ",
-                                 round(1 - qc_thresh, 2), " (",
-                                 thresh_label, " = ", qc_thresh, ")"),
-            threshold   = paste0(thresh_label, "=", qc_thresh),
-            excluded_by = "04_qc.R"
-          )
-        }
-        site_qc <- site_qc[is.na(site_qc$qc_flagged) | !site_qc$qc_flagged, ]
-      } else {
-        site_qc <- site_d
-      }
-    } else {
-      site_qc <- site_d
-    }
-
-    # Stage 2: integer flag filter (no-op at coarser resolutions)
-    n_s2_before   <- nrow(site_qc)
-    site_qc       <- fluxnet_qc_hh(site_qc, max_qc = 1L)
-    n_excluded_s2 <- n_excluded_s2 + (n_s2_before - nrow(site_qc))
-    accum[[length(accum) + 1L]] <- site_qc
-
-    if (length(accum) >= 50L || s_i == n_sites) {
-      message("  Progress: ", s_i, "/", n_sites, " sites"); flush(stderr())
-      chunk_n   <- chunk_n + 1L
-      chunk_dat <- dplyr::bind_rows(accum)
-      saveRDS(chunk_dat,
-              file.path(chunk_dir, sprintf("chunk_%04d.rds", chunk_n)))
-      accum <- list()
-      rm(chunk_dat); gc()
-    }
-  }
-
-  # Free the raw frame before combining chunks — eliminates the ~1 GB overlap
-  # between the raw and QC'd frames that caused OOM on the previous approach.
-  rm(flux_data); gc()
-
-  # Bind chunks sequentially so peak memory stays bounded to
-  # (accumulated result so far) + (one new chunk ~30 K rows).
-  chunk_files <- sort(list.files(chunk_dir, pattern = "\\.rds$",
-                                 full.names = TRUE))
-  message("  Combining ", length(chunk_files), " chunks..."); flush(stderr())
-  flux_data_qc <- NULL
-  for (cf in chunk_files) {
-    chunk_dat    <- readRDS(cf)
-    flux_data_qc <- if (is.null(flux_data_qc)) chunk_dat
-                    else dplyr::bind_rows(flux_data_qc, chunk_dat)
-    rm(chunk_dat); gc()
-  }
-  unlink(chunk_dir, recursive = TRUE)
-
-  n_after_stage1  <- n_before_stage1 - n_excluded_s1
-  n_before_stage2 <- n_after_stage1
-  n_after_stage2  <- n_after_stage1 - n_excluded_s2
-  n_excluded_hh   <- n_excluded_s2
-
-  saveRDS(flux_data_qc, out_path)
-
-  cat("Records input:                  ", n_before_stage1, "\n")
-  if (!is_hh) {
-    cat(sprintf("Excluded by flux_qc (stage 1):   %d (%s = %s)\n",
-                n_before_stage1 - n_after_stage1, thresh_label, qc_thresh))
-  }
-  cat("Excluded by fluxnet_qc_hh (s2): ", n_excluded_hh,
-      " (max_qc = 1)\n")
-  cat("Records output:                 ", nrow(flux_data_qc), "\n")
-  cat("Saved:", out_path, "\n")
+  log_exclusion(
+    site_id = excluded[[1]],
+    variable = "ALL",
+    timestamp = excluded[[2]],
+    reason = glue::glue(
+      "{qc_col} p_gapfilled > {round(1 - threshold, 2)} (QC_THRESHOLD_{suffix}={threshold})"
+    ),
+    threshold = glue::glue("QC_THRESHOLD_{suffix}={threshold}"),
+    excluded_by = "04_qc.R"
+  )
 }
+
+# Do hourly QC differently as sub-daily data uses integer _QC flags (Stage 2
+# only; skip Stage 1).
+if ("hourly" %in% tables) {
+  hourly <- tbl(con, "hourly")
+  hourly_qc <- hourly |>
+    mutate(qc_flagged = if_any(ends_with("_QC"), \(x) as.integer(x) > 1L))
+
+  # If QC table already exists, remove it
+  if ("hourly_qc" %in% tables) {
+    dbExecute(con, "DROP TABLE hourly_qc")
+  }
+  hourly_qc |>
+    filter(!qc_flagged | is.na(qc_flagged)) |>
+    compute(name = "hourly_qc", temporary = FALSE)
+
+  excluded <- hourly_qc |>
+    filter(qc_flagged) |>
+    select(site_id, starts_with("TIMESTAMP")) |>
+    collect()
+
+  log_exclusion(
+    site_id = excluded[[1]],
+    variable = "ALL",
+    timestamp = excluded[[2]],
+    reason = "*_QC column(s) > 1",
+    threshold = "max QC flag = 1",
+    excluded_by = "04_qc.R"
+  )
+}
+
+dbDisconnect(con)
 
 cat("\n--- 04_qc.R: log file summary ---\n")
 cat("exclusion_log.csv:", excl_log_path,

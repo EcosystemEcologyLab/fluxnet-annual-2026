@@ -13,12 +13,14 @@ BR-Npw,Tropical moist forest,12,within
 BR-Sa1,Tropical rainforest,11,within
 BR-Sa3,Tropical rainforest,11,within
 BR-SM1,Subtropical humid forest,21,within
+BR-Xpw,Tropical moist forest,12,within
 CA-ARB,Boreal tundra woodland,42,within
 CA-ARF,Boreal tundra woodland,42,within
 CA-BOU,Boreal coniferous forest,41,within
 CA-Ca1,Temperate oceanic forest,31,within
 CA-Ca2,Temperate oceanic forest,31,within
 CA-Ca3,Temperate oceanic forest,31,within
+CA-Cbo,Temperate continental forest,32,within
 CA-CF1,Boreal tundra woodland,42,within
 CA-CF2,Boreal tundra woodland,42,within
 CA-CF3,Boreal tundra woodland,42,within
@@ -38,7 +40,9 @@ CA-MA2,Temperate steppe,33,within
 CA-MA3,Temperate steppe,33,within
 CA-Man,Boreal coniferous forest,41,within
 CA-Mer,Temperate continental forest,32,within
+CA-Mtk,Polar,50,within
 CA-Na1,Temperate continental forest,32,within
+CA-Ojp,Boreal coniferous forest,41,within
 CA-PB1,Boreal tundra woodland,42,within
 CA-PB2,Boreal tundra woodland,42,within
 CA-Qc2,Boreal coniferous forest,41,within
@@ -47,12 +51,17 @@ CA-RBM,Temperate oceanic forest,31,nearest_feature
 CA-SCB,Boreal tundra woodland,42,within
 CA-SCC,Boreal tundra woodland,42,within
 CA-SF1,Boreal coniferous forest,41,within
+CA-SF2,Boreal coniferous forest,41,within
 CA-SF3,Boreal coniferous forest,41,within
+CA-SJ2,Boreal coniferous forest,41,within
 CA-SMC,Boreal tundra woodland,42,within
 CA-TP1,Temperate continental forest,32,within
+CA-TP2,Temperate continental forest,32,within
 CA-TP3,Temperate continental forest,32,within
+CA-TP4,Temperate continental forest,32,within
 CA-TPA,Temperate continental forest,32,within
 CA-TPD,Temperate continental forest,32,within
+CA-TVC,Polar,50,within
 CL-ACF,Temperate oceanic forest,31,within
 CL-SDF,Temperate oceanic forest,31,within
 CL-SDP,Temperate oceanic forest,31,within
@@ -61,12 +70,19 @@ MX-Aog,Tropical dry forest,13,within
 MX-PMm,Tropical moist forest,12,within
 MX-Tes,Tropical dry forest,13,within
 PE-QFR,Tropical rainforest,11,within
+PR-xGU,Tropical moist forest,12,within
 PR-xLA,Tropical moist forest,12,within
+US-A03,Polar,50,within
 US-A10,Polar,50,within
 US-A32,Temperate steppe,33,within
 US-A37,Temperate steppe,33,within
 US-A39,Subtropical steppe,23,within
 US-A74,Temperate steppe,33,within
+US-ABa,Subtropical humid forest,21,within
+US-ABb,Subtropical humid forest,21,within
+US-ABc,Subtropical humid forest,21,within
+US-ABd,Subtropical humid forest,21,within
+US-ABe,Subtropical humid forest,21,within
 US-ADR,Subtropical desert,24,within
 US-Akn,Subtropical humid forest,21,within
 US-ALQ,Temperate continental forest,32,within
@@ -74,13 +90,16 @@ US-AR1,Temperate steppe,33,within
 US-AR2,Temperate steppe,33,within
 US-ARb,Temperate steppe,33,within
 US-ARc,Temperate steppe,33,within
+US-ARM,Temperate steppe,33,within
 US-ASH,Subtropical dry forest,22,within
 US-ASM,Subtropical dry forest,22,within
+US-Aud,Subtropical desert,24,within
 US-Bar,Temperate mountain system,35,within
 US-Bi1,Subtropical dry forest,22,within
 US-Bi2,Subtropical dry forest,22,within
 US-BRG,Temperate continental forest,32,within
 US-BZB,Boreal tundra woodland,42,within
+US-BZF,Boreal tundra woodland,42,within
 US-BZo,Boreal tundra woodland,42,within
 US-CAK,Boreal tundra woodland,42,within
 US-CdM,Temperate desert,34,within
@@ -131,6 +150,7 @@ US-EvM,Tropical moist forest,12,within
 US-Fcr,Boreal tundra woodland,42,within
 US-Fmf,Subtropical mountain system,25,within
 US-Fo1,Polar,50,within
+US-Fo2,Polar,50,within
 US-Fuf,Subtropical mountain system,25,within
 US-Fwf,Subtropical mountain system,25,within
 US-GLE,Temperate mountain system,35,within
@@ -143,6 +163,7 @@ US-HBK,Temperate mountain system,35,within
 US-Hn2,Temperate desert,34,within
 US-Hn3,Temperate desert,34,within
 US-Ho2,Temperate continental forest,32,within
+US-Ho3,Temperate continental forest,32,within
 US-HRA,Subtropical humid forest,21,within
 US-HRC,Subtropical humid forest,21,within
 US-Hsm,Subtropical dry forest,22,within
@@ -155,6 +176,7 @@ US-ICh,Polar,50,within
 US-ICs,Polar,50,within
 US-ICt,Polar,50,within
 US-Jo1,Subtropical desert,24,within
+US-Jo2,Subtropical desert,24,within
 US-KFS,Temperate steppe,33,within
 US-Kon,Temperate steppe,33,within
 US-KPL,Boreal mountain system,43,within
@@ -169,6 +191,7 @@ US-LS1,Subtropical desert,24,within
 US-MBP,Temperate continental forest,32,within
 US-Me1,Temperate mountain system,35,within
 US-Me3,Temperate mountain system,35,within
+US-Me5,Temperate mountain system,35,within
 US-Me6,Temperate mountain system,35,within
 US-Me7,Temperate mountain system,35,within
 US-MEF,Temperate mountain system,35,within
@@ -188,12 +211,14 @@ US-NC1,Subtropical humid forest,21,within
 US-NC2,Subtropical humid forest,21,within
 US-NC3,Subtropical humid forest,21,within
 US-NC4,Subtropical humid forest,21,within
+US-NC5,Subtropical humid forest,21,within
 US-Ne1,Temperate steppe,33,within
 US-Ne2,Temperate steppe,33,within
 US-Ne3,Temperate steppe,33,within
 US-NGB,Polar,50,within
 US-NGC,Boreal tundra woodland,42,within
 US-NR1,Temperate mountain system,35,within
+US-NR3,Temperate mountain system,35,within
 US-NSa,Subtropical dry forest,22,within
 US-NSb,Subtropical dry forest,22,within
 US-Oho,Temperate continental forest,32,within
@@ -223,6 +248,7 @@ US-PSH,Subtropical dry forest,22,within
 US-PSL,Subtropical dry forest,22,within
 US-RC1,Temperate desert,34,within
 US-RC2,Temperate desert,34,within
+US-RC3,Temperate desert,34,within
 US-RC4,Temperate mountain system,35,within
 US-RC5,Temperate desert,34,within
 US-RGA,Subtropical humid forest,21,within
@@ -249,6 +275,7 @@ US-SD2,Temperate continental forest,32,within
 US-Seg,Subtropical steppe,23,within
 US-Ses,Subtropical steppe,23,within
 US-SHC,Subtropical mountain system,25,within
+US-Slt,Temperate continental forest,32,within
 US-Sne,Subtropical dry forest,22,within
 US-Snf,Subtropical dry forest,22,within
 US-SP1,Subtropical humid forest,21,within
@@ -260,6 +287,8 @@ US-SRS,Subtropical desert,24,within
 US-SSH,Temperate mountain system,35,within
 US-Sta,Temperate desert,34,within
 US-StJ,Subtropical humid forest,21,within
+US-Syv,Temperate continental forest,32,within
+US-TaS,Tropical moist forest,12,within
 US-TKs,Polar,50,within
 US-TLR,Subtropical humid forest,21,within
 US-Ton,Subtropical mountain system,25,within
@@ -284,7 +313,12 @@ US-UTB,Temperate desert,34,within
 US-UTD,Temperate desert,34,within
 US-UTE,Temperate desert,34,within
 US-UTJ,Temperate desert,34,within
+US-UTL,Temperate desert,34,within
+US-UTM,Temperate desert,34,within
+US-UTP,Water,90,within
+US-UTV,Temperate desert,34,within
 US-UTW,Temperate desert,34,within
+US-Var,Subtropical mountain system,25,within
 US-Vcm,Temperate mountain system,35,within
 US-Vcp,Temperate mountain system,35,within
 US-VT1,Temperate steppe,33,within
@@ -292,6 +326,7 @@ US-VT2,Temperate steppe,33,within
 US-WCr,Temperate continental forest,32,within
 US-Whs,Subtropical desert,24,within
 US-Wjs,Subtropical steppe,23,within
+US-Wkg,Subtropical desert,24,within
 US-WPT,Temperate continental forest,32,within
 US-WT1,Subtropical steppe,23,within
 US-xAB,Temperate mountain system,35,within
@@ -527,6 +562,7 @@ UK-Ags,Temperate oceanic forest,31,within
 SN-Nkr,Tropical dry forest,13,within
 SN-Dhr,Tropical shrubland,14,within
 SE-Trb,Boreal coniferous forest,41,within
+SE-St1,Boreal mountain system,43,within
 SE-Srj,Boreal coniferous forest,41,within
 SE-Ros,Boreal coniferous forest,41,within
 SE-Hmr,Boreal coniferous forest,41,within
@@ -557,6 +593,9 @@ IT-BsB,Temperate mountain system,35,within
 IT-Arz,Temperate oceanic forest,31,within
 IL-Yat,Tropical desert,15,within
 IL-RmH,Subtropical steppe,23,within
+IE-Gwr,Temperate oceanic forest,31,within
+IE-CaN,Temperate oceanic forest,31,within
+IE-CaC,Temperate oceanic forest,31,within
 GH-Ank,Tropical rainforest,11,within
 FR-Nzn,Temperate oceanic forest,31,within
 FR-Mau,Temperate oceanic forest,31,within
@@ -594,7 +633,9 @@ ES-Abr,Subtropical dry forest,22,within
 EE-Stg,Temperate continental forest,32,within
 EE-Rng,Temperate continental forest,32,within
 EE-Pts,Temperate continental forest,32,within
+DE-Zrk,Temperate oceanic forest,31,within
 DE-Spw,Temperate continental forest,32,within
+DE-SfS,Temperate oceanic forest,31,within
 DE-Seh,Temperate oceanic forest,31,within
 DE-SbM,Temperate mountain system,35,within
 DE-RuM,Temperate oceanic forest,31,within
@@ -604,6 +645,7 @@ DE-Obe,Temperate mountain system,35,within
 DE-Lnf,Temperate oceanic forest,31,within
 DE-Lkb,Temperate mountain system,35,within
 DE-Hte,Temperate oceanic forest,31,within
+DE-Hdn,Temperate oceanic forest,31,within
 DE-Etn,Temperate oceanic forest,31,within
 DE-Akm,Temperate oceanic forest,31,within
 CZ-Stn,Temperate continental forest,32,within
@@ -648,6 +690,7 @@ CN-Jzh,Temperate continental forest,32,within
 CN-Jng,Temperate mountain system,35,within
 CN-Huz,Temperate desert,34,within
 CN-HeM,Temperate desert,34,within
+CN-HeD,Temperate desert,34,within
 CN-HaW,Temperate mountain system,35,within
 CN-Ha2,Temperate mountain system,35,within
 CN-GuT,Temperate mountain system,35,within
@@ -663,55 +706,55 @@ CN-DaW,Subtropical mountain system,25,within
 CN-BeO,Temperate continental forest,32,within
 CN-Ash,Subtropical mountain system,25,within
 CN-Aro,Temperate mountain system,35,within
-AU-APL,Temperate mountain system,35,within
-AU-Cow,Tropical rainforest,11,within
-AU-DaS,Tropical dry forest,13,within
-AU-Fle,Tropical shrubland,14,within
-AU-GWW,Subtropical desert,24,within
-AU-Ctr,Tropical rainforest,11,within
-AU-Sil,Temperate mountain system,35,within
-AU-Boy,Subtropical steppe,23,within
-AU-Ya1,Subtropical humid forest,21,within
-AU-Cum,Subtropical humid forest,21,within
-AU-Stp,Tropical desert,15,within
-NZ-Cla,Temperate oceanic forest,31,within
-AU-Lit,Tropical dry forest,13,within
-NZ-BFm,Temperate oceanic forest,31,within
-AU-DaP,Tropical dry forest,13,within
-AU-Ade,Tropical dry forest,13,within
-AU-Whr,Subtropical steppe,23,within
-AU-Rig,Subtropical steppe,23,within
-NZ-ADw,Temperate oceanic forest,31,within
 AU-Emr,Tropical shrubland,14,within
-AU-How,Tropical dry forest,13,within
-AU-Rgf,Subtropical steppe,23,within
-NZ-Kop,Subtropical humid forest,21,within
-AU-Lox,Subtropical steppe,23,within
-AU-MvA,Subtropical steppe,23,within
-AU-Cpr,Subtropical steppe,23,within
 AU-Rob,Tropical rainforest,11,within
-AU-ASM,Tropical desert,15,within
-AU-Gin,Subtropical dry forest,22,within
-AU-Sam,Subtropical humid forest,21,within
-NZ-Lau,Temperate oceanic forest,31,within
-AU-MvB,Subtropical steppe,23,within
-NZ-ScF,Subtropical humid forest,21,within
-AU-RDF,Tropical dry forest,13,within
-AU-Tum,Temperate mountain system,35,within
 AU-Wom,Subtropical steppe,23,within
-AU-Ya2,Subtropical humid forest,21,within
-AU-Ync,Subtropical steppe,23,within
-NZ-BFu,Temperate oceanic forest,31,within
+AU-Rig,Subtropical steppe,23,within
+AU-Cum,Subtropical humid forest,21,within
+AU-Cow,Tropical rainforest,11,within
+AU-APL,Temperate mountain system,35,within
 NZ-ADd,Temperate oceanic forest,31,within
+AU-RDF,Tropical dry forest,13,within
 AU-Sno,Temperate mountain system,35,within
 AU-Wel,Subtropical steppe,23,within
+AU-Boy,Subtropical steppe,23,within
+AU-Ya1,Subtropical humid forest,21,within
+AU-Sil,Temperate mountain system,35,within
+AU-How,Tropical dry forest,13,within
+NZ-BFu,Temperate oceanic forest,31,within
+AU-MvB,Subtropical steppe,23,within
+AU-Fle,Tropical shrubland,14,within
+AU-Lit,Tropical dry forest,13,within
+NZ-Cla,Temperate oceanic forest,31,within
+AU-ASM,Tropical desert,15,within
+AU-DaP,Tropical dry forest,13,within
+AU-Wgt,Temperate mountain system,35,within
+AU-Rgf,Subtropical steppe,23,within
+AU-Wrr,Temperate mountain system,35,within
 AU-Otw,Temperate oceanic forest,31,within
+NZ-Lau,Temperate oceanic forest,31,within
+NZ-ScF,Subtropical humid forest,21,within
+AU-Ya2,Subtropical humid forest,21,within
+AU-Stp,Tropical desert,15,within
+AU-Sam,Subtropical humid forest,21,within
+NZ-Kop,Subtropical humid forest,21,within
+AU-Lox,Subtropical steppe,23,within
+AU-GWW,Subtropical desert,24,within
+AU-Cpr,Subtropical steppe,23,within
+AU-Tum,Temperate mountain system,35,within
+AU-Wac,Temperate mountain system,35,within
+NZ-Oxf,Temperate oceanic forest,31,within
+AU-Lon,Tropical desert,15,within
 AU-TTE,Tropical desert,15,within
+AU-Col,Subtropical dry forest,22,within
+AU-DaS,Tropical dry forest,13,within
+NZ-BFm,Temperate oceanic forest,31,within
+AU-MvA,Subtropical steppe,23,within
+AU-Whr,Subtropical steppe,23,within
+NZ-ADw,Temperate oceanic forest,31,within
+AU-Ync,Subtropical steppe,23,within
+AU-Ctr,Tropical rainforest,11,within
+AU-Ade,Tropical dry forest,13,within
+AU-Gin,Subtropical dry forest,22,within
 AU-Dry,Tropical shrubland,14,within
 AU-Fog,Tropical dry forest,13,within
-AU-Wrr,Temperate mountain system,35,within
-AU-Lon,Tropical desert,15,within
-AU-Col,Subtropical dry forest,22,within
-NZ-Oxf,Temperate oceanic forest,31,within
-AU-Wgt,Temperate mountain system,35,within
-AU-Wac,Temperate mountain system,35,within

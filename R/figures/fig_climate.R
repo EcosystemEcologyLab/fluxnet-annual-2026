@@ -118,8 +118,11 @@ fig_whittaker_worldclim <- function(
     }
   }
 
-  .check_cols_climate(data_yy,   c("site_id", "NEE_VUT_REF", "YEAR"))
+  .check_cols_climate(data_yy,   c("site_id", "YEAR"))
   .check_cols_climate(site_meta, c("site_id", "location_lat", "location_long"))
+  if (!any(c("NEE_VUT_REF", "NEE_CUT_REF") %in% names(data_yy))) {
+    stop("data_yy must contain NEE_VUT_REF and/or NEE_CUT_REF.", call. = FALSE)
+  }
 
   # --- year_cutoff: filter site_meta to sites established by cutoff year ------
   if (!is.null(year_cutoff)) {
@@ -191,9 +194,12 @@ fig_whittaker_worldclim <- function(
   )
 
   # --- NEE colour limits from FULL data_yy (not filtered) ---------------------
+  # Coalesce VUT and CUT so CUT-only sites contribute to the scale.
   if (is.null(style$nee_lims)) {
-    nee_q   <- quantile(data_yy$NEE_VUT_REF, probs = c(0.05, 0.95),
-                        na.rm = TRUE)
+    nee_vut_all <- if ("NEE_VUT_REF" %in% names(data_yy)) data_yy[["NEE_VUT_REF"]] else rep(NA_real_, nrow(data_yy))
+    nee_cut_all <- if ("NEE_CUT_REF" %in% names(data_yy)) data_yy[["NEE_CUT_REF"]] else rep(NA_real_, nrow(data_yy))
+    nee_q   <- quantile(dplyr::coalesce(nee_vut_all, nee_cut_all),
+                        probs = c(0.05, 0.95), na.rm = TRUE)
     nee_max <- max(abs(nee_q))
     style$nee_lims <- c(-nee_max, nee_max)
   }
@@ -207,11 +213,15 @@ fig_whittaker_worldclim <- function(
   }
 
   # --- per-site NEE median and site-year count --------------------------------
+  # Coalesce VUT and CUT: recovers ~36 CUT-only sites with no NEE_VUT_REF.
+  nee_vut_f <- if ("NEE_VUT_REF" %in% names(data_filt)) data_filt[["NEE_VUT_REF"]] else rep(NA_real_, nrow(data_filt))
+  nee_cut_f <- if ("NEE_CUT_REF" %in% names(data_filt)) data_filt[["NEE_CUT_REF"]] else rep(NA_real_, nrow(data_filt))
+  data_filt <- dplyr::mutate(data_filt, NEE_ref = dplyr::coalesce(nee_vut_f, nee_cut_f))
   site_nee <- data_filt |>
-    dplyr::filter(!is.na(.data$NEE_VUT_REF)) |>
+    dplyr::filter(!is.na(.data$NEE_ref)) |>
     dplyr::group_by(.data$site_id) |>
     dplyr::summarise(
-      median_nee  = median(.data$NEE_VUT_REF, na.rm = TRUE),
+      median_nee  = median(.data$NEE_ref, na.rm = TRUE),
       n_nee_years = dplyr::n_distinct(.data$YEAR),
       .groups     = "drop"
     )

@@ -278,16 +278,19 @@ build_s1 <- function() {
 
   plots <- list()
 
-  # NEE — filter to years where NEE_VUT_REF is not NA to avoid ERA5-only rows
-  # creating spurious line segments.
-  if (has_col("NEE_VUT_REF")) {
-    p <- ggplot(dplyr::filter(df, !is.na(.data$NEE_VUT_REF)),
-                aes(x = .data$yr, y = .data$NEE_VUT_REF,
+  # NEE — coalesce VUT and CUT, then filter to non-NA to avoid ERA5-only rows
+  # creating spurious line segments. Recovers ~36 CUT-only sites.
+  if (has_col("NEE_VUT_REF") || has_col("NEE_CUT_REF")) {
+    nee_vut <- if (has_col("NEE_VUT_REF")) df[["NEE_VUT_REF"]] else rep(NA_real_, nrow(df))
+    nee_cut <- if (has_col("NEE_CUT_REF")) df[["NEE_CUT_REF"]] else rep(NA_real_, nrow(df))
+    df <- dplyr::mutate(df, NEE_ref = dplyr::coalesce(nee_vut, nee_cut))
+    p <- ggplot(dplyr::filter(df, !is.na(.data$NEE_ref)),
+                aes(x = .data$yr, y = .data$NEE_ref,
                         colour = .data$igbp, group = .data$site_id)) +
       geom_line(linewidth = 0.6, alpha = 0.7) +
       geom_point(size = 1.5, alpha = 0.7) +
       igbp_colour_scale +
-      labs(title = "Annual NEE \u2014 all sites (coloured by IGBP)",
+      labs(title = "Annual NEE (VUT ref, CUT fallback) \u2014 all sites (coloured by IGBP)",
            x = "Year", y = "NEE (gC m\u207b\u00b2 yr\u207b\u00b9)") +
       fluxnet_theme()
     nee_path <- file.path("review", "figures", "fig_yy_nee.png")

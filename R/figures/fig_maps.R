@@ -255,8 +255,8 @@ fig_map_nee_mean <- function(data_yy,
   .disable_s2()
   .check_meta_cols(metadata, c("site_id", "location_lat", "location_long"))
 
-  if (!"NEE_VUT_REF" %in% names(data_yy)) {
-    stop("NEE_VUT_REF column not found in data_yy.", call. = FALSE)
+  if (!any(c("NEE_VUT_REF", "NEE_CUT_REF") %in% names(data_yy))) {
+    stop("Neither NEE_VUT_REF nor NEE_CUT_REF found in data_yy.", call. = FALSE)
   }
 
   flux <- data_yy
@@ -264,13 +264,18 @@ fig_map_nee_mean <- function(data_yy,
     flux <- dplyr::filter(flux, !site_id %in% exclude_sites)
   }
 
+  # Coalesce VUT and CUT: recovers ~36 CUT-only sites with no NEE_VUT_REF
+  nee_vut <- if ("NEE_VUT_REF" %in% names(flux)) flux[["NEE_VUT_REF"]] else rep(NA_real_, nrow(flux))
+  nee_cut <- if ("NEE_CUT_REF" %in% names(flux)) flux[["NEE_CUT_REF"]] else rep(NA_real_, nrow(flux))
+  flux <- dplyr::mutate(flux, NEE_ref = dplyr::coalesce(nee_vut, nee_cut))
+
   year_col <- if ("YEAR" %in% names(flux)) "YEAR" else "TIMESTAMP"
   site_stats <- flux |>
-    dplyr::filter(is.finite(NEE_VUT_REF)) |>
+    dplyr::filter(is.finite(NEE_ref)) |>
     dplyr::group_by(site_id) |>
     dplyr::summarise(
       n_years  = dplyr::n_distinct(.data[[year_col]]),
-      mean_nee = mean(NEE_VUT_REF, na.rm = TRUE),
+      mean_nee = mean(NEE_ref, na.rm = TRUE),
       .groups  = "drop"
     ) |>
     dplyr::filter(n_years >= min_years)
@@ -357,8 +362,8 @@ fig_map_nee_delta <- function(data_yy,
   .disable_s2()
   .check_meta_cols(metadata, c("site_id", "location_lat", "location_long"))
 
-  if (!"NEE_VUT_REF" %in% names(data_yy)) {
-    stop("NEE_VUT_REF column not found in data_yy.", call. = FALSE)
+  if (!any(c("NEE_VUT_REF", "NEE_CUT_REF") %in% names(data_yy))) {
+    stop("Neither NEE_VUT_REF nor NEE_CUT_REF found in data_yy.", call. = FALSE)
   }
 
   flux <- data_yy
@@ -366,18 +371,23 @@ fig_map_nee_delta <- function(data_yy,
     flux <- dplyr::filter(flux, !site_id %in% exclude_sites)
   }
 
+  # Coalesce VUT and CUT: recovers ~36 CUT-only sites with no NEE_VUT_REF
+  nee_vut <- if ("NEE_VUT_REF" %in% names(flux)) flux[["NEE_VUT_REF"]] else rep(NA_real_, nrow(flux))
+  nee_cut <- if ("NEE_CUT_REF" %in% names(flux)) flux[["NEE_CUT_REF"]] else rep(NA_real_, nrow(flux))
+  flux <- dplyr::mutate(flux, NEE_ref = dplyr::coalesce(nee_vut, nee_cut))
+
   year_col <- if ("YEAR" %in% names(flux)) "YEAR" else "TIMESTAMP"
   site_stats <- flux |>
-    dplyr::filter(is.finite(NEE_VUT_REF)) |>
+    dplyr::filter(is.finite(NEE_ref)) |>
     dplyr::mutate(is_recent = .data[[year_col]] %in% recent_years) |>
     dplyr::group_by(site_id) |>
     dplyr::summarise(
       n_years      = dplyr::n_distinct(.data[[year_col]]),
       n_recent     = sum(is_recent),
       mean_recent  = if (sum(is_recent) > 0L)
-        mean(NEE_VUT_REF[is_recent], na.rm = TRUE) else NA_real_,
+        mean(NEE_ref[is_recent], na.rm = TRUE) else NA_real_,
       mean_hist    = if (sum(!is_recent) > 0L)
-        mean(NEE_VUT_REF[!is_recent], na.rm = TRUE) else NA_real_,
+        mean(NEE_ref[!is_recent], na.rm = TRUE) else NA_real_,
       .groups      = "drop"
     ) |>
     dplyr::mutate(delta_nee = mean_recent - mean_hist) |>

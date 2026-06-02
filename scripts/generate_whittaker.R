@@ -62,7 +62,10 @@ sites_fluxnet2015 <- readr::read_csv("data/snapshots/sites_fluxnet2015_clean.csv
 
 # ---- Compute shared NEE limits from full Shuttle data once ------------------
 # All panels use the same scale so figures are directly comparable.
-nee_q   <- quantile(data_yy$NEE_VUT_REF, probs = c(0.05, 0.95), na.rm = TRUE)
+# Coalesce VUT and CUT so CUT-only sites contribute to the shared limits.
+nee_vut <- if ("NEE_VUT_REF" %in% names(data_yy)) data_yy[["NEE_VUT_REF"]] else rep(NA_real_, nrow(data_yy))
+nee_cut <- if ("NEE_CUT_REF" %in% names(data_yy)) data_yy[["NEE_CUT_REF"]] else rep(NA_real_, nrow(data_yy))
+nee_q   <- quantile(dplyr::coalesce(nee_vut, nee_cut), probs = c(0.05, 0.95), na.rm = TRUE)
 nee_max <- max(abs(nee_q))
 shared_style <- WHITTAKER_STYLE
 shared_style$nee_lims <- c(-nee_max, nee_max)

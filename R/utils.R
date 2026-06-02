@@ -249,10 +249,12 @@ compute_site_year_presence <- function(
 
 #' Test whether sites are functionally active at a reference year
 #'
-#' A site is *functionally active* in reference year `Y` if it has valid
-#' NEE data (at least `min_months` non-NA `NEE_VUT_REF` months, as recorded
-#' in `presence_df`) in at least one year within the window
-#' `[Y − (active_threshold − 1), Y]`.
+#' A site is *functionally active* in reference year `Y` if `presence_df`
+#' records `has_data = TRUE` (any non-NA value across NEE VUT/CUT, GPP, RECO,
+#' LE, or H — as computed by [compute_site_year_presence()]) for at least one
+#' year within the window `[Y − (active_threshold − 1), Y]`. CUT-only sites
+#' (with valid `NEE_CUT_REF` but no `NEE_VUT_REF`) are included when
+#' `presence_df` was built with the default `flux_vars`.
 #'
 #' When `presence_df` is `NULL` the function falls back to the simpler
 #' metadata-based test: `last_year >= reference_year − active_threshold`.

@@ -18,6 +18,20 @@ creds <- fluxnet_credentials()
 # List all available sites from the Shuttle
 live_manifest <- flux_listall()
 
+# Guard against silent hub drops. flux_listall() fetches each hub independently;
+# a hub-level error (e.g. TERN HTTP 404) silently removes that hub from the
+# manifest with no R-level warning. This assertion makes the failure loud.
+expected_hubs <- c("AmeriFlux", "ICOS", "TERN")
+missing_hubs  <- setdiff(expected_hubs, unique(live_manifest$data_hub))
+if (length(missing_hubs) > 0) {
+  stop(
+    "Hub(s) missing from live manifest — likely upstream fetch failure:\n  ",
+    paste(missing_hubs, collapse = ", "),
+    "\nCheck logs for shuttle error counts. ",
+    "If a hub is intentionally excluded, remove it from expected_hubs in 01_download.R."
+  )
+}
+
 # In development mode, optionally save a snapshot; in locked mode, use the
 # snapshot CSV instead of the live manifest.
 source("R/snapshot.R")

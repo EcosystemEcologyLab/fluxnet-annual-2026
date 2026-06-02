@@ -121,9 +121,11 @@ Contacts: Danielle Christianson, Dario Papale
 | `httr2_failure` on batch download | HTTP request failures during download of batches 12 and 13 — `resp` is not an HTTP response object | Some sites may not download on first attempt | Re-run `batch_download.R` — resumable design handles retries | Report to support@fluxnet.org |
 | AU-Dry BIF column order | `TERN_AU-Dry_FLUXNET_BIF_2009-2025_v1.3_r1.csv` has columns in unexpected order causing read failure | Site excluded from read stage | Fixed in `03_read.R` with column reordering | **RESOLVED** — fixed in `03_read.R`; reported to TERN data contributor |
 | Windows file paths in `VARIABLE_GROUP` | 3 BIF files contain Windows-style file paths appearing as `VARIABLE_GROUP` values | Inflates group count and adds processing overhead | Filtered in `03_read.R` with regex guard | Report to support@fluxnet.org with affected site IDs |
-| TERN hub silently dropped on 2026-05-25 | `flux_listall()` dropped all 52 TERN (AU/NZ OzFlux) sites from the manifest (716→668) when TERN's upstream returned HTTP 404; no R-level warning was raised | Paper site set changes silently — violates spirit of Hard Rule #5 | Pass `log_file =` to every `flux_listall()` call and inspect log for `N errors`; or assert `all(c("AmeriFlux","ICOS","TERN") %in% manifest$data_hub)` after call | Report HTTP 404 to TERN and shuttle maintainers; add hub-presence assertion to `scripts/01_download.R` |
+| TERN hub silently dropped on 2026-05-25 | `flux_listall()` dropped all 52 TERN (AU/NZ OzFlux) sites from the manifest (716→668) when TERN's upstream returned HTTP 404; no R-level warning was raised | Paper site set changes silently — violates spirit of Hard Rule #5 | Hub-presence assertion added to `scripts/01_download.R` (2026-06-02): `stop()` if any of AmeriFlux/ICOS/TERN absent from live manifest | **RESOLVED** — assertion added; report HTTP 404 to TERN and shuttle maintainers |
 
-**Note on hub-drop behaviour:** `flux_listall()` delegates to the fluxnet-shuttle CLI, which fetches each hub independently. When a hub's upstream returns an error, the shuttle logs `get_all_sites: N results, 1 errors` and silently drops that hub — the R function does not propagate the error count. The TERN 404 is at `https://dap.tern.org.au/thredds/fileServer/ecosystem_process/fluxnet/BIF_all_sites.csv`; it is present across shuttle versions 0.3.7, 0.3.8, and HEAD — upgrading does not fix it. To detect hub drops: always pass `log_file = "logs/shuttle_listall.log"` to `flux_listall()` and grep for `errors`, or add a post-call hub assertion (see Workaround column).
+**Note on hub-drop behaviour:** `flux_listall()` delegates to the fluxnet-shuttle CLI, which fetches each hub independently. When a hub's upstream returns an error, the shuttle logs `get_all_sites: N results, 1 errors` and silently drops that hub — the R function does not propagate the error count. The TERN 404 is at `https://dap.tern.org.au/thredds/fileServer/ecosystem_process/fluxnet/BIF_all_sites.csv`; it is present across shuttle versions 0.3.7, 0.3.8, and HEAD — upgrading does not fix it. The hub-presence assertion in `01_download.R` now makes this failure loud rather than silent.
+
+**`flux_download()` version-pinning gap — empirically confirmed 2026-06-02:** `check_pipeline_config()` reports the version installed in the pinned `fluxnet_annual_2026` venv (0.3.7, confirmed from venv `METADATA`). However, `flux_download()` emits `Installed N packages in Nms` at each batch — a `uv` ephemeral-environment message — indicating it bootstraps a separate `uv` environment at call time rather than using the pinned venv. The actual shuttle commit used at download time is not captured in the batch logs or in any run metadata. This means the version check passes (0.3.7 venv) but the download may have run on a different shuttle commit. Confirmed across 14 batches of the 2026-06-01 full download run (`logs/dl_local_full_20260601.log`). Tracked as deferred in `docs/decisions_pending.md` — action required before final dataset lock.
 
 ---
 
@@ -192,7 +194,29 @@ the site is correctly allocated 8 invited authors (≥21 yr, ≤2 yr latency).
 
 ---
 
-## Section 7 — Pipeline analysis bugs (resolved)
+## Section 7 — CUT QC not filtered at pipeline level (open)
+
+`04_qc.R` gates row exclusion exclusively on `NEE_VUT_REF_QC >= QC_THRESHOLD_YY` (by
+design). For the ~36 CUT-only sites (`NEE_CUT_REF` present, `NEE_VUT_REF` absent),
+`NEE_VUT_REF_QC` is either absent or all-NA, so those rows pass the QC stage without
+any quality filtering on the CUT variable. As of 2026-06-02, figure functions that
+use `coalesce(NEE_VUT_REF, NEE_CUT_REF)` (fig_map_nee_mean, fig_map_nee_delta,
+fig_whittaker_worldclim, 00_candidate_figures Section 1) will therefore plot CUT
+values that are unfiltered on `NEE_CUT_REF_QC`.
+
+**Impact:** CUT-only sites are a small fraction of the network (~36 of 759). Their
+annual NEE data comes from sites where VUT processing was statistically infeasible
+(insufficient u* threshold data); the CUT values are scientifically valid but may
+include years with high gap-fill fractions.
+
+**Action:** Before final analysis, add `NEE_CUT_REF_QC >= QC_THRESHOLD_YY` gating
+to `04_qc.R` for rows where `NEE_VUT_REF_QC` is NA but `NEE_CUT_REF_QC` is present.
+This should be symmetric with the VUT threshold. Alternatively, document the asymmetry
+in the methods section and apply a post-hoc filter in the analysis scripts.
+
+---
+
+## Section 8 — Pipeline analysis bugs (resolved)
 
 | Issue | Description | Impact | Fix | Resolved |
 |---|---|---|---|---|

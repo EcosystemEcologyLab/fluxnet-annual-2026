@@ -1,0 +1,9 @@
+Global FLUXNET site locations coloured by data hub
+
+Outline world map showing all 759 sites coloured by data hub (AmeriFlux, ICOS, TERN/OzFlux, and others). TERN sites confirmed present (TERN-inclusive snapshot). Produced by fig_map_global().
+
+Snapshot metadata: 759 sites.
+Data source: FLUXNET Shuttle v0.3.7, 759 sites, Jun 1 2026 snapshot (TERN-inclusive).
+QC: NEE_VUT_REF_QC >= 0.50 (VUT sites); NEE_CUT_REF_QC >= 0.50 (CUT-only sites, per-site fallback, commit ad7464f).
+Pipeline: DuckDB canonical (commit 21a2ca3).
+Function: R/figures/fig_maps.R — fig_map_global()

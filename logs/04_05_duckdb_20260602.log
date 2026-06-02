@@ -1,0 +1,93 @@
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Loading required package: DBI
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+  YY QC: 598 VUT-gated, 41 CUT-gated, 120 no-QC sites
+  DD QC: 711 VUT-gated, 48 CUT-gated, 0 no-QC sites
+  MM QC: 711 VUT-gated, 48 CUT-gated, 0 no-QC sites
+  WW QC: 1 VUT-gated, 0 CUT-gated, 0 no-QC sites
+Warning message:
+Missing values are always removed in SQL aggregation functions.
+Use `na.rm = TRUE` to silence this warning
+This warning is displayed once every 8 hours. 
+
+--- 04_qc.R: log file summary ---
+exclusion_log.csv: outputs/exclusion_log.csv (written, 296354 row(s)) 
+unknown_log.csv:   outputs/unknown_log.csv (written, 0 row(s)) 
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Loading required package: DBI
+=========================================
+  05_units_duckdb.R
+=========================================
+
+
+--- 05_units_duckdb.R: YY ---
+  Columns in table: 392 
+  Converting: 27   Passing through: 365 
+  spp: per-row leap-year calculation (YY)
+  annual_qc → annual_converted: 40062 rows OK
+  YY NEE_VUT_REF range: min=-2419.5  max=2316.5  gC m-2 y-1
+
+--- 05_units_duckdb.R: MM ---
+  Columns in table: 395 
+  Converting: 28   Passing through: 367 
+  spp: 2629800 s per period ( MM )
+  monthly_qc → monthly_converted: 476875 rows OK
+
+--- 05_units_duckdb.R: WW ---
+  Columns in table: 328 
+  Converting: 28   Passing through: 300 
+  spp: 604800 s per period ( WW )
+  weekly_qc → weekly_converted: 3603 rows OK
+
+--- 05_units_duckdb.R: DD ---
+  Columns in table: 401 
+  Converting: 34   Passing through: 367 
+  spp: 86400 s per period ( DD )
+  daily_qc → daily_converted: 14440004 rows OK
+
+--- 05_units_duckdb.R: HH ---
+  Columns in table: 228 
+  Converting: 152   Passing through: 76 
+  spp: 1800 s per period ( HH )
+  hourly_qc → hourly_converted: 527439 rows OK
+Warning message:
+11 NEE_VUT_REF value(s) exceed |2000| gC m-2 y-1 — see known_issues.md §2 (IT-Lav, US-Bi2). Not an error. 
+
+=========================================
+ 05_units_duckdb.R complete.
+ Tables written: annual_converted, monthly_converted,
+                 weekly_converted, daily_converted, hourly_converted
+=========================================

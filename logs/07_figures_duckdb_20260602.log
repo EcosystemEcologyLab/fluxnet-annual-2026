@@ -1,0 +1,158 @@
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘lubridate’
+
+The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union
+
+Loading required package: DBI
+Output directory: figures
+DuckDB connection open. Tables verified: annual_converted, monthly_converted, weekly_converted, daily_converted, hourly_converted
+
+Collecting annual_converted (FLUXMET rows)...
+  annual_converted: 6,108 rows collected
+
+=========================================
+  07_figures_duckdb.R
+=========================================
+
+
+── IGBP figures ──
+  [igbp_nee_composite                      ] OK  0.1s  delta 44 MB  rows 6,108
+  SAVED: igbp_nee_composite.png
+  [igbp_gpp_composite                      ] OK  0.0s  delta 32 MB  rows 6,108
+  SAVED: igbp_gpp_composite.png
+  [igbp_nee_timeseries                     ] OK  0.1s  delta 34 MB  rows 6,108
+  SAVED: igbp_nee_timeseries.png
+  [igbp_nee_timeslice                      ] OK  0.0s  delta 33 MB  rows 6,108
+  SAVED: igbp_nee_timeslice.png
+  [biome_nee_groups                        ] OK  0.1s  delta 49 MB  rows 6,108
+  SAVED: biome_nee_forest.png
+  SAVED: biome_nee_shrubopens.png
+  SAVED: biome_nee_grasscropswet.png
+  SAVED: biome_nee_other.png
+
+── Map figures ──
+Spherical geometry (s2) switched off
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+  [map_global_hub                          ] OK  0.4s  delta 12 MB  rows 759
+  SAVED: map_global_hub.png
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+  [map_global_igbp                         ] OK  0.2s  delta 3 MB  rows 759
+  SAVED: map_global_igbp.png
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+  [map_nee_mean                            ] OK  0.2s  delta 3 MB  rows 6,108
+  SAVED: map_nee_mean.png
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+  [map_nee_delta                           ] OK  0.2s  delta 3 MB  rows 6,108
+  SAVED: map_nee_delta.png
+
+── Climate figures ──
+  [climate_scatter                         ] OK  0.0s  delta 46 MB  rows 6,108
+  SAVED: climate_precip_vs_nee.png
+  SAVED: climate_temp_vs_gpp.png
+
+── Latitudinal figures ──
+  [latitudinal_nee                         ] OK  0.0s  delta 1 MB  rows 6,108
+  SAVED: latitudinal_nee.png
+Warning message:
+Removed 14 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+  [latitudinal_gpp                         ] OK  0.0s  delta 13 MB  rows 6,108
+  SAVED: latitudinal_gpp.png
+Warning message:
+Removed 10 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+
+── Seasonal figures (DD) — collecting from DuckDB ──
+  Collecting daily_converted (FLUXMET, seasonal columns)...
+  Collected: 2,038,445 rows  93.4 Mb
+  [seasonal_gpp                            ] OK  0.4s  delta 183 MB  rows 2,038,445
+  SAVED: seasonal_gpp_forest.png
+  SAVED: seasonal_gpp_shrubopens.png
+  SAVED: seasonal_gpp_grasscropswet.png
+  SAVED: seasonal_gpp_other.png
+Warning message:
+Removed 356 rows containing missing values or values outside the scale range
+(`geom_ribbon()`). 
+  [seasonal_nee                            ] OK  0.4s  delta 202 MB  rows 2,038,445
+  SAVED: seasonal_nee_forest.png
+  SAVED: seasonal_nee_shrubopens.png
+  SAVED: seasonal_nee_grasscropswet.png
+  SAVED: seasonal_nee_other.png
+Warning message:
+Removed 1 row containing missing values or values outside the scale range
+(`geom_ribbon()`). 
+  [seasonal_weekly_gpp                     ] OK  0.9s  delta 2 MB  rows 2,038,445
+  SAVED: seasonal_weekly_gpp.png
+            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells   3836763 205.0    6864641  366.7         NA   6326045  337.9
+Vcells 101994430 778.2  168430722 1285.1      16384 168257712 1283.8
+
+── Growing season figure (DD) — collecting from DuckDB ──
+  Collecting daily_converted (FLUXMET, growing-season columns)...
+  Collected: 1,619,793 rows  49.5 Mb
+  [growing_season_nee                      ] OK  1.1s  delta 4 MB  rows 1,619,793
+  SAVED: growing_season_count.png
+  SAVED: growing_season_span.png
+Warning messages:
+1: Removed 411 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 5 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+3: Removed 12 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+4: Removed 400 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells   3885406 207.6    6864641  366.7         NA   6864641  366.7
+Vcells 102129493 779.2  168430722 1285.1      16384 168257712 1283.8
+
+DuckDB connection closed.
+
+══════════════════════════════════════════════
+07_figures_duckdb.R — COMPLETE
+Output dir:  figures 
+Files written: 27 
+Profile log:  logs/07_figures_duckdb_profile_20260602T160416.csv 
+──────────────────────────────────────────────
+                figure status elapsed_s mem_delta_mb rows_collected
+1   igbp_nee_composite     OK       0.1           44           6108
+2   igbp_gpp_composite     OK       0.0           32           6108
+3  igbp_nee_timeseries     OK       0.1           34           6108
+4   igbp_nee_timeslice     OK       0.0           33           6108
+5     biome_nee_groups     OK       0.1           49           6108
+6       map_global_hub     OK       0.4           12            759
+7      map_global_igbp     OK       0.2            3            759
+8         map_nee_mean     OK       0.2            3           6108
+9        map_nee_delta     OK       0.2            3           6108
+10     climate_scatter     OK       0.0           46           6108
+11     latitudinal_nee     OK       0.0            1           6108
+12     latitudinal_gpp     OK       0.0           13           6108
+13        seasonal_gpp     OK       0.4          183        2038445
+14        seasonal_nee     OK       0.4          202        2038445
+15 seasonal_weekly_gpp     OK       0.9            2        2038445
+16  growing_season_nee     OK       1.1            4        1619793
+══════════════════════════════════════════════

@@ -1,9 +1,0 @@
-Annual GPP (NT, VUT) by IGBP class — boxplot composite
-
-Three-panel composite: [1] boxplot of annual GPP_NT_VUT_REF values by IGBP class, [2] median bar chart, [3] site-year count. Produced by fig_flux_by_igbp().
-
-Annual data: 6,108 FLUXMET site-years after QC.
-Data source: FLUXNET Shuttle v0.3.7, 759 sites, Jun 1 2026 snapshot (TERN-inclusive).
-QC: NEE_VUT_REF_QC >= 0.50 (VUT sites); NEE_CUT_REF_QC >= 0.50 (CUT-only sites, per-site fallback, commit ad7464f).
-Pipeline: DuckDB canonical (commit 21a2ca3).
-Function: R/figures/fig_igbp.R — fig_flux_by_igbp()

@@ -1,9 +1,0 @@
-Growing season length (uptake days) vs annual NEE
-
-Scatter of growing season length (count of days with NEE < 0 per site-year) vs annual NEE_VUT_REF, coloured by IGBP. Regression line with 95% SE bounds. Sites with >= 5 valid annual NEE years and >= 330 valid daily records per year. Produced by fig_growing_season_nee().
-
-Annual + daily data combined.
-Data source: FLUXNET Shuttle v0.3.7, 759 sites, Jun 1 2026 snapshot (TERN-inclusive).
-QC: NEE_VUT_REF_QC >= 0.50 (VUT sites); NEE_CUT_REF_QC >= 0.50 (CUT-only sites, per-site fallback, commit ad7464f).
-Pipeline: DuckDB canonical (commit 21a2ca3).
-Function: R/figures/fig_growing_season.R — fig_growing_season_nee()

@@ -1,9 +1,0 @@
-Latitudinal gradient of annual GPP
-
-GPP (GPP_NT_VUT_REF) binned into 5-degree latitude bands. Ribbon shows min-max range per band; points show site-mean values shaped by IGBP. Produced by fig_latitudinal_flux().
-
-Annual data: 6,108 FLUXMET site-years after QC.
-Data source: FLUXNET Shuttle v0.3.7, 759 sites, Jun 1 2026 snapshot (TERN-inclusive).
-QC: NEE_VUT_REF_QC >= 0.50 (VUT sites); NEE_CUT_REF_QC >= 0.50 (CUT-only sites, per-site fallback, commit ad7464f).
-Pipeline: DuckDB canonical (commit 21a2ca3).
-Function: R/figures/fig_latitudinal.R — fig_latitudinal_flux()

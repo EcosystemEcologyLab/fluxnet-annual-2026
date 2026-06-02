@@ -94,7 +94,7 @@ for (table in stage_1_tables) {
     data_qc <- data
     data_qc$p_gapfilled <- NA_real_
     data_qc$qc_flagged <- NA
-    return(data)
+    next
   } else {
     data_qc <- data |>
       mutate(

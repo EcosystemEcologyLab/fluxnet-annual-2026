@@ -10,10 +10,12 @@
 ##     are added; flagged rows are dropped and logged as exclusions. Rows with
 ##     qc_flagged == NA are kept. Stage 1 is skipped for HH/HR data.
 ##
-##     Row exclusion gated on NEE_VUT_REF_QC only — primary variable for the
-##     FLUXNET Annual Paper 2026. Secondary variable QC columns (GPP, RECO,
-##     LE, H) are retained in the output for per-variable filtering downstream
-##     but do not drive row exclusion. See docs/decisions_pending.md.
+##     Row exclusion uses VUT QC for sites that have NEE_VUT_REF (the majority),
+##     and CUT QC for the ~36 sites where NEE_VUT_REF is absent (CUT-only sites).
+##     When both are present, VUT is the reference and VUT QC is the gate.
+##     Secondary variable QC columns (GPP, RECO, LE, H) are retained in the
+##     output for per-variable filtering downstream but do not drive row exclusion.
+##     See docs/decisions_pending.md and docs/known_issues.md Section 8.
 ##
 ##   Stage 2: at HH/HR resolution, _QC values are integers
 ##     0–3. Rows with any _QC > max_qc are dropped. At DD/MM/WW/YY this is a

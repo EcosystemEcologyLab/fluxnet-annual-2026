@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-02T18:36:50Z",
+  "pipeline_version": "ee84552",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260601T224043.csv",
+    "FAO Global Ecological Zones 2010 — data/external/gez/gez_2010_wgs84.shp (FAO catalog 2fb209d0-fd34-4e5e-a3d8-a13c241eb61b, gez2010.zip)"
+  ],
+  "notes": "Site->GEZ spatial join: sf_use_s2(FALSE), st_within primary, st_nearest_feature fallback for 3 site(s): AR-TF1, CA-RBM, CN-SnB. gez_method column flags join method per site."
+}

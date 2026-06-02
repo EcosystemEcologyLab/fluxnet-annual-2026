@@ -90,9 +90,24 @@ local research files on personal machines.
 
 **Always ask regardless of environment:**
 - Deleting files or directories outside of `data/downloads/` or `data/raw/`
+  (Renames within the repository are autonomous; renames that move files out of
+  the repository follow the "outside the repository directory" rule.)
 - Force pushing to git
 - Any action outside the repository directory
 - Making changes to `.devcontainer/devcontainer.json`
+- Deleting or moving files in `data/snapshots/` (these are authoritative
+  manifests and the only committable part of `data/`)
+- Modifying `renv.lock` directly, or running `renv::snapshot()` /
+  `renv::restore()` (these change the package environment and can leave the
+  Codespace in a broken state)
+
+**Long-running pipeline scripts:**
+When launching long-running pipeline scripts (reprocessing scripts 02–05,
+batch downloads, full figure regeneration), use the established
+`nohup` + `disown` pattern and log to a file in `logs/`. Do not run these
+scripts in the foreground; Codespace terminal idle timeouts can interrupt them.
+Report the PID and log path after launching, then monitor periodically rather
+than blocking.
 
 ---
 
@@ -106,7 +121,7 @@ as GitHub Codespace Secrets. For local use, copy `.env.example` to `.env`.
 | `AMERIFLUX_USER_NAME`    | Registered AmeriFlux account name                    | — (required)                  |
 | `AMERIFLUX_USER_EMAIL`   | Registered AmeriFlux account email                   | — (required)                  |
 | `AMERIFLUX_INTENDED_USE` | AmeriFlux intended use code (1–6)                    | `1` (Synthesis)               |
-| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.2.0`                       |
+| `FLUXNET_SHUTTLE_VERSION`| Expected fluxnet-shuttle version                     | `0.3.7`                       |
 | `FLUXNET_SNAPSHOT_MODE`  | `"development"` or `"locked"`                        | `"development"`               |
 | `FLUXNET_SNAPSHOT_FILE`  | Path to locked snapshot CSV                          | — (required if locked)        |
 | `FLUXNET_DATA_ROOT`      | Root directory for all pipeline data I/O             | `"data"`                      |
@@ -160,6 +175,80 @@ reticulate::virtualenv_remove("fluxnet")
 
 ---
 
+## Session Start — Multi-Machine Sync
+
+This repository is worked on from both the local mini and the Codespace; either machine may
+have pushed commits since the last session. At the start of every session, before doing
+anything else:
+
+1. **Check working tree status:** `git status`
+2. **If the working tree is clean** (no modified tracked files, or only gitignored/untracked
+   files): run `git pull` to bring the branch up to date with origin.
+3. **If there are uncommitted modifications to tracked files:** do not pull blindly. Report
+   the modified files and their likely authority (e.g., locally-regenerated snapshot outputs
+   vs. drafting changes). Stash, commit, or explicitly handle the conflict first, then pull.
+
+The snapshot files (`data/snapshots/*.csv`, `*.meta.json`), `outputs/session_info.txt`, and
+`renv/profile` are frequently modified locally and represent separate commit decisions — flag
+them rather than overwriting with a pull.
+
+---
+
+## renv Profile Selection
+
+This project uses renv profiles to maintain separate lockfiles for
+different environments.
+
+At the start of every session, detect the environment and activate
+the correct profile before doing anything else:
+
+- If `CODESPACE_NAME` is set: activate the codespace profile
+  `renv::activate(profile = 'codespace')`
+
+- If `CODESPACE_NAME` is not set (local machine): activate the macos profile
+  `renv::activate(profile = 'macos')`
+
+Never run `renv::snapshot()` without first confirming which profile is
+active. Never commit a lockfile change without noting which profile
+it applies to in the commit message.
+
+### Updating the codespace lockfile from a local machine
+
+The codespace profile library (`renv/profiles/codespace/renv/`) is empty on the
+local mini — packages are only installed inside the GitHub Codespace. This means
+`renv::activate(profile = "codespace"); renv::snapshot()` will produce an empty
+or incorrect lockfile when run locally.
+
+**Correct procedure for adding new packages to both lockfiles:**
+
+1. Install the package locally and confirm it works.
+2. Update the **macos lockfile** normally:
+   ```r
+   renv::activate(profile = "macos")
+   renv::snapshot(prompt = FALSE)
+   ```
+3. Copy the new package entry/entries into the **codespace lockfile** using
+   Python's `json` module (which preserves the verbose-DESCRIPTION format that
+   the codespace lockfile uses):
+   ```python
+   import json
+   with open("renv/profiles/macos/renv.lock") as f:
+       mac = json.load(f)
+   with open("renv/profiles/codespace/renv.lock") as f:
+       cs = json.load(f)
+   for pkg in ["new_pkg", "its_dep"]:
+       cs["Packages"][pkg] = mac["Packages"][pkg]
+   cs["Packages"] = dict(sorted(cs["Packages"].items()))
+   with open("renv/profiles/codespace/renv.lock", "w") as f:
+       json.dump(cs, f, indent=2, ensure_ascii=False)
+       f.write("\n")
+   ```
+4. Verify: `git diff --stat renv/profiles/codespace/renv.lock` should show
+   only insertions (no deletions to existing entries).
+5. Commit both lockfiles together, noting both profiles in the commit message.
+
+---
+
 ## Pipeline Execution Order
 
 Scripts in `scripts/` are numbered and must be run in order:
@@ -209,6 +298,25 @@ Do not skip steps or run them out of order. Each script sources
   and stop with a clear error if HH and HR data are mixed without explicit
   aggregation
 
+### R 4.1+ backslash-escape gotcha
+
+In R 4.1+, `"\\_"` is a recognised escape sequence (soft hyphen / non-breaking
+underscore), **not** a backslash followed by an underscore. This means:
+
+```r
+# WRONG — "\\\\_" in R 4.1+ is parsed as \\ (one backslash) + \_ (soft hyphen)
+gsub("\\\\_", "_", title, fixed = TRUE)   # does NOT match a literal \_
+
+# CORRECT — use a regex that matches one literal backslash then any character
+gsub("\\\\(.)", "\\1", title, perl = TRUE)   # strips any LaTeX backslash escape
+```
+
+This affects any code that tries to unescape LaTeX strings read from `.bib`
+files or other LaTeX sources. The regex approach above strips all `\x` sequences
+(e.g. `\_` → `_`, `\-` → `-`, `\&` → `&`) and is the canonical fix in this repo.
+Discovered in `R/parse_bib_to_apa.R` (2026-05-28); applies anywhere LaTeX
+escape sequences appear in character data.
+
 ---
 
 ## Temporal Resolution
@@ -252,10 +360,10 @@ All DD/WW/MM/YY thresholds are set as named constants in `R/pipeline_config.R`.
 Change them there to adjust pipeline-wide filtering.
 
 ```r
-QC_THRESHOLD_DD <- 0.75   # daily
-QC_THRESHOLD_WW <- 0.75   # weekly
-QC_THRESHOLD_MM <- 0.75   # monthly
-QC_THRESHOLD_YY <- 0.75   # annual
+QC_THRESHOLD_DD <- 0.50   # daily
+QC_THRESHOLD_WW <- 0.50   # weekly
+QC_THRESHOLD_MM <- 0.50   # monthly
+QC_THRESHOLD_YY <- 0.50   # annual
 ```
 
 - HH/HR analysis: keep records where `_QC <= 1`
@@ -263,9 +371,14 @@ QC_THRESHOLD_YY <- 0.75   # annual
 - ERA-Interim fills: flag but do not drop by default (`_F_QC == 2` is marked)
 - USTAR filtering: already applied in the distributed data — do not re-apply
 
-The FLUXNET published convention for coarse resolutions is `> 0.5`.
-The stricter default of `> 0.75` is intentional for this synthesis paper.
-To reproduce FLUXNET2015 published figures, set all thresholds to `0.5`.
+The FLUXNET published convention for coarse resolutions is `> 0.5`. The default
+for this synthesis paper is also `0.50` — row exclusion is gated on
+`NEE_VUT_REF_QC` only (not all QC columns), so the effective filter is already
+conservative. The decision to use 0.50 rather than 0.75 is documented in
+`docs/decisions_pending.md` (resolved 2026-04-20) and confirmed in
+`docs/methods_requirements.md` §5.3. To reproduce FLUXNET2015 published figures,
+no threshold change is needed; to apply a stricter filter, raise all thresholds
+to `0.75` in `R/pipeline_config.R`.
 
 ---
 
@@ -391,4 +504,8 @@ the package is updated. Do not implement workarounds.
 | Response pending from Eric Scott re: #43 download rearchitecture | EcosystemEcologyLab/fluxnet-package#43 |
 
 # Shuttle version monitoring: check https://github.com/fluxnet/shuttle/releases
-# for new releases. Run flux_listall() after upgrading to confirm snapshot format is unchanged.
+# for new releases. Current pin: 0.3.7 — use 0.3.7 as the value for FLUXNET_SHUTTLE_VERSION.
+# The installable git tag is 0.3.7; the shuttle may self-report 0.3.7.post0+dirty in certain
+# builds (e.g. the Codespace) but the underlying commit (3f3bd767) is identical. Use 0.3.7 as
+# the env var value for both installation and version-checking.
+# Run flux_listall() after upgrading to confirm snapshot format is unchanged.

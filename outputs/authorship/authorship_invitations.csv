@@ -1,0 +1,2729 @@
+site_id,submitting_network,n_invited_authors_for_site,contact_role,contact_name,contact_email,contact_source,n_contacts_for_site
+AR-Bal,AMF,2,PI,Maria Isabel Gassmann,gassmann@at.fcen.uba.ar,snapshot,5
+AR-Bal,AMF,2,PI,Natalia Edith Tonti,ntonti@at.fcen.uba.ar,snapshot,5
+AR-Bal,AMF,2,DataManager,Nahuel Ezequiel Bautista,nbautista@at.fcen.uba.ar,snapshot,5
+AR-Bal,AMF,2,Technician,Claudio Pérez,perez@at.fcen.uba.ar,snapshot,5
+AR-Bal,AMF,2,Technician,Mauro Covi,mcovi@at.fcen.uba.ar,snapshot,5
+AR-CCa,AMF,3,PI,Gabriela Posse,posse.gabriela@gmail.com,snapshot,3
+AR-CCa,AMF,3,Affiliate,Klaus Richter,richter21@ymail.com,snapshot,3
+AR-CCa,AMF,3,Technician,Patricio Oricchio,oricchio.patricio@inta.gob.ar,snapshot,3
+AR-CCg,AMF,5,PI,Gabriela Posse,posse.gabriela@gmail.com,snapshot,3
+AR-CCg,AMF,5,Affiliate,Carlos Di Bella,carlos.m.dibella@gmail.com,snapshot,3
+AR-CCg,AMF,5,Technician,Patricio Oricchio,oricchio.patricio@inta.gob.ar,snapshot,3
+AR-TF1,AMF,2,PI,Lars Kutzbach,lars.kutzbach@uni-hamburg.de,snapshot,3
+AR-TF1,AMF,2,PI,Veronica Pancotto,pancotto@cadic-conicet.gob.ar,snapshot,3
+AR-TF1,AMF,2,DataManager,David Holl,david.holl@uni-hamburg.de,snapshot,3
+AR-TF2,AMF,2,PI,Lars Kutzbach,lars.kutzbach@uni-hamburg.de,snapshot,3
+AR-TF2,AMF,2,PI,Veronica Pancotto,pancotto@cadic-conicet.gob.ar,snapshot,3
+AR-TF2,AMF,2,DataManager,David Holl,david.holl@uni-hamburg.de,snapshot,3
+AT-Mmg,EUF,4,PI,Georg Wohlfahrt,georg.wohlfahrt@uibk.ac.at,snapshot,2
+AT-Mmg,EUF,4,FluxContact,Alexander Platter,alexander.platter@uibk.ac.at,snapshot,2
+AT-Neu,EUF,5,PI,Georg Wohlfahrt,georg.wohlfahrt@uibk.ac.at,snapshot,1
+AT-Nsd,EUF,2,PI,Stephan Glatzel,stephan.glatzel@univie.ac.at,snapshot,2
+AT-Nsd,EUF,2,DataManager,Pamela Baur,pamela.baur@univie.ac.at,snapshot,2
+AT-PsM,EUF,2,PI,Stephan Glatzel,stephan.glatzel@univie.ac.at,snapshot,2
+AT-PsM,EUF,2,DataManager,Pamela Baur,pamela.baur@univie.ac.at,snapshot,2
+AT-Zoe,EUF,6,PI,Gisela Pröll,gisela.proell@umweltbundesamt.at,snapshot,4
+AT-Zoe,EUF,6,DataManager,Bradley Matthews,bradley.matthews@boku.ac.at,snapshot,4
+AT-Zoe,EUF,6,DataManager,Johannes Kobler,johannes.kobler@umweltbundesamt.at,snapshot,4
+AT-Zoe,EUF,6,DataManager,Karl Knaebel,karl.knaebel@umweltbundesamt.at,snapshot,4
+AU-APL,TERN,3,PI,Samantha Grover,samantha.grover@rmit.edu.au,snapshot,1
+AU-ASM,TERN,7,PI,Anne Griebel,anne.griebel@uts.edu.au,snapshot,3
+AU-ASM,TERN,7,PI,Jamie Cleverly,ozfluxservice@gmail.com,snapshot,3
+AU-ASM,TERN,7,Affiliate,Nicola Lieff,nicola.lieff@uts.edu.au,snapshot,3
+AU-Ade,TERN,2,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Ade,TERN,2,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-Boy,TERN,5,PI,Caitlin Moore,caitlin.moore@uwa.edu.au,snapshot,2
+AU-Boy,TERN,5,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Col,TERN,2,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,1
+AU-Cow,TERN,7,PI,Michael Liddell,michael.liddell@jcu.edu.au,snapshot,1
+AU-Cpr,TERN,7,PI,Sami Rifai,sami.rifai@adelaide.edu.au,snapshot,3
+AU-Cpr,TERN,7,PI,Wayne Meyer,wayne.meyer@adelaide.edu.au,snapshot,3
+AU-Cpr,TERN,7,Affiliate,Cacilia Ewenz,cacilia.ewenz@internode.on.net,snapshot,3
+AU-Ctr,TERN,3,PI,Michael Liddell,michael.liddell@jcu.edu.au,snapshot,1
+AU-Cum,TERN,6,PI,Elise Pendall,e.pendall@westernsydney.edu.au,snapshot,1
+AU-DaP,TERN,3,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-DaP,TERN,3,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-DaS,TERN,7,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-DaS,TERN,7,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-Dry,TERN,7,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Dry,TERN,7,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-Emr,TERN,2,PI,Andrew Feitz,Andrew.Feitz@ga.gov.au,snapshot,3
+AU-Emr,TERN,2,PI,Ivan Schroder,ivan.schroder@ga.gov.au,snapshot,3
+AU-Emr,TERN,2,Affilite,Mark Kitchen,Mark.Kitchen@csiro.au,snapshot,3
+AU-Fle,TERN,4,PI,Jamie Clevery,ozfluxservice@gmail.com,snapshot,3
+AU-Fle,TERN,4,PI,Michael Liddell,michael.liddell@jcu.edu.au,snapshot,3
+AU-Fle,TERN,4,Affiliate,Jo Owens,jo.owens@usq.edu.au,snapshot,3
+AU-Fog,TERN,2,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Fog,TERN,2,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-GWW,TERN,6,PI,Craig Macfarlane,Craig.Macfarlane@csiro.au,snapshot,2
+AU-GWW,TERN,6,PI,Suzanne Prober,Suzanne.Prober@csiro.au,snapshot,2
+AU-Gin,TERN,6,PI,Caitlin Moore,caitlin.moore@uwa.edu.au,snapshot,3
+AU-Gin,TERN,6,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,3
+AU-Gin,TERN,6,PI,Richard Silberstein,r.silberstein@ecu.edu.au,snapshot,3
+AU-How,TERN,8,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-How,TERN,8,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-Lit,TERN,6,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Lit,TERN,6,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-Lon,TERN,5,PI,David Rowlings,d.rowlings@qut.edu.au,snapshot,1
+AU-Lox,TERN,2,PI,Robert Stevens,rmstevens.water@gmail.com,snapshot,2
+AU-Lox,TERN,2,Affiliate,Cacilia Ewenz,cacilia.ewenz@internode.on.net,snapshot,2
+AU-MvA,TERN,4,PI,Ben Macdonald,Ben.Macdonald@csiro.au,snapshot,2
+AU-MvA,TERN,4,Affiliate,Mark Kitchen,mark.kitchen@csiro.au,snapshot,2
+AU-MvB,TERN,4,PI,Ben Macdonald,Ben.Macdonald@csiro.au,snapshot,2
+AU-MvB,TERN,4,Affiliate,Mark Kitchen,mark.kitchen@csiro.au,snapshot,2
+AU-Otw,TERN,2,PI,Eva van Gorsel,eva.vangorsel@csiro.au,snapshot,2
+AU-Otw,TERN,2,Affiliate,Steve Zeglin,steve.zegelin@csiro.au,snapshot,2
+AU-RDF,TERN,2,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-RDF,TERN,2,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-Rgf,TERN,6,PI,Caitlin Moore,caitlin.moore@uwa.edu.au,snapshot,2
+AU-Rgf,TERN,6,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Rig,TERN,3,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Rig,TERN,3,Affiliate,Ian McHugh,ian.mchugh@unimelb.edu.au,snapshot,2
+AU-Rob,TERN,6,PI,Michael Liddell,michael.liddell@jcu.edu.au,snapshot,1
+AU-Sam,TERN,3,PI,David Rowlings,d.rowlings@qut.edu.au,snapshot,1
+AU-Sil,TERN,5,PI,Mark Hovenden,Mark.Hovenden@utas.edu.au,snapshot,1
+AU-Sno,TERN,4,PI,Mark Hovenden,Mark.Hovenden@utas.edu.au,snapshot,1
+AU-Stp,TERN,7,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Stp,TERN,7,PI,Lindsay Hutley,Lindsay.Hutley@cdu.edu.au,snapshot,2
+AU-TTE,TERN,6,PI,Anne Griebel,anne.griebel@uts.edu.au,snapshot,3
+AU-TTE,TERN,6,PI,Jamie Cleverly,unknown,snapshot,3
+AU-TTE,TERN,6,Affiliate,Nicola Lieff,nicola.lieff@uts.edu.au,snapshot,3
+AU-Tum,TERN,6,PI,Stefan Arndt,sarndt@unimelb.edu.au,snapshot,4
+AU-Tum,TERN,6,PI,Will Woodgate,will.woodgate@csiro.au,snapshot,4
+AU-Tum,TERN,6,Affiliate,Mark Kitchen,mark.kitchen@csiro.au,snapshot,4
+AU-Tum,TERN,6,Affiliate,Markus Loew,m.loew@unimelb.edu.au,snapshot,4
+AU-Wac,TERN,2,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Wac,TERN,2,Affiliate,Ian McHugh,ian.mchugh@unimelb.edu.au,snapshot,2
+AU-Wel,TERN,4,PI,Martin Anderson,m.andersen@unsw.edu.au,snapshot,2
+AU-Wel,TERN,4,Affiliate,Evan Jensen,evan.jensen@unsw.edu.au,snapshot,2
+AU-Wgt,TERN,4,PI,Mark Hovenden,Mark.Hovenden@utas.edu.au,snapshot,1
+AU-Whr,TERN,6,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,4
+AU-Whr,TERN,6,PI,Stefan Arndt,sarndt@unimelb.edu.au,snapshot,4
+AU-Whr,TERN,6,Affiliate,Ian McHugh,ian.mchugh@unimelb.edu.au,snapshot,4
+AU-Whr,TERN,6,Affiliate,Markus Loew,m.loew@unimelb.edu.au,snapshot,4
+AU-Wom,TERN,6,PI,Stefan Arndt,sarndt@unimelb.edu.au,snapshot,3
+AU-Wom,TERN,6,Affiliate,Markus Loew,m.loew@unimelb.edu.au,snapshot,3
+AU-Wom,TERN,6,Affiliate,Nina Hinko-Najera,n.hinkonajera@unimelb.edu.au,snapshot,3
+AU-Wrr,TERN,3,PI,Tim Wardlaw,Timothy.Wardlaw@utas.edu.au,snapshot,2
+AU-Wrr,TERN,3,Affiliate,Alison Phillips,alison.phillips@sttas.com.au,snapshot,2
+AU-Ya1,TERN,4,PI,Elise Pendall,e.pendall@westernsydney.edu.au,snapshot,1
+AU-Ya2,TERN,4,PI,Elise Pendall,e.pendall@westernsydney.edu.au,snapshot,1
+AU-Ync,TERN,6,PI,Jason Beringer,jason.beringer@uwa.edu.au,snapshot,2
+AU-Ync,TERN,6,PI,Jeffrey Walker,jeff.walker@monash.edu,snapshot,2
+BE-Bra,ICOS,8,PI,Ivan Janssens,ivan.janssens@uantwerpen.be,snapshot,9
+BE-Bra,ICOS,8,PI,Marilyn Roland,marilyn.roland@uantwerpen.be,snapshot,9
+BE-Bra,ICOS,8,DataManager,Mahum Naseer,mahum.naseer@uantwerpen.be,snapshot,9
+BE-Bra,ICOS,8,Technician,Arne Vande Sompele,arne.vandesompele@uantwerpen.be,snapshot,9
+BE-Bra,ICOS,8,FluxContact,Jan Segers,jan.segers@uantwerpen.be,snapshot,9
+BE-Bra,ICOS,8,Technician,Jasper Van Look,jasper.vanlook@uantwerpen.be,snapshot,9
+BE-Bra,ICOS,8,FluxContact,Lodewijk Lefevre,lodewijk.lefevre@ugent.be,snapshot,9
+BE-Bra,ICOS,8,Technician,Seppe Bresseleers,seppe.bresseleers@uantwerpen.be,snapshot,9
+BE-Bra,ICOS,8,Technician,Tim De Meulder,tim.demeulder@uantwerpen.be,snapshot,9
+BE-Dor,ICOS,6,PI,Ariane Faurès,ariane.faures@uliege.be,snapshot,14
+BE-Dor,ICOS,6,PI,Bernard Heinesch,bernard.heinesch@uliege.be,snapshot,14
+BE-Dor,ICOS,6,PI,Kim Hoang,ltk.hoang@uliege.be,snapshot,14
+BE-Dor,ICOS,6,DataManager,Ayche Orgun,ayche.orgun@uliege.be,snapshot,14
+BE-Dor,ICOS,6,DataManager,Gaëtan Bogaerts,gaetan.bogaerts@uliege.be,snapshot,14
+BE-Dor,ICOS,6,DataManager,Henri Chopin,h.chopin@uliege.be,snapshot,14
+BE-Dor,ICOS,6,DataManager,Pierre-Yves Culot,pyculot@uliege.be,snapshot,14
+BE-Dor,ICOS,6,DataManager,Timothée Clément,tclement@uliege.be,snapshot,14
+BE-Dor,ICOS,6,Technician,André Piret,a.piret@uliege.be,snapshot,14
+BE-Dor,ICOS,6,FluxContact,Bernard Longdoz,bernard.longdoz@uliege.be,snapshot,14
+BE-Dor,ICOS,6,Technician,Loïc Demoulin,loic.demoulin@uclouvain.be,snapshot,14
+BE-Dor,ICOS,6,FluxContact,Tanguy Manise,tanguy.manise@uliege.be,snapshot,14
+BE-Dor,ICOS,6,FluxContact,Thibaut Engelmann,tengelmann@uliege.be,snapshot,14
+BE-Dor,ICOS,6,Technician,Thibaut Thyrion,thibaut.thyrion@uclouvain.be,snapshot,14
+BE-Lcr,EUF,2,PI,Marilyn Roland,marilyn.roland@uantwerpen.be,snapshot,5
+BE-Lcr,EUF,2,PI,Tim De Meulder,tim.demeulder@uantwerpen.be,snapshot,5
+BE-Lcr,EUF,2,FluxContact,Jan Segers,jan.segers@uantwerpen.be,snapshot,5
+BE-Lcr,EUF,2,Technician,Jasper Van Look,jasper.vanlook@uantwerpen.be,snapshot,5
+BE-Lcr,EUF,2,Technician,Lodewijk Lefevre,lodewijk.lefevre@ugent.be,snapshot,5
+BE-Lon,ICOS,8,PI,Anne De Ligne,anne.deligne@uliege.be,snapshot,17
+BE-Lon,ICOS,8,PI,Benjamin Dumont,benjamin.dumont@uliege.be,snapshot,17
+BE-Lon,ICOS,8,PI,Bernard Heinesch,bernard.heinesch@uliege.be,snapshot,17
+BE-Lon,ICOS,8,PI,Timothée Clément,tclement@uliege.be,snapshot,17
+BE-Lon,ICOS,8,DataManager,Ayche Orgun,ayche.orgun@uliege.be,snapshot,17
+BE-Lon,ICOS,8,DataManager,Gaëtan Bogaerts,gaetan.bogaerts@uliege.be,snapshot,17
+BE-Lon,ICOS,8,DataManager,Henri Chopin,h.chopin@uliege.be,snapshot,17
+BE-Lon,ICOS,8,DataManager,Kim Hoang,ltk.hoang@uliege.be,snapshot,17
+BE-Lon,ICOS,8,Technician,André Piret,a.piret@uliege.be,snapshot,17
+BE-Lon,ICOS,8,FluxContact,Ariane Faurès,ariane.faures@uliege.be,snapshot,17
+BE-Lon,ICOS,8,FluxContact,Bernard Bodson,b.bodson@uliege.be,snapshot,17
+BE-Lon,ICOS,8,Technician,Bernard Douxfils,bernard.douxfils@guest.uliege.be,snapshot,17
+BE-Lon,ICOS,8,FluxContact,Bernard Longdoz,bernard.longdoz@uliege.be,snapshot,17
+BE-Lon,ICOS,8,Technician,Loïc Demoulin,loic.demoulin@uclouvain.be,snapshot,17
+BE-Lon,ICOS,8,FluxContact,Tanguy Manise,tanguy.manise@uliege.be,snapshot,17
+BE-Lon,ICOS,8,FluxContact,Thibaut Engelmann,tengelmann@uliege.be,snapshot,17
+BE-Lon,ICOS,8,Technician,Thibaut Thyrion,thibaut.thyrion@uclouvain.be,snapshot,17
+BE-Maa,ICOS,5,PI,Marilyn Roland,marilyn.roland@uantwerpen.be,snapshot,8
+BE-Maa,ICOS,5,DataManager,Mahum Naseer,mahum.naseer@uantwerpen.be,snapshot,8
+BE-Maa,ICOS,5,Technician,Arne Vande Sompele,arne.vandesompele@uantwerpen.be,snapshot,8
+BE-Maa,ICOS,5,FluxContact,Jan Segers,jan.segers@uantwerpen.be,snapshot,8
+BE-Maa,ICOS,5,Technician,Jasper Van Look,jasper.vanlook@uantwerpen.be,snapshot,8
+BE-Maa,ICOS,5,FluxContact,Lodewijk Lefevre,lodewijk.lefevre@ugent.be,snapshot,8
+BE-Maa,ICOS,5,Technician,Seppe Bresseleers,seppe.bresseleers@uantwerpen.be,snapshot,8
+BE-Maa,ICOS,5,Technician,Tim De Meulder,tim.demeulder@uantwerpen.be,snapshot,8
+BE-Vie,ICOS,8,PI,Caroline Vincke,caroline.vincke@uclouvain.be,snapshot,16
+BE-Vie,ICOS,8,PI,Tanguy Manise,tanguy.manise@uliege.be,snapshot,16
+BE-Vie,ICOS,8,DataManager,Ayche Orgun,ayche.orgun@uliege.be,snapshot,16
+BE-Vie,ICOS,8,DataManager,Gaëtan Bogaerts,gaetan.bogaerts@uliege.be,snapshot,16
+BE-Vie,ICOS,8,DataManager,Henri Chopin,h.chopin@uliege.be,snapshot,16
+BE-Vie,ICOS,8,DataManager,Kim Hoang,ltk.hoang@uliege.be,snapshot,16
+BE-Vie,ICOS,8,DataManager,Timothée Clément,tclement@uliege.be,snapshot,16
+BE-Vie,ICOS,8,Technician,André Piret,a.piret@uliege.be,snapshot,16
+BE-Vie,ICOS,8,FluxContact,Anne De Ligne,anne.deligne@uliege.be,snapshot,16
+BE-Vie,ICOS,8,FluxContact,Ariane Faurès,ariane.faures@uliege.be,snapshot,16
+BE-Vie,ICOS,8,Technician,Bernard Douxfils,bernard.douxfils@guest.uliege.be,snapshot,16
+BE-Vie,ICOS,8,FluxContact,Bernard Heinesch,bernard.heinesch@uliege.be,snapshot,16
+BE-Vie,ICOS,8,Technician,Loïc Demoulin,loic.demoulin@uclouvain.be,snapshot,16
+BE-Vie,ICOS,8,FluxContact,Thibaut Engelmann,tengelmann@uliege.be,snapshot,16
+BE-Vie,ICOS,8,Technician,Thibaut Thyrion,thibaut.thyrion@uclouvain.be,snapshot,16
+BE-Vie,ICOS,8,FluxContact,Wafa Chebbi,wafa.chebbi@uclm.es,snapshot,16
+BJ-Bfg,FLX,3,PI,Jean-Martial COHARD,jean-martial.cohard@univ-grenoble-alpes.fr,snapshot,6
+BJ-Bfg,FLX,3,DataManager,Helene BARRAL,helene.barral@univ-grenoble-alpes.fr,snapshot,6
+BJ-Bfg,FLX,3,DataManager,Ossénatou MAMADOU,ossenatou.mamadou@imsp-uac.org,snapshot,6
+BJ-Bfg,FLX,3,FluxContact,Rita HOUNGUE,rita.houngue@ird.fr,snapshot,6
+BJ-Bfg,FLX,3,Technician,Simon AFOUDA,theodore.ouani@ird.fr,snapshot,6
+BJ-Bfg,FLX,3,Technician,Théo OUANI,simon.afouda@ird.fr,snapshot,6
+BJ-Db1,FLX,4,PI,Ossénatou MAMADOU,ossenatou.mamadou@imsp-uac.org,snapshot,2
+BJ-Db1,FLX,4,DataManager,Renaud Koukoui,romeo.koukoui@imsp-uac.org,snapshot,2
+BJ-Nhu,FLX,3,PI,Jean-Martial COHARD,jean-martial.cohard@univ-grenoble-alpes.fr,snapshot,3
+BJ-Nhu,FLX,3,DataManager,Helene BARRAL,helene.barral@univ-grenoble-alpes.fr,snapshot,3
+BJ-Nhu,FLX,3,DataManager,Ossénatou MAMADOU,ossenatou.mamadou@imsp-uac.org,snapshot,3
+BR-CST,AMF,2,PI,Antonio Antonino,acdantonino@gmail.com,snapshot,4
+BR-CST,AMF,2,DataManager,Rodolfo Souza,rodolfomssouza@gmail.com,snapshot,4
+BR-CST,AMF,2,FluxContact,Eduardo Souza,eduardo.souza.rd@gmail.com,snapshot,4
+BR-CST,AMF,2,FluxContact,José Romualdo Lima,romualdo_solo@yahoo.com.br,snapshot,4
+BR-ITA,AMF,4,PI,Joannès Guillemot,joannes.guillemot@cirad.fr,snapshot,3
+BR-ITA,AMF,4,AncContact,Guerric le Maire,guerric.le_maire@cirad.fr,snapshot,3
+BR-ITA,AMF,4,AncContact,Pedro Brancalion,pedrobrancalion@gmail.com,snapshot,3
+BR-Ji3,AMF,3,PI,Alessandro Araujo,alessandro.araujo@embrapa.br,snapshot,20
+BR-Ji3,AMF,3,DataManager,Bárbara Antonucci,antonucci.engenharia@gmail.com,snapshot,20
+BR-Ji3,AMF,3,DataManager,Paulo Ricardo Teixeira,paulo.ricardo.teixeira@gmail.com,snapshot,20
+BR-Ji3,AMF,3,AncContact,Alberto Dresch Webler,alberto.webler@unir.br,snapshot,20
+BR-Ji3,AMF,3,AncContact,Antonio Manzi,antonio.manzi@inpe.br,snapshot,20
+BR-Ji3,AMF,3,Affiliate,Bart Kruijt,bart.kruijt@wur.nl,snapshot,20
+BR-Ji3,AMF,3,AncContact,Celson von Randow,celso.vonrandow@inpe.br,snapshot,20
+BR-Ji3,AMF,3,AncContact,Fabrício Berton Zanchi,fabricio.berton@ufsb.edu.br,snapshot,20
+BR-Ji3,AMF,3,AncContact,Fernando Luiz Cardoso,cardoso@unir.br,snapshot,20
+BR-Ji3,AMF,3,Technician,Hermes Xavier,hermes@inpa.gov.br,snapshot,20
+BR-Ji3,AMF,3,Technician,Jailson da Mata,jailson.mata97@gmail.com,snapshot,20
+BR-Ji3,AMF,3,AncContact,Jan Elbers,jan.elbers@wur.nl,snapshot,20
+BR-Ji3,AMF,3,Technician,Jorge Melo,jorge.melo@cptec.inpe.br,snapshot,20
+BR-Ji3,AMF,3,Technician,Jorge Nogueira,jorge.nogueira@cptec.inpe.br,snapshot,20
+BR-Ji3,AMF,3,Technician,Leonardo Ramos de Oliveira,loliveira@inpa.gov.br,snapshot,20
+BR-Ji3,AMF,3,AncContact,Luis Marcelo Zeri,marcelo.zeri@cemaden.gov.br,snapshot,20
+BR-Ji3,AMF,3,Technician,Paulo Arlino,paulo.arlino@cptec.inpe.br,snapshot,20
+BR-Ji3,AMF,3,AncContact,Paulo Jorge de Oliveira Ponte de Souza,paulo.jorge@ufra.edu.br,snapshot,20
+BR-Ji3,AMF,3,AncContact,Renata Gonçalves Aguiar,rgaguiar@unir.br,snapshot,20
+BR-Ji3,AMF,3,Technician,Thiago Xavier,thiagolimaxavier2020@gmail.com,snapshot,20
+BR-Ma2,AMF,5,PI,Alessandro Araujo,alessandro.araujo@gmail.com,snapshot,17
+BR-Ma2,AMF,5,DataManager,Julie Andrews de França e Silva,julieandrewsfranca@gmail.com,snapshot,17
+BR-Ma2,AMF,5,DataManager,Paulo Ricardo Teixeira,paulo.ricardo.teixeira@gmail.com,snapshot,17
+BR-Ma2,AMF,5,AncContact,Antonio Manzi,manzi@inpa.gov.br,snapshot,17
+BR-Ma2,AMF,5,AncContact,Antonio Nobre,anobre@ltid.inpe.br,snapshot,17
+BR-Ma2,AMF,5,Affiliate,Bart Kruijt,bart.kruijt@wur.nl,snapshot,17
+BR-Ma2,AMF,5,Affiliate,Carlos Alexandre Querino,carlosquerino@ufam.edu.br,snapshot,17
+BR-Ma2,AMF,5,AncContact,Celso von Randow,celso.vonrandow@inpe.br,snapshot,17
+BR-Ma2,AMF,5,AncContact,Gilberto Pastorello,gzpastorello@lbl.gov,snapshot,17
+BR-Ma2,AMF,5,AncContact,Jair Max Furtunato Maia,jmaia@uea.edu.br,snapshot,17
+BR-Ma2,AMF,5,Affiliate,Jan Elbers,jan.elbers@wur.nl,snapshot,17
+BR-Ma2,AMF,5,AncContact,Julio Tota,julio.tota@ufopa.edu.br,snapshot,17
+BR-Ma2,AMF,5,Affiliate,Leila do Socorro Monteiro Leal,leilas_leal@yahoo.com.br,snapshot,17
+BR-Ma2,AMF,5,Technician,Leonardo Ramos de Oliveira,loliveira@inpa.gov.br,snapshot,17
+BR-Ma2,AMF,5,AncContact,Maria Betânia Oliveira,mabetanialeal@gmail.com,snapshot,17
+BR-Ma2,AMF,5,Affiliate,Marta Sá,martasa.inpa@gmail.com,snapshot,17
+BR-Ma2,AMF,5,AncContact,Rita von Randow,rita.vonrandow@gmail.com,snapshot,17
+BR-Ma3,AMF,4,PI,Alessandro Araujo,alessandro.araujo@embrapa.br,snapshot,16
+BR-Ma3,AMF,4,DataManager,Paulo Ricardo Teixeira,paulo.ricardo.teixeira@gmail.com,snapshot,16
+BR-Ma3,AMF,4,Technician,Antonio Huxley,ahuxley16@gmail.com,snapshot,16
+BR-Ma3,AMF,4,AncContact,Antonio Manzi,antonio.manzi@inpe.br,snapshot,16
+BR-Ma3,AMF,4,AncContact,Celso von Randow,celso.vonrandow@inpe.br,snapshot,16
+BR-Ma3,AMF,4,Technician,Daniel Massaki Osawa,qualidadesan@gmail.com,snapshot,16
+BR-Ma3,AMF,4,Technician,Flávio de Carvalho Magina,flavio.magina@inpe.br,snapshot,16
+BR-Ma3,AMF,4,Technician,Hermes Xavier,hermes@inpa.gov.br,snapshot,16
+BR-Ma3,AMF,4,Technician,Jailson da Mata,jailson.mata97@gmail.com,snapshot,16
+BR-Ma3,AMF,4,AncContact,Javier Tomassela,javier.tomasella@inpe.br,snapshot,16
+BR-Ma3,AMF,4,Technician,Leonardo Ramos de Oliveira,loliveira@inpa.gov.br,snapshot,16
+BR-Ma3,AMF,4,Technician,Marcos Alexandre Bolson,mbolson@inpa.gov.br,snapshot,16
+BR-Ma3,AMF,4,AncContact,Marta Sá,martasa.inpa@gmail.com,snapshot,16
+BR-Ma3,AMF,4,AncContact,Rita von Randow,rita.vonrandow@gmail.com,snapshot,16
+BR-Ma3,AMF,4,Technician,Thiago Xavier,thiagolimaxavier2020@gmail.com,snapshot,16
+BR-Ma3,AMF,4,Technician,Thomé Aquino,aquino246@gmail.com,snapshot,16
+BR-Npw,AMF,2,PI,Higo Dalmagro,higojdalmagro@gmail.com,snapshot,4
+BR-Npw,AMF,2,PI,Mark Johnson,mark.johnson@ubc.ca,snapshot,4
+BR-Npw,AMF,2,AncContact,George Vourlitis,georgev@csusm.edu,snapshot,4
+BR-Npw,AMF,2,AncContact,Paulo Arruda,paulo.zanella@gmail.com,snapshot,4
+BR-SM1,AMF,2,PI,Debora Regina Roberti,debora@ufsm.br,snapshot,1
+BR-Sa1,AMF,3,PI,Scott Saleska,saleska@email.arizona.edu,snapshot,4
+BR-Sa1,AMF,3,FluxContact,Natalia Restrepo-Coupe,nataliacoupe@gmail.com,snapshot,4
+BR-Sa1,AMF,3,AncContact,"Raimundo Cosme de Oliveira, Junior",raimundo.oliveira-junior@embrapa.br,snapshot,4
+BR-Sa1,AMF,3,AncContact,Rodrigo da Silva,rsilvf@gmail.com,snapshot,4
+BR-Sa3,AMF,2,PI,Mike Goulden,mgoulden@uci.edu,snapshot,1
+BW-Gum,FLX,2,PI,Carole Helfter,caro2@ceh.ac.uk,snapshot,2
+BW-Gum,FLX,2,FluxContact,Garry Hayman,garr@ceh.ac.uk,snapshot,2
+BW-Nxr,FLX,2,PI,Carole Helfter,caro2@ceh.ac.uk,snapshot,3
+BW-Nxr,FLX,2,FluxContact,Garry Hayman,garr@ceh.ac.uk,snapshot,3
+BW-Nxr,FLX,2,FluxContact,Mangaliso Gondwe,mgondwe@ub.ac.bw,snapshot,3
+CA-ARB,AMF,6,PI,Elyn Humphreys,elynhumphreys@cunet.carleton.ca,snapshot,2
+CA-ARB,AMF,6,DataManager,Phaedra Cowden,phaedracowden@cunet.carleton.ca,snapshot,2
+CA-ARF,AMF,6,PI,Elyn Humphreys,elynhumphreys@cunet.carleton.ca,snapshot,2
+CA-ARF,AMF,6,DataManager,Phaedra Cowden,phaedracowden@cunet.carleton.ca,snapshot,2
+CA-BOU,AMF,2,PI,Michelle Garneau,garneau.michelle@uqam.ca,snapshot,2
+CA-BOU,AMF,2,DataManager,Pierre Taillardat,taillardat.pierre@nus.edu.sg,snapshot,2
+CA-CF1,AMF,2,PI,Tim Papakyriakou,Tim.papakyriakou@umanitoba.ca,snapshot,2
+CA-CF1,AMF,2,DataManager,Brian Amiro,brian_amiro@umanitoba.ca,snapshot,2
+CA-CF2,AMF,2,PI,Mario Tenuta,Mario.Tenuta@umanitoba.ca,snapshot,2
+CA-CF2,AMF,2,DataManager,Brian Amiro,brian_amiro@umanitoba.ca,snapshot,2
+CA-CF3,AMF,4,PI,Kyle Arndt,karndt@woodwellclimate.org,snapshot,3
+CA-CF3,AMF,4,PI,Susan Natali,snatali@woodwellclimate.org,snapshot,3
+CA-CF3,AMF,4,Technician,Patrick Murphy,pmurphy@woodwellclimate.org,snapshot,3
+CA-Ca1,AMF,4,PI,T. Andrew Black,andrew.black@ubc.ca,snapshot,1
+CA-Ca2,AMF,4,PI,T. Andrew Black,andrew.black@ubc.ca,snapshot,1
+CA-Ca3,AMF,8,PI,T. Andrew Black,andrew.black@ubc.ca,snapshot,3
+CA-Ca3,AMF,8,BADMContact,Paul Jassal,rachhpal.jassal@ubc.ca,snapshot,3
+CA-Ca3,AMF,8,FluxContact,Zoran Nesic,zoran.nesic@ubc.ca,snapshot,3
+CA-DB2,AMF,5,PI,Sara Knox,sara.knox@ubc.ca,snapshot,2
+CA-DB2,AMF,5,DataManager,Rosemary Howard,rosemary.howard@mcgill.ca,snapshot,2
+CA-DBB,AMF,5,PI,Andreas Christen,andreas.christen@ubc.ca,snapshot,5
+CA-DBB,AMF,5,PI,Sara Knox,sara.knox@ubc.ca,snapshot,5
+CA-DBB,AMF,5,DataManager,Rosemary Howard,rosemary.howard@mcgill.ca,snapshot,5
+CA-DBB,AMF,5,Affiliate,Andrew T. Black,andrew.black@ubc.ca,snapshot,5
+CA-DBB,AMF,5,Affiliate,Mark S. Johnson,mark.johnson@ubc.ca,snapshot,5
+CA-DSM,AMF,4,PI,Sara Knox,sara.knox@ubc.ca,snapshot,2
+CA-DSM,AMF,4,DataManager,Rosemary Howard,rosemary.howard@mcgill.ca,snapshot,2
+CA-EM1,AMF,3,PI,Pascal Badiou,p_badiou@ducks.ca,snapshot,2
+CA-EM1,AMF,3,DataManager,Rosemary Howard,rosemary.howard@mcgill.ca,snapshot,2
+CA-EM2,AMF,3,PI,Pascal Badiou,p_badiou@ducks.ca,snapshot,2
+CA-EM2,AMF,3,DataManager,Rosemary Howard,rosemary.howard@mcgill.ca,snapshot,2
+CA-Gro,AMF,4,PI,Harry McCaughey,mccaughe@queensu.ca,snapshot,1
+CA-HPC,AMF,2,PI,Oliver Sonnentag,oliver.sonnentag@umontreal.ca,snapshot,4
+CA-HPC,AMF,2,PI,Phil Marsh,pmarsh@wlu.ca,snapshot,4
+CA-HPC,AMF,2,DataManager,Haley Alcock,haley.alcock@umontreal.ca,snapshot,4
+CA-HPC,AMF,2,Technician,Gabriel Hould Gosselin,ghouldgosselin@wlu.ca,snapshot,4
+CA-KLP,AMF,3,PI,Elyn Humphreys,elynhumphreys@cunet.carleton.ca,snapshot,2
+CA-KLP,AMF,3,DataManager,Phaedra Cowden,phaedracowden@cunet.carleton.ca,snapshot,2
+CA-LP1,AMF,7,PI,Thomas Andrew Black,andrew.black@ubc.ca,snapshot,1
+CA-LU1,AMF,3,PI,David Olefeldt,olefeldt@ualberta.ca,snapshot,4
+CA-LU1,AMF,3,PI,Oliver Sonnentag,oliver.sonnentag@umontreal.ca,snapshot,4
+CA-LU1,AMF,3,DataManager,Haley Alcock,haley.alcock@umontreal.ca,snapshot,4
+CA-LU1,AMF,3,AncContact,Christopher Schulze,cschulze@ualberta.ca,snapshot,4
+CA-LU2,AMF,3,PI,David Olefeldt,olefeldt@ualberta.ca,snapshot,4
+CA-LU2,AMF,3,PI,Oliver Sonnentag,oliver.sonnentag@umontreal.ca,snapshot,4
+CA-LU2,AMF,3,DataManager,Haley Alcock,haley.alcock@umontreal.ca,snapshot,4
+CA-LU2,AMF,3,AncContact,Christopher Schulze,cschulze@ualberta.ca,snapshot,4
+CA-MA1,AMF,2,PI,Brian Amiro,brian_amiro@umanitoba.ca,snapshot,1
+CA-MA2,AMF,2,PI,Brian Amiro,brian_amiro@umanitoba.ca,snapshot,1
+CA-MA3,AMF,2,PI,Brian Amiro,brian_amiro@umanitoba.ca,snapshot,1
+CA-Man,AMF,4,PI,Brian Amiro,Brian_Amiro@umanitoba.ca,snapshot,2
+CA-Man,AMF,4,AncContact,Steve Wofsy,swofsy@seas.harvard.edu,snapshot,2
+CA-Mer,AMF,6,PI,Elyn Humphreys,elyn.humphreys@carleton.ca,snapshot,3
+CA-Mer,AMF,6,DataManager,Phaedra Cowden,phaedracowden@cunet.carleton.ca,snapshot,3
+CA-Mer,AMF,6,Affiliate,Peter Lafleur,plafleur@trentu.ca,snapshot,3
+CA-Na1,AMF,2,PI,Charles P.-A. Bourque,cbourque@unb.ca,snapshot,1
+CA-PB1,AMF,5,PI,Elyn Humphreys,elynhumphreys@cunet.carleton.ca,snapshot,2
+CA-PB1,AMF,5,DataManager,Phaedra Cowden,phaedracowden@cunet.carleton.ca,snapshot,2
+CA-PB2,AMF,5,PI,Elyn Humphreys,elynhumphreys@cunet.carleton.ca,snapshot,2
+CA-PB2,AMF,5,DataManager,Phaedra Cowden,phaedracowden@cunet.carleton.ca,snapshot,2
+CA-Qc2,AMF,2,PI,Hank Margolis,Hank.Margolis@sbf.ulaval.ca,snapshot,2
+CA-Qc2,AMF,2,AncContact,Carole Coursolle,carole.coursolle@NRCan-RNCan.gc.ca,snapshot,2
+CA-Qfo,AMF,3,PI,Hank A. Margolis,Hank.Margolis@sbf.ulaval.ca,snapshot,2
+CA-Qfo,AMF,3,AncContact,Carole Coursolle,carole.coursolle@NRCan-RNCan.gc.ca,snapshot,2
+CA-RBM,AMF,4,PI,Sara Knox,sara.knox@ubc.ca,snapshot,2
+CA-RBM,AMF,4,DataManager,Rosemary Howard,rosemary.howard@mcgill.ca,snapshot,2
+CA-SCB,AMF,3,PI,Oliver Sonnentag,oliver.sonnentag@umontreal.ca,snapshot,2
+CA-SCB,AMF,3,DataManager,Haley Alcock,haley.alcock@umontreal.ca,snapshot,2
+CA-SCC,AMF,5,PI,Oliver Sonnentag,oliver.sonnentag@umontreal.ca,snapshot,2
+CA-SCC,AMF,5,DataManager,Haley Alcock,haley.alcock@umontreal.ca,snapshot,2
+CA-SF1,AMF,2,PI,Brian Amiro,Brian_Amiro@umanitoba.ca,snapshot,1
+CA-SF3,AMF,3,PI,Brian Amiro,Brian_Amiro@umanitoba.ca,snapshot,1
+CA-SMC,AMF,2,PI,Oliver Sonnentag,oliver.sonnentag@umontreal.ca,snapshot,3
+CA-SMC,AMF,2,DataManager,Haley Alcock,haley.alcock@umontreal.ca,snapshot,3
+CA-SMC,AMF,2,Technician,Gabriel Hould Gosselin,ghouldgosselin@wlu.ca,snapshot,3
+CA-TP1,AMF,7,PI,M. Altaf Arain,arainm@mcmaster.ca,snapshot,2
+CA-TP1,AMF,7,DataManager,Jason J. Brodeur,brodeujj@mcmaster.ca,snapshot,2
+CA-TP3,AMF,7,PI,M. Altaf Arain,arainm@mcmaster.ca,snapshot,2
+CA-TP3,AMF,7,DataManager,Jason J. Brodeur,brodeujj@mcmaster.ca,snapshot,2
+CA-TPA,AMF,3,PI,M. Altaf Arain,arainm@mcmaster.ca,snapshot,1
+CA-TPD,AMF,5,PI,M. Altaf Arain,arainm@mcmaster.ca,snapshot,2
+CA-TPD,AMF,5,DataManager,Jason J. Brodeur,brodeujj@mcmaster.ca,snapshot,2
+CD-Ygb,ICOS,4,PI,Freke Van Damme,freke.vandamme@ugent.be,snapshot,12
+CD-Ygb,ICOS,4,PI,Geraldine Boon,geraldine.boon@ugent.be,snapshot,12
+CD-Ygb,ICOS,4,PI,Pascal Boeckx,pascal.boeckx@ugent.be,snapshot,12
+CD-Ygb,ICOS,4,PI,Thomas Sibret,thomas.sibret@ugent.be,snapshot,12
+CD-Ygb,ICOS,4,DataManager,Roxanne Daelman,roxanne.daelman@ugent.be,snapshot,12
+CD-Ygb,ICOS,4,Technician,David Ekili,dvdekili@gmail.com,snapshot,12
+CD-Ygb,ICOS,4,FluxContact,Emmanuel Bulonza,emmanuelbulonza@gmail.com,snapshot,12
+CD-Ygb,ICOS,4,Technician,Fabrice Kimbesa,fkimbesa@gmail.com,snapshot,12
+CD-Ygb,ICOS,4,FluxContact,Hans Verbeeck,hans.verbeeck@ugent.be,snapshot,12
+CD-Ygb,ICOS,4,Technician,José Mbifo,josembifo@gmail.com,snapshot,12
+CD-Ygb,ICOS,4,FluxContact,Lodewijk Lefevre,lodewijk.lefevre@ugent.be,snapshot,12
+CD-Ygb,ICOS,4,FluxContact,Marijn Bauters,marijn.bauters@ugent.be,snapshot,12
+CG-Tch,EUF,2,PI,Yann Nouvellon,yann.nouvellon@cirad.fr,snapshot,2
+CG-Tch,EUF,2,DataManager,Blandine Caquet,bcaquet@yahoo.fr,snapshot,2
+CH-Aws,EUF,7,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,8
+CH-Aws,EUF,7,FluxContact,Henriikka Vekuri,henriikka.vekuri@usys.ethz.ch,snapshot,8
+CH-Aws,EUF,7,FluxContact,Kukka-Maaria Kohonen,kukkamaaria.kohonen@usys.ethz.ch,snapshot,8
+CH-Aws,EUF,7,FluxContact,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,8
+CH-Aws,EUF,7,FluxContact,Matthias Zeeman,matthias.zeeman@meteo.uni-freiburg.de,snapshot,8
+CH-Aws,EUF,7,Technician,Philip Meier,philip.meier@usys.ethz.ch,snapshot,8
+CH-Aws,EUF,7,FluxContact,Shiva Ghiasi,shiva.ghiasi@agroscope.admin.ch,snapshot,8
+CH-Aws,EUF,7,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,8
+CH-Cha,EUF,7,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,9
+CH-Cha,EUF,7,FluxContact,Iris Feigenwinter,iris.feigenwinter@usys.ethz.ch,snapshot,9
+CH-Cha,EUF,7,FluxContact,Kathrin Fuchs,kathrin.fuchs@kit.edu,snapshot,9
+CH-Cha,EUF,7,FluxContact,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,9
+CH-Cha,EUF,7,FluxContact,Matthias Zeeman,matthias.zeeman@meteo.uni-freiburg.de,snapshot,9
+CH-Cha,EUF,7,Technician,Philip Meier,philip.meier@usys.ethz.ch,snapshot,9
+CH-Cha,EUF,7,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,9
+CH-Cha,EUF,7,FluxContact,Yi Wang,yi.wang@nateko.lu.se,snapshot,9
+CH-Cha,EUF,7,FluxContact,Ziyu Guo,ziyu.guo@usys.ethz.ch,snapshot,9
+CH-Crs,EUF,2,PI,Sonja Paul,sonjamarit.paul@agroscope.admin.ch,snapshot,3
+CH-Crs,EUF,2,FluxContact,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,3
+CH-Crs,EUF,2,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,3
+CH-Dav,ICOS,8,PI,Mana Gharun,mana.gharun@uni-muenster.de,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Anne Thimonier Rickenmann,anne.thimonier@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Arthur Gessler,arthur.gessler@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Christian Hug,christian.hug@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Christoph Hüglin,christoph.hueglin@empa.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Dominik Hummel,dominik.hummel@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Flurin Sutter,flurin.sutter@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Iris Feigenwinter,iris.feigenwinter@usys.ethz.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Joachim Zhu,joachim.zhu@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Kathi Liechti,kaethi.liechti@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Marco Walser,marco.walser@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Maria Schmitt Oehler,maria.schmitt@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Markus Staudinger,markus.staudinger@usys.ethz.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Mattias Häni,matthias.haeni@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Mauro Marty,mauro.marty@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Micah Wilhelm,micah.wilhelm@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Peter Waldner,peter.waldner@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Philip Meier,philip.meier@usys.ethz.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Roger Köchli,roger.koechli@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Roman Zweifel,roman.zweifel@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Simpal Kumar,simpal.kumar@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Sophia Etzold,sophia.etzold@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Stephan Zimmermann,stephan.zimmermann@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Susanne Burri,susanne.burri@usys.ethz.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Tanja Stutz,tanja.stutz@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,30
+CH-Dav,ICOS,8,Technician,Volodymyr Trotsiuk,volodymyr.trotsiuk@wsl.ch,snapshot,30
+CH-Dav,ICOS,8,FluxContact,Werner Eugster,werner.eugster@usys.ethz.ch,snapshot,30
+CH-For,EUF,4,PI,Lorenz Allemann,lorenz.allemann@usys.ethz.ch,snapshot,7
+CH-For,EUF,4,FluxContact,Kukka-Maaria Kohonen,kukkamaaria.kohonen@usys.ethz.ch,snapshot,7
+CH-For,EUF,4,FluxContact,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,7
+CH-For,EUF,4,Technician,Martin Ruegg,martin.ruegg@usys.ethz.ch,snapshot,7
+CH-For,EUF,4,FluxContact,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,7
+CH-For,EUF,4,Technician,Philip Meier,philip.meier@usys.ethz.ch,snapshot,7
+CH-For,EUF,4,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,7
+CH-Frk,EUF,2,PI,Georg Wohlfahrt,georg.wohlfahrt@uibk.ac.at,snapshot,1
+CH-Fru,EUF,7,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,8
+CH-Fru,EUF,7,FluxContact,Iris Feigenwinter,iris.feigenwinter@usys.ethz.ch,snapshot,8
+CH-Fru,EUF,7,FluxContact,Kathrin Fuchs,kathrin.fuchs@kit.edu,snapshot,8
+CH-Fru,EUF,7,FluxContact,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,8
+CH-Fru,EUF,7,FluxContact,Matthias Zeeman,matthias.zeeman@meteo.uni-freiburg.de,snapshot,8
+CH-Fru,EUF,7,Technician,Philip Meier,philip.meier@usys.ethz.ch,snapshot,8
+CH-Fru,EUF,7,FluxContact,Susanne Burri,susanne.burri@usys.ethz.ch,snapshot,8
+CH-Fru,EUF,7,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,8
+CH-Lae,EUF,8,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,10
+CH-Lae,EUF,8,FluxContact,Ankit Shekhar,ankit.shekhar@usys.ethz.ch,snapshot,10
+CH-Lae,EUF,8,FluxContact,Eugenie Paul-Limoges,eugenie.paul-limoges@wsl.ch,snapshot,10
+CH-Lae,EUF,8,FluxContact,Liliana Scapucci,liliana.scapucci@usys.ethz.ch,snapshot,10
+CH-Lae,EUF,8,FluxContact,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,10
+CH-Lae,EUF,8,FluxContact,Mana Gharun,mana.gharun@uni-muenster.de,snapshot,10
+CH-Lae,EUF,8,FluxContact,Nicolas Wright-Osment,nicholas.wrightosment@usys.ethz.ch,snapshot,10
+CH-Lae,EUF,8,Technician,Philip Meier,philip.meier@usys.ethz.ch,snapshot,10
+CH-Lae,EUF,8,FluxContact,Sophia Etzold,sophia.etzold@wsl.ch,snapshot,10
+CH-Lae,EUF,8,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,10
+CH-Oe1,EUF,3,PI,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,2
+CH-Oe1,EUF,3,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,2
+CH-Oe2,EUF,8,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,7
+CH-Oe2,EUF,8,FluxContact,Fabio Turco,fabio.turco@usys.ethz.ch,snapshot,7
+CH-Oe2,EUF,8,FluxContact,Flavian Tschurr,flavian.tschurr@usys.ethz.ch,snapshot,7
+CH-Oe2,EUF,8,FluxContact,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,7
+CH-Oe2,EUF,8,Technician,Philip Meier,philip.meier@usys.ethz.ch,snapshot,7
+CH-Oe2,EUF,8,FluxContact,Regine Maier,regine.maier@wsl.ch,snapshot,7
+CH-Oe2,EUF,8,Technician,Thomas Baur,thomas.baur@usys.ethz.ch,snapshot,7
+CH-Oe3,EUF,3,PI,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,3
+CH-Oe3,EUF,3,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,3
+CH-Oe3,EUF,3,AFFILIATED,Sonja Paul,sonjamarit.paul@agroscope.admin.ch,badm_extra,3
+CH-Rh1,EUF,2,PI,Sonja Paul,sonjamarit.paul@agroscope.admin.ch,snapshot,3
+CH-Rh1,EUF,2,FluxContact,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,3
+CH-Rh1,EUF,2,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,3
+CH-Rh2,EUF,2,PI,Sonja Paul,sonjamarit.paul@agroscope.admin.ch,snapshot,3
+CH-Rh2,EUF,2,FluxContact,Christoph Ammann,christof.ammann@agroscope.admin.ch,snapshot,3
+CH-Rh2,EUF,2,FluxContact,David Schweizer,david.schweizer@agroscope.admin.ch,snapshot,3
+CH-Rtb,EUF,4,PI,Sonia I. Seneviratne,sonia.seneviratne@ethz.ch,snapshot,3
+CH-Rtb,EUF,4,FluxContact,Dominik Michel,dominik.michel@env.ethz.ch,snapshot,3
+CH-Rtb,EUF,4,FluxContact,Martin Hirschi,martin.hirschi@env.ethz.ch,snapshot,3
+CH-Tnk,EUF,4,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,3
+CH-Tnk,EUF,4,DataManager,Fabio Turco,fabio.turco@usys.ethz.ch,snapshot,3
+CH-Tnk,EUF,4,DataManager,Lukas Hortnagl,lukas.hoertnagl@usys.ethz.ch,snapshot,3
+CL-ACF,AMF,2,PI,Antonio Lara,antoniolaraaguilar@gmail.com,snapshot,4
+CL-ACF,AMF,2,DataManager,Jonathan Barichivich,jbari@lsce.ipsl.fr,snapshot,4
+CL-ACF,AMF,2,Technician,Cristian Gajardo,cristian.gajardo@uchile.cl,snapshot,4
+CL-ACF,AMF,2,Affiliate,Jorge Perez-Quezada,jorgepq@uchile.cl,snapshot,4
+CL-SDF,AMF,3,PI,Jorge Perez-Quezada,jorgepq@uchile.cl,snapshot,3
+CL-SDF,AMF,3,PI,Juan J. Armesto,jarmesto@bio.puc.cl,snapshot,3
+CL-SDF,AMF,3,DataManager,Cristian Gajardo,cristian.gajardo@uchile.cl,snapshot,3
+CL-SDP,AMF,3,PI,Jorge Perez-Quezada,jorgepq@uchile.cl,snapshot,2
+CL-SDP,AMF,3,DataManager,Cristian Gajardo,cristian.gajardo@uchile.cl,snapshot,2
+CN-Aro,CNF,6,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-Aro,CNF,6,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-Aro,CNF,6,FluxContact,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-Ash,CNF,4,PI,Qinghai Song,sqh@xtbg.ac.cn,snapshot,5
+CN-Ash,CNF,4,FluxContact,Gnanamoorthy Palingamoorthy,gnanamoorthy@xtbg.ac,snapshot,5
+CN-Ash,CNF,4,FluxContact,Jing Zhang,zhangjing1@xtbg.ac.cn,snapshot,5
+CN-Ash,CNF,4,FluxContact,Yingxiang Yu,yuyingxiang@xtbg.ac.cn,snapshot,5
+CN-Ash,CNF,4,FluxContact,Zhexin Fan,fanzexin@xtbg.org.cn,snapshot,5
+CN-BeO,CNF,3,PI,Xin Jia,xinjia@bjfu.edu.cn,snapshot,1
+CN-DaW,CNF,2,PI,Yongtao He,heyt@igsnrr.ac.cn,snapshot,5
+CN-DaW,CNF,2,FluxContact,Ben Niu,niub@igsnrr.ac.cn,snapshot,5
+CN-DaW,CNF,2,SCI,Mingyuan Du,dumy@ms.xjb.ac.cn,badm_extra,5
+CN-DaW,CNF,2,FluxContact,Peili Shi,shipl@igsnrr.ac.cn,snapshot,5
+CN-DaW,CNF,2,FluxContact,Xianzhou Zhang,zhangxz@igsnrr.ac.cn,snapshot,5
+CN-Dan,CNF,3,PI,Peili Shi,shipl@igsnrr.ac.cn,snapshot,4
+CN-Dan,CNF,3,FluxContact,Ben Niu,niub@igsnrr.ac.cn,snapshot,4
+CN-Dan,CNF,3,FluxContact,Xianzhou Zhang,zhangxz@igsnrr.ac.cn,snapshot,4
+CN-Dan,CNF,3,FluxContact,Yongtao He,heyt@igsnrr.ac.cn,snapshot,4
+CN-Dda,CNF,2,PI,Guangsheng Zhou,zhougs@cma.gov.cn,snapshot,2
+CN-Dda,CNF,2,FluxContact,Li Zhou,zhouli@cma.gov.cn,snapshot,2
+CN-Din,CNF,3,PI,Junhua Yan,jhyan@scbg.ac.cn,snapshot,3
+CN-Din,CNF,3,FluxContact,Mengxiao Yu,yumx@scbg.ac.cn,snapshot,3
+CN-Din,CNF,3,FluxContact,Ze Meng,mengze@scbg.ac.cn,snapshot,3
+CN-Dmn,CNF,6,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-Dmn,CNF,6,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-Dmn,CNF,6,DataManager,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-Dsh,CNF,6,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-Dsh,CNF,6,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-Dsh,CNF,6,FluxContact,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-Du2,CNF,3,PI,Shiping Chen,spchen@ibcas.ac.cn,snapshot,1
+CN-Dzo,CNF,3,PI,Wu zhixiang,wzxrri@163.com,snapshot,5
+CN-Dzo,CNF,3,FluxContact,Guo xinwei,guoxinwei6@163.com,snapshot,5
+CN-Dzo,CNF,3,FluxContact,Lan guoyu,langyrri@163.com,snapshot,5
+CN-Dzo,CNF,3,FluxContact,Sun rui,sunrui_85@163.com,snapshot,5
+CN-Dzo,CNF,3,FluxContact,Yang chuan,yc007kgb@163.com,snapshot,5
+CN-Erg,CNF,2,PI,Shiping Chen,spchen@ibcas.ac.cn,snapshot,1
+CN-GuT,CNF,2,PI,Zhao Liang,lzhao@nwipb.cas.cn,snapshot,2
+CN-GuT,CNF,2,FluxContact,He Fuquan,hefuquan@nwipb.cas.cn,snapshot,2
+CN-Ha2,CNF,3,PI,Yingnian Li,ynli@nwipb.cas.cn,snapshot,4
+CN-Ha2,CNF,3,FluxContact,Fawei Zhang,mywing963@126.com,snapshot,4
+CN-Ha2,CNF,3,FluxContact,Xinquan Zhao,xqzhao@nwipb.cas.cn,snapshot,4
+CN-Ha2,CNF,3,FluxContact,Zhao Liang,lzhao@nwipb.cas.cn,snapshot,4
+CN-HaM,JPF,4,PI,Mingyuan Du,dumy55@qq.com,snapshot,6
+CN-HaM,JPF,4,DataManager,Yingnian Li,ynli@nwipb.cas.cn,snapshot,6
+CN-HaM,JPF,4,Technician,Fawei Zhang,mywing963@126.com,snapshot,6
+CN-HaM,JPF,4,FluxContact,Song Gu,songgu@nankai.edu.cn,snapshot,6
+CN-HaM,JPF,4,FluxContact,Tomomichi Kato,tkato@agr.hokudai.ac.jp,snapshot,6
+CN-HaM,JPF,4,Technician,Zhao Liang,lzhao@nwipb.cas.cn,snapshot,6
+CN-HaW,CNF,3,PI,Fawei Zhang,mywing963@126.com,snapshot,4
+CN-HaW,CNF,3,FluxContact,Xinquan Zhao,xqzhao@nwipb.cas.cn,snapshot,4
+CN-HaW,CNF,3,FluxContact,Yingnian Li,ynli@nwipb.cas.cn,snapshot,4
+CN-HaW,CNF,3,FluxContact,Zhao Liang,lzhao@nwipb.cas.cn,snapshot,4
+CN-HeM,CNF,6,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-HeM,CNF,6,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-HeM,CNF,6,DataManager,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-Huz,CNF,5,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-Huz,CNF,5,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-Huz,CNF,5,DataManager,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-Jng,CNF,5,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-Jng,CNF,5,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-Jng,CNF,5,DataManager,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-Jzh,CNF,2,PI,Guangsheng Zhou,zhougs@cma.gov.cn,snapshot,3
+CN-Jzh,CNF,2,FluxContact,Li Zhou,zhouli@cma.gov.cn,snapshot,3
+CN-Jzh,CNF,2,FluxContact,Qingyu Jia,beyond.22@126.com,snapshot,3
+CN-Lch,CNF,4,PI,Yucui Zhang,yczhang@sjziam.ac.cn,snapshot,1
+CN-Lsh,JPF,2,PI,Nobuko Saigusa,n.saigusa@nies.go.jp,snapshot,2
+CN-Lsh,JPF,2,FluxContact,Huimin Wang,wanghm@igsnrr.ac.cn,snapshot,2
+CN-Mxn,CNF,2,PI,Qihua He,heqh@cib.ac.cn,snapshot,1
+CN-Nmn,CNF,2,PI,Yuqiang Li,liyq@lzb.ac.cn,snapshot,1
+CN-Qng,CNF,4,PI,Qiang Li,qiang.li@nwafu.edu.cn,snapshot,4
+CN-Qng,CNF,4,FluxContact,Junzhu Pang,pangjunzhu@nwafu.edu.cn,snapshot,4
+CN-Qng,CNF,4,FluxContact,Ruikun Gou,ruikungou@nwafu.edu.cn,snapshot,4
+CN-Qng,CNF,4,FluxContact,Weiguo Liu,liuweiguo110@nwafu.edu.cn,snapshot,4
+CN-Sb1,FLX,4,PI,Rui Sun,sunrui@bnu.edu.cn,snapshot,3
+CN-Sb1,FLX,4,FluxContact,Guangjian Yan,gjyan@bnu.edu.cn,snapshot,3
+CN-Sb1,FLX,4,FluxContact,Xihan Mu,muxihan@bnu.edu.cn,snapshot,3
+CN-Sb2,FLX,4,PI,Rui Sun,sunrui@bnu.edu.cn,snapshot,3
+CN-Sb2,FLX,4,FluxContact,Guangjian Yan,gjyan@bnu.edu.cn,snapshot,3
+CN-Sb2,FLX,4,FluxContact,Xihan Mu,muxihan@bnu.edu.cn,snapshot,3
+CN-Sdq,CNF,6,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-Sdq,CNF,6,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-Sdq,CNF,6,DataManager,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-SnB,FLX,2,PI,Haiqiang Guo,hqguo@fudan.edu.cn,badm_fallback,1
+CN-Wnb,CNF,2,PI,Gang Dong,dongg@sxu.edu.cn,snapshot,1
+CN-Xi2,CNF,3,PI,Shiping Chen,spchen@ibcas.ac.cn,snapshot,1
+CN-YaS,CNF,3,PI,Xin Jia,xinjia@bjfu.edu.cn,snapshot,1
+CN-Yan,CNF,2,PI,Lingtong Du,dult80@nxu.edu.cn,snapshot,4
+CN-Yan,CNF,2,FluxContact,Chenglong Qiao,qiaocl93@163.com,snapshot,4
+CN-Yan,CNF,2,FluxContact,Longlong Ma,mall0911@foxmail.com,snapshot,4
+CN-Yan,CNF,2,FluxContact,Yuxia Wang,wyxia@stu.nxu.edu.cn,snapshot,4
+CN-You,CNF,5,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-You,CNF,5,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-You,CNF,5,DataManager,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CN-Yuc,CNF,3,FluxContact,LI Fadong,lifadong@igsnrr.ac.cn,snapshot,1
+CN-Zha,CNF,6,PI,Shaomin Liu,smliu@bnu.edu.cn,snapshot,3
+CN-Zha,CNF,6,PI,Tao Che,chetao@lzb.ac.cn,snapshot,3
+CN-Zha,CNF,6,DataManager,Ziwei Xu,xuzw@bnu.edu.cn,snapshot,3
+CR-AqC,FLX,3,PI,Olivier Roupsard,olivier.roupsard@cirad.fr,snapshot,4
+CR-AqC,FLX,3,FluxContact,Fredéric Gay,frederic.gay@cirad.fr,snapshot,4
+CR-AqC,FLX,3,FluxContact,Jean-Marc Bonnefond,bonnefond@inrae.fr,snapshot,4
+CR-AqC,FLX,3,FluxContact,Karel Vanden,karel.van_den_meersche@cirad.fr,snapshot,4
+CR-Fsc,AMF,2,PI,Mark Johnson,mark.johnson@ubc.ca,snapshot,2
+CR-Fsc,AMF,2,DataManager,Yeonuk Kim,yeonuk.kim.may@gmail.com,snapshot,2
+CZ-BK1,ICOS,8,PI,Ladislav Šigut,sigut.l@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,PI,Radek Czerný,czerny.r@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Eva Darenová,darenova.e@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Georg Jocher,georg.jocher@thuenen.de,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Jan Krejza,krejza.j@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,Technician,Jan Trusina,trusina.j@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,Technician,Jirí Šlížek,slizek.j@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,Technician,Karel Staník,stanik.k@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Klára Taufarová,taufarova.k@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Lenka Foltýnová,foltynova.l@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,Technician,Lukáš Vágner,vagner.l@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Marian Pavelka,pavelka.m@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,Technician,Michal Bellan,bellan.m@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Michal V. Marek,marek.mv@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Milan Fischer,fischer.milan@gmail.com,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Natalia Kowalska,kowalska.n@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Ondrej Nezval,nezval.o@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,Technician,Pavlína Konrádová,konradova.p@czechglobe.cz,snapshot,19
+CZ-BK1,ICOS,8,FluxContact,Pavol Klimo,klimo.p@czechglobe.cz,snapshot,19
+CZ-BK2,EUF,3,PI,Marian Pavelka,pavelka.m@czechglobe.cz,snapshot,2
+CZ-BK2,EUF,3,FluxContact,Radek Czerný,czerny.r@czechglobe.cz,snapshot,2
+CZ-KrP,EUF,4,PI,Manuel Acosta,acosta.m@czechglobe.cz,snapshot,3
+CZ-KrP,EUF,4,FluxContact,Milan Fischer,fischer.milan@gmail.com,snapshot,3
+CZ-KrP,EUF,4,FluxContact,Radek Czerný,czerny.r@czechglobe.cz,snapshot,3
+CZ-LnG,EUF,5,PI,Natalia Kowalska,kowalska.n@czechglobe.cz,snapshot,4
+CZ-LnG,EUF,5,DataManager,Radek Czerný,czerny.r@czechglobe.cz,snapshot,4
+CZ-LnG,EUF,5,Technician,Jan Trusina,trusina.j@czechglobe.cz,snapshot,4
+CZ-LnG,EUF,5,FluxContact,Marian Pavelka,pavelka.m@czechglobe.cz,snapshot,4
+CZ-Lnz,ICOS,5,PI,Natalia Kowalska,kowalska.n@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,DataManager,Radek Czerný,czerny.r@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Caleb Mensah,mensah.c@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Eva Darenová,darenova.e@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Georg Jocher,georg.jocher@thuenen.de,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Jan Krejza,krejza.j@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,Technician,Jan Trusina,trusina.j@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,Technician,Jirí Šlížek,slizek.j@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,Technician,Karel Staník,stanik.k@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Ladislav Šigut,sigut.l@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Lenka Foltýnová,foltynova.l@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Marian Pavelka,pavelka.m@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,Technician,Michal Bellan,bellan.m@czechglobe.cz,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Milan Fischer,fischer.milan@gmail.com,snapshot,15
+CZ-Lnz,ICOS,5,FluxContact,Ondrej Nezval,nezval.o@czechglobe.cz,snapshot,15
+CZ-RAJ,EUF,6,PI,Ladislav Šigut,sigut.l@czechglobe.cz,snapshot,4
+CZ-RAJ,EUF,6,FluxContact,Marian Pavelka,pavelka.m@czechglobe.cz,snapshot,4
+CZ-RAJ,EUF,6,FluxContact,Natalia Kowalska,kowalska.n@czechglobe.cz,snapshot,4
+CZ-RAJ,EUF,6,FluxContact,Radek Czerný,czerny.r@czechglobe.cz,snapshot,4
+CZ-Stn,EUF,6,PI,Ladislav Šigut,sigut.l@czechglobe.cz,snapshot,3
+CZ-Stn,EUF,6,FluxContact,Marian Pavelka,pavelka.m@czechglobe.cz,snapshot,3
+CZ-Stn,EUF,6,FluxContact,Radek Czerný,czerny.r@czechglobe.cz,snapshot,3
+CZ-wet,ICOS,7,PI,Jiri Dusek,dusek.j@czechglobe.cz,snapshot,9
+CZ-wet,ICOS,7,DataManager,Jan Trusina,trusina.j@czechglobe.cz,snapshot,9
+CZ-wet,ICOS,7,DataManager,Radek Czerný,czerny.r@czechglobe.cz,snapshot,9
+CZ-wet,ICOS,7,FluxContact,Georg Jocher,georg.jocher@thuenen.de,snapshot,9
+CZ-wet,ICOS,7,Technician,Karel Staník,stanik.k@czechglobe.cz,snapshot,9
+CZ-wet,ICOS,7,FluxContact,Ladislav Šigut,sigut.l@czechglobe.cz,snapshot,9
+CZ-wet,ICOS,7,FluxContact,Marian Pavelka,pavelka.m@czechglobe.cz,snapshot,9
+CZ-wet,ICOS,7,FluxContact,Sergey Kivalov,kivalov.s@czechglobe.cz,snapshot,9
+CZ-wet,ICOS,7,Technician,Stanislav Stellner,stellner.s@czechglobe.cz,snapshot,9
+DE-Akm,EUF,6,PI,Christian Bernhofer,christian.bernhofer@tu-dresden.de,snapshot,2
+DE-Akm,EUF,6,FluxContact,Thomas Gruenwald,thomas.gruenwald@tu-dresden.de,snapshot,2
+DE-Amv,ICOS,4,PI,Mana Gharun,mana.gharun@uni-muenster.de,snapshot,2
+DE-Amv,ICOS,4,FluxContact,Nicolas Behrens,nicolas.behrens@uni-muenster.de,snapshot,2
+DE-Brs,ICOS,4,PI,Lennart Boeske,lennart.boeske@dwd.de,snapshot,5
+DE-Brs,ICOS,4,PI,Mathias Herbst,mathias.herbst@dwd.de,snapshot,5
+DE-Brs,ICOS,4,Technician,Holger Pletsch,holger.pletsch@dwd.de,snapshot,5
+DE-Brs,ICOS,4,FluxContact,Jelka Braden-Behrens,jelka.braden-behrens@dwd.de,snapshot,5
+DE-Brs,ICOS,4,Technician,Matthias Jaske,matthias.jaske@dwd.de,snapshot,5
+DE-Etn,EUF,4,PI,Andreas Christen,andreas.christen@meteo.uni-freiburg.de,snapshot,3
+DE-Etn,EUF,4,FluxContact,Christiane Werner,c.werner@cep.uni-freiburg.de,snapshot,3
+DE-Etn,EUF,4,FluxContact,Markus Sulzer,markus.sulzer@meteo.uni-freiburg.de,snapshot,3
+DE-Fen,ICOS,4,PI,Hans Peter Schmid,hape.schmid@kit.edu,snapshot,5
+DE-Fen,ICOS,4,FluxContact,Ingo Völksch,ingo.voelksch@kit.edu,snapshot,5
+DE-Fen,ICOS,4,FluxContact,Matthias Mauder,matthias.mauder@tu-dresden.de,snapshot,5
+DE-Fen,ICOS,4,FluxContact,Rainer Steinbrecher,rainer.steinbrecher@kit.edu,snapshot,5
+DE-Fen,ICOS,4,Technician,Stefan Sellmaier,stefan.sellmaier@kit.edu,snapshot,5
+DE-Geb,ICOS,4,PI,Christian Brümmer,christian.bruemmer@thuenen.de,snapshot,7
+DE-Geb,ICOS,4,PI,Jean-Pierre Delorme,jean-pierre.delorme@thuenen.de,snapshot,7
+DE-Geb,ICOS,4,PI,Timo Rosenthal,timo.rosenthal@thuenen.de,snapshot,7
+DE-Geb,ICOS,4,DataManager,Frederik Schrader,frederik.schrader@thuenen.de,snapshot,7
+DE-Geb,ICOS,4,DataManager,Jeremy Rüffer,jeremy.rueffer@thuenen.de,snapshot,7
+DE-Geb,ICOS,4,DataManager,John Akubia,john.akubia@thuenen.de,snapshot,7
+DE-Geb,ICOS,4,FluxContact,Akarsh Shivhalli Gopal,sg.akarsh@thuenen.de,snapshot,7
+DE-Gri,ICOS,8,PI,Christian Bernhofer,christian.bernhofer@tu-dresden.de,snapshot,7
+DE-Gri,ICOS,8,PI,Matthias Mauder,matthias.mauder@tu-dresden.de,snapshot,7
+DE-Gri,ICOS,8,PI,Thomas Gruenwald,thomas.gruenwald@tu-dresden.de,snapshot,7
+DE-Gri,ICOS,8,DataManager,Heiko Prasse,heiko.prasse@tu-dresden.de,snapshot,7
+DE-Gri,ICOS,8,DataManager,Uwe Eichelmann,uwe.eichelmann@tu-dresden.de,snapshot,7
+DE-Gri,ICOS,8,Technician,Markus Hehn,markus.hehn@tu-dresden.de,snapshot,7
+DE-Gri,ICOS,8,FluxContact,Uta Moderow,uta.moderow@tu-dresden.de,snapshot,7
+DE-GsB,ICOS,5,PI,Anke Hildebrandt,anke.hildebrandt@ufz.de,snapshot,8
+DE-GsB,ICOS,5,PI,Corinna Rebmann,corinna.rebmann@kit.edu,snapshot,8
+DE-GsB,ICOS,5,DataManager,Robert Wiesen,robert.wiesen@ufz.de,snapshot,8
+DE-GsB,ICOS,5,Technician,David Hautmann,david.hautmann@ufz.de,snapshot,8
+DE-GsB,ICOS,5,FluxContact,Flavio Bastos Campos,flavio.bastos-campos@ufz.de,snapshot,8
+DE-GsB,ICOS,5,FluxContact,Laura Dienstbach,laura.dienstbach@ufz.de,snapshot,8
+DE-GsB,ICOS,5,Technician,Patrick Schmidt,patrick.schmidt@ufz.de,snapshot,8
+DE-GsB,ICOS,5,Technician,Sophie Dejosez,sophie.dejosez@ufz.de,snapshot,8
+DE-Gwg,ICOS,4,PI,Hans Peter Schmid,hape.schmid@kit.edu,snapshot,3
+DE-Gwg,ICOS,4,PI,Ingo Völksch,ingo.voelksch@kit.edu,snapshot,3
+DE-Gwg,ICOS,4,Technician,Stefan Sellmaier,stefan.sellmaier@kit.edu,snapshot,3
+DE-Hai,ICOS,8,PI,Alexander Knohl,aknohl@uni-goettingen.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Anne Klosterhalfen,anne.klosterhalfen@uni-goettingen.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Christian Markwitz,christian.markwitz@forst.uni-goettingen.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Corinna Rebmann,corinna.rebmann@kit.edu,snapshot,11
+DE-Hai,ICOS,8,Technician,Dietmar Fellert,dietmar.fellert@forst.uni-goettingen.de,snapshot,11
+DE-Hai,ICOS,8,Technician,Frank Tiedemann,frank.tiedemann@forst.uni-goettingen.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Heinrich Kreilein,hkreile@gwdg.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Lukas Siebicke,lukas.siebicke@forst.uni-goettingen.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Mathias Herbst,mathias.herbst@dwd.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,11
+DE-Hai,ICOS,8,FluxContact,Werner Kutsch,werner.kutsch@icos-ri.eu,snapshot,11
+DE-Har,ICOS,4,PI,Andreas Christen,andreas.christen@meteo.uni-freiburg.de,snapshot,6
+DE-Har,ICOS,4,PI,Thomas Plapp,thomas.plapp@meteo.uni-freiburg.de,snapshot,6
+DE-Har,ICOS,4,Technician,Dirk Redepenning,dirk.redepenning@meteo.uni-freiburg.de,snapshot,6
+DE-Har,ICOS,4,FluxContact,Dirk Schindler,dirk.schindler@meteo.uni-freiburg.de,snapshot,6
+DE-Har,ICOS,4,Technician,Felix Baab,f.baab@meteo.uni-freiburg.de,snapshot,6
+DE-Har,ICOS,4,FluxContact,Sven Kolbe,sven.kolbe@meteo.uni-freiburg.de,snapshot,6
+DE-HoH,ICOS,5,PI,Anke Hildebrandt,anke.hildebrandt@ufz.de,snapshot,14
+DE-HoH,ICOS,5,PI,Corinna Rebmann,corinna.rebmann@kit.edu,snapshot,14
+DE-HoH,ICOS,5,DataManager,Robert Wiesen,robert.wiesen@ufz.de,snapshot,14
+DE-HoH,ICOS,5,Technician,David Hautmann,david.hautmann@ufz.de,snapshot,14
+DE-HoH,ICOS,5,FluxContact,Flavio Bastos Campos,flavio.bastos-campos@ufz.de,snapshot,14
+DE-HoH,ICOS,5,FluxContact,Inmaculada Garcia Quiros,garcia.quiros@ufz.de,snapshot,14
+DE-HoH,ICOS,5,Technician,Isabella Feldmann,isabella.feldmann@ufz.de,snapshot,14
+DE-HoH,ICOS,5,Technician,Julia Meis,julia.meis@ufz.de,snapshot,14
+DE-HoH,ICOS,5,FluxContact,Laura Dienstbach,laura.dienstbach@ufz.de,snapshot,14
+DE-HoH,ICOS,5,Technician,Patrick Schmidt,patrick.schmidt@ufz.de,snapshot,14
+DE-HoH,ICOS,5,Technician,Paul Kempka,paul.kempka@ufz.de,snapshot,14
+DE-HoH,ICOS,5,FluxContact,Sebastian Gimper,sebastian.gimper@ufz.de,snapshot,14
+DE-HoH,ICOS,5,Technician,Simon Paasch,simon.paasch@ufz.de,snapshot,14
+DE-HoH,ICOS,5,Technician,Sophie Dejosez,sophie.dejosez@ufz.de,snapshot,14
+DE-Hte,EUF,3,PI,Gerald Jurasinski,gerald.jurasinski@uni-rostock.de,snapshot,2
+DE-Hte,EUF,3,FluxContact,Franziska Koebsch,franziska.koebsch@uni-rostock.de,snapshot,2
+DE-Hzd,ICOS,4,PI,Christian Bernhofer,christian.bernhofer@tu-dresden.de,snapshot,7
+DE-Hzd,ICOS,4,PI,Matthias Mauder,matthias.mauder@tu-dresden.de,snapshot,7
+DE-Hzd,ICOS,4,PI,Thomas Gruenwald,thomas.gruenwald@tu-dresden.de,snapshot,7
+DE-Hzd,ICOS,4,DataManager,Heiko Prasse,heiko.prasse@tu-dresden.de,snapshot,7
+DE-Hzd,ICOS,4,DataManager,Uwe Eichelmann,uwe.eichelmann@tu-dresden.de,snapshot,7
+DE-Hzd,ICOS,4,Technician,Markus Hehn,markus.hehn@tu-dresden.de,snapshot,7
+DE-Hzd,ICOS,4,FluxContact,Uta Moderow,uta.moderow@tu-dresden.de,snapshot,7
+DE-Kli,ICOS,5,PI,Christian Bernhofer,christian.bernhofer@tu-dresden.de,snapshot,7
+DE-Kli,ICOS,5,PI,Matthias Mauder,matthias.mauder@tu-dresden.de,snapshot,7
+DE-Kli,ICOS,5,PI,Thomas Gruenwald,thomas.gruenwald@tu-dresden.de,snapshot,7
+DE-Kli,ICOS,5,DataManager,Heiko Prasse,heiko.prasse@tu-dresden.de,snapshot,7
+DE-Kli,ICOS,5,DataManager,Uwe Eichelmann,uwe.eichelmann@tu-dresden.de,snapshot,7
+DE-Kli,ICOS,5,Technician,Markus Hehn,markus.hehn@tu-dresden.de,snapshot,7
+DE-Kli,ICOS,5,FluxContact,Uta Moderow,uta.moderow@tu-dresden.de,snapshot,7
+DE-Lkb,EUF,2,PI,Hans Peter Schmid,hape.schmid@kit.edu,snapshot,2
+DE-Lkb,EUF,2,FluxContact,Ingo Völksch,ingo.voelksch@kit.edu,snapshot,2
+DE-Lnf,EUF,7,PI,Alexander Knohl,aknohl@uni-goettingen.de,snapshot,4
+DE-Lnf,EUF,7,DataManager,Anne Klosterhalfen,anne.klosterhalfen@uni-goettingen.de,snapshot,4
+DE-Lnf,EUF,7,DataManager,Christian Markwitz,christian.markwitz@forst.uni-goettingen.de,snapshot,4
+DE-Lnf,EUF,7,DataManager,Frank Tiedemann,frank.tiedemann@forst.uni-goettingen.de,snapshot,4
+DE-Msr,ICOS,4,PI,Janina Klatt,janina.klatt@hswt.de,snapshot,5
+DE-Msr,ICOS,4,PI,Matthias Drösler,matthias.droesler@hswt.de,snapshot,5
+DE-Msr,ICOS,4,FluxContact,Heta Meyer,heta.meyer@hswt.de,snapshot,5
+DE-Msr,ICOS,4,Technician,Jörg Eberl,joerg.eberl@hswt.de,snapshot,5
+DE-Msr,ICOS,4,FluxContact,Martina Schlaipfer,martina.schlaipfer@hswt.de,snapshot,5
+DE-Obe,EUF,7,PI,Christian Bernhofer,christian.bernhofer@tu-dresden.de,snapshot,2
+DE-Obe,EUF,7,FluxContact,Thomas Gruenwald,thomas.gruenwald@tu-dresden.de,snapshot,2
+DE-Rns,EUF,4,PI,Alexander Knohl,aknohl@uni-goettingen.de,snapshot,3
+DE-Rns,EUF,4,FluxContact,Christian Markwitz,christian.markwitz@forst.uni-goettingen.de,snapshot,3
+DE-Rns,EUF,4,FluxContact,Edgar Tunsch,etunsch@gwdg.de,snapshot,3
+DE-RuC,EUF,6,PI,Marius Schmidt,ma.schmidt@fz-juelich.de,snapshot,2
+DE-RuC,EUF,6,FluxContact,Alexander Graf,a.graf@fz-juelich.de,snapshot,2
+DE-RuM,EUF,3,PI,Alexander Graf,a.graf@fz-juelich.de,snapshot,2
+DE-RuM,EUF,3,PI,Marius Schmidt,ma.schmidt@fz-juelich.de,snapshot,2
+DE-RuR,ICOS,6,PI,Alexander Graf,a.graf@fz-juelich.de,snapshot,8
+DE-RuR,ICOS,6,PI,Marius Schmidt,ma.schmidt@fz-juelich.de,snapshot,8
+DE-RuR,ICOS,6,Technician,Daniel Dolfus,d.dolfus@fz-juelich.de,snapshot,8
+DE-RuR,ICOS,6,Technician,Judith Mattes,ju.mattes@fz-juelich.de,snapshot,8
+DE-RuR,ICOS,6,FluxContact,Martina Kettler,m.kettler@fz-juelich.de,snapshot,8
+DE-RuR,ICOS,6,Technician,Nils Becker,ni.becker@fz-juelich.de,snapshot,8
+DE-RuR,ICOS,6,Technician,Shirin Bagheri,s.bagheri@fz-juelich.de,snapshot,8
+DE-RuR,ICOS,6,Technician,Sirgit Kummer,s.kummer@fz-juelich.de,snapshot,8
+DE-RuS,ICOS,6,PI,Alexander Graf,a.graf@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,PI,Marius Schmidt,ma.schmidt@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Andreas Haustein,a.haustein@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Daniel Dolfus,d.dolfus@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Judith Mattes,ju.mattes@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Martina Kettler,m.kettler@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Nils Becker,ni.becker@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Odilia Esser,o.esser@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Shirin Bagheri,s.bagheri@fz-juelich.de,snapshot,10
+DE-RuS,ICOS,6,Technician,Sirgit Kummer,s.kummer@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,PI,Alexander Graf,a.graf@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,PI,Marius Schmidt,ma.schmidt@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,FluxContact,Clemens Drüe,druee@uni-trier.de,snapshot,10
+DE-RuW,ICOS,6,Technician,Daniel Dolfus,d.dolfus@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,Technician,Judith Mattes,ju.mattes@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,Technician,Martina Kettler,m.kettler@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,Technician,Nils Becker,ni.becker@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,Technician,Shirin Bagheri,s.bagheri@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,Technician,Sirgit Kummer,s.kummer@fz-juelich.de,snapshot,10
+DE-RuW,ICOS,6,Technician,Uwe Baltes,uwe.baltes@uni-trier.de,snapshot,10
+DE-SbM,EUF,4,PI,Simon Drollinger,simon.drollinger@uni-goettingen.de,snapshot,2
+DE-SbM,EUF,4,DataManager,Anas Emad,anas.emad@uni-goettingen.de,snapshot,2
+DE-Seh,EUF,2,PI,Karl Schneider,karl.schneider@uni-koeln.de,snapshot,2
+DE-Seh,EUF,2,FluxContact,Marius Schmidt,ma.schmidt@fz-juelich.de,snapshot,2
+DE-Spw,EUF,3,PI,Christian Bernhofer,christian.bernhofer@tu-dresden.de,snapshot,2
+DE-Spw,EUF,3,FluxContact,Thomas Gruenwald,thomas.gruenwald@tu-dresden.de,snapshot,2
+DE-Tha,ICOS,8,PI,Christian Bernhofer,christian.bernhofer@tu-dresden.de,snapshot,7
+DE-Tha,ICOS,8,PI,Matthias Mauder,matthias.mauder@tu-dresden.de,snapshot,7
+DE-Tha,ICOS,8,PI,Thomas Gruenwald,thomas.gruenwald@tu-dresden.de,snapshot,7
+DE-Tha,ICOS,8,DataManager,Heiko Prasse,heiko.prasse@tu-dresden.de,snapshot,7
+DE-Tha,ICOS,8,DataManager,Uwe Eichelmann,uwe.eichelmann@tu-dresden.de,snapshot,7
+DE-Tha,ICOS,8,Technician,Markus Hehn,markus.hehn@tu-dresden.de,snapshot,7
+DE-Tha,ICOS,8,FluxContact,Uta Moderow,uta.moderow@tu-dresden.de,snapshot,7
+DK-Gds,ICOS,2,PI,Rasmus Jensen,raje@ecos.au.dk,snapshot,2
+DK-Gds,ICOS,2,PI,Thomas Friborg,tfj@ign.ku.dk,snapshot,2
+DK-RCW,ICOS,4,PI,Andreas Ibrom,anib@env.dtu.dk,snapshot,6
+DK-RCW,ICOS,4,Technician,Erik Lange Rønn,erro@env.dtu.dk,snapshot,6
+DK-RCW,ICOS,4,Technician,Flemming Møller,flmol@env.dtu.dk,snapshot,6
+DK-RCW,ICOS,4,Technician,Jens Schaarup Sørensen,jsso@env.dtu.dk,snapshot,6
+DK-RCW,ICOS,4,FluxContact,Kim Pilegaard,kipi@env.dtu.dk,snapshot,6
+DK-RCW,ICOS,4,Technician,Mads Lodsgaard Justesen,majus@env.dtu.dk,snapshot,6
+DK-Skj,ICOS,2,PI,Rasmus Jensen,raje@ecos.au.dk,snapshot,2
+DK-Skj,ICOS,2,PI,Thomas Friborg,tfj@ign.ku.dk,snapshot,2
+DK-Sor,ICOS,8,PI,Andreas Ibrom,anib@env.dtu.dk,snapshot,6
+DK-Sor,ICOS,8,PI,Erik Lange Rønn,erro@env.dtu.dk,snapshot,6
+DK-Sor,ICOS,8,Technician,Flemming Møller,flmol@env.dtu.dk,snapshot,6
+DK-Sor,ICOS,8,Technician,Jens Schaarup Sørensen,jsso@env.dtu.dk,snapshot,6
+DK-Sor,ICOS,8,FluxContact,Kim Pilegaard,kipi@env.dtu.dk,snapshot,6
+DK-Sor,ICOS,8,Technician,Mads Lodsgaard Justesen,majus@env.dtu.dk,snapshot,6
+DK-Vng,ICOS,3,PI,Rasmus Jensen,raje@ecos.au.dk,snapshot,3
+DK-Vng,ICOS,3,PI,Thomas Friborg,tfj@ign.ku.dk,snapshot,3
+DK-Vng,ICOS,3,Technician,Lars Rasmussen,lmr@ign.ku.dk,snapshot,3
+EE-Pts,EUF,4,PI,Kuno Kasak,kuno.kasak@ut.ee,snapshot,2
+EE-Pts,EUF,4,FluxContact,Mihkel Pindus,mihkel.pindus@ut.ee,snapshot,2
+EE-Rng,EUF,4,PI,Kuno Kasak,kuno.kasak@ut.ee,snapshot,2
+EE-Rng,EUF,4,FluxContact,Mihkel Pindus,mihkel.pindus@ut.ee,snapshot,2
+EE-Stg,EUF,5,PI,Kaido Soosaar,kaido.soosaar@ut.ee,snapshot,2
+EE-Stg,EUF,5,FluxContact,Alisa Krasnova,alisa.krasnova@ut.ee,snapshot,2
+ES-Abr,EUF,3,PI,Sung-Ching Lee,sclee@bgc-jena.mpg.de,snapshot,4
+ES-Abr,EUF,3,FluxContact,Laura Nadolski,lnadolski@bgc-jena.mpg.de,snapshot,4
+ES-Abr,EUF,3,FluxContact,Mirco Migliavacca,mirco.migliavacca@gmail.com,snapshot,4
+ES-Abr,EUF,3,FluxContact,Tarek El-Madany,telmad@bgc-jena.mpg.de,snapshot,4
+ES-Agu,EUF,6,PI,Francisco Domingo Poveda,poveda@eeza.csic.es,snapshot,5
+ES-Agu,EUF,6,FluxContact,Ana López Ballesteros,alopezb@cita-aragon.es,snapshot,5
+ES-Agu,EUF,6,FluxContact,Cecilio Oyonarte Gutierrez,coyonart@ual.es,snapshot,5
+ES-Agu,EUF,6,FluxContact,Enrique P.Sanchez-Canete,enripsc@ugr.es,snapshot,5
+ES-Agu,EUF,6,FluxContact,María Rosario Moya,charo.moya@eeza.csic.es,snapshot,5
+ES-Amo,EUF,4,PI,Francisco Domingo Poveda,poveda@eeza.csic.es,snapshot,5
+ES-Amo,EUF,4,FluxContact,Ana López Ballesteros,alopezb@cita-aragon.es,snapshot,5
+ES-Amo,EUF,4,FluxContact,Cecilio Oyonarte Gutierrez,coyonart@ual.es,snapshot,5
+ES-Amo,EUF,4,FluxContact,Enrique P.Sanchez-Canete,enripsc@ugr.es,snapshot,5
+ES-Amo,EUF,4,FluxContact,María Rosario Moya,charo.moya@eeza.csic.es,snapshot,5
+ES-Cnd,EUF,3,PI,Sergio Aranda-Barranco,sergioaranda@ugr.es,snapshot,4
+ES-Cnd,EUF,3,FluxContact,Andrew Kowalski,andyk@ugr.es,snapshot,4
+ES-Cnd,EUF,3,FluxContact,Enrique P.Sanchez-Canete,enripsc@ugr.es,snapshot,4
+ES-Cnd,EUF,3,FluxContact,Penelope Serrano,penelope@ugr.es,snapshot,4
+ES-Crg,EUF,4,PI,Arnaud Carrara,arnaud@ceam.es,snapshot,2
+ES-Crg,EUF,4,Technician,Ramon Lopez Jimenez,monra@ceam.es,snapshot,2
+ES-Dnn,EUF,4,PI,Javier Bustamante,jbustamante@ebd.csic.es,snapshot,5
+ES-Dnn,EUF,4,DataManager,Eduardo Escobar,manueleduardo.escobar@ebd.csic.es,snapshot,5
+ES-Dnn,EUF,4,Technician,Abel Valero,abel.valero@csic.es,snapshot,5
+ES-Dnn,EUF,4,Technician,Ignacio Boixo,boixo@ebd.csic.es,snapshot,5
+ES-Dnn,EUF,4,FluxContact,Pedro Gomez-Giraldez,pedro.gomez@ebd.csic.es,snapshot,5
+ES-FtD,EUF,4,PI,Javier Bustamante,jbustamante@ebd.csic.es,snapshot,5
+ES-FtD,EUF,4,DataManager,Eduardo Escobar,manueleduardo.escobar@ebd.csic.es,snapshot,5
+ES-FtD,EUF,4,Technician,Abel Valero,abel.valero@csic.es,snapshot,5
+ES-FtD,EUF,4,Technician,Ignacio Boixo,boixo@ebd.csic.es,snapshot,5
+ES-FtD,EUF,4,FluxContact,Pedro Gomez-Giraldez,pedro.gomez@ebd.csic.es,snapshot,5
+ES-Gdn,EUF,3,PI,Penelope Serrano,penelope@ugr.es,snapshot,3
+ES-Gdn,EUF,3,DataManager,Andrew Kowalski,andyk@ugr.es,snapshot,3
+ES-Gdn,EUF,3,DataManager,Enrique P.Sanchez-Canete,enripsc@ugr.es,snapshot,3
+ES-HdD,EUF,4,PI,Maria Pat Gonzalez,mariap.gonzalez.d@juntadeandalucia.es,snapshot,2
+ES-HdD,EUF,4,DataManager,Alma M García Moreno,alma.garcia@juntadeandalucia.es,snapshot,2
+ES-HeB,EUF,5,PI,Eva Maria Rubio Caballero,evamaria.rubio@uclm.es,snapshot,3
+ES-HeB,EUF,5,DataManager,Francisco Ramón López Serrano,fco.lopez@uclm.es,snapshot,3
+ES-HeB,EUF,5,DataManager,Wafa Chebbi,wafa.chebbi@uclm.es,snapshot,3
+ES-Hen,EUF,5,PI,Francisco Ramón López Serrano,fco.lopez@uclm.es,snapshot,3
+ES-Hen,EUF,5,FluxContact,Eva Maria Rubio Caballero,evamaria.rubio@uclm.es,snapshot,3
+ES-Hen,EUF,5,FluxContact,Wafa Chebbi,wafa.chebbi@uclm.es,snapshot,3
+ES-LJu,EUF,8,PI,Enrique P.Sanchez-Canete,enripsc@ugr.es,snapshot,5
+ES-LJu,EUF,8,FluxContact,Andrew Kowalski,andyk@ugr.es,snapshot,5
+ES-LJu,EUF,8,FluxContact,Francisco Domingo Poveda,poveda@eeza.csic.es,snapshot,5
+ES-LJu,EUF,8,FluxContact,María Rosario Moya,charo.moya@eeza.csic.es,snapshot,5
+ES-LJu,EUF,8,FluxContact,Penelope Serrano,penelope@ugr.es,snapshot,5
+ES-LM1,EUF,6,PI,Sung-Ching Lee,sclee@bgc-jena.mpg.de,snapshot,7
+ES-LM1,EUF,6,FluxContact,Arnaud Carrara,arnaud@ceam.es,snapshot,7
+ES-LM1,EUF,6,FluxContact,Markus Reichstein,mreichstein@bgc-jena.mpg.de,snapshot,7
+ES-LM1,EUF,6,FluxContact,Mirco Migliavacca,mirco.migliavacca@gmail.com,snapshot,7
+ES-LM1,EUF,6,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,7
+ES-LM1,EUF,6,FluxContact,Tarek El-Madany,telmad@bgc-jena.mpg.de,snapshot,7
+ES-LM1,EUF,6,FluxContact,Tiana Hammer,thammer@bgc-jena.mpg.de,snapshot,7
+ES-LM2,EUF,6,PI,Sung-Ching Lee,sclee@bgc-jena.mpg.de,snapshot,7
+ES-LM2,EUF,6,FluxContact,Arnaud Carrara,arnaud@ceam.es,snapshot,7
+ES-LM2,EUF,6,FluxContact,Markus Reichstein,mreichstein@bgc-jena.mpg.de,snapshot,7
+ES-LM2,EUF,6,FluxContact,Mirco Migliavacca,mirco.migliavacca@gmail.com,snapshot,7
+ES-LM2,EUF,6,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,7
+ES-LM2,EUF,6,FluxContact,Tarek El-Madany,telmad@bgc-jena.mpg.de,snapshot,7
+ES-LM2,EUF,6,FluxContact,Tiana Hammer,thammer@bgc-jena.mpg.de,snapshot,7
+ES-LMa,ICOS,4,PI,Arnaud Carrara,arnaud@ceam.es,snapshot,5
+ES-LMa,ICOS,4,FluxContact,Gerardo Moreno,gmoreno@unex.es,snapshot,5
+ES-LMa,ICOS,4,FluxContact,Luis Alonso,alonso@ceam.es,snapshot,5
+ES-LMa,ICOS,4,FluxContact,María Pilar Martín,mpilar.martin@cchs.csic.es,snapshot,5
+ES-LMa,ICOS,4,Technician,Ramon Lopez Jimenez,monra@ceam.es,snapshot,5
+ES-Mcd,EUF,5,PI,Arnaud Carrara,arnaud@ceam.es,snapshot,2
+ES-Mcd,EUF,5,DataManager,Domingo Iglesias,iglesias_dom@gva.es,snapshot,2
+ES-MtB,EUF,4,PI,Javier Bustamante,jbustamante@ebd.csic.es,snapshot,5
+ES-MtB,EUF,4,DataManager,Eduardo Escobar,manueleduardo.escobar@ebd.csic.es,snapshot,5
+ES-MtB,EUF,4,Technician,Abel Valero,abel.valero@csic.es,snapshot,5
+ES-MtB,EUF,4,Technician,Ignacio Boixo,boixo@ebd.csic.es,snapshot,5
+ES-MtB,EUF,4,FluxContact,Pedro Gomez-Giraldez,pedro.gomez@ebd.csic.es,snapshot,5
+ES-MtN,EUF,4,PI,Javier Bustamante,jbustamante@ebd.csic.es,snapshot,5
+ES-MtN,EUF,4,DataManager,Eduardo Escobar,manueleduardo.escobar@ebd.csic.es,snapshot,5
+ES-MtN,EUF,4,Technician,Abel Valero,abel.valero@csic.es,snapshot,5
+ES-MtN,EUF,4,Technician,Ignacio Boixo,boixo@ebd.csic.es,snapshot,5
+ES-MtN,EUF,4,FluxContact,Pedro Gomez-Giraldez,pedro.gomez@ebd.csic.es,snapshot,5
+ES-Mzn,EUF,4,PI,Ana López Ballesteros,alopezb@cita-aragon.es,snapshot,1
+ES-Pzb,EUF,4,PI,Maria Pat Gonzalez,mariap.gonzalez.d@juntadeandalucia.es,snapshot,1
+ES-Srn,EUF,4,PI,Ana López Ballesteros,alopezb@cita-aragon.es,snapshot,1
+ES-TzM,EUF,4,PI,Juan ManuelSánchez,juanmanuel.sanchez@uclm.es,snapshot,4
+ES-TzM,EUF,4,DataManager,Alfonso Calera,alfonso.calera@uclm.es,snapshot,4
+ES-TzM,EUF,4,DataManager,Antonio Rodriguez,antonio.rodriguez@uclm.es,snapshot,4
+ES-TzM,EUF,4,DataManager,José GonzálezPiqueras,jose.gonzalez@uclm.es,snapshot,4
+ES-VDA,EUF,4,PI,Arnaud Carrara,arnaud@ceam.es,snapshot,3
+ES-VDA,EUF,4,FluxContact,Cristina Gimeno,cristina@ceam.es,snapshot,3
+ES-VDA,EUF,4,Technician,Ramon Lopez Jimenez,monra@ceam.es,snapshot,3
+ES-Yst,EUF,5,PI,Wafa Chebbi,wafa.chebbi@uclm.es,snapshot,3
+ES-Yst,EUF,5,FluxContact,Eva Maria Rubio Caballero,evamaria.rubio@uclm.es,snapshot,3
+ES-Yst,EUF,5,FluxContact,Francisco Ramón López Serrano,fco.lopez@uclm.es,snapshot,3
+FI-Ant,ICOS,2,PI,Juho Kinnunen,juho.kinnunen@luke.fi,snapshot,9
+FI-Ant,ICOS,2,PI,Narasinha Shurpali,narasinha.shurpali@luke.fi,snapshot,9
+FI-Ant,ICOS,2,DataManager,Marko Loponen,marko.loponen@luke.fi,snapshot,9
+FI-Ant,ICOS,2,DataManager,Matti Kakkinen,matti.kakkinen@luke.fi,snapshot,9
+FI-Ant,ICOS,2,DataManager,Olli Peltola,olli.peltola@luke.fi,snapshot,9
+FI-Ant,ICOS,2,DataManager,Roosa Yli-Siuru,roosa.yli-siuru@luke.fi,snapshot,9
+FI-Ant,ICOS,2,Technician,Esa Miettinen,esa.miettinen@luke.fi,snapshot,9
+FI-Ant,ICOS,2,FluxContact,Janne Rinne,janne.rinne@nateko.lu.se,snapshot,9
+FI-Ant,ICOS,2,FluxContact,Panu Korhonen,panu.korhonen@luke.fi,snapshot,9
+FI-Hyy,ICOS,8,PI,Ivan Mammarella,ivan.mammarella@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,PI,Janne Levula,janne.levula@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,PI,Juho Aalto,juho.aalto@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,DataManager,Pasi Kolari,pasi.kolari@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,FluxContact,Abin Thomas,abin.thomas@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,Technician,Heikki Laakso,heikki.laakso@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,FluxContact,Jaana Back,jaana.back@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,FluxContact,Jukka Pumpanen,jukka.pumpanen@uef.fi,snapshot,13
+FI-Hyy,ICOS,8,FluxContact,Kira Ryhti,kira.ryhti@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,FluxContact,Mari Pihlatie,mari.pihlatie@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,Technician,Risto Taipale,risto.taipale@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,Technician,Teemu Matilainen,teemu.matilainen@helsinki.fi,snapshot,13
+FI-Hyy,ICOS,8,FluxContact,Timo Vesala,timo.vesala@helsinki.fi,snapshot,13
+FI-Jok,EUF,2,PI,Annalea Lohila,annalea.lohila@fmi.fi,snapshot,4
+FI-Jok,EUF,2,FluxContact,Kristiina Lång,kristiina.lang@luke.fi,snapshot,4
+FI-Jok,EUF,2,FluxContact,Kristiina Regina,kristiina.regina@mtt.fi,snapshot,4
+FI-Jok,EUF,2,FluxContact,Mika Aurela,mika.korkiakoski@fmi.fi,snapshot,4
+FI-Ken,ICOS,5,PI,Tuomas Laurila,tuomas.laurila@fmi.fi,snapshot,8
+FI-Ken,ICOS,5,DataManager,Juha Hatakka,juha.hatakka@fmi.fi,snapshot,8
+FI-Ken,ICOS,5,DataManager,Samu Varjonen,samu.varjonen@fmi.fi,snapshot,8
+FI-Ken,ICOS,5,FluxContact,Hermanni Aaltonen,hermanni.aaltonen@fmi.fi,snapshot,8
+FI-Ken,ICOS,5,Technician,Juuso Rainne,juuso.rainne@fmi.fi,snapshot,8
+FI-Ken,ICOS,5,FluxContact,Mika Aurela,mika.aurela@fmi.fi,snapshot,8
+FI-Ken,ICOS,5,Technician,Sami Suopajärvi,sami.suopajarvi@fmi.fi,snapshot,8
+FI-Ken,ICOS,5,FluxContact,Toprak Aslan,toprak.aslan@uni-muenster.de,snapshot,8
+FI-Let,ICOS,7,PI,Annalea Lohila,annalea.lohila@fmi.fi,snapshot,8
+FI-Let,ICOS,7,PI,Mika Aurela,mika.korkiakoski@fmi.fi,snapshot,8
+FI-Let,ICOS,7,DataManager,Juha Hatakka,juha.hatakka@fmi.fi,snapshot,8
+FI-Let,ICOS,7,FluxContact,Hermanni Aaltonen,hermanni.aaltonen@fmi.fi,snapshot,8
+FI-Let,ICOS,7,FluxContact,Juha-Pekka Tuovinen,juha-pekka.tuovinen@fmi.fi,snapshot,8
+FI-Let,ICOS,7,Technician,Juuso Rainne,juuso.rainne@fmi.fi,snapshot,8
+FI-Let,ICOS,7,FluxContact,Mika Aurela,mika.aurela@fmi.fi,snapshot,8
+FI-Let,ICOS,7,FluxContact,Tuomas Laurila,tuomas.laurila@fmi.fi,snapshot,8
+FI-Nsv,EUF,4,PI,Annalea Lohila,annalea.lohila@fmi.fi,snapshot,4
+FI-Nsv,EUF,4,FluxContact,Alexander Buzacott,alexander.buzacott@helsinki.fi,snapshot,4
+FI-Nsv,EUF,4,FluxContact,Kari Laasasenaho,kari.laasasenaho@seamk.fi,snapshot,4
+FI-Nsv,EUF,4,FluxContact,Kari Minkkinen,kari.minkkinen@helsinki.fi,snapshot,4
+FI-Pap,EUF,2,PI,Narasinha Shurpali,narasinha.shurpali@luke.fi,snapshot,2
+FI-Pap,EUF,2,FluxContact,Olli Peltola,olli.peltola@luke.fi,snapshot,2
+FI-Qvd,EUF,4,PI,Hermanni Aaltonen,hermanni.aaltonen@fmi.fi,snapshot,5
+FI-Qvd,EUF,4,PI,Laura Heimsch,laura.heimsch@fmi.fi,snapshot,5
+FI-Qvd,EUF,4,FluxContact,Annalea Lohila,annalea.lohila@fmi.fi,snapshot,5
+FI-Qvd,EUF,4,FluxContact,Henriikka Vekuri,henriikka.vekuri@usys.ethz.ch,snapshot,5
+FI-Qvd,EUF,4,FluxContact,Liisa Kulmala,liisa.kulmala@fmi.fi,snapshot,5
+FI-Rk2,EUF,3,PI,Helena Rautakoski,helena.rautakoski@fmi.fi,snapshot,2
+FI-Rk2,EUF,3,FluxContact,Mika Aurela,mika.aurela@fmi.fi,snapshot,2
+FI-Ruk,EUF,3,PI,Stephanie Gerin,stephanie.gerin@fmi.fi,snapshot,6
+FI-Ruk,EUF,3,FluxContact,Henriikka Vekuri,henriikka.vekuri@usys.ethz.ch,snapshot,6
+FI-Ruk,EUF,3,Technician,Hermanni Aaltonen,hermanni.aaltonen@fmi.fi,snapshot,6
+FI-Ruk,EUF,3,Technician,Juha Hatakka,juha.hatakka@fmi.fi,snapshot,6
+FI-Ruk,EUF,3,FluxContact,Mika Aurela,mika.korkiakoski@fmi.fi,snapshot,6
+FI-Ruk,EUF,3,Technician,Sami Suopajärvi,sami.suopajarvi@fmi.fi,snapshot,6
+FI-Sar,EUF,2,PI,Narasinha Shurpali,narasinha.shurpali@luke.fi,snapshot,2
+FI-Sar,EUF,2,FluxContact,Olli Peltola,olli.peltola@luke.fi,snapshot,2
+FI-Sii,ICOS,5,PI,Eeva-Stiina Tuittila,eeva-stiina.tuittila@uef.fi,snapshot,10
+FI-Sii,ICOS,5,PI,Janne Levula,janne.levula@helsinki.fi,snapshot,10
+FI-Sii,ICOS,5,DataManager,Pasi Kolari,pasi.kolari@helsinki.fi,snapshot,10
+FI-Sii,ICOS,5,FluxContact,Aino Korrensalo,aino.korrensalo@uef.fi,snapshot,10
+FI-Sii,ICOS,5,FluxContact,Elisa Männistö,elisa.mannisto@uef.fi,snapshot,10
+FI-Sii,ICOS,5,Technician,Heikki Laakso,heikki.laakso@helsinki.fi,snapshot,10
+FI-Sii,ICOS,5,FluxContact,Ivan Mammarella,ivan.mammarella@helsinki.fi,snapshot,10
+FI-Sii,ICOS,5,FluxContact,Risto Taipale,risto.taipale@helsinki.fi,snapshot,10
+FI-Sii,ICOS,5,Technician,Teemu Matilainen,teemu.matilainen@helsinki.fi,snapshot,10
+FI-Sii,ICOS,5,FluxContact,Timo Vesala,timo.vesala@helsinki.fi,snapshot,10
+FI-Sod,ICOS,4,PI,Mika Aurela,mika.aurela@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,DataManager,Jaakko Oivukkamäki,jaakko.oivukkamaki@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,DataManager,Juha Hatakka,juha.hatakka@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,DataManager,Samu Varjonen,samu.varjonen@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,FluxContact,Annalea Lohila,annalea.lohila@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,FluxContact,Erkka Rinne,erkka.rinne@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,FluxContact,Hermanni Aaltonen,hermanni.aaltonen@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,FluxContact,Juha-Pekka Tuovinen,juha-pekka.tuovinen@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,Technician,Juuso Rainne,juuso.rainne@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,FluxContact,Milja Männikkö,milja.mannikko@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,Technician,Sami Suopajärvi,sami.suopajarvi@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,Technician,Timo Mäkelä,timo.makela@fmi.fi,snapshot,13
+FI-Sod,ICOS,4,FluxContact,Tuomas Laurila,tuomas.laurila@fmi.fi,snapshot,13
+FI-Var,ICOS,5,PI,Pasi Kolari,pasi.kolari@helsinki.fi,snapshot,5
+FI-Var,ICOS,5,FluxContact,Ganapati Sahoo,ganapati.sahoo@helsinki.fi,snapshot,5
+FI-Var,ICOS,5,FluxContact,Liisa Kulmala,liisa.kulmala@fmi.fi,snapshot,5
+FI-Var,ICOS,5,Technician,Pasi Aalto,pasi.p.aalto@helsinki.fi,snapshot,5
+FI-Var,ICOS,5,Technician,Petri Keronen,petri.keronen@helsinki.fi,snapshot,5
+FR-Aur,ICOS,7,PI,Bartosz Zawilski,bartosz.zawilski@cnrs.fr,snapshot,8
+FR-Aur,ICOS,7,PI,Tiphaine Tallec,tiphaine.tallec@univ-tlse3.fr,snapshot,8
+FR-Aur,ICOS,7,FluxContact,Aurore Brut,aurore.brut@iut-tlse3.fr,snapshot,8
+FR-Aur,ICOS,7,Technician,Baptiste Lemaire,baptiste.lemaire@univ-tlse3.fr,snapshot,8
+FR-Aur,ICOS,7,FluxContact,Eric Ceschia,eric.ceschia@inrae.fr,snapshot,8
+FR-Aur,ICOS,7,Technician,Franck Granouillac,franck.granouillac@univ-tlse3.fr,snapshot,8
+FR-Aur,ICOS,7,Technician,Hervé Gibrin,herve.gibrin@univ-tlse3.fr,snapshot,8
+FR-Aur,ICOS,7,Technician,Nicole Claverie,nicole.claverie@univ-tlse3.fr,snapshot,8
+FR-Bil,ICOS,6,PI,Christophe Chipeaux,christophe.chipeaux@inrae.fr,snapshot,9
+FR-Bil,ICOS,6,PI,Denis Loustau,denis.loustau@inrae.fr,snapshot,9
+FR-Bil,ICOS,6,DataManager,Christelle Aluome,christelle.aluome@inrae.fr,snapshot,9
+FR-Bil,ICOS,6,DataManager,Sebastien Lafont,sebastien.lafont@inrae.fr,snapshot,9
+FR-Bil,ICOS,6,Technician,Alain Kruszewski,alain.kruszewski@inrae.fr,snapshot,9
+FR-Bil,ICOS,6,Technician,Cyriane Garrigou,cyriane.garrigou@inrae.fr,snapshot,9
+FR-Bil,ICOS,6,FluxContact,Jean Christophe Domec,jc.domec@agro-bordeaux.fr,snapshot,9
+FR-Bil,ICOS,6,Technician,Jean-Luc Denou,jean-luc.denou@inrae.fr,snapshot,9
+FR-Bil,ICOS,6,Technician,Jeremie DEPUYDT,jeremie.depuydt@inrae.fr,snapshot,9
+FR-CLt,ICOS,5,PI,Didier Voisin,didier.voisin@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,PI,Eglantine Gavoty,eglantine.gavoty@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,PI,Jean-Gabriel Valay,jean-gabriel.valay@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,PI,Jerome Foret,jerome.foret@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,DataManager,Lucie Liger,lucie.liger@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,FluxContact,Arnaud Foulquier,arnaud.foulquier@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,Technician,Catherine Coulaud,catherine.coulaud@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,Technician,Helene BARRAL,helene.barral@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,FluxContact,Jean-Martial COHARD,jean-martial.cohard@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,Technician,Pascal Salze,pascal.salze@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,Technician,Remi Vannard,remi.vannard@univ-grenoble-alpes.fr,snapshot,12
+FR-CLt,ICOS,5,Technician,Romain Biron,romain.biron@univ-grenoble-alpes.fr,snapshot,12
+FR-EM2,ICOS,5,PI,Frédéric Bornet,frederic.bornet@inrae.fr,snapshot,4
+FR-EM2,ICOS,5,PI,Joel Leonard,joel.leonard@inrae.fr,snapshot,4
+FR-EM2,ICOS,5,Technician,Bernadette François,bernadette.francois@inrae.fr,snapshot,4
+FR-EM2,ICOS,5,Technician,Eric Grehan,eric.grehan@inrae.fr,snapshot,4
+FR-FBn,ICOS,7,PI,Guillaume Simioni,guillaume.simioni@inrae.fr,snapshot,3
+FR-FBn,ICOS,7,PI,Olivier Marloie,olivier.marloie@inrae.fr,snapshot,3
+FR-FBn,ICOS,7,FluxContact,Nicolas Martin - Saint Paul,nicolas.martin@inrae.fr,snapshot,3
+FR-Fon,ICOS,5,PI,Daniel Berveiller,daniel.berveiller@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,PI,Eric Dufrêne,eric.dufrene@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,DataManager,Christophe Francois,christophe.francois@cnrs.fr,snapshot,11
+FR-Fon,ICOS,5,Technician,Alexandre Morfin,alexandre.morfin@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,Technician,Charlotte Girardin,charlotte.girardin@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,Technician,Clotilde Perot-Guillaume,clotilde.perot-guillaume@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,Technician,Gaëlle Vincent,gaelle.vincent@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,FluxContact,Kamel Soudani,kamel.soudani@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,FluxContact,Nicolas Delpierre,nicolas.delpierre@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,FluxContact,Stéphane Bazot,stephane.bazot@universite-paris-saclay.fr,snapshot,11
+FR-Fon,ICOS,5,Technician,Timothé Guillot,timothe.guillot@universite-paris-saclay.fr,snapshot,11
+FR-Gri,ICOS,8,PI,Benjamin Loubet,benjamin.loubet@inrae.fr,snapshot,6
+FR-Gri,ICOS,8,PI,Carmen Kalalian,carmen.kalalian@inrae.fr,snapshot,6
+FR-Gri,ICOS,8,PI,Pauline Buysse,pauline.buysse@inrae.fr,snapshot,6
+FR-Gri,ICOS,8,Technician,Brigitte Durand,brigitte.durand@inrae.fr,snapshot,6
+FR-Gri,ICOS,8,Technician,Jean-Christophe Gueudet,jean-christophe.gueudet@inrae.fr,snapshot,6
+FR-Gri,ICOS,8,Technician,Jeremie DEPUYDT,jeremie.depuydt@inrae.fr,snapshot,6
+FR-Hes,ICOS,8,PI,Alwin Naiken,alwin.naiken@inrae.fr,snapshot,6
+FR-Hes,ICOS,8,PI,Jean-Baptiste Lily,jean-baptiste.lily@inrae.fr,snapshot,6
+FR-Hes,ICOS,8,PI,Matthias Cuntz,matthias.cuntz@inrae.fr,snapshot,6
+FR-Hes,ICOS,8,DataManager,Pascal Courtois,pascal.courtois@inrae.fr,snapshot,6
+FR-Hes,ICOS,8,DataManager,Thomas Aiguier,thomas.aiguier@inrae.fr,snapshot,6
+FR-Hes,ICOS,8,FluxContact,Emilie Joetzjer,emilie.joetzjer@inrae.fr,snapshot,6
+FR-LBr,EUF,4,PI,Denis Loustau,denis.loustau@inrae.fr,snapshot,3
+FR-LBr,EUF,4,FluxContact,Jean-Marc Bonnefond,bonnefond@inrae.fr,snapshot,3
+FR-LBr,EUF,4,FluxContact,Nathalie Jarosz,nathalie.jarosz@bordeaux.inra.fr,snapshot,3
+FR-LGt,ICOS,5,PI,Adrien Jacotot,adrien.jacotot@inrae.fr,snapshot,10
+FR-LGt,ICOS,5,PI,Sebastien Gogo,sebastien.gogo@univ-rennes.fr,snapshot,10
+FR-LGt,ICOS,5,DataManager,Jean-Baptiste Paroissien,jean-baptiste.paroissien@inrae.fr,snapshot,10
+FR-LGt,ICOS,5,DataManager,Laurent Perdereau,laurent.perdereau@cnrs-orleans.fr,snapshot,10
+FR-LGt,ICOS,5,Technician,Chevrier Stephane,stephane.chevrier@cnrs-orleans.fr,snapshot,10
+FR-LGt,ICOS,5,FluxContact,Christophe Guimbaud,christophe.guimbaud@cnrs-orleans.fr,snapshot,10
+FR-LGt,ICOS,5,FluxContact,Jean-Sebastien Moquet,jean-sebastien.moquet@univ-orleans.fr,snapshot,10
+FR-LGt,ICOS,5,Technician,Juliette Mazeron,juliette.mazeron@cnrs-orleans.fr,snapshot,10
+FR-LGt,ICOS,5,FluxContact,Line Jourdain,line.jourdain@cnrs-orleans.fr,snapshot,10
+FR-LGt,ICOS,5,Technician,Thomas Lecas,thomas.lecas@cnrs-orleans.fr,snapshot,10
+FR-Lam,ICOS,4,PI,Aurore Brut,aurore.brut@iut-tlse3.fr,snapshot,7
+FR-Lam,ICOS,4,PI,Bartosz Zawilski,bartosz.zawilski@cnrs.fr,snapshot,7
+FR-Lam,ICOS,4,Technician,Baptiste Lemaire,baptiste.lemaire@univ-tlse3.fr,snapshot,7
+FR-Lam,ICOS,4,FluxContact,Eric Ceschia,eric.ceschia@inrae.fr,snapshot,7
+FR-Lam,ICOS,4,Technician,Franck Granouillac,franck.granouillac@univ-tlse3.fr,snapshot,7
+FR-Lam,ICOS,4,Technician,Nicole Claverie,nicole.claverie@univ-tlse3.fr,snapshot,7
+FR-Lam,ICOS,4,FluxContact,Tiphaine Tallec,tiphaine.tallec@univ-tlse3.fr,snapshot,7
+FR-Lqu,ICOS,4,PI,Katja Klumpp,katja.klumpp@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,PI,Olivier Darsonville,olivier.darsonville@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,DataManager,Jean-Baptiste Paroissien,jean-baptiste.paroissien@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,DataManager,Lain Pavot,lain.pavot@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,DataManager,Raphael Martin,raphael.martin@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,FluxContact,Bruna Winck,bruna.winck@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,Technician,David Colosse,david.colosse@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,Technician,Isabelle Bosio,isabelle.bosio@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,Technician,Jacques Tyssandier,jacques.tyssandier@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,FluxContact,Jean-Noel Galliot,jean-noel.galliot@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,FluxContact,Juliette Bloor,juliette.bloor@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,Technician,Luc Michaud,luc.michaud@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,FluxContact,Priscilla Note,priscilla.note@inrae.fr,snapshot,14
+FR-Lqu,ICOS,4,Technician,Robert Falcimagne,robert.falcimagne@inrae.fr,snapshot,14
+FR-Lus,ICOS,4,PI,Christophe de Berranger,christophe.de-berranger@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,PI,Francois Gastal,francois.gastal@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,DataManager,Brahim Chebil,brahim.chebil@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,DataManager,Cedric Perrot,cedric.perrot@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,DataManager,Patrick Beauclair,patrick.beauclair@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,FluxContact,Abad Chabbi,abad.chabbi@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,Technician,Christophe Huguet,christophe.huguet@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,Technician,Jean-François Bouhiron,jean-francois.bouhiron@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,Technician,Jerome Chargelegue,jerome.chargelegue@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,FluxContact,Marie-Laure Decau,marie-laure.decau@inrae.fr,snapshot,11
+FR-Lus,ICOS,4,FluxContact,Sebastien Lafont,sebastien.lafont@inrae.fr,snapshot,11
+FR-Mau,EUF,3,PI,Jean-Christophe Calvet,jean-christophe.calvet@meteo.fr,snapshot,2
+FR-Mau,EUF,3,FluxContact,William Maurel,william.maurel@meteo.fr,snapshot,2
+FR-Mej,ICOS,5,PI,Christophe Flechard,christophe.flechard@inrae.fr,snapshot,4
+FR-Mej,ICOS,5,PI,Yannick Fauvel,yannick.fauvel@inrae.fr,snapshot,4
+FR-Mej,ICOS,5,FluxContact,Adrien Jacotot,adrien.jacotot@inrae.fr,snapshot,4
+FR-Mej,ICOS,5,Technician,Yannick Hamon,yannick.hamon@inrae.fr,snapshot,4
+FR-Nzn,EUF,5,PI,Christophe Flechard,christophe.flechard@inrae.fr,snapshot,4
+FR-Nzn,EUF,5,FluxContact,Adrien Jacotot,adrien.jacotot@inrae.fr,snapshot,4
+FR-Nzn,EUF,5,FluxContact,Pauline Buysse,pauline.buysse@inrae.fr,snapshot,4
+FR-Nzn,EUF,5,FluxContact,Yannick Hamon,yannick.hamon@inrae.fr,snapshot,4
+FR-Pue,ICOS,8,PI,Jean-Marc Limousin,jean-marc.limousin@cefe.cnrs.fr,snapshot,5
+FR-Pue,ICOS,8,PI,Richard Joffre,richard.joffre@cefe.cnrs.fr,snapshot,5
+FR-Pue,ICOS,8,FluxContact,Jean Kempf,jean.kempf@cefe.cnrs.fr,snapshot,5
+FR-Pue,ICOS,8,FluxContact,Jean-Marc Ourcival,jean-marc.ourcival@cefe.cnrs.fr,snapshot,5
+FR-Pue,ICOS,8,FluxContact,Karim Piquemal,karim.piquemal@cefe.cnrs.fr,snapshot,5
+FR-Tou,ICOS,5,PI,Alexandre Paci,alexandre.paci@meteo.fr,snapshot,6
+FR-Tou,ICOS,5,PI,Guylaine Canut,guylaine.canut@meteo.fr,snapshot,6
+FR-Tou,ICOS,5,PI,Jean-Christophe Calvet,jean-christophe.calvet@meteo.fr,snapshot,6
+FR-Tou,ICOS,5,DataManager,Jean-Claude Etienne,jean-claude.etienne@meteo.fr,snapshot,6
+FR-Tou,ICOS,5,DataManager,Stéphanie Pommies,stephanie.pommies@meteo.fr,snapshot,6
+FR-Tou,ICOS,5,DataManager,William Maurel,william.maurel@meteo.fr,snapshot,6
+GF-Guy,ICOS,5,PI,Damien Bonal,damien.bonal@inrae.fr,snapshot,3
+GF-Guy,ICOS,5,DataManager,Laetitia BRECHET,laeti.brechet@gmail.com,snapshot,3
+GF-Guy,ICOS,5,Technician,Benoit Burban,benoit.burban@inrae.fr,snapshot,3
+GH-Ank,EUF,2,PI,Riccardo Valentini,rik@unitus.it,snapshot,2
+GH-Ank,EUF,2,DataManager,Giacomo Nicolini,g.nicolini@unitus.it,snapshot,2
+GL-Dsk,ICOS,4,PI,Rasmus Jensen,raje@ecos.au.dk,snapshot,2
+GL-Dsk,ICOS,4,PI,Thomas Friborg,tfj@ign.ku.dk,snapshot,2
+GL-NuF,ICOS,5,PI,Rasmus Jensen,raje@ecos.au.dk,snapshot,2
+GL-NuF,ICOS,5,PI,Thomas Friborg,tfj@ign.ku.dk,snapshot,2
+GL-ZaF,ICOS,4,PI,Eric Larmanou,eric.larmanou@slu.se,snapshot,7
+GL-ZaF,ICOS,4,PI,Marcin Antoni Jackowicz-Korczynski,mjk@bios.au.dk,snapshot,7
+GL-ZaF,ICOS,4,DataManager,Efrén López-Blanco,elb@natur.gl,snapshot,7
+GL-ZaF,ICOS,4,Technician,Daniel Rudd,dar@bios.au.dk,snapshot,7
+GL-ZaF,ICOS,4,FluxContact,Georgina Wieth-Klitgaard,gwk@ecos.au.dk,snapshot,7
+GL-ZaF,ICOS,4,FluxContact,Rasmus Jensen,raje@ecos.au.dk,snapshot,7
+GL-ZaF,ICOS,4,FluxContact,Torben Røjle Christensen,torben.christensen@bios.au.dk,snapshot,7
+GL-ZaH,ICOS,4,PI,Eric Larmanou,eric.larmanou@slu.se,snapshot,4
+GL-ZaH,ICOS,4,PI,Marcin Antoni Jackowicz-Korczynski,mjk@bios.au.dk,snapshot,4
+GL-ZaH,ICOS,4,FluxContact,Georgina Wieth-Klitgaard,gwk@ecos.au.dk,snapshot,4
+GL-ZaH,ICOS,4,FluxContact,Rasmus Jensen,raje@ecos.au.dk,snapshot,4
+ID-JOP,FLX,6,PI,Alexander Knohl,aknohl@uni-goettingen.de,snapshot,4
+ID-JOP,FLX,6,FluxContact,Anne Klosterhalfen,anne.klosterhalfen@uni-goettingen.de,snapshot,4
+ID-JOP,FLX,6,Technician,Edgar Tunsch,etunsch@gwdg.de,snapshot,4
+ID-JOP,FLX,6,Technician,Marek Peksa,peksa@gwdg.de,snapshot,4
+ID-PaB,JPF,4,PI,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,2
+ID-PaB,JPF,4,DataManager,Shinjiro Ohkubo,ookubo-shinjirou@hro.or.jp,snapshot,2
+ID-PaD,JPF,5,PI,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,2
+ID-PaD,JPF,5,DataManager,Shinjiro Ohkubo,ookubo-shinjirou@hro.or.jp,snapshot,2
+ID-Pag,JPF,4,PI,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,5
+ID-Pag,JPF,4,DataManager,Ayaka Sakabe,sakabe.a1118@gmail.com,snapshot,5
+ID-Pag,JPF,4,DataManager,Kitso Kusin,kitsoksn@yahoo.com,snapshot,5
+ID-Pag,JPF,4,DataManager,Masayuki Itoh,itoma@shse.u-hyogo.ac.jp,snapshot,5
+ID-Pag,JPF,4,DataManager,Shinjiro Ohkubo,ookubo-shinjirou@hro.or.jp,snapshot,5
+IE-Cra,ICOS,4,PI,Matt Saunders,saundem@tcd.ie,snapshot,1
+IL-RmH,EUF,3,PI,Eran Tas,eran.tas@mail.huji.ac.il,snapshot,2
+IL-RmH,EUF,3,FluxContact,Qian Li,li.qian@mail.huji.ac.il,snapshot,2
+IL-Yat,EUF,8,PI,Dan Yakir,dan.yakir@weizmann.ac.il,snapshot,3
+IL-Yat,EUF,8,FluxContact,Efrat Schwartz,efrat.schwartz@weizmann.ac.il,snapshot,3
+IL-Yat,EUF,8,FluxContact,Eyal Rotenberg,eyal.rotenberg@weizmann.ac.il,snapshot,3
+IT-Arz,EUF,5,PI,Andrea Pitacco,andrea.pitacco@unipd.it,snapshot,4
+IT-Arz,EUF,5,PI,Franco Meggio,franco.meggio@unipd.it,snapshot,4
+IT-Arz,EUF,5,FluxContact,Luca Tezza,luca.tezza@unipd.it,snapshot,4
+IT-Arz,EUF,5,FluxContact,Monica Canton,monica.canton@unipd.it,snapshot,4
+IT-BCi,ICOS,7,PI,Vincenzo Magliulo,enzo.magliulo@cnr.it,snapshot,9
+IT-BCi,ICOS,7,Technician,Andrea Esposito,andrea.esposito@cnr.it,snapshot,9
+IT-BCi,ICOS,7,FluxContact,Antonio Manco,antonio.manco89@gmail.com,snapshot,9
+IT-BCi,ICOS,7,FluxContact,Daniela Famulari,daniela.famulari@cnr.it,snapshot,9
+IT-BCi,ICOS,7,Technician,Davide Calandrelli,davide.calandrelli@cnr.it,snapshot,9
+IT-BCi,ICOS,7,Technician,Donato Cuocolo,donato.cuocolo@cnr.it,snapshot,9
+IT-BCi,ICOS,7,FluxContact,Luca Vitale,luca.vitale@cnr.it,snapshot,9
+IT-BCi,ICOS,7,FluxContact,Paul Di Tommasi,paul.ditommasi@cnr.it,snapshot,9
+IT-BCi,ICOS,7,FluxContact,Terenzio Zenone,terenzio.zenone@gmail.com,snapshot,9
+IT-BFt,ICOS,4,PI,Angelo Finco,angelo.finco@unicatt.it,snapshot,5
+IT-BFt,ICOS,4,PI,Giacomo Gerosa,giacomo.gerosa@unicatt.it,snapshot,5
+IT-BFt,ICOS,4,FluxContact,Davide Plebani,davide.plebani@unicatt.it,snapshot,5
+IT-BFt,ICOS,4,FluxContact,Laura Bignotti,laura.bignotti1@unicatt.it,snapshot,5
+IT-BFt,ICOS,4,FluxContact,Riccardo Marzuoli,riccardo.marzuoli@unicatt.it,snapshot,5
+IT-BsB,EUF,4,PI,Davide Gisolo,davide.gisolo@unito.it,snapshot,3
+IT-BsB,EUF,4,FluxContact,Davide Canone,davide.canone@unito.it,snapshot,3
+IT-BsB,EUF,4,FluxContact,Stefano Ferraris,stefanof32@gmail.com,snapshot,3
+IT-Bsn,EUF,2,PI,Davide Gisolo,davide.gisolo@unito.it,snapshot,5
+IT-Bsn,EUF,2,FluxContact,Alessio Gentile,alessio.gentile@unito.it,snapshot,5
+IT-Bsn,EUF,2,FluxContact,Davide Canone,davide.canone@unito.it,snapshot,5
+IT-Bsn,EUF,2,FluxContact,Stefano Ferraris,stefanof32@gmail.com,snapshot,5
+IT-Bsn,EUF,2,FluxContact,Stefano Ferraris,stefano.ferraris@unito.it,snapshot,5
+IT-CA1,EUF,2,PI,Dario Papale,darpap@unitus.it,snapshot,4
+IT-CA1,EUF,2,FluxContact,Michele Tomassucci,mtomass@unitus.it,snapshot,4
+IT-CA1,EUF,2,FluxContact,Nicola Arriga,nicola.arriga@ec.europa.eu,snapshot,4
+IT-CA1,EUF,2,FluxContact,Simone Sabbatini,simone.sabbatini@unitus.it,snapshot,4
+IT-CA2,EUF,2,PI,Dario Papale,darpap@unitus.it,snapshot,5
+IT-CA2,EUF,2,FluxContact,Beniamino Gioli,beniamino.gioli@cnr.it,snapshot,5
+IT-CA2,EUF,2,FluxContact,Michele Tomassucci,mtomass@unitus.it,snapshot,5
+IT-CA2,EUF,2,FluxContact,Nicola Arriga,nicola.arriga@ec.europa.eu,snapshot,5
+IT-CA2,EUF,2,FluxContact,Simone Sabbatini,simone.sabbatini@unitus.it,snapshot,5
+IT-CA3,EUF,2,PI,Giorgio Matteucci,giorgio.matteucci@cnr.it,snapshot,5
+IT-CA3,EUF,2,FluxContact,Dario Papale,darpap@unitus.it,snapshot,5
+IT-CA3,EUF,2,FluxContact,Michele Tomassucci,mtomass@unitus.it,snapshot,5
+IT-CA3,EUF,2,FluxContact,Nicola Arriga,nicola.arriga@ec.europa.eu,snapshot,5
+IT-CA3,EUF,2,FluxContact,Simone Sabbatini,simone.sabbatini@unitus.it,snapshot,5
+IT-Cp2,ICOS,6,PI,Silvano Fares,silvano.fares@cnr.it,snapshot,10
+IT-Cp2,ICOS,6,PI,Tiziano Sorgi,tiziano.sorgi@crea.gov.it,snapshot,10
+IT-Cp2,ICOS,6,FluxContact,Adriano Conte,adriano.conte@cnr.it,snapshot,10
+IT-Cp2,ICOS,6,FluxContact,Alessandro Alivernini,alessandro.alivernini@crea.gov.it,snapshot,10
+IT-Cp2,ICOS,6,FluxContact,Carlotta Ferrara,carlotta.ferrara@crea.gov.it,snapshot,10
+IT-Cp2,ICOS,6,Technician,Filippo Ilardi,filippo.ilardi@crea.gov.it,snapshot,10
+IT-Cp2,ICOS,6,FluxContact,Francesco Chianucci,francesco.chianucci@crea.gov.it,snapshot,10
+IT-Cp2,ICOS,6,FluxContact,Lina Fusaro,lina.fusaro@cnr.it,snapshot,10
+IT-Cp2,ICOS,6,FluxContact,Roberto Corsanici,roberto.corsanici@unitus.it,snapshot,10
+IT-Cp2,ICOS,6,Technician,Valerio Moretti,valerio.moretti@crea.gov.it,snapshot,10
+IT-Lav,EUF,5,PI,Damiano Gianelle,damiano.gianelle@fmach.it,snapshot,5
+IT-Lav,EUF,5,FluxContact,Luca Belelli Marchesini,luca.belellimarchesini@fmach.it,snapshot,5
+IT-Lav,EUF,5,FluxContact,Matteo Sottocornola,m.sottocornola@gmail.com,snapshot,5
+IT-Lav,EUF,5,FluxContact,Mauro Cavagna,mauro.cavagna@fmach.it,snapshot,5
+IT-Lav,EUF,5,FluxContact,Roberto Zampedri,roberto.zampedri@fmach.it,snapshot,5
+IT-Lsn,ICOS,5,PI,Andrea Pitacco,andrea.pitacco@unipd.it,snapshot,5
+IT-Lsn,ICOS,5,DataManager,Franco Meggio,franco.meggio@unipd.it,snapshot,5
+IT-Lsn,ICOS,5,FluxContact,Alessandro Peressotti,alessandro.peressotti@uniud.it,snapshot,5
+IT-Lsn,ICOS,5,FluxContact,Luca Tezza,luca.tezza@unipd.it,snapshot,5
+IT-Lsn,ICOS,5,FluxContact,Nadia Vendrame,nadia.vendrame@unipd.it,snapshot,5
+IT-MBo,ICOS,8,PI,Damiano Gianelle,damiano.gianelle@fmach.it,snapshot,7
+IT-MBo,ICOS,8,PI,Roberto Zampedri,roberto.zampedri@fmach.it,snapshot,7
+IT-MBo,ICOS,8,DataManager,Mauro Cavagna,mauro.cavagna@fmach.it,snapshot,7
+IT-MBo,ICOS,8,FluxContact,Barbara Marcolla,barbara.marcolla@fmach.it,snapshot,7
+IT-MBo,ICOS,8,FluxContact,Loris Vescovo,loris.vescovo@fmach.it,snapshot,7
+IT-MBo,ICOS,8,FluxContact,Luca Belelli Marchesini,luca.belellimarchesini@fmach.it,snapshot,7
+IT-MBo,ICOS,8,FluxContact,Mirco Rodeghiero,mirco.rodeghiero@fmach.it,snapshot,7
+IT-NiG,EUF,4,PI,Davide Gisolo,davide.gisolo@unito.it,snapshot,4
+IT-NiG,EUF,4,DataManager,Stefano Ferraris,stefanof32@gmail.com,snapshot,4
+IT-NiG,EUF,4,FluxContact,Alessio Gentile,alessio.gentile@unito.it,snapshot,4
+IT-NiG,EUF,4,FluxContact,Davide Canone,davide.canone@unito.it,snapshot,4
+IT-Niv,ICOS,5,PI,Antonello Provenzale,antonello.provenzale@cnr.it,snapshot,5
+IT-Niv,ICOS,5,PI,Ilaria Baneschi,i.baneschi@igg.cnr.it,snapshot,5
+IT-Niv,ICOS,5,DataManager,Mariasilvia Giamberini,mariasilvia.giamberini@igg.cnr.it,snapshot,5
+IT-Niv,ICOS,5,FluxContact,Brunella Raco,b.raco@igg.cnr.it,snapshot,5
+IT-Niv,ICOS,5,FluxContact,Gianna Vivaldo,gianna.vivaldo@igg.cnr.it,snapshot,5
+IT-Noe,ICOS,4,PI,Donatella Spano,spano@uniss.it,snapshot,10
+IT-Noe,ICOS,4,DataManager,Arianna Lucarini,arianna.lucarini@iusspavia.it,snapshot,10
+IT-Noe,ICOS,4,DataManager,Costantino Sirca,cosirca@uniss.it,snapshot,10
+IT-Noe,ICOS,4,DataManager,Mauro Lo Cascio,mlocascio@uniss.it,snapshot,10
+IT-Noe,ICOS,4,DataManager,Serena Marras,serenam@uniss.it,snapshot,10
+IT-Noe,ICOS,4,FluxContact,Andrea Ventura,a.ventura@ibimet.cnr.it,snapshot,10
+IT-Noe,ICOS,4,Technician,Angelo Arca,angelo.arca@ibe.cnr.it,snapshot,10
+IT-Noe,ICOS,4,FluxContact,Laura Sanna,sanna@ibimet.cnr.it,snapshot,10
+IT-Noe,ICOS,4,FluxContact,Pierpaolo Duce,pierpaolo.duce@ibe.cnr.it,snapshot,10
+IT-Noe,ICOS,4,Technician,Pierpaolo Zara,zara@ibimet.cnr.it,snapshot,10
+IT-Ren,ICOS,8,PI,Leonardo Montagnani,leonardo.montagnani@unibz.it,snapshot,10
+IT-Ren,ICOS,8,PI,Stefano Minerbi,stefano.minerbi@provinz.bz.it,snapshot,10
+IT-Ren,ICOS,8,FluxContact,Anna Candotti,anna.candotti@unibz.it,snapshot,10
+IT-Ren,ICOS,8,FluxContact,Enrico Tomelleri,enrico.tomelleri@unibz.it,snapshot,10
+IT-Ren,ICOS,8,Technician,Fabio Tenca,fabio.tenca@provinz.bz.it,snapshot,10
+IT-Ren,ICOS,8,Technician,Giorgio Folino,giorgio.folino@unibz.it,snapshot,10
+IT-Ren,ICOS,8,Technician,Ivo Cobbe,ivo.cobbe@provinz.bz.it,snapshot,10
+IT-Ren,ICOS,8,FluxContact,Martin Stecher,martin.stecher@provinz.bz.it,snapshot,10
+IT-Ren,ICOS,8,Technician,Massimo Bortoli,massimo.bortoli@provinz.bz.it,snapshot,10
+IT-Ren,ICOS,8,Technician,Maurizio Ventura,maurizio.ventura@unibz.it,snapshot,10
+IT-SR2,FLX,6,PI,Alessandro Dell'Acqua,alessandro.dell'acqua@ec.europa.eu,snapshot,5
+IT-SR2,FLX,6,PI,Carsten Grüning,carsten.gruening@ec.europa.eu,snapshot,5
+IT-SR2,FLX,6,PI,Ignacio Goded,ignacio.goded@ec.europa.eu,snapshot,5
+IT-SR2,FLX,6,PI,Nicola Arriga,nicola.arriga@ec.europa.eu,snapshot,5
+IT-SR2,FLX,6,Technician,Marco Matteucci,matteucci.m@gmail.com,snapshot,5
+IT-SRo,EUF,4,PI,Giovanni Manca,giovanni.manca@ec.europa.eu,snapshot,1
+IT-Tor,ICOS,7,PI,Edoardo Cremonese,e.cremonese@arpa.vda.it,snapshot,3
+IT-Tor,ICOS,7,FluxContact,Marta Galvagno,m.galvagno@arpa.vda.it,snapshot,3
+IT-Tor,ICOS,7,FluxContact,Umberto Morra di Cella,u.morradicella@arpa.vda.it,snapshot,3
+IT-TrF,ICOS,6,PI,Marta Galvagno,m.galvagno@arpa.vda.it,snapshot,3
+IT-TrF,ICOS,6,FluxContact,Daria Ferraris,daria.doose@gmail.com,snapshot,3
+IT-TrF,ICOS,6,FluxContact,Gianluca Filippa,g.filippa@arpa.vda.it,snapshot,3
+JP-Api,JPF,6,PI,Yukio Yasuda,yasuda_yukio330@ffpri.go.jp,badm_fallback,1
+JP-BBY,JPF,3,PI,Masahito Ueyama,mueyama@omu.ac.jp,snapshot,3
+JP-BBY,JPF,3,FluxContact,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,3
+JP-BBY,JPF,3,FluxContact,Yasuhiro Kominami,comy@affrc.go.jp,snapshot,3
+JP-Fhk,JPF,6,PI,Yoshiyuki Takahashi,yoshiyu@nies.go.jp,snapshot,6
+JP-Fhk,JPF,6,DataManager,Reiko Ide,ide.reiko@nies.go.jp,snapshot,6
+JP-Fhk,JPF,6,FluxContact,Naishen Liang,liang@nies.go.jp,snapshot,6
+JP-Fhk,JPF,6,FluxContact,Ryuichi Hirata,hirata.ryuichi@nies.go.jp,snapshot,6
+JP-Fhk,JPF,6,Technician,Yasuo Hirose,hirose.yasuo@nies.go.jp,snapshot,6
+JP-Fhk,JPF,6,Technician,Yukio Yamao,yamao.yukio@nies.go.jp,snapshot,6
+JP-Fjy,JPF,6,PI,Yuji Kominami,kominy@ffpri.affrc.go.jp,snapshot,4
+JP-Fjy,JPF,6,FluxContact,Takafumi Miyama,tmiyama@affrc.go.jp,snapshot,4
+JP-Fjy,JPF,6,FluxContact,Yasuko Mizoguchi,pop128@ffpri.affrc.go.jp,snapshot,4
+JP-Fjy,JPF,6,FluxContact,Yuta Inoue,inoueyu03@affrc.go.jp,snapshot,4
+JP-Fmt,JPF,4,PI,Kentaro Takagi,kentt@fsc.hokudai.ac.jp,snapshot,2
+JP-Fmt,JPF,4,FluxContact,Kazuhide Matsuda,kmatsuda@cc.tuat.ac.jp,snapshot,2
+JP-Hc2,JPF,2,PI,Takahiro Takimoto,takimotot689@affrc.go.jp,snapshot,2
+JP-Hc2,JPF,2,PI,Toru Iwata,iwata@okayama-u.ac.jp,snapshot,2
+JP-Hc3,JPF,2,PI,Takahiro Takimoto,takimotot689@affrc.go.jp,snapshot,2
+JP-Hc3,JPF,2,PI,Toru Iwata,iwata@okayama-u.ac.jp,snapshot,2
+JP-KaP,JPF,2,PI,Akira Miyata,miyata.akira@affrc.go.jp,snapshot,3
+JP-KaP,JPF,2,PI,Yoshinobu Harazono,harazono2009gl@gmail.com,snapshot,3
+JP-KaP,JPF,2,FluxContact,Kentaro Takagi,kentt@fsc.hokudai.ac.jp,snapshot,3
+JP-Khw,JPF,5,PI,Kenzo Kitamura,kitamu93@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,PI,Takanori Shimizu,simizuta@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,PI,Yuji Kominami,kominy@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,FluxContact,Akira Shimizu,akiraxx@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,FluxContact,Koji Tamai,a123@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,FluxContact,Kyushu Hagino,hagin@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,FluxContact,Masahiro Kobayashi,kbmasa@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,FluxContact,Yasuhiro Ohnuki,bchankan@ffpri.affrc.go.jp,snapshot,9
+JP-Khw,JPF,5,FluxContact,Yasuko Mizoguchi,pop128@ffpri.affrc.go.jp,snapshot,9
+JP-Kzw,JPF,3,PI,Ko Nakaya,cow@criepi.denken.or.jp,snapshot,3
+JP-Kzw,JPF,3,FluxContact,Shinji Yasuike,yasuike@criepi.denken.or.jp,snapshot,3
+JP-Kzw,JPF,3,FluxContact,Takuya Kobayashi,t-koba@criepi.denken.or.jp,snapshot,3
+JP-MBF,JPF,3,PI,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,7
+JP-MBF,JPF,3,PI,Taro Nakai,taro.nakai@gmail.com,snapshot,7
+JP-MBF,JPF,3,PI,Yuji Kodama,kodama.yuji@arc.hokudai.ac.jp,snapshot,7
+JP-MBF,JPF,3,DataManager,Takeshi Ohta,takeshi@agr.nagoya-u.ac.jp,snapshot,7
+JP-MBF,JPF,3,FluxContact,Akihiro Sumida,asumida@kpu.au.jp,snapshot,7
+JP-MBF,JPF,3,FluxContact,Motomu Toda,todam2525@gmail.com,snapshot,7
+JP-MBF,JPF,3,FluxContact,Toshihiko Hara,t-hara@lowtem.hokudai.ac.jp,snapshot,7
+JP-MMF,JPF,3,PI,Taro Nakai,taro.nakai@gmail.com,snapshot,5
+JP-MMF,JPF,3,PI,Yuji Kodama,kodama.yuji@arc.hokudai.ac.jp,snapshot,5
+JP-MMF,JPF,3,FluxContact,Akihiro Sumida,asumida@kpu.au.jp,snapshot,5
+JP-MMF,JPF,3,FluxContact,Motomu Toda,todam2525@gmail.com,snapshot,5
+JP-MMF,JPF,3,FluxContact,Toshihiko Hara,t-hara@lowtem.hokudai.ac.jp,snapshot,5
+JP-Mse,JPF,3,PI,Hiroki Iwata,hiwata@shinshu-u.ac.jp,snapshot,2
+JP-Mse,JPF,3,DataManager,Keisuke Ono,onok@affrc.go.jp,snapshot,2
+JP-NsC,JPF,4,PI,Shoji Matsuura,matsuura.shoji596@naro.go.jp,snapshot,1
+JP-NsM,JPF,4,PI,Shoji Matsuura,matsuura.shoji596@naro.go.jp,snapshot,1
+JP-Nuf,JPF,2,PI,Md. Abdul Awal,awalma7@bau.edu.bd,snapshot,2
+JP-Nuf,JPF,2,PI,Takeshi Ohta,takeshi_1956@grace.ocn.ne.jp,badm_extra,2
+JP-Om2,JPF,3,PI,Masahito Ueyama,mueyama@omu.ac.jp,snapshot,1
+JP-SMF,JPF,4,PI,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,2
+JP-SMF,JPF,4,DataManager,Takeshi Ohta,takeshi@agr.nagoya-u.ac.jp,snapshot,2
+JP-Sb1,JPF,2,PI,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,1
+JP-Sb2,JPF,2,PI,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,1
+JP-Shn,JPF,2,PI,Hiroki Iwata,hiwata@shinshu-u.ac.jp,snapshot,2
+JP-Shn,JPF,2,PI,Jun Suzuki,jsuzuki@shinshu-u.ac.jp,snapshot,2
+JP-Spp,JPF,5,PI,Yasuko Mizoguchi,pop128@ffpri.affrc.go.jp,snapshot,2
+JP-Spp,JPF,5,FluxContact,Kenzo Kitamura,kitamu93@ffpri.affrc.go.jp,snapshot,2
+JP-Srk,JPF,3,PI,Sachinobu Ishida,ishida@hirosaki-u.ac.jp,snapshot,1
+JP-Ta2,JPF,4,PI,Taku M. Saitoh,saitoh.taku.k0@f.gifu-u.ac.jp,snapshot,2
+JP-Ta2,JPF,4,DataManager,Ichiro Tamagawa,tama@green.gifu-u.ac.jp,snapshot,2
+JP-Tak,JPF,6,PI,Hiroaki Kondo,kondo-hrk@aist.go.jp,snapshot,4
+JP-Tak,JPF,6,PI,Shohei Murayama,s.murayama@aist.go.jp,snapshot,4
+JP-Tak,JPF,6,FluxContact,Shigeyuki Ishidoya,s-ishidoya@aist.go.jp,snapshot,4
+JP-Tak,JPF,6,FluxContact,Takahisa Maeda,takahisa.maeda@aist.go.jp,snapshot,4
+JP-Tef,JPF,7,PI,Kentaro Takagi,kentt@fsc.hokudai.ac.jp,snapshot,3
+JP-Tef,JPF,7,DataManager,Ryuichi Hirata,hirata.ryuichi@nies.go.jp,snapshot,3
+JP-Tef,JPF,7,DataManager,Yoshiyuki Takahashi,yoshiyu@nies.go.jp,snapshot,3
+JP-Tkb,JPF,2,PI,Takanori Shimizu,simizuta@ffpri.affrc.go.jp,snapshot,4
+JP-Tkb,JPF,2,FluxContact,Naoki Kabeya,kabeya@ffpri.affrc.go.jp,snapshot,4
+JP-Tkb,JPF,2,FluxContact,Shin''ichi Iida,iishin@ffpri.affrc.go.jp,snapshot,4
+JP-Tkb,JPF,2,FluxContact,Sho Iwagami,iwagami@ffpri.affrc.go.jp,snapshot,4
+JP-Tmd,JPF,6,PI,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,2
+JP-Tmd,JPF,6,Technician,Ryuichi Hirata,hirata.ryuichi@nies.go.jp,snapshot,2
+JP-Tmk,JPF,2,PI,Ryuichi Hirata,hirata.ryuichi@nies.go.jp,snapshot,2
+JP-Tmk,JPF,2,FluxContact,Takashi Hirano,hirano@agr.hokudai.ac.jp,snapshot,2
+JP-Toc,JPF,2,PI,Tatsuro Nakaji,nakaji@fsc.hokudai.ac.jp,snapshot,3
+JP-Toc,JPF,2,DataManager,Reiko Ide,ide.reiko@nies.go.jp,snapshot,3
+JP-Toc,JPF,2,Technician,Masahiro Nakamura,masahiro@fsc.hokudai.ac.jp,snapshot,3
+JP-Yms,JPF,7,PI,Yuji Kominami,kominy@ffpri.affrc.go.jp,snapshot,2
+JP-Yms,JPF,7,FluxContact,Yuta Inoue,inoueyu03@affrc.go.jp,snapshot,2
+JP-Ynf,JPF,3,PI,Kazuho Matsumoto,kazuhom@iwate-u.ac.jp,snapshot,3
+JP-Ynf,JPF,3,FluxContact,Atsushi Takashima,a-taka@agr.u-ryukyu.ac.jp,snapshot,3
+JP-Ynf,JPF,3,FluxContact,Shingo Taniguchi,shingota@agr.u-ryukyu.ac.jp,snapshot,3
+KE-Aq1,FLX,2,PI,Lutz Merbold,lutz.merbold@gmail.com,snapshot,3
+KE-Aq1,FLX,2,FluxContact,Sonja Leitner,s.leitner@cgiar.org,snapshot,3
+KE-Aq1,FLX,2,FluxContact,Vincent Odongo,v.odongo@cgiar.org,snapshot,3
+KE-Aq2,FLX,4,PI,Vincent Odongo,v.odongo@cgiar.org,snapshot,3
+KE-Aq2,FLX,4,FluxContact,Lutz Merbold,lutz.merbold@gmail.com,snapshot,3
+KE-Aq2,FLX,4,FluxContact,Sonja Leitner,s.leitner@cgiar.org,snapshot,3
+KE-Chk,FLX,4,PI,Enrico Di Minin,enrico.di.minin@helsinki.fi,snapshot,5
+KE-Chk,FLX,4,PI,Matti Räsänen,matti.rasanen@helsinki.fi,snapshot,5
+KE-Chk,FLX,4,Technician,Julius Omondi,julius.omondi@helsinki.fi,snapshot,5
+KE-Chk,FLX,4,FluxContact,Petri Pellikka,petri.pellikka@helsinki.fi,snapshot,5
+KE-Chk,FLX,4,FluxContact,Timo Vesala,timo.vesala@helsinki.fi,snapshot,5
+KE-Kpt,FLX,5,PI,Lutz Merbold,lutz.merbold@gmail.com,snapshot,3
+KE-Kpt,FLX,5,FluxContact,Sonja Leitner,s.leitner@cgiar.org,snapshot,3
+KE-Kpt,FLX,5,FluxContact,Vincent Odongo,v.odongo@cgiar.org,snapshot,3
+KE-Mkt,FLX,5,PI,Enrico Di Minin,enrico.di.minin@helsinki.fi,snapshot,5
+KE-Mkt,FLX,5,PI,Matti Räsänen,matti.rasanen@helsinki.fi,snapshot,5
+KE-Mkt,FLX,5,Technician,Julius Omondi,julius.omondi@helsinki.fi,snapshot,5
+KE-Mkt,FLX,5,FluxContact,Petri Pellikka,petri.pellikka@helsinki.fi,snapshot,5
+KE-Mkt,FLX,5,FluxContact,Timo Vesala,timo.vesala@helsinki.fi,snapshot,5
+KH-Kmp,JPF,2,PI,Takanori Shimizu,simizuta@ffpri.affrc.go.jp,snapshot,6
+KH-Kmp,JPF,2,FluxContact,Akira Shimizu,akiraxx@ffpri.affrc.go.jp,snapshot,6
+KH-Kmp,JPF,2,FluxContact,Koji Tamai,a123@ffpri.affrc.go.jp,snapshot,6
+KH-Kmp,JPF,2,FluxContact,Satha Saing,saingsatha999@gmail.com,snapshot,6
+KH-Kmp,JPF,2,FluxContact,Shin''ichi Iida,iishin@ffpri.affrc.go.jp,snapshot,6
+KH-Kmp,JPF,2,FluxContact,Sophal Chann,sophal.chan@gmail.com,snapshot,6
+KR-AdC,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-AdC,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,3
+KR-AdC,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-CRK,KOF,3,PI,Minseok Kang,ms-kang@ncam.kr,snapshot,4
+KR-CRK,KOF,3,FluxContact,Jongho Kim,happs@ncam.kr,snapshot,4
+KR-CRK,KOF,3,FluxContact,Seungwon Sohn,swsohn@ncam.kr,snapshot,4
+KR-CRK,KOF,3,FluxContact,Youngryel Ryu,yryu@snu.ac.kr,snapshot,4
+KR-CmF,KOF,3,PI,Kiyoung Kim,kykim@kihs.re.kr,snapshot,2
+KR-CmF,KOF,3,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,2
+KR-GmP,KOF,2,PI,Kyo-Moon Shim,kmshim@korea.kr,snapshot,3
+KR-GmP,KOF,2,PI,Mingu Kang,hyekky@korea.kr,snapshot,3
+KR-GmP,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-GmR,KOF,2,PI,Kyo-Moon Shim,kmshim@korea.kr,snapshot,3
+KR-GmR,KOF,2,PI,Mingu Kang,hyekky@korea.kr,snapshot,3
+KR-GmR,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-GmS,KOF,2,PI,Kyo-Moon Shim,kmshim@korea.kr,snapshot,3
+KR-GmS,KOF,2,PI,Mingu Kang,hyekky@korea.kr,snapshot,3
+KR-GmS,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-HPK,KOF,2,PI,Joon Kim,joon@snu.ac.kr,snapshot,3
+KR-HPK,KOF,2,PI,Seunghoon Lee,shlee@ncam.kr,badm_extra,3
+KR-HPK,KOF,2,SCI,Minseok Kang,ms-kang@gwnu.ac.kr,badm_extra,3
+KR-HcM,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-HcM,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,3
+KR-HcM,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-Hnm,KOF,2,PI,Jaeil Cho,chojaeil@jnu.ac.kr,snapshot,2
+KR-Hnm,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,2
+KR-JjM,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-JjM,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,3
+KR-JjM,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-Kw1,KOF,2,PI,Minseok Kang,ms-kang@gwnu.ac.kr,badm_extra,3
+KR-Kw1,KOF,2,FluxContact,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-Kw1,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-Kw2,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,2
+KR-Kw2,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,2
+KR-Nj1,KOF,4,PI,Jaeil Cho,chojaeil@jnu.ac.kr,snapshot,3
+KR-Nj1,KOF,4,FluxContact,Jong-Sung Ha,jongsung@kari.re.kr,snapshot,3
+KR-Nj1,KOF,4,FluxContact,Seungtaek Jeong,stjeong@kari.re.kr,snapshot,3
+KR-Nj2,KOF,4,PI,Jaeil Cho,chojaeil@jnu.ac.kr,snapshot,3
+KR-Nj2,KOF,4,PI,Jong-Sung Ha,jongsung@kari.re.kr,snapshot,3
+KR-Nj2,KOF,4,PI,Seungtaek Jeong,stjeong@kari.re.kr,snapshot,3
+KR-PcD,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-PcD,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,3
+KR-PcD,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-ScC,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-ScC,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,3
+KR-ScC,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-SmM,KOF,3,PI,Kiyoung Kim,kykim@kihs.re.kr,snapshot,2
+KR-SmM,KOF,3,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,2
+KR-TwB,KOF,4,PI,Hyun Seok Kim,cameroncrazies@snu.ac.kr,snapshot,1
+KR-TwC,KOF,4,PI,Hyun Seok Kim,cameroncrazies@snu.ac.kr,snapshot,1
+KR-UAO,KOF,2,PI,Kyo-Moon Shim,kmshim@korea.kr,snapshot,3
+KR-UAO,KOF,2,PI,Mingu Kang,hyekky@korea.kr,snapshot,3
+KR-UAO,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+KR-WdE,KOF,2,PI,A Reum Kim,bgvib@korea.kr,snapshot,3
+KR-WdE,KOF,2,PI,Jung-Hwa Chun,chunjh69@korea.kr,snapshot,3
+KR-WdE,KOF,2,FluxContact,Sungsik Cho,jss7077@hanmail.net,snapshot,3
+ML-Kem,FLX,2,PI,Laurent Kergoat,laurent.kergoat29@gmail.com,snapshot,3
+ML-Kem,FLX,2,FluxContact,Franck Timouk,franck.timouk@ird.fr,snapshot,3
+ML-Kem,FLX,2,FluxContact,Manuela Grippa,manuela.grippa@utoulouse.fr,snapshot,3
+MN-Hst,JPF,3,PI,Qinxue Wang,wangqx@nies.go.jp,snapshot,6
+MN-Hst,JPF,3,DataManager,Masataka Watanabe,masawata.57t@g.chuo-u.ac.jp,snapshot,6
+MN-Hst,JPF,3,Technician,Ochirbat Batkhishig,batkhishig@gmail.com,snapshot,6
+MN-Hst,JPF,3,FluxContact,Tomohiro Okadera,okadera@nies.go.jp,snapshot,6
+MN-Hst,JPF,3,FluxContact,Xinhao Peng,pengxh92@yahoo.co.jp,snapshot,6
+MN-Hst,JPF,3,Technician,Yoko Saito,yoko_saito@tamacc.chuo-u.ac.jp,snapshot,6
+MN-Kbu,JPF,3,PI,Jun Asanuma,asanuma@ied.tsukuba.ac.jp,snapshot,1
+MN-Nkh,JPF,3,PI,Qinxue Wang,wangqx@nies.go.jp,snapshot,6
+MN-Nkh,JPF,3,DataManager,Masataka Watanabe,masawata.57t@g.chuo-u.ac.jp,snapshot,6
+MN-Nkh,JPF,3,Technician,Ochirbat Batkhishig,batkhishig@gmail.com,snapshot,6
+MN-Nkh,JPF,3,FluxContact,Tomohiro Okadera,okadera@nies.go.jp,snapshot,6
+MN-Nkh,JPF,3,FluxContact,Xinhao Peng,pengxh92@yahoo.co.jp,snapshot,6
+MN-Nkh,JPF,3,Technician,Yoko Saito,yoko_saito@tamacc.chuo-u.ac.jp,snapshot,6
+MN-Udg,JPF,2,PI,Mamoru Ishikawa,mishi@ees.hokudai.ac.jp,snapshot,1
+MX-Aog,AMF,2,PI,Enrico A. Yepez,enrico.yepez@itson.edu.mx,snapshot,2
+MX-Aog,AMF,2,FluxContact,Nidia E. Rojas Robles,nerojasrobles@gmail.com,snapshot,2
+MX-PMm,AMF,2,PI,Susana Alvarado-Barrientos,susana.alvarado@gmail.com,snapshot,1
+MX-Tes,AMF,2,PI,Enrico A. Yepez,enrico.yepez@itson.edu.mx,snapshot,3
+MX-Tes,AMF,2,PI,Jaime Garatuza,garatuza@itson.edu.mx,snapshot,3
+MX-Tes,AMF,2,Technician,Miguel Agustin Rivera,migel.rivera@itson.edu.mx,snapshot,3
+MY-LHP,JPF,4,PI,Tomo''omi Kumagai,tomoomikumagai@gmail.com,snapshot,4
+MY-LHP,JPF,4,DataManager,Yoshiaki Hata,yhata0806@g.ecc.u-tokyo.ac.jp,snapshot,4
+MY-LHP,JPF,4,FluxContact,Kazuho Matsumoto,kazuhom@iwate-u.ac.jp,snapshot,4
+MY-LHP,JPF,4,FluxContact,Tomonori Kume,kumett@gmail.com,snapshot,4
+NL-Hrw,EUF,3,PI,Bert Heusinkveld,bert.heusinkveld@wur.nl,snapshot,3
+NL-Hrw,EUF,3,DataManager,Johannes Barten,sjoerd.barten@wur.nl,snapshot,3
+NL-Hrw,EUF,3,FluxContact,Oscar Hartogensis,oscar.hartogensis@wur.nl,snapshot,3
+NL-Loo,ICOS,8,PI,Michiel van der Molen,michiel.vandermolen@wur.nl,snapshot,7
+NL-Loo,ICOS,8,DataManager,Hong Zhao,hong.zhao@wur.nl,snapshot,7
+NL-Loo,ICOS,8,DataManager,Johannes Barten,sjoerd.barten@wur.nl,snapshot,7
+NL-Loo,ICOS,8,DataManager,Reinder Ronda,reinder.ronda@wur.nl,snapshot,7
+NL-Loo,ICOS,8,FluxContact,Bart Kruijt,bart.kruijt@wur.nl,snapshot,7
+NL-Loo,ICOS,8,Technician,Henk Snellen,henk.snellen@wur.nl,snapshot,7
+NL-Loo,ICOS,8,Technician,Ron Lootens,rn.lootens@vu.nl,snapshot,7
+NL-Vkp,EUF,6,PI,Bert Heusinkveld,bert.heusinkveld@wur.nl,snapshot,3
+NL-Vkp,EUF,6,DataManager,Johannes Barten,sjoerd.barten@wur.nl,snapshot,3
+NL-Vkp,EUF,6,FluxContact,Oscar Hartogensis,oscar.hartogensis@wur.nl,snapshot,3
+NO-And,EUF,3,PI,Daniel P. Rasse,daniel.rasse@bioforsk.no,snapshot,6
+NO-And,EUF,3,PI,Daniel P. Rasse,daniel.rasse@nibio.no,snapshot,6
+NO-And,EUF,3,FluxContact,Bert G. Drake,drakeb@si.edu,snapshot,6
+NO-And,EUF,3,FluxContact,Frans-Jan Parmentier,f.j.parmentier@geo.uio.no,snapshot,6
+NO-And,EUF,3,FluxContact,Georg Hansen,ghh@nilu.no,snapshot,6
+NO-And,EUF,3,FluxContact,Simon Weldon,simon.weldon@nibio.no,snapshot,6
+NO-Fns,EUF,5,PI,Lena Tallaksen,l.m.tallaksen@geo.uio.no,snapshot,2
+NO-Fns,EUF,5,DataManager,Norbert Pirk,norbert.pirk@geo.uio.no,snapshot,2
+NO-Hur,ICOS,4,PI,Holger Lange,holger.lange@nibio.no,snapshot,4
+NO-Hur,ICOS,4,DataManager,Helge Meissner,helge.meissner@nibio.no,snapshot,4
+NO-Hur,ICOS,4,FluxContact,Junbin Zhao,junbin.zhao@nibio.no,snapshot,4
+NO-Hur,ICOS,4,Technician,Ricardo Guzman,ricardo.guzman@nibio.no,snapshot,4
+NO-Ikr,EUF,2,PI,Norbert Pirk,norbert.pirk@geo.uio.no,snapshot,1
+NZ-ADd,TERN,2,PI,John Hunt,HuntJ@landcareresearch.co.nz,snapshot,2
+NZ-ADd,TERN,2,Affiliate,Johannes Laubach,LaubachJ@landcareresearch.co.nz,snapshot,2
+NZ-ADw,TERN,3,PI,John Hunt,HuntJ@landcareresearch.co.nz,snapshot,2
+NZ-ADw,TERN,3,Affiliate,Johannes Laubach,LaubachJ@landcareresearch.co.nz,snapshot,2
+NZ-BFm,TERN,2,PI,John Hunt,HuntJ@landcareresearch.co.nz,snapshot,2
+NZ-BFm,TERN,2,Affiliate,Johannes Laubach,LaubachJ@landcareresearch.co.nz,snapshot,2
+NZ-BFu,TERN,2,PI,John Hunt,HuntJ@landcareresearch.co.nz,snapshot,2
+NZ-BFu,TERN,2,Affiliate,Johannes Laubach,LaubachJ@landcareresearch.co.nz,snapshot,2
+NZ-Cla,TERN,4,PI,Johannes Laubach,LaubachJ@landcareresearch.co.nz,snapshot,3
+NZ-Cla,TERN,4,PI,John Hunt,HuntJ@landcareresearch.co.nz,snapshot,3
+NZ-Cla,TERN,4,Affiliate,Scott Graham,grahams@landcareresearch.co.nz,snapshot,3
+NZ-Kop,TERN,2,PI,David Campbell,david.campbell@waikato.ac.nz,snapshot,2
+NZ-Kop,TERN,2,PI,Louis Schipper,louis.schipper@waikato.ac.nz,snapshot,2
+NZ-Lau,TERN,5,PI,Dan Smale,dan.smale@niwa.co.nz,snapshot,1
+NZ-Oxf,TERN,2,PI,John Hunt,HuntJ@landcareresearch.co.nz,snapshot,1
+NZ-ScF,TERN,2,PI,Dave Campbell,david.campbell@waikato.ac.nz,snapshot,2
+NZ-ScF,TERN,2,PI,Louis Schipper,louis.schipper@waikato.ac.nz,snapshot,2
+PA-SPn,EUF,2,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,2
+PA-SPn,EUF,2,PI,Sebastian Wolf,sewolf@ethz.ch,snapshot,2
+PA-SPs,EUF,2,PI,Nina Buchmann,nina.buchmann@usys.ethz.ch,snapshot,2
+PA-SPs,EUF,2,PI,Sebastian Wolf,sewolf@ethz.ch,snapshot,2
+PE-QFR,AMF,2,PI,Timothy Griffis,tgriffis@umn.edu,snapshot,4
+PE-QFR,AMF,2,Technician,Jhon Rengifo,jrengifo@iiap.gob.pe,snapshot,4
+PE-QFR,AMF,2,Technician,Lizardo Fachin Malaverri,lfachin@iiap.gob.pe,snapshot,4
+PE-QFR,AMF,2,FluxContact,Tyler Roman,tyler.roman@fs-ip.us,snapshot,4
+PR-xLA,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+PR-xLA,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+PR-xLA,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+PR-xLA,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+PR-xLA,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+RU-Ch2,EUF,3,PI,Mathias Goeckede,mgoeck@bgc-jena.mpg.de,snapshot,3
+RU-Ch2,EUF,3,FluxContact,Fanny Kittler,fkittler@bgc-jena.mpg.de,snapshot,3
+RU-Ch2,EUF,3,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,3
+RU-Che,EUF,3,PI,Lutz Merbold,lutz.merbold@gmail.com,snapshot,5
+RU-Che,EUF,3,FluxContact,Corinna Rebmann,corinna.rebmann@kit.edu,snapshot,5
+RU-Che,EUF,3,FluxContact,Fanny Kittler,fkittler@bgc-jena.mpg.de,snapshot,5
+RU-Che,EUF,3,FluxContact,Mathias Goeckede,mgoeck@bgc-jena.mpg.de,snapshot,5
+RU-Che,EUF,3,FluxContact,Olaf Kolle,olaf.kolle@bgc-jena.mpg.de,snapshot,5
+RU-Ege,JPF,3,PI,Trofim Maximov,t.c.maximov@ibpc.ysn.ru,snapshot,4
+RU-Ege,JPF,3,DataManager,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,4
+RU-Ege,JPF,3,SCI-ANC,Takeshi Ohta,takeshi_1956@grace.ocn.ne.jp,badm_extra,4
+RU-Ege,JPF,3,FluxContact,Tetsuya Hiyama,hiyama@nagoya-u.jp,snapshot,4
+RU-Fy2,EUF,5,PI,Andrej Varlagin,varlagin@sevin.ru,snapshot,1
+RU-Fy3,EUF,2,PI,Vadim Mamkin,vadimmamkin@gmail.com,snapshot,3
+RU-Fy3,EUF,2,FluxContact,Juliya Kurbatova,kurbatova.j@gmail.com,snapshot,3
+RU-Fy3,EUF,2,FluxContact,Vitaly Avilov,vitavilov@gmail.com,snapshot,3
+RU-Fy4,EUF,3,PI,Juliya Kurbatova,kurbatova.j@gmail.com,snapshot,4
+RU-Fy4,EUF,3,DataManager,Dmitry Ivanov,ivanovdg19@gmail.com,snapshot,4
+RU-Fy4,EUF,3,DataManager,Vadim Mamkin,vadimmamkin@gmail.com,snapshot,4
+RU-Fy4,EUF,3,DataManager,Vitaly Avilov,vitavilov@gmail.com,snapshot,4
+RU-Fyo,EUF,8,PI,Andrej Varlagin,varlagin@sevin.ru,snapshot,1
+RU-Ha1,EUF,2,PI,Dario Papale,darpap@unitus.it,snapshot,2
+RU-Ha1,EUF,2,FluxContact,Luca Belelli Marchesini,luca.belellimarchesini@fmach.it,snapshot,2
+RU-NeB,JPF,2,PI,Takashi Machimura,mach@see.eng.osaka-u.ac.jp,snapshot,1
+RU-NeC,JPF,3,PI,Takashi Machimura,mach@see.eng.osaka-u.ac.jp,snapshot,1
+RU-NeF,JPF,3,PI,Takashi Machimura,mach@see.eng.osaka-u.ac.jp,snapshot,1
+RU-Sk2,JPF,2,PI,Trofim Maximov,t.c.maximov@ibpc.ysn.ru,snapshot,5
+RU-Sk2,JPF,2,DataManager,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,5
+RU-Sk2,JPF,2,FluxContact,Hironori Yabuki,yabuki.hironori@nipr.ac.jp,snapshot,5
+RU-Sk2,JPF,2,FluxContact,Tetsuya Hiyama,hiyama@nagoya-u.jp,snapshot,5
+RU-Sk2,JPF,2,FluxContact,Yoshihiro Iijima,yiijima@bio.mie-u.ac.jp,snapshot,5
+RU-SkP,JPF,3,PI,Trofim Maximov,t.c.maximov@ibpc.ysn.ru,snapshot,6
+RU-SkP,JPF,3,DataManager,Ayumi Kotani,kotani@agr.nagoya-u.ac.jp,snapshot,6
+RU-SkP,JPF,3,FluxContact,Hironori Yabuki,yabuki.hironori@nipr.ac.jp,snapshot,6
+RU-SkP,JPF,3,FluxContact,Roman Petrov,petrov.re@ibpc.ysn.ru,snapshot,6
+RU-SkP,JPF,3,FluxContact,Tetsuya Hiyama,hiyama@nagoya-u.jp,snapshot,6
+RU-SkP,JPF,3,FluxContact,Yoshihiro Iijima,yiijima@bio.mie-u.ac.jp,snapshot,6
+RU-Tur,JPF,2,PI,Yojiro Matsuura,orijoy@mbr.nifty.com,snapshot,2
+RU-Tur,JPF,2,FluxContact,Tomoaki Morishita,morisita@affrc.go.jp,snapshot,2
+SD-Dem,EUF,2,NA,NA,NA,missing,0
+SE-Deg,ICOS,5,PI,Giuseppe De Simon,giuseppe.de.simon@slu.se,snapshot,15
+SE-Deg,ICOS,5,PI,Mats Nilsson,mats.b.nilsson@slu.se,snapshot,15
+SE-Deg,ICOS,5,DataManager,Jutta Holst,jutta.holst@mgeo.lu.se,snapshot,15
+SE-Deg,ICOS,5,DataManager,Kim Lindgren,kim.lindgren@slu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Eric Larmanou,eric.larmanou@slu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Fabio Boschetti,fabio.boschetti@slu.se,snapshot,15
+SE-Deg,ICOS,5,FluxContact,Maj-Lena Linderson,maj-lena.linderson@nateko.lu.se,snapshot,15
+SE-Deg,ICOS,5,FluxContact,Matthias Peichl,matthias.peichl@slu.se,snapshot,15
+SE-Deg,ICOS,5,FluxContact,Meelis Molder,meelis.molder@mgeo.lu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Nataliia Kozii,nataliia.kozii@slu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Paul Smith,paul.smith@slu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Per Marklund,per.marklund@slu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Pernilla Lofvenius,pernilla.lofvenius@slu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Rowan Dignam,rowan.dignam@slu.se,snapshot,15
+SE-Deg,ICOS,5,Technician,Tommy Andersson,tommy.andersson@slu.se,snapshot,15
+SE-HfM,EUF,3,PI,Matthias Peichl,matthias.peichl@slu.se,snapshot,1
+SE-Hmr,EUF,3,PI,Matthias Peichl,matthias.peichl@slu.se,snapshot,1
+SE-Htm,ICOS,5,PI,Michal Heliasz,michal.heliasz@mgeo.lu.se,snapshot,10
+SE-Htm,ICOS,5,PI,Tobias Biermann,tobias.biermann@mgeo.lu.se,snapshot,10
+SE-Htm,ICOS,5,DataManager,Jutta Holst,jutta.holst@mgeo.lu.se,snapshot,10
+SE-Htm,ICOS,5,FluxContact,Anders Lindroth,anders.lindroth@nateko.lu.se,snapshot,10
+SE-Htm,ICOS,5,FluxContact,Janne Rinne,janne.rinne@nateko.lu.se,snapshot,10
+SE-Htm,ICOS,5,FluxContact,Maj-Lena Linderson,maj-lena.linderson@nateko.lu.se,snapshot,10
+SE-Htm,ICOS,5,FluxContact,Meelis Molder,meelis.molder@mgeo.lu.se,snapshot,10
+SE-Htm,ICOS,5,FluxContact,Natascha Kljun,natascha.kljun@mgeo.lu.se,snapshot,10
+SE-Htm,ICOS,5,Technician,Peter Kornacher,peter.kornacher@nateko.lu.se,snapshot,10
+SE-Htm,ICOS,5,FluxContact,Thomas Holst,thomas.holst@mgeo.lu.se,snapshot,10
+SE-Nor,ICOS,5,PI,Irene Lehner,irene.lehner@cec.lu.se,snapshot,7
+SE-Nor,ICOS,5,PI,Meelis Molder,meelis.molder@mgeo.lu.se,snapshot,7
+SE-Nor,ICOS,5,DataManager,Jutta Holst,jutta.holst@mgeo.lu.se,snapshot,7
+SE-Nor,ICOS,5,Technician,Anders Båth,anders.bath@cec.lu.se,snapshot,7
+SE-Nor,ICOS,5,Technician,Gunnar Bergström,gunnar.bergstrom@mgeo.lu.se,snapshot,7
+SE-Nor,ICOS,5,FluxContact,Maj-Lena Linderson,maj-lena.linderson@nateko.lu.se,snapshot,7
+SE-Nor,ICOS,5,FluxContact,Natascha Kljun,natascha.kljun@mgeo.lu.se,snapshot,7
+SE-Ros,EUF,3,PI,Matthias Peichl,matthias.peichl@slu.se,snapshot,3
+SE-Ros,EUF,3,FluxContact,Giuseppe De Simon,giuseppe.de.simon@slu.se,snapshot,3
+SE-Ros,EUF,3,FluxContact,Mats Nilsson,mats.b.nilsson@slu.se,snapshot,3
+SE-Srj,EUF,3,PI,Matthias Peichl,matthias.peichl@slu.se,snapshot,1
+SE-Sto,ICOS,4,PI,Janne Rinne,janne.rinne@nateko.lu.se,snapshot,12
+SE-Sto,ICOS,4,DataManager,Jutta Holst,jutta.holst@mgeo.lu.se,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Alexander Meire,alexander.meire@polar.se,snapshot,12
+SE-Sto,ICOS,4,Technician,Annika Kristoffersson,annika.kristoffersson@polar.se,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Dagmar Egelkraut,dagmaregelkraut@gmail.com,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Erik Lundin,erik.lundin@polar.se,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Håkan Grudd,hakan.grudd@polar.se,snapshot,12
+SE-Sto,ICOS,4,Technician,Jonas Gustafsson,jonas.gustafsson@polar.se,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Maj-Lena Linderson,maj-lena.linderson@nateko.lu.se,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Meelis Molder,meelis.molder@mgeo.lu.se,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Niklas Rakos,niklas.rakos@polar.se,snapshot,12
+SE-Sto,ICOS,4,FluxContact,Patrick Crill,patrick.crill@geo.su.se,snapshot,12
+SE-Svb,ICOS,6,PI,Fabio Boschetti,fabio.boschetti@slu.se,snapshot,16
+SE-Svb,ICOS,6,PI,Matthias Peichl,matthias.peichl@slu.se,snapshot,16
+SE-Svb,ICOS,6,PI,Per Marklund,per.marklund@slu.se,snapshot,16
+SE-Svb,ICOS,6,DataManager,Jutta Holst,jutta.holst@mgeo.lu.se,snapshot,16
+SE-Svb,ICOS,6,DataManager,Kim Lindgren,kim.lindgren@slu.se,snapshot,16
+SE-Svb,ICOS,6,Technician,Eric Larmanou,eric.larmanou@slu.se,snapshot,16
+SE-Svb,ICOS,6,Technician,Giuseppe De Simon,giuseppe.de.simon@slu.se,snapshot,16
+SE-Svb,ICOS,6,FluxContact,Maj-Lena Linderson,maj-lena.linderson@nateko.lu.se,snapshot,16
+SE-Svb,ICOS,6,FluxContact,Mats Nilsson,mats.b.nilsson@slu.se,snapshot,16
+SE-Svb,ICOS,6,FluxContact,Meelis Molder,meelis.molder@mgeo.lu.se,snapshot,16
+SE-Svb,ICOS,6,FluxContact,Mikaell Ottosson-Löfvenius,mikaell.ottosson.lofvenius@slu.se,snapshot,16
+SE-Svb,ICOS,6,Technician,Nataliia Kozii,nataliia.kozii@slu.se,snapshot,16
+SE-Svb,ICOS,6,Technician,Paul Smith,paul.smith@slu.se,snapshot,16
+SE-Svb,ICOS,6,Technician,Pernilla Lofvenius,pernilla.lofvenius@slu.se,snapshot,16
+SE-Svb,ICOS,6,Technician,Rowan Dignam,rowan.dignam@slu.se,snapshot,16
+SE-Svb,ICOS,6,Technician,Tommy Andersson,tommy.andersson@slu.se,snapshot,16
+SE-Trb,EUF,3,PI,Järvi Järveoja,jarvi.jarveoja@slu.se,snapshot,2
+SE-Trb,EUF,3,FluxContact,Matthias Peichl,matthias.peichl@slu.se,snapshot,2
+SN-Dhr,EUF,4,PI,Torbern Tagesson,torbern.tagesson@nateko.lu.se,snapshot,3
+SN-Dhr,EUF,4,FluxContact,Jonas Ardo,jonas.ardo@nateko.lu.se,snapshot,3
+SN-Dhr,EUF,4,FluxContact,Rasmus Fensholt,rf@ign.ku.dk,snapshot,3
+SN-Nkr,EUF,5,PI,Olivier Roupsard,olivier.roupsard@cirad.fr,snapshot,4
+SN-Nkr,EUF,5,DataManager,Christophe Jourdan,christophe.jourdan@cirad.fr,snapshot,4
+SN-Nkr,EUF,5,DataManager,Franck Timouk,franck.timouk@ird.fr,snapshot,4
+SN-Nkr,EUF,5,DataManager,Laurent Cournac,laurent.cournac@ird.fr,snapshot,4
+TH-Kog,JPF,3,PI,Tomo''omi Kumagai,tomoomikumagai@gmail.com,snapshot,2
+TH-Kog,JPF,3,DataManager,Naoya Takamura,takamura-naoya@g.ecc.u-tokyo.ac.jp,snapshot,2
+TH-Mae,JPF,4,PI,Tomo''omi Kumagai,tomoomikumagai@gmail.com,snapshot,2
+TH-Mae,JPF,4,DataManager,Naoya Takamura,takamura-naoya@g.ecc.u-tokyo.ac.jp,snapshot,2
+UK-AMo,ICOS,8,PI,Carole Helfter,caro2@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,PI,Eiko Nemitz,en@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,DataManager,James Cash,jamcas@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,DataManager,William Fincham,wilfinc@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Duncan Harvey,dunhar@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Eilidh Vandome,eilvan@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Felicity Ocallaghan,feloca@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Karen Yeung,karung@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Matthew Jones,matj@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,FluxContact,Maude Grenier,maugre@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,FluxContact,Mhairi Coyle,mcoy@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Nathan Callaghan,natcal@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Neil Mullinger,neimul@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Netty van Dijk,nvd@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,FluxContact,Peter Levy,plevy@ceh.ac.uk,snapshot,16
+UK-AMo,ICOS,8,Technician,Sarah Leeson,sarle@ceh.ac.uk,snapshot,16
+UK-Ags,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,6
+UK-Ags,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,6
+UK-Ags,EUF,4,FluxContact,Chris Evans,cev@ceh.ac.uk,snapshot,6
+UK-Ags,EUF,4,Technician,Dafydd Ergyn Crabtree,dafcra@ceh.ac.uk,snapshot,6
+UK-Ags,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,6
+UK-Ags,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,6
+UK-BnB,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,7
+UK-BnB,EUF,4,DataManager,Alex Cumming,alexc@ceh.ac.uk,snapshot,7
+UK-BnB,EUF,4,DataManager,Hollie Cooper,holcoo@ceh.ac.uk,snapshot,7
+UK-BnB,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,7
+UK-BnB,EUF,4,FluxContact,Eimear Reeve,eimear.reeve@daera-ni.gov.uk,snapshot,7
+UK-BnB,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,7
+UK-BnB,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,7
+UK-CCr,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,7
+UK-CCr,EUF,4,Technician,Alex Cumming,alexc@ceh.ac.uk,snapshot,7
+UK-CCr,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,7
+UK-CCr,EUF,4,FluxContact,Chris Evans,cev@ceh.ac.uk,snapshot,7
+UK-CCr,EUF,4,Technician,Jonay Jovani,jsancho@ceh.ac.uk,snapshot,7
+UK-CCr,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,7
+UK-CCr,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,7
+UK-Cvn,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,6
+UK-Cvn,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,6
+UK-Cvn,EUF,4,FluxContact,Chris Evans,cev@ceh.ac.uk,snapshot,6
+UK-Cvn,EUF,4,FluxContact,Emily Shuckburgh,efs20@cam.ac.uk,snapshot,6
+UK-Cvn,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,6
+UK-Cvn,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,6
+UK-GaB,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,7
+UK-GaB,EUF,4,DataManager,Alex Cumming,alexc@ceh.ac.uk,snapshot,7
+UK-GaB,EUF,4,DataManager,Hollie Cooper,holcoo@ceh.ac.uk,snapshot,7
+UK-GaB,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,7
+UK-GaB,EUF,4,FluxContact,Eimear Reeve,eimear.reeve@daera-ni.gov.uk,snapshot,7
+UK-GaB,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,7
+UK-GaB,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,7
+UK-Gnn,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,7
+UK-Gnn,EUF,4,DataManager,Alex Cumming,alexc@ceh.ac.uk,snapshot,7
+UK-Gnn,EUF,4,DataManager,Hollie Cooper,holcoo@ceh.ac.uk,snapshot,7
+UK-Gnn,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,7
+UK-Gnn,EUF,4,FluxContact,Eimear Reeve,eimear.reeve@daera-ni.gov.uk,snapshot,7
+UK-Gnn,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,7
+UK-Gnn,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,7
+UK-Gwr,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,7
+UK-Gwr,EUF,4,DataManager,Alex Cumming,alexc@ceh.ac.uk,snapshot,7
+UK-Gwr,EUF,4,DataManager,Hollie Cooper,holcoo@ceh.ac.uk,snapshot,7
+UK-Gwr,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,7
+UK-Gwr,EUF,4,FluxContact,Eimear Reeve,eimear.reeve@daera-ni.gov.uk,snapshot,7
+UK-Gwr,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,7
+UK-Gwr,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,7
+UK-HgF,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,6
+UK-HgF,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,6
+UK-HgF,EUF,4,FluxContact,Chris Evans,cev@ceh.ac.uk,snapshot,6
+UK-HgF,EUF,4,FluxContact,Emily Shuckburgh,efs20@cam.ac.uk,snapshot,6
+UK-HgF,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,6
+UK-HgF,EUF,4,FluxContact,Terhi Riutta,terriu@ceh.ac.uk,snapshot,6
+UK-HpF,EUF,4,PI,Ross Morrison,rosrri@ceh.ac.uk,snapshot,7
+UK-HpF,EUF,4,PI,Terhi Riutta,terriu@ceh.ac.uk,snapshot,7
+UK-HpF,EUF,4,Technician,Alex Cumming,alexc@ceh.ac.uk,snapshot,7
+UK-HpF,EUF,4,FluxContact,Brenda D''Acunha,brenha@ceh.ac.uk,snapshot,7
+UK-HpF,EUF,4,Technician,Kate Blake,kabla@ceh.ac.uk,snapshot,7
+UK-HpF,EUF,4,FluxContact,Merit van den Berg,mervan@ceh.ac.uk,snapshot,7
+UK-HpF,EUF,4,FluxContact,Rob Field,rob.field@rspb.org.uk,snapshot,7
+US-A10,AMF,4,PI,Ryan Sullivan,rcsullivan@anl.gov,snapshot,3
+US-A10,AMF,4,DataManager,Sebastien Biraud,scbiraud@lbl.gov,snapshot,3
+US-A10,AMF,4,FluxContact,Dave Billesbach,dbillesbach1@unl.edu,snapshot,3
+US-A32,AMF,2,PI,Lara Kueppers,lmkueppers@lbl.gov,snapshot,4
+US-A32,AMF,2,PI,Margaret Torn,mstorn@lbl.gov,snapshot,4
+US-A32,AMF,2,PI,Sebastien Biraud,scbiraud@lbl.gov,snapshot,4
+US-A32,AMF,2,FluxContact,Dave Billesbach,dbillesbach1@unl.edu,snapshot,4
+US-A37,AMF,4,PI,Ryan Sullivan,rcsullivan@anl.gov,snapshot,4
+US-A37,AMF,4,AncContact,Evan Keeler,ekeeler@anl.gov,snapshot,4
+US-A37,AMF,4,AncContact,Jenni Kyrouac,jprell@anl.gov,snapshot,4
+US-A37,AMF,4,AncContact,Sujan Pal,spal@anl.gov,snapshot,4
+US-A39,AMF,4,PI,Ryan Sullivan,rcsullivan@anl.gov,snapshot,6
+US-A39,AMF,4,Affiliate,Dave Billesbach,dbillesbach1@unl.edu,snapshot,6
+US-A39,AMF,4,AncContact,Evan Keeler,ekeeler@anl.gov,snapshot,6
+US-A39,AMF,4,AncContact,Jenni Kyrouac,jprell@anl.gov,snapshot,6
+US-A39,AMF,4,Affiliate,Sebastien Biraud,scbiraud@lbl.gov,snapshot,6
+US-A39,AMF,4,AncContact,Sujan Pal,spal@anl.gov,snapshot,6
+US-A74,AMF,2,PI,Lara Kueppers,lmkueppers@lbl.gov,snapshot,4
+US-A74,AMF,2,PI,Margaret Torn,mstorn@lbl.gov,snapshot,4
+US-A74,AMF,2,PI,Sebastien Biraud,scbiraud@lbl.gov,snapshot,4
+US-A74,AMF,2,FluxContact,Dave Billesbach,dbillesbach1@unl.edu,snapshot,4
+US-ADR,AMF,3,PI,Michael Moreo,mtmoreo@usgs.gov,snapshot,2
+US-ADR,AMF,3,AncContact,Brian Andraski,andraski@usgs.gov,snapshot,2
+US-ALQ,AMF,6,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,2
+US-ALQ,AMF,6,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,2
+US-AR1,AMF,2,PI,Dave Billesbach,dbillesbach1@unl.edu,snapshot,3
+US-AR1,AMF,2,PI,Margaret Torn,mstorn@lbl.gov,snapshot,3
+US-AR1,AMF,2,Affiliate,Chris Zou,chris.zou@okstate.edu,snapshot,3
+US-AR2,AMF,2,PI,Dave Billesbach,dbillesbach1@unl.edu,snapshot,3
+US-AR2,AMF,2,PI,Margaret Torn,mstorn@lbl.gov,snapshot,3
+US-AR2,AMF,2,Affiliate,Chris Zou,chris.zou@okstate.edu,snapshot,3
+US-ARb,AMF,2,PI,Margaret Torn,mstorn@lbl.gov,snapshot,2
+US-ARb,AMF,2,AncContact,Marc Fischer,mlfischer@lbl.gov,snapshot,2
+US-ARc,AMF,2,PI,Margaret Torn,mstorn@lbl.gov,snapshot,2
+US-ARc,AMF,2,AncContact,Marc Fischer,mlfischer@lbl.gov,snapshot,2
+US-ASH,AMF,2,PI,Ray G. Anderson,ray.anderson@usda.gov,snapshot,1
+US-ASM,AMF,2,PI,Ray G. Anderson,ray.anderson@usda.gov,snapshot,1
+US-Akn,AMF,3,PI,Brian Viner,brian.viner@srnl.doe.gov,snapshot,4
+US-Akn,AMF,3,Affiliate,Doug Aubrey,daubrey@srel.uga.edu,snapshot,4
+US-Akn,AMF,3,Affiliate,Greg Starr,gstarr@ua.edu,snapshot,4
+US-Akn,AMF,3,Affiliate,Monique Leclerc,mleclerc@uga.edu,snapshot,4
+US-BRG,AMF,2,PI,Kimberly Novick,knovick@indiana.edu,snapshot,3
+US-BRG,AMF,2,DataManager,Michael Benson,micbenso@iu.edu,snapshot,3
+US-BRG,AMF,2,AncContact,Quan Zhang,quazhang@indiana.edu,snapshot,3
+US-BZB,AMF,6,PI,Eugenie Euskirchen,seeuskirchen@alaska.edu,snapshot,2
+US-BZB,AMF,6,FluxContact,Colin Edgar,cedgar3@alaska.edu,snapshot,2
+US-BZo,AMF,5,PI,Eugenie Euskirchen,seeuskirchen@alaska.edu,snapshot,2
+US-BZo,AMF,5,FluxContact,Colin Edgar,cedgar3@alaska.edu,snapshot,2
+US-Bar,AMF,6,PI,Andrew Richardson,Andrew.Richardson@nau.edu,snapshot,3
+US-Bar,AMF,6,Technician,Andrew Ouimette,apouimette@gmail.com,snapshot,3
+US-Bar,AMF,6,FluxContact,David Hollinger,dyhollinger@gmail.com,snapshot,3
+US-Bi1,AMF,5,PI,Dennis Baldocchi,Baldocchi@berkeley.edu,snapshot,4
+US-Bi1,AMF,5,FluxContact,Arman Ahmadi,a.ahmadi@berkeley.edu,snapshot,4
+US-Bi1,AMF,5,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Bi1,AMF,5,Technician,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Bi2,AMF,5,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,4
+US-Bi2,AMF,5,DataManager,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Bi2,AMF,5,FluxContact,Arman Ahmadi,a.ahmadi@berkeley.edu,snapshot,4
+US-Bi2,AMF,5,Technician,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-CAK,AMF,4,PI,Kyle Arndt,karndt@woodwellclimate.org,snapshot,3
+US-CAK,AMF,4,PI,Susan Natali,snatali@woodwellclimate.org,snapshot,3
+US-CAK,AMF,4,Technician,Patrick Murphy,pmurphy@woodwellclimate.org,snapshot,3
+US-CF1,AMF,2,PI,Claire Phillips,claire.phillips@wsu.edu,snapshot,5
+US-CF1,AMF,2,PI,Dave Huggins,David.Huggins@usda.gov,snapshot,5
+US-CF1,AMF,2,DataManager,Bryan Carlson,bryan.carlson@usda.gov,snapshot,5
+US-CF1,AMF,2,FluxContact,Eric Russell,eric.russell@wsu.edu,snapshot,5
+US-CF1,AMF,2,BADMContact,Ian Leslie,ian.leslie@usda.gov,snapshot,5
+US-CF2,AMF,2,PI,Claire Phillips,claire.phillips@wsu.edu,snapshot,4
+US-CF2,AMF,2,PI,Dave Huggins,David.Huggins@ars.usda.gov,snapshot,4
+US-CF2,AMF,2,DataManager,Bryan Carlson,bryan.carlson@ars.usda.gov,snapshot,4
+US-CF2,AMF,2,BADMContact,Ian Leslie,ian.leslie@ars.usda.gov,snapshot,4
+US-CF3,AMF,2,PI,Claire Phillips,claire.phillips@wsu.edu,snapshot,4
+US-CF3,AMF,2,PI,Dave Huggins,David.Huggins@ars.usda.gov,snapshot,4
+US-CF3,AMF,2,DataManager,Bryan Carlson,bryan.carlson@ars.usda.gov,snapshot,4
+US-CF3,AMF,2,BADMContact,Ian Leslie,ian.leslie@ars.usda.gov,snapshot,4
+US-CF4,AMF,2,PI,Claire Phillips,claire.phillips@wsu.edu,snapshot,4
+US-CF4,AMF,2,PI,Dave Huggins,David.Huggins@ars.usda.gov,snapshot,4
+US-CF4,AMF,2,DataManager,Bryan Carlson,bryan.carlson@ars.usda.gov,snapshot,4
+US-CF4,AMF,2,BADMContact,Ian Leslie,ian.leslie@ars.usda.gov,snapshot,4
+US-CGG,AMF,5,PI,Patty Oikawa,Patty.oikawa@csueastbay.edu,snapshot,2
+US-CGG,AMF,5,Affiliate,Tommy Fenster,tfenster@horizon.csueastbay.edu,snapshot,2
+US-CLF,AMF,2,PI,Kenneth J. Davis,kjd10@psu.edu,snapshot,3
+US-CLF,AMF,2,DataManager,Brandon Forsythe,brf11@psu.edu,snapshot,3
+US-CLF,AMF,2,FluxContact,Yuting He Smeglin,heyuting.iap@gmail.com,snapshot,3
+US-CMW,AMF,6,PI,Russell Scott,russ.scott@ars.usda.gov,snapshot,2
+US-CMW,AMF,6,Technician,Ross Bryant,ross.bryant@usda.gov,snapshot,2
+US-CRK,AMF,4,PI,Asko Noormets,noormets@tamu.edu,snapshot,7
+US-CRK,AMF,4,DataManager,Benju Baniya,benju.baniya@tamu.edu,snapshot,7
+US-CRK,AMF,4,DataManager,Jiaojiao Dong,jiaodong@tamu.edu,snapshot,7
+US-CRK,AMF,4,Affiliate,Clement Sarpong,clemsarpong_2112@email.tamu.edu,snapshot,7
+US-CRK,AMF,4,AncContact,Dohee Kim,doheekim@tamu.edu,snapshot,7
+US-CRK,AMF,4,Affiliate,Malik Nkrumah,maliknkrumah@tamu.edu,snapshot,7
+US-CRK,AMF,4,Affiliate,Moeka Ono,mono@tamu.edu,snapshot,7
+US-CRT,AMF,2,PI,Jiquan Chen,jqchen@msu.edu,snapshot,2
+US-CRT,AMF,2,FluxContact,Housen Chu,chu.housen@gmail.com,snapshot,2
+US-CS1,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,2
+US-CS1,AMF,2,FluxContact,Jonathan Thom,jonathan.thom@ssec.wisc.edu,snapshot,2
+US-CS2,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,3
+US-CS2,AMF,2,DataManager,Ammara Talib,ammara.talib@yale.edu,snapshot,3
+US-CS2,AMF,2,FluxContact,Jonathan Thom,jonathan.thom@ssec.wisc.edu,snapshot,3
+US-CS3,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,2
+US-CS3,AMF,2,FluxContact,Jonathan Thom,jonathan.thom@ssec.wisc.edu,snapshot,2
+US-CS4,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,2
+US-CS4,AMF,2,FluxContact,Jonathan Thom,jonathan.thom@ssec.wisc.edu,snapshot,2
+US-CS5,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,2
+US-CS5,AMF,2,FluxContact,Jonathan Thom,jonathan.thom@ssec.wisc.edu,snapshot,2
+US-CS6,AMF,3,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,3
+US-CS6,AMF,3,DataManager,Ammara Talib,ammara.talib@yale.edu,snapshot,3
+US-CS6,AMF,3,FluxContact,Jonathan Thom,jonathan.thom@ssec.wisc.edu,snapshot,3
+US-CS8,AMF,3,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,3
+US-CS8,AMF,3,DataManager,Ammara Talib,ammara.talib@yale.edu,snapshot,3
+US-CS8,AMF,3,FluxContact,Jonathan Thom,jonathan.thom@ssec.wisc.edu,snapshot,3
+US-CdM,AMF,5,PI,Kathryn Ladig,kladig@utah.gov,snapshot,4
+US-CdM,AMF,5,PI,Paul Inkenbrandt,paulinkenbrandt@utah.gov,snapshot,4
+US-CdM,AMF,5,PI,Steve Kannenberg,steven.kannenberg@mail.wvu.edu,snapshot,4
+US-CdM,AMF,5,AncContact,Diane Menuz,dmenuz@utah.gov,snapshot,4
+US-Ced,AMF,3,PI,Andrew Ouimette,Andrew.Ouimette@usda.gov,snapshot,4
+US-Ced,AMF,3,PI,Michael R. Gallagher,michael.r.gallagher@usda.gov,snapshot,4
+US-Ced,AMF,3,Technician,Kevin Brown,kevin.brown3@usda.gov,snapshot,4
+US-Ced,AMF,3,FluxContact,Roel Alfredo Ruzol,roel.ruzol@maine.edu,snapshot,4
+US-ChR,AMF,4,PI,John Kochendorfer,john.kochendorfer@noaa.gov,snapshot,3
+US-ChR,AMF,4,PI,Tilden Meyers,tilden.meyers@noaa.gov,snapshot,3
+US-ChR,AMF,4,FluxContact,Praveena Krishnan,Praveena.Krishnan@noaa.gov,snapshot,3
+US-Cms,AMF,3,PI,Akira Miyata,amiyat@affrc.go.jp,snapshot,3
+US-Cms,AMF,3,PI,Yoshinobu Harazono,harazono2009gl@gmail.com,snapshot,3
+US-Cms,AMF,3,AncContact,Masahito Ueyama,miyabi-flux@muh.biglobe.ne.jp,snapshot,3
+US-Cop,AMF,2,PI,David Bowling,david.bowling@utah.edu,snapshot,1
+US-Cst,AMF,2,PI,Kim Novick,knovick@indiana.edu,snapshot,4
+US-Cst,AMF,2,Affiliate,Chelcy Miniat,cfminat@fs.fed.us,snapshot,4
+US-Cst,AMF,2,Affiliate,Don Bragg,dbragg@fs.fed.us,snapshot,4
+US-Cst,AMF,2,Technician,Rick Stagg,rstagg@fs.fed.us,snapshot,4
+US-Cwt,AMF,6,PI,A. Christopher Oishi,andrew.c.oishi@usda.gov,snapshot,1
+US-DFC,AMF,5,PI,Alison Duff,alison.duff@usda.gov,snapshot,6
+US-DFC,AMF,5,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,6
+US-DFC,AMF,5,DataManager,Susanne Wiesner,swiesner2@wisc.edu,snapshot,6
+US-DFC,AMF,5,Technician,Emily Mather,emather@wisc.edu,snapshot,6
+US-DFC,AMF,5,Technician,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,6
+US-DFC,AMF,5,Technician,Kris Niemann,kris.niemann@usda.gov,snapshot,6
+US-DFK,AMF,2,PI,Alison Duff,alison.duff@usda.gov,snapshot,5
+US-DFK,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,5
+US-DFK,AMF,2,PI,Valentin Picasso Risso,picassorisso@wisc.edu,snapshot,5
+US-DFK,AMF,2,Technician,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,5
+US-DFK,AMF,2,Technician,Julia Pope,julia.pope@usda.gov,snapshot,5
+US-DPW,AMF,2,PI,Charless Ross Hinkle,rhinkle@ucf.edu,snapshot,2
+US-DPW,AMF,2,FluxContact,Rosvel Bracho,rbracho@ufl.edu,snapshot,2
+US-DS1,AMF,2,PI,Nick Christen,nchristen@hydrofocus.com,snapshot,1
+US-DS2,AMF,3,PI,Steve Deverel,sdeverel@hydrofocus.com,snapshot,2
+US-DS2,AMF,3,DataManager,Nick Christen,nchristen@hydrofocus.com,snapshot,2
+US-DS3,AMF,4,PI,Piet Jones,p.jones@arva.com,snapshot,5
+US-DS3,AMF,4,PI,Sebastien C. Biraud,SCBiraud@lbl.gov,snapshot,5
+US-DS3,AMF,4,PI,Steve Deverel,sdeverel@hydrofocus.com,snapshot,5
+US-DS3,AMF,4,FluxContact,Nick Christen,nchristen@hydrofocus.com,snapshot,5
+US-DS3,AMF,4,FluxContact,Stephen W. Chan,SWChan@lbl.gov,snapshot,5
+US-Dix,AMF,2,PI,Andrew Ouimette,Andrew.Ouimette@usda.gov,snapshot,4
+US-Dix,AMF,2,PI,Michael R. Gallagher,michael.r.gallagher@usda.gov,snapshot,4
+US-Dix,AMF,2,Technician,Kevin Brown,kevin.brown3@usda.gov,snapshot,4
+US-Dix,AMF,2,FluxContact,Roel Alfredo Ruzol,roel.ruzol@maine.edu,snapshot,4
+US-Dk1,AMF,3,PI,A. Christopher Oishi,andrew.c.oishi@usda.gov,snapshot,3
+US-Dk1,AMF,3,PI,Kim Novick,knovick@indiana.edu,snapshot,3
+US-Dk1,AMF,3,PI,Paul Stoy,paul.stoy@montana.edu,snapshot,3
+US-Dk2,AMF,3,PI,A. Christopher Oishi,andrew.c.oishi@usda.gov,snapshot,3
+US-Dk2,AMF,3,PI,Kim Novick,knovick@indiana.edu,snapshot,3
+US-Dk2,AMF,3,PI,Paul Stoy,paul.stoy@montana.edu,snapshot,3
+US-Dk3,AMF,3,PI,A. Christopher Oishi,andrew.c.oishi@usda.gov,snapshot,3
+US-Dk3,AMF,3,PI,Kim Novick,knovick@indiana.edu,snapshot,3
+US-Dk3,AMF,3,PI,Paul Stoy,paul.stoy@montana.edu,snapshot,3
+US-Dmg,AMF,4,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,4
+US-Dmg,AMF,4,DataManager,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Dmg,AMF,4,FluxContact,Ariane Arias-Ortiz,Ariane.Arias@uab.cat,snapshot,4
+US-Dmg,AMF,4,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-EA4,AMF,4,PI,Marcus Gary,marcus.gary@beg.utexas.edu,snapshot,4
+US-EA4,AMF,4,PI,Preston Fleck,preston.fleck@beg.utexas.edu,snapshot,4
+US-EA4,AMF,4,Affiliate,Logan Schmidt,lschmidt@edwardsaquifer.org,snapshot,4
+US-EA4,AMF,4,AncContact,Michael Young,michael.young@beg.utexas.edu,snapshot,4
+US-EA5,AMF,2,PI,Marcus Gary,mgary@edwardsaquifer.org,snapshot,3
+US-EA5,AMF,2,AncContact,Michael Young,michael.young@beg.utexas.edu,snapshot,3
+US-EA5,AMF,2,Affiliate,Tyson McKinney,tyson.McKinney@austintexas.gov,snapshot,3
+US-EA6,AMF,3,PI,Marcus Gary,marcus.gary@beg.utexas.edu,snapshot,4
+US-EA6,AMF,3,PI,Preston Fleck,preston.fleck@beg.utexas.edu,snapshot,4
+US-EA6,AMF,3,Affiliate,Logan Schmidt,lschmidt@edwardsaquifer.org,snapshot,4
+US-EA6,AMF,3,AncContact,Michael Young,michael.young@beg.utexas.edu,snapshot,4
+US-EDN,AMF,5,PI,Patty Oikawa,Patty.oikawa@csueastbay.edu,snapshot,1
+US-EKH,AMF,4,PI,Adina Paytan,apaytan@ucsc.edu,snapshot,4
+US-EKH,AMF,4,FluxContact,Jacqueline (J.J.) Jabuka,jjabuka@ucsc.edu,snapshot,4
+US-EKH,AMF,4,Technician,Lucas Ognibene,logniben@ucsc.edu,snapshot,4
+US-EKH,AMF,4,Affiliate,Sylvain Labedens,slabeden@ucsc.edu,snapshot,4
+US-EKN,AMF,4,PI,Adina Paytan,apaytan@ucsc.edu,snapshot,4
+US-EKN,AMF,4,FluxContact,Jacqueline (J.J.) Jabuka,jjabuka@ucsc.edu,snapshot,4
+US-EKN,AMF,4,Technician,Lucas Ognibene,logniben@ucsc.edu,snapshot,4
+US-EKN,AMF,4,Affiliate,Sylvain Labedens,slabeden@ucsc.edu,snapshot,4
+US-EKP,AMF,4,PI,Adina Paytan,apaytan@ucsc.edu,snapshot,4
+US-EKP,AMF,4,FluxContact,Jacqueline (J.J.) Jabuka,jjabuka@ucsc.edu,snapshot,4
+US-EKP,AMF,4,Technician,Lucas Ognibene,logniben@ucsc.edu,snapshot,4
+US-EKP,AMF,4,Affiliate,Sylvain Labedens,slabeden@ucsc.edu,snapshot,4
+US-EML,AMF,6,PI,Ted Schuur,ted.Schuur@nau.edu,snapshot,7
+US-EML,AMF,6,DataManager,Craig See,Craig.See@nau.edu,snapshot,7
+US-EML,AMF,6,DataManager,Gerardo Celis,gerardoc@uark.edu,snapshot,7
+US-EML,AMF,6,DataManager,Grant Falvo,Grant.Falvo@nau.edu,snapshot,7
+US-EML,AMF,6,DataManager,Heidi Rodenhizer,hgr7@nau.edu,snapshot,7
+US-EML,AMF,6,Technician,Justin Ledman,justin.ledman@nau.edu,snapshot,7
+US-EML,AMF,6,FluxContact,Rosvel Bracho,rbracho@ufl.edu,snapshot,7
+US-Elm,AMF,7,PI,Gregory Starr,gstarr@bama.ua.edu,snapshot,3
+US-Elm,AMF,7,PI,Steve Oberbauer,oberbaue@fiu.edu,snapshot,3
+US-Elm,AMF,7,DataManager,David Yannick,dyannick@crimson.ua.edu,snapshot,3
+US-Esm,AMF,7,PI,Gregory Starr,gstarr@bama.ua.edu,snapshot,3
+US-Esm,AMF,7,PI,Steve Oberbauer,oberbaue@fiu.edu,snapshot,3
+US-Esm,AMF,7,DataManager,David Yannick,dyannick@crimson.ua.edu,snapshot,3
+US-EvM,AMF,3,PI,Gregory Starr,gstarr@ua.edu,snapshot,3
+US-EvM,AMF,3,PI,Steven F. Oberbauer,oberbaue@fiu.edu,snapshot,3
+US-EvM,AMF,3,DataManager,David Yannick,dyannick@crimson.ua.edu,snapshot,3
+US-Fcr,AMF,2,PI,Hiroki Iwata,hiwata@shinshu-u.ac.jp,snapshot,3
+US-Fcr,AMF,2,PI,Masahito Ueyama,miyabi-flux@muh.biglobe.ne.jp,snapshot,3
+US-Fcr,AMF,2,PI,Yoshinobu Harazono,harazono2009gl@gmail.com,snapshot,3
+US-Fmf,AMF,3,PI,Sabina Dore,Sabina.Dore@nau.edu,snapshot,2
+US-Fmf,AMF,3,PI,Thomas Kolb,tom.kolb@nau.edu,snapshot,2
+US-Fo1,AMF,4,PI,John Kochendorfer,john.kochendorfer@noaa.gov,snapshot,3
+US-Fo1,AMF,4,PI,Mark Heuer,Mark.Heuer@noaa.gov,snapshot,3
+US-Fo1,AMF,4,PI,Praveena Krishnan,praveena.krishnan@noaa.gov,snapshot,3
+US-Fuf,AMF,3,PI,Sabina Dore,Sabina.Dore@nau.edu,snapshot,2
+US-Fuf,AMF,3,PI,Thomas Kolb,tom.kolb@nau.edu,snapshot,2
+US-Fwf,AMF,3,PI,Sabina Dore,Sabina.Dore@nau.edu,snapshot,2
+US-Fwf,AMF,3,PI,Thomas Kolb,tom.kolb@nau.edu,snapshot,2
+US-GLE,AMF,5,PI,Bill Massman,william.massman@usda.gov,snapshot,3
+US-GLE,AMF,5,PI,George Valentine,george.valentine@usda.gov,snapshot,3
+US-GLE,AMF,5,PI,John Frank,john.frank@usda.gov,snapshot,3
+US-HB1,AMF,5,PI,Tom O'Halloran,tohallo@clemson.edu,snapshot,5
+US-HB1,AMF,5,DataManager,Haoyu Li,haoyul@clemson.edu,snapshot,5
+US-HB1,AMF,5,Affiliate,Daniel Schermaier,dscherm@clemson.edu,snapshot,5
+US-HB1,AMF,5,Affiliate,Erik M. Smith,erik@baruch.sc.edu,snapshot,5
+US-HB1,AMF,5,Technician,Logan Porter,hlp@clemson.edu,snapshot,5
+US-HB2,AMF,5,PI,Tom O'Halloran,tohallo@clemson.edu,snapshot,3
+US-HB2,AMF,5,DataManager,Haoyu Li,haoyul@clemson.edu,snapshot,3
+US-HB2,AMF,5,Technician,Logan Porter,hlp@clemson.edu,snapshot,3
+US-HB3,AMF,5,PI,Tom O'Halloran,tohallo@clemson.edu,snapshot,3
+US-HB3,AMF,5,DataManager,Haoyu Li,haoyul@clemson.edu,snapshot,3
+US-HB3,AMF,5,Technician,Logan Porter,hlp@clemson.edu,snapshot,3
+US-HB4,AMF,4,PI,Tom O'Halloran,tohallo@clemson.edu,snapshot,3
+US-HB4,AMF,4,DataManager,Haoyu Li,haoyul@clemson.edu,snapshot,3
+US-HB4,AMF,4,Technician,Logan Porter,hlp@clemson.edu,snapshot,3
+US-HBK,AMF,5,PI,Eric Kelsey,ekelsey2@plymouth.edu,snapshot,3
+US-HBK,AMF,5,PI,Mark Green,greenmarkb@gmail.com,snapshot,3
+US-HBK,AMF,5,DataManager,Daniel Evans,dmevans1@plymouth.edu,snapshot,3
+US-HRA,AMF,5,PI,Benjamin R. K. Runkle,brrunkle@uark.edu,snapshot,4
+US-HRA,AMF,5,DataManager,Riasad Bin Mahbub,rbmahbub@uark.edu,snapshot,4
+US-HRA,AMF,5,AncContact,Kosana Suvocarev,ksuvocar@uark.edu,snapshot,4
+US-HRA,AMF,5,AncContact,Michele L. Reba,michele.reba@ars.usda.gov,snapshot,4
+US-HRC,AMF,5,PI,Michele L. Reba,michele.reba@ars.usda.gov,snapshot,3
+US-HRC,AMF,5,DataManager,Riasad Bin Mahbub,rbmahbub@uark.edu,snapshot,3
+US-HRC,AMF,5,AncContact,Benjamin R. K. Runkle,brrunkle@uark.edu,snapshot,3
+US-HVs,AMF,2,PI,Akira Miyata,amiyat@affrc.go.jp,snapshot,3
+US-HVs,AMF,2,PI,Yoshinobu Harazono,harazono2009gl@gmail.com,snapshot,3
+US-HVs,AMF,2,AncContact,Masahito Ueyama,miyabi-flux@muh.biglobe.ne.jp,snapshot,3
+US-HWB,AMF,2,PI,Sarah Goslee,sarah.goslee@usda.gov,snapshot,2
+US-HWB,AMF,2,DataManager,Jeffery Gonet,jeffery.gonet@usda.gov,snapshot,2
+US-Ha1,AMF,8,PI,J. William  Munger,jwmunger@gmail.com,snapshot,2
+US-Ha1,AMF,8,Affiliate,Jaclyn Matthes,jaclyn_matthes@fas.harvard.edu,snapshot,2
+US-Hn2,AMF,2,PI,Heping Liu,heping.liu@wsu.edu,snapshot,4
+US-Hn2,AMF,2,PI,Maoyi Huang,Maoyi.Huang@pnnl.gov,snapshot,4
+US-Hn2,AMF,2,PI,Xingyuan Chen,Xingyuan.Chen@pnnl.gov,snapshot,4
+US-Hn2,AMF,2,DataManager,Justine Missik,justine.missik@wsu.edu,snapshot,4
+US-Hn3,AMF,2,PI,Heping Liu,heping.liu@wsu.edu,snapshot,4
+US-Hn3,AMF,2,PI,Maoyi Huang,Maoyi.Huang@pnnl.gov,snapshot,4
+US-Hn3,AMF,2,PI,Xingyuan Chen,Xingyuan.Chen@pnnl.gov,snapshot,4
+US-Hn3,AMF,2,DataManager,Justine Missik,justine.missik@wsu.edu,snapshot,4
+US-Ho2,AMF,8,PI,Andrew Ouimette,Andrew.Ouimette@usda.gov,snapshot,3
+US-Ho2,AMF,8,DataManager,Roel Alfredo Ruzol,roel.ruzol@maine.edu,snapshot,3
+US-Ho2,AMF,8,AncContact,David Hollinger,David.Hollinger@unh.edu,snapshot,3
+US-Hsm,AMF,4,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,4
+US-Hsm,AMF,4,DataManager,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Hsm,AMF,4,Technician,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Hsm,AMF,4,FluxContact,Kyle Delwiche,kdelwiche@berkeley.edu,snapshot,4
+US-IAB,AMF,5,PI,Vanloocke Andy,andyvanl@iastate.edu,snapshot,2
+US-IAB,AMF,5,FluxContact,Guler Aslan-Sungur,gulera@iastate.edu,snapshot,2
+US-IAC,AMF,5,PI,Vanloocke Andy,andyvanl@iastate.edu,snapshot,2
+US-IAC,AMF,5,FluxContact,Guler Aslan-Sungur,gulera@iastate.edu,snapshot,2
+US-IAM,AMF,5,PI,Vanloocke Andy,andyvanl@iastate.edu,snapshot,2
+US-IAM,AMF,5,FluxContact,Guler Aslan-Sungur,gulera@iastate.edu,snapshot,2
+US-ICh,AMF,7,PI,Eugenie Euskirchen,seeuskirchen@alaska.edu,snapshot,4
+US-ICh,AMF,7,PI,Syndonia Bret-Harte,msbretharte@alaska.edu,snapshot,4
+US-ICh,AMF,7,FluxContact,Colin Edgar,cedgar3@alaska.edu,snapshot,4
+US-ICh,AMF,7,Affiliate,Gaius Shaver,gshaver@mbl.edu,snapshot,4
+US-ICs,AMF,7,PI,Eugenie Euskirchen,seeuskirchen@alaska.edu,snapshot,4
+US-ICs,AMF,7,PI,Syndonia Bret-Harte,msbretharte@alaska.edu,snapshot,4
+US-ICs,AMF,7,FluxContact,Colin Edgar,cedgar3@alaska.edu,snapshot,4
+US-ICs,AMF,7,Affiliate,Gaius Shaver,gshaver@mbl.edu,snapshot,4
+US-ICt,AMF,7,PI,Eugenie Euskirchen,seeuskirchen@alaska.edu,snapshot,4
+US-ICt,AMF,7,PI,Syndonia Bret-Harte,msbretharte@alaska.edu,snapshot,4
+US-ICt,AMF,7,FluxContact,Colin Edgar,cedgar3@alaska.edu,snapshot,4
+US-ICt,AMF,7,Affiliate,Gaius Shaver,gshaver@mbl.edu,snapshot,4
+US-Jo1,AMF,4,PI,Craig Tweedie,ctweedie@utep.edu,snapshot,3
+US-Jo1,AMF,4,DataManager,Gesuri Ramirez,gramirez12@utep.edu,snapshot,3
+US-Jo1,AMF,4,FluxContact,Marguerite Mauritz,memauritz@utep.edu,snapshot,3
+US-KFS,AMF,4,PI,Nathaniel Brunsell,brunsell@ku.edu,snapshot,2
+US-KFS,AMF,4,DataManager,Bryan Conrad,bryan.j.conrad@ku.edu,snapshot,2
+US-KPL,AMF,4,PI,Patrick Sullivan,pfsullivan@alaska.edu,snapshot,1
+US-KS1,AMF,2,PI,Bert Drake,drakeb@si.edu,snapshot,5
+US-KS1,AMF,2,PI,Ross Hinkle,rhinkle@ucf.edu,snapshot,5
+US-KS1,AMF,2,DataManager,Tom Powell,tlpowell@lbl.gov,snapshot,5
+US-KS1,AMF,2,AncContact,Rosvel Bracho,rbracho@ufl.edu,snapshot,5
+US-KS1,AMF,2,AncContact,Sabina Dore,sabina.dore@nau.edu,snapshot,5
+US-KS2,AMF,2,PI,Bert Drake,drakeb@si.edu,snapshot,5
+US-KS2,AMF,2,PI,Ross Hinkle,rhinkle@ucf.edu,snapshot,5
+US-KS2,AMF,2,DataManager,Tom Powell,tlpowell@lbl.gov,snapshot,5
+US-KS2,AMF,2,AncContact,Rosvel Bracho,rbracho@ufl.edu,snapshot,5
+US-KS2,AMF,2,AncContact,Sabina Dore,sabina.dore@nau.edu,snapshot,5
+US-KS3,AMF,2,PI,Ross Hinkle,rhinkle@ucf.edu,snapshot,2
+US-KS3,AMF,2,FluxContact,Rosvel Bracho,rbracho@ufl.edu,snapshot,2
+US-Kon,AMF,5,PI,Nathaniel Brunsell,brunsell@ku.edu,snapshot,3
+US-Kon,AMF,5,DataManager,Bryan Conrad,bryan.j.conrad@ku.edu,snapshot,3
+US-Kon,AMF,5,Technician,Jeff Taylor,jht@ksu.edu,snapshot,3
+US-LA2,AMF,4,PI,Eric Ward,ericward@umd.edu,snapshot,4
+US-LA2,AMF,4,PI,Melinda Martinez,melindamartinez@usgs.gov,snapshot,4
+US-LA2,AMF,4,DataManager,Sergio Merino,smerino@usgs.gov,snapshot,4
+US-LA2,AMF,4,Affiliate,Ken Krauss,kraussk@usgs.gov,snapshot,4
+US-LA3,AMF,3,PI,Eric Ward,ericward@umd.edu,snapshot,3
+US-LA3,AMF,3,PI,Melinda Martinez,melindamartinez@usgs.gov,snapshot,3
+US-LA3,AMF,3,DataManager,Sergio Merino,smerino@usgs.gov,snapshot,3
+US-LS1,AMF,2,PI,Russell Scott,russ.scott@ars.usda.gov,snapshot,2
+US-LS1,AMF,2,Technician,Ross Bryant,Ross.Bryant@usda.gov,snapshot,2
+US-Lin,AMF,2,PI,Silvano Fares,silvano.fares@cnr.it,snapshot,3
+US-Lin,AMF,2,AncContact,Allen Goldstein,ahg@berkeley.edu,snapshot,3
+US-Lin,AMF,2,FluxContact,Robin J. Weber,rjweber@berkeley.edu,snapshot,3
+US-Los,AMF,8,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,2
+US-Los,AMF,8,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,2
+US-MBP,AMF,7,PI,Randy Kolka,randall.k.kolka@usda.gov,snapshot,4
+US-MBP,AMF,7,PI,Timothy Griffis,timgriffis@umn.edu,snapshot,4
+US-MBP,AMF,7,DataManager,Caleb Hammer,Hamme785@umn.edu,snapshot,4
+US-MBP,AMF,7,Affiliate,Tyler Roman,tyler.roman@fs-ip.us,snapshot,4
+US-MEF,AMF,4,PI,George Valentine,george.valentine@usda.gov,snapshot,2
+US-MEF,AMF,4,PI,John Frank,john.frank@usda.gov,snapshot,2
+US-MMS,AMF,7,PI,Kim Novick,knovick@iu.edu,snapshot,6
+US-MMS,AMF,7,PI,Rich Phillips,rpp6@iu.edu,snapshot,6
+US-MMS,AMF,7,Affiliate,Hans Peter Schmid,hape.schmid@kit.edu,snapshot,6
+US-MMS,AMF,7,BADMContact,Mike Voyles,mpvoyles@iu.edu,snapshot,6
+US-MMS,AMF,7,Affiliate,Quan Zhang,quazhang@indiana.edu,snapshot,6
+US-MMS,AMF,7,Technician,Steven Scott,stlscott@iu.edu,snapshot,6
+US-MN1,AMF,5,PI,Sharon Weyers,sharon.weyers@usda.gov,snapshot,5
+US-MN1,AMF,5,DataManager,Christina Helseth,christina.helseth@usda.gov,snapshot,5
+US-MN1,AMF,5,FluxContact,Chris Wente,chris.wente@usda.gov,snapshot,5
+US-MN1,AMF,5,Affiliate,Jane Johnson,jane.m.johnson@usda.gov,snapshot,5
+US-MN1,AMF,5,Technician,Shelby Conner,Shelby.Conner@usda.gov,snapshot,5
+US-MN2,AMF,5,PI,Sharon Weyers,sharon.weyers@usda.gov,snapshot,5
+US-MN2,AMF,5,DataManager,Christina Helseth,christina.helseth@usda.gov,snapshot,5
+US-MN2,AMF,5,FluxContact,Chris Wente,chris.wente@usda.gov,snapshot,5
+US-MN2,AMF,5,Affiliate,Jane Johnson,jane.m.johnson@usda.gov,snapshot,5
+US-MN2,AMF,5,Technician,Shelby Conner,Shelby.Conner@usda.gov,snapshot,5
+US-MN3,AMF,4,PI,Sharon Weyers,sharon.weyers@usda.gov,snapshot,5
+US-MN3,AMF,4,DataManager,Christina Helseth,christina.helseth@usda.gov,snapshot,5
+US-MN3,AMF,4,FluxContact,Chris Wente,chris.wente@usda.gov,snapshot,5
+US-MN3,AMF,4,Affiliate,Jane Johnson,jane.m.johnson@usda.gov,snapshot,5
+US-MN3,AMF,4,Technician,Shelby Conner,Shelby.Conner@usda.gov,snapshot,5
+US-MOz,AMF,5,PI,Jeffrey Wood,woodjd@missouri.edu,snapshot,3
+US-MOz,AMF,5,PI,Lianhong Gu,lianhong-gu@ornl.gov,snapshot,3
+US-MOz,AMF,5,Affiliate,Yang Bai,yangb@ornl.gov,snapshot,3
+US-MZA,AMF,4,PI,Tim Morin,thmorin@esf.edu,snapshot,2
+US-MZA,AMF,4,AncContact,Christian Bright,cbright@esf.edu,snapshot,2
+US-Me1,AMF,2,PI,Bev Law,bev.law@oregonstate.edu,snapshot,2
+US-Me1,AMF,2,DataManager,Chand Hanson,chand.hanson@oregonstate.edu,snapshot,2
+US-Me3,AMF,3,PI,Bev Law,bev.law@oregonstate.edu,snapshot,3
+US-Me3,AMF,3,DataManager,Chad Hanson,chad.hanson@oregonstate.edu,snapshot,3
+US-Me3,AMF,3,Affiliate,Larry Mahrt,mahrt@coas.oregonstate.edu,snapshot,3
+US-Me6,AMF,7,PI,Chad Hanson,chad.hanson@oregonstate.edu,snapshot,4
+US-Me6,AMF,7,PI,Chris Still,chris.still@oregonstate.edu,snapshot,4
+US-Me6,AMF,7,Technician,Alex Irving,Alex.Irving@oregonstate.edu,snapshot,4
+US-Me6,AMF,7,Affiliate,Bev Law,bev.law@oregonstate.edu,snapshot,4
+US-Me7,AMF,3,PI,Chad Hanson,chad.hanson@oregonstate.edu,snapshot,3
+US-Me7,AMF,3,PI,Chris Still,chris.still@oregonstate.edu,snapshot,3
+US-Me7,AMF,3,Technician,Alex Irving,alex.irving@oregonstate.edu,snapshot,3
+US-Mo1,AMF,5,PI,Adam Schreiner-McGraw,Adam.Schreiner-McGraw@usda.gov,snapshot,4
+US-Mo1,AMF,5,DataManager,Megan Metz,Megan.Metz@usda.gov,snapshot,4
+US-Mo1,AMF,5,Technician,Ed Winchester,winchesterEJ@missouri.edu,snapshot,4
+US-Mo1,AMF,5,AncContact,Jeffrey Wood,woodjd@missouri.edu,snapshot,4
+US-Mo2,AMF,5,PI,Adam Schreiner-McGraw,Adam.Schreiner-McGraw@usda.gov,snapshot,4
+US-Mo2,AMF,5,DataManager,Megan Schmiedeler,Megan.Schmiedeler@usda.gov,snapshot,4
+US-Mo2,AMF,5,Technician,Ed Winchester,winchesterEJ@missouri.edu,snapshot,4
+US-Mo2,AMF,5,AncContact,Jeff Wood,woodjd@missouri.edu,snapshot,4
+US-Mo3,AMF,4,PI,Adam Schreiner-McGraw,Adam.Schreiner-McGraw@usda.gov,snapshot,4
+US-Mo3,AMF,4,DataManager,Megan Schmiedeler,Megan.Schmiedeler@usda.gov,snapshot,4
+US-Mo3,AMF,4,Technician,Ed Winchester,winchesterEJ@missouri.edu,snapshot,4
+US-Mo3,AMF,4,AncContact,Jeff Wood,woodjd@missouri.edu,snapshot,4
+US-Mpj,AMF,7,PI,Marcy Litvak,mlitvak@unm.edu,snapshot,3
+US-Mpj,AMF,7,DataManager,Kai Del Regno,kaidelregno@unm.edu,snapshot,3
+US-Mpj,AMF,7,Technician,Bishop Cervantes,bmcervantes@unm.edu,snapshot,3
+US-MtB,AMF,6,PI,Greg Barron-Gafford,gregbg@arizona.edu,snapshot,3
+US-MtB,AMF,6,PI,Russ Scott,russ.scott@usda.gov,snapshot,3
+US-MtB,AMF,6,AncContact,John Knowles,John.knowles@montana.edu,snapshot,3
+US-Myb,AMF,7,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,3
+US-Myb,AMF,7,FluxContact,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,3
+US-Myb,AMF,7,AncContact,Joe Verfaillie,jverfail@berkeley.edu,snapshot,3
+US-NC1,AMF,3,PI,Asko Noormets,noormets@tamu.edu,snapshot,2
+US-NC1,AMF,3,Technician,Michael Gavazzi,mgavazzi@fs.fed.us,snapshot,2
+US-NC2,AMF,8,PI,Asko Noormets,noormets@tamu.edu,snapshot,5
+US-NC2,AMF,8,DataManager,Benju Baniya,benju.baniya@ag.tamu.edu,snapshot,5
+US-NC2,AMF,8,DataManager,Jiaojiao Dong,jiaodong@tamu.edu,snapshot,5
+US-NC2,AMF,8,Affiliate,John King,john_king@ncsu.edu,snapshot,5
+US-NC2,AMF,8,Affiliate,Maricar Aguilos,mmaguilo@ncsu.edu,snapshot,5
+US-NC3,AMF,3,PI,Asko Noormets,noormets@tamu.edu,snapshot,3
+US-NC3,AMF,3,Affiliate,John King,john_king@ncsu.edu,snapshot,3
+US-NC3,AMF,3,Affiliate,Maricar Aguilos,mmaguilo@ncsu.edu,snapshot,3
+US-NC4,AMF,6,PI,Asko Noormets,noormets@tamu.edu,snapshot,5
+US-NC4,AMF,6,PI,John King,john_king@ncsu.edu,snapshot,5
+US-NC4,AMF,6,DataManager,Benju Baniya,benju.baniya@ag.tamu.edu,snapshot,5
+US-NC4,AMF,6,DataManager,Jiaojiao Dong,jiaodong@tamu.edu,snapshot,5
+US-NC4,AMF,6,Affiliate,Maricar Aguilos,mmaguilo@ncsu.edu,snapshot,5
+US-NGB,AMF,5,PI,Margaret Torn,mstorn@lbl.gov,snapshot,2
+US-NGB,AMF,5,FluxContact,Sigrid Dengel,sdengel@lbl.gov,snapshot,2
+US-NGC,AMF,4,PI,Margaret Torn,mstorn@lbl.gov,snapshot,2
+US-NGC,AMF,4,AncContact,Sigrid Dengel,Sdengel@lbl.gov,snapshot,2
+US-NR1,AMF,8,PI,Peter Blanken,Blanken@Colorado.EDU,snapshot,4
+US-NR1,AMF,8,Affiliate,David Bowling,david.bowling@utah.edu,snapshot,4
+US-NR1,AMF,8,FluxContact,Russell Monson,Russell.Monson@colorado.edu,snapshot,4
+US-NR1,AMF,8,AncContact,Sean Burns,sean.burns@colorado.edu,snapshot,4
+US-NSa,AMF,4,PI,Kenneth Davis,kjd10@psu.edu,snapshot,4
+US-NSa,AMF,4,DataManager,Fan Wu,ffw5051@psu.edu,snapshot,4
+US-NSa,AMF,4,FluxContact,Benjamin Ahlswede,bja5623@psu.edu,snapshot,4
+US-NSa,AMF,4,FluxContact,Scott Richardson,sjr17@psu.edu,snapshot,4
+US-NSb,AMF,4,PI,Kenneth Davis,kjd10@psu.edu,snapshot,4
+US-NSb,AMF,4,DataManager,Fan Wu,ffw5051@psu.edu,snapshot,4
+US-NSb,AMF,4,FluxContact,Benjamin Ahlswede,bja5623@psu.edu,snapshot,4
+US-NSb,AMF,4,FluxContact,Scott Richardson,sjr17@psu.edu,snapshot,4
+US-Ne1,AMF,8,PI,Andy Suyker,asuyker1@unl.edu,snapshot,2
+US-Ne1,AMF,8,DataManager,Dan Hatch,dhatch2@unl.edu,snapshot,2
+US-Ne2,AMF,8,PI,Andy Suyker,asuyker1@unl.edu,snapshot,2
+US-Ne2,AMF,8,DataManager,Dan Hatch,dhatch2@unl.edu,snapshot,2
+US-Ne3,AMF,8,PI,Andy Suyker,asuyker1@unl.edu,snapshot,2
+US-Ne3,AMF,8,DataManager,Dan Hatch,dhatch2@unl.edu,snapshot,2
+US-ONA,AMF,3,PI,Rosvel Bracho,rbracho@ufl.edu,snapshot,2
+US-ONA,AMF,3,Affiliate,Maria Silveira,mlas@ufl.edu,snapshot,2
+US-OPE,AMF,2,PI,Joe Alfieri,joe.alfieri@usda.gov,snapshot,3
+US-OPE,AMF,2,DataManager,Alex White,alex.white@usda.gov,snapshot,3
+US-OPE,AMF,2,FluxContact,Lynn McKee,lynn.mckee@usda.gov,snapshot,3
+US-OWC,AMF,5,PI,Gil Bohrer,bohrer.17@osu.edu,snapshot,4
+US-OWC,AMF,5,DataManager,Justine Missik,missik.2@osu.edu,snapshot,4
+US-OWC,AMF,5,DataManager,Katie Bossert,bossert.15@osu.edu,snapshot,4
+US-OWC,AMF,5,AncContact,Steven McMurray,steven.mcmurray@dnr.ohio.gov,snapshot,4
+US-Oho,AMF,3,PI,Jiquan Chen,jqchen@msu.edu,snapshot,3
+US-Oho,AMF,3,Affiliate,Asko Noormets,noormets@tamu.edu,snapshot,3
+US-Oho,AMF,3,FluxContact,Housen Chu,chu.housen@gmail.com,snapshot,3
+US-PAS,AMF,2,PI,Maria Lucia Silveira,mlas@ufl.edu,snapshot,3
+US-PAS,AMF,2,PI,Rosvel Bracho,rbracho@ufl.edu,snapshot,3
+US-PAS,AMF,2,Affiliate,Abmael da Silva Cardoso,adasilvacardoso@ufl.edu,snapshot,3
+US-PFL,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFL,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFL,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFL,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFb,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFb,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFb,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFb,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFc,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFc,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFc,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFc,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFd,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFd,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFd,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFd,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFf,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFf,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFf,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFf,AMF,2,FluxContact,Paul Stoy,paul.stoy@montana.edu,snapshot,4
+US-PFg,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFg,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFg,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFg,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFh,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFh,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFh,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFh,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFi,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFi,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFi,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFi,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFj,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFj,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFj,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFj,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFk,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFk,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFk,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFk,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFm,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFm,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFm,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFm,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFn,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFn,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFn,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFn,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFp,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFp,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFp,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFp,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFq,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFq,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFq,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFq,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFr,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFr,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFr,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFr,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PFt,AMF,2,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,4
+US-PFt,AMF,2,FluxContact,Brian Butterworth,bbutterworth@wisc.edu,snapshot,4
+US-PFt,AMF,2,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,4
+US-PFt,AMF,2,FluxContact,Steve Oncley,oncley@ucar.edu,snapshot,4
+US-PLo,AMF,3,PI,Inke Forbrich,inke.forbrich@utoledo.edu,snapshot,2
+US-PLo,AMF,3,DataManager,Hannah Orton,horton@mbl.edu,snapshot,2
+US-PSH,AMF,2,PI,Ray G. Anderson,ray.anderson@usda.gov,snapshot,1
+US-PSL,AMF,2,PI,Ray G. Anderson,ray.anderson@usda.gov,snapshot,1
+US-Prr,AMF,4,PI,Go Iwahana,giwahana@alaska.edu,snapshot,6
+US-Prr,AMF,4,PI,Hideki Kobayashi,hkoba@jamstec.go.jp,snapshot,6
+US-Prr,AMF,4,PI,Hiroki Ikawa,hikawa.biomet@gmail.com,snapshot,6
+US-Prr,AMF,4,Technician,Naoki Kukuu,naokikukuu@hotmail.com,snapshot,6
+US-Prr,AMF,4,Affiliate,Rikie Suzuki,rikie@jamstec.go.jp,snapshot,6
+US-Prr,AMF,4,Affiliate,Robert Busey,rcbusey@alaska.edu,snapshot,6
+US-RC1,AMF,3,PI,Brian Lamb,blamb@wsu.edu,snapshot,5
+US-RC1,AMF,3,PI,Jinshu Chi,jinshuchi@hkust-gz.edu.cn,snapshot,5
+US-RC1,AMF,3,PI,Shelley Pressley,spressley@wsu.edu,snapshot,5
+US-RC1,AMF,3,DataManager,Eric Russell,eric.s.russell@wsu.edu,snapshot,5
+US-RC1,AMF,3,AncContact,Bryan Carlson,bryan.carlson@usda.gov,snapshot,5
+US-RC2,AMF,2,PI,Brian Lamb,blamb@wsu.edu,snapshot,5
+US-RC2,AMF,2,PI,Jinshu Chi,jinshuchi@hkust-gz.edu.cn,snapshot,5
+US-RC2,AMF,2,PI,Shelley Pressley,spressley@wsu.edu,snapshot,5
+US-RC2,AMF,2,DataManager,Eric Russell,eric.s.russell@wsu.edu,snapshot,5
+US-RC2,AMF,2,AncContact,Bryan Carlson,bryan.carlson@usda.gov,snapshot,5
+US-RC4,AMF,2,PI,Brian Lamb,blamb@wsu.edu,snapshot,6
+US-RC4,AMF,2,PI,Jinshu Chi,jinshuchi@hkust-gz.edu.cn,snapshot,6
+US-RC4,AMF,2,PI,Shelley Pressley,spressley@wsu.edu,snapshot,6
+US-RC4,AMF,2,DataManager,Eric Russell,eric.s.russell@wsu.edu,snapshot,6
+US-RC4,AMF,2,AncContact,Bryan Carlson,bryan.carlson@usda.gov,snapshot,6
+US-RC4,AMF,2,Technician,Patrick O'Keeffe,pokeeffe@wsu.edu,snapshot,6
+US-RC5,AMF,2,PI,Brian Lamb,blamb@wsu.edu,snapshot,6
+US-RC5,AMF,2,PI,Jinshu Chi,jinshuchi@hkust-gz.edu.cn,snapshot,6
+US-RC5,AMF,2,PI,Shelley Pressley,spressley@wsu.edu,snapshot,6
+US-RC5,AMF,2,DataManager,Eric Russell,eric.s.russell@wsu.edu,snapshot,6
+US-RC5,AMF,2,AncContact,Bryan Carlson,bryan.carlson@usda.gov,snapshot,6
+US-RC5,AMF,2,Technician,Patrick O'Keeffe,pokeeffe@wsu.edu,snapshot,6
+US-RGA,AMF,4,PI,Piet Jones,p.jones@arva.com,snapshot,3
+US-RGA,AMF,4,PI,Sebastien C. Biraud,SCBiraud@lbl.gov,snapshot,3
+US-RGA,AMF,4,FluxContact,Stephen W. Chan,SWChan@lbl.gov,snapshot,3
+US-RGB,AMF,4,PI,Piet Jones,p.jones@arva.com,snapshot,3
+US-RGB,AMF,4,PI,Sebastien C. Biraud,SCBiraud@lbl.gov,snapshot,3
+US-RGB,AMF,4,FluxContact,Stephen W. Chan,SWChan@lbl.gov,snapshot,3
+US-RGF,AMF,4,PI,Piet Jones,p.jones@arva.com,snapshot,3
+US-RGF,AMF,4,PI,Sebastien C. Biraud,SCBiraud@lbl.gov,snapshot,3
+US-RGF,AMF,4,FluxContact,Stephen W. Chan,SWChan@lbl.gov,snapshot,3
+US-RGW,AMF,4,PI,Piet Jones,p.jones@arva.com,snapshot,3
+US-RGW,AMF,4,PI,Sebastien C. Biraud,SCBiraud@lbl.gov,snapshot,3
+US-RGW,AMF,4,FluxContact,Stephen W. Chan,SWChan@lbl.gov,snapshot,3
+US-RGo,AMF,4,PI,Piet Jones,p.jones@arva.com,snapshot,3
+US-RGo,AMF,4,PI,Sebastien C. Biraud,SCBiraud@lbl.gov,snapshot,3
+US-RGo,AMF,4,FluxContact,Stephen W. Chan,SWChan@lbl.gov,snapshot,3
+US-RRC,AMF,4,PI,Christopher Gough,cmgough@vcu.edu,snapshot,4
+US-RRC,AMF,4,PI,Gil Bohrer,bohrer.17@osu.edu,snapshot,4
+US-RRC,AMF,4,PI,Lisa Haber,haberlt@vcu.edu,snapshot,4
+US-RRC,AMF,4,PI,Scott Neubauer,sneubauer@VCU.EDU,snapshot,4
+US-Rls,AMF,4,PI,Gerald Flerchinger,gerald.flerchinger@usda.gov,snapshot,2
+US-Rls,AMF,4,AncContact,Aaron Fellows,aarron.fellows@ars.usda.gov,snapshot,2
+US-Rms,AMF,4,PI,Gerald Flerchinger,gerald.flerchinger@usda.gov,snapshot,2
+US-Rms,AMF,4,AncContact,Aaron Fellows,aarron.fellows@ars.usda.gov,snapshot,2
+US-Ro1,AMF,4,PI,John Baker,jbaker@umn.edu,snapshot,4
+US-Ro1,AMF,4,PI,Timothy Griffis,tgriffis@umn.edu,snapshot,4
+US-Ro1,AMF,4,DataManager,Ke Xiao,xiaox224@umn.edu,snapshot,4
+US-Ro1,AMF,4,Technician,Bill Breiter,wbreiter@umn.edu,snapshot,4
+US-Ro2,AMF,3,PI,John Baker,jbaker@umn.edu,snapshot,5
+US-Ro2,AMF,3,PI,Timothy Griffis,tgriffis@umn.edu,snapshot,5
+US-Ro2,AMF,3,DataManager,Ke Xiao,xiaox224@umn.edu,snapshot,5
+US-Ro2,AMF,3,Technician,Bill Breiter,wbreiter@umn.edu,snapshot,5
+US-Ro2,AMF,3,Affiliate,Peter Turner,turne289@umn.edu,snapshot,5
+US-Ro3,AMF,2,PI,John Baker,jbaker@umn.edu,snapshot,4
+US-Ro3,AMF,2,PI,Timothy Griffis,tgriffis@umn.edu,snapshot,4
+US-Ro3,AMF,2,DataManager,Ke Xiao,xiaox224@umn.edu,snapshot,4
+US-Ro3,AMF,2,Technician,Bill Breiter,wbreiter@umn.edu,snapshot,4
+US-Ro4,AMF,6,PI,Brent Dalzell,bdalzell@umn.edu,snapshot,6
+US-Ro4,AMF,6,PI,John Baker,jbaker@umn.edu,snapshot,6
+US-Ro4,AMF,6,PI,Timothy Griffis,timgriffis@umn.edu,snapshot,6
+US-Ro4,AMF,6,DataManager,Caleb Hammer,Hamme785@umn.edu,snapshot,6
+US-Ro4,AMF,6,DataManager,Ke Xiao,xiaox224@umn.edu,snapshot,6
+US-Ro4,AMF,6,Technician,Forrest Goodman,forrest.goodman@usda.gov,snapshot,6
+US-Ro5,AMF,5,PI,Brent Dalzell,bdalzell@umn.edu,snapshot,6
+US-Ro5,AMF,5,PI,John Baker,jbaker@umn.edu,snapshot,6
+US-Ro5,AMF,5,PI,Timothy Griffis,timgriffis@umn.edu,snapshot,6
+US-Ro5,AMF,5,DataManager,Caleb Hammer,Hamme785@umn.edu,snapshot,6
+US-Ro5,AMF,5,DataManager,Ke Xiao,xiaox224@umn.edu,snapshot,6
+US-Ro5,AMF,5,Technician,Forrest Goodman,forrest.goodman@usda.gov,snapshot,6
+US-Ro6,AMF,5,PI,Brent Dalzell,bdalzell@umn.edu,snapshot,6
+US-Ro6,AMF,5,PI,John Baker,jbaker@umn.edu,snapshot,6
+US-Ro6,AMF,5,PI,Timothy Griffis,timgriffis@umn.edu,snapshot,6
+US-Ro6,AMF,5,DataManager,Caleb Hammer,Hamme785@umn.edu,snapshot,6
+US-Ro6,AMF,5,DataManager,Ke Xiao,xiaox224@umn.edu,snapshot,6
+US-Ro6,AMF,5,Technician,Forrest Goodman,forrest.goodman@usda.gov,snapshot,6
+US-Rpf,AMF,7,PI,Hiroki Iwata,hiwata@shinshu-u.ac.jp,snapshot,4
+US-Rpf,AMF,7,PI,Masahito Ueyama,miyabi-flux@muh.biglobe.ne.jp,snapshot,4
+US-Rpf,AMF,7,PI,Yoshinobu Harazono,harazono2009gl@gmail.com,snapshot,4
+US-Rpf,AMF,7,Technician,Naoki Kukuu,naokikukuu@hotmail.com,snapshot,4
+US-Rwe,AMF,2,PI,Gerald Flerchinger,gerald.flerchinger@usda.gov,snapshot,2
+US-Rwe,AMF,2,PI,Michele L. Reba,michele.reba@usda.gov,snapshot,2
+US-Rwf,AMF,4,PI,Gerald Flerchinger,gerald.flerchinger@usda.gov,snapshot,1
+US-Rws,AMF,4,PI,Gerald Flerchinger,gerald.flerchinger@usda.gov,snapshot,2
+US-Rws,AMF,4,AncContact,Aaron Fellows,aarron.fellows@ars.usda.gov,snapshot,2
+US-SD1,AMF,4,PI,Kesondra Key,keyke@iu.edu,snapshot,5
+US-SD1,AMF,4,PI,Kim Novick,knovick@iu.edu,snapshot,5
+US-SD1,AMF,4,Technician,Michael Voyles,mpvoyles@iu.edu,snapshot,5
+US-SD1,AMF,4,Technician,Steve Scott,stlscott@indiana.edu,snapshot,5
+US-SD1,AMF,4,Technician,Trevor Gress,trgress@iu.edu,snapshot,5
+US-SD2,AMF,4,PI,Kesondra Key,keyke@iu.edu,snapshot,5
+US-SD2,AMF,4,PI,Kim Novick,knovick@iu.edu,snapshot,5
+US-SD2,AMF,4,Technician,Michael Voyles,mpvoyles@iu.edu,snapshot,5
+US-SD2,AMF,4,Technician,Steve Scott,stlscott@indiana.edu,snapshot,5
+US-SD2,AMF,4,Technician,Trevor Gress,trgress@iu.edu,snapshot,5
+US-SHC,AMF,2,PI,Sebastian Wolf,sewolf@ethz.ch,snapshot,4
+US-SHC,AMF,2,Affiliate,Andrea Carminati,andrea.carminati@usys.ethz.ch,snapshot,4
+US-SHC,AMF,2,Technician,Dan Sayler,sage_minion@berkeley.edu,snapshot,4
+US-SHC,AMF,2,Affiliate,James Kirchner,kirchner@ethz.ch,snapshot,4
+US-SP1,AMF,6,PI,Rosvel Bracho,rbracho@ufl.edu,snapshot,4
+US-SP1,AMF,6,PI,Tim Martin,tamartin@ufl.edu,snapshot,4
+US-SP1,AMF,6,Affiliate,Gregory Starr,gstarr@ua.edu,snapshot,4
+US-SP1,AMF,6,Affiliate,Henry L. Gholz,hgholz@nsf.edu,snapshot,4
+US-SRC,AMF,3,PI,Shirley (Kurc) Papuga,shirley.papuga@gmail.com,snapshot,1
+US-SRG,AMF,7,PI,Russell Scott,russ.scott@ars.usda.gov,snapshot,1
+US-SRM,AMF,8,PI,Russell Scott,russ.scott@ars.usda.gov,snapshot,1
+US-SRS,AMF,3,PI,Enrique R. Vivoni,vivoni@asu.edu,snapshot,2
+US-SRS,AMF,3,FluxContact,Eli R. Perez-Ruiz,eli.perez@asu.edu,snapshot,2
+US-SSH,AMF,3,PI,Kenneth J. Davis,kjd10@psu.edu,snapshot,5
+US-SSH,AMF,3,DataManager,Brandon Forsythe,brf11@psu.edu,snapshot,5
+US-SSH,AMF,3,Affiliate,Jason Horne,jph6488@psu.edu,snapshot,5
+US-SSH,AMF,3,FluxContact,Yuning Shi,yshi@psu.edu,snapshot,5
+US-SSH,AMF,3,FluxContact,Yuting He Smeglin,heyuting.iap@gmail.com,snapshot,5
+US-Sag,AMF,2,PI,Akira Miyata,amiyat@affrc.go.jp,snapshot,3
+US-Sag,AMF,2,PI,Yoshinobu Harazono,harazono2009gl@gmail.com,snapshot,3
+US-Sag,AMF,2,AncContact,Masahito Ueyama,miyabi-flux@muh.biglobe.ne.jp,snapshot,3
+US-Seg,AMF,7,PI,Marcy Litvak,mlitvak@unm.edu,snapshot,3
+US-Seg,AMF,7,DataManager,Kai Del Regno,kaidelregno@unm.edu,snapshot,3
+US-Seg,AMF,7,Technician,Bishop Cervantes,bmcervantes@unm.edu,snapshot,3
+US-Ses,AMF,7,PI,Marcy Litvak,mlitvak@unm.edu,snapshot,3
+US-Ses,AMF,7,DataManager,Kai Del Regno,kaidelregno@unm.edu,snapshot,3
+US-Ses,AMF,7,Technician,Bishop Cervantes,bmcervantes@unm.edu,snapshot,3
+US-Sne,AMF,2,PI,Dennis Baldocchi,Baldocchi@berkeley.edu,snapshot,4
+US-Sne,AMF,2,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Sne,AMF,2,Technician,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Sne,AMF,2,FluxContact,Robert Shortt,robert_shortt@berkeley.edu,snapshot,4
+US-Snf,AMF,2,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,4
+US-Snf,AMF,2,FluxContact,Camilo Rey-Sanchez,rey.1@berkeley.edu,snapshot,4
+US-Snf,AMF,2,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Snf,AMF,2,Technician,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Srr,AMF,2,PI,Patty Oikawa,patty.oikawa@csueastbay.edu,snapshot,5
+US-Srr,AMF,2,FluxContact,Brandon Broach,bbroach2@horizon.csueastbay.edu,snapshot,5
+US-Srr,AMF,2,Affiliate,Brian Bergamaschi,bbergama@usgs.gov,snapshot,5
+US-Srr,AMF,2,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,5
+US-Srr,AMF,2,AncContact,Lisamarie Windham-Myers,lwindham-myers@usgs.gov,snapshot,5
+US-StJ,AMF,3,PI,Rodrigo Vargas,rvargasr@asu.edu,snapshot,2
+US-StJ,AMF,3,Affiliate,Himal Acharya,hachary6@asu.edu,snapshot,2
+US-Sta,AMF,2,PI,Brent Ewers,BEEwers@uwyo.edu,snapshot,3
+US-Sta,AMF,2,PI,Elise Pendall,e.pendall@westernsydney.edu.au,snapshot,3
+US-Sta,AMF,2,DataManager,David Reed,david.edwin.reed@gmail.com,snapshot,3
+US-TKs,AMF,5,PI,Syndonia Bret-Harte,msbretharte@alaska.edu,snapshot,2
+US-TKs,AMF,5,FluxContact,Colin Edgar,cedgar3@alaska.edu,snapshot,2
+US-TLR,AMF,4,PI,Camilo Rey-Sanchez,areysan@ncsu.edu,snapshot,2
+US-TLR,AMF,4,DataManager,Darian Ng,dcng@ncsu.edu,snapshot,2
+US-Ton,AMF,8,PI,Dennis Baldocchi,Baldocchi@berkeley.edu,snapshot,3
+US-Ton,AMF,8,DataManager,Joe Verfaillie,jverfail@berkeley.edu,snapshot,3
+US-Ton,AMF,8,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,3
+US-Tw1,AMF,5,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,4
+US-Tw1,AMF,5,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Tw1,AMF,5,AncContact,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Tw1,AMF,5,FluxContact,Robert Shortt,robert_shortt@berkeley.edu,snapshot,4
+US-Tw2,AMF,2,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,5
+US-Tw2,AMF,2,Affiliate,Cove Sturtevant,csturtevant@berkeley.edu,snapshot,5
+US-Tw2,AMF,2,AncContact,Joe Verfaillie,jverfail@berkeley.edu,snapshot,5
+US-Tw2,AMF,2,Affiliate,Laurie Koteen,lkoteen@berkeley.edu,snapshot,5
+US-Tw2,AMF,2,Affiliate,Sara Knox,saraknox@berkeley.edu,snapshot,5
+US-Tw3,AMF,3,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,6
+US-Tw3,AMF,3,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,6
+US-Tw3,AMF,3,Affiliate,Elke Eichelmann,eeichelm@berkeley.edu,snapshot,6
+US-Tw3,AMF,3,Technician,Joe Verfaillie,jverfail@berkeley.edu,snapshot,6
+US-Tw3,AMF,3,Affiliate,Patty Oikawa,pattyoikawa@berkeley.edu,snapshot,6
+US-Tw3,AMF,3,FluxContact,Sam Chamberlain,schamberlain@berkeley.edu,snapshot,6
+US-Tw4,AMF,6,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,6
+US-Tw4,AMF,6,Affiliate,Camilo Rey,rey.1@berkeley.edu,snapshot,6
+US-Tw4,AMF,6,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,6
+US-Tw4,AMF,6,Affiliate,Elke Eichelmann,eeichelm@berkeley.edu,snapshot,6
+US-Tw4,AMF,6,AncContact,Joe Verfaillie,jverfail@berkeley.edu,snapshot,6
+US-Tw4,AMF,6,FluxContact,Robert Shortt,robert_shortt@berkeley.edu,snapshot,6
+US-Tw5,AMF,2,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,4
+US-Tw5,AMF,2,Technician,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Tw5,AMF,2,Technician,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Tw5,AMF,2,Affiliate,"Valach, Alex",a.c.valach@gmail.com,snapshot,4
+US-Twt,AMF,3,PI,Dennis Baldocchi,baldocchi@berkeley.edu,snapshot,4
+US-Twt,AMF,3,AncContact,Daphne Szutu,daphneszutu@berkeley.edu,snapshot,4
+US-Twt,AMF,3,AncContact,Joe Verfaillie,jverfail@berkeley.edu,snapshot,4
+US-Twt,AMF,3,Affiliate,Sara Knox,saraknox.knox@gmail.com,snapshot,4
+US-UC1,AMF,5,PI,Sarah Goslee,sarah.goslee@usda.gov,snapshot,2
+US-UC1,AMF,5,DataManager,Jeffery Gonet,jeffery.gonet@usda.gov,snapshot,2
+US-UC2,AMF,5,PI,Sarah Goslee,sarah.goslee@usda.gov,snapshot,2
+US-UC2,AMF,5,DataManager,Jeffery Gonet,jeffery.gonet@usda.gov,snapshot,2
+US-UMd,AMF,7,PI,Aimee Classen,aclassen@umich.edu,snapshot,4
+US-UMd,AMF,7,PI,Christopher Gough,cmgough@vcu.edu,snapshot,4
+US-UMd,AMF,7,PI,Gil Bohrer,bohrer.17@osu.edu,snapshot,4
+US-UMd,AMF,7,DataManager,John Lenters,jlenters@umich.edu,snapshot,4
+US-UTB,AMF,3,PI,Kathryn Ladig,kladig@utah.gov,snapshot,3
+US-UTB,AMF,3,PI,Paul Inkenbrandt,paulinkenbrandt@utah.gov,snapshot,3
+US-UTB,AMF,3,AncContact,Diane Menuz,dmenuz@utah.gov,snapshot,3
+US-UTD,AMF,4,PI,Paul Inkenbrandt,paulinkenbrandt@utah.gov,snapshot,3
+US-UTD,AMF,4,AncContact,Diane Menuz,dmenuz@utah.gov,snapshot,3
+US-UTD,AMF,4,AncContact,Kathryn Ladig,kladig@utah.gov,snapshot,3
+US-UTE,AMF,4,PI,Paul Inkenbrandt,paulinkenbrandt@utah.gov,snapshot,3
+US-UTE,AMF,4,AncContact,Diane Menuz,dmenuz@utah.gov,snapshot,3
+US-UTE,AMF,4,AncContact,Kathryn Ladig,kladig@utah.gov,snapshot,3
+US-UTJ,AMF,4,PI,Paul Inkenbrandt,paulinkenbrandt@utah.gov,snapshot,3
+US-UTJ,AMF,4,AncContact,Diane Menuz,dmenuz@utah.gov,snapshot,3
+US-UTJ,AMF,4,AncContact,Kathryn Ladig,kladig@utah.gov,snapshot,3
+US-UTW,AMF,4,PI,Kathryn Ladig,kladig@utah.gov,snapshot,3
+US-UTW,AMF,4,PI,Paul Inkenbrandt,paulinkenbrandt@utah.gov,snapshot,3
+US-UTW,AMF,4,AncContact,Diane Menuz,dmenuz@utah.gov,snapshot,3
+US-Uaf,AMF,8,PI,Hiroki Iwata,hiwata@shinshu-u.ac.jp,snapshot,4
+US-Uaf,AMF,8,PI,Masahito Ueyama,miyabi-flux@muh.biglobe.ne.jp,snapshot,4
+US-Uaf,AMF,8,PI,Yoshinobu Harazono,harazono2009gl@gmail.com,snapshot,4
+US-Uaf,AMF,8,Technician,Naoki Kukuu,naokikukuu@hotmail.com,snapshot,4
+US-UiA,AMF,5,PI,Carl J Bernacchi,bernacch@illinois.edu,snapshot,5
+US-UiA,AMF,5,FluxContact,Bethany J Blakely,bethany.j.blakely@gmail.com,snapshot,5
+US-UiA,AMF,5,FluxContact,Caitlin E Moore,moore.e.caitlin@gmail.com,snapshot,5
+US-UiA,AMF,5,FluxContact,Koong Yi,koongyi@gmail.com,snapshot,5
+US-UiA,AMF,5,Technician,Taylor L Pederson,tpeders2@illinois.edu,snapshot,5
+US-UiB,AMF,7,PI,Carl J Bernacchi,bernacch@illinois.edu,snapshot,5
+US-UiB,AMF,7,FluxContact,Bethany J Blakely,bethany.j.blakely@gmail.com,snapshot,5
+US-UiB,AMF,7,FluxContact,Caitlin E Moore,moore.e.caitlin@gmail.com,snapshot,5
+US-UiB,AMF,7,FluxContact,Koong Yi,koongyi@gmail.com,snapshot,5
+US-UiB,AMF,7,Technician,Taylor L Pederson,tpeders2@illinois.edu,snapshot,5
+US-UiC,AMF,7,PI,Carl J Bernacchi,bernacch@illinois.edu,snapshot,5
+US-UiC,AMF,7,FluxContact,Bethany J Blakely,bethany.j.blakely@gmail.com,snapshot,5
+US-UiC,AMF,7,FluxContact,Caitlin E Moore,moore.e.caitlin@gmail.com,snapshot,5
+US-UiC,AMF,7,FluxContact,Koong Yi,koongyi@gmail.com,snapshot,5
+US-UiC,AMF,7,Technician,Taylor L Pederson,tpeders2@illinois.edu,snapshot,5
+US-UiD,AMF,5,PI,Carl J Bernacchi,bernacch@illinois.edu,snapshot,5
+US-UiD,AMF,5,FluxContact,Bethany J Blakely,bethany.j.blakely@gmail.com,snapshot,5
+US-UiD,AMF,5,FluxContact,Caitlin E Moore,moore.e.caitlin@gmail.com,snapshot,5
+US-UiD,AMF,5,FluxContact,Koong Yi,koongyi@gmail.com,snapshot,5
+US-UiD,AMF,5,Technician,Taylor L Pederson,tpeders2@illinois.edu,snapshot,5
+US-UiE,AMF,5,PI,Carl J Bernacchi,bernacch@illinois.edu,snapshot,4
+US-UiE,AMF,5,FluxContact,Bethany Blakely,bethany.j.blakely@gmail.com,snapshot,4
+US-UiE,AMF,5,FluxContact,Koong Yi,koongyi@gmail.com,snapshot,4
+US-UiE,AMF,5,Technician,Taylor Pederson,tpeders2@illinois.edu,snapshot,4
+US-UiF,AMF,4,PI,Carl J Bernacchi,bernacch@illinois.edu,snapshot,4
+US-UiF,AMF,4,FluxContact,Bethany Blakely,bethany.j.blakely@gmail.com,snapshot,4
+US-UiF,AMF,4,FluxContact,Koong Yi,koongyi@gmail.com,snapshot,4
+US-UiF,AMF,4,Technician,Taylor Pederson,tpeders2@illinois.edu,snapshot,4
+US-UiG,AMF,4,PI,Carl J Bernacchi,bernacch@illinois.edu,snapshot,4
+US-UiG,AMF,4,FluxContact,Bethany Blakely,bethany.j.blakely@gmail.com,snapshot,4
+US-UiG,AMF,4,FluxContact,Koong Yi,koongyi@gmail.com,snapshot,4
+US-UiG,AMF,4,Technician,Taylor Pederson,tpeders2@illinois.edu,snapshot,4
+US-VT1,AMF,4,PI,Kesondra Key,keyke@iu.edu,snapshot,5
+US-VT1,AMF,4,PI,Kim Novick,knovick@iu.edu,snapshot,5
+US-VT1,AMF,4,Technician,Michael Voyles,mpvoyles@iu.edu,snapshot,5
+US-VT1,AMF,4,Technician,Steve Scott,stlscott@indiana.edu,snapshot,5
+US-VT1,AMF,4,Technician,Trevor Gress,trgress@iu.edu,snapshot,5
+US-VT2,AMF,4,PI,Kesondra Key,keyke@iu.edu,snapshot,5
+US-VT2,AMF,4,PI,Kim Novick,knovick@iu.edu,snapshot,5
+US-VT2,AMF,4,Technician,Michael Voyles,mpvoyles@iu.edu,snapshot,5
+US-VT2,AMF,4,Technician,Steve Scott,stlscott@indiana.edu,snapshot,5
+US-VT2,AMF,4,Technician,Trevor Gress,trgress@iu.edu,snapshot,5
+US-Vcm,AMF,7,PI,Marcy Litvak,mlitvak@unm.edu,snapshot,3
+US-Vcm,AMF,7,DataManager,Kai Del Regno,kaidelregno@unm.edu,snapshot,3
+US-Vcm,AMF,7,Technician,Bishop Cervantes,bmcervantes@unm.edu,snapshot,3
+US-Vcp,AMF,7,PI,Marcy Litvak,mlitvak@unm.edu,snapshot,3
+US-Vcp,AMF,7,DataManager,Kai Del Regno,kaidelregno@unm.edu,snapshot,3
+US-Vcp,AMF,7,Technician,Bishop Cervantes,bmcervantes@unm.edu,snapshot,3
+US-WCr,AMF,8,PI,Ankur Desai,desai@aos.wisc.edu,snapshot,2
+US-WCr,AMF,8,FluxContact,Jonathan Thom,jthom@ssec.wisc.edu,snapshot,2
+US-WPT,AMF,2,PI,Jiquan Chen,jqchen@msu.edu,snapshot,2
+US-WPT,AMF,2,FluxContact,Housen Chu,chu.housen@gmail.com,snapshot,2
+US-WT1,AMF,4,PI,Craig Bednarz,cbednarz@wtamu.edu,snapshot,1
+US-Whs,AMF,7,PI,Russell Scott,russ.scott@ars.usda.gov,snapshot,2
+US-Whs,AMF,7,Technician,Ross Bryant,Ross.Bryant@ars.usda.gov,snapshot,2
+US-Wjs,AMF,7,PI,Marcy Litvak,mlitvak@unm.edu,snapshot,3
+US-Wjs,AMF,7,DataManager,Kai Del Regno,kaidelregno@unm.edu,snapshot,3
+US-Wjs,AMF,7,Technician,Bishop Cervantes,bmcervantes@unm.edu,snapshot,3
+US-YK1,AMF,5,PI,Susan Natali,snatali@woodwellclimate.org,snapshot,3
+US-YK1,AMF,5,DataManager,Kyle Arndt,karndt@woodwellclimate.org,snapshot,3
+US-YK1,AMF,5,FluxContact,Jacqueline Hung,jhung@woodwellclimate.org,snapshot,3
+US-YK2,AMF,5,PI,Sue Natali,snatali@woodwellclimate.org,snapshot,3
+US-YK2,AMF,5,DataManager,Kyle Arndt,karndt@woodwellclimate.org,snapshot,3
+US-YK2,AMF,5,FluxContact,Jacqueline Hung,jhung@woodwellclimate.org,snapshot,3
+US-ZF2,AMF,4,PI,Sebastien C. Biraud,SCBiraud@lbl.gov,snapshot,3
+US-ZF2,AMF,4,FluxContact,Brian Wang,BrianWang@lbl.gov,snapshot,3
+US-ZF2,AMF,4,FluxContact,Stephen W. Chan,SWChan@lbl.gov,snapshot,3
+US-xAB,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xAB,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xAB,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xAB,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xAB,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xAE,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xAE,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xAE,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xAE,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xAE,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xBA,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xBA,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xBA,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xBA,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xBA,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xBL,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xBL,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xBL,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xBL,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xBL,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xBN,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xBN,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xBN,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xBN,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xBN,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xBR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,6
+US-xBR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,6
+US-xBR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,6
+US-xBR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,6
+US-xBR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,6
+US-xBR,AMF,5,NA,NEON User Inquiries,neon-ameriflux-inquiry@battelleecology.org,badm_extra,6
+US-xCL,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xCL,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xCL,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xCL,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xCL,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xCP,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xCP,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xCP,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xCP,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xCP,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xDC,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xDC,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xDC,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xDC,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xDC,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xDJ,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xDJ,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xDJ,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xDJ,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xDJ,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xDL,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xDL,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xDL,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xDL,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xDL,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xDS,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xDS,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xDS,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xDS,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xDS,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xGR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xGR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xGR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xGR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xGR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xHE,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xHE,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xHE,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xHE,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xHE,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xJE,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xJE,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xJE,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xJE,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xJE,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xJR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xJR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xJR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xJR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xJR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xKZ,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xKZ,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xKZ,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xKZ,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xKZ,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xLE,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xLE,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xLE,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xLE,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xLE,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xMB,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xMB,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xMB,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xMB,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xMB,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xML,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xML,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xML,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xML,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xML,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xNG,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xNG,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xNG,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xNG,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xNG,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xNQ,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xNQ,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xNQ,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xNQ,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xNQ,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xNW,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xNW,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xNW,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xNW,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xNW,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xPU,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xPU,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xPU,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xPU,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xPU,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xRM,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xRM,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xRM,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xRM,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xRM,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xRN,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xRN,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xRN,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xRN,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xRN,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xSB,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xSB,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xSB,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xSB,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xSB,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xSC,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xSC,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xSC,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xSC,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xSC,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xSE,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xSE,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xSE,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xSE,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xSE,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xSJ,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xSJ,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xSJ,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xSJ,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xSJ,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xSL,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xSL,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xSL,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xSL,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xSL,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xSP,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xSP,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xSP,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xSP,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xSP,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xSR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xSR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xSR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xSR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xSR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xST,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xST,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xST,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xST,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xST,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xTE,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xTE,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xTE,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xTE,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xTE,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xTL,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xTL,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xTL,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xTL,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xTL,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xTR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xTR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xTR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xTR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xTR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xUK,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xUK,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xUK,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xUK,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xUK,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xUN,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xUN,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xUN,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xUN,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xUN,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xWD,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xWD,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xWD,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xWD,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xWD,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xWR,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xWR,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xWR,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xWR,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xWR,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+US-xYE,AMF,5,PI,National Ecological Observatory Network,neon-ameriflux@battelleecology.org,snapshot,5
+US-xYE,AMF,5,DataManager,Cove Sturtevant,csturtevant@battelleecology.org,snapshot,5
+US-xYE,AMF,5,FluxContact,Adam Young,younga1@battelleecology.org,snapshot,5
+US-xYE,AMF,5,FluxContact,Christopher Florian,cflorian@battelleecology.org,snapshot,5
+US-xYE,AMF,5,FluxContact,David Durden,ddurden@battelleecology.org,snapshot,5
+VU-Coc,FLX,2,PI,Olivier Roupsard,olivier.roupsard@cirad.fr,snapshot,1
+ZA-BfK,SAEON,4,PI,Gregor Feig,gt.feig@saeon.nrf.ac.za,snapshot,5
+ZA-BfK,SAEON,4,PI,Helga Knoetz,h.vancoller@saeon.nrf.ac.za,snapshot,5
+ZA-BfK,SAEON,4,Technician,Abri de Buys,aj.debuys@saeon.nrf.ac.za,snapshot,5
+ZA-BfK,SAEON,4,FluxContact,Kathleen Smart,kg.smart@saeon.nrf.ac.za,snapshot,5
+ZA-BfK,SAEON,4,Technician,Siphesihle Faltein,s.faltein@saeon.nrf.ac.za,snapshot,5
+ZA-BfS,SAEON,4,PI,Gregor Feig,gt.feig@saeon.nrf.ac.za,snapshot,5
+ZA-BfS,SAEON,4,PI,Helga Knoetz,h.vancoller@saeon.nrf.ac.za,snapshot,5
+ZA-BfS,SAEON,4,Technician,Abri de Buys,aj.debuys@saeon.nrf.ac.za,snapshot,5
+ZA-BfS,SAEON,4,FluxContact,Kathleen Smart,kg.smart@saeon.nrf.ac.za,snapshot,5
+ZA-BfS,SAEON,4,Technician,Siphesihle Faltein,s.faltein@saeon.nrf.ac.za,snapshot,5
+ZA-Jks,SAEON,4,PI,Kathleen Smart,kg.smart@saeon.nrf.ac.za,snapshot,4
+ZA-Jks,SAEON,4,PI,Warren Joubert,wr.joubert@saeon.nrf.ac.za,snapshot,4
+ZA-Jks,SAEON,4,Technician,Sagwati Maswanganye,se.maswanganye@saeon.nrf.ac.za,snapshot,4
+ZA-Jks,SAEON,4,Technician,Sylvester Selala,ms.selala@saeon.nrf.ac.za,snapshot,4
+ZA-Spk,SAEON,4,PI,Gregor Feig,gt.feig@saeon.nrf.ac.za,snapshot,4
+ZA-Spk,SAEON,4,Technician,Abri de Buys,aj.debuys@saeon.nrf.ac.za,snapshot,4
+ZA-Spk,SAEON,4,Technician,Jeremy Moonsamy,jm.moonsamy@saeon.nrf.ac.za,snapshot,4
+ZA-Spk,SAEON,4,FluxContact,Kathleen Smart,kg.smart@saeon.nrf.ac.za,snapshot,4
+ZA-Uby,SAEON,4,PI,Gregor Feig,gt.feig@saeon.nrf.ac.za,snapshot,2
+ZA-Uby,SAEON,4,FluxContact,Kathleen Smart,kg.smart@saeon.nrf.ac.za,snapshot,2
+ZM-Mon,EUF,2,PI,Werner Kutsch,werner.kutsch@icos-ri.eu,snapshot,2
+ZM-Mon,EUF,2,DataManager,Lutz Merbold,lutz.merbold@gmail.com,snapshot,2

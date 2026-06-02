@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-05-12T22:28:44Z",
+  "pipeline_version": "858733d",
+  "input_sources": [
+    "data/snapshots/site_year_data_presence.csv",
+    "outputs/authorship/site_authors.csv"
+  ],
+  "notes": "n_with_2025_data_pres: sites with n_months_present > 0 for year 2025 in presence file (any of 12 flux variables: NEE VUT+CUT, GPP/RECO NT+DT x VUT+CUT, LE_F_MDS, H_F_MDS). n_with_latency_1: sites where latency_years = 1 (max_data_year = 2025 per presence file). All 716 sites now have presence-file coverage; latency is derived from presence file only."
+}

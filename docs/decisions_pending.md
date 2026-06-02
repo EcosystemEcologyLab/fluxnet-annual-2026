@@ -1,6 +1,18 @@
 > Technical bugs and data quality issues with external dependencies (fluxnet R package,
 > FLUXNET Shuttle) are tracked in [docs/known_issues.md](known_issues.md), not here.
 
+## Authorship rubric — 5-year data-volume boundary — RESOLVED 2026-05-20
+
+**Decision (2026-05-20):** Sites with exactly 5 years of data are placed in the **<5 row (lower
+author count)** of the locked authorship rubric. This was the implementation at the 2026-05-07
+team meeting and is formally confirmed as final policy. The rubric label is understood as "≤5
+years". The alternative (moving 5-year sites to the "6–10" row, +50 authors) was considered and
+rejected. No code or data change is required; `scripts/authorship_models.R` already implements
+`years_data <= 5L ~ row 1` and `outputs/authorship/site_authors.csv` reflects this. Tracked as
+FOLLOWUP-A in the authorship report; all authorship followup tasks are now resolved.
+
+---
+
 ## QC gating — RESOLVED 2026-04-20
 
 ~~US-Ha1 (Harvard Forest) excluded entirely at QC_THRESHOLD_YY = 0.75 — all 35 FLUXMET YY
@@ -86,6 +98,39 @@ estimates in these cases. This needs a paragraph in the paper methods section ex
 
 Contact Gilberto Pastorello (LBL) for ONEFlux processing documentation to support
 methods writing (flagged by Dario Papale, 2026-04-16).
+
+---
+
+## flux_download() version-pinning gap — DEFERRED
+
+`flux_download()` bootstraps an ephemeral `uv` environment and runs the shuttle at git HEAD
+(observed HEAD = tag 0.3.8 on 2026-05-25), bypassing the pinned `fluxnet_annual_2026` venv
+used by `flux_listall()` and `check_pipeline_config()`. Downloads therefore run on an unpinned,
+moving shuttle version — defeating the version lock established for the paper.
+
+This ties to the in-flight rearchitecture in [fluxnet-package#43](https://github.com/EcosystemEcologyLab/fluxnet-package/issues/43)
+("route flux_download() through the shuttle Python API"). The download itself functions correctly;
+the concern is reproducibility: if the dataset is locked and then re-downloaded later, a different
+shuttle version may be used.
+
+**Decision:** Deferred to a post-manuscript reproducibility pass, before final dataset lock.
+Before locking: confirm with package maintainers (#43) whether `flux_download()` can be pinned
+to a specific shuttle commit, or record the actual shuttle commit used at download time in
+run metadata.
+
+---
+
+## Representativeness analysis climate axis — DEFERRED
+
+The network representativeness analysis is not yet defined in scope (no assigned figure number
+or methods specification as of 2026-05-26). When it is eventually defined, **use Köppen-Geiger**
+for the climate-variability axis, not CRU. Köppen-Geiger classifications are already extracted
+at all sites (`data/snapshots/` — see `long_record_site_candidates_gez_kg.csv`) and are on-disk
+and reproducible via the existing pipeline. CRU adds a data dependency without a clear advantage
+for this comparison axis.
+
+**Decision:** Climate axis = Köppen-Geiger. Recording now so the decision is not lost when the
+analysis is eventually scoped.
 
 ---
 

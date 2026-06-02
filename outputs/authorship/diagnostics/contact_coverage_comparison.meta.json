@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-05-20T17:28:04Z",
+  "pipeline_version": "000152a",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
+    "data/processed/badm.rds"
+  ],
+  "notes": "Per-site comparison of contact record counts from two sources (audit trail). n_contacts_snapshot: semicolon-delimited entries in team_member_name field. n_contacts_badm: distinct GROUP_IDs with TEAM_MEMBER_NAME or TEAM_CONTACT_NAME in BADM GRP_TEAM/TEAM_MEMBER/TEAM_CONTACT groups. badm_has_more=TRUE indicates BADM has additional contacts; these are now included in authorship_invitations.csv as contact_source='badm_extra' (or 'badm_fallback' for sites with snapshot=0). This file is the raw audit trail — it is not modified by the merge decision. Sorted: badm_has_more DESC, difference DESC."
+}

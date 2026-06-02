@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-05-01T16:48:15Z",
+  "pipeline_version": "71bfff6",
+  "input_sources": {
+    "gez_kg_candidates": "data/snapshots/long_record_site_candidates_gez_kg.csv",
+    "worldclim": "data/snapshots/site_worldclim.csv",
+    "aridity": "data/snapshots/site_aridity.csv",
+    "snapshot": "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+  },
+  "notes": "Rebuilt for 716-site Apr-28 snapshot (44 net-new sites). 569 candidate rows (up from 530). 39 of 44 net-new sites are present (5 excluded — no valid NEE). GEZ present for all 39. KG missing for all 39 net-new sites: CLIMATE_KOEPPEN absent from BADM for European Fluxes Database and ChinaFLUX sites — expected gap, consistent with 152 total sites missing KG across the full candidate set. WorldClim and aridity fully populated (0 NAs)."
+}

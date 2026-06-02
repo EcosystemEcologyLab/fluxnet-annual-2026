@@ -1,0 +1,924 @@
+2026-05-06T13:18:25Z === FIGURE REGENERATION START (Phase 1 + 2) ===
+2026-05-06T13:18:25Z Git: 3f9e4f5
+2026-05-06T13:19:52Z === FIGURE REGENERATION START (Phase 1 + 2) ===
+2026-05-06T13:19:52Z Git: 3f9e4f5
+2026-05-06T13:19:52Z === START scripts/00_candidate_figures.R ===
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘lubridate’
+
+The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union
+
+
+Attaching package: ‘scales’
+
+The following object is masked from ‘package:readr’:
+
+    col_factor
+
+virtualenv: fluxnet
+fluxnet-shuttle version OK: 0.3.7.post0+dirty
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Building Section 1 — Annual time series (YY) ...
+Review figure saved: review/figures/fig_yy_nee.png
+Review figure saved: review/figures/fig_yy_gpp.png
+Review figure saved: review/figures/fig_yy_et.png
+Building Section 2 — Monthly climatology (MM) ...
+Review figure saved: review/figures/fig_mm_nee.png
+Review figure saved: review/figures/fig_mm_gpp.png
+Review figure saved: review/figures/fig_mm_et.png
+Warning messages:
+1: Removed 947 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+2: Removed 987 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+3: Removed 430 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+4: Removed 470 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+Building Section 3 — Daily climatology (DD) ...
+  Loading DD data (lazy) ...
+Building Section 8 — Network growth (cumulative) ...
+Review figure saved: review/figures/network/fig_network_growth.png
+Building Section 9 — Network growth (annual new sites) ...
+Review figure saved: review/figures/fig_network_growth_annual.png
+Building Section 12 — Network active proportion ...
+Review figure saved: review/figures/network/fig_network_active_proportion.png
+Warning messages:
+1: Removed 1 row containing missing values or values outside the scale range
+(`geom_line()`). 
+2: Removed 1 row containing missing values or values outside the scale range
+(`geom_point()`). 
+Building Section 13 — Subregion overview ...
+Review figure saved: review/figures/network/fig_network_subregion_overview.png
+Building Section 13b — Latency by subregion ...
+Review figure saved: review/figures/network/fig_latency_by_subregion.png
+Building Section 13c — Latency by subregion (%) ...
+Review figure saved: review/figures/network/fig_latency_by_subregion_pct.png
+Building Section 5 — Latitudinal multi-variable ribbon ...
+Review figure saved: review/figures/fig_latitudinal_multi.png
+Warning messages:
+1: Removed 12 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 13 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+3: Removed 14 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+Building Section 6 — Environmental response curves ...
+Review figure saved: review/figures/envresponse/fig_envresponse_ta_f_nee_vut_ref.png
+Review figure saved: review/figures/envresponse/fig_envresponse_ta_f_gpp_nt_vut_ref.png
+Review figure saved: review/figures/envresponse/fig_envresponse_ta_f_reco_nt_vut_ref.png
+Review figure saved: review/figures/envresponse/fig_envresponse_ta_f_le_f_mds.png
+Review figure saved: review/figures/envresponse/fig_envresponse_ta_f_h_f_mds.png
+Review figure saved: review/figures/envresponse/fig_envresponse_p_f_nee_vut_ref.png
+Review figure saved: review/figures/envresponse/fig_envresponse_p_f_gpp_nt_vut_ref.png
+Review figure saved: review/figures/envresponse/fig_envresponse_p_f_reco_nt_vut_ref.png
+Review figure saved: review/figures/envresponse/fig_envresponse_p_f_le_f_mds.png
+Review figure saved: review/figures/envresponse/fig_envresponse_p_f_h_f_mds.png
+Building Section 7 — Long-record annual time series by continent ...
+Reading snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv
+Long-record site list written: data/snapshots/long_record_sites.csv
+
+--- Top 5 sites per continent by record span ---
+ site_id continent first_year last_year span igbp
+  SN-Dhr    Africa       2010      2022   12  GRA
+  BJ-Nhu    Africa       2008      2017    9  SAV
+  BJ-Bfg    Africa       2008      2017    9  DBF
+  KE-Kpt    Africa       2018      2024    6  GRA
+  SN-Nkr    Africa       2018      2024    6  CRO
+  US-Ha1  Americas       1991      2025   34  DBF
+  US-NR1  Americas       1998      2025   27  ENF
+  US-Ho2  Americas       1999      2025   26  ENF
+  US-WCr  Americas       1999      2025   26  DBF
+  US-Los  Americas       2000      2025   25  WET
+  IL-Yat      Asia       2000      2024   24  ENF
+  JP-Yms      Asia       2000      2023   23  DBF
+  JP-Tak      Asia       1998      2021   23  DBF
+  JP-Tef      Asia       2001      2023   22  DNF
+  JP-Api      Asia       2000      2022   22  DBF
+  DK-Sor    Europe       1996      2024   28  DBF
+  DE-Tha    Europe       1996      2024   28  ENF
+  BE-Vie    Europe       1996      2024   28   MF
+  NL-Loo    Europe       1997      2024   27  ENF
+  FR-Hes    Europe       1997      2024   27  DBF
+  AU-How   Oceania       2002      2025   23  WSA
+  AU-Tum   Oceania       2002      2022   20  EBF
+  AU-DaS   Oceania       2007      2025   18  WSA
+  AU-Stp   Oceania       2008      2025   17  GRA
+  AU-Cow   Oceania       2009      2025   16  EBF
+
+Review figure saved: review/figures/fig_timeseries_africa.png
+Review figure saved: review/figures/fig_timeseries_americas.png
+Review figure saved: review/figures/fig_timeseries_asia.png
+Review figure saved: review/figures/fig_timeseries_europe.png
+Review figure saved: review/figures/fig_timeseries_oceania.png
+Building Section 14 — Diagnostic timeseries by UN subregion ...
+--- fig_timeseries_by_subregion: subregion inclusion ---
+  Qualifying (>= 3 sites with valid NEE): Australia and New Zealand; Eastern Asia; Eastern Europe; Latin America and the Caribbean; Northern America; Northern Europe; South-eastern Asia; Southern Europe; Sub-Saharan Africa; Western Europe
+  Excluded  (< 3 sites with valid NEE): Melanesia (n=1); Northern Africa (n=1); Western Asia (n=1)
+Review figure saved: review/figures/timeseries/fig_timeseries_australia_and_new_zealand.png
+Review figure saved: review/figures/timeseries/fig_timeseries_eastern_asia.png
+Review figure saved: review/figures/timeseries/fig_timeseries_eastern_europe.png
+Review figure saved: review/figures/timeseries/fig_timeseries_latin_america_and_the_caribbean.png
+Review figure saved: review/figures/timeseries/fig_timeseries_northern_america.png
+Review figure saved: review/figures/timeseries/fig_timeseries_northern_europe.png
+Review figure saved: review/figures/timeseries/fig_timeseries_southeastern_asia.png
+Review figure saved: review/figures/timeseries/fig_timeseries_southern_europe.png
+Review figure saved: review/figures/timeseries/fig_timeseries_subsaharan_africa.png
+Review figure saved: review/figures/timeseries/fig_timeseries_western_europe.png
+Report written: review/candidate_figures.html (15 KB)
+Done.
+2026-05-06T13:20:52Z === DONE  scripts/00_candidate_figures.R ===
+2026-05-06T13:20:52Z === START scripts/generate_env_response_era5.R ===
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Building fig_environmental_response_era5 ...
+fig_environmental_response_era5(): ERA5 outlier filter
+  P_ERA > 5000 mm:           217 site-years
+  VPD_ERA > 5 kPa:           5 site-years
+  TA_ERA_C outside [-30,40]: 0 site-years
+  Total removed: 222 of 5727 FLUXMET site-years
+fig_environmental_response_era5(): 5505 of 5505 FLUXMET rows matched aridity index
+fig_environmental_response_era5(): TA_ERA_C range = [-13.9, 29.5] °C (annual mean)
+Saved: review/figures/climate/fig_environmental_response_era5.png
+2026-05-06T13:21:02Z === DONE  scripts/generate_env_response_era5.R ===
+2026-05-06T13:21:02Z === START scripts/generate_historical_comparison_figures.R ===
+terra 1.9.11
+
+Attaching package: ‘terra’
+
+The following object is masked from ‘package:colorspace’:
+
+    RGB
+
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:terra’:
+
+    intersect, union
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘patchwork’
+
+The following object is masked from ‘package:terra’:
+
+    area
+
+
+Attaching package: ‘scales’
+
+The following object is masked from ‘package:readr’:
+
+    col_factor
+
+The following object is masked from ‘package:terra’:
+
+    rescale
+
+Loading data ...
+  Shuttle snapshot: 716 sites (fluxnet_shuttle_snapshot_20260428T231049.csv)
+  YY data: 5727 rows
+Loading historical site lists ...
+load_historical_site_lists: using snapshot: fluxnet_shuttle_snapshot_20260428T231049.csv
+New names:
+• `` -> `...2`
+
+--- Historical dataset summary ---
+  Dataset           Total   In Shuttle     Fallback   Site Years
+------------------------------------------------------------------ 
+  marconi              35           13           22           96
+  la_thuile           252          101          151          965
+  fluxnet2015         212          142           70         1532
+  shuttle             716          716            0         5740
+
+  Marconi: 35  La Thuile: 252  FLUXNET2015: 212
+Loading WorldClim raster ...
+load_worldclim(): reading 19 TIF files from data/external/worldclim/climate/wc2.1_2.5m
+Extracting WorldClim for 179 historical sites not in cache ...
+  Combined WorldClim lookup: 895 sites
+NEE fill limits: ±718.3 gC m⁻² yr⁻¹
+Duration x limit: 0 – 29  y limit: 0 – 194
+
+── Marconi 2000 vs Shuttle 2000 ──
+  Building Whittaker ...
+  Saved: fig_compare_whittaker_2000.png
+  Building duration histogram ...
+    Historical sites with first_year: 33 / 35
+  Saved: fig_compare_duration_2000.png
+
+── La Thuile 2007 vs Shuttle 2007 ──
+  Building Whittaker ...
+  Saved: fig_compare_whittaker_2007.png
+  Building duration histogram ...
+    Historical sites with first_year: 83 / 252
+  Saved: fig_compare_duration_2007.png
+
+── FLUXNET2015 vs Shuttle 2015 ──
+  Building Whittaker ...
+  Saved: fig_compare_whittaker_2015.png
+  Building duration histogram ...
+    Historical sites with first_year: 133 / 212
+  Saved: fig_compare_duration_2015.png
+Warning messages:
+1: Removed 35 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+2: Removed 252 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+3: Removed 212 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+All historical comparison figures done.
+2026-05-06T13:21:43Z === DONE  scripts/generate_historical_comparison_figures.R ===
+2026-05-06T13:21:43Z === START scripts/generate_availability_heatmap.R ===
+virtualenv: fluxnet
+fluxnet-shuttle version OK: 0.3.7.post0+dirty
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv
+Full snapshot: 716 sites
+
+Candidates with valid NEE: 569 sites
+
+=============================================================
+  IGBP CLASS QUALIFICATION (threshold: >10 sites in snapshot)
+=============================================================
+
+  Qualifying IGBPs (included in heatmap):
+ igbp n_sites_snapshot   status
+  GRA              130 INCLUDED
+  CRO              129 INCLUDED
+  WET              105 INCLUDED
+  ENF              104 INCLUDED
+  DBF               75 INCLUDED
+  EBF               41 INCLUDED
+  OSH               37 INCLUDED
+   MF               23 INCLUDED
+  WSA               18 INCLUDED
+  DNF               13 INCLUDED
+  SAV               13 INCLUDED
+  CSH               12 INCLUDED
+Warning messages:
+1: Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+ℹ Please use `"igbp"` instead of `.data$igbp` 
+2: Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+ℹ Please use `"n_sites_snapshot"` instead of `.data$n_sites_snapshot` 
+3: Use of .data in tidyselect expressions was deprecated in tidyselect 1.2.0.
+ℹ Please use `"status"` instead of `.data$status` 
+
+  Excluded IGBPs (<=10 sites in snapshot):
+ igbp n_sites_snapshot   status
+  CVM                9 EXCLUDED
+  BSV                5 EXCLUDED
+  SNO                2 EXCLUDED
+
+Generating >=5 NEE-year availability heatmap...
+Saved: review/figures/anomalies/fig_availability_5yr.png
+Generating >=10 NEE-year availability heatmap...
+Saved: review/figures/anomalies/fig_availability_10yr.png
+
+Done.
+2026-05-06T13:21:51Z === DONE  scripts/generate_availability_heatmap.R ===
+2026-05-06T13:21:51Z === START scripts/generate_kg_availability_heatmaps.R ===
+virtualenv: fluxnet
+fluxnet-shuttle version OK: 0.3.7.post0+dirty
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Loading BADM: data/processed/badm.rds
+  No 'Bsk' entries found — BADM already normalised
+
+KG codes available for 538 sites
+Loading GEZ candidates: data/snapshots/long_record_site_candidates_gez.csv
+Sites with KG:    417
+Sites without KG: 152 (will appear as NA in heatmaps)
+
+Saved enriched table: data/snapshots/long_record_site_candidates_gez_kg.csv
+Qualifying sites (>= 8 NEE yr, non-NA subregion+KG): 116
+
+Generating: fig_kg_availability_main_8yr.png
+  Saved: review/figures/Anomalies_KG/fig_kg_availability_main_8yr.png
+Generating: fig_kg_availability_second_8yr.png
+  Saved: review/figures/Anomalies_KG/fig_kg_availability_second_8yr.png
+Generating: fig_kg_availability_third_8yr.png
+  Saved: review/figures/Anomalies_KG/fig_kg_availability_third_8yr.png
+
+================================================================
+  DONE
+================================================================
+  Output directory: review/figures/Anomalies_KG
+  Enriched CSV:     data/snapshots/long_record_site_candidates_gez_kg.csv
+
+2026-05-06T13:22:03Z === DONE  scripts/generate_kg_availability_heatmaps.R ===
+2026-05-06T13:22:03Z === START scripts/generate_kg_anomaly_figures.R ===
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+virtualenv: fluxnet
+fluxnet-shuttle version OK: 0.3.7.post0+dirty
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Loading annual flux data: data/processed/flux_data_converted_yy.rds
+Using snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv
+Loading KG candidates: data/snapshots/long_record_site_candidates_gez_kg.csv
+
+================================================================
+  QUALIFYING COMBINATIONS — Level 1 (kg_main — A/B/C/D/E) (>= 4 sites, >= 8 NEE yr)
+================================================================
+
+  igbp    un_subregion                    kg_class      n_sites_qualifying
+  ----------------------------------------------------------------
+  CRO     Northern America                D             6
+  CRO     Western Europe                  C             5
+  DBF     Northern America                D             6
+  ENF     Northern America                C             5
+  ENF     Northern America                D             7
+  ENF     Northern Europe                 D             5
+  ENF     Western Europe                  C             7
+  GRA     Western Europe                  C             5
+  GRA     Western Europe                  D             4
+  WET     Northern America                C             4
+
+  Figures to generate: 10
+
+
+================================================================
+  QUALIFYING COMBINATIONS — Level 2 (kg_second — Af/Cf/Df…) (>= 4 sites, >= 8 NEE yr)
+================================================================
+
+  igbp    un_subregion                    kg_class      n_sites_qualifying
+  ----------------------------------------------------------------
+  CRO     Northern America                Df            6
+  CRO     Western Europe                  Cf            5
+  DBF     Northern America                Df            5
+  ENF     Northern America                Cf            4
+  ENF     Northern America                Df            6
+  ENF     Northern Europe                 Df            5
+  ENF     Western Europe                  Cf            7
+  GRA     Western Europe                  Cf            5
+  GRA     Western Europe                  Df            4
+  WET     Northern America                Cs            4
+
+  Figures to generate: 10
+
+================================================================
+  GENERATING FIGURES
+================================================================
+Generating [1/10]: CRO × Northern America × kg_main=D (n=6 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: CRO | subregion: Northern America | kg_main: D | n_sites: 6
+ site_id  data_hub igbp kg_main location_lat n_years_valid_nee
+  US-Ne1 AmeriFlux  CRO       D      41.1651                23
+  US-Ne3 AmeriFlux  CRO       D      41.1797                22
+  US-Ne2 AmeriFlux  CRO       D      41.1649                21
+  US-Ro1 AmeriFlux  CRO       D      44.7143                13
+  US-Ro5 AmeriFlux  CRO       D      44.6910                 8
+  US-Ro6 AmeriFlux  CRO       D      44.6946                 8
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_cro_northern_america_d.png
+Generating [2/10]: CRO × Western Europe × kg_main=C (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: CRO | subregion: Western Europe | kg_main: C | n_sites: 5
+ site_id data_hub igbp kg_main location_lat n_years_valid_nee
+  CH-Oe2     ICOS  CRO       C     47.28641                21
+  FR-Aur     ICOS  CRO       C     43.54965                19
+  BE-Lon     ICOS  CRO       C     50.55162                19
+  DE-RuS     ICOS  CRO       C     50.86591                11
+  FR-EM2     ICOS  CRO       C     49.87211                 8
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_cro_western_europe_c.png
+Generating [3/10]: DBF × Northern America × kg_main=D (n=6 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: DBF | subregion: Northern America | kg_main: D | n_sites: 6
+ site_id  data_hub igbp kg_main location_lat n_years_valid_nee
+  US-Ha1 AmeriFlux  DBF       D      42.5378                33
+  US-UMd AmeriFlux  DBF       D      45.5625                16
+  US-Bar AmeriFlux  DBF       D      44.0646                15
+  US-Rpf AmeriFlux  DBF       D      65.1198                13
+  CA-TPD AmeriFlux  DBF       D      42.6353                12
+  US-Oho AmeriFlux  DBF       D      41.5545                10
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_dbf_northern_america_d.png
+Generating [4/10]: ENF × Northern America × kg_main=C (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Northern America | kg_main: C | n_sites: 5
+ site_id  data_hub igbp kg_main location_lat n_years_valid_nee
+  US-NC2 AmeriFlux  ENF       C      35.8030                17
+  US-SP1 AmeriFlux  ENF       C      29.7381                17
+  CA-Ca1 AmeriFlux  ENF       C      49.8673                13
+  US-Me6 AmeriFlux  ENF       C      44.3233                13
+  CA-Ca2 AmeriFlux  ENF       C      49.8705                10
+
+  [NEE_VUT_REF] Left zone restricted to 3 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 3 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 3 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_enf_northern_america_c.png
+Generating [5/10]: ENF × Northern America × kg_main=D (n=7 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Northern America | kg_main: D | n_sites: 7
+ site_id  data_hub igbp kg_main location_lat n_years_valid_nee
+  CA-TP3 AmeriFlux  ENF       D      42.7068                17
+  US-Vcp AmeriFlux  ENF       D      35.8642                17
+  US-Vcm AmeriFlux  ENF       D      35.8884                16
+  CA-TP1 AmeriFlux  ENF       D      42.6609                14
+  US-GLE AmeriFlux  ENF       D      41.3665                14
+  US-MtB AmeriFlux  ENF       D      32.4160                11
+  CA-Man AmeriFlux  ENF       D      55.8796                 9
+
+  [NEE_VUT_REF] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_enf_northern_america_d.png
+Generating [6/10]: ENF × Northern Europe × kg_main=D (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Northern Europe | kg_main: D | n_sites: 5
+ site_id data_hub igbp kg_main location_lat n_years_valid_nee
+  FI-Hyy     ICOS  ENF       D     61.84741                24
+  FI-Let     ICOS  ENF       D     60.64183                13
+  SE-Svb     ICOS  ENF       D     64.25611                 9
+  FI-Var     ICOS  ENF       D     67.75490                 9
+  EE-Stg     ICOS  ENF       D     58.02364                 8
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_enf_northern_europe_d.png
+Generating [7/10]: ENF × Western Europe × kg_main=C (n=7 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Western Europe | kg_main: C | n_sites: 7
+ site_id data_hub igbp kg_main location_lat n_years_valid_nee
+  NL-Loo     ICOS  ENF       C     52.16645                28
+  DE-Tha     ICOS  ENF       C     50.96260                28
+  BE-Bra     ICOS  ENF       C     51.30761                22
+  DE-Obe     ICOS  ENF       C     50.78640                17
+  FR-FBn     ICOS  ENF       C     43.24079                15
+  FR-Bil     ICOS  ENF       C     44.49365                10
+  DE-RuW     ICOS  ENF       C     50.50493                 9
+
+  [NEE_VUT_REF] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_enf_western_europe_c.png
+Generating [8/10]: GRA × Western Europe × kg_main=C (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: GRA | subregion: Western Europe | kg_main: C | n_sites: 5
+ site_id data_hub igbp kg_main location_lat n_years_valid_nee
+  BE-Dor     ICOS  GRA       C     50.31187                14
+  DE-RuR     ICOS  GRA       C     50.62191                13
+  NL-Vkp     ICOS  GRA       C     51.98093                10
+  CH-Oe3     ICOS  GRA       C     47.17120                 9
+  FR-Nzn     ICOS  GRA       C     48.00581                 8
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_gra_western_europe_c.png
+Generating [9/10]: GRA × Western Europe × kg_main=D (n=4 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: GRA | subregion: Western Europe | kg_main: D | n_sites: 4
+ site_id data_hub igbp kg_main location_lat n_years_valid_nee
+  DE-Gri     ICOS  GRA       D     50.95000                19
+  AT-Neu     ICOS  GRA       D     47.11632                19
+  CH-Rtb     ICOS  GRA       D     47.38040                13
+  DE-GsB     ICOS  GRA       D     52.02965                 9
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_gra_western_europe_d.png
+Generating [10/10]: WET × Northern America × kg_main=C (n=4 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: WET | subregion: Northern America | kg_main: C | n_sites: 4
+ site_id  data_hub igbp kg_main location_lat n_years_valid_nee
+  US-Myb AmeriFlux  WET       C      38.0499                14
+  US-Tw4 AmeriFlux  WET       C      38.1027                11
+  US-Tw1 AmeriFlux  WET       C      38.1074                10
+  CA-DBB AmeriFlux  WET       C      49.1293                 8
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level1/fig_anomaly_wet_northern_america_c.png
+
+  level1: 10 / 10 succeeded, 0 failed
+Generating [1/10]: CRO × Northern America × kg_second=Df (n=6 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: CRO | subregion: Northern America | kg_second: Df | n_sites: 6
+ site_id  data_hub igbp kg_second location_lat n_years_valid_nee
+  US-Ne1 AmeriFlux  CRO        Df      41.1651                23
+  US-Ne3 AmeriFlux  CRO        Df      41.1797                22
+  US-Ne2 AmeriFlux  CRO        Df      41.1649                21
+  US-Ro1 AmeriFlux  CRO        Df      44.7143                13
+  US-Ro5 AmeriFlux  CRO        Df      44.6910                 8
+  US-Ro6 AmeriFlux  CRO        Df      44.6946                 8
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_cro_northern_america_df.png
+Generating [2/10]: CRO × Western Europe × kg_second=Cf (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: CRO | subregion: Western Europe | kg_second: Cf | n_sites: 5
+ site_id data_hub igbp kg_second location_lat n_years_valid_nee
+  CH-Oe2     ICOS  CRO        Cf     47.28641                21
+  FR-Aur     ICOS  CRO        Cf     43.54965                19
+  BE-Lon     ICOS  CRO        Cf     50.55162                19
+  DE-RuS     ICOS  CRO        Cf     50.86591                11
+  FR-EM2     ICOS  CRO        Cf     49.87211                 8
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_cro_western_europe_cf.png
+Generating [3/10]: DBF × Northern America × kg_second=Df (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: DBF | subregion: Northern America | kg_second: Df | n_sites: 5
+ site_id  data_hub igbp kg_second location_lat n_years_valid_nee
+  US-Ha1 AmeriFlux  DBF        Df      42.5378                33
+  US-UMd AmeriFlux  DBF        Df      45.5625                16
+  US-Bar AmeriFlux  DBF        Df      44.0646                15
+  CA-TPD AmeriFlux  DBF        Df      42.6353                12
+  US-Oho AmeriFlux  DBF        Df      41.5545                10
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_dbf_northern_america_df.png
+Generating [4/10]: ENF × Northern America × kg_second=Cf (n=4 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Northern America | kg_second: Cf | n_sites: 4
+ site_id  data_hub igbp kg_second location_lat n_years_valid_nee
+  US-NC2 AmeriFlux  ENF        Cf      35.8030                17
+  US-SP1 AmeriFlux  ENF        Cf      29.7381                17
+  CA-Ca1 AmeriFlux  ENF        Cf      49.8673                13
+  CA-Ca2 AmeriFlux  ENF        Cf      49.8705                10
+
+  [NEE_VUT_REF] Left zone restricted to 2 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 2 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 2 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_enf_northern_america_cf.png
+Generating [5/10]: ENF × Northern America × kg_second=Df (n=6 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Northern America | kg_second: Df | n_sites: 6
+ site_id  data_hub igbp kg_second location_lat n_years_valid_nee
+  CA-TP3 AmeriFlux  ENF        Df      42.7068                17
+  US-Vcp AmeriFlux  ENF        Df      35.8642                17
+  US-Vcm AmeriFlux  ENF        Df      35.8884                16
+  CA-TP1 AmeriFlux  ENF        Df      42.6609                14
+  US-GLE AmeriFlux  ENF        Df      41.3665                14
+  CA-Man AmeriFlux  ENF        Df      55.8796                 9
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_enf_northern_america_df.png
+Generating [6/10]: ENF × Northern Europe × kg_second=Df (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Northern Europe | kg_second: Df | n_sites: 5
+ site_id data_hub igbp kg_second location_lat n_years_valid_nee
+  FI-Hyy     ICOS  ENF        Df     61.84741                24
+  FI-Let     ICOS  ENF        Df     60.64183                13
+  SE-Svb     ICOS  ENF        Df     64.25611                 9
+  FI-Var     ICOS  ENF        Df     67.75490                 9
+  EE-Stg     ICOS  ENF        Df     58.02364                 8
+
+  [NEE_VUT_REF] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 5 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_enf_northern_europe_df.png
+Generating [7/10]: ENF × Western Europe × kg_second=Cf (n=7 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: ENF | subregion: Western Europe | kg_second: Cf | n_sites: 7
+ site_id data_hub igbp kg_second location_lat n_years_valid_nee
+  NL-Loo     ICOS  ENF        Cf     52.16645                28
+  DE-Tha     ICOS  ENF        Cf     50.96260                28
+  BE-Bra     ICOS  ENF        Cf     51.30761                22
+  DE-Obe     ICOS  ENF        Cf     50.78640                17
+  FR-FBn     ICOS  ENF        Cf     43.24079                15
+  FR-Bil     ICOS  ENF        Cf     44.49365                10
+  DE-RuW     ICOS  ENF        Cf     50.50493                 9
+
+  [NEE_VUT_REF] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_enf_western_europe_cf.png
+Generating [8/10]: GRA × Western Europe × kg_second=Cf (n=5 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: GRA | subregion: Western Europe | kg_second: Cf | n_sites: 5
+ site_id data_hub igbp kg_second location_lat n_years_valid_nee
+  BE-Dor     ICOS  GRA        Cf     50.31187                14
+  DE-RuR     ICOS  GRA        Cf     50.62191                13
+  NL-Vkp     ICOS  GRA        Cf     51.98093                10
+  CH-Oe3     ICOS  GRA        Cf     47.17120                 9
+  FR-Nzn     ICOS  GRA        Cf     48.00581                 8
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_gra_western_europe_cf.png
+Generating [9/10]: GRA × Western Europe × kg_second=Df (n=4 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: GRA | subregion: Western Europe | kg_second: Df | n_sites: 4
+ site_id data_hub igbp kg_second location_lat n_years_valid_nee
+  DE-Gri     ICOS  GRA        Df     50.95000                19
+  AT-Neu     ICOS  GRA        Df     47.11632                19
+  CH-Rtb     ICOS  GRA        Df     47.38040                13
+  DE-GsB     ICOS  GRA        Df     52.02965                 9
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_gra_western_europe_df.png
+Generating [10/10]: WET × Northern America × kg_second=Cs (n=4 sites)
+
+--- fig_anomaly_context_kg: selected sites ---
+IGBP: WET | subregion: Northern America | kg_second: Cs | n_sites: 4
+ site_id  data_hub igbp kg_second location_lat n_years_valid_nee
+  US-Myb AmeriFlux  WET        Cs      38.0499                14
+  US-Tw4 AmeriFlux  WET        Cs      38.1027                11
+  US-Tw1 AmeriFlux  WET        Cs      38.1074                10
+  CA-DBB AmeriFlux  WET        Cs      49.1293                 8
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_KG/level2/fig_anomaly_wet_northern_america_cs.png
+
+  level2: 10 / 10 succeeded, 0 failed
+
+================================================================
+  DONE
+  Output root: review/figures/Anomalies_KG/
+================================================================
+
+2026-05-06T13:22:39Z === DONE  scripts/generate_kg_anomaly_figures.R ===
+2026-05-06T13:22:39Z === START scripts/generate_gez_anomaly_figures.R ===
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+virtualenv: fluxnet
+fluxnet-shuttle version OK: 0.3.7.post0+dirty
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Loading annual flux data: data/processed/flux_data_converted_yy.rds
+Using snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv
+Loading GEZ lookup: data/snapshots/site_gez_lookup.csv
+Loading GEZ candidates: data/snapshots/long_record_site_candidates_gez.csv
+
+================================================================
+  QUALIFYING COMBINATIONS (all IGBP, >= 4 sites, >= 8 NEE yr)
+================================================================
+
+  igbp    un_subregion                    gez_name                                n_sites_qualifying
+  --------------------------------------------------------------------------------------
+  CRO     Northern America                Temperate steppe                        7
+  CRO     Western Europe                  Temperate oceanic forest                6
+  DBF     Northern America                Temperate continental forest            5
+  ENF     Northern America                Temperate mountain system               4
+  ENF     Northern Europe                 Boreal coniferous forest                4
+  ENF     Western Europe                  Temperate oceanic forest                5
+  GRA     Western Europe                  Temperate mountain system               4
+  GRA     Western Europe                  Temperate oceanic forest                9
+
+  Figures to generate: 8
+
+Generating [1/8]: CRO × Northern America × Temperate steppe (n=7 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: CRO | subregion: Northern America | GEZ: Temperate steppe | n_sites: 7
+ site_id  data_hub igbp         gez_name location_lat n_years_valid_nee
+  US-Ne1 AmeriFlux  CRO Temperate steppe      41.1651                23
+  US-Ne3 AmeriFlux  CRO Temperate steppe      41.1797                22
+  US-Ne2 AmeriFlux  CRO Temperate steppe      41.1649                21
+  US-Ro1 AmeriFlux  CRO Temperate steppe      44.7143                13
+  US-Mo1 AmeriFlux  CRO Temperate steppe      39.2298                 8
+  US-Ro5 AmeriFlux  CRO Temperate steppe      44.6910                 8
+  US-Ro6 AmeriFlux  CRO Temperate steppe      44.6946                 8
+
+  [NEE_VUT_REF] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_cro_northern_america_temperate_steppe.png
+Generating [2/8]: CRO × Western Europe × Temperate oceanic forest (n=6 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: CRO | subregion: Western Europe | GEZ: Temperate oceanic forest | n_sites: 6
+ site_id data_hub igbp                 gez_name location_lat n_years_valid_nee
+  CH-Oe2     ICOS  CRO Temperate oceanic forest     47.28641                21
+  FR-Aur     ICOS  CRO Temperate oceanic forest     43.54965                19
+  BE-Lon     ICOS  CRO Temperate oceanic forest     50.55162                19
+  FR-Gri     ICOS  CRO Temperate oceanic forest     48.84422                18
+  DE-RuS     ICOS  CRO Temperate oceanic forest     50.86591                11
+  FR-EM2     ICOS  CRO Temperate oceanic forest     49.87211                 8
+
+  [NEE_VUT_REF] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 6 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_cro_western_europe_temperate_oceanic_forest.png
+Generating [3/8]: DBF × Northern America × Temperate continental forest (n=5 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: DBF | subregion: Northern America | GEZ: Temperate continental forest | n_sites: 5
+ site_id  data_hub igbp                     gez_name location_lat
+  US-MMS AmeriFlux  DBF Temperate continental forest      39.3232
+  US-MOz AmeriFlux  DBF Temperate continental forest      38.7441
+  US-UMd AmeriFlux  DBF Temperate continental forest      45.5625
+  CA-TPD AmeriFlux  DBF Temperate continental forest      42.6353
+  US-Oho AmeriFlux  DBF Temperate continental forest      41.5545
+ n_years_valid_nee
+                25
+                16
+                16
+                12
+                10
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_dbf_northern_america_temperate_continental_forest.png
+Generating [4/8]: ENF × Northern America × Temperate mountain system (n=4 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: ENF | subregion: Northern America | GEZ: Temperate mountain system | n_sites: 4
+ site_id  data_hub igbp                  gez_name location_lat
+  US-Vcp AmeriFlux  ENF Temperate mountain system      35.8642
+  US-Vcm AmeriFlux  ENF Temperate mountain system      35.8884
+  US-GLE AmeriFlux  ENF Temperate mountain system      41.3665
+  US-Me6 AmeriFlux  ENF Temperate mountain system      44.3233
+ n_years_valid_nee
+                17
+                16
+                14
+                13
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_enf_northern_america_temperate_mountain_system.png
+Generating [5/8]: ENF × Northern Europe × Boreal coniferous forest (n=4 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: ENF | subregion: Northern Europe | GEZ: Boreal coniferous forest | n_sites: 4
+ site_id data_hub igbp                 gez_name location_lat n_years_valid_nee
+  FI-Hyy     ICOS  ENF Boreal coniferous forest     61.84741                24
+  FI-Let     ICOS  ENF Boreal coniferous forest     60.64183                13
+  SE-Svb     ICOS  ENF Boreal coniferous forest     64.25611                 9
+  FI-Var     ICOS  ENF Boreal coniferous forest     67.75490                 9
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_enf_northern_europe_boreal_coniferous_forest.png
+Generating [6/8]: ENF × Western Europe × Temperate oceanic forest (n=5 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: ENF | subregion: Western Europe | GEZ: Temperate oceanic forest | n_sites: 5
+ site_id data_hub igbp                 gez_name location_lat n_years_valid_nee
+  NL-Loo     ICOS  ENF Temperate oceanic forest     52.16645                28
+  DE-Tha     ICOS  ENF Temperate oceanic forest     50.96260                28
+  BE-Bra     ICOS  ENF Temperate oceanic forest     51.30761                22
+  FR-Bil     ICOS  ENF Temperate oceanic forest     44.49365                10
+  FR-LBr     ICOS  ENF Temperate oceanic forest     44.71711                 8
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_enf_western_europe_temperate_oceanic_forest.png
+Generating [7/8]: GRA × Western Europe × Temperate mountain system (n=4 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: GRA | subregion: Western Europe | GEZ: Temperate mountain system | n_sites: 4
+ site_id data_hub igbp                  gez_name location_lat n_years_valid_nee
+  AT-Neu     ICOS  GRA Temperate mountain system     47.11632                19
+  DE-RuR     ICOS  GRA Temperate mountain system     50.62191                13
+  CH-Rtb     ICOS  GRA Temperate mountain system     47.38040                13
+  CH-Aws     ICOS  GRA Temperate mountain system     46.58311                10
+
+  [NEE_VUT_REF] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 4 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_gra_western_europe_temperate_mountain_system.png
+Generating [8/8]: GRA × Western Europe × Temperate oceanic forest (n=9 sites)
+
+--- fig_anomaly_context: selected sites ---
+IGBP: GRA | subregion: Western Europe | GEZ: Temperate oceanic forest | n_sites: 9
+ site_id data_hub igbp                 gez_name location_lat n_years_valid_nee
+  DE-Gri     ICOS  GRA Temperate oceanic forest     50.95000                19
+  CH-Cha     ICOS  GRA Temperate oceanic forest     47.21022                18
+  CH-Fru     ICOS  GRA Temperate oceanic forest     47.11583                17
+  BE-Dor     ICOS  GRA Temperate oceanic forest     50.31187                14
+  NL-Vkp     ICOS  GRA Temperate oceanic forest     51.98093                10
+  CH-Oe1     ICOS  GRA Temperate oceanic forest     47.17120                10
+  DE-GsB     ICOS  GRA Temperate oceanic forest     52.02965                 9
+  CH-Oe3     ICOS  GRA Temperate oceanic forest     47.17120                 9
+  FR-Nzn     ICOS  GRA Temperate oceanic forest     48.00581                 8
+
+  [NEE_VUT_REF] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  [LE_F_MDS] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  [H_F_MDS] Left zone restricted to 7 site(s) with data in recent period (2019–2024)
+  Saved: review/figures/Anomalies_GEZ/fig_anomaly_gra_western_europe_temperate_oceanic_forest.png
+
+================================================================
+  DONE
+================================================================
+  Successfully generated: 8 / 8
+  Failed:                 0
+  Output directory:       review/figures/Anomalies_GEZ
+
+2026-05-06T13:22:57Z === DONE  scripts/generate_gez_anomaly_figures.R ===
+2026-05-06T13:22:57Z === PHASE 1 COMPLETE ===
+2026-05-06T13:22:57Z Copied fig_network_growth.png → candidates/fig_01_network_growth.png
+2026-05-06T13:22:57Z Copied fig_dur08_HistoricalOverlay.png → candidates/fig_02_network_duration_profile.png
+2026-05-06T13:22:57Z Copied fig_dur11_CumulativeSiteYears_IGBP.png → candidates/fig_02b_cumulative_siteyears_igbp.png
+2026-05-06T13:22:57Z Copied fig_map01_ShuttleFull.png → candidates/fig_03_choropleth_current.png
+2026-05-06T13:22:57Z Copied fig_map09_ShuttleSnapshotsStack.png → candidates/fig_04_choropleth_snapshots.png
+2026-05-06T13:22:57Z === PHASE 2 COMPLETE ===
+2026-05-06T13:22:57Z === ALL DONE ===

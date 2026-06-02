@@ -118,6 +118,71 @@ Expected time: 60–120 minutes. Expected disk usage: ~300MB extracted CSVs
 
 ---
 
+## Generating citations and APA reference lists
+
+Two scripts handle citation output for the paper. Both support filtering to a
+specific subset of sites — useful for drafting, regional sub-analyses, or
+co-author review.
+
+### Step 1 — generate a BibTeX file
+
+```r
+source("scripts/generate_fluxnet_citations.R")
+
+# All 718 sites
+generate_fluxnet_citations(
+  site_ids      = c("US-MMS", "DE-Tha", "AU-How"),   # or use site_ids_csv below
+  output_prefix = "outputs/citations/paper2026"
+)
+# → outputs/citations/paper2026.bib
+# → outputs/citations/paper2026_acknowledgments.md
+# → outputs/citations/paper2026_review_flags.md
+
+# Filter via CSV (any CSV with a "site_id" column)
+generate_fluxnet_citations(
+  site_ids_csv  = "data/my_sites.csv",
+  output_prefix = "outputs/citations/subset"
+)
+
+# CSV with a different column name
+generate_fluxnet_citations(
+  site_ids_csv  = "data/analysis_sites.csv",
+  site_id_col   = "SITE_ID",
+  output_prefix = "outputs/citations/subset"
+)
+```
+
+### Step 2 — convert to APA plain text, Word document, or Google Doc
+
+```r
+source("R/parse_bib_to_apa.R")
+
+# Plain text (default) — writes to Google Drive sync folder
+bib_to_apa()
+
+# Filter to a subset — vector or CSV
+bib_to_apa(site_ids = c("US-MMS", "DE-Tha", "AU-How"))
+bib_to_apa(site_ids_csv = "data/my_sites.csv")
+
+# Word document (requires officer package)
+bib_to_apa(output_format = "docx")
+bib_to_apa(site_ids_csv = "data/my_sites.csv",
+           out_path      = "~/Desktop/citations_subset.docx",
+           output_format = "docx")
+
+# Native Google Doc (requires googledrive; triggers browser OAuth on first use)
+bib_to_apa(output_format = "gdoc")
+bib_to_apa(site_ids = c("US-MMS", "DE-Tha"),
+           out_path      = "Subset Citations 2026",
+           output_format = "gdoc",
+           gdrive_path   = "My Drive/Paper2026")
+```
+
+The default output path for `txt` and `docx` formats is the project's Google
+Drive sync folder (`~/Library/CloudStorage/…/My Drive/FLUXNET_APA_Citations.*`).
+
+---
+
 ## Reviewing figures
 
 After running scripts 01–05, generate the candidate figures report:
@@ -142,16 +207,17 @@ source("scripts/00_diagnostics.R")
 
 ```
 scripts/
-  00_diagnostics.R        # Pipeline QC report
-  00_candidate_figures.R  # Paper-candidate figures (main review target)
-  01_download.R           # Download from FLUXNET Shuttle
-  02_extract.R            # Extract CSVs from ZIPs
-  03_read.R               # Read CSVs into RDS
-  04_qc.R                 # QC filtering
-  05_units.R              # Unit conversion
-  06_analysis.R           # Analysis (placeholder)
-  07_figures.R            # Final paper figures (placeholder)
-  batch_download.R        # Full download in batches of 50
+  00_diagnostics.R              # Pipeline QC report
+  00_candidate_figures.R        # Paper-candidate figures (main review target)
+  01_download.R                 # Download from FLUXNET Shuttle
+  02_extract.R                  # Extract CSVs from ZIPs
+  03_read.R                     # Read CSVs into RDS
+  04_qc.R                       # QC filtering
+  05_units.R                    # Unit conversion
+  06_analysis.R                 # Analysis (placeholder)
+  07_figures.R                  # Final paper figures (placeholder)
+  batch_download.R              # Full download in batches of 50
+  generate_fluxnet_citations.R  # BibTeX + acknowledgments from snapshot
 
 R/
   pipeline_config.R       # QC thresholds, env vars, config checks
@@ -163,6 +229,7 @@ R/
   snapshot.R              # Snapshot management
   plot_constants.R        # Shared visual theme, IGBP palette
   external_data.R         # WorldClim and aridity index loaders
+  parse_bib_to_apa.R      # BibTeX → APA plain text / docx / Google Doc
   figures/
     fig_igbp.R            # IGBP boxplots and time series
     fig_seasonal.R        # Seasonal cycles

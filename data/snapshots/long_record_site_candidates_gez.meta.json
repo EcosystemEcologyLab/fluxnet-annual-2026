@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-04-30T23:30:15Z",
+  "pipeline_version": "71bfff6",
+  "input_sources": {
+    "candidates": "outputs/long_record_site_candidates.csv",
+    "gez": "data/snapshots/site_gez_lookup.csv",
+    "snapshot": "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
+    "annual_data": "data/processed/flux_data_converted_yy.rds"
+  },
+  "notes": "Rebuilt for 716-site Apr-28 snapshot. 569 sites with valid NEE (up from 530). GEZ joined from updated site_gez_lookup.csv (716 sites). All net-new ICOS sites with valid NEE are included."
+}

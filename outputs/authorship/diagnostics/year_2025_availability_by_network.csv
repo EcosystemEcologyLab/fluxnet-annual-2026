@@ -1,0 +1,10 @@
+submitting_network,n_sites,n_with_2025_data_pres,n_with_latency_1,n_without_2025,pct_with_2025
+AMF,340,51,51,289,15
+EUF,118,0,0,118,0
+ICOS,79,0,0,79,0
+JPF,52,0,0,52,0
+TERN,52,26,26,26,50
+CNF,31,0,0,31,0
+KOF,21,0,0,21,0
+FLX,18,0,0,18,0
+SAEON,5,0,0,5,0

@@ -1,0 +1,49 @@
+virtualenv: fluxnet
+fluxnet-shuttle version OK: 0.3.7.post0+dirty
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+! Use of data downloaded by fluxnet requires you abide by FLUXNET data
+  policies: <https://fluxnet.org/data/data-policy/>
+ℹ Citations for individual sites' datasets are returned by
+  `fluxnet::flux_listall()`
+Snapshot written to: data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv
+Comparing with previous snapshot: fluxnet_shuttle_snapshot_20260414T154430.csv
+Update detection — new sites: 44; extended data coverage: 0; reprocessed AmeriFlux: ; reprocessed ICOS/TERN: pending Gilberto team response (support@fluxnet.org)
+Downloading 59 changed site(s).
+Downloading data from specified sites.
+[working] (48 + 0) -> 10 -> 1 | ■■                                 2%
+[working] (47 + 0) -> 10 -> 2 | ■■                                 3%
+[working] (44 + 0) -> 10 -> 5 | ■■■■                               8%
+[working] (42 + 0) -> 10 -> 7 | ■■■■■                             12%
+[working] (41 + 0) -> 10 -> 8 | ■■■■■                             14%
+[working] (40 + 0) -> 10 -> 9 | ■■■■■■                            15%
+[working] (39 + 0) -> 10 -> 10 | ■■■■■■                            17%
+[working] (38 + 0) -> 10 -> 11 | ■■■■■■■                           19%
+[working] (37 + 0) -> 10 -> 12 | ■■■■■■■                           20%
+[working] (35 + 0) -> 10 -> 14 | ■■■■■■■■                          24%
+[working] (33 + 0) -> 10 -> 16 | ■■■■■■■■■                         27%
+[working] (29 + 0) -> 10 -> 20 | ■■■■■■■■■■■                       34%
+[working] (28 + 0) -> 10 -> 21 | ■■■■■■■■■■■■                      36%
+[working] (27 + 0) -> 10 -> 22 | ■■■■■■■■■■■■                      37%
+[working] (25 + 0) -> 10 -> 24 | ■■■■■■■■■■■■■                     41%
+[working] (24 + 0) -> 10 -> 25 | ■■■■■■■■■■■■■■                    42%
+[working] (23 + 0) -> 10 -> 26 | ■■■■■■■■■■■■■■                    44%
+[working] (22 + 0) -> 10 -> 27 | ■■■■■■■■■■■■■■■                   46%
+[working] (21 + 0) -> 10 -> 28 | ■■■■■■■■■■■■■■■                   47%
+[working] (20 + 0) -> 10 -> 29 | ■■■■■■■■■■■■■■■■                  49%
+[working] (17 + 0) -> 10 -> 32 | ■■■■■■■■■■■■■■■■■                 54%
+[working] (14 + 0) -> 10 -> 35 | ■■■■■■■■■■■■■■■■■■■               59%
+[working] (13 + 0) -> 10 -> 36 | ■■■■■■■■■■■■■■■■■■■               61%
+[working] (9 + 0) -> 10 -> 40 | ■■■■■■■■■■■■■■■■■■■■■             68%
+[working] (8 + 0) -> 10 -> 41 | ■■■■■■■■■■■■■■■■■■■■■■            69%
+[working] (7 + 0) -> 10 -> 42 | ■■■■■■■■■■■■■■■■■■■■■■            71%
+[working] (5 + 0) -> 10 -> 44 | ■■■■■■■■■■■■■■■■■■■■■■■           75%
+[working] (1 + 0) -> 10 -> 48 | ■■■■■■■■■■■■■■■■■■■■■■■■■         81%
+[working] (0 + 0) -> 9 -> 50 | ■■■■■■■■■■■■■■■■■■■■■■■■■■        85%
+[working] (0 + 0) -> 7 -> 52 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■       88%
+[working] (0 + 0) -> 4 -> 55 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■     93%
+[working] (0 + 0) -> 2 -> 57 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■    97%
+[working] (0 + 0) -> 0 -> 59 | ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100%

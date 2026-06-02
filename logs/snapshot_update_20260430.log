@@ -1,0 +1,206 @@
+2026-04-30T22:52:26Z === PHASE A START ===
+2026-04-30T22:52:26Z === START step1_extract_worldclim.R ===
+2026-04-30T22:52:26Z === START aridity extraction (inline) ===
+Snapshot: fluxnet_shuttle_snapshot_20260428T231049.csv
+terra 1.9.11
+Sites: 716
+Loading aridity raster...
+load_aridity_index(): reading data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif
+Extracting at 716 sites...
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:terra’:
+
+    intersect, union
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Loading 19 WorldClim TIF files ...
+  Layers: wc2.1_2.5m_bio_1, wc2.1_2.5m_bio_2 ...
+Snapshot: fluxnet_shuttle_snapshot_20260428T231049.csv
+Extracting WorldClim at 716 sites ...
+Sites extracted: 716  NA: 0
+Saved: data/snapshots/site_aridity.csv
+2026-04-30T22:52:47Z === DONE aridity extraction ===
+  bio1 column: wc2.1_2.5m_bio_1  |  bio12 column: wc2.1_2.5m_bio_12
+
+--- mat_worldclim (°C) ---
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-11.990   5.560   9.812  10.096  15.368  29.993 
+
+--- map_worldclim (mm yr-1) ---
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   41.0   493.2   793.0   856.1  1141.5  3307.0 
+
+All  716  sites extracted without NA.
+Saved: data/snapshots/site_worldclim.csv
+2026-04-30T22:53:08Z === DONE step1_extract_worldclim.R ===
+=======================================================
+  CURRENT SELECTION CRITERIA IN fig_long_record_timeseries()
+=======================================================
+
+Function signature:
+  fig_long_record_timeseries(
+    data_yy, metadata,
+    flux_vars = c('NEE_VUT_REF', 'GPP_NT_VUT_REF', 'RECO_NT_VUT_REF',
+                  'LE_F_MDS', 'H_F_MDS'),
+    n_sites   = 5L,
+    geo_level = 'continent'
+  )
+
+Continent assignment (R/figures/fig_timeseries.R lines 229-241):
+  iso2 <- substr(metadata$site_id, 1L, 2L)
+  continent <- .iso2_to_continent(iso2)
+  .iso2_to_continent() normalises 'UK' -> 'GB', then calls:
+    countrycode::countrycode(iso2_norm, origin='iso2c',
+                             destination='continent', warn=FALSE)
+  Uses UN Geoscheme 6-continent system.
+  Sites with NA continent are dropped before selection.
+
+Record length calculation (line 239):
+  span = last_year - first_year   [integer subtraction from snapshot metadata]
+  NOTE: span is the calendar span, NOT n_years_valid_nee.
+  No actual NEE data coverage check is performed during site selection.
+
+Site selection (lines 244-248):
+  selected_sites <- site_meta |>
+    group_by(continent) |>
+    slice_max(order_by = span, n = n_sites, with_ties = FALSE) |>
+    ungroup()
+  Selects top n_sites = 5 per continent by maximum span.
+  Ties broken arbitrarily (with_ties = FALSE, row order determines winner).
+
+=======================================================
+  LOADING DATA
+=======================================================
+
+Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv 
+Annual data: data/processed/flux_data_converted_yy.rds 
+
+Year column used: YEAR 
+Counting valid NEE years per site...
+  Sites with any NEE data: 569 
+
+Snapshot columns available: data_hub, site_id, site_name, location_lat, location_long, igbp, network, team_member_name, team_member_role, team_member_email, first_year, last_year, download_link, fluxnet_product_name, product_citation, product_id, oneflux_code_version, product_source_network 
+
+Using snapshot columns: hub='network', igbp='igbp', first_year='first_year', last_year='last_year'
+
+Sites with valid NEE (n_years_valid_nee > 0): 569 
+Sites with no valid NEE data: 147 
+
+Saved: outputs/long_record_site_candidates.csv ( 569 rows )
+
+=======================================================
+  SUMMARY: SITES WITH VALID NEE BY CONTINENT
+=======================================================
+
+--- Africa  (18 sites with valid NEE) ---
+
+  Currently selected (top 5 by span_years):
+  site_id       hub     igbp   span   nee_yrs   pct_cov   selected_by
+  --------------------------------------------------------------------
+  SN-Dhr        CarboAfrica;European Fluxes Database;GHG-Europe  GRA      12         3     25.0%  span_years
+  BJ-Nhu        Unaffiliated  SAV       9         6     66.7%  span_years
+  BJ-Bfg        Unaffiliated  DBF       9         3     33.3%  span_years
+  SN-Nkr        European Fluxes Database  CRO       6         6    100.0%  span_years
+  KE-Kpt        Unaffiliated  GRA       6         1     16.7%  span_years
+
+  Next 5 by n_years_valid_nee (would be selected if criterion changed):
+  site_id       hub     igbp   span   nee_yrs   pct_cov
+  ----------------------------------------------------------
+  ZA-BfK        EFTEON SAEON;European Fluxes Database  OSH       4         4    100.0%
+  CD-Ygb        European Fluxes Database;ICOS  MF        4         3     75.0%
+  ZA-BfS        EFTEON SAEON;European Fluxes Database  OSH       4         2     50.0%
+  BJ-Db1        Unaffiliated  CRO       2         2    100.0%
+  SD-Dem        NA      SAV       2         2    100.0%
+
+--- Americas  (253 sites with valid NEE) ---
+
+  Currently selected (top 5 by span_years):
+  site_id       hub     igbp   span   nee_yrs   pct_cov   selected_by
+  --------------------------------------------------------------------
+  US-Ha1        AmeriFlux;LTER;Phenocam  DBF      34        33     97.1%  span_years
+  US-MMS        AmeriFlux;Phenocam  DBF      24        25    104.2%  span_years
+  US-Ton        AmeriFlux;Phenocam  WSA      24        24    100.0%  span_years
+  US-Ne1        AmeriFlux  CRO      23        23    100.0%  span_years
+  US-Ne2        AmeriFlux  CRO      23        21     91.3%  span_years
+
+  Next 5 by n_years_valid_nee (would be selected if criterion changed):
+  site_id       hub     igbp   span   nee_yrs   pct_cov
+  ----------------------------------------------------------
+  US-Ne3        AmeriFlux  CRO      23        22     95.7%
+  CA-Mer        AmeriFlux;Fluxnet-Canada;Phenocam  WET      22        22    100.0%
+  US-SRM        AmeriFlux;LTAR;Phenocam  WSA      21        22    104.8%
+  US-CMW        AmeriFlux  DBF      20        19     95.0%
+  US-Seg        AmeriFlux;Phenocam  GRA      18        19    105.6%
+
+--- Asia  (86 sites with valid NEE) ---
+
+  Currently selected (top 5 by span_years):
+  site_id       hub     igbp   span   nee_yrs   pct_cov   selected_by
+  --------------------------------------------------------------------
+  IL-Yat        CarboEuroFlux;CarboEuropeIP;European Fluxes Database  ENF      24        22     91.7%  span_years
+  JP-Yms        AsiaFlux;JapanFlux  DBF      23        22     95.7%  span_years
+  JP-Tak        AsiaFlux;JapanFlux  DBF      23        22     95.7%  span_years
+  JP-Api        AsiaFlux;JapanFlux  DBF      22        22    100.0%  span_years
+  JP-Tef        AsiaFlux;JapanFlux  DNF      22        20     90.9%  span_years
+
+  Next 5 by n_years_valid_nee (would be selected if criterion changed):
+  site_id       hub     igbp   span   nee_yrs   pct_cov
+  ----------------------------------------------------------
+  JP-Fjy        AsiaFlux;JapanFlux  ENF      20        20    100.0%
+  JP-Fhk        AsiaFlux;JapanFlux  DNF      17        18    105.9%
+  JP-Spp        AsiaFlux;JapanFlux  DBF      18        16     88.9%
+  ID-PaD        AsiaFlux;JapanFlux  EBF      16        12     75.0%
+  CN-Dmn        ChinaFLUX  CRO      12        12    100.0%
+
+--- Europe  (165 sites with valid NEE) ---
+
+  Currently selected (top 5 by span_years):
+  site_id       hub     igbp   span   nee_yrs   pct_cov   selected_by
+  --------------------------------------------------------------------
+  DE-Tha        European Fluxes Database;ICOS  ENF      28        28    100.0%  span_years
+  DK-Sor        European Fluxes Database;ICOS  DBF      28        26     92.9%  span_years
+  BE-Vie        European Fluxes Database;ICOS  MF       28        26     92.9%  span_years
+  NL-Loo        European Fluxes Database;ICOS  ENF      27        28    103.7%  span_years
+  FI-Hyy        European Fluxes Database;ICOS  ENF      27        24     88.9%  span_years
+
+  Next 5 by n_years_valid_nee (would be selected if criterion changed):
+  site_id       hub     igbp   span   nee_yrs   pct_cov
+  ----------------------------------------------------------
+  CH-Dav        European Fluxes Database;ICOS  ENF      27        28    103.7%
+  RU-Fyo        European Fluxes Database;GHG-Europe;InGOS;TCOS-Siberia  ENF      26        24     92.3%
+  FR-Pue        European Fluxes Database;ICOS  EBF      24        24    100.0%
+  IT-Ren        European Fluxes Database;ICOS  ENF      25        23     92.0%
+  BE-Bra        European Fluxes Database;ICOS  ENF      25        22     88.0%
+
+--- Oceania  (47 sites with valid NEE) ---
+
+  Currently selected (top 5 by span_years):
+  site_id       hub     igbp   span   nee_yrs   pct_cov   selected_by
+  --------------------------------------------------------------------
+  AU-How        OzFlux  WSA      23        20     87.0%  span_years
+  AU-DaS        OzFlux  WSA      18        16     88.9%  span_years
+  AU-Stp        OzFlux  GRA      17        14     82.4%  span_years
+  AU-Cow        OzFlux  EBF      16        13     81.2%  span_years
+  AU-Dry        OzFlux  WSA      16         9     56.2%  span_years
+
+  Next 5 by n_years_valid_nee (would be selected if criterion changed):
+  site_id       hub     igbp   span   nee_yrs   pct_cov
+  ----------------------------------------------------------
+  AU-Cpr        TERN    WSA      15        13     86.7%
+  AU-Gin        OzFlux  EBF      14        12     85.7%
+  AU-Cum        TERN    EBF      11        12    109.1%
+  AU-ASM        TERN    SAV      15        11     73.3%
+  AU-GWW        OzFlux  EBF      12        11     91.7%
+
+All currently-selected sites have valid NEE in the processed data.
+
+Done.

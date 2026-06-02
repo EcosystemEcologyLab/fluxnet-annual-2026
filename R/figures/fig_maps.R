@@ -24,15 +24,24 @@ source("R/plot_constants.R")
 }
 
 # Return a land-outline sf object using the bundled rnaturalearthdata.
-# Scale: "medium" (1:50m). Cached in the calling environment after first call.
-.land_sf <- function(scale = "medium") {
-  rnaturalearth::ne_countries(scale = scale, returnclass = "sf") |>
+# Scale: "medium" (1:50m). Pre-cropped to the supplied bbox to avoid the
+# horizontal cut-edge artifacts that coord_sf produces when clipping polygons
+# at render time (visible as spurious horizontal lines across the map).
+.land_sf <- function(scale = "medium",
+                     xmin = -180, xmax = 180,
+                     ymin =  -55, ymax =   85) {
+  land <- rnaturalearth::ne_countries(scale = scale, returnclass = "sf") |>
     sf::st_make_valid()
+  suppressWarnings(
+    sf::st_crop(land, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
+  )
 }
 
 # Shared void basemap with land outline and consistent legend styling.
 # Applies theme_void() + fluxnet_theme() legend settings.
-.map_base <- function(land, title = NULL, base_size = 11) {
+# land_fill: fill colour for land polygons; "gray95" (default) or "white" for
+# a clean outline-only basemap.
+.map_base <- function(land, title = NULL, base_size = 11, land_fill = "gray95") {
   ggplot2::ggplot() +
     ggplot2::theme_void(base_size = base_size) +
     ggplot2::theme(
@@ -42,7 +51,7 @@ source("R/plot_constants.R")
       legend.title    = ggtext::element_markdown(size = base_size * 0.9),
       legend.text     = ggtext::element_markdown(size = base_size * 0.85)
     ) +
-    ggplot2::geom_sf(data = land, fill = "gray95", color = "black",
+    ggplot2::geom_sf(data = land, fill = land_fill, color = "black",
                      linewidth = 0.25) +
     ggplot2::labs(title = title)
 }
@@ -66,12 +75,13 @@ source("R/plot_constants.R")
     }
   )
   if (is.null(limits)) {
-    return(p + ggplot2::coord_sf(expand = FALSE))
+    return(p + ggplot2::coord_sf(expand = FALSE, datum = NA))
   }
   p + ggplot2::coord_sf(
     xlim   = limits[1:2],
     ylim   = limits[3:4],
-    expand = FALSE
+    expand = FALSE,
+    datum  = NA
   )
 }
 
@@ -143,10 +153,11 @@ source("R/plot_constants.R")
 #' print(p)
 #' }
 fig_map_global <- function(metadata,
-                            color_by = "data_hub",
-                            pt_size  = 1.8,
-                            pt_alpha = 0.9,
-                            region   = "global") {
+                            color_by  = "data_hub",
+                            pt_size   = 1.8,
+                            pt_alpha  = 0.9,
+                            region    = "global",
+                            land_fill = "gray95") {
   .disable_s2()
   .check_meta_cols(metadata, c("site_id", "location_lat", "location_long",
                                 "data_hub", "igbp"))
@@ -165,7 +176,7 @@ fig_map_global <- function(metadata,
     ) |>
     dplyr::distinct(site_id, .keep_all = TRUE)
 
-  p <- .map_base(land, title = NULL)
+  p <- .map_base(land, title = NULL, land_fill = land_fill)
 
   if (color_by == "data_hub") {
     hubs      <- sort(unique(stats::na.omit(sites_clean$data_hub)))
@@ -244,8 +255,8 @@ fig_map_nee_mean <- function(data_yy,
   .disable_s2()
   .check_meta_cols(metadata, c("site_id", "location_lat", "location_long"))
 
-  if (!"NEE_VUT_REF" %in% names(data_yy)) {
-    stop("NEE_VUT_REF column not found in data_yy.", call. = FALSE)
+  if (!any(c("NEE_VUT_REF", "NEE_CUT_REF") %in% names(data_yy))) {
+    stop("Neither NEE_VUT_REF nor NEE_CUT_REF found in data_yy.", call. = FALSE)
   }
 
   flux <- data_yy
@@ -253,13 +264,18 @@ fig_map_nee_mean <- function(data_yy,
     flux <- dplyr::filter(flux, !site_id %in% exclude_sites)
   }
 
+  # Coalesce VUT and CUT: recovers ~36 CUT-only sites with no NEE_VUT_REF
+  nee_vut <- if ("NEE_VUT_REF" %in% names(flux)) flux[["NEE_VUT_REF"]] else rep(NA_real_, nrow(flux))
+  nee_cut <- if ("NEE_CUT_REF" %in% names(flux)) flux[["NEE_CUT_REF"]] else rep(NA_real_, nrow(flux))
+  flux <- dplyr::mutate(flux, NEE_ref = dplyr::coalesce(nee_vut, nee_cut))
+
   year_col <- if ("YEAR" %in% names(flux)) "YEAR" else "TIMESTAMP"
   site_stats <- flux |>
-    dplyr::filter(is.finite(NEE_VUT_REF)) |>
+    dplyr::filter(is.finite(NEE_ref)) |>
     dplyr::group_by(site_id) |>
     dplyr::summarise(
       n_years  = dplyr::n_distinct(.data[[year_col]]),
-      mean_nee = mean(NEE_VUT_REF, na.rm = TRUE),
+      mean_nee = mean(NEE_ref, na.rm = TRUE),
       .groups  = "drop"
     ) |>
     dplyr::filter(n_years >= min_years)
@@ -346,8 +362,8 @@ fig_map_nee_delta <- function(data_yy,
   .disable_s2()
   .check_meta_cols(metadata, c("site_id", "location_lat", "location_long"))
 
-  if (!"NEE_VUT_REF" %in% names(data_yy)) {
-    stop("NEE_VUT_REF column not found in data_yy.", call. = FALSE)
+  if (!any(c("NEE_VUT_REF", "NEE_CUT_REF") %in% names(data_yy))) {
+    stop("Neither NEE_VUT_REF nor NEE_CUT_REF found in data_yy.", call. = FALSE)
   }
 
   flux <- data_yy
@@ -355,18 +371,23 @@ fig_map_nee_delta <- function(data_yy,
     flux <- dplyr::filter(flux, !site_id %in% exclude_sites)
   }
 
+  # Coalesce VUT and CUT: recovers ~36 CUT-only sites with no NEE_VUT_REF
+  nee_vut <- if ("NEE_VUT_REF" %in% names(flux)) flux[["NEE_VUT_REF"]] else rep(NA_real_, nrow(flux))
+  nee_cut <- if ("NEE_CUT_REF" %in% names(flux)) flux[["NEE_CUT_REF"]] else rep(NA_real_, nrow(flux))
+  flux <- dplyr::mutate(flux, NEE_ref = dplyr::coalesce(nee_vut, nee_cut))
+
   year_col <- if ("YEAR" %in% names(flux)) "YEAR" else "TIMESTAMP"
   site_stats <- flux |>
-    dplyr::filter(is.finite(NEE_VUT_REF)) |>
+    dplyr::filter(is.finite(NEE_ref)) |>
     dplyr::mutate(is_recent = .data[[year_col]] %in% recent_years) |>
     dplyr::group_by(site_id) |>
     dplyr::summarise(
       n_years      = dplyr::n_distinct(.data[[year_col]]),
       n_recent     = sum(is_recent),
       mean_recent  = if (sum(is_recent) > 0L)
-        mean(NEE_VUT_REF[is_recent], na.rm = TRUE) else NA_real_,
+        mean(NEE_ref[is_recent], na.rm = TRUE) else NA_real_,
       mean_hist    = if (sum(!is_recent) > 0L)
-        mean(NEE_VUT_REF[!is_recent], na.rm = TRUE) else NA_real_,
+        mean(NEE_ref[!is_recent], na.rm = TRUE) else NA_real_,
       .groups      = "drop"
     ) |>
     dplyr::mutate(delta_nee = mean_recent - mean_hist) |>

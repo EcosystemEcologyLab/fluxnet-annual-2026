@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-05-12T22:28:44Z",
+  "pipeline_version": "858733d",
+  "input_sources": [
+    "outputs/authorship/site_authors.csv"
+  ],
+  "notes": "Sensitivity: sites with exactly 5 years of data re-assigned from '<5' row to '6-10' row. base_total = current (default) totals. alt_total = totals under alternative assignment. swing = alt_total minus base_total (positive = more authors under alt assignment). Last row is TOTAL across all networks."
+}

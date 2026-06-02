@@ -194,6 +194,33 @@ the site is correctly allocated 8 invited authors (≥21 yr, ≤2 yr latency).
 
 ---
 
+## Section 6 — DD (daily) read OOM on local Mac mini (open)
+
+`03_read.R` crashed during DD resolution processing at site 150 of 759 with
+`Error: vector memory limit of 16.0 Gb reached`. YY and MM completed successfully.
+
+**What is on disk:**
+- `data/processed/flux_data_raw_yy.rds` — complete (759 sites, 10 MB)
+- `data/processed/flux_data_raw_mm.rds` — complete (759 sites, 123 MB)
+- `data/processed/flux_data_raw_dd_partial.rds` — 150 sites, 411 MB (resumable)
+- `data/processed/flux_data_raw_dd_done_sites.rds` — list of 150 completed site IDs
+
+**Root cause:** DD data at 759 sites × ~390 columns × daily resolution accumulates
+to a frame that exceeds the 16 GB R vector memory ceiling on the local Mac mini.
+The resumable partial design in `03_read.R` wrote a checkpoint at site 150.
+
+**Figures affected:** `fig_seasonal_cycle`, `fig_seasonal_weekly`,
+`fig_seasonal_triplet`, `fig_growing_season_nee`. All YY-based figures (maps,
+IGBP boxplots, Whittaker, latitudinal, climate scatter, anomaly) are unaffected.
+
+**Next steps (deferred):** Run DD read on the Codespace (more RAM), or split
+into batches of ~100 sites per chunk and merge. The partial file at site 150
+can serve as the starting point — `03_read.R` will resume from where it left off.
+`07_figures.R` has been updated (2026-06-02) to degrade gracefully when
+`flux_data_converted_dd.rds` is absent, so the rest of the pipeline can proceed.
+
+---
+
 ## Section 7 — site_candidates_full.csv stale after 759-site re-extraction (open)
 
 `data/snapshots/site_candidates_full.csv` was rebuilt by `step2_extract_aridity.R`

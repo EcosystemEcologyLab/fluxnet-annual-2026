@@ -51,7 +51,16 @@ message("Loading processed data...")
 
 data_yy_raw <- readRDS(file.path(processed_dir, "flux_data_converted_yy.rds"))
 data_mm_raw <- readRDS(file.path(processed_dir, "flux_data_converted_mm.rds"))
-data_dd_raw <- readRDS(file.path(processed_dir, "flux_data_converted_dd.rds"))
+
+# DD is optional — may be absent if 03_read.R was interrupted by memory limits.
+# Sections 3 (seasonal) and 6 (growing season) degrade gracefully when NULL.
+dd_path     <- file.path(processed_dir, "flux_data_converted_dd.rds")
+data_dd_raw <- if (file.exists(dd_path)) {
+  readRDS(dd_path)
+} else {
+  message("flux_data_converted_dd.rds absent — seasonal and growing-season figures will be skipped.")
+  NULL
+}
 
 # Snapshot for metadata
 snap_file <- sort(list.files(file.path(FLUXNET_DATA_ROOT, "snapshots"),
@@ -72,15 +81,16 @@ data_yy_all <- data_yy_raw |>
   mutate(TIMESTAMP = YEAR)
 
 # ── Prepare DD data ───────────────────────────────────────────────────────────
-# flux_read() renames TIMESTAMP → DATE (Date object) for DD resolution.
-# Add TIMESTAMP (YYYYMMDD integer) for fig_growing_season_nee().
-# Add DOY for fig_seasonal_cycle().
-data_dd_flux <- data_dd_raw |>
-  filter(dataset == "FLUXMET") |>
-  mutate(
-    DOY       = lubridate::yday(DATE),
-    TIMESTAMP = as.integer(format(DATE, "%Y%m%d"))
-  )
+data_dd_flux <- if (!is.null(data_dd_raw)) {
+  data_dd_raw |>
+    filter(dataset == "FLUXMET") |>
+    mutate(
+      DOY       = lubridate::yday(DATE),
+      TIMESTAMP = as.integer(format(DATE, "%Y%m%d"))
+    )
+} else {
+  NULL
+}
 
 # ── Metadata ──────────────────────────────────────────────────────────────────
 # For IGBP-join functions: need uppercase IGBP column.
@@ -94,8 +104,9 @@ meta_map <- snapshot_meta |>
   distinct(site_id, .keep_all = TRUE)
 
 message("Data loaded: YY=", nrow(data_yy_flux), " rows (FLUXMET); ",
-        "DD=", nrow(data_dd_flux), " rows (FLUXMET); ",
-        "25 sites")
+        if (!is.null(data_dd_flux)) paste0("DD=", nrow(data_dd_flux), " rows (FLUXMET)")
+        else "DD=absent",
+        "; snapshot=", nrow(snapshot_meta), " sites")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SECTION 1 — IGBP figures

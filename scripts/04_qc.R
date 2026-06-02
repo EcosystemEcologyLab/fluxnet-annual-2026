@@ -66,72 +66,121 @@ stage_1_tables <- tables[tables %in% c("annual", "monthly", "weekly", "daily")]
 for (table in stage_1_tables) {
   data <- tbl(con, table)
 
-  # TODO: if no NEE_VUT_REF_QC for a particular site, fall back on NEE_CUT_REF_QC
+  has_vut_col <- "NEE_VUT_REF_QC" %in% colnames(data)
+  has_cut_col <- "NEE_CUT_REF_QC" %in% colnames(data)
 
-  qc_col <- "NEE_VUT_REF_QC"
+  if (!has_vut_col && !has_cut_col) {
+    cli::cli_warn(c(
+      "!" = "Neither NEE_VUT_REF_QC nor NEE_CUT_REF_QC found in {table} data",
+      i = "Stage 1 skipped for this resolution."
+    ))
+    next
+  }
 
   threshold <- switch(
     table,
-    "annual" = QC_THRESHOLD_YY,
+    "annual"  = QC_THRESHOLD_YY,
     "monthly" = QC_THRESHOLD_MM,
-    "weekly" = QC_THRESHOLD_WW,
-    "daily" = QC_THRESHOLD_DD
+    "weekly"  = QC_THRESHOLD_WW,
+    "daily"   = QC_THRESHOLD_DD
   )
 
   suffix <- switch(
     table,
-    "annual" = "YY",
+    "annual"  = "YY",
     "monthly" = "MM",
-    "weekly" = "WW",
-    "daily" = "DD"
+    "weekly"  = "WW",
+    "daily"   = "DD"
   )
 
-  if (!qc_col %in% colnames(data)) {
-    cli::cli_warn(c(
-      "!" = "QC column {.var {qc_col}} not found in {table} data",
-      i = "Stage 1 skipped for this resolution."
-    ))
-    data_qc <- data
-    data_qc$p_gapfilled <- NA_real_
-    data_qc$qc_flagged <- NA
-    next
+  # Precompute per-site QC column assignment.
+  #
+  # DuckDB ingest uses union_by_name, so CUT-only sites have NEE_VUT_REF_QC
+  # present as a column but entirely NA — column absence is not the right
+  # signal. Instead, count non-NA values per site to determine which QC
+  # column to use. This is a per-site decision, not per-row: all rows for a
+  # site use the same QC reference to avoid mixing VUT and CUT within a site.
+  #
+  # Priority: VUT (any non-NA) → CUT (any non-NA, VUT all-NA) → no gate.
+  site_vut_counts <- data |>
+    group_by(site_id) |>
+    summarise(n_vut = sum(!is.na(NEE_VUT_REF_QC))) |>
+    collect()
+
+  if (has_cut_col) {
+    site_cut_counts <- data |>
+      group_by(site_id) |>
+      summarise(n_cut = sum(!is.na(NEE_CUT_REF_QC))) |>
+      collect()
+    site_counts <- dplyr::left_join(site_vut_counts, site_cut_counts,
+                                    by = "site_id")
   } else {
-    data_qc <- data |>
-      mutate(
-        p_gapfilled = 1 - .data[[qc_col]],
-        qc_flagged = p_gapfilled > threshold
-      )
+    site_counts <- dplyr::mutate(site_vut_counts, n_cut = 0L)
   }
 
-  # This copies the entire QC-filtered table into the database.  Maybe not the
-  # best way to do things?  Probably better to just use SQL to create the
-  # `qc_flagged` column in each table and then downstream scripts can just start
-  # with `filter(!qc_flagged)`.
+  site_qc_flag <- site_counts |>
+    dplyr::mutate(qc_col_used = dplyr::case_when(
+      n_vut > 0L ~ "NEE_VUT_REF_QC",
+      n_cut > 0L ~ "NEE_CUT_REF_QC",
+      TRUE       ~ NA_character_
+    )) |>
+    dplyr::select(site_id, qc_col_used)
 
-  # If qc table already exists, delete it
+  n_vut <- sum(site_qc_flag$qc_col_used == "NEE_VUT_REF_QC", na.rm = TRUE)
+  n_cut <- sum(site_qc_flag$qc_col_used == "NEE_CUT_REF_QC", na.rm = TRUE)
+  n_none <- sum(is.na(site_qc_flag$qc_col_used))
+  message(sprintf("  %s QC: %d VUT-gated, %d CUT-gated, %d no-QC sites",
+                  suffix, n_vut, n_cut, n_none))
+
+  # Join the per-site flag back to the full lazy table (copy = TRUE writes the
+  # small flag frame to a DuckDB temp table for the join). Then apply the
+  # per-site-appropriate QC column via CASE WHEN — not a row-by-row coalesce.
+  data_qc <- data |>
+    dplyr::left_join(site_qc_flag, by = "site_id", copy = TRUE) |>
+    dplyr::mutate(
+      p_gapfilled = dplyr::case_when(
+        qc_col_used == "NEE_VUT_REF_QC" ~ 1 - NEE_VUT_REF_QC,
+        qc_col_used == "NEE_CUT_REF_QC" ~ 1 - NEE_CUT_REF_QC,
+        TRUE                            ~ NA_real_
+      )
+    ) |>
+    dplyr::mutate(qc_flagged = p_gapfilled > threshold)
+
+  # If the _qc table already exists, drop it before recomputing.
   qc_name <- glue::glue("{table}_qc")
-  if (qc_name %in% tables) {
+  current_tables <- dbListTables(con)
+  if (qc_name %in% current_tables) {
     dbExecute(con, glue::glue("DROP TABLE {qc_name}"))
   }
   data_qc |>
-    filter(is.na(qc_flagged) | !qc_flagged) |>
-    dplyr::compute(name = glue::glue("{table}_qc"), temporary = FALSE)
+    dplyr::filter(is.na(qc_flagged) | !qc_flagged) |>
+    dplyr::compute(name = qc_name, temporary = FALSE)
 
+  # Exclusion log — group by qc_col_used so the audit trail records whether
+  # each excluded row was gated on VUT QC or CUT QC.
   excluded <- data_qc |>
-    filter(qc_flagged) |>
-    select(site_id, starts_with("TIMESTAMP")) |>
+    dplyr::filter(qc_flagged) |>
+    dplyr::select(site_id, qc_col_used, dplyr::starts_with("TIMESTAMP")) |>
     collect()
 
-  log_exclusion(
-    site_id = excluded[[1]],
-    variable = "ALL",
-    timestamp = excluded[[2]],
-    reason = glue::glue(
-      "{qc_col} p_gapfilled > {round(1 - threshold, 2)} (QC_THRESHOLD_{suffix}={threshold})"
-    ),
-    threshold = glue::glue("QC_THRESHOLD_{suffix}={threshold}"),
-    excluded_by = "04_qc.R"
-  )
+  if (nrow(excluded) > 0L) {
+    ts_col <- grep("^TIMESTAMP", names(excluded), value = TRUE)[1]
+    for (qc_col in unique(excluded$qc_col_used[!is.na(excluded$qc_col_used)])) {
+      excl_sub <- excluded[!is.na(excluded$qc_col_used) &
+                             excluded$qc_col_used == qc_col, ]
+      log_exclusion(
+        site_id     = excl_sub$site_id,
+        variable    = qc_col,
+        timestamp   = excl_sub[[ts_col]],
+        reason      = glue::glue(
+          "{qc_col} p_gapfilled > {round(1 - threshold, 2)} ",
+          "(QC_THRESHOLD_{suffix}={threshold})"
+        ),
+        threshold   = glue::glue("QC_THRESHOLD_{suffix}={threshold}"),
+        excluded_by = "04_qc.R"
+      )
+    }
+  }
 }
 
 # Do hourly QC differently as sub-daily data uses integer _QC flags (Stage 2

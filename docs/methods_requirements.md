@@ -90,7 +90,11 @@ partitioning, and uncertainty handling. Cross-hub validation if applicable.
 - Unit handling: pre-integrated annual/monthly data passed through
   unchanged; energy variables converted (LE→mm, H→MJ)
 - ERA5 climate variable integration (already in FLUXNET files)
-- Known data quality issues (anomalous ERA5 precipitation at 4 sites)
+- Known data quality issues (anomalous ERA5 precipitation at 4 sites; separately,
+  FLUXNET-measured tower precipitation (`P_F`) has staggeringly wrong values at an
+  unknown number of sites — sites and magnitude not yet characterised; see
+  `docs/known_issues.md` §9. Methods must address how these anomalies are handled
+  in any figure or analysis that uses tower P as a primary axis or predictor.)
 
 **Primary code files:**
 - `scripts/04_qc.R` — QC gating implementation

@@ -294,6 +294,50 @@ before extracting unit assignments.
 
 ---
 
+## Section 9 — Precipitation anomalies at some FLUXNET sites (open, sites not yet identified)
+
+**Flagged:** 2026-06-03.
+
+Some FLUXNET sites carry staggeringly wrong precipitation (`P_F`) values in the Shuttle
+data. Specific sites and the magnitude of the anomaly are not yet characterised — this
+issue was flagged during visual review and has not yet been subjected to a systematic
+identification pass.
+
+Plausible causes include unit-of-measure errors (e.g., mm s⁻¹ reported as mm per
+timestep), instrument failure periods not gap-filled or flagged, and gap-fill artifacts
+(ERA5 precipitation substitution producing out-of-range values for the site's climate).
+
+**Impact:** Any figure or analysis that uses FLUXNET-measured precipitation as a primary
+axis or predictor is at risk. This includes:
+
+- Precipitation-vs-NEE scatter figures
+- Aridity-based site filtering using tower P rather than WorldClim or ERA5
+- Any future environmental-response figure that switches from ERA5 P to tower P
+
+Note: current candidate figures use WorldClim MAP (fig_05, fig_06 — Whittaker) and ERA5
+Annual Precipitation (fig_08 — environmental response). Those sources are not directly
+affected by tower `P_F` anomalies. If future figures add a tower-P axis, this issue
+becomes active.
+
+**The pipeline does not flag these anomalies.** No range check, outlier detection, or
+QC flag exists for `P_F` in the current pipeline.
+
+**Action required before any analysis using tower P:**
+
+1. Run a systematic identification pass — flag site-years where annual `P_F` falls
+   outside a plausible range (e.g., < 0 or > 5000 mm yr⁻¹, or > 3σ from the
+   WorldClim MAP for that site).
+2. Characterise the anomaly pattern (unit error, instrument failure, gap-fill artifact).
+3. Decide: flag-and-exclude the anomalous site-years, or correct where correction is
+   defensible (e.g., unit rescaling with documented justification).
+4. Document the decision in `docs/decisions_pending.md` before finalising any figure
+   that uses tower precipitation.
+
+Cross-reference: see `docs/methods_requirements.md` §5.3 — methods text must address
+how precipitation anomalies are handled when tower P appears in any candidate figure.
+
+---
+
 ## Future enhancements
 
 ### FAO GEZ shapefile

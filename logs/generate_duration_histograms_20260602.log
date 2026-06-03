@@ -1,0 +1,59 @@
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Using snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260601T224043.csv
+Loaded presence_df: 32018 rows
+
+Computing shared axis limits...
+Shared xlim: [0, 35] years
+Shared ylim: [0, 100] sites
+
+── Dur01: FLUXNET Shuttle 2025 ──
+Saved: review/figures/network/fig_dur01_ShuttleFull.png
+
+── Dur02: Marconi 2000 ──
+Saved: review/figures/network/fig_dur02_Marconi.png
+
+── Dur03: La Thuile 2007 ──
+Saved: review/figures/network/fig_dur03_LaThuile.png
+
+── Dur04: FLUXNET2015 ──
+Saved: review/figures/network/fig_dur04_FLUXNET2015.png
+
+── Dur05: Shuttle snapshot 2000 ──
+Saved: review/figures/network/fig_dur05_ShuttleSnapshot2000.png
+
+── Dur06: Shuttle snapshot 2007 ──
+Saved: review/figures/network/fig_dur06_ShuttleSnapshot2007.png
+
+── Dur07: Shuttle snapshot 2015 ──
+Saved: review/figures/network/fig_dur07_ShuttleSnapshot2015.png
+
+── Dur08: historical overlay ──
+Saved: review/figures/network/fig_dur08_HistoricalOverlay.png
+
+── Dur09: site-years by calendar year ──
+Saved: review/figures/network/fig_dur09_SiteYearsByYear.png
+
+── Dur10: site-years by calendar year (IGBP) ──
+Saved: review/figures/network/fig_dur10_SiteYearsByYear_IGBP.png
+
+── Dur11: cumulative site-years by IGBP ──
+Saved: review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png
+
+Done. All 11 figures generated: Dur01-11.

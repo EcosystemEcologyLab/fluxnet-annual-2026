@@ -314,6 +314,14 @@ if (!is.null(p_lat_gpp)) {
   report <- c(report, "latitudinal_gpp.png")
 }
 
+p_lat_multi <- profile_fig("latitudinal_nee_le_h", YY_ROWS, function() {
+  fig_latitudinal_multi(data_yy, metadata = meta_map)
+})
+if (!is.null(p_lat_multi)) {
+  save_fig(p_lat_multi, "latitudinal_nee_le_h.png", width = 8, height = 18)
+  report <- c(report, "latitudinal_nee_le_h.png")
+}
+
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 5 — Seasonal cycle figures (DD)
 # Filter + select in DuckDB; join IGBP via copy=TRUE; collect minimal columns.

@@ -4,8 +4,8 @@ This figure shows annual NEE, Latent Heat Flux (LE), and Sensible Heat Flux (H)
 binned by 5-degree latitude bands across the FLUXNET network.
 
 Each panel shows the min-max range as a ribbon and site-mean flux as points
-per latitude band. Panels from top to bottom: NEE (g C m⁻² yr⁻¹), LE (W m⁻²),
-H (W m⁻²). Points are coloured by IGBP class.
+per latitude band. Panels from top to bottom: NEE (g C m⁻² yr⁻¹), LE (mm H₂O yr⁻¹),
+H (MJ m⁻² yr⁻¹). Points are coloured by IGBP class.
 
 Based on 530 sites with valid NEE_VUT_REF after QC (NEE_VUT_REF_QC threshold
 = 0.50, gating on primary variable only).

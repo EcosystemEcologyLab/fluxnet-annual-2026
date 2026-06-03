@@ -25,8 +25,8 @@ library(dplyr)
     NEE  = lab_nee_annual,
     GPP  = lab_gpp_annual,
     RECO = lab_reco_annual,
-    LE   = "Latent Heat Flux (W m<sup>-2</sup>)",
-    H    = "Sensible Heat Flux (W m<sup>-2</sup>)",
+    LE   = "Latent Heat Flux (mm H₂O yr<sup>-1</sup>)",
+    H    = "Sensible Heat Flux (MJ m<sup>-2</sup> yr<sup>-1</sup>)",
     flux_var
   )
 }

@@ -1,0 +1,25 @@
+Figure 4 — FLUXNET network growth: four historical datasets as point maps
+
+Four-panel global point map showing site locations for four successive FLUXNET
+datasets. Each panel uses the authoritative site list for that dataset:
+
+  Marconi 2000     — 35 sites   (Falge et al. 2001; comparison figure)
+  La Thuile 2007   — 252 sites  (La Thuile dataset; comparison figure)
+  FLUXNET2015      — 212 sites  (Pastorello et al. 2020; comparison figure)
+  Shuttle 2025     — 759 sites  (FLUXNET Shuttle v0.3.7, snapshot 2026-06-01)
+
+Panels labelled "(comparison — non-Shuttle)" use historical site lists that
+are not part of the primary Shuttle-based analysis (see CLAUDE.md §1).
+No spatial aggregation or regional binning is applied to any panel.
+
+Points: filled circles (Okabe-Ito blue, #0072B2), black outline, uniform size.
+White outline-only basemap with country borders from Natural Earth (1:50m).
+
+Data sources:
+- Marconi: Falge, E. et al. (2001a,b). Agricultural and Forest Meteorology 107.
+- La Thuile: La Thuile FLUXNET dataset (2007).
+- FLUXNET2015: Pastorello, G. et al. (2020). Scientific Data 7: 225.
+- Shuttle: FLUXNET Shuttle v0.3.7.
+
+Function: fig_map_point_snapshots() in R/figures/fig_maps.R
+Script: scripts/generate_point_maps.R

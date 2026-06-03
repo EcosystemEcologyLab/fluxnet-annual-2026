@@ -1,0 +1,25 @@
+Figure 3 (aridity variant) — FLUXNET Shuttle 2025: current network sites
+on CGIAR Global Aridity Index backdrop
+
+Same site locations as the white-background variant. The backdrop shows the
+CGIAR Global Aridity Index v3.1 (Zomer et al. 2022) binned into five UNEP
+aridity classes:
+
+  Hyper-Arid    (AI < 0.05)   #d73027 (red)
+  Arid          (AI 0.05–0.20) #fc8d59 (orange)
+  Semi-Arid     (AI 0.20–0.50) #ffff33 (yellow)
+  Dry Sub-Humid (AI 0.50–0.65) #66bd63 (green)
+  Humid         (AI ≥ 0.65)   white (no colour)
+
+Raw AI values are stored as integers (AI × 10000); applied scaling factor
+0.0001 per Zomer et al. (2022). Raster aggregated to ~0.2-degree resolution
+for display. Country outlines (Natural Earth 1:50m) are rendered above the
+aridity layer.
+
+Data sources:
+- Flux sites: FLUXNET Shuttle v0.3.7, snapshot 2026-06-01 (759 sites)
+- Aridity: CGIAR Global Aridity Index v3.1 (Zomer, R.J.; Trabucco, A.; Bossio,
+  D.A.; Verchot, L.V. 2022. Version 3.1. figshare. doi:10.6084/m9.figshare.7504448)
+
+Function: fig_map_point_network() in R/figures/fig_maps.R
+Script: scripts/generate_point_maps.R

@@ -944,3 +944,310 @@ fig_map_country_sites <- function(metadata,
   )
   fig_map_subregion_sites(metadata, year_cutoffs = year_cutoffs)
 }
+
+# ---- Point-based network maps (fig_03 / fig_04 replacement) -----------------
+#
+# These functions replace the UN-subregion choropleth representation for the
+# candidate figures. fig_map_subregion_sites() and fig_map_historical() are
+# preserved for other potential uses but are no longer called from the
+# candidate-figure generation pipeline.
+#
+# Two backdrop modes:
+#   "white"   — outline-only basemap, white land, black country borders
+#   "aridity" — CGIAR Global Aridity Index v3.1 binned into 5 classes
+#               beneath country outlines and site points
+#
+# Both modes use identical point styling:
+#   shape = 21, fill = "#0072B2" (Okabe-Ito blue), color = "black", stroke = 0.4
+
+# ---- Aridity backdrop colour constants ---------------------------------------
+
+.AI_LEVELS <- c("Hyper-Arid", "Arid", "Semi-Arid", "Dry Sub-Humid", "Humid")
+.AI_COLORS <- c(
+  "Hyper-Arid"    = "#d73027",
+  "Arid"          = "#fc8d59",
+  "Semi-Arid"     = "#ffff33",
+  "Dry Sub-Humid" = "#66bd63",
+  "Humid"         = "white"
+)
+
+# ---- Internal: load, aggregate, and bin aridity raster ----------------------
+
+#' Load CGIAR aridity raster and bin into 5 dryness classes
+#'
+#' Reads data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif,
+#' crops to the global map extent, aggregates to ~target_res degrees, applies
+#' the x0.0001 scaling documented in site_aridity.meta.json, then bins values
+#' into the five UNEP aridity classes.
+#'
+#' @param target_res Numeric. Target resolution in degrees (default 0.2).
+#'   Aggregation factor is computed from the native 30 arc-second resolution.
+#' @return Data frame with columns x, y, aridity_class (factor, 5 levels).
+#' @noRd
+.aridity_raster_df <- function(target_res = 0.2) {
+  rast_path <- file.path("data", "external", "aridity",
+                          "Global-AI_ET0__annual_v3_1", "ai_v31_yr.tif")
+  if (!file.exists(rast_path)) {
+    stop(
+      "Aridity raster not found: ", rast_path,
+      "\nExpected at data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif",
+      call. = FALSE
+    )
+  }
+  if (!requireNamespace("terra", quietly = TRUE)) {
+    stop("Package 'terra' is required for aridity backdrop.", call. = FALSE)
+  }
+
+  r <- terra::rast(rast_path)
+  r <- terra::crop(r, terra::ext(-180, 180, -57, 87))   # crop before aggregate
+
+  curr_res <- as.numeric(terra::res(r)[1])
+  agg_fact <- max(1L, round(target_res / curr_res))
+  if (agg_fact > 1L) {
+    r <- terra::aggregate(r, fact = agg_fact, fun = "mean", na.rm = TRUE)
+  }
+
+  df <- as.data.frame(r, xy = TRUE)
+  names(df)[3] <- "ai_raw"   # layer name varies; capture by position
+
+  df |>
+    dplyr::filter(!is.na(.data$ai_raw)) |>
+    dplyr::mutate(
+      ai = .data$ai_raw * 0.0001,
+      aridity_class = factor(
+        dplyr::case_when(
+          .data$ai < 0.05 ~ "Hyper-Arid",
+          .data$ai < 0.20 ~ "Arid",
+          .data$ai < 0.50 ~ "Semi-Arid",
+          .data$ai < 0.65 ~ "Dry Sub-Humid",
+          TRUE            ~ "Humid"
+        ),
+        levels = .AI_LEVELS
+      )
+    ) |>
+    dplyr::select("x", "y", "aridity_class")
+}
+
+# ---- Internal: build aridity-backdrop base map ------------------------------
+
+#' @noRd
+.map_aridity_base <- function(land, aridity_df, title = NULL, base_size = 11) {
+  # Render aridity tiles first (bottom layer), then country outlines on top.
+  # geom_tile() x/y are in WGS84 lon/lat — same CRS as the sf land layer,
+  # so coord_sf() positions them correctly without additional transformation.
+  # Constant-fill site points (added by callers) do not interfere with
+  # scale_fill_manual() since their fill aesthetic is not mapped to a variable.
+  ggplot2::ggplot() +
+    ggplot2::theme_void(base_size = base_size) +
+    ggplot2::theme(
+      plot.title      = ggplot2::element_text(hjust = 0.5, face = "bold",
+                                              size  = base_size * 1.1),
+      plot.subtitle   = ggplot2::element_text(hjust = 0.5, size = base_size * 0.9,
+                                              colour = "grey40"),
+      legend.position = "bottom",
+      legend.title    = ggplot2::element_text(size = base_size * 0.85),
+      legend.text     = ggplot2::element_text(size = base_size * 0.80),
+      legend.key      = ggplot2::element_rect(colour = "grey60",
+                                              linewidth = 0.3, fill = NA)
+    ) +
+    ggplot2::geom_tile(
+      data = aridity_df,
+      ggplot2::aes(x = .data$x, y = .data$y, fill = .data$aridity_class)
+    ) +
+    ggplot2::scale_fill_manual(
+      values = .AI_COLORS,
+      name   = "Aridity class (CGIAR AI v3.1)",
+      drop   = FALSE,
+      guide  = ggplot2::guide_legend(
+        nrow           = 1,
+        title.position = "top",
+        title.hjust    = 0.5,
+        override.aes   = list(colour = "grey50", linewidth = 0.3)
+      )
+    ) +
+    ggplot2::geom_sf(data = land, fill = NA, color = "black", linewidth = 0.2) +
+    ggplot2::labs(title = title)
+}
+
+# ---- fig_map_point_network ---------------------------------------------------
+
+#' Single-panel global point map of the current FLUXNET network
+#'
+#' Plots every site in \code{metadata} as a uniform point (Okabe-Ito blue,
+#' shape 21) on a global basemap.  Replaces the UN-subregion choropleth for
+#' candidate figure fig_03.
+#'
+#' @param metadata Data frame. Snapshot CSV with columns \code{site_id},
+#'   \code{location_lat}, \code{location_long}.
+#' @param backdrop Character. \code{"white"} (default) — outline-only basemap;
+#'   \code{"aridity"} — CGIAR AI v3.1 binned into 5 dryness classes beneath
+#'   the site points.
+#' @param aridity_df Optional pre-loaded data frame from \code{.aridity_raster_df()}.
+#'   Pass to avoid re-reading the raster when generating both backdrop variants.
+#' @param pt_size Numeric. Point size (default \code{2.0}).
+#' @param title Character or \code{NULL}. Map title.
+#'
+#' @return A ggplot object.
+#'
+#' @examples
+#' \dontrun{
+#' meta <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_*.csv")
+#' p    <- fig_map_point_network(meta)
+#' print(p)
+#' p_ai <- fig_map_point_network(meta, backdrop = "aridity")
+#' print(p_ai)
+#' }
+#'
+#' @export
+fig_map_point_network <- function(metadata,
+                                   backdrop   = c("white", "aridity"),
+                                   aridity_df = NULL,
+                                   pt_size    = 2.0,
+                                   title      = NULL) {
+  backdrop <- match.arg(backdrop)
+  .disable_s2()
+  .check_meta_cols(metadata, c("site_id", "location_lat", "location_long"))
+
+  sites_clean <- metadata |>
+    dplyr::filter(
+      !is.na(.data$location_lat), !is.na(.data$location_long),
+      dplyr::between(.data$location_lat,   -90,  90),
+      dplyr::between(.data$location_long, -180, 180)
+    ) |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE)
+
+  land <- .land_sf()
+
+  if (backdrop == "aridity") {
+    if (is.null(aridity_df)) aridity_df <- .aridity_raster_df()
+    p <- .map_aridity_base(land, aridity_df, title = title)
+  } else {
+    p <- .map_base(land, title = title, land_fill = "gray97") +
+      ggplot2::theme(
+        plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 9,
+                                              colour = "grey40")
+      )
+  }
+
+  p +
+    ggplot2::geom_point(
+      data = sites_clean,
+      ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+      shape  = 21,
+      fill   = "#0072B2",
+      color  = "black",
+      size   = pt_size,
+      stroke = 0.4,
+      alpha  = 0.9
+    ) +
+    ggplot2::labs(
+      subtitle = paste0("n = ", nrow(sites_clean), " sites")
+    ) +
+    ggplot2::coord_sf(ylim = c(-56, 85), expand = FALSE, datum = NA)
+}
+
+# ---- fig_map_point_snapshots -------------------------------------------------
+
+#' Four-panel point map showing FLUXNET network growth across datasets
+#'
+#' Produces a patchwork of four panels: Marconi 2000, La Thuile 2007,
+#' FLUXNET2015, and FLUXNET Shuttle 2025 (full current network).  Each panel
+#' uses the authoritative site list for that dataset.  Replaces the
+#' UN-subregion choropleth for candidate figure fig_04.
+#'
+#' Marconi, La Thuile, and FLUXNET2015 panels are comparison figures using
+#' non-Shuttle data — clearly labelled per CLAUDE.md §1.
+#'
+#' @param snap_meta Data frame. Shuttle snapshot CSV for the Shuttle 2025 panel.
+#'   Must contain \code{site_id}, \code{location_lat}, \code{location_long}.
+#' @param sites_marconi Data frame. Marconi 2000 site list (e.g.
+#'   \code{data/snapshots/sites_marconi_clean.csv}).
+#' @param sites_la_thuile Data frame. La Thuile 2007 site list.
+#' @param sites_fluxnet2015 Data frame. FLUXNET2015 site list.
+#' @param backdrop Character. \code{"white"} (default) or \code{"aridity"}.
+#' @param aridity_df Optional pre-loaded aridity data frame from
+#'   \code{.aridity_raster_df()}.  Supply to avoid re-reading the raster.
+#' @param pt_size Numeric. Point size (default \code{1.8}).
+#' @param ncol Integer. Number of patchwork columns (default \code{1L}).
+#'
+#' @return A patchwork object.
+#'
+#' @examples
+#' \dontrun{
+#' p <- fig_map_point_snapshots(shuttle_meta, sites_marconi,
+#'                              sites_la_thuile, sites_fluxnet2015)
+#' }
+#'
+#' @export
+fig_map_point_snapshots <- function(snap_meta,
+                                     sites_marconi,
+                                     sites_la_thuile,
+                                     sites_fluxnet2015,
+                                     backdrop   = c("white", "aridity"),
+                                     aridity_df = NULL,
+                                     pt_size    = 1.8,
+                                     ncol       = 1L) {
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop("Package 'patchwork' is required. Install with: install.packages('patchwork')",
+         call. = FALSE)
+  }
+
+  backdrop <- match.arg(backdrop)
+  .disable_s2()
+
+  if (backdrop == "aridity" && is.null(aridity_df)) {
+    aridity_df <- .aridity_raster_df()
+  }
+
+  land <- .land_sf()
+
+  datasets <- list(
+    list(meta = sites_marconi,     label = "Marconi 2000",     note = "(comparison — non-Shuttle)"),
+    list(meta = sites_la_thuile,   label = "La Thuile 2007",   note = "(comparison — non-Shuttle)"),
+    list(meta = sites_fluxnet2015, label = "FLUXNET2015",      note = "(comparison — non-Shuttle)"),
+    list(meta = snap_meta,         label = "Shuttle 2025",     note = NULL)
+  )
+
+  panels <- lapply(datasets, function(d) {
+    .check_meta_cols(d$meta, c("site_id", "location_lat", "location_long"))
+
+    sites_clean <- d$meta |>
+      dplyr::filter(
+        !is.na(.data$location_lat), !is.na(.data$location_long),
+        dplyr::between(.data$location_lat,   -90,  90),
+        dplyr::between(.data$location_long, -180, 180)
+      ) |>
+      dplyr::distinct(.data$site_id, .keep_all = TRUE)
+
+    n_lab <- paste0("n = ", nrow(sites_clean), " sites")
+    subtitle_text <- if (!is.null(d$note)) paste0(n_lab, "\n", d$note) else n_lab
+
+    if (backdrop == "aridity") {
+      p <- .map_aridity_base(land, aridity_df, title = d$label, base_size = 10)
+    } else {
+      p <- .map_base(land, title = d$label, base_size = 10, land_fill = "gray97") +
+        ggplot2::theme(
+          plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 8,
+                                                colour = "grey40")
+        )
+    }
+
+    p +
+      ggplot2::geom_point(
+        data = sites_clean,
+        ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+        shape  = 21,
+        fill   = "#0072B2",
+        color  = "black",
+        size   = pt_size,
+        stroke = 0.4,
+        alpha  = 0.9
+      ) +
+      ggplot2::labs(subtitle = subtitle_text) +
+      ggplot2::coord_sf(ylim = c(-56, 85), expand = FALSE, datum = NA)
+  })
+
+  patchwork::wrap_plots(panels, ncol = as.integer(ncol)) +
+    patchwork::plot_layout(guides = "collect") &
+    ggplot2::theme(legend.position = "bottom")
+}

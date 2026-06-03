@@ -1,0 +1,13 @@
+Figure 3 — FLUXNET Shuttle 2025: current network site locations
+
+Global map showing all 759 sites in the current FLUXNET Shuttle snapshot
+(June 2026) as individual point locations. Each point represents one flux
+tower site. No spatial aggregation or regional binning is applied.
+
+Points: filled circles (Okabe-Ito blue, #0072B2), black outline, uniform
+size. White outline-only basemap with country borders from Natural Earth
+(1:50m scale).
+
+Data source: FLUXNET Shuttle v0.3.7, snapshot 2026-06-01 (759 sites).
+Function: fig_map_point_network() in R/figures/fig_maps.R
+Script: scripts/generate_point_maps.R

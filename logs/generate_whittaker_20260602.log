@@ -1,0 +1,92 @@
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Loading required package: DBI
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Collected annual_converted (FLUXMET): 6,108 rows
+Shared NEE colour limits: [-796.2, 796.2] gC m⁻² yr⁻¹
+
+── Whit01: FLUXNET Shuttle 2025 ──
+Saved: review/figures/whittaker/fig_whit01_ShuttleFull.png
+Warning message:
+Removed 120 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+── Whit02: Marconi 2000 ──
+fig_whittaker_worldclim: extracted WorldClim for 21 sites not in worldclim_csv.
+Saved: review/figures/whittaker/fig_whit02_Marconi.png
+Warning message:
+Removed 21 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+── Whit03: La Thuile 2007 ──
+fig_whittaker_worldclim: extracted WorldClim for 140 sites not in worldclim_csv.
+Saved: review/figures/whittaker/fig_whit03_LaThuile.png
+Warning message:
+Removed 150 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+── Whit04: FLUXNET2015 ──
+fig_whittaker_worldclim: extracted WorldClim for 60 sites not in worldclim_csv.
+Saved: review/figures/whittaker/fig_whit04_FLUXNET2015.png
+Warning message:
+Removed 77 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+── Whit05: Shuttle snapshot 2000 ──
+Saved: review/figures/whittaker/fig_whit05_ShuttleSnapshot2000.png
+Warning message:
+Removed 20 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+── Whit06: Shuttle snapshot 2007 ──
+Saved: review/figures/whittaker/fig_whit06_ShuttleSnapshot2007.png
+Warning message:
+Removed 50 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+── Whit07: Shuttle snapshot 2015 ──
+Saved: review/figures/whittaker/fig_whit07_ShuttleSnapshot2015.png
+Warning message:
+Removed 74 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+
+── Whit08: historical datasets stack (Whit02 / Whit03 / Whit04) ──
+Warning messages:
+1: Removed 21 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+2: Removed 150 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+3: Removed 77 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+Saved: review/figures/whittaker/fig_whit08_HistoricalDatasets_stack.png
+
+── Whit09: Shuttle snapshots stack (Whit05 / Whit06 / Whit07) ──
+Warning messages:
+1: Removed 20 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+2: Removed 50 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+3: Removed 74 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+Saved: review/figures/whittaker/fig_whit09_ShuttleSnapshots_stack.png
+[1] TRUE
+Copied fig_whit01_ShuttleFull → candidates/fig_05_whittaker_current.png
+[1] TRUE
+Copied fig_whit09_ShuttleSnapshots_stack → candidates/fig_06_whittaker_snapshots.png
+
+All 9 Whittaker figures done.

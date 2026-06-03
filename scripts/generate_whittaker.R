@@ -30,6 +30,7 @@ source("R/plot_constants.R")
 source("R/figures/fig_climate.R")
 
 library(dplyr)
+library(duckdb)
 library(readr)
 library(patchwork)
 library(ggplot2)
@@ -39,9 +40,34 @@ check_pipeline_config()
 out_dir <- file.path("review", "figures", "whittaker")
 if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 
-# ---- Load data ---------------------------------------------------------------
-processed_dir <- file.path(FLUXNET_DATA_ROOT, "processed")
-data_yy <- readRDS(file.path(processed_dir, "flux_data_converted_yy.rds"))
+# ---- Load data from DuckDB ---------------------------------------------------
+# DuckDB port (first of five generate_*.R migrations).
+# Pattern: open connection, filter + select + collect only needed columns,
+# close connection. The rest of the script is unchanged.
+#
+# annual_converted has TIMESTAMP (integer year) not YEAR — schema-translation
+# patch applied post-collect, same as scripts/07_figures.R.
+# QC (incl. CUT fallback) already applied in annual_converted (commit ad7464f).
+db_path <- file.path(FLUXNET_DATA_ROOT, "duckdb/fluxnet.duckdb")
+if (!file.exists(db_path)) {
+  stop("DuckDB database not found: ", db_path,
+       "\nRun 03b_create_database.R → 04_qc.R → 05_units.R first.")
+}
+con <- dbConnect(duckdb(), db_path, read_only = TRUE)
+if (!"annual_converted" %in% dbListTables(con)) {
+  dbDisconnect(con)
+  stop("annual_converted table missing. Run 04_qc.R → 05_units.R first.")
+}
+
+data_yy <- dplyr::tbl(con, "annual_converted") |>
+  dplyr::filter(dataset == "FLUXMET") |>
+  dplyr::select(site_id, TIMESTAMP, NEE_VUT_REF, NEE_CUT_REF) |>
+  dplyr::collect() |>
+  dplyr::mutate(YEAR = as.integer(TIMESTAMP))  # schema-translation patch
+
+dbDisconnect(con)
+message("Collected annual_converted (FLUXMET): ",
+        format(nrow(data_yy), big.mark = ","), " rows")
 
 # Latest Shuttle snapshot for full-network site_meta
 snap_file <- sort(

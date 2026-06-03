@@ -33,6 +33,7 @@ source("R/figures/fig_seasonal.R")
 source("R/figures/fig_climate.R")
 source("R/figures/fig_latitudinal.R")
 source("R/figures/fig_growing_season.R")
+source("R/figures/fig_network_growth.R")
 
 library(dplyr)
 library(duckdb)
@@ -170,6 +171,27 @@ cat("  07_figures_duckdb.R\n")
 cat("=========================================\n\n")
 
 report <- character(0)
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 0 — Network and choropleth figures (metadata only)
+# ══════════════════════════════════════════════════════════════════════════════
+message("\n── Network and choropleth figures (metadata only) ──")
+
+p_net_growth <- profile_fig("network_growth", nrow(meta_map), function() {
+  fig_network_growth(meta_map)
+})
+if (!is.null(p_net_growth)) {
+  save_fig(p_net_growth, "network_growth.png", width = 12, height = 8)
+  report <- c(report, "network_growth.png")
+}
+
+p_subregion <- profile_fig("choropleth_snapshots", nrow(meta_map), function() {
+  fig_map_subregion_sites(meta_map)
+})
+if (!is.null(p_subregion)) {
+  save_fig(p_subregion, "choropleth_snapshots.png", width = 12, height = 22)
+  report <- c(report, "choropleth_snapshots.png")
+}
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SECTION 1 — IGBP figures (YY)

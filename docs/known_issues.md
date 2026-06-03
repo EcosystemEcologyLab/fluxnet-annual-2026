@@ -294,47 +294,81 @@ before extracting unit assignments.
 
 ---
 
-## Section 9 — Precipitation anomalies at some FLUXNET sites (open, sites not yet identified)
+## Section 9 — Precipitation anomalies: ERA5 P_ERA and tower-observed P_F (open)
 
-**Flagged:** 2026-06-03.
+**Flagged:** 2026-06-03. ERA5 observation added 2026-06-03 (commit 5e868b4).
 
-Some FLUXNET sites carry staggeringly wrong precipitation (`P_F`) values in the Shuttle
-data. Specific sites and the magnitude of the anomaly are not yet characterised — this
-issue was flagged during visual review and has not yet been subjected to a systematic
-identification pass.
+Two related but distinct precipitation anomaly issues have been identified. They have
+different sources, different likely causes, and require separate investigation passes.
 
-Plausible causes include unit-of-measure errors (e.g., mm s⁻¹ reported as mm per
-timestep), instrument failure periods not gap-filled or flagged, and gap-fill artifacts
-(ERA5 precipitation substitution producing out-of-range values for the site's climate).
+---
 
-**Impact:** Any figure or analysis that uses FLUXNET-measured precipitation as a primary
-axis or predictor is at risk. This includes:
+### 9a — ERA5 reanalysis precipitation (P_ERA): quantified
 
-- Precipitation-vs-NEE scatter figures
-- Aridity-based site filtering using tower P rather than WorldClim or ERA5
-- Any future environmental-response figure that switches from ERA5 P to tower P
+**Observation:** 225 of 6,108 FLUXMET site-years (3.7%) in `annual_converted` have
+`P_ERA > 5000 mm yr⁻¹`. Surfaced during the `generate_env_response_era5.R` DuckDB
+port (commit 5e868b4, 2026-06-03).
 
-Note: current candidate figures use WorldClim MAP (fig_05, fig_06 — Whittaker) and ERA5
-Annual Precipitation (fig_08 — environmental response). Those sources are not directly
-affected by tower `P_F` anomalies. If future figures add a tower-P axis, this issue
-becomes active.
+**Source:** Reanalysis — ERA5 annual precipitation interpolated to site locations by
+the FLUXNET Shuttle. Not derived from tower instruments.
 
-**The pipeline does not flag these anomalies.** No range check, outlier detection, or
-QC flag exists for `P_F` in the current pipeline.
+**Likely cause:** Spatial-averaging artifacts at the ERA5 grid scale (~31 km), amplified
+at topographically complex sites (e.g., coastal, high-relief terrain) where the ERA5
+grid cell may include ocean or orographic precipitation enhancement.
 
-**Action required before any analysis using tower P:**
+**Current pipeline handling:** `fig_environmental_response_era5()` applies its own
+outlier filter before plotting (removes `P_ERA > 5000`, `VPD_ERA > 5 kPa`,
+`TA_ERA_C` outside [−30, 40] °C). The 225 outlier site-years are silently dropped
+from fig_08 panels. No flag is written to the exclusion log.
 
-1. Run a systematic identification pass — flag site-years where annual `P_F` falls
-   outside a plausible range (e.g., < 0 or > 5000 mm yr⁻¹, or > 3σ from the
-   WorldClim MAP for that site).
+**Action required:**
+1. Log the 225 removed site-years to the exclusion log (currently silent drop in the
+   figure function — should call `log_exclusion()` or equivalent).
+2. Investigate the site-year distribution: are the > 5000 mm cases concentrated at
+   specific sites, specific years, or specific geographic regions?
+3. Consider whether a `P_ERA_QC` flag or outlier annotation should be added to
+   `annual_converted` so downstream scripts don't each re-implement the filter.
+
+---
+
+### 9b — Tower-observed precipitation (P_F): unquantified
+
+**Observation:** Some FLUXNET sites carry staggeringly wrong tower-measured `P_F`
+values. Specific sites and magnitudes are not yet characterised — this was flagged
+during visual review and has not been subjected to a systematic identification pass.
+
+**Source:** Tower-observed precipitation (gap-filled where missing). Distinct from ERA5
+reanalysis — though ERA5 is commonly used to gap-fill `P_F`, so the two phenomena
+can co-occur at sites with heavy gap-fill fractions.
+
+**Likely cause:** Instrument failure, unit-of-measure errors (e.g., mm s⁻¹ mistakenly
+reported as mm per timestep), or gap-fill artifacts (ERA5 substitution producing values
+inconsistent with the site's local climate).
+
+**Current pipeline handling:** No range check, outlier detection, or QC flag exists for
+`P_F` in the current pipeline. Anomalies pass through unchanged to `annual_converted`.
+
+**Action required before any analysis or figure using tower P:**
+1. Systematic identification pass — flag site-years where annual `P_F` falls outside a
+   plausible range (e.g., < 0 or > 5000 mm yr⁻¹, or > 3σ from WorldClim MAP for that
+   site).
 2. Characterise the anomaly pattern (unit error, instrument failure, gap-fill artifact).
 3. Decide: flag-and-exclude the anomalous site-years, or correct where correction is
    defensible (e.g., unit rescaling with documented justification).
 4. Document the decision in `docs/decisions_pending.md` before finalising any figure
    that uses tower precipitation.
 
+---
+
+**Current candidate figure exposure:** fig_05 and fig_06 (Whittaker) use WorldClim MAP
+(bio12) — unaffected by either anomaly. fig_08 (environmental response) uses ERA5 `P_ERA`
+with its own outlier filter — affected by 9a, handled in-function. No current candidate
+figure uses tower `P_F` as a primary axis. If future figures add a tower-P axis, 9b
+becomes active.
+
 Cross-reference: see `docs/methods_requirements.md` §5.3 — methods text must address
-how precipitation anomalies are handled when tower P appears in any candidate figure.
+how both precipitation anomaly types are handled in any candidate figure that uses
+precipitation as a primary axis or predictor.
 
 ---
 

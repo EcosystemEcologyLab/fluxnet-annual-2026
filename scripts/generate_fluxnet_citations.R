@@ -1,41 +1,33 @@
-## scripts/generate_fluxnet_citations.R
+## generate_fluxnet_citations.R
+##
 ## Generate BibTeX citations, acknowledgments, and review flags for a set of
-## FLUXNET sites.  Reads from the snapshot CSV; routes by product_source_network.
+## FLUXNET sites from a FLUXNET shuttle snapshot CSV.
 ##
-## Usage:
-##   source("scripts/generate_fluxnet_citations.R")
+## Requirements:
+##   R 4+; packages: dplyr, readr, stringr
+##   A FLUXNET shuttle snapshot CSV (from flux_listall() or data/snapshots/).
+##   No environment variables, no additional sourced files, no data download.
 ##
-##   # Provide site IDs directly
+## What this script does NOT do:
+##   - No BIF verification: citations are reproduced verbatim from the snapshot
+##     product_citation field without cross-checking BIF records on disk.
+##   - No data download: the snapshot CSV must already be on disk.
+##   - No AmeriFlux credential checks or pipeline configuration validation.
+##
+## Quick start:
+##   source("generate_fluxnet_citations.R")
 ##   generate_fluxnet_citations(
-##     site_ids       = c("US-MMS", "DE-Tha", "AU-How", "ZA-Jks"),
-##     output_prefix  = "outputs/citations/fluxnet_2026"
+##     site_ids      = c("US-MMS", "DE-Tha", "AU-How"),
+##     snapshot_path = "data/snapshots/fluxnet_shuttle_snapshot_20260601T224043.csv",
+##     output_prefix = "outputs/citations/fluxnet_2026"
 ##   )
 ##
-##   # Provide site IDs via CSV (column named "site_id" by default)
-##   generate_fluxnet_citations(
-##     site_ids_csv   = "data/my_sites.csv",
-##     output_prefix  = "outputs/citations/fluxnet_2026"
-##   )
-##
-##   # CSV with a different column name
-##   generate_fluxnet_citations(
-##     site_ids_csv   = "data/analysis_sites.csv",
-##     site_id_col    = "SITE_ID",
-##     output_prefix  = "outputs/citations/fluxnet_2026"
-##   )
+## Omit snapshot_path to auto-discover the newest CSV in data/snapshots/.
 ##
 ## Outputs:
 ##   {prefix}.bib                   one @misc per site + mandated @article refs
 ##   {prefix}_acknowledgments.md    global + network-conditional acknowledgment texts
 ##   {prefix}_review_flags.md       sites needing human attention before submission
-
-if (file.exists(".env")) {
-  library(dotenv)
-  dotenv::load_dot_env()
-}
-source("R/pipeline_config.R")
-source("R/utils.R")
-check_pipeline_config()
 
 library(dplyr)
 library(readr)
@@ -188,16 +180,23 @@ build_bib_entry <- function(row) {
   # Hard guard: blank fields
   if (is.na(cit) || !nzchar(trimws(cit)))
     stop(sprintf("GUARD: site %s has empty product_citation", sid))
-  if (is.na(pid) || !nzchar(trimws(pid)))
-    stop(sprintf("GUARD: site %s has empty product_id", sid))
+  if (is.na(pid) || !nzchar(trimws(pid))) {
+    flag <- sprintf(
+      "NOTICE: site %s has no product_id — entry generated without persistent identifier",
+      sid
+    )
+    pid <- NA_character_
+  }
   if (!net %in% KNOWN_NETWORKS)
     stop(sprintf("GUARD: site %s has unknown product_source_network '%s'", sid, net))
 
-  # Structural pattern guard (product_id)
-  if (net == "AMF"  && !grepl("^10\\.17190/AMF/", pid))
-    flag <- sprintf("product_id fails AMF DOI pattern: %s", pid)
-  if (net == "TERN" && !grepl("^https://dx\\.doi\\.org/10\\.25901/", pid))
-    flag <- sprintf("product_id fails TERN DOI URL pattern: %s", pid)
+  # Structural pattern guard (product_id); skipped when product_id is absent
+  if (!is.na(pid)) {
+    if (net == "AMF"  && !grepl("^10\\.17190/AMF/", pid))
+      flag <- sprintf("product_id fails AMF DOI pattern: %s", pid)
+    if (net == "TERN" && !grepl("^https://dx\\.doi\\.org/10\\.25901/", pid))
+      flag <- sprintf("product_id fails TERN DOI URL pattern: %s", pid)
+  }
 
   parsed <- tryCatch(
     {
@@ -388,6 +387,14 @@ build_review_flags <- function(flags_named, sites_df) {
     paste("Sites processed:", nrow(sites_df)),
     "",
     "Sites listed here need human attention before the bibliography is finalised.",
+    "",
+    "## Data source notice",
+    "",
+    "Citations in this output were generated from the FLUXNET shuttle metadata",
+    "snapshot (`product_citation` field) without verification against BIF files.",
+    "Author strings, titles, and identifiers are reproduced verbatim from the",
+    "snapshot. Before publication-quality use, verify entries against the FLUXNET",
+    "data registry (https://fluxnet.org) by downloading the relevant site data.",
     ""
   )
 
@@ -452,14 +459,14 @@ build_review_flags <- function(flags_named, sites_df) {
 
 # ---- Snapshot loader ---------------------------------------------------------
 
-find_latest_snapshot <- function() {
+find_latest_snapshot <- function(snapshot_dir = "data/snapshots") {
   snaps <- sort(list.files(
-    file.path(FLUXNET_DATA_ROOT, "snapshots"),
+    snapshot_dir,
     pattern    = "fluxnet_shuttle_snapshot.*\\.csv$",
     full.names = TRUE
   ), decreasing = TRUE)
   if (length(snaps) == 0L)
-    stop("No snapshot CSV found in ", file.path(FLUXNET_DATA_ROOT, "snapshots"))
+    stop("No snapshot CSV found in ", snapshot_dir)
   snaps[[1L]]
 }
 
@@ -469,8 +476,9 @@ find_latest_snapshot <- function() {
 #'
 #' @param site_ids Character vector of FLUXNET site IDs to cite.  Exactly one
 #'   of \code{site_ids} or \code{site_ids_csv} must be provided.
-#' @param snapshot_path Path to the snapshot CSV; defaults to the most recent
-#'   committed snapshot.
+#' @param snapshot_path Path to the snapshot CSV.  If \code{NULL} (default),
+#'   auto-discovers the most recent CSV in \code{data/snapshots/} relative to
+#'   the working directory.  Pass an explicit path to use a specific snapshot.
 #' @param output_prefix File path prefix for outputs (no extension).
 #' @param site_ids_csv Optional path to a CSV file containing a column of site
 #'   IDs.  The column is identified by \code{site_id_col}.  Duplicate and
@@ -482,7 +490,7 @@ find_latest_snapshot <- function() {
 #'   and summary counts.
 generate_fluxnet_citations <- function(
     site_ids      = NULL,
-    snapshot_path = find_latest_snapshot(),
+    snapshot_path = NULL,
     output_prefix,
     site_ids_csv  = NULL,
     site_id_col   = "site_id"
@@ -508,6 +516,20 @@ generate_fluxnet_citations <- function(
   }
   stopifnot(is.character(site_ids), length(site_ids) > 0L)
 
+  if (is.null(snapshot_path)) {
+    snapshot_path <- tryCatch(
+      find_latest_snapshot(),
+      error = function(e) stop(
+        "snapshot_path not supplied and no snapshot CSV found in data/snapshots/.\n",
+        "Pass snapshot_path explicitly or place a snapshot CSV at\n",
+        "data/snapshots/fluxnet_shuttle_snapshot_<timestamp>.csv",
+        call. = FALSE
+      )
+    )
+  }
+  if (!file.exists(snapshot_path))
+    stop("snapshot_path not found: ", snapshot_path, call. = FALSE)
+
   message("Snapshot: ", basename(snapshot_path))
   snap  <- readr::read_csv(snapshot_path, show_col_types = FALSE)
   sites <- snap |>
@@ -530,8 +552,18 @@ generate_fluxnet_citations <- function(
   message("Networks: ", paste(networks, collapse = ", "))
 
   # Assemble .bib
+  notice_block <- paste(c(
+    "%% NOTICE: Citations generated from the FLUXNET shuttle metadata snapshot",
+    "%% (product_citation field) without verification against BIF files.",
+    "%% Author strings and identifiers are reproduced verbatim from the snapshot.",
+    "%% Before journal submission, verify against the FLUXNET data registry",
+    "%% (https://fluxnet.org) by downloading the relevant site data.",
+    "%% Review accompanying _review_flags.md before use.",
+    "%%"
+  ), collapse = "\n")
+
   header <- paste(c(
-    "%% FLUXNET site citations — generated by scripts/generate_fluxnet_citations.R",
+    "%% FLUXNET site citations — generated by generate_fluxnet_citations.R",
     paste0("%% Generated : ", format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")),
     paste0("%% Sites     : ", nrow(sites)),
     paste0("%% Networks  : ", paste(networks, collapse = ", ")),
@@ -552,6 +584,7 @@ generate_fluxnet_citations <- function(
   )
 
   bib_content <- paste0(
+    notice_block, "\n",
     header, "\n\n",
     paste(bib_entries, collapse = "\n"),
     mandated_section

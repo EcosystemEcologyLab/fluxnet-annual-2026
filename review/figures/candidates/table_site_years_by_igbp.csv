@@ -1,0 +1,17 @@
+igbp,igbp_name,shuttle_sites,shuttle_site_years,mean_years_per_site,fx15_site_years,delta_site_years
+ENF,Evergreen Needleleaf Forests,112,1107,9.9,411,696
+GRA,Grasslands,140,965,6.9,242,723
+CRO,Croplands,136,791,5.8,150,641
+WET,Permanent Wetlands,114,707,6.2,95,612
+DBF,Deciduous Broadleaf Forests,77,700,9.1,233,467
+EBF,Evergreen Broadleaf Forests,42,370,8.8,102,268
+OSH,Open Shrublands,39,333,8.5,70,263
+MF,Mixed Forests,24,210,8.8,106,104
+WSA,Woody Savannas,18,191,10.6,49,142
+SAV,Savannas,13,107,8.2,53,54
+DNF,Deciduous Needleleaf Forests,13,102,7.8,3,99
+CSH,Closed Shrublands,12,74,6.2,16,58
+CVM,Cropland/Natural Vegetation Mosaics,9,50,5.6,0,50
+BSV,Barren Sparse Vegetation,7,42,6,0,42
+SNO,Snow and Ice,2,18,9,2,16
+TOTAL,,758,5767,7.6,1532,4235

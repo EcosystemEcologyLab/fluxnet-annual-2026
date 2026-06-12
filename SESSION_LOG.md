@@ -574,3 +574,51 @@ Decisions locked by Part 1 findings:
 4. **Users without a manifest**: anyone who used `flux_download()` via `01_download.R` has a snapshot; anyone who called the Python CLI directly without routing through the R wrapper may not. This edge case is acknowledged in the README limitations section but is not recoverable without some temporal imprecision.
 
 **Awaiting "proceed" confirmation before starting Part 2.**
+
+---
+
+### Part 2: fluxnet-citations repo created
+
+**Repo:** <https://github.com/EcosystemEcologyLab/fluxnet-citations>  
+**Commit:** `e333643` — "Initial commit: standalone FLUXNET citation generator"
+
+#### Contents shipped
+
+| File | Description |
+|---|---|
+| `generate_fluxnet_citations.R` | Copied from paper repo commit 7f31497; `snapshot_path` renamed to `manifest_path` throughout |
+| `LICENSE` | MIT, copyright 2026 David J. P. Moore and contributors |
+| `CITATION.md` | Tool self-citation (placeholder for FLUXNET 2026 paper); Pastorello 2020 (placeholder for synthesis citation); fluxnet R package pointer; site-level citation obligation note |
+| `README.md` | ~200-line user-facing doc covering all sections in the spec |
+| `.gitignore` | R ignores + output/ + example/output/ |
+| `example/example_manifest.csv` | 10-site frozen subset of `fluxnet_shuttle_snapshot_20260601T224043.csv` |
+| `example/example_sites.csv` | One-column CSV with all 10 site IDs |
+| `example/README.md` | Example walkthrough with expected outputs |
+
+#### 10 example sites
+
+| Site | Network | Note |
+|---|---|---|
+| US-Hsm | AMF | Preserved typo: `Kyle_Delwiche` |
+| US-A03 | AMF | |
+| US-A10 | AMF | |
+| ZM-Mon | EUF | |
+| TH-Mae | JPF | |
+| KR-WdE | KOF | |
+| AU-Cow | TERN | Preserved typo: `FLUXNEXT` |
+| AU-Emr | TERN | |
+| ZA-Uby | SAEON | |
+| ZA-Spk | SAEON | |
+
+#### Verification results
+
+- Example ran cleanly: 10 sites, 6 networks (AMF, EUF, JPF, KOF, SAEON, TERN), 3 output files produced.
+- `_review_flags.md`: flags present for AU-Cow (FLUXNEXT typo), US-Hsm (Kyle_Delwiche typo), plus no-author ICOS/JPF/KOF entries.
+- `%% NOTICE` data-source block confirmed at top of `.bib`.
+- Raw README accessible at `https://raw.githubusercontent.com/EcosystemEcologyLab/fluxnet-citations/main/README.md`.
+
+#### Decisions made not covered in the brief
+
+- **ZM-Mon (Zambia) as the EUF site.** It was the first EUF site alphabetically in the snapshot. No constraints on EUF site selection were specified; this is a valid ICOS EUF-family site.
+- **`find_latest_snapshot()` internal function name kept.** The user-facing vocabulary is "manifest" throughout, but the private helper function that locates `fluxnet_shuttle_snapshot_*.csv` files was left as `find_latest_snapshot` because the filename pattern it searches for is controlled by the shuttle, not by this tool. Renaming the function name would be cosmetic-only and would not affect user-facing terminology.
+- **Two README user-facing annotations incorporated** per the session instructions: (a) "Where is my manifest?" leads with the behavioral rule ("Always save your `flux_listall()` output to CSV before calling `flux_download()`...") followed by the paper-repo example as a concrete instance; (b) CITATION.md marks the Pastorello 2020 reference as a placeholder for the synthesis citation, parallel to the tool self-citation placeholder.

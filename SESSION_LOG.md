@@ -464,3 +464,113 @@ These are maintenance items. In a standalone tool distributed to other researche
 No parser functions, BibTeX helpers, cite-key builder, mandated-references logic, acknowledgments builder, or verbatim-preservation behavior were changed.
 
 **Script is now ready to copy to a standalone `fluxnet-citations` repo** — no paper-repo files, env vars, or pipeline infrastructure required.
+
+---
+
+## 2026-06-11 — FLUXNET shuttle manifest investigation
+
+### Manifest artifacts: what the shuttle writes, and when
+
+**Purpose:** Determine which artifact produced by the FLUXNET shuttle workflow represents the durable record of a download, and whether that artifact carries the metadata needed for citations (`product_citation`, `product_id`, `product_source_network`). This answers the design question: what should the citation tool require as input so that citations match the data actually downloaded, not a later metadata state.
+
+---
+
+#### 1. Python `shuttle.download()`: no manifest written
+
+The Python shuttle's `download()` function (in `fluxnet_shuttle/shuttle.py`) takes a `snapshot_file` path (a CSV on disk) as input and reads it to get download URLs and filenames. It uses four columns from the snapshot: `site_id`, `data_hub`, `download_link`, `fluxnet_product_name`. It writes nothing to disk except the downloaded ZIP files. Return value: a list of downloaded filenames.
+
+The function does not write a manifest, an index, a checksum file, or any secondary record of the metadata state at download time.
+
+#### 2. R `flux_download()`: temp file bridge, no persistent artifact
+
+The R `flux_download()` function takes `file_list_df` (a data frame with all 18 columns from `flux_listall()`) and an output directory. Internally it writes the data frame to a temporary CSV file via `withr::local_tempfile()`, then passes that temp path to Python as `snapshot_file`. The temp file is deleted when the function exits. `flux_download()` returns only a tibble of download paths (`download_path`).
+
+Key: the R function writes no persistent manifest. The temp CSV it creates exists only for the duration of the function call.
+
+```r
+# flux_download() internals (from decompiled source):
+file_list <- withr::local_tempfile()
+readr::write_csv(file_list_df, file_list)
+fluxnet_py$download(site_ids = as.list(site_ids), snapshot_file = file_list, ...)
+```
+
+#### 3. `write_snapshot()` in `R/snapshot.R`: the actual durable record
+
+`01_download.R` calls `write_snapshot(manifest, snapshot_dir = snapshots_dir)` **before** calling `flux_download()`. `write_snapshot()` (defined in `R/snapshot.R`) saves the full 18-column manifest to `data/snapshots/fluxnet_shuttle_snapshot_{TIMESTAMP}.csv` using `readr::write_csv()`. This is the only artifact that captures the full metadata state at download time in a committed, timestamped file.
+
+The snapshot CSV is also how locked mode (`FLUXNET_SNAPSHOT_MODE="locked"`) reproduces a run: `resolve_snapshot()` reads this file back in lieu of a live `flux_listall()` call.
+
+#### 4. `flux_discover_files()`: temporally incorrect for citations
+
+`flux_discover_files()` (decompiled from the compiled package) constructs a file inventory from on-disk extracted files and then **calls `flux_listall()` internally** to obtain metadata, merging the two via `left_join` on `product_source_network` + `site_id`. The metadata it attaches reflects the current state of the Shuttle at the time `flux_discover_files()` is called — not the state at download time.
+
+Columns from the file-system parse (from extracted directory/filenames):
+`product_source_network`, `site_id`, `dataset`, `time_resolution`, `first_year`, `last_year`, `oneflux_code_version`, `release_version`, `path`, `download_time`
+
+Columns joined from fresh `flux_listall()` (15 of the original 18, minus `first_year`/`last_year`/`oneflux_code_version` which come from the filename):
+`data_hub`, `site_name`, `location_lat`, `location_long`, `igbp`, `network`, `team_member_name`, `team_member_role`, `team_member_email`, `download_link`, `fluxnet_product_name`, `product_citation`, `product_id`
+
+This output is saved in this repo as `data/processed/file_inventory.rds` (gitignored, regenerated each run). It carries all citation-relevant columns, but from a fresh metadata query — a user running this six months after their download would get current `product_citation` strings, not the ones that were current when the data was downloaded.
+
+#### 5. Column shape comparison
+
+| Artifact | Has citation columns? | Metadata timing | Format |
+|---|---|---|---|
+| `flux_listall()` output | Yes (all 18) | Live (current) | tibble |
+| Snapshot CSV (`data/snapshots/`) | Yes (all 18) | Fixed at snapshot-write time | CSV, 18 cols |
+| `flux_download()` temp file | Yes (all 18) | Same as input manifest | Deleted on exit |
+| `flux_discover_files()` output | Yes (from fresh `flux_listall()`) | Live (current at call time) | tibble, ~23 cols |
+| `file_inventory.rds` | Yes (from fresh `flux_listall()`) | Live when 02_extract.R was last run | RDS |
+| Progress CSVs (`download_progress*.csv`) | No | — | CSV, 7 cols (batch tracking only) |
+
+All three candidate "manifests" that carry the citation columns (`flux_listall()` output, snapshot CSV, `flux_discover_files()` output) have identical `product_citation`, `product_id`, and `product_source_network` column names. The snapshot CSV and direct `flux_listall()` output are structurally identical (same 18 columns, same names, same encoding) — the Python shuttle's `_write_snapshot_file()` writes a CSV that round-trips losslessly back to an R tibble.
+
+#### 6. Actual artifacts in `data/snapshots/`
+
+- **`fluxnet_shuttle_snapshot_*.csv`** — 29 timestamped snapshots from 2026-03-28 through 2026-06-01. Each is a direct `flux_listall()` output, 18 columns, written by `write_snapshot()` in 01_download.R before each download run. These are committed. Latest: `fluxnet_shuttle_snapshot_20260601T224043.csv`.
+- **`download_progress*.csv`** — batch download tracking (3 files). 7 columns: `batch_num`, `n_sites`, `site_ids`, `status`, `started_at`, `completed_at`, `disk_free_gb`. No citation metadata.
+- No manifest, index, or metadata file is written by the Python shuttle itself during download.
+
+#### 7. Design implications for the citation tool
+
+**Correct artifact to require: the snapshot CSV from `data/snapshots/`.**
+
+Reasoning:
+- It is the only artifact that is (a) durable, (b) committed, (c) timestamped, and (d) reflects the metadata state at the time of download.
+- In locked mode, it IS the dataset definition — the citation tool using the same snapshot file as the download gives a logical guarantee that citations match the data.
+- Column format is identical to `flux_listall()` output. The existing parser logic in `generate_fluxnet_citations.R` operates on this format and requires no changes.
+
+**The existing `snapshot_path` parameter design is correct.** The function already requires the user to pass an explicit snapshot path (or auto-discovers in `data/snapshots/`). That design choice was the right one.
+
+**Recovery path when no snapshot is available:** A user who called `flux_download()` directly (without 01_download.R) and did not call `write_snapshot()` separately will not have a timestamped snapshot. In this case:
+1. Best option: call `flux_listall()` now and save it — metadata drift is possible but likely small for stable sites.
+2. Second option: use `flux_discover_files()` output, strip the file-system-only columns, and pass the result as a data frame — same temporal imprecision as option 1.
+3. There is no way to recover the exact download-time metadata if no snapshot was saved.
+
+**Parser compatibility:** The snapshot CSV and `flux_listall()` output are structurally identical. No parser changes needed to support either as input. The `flux_discover_files()` output has extra columns (harmless) and would need to be subset to the 18-column snapshot schema if used as fallback input — but temporal correctness cannot be recovered regardless of column subsetting.
+
+---
+
+## 2026-06-12 — fluxnet-citations standalone repo: Part 1 confirmation + Part 2 plan
+
+### Part 1: manifest investigation — confirmed
+
+Re-ran the source-trace investigation today against the installed package (v0.3.2.9000) and shuttle Python code (`fluxnet_annual_2026` venv). All findings from the 2026-06-11 session are confirmed exactly. No new findings.
+
+Summary for the record:
+- **The durable record is the snapshot CSV** (`fluxnet_shuttle_snapshot_<timestamp>.csv` in `data/snapshots/`). It is written by `write_snapshot()` in `01_download.R` before each download run, is committed, and is the only artifact that captures full 18-column metadata at download time.
+- **The Python shuttle `download()` function writes no manifest.** It reads the snapshot CSV as input but produces only downloaded ZIP files as output.
+- **`flux_discover_files()` is temporally incorrect for citations.** It calls `flux_listall()` live at the time of the call; the citation metadata it attaches reflects the current Shuttle state, not the download-time state.
+- **Column format is identical to `flux_listall()` output.** The snapshot CSV and `flux_listall()` R tibble share the same 18-column schema. No parser changes are needed in `generate_fluxnet_citations.R`.
+- **"Manifest" is the correct vocabulary.** The snapshot CSV IS the manifest: it is a frozen record of what the user had access to and chose to download. The terminology rename (from `snapshot_path` → `manifest_path`) is consistent with the artifact's function and with how the standalone repo will describe it.
+
+### Part 2: standalone repo design decisions (pending user confirmation to proceed)
+
+Decisions locked by Part 1 findings:
+
+1. **`manifest_path` input**: points to a `fluxnet_shuttle_snapshot_*.csv` from `data/snapshots/`. Same 18-column schema as `flux_listall()` output. Parsers unchanged.
+2. **Example file format**: 10-row subset of `fluxnet_shuttle_snapshot_20260601T224043.csv`. Not a shuttle-produced manifest from a separate download; this IS the shuttle-produced manifest format (they are the same format). The example file is a frozen slice of a real file, dated 2026-06-01.
+3. **"Where is my manifest?" section of README**: points users to `data/snapshots/fluxnet_shuttle_snapshot_<timestamp>.csv` in their paper repo clone. The most recent snapshot written before (or matching) their download run is the correct input. In the batch download workflow, the snapshot written by `write_snapshot()` within `01_download.R` just before each download is the authoritative file for that run.
+4. **Users without a manifest**: anyone who used `flux_download()` via `01_download.R` has a snapshot; anyone who called the Python CLI directly without routing through the R wrapper may not. This edge case is acknowledged in the README limitations section but is not recoverable without some temporal imprecision.
+
+**Awaiting "proceed" confirmation before starting Part 2.**

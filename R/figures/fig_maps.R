@@ -1000,6 +1000,7 @@ fig_map_country_sites <- function(metadata,
 
   r <- terra::rast(rast_path)
   r <- terra::crop(r, terra::ext(-180, 180, -57, 87))   # crop before aggregate
+  r[r == 0] <- NA   # ocean cells are stored as 0 in this raster, not as NoData
 
   curr_res <- as.numeric(terra::res(r)[1])
   agg_fact <- max(1L, round(target_res / curr_res))

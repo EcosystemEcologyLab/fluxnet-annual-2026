@@ -4,7 +4,57 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code appends its structured outputs (reports, audits, investigation summaries) to this file as they're produced, then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's reports.
 
-## 2026-06-16 — fluxnet-quickstart template repository created
+## 2026-06-16 — fluxnet-quickstart template repository created; HR workaround audit
+
+### HR workaround audit: FluxCourseForecast vs synthesized version
+
+**File checked:** `davidjpmoore/FluxCourseForecast` at `data/US-MMS/extract_hr_workaround.R`
+**Result:** File exists. Opens with a retirement notice.
+
+#### Critical finding
+
+The FluxCourseForecast script begins:
+
+```
+## THIS SCRIPT IS NO LONGER NEEDED.
+## The HR extraction bug was fixed in fluxnet v0.3.2.9000 (commit 2741bb8).
+## flux_extract() now correctly handles _HR_ files in AmeriFlux FLUXNET v1.3_r1.
+## This script is retained for reference only.
+```
+
+The bug it fixed: `flux_extract()` v0.3.1 matched filenames with `_HH_` (the FLUXNET-2015
+convention) but AmeriFlux FLUXNET v1.3_r1 ships files named `_HR_`. The package fixed this
+in v0.3.2.9000.
+
+The FluxCourseForecast script bypassed `flux_extract()` entirely — it used `zip::zip_list()`
+to read the ZIP index, grepped for `_HR_` entries, and extracted them with `zip::unzip()`.
+Then read with `data.table::fread(na.strings = "-9999")` and wrote two output CSVs:
+`US-MMS_HR.csv` and `US-MMS_ERA5_HR.csv`. Hardwired to US-MMS; not a reusable function.
+
+#### The synthesized `R/hr_workaround.R` in fluxnet-quickstart addresses a different layer
+
+The two scripts do not overlap. The synthesized version targets a **separate, still-active
+concern**: `flux_discover_files()` labels extracted files with `time_resolution = "HR"` for
+hourly AmeriFlux sites. Students naively filtering for `time_resolution == "HH"` will
+silently miss those sites. The FluxCourseForecast bug fix does not change this.
+
+The synthesized comment block incorrectly implies `flux_extract()` is still the problem. It
+should be corrected to describe the inventory-label concern instead.
+
+| | FluxCourseForecast script | Synthesized `hr_workaround.R` |
+|---|---|---|
+| Bug targeted | `flux_extract()` skipping `_HR_` filenames (v0.3.1) | `flux_discover_files()` labeling files as `time_resolution = "HR"` |
+| Status | **Retired** — fixed in fluxnet v0.3.2.9000 | **Active** — inventory label distinction remains |
+| Mechanism | Bypass `flux_extract()`; read ZIP directly | Normalize inventory data frame post-extraction |
+| Scope | US-MMS only, script-level | Any site, function-level |
+
+#### Action required
+
+Update the comment block in `fluxnet-quickstart/R/hr_workaround.R` to describe the
+inventory-label concern accurately, not the (now-fixed) `flux_extract()` filename bug.
+Decision logged here; edit deferred pending user confirmation.
+
+---
 
 ### fluxnet-quickstart: session summary
 

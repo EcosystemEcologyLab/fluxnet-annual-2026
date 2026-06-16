@@ -4,6 +4,51 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code appends its structured outputs (reports, audits, investigation summaries) to this file as they're produced, then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's reports.
 
+## 2026-06-16 — fluxnet-quickstart template repository created
+
+### fluxnet-quickstart: session summary
+
+**Repo:** https://github.com/EcosystemEcologyLab/fluxnet-quickstart
+**Commit:** ea038da — "Initial commit: FLUXNET quickstart template"
+**Template flag:** confirmed (`gh repo edit --template=true` succeeded)
+
+---
+
+#### Contents shipped
+
+| File | Description |
+|------|-------------|
+| `README.md` | ~250-line audience-first document; sections for shuttle overview, installation, credential norms, vendored utility status, what's out of scope, citing |
+| `LICENSE` | MIT, copyright 2026 David J. P. Moore and contributors |
+| `CITATION.md` | Full citation guidance: fluxnet package, fluxnet-citations tool, Pastorello 2020, per-site DOI requirement |
+| `.gitignore` | R standard ignores + data/raw/, data/extracted/, output/; my_manifest.csv and my_sites.csv intentionally un-ignored |
+| `data/.gitkeep` | Placeholder so data/ directory exists in template forks |
+| `R/hr_workaround.R` | Temporary utility (marked); three functions: `identify_hr_sites()`, `normalize_hr_inventory()`, `filter_subdaily_inventory()` |
+| `R/generate_fluxnet_citations.R` | Vendored from fluxnet-citations HEAD; temporary-status block prepended; paths adjusted for template layout |
+| `examples/01_discover.R` | flux_listall() → filter by IGBP and record length → save data/my_manifest.csv; heavy inline commentary for students |
+| `examples/02_download.R` | flux_download() + flux_extract() for 5 representative sites; credential walkthrough; HR workaround applied post-discovery |
+| `examples/03_cite.R` | generate_fluxnet_citations() from data/my_sites.csv + manifest; explains manifest-as-citation-source principle |
+
+#### HR workaround — implementation decision
+
+No standalone workaround function existed in the paper repo. The pattern was synthesized from two locations:
+- `scripts/03_read.R` line 166-167: `file_inventory$time_resolution %in% c("HH", "HR")` — the filter-level fix
+- `scripts/duckdb_setup.R` line 34-36: normalize HR → HH in the file inventory
+
+These were refactored into three named functions in `R/hr_workaround.R` with documentation suited to a student audience. US-MMS is cited as the motivating example in `examples/02_download.R`.
+
+#### Verification status
+
+The examples were not run end-to-end (would require ~500 MB download of 5 sites). Scripts were verified by code review: correct function calls, consistent file paths, no broken references between examples. The citation generator is a verbatim copy of the tested fluxnet-citations HEAD with only the comment block prepended; it requires no verification beyond what the fluxnet-citations repo already provides.
+
+#### Decisions made not covered by the original brief
+
+- `03_cite.R` peek-at-BibTeX step: split `length(readLines(results$bib)[grepl(...)])` into two lines to avoid a parse-error-inducing inline assignment in `length()`. Functionality identical to the intent.
+- `data/my_sites.csv` written by `02_download.R` (not only mentioned as a path). This makes example 03 runnable without manual file creation.
+- `flux_extract()` called with `resolutions = c("y", "m", "d")` in example 02 (not "h"), matching the paper repo's default and keeping the example download size manageable. A comment notes how to add "h" for sub-daily data.
+
+---
+
 ## 2026-06-03 — fluxnet package metadata investigation
 
 ### fluxnet R package metadata audit

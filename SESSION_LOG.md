@@ -48,11 +48,11 @@ should be corrected to describe the inventory-label concern instead.
 | Mechanism | Bypass `flux_extract()`; read ZIP directly | Normalize inventory data frame post-extraction |
 | Scope | US-MMS only, script-level | Any site, function-level |
 
-#### Action required
+#### Action required → DONE (fluxnet-quickstart commit 8d47cfe)
 
-Update the comment block in `fluxnet-quickstart/R/hr_workaround.R` to describe the
-inventory-label concern accurately, not the (now-fixed) `flux_extract()` filename bug.
-Decision logged here; edit deferred pending user confirmation.
+Comment block in `fluxnet-quickstart/R/hr_workaround.R` rewritten: now describes the
+inventory-label concern accurately; added historical note distinguishing this from the
+retired flux_extract() workaround at FluxCourseForecast:data/US-MMS/extract_hr_workaround.R.
 
 ---
 

@@ -4,6 +4,68 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Beck 2023 KG download and per-site extraction
+
+### Raster source
+
+**Beck et al. (2023)** High-resolution (1 km) Köppen-Geiger maps for 1901–2099 based on
+constrained CMIP6 projections. *Scientific Data* 10:724.
+doi: 10.1038/s41597-023-02549-6
+
+Figshare: doi:10.6084/m9.figshare.21789074.v2 (v2 published 2026-01-14; corrects a
+calculation error in v1). Downloaded file: `koppen_geiger_tif.zip` (~125 MB, file ID 61012822).
+
+Raster used for extraction: `1991_2020/koppen_geiger_0p00833333.tif` — present-day KG
+classification (1991–2020) at 1 km resolution (0.00833333°), EPSG:4326, 21600 × 43200 cells,
+30 integer classes.
+
+### Files committed
+
+| File | Description |
+|---|---|
+| `.gitignore` | Updated to allow README/legend in koppen_beck2023 while ignoring rasters |
+| `data/external/koppen_beck2023/README.md` | Source, citation, file structure |
+| `data/external/koppen_beck2023/legend.txt` | Beck 2023 class legend (30 classes, RGB) |
+| `scripts/step4_extract_koppen_beck2023.R` | Extraction script |
+| `data/snapshots/site_koppen_beck2023.csv` | Per-site KG class, 767 sites |
+| `data/snapshots/site_koppen_beck2023.meta.json` | Companion metadata |
+
+Raster files (`.tif`, `.zip`) and period subdirectories are gitignored.
+
+### Extraction results (767 sites)
+
+**Snapshot:** `fluxnet_shuttle_snapshot_20260624T095651.csv`
+
+**Primary extraction (exact pixel):** 764 sites — all returned a valid class.
+
+**Fallback — nearest-land pixel:** 3 sites had coordinates falling in ocean/tidal water;
+recovered using nearest non-NA land pixel within 3° window:
+
+| site_id | lat | lon | Class assigned | Nearest land (km) | Note |
+|---|---|---|---|---|---|
+| US-KS3 | 28.71 | −80.74 | Cfa | 0.7 | Coastal FL, KSC area |
+| US-TaS | 25.19 | −80.64 | Am | 0.6 | Florida Bay/Everglades |
+| CN-SnB | 31.69 | 121.66 | Cfa | 1.0 | Yangtze estuary, near Shanghai |
+
+**`koppen_method` column** records extraction method per site (`exact` or
+`nearest_land_Xkm`).
+
+### KG main class distribution
+
+| Main class | Name | Sites | % |
+|---|---|---|---|
+| A | Tropical | 49 | 6.4 |
+| B | Arid | 86 | 11.2 |
+| C | Temperate | 292 | 38.1 |
+| D | Cold | 318 | 41.5 |
+| E | Polar | 22 | 2.9 |
+
+**Top 5 KG classes:** Dfb (136), Cfa (115), Cfb (93), Dfc (69), Csa/Dfa (54 each).
+Network is heavily temperate-cold (C+D = 79.6%); tropical sites at 6.4%, arid at 11.2%,
+polar at 2.9%.
+
+---
+
 ## 2026-06-24 — decisions_pending.md and CLAUDE.md updates
 
 ### decisions_pending.md: pipeline regeneration deferred at +8 ICOS sites

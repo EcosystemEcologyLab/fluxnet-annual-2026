@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-24T17:15:58Z",
+  "pipeline_version": "c1fff01",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "Beck et al. (2023) KG 1991-2020 1 km raster — data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif (figshare doi:10.6084/m9.figshare.21789074.v2, file 61012822)"
+  ],
+  "notes": "KG class extracted at exact site coordinates via terra::extract(); buffer modal fallback (up to 0.5°) for NA returns. koppen_method column records extraction method per site. Snapshot: fluxnet_shuttle_snapshot_20260624T095651.csv (767 sites, 2026-06-24)."
+}

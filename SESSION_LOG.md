@@ -4,6 +4,43 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Shuttle snapshot diff (2026-06-01 → 2026-06-24)
+
+### New snapshot written
+
+`data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv` — 767 sites.
+
+### Diff against prior snapshot
+
+Prior snapshot: `fluxnet_shuttle_snapshot_20260601T161559.csv` — 759 sites.
+
+**Net change: +8 sites (no removals, no last_year advances).**
+
+All 8 additions are ICOS sites:
+
+| site_id | data_hub | network | igbp | first_year | last_year | lat | lon |
+|---|---|---|---|---|---|---|---|
+| DK-Eng | ICOS | CarboEurope | GRA | 2005 | 2008 | 55.69 | 12.18 |
+| DK-Fou | ICOS | CarboEurope | CRO | 2005 | 2005 | 56.49 | 9.59 |
+| ES-Pdu | ICOS | EuropeFlux | WET | 2014 | 2017 | 37.00 | −3.61 |
+| IT-MtM | ICOS | EuropeFlux | GRA | 2014 | 2019 | 46.69 | 10.58 |
+| IT-PT1 | ICOS | NA | DBF | 2002 | 2004 | 45.20 | 9.06 |
+| JP-Nkm | ICOS | AsiaFlux | ENF | 2018 | 2024 | 35.77 | 137.99 |
+| JP-Tgf | ICOS | AsiaFlux | GRA | 2002 | 2004 | 36.05 | 140.02 |
+| SJ-Adv | ICOS | NA | WET | 2012 | 2014 | 78.19 | 15.92 |
+
+**Removals:** 0
+
+**last_year advances (existing sites with new data year added):** 0
+
+### Notes
+
+- `JP-Nkm` has the widest span of the additions (2018–2024, ENF, AsiaFlux ICOS).
+- `IT-PT1` and `SJ-Adv` have `network = NA` in the shuttle manifest.
+- No sites were lost between the June 1 and June 24 snapshots.
+
+---
+
 ## 2026-06-24 — Data inventory
 
 ### Data inventory: docs/data_inventory.md

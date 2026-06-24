@@ -189,10 +189,15 @@ if (length(na_idx) > 0L) {
 # ---- Join legend ------------------------------------------------------------
 out <- site_coords |>
   dplyr::left_join(legend_df, by = "koppen_class_code") |>
+  dplyr::mutate(
+    # Two-letter aggregation: drops temperature subclass (3rd character).
+    # substr(x, 1, 2) gives Af/Am/Aw, BW/BS, Cf/Cs/Cw, Df/Ds/Dw, ET/EF.
+    koppen_twoletter = substr(koppen_class, 1L, 2L)
+  ) |>
   dplyr::select(
     site_id, location_lat, location_long,
     koppen_class_code, koppen_class, koppen_class_name,
-    koppen_main, koppen_main_name, koppen_method
+    koppen_twoletter, koppen_main, koppen_main_name, koppen_method
   )
 
 # ---- Summary ----------------------------------------------------------------

@@ -96,11 +96,13 @@ dist_30 <- legend_df |>
   dplyr::left_join(zone_areas, by = "koppen_class_code") |>
   dplyr::mutate(
     global_land_area_km2 = dplyr::coalesce(global_land_area_km2, 0),
-    global_land_fraction = global_land_area_km2 / total_land_km2
+    global_land_fraction = global_land_area_km2 / total_land_km2,
+    # Two-letter aggregation: drops temperature subclass (3rd character).
+    koppen_twoletter     = substr(koppen_class, 1L, 2L)
   ) |>
   dplyr::select(
     koppen_class_code, koppen_class, koppen_class_name,
-    koppen_main, koppen_main_name,
+    koppen_twoletter, koppen_main, koppen_main_name,
     global_land_area_km2, global_land_fraction
   ) |>
   dplyr::arrange(koppen_class_code)

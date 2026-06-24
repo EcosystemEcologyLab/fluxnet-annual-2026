@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-06-24T17:24:35Z",
-  "pipeline_version": "2c42033",
+  "run_datetime_utc": "2026-06-24T18:07:59Z",
+  "pipeline_version": "c2a491f",
   "input_sources": [
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif",
     "Beck et al. (2023) KG 1991-2020 1 km raster — figshare doi:10.6084/m9.figshare.21789074.v2, file 61012822"

@@ -6,10 +6,13 @@
 ##
 ## Outputs (review/figures/representativeness/):
 ##   fig_representativeness_kg_30class.png  — 30 KG classes
-##   fig_representativeness_kg_5class.png   — 5 main classes + sampling-ratio panel
+##   fig_representativeness_kg_5class.png   — 5 main classes + sampling-ratio panel (right)
+##   fig_representativeness_kg_twoletter.png — 13 two-letter classes + ratio panel (below)
 ##
 ## Color scheme: Beck 2023 published RGB values from legend.txt.
 ## 5-class representatives: A=Aw, B=BSh, C=Cfa, D=Dfb, E=ET (per user spec).
+## Two-letter colors: mean RGB of all 30-class members within each two-letter group
+##   (e.g., Cf color = mean(Cfa, Cfb, Cfc) RGB). Equal-weight mean, documented below.
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -288,11 +291,191 @@ p5 <- p5_bars + p5_ratio +
   plot_layout(widths = c(3, 2), guides = "keep") &
   theme(plot.background = element_rect(fill = "white", colour = NA))
 
+# ---- Figure 3: two-letter stacked bar + sampling-ratio panel beneath --------
+
+# Two-letter class ordering: A (Af, Am, Aw), B (BS, BW), C (Cf, Cs, Cw),
+# D (Df, Ds, Dw), E (EF, ET) — alphabetical within main class.
+tl_order <- c("Af", "Am", "Aw", "BS", "BW", "Cf", "Cs", "Cw",
+               "Df", "Ds", "Dw", "EF", "ET")
+
+# Two-letter colors: mean RGB of all 30-class members in each group.
+# EF and ET are singletons; the rest are means across 2–4 members.
+color_tl <- setNames(
+  vapply(tl_order, function(tl) {
+    members <- legend_df[substr(legend_df$koppen_class, 1L, 2L) == tl, ]
+    grDevices::rgb(
+      mean(members$r), mean(members$g), mean(members$b),
+      maxColorValue = 255
+    )
+  }, character(1L)),
+  tl_order
+)
+
+# Global two-letter fractions
+global_tl <- global_df |>
+  dplyr::group_by(koppen_twoletter) |>
+  dplyr::summarise(global_frac = sum(global_land_fraction), .groups = "drop") |>
+  dplyr::rename(koppen_twoletter_code = koppen_twoletter)
+
+# Site two-letter fractions
+site_tl <- sites_df |>
+  dplyr::count(koppen_twoletter, name = "n") |>
+  dplyr::mutate(network_frac = n / n_sites) |>
+  dplyr::rename(koppen_twoletter_code = koppen_twoletter, n_tl_sites = n)
+
+# Full join to include EF (no sites) and any class present in only one source
+all_tl <- dplyr::tibble(koppen_twoletter_code = tl_order) |>
+  dplyr::left_join(global_tl, by = "koppen_twoletter_code") |>
+  dplyr::left_join(site_tl,   by = "koppen_twoletter_code") |>
+  dplyr::mutate(
+    global_frac  = dplyr::coalesce(global_frac,   0),
+    n_tl_sites   = dplyr::coalesce(n_tl_sites,    0L),
+    network_frac = dplyr::coalesce(network_frac,   0),
+    sampling_ratio = dplyr::if_else(
+      global_frac > 0, network_frac / global_frac, NA_real_
+    ),
+    # Flag: < 5 network sites → unstable ratio
+    flag_unstable = n_tl_sites < 5L
+  )
+
+message("\n=== TWO-LETTER CLASS SUMMARY ===")
+print(as.data.frame(dplyr::select(
+  all_tl, koppen_twoletter_code, global_frac, n_tl_sites, sampling_ratio, flag_unstable
+)))
+cat("Unstable (< 5 sites):", all_tl$koppen_twoletter_code[all_tl$flag_unstable], "\n")
+cat("Top over-sampled:   ",
+    all_tl$koppen_twoletter_code[which.max(all_tl$sampling_ratio)],
+    sprintf("(%.2f×)\n", max(all_tl$sampling_ratio, na.rm = TRUE)))
+cat("Top under-sampled:  ",
+    all_tl$koppen_twoletter_code[which.min(replace(all_tl$sampling_ratio, is.na(all_tl$sampling_ratio), Inf))],
+    sprintf("(%.2f×)\n", min(all_tl$sampling_ratio, na.rm = TRUE)))
+
+# Long format for stacked bars
+plotTL <- all_tl |>
+  tidyr::pivot_longer(
+    cols      = c(global_frac, network_frac),
+    names_to  = "bar",
+    values_to = "fraction"
+  ) |>
+  dplyr::mutate(
+    bar = factor(bar,
+                 levels = c("global_frac", "network_frac"),
+                 labels = c("Global land", "FLUXNET\n(767 sites)")),
+    koppen_twoletter_code = factor(koppen_twoletter_code, levels = tl_order),
+    label = dplyr::case_when(
+      fraction >= 0.07 ~ sprintf("%s\n%s%%", koppen_twoletter_code,
+                                 formatC(round(fraction * 100, 1), format = "f", digits = 1)),
+      fraction >= 0.025 ~ sprintf("%s %s%%", koppen_twoletter_code,
+                                  formatC(round(fraction * 100, 1), format = "f", digits = 1)),
+      fraction > 0      ~ as.character(koppen_twoletter_code),
+      TRUE              ~ NA_character_
+    )
+  )
+
+# Stacked bars
+pTL_bars <- ggplot(plotTL, aes(x = bar, y = fraction, fill = koppen_twoletter_code)) +
+  geom_bar(stat = "identity", width = 0.55, colour = "white", linewidth = 0.3) +
+  geom_text(
+    aes(label = label),
+    position   = position_stack(vjust = 0.5),
+    size       = 2.6,
+    family     = "sans",
+    colour     = "black",
+    lineheight = 0.9,
+    na.rm      = TRUE
+  ) +
+  scale_fill_manual(
+    values = color_tl,
+    breaks = tl_order,
+    name   = NULL,
+    guide  = guide_legend(ncol = 2, reverse = FALSE,
+                          override.aes = list(colour = NA))
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.01)),
+    labels = scales::percent_format(accuracy = 1),
+    name   = "Fraction of total"
+  ) +
+  scale_x_discrete(name = NULL) +
+  base_theme +
+  theme(
+    legend.key.size = unit(0.4, "cm"),
+    legend.text     = element_text(size = 8)
+  )
+
+# Sampling-ratio panel beneath — dot plot, one dot per two-letter class
+ratio_tl <- all_tl |>
+  dplyr::mutate(
+    koppen_twoletter_code = factor(koppen_twoletter_code, levels = tl_order),
+    # EF: sampling_ratio is NA (0 sites); treat as 0 for display, flag with shape
+    ratio_plot = dplyr::coalesce(sampling_ratio, 0),
+    dot_shape  = dplyr::if_else(flag_unstable, 4L, 19L),   # × for unstable, ● for stable
+    dot_alpha  = dplyr::if_else(flag_unstable, 0.45, 1.0),
+    ratio_label = dplyr::case_when(
+      flag_unstable       ~ sprintf("%.2f×\n(n=%d)", ratio_plot, n_tl_sites),
+      !is.na(ratio_plot)  ~ sprintf("%.2f×", sampling_ratio),
+      TRUE                ~ NA_character_
+    )
+  )
+
+pTL_ratio <- ggplot(ratio_tl,
+                    aes(x = koppen_twoletter_code, y = ratio_plot,
+                        colour = koppen_twoletter_code,
+                        shape  = factor(dot_shape),
+                        alpha  = dot_alpha)) +
+  geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50", linewidth = 0.5) +
+  geom_segment(aes(xend = koppen_twoletter_code, yend = 1),
+               colour = "grey75", linewidth = 0.5, alpha = 1) +
+  geom_point(size = 3) +
+  geom_text(
+    aes(label = ratio_label),
+    vjust    = -0.65,
+    size     = 2.4,
+    family   = "sans",
+    colour   = "black",
+    lineheight = 0.85,
+    na.rm    = TRUE
+  ) +
+  scale_colour_manual(values = color_tl, guide = "none") +
+  scale_shape_manual(
+    values = c("4" = 4, "19" = 19),
+    guide  = guide_legend(
+      title      = NULL,
+      override.aes = list(colour = "grey40", alpha = c(1, 0.45)),
+      label.theme  = element_text(size = 7, family = "sans")
+    ),
+    labels = c("4" = "Stable (≥ 5 sites)", "19" = "Unstable (< 5 sites)")
+  ) +
+  scale_alpha_identity() +
+  scale_y_continuous(
+    name   = "Sampling ratio\n(network / global)",
+    trans  = "log2",
+    breaks = c(0.125, 0.25, 0.5, 1, 2, 4, 8),
+    labels = c("0.125×", "0.25×", "0.5×", "1×", "2×", "4×", "8×"),
+    limits = c(0.08, 12)
+  ) +
+  scale_x_discrete(name = NULL) +
+  base_theme +
+  theme(
+    panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
+    panel.grid.major.x = element_blank(),
+    axis.text.x        = element_text(size = 8),
+    axis.title.y       = element_text(size = 8),
+    legend.position    = "right",
+    legend.text        = element_text(size = 7)
+  )
+
+pTL <- pTL_bars / pTL_ratio +
+  plot_layout(heights = c(3, 1.8), guides = "keep") &
+  theme(plot.background = element_rect(fill = "white", colour = NA))
+
 # ---- Save -------------------------------------------------------------------
 out_30 <- file.path(out_dir, "fig_representativeness_kg_30class.png")
 out_5  <- file.path(out_dir, "fig_representativeness_kg_5class.png")
+out_tl <- file.path(out_dir, "fig_representativeness_kg_twoletter.png")
 
-ggsave(out_30, plot = p30, width = 6.5, height = 8, dpi = 200, bg = "white")
-ggsave(out_5,  plot = p5,  width = 7.5, height = 4, dpi = 200, bg = "white")
+ggsave(out_30, plot = p30,  width = 6.5, height = 8,   dpi = 200, bg = "white")
+ggsave(out_5,  plot = p5,   width = 7.5, height = 4,   dpi = 200, bg = "white")
+ggsave(out_tl, plot = pTL,  width = 6.5, height = 6.5, dpi = 200, bg = "white")
 
-message("Saved:\n  ", out_30, "\n  ", out_5)
+message("Saved:\n  ", out_30, "\n  ", out_5, "\n  ", out_tl)

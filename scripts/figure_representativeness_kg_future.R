@@ -1,19 +1,32 @@
 ## figure_representativeness_kg_future.R
-## Future Köppen-Geiger representativeness axis.
-## Scenario: Beck 2023 SSP2-4.5 projection, 2041-2070, 1 km resolution.
+## Generic future Köppen-Geiger representativeness axis.
+## Parameterized: accepts any Beck 2023 scenario / period via command-line args.
+##
+## Usage:
+##   Rscript scripts/figure_representativeness_kg_future.R [ssp] [period_dir] \
+##           [period_label] [scenario_label]
+##
+## Defaults (SSP2-4.5, 2041-2070):
+##   Rscript scripts/figure_representativeness_kg_future.R
+##   Rscript scripts/figure_representativeness_kg_future.R ssp245 2041_2070 "2041-70" "SSP2-4.5"
+##
+## Example (SSP5-8.5, 2071-2099):
+##   Rscript scripts/figure_representativeness_kg_future.R ssp585 2071_2099 "2071-99" "SSP5-8.5"
 ##
 ## Asymmetric design (documented in methods):
-##   Earth bar  = global land area fractions under PROJECTED 2041-2070 climate
+##   Earth bar  = global land area fractions under PROJECTED future climate
 ##   Network bar = current 767-site FLUXNET network with PRESENT-DAY KG
 ##                 assignments (from site_koppen_beck2023.csv)
 ##
-## The question: does the network placed under today's biogeography sample
-## tomorrow's climate distribution?
-##
-## Source raster: data/external/koppen_beck2023/2041_2070/ssp245/
-##                koppen_geiger_0p00833333.tif
 ## Beck et al. (2023) Sci Data 10:724. doi:10.1038/s41597-023-02549-6
 ## Figshare v2: doi:10.6084/m9.figshare.21789074.v2
+
+cli_args       <- commandArgs(trailingOnly = TRUE)
+ssp            <- if (length(cli_args) >= 1) cli_args[1] else "ssp245"
+period_dir     <- if (length(cli_args) >= 2) cli_args[2] else "2041_2070"
+period_label   <- if (length(cli_args) >= 3) cli_args[3] else "2041-70"
+scenario_label <- if (length(cli_args) >= 4) cli_args[4] else "SSP2-4.5"
+message(sprintf("Scenario: %s / %s (%s)", scenario_label, period_dir, ssp))
 
 if (file.exists(".env")) dotenv::load_dot_env()
 source("R/pipeline_config.R")
@@ -30,8 +43,7 @@ library(patchwork)
 # ---- Paths ------------------------------------------------------------------
 kg_dir      <- file.path("data", "external", "koppen_beck2023")
 leg_path    <- file.path(kg_dir, "legend.txt")
-rast_fut    <- file.path(kg_dir, "2041_2070", "ssp245",
-                         "koppen_geiger_0p00833333.tif")
+rast_fut    <- file.path(kg_dir, period_dir, ssp, "koppen_geiger_0p00833333.tif")
 rast_pres   <- file.path(kg_dir, "1991_2020", "koppen_geiger_0p00833333.tif")
 snap_path   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          "fluxnet_shuttle_snapshot_20260624T095651.csv")
@@ -40,7 +52,7 @@ site_pres   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
 pres_glob   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          "koppen_beck2023_global_distribution.csv")
 
-scenario    <- "ssp245_2041_2070"
+scenario    <- paste0(ssp, "_", period_dir)
 site_out    <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          paste0("site_koppen_beck2023_", scenario, ".csv"))
 glob_out    <- file.path(FLUXNET_DATA_ROOT, "snapshots",
@@ -49,15 +61,14 @@ glob_out    <- file.path(FLUXNET_DATA_ROOT, "snapshots",
 metrics_out <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          "representativeness_metrics.csv")
 out_dir     <- file.path("review", "figures", "representativeness")
-methods_out <- file.path(out_dir,
-                         "methods_koppen_beck2023_future.md")
+methods_out <- file.path(out_dir, "methods_koppen_beck2023_future.md")
 
 for (p in c(rast_fut, leg_path, snap_path, site_pres)) {
   if (!file.exists(p)) stop("Required file not found: ", p, call. = FALSE)
 }
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-tag <- "SSP2-4.5, 2041–70"   # used in figure labels
+tag <- paste0(scenario_label, ", ", period_label)   # used in figure labels
 
 # ---- Parse legend (class codes, names, RGB colors) --------------------------
 leg_lines <- readLines(leg_path)
@@ -216,8 +227,9 @@ write_output_metadata(
   input_sources = c(snap_path, rast_fut),
   notes = paste0(
     "Future KG site extraction for 767 sites (snapshot 20260624T095651). ",
-    "Scenario: SSP2-4.5, 2041-2070. Same terra::extract() + nearest-land ",
-    "fallback method as present-day (scripts/step4_extract_koppen_beck2023.R). ",
+    "Scenario: ", scenario_label, " / ", period_dir, ". ",
+    "Same terra::extract() + nearest-land fallback method as present-day ",
+    "(scripts/step4_extract_koppen_beck2023.R). ",
     "This CSV records PROJECTED future class at each site's PRESENT location. ",
     "For figures, the network bar uses present-day assignments from ",
     "site_koppen_beck2023.csv, NOT this file."
@@ -255,12 +267,13 @@ message("Saved: ", glob_out)
 write_output_metadata(
   glob_out,
   input_sources = c(rast_fut,
-    paste0("Beck et al. (2023) KG SSP2-4.5 2041-2070 1 km raster — ",
-           "figshare doi:10.6084/m9.figshare.21789074.v2")),
+    paste0("Beck et al. (2023) KG ", scenario_label, " ", period_dir,
+           " 1 km raster — figshare doi:10.6084/m9.figshare.21789074.v2")),
   notes = paste0(
-    "Global land area per KG class under SSP2-4.5, 2041-2070 projection. ",
-    "Method: terra::cellSize(mask=TRUE, unit='km') + terra::zonal(fun='sum'). ",
-    "Total land: ", format(round(total_land_km2), big.mark = ","), " km². ",
+    "Global land area per KG class under ", scenario_label, " / ", period_dir,
+    " projection. Method: terra::cellSize(mask=TRUE, unit='km') + ",
+    "terra::zonal(fun='sum'). Total land: ",
+    format(round(total_land_km2), big.mark = ","), " km². ",
     "Elapsed (zonal): ", elapsed, " s."
   )
 )
@@ -578,45 +591,43 @@ print(as.data.frame(cmp[, c("aggregation_level","J_pres","J_fut","dJ",
                              "H_pres","H_fut","dH")]), row.names = FALSE)
 
 # ---- Step 5: Methods text ---------------------------------------------------
-methods_lines <- c(
-  "Future-climate representativeness was assessed using the Beck et al. (2023)",
-  "SSP2-4.5 projected Köppen-Geiger map for 2041-2070. SSP2-4.5 (\"Middle of the",
-  "Road\") represents a moderate forcing scenario in which emissions peak around",
-  "mid-century before declining; it is one of the more widely used scenarios for",
-  "near-term climate assessment. The source raster is at 1 km resolution and uses",
-  "the same 30-class KG scheme and legend as the present-day 1991-2020 map. Full",
-  "citation and data source are identical to the present-day analysis",
-  "(see methods_koppen_beck2023.md); the SSP2-4.5 2041-2070 raster is distributed",
-  "within the same figshare archive (doi:10.6084/m9.figshare.21789074.v2).",
+# Preamble covers shared design; scenario-specific blocks follow as ## sections.
+# Each run of this script upserts its own ## section without disturbing others.
+
+ssp_narrative <- switch(ssp,
+  ssp245 = c(
+    paste0("SSP2-4.5 (\"Middle of the Road\") is a moderate forcing scenario in which"),
+    "global emissions peak around mid-century and then decline. It is widely used",
+    "for near-term climate assessment and represents a plausible policy-consistent",
+    "trajectory consistent with approximately 2.5-3 degrees C of global warming by 2100."
+  ),
+  ssp585 = c(
+    paste0("SSP5-8.5 (\"Fossil-fuelled Development\") is the highest-emission marker"),
+    "scenario, in which fossil fuel use and CO2 emissions continue rising throughout",
+    "the century. It represents an upper-bound stress test for climate-driven KG class",
+    "shifts, assuming approximately 4-5 degrees C of global warming by 2100. Together",
+    "with SSP2-4.5 mid-century, it brackets the plausible range of representativeness",
+    "challenges the network will face over the coming decades."
+  ),
+  c(paste0("Scenario ", scenario_label, ": no narrative description available."))
+)
+
+sentinel <- paste0("## Scenario: ", scenario_label, " / ", period_dir)
+scenario_section <- c(
+  sentinel,
   "",
-  "The core design choice for this axis is asymmetric: the Earth bar in each",
-  "figure shows the PROJECTED global land area distribution under 2041-2070",
-  "SSP2-4.5, while the FLUXNET network bar shows PRESENT-DAY KG assignments",
-  "from site_koppen_beck2023.csv. This asymmetry is intentional. The FLUXNET",
-  "network occupies fixed physical locations; sites do not migrate as their local",
-  "climate shifts. The question this axis asks is therefore: does the current",
-  "network, classified by its present-day biogeography, sample the climate",
-  "distribution that is projected to cover the globe in 2041-2070? A network",
-  "that already samples a future-like distribution would require less supplementation",
-  "under climate change; one that does not would need new sites in projected",
-  "growth zones (primarily arid B and expanding semi-arid classes) to remain",
-  "representative.",
+  paste0("Raster: koppen_beck2023/", period_dir, "/", ssp,
+         "/koppen_geiger_0p00833333.tif"),
+  "(Beck et al. 2023, figshare v2, doi:10.6084/m9.figshare.21789074.v2)",
   "",
-  "As a secondary output, per-site future KG assignments were also extracted",
-  sprintf("(site_koppen_beck2023_%s.csv). These show which sites are", scenario),
-  "projected to cross a class boundary under SSP2-4.5 by 2041-2070. This CSV is",
-  "for exploratory use; it is NOT the basis for the network bar in any figure.",
+  ssp_narrative,
   "",
-  "Global area computation and per-site extraction methods are identical to the",
-  "present-day analysis described in methods_koppen_beck2023.md. The same",
-  "terra::cellSize(mask=TRUE, unit='km') + terra::zonal(fun='sum') approach was",
-  sprintf("used. Total land area under the future projection: %s km²",
+  sprintf("Total land area: %s km²  (present-day: 147,322,862 km²).",
           format(round(total_land_km2), big.mark = ",")),
-  sprintf("(present-day: 147,322,862 km²; difference reflects raster land mask)."),
-  "",
-  "Representativeness metrics (weighted Jaccard J and Hellinger distance H) are",
-  "computed as described in methods_koppen_beck2023.md, with p = future global",
-  "land fraction per class and q = present-day network fraction per class.",
+  sprintf("Sites changing class vs present-day: %d / %d (%.1f%%).",
+          nrow(changed), n_sites, round(100 * nrow(changed) / n_sites, 1)),
+  paste0("Per-site future CSV: site_koppen_beck2023_", scenario, ".csv",
+         " (reference only; NOT used as network bar)."),
   "",
   "Comparison with present-day metrics:",
   sprintf("  5-class:    present J=%.3f H=%.3f | future J=%.3f H=%.3f | dJ=%+.3f dH=%+.3f",
@@ -641,6 +652,60 @@ methods_lines <- c(
           cmp$dJ[cmp$aggregation_level=="30class"],
           cmp$dH[cmp$aggregation_level=="30class"])
 )
-writeLines(methods_lines, methods_out)
+
+preamble_lines <- c(
+  "# Methods: Future Köppen-Geiger Representativeness (Beck 2023)",
+  "",
+  "This file covers all future-scenario representativeness analyses.",
+  "Each scenario is documented in its own ## section below.",
+  "All scenarios use: scripts/figure_representativeness_kg_future.R",
+  "(parameterized; run with [ssp] [period_dir] [period_label] [scenario_label]).",
+  "",
+  "Shared design (applies to all scenarios):",
+  "",
+  "  ASYMMETRIC FRAMING. Earth bar = projected global land area fractions for",
+  "  the specified future period/scenario. Network bar = PRESENT-DAY FLUXNET",
+  "  assignments from site_koppen_beck2023.csv (767 sites, 1991-2020 climate).",
+  "  The network occupies fixed locations; sites do not migrate as climate shifts.",
+  "  The question: does the current network, classified by its present biogeography,",
+  "  sample the distribution projected to dominate the globe in the target period?",
+  "",
+  "  PER-SITE EXTRACTION. terra::extract() from the 1 km raster, with a",
+  "  nearest-land fallback (terra::as.points + terra::distance) for sites on",
+  "  ocean pixels. The same 3 coastal wetland sites need this fallback across",
+  "  all scenarios: US-KS3, US-TaS, CN-SnB (~0.6-1.0 km from land).",
+  "",
+  "  GLOBAL DISTRIBUTION. terra::cellSize(mask=TRUE, unit='km') +",
+  "  terra::zonal(fun='sum'). Land mask is consistent; total land area is",
+  "  ~147,322,862 km2 across all scenarios.",
+  "",
+  "  METRICS. Weighted Jaccard J and Hellinger distance H.",
+  "  p_k = global land fraction for class k (FUTURE raster).",
+  "  q_k = fraction of 767-site network in class k (PRESENT-DAY).",
+  "  J = sum(min(p,q)) / sum(max(p,q))  [0,1]; 1 = perfect representativeness.",
+  "  H = (1/sqrt(2)) * sqrt(sum((sqrt(p) - sqrt(q))^2))  [0,1]; 0 = identical.",
+  "",
+  "---",
+  ""
+)
+
+# Upsert this scenario's section: rebuild file = preamble + our section + others
+other_section_lines <- character(0)
+if (file.exists(methods_out)) {
+  existing <- readLines(methods_out)
+  sentinel_pos <- grep("^## Scenario:", existing)
+  if (length(sentinel_pos) > 0) {
+    for (i in seq_along(sentinel_pos)) {
+      end_i <- if (i < length(sentinel_pos)) sentinel_pos[i + 1L] - 1L else length(existing)
+      block <- existing[sentinel_pos[i]:end_i]
+      if (block[1L] == sentinel) next   # skip our own old block
+      while (length(block) > 0 && trimws(tail(block, 1)) == "")
+        block <- block[-length(block)]
+      other_section_lines <- c(other_section_lines, "", block)
+    }
+  }
+}
+full_methods <- c(preamble_lines, scenario_section, other_section_lines)
+writeLines(full_methods, methods_out)
 message("Saved: ", methods_out)
 message("\nAll outputs complete.")

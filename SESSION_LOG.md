@@ -4,6 +4,69 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Data inventory
+
+### Data inventory: docs/data_inventory.md
+
+**Purpose:** Generate a committed reference document cataloguing every dataset, raster,
+snapshot, processed file, and external data product in the paper repo. Primary motivation:
+planning the network representativeness figure work; secondary: template for future projects.
+
+**Output:** `docs/data_inventory.md` (committed 2bf8789)
+
+---
+
+#### What was inventoried
+
+| Location | Contents | Size |
+|---|---|---|
+| `data/snapshots/` | 26 shuttle snapshot CSVs (2026-03-28 to 2026-06-01); site characterisation tables; historical dataset site lists; download tracking | ~13 MB |
+| `data/lists/` | 5 Excel/XLS source files for Marconi, La Thuile, and FLUXNET2015 historical datasets | ~340 KB |
+| `data/extracted/` | 759 per-site directories; BIF, BIFVARINFO, ERA5 (1981–2025), and FLUXMET CSVs at DD/MM/YY (and HH/HR for sub-daily sites) | 6.9 GB |
+| `data/raw/` | Empty (ZIPs not retained after extraction) | 0 B |
+| `data/processed/` | 12 RDS files: raw, QC-gated, and unit-converted data at YY, MM, and DD resolutions | 827 MB |
+| `data/duckdb/` | `fluxnet.duckdb`; 16 tables covering annual/monthly/weekly/daily/hourly × raw/_qc/_converted + manifest | 14 GB |
+| `data/external/` | CGIAR Aridity Index v3.1 (386 MB raster); FAO GEZ 2010 (91 MB shapefile); WorldClim v2.1 19 bioclimatic TIFs at 2.5 arc-min | 2.7 GB |
+| `outputs/` | Authorship CSVs, exclusion/unknown logs, full-site BibTeX and acknowledgment files | — |
+
+#### Historical FLUXNET datasets confirmed present
+
+| Dataset | Location | Sites | Format |
+|---|---|---|---|
+| Marconi (Falge et al. 2001) | `data/snapshots/sites_marconi_clean.csv`, `years_marconi.csv`; `data/lists/Marconi_to_Modern_SiteIDs.xlsx` | 35 (of 38 original) | Site lists + crosswalk |
+| La Thuile (2007) | `data/snapshots/sites_la_thuile_clean.csv`, `years_la_thuile.csv`; `data/lists/LaThuileList.xlsx`, `LaThuile_SiteMetadata.xls` | 252 | Site lists + metadata |
+| FLUXNET2015 (Pastorello et al. 2020) | `data/snapshots/sites_fluxnet2015_clean.csv`, `years_fluxnet2015.csv`; `data/lists/FLUXNET2015.xlsx`, `FLUXNET2015_SiteLocations.xlsx` | 212 | Site lists + metadata |
+
+These are site lists and metadata, not the underlying flux data.
+
+#### Gaps for representativeness figure work
+
+**Present — no download needed:**
+- WorldClim v2.1 BIO1/BIO12 extracted per site; all 19 BIO TIFs on disk for extended climate-space analysis
+- CGIAR Aridity Index v3.1 extracted per site
+- FAO GEZ 2010 extracted per site
+- Köppen-Geiger from BADM CLIMATE_KOEPPEN field (site-level; stale set of 569 sites)
+
+**Not present — needs download:**
+- Beck et al. 2023 Köppen-Geiger raster (1991–2020, 30 arc-sec) — needed for spatially consistent KG coverage maps (doi:10.1038/s41597-023-02549-6)
+- Beck et al. 2023 KG future projections (SSP1-2.6, SSP2-4.5, SSP5-8.5)
+- ESA CCI Land Cover (300 m, 2000–2020) — if landcover is a representativeness axis
+- ESA CCI Biomass v5 (100 m, 2010–2020) — if biomass is an axis
+
+**Lower priority / long-lead:**
+- TRENDY v11 — needs institutional data agreement with TRENDY coordinators
+- CMIP6 climate projections — large volumes; only needed for future-climate representativeness
+
+#### Notable findings
+
+1. `data/raw/` is empty — ZIPs are not retained post-extraction. Re-extraction requires a full re-download.
+2. `site_candidates_full.csv` and both `long_record_site_candidates_*` files are **stale at 569 rows** (should be 759). These are a prerequisite for anomaly and long-record figures (decisions_pending.md Priority 3).
+3. `flux_data_raw_dd_partial.rds` (411 MB) is a dead artifact from the OOM-interrupted DD read before the DuckDB path was implemented. Safe to delete once DuckDB pipeline is confirmed stable.
+4. Only 2 of 19 WorldClim BIO variables are extracted to site level (BIO1 and BIO12). The other 17 TIFs are on disk and can be extracted cheaply if a multi-variable climate PCA is needed for representativeness figures.
+5. ZIP archives are retained alongside extracted rasters in `data/external/`. These could be deleted to reclaim disk space once extraction is confirmed complete.
+
+---
+
 ## 2026-06-24 — Repository status review
 
 ### Repository state

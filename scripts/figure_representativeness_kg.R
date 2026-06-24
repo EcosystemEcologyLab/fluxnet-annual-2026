@@ -81,6 +81,46 @@ global_df <- readr::read_csv(global_path, show_col_types = FALSE)
 sites_df  <- readr::read_csv(sites_path,  show_col_types = FALSE)
 n_sites   <- nrow(sites_df)
 
+# ---- Representativeness metrics (Jaccard + Hellinger) -----------------------
+# Computed here for all aggregation levels; used as figure annotations and CSV.
+
+compute_repr_metrics <- function(p, q) {
+  # p, q: aligned numeric fraction vectors (same length, same class order)
+  p[is.na(p)] <- 0
+  q[is.na(q)] <- 0
+  list(
+    weighted_jaccard   = sum(pmin(p, q)) / sum(pmax(p, q)),
+    hellinger_distance = (1 / sqrt(2)) * sqrt(sum((sqrt(p) - sqrt(q))^2))
+  )
+}
+
+# Helper: build q (site fraction) vector aligned to a given class-order vector
+site_fracs <- function(col_name, levels_vec, df = sites_df) {
+  counts <- table(df[[col_name]])
+  vapply(levels_vec, function(lv) {
+    n <- counts[lv]
+    if (is.na(n)) 0 else as.numeric(n) / n_sites
+  }, numeric(1L))
+}
+
+# 30-class
+p_30 <- global_df$global_land_fraction[match(class_order, global_df$koppen_class)]
+p_30[is.na(p_30)] <- 0
+q_30 <- site_fracs("koppen_class", class_order)
+m30  <- compute_repr_metrics(p_30, q_30)
+
+# 5-class
+p_5 <- vapply(main_order, function(m)
+  sum(global_df$global_land_fraction[global_df$koppen_main == m], na.rm = TRUE),
+  numeric(1L))
+q_5  <- site_fracs("koppen_main", main_order)
+m5   <- compute_repr_metrics(p_5, q_5)
+
+message(sprintf("Metrics — 30-class: J = %.4f, H = %.4f",
+                m30$weighted_jaccard, m30$hellinger_distance))
+message(sprintf("Metrics —  5-class: J = %.4f, H = %.4f",
+                m5$weighted_jaccard,  m5$hellinger_distance))
+
 # ---- Build plot data frames -------------------------------------------------
 
 # 30-class long format
@@ -212,6 +252,14 @@ p30 <- ggplot(plot30, aes(x = bar, y = fraction, fill = koppen_class)) +
     name   = "Fraction of total"
   ) +
   scale_x_discrete(name = NULL) +
+  annotate(
+    "text",
+    x      = Inf, y = Inf,
+    label  = sprintf("J = %.2f\nH = %.2f",
+                     m30$weighted_jaccard, m30$hellinger_distance),
+    hjust  = 1.08, vjust = 1.5,
+    size   = 2.9, family = "sans", colour = "grey25", lineheight = 1.2
+  ) +
   base_theme +
   theme(
     legend.key.size  = unit(0.35, "cm"),
@@ -251,6 +299,14 @@ p5_bars <- ggplot(plot5, aes(x = bar, y = fraction, fill = koppen_main)) +
     name   = "Fraction of total"
   ) +
   scale_x_discrete(name = NULL) +
+  annotate(
+    "text",
+    x      = Inf, y = Inf,
+    label  = sprintf("J = %.2f\nH = %.2f",
+                     m5$weighted_jaccard, m5$hellinger_distance),
+    hjust  = 1.08, vjust = 1.5,
+    size   = 2.9, family = "sans", colour = "grey25", lineheight = 1.2
+  ) +
   base_theme +
   theme(
     legend.key.size = unit(0.45, "cm"),
@@ -338,6 +394,25 @@ all_tl <- dplyr::tibble(koppen_twoletter_code = tl_order) |>
     flag_unstable = n_tl_sites < 5L
   )
 
+# Two-letter metrics (computed here, after all_tl is available)
+p_tl <- all_tl$global_frac
+q_tl <- all_tl$network_frac
+m_tl <- compute_repr_metrics(p_tl, q_tl)
+message(sprintf("Metrics — two-letter: J = %.4f, H = %.4f",
+                m_tl$weighted_jaccard, m_tl$hellinger_distance))
+
+# ---- Write metrics CSV -------------------------------------------------------
+metrics_df <- data.frame(
+  aggregation_level  = c("5class", "13class_twoletter", "30class"),
+  weighted_jaccard   = c(m5$weighted_jaccard,  m_tl$weighted_jaccard,  m30$weighted_jaccard),
+  hellinger_distance = c(m5$hellinger_distance, m_tl$hellinger_distance, m30$hellinger_distance),
+  stringsAsFactors   = FALSE
+)
+metrics_path <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                          "koppen_beck2023_representativeness_metrics.csv")
+readr::write_csv(metrics_df, metrics_path)
+message("Saved metrics: ", metrics_path)
+
 message("\n=== TWO-LETTER CLASS SUMMARY ===")
 print(as.data.frame(dplyr::select(
   all_tl, koppen_twoletter_code, global_frac, n_tl_sites, sampling_ratio, flag_unstable
@@ -397,6 +472,14 @@ pTL_bars <- ggplot(plotTL, aes(x = bar, y = fraction, fill = koppen_twoletter_co
     name   = "Fraction of total"
   ) +
   scale_x_discrete(name = NULL) +
+  annotate(
+    "text",
+    x      = Inf, y = Inf,
+    label  = sprintf("J = %.2f\nH = %.2f",
+                     m_tl$weighted_jaccard, m_tl$hellinger_distance),
+    hjust  = 1.08, vjust = 1.5,
+    size   = 2.9, family = "sans", colour = "grey25", lineheight = 1.2
+  ) +
   base_theme +
   theme(
     legend.key.size = unit(0.4, "cm"),

@@ -562,6 +562,53 @@ No parser functions, BibTeX helpers, cite-key builder, mandated-references logic
 
 ---
 
+## 2026-06-24 — Repository status review
+
+### Repository state
+
+**Environment:** Local Mac mini (no Codespace). Branch `main` is up to date with `origin/main` — no pull required.
+
+**Modified tracked files (not yet committed):**
+
+| File | Authority note |
+|---|---|
+| `outputs/session_info.txt` | Regenerated locally each run — expected, commit separately |
+| `renv/activate.R` | Local renv profile change — stage only after confirming active profile |
+| `review/figures/climate/fig_environmental_response_era5.png` | Locally regenerated; relevant to Priority 2 style pass (see below) |
+
+Approximately 40 untracked files in `logs/` and one new snapshot in `data/snapshots/` (`fluxnet_shuttle_snapshot_20260601T161559.csv`) — not yet committed.
+
+---
+
+### Open paper-critical items (from `docs/decisions_pending.md`)
+
+**Priority 1 — Fig 01: functionally active site line (OPEN)**
+
+The second Y-axis on the network growth figure was computed with the old `last_year >= 2021` definition, before the `presence_df` refactor. `is_functionally_active()` was corrected in commits ee84552 (R/utils.R), but Fig 01 has not been regenerated. The presence CSV (`data/snapshots/site_year_data_presence.csv`) was produced by `03_read.R` on the 759-site dataset and is treated as authoritative. Action: recompute using `is_functionally_active()` (≥3 months valid flux data in at least one year within last 4 years) and regenerate Fig 01.
+
+**Priority 2 — Fig 07 / Fig 08 style harmonisation (OPEN)**
+
+The modified `review/figures/climate/fig_environmental_response_era5.png` in the working tree indicates Fig 08 (ERA5 environmental response) was recently regenerated. Neither Fig 07 (latitudinal gradient) nor Fig 08 has been confirmed against `MAP_STYLE`, `DUR_STYLE`, and `WHITTAKER_STYLE` constants in `R/figures/`. Action: apply style review pass to both figures together and regenerate once confirmed.
+
+**Priority 3 — Rebuild `site_candidates_full.csv` at 759 sites (OPEN)**
+
+`data/snapshots/site_candidates_full.csv` has 569 rows (716-site April lineage). `long_record_site_candidates_gez_kg.csv` is also stale. Any figure joining on candidate status uses the wrong site set. Prerequisite: `03_read.R` must produce updated NEE presence data for 759 sites, then rebuild via `step2_extract_aridity.R`. Tracked in `known_issues.md` §7. This is a prerequisite for anomaly figures and long-record time series.
+
+**Priority 4 — Manuscript drafting**
+
+Pipeline is end-to-end on 759 sites via DuckDB. Figures are stable enough to reference. `docs/methods_requirements.md` contains the section-by-section requirements spec; a few values are marked `[TBD]` for paper-lock time. Methods drafting not yet started — by design per the requirements spec header.
+
+---
+
+### Deferred items (do not action now)
+
+- DuckDB schema-translation refactor (`YEAR`/`DOY` columns) — working patches in `07_figures.R`, schedule for next maintenance pass.
+- `flux_download()` version pinning — deliberately deferred to paper-lock time; env-var format conflict (`0.3.7` install tag vs `0.3.7.post0+dirty` self-report) is part of the same decision.
+- Representativeness analysis climate axis — scope not yet defined; Köppen-Geiger already extracted at all sites when needed.
+- fluxnet package DuckDB rewrite — out of our control; methodological decisions are rewrite-proof.
+
+---
+
 ## 2026-06-11 — FLUXNET shuttle manifest investigation
 
 ### Manifest artifacts: what the shuttle writes, and when

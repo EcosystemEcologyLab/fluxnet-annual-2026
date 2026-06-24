@@ -514,6 +514,18 @@ at the end of each QC script run.
 
 ---
 
+## External Data (`data/external/`)
+
+External rasters and reference datasets in `data/external/` are retained on disk to avoid
+re-downloading when new sites are added to the network. The rasters themselves are static and
+do not need to be regenerated unless a new version of an external product is released. When
+new sites are added, only the per-site extraction needs to re-run, not the raster downloads.
+
+Current contents: `aridity/` (CGIAR Aridity Index v3.1), `gez/` (FAO GEZ 2010 shapefile),
+`worldclim/` (WorldClim v2.1 19 BIO TIFs at 2.5 arc-min).
+
+---
+
 ## Locking the Dataset for Final Paper Analysis
 
 When ready to lock the dataset for the final paper analysis:

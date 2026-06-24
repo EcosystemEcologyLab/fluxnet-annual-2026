@@ -1,26 +1,33 @@
 ## figure_representativeness_aridity.R
 ## Aridity axis for the FLUXNET representativeness figure.
-## Uses CGIAR Aridity Index v3.1 (Zomer et al. 2022) and UNEP 5-class binning.
+## Runs two parallel binning schemes on CGIAR Aridity Index v3.1 data:
+##   (1) 5-class canonical UNEP scheme
+##   (2) 7-class extended scheme with humid subdivisions (FAO-derived)
 ##
 ## Steps executed in order:
 ##   1. Per-site AI extraction for all 767 sites (20260624 snapshot)
-##   2. Global area-weighted UNEP class distribution
-##   3. Representativeness metrics (weighted Jaccard, Hellinger); rename and
-##      extend koppen_beck2023_representativeness_metrics.csv →
-##      representativeness_metrics.csv
-##   4. Stacked bar + sampling-ratio panel figure
-##   5. Methods text (review/figures/representativeness/methods_aridity_unep.md)
+##   2. Global area-weighted distributions for both schemes
+##   3. Representativeness metrics for both schemes; update representativeness_metrics.csv
+##   4. Two stacked-bar + ratio-panel figures
+##   5. Methods text (single file covering both schemes)
 ##
 ## Raster: data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif
-##   - CRS: EPSG:4326; resolution: 0.00833333° (~1 km); INT2U
-##   - Raw integer values × 0.0001 = aridity index (dimensionless ratio P/PET)
-##   - Value 0 = ocean / no-data (not NA in the raster; explicit exclusion below)
-##   - Extent: -60° to 90° latitude (no Antarctic coverage)
+##   INT2U; raw integer × 0.0001 = AI (P/PET); value 0 = ocean/no-data.
+##   Extent: 60°S to 90°N (no Antarctic coverage; explains ~12.6 M km² difference
+##   vs the KG raster total of 147.3 M km²).
 ##
-## Source: Zomer, R.J. et al. (2022) Version 3 of the Global Aridity Index and
-##   Potential Evapotranspiration Database. Sci Data 9, 409.
-##   doi:10.1038/s41597-022-01493-1
+## UNEP 5-class thresholds (canonical, World Atlas of Desertification 1992):
+##   Hyper-Arid < 0.05 | Arid 0.05–0.20 | Semi-Arid 0.20–0.50
+##   Dry Sub-Humid 0.50–0.65 | Humid ≥ 0.65
+##
+## Extended 7-class thresholds (lower 4 = canonical UNEP; upper 3 = FAO-derived):
+##   ...Dry Sub-Humid 0.50–0.65 | Humid (low) 0.65–1.0
+##   Humid (moderate) 1.0–2.0 | Hyper-Humid ≥ 2.0
+##
+## Sources:
+##   Zomer et al. (2022) Sci Data 9:409. doi:10.1038/s41597-022-01493-1
 ##   Figshare: doi:10.6084/m9.figshare.7504448
+##   UNEP (1992) World Atlas of Desertification. Arnold, London.
 
 if (file.exists(".env")) dotenv::load_dot_env()
 source("R/pipeline_config.R")
@@ -41,14 +48,15 @@ rast_path   <- file.path(ar_dir, "ai_v31_yr.tif")
 snap_path   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          "fluxnet_shuttle_snapshot_20260624T095651.csv")
 site_out    <- file.path(FLUXNET_DATA_ROOT, "snapshots", "site_aridity.csv")
-glob_out    <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                         "aridity_unep_global_distribution.csv")
-old_metrics <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                         "koppen_beck2023_representativeness_metrics.csv")
+glob5_out   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                         "aridity_unep5_global_distribution.csv")
+glob7_out   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                         "aridity_unep7_global_distribution.csv")
 metrics_out <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          "representativeness_metrics.csv")
 out_dir     <- file.path("review", "figures", "representativeness")
-fig_out     <- file.path(out_dir, "fig_representativeness_aridity_unep.png")
+fig5_out    <- file.path(out_dir, "fig_representativeness_aridity_unep5.png")
+fig7_out    <- file.path(out_dir, "fig_representativeness_aridity_unep7.png")
 methods_out <- file.path(out_dir, "methods_aridity_unep.md")
 
 for (p in c(rast_path, snap_path)) {
@@ -56,29 +64,38 @@ for (p in c(rast_path, snap_path)) {
 }
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-# ---- UNEP class definitions -------------------------------------------------
-# Raw integer × 0.0001 = AI (P/PET, dimensionless).
-# Value 0 is ocean/no-data; minimum observed Hyper-Arid land value is ~1.
-# In raw integer space (right-exclusive intervals, i.e. [from, to)):
-#   [0, 1)     → ocean (NA)
-#   [1, 500)   → Hyper-Arid   AI < 0.05
-#   [500, 2000) → Arid         0.05 ≤ AI < 0.20
-#   [2000, 5000) → Semi-Arid   0.20 ≤ AI < 0.50
-#   [5000, 6500) → Dry Sub-Humid 0.50 ≤ AI < 0.65
-#   [6500, 65536) → Humid      AI ≥ 0.65
+# ---- Class definitions ------------------------------------------------------
 
-unep_classes <- c("Hyper-Arid", "Arid", "Semi-Arid", "Dry Sub-Humid", "Humid")
-unep_ai_min  <- c(0.00, 0.05, 0.20, 0.50, 0.65)
-unep_ai_max  <- c(0.05, 0.20, 0.50, 0.65, Inf)
+classes5   <- c("Hyper-Arid", "Arid", "Semi-Arid", "Dry Sub-Humid", "Humid")
+ai_min5    <- c(0.00, 0.05, 0.20, 0.50, 0.65)
+ai_max5    <- c(0.05, 0.20, 0.50, 0.65, Inf)
 
-ai_to_unep <- function(ai) {
+classes7   <- c("Hyper-Arid", "Arid", "Semi-Arid", "Dry Sub-Humid",
+                "Humid (low)", "Humid (moderate)", "Hyper-Humid")
+ai_min7    <- c(0.00, 0.05, 0.20, 0.50, 0.65, 1.00, 2.00)
+ai_max7    <- c(0.05, 0.20, 0.50, 0.65, 1.00, 2.00,  Inf)
+
+ai_to_unep5 <- function(ai) {
   dplyr::case_when(
-    is.na(ai) | ai <= 0 ~ NA_character_,
-    ai <  0.05          ~ "Hyper-Arid",
-    ai <  0.20          ~ "Arid",
-    ai <  0.50          ~ "Semi-Arid",
-    ai <  0.65          ~ "Dry Sub-Humid",
-    TRUE                ~ "Humid"
+    is.na(ai) | ai <= 0  ~ NA_character_,
+    ai <  0.05           ~ "Hyper-Arid",
+    ai <  0.20           ~ "Arid",
+    ai <  0.50           ~ "Semi-Arid",
+    ai <  0.65           ~ "Dry Sub-Humid",
+    TRUE                 ~ "Humid"
+  )
+}
+
+ai_to_unep7 <- function(ai) {
+  dplyr::case_when(
+    is.na(ai) | ai <= 0  ~ NA_character_,
+    ai <  0.05           ~ "Hyper-Arid",
+    ai <  0.20           ~ "Arid",
+    ai <  0.50           ~ "Semi-Arid",
+    ai <  0.65           ~ "Dry Sub-Humid",
+    ai <  1.00           ~ "Humid (low)",
+    ai <  2.00           ~ "Humid (moderate)",
+    TRUE                 ~ "Hyper-Humid"
   )
 }
 
@@ -95,7 +112,7 @@ site_coords <- snapshot |>
 N <- nrow(site_coords)
 message("Sites with coordinates: ", N)
 
-# ---- Step 1: Per-site extraction --------------------------------------------
+# ---- Step 1: Per-site extraction (767 sites) --------------------------------
 message("\nExtracting AI at exact site coordinates ...")
 pts <- terra::vect(
   data.frame(x = site_coords$location_long, y = site_coords$location_lat),
@@ -106,15 +123,13 @@ raw_vals <- terra::extract(ai_rast, pts, ID = FALSE)[[1L]]
 site_coords$raw_val        <- raw_vals
 site_coords$aridity_method <- "exact"
 
-# Value 0 = ocean pixel → treat as NA for fallback
+# Value 0 = ocean pixel → NA; apply nearest-land fallback
 site_coords$raw_val[!is.na(site_coords$raw_val) &
                     site_coords$raw_val == 0L] <- NA_integer_
-
 na_idx <- which(is.na(site_coords$raw_val))
 message("NA after exact extraction: ", length(na_idx), " site(s)")
 
 if (length(na_idx) > 0L) {
-  # Mode of non-zero, non-NA integer values
   int_mode <- function(x) {
     x <- x[!is.na(x) & x != 0]
     if (length(x) == 0L) return(NA_integer_)
@@ -135,8 +150,8 @@ if (length(na_idx) > 0L) {
         site_coords$aridity_method[still_na[j]] <-
           paste0("buffer_", round(buf * 111, 0), "km")
         message("  ", site_coords$site_id[still_na[j]],
-                " recovered at buffer ", buf, "° (~", round(buf * 111, 0),
-                " km): raw ", mode_val, " → AI ", round(mode_val * 0.0001, 4))
+                " recovered at buffer ", buf, "°: raw ", mode_val,
+                " (AI ", round(mode_val * 0.0001, 4), ")")
         recovered_any[j] <- TRUE
         break
       }
@@ -145,14 +160,14 @@ if (length(na_idx) > 0L) {
   still_na <- still_na[!recovered_any]
 
   if (length(still_na) > 0L) {
-    message(length(still_na), " site(s) still NA — nearest-land pixel search ...")
+    message(length(still_na), " site(s) still NA — nearest-land search ...")
     for (j in seq_along(still_na)) {
       idx <- still_na[j]
       lng <- site_coords$location_long[idx]
       lat <- site_coords$location_lat[idx]
-      search_ext <- terra::ext(lng - 3, lng + 3, lat - 3, lat + 3)
-      local_rast <- terra::crop(ai_rast, search_ext)
-      local_rast[local_rast == 0] <- NA  # mask ocean
+      local_rast <- terra::crop(ai_rast, terra::ext(lng - 3, lng + 3,
+                                                     lat - 3, lat + 3))
+      local_rast[local_rast == 0] <- NA
       land_pts <- terra::as.points(local_rast, na.rm = TRUE)
       if (terra::nrow(land_pts) == 0L) {
         message("  No land pixels within 3° of ", site_coords$site_id[idx])
@@ -165,132 +180,169 @@ if (length(na_idx) > 0L) {
       site_coords$raw_val[idx]        <- nearest_val
       site_coords$aridity_method[idx] <- paste0("nearest_land_", nearest_km, "km")
       message("  ", site_coords$site_id[idx], " → raw ", nearest_val,
-              " (AI ", round(nearest_val * 0.0001, 4), ") at ",
-              nearest_km, " km")
+              " (AI ", round(nearest_val * 0.0001, 4), ") at ", nearest_km, " km")
     }
     still_na <- still_na[is.na(site_coords$raw_val[still_na])]
   }
-
   if (length(still_na) > 0L) {
     warning(length(still_na), " site(s) remain NA: ",
             paste(site_coords$site_id[still_na], collapse = ", "))
   }
 }
 
-# Build output data frame
 out_sites <- site_coords |>
   dplyr::mutate(
-    ai_value   = raw_val * 0.0001,
-    unep_class = ai_to_unep(ai_value),
-    unep_class = factor(unep_class, levels = unep_classes)
+    ai_value     = raw_val * 0.0001,
+    unep_class_5 = factor(ai_to_unep5(ai_value), levels = classes5),
+    unep_class_7 = factor(ai_to_unep7(ai_value), levels = classes7)
   ) |>
   dplyr::select(site_id, location_lat, location_long,
-                ai_value, unep_class, aridity_method)
+                ai_value, unep_class_5, unep_class_7, aridity_method)
 
 n_sites <- nrow(out_sites)
 
-# Summary
-cat("\n=== UNEP CLASS DISTRIBUTION (", n_sites, " sites) ===\n")
-cls_tbl <- out_sites |>
-  dplyr::count(unep_class, name = "n", .drop = FALSE) |>
+cat("\n=== SITE DISTRIBUTION (", n_sites, " sites) ===\n")
+cat("--- 5-class ---\n")
+cls5_tbl <- out_sites |>
+  dplyr::count(unep_class_5, name = "n", .drop = FALSE) |>
   dplyr::mutate(pct = round(100 * n / sum(n), 1))
-print(as.data.frame(cls_tbl))
-cat("NA remaining:", sum(is.na(out_sites$unep_class)), "\n")
-cat("AI range: [", round(min(out_sites$ai_value, na.rm=TRUE), 4), ",",
-    round(max(out_sites$ai_value, na.rm=TRUE), 4), "]\n")
+print(as.data.frame(cls5_tbl))
+
+cat("--- 7-class ---\n")
+cls7_tbl <- out_sites |>
+  dplyr::count(unep_class_7, name = "n", .drop = FALSE) |>
+  dplyr::mutate(pct = round(100 * n / sum(n), 1))
+print(as.data.frame(cls7_tbl))
+
+cat("NA: ", sum(is.na(out_sites$ai_value)), "\n")
+cat("AI range: [", round(min(out_sites$ai_value, na.rm = TRUE), 4), ",",
+    round(max(out_sites$ai_value, na.rm = TRUE), 4), "]\n")
 
 fb_sites <- out_sites |>
   dplyr::filter(aridity_method != "exact") |>
-  dplyr::select(site_id, ai_value, unep_class, aridity_method)
+  dplyr::select(site_id, ai_value, unep_class_5, unep_class_7, aridity_method)
 if (nrow(fb_sites) > 0L) {
-  cat("\n--- Fallback extraction sites ---\n")
+  cat("--- Fallback sites ---\n")
   print(as.data.frame(fb_sites))
 }
 
-# Write
 readr::write_csv(out_sites, site_out)
 message("Saved: ", site_out)
+
 write_output_metadata(
   site_out,
   input_sources = c(snap_path, rast_path),
   notes = paste0(
     "767-site re-extraction (snapshot 20260624T095651). ",
-    "ai_value = raw_integer * 0.0001 per CGIAR v3.1 documentation. ",
-    "Ocean/no-data pixels have raw value 0; these were treated as NA and ",
-    "recovered via progressive-buffer nearest-land fallback. ",
-    "UNEP class breakpoints: Hyper-Arid AI < 0.05, Arid 0.05–0.20, ",
-    "Semi-Arid 0.20–0.50, Dry Sub-Humid 0.50–0.65, Humid >= 0.65. ",
-    "Overwrites prior 759-site version from snapshot 20260428."
+    "ai_value = raw_integer * 0.0001 per CGIAR v3.1. ",
+    "Ocean pixels (raw value 0) treated as NA; recovered via buffer/nearest-land fallback. ",
+    "unep_class_5: canonical UNEP 5-class (thresholds 0.05/0.20/0.50/0.65). ",
+    "unep_class_7: 5-class + FAO humid subdivisions at 1.0 and 2.0. ",
+    "Replaces prior version (which had single unep_class column)."
   )
 )
 
-# ---- Step 2: Global area-weighted UNEP distribution -------------------------
-message("\nClassifying raster to UNEP classes ...")
+# ---- Step 2: Global distributions -------------------------------------------
+# classify() matrix convention: right=FALSE → intervals [from, to); value 0 → NA
 
-# Classify matrix: [from, to) → class code (NA for ocean value 0)
-rcl <- matrix(c(
-  0,    1,     NA,  # ocean (value 0 only; [0, 1) captures integer 0)
-  1,    500,    1,  # Hyper-Arid:     [1, 500) → raw 1–499
-  500,  2000,   2,  # Arid:           [500, 2000) → raw 500–1999
-  2000, 5000,   3,  # Semi-Arid:      [2000, 5000) → raw 2000–4999
-  5000, 6500,   4,  # Dry Sub-Humid:  [5000, 6500) → raw 5000–6499
-  6500, 65536,  5   # Humid:          [6500, 65536) → raw 6500–65535
+rcl5 <- matrix(c(
+  0,     1,      NA,   # ocean (value 0 only)
+  1,     500,     1,   # Hyper-Arid
+  500,   2000,    2,   # Arid
+  2000,  5000,    3,   # Semi-Arid
+  5000,  6500,    4,   # Dry Sub-Humid
+  6500,  65536,   5    # Humid
 ), ncol = 3, byrow = TRUE)
 
-ar_class   <- terra::classify(ai_rast, rcl, right = FALSE)
-cell_areas <- terra::cellSize(ar_class, mask = TRUE, unit = "km")
+rcl7 <- matrix(c(
+  0,      1,      NA,  # ocean
+  1,      500,     1,  # Hyper-Arid
+  500,    2000,    2,  # Arid
+  2000,   5000,    3,  # Semi-Arid
+  5000,   6500,    4,  # Dry Sub-Humid
+  6500,   10000,   5,  # Humid (low)
+  10000,  20000,   6,  # Humid (moderate)
+  20000,  65536,   7   # Hyper-Humid
+), ncol = 3, byrow = TRUE)
 
-message("Computing zonal sums ...")
-t0         <- proc.time()
-zone_areas <- terra::zonal(cell_areas, ar_class, fun = "sum", na.rm = TRUE)
-elapsed    <- round((proc.time() - t0)[["elapsed"]], 1)
-names(zone_areas) <- c("class_code", "global_land_area_km2")
-message("  Done in ", elapsed, " s  |  ", nrow(zone_areas), " UNEP zones found")
+message("\nClassifying raster → 5-class ...")
+ar5 <- terra::classify(ai_rast, rcl5, right = FALSE)
+message("Computing cell areas (km²) ...")
+cell_areas <- terra::cellSize(ar5, mask = TRUE, unit = "km")
 
-# Keep valid codes only (1–5)
-zone_areas <- zone_areas |>
-  dplyr::filter(class_code >= 1L, class_code <= 5L)
+t0 <- proc.time()
+z5 <- terra::zonal(cell_areas, ar5, fun = "sum", na.rm = TRUE)
+message("  5-class zonal done in ", round((proc.time() - t0)[["elapsed"]], 1), " s")
+names(z5) <- c("class_code", "global_land_area_km2")
+z5 <- z5[z5$class_code >= 1L & z5$class_code <= 5L, ]
 
-total_land_km2 <- sum(zone_areas$global_land_area_km2)
-message("  Total land area: ",
-        format(round(total_land_km2), big.mark = ","), " km²",
-        "  (KG raster: 147,322,862 km² for reference)")
+total_km2 <- sum(z5$global_land_area_km2)
+message("  Total land area: ", format(round(total_km2), big.mark = ","), " km²")
 
-dist_global <- data.frame(
-  class_code = 1:5,
-  unep_class = unep_classes,
-  ai_min     = unep_ai_min,
-  ai_max     = unep_ai_max,
-  stringsAsFactors = FALSE
-) |>
-  dplyr::left_join(zone_areas, by = "class_code") |>
+dist5 <- data.frame(class_code = 1:5, unep_class = classes5,
+                    ai_min = ai_min5, ai_max = ai_max5,
+                    stringsAsFactors = FALSE) |>
+  dplyr::left_join(z5, by = "class_code") |>
   dplyr::mutate(
     global_land_area_km2 = dplyr::coalesce(global_land_area_km2, 0),
-    global_land_fraction = global_land_area_km2 / total_land_km2
+    global_land_fraction = global_land_area_km2 / total_km2,
+    unep_class = factor(unep_class, levels = classes5)
   ) |>
   dplyr::select(unep_class, ai_min, ai_max, global_land_area_km2, global_land_fraction)
 
-cat("\n=== GLOBAL UNEP CLASS DISTRIBUTION ===\n")
-print(as.data.frame(dplyr::mutate(dist_global,
+cat("\n=== GLOBAL 5-CLASS DISTRIBUTION ===\n")
+print(as.data.frame(dplyr::mutate(dist5,
   area_Mkm2 = round(global_land_area_km2 / 1e6, 2),
-  pct       = round(global_land_fraction * 100, 1)
+  pct = round(global_land_fraction * 100, 1)
 )[, c("unep_class", "area_Mkm2", "pct")]))
 
-readr::write_csv(dist_global, glob_out)
-message("Saved: ", glob_out)
+message("\nClassifying raster → 7-class ...")
+ar7 <- terra::classify(ai_rast, rcl7, right = FALSE)
+t0  <- proc.time()
+z7  <- terra::zonal(cell_areas, ar7, fun = "sum", na.rm = TRUE)
+message("  7-class zonal done in ", round((proc.time() - t0)[["elapsed"]], 1), " s")
+names(z7) <- c("class_code", "global_land_area_km2")
+z7 <- z7[z7$class_code >= 1L & z7$class_code <= 7L, ]
+
+dist7 <- data.frame(class_code = 1:7, unep_class = classes7,
+                    ai_min = ai_min7, ai_max = ai_max7,
+                    stringsAsFactors = FALSE) |>
+  dplyr::left_join(z7, by = "class_code") |>
+  dplyr::mutate(
+    global_land_area_km2 = dplyr::coalesce(global_land_area_km2, 0),
+    global_land_fraction = global_land_area_km2 / total_km2,
+    unep_class = factor(unep_class, levels = classes7)
+  ) |>
+  dplyr::select(unep_class, ai_min, ai_max, global_land_area_km2, global_land_fraction)
+
+cat("\n=== GLOBAL 7-CLASS DISTRIBUTION ===\n")
+print(as.data.frame(dplyr::mutate(dist7,
+  area_Mkm2 = round(global_land_area_km2 / 1e6, 2),
+  pct = round(global_land_fraction * 100, 1)
+)[, c("unep_class", "area_Mkm2", "pct")]))
+
+readr::write_csv(dist5, glob5_out)
+readr::write_csv(dist7, glob7_out)
+message("Saved: ", glob5_out)
+message("Saved: ", glob7_out)
+
+glob_meta_path <- sub("unep5_", "unep_", glob5_out) |>
+  sub("distribution.csv", "distribution.meta.json", x = _)
+glob_meta_path <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                            "aridity_unep_global_distribution.meta.json")
 write_output_metadata(
-  glob_out,
+  glob5_out,
   input_sources = rast_path,
   notes = paste0(
-    "Area-weighted global UNEP aridity class distribution via ",
+    "Global area-weighted UNEP aridity distribution (5-class and 7-class) via ",
     "terra::classify() + terra::cellSize(mask=TRUE, unit='km') + ",
-    "terra::zonal(fun='sum'). Value 0 (ocean) set to NA via classify matrix. ",
-    "Total land area: ", format(round(total_land_km2), big.mark = ","), " km². ",
-    "Elapsed (classify + zonal): ", elapsed, " s."
+    "terra::zonal(fun='sum'). Value 0 set to NA (ocean). ",
+    "Total land area: ", format(round(total_km2), big.mark = ","), " km² ",
+    "(aridity raster covers 60°S–90°N; excludes Antarctica)."
   )
 )
 
-# ---- Step 3: Metrics + extend representativeness CSV -----------------------
+# ---- Step 3: Metrics + update representativeness_metrics.csv ---------------
 compute_repr_metrics <- function(p, q) {
   p[is.na(p)] <- 0; q[is.na(q)] <- 0
   list(
@@ -299,136 +351,101 @@ compute_repr_metrics <- function(p, q) {
   )
 }
 
-p_ar <- dist_global$global_land_fraction
-q_ar <- vapply(unep_classes, function(cl)
-  sum(out_sites$unep_class == cl, na.rm = TRUE) / n_sites,
-  numeric(1L))
+q5 <- vapply(classes5, function(cl)
+  sum(out_sites$unep_class_5 == cl, na.rm = TRUE) / n_sites, numeric(1L))
+q7 <- vapply(classes7, function(cl)
+  sum(out_sites$unep_class_7 == cl, na.rm = TRUE) / n_sites, numeric(1L))
 
-m_ar <- compute_repr_metrics(p_ar, q_ar)
-message(sprintf("\nAridity metrics: J = %.4f, H = %.4f",
-                m_ar$weighted_jaccard, m_ar$hellinger_distance))
+m5 <- compute_repr_metrics(dist5$global_land_fraction, q5)
+m7 <- compute_repr_metrics(dist7$global_land_fraction, q7)
 
-# Load existing KG metrics and migrate schema (add axis + n_classes columns)
-if (file.exists(old_metrics)) {
-  old_df <- readr::read_csv(old_metrics, show_col_types = FALSE) |>
-    dplyr::mutate(
-      axis      = "koppen_beck2023",
-      n_classes = dplyr::case_when(
-        aggregation_level == "5class"            ~ 5L,
-        aggregation_level == "13class_twoletter" ~ 13L,
-        aggregation_level == "30class"           ~ 30L,
-        TRUE                                     ~ NA_integer_
-      )
-    ) |>
-    dplyr::select(axis, aggregation_level, n_classes,
-                  weighted_jaccard, hellinger_distance)
+message(sprintf("\n5-class metrics: J = %.4f, H = %.4f",
+                m5$weighted_jaccard, m5$hellinger_distance))
+message(sprintf("7-class metrics: J = %.4f, H = %.4f",
+                m7$weighted_jaccard, m7$hellinger_distance))
+
+# Sampling ratios for reporting
+samp5 <- data.frame(unep_class = classes5, global = dist5$global_land_fraction,
+                    network = q5, ratio = q5 / dist5$global_land_fraction)
+samp7 <- data.frame(unep_class = classes7, global = dist7$global_land_fraction,
+                    network = q7, ratio = q7 / dist7$global_land_fraction)
+cat("\n=== SAMPLING RATIOS — 5-class ===\n")
+print(as.data.frame(dplyr::mutate(samp5,
+  g = round(global*100,1), n = round(network*100,1), r = round(ratio,2)
+)[, c("unep_class","g","n","r")]))
+cat("\n=== SAMPLING RATIOS — 7-class ===\n")
+print(as.data.frame(dplyr::mutate(samp7,
+  g = round(global*100,1), n = round(network*100,1), r = round(ratio,2)
+)[, c("unep_class","g","n","r")]))
+
+# Update metrics CSV: keep KG rows, replace any aridity rows, append new ones
+old_met <- if (file.exists(metrics_out)) {
+  readr::read_csv(metrics_out, show_col_types = FALSE) |>
+    dplyr::filter(!grepl("^aridity", axis))  # drop old aridity rows
 } else {
-  old_df <- data.frame(axis = character(), aggregation_level = character(),
-                       n_classes = integer(), weighted_jaccard = numeric(),
-                       hellinger_distance = numeric())
+  data.frame(axis = character(), aggregation_level = character(),
+             n_classes = integer(), weighted_jaccard = numeric(),
+             hellinger_distance = numeric())
 }
 
-new_row <- data.frame(
-  axis               = "aridity_unep",
-  aggregation_level  = "5class",
-  n_classes          = 5L,
-  weighted_jaccard   = m_ar$weighted_jaccard,
-  hellinger_distance = m_ar$hellinger_distance,
-  stringsAsFactors   = FALSE
+metrics_df <- dplyr::bind_rows(
+  old_met,
+  data.frame(axis = "aridity_unep5", aggregation_level = "unep5", n_classes = 5L,
+             weighted_jaccard = m5$weighted_jaccard,
+             hellinger_distance = m5$hellinger_distance),
+  data.frame(axis = "aridity_unep7", aggregation_level = "unep7", n_classes = 7L,
+             weighted_jaccard = m7$weighted_jaccard,
+             hellinger_distance = m7$hellinger_distance)
 )
-
-metrics_df <- dplyr::bind_rows(old_df, new_row)
 readr::write_csv(metrics_df, metrics_out)
 message("Saved: ", metrics_out)
 
-cat("\n=== REPRESENTATIVENESS METRICS (all axes) ===\n")
-print(as.data.frame(metrics_df))
+cat("\n=== FULL METRICS TABLE ===\n")
+print(as.data.frame(dplyr::mutate(metrics_df,
+  J = round(weighted_jaccard, 3), H = round(hellinger_distance, 3)
+)[, c("axis", "aggregation_level", "n_classes", "J", "H")]))
 
-# Sampling ratios for reporting
-samp_ratio_ar <- dplyr::tibble(
-  unep_class   = unep_classes,
-  global_frac  = p_ar,
-  network_frac = q_ar,
-  sampling_ratio = q_ar / p_ar
-)
-cat("\n=== ARIDITY SAMPLING RATIOS ===\n")
-print(as.data.frame(dplyr::mutate(samp_ratio_ar,
-  global_pct  = round(global_frac  * 100, 1),
-  network_pct = round(network_frac * 100, 1),
-  ratio       = round(sampling_ratio, 2)
-)[, c("unep_class", "global_pct", "network_pct", "ratio")]))
+# ---- Step 4: Figures --------------------------------------------------------
+# Color palettes (documented):
+# 5-class: Humid = #cccccc (pale gray) instead of white-no-fill because the
+#   Humid segment is the global majority and white-on-white is structurally
+#   invisible. Uniform thin grey border (grey70) on all segments.
+# 7-class: Humid trio = blues (light → dark → near-black) completing the
+#   red-to-blue colorbar across the full aridity continuum.
 
-# ---- Step 4: Figure ---------------------------------------------------------
-# Color palette — user spec with one substitution documented here:
-# Original spec for Humid: white / no fill. In a stacked bar where Humid
-# is the majority global class, white produces structural visual issues
-# (invisible segment against white background; no border cue for segment extent).
-# Substituted #cccccc (pale gray) with a uniform thin grey border (grey70) on
-# all segments for visual consistency. This is documented in the methods text.
-color_ar <- c(
+color5 <- c(
   "Hyper-Arid"    = "#d73027",
   "Arid"          = "#fc8d59",
   "Semi-Arid"     = "#ffff33",
   "Dry Sub-Humid" = "#66bd63",
   "Humid"         = "#cccccc"
 )
+color7 <- c(
+  "Hyper-Arid"       = "#d73027",
+  "Arid"             = "#fc8d59",
+  "Semi-Arid"        = "#ffff33",
+  "Dry Sub-Humid"    = "#66bd63",
+  "Humid (low)"      = "#74add1",
+  "Humid (moderate)" = "#4575b4",
+  "Hyper-Humid"      = "#313695"
+)
 
-# Long format for stacked bars
-site_ar <- out_sites |>
-  dplyr::count(unep_class, name = "n", .drop = FALSE) |>
-  dplyr::mutate(fraction = n / n_sites,
-                unep_class = factor(unep_class, levels = unep_classes))
-
-dist_global <- dist_global |>
-  dplyr::mutate(unep_class = factor(unep_class, levels = unep_classes))
-
-plot_ar <- dplyr::tibble(unep_class = factor(unep_classes, levels = unep_classes)) |>
-  dplyr::left_join(
-    dplyr::select(dist_global, unep_class, global = global_land_fraction),
-    by = "unep_class"
-  ) |>
-  dplyr::left_join(
-    dplyr::select(site_ar, unep_class, network = fraction),
-    by = "unep_class"
-  ) |>
-  dplyr::mutate(
-    global  = dplyr::coalesce(global,  0),
-    network = dplyr::coalesce(network, 0)
-  ) |>
-  tidyr::pivot_longer(
-    cols      = c(global, network),
-    names_to  = "bar",
-    values_to = "fraction"
-  ) |>
-  dplyr::mutate(
-    bar = factor(bar,
-                 levels = c("global", "network"),
-                 labels = c("Global land", "FLUXNET\n(767 sites)")),
-    label = dplyr::case_when(
-      fraction >= 0.08  ~ sprintf("%s\n%.1f%%",
-                                  as.character(unep_class), fraction * 100),
-      fraction >= 0.03  ~ sprintf("%s  %.1f%%",
-                                  as.character(unep_class), fraction * 100),
-      fraction >  0     ~ as.character(unep_class),
-      TRUE              ~ NA_character_
-    )
-  )
-
-# Sampling ratio data (driest → most humid, left to right in panel)
-ratio_ar <- dplyr::tibble(unep_class = factor(unep_classes, levels = unep_classes)) |>
-  dplyr::left_join(
-    dplyr::rename(dist_global, global_frac = global_land_fraction),
-    by = "unep_class"
-  ) |>
-  dplyr::left_join(
-    dplyr::rename(site_ar, network_frac = fraction),
-    by = "unep_class"
-  ) |>
-  dplyr::mutate(
-    network_frac   = dplyr::coalesce(network_frac, 0),
-    sampling_ratio = network_frac / global_frac,
-    label          = sprintf("%.2f×", sampling_ratio)
-  )
+labels5 <- c(
+  "Hyper-Arid"    = "Hyper-Arid (AI < 0.05)",
+  "Arid"          = "Arid (0.05–0.20)",
+  "Semi-Arid"     = "Semi-Arid (0.20–0.50)",
+  "Dry Sub-Humid" = "Dry Sub-Humid (0.50–0.65)",
+  "Humid"         = "Humid (AI ≥ 0.65)"
+)
+labels7 <- c(
+  "Hyper-Arid"       = "Hyper-Arid (AI < 0.05)",
+  "Arid"             = "Arid (0.05–0.20)",
+  "Semi-Arid"        = "Semi-Arid (0.20–0.50)",
+  "Dry Sub-Humid"    = "Dry Sub-Humid (0.50–0.65)",
+  "Humid (low)"      = "Humid, low (0.65–1.0)",
+  "Humid (moderate)" = "Humid, moderate (1.0–2.0)",
+  "Hyper-Humid"      = "Hyper-Humid (AI ≥ 2.0)"
+)
 
 base_theme <- theme_minimal(base_size = 10, base_family = "sans") +
   theme(
@@ -440,186 +457,213 @@ base_theme <- theme_minimal(base_size = 10, base_family = "sans") +
     panel.background   = element_rect(fill = "white", colour = NA)
   )
 
-pAR_bars <- ggplot(plot_ar, aes(x = bar, y = fraction, fill = unep_class)) +
-  geom_bar(stat = "identity", width = 0.55, colour = "grey70", linewidth = 0.25) +
-  geom_text(
-    aes(label = label),
-    position   = position_stack(vjust = 0.5),
-    size       = 3.0,
-    family     = "sans",
-    colour     = "black",
-    lineheight = 0.9,
-    na.rm      = TRUE
-  ) +
-  scale_fill_manual(
-    values = color_ar,
-    breaks = unep_classes,
-    labels = c(
-      "Hyper-Arid"    = "Hyper-Arid (AI < 0.05)",
-      "Arid"          = "Arid (0.05–0.20)",
-      "Semi-Arid"     = "Semi-Arid (0.20–0.50)",
-      "Dry Sub-Humid" = "Dry Sub-Humid (0.50–0.65)",
-      "Humid"         = "Humid (AI ≥ 0.65)"
-    ),
-    name  = NULL,
-    guide = guide_legend(ncol = 1, reverse = FALSE,
-                         override.aes = list(colour = "grey70", linewidth = 0.25))
-  ) +
-  scale_y_continuous(
-    expand = expansion(mult = c(0, 0.01)),
-    labels = scales::percent_format(accuracy = 1),
-    name   = "Fraction of total"
-  ) +
-  scale_x_discrete(name = NULL) +
-  annotate(
-    "text",
-    x     = Inf, y = Inf,
-    label = sprintf("J = %.2f\nH = %.2f",
-                    m_ar$weighted_jaccard, m_ar$hellinger_distance),
-    hjust = 1.08, vjust = 1.5,
-    size  = 2.9, family = "sans", colour = "grey25", lineheight = 1.2
-  ) +
-  base_theme +
-  theme(
-    legend.key.size = unit(0.45, "cm"),
-    legend.text     = element_text(size = 8)
+# Helper: build long-format plot data from a distribution + site fractions
+make_plot_df <- function(dist_df, q_vec, class_levels, bar_label_fn) {
+  site_df <- data.frame(unep_class = factor(class_levels, levels = class_levels),
+                        network = q_vec)
+  dplyr::tibble(unep_class = factor(class_levels, levels = class_levels)) |>
+    dplyr::left_join(
+      dplyr::select(dist_df, unep_class, global = global_land_fraction),
+      by = "unep_class"
+    ) |>
+    dplyr::left_join(site_df, by = "unep_class") |>
+    dplyr::mutate(global  = dplyr::coalesce(global,  0),
+                  network = dplyr::coalesce(network, 0)) |>
+    tidyr::pivot_longer(c(global, network), names_to = "bar", values_to = "fraction") |>
+    dplyr::mutate(
+      bar = factor(bar,
+                   levels = c("global", "network"),
+                   labels = c("Global land", "FLUXNET\n(767 sites)")),
+      label = bar_label_fn(as.character(unep_class), fraction)
+    )
+}
+
+# Helper: build sampling ratio data frame
+make_ratio_df <- function(dist_df, q_vec, class_levels) {
+  dplyr::tibble(unep_class = factor(class_levels, levels = class_levels)) |>
+    dplyr::left_join(
+      dplyr::rename(dist_df, global_frac = global_land_fraction),
+      by = "unep_class"
+    ) |>
+    dplyr::mutate(
+      network_frac   = q_vec,
+      sampling_ratio = network_frac / global_frac,
+      label          = sprintf("%.2f×", sampling_ratio)
+    )
+}
+
+# Helper: build figure (bars / ratio panel)
+make_figure <- function(plot_df, ratio_df, color_map, class_levels,
+                        legend_labels, metrics_list, ratio_limits) {
+  p_bars <- ggplot(plot_df, aes(x = bar, y = fraction, fill = unep_class)) +
+    geom_bar(stat = "identity", width = 0.55, colour = "grey70", linewidth = 0.25) +
+    geom_text(
+      aes(label = label),
+      position = position_stack(vjust = 0.5),
+      size = 2.9, family = "sans", colour = "black", lineheight = 0.9, na.rm = TRUE
+    ) +
+    scale_fill_manual(
+      values = color_map, breaks = class_levels, labels = legend_labels,
+      name = NULL,
+      guide = guide_legend(ncol = 1, reverse = FALSE,
+                           override.aes = list(colour = "grey70", linewidth = 0.25))
+    ) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.01)),
+                       labels = scales::percent_format(accuracy = 1),
+                       name = "Fraction of total") +
+    scale_x_discrete(name = NULL) +
+    annotate("text", x = Inf, y = Inf,
+             label = sprintf("J = %.2f\nH = %.2f",
+                             metrics_list$weighted_jaccard,
+                             metrics_list$hellinger_distance),
+             hjust = 1.08, vjust = 1.5,
+             size = 2.9, family = "sans", colour = "grey25", lineheight = 1.2) +
+    base_theme +
+    theme(legend.key.size = unit(0.42, "cm"),
+          legend.text     = element_text(size = 8))
+
+  p_ratio <- ggplot(ratio_df,
+                    aes(x = unep_class, y = sampling_ratio, colour = unep_class)) +
+    geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50", linewidth = 0.5) +
+    geom_segment(aes(xend = unep_class, yend = 1),
+                 colour = "grey75", linewidth = 0.5) +
+    geom_point(size = 3.5) +
+    geom_text(aes(label = label), vjust = -0.65, size = 2.7, family = "sans",
+              colour = "black") +
+    scale_colour_manual(values = color_map[class_levels], guide = "none") +
+    scale_y_continuous(
+      name = "Sampling ratio\n(network / global)",
+      trans = "log2",
+      breaks = c(0.0625, 0.25, 0.5, 1, 2, 4, 8),
+      labels = c("0.06×", "0.25×", "0.5×", "1×",
+                 "2×", "4×", "8×"),
+      limits = ratio_limits
+    ) +
+    scale_x_discrete(name = NULL) +
+    base_theme +
+    theme(
+      panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
+      panel.grid.major.x = element_blank(),
+      axis.text.x        = element_text(size = 7.5, angle = 12, hjust = 0.7),
+      axis.title.y       = element_text(size = 8),
+      legend.position    = "none"
+    )
+
+  p_bars / p_ratio +
+    plot_layout(heights = c(3, 1.8), guides = "keep") &
+    theme(plot.background = element_rect(fill = "white", colour = NA))
+}
+
+# Label helpers: tiered thresholds
+label_fn5 <- function(cls, frac) {
+  dplyr::case_when(
+    frac >= 0.08  ~ sprintf("%s\n%.1f%%", cls, frac * 100),
+    frac >= 0.03  ~ sprintf("%s  %.1f%%", cls, frac * 100),
+    frac >  0     ~ cls,
+    TRUE          ~ NA_character_
   )
-
-pAR_ratio <- ggplot(ratio_ar,
-                    aes(x = unep_class, y = sampling_ratio,
-                        colour = unep_class)) +
-  geom_hline(yintercept = 1, linetype = "dashed",
-             colour = "grey50", linewidth = 0.5) +
-  geom_segment(aes(xend = unep_class, yend = 1),
-               colour = "grey75", linewidth = 0.5) +
-  geom_point(size = 3.5) +
-  geom_text(
-    aes(label = label),
-    vjust  = -0.65,
-    size   = 2.9,
-    family = "sans",
-    colour = "black"
-  ) +
-  scale_colour_manual(values = color_ar, guide = "none") +
-  scale_y_continuous(
-    name   = "Sampling ratio\n(network / global)",
-    trans  = "log2",
-    breaks = c(0.0625, 0.25, 0.5, 1, 2, 4),
-    labels = c("0.06×", "0.25×", "0.5×", "1×", "2×", "4×"),
-    limits = c(0.03, 6)
-  ) +
-  scale_x_discrete(name = NULL) +
-  base_theme +
-  theme(
-    panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
-    panel.grid.major.x = element_blank(),
-    axis.text.x        = element_text(size = 8, angle = 10, hjust = 0.7),
-    axis.title.y       = element_text(size = 8),
-    legend.position    = "none"
+}
+label_fn7 <- function(cls, frac) {
+  dplyr::case_when(
+    frac >= 0.07  ~ sprintf("%s\n%.1f%%", cls, frac * 100),
+    frac >= 0.025 ~ sprintf("%s  %.1f%%", cls, frac * 100),
+    frac >  0     ~ cls,
+    TRUE          ~ NA_character_
   )
+}
 
-pAR <- pAR_bars / pAR_ratio +
-  plot_layout(heights = c(3, 1.8), guides = "keep") &
-  theme(plot.background = element_rect(fill = "white", colour = NA))
+# Compute the ratio y-axis limits dynamically to include all finite ratios
+all_ratios5 <- q5 / dist5$global_land_fraction
+all_ratios7 <- q7 / dist7$global_land_fraction
+finite5 <- all_ratios5[is.finite(all_ratios5) & all_ratios5 > 0]
+finite7 <- all_ratios7[is.finite(all_ratios7) & all_ratios7 > 0]
+ylim5 <- c(min(finite5) * 0.55, max(finite5) * 2.2)
+ylim7 <- c(min(finite7) * 0.55, max(finite7) * 2.2)
 
-ggsave(fig_out, plot = pAR, width = 7, height = 6.5, dpi = 200, bg = "white")
-message("Saved: ", fig_out)
+# 5-class figure
+pd5    <- make_plot_df(dist5, q5, classes5, label_fn5)
+rd5    <- make_ratio_df(dist5, q5, classes5)
+fig_p5 <- make_figure(pd5, rd5, color5, classes5, labels5, m5, ylim5)
+ggsave(fig5_out, plot = fig_p5, width = 7, height = 6.5, dpi = 200, bg = "white")
+message("Saved: ", fig5_out)
+
+# 7-class figure
+pd7    <- make_plot_df(dist7, q7, classes7, label_fn7)
+rd7    <- make_ratio_df(dist7, q7, classes7)
+fig_p7 <- make_figure(pd7, rd7, color7, classes7, labels7, m7, ylim7)
+ggsave(fig7_out, plot = fig_p7, width = 7.5, height = 6.5, dpi = 200, bg = "white")
+message("Saved: ", fig7_out)
 
 # ---- Step 5: Methods text ---------------------------------------------------
-global_pct_hu <- round(dist_global$global_land_fraction[dist_global$unep_class == "Humid"]  * 100, 1)
-global_pct_ha <- round(dist_global$global_land_fraction[dist_global$unep_class == "Hyper-Arid"] * 100, 1)
+pct_humid5_g  <- round(dist5$global_land_fraction[dist5$unep_class == "Humid"]    * 100, 1)
+pct_ha_g      <- round(dist5$global_land_fraction[dist5$unep_class == "Hyper-Arid"] * 100, 1)
+pct_hh_g      <- round(dist7$global_land_fraction[dist7$unep_class == "Hyper-Humid"] * 100, 1)
+pct_humid7_n  <- round(sum(q7[classes7 %in% c("Humid (low)","Humid (moderate)","Hyper-Humid")]) * 100, 1)
 
-methods_text <- sprintf(
-'Per-site aridity values were extracted from the CGIAR Global Aridity Index
-and Potential Evapotranspiration Dataset, Version 3.1 (Zomer et al. 2022).
-The dataset provides annual mean aridity index (AI) values at 30 arc-second
-(~1 km) resolution, derived from long-term (1970–2000) averages of precipitation
-and reference evapotranspiration computed by the Penman-Monteith equation. Full
-citation: Zomer, R.J., Trabucco, A., Bossio, D.A., van Straaten, O., Verchot,
-L.V. (2022). Version 3 of the Global Aridity Index and Potential
-Evapotranspiration Database. Scientific Data 9, 409.
-doi:10.1038/s41597-022-01493-1. Dataset archived at Figshare:
-doi:10.6084/m9.figshare.7504448.
-
-The aridity index is defined as the ratio of annual precipitation to annual
-potential evapotranspiration (AI = P/PET), and is dimensionless. Values less
-than one indicate more evaporative demand than precipitation supply (i.e., a
-water deficit), while values greater than one indicate surplus. The raster
-stores values as 16-bit unsigned integers scaled by 10,000, so that raw integer
-values must be multiplied by 0.0001 to obtain the true AI.
-
-Sites were classified into the five standard UNEP aridity categories as defined
-in the UNEP World Atlas of Desertification (UNEP 1992): Hyper-Arid (AI < 0.05),
-Arid (0.05 <= AI < 0.20), Semi-Arid (0.20 <= AI < 0.50),
-Dry Sub-Humid (0.50 <= AI < 0.65), and Humid (AI >= 0.65). These five classes
-partition a continuous gradient from the most xeric environments to perhumid
-conditions.
-
-Per-site AI values were extracted using terra::extract() at the exact reported
-latitude and longitude of each FLUXNET site. The CGIAR raster assigns a value
-of zero to ocean and water-body pixels (rather than a formal NA flag), so pixels
-with raw value zero were treated as missing and a nearest-land recovery procedure
-was applied: a progressive circular buffer (0.01 to 0.5 degrees) was searched for
-non-zero pixel values, and if unsuccessful a nearest-land pixel search within a
-3-degree window was used (terra::as.points(na.rm=TRUE) and terra::distance()
-to locate the closest non-zero cell). The aridity_method column in
-site_aridity.csv records whether each site was assigned by exact extraction or
-by the fallback procedure.
-
-The area-weighted global UNEP class distribution was computed using the same
-geodesic approach applied to the Köppen-Geiger axis. The raster was first
-classified into five class codes (zero set to NA to exclude ocean) using
-terra::classify(), then per-pixel land area in km² was computed with
-terra::cellSize(mask=TRUE, unit="km"), accounting for convergence of meridians
-at high latitudes. terra::zonal(fun="sum") accumulated land area per class.
-Total land area from this raster: %s km² (the aridity raster covers 60°S to
-90°N; the small difference from the KG total of 147,322,862 km² reflects
-differences in land mask and coverage).
-
-The sampling ratio for each class is the network fraction divided by the global
-land fraction: values above 1 indicate over-representation of that climate type
-in the FLUXNET network relative to its global land area; values below 1 indicate
-under-representation.
-
-Two scalar metrics summarise overall representativeness. The weighted Jaccard
-similarity (also known as the Ruzicka index):
-
-    J = sum(min(p_k, q_k)) / sum(max(p_k, q_k))
-
-where p_k is the global land fraction and q_k is the network fraction of class k,
-is bounded [0, 1]; J = 1 means the distributions are identical and J = 0 means
-no overlap. For the UNEP aridity axis at five-class aggregation, J = %.2f and
-the Hellinger distance H = %.2f. Hellinger distance:
-
-    H = (1/sqrt(2)) * sqrt(sum((sqrt(p_k) - sqrt(q_k))^2))
-
-is also bounded [0, 1]; H = 0 means identical distributions and H = 1 means
-maximal divergence. Hellinger is more sensitive than Jaccard to specific class
-mismatches where one distribution has a large fraction in a class that the other
-has near zero.
-
-The Humid class (AI >= 0.65) constitutes %.1f%% of global land area by this
-analysis but is represented by a moderate share of the network (temperate and
-boreal forests, which support high tower density). The Hyper-Arid class
-(AI < 0.05) covers %.1f%% of global land area and is structurally under-sampled
-for the same physical reasons as polar EF in the Köppen-Geiger analysis: eddy
-covariance towers in hyperarid environments require substantial logistical
-infrastructure and are rarely established in the most remote desert interiors.
-
-Color palette for the figure: Hyper-Arid #d73027, Arid #fc8d59, Semi-Arid
-#ffff33, Dry Sub-Humid #66bd63. The original color specification called for
-white (no fill) for the Humid class. In a stacked bar where Humid is the
-majority global class, a white fill is structurally invisible against the white
-panel background. The Humid class is therefore displayed in pale gray (#cccccc)
-with a thin grey border (grey70) applied uniformly to all segments.
-',
-  format(round(total_land_km2), big.mark = ","),
-  m_ar$weighted_jaccard,
-  m_ar$hellinger_distance,
-  global_pct_hu,
-  global_pct_ha
+methods_lines <- c(
+  "Per-site aridity values were extracted from the CGIAR Global Aridity Index",
+  "and Potential Evapotranspiration Dataset, Version 3.1 (Zomer et al. 2022;",
+  "doi:10.1038/s41597-022-01493-1; Figshare doi:10.6084/m9.figshare.7504448).",
+  "The dataset provides annual mean aridity index (AI) values at 30 arc-second",
+  "(~1 km) resolution, derived from long-term (1970-2000) climate averages. The",
+  "AI is defined as P/PET (annual precipitation divided by annual potential",
+  "evapotranspiration computed by the Penman-Monteith equation) and is",
+  "dimensionless. Values below one indicate more evaporative demand than",
+  "precipitation supply; values above one indicate a water surplus. The raster",
+  "stores 16-bit unsigned integers scaled by 10,000 (multiply by 0.0001 to obtain",
+  "the true AI). Ocean and water-body pixels carry raw value 0 (not a formal NA",
+  "flag); these were treated as missing data in all computations.",
+  "",
+  "Sites were classified into two parallel aridity schemes. The five-class",
+  "canonical UNEP scheme follows the World Atlas of Desertification (UNEP 1992):",
+  "Hyper-Arid (AI < 0.05), Arid (0.05 to 0.20), Semi-Arid (0.20 to 0.50), Dry",
+  "Sub-Humid (0.50 to 0.65), and Humid (AI >= 0.65). The seven-class extended",
+  "scheme retains these four lower thresholds and subdivides the Humid class",
+  "following FAO usage: Humid (low) (0.65 to 1.0), Humid (moderate) (1.0 to 2.0),",
+  "and Hyper-Humid (AI >= 2.0). The 1.0 threshold approximately marks the",
+  "transition from energy-limited to water-excess conditions; the 2.0 threshold",
+  "separates the moderately humid zone from rainforest-scale moisture regimes. Both",
+  "schemes are shown to support a decision on which granularity goes into the final",
+  "paper figure.",
+  "",
+  "Per-site AI values were extracted using terra::extract() at the exact reported",
+  "coordinates of each FLUXNET site. Three sites (US-KS3, US-TaS, CN-SnB) are",
+  "wetland sites whose coordinates fall on the raster ocean mask. For these, a",
+  "nearest-land pixel was identified within a 3-degree search window using",
+  "terra::as.points() and terra::distance(); all three were recovered at 0.6-1.0 km",
+  "and assigned to the Humid class (AI 0.74-0.97). The aridity_method column in",
+  "site_aridity.csv records the extraction method per site.",
+  "",
+  "The area-weighted global distribution was computed geodesically. The raster was",
+  "classified to integer class codes using terra::classify() (value 0 mapped to NA",
+  "to exclude ocean). terra::cellSize(mask=TRUE, unit='km') computed per-pixel land",
+  "area in km2, correctly accounting for meridional convergence at high latitudes.",
+  "terra::zonal(fun='sum') accumulated land area per class without materialising the",
+  sprintf("full raster. Total land area: %s km2 (aridity raster covers 60 degrees S",
+          format(round(total_km2), big.mark = ",")),
+  "to 90 degrees N; excludes Antarctica, explaining the ~12.6 M km2 difference from",
+  "the KG raster total of 147.3 M km2). For the 7-class scheme, the same cell-area",
+  "raster was reused and only the zonal summation was re-run.",
+  "",
+  "The sampling ratio for each class is the network fraction divided by the global",
+  "land fraction (values above 1 = over-sampled, below 1 = under-sampled). Two",
+  "scalar metrics summarise overall representativeness. The weighted Jaccard",
+  "(Ruzicka) similarity J = sum(min(p,q)) / sum(max(p,q)) and Hellinger distance",
+  "H = (1/sqrt(2)) * sqrt(sum((sqrt(p) - sqrt(q))^2)) are both bounded [0,1].",
+  sprintf("For the 5-class scheme: J = %.2f, H = %.2f. For the 7-class scheme:",
+          m5$weighted_jaccard, m5$hellinger_distance),
+  sprintf("J = %.2f, H = %.2f. Jaccard is interpretable as an overlap fraction;",
+          m7$weighted_jaccard, m7$hellinger_distance),
+  "Hellinger is more sensitive to class-specific mismatches.",
+  "",
+  "Color palette note: the 5-class figure uses pale gray (#cccccc) for the Humid",
+  "class with a uniform thin grey border on all segments, substituting the original",
+  sprintf("'white/no-fill' specification. White-on-white is structurally invisible"),
+  sprintf("when the Humid class represents %.1f%% of global land area. The 7-class", pct_humid5_g),
+  "figure uses a blue gradient for the humid trio (Humid low: #74add1, moderate:",
+  "#4575b4, Hyper-Humid: #313695), completing a red-to-blue colorbar that maps the",
+  "full aridity continuum from extreme drought to extreme moisture surplus."
 )
-
-writeLines(methods_text, methods_out)
+writeLines(methods_lines, methods_out)
 message("Saved: ", methods_out)
 message("\nAll outputs complete.")

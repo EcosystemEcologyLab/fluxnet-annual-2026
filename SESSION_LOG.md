@@ -4,6 +4,43 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Representativeness figure: KG axis (v1)
+
+### Files
+
+| File | Dimensions | Description |
+|---|---|---|
+| `review/figures/representativeness/fig_representativeness_kg_30class.png` | 6.5 × 8 in, 200 dpi | Two-bar stacked chart, 30 KG classes |
+| `review/figures/representativeness/fig_representativeness_kg_5class.png` | 7.5 × 4 in, 200 dpi | Two-bar 5-class + sampling-ratio panel |
+| `scripts/figure_representativeness_kg.R` | — | Figure script |
+
+### Design decisions
+
+**Color scheme:** Beck 2023 published RGB values from `legend.txt` for both figures.
+5-class representatives chosen per spec: A = Aw [70, 170, 250], B = BSh [245, 165, 0],
+C = Cfa [200, 255, 80], D = Dfb [55, 200, 255], E = ET [178, 178, 178].
+
+**Stacking order:** ggplot2 `position_stack` with factor levels in code order (Af=1 → EF=30)
+results in E classes at the bottom and A classes at the top. This is an artifact of ggplot2's
+stacking direction (last factor level rendered first/bottom). The visual result — cold/polar at
+the base, tropical at the top — is climatologically intuitive and retained as-is.
+
+**Labels:** 30-class figure labels segments where fraction ≥ 1.5% in that bar (class code only,
+size 2.3). 5-class: two-line (class + %) for segments ≥ 8%, single-line for 3–8%, letter-only
+below 3%. Sampling-ratio panel uses log₂ x-axis (0.25× → 4×), lollipop style, labels to the
+right of each dot.
+
+**Font:** `sans` (Helvetica on macOS). White background throughout.
+
+### Stacking order note for next iteration
+
+Consider adding `A` at the bottom of the bar (current bottom is `E`) so the ordering is
+consistent with KG map conventions (tropical at low latitudes = visually prominent). This
+requires reversing the factor level order in `class_order`. Low priority — decide alongside
+the FLUXNET2015 third-bar addition.
+
+---
+
 ## 2026-06-24 — Beck 2023 KG global area-weighted distribution
 
 ### Method

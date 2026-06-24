@@ -4,6 +4,25 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — decisions_pending.md and CLAUDE.md updates
+
+### decisions_pending.md: pipeline regeneration deferred at +8 ICOS sites
+
+Added a new open item recording that the 2026-06-24 snapshot (767 sites) has not yet
+propagated through the downstream pipeline. DuckDB tables and all figures remain at 759
+sites. A single coordinated regeneration pass is planned before paper-lock. The
+representativeness figure is documented as a permitted exception — it uses 767 sites as
+the current-network reference but depends only on site metadata, not flux data, so no
+pipeline re-run is required for it.
+
+### CLAUDE.md: data/external/ persistence intent
+
+Added a `## External Data (data/external/)` section documenting that rasters are retained
+on disk and should not be re-downloaded when new sites arrive — only per-site extraction
+needs to re-run. Lists the three current subdirectories (aridity, gez, worldclim).
+
+---
+
 ## 2026-06-24 — Shuttle snapshot diff (2026-06-01 → 2026-06-24)
 
 ### New snapshot written

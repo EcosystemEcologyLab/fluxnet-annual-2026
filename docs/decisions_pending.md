@@ -1,6 +1,20 @@
 > Technical bugs and data quality issues with external dependencies (fluxnet R package,
 > FLUXNET Shuttle) are tracked in [docs/known_issues.md](known_issues.md), not here.
 
+## Pipeline regeneration deferred at +8 ICOS sites (2026-06-24)
+
+Snapshot `fluxnet_shuttle_snapshot_20260624T095651.csv` adds 8 ICOS sites (mostly historical
+re-releases) bringing the network to 767 sites. Downstream pipeline outputs (Fig 01, 02, 02b,
+03, 04, 05, 06, 07, 08, plus DD-dependent figures and the DuckDB tables) are still at 759
+sites and will be regenerated in a single coordinated pass before paper-lock.
+
+The representativeness figure (in development) uses 767 sites as the current-network reference.
+This is an exception to the 759-site consistency rule and is acceptable because the
+representativeness figure is new work, not yet published, and depends only on site metadata
+(not flux data), so no pipeline re-run is required to incorporate the 8 new sites.
+
+---
+
 ## Authorship rubric — 5-year data-volume boundary — RESOLVED 2026-05-20
 
 **Decision (2026-05-20):** Sites with exactly 5 years of data are placed in the **<5 row (lower

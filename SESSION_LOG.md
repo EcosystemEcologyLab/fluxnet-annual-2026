@@ -4,6 +4,76 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Aridity representativeness axis: 5-class and 7-class parallel schemes
+
+### Site extraction (767 sites, snapshot 20260624T095651)
+
+Re-extracted from scratch. Same 3 coastal wetland NAs as before (US-KS3, US-TaS,
+CN-SnB), recovered at 0.6–1.0 km; all assigned Humid (low) in 7-class. `site_aridity.csv`
+now carries `unep_class_5` and `unep_class_7` columns (column `unep_class` removed).
+
+| Class | 5-class n | 5-class % | 7-class n | 7-class % |
+|---|---|---|---|---|
+| Hyper-Arid | 4 | 0.5% | 4 | 0.5% |
+| Arid | 45 | 5.9% | 45 | 5.9% |
+| Semi-Arid | 147 | 19.2% | 147 | 19.2% |
+| Dry Sub-Humid | 70 | 9.1% | 70 | 9.1% |
+| Humid | 501 | 65.3% | — | — |
+| Humid (low) 0.65–1.0 | — | — | 195 | 25.4% |
+| Humid (moderate) 1.0–2.0 | — | — | 271 | 35.3% |
+| Hyper-Humid ≥ 2.0 | — | — | 35 | 4.6% |
+
+AI range across 767 sites: [0.0197, 3.7939]
+
+### Global distributions
+
+Total land area: **134,761,545 km²** (aridity raster covers 60°S–90°N; ~12.6 M km²
+less than KG raster due to Antarctic exclusion).
+
+| Class | Global % | Network % (5cl) | Ratio (5cl) | Network % (7cl) | Ratio (7cl) |
+|---|---|---|---|---|---|
+| Hyper-Arid | 9.8% | 0.5% | **0.05×** | 0.5% | **0.05×** |
+| Arid | 14.7% | 5.9% | 0.40× | 5.9% | 0.40× |
+| Semi-Arid | 16.5% | 19.2% | 1.16× | 19.2% | 1.16× |
+| Dry Sub-Humid | 8.8% | 9.1% | 1.03× | 9.1% | 1.03× |
+| Humid (all) | 50.2% | 65.3% | 1.30× | — | — |
+| Humid (low) | 18.9% | — | — | 25.4% | **1.34×** |
+| Humid (moderate) | 24.8% | — | — | 35.3% | **1.42×** |
+| Hyper-Humid | 6.5% | — | — | 4.6% | 0.71× |
+
+The 7-class scheme reveals that the over-representation of Humid is concentrated in
+Humid (moderate) (1.42×) and Humid (low) (1.34×); Hyper-Humid (≥ 2.0, largely tropical
+rainforest) is slightly under-sampled (0.71×).
+
+### Metrics
+
+| Axis | J (Jaccard) | H (Hellinger) |
+|---|---|---|
+| aridity_unep5 (5-class) | **0.694** | **0.211** |
+| aridity_unep7 (7-class) | **0.667** | **0.218** |
+| koppen_beck2023 (5-class) | 0.401 | 0.329 |
+| koppen_beck2023 (30-class) | 0.350 | 0.440 |
+
+Splitting the Humid class into three reduces J slightly (0.694 → 0.667) and increases H
+(0.211 → 0.218), consistent with the 7-class scheme revealing within-Humid heterogeneity
+that the 5-class scheme collapses. Both aridity metrics remain substantially better than KG.
+
+### Files
+
+| File | Change |
+|---|---|
+| `scripts/figure_representativeness_aridity.R` | Full rewrite; single script for both schemes |
+| `data/snapshots/site_aridity.csv` | unep_class → unep_class_5 + unep_class_7 |
+| `data/snapshots/aridity_unep5_global_distribution.csv` | Renamed from aridity_unep_* |
+| `data/snapshots/aridity_unep7_global_distribution.csv` | New; 7 rows |
+| `data/snapshots/representativeness_metrics.csv` | Split aridity_unep → aridity_unep5 + aridity_unep7 |
+| `review/figures/representativeness/fig_representativeness_aridity_unep5.png` | 7×6.5 in |
+| `review/figures/representativeness/fig_representativeness_aridity_unep7.png` | 7.5×6.5 in; humid trio in blues |
+| `review/figures/representativeness/methods_aridity_unep.md` | Updated for both schemes |
+| `review/figures/representativeness/fig_representativeness_aridity_unep.png` | Removed (superseded) |
+
+---
+
 ## 2026-06-24 — Aridity UNEP representativeness axis
 
 ### Site extraction (767 sites, snapshot 20260624T095651)

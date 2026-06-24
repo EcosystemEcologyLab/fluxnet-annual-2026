@@ -1,0 +1,31 @@
+koppen_class_code,koppen_class,koppen_class_name,koppen_main,koppen_main_name,global_land_area_km2,global_land_fraction
+1,Af,"Tropical, rainforest",A,Tropical,6795499.604531407,0.04612657874954013
+2,Am,"Tropical, monsoon",A,Tropical,4859693.476347327,0.03298668926209418
+3,Aw,"Tropical, savannah",A,Tropical,17826517.85793239,0.12100306491897779
+4,BWh,"Arid, desert, hot",B,Arid,21539548.413452864,0.14620642100547618
+5,BWk,"Arid, desert, cold",B,Arid,5220469.072452605,0.03543556644745455
+6,BSh,"Arid, steppe, hot",B,Arid,8589751.428546846,0.05830562412859746
+7,BSk,"Arid, steppe, cold",B,Arid,7426649.146185085,0.05041070364543615
+8,Csa,"Temperate, dry summer, hot summer",C,Temperate,1678332.9545952082,0.011392209801095638
+9,Csb,"Temperate, dry summer, warm summer",C,Temperate,1027836.886842221,0.00697676430898404
+10,Csc,"Temperate, dry summer, cold summer",C,Temperate,5804.0225085914135,3.939661789224786e-5
+11,Cwa,"Temperate, dry winter, hot summer",C,Temperate,4080520.259205997,0.027697807376789382
+12,Cwb,"Temperate, dry winter, warm summer",C,Temperate,1589944.714980781,0.010792246982704859
+13,Cwc,"Temperate, dry winter, cold summer",C,Temperate,7536.088184297085,5.115355534192965e-5
+14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,6287548.928647101,0.04267870468352799
+15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,3068691.49100402,0.020829703179358994
+16,Cfc,"Temperate, no dry season, cold summer",C,Temperate,122425.33439654112,8.31000243781228e-4
+17,Dsa,"Cold, dry summer, hot summer",D,Cold,381106.6674900651,0.0025868806906019217
+18,Dsb,"Cold, dry summer, warm summer",D,Cold,834037.4299048781,0.005661289887342177
+19,Dsc,"Cold, dry summer, cold summer",D,Cold,1616236.6792743206,0.010970711912738457
+20,Dsd,"Cold, dry summer, very cold winter",D,Cold,12748.319064199924,8.653320248108975e-5
+21,Dwa,"Cold, dry winter, hot summer",D,Cold,1070438.2511781454,0.007265934392309262
+22,Dwb,"Cold, dry winter, warm summer",D,Cold,1716303.9481610358,0.01164994979474445
+23,Dwc,"Cold, dry winter, cold summer",D,Cold,2762726.5605669767,0.018752870528380563
+24,Dwd,"Cold, dry winter, very cold winter",D,Cold,247743.21391943097,0.0016816345422047598
+25,Dfa,"Cold, no dry season, hot summer",D,Cold,2363127.204888344,0.016040464933406363
+26,Dfb,"Cold, no dry season, warm summer",D,Cold,10211928.39256227,0.06931665758174518
+27,Dfc,"Cold, no dry season, cold summer",D,Cold,14936053.326434724,0.1013831329648984
+28,Dfd,"Cold, no dry season, very cold winter",D,Cold,121770.89477413893,8.265580301786514e-4
+29,ET,"Polar, tundra",E,Polar,6837753.81378755,0.046413392409194135
+30,EF,"Polar, frost",E,Polar,14084117.810711138,0.09560035422272174

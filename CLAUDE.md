@@ -194,6 +194,29 @@ them rather than overwriting with a pull.
 
 ---
 
+## Session Log
+
+Structured investigation reports, audits, and summaries produced during a session are
+recorded in `SESSION_LOG.md` at the repository root.
+
+### Rules
+
+1. **New entries go at the top**, immediately after the file header (the introductory
+   paragraph and convention block). The file is maintained in reverse chronological order —
+   most recent session first.
+2. **Each session is introduced by a `## YYYY-MM-DD — <title>` heading.** Use the actual
+   calendar date of the session. Sub-sections within a session use `###` and `####` headings.
+3. **Separate top-level session entries with a `---` horizontal rule.** The rule goes between
+   entries, not after the last one.
+4. **Log only structured outputs** — investigation reports, audits, decision records, and
+   summaries. Do not log prompts, back-and-forth conversation, or in-progress reasoning.
+5. **Commit and push immediately after writing an entry.** Stage only `SESSION_LOG.md` in the
+   session-log commit; other modified files are separate commit decisions.
+6. **Do not alter the text of existing entries** when adding a new one. Reordering for
+   chronology is acceptable; editing past content is not.
+
+---
+
 ## renv Profile Selection
 
 This project uses renv profiles to maintain separate lockfiles for

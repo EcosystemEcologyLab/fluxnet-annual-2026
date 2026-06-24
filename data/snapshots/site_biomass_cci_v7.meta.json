@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-24T20:54:29Z",
+  "pipeline_version": "aa409b2",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif"
+  ],
+  "notes": "Per-site AGB extraction from ESA CCI Biomass v7.0 1km pre-aggregated product. Raster layer used: 'ESACCI-BIOMASS-L4-AGB-MERGED-1000m-2024-fv7.0' (layer 18 of 18). Bin definitions: 0-5, 5-25, 25-50, 50-100, 100-200, 200-400, >400 Mg/ha. NA values (0 site(s)) assigned to bin 1 (biomass_method = na_assigned_low). 1km resolution chosen: EC tower footprints 0.5-3 km; 100m sub-pixel gives no additional information for coarse bin classification. Snapshot: 20260624T095651 (767 sites). Citation: Santoro & Cartus (2024) CEDA doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903"
+}

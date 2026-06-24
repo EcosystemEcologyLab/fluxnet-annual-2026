@@ -4,6 +4,117 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Biomass representativeness axis: ESA CCI Biomass v7.0 (2024)
+
+### Data and download
+
+Source: ESA CCI Biomass v7.0 (March 2026), CEDA catalogue
+doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903. Anonymous HTTP, no authentication.
+
+File downloaded: `ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif` (1.4 GB) from
+`http://data.ceda.ac.uk/neodc/esacci/biomass/data/agb/maps/v7.0/geotiff/aggregated/`
+
+The 1km pre-aggregated file is a multi-band GeoTIFF containing all 18 available
+years as bands (2005–2012, 2015–2024). Band 18 = **2024** (most recent) was
+selected for analysis. The native 100m product (~18 GB per year of tiled files)
+was not downloaded; 1km is appropriate for EC footprint scale (0.5–3 km) and
+matches the KG land mask resolution directly.
+
+### Resolution and land mask consistency
+
+Biomass raster resampled to the KG 0.00833° grid (terra::resample(), bilinear).
+KG-land pixels where resampled biomass is NA → assigned to bin 1 (bare/desert).
+Total land area: **147,322,862 km²** — exact match with KG baseline.
+
+### Per-site extraction (767 sites, snapshot 20260624T095651)
+
+0 NA sites at 1km. Site distribution across 7 biomass bins:
+
+| Bin | Range (Mg/ha) | Label | Sites | % |
+|---|---|---|---|---|
+| 1 | 0-5 | Bare/ice/desert | 242 | 31.6% |
+| 2 | 5-25 | Sparse vegetation | 179 | 23.3% |
+| 3 | 25-50 | Shrubland/savanna | 75 | 9.8% |
+| 4 | 50-100 | Open forest | 117 | 15.3% |
+| 5 | 100-200 | Temperate forest | 121 | 15.8% |
+| 6 | 200-400 | Wet/boreal forest | 32 | 4.2% |
+| 7 | >400 | Tropical forest | 1 | 0.1% |
+
+Bin 1 (242 sites, 31.6%) captures non-woody biomes — croplands, grasslands,
+wetlands, and tundra — where CCI Biomass reports near-zero woody AGB. Only
+1 FLUXNET site exceeds 400 Mg/ha (tropical forest threshold at 1km scale).
+
+### Global distribution (2024, KG land mask)
+
+| Bin | Range (Mg/ha) | Global % |
+|---|---|---|
+| 1 | 0-5 | **52.4%** |
+| 2 | 5-25 | 15.3% |
+| 3 | 25-50 | 8.3% |
+| 4 | 50-100 | 9.1% |
+| 5 | 100-200 | 8.5% |
+| 6 | 200-400 | 6.3% |
+| 7 | >400 | ~0.0% |
+
+Bin 1 dominates: 52.4% of global land has <5 Mg/ha AGB under the CCI 2024
+product. This captures deserts (Sahara, Arabian, Australian), polar regions,
+and ice sheets. At 1km resolution, even the densest tropical forests rarely
+average >400 Mg/ha after spatial averaging, consistent with the global ~0%
+in bin 7.
+
+### Sampling ratios and representativeness
+
+| Bin | Global % | Network % | Ratio |
+|---|---|---|---|
+| 1 (bare) | 52.4 | 31.6 | **0.60×** under-sampled |
+| 2 (sparse) | 15.3 | 23.3 | 1.52× over-sampled |
+| 3 (shrub) | 8.3 | 9.8 | 1.18× |
+| 4 (open forest) | 9.1 | 15.3 | **1.68×** over-sampled |
+| 5 (temperate) | 8.5 | 15.8 | **1.85×** over-sampled |
+| 6 (wet/boreal) | 6.3 | 4.2 | 0.66× under-sampled |
+| 7 (tropical) | ~0.0 | 0.1 | ~3.7× |
+
+The dominant pattern: the network under-samples bare/desert land (0.60×) and
+wet/boreal forest (0.66×), and over-samples temperate and open forest (1.7-1.85×).
+This is a direct reflection of EC tower placement logic: towers are placed in
+vegetated areas where eddy covariance works best.
+
+### Metrics
+
+**J = 0.626, H = 0.168**
+
+In context of the full metrics table:
+
+| Axis | Aggregation | J | H |
+|---|---|---|---|
+| koppen_beck2023 | 5-class | 0.401 | 0.329 |
+| koppen_beck2023 | 30-class | 0.350 | 0.440 |
+| aridity_unep5 | 5-class | 0.694 | 0.211 |
+| aridity_unep7 | 7-class | 0.667 | 0.217 |
+| **biomass_cci_v7** | **7-bin** | **0.626** | **0.168** |
+
+The biomass axis has better representativeness than KG (J +0.22 vs 5-class),
+comparable to aridity (J −0.07 vs 5-class), and the lowest H of any axis
+(0.168 — the network distribution is the closest to global land distribution
+along this dimension). The relatively high J reflects that the biomass bins
+are broad enough to capture the network's spread across the vegetation density
+gradient, even though the network systematically skews toward mid-biomass forests.
+
+### Files
+
+| File | Description |
+|---|---|
+| `.gitignore` | `data/external/cci_biomass/*.tif` added |
+| `data/external/cci_biomass/README.md` | Source, citation, download details |
+| `scripts/figure_representativeness_biomass.R` | Analysis script (7 bins, KG land mask) |
+| `data/snapshots/site_biomass_cci_v7.csv` | 767 sites, AGB value + bin + method |
+| `data/snapshots/biomass_cci_v7_global_distribution.csv` | 7 bins, global area fractions |
+| `data/snapshots/representativeness_metrics.csv` | +1 row (biomass_cci_v7, 7bin) |
+| `review/figures/representativeness/fig_representativeness_biomass.png` | 7.5×6.5 in |
+| `review/figures/representativeness/methods_biomass.md` | ~500-word methods text |
+
+---
+
 ## 2026-06-24 — Future KG representativeness axis: Beck 2023 SSP5-8.5, 2071-2099
 
 ### Archive note

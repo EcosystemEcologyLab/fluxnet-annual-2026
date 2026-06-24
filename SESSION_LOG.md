@@ -4,6 +4,66 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Aridity UNEP representativeness axis
+
+### Site extraction (767 sites, snapshot 20260624T095651)
+
+All 767 sites extracted fresh from CGIAR AI v3.1 raster
+(`Global-AI_ET0__annual_v3_1/ai_v31_yr.tif`, INT2U, 0.00833°). Raw integer ×
+0.0001 = AI. Value 0 = ocean/nodata; 3 coastal wetland sites (US-KS3, US-TaS,
+CN-SnB) fell on ocean pixels and were recovered via nearest-land pixel search
+(0.6–1.0 km) — all three assigned to the Humid class.
+
+| UNEP Class | Sites (n) | Network % | Global % | Sampling ratio |
+|---|---|---|---|---|
+| Hyper-Arid | 4 | 0.5% | 9.8% | **0.05×** |
+| Arid | 45 | 5.9% | 14.7% | 0.40× |
+| Semi-Arid | 147 | 19.2% | 16.5% | 1.16× |
+| Dry Sub-Humid | 70 | 9.1% | 8.8% | 1.03× |
+| Humid | 501 | 65.3% | 50.2% | 1.30× |
+
+### Global distribution
+
+Total land area from CGIAR aridity raster: **134,761,545 km²**. The aridity
+raster covers 60°S to 90°N; the difference from the KG total (147,322,862 km²)
+reflects the exclusion of Antarctic landmass not covered by the aridity dataset.
+Majority of global land is Humid (50.2%), followed by Semi-Arid (16.5%) and
+Arid (14.7%). Hyper-Arid accounts for 9.8% of land but only 0.5% of sites.
+
+### Metrics
+
+| Axis | J (Jaccard) | H (Hellinger) |
+|---|---|---|
+| Aridity UNEP 5-class | **0.69** | **0.21** |
+| KG 5-class | 0.40 | 0.33 |
+| KG 13-class | 0.37 | 0.41 |
+| KG 30-class | 0.35 | 0.44 |
+
+The aridity UNEP axis shows substantially better representativeness than KG: J =
+0.69 vs 0.40 at the same 5-class level. The network is moderately over-sampled
+for humid and semi-arid environments (1.03–1.30×) and severely under-sampled for
+hyper-arid lands (0.05×). Like polar EF in the KG analysis, the Hyper-Arid under-
+sampling partially reflects structural access constraints (remote desert interiors).
+
+### Files
+
+| File | Description |
+|---|---|
+| `scripts/figure_representativeness_aridity.R` | Self-contained analysis + figure + methods script |
+| `data/snapshots/site_aridity.csv` | Replaced; 767 sites, ai_value + unep_class + aridity_method |
+| `data/snapshots/aridity_unep_global_distribution.csv` | 5-row UNEP global land area table |
+| `data/snapshots/representativeness_metrics.csv` | Renamed from koppen_beck2023_*; 4 rows covering KG + aridity |
+| `review/figures/representativeness/fig_representativeness_aridity_unep.png` | 7×6.5 in, 200 dpi |
+| `review/figures/representativeness/methods_aridity_unep.md` | ~600-word methods draft |
+
+### Color note
+
+Humid class shown as #cccccc (pale gray) with uniform thin grey border, substituting
+the original "white / no fill" spec which would be invisible against the white panel
+background. Documented in script comments and methods text.
+
+---
+
 ## 2026-06-24 — KG representativeness metrics (Jaccard + Hellinger) and methods text
 
 ### Metrics

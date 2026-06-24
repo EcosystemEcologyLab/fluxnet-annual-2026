@@ -409,7 +409,7 @@ metrics_df <- data.frame(
   stringsAsFactors   = FALSE
 )
 metrics_path <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                          "koppen_beck2023_representativeness_metrics.csv")
+                          "representativeness_metrics.csv")
 readr::write_csv(metrics_df, metrics_path)
 message("Saved metrics: ", metrics_path)
 

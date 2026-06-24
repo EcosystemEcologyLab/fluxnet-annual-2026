@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-24T19:38:46Z",
+  "pipeline_version": "78235d0",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/external/koppen_beck2023/2041_2070/ssp245/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "Future KG site extraction for 767 sites (snapshot 20260624T095651). Scenario: SSP2-4.5, 2041-2070. Same terra::extract() + nearest-land fallback method as present-day (scripts/step4_extract_koppen_beck2023.R). This CSV records PROJECTED future class at each site's PRESENT location. For figures, the network bar uses present-day assignments from site_koppen_beck2023.csv, NOT this file."
+}

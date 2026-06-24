@@ -4,6 +4,91 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Future KG representativeness axis: Beck 2023 SSP2-4.5, 2041-2070
+
+### Design
+
+Asymmetric framing: the **Earth bar** shows global land area fractions under the
+projected 2041-2070 climate (SSP2-4.5); the **Network bar** shows the current 767-site
+network with *present-day* KG assignments from `site_koppen_beck2023.csv`. This answers
+the question: does a network placed at its current locations, classified by its present
+biogeography, sample the climate distribution projected to dominate mid-century Earth?
+
+Source raster: `data/external/koppen_beck2023/2041_2070/ssp245/koppen_geiger_0p00833333.tif`
+(Beck et al. 2023, figshare v2, doi:10.6084/m9.figshare.21789074.v2). Same 30-class
+scheme and legend as the present-day 1991-2020 map.
+
+### Per-site future KG extraction (site_koppen_beck2023_ssp245_2041_2070.csv)
+
+767 sites, same extraction method (terra::extract + nearest-land fallback). Same 3 sites
+needed fallback as in the present-day and aridity extractions (US-KS3 0.7 km, US-TaS 0.6 km,
+CN-SnB 1 km — now code 2, 3, and 14 respectively under the future projection).
+
+**191 of 767 sites (24.9%) change KG class under SSP2-4.5 by 2041-2070.**
+
+Dominant shift directions (North America): Dfc → Dfb (boreal transitioning to warm
+continental), Dfa → Dfb (central US warming into cold continental), Cfb → Dfb (oceanic
+to continental in NW Europe). In Europe: Cfb → Dfb across Germany, France, and Nordic
+sites; Dfc → ET losses (high-altitude Italian and Swiss sites). In Japan: Dfa → Dfb
+across multiple Hokkaido / northern Honshu sites. Isolated cases: several US Great Plains
+sites shift from BSh to BSk (arid warming), and three AU sites shift Aw/Am (tropical).
+
+Site future-class distribution (for reference; not used in figure network bar):
+A: 8.0%, B: 12.3%, C: 42.2%, D: 35.6%, E: 2.0%
+
+### Global distribution under future climate
+
+Total land area: **147,322,862 km²** (identical to present-day; same raster mask). The
+largest global class shifts between 1991-2020 and 2041-2070 SSP2-4.5:
+
+| Class | Present (%) | Future (%) | Δ (pp) | Direction |
+|---|---|---|---|---|
+| ET | 4.64 | 3.27 | **−1.37** | Shrink |
+| Dfc | 10.14 | 8.91 | **−1.23** | Shrink |
+| Aw | 12.10 | 13.24 | **+1.14** | Expand |
+| Dfa | 1.60 | 2.72 | **+1.11** | Expand |
+| Cfa | 4.27 | 5.07 | +0.80 | Expand |
+| BSh | 5.83 | 6.63 | +0.80 | Expand |
+| Cwa | 2.77 | 2.11 | −0.66 | Shrink |
+| BWh | 14.62 | 15.28 | +0.66 | Expand |
+
+5-class summary: E contracts 14.2% → 12.7% (−1.49 pp); A expands 20.0% → 21.3% (+1.28 pp);
+B expands marginally (+0.59 pp); C and D nearly stable (< 0.5 pp change each).
+
+### Metrics: present-day network vs future global distribution
+
+| Aggregation | J (present) | J (future) | ΔJ | H (present) | H (future) | ΔH |
+|---|---|---|---|---|---|---|
+| 5-class | 0.401 | 0.397 | −0.004 | 0.329 | 0.331 | +0.002 |
+| two-letter (13-class) | 0.373 | 0.381 | **+0.007** | 0.410 | 0.406 | −0.005 |
+| 30-class | 0.350 | 0.368 | **+0.018** | 0.440 | 0.433 | **−0.008** |
+
+**Key finding:** representativeness metrics change only marginally (|ΔJ| < 0.02 at all
+aggregation levels), and the direction is counter-intuitive — the current network is
+*slightly more* representative of the projected 2041-2070 distribution than of the
+present-day distribution at the 30-class level (J +0.018, H −0.008). This occurs because
+the future projection shrinks the two classes that the network most under-samples (ET and
+Dfc), while expanding classes where network coverage is relatively stronger (Aw, Dfa, Cfa).
+The implication is that the existing network gap — predominantly a Hyper-Arid and
+Arid under-representation — does not worsen under SSP2-4.5 by 2041-2070, but it also
+does not improve: sampling of BWh (the single largest global land class, 14-15%) remains
+structurally weak.
+
+### Files
+
+| File | Description |
+|---|---|
+| `scripts/figure_representativeness_kg_future.R` | New script |
+| `data/snapshots/site_koppen_beck2023_ssp245_2041_2070.csv` | 767 rows, future KG per site |
+| `data/snapshots/koppen_beck2023_ssp245_2041_2070_global_distribution.csv` | 30 rows, global class fractions |
+| `data/snapshots/representativeness_metrics.csv` | +3 rows (axis = koppen_beck2023_future_ssp245_2041_2070) |
+| `review/figures/representativeness/fig_representativeness_kg_future_ssp245_2041_2070_30class.png` | 6.5×8 in |
+| `review/figures/representativeness/fig_representativeness_kg_future_ssp245_2041_2070_5class.png` | 7.5×5 in |
+| `review/figures/representativeness/fig_representativeness_kg_future_ssp245_2041_2070_twoletter.png` | 6.5×6.5 in |
+| `review/figures/representativeness/methods_koppen_beck2023_future.md` | Methods text |
+
+---
+
 ## 2026-06-24 — Aridity representativeness axis: 5-class and 7-class parallel schemes
 
 ### Site extraction (767 sites, snapshot 20260624T095651)

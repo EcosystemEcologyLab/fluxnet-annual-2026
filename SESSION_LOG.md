@@ -4,6 +4,59 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Beck 2023 KG global area-weighted distribution
+
+### Method
+
+`terra::cellSize(mask=TRUE, unit="km")` computes geodesic pixel area in km² for all land
+pixels (ocean = NA in Beck 2023 raster, automatically excluded). `terra::zonal(fun="sum")`
+accumulates land area per KG class without materialising the full raster. Total land area:
+**147,322,862 km²** (reference: Earth ~148.9 M km² — difference is representation of small
+islands at 1 km resolution). Zonal step: 5.2 s.
+
+### Output
+
+`data/snapshots/koppen_beck2023_global_distribution.csv` — 30 rows, columns:
+`koppen_class_code`, `koppen_class`, `koppen_class_name`, `koppen_main`, `koppen_main_name`,
+`global_land_area_km2`, `global_land_fraction`.
+
+### Top 10 KG classes by global land area
+
+| Class | Name | Area (M km²) | % |
+|---|---|---|---|
+| BWh | Arid, desert, hot | 21.54 | 14.62 |
+| Aw | Tropical, savannah | 17.83 | 12.10 |
+| Dfc | Cold, no dry season, cold summer | 14.94 | 10.14 |
+| EF | Polar, frost | 14.08 | 9.56 |
+| Dfb | Cold, no dry season, warm summer | 10.21 | 6.93 |
+| BSh | Arid, steppe, hot | 8.59 | 5.83 |
+| BSk | Arid, steppe, cold | 7.43 | 5.04 |
+| ET | Polar, tundra | 6.84 | 4.64 |
+| Af | Tropical, rainforest | 6.80 | 4.61 |
+| Cfa | Temperate, no dry season, hot summer | 6.29 | 4.27 |
+
+### 5-class summary: global area vs FLUXNET network representation
+
+| Class | Name | Global area % | Sites (n) | Network % | Sampling ratio |
+|---|---|---|---|---|---|
+| A | Tropical | 20.0 | 49 | 6.4 | **0.32** ← severe under-sampling |
+| B | Arid | 29.0 | 86 | 11.2 | **0.39** ← severe under-sampling |
+| C | Temperate | 12.1 | 292 | 38.1 | **3.14** ← strong over-sampling |
+| D | Cold | 24.6 | 318 | 41.5 | **1.68** ← moderate over-sampling |
+| E | Polar | 14.2 | 22 | 2.9 | **0.20** ← severe under-sampling |
+
+Sampling ratio > 1 = over-sampled; < 1 = under-sampled relative to global land area.
+
+### Interpretation note
+
+B (arid) covers 29% of global land but holds only 11% of network sites (ratio 0.39).
+A (tropical) covers 20% of land but only 6% of sites (ratio 0.32). Polar EF alone
+(9.6% of land) has very few sites because flux towers on ice sheets are rare/impossible.
+Temperate C (3.1×) and Cold D (1.7×) classes are the over-sampled backbone of the current
+network — a known biogeographic bias in the eddy covariance record.
+
+---
+
 ## 2026-06-24 — Beck 2023 KG download and per-site extraction
 
 ### Raster source

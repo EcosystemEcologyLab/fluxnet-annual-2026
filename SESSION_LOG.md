@@ -4,6 +4,61 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Representativeness figure: KG axis, two-letter aggregation (13 classes)
+
+### Files
+
+| File | Dimensions | Description |
+|---|---|---|
+| `review/figures/representativeness/fig_representativeness_kg_twoletter.png` | 6.5 × 6.5 in, 200 dpi | Two-bar 13-class stacked bars + sampling-ratio panel beneath |
+| `data/snapshots/site_koppen_beck2023.csv` | 767 rows | Added `koppen_twoletter` column |
+| `data/snapshots/koppen_beck2023_global_distribution.csv` | 30 rows | Added `koppen_twoletter` column |
+| `scripts/step4_extract_koppen_beck2023.R` | — | Now writes `koppen_twoletter` to snapshot |
+| `scripts/compute_koppen_beck2023_global.R` | — | Now writes `koppen_twoletter` to global distribution |
+| `scripts/figure_representativeness_kg.R` | — | Extended with Figure 3 (two-letter) |
+
+### Two-letter aggregation
+
+`koppen_twoletter = substr(koppen_class, 1L, 2L)` applied to all 30 classes.  
+Result: **13 unique two-letter codes** — Af, Am, Aw, BS, BW, Cf, Cs, Cw, Df, Ds, Dw, EF, ET.  
+Class order in figure: `c("Af","Am","Aw","BS","BW","Cf","Cs","Cw","Df","Ds","Dw","EF","ET")`.
+
+### Two-letter distribution (767 FLUXNET sites, global area)
+
+| Code | Global area | n sites | Sampling ratio |
+|---|---|---|---|
+| Af | 4.6% | 12 | 0.34× |
+| Am | 3.3% | 12 | 0.47× |
+| Aw | 12.1% | 25 | 0.27× |
+| BS | 10.9% | 62 | 0.74× |
+| BW | 18.2% | 24 | 0.17× |
+| Cf | 6.4% | 208 | **4.21×** |
+| Cs | 1.8% | 75 | **5.31×** |
+| Cw | 3.9% | 9 | 0.30× |
+| Df | 18.8% | 263 | 1.83× |
+| Ds | 1.9% | 26 | 1.76× |
+| Dw | 3.9% | 29 | 0.96× |
+| EF | 9.6% | **0** | 0.00× ← unstable |
+| ET | 4.6% | 22 | 0.62× |
+
+### Design decisions
+
+**Colors:** Mean RGB of all 30-class members within each two-letter group (unweighted mean).
+Singletons (EF, ET) retain their own Beck RGB values.
+
+**EF (0 sites):** Flagged as unstable. In the ratio panel: shown with × shape (shape=4) and
+alpha=0.45, placed at sampling_ratio=0 which falls below the log₂ axis lower limit (0.08×) and
+is not visible in the panel. The × is clipped out — EF's absence in the ratio panel is
+intentional and honest.
+
+**Sampling-ratio panel:** Below the stacked bars (patchwork `/` operator), height ratio 3:1.8.
+Log₂ y-axis (0.08× → 12×). Vertical lollipops from ratio=1 dashed line.
+
+**Label thresholds:** Two-line (code + %) for segments ≥ 7%, single-line for 2.5–7%,
+code-only for > 0%, NA for zero-fraction segments.
+
+---
+
 ## 2026-06-24 — Representativeness figure: KG axis (v1)
 
 ### Files

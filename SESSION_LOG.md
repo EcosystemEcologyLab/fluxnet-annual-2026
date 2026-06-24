@@ -4,6 +4,43 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — KG representativeness metrics (Jaccard + Hellinger) and methods text
+
+### Metrics
+
+| Aggregation | Weighted Jaccard (J) | Hellinger distance (H) |
+|---|---|---|
+| 5-class (A/B/C/D/E) | **0.40** | **0.33** |
+| 13-class (two-letter) | **0.37** | **0.41** |
+| 30-class (native) | **0.35** | **0.44** |
+
+Interpretation: J measures overlap fraction (1 = identical, 0 = no overlap). H measures
+divergence (0 = identical, 1 = maximally different). Coarser aggregation increases J and
+decreases H because within-group heterogeneity is collapsed — the FLUXNET network is more
+representative at the 5-class level than at 30-class resolution. The 30-class H of 0.44
+indicates substantial compositional divergence, driven primarily by EF (9.6% of global
+land, 0 sites), BW (18.2% global, 0.17× sampled), and Cs (1.8% global, 5.31× over-sampled).
+
+### Files
+
+| File | Description |
+|---|---|
+| `data/snapshots/koppen_beck2023_representativeness_metrics.csv` | Metrics table, 3 rows × 3 cols |
+| `review/figures/representativeness/methods_koppen_beck2023.md` | ~500-word methods draft |
+| `scripts/figure_representativeness_kg.R` | Extended with `compute_repr_metrics()` and annotations |
+| `review/figures/representativeness/fig_representativeness_kg_30class.png` | Annotated J/H upper-right |
+| `review/figures/representativeness/fig_representativeness_kg_5class.png` | Annotated J/H upper-right |
+| `review/figures/representativeness/fig_representativeness_kg_twoletter.png` | Annotated J/H upper-right |
+
+### Implementation
+
+`compute_repr_metrics(p, q)` takes aligned fraction vectors and returns `weighted_jaccard`
+(Σ min / Σ max) and `hellinger_distance` ((1/√2) × √(Σ(√p − √q)²)). Metrics computed at
+each aggregation level and displayed as `annotate("text", x=Inf, y=Inf, hjust=1.08, vjust=1.5)`
+in the upper-right of each bar panel.
+
+---
+
 ## 2026-06-24 — Representativeness figure: KG axis, two-letter aggregation (13 classes)
 
 ### Files

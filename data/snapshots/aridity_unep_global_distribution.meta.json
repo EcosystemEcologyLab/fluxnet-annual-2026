@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-06-24T18:55:55Z",
+  "pipeline_version": "c03acb1",
+  "input_sources": [
+    "data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif"
+  ],
+  "notes": "Area-weighted global UNEP aridity class distribution via terra::classify() + terra::cellSize(mask=TRUE, unit='km') + terra::zonal(fun='sum'). Value 0 (ocean) set to NA via classify matrix. Total land area: 134,761,545 km². Elapsed (classify + zonal): 5.4 s."
+}

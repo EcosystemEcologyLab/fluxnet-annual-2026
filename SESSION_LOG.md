@@ -4,6 +4,132 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — Land cover representativeness axis: ESA CCI LC v2.0.7 (2015)
+
+### Download and data source
+
+**ESA CCI Land Cover v2.0.7, year 2015** — most recent year available via anonymous
+CEDA HTTP. v2.1.1 (through 2020) confirmed as CDS-authenticated only; no public
+anonymous path found.
+
+Source: `https://dap.ceda.ac.uk/neodc/esacci/land_cover/data/land_cover_maps/v2.0.7/`
+File: `ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif` (312 MB, 64800×129600, uint8 LCCS codes).
+Legend: `ESACCI-LC-Legend.csv` (37 LCCS codes, RGB, labels), also `ESACCI-LCMapsColorLegend.qml`.
+Both downloaded via anonymous CEDA HTTPS with curl.
+
+### Aggregation scheme (10 high-level classes, ESA CCI PUG Table 2)
+
+| Code | Class | Native LCCS codes |
+|------|-------|-------------------|
+| 1 | Cropland | 10, 11, 12, 20, 30 |
+| 2 | Forest | 50, 60–62, 70–72, 80–82, 90, 100 |
+| 3 | Shrubland | 120, 121, 122, 150, 151, 152, 153 (incl. sparse vegetation) |
+| 4 | Grassland | 110, 130 |
+| 5 | Wetland | 160, 170, 180 |
+| 6 | Settlement | 190 |
+| 7 | Bare | 200, 201, 202 |
+| 8 | Snow/Ice | 220 |
+| 9 | Water | 210 |
+| 10 | Other | 40, 140 (mosaic nat-veg/crop; lichens/mosses) |
+
+Implementation note: `terra::classify()` requires `right = NA` for exact single-value
+mapping (from == to == code). Using `right = TRUE` with `include.lowest = TRUE`
+silently misclassifies all but the lowest code as NA (empty half-open intervals).
+Bug identified during run, fixed before final output.
+
+### Per-site extraction (767 sites, snapshot 20260624T095651)
+
+terra::extract() at site lat/lon from native 300m raster. **0 NA sites** —
+no nearest-land recovery needed. Site distribution:
+
+| Class | Sites | % |
+|-------|-------|---|
+| Cropland | 208 | 27.1 |
+| Forest | 282 | 36.8 |
+| Shrubland | 88 | 11.5 |
+| Grassland | 96 | 12.5 |
+| Wetland | 57 | 7.4 |
+| Settlement | 3 | 0.4 |
+| Bare | 5 | 0.7 |
+| Snow/Ice | 0 | 0.0 |
+| Water | 6 | 0.8 |
+| Other | 22 | 2.9 |
+
+### Global distribution (resampled to KG 0.00833° grid, nearest-neighbour)
+
+Total land: **147,322,862 km²** — exact KG baseline match.
+Inland water within KG mask: 2.47% of land (retained as separate class).
+
+| Class | Global % | Network % | Ratio |
+|-------|----------|-----------|-------|
+| Cropland | 15.1 | 27.1 | **1.79×** over |
+| Forest | 29.0 | 36.8 | 1.27× |
+| Shrubland | 15.1 | 11.5 | 0.76× |
+| Grassland | 9.3 | 12.5 | 1.34× |
+| Wetland | 2.0 | 7.4 | **3.63×** over |
+| Settlement | 0.5 | 0.4 | 0.77× |
+| Bare | 13.1 | 0.7 | **0.05×** under |
+| Snow/Ice | 9.9 | 0.0 | **0.00×** absent |
+| Water | 2.5 | 0.8 | 0.32× |
+| Other | 3.4 | 2.9 | 0.84× |
+
+### Representativeness metrics
+
+**J = 0.558, H = 0.337**
+
+In cross-axis context:
+
+| Axis | J | H |
+|------|---|---|
+| KG (5-class) | 0.401 | 0.329 |
+| Aridity (5-class) | 0.694 | 0.211 |
+| Biomass (7-bin hybrid) | 0.639 | 0.166 |
+| **Land cover (10-class)** | **0.558** | **0.337** |
+
+Intermediate J (0.558): substantially better than KG, worse than aridity and biomass.
+
+### Notable findings
+
+**Most under-sampled classes:**
+- **Snow/Ice (0.00×):** No FLUXNET towers on ice sheets. Structurally expected.
+- **Bare (0.05×):** Desert/rock surfaces cover 13.1% of global land; only 5 FLUXNET
+  sites. Logistically unsurprising but ecologically significant for dryland carbon budgets.
+- **Water (0.32×):** Open water in KG mask (2.5% global) — EC towers on water are
+  rare and site-specific (lake flux towers).
+
+**Most over-sampled classes:**
+- **Wetland (3.63×):** 57 sites (7.4% of network) on 2.0% of global land. Wetlands
+  are disproportionately studied for their methane and carbon-exchange significance.
+  This is a design feature, not a gap.
+- **Cropland (1.79×):** 208 sites (27.1%) on 15.1% of land. Agricultural flux
+  monitoring is a research priority; croplands are relatively accessible. For
+  agricultural-GHG stakeholders, the over-sampling is actually favorable coverage.
+
+**Forest (1.27×)** and **Grassland (1.34×)** are modestly over-sampled. **Shrubland
+(0.76×)** is modestly under-sampled — dryland shrublands in central Asia, Australia,
+and South America are documented gaps.
+
+The LULC axis complements the biomass axis: biomass measures carbon-stock density
+gradient, LULC measures functional ecosystem type. Together they characterize both
+the compositional coverage and the structural density coverage of the network.
+
+### Files
+
+| File | Description |
+|------|-------------|
+| `data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif` | Downloaded raster (gitignored) |
+| `data/external/cci_landcover/ESACCI-LC-Legend.csv` | Class legend |
+| `data/external/cci_landcover/ESACCI-LCMapsColorLegend.qml` | QML color file |
+| `data/external/cci_landcover/README.md` | Download details, aggregation table, citation |
+| `scripts/figure_representativeness_landcover.R` | Analysis script |
+| `data/snapshots/site_landcover_cci.csv` | 767 sites, native + high-level class |
+| `data/snapshots/landcover_cci_global_distribution.csv` | 10 classes, global area fractions |
+| `data/snapshots/representativeness_metrics.csv` | +1 row (landcover_cci, high_level) |
+| `review/figures/representativeness/fig_representativeness_landcover.png` | Figure |
+| `review/figures/representativeness/methods_landcover.md` | Methods text |
+
+---
+
 ## 2026-06-24 — Biomass axis hybrid re-binning: equal-area quantile scheme
 
 ### Summary

@@ -1,0 +1,768 @@
+site_id,location_lat,location_long,cci_native_class,cci_native_class_name,cci_high_level_class,cci_high_level_class_name,landcover_method
+AR-Bal,-37.7596,-58.3024,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+AR-CCa,-35.621,-61.3181,11,Herbaceous cover,1,Cropland,exact
+AR-CCg,-35.9244,-61.1855,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+AR-TF1,-54.9733,-66.7335,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+AR-TF2,-54.8269,-68.4549,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+BR-CST,-7.9682,-38.3842,62,"Tree cover, broadleaved, deciduous, open (15-40%)",2,Forest,exact
+BR-ITA,-23.0604,-48.6467,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BR-Ji3,-10.1866,-61.8725,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BR-Ma2,-2.6091,-60.2093,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BR-Ma3,-2.3907,-59.8835,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BR-Npw,-16.498,-56.412,120,Shrubland,3,Shrubland,exact
+BR-Sa1,-2.8567,-54.9589,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BR-Sa3,-3.018,-54.9714,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BR-SM1,-30.2771,-53.1479,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+BR-Xpw,-16.373,-56.461,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+CA-ARB,52.695,-83.9452,120,Shrubland,3,Shrubland,exact
+CA-ARF,52.7008,-83.955,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+CA-BOU,50.5244,-63.2064,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+CA-Ca1,49.8673,-125.3336,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+CA-Ca2,49.8705,-125.2909,120,Shrubland,3,Shrubland,exact
+CA-Ca3,49.5346,-124.9004,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-Cbo,44.3184,-79.9341,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+CA-CF1,58.6658,-93.83,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-CF2,58.6658,-93.83,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-CF3,58.6658,-93.8304,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-DB2,49.119,-122.9951,200,Bare areas,7,Bare,exact
+CA-DBB,49.1293,-122.9849,200,Bare areas,7,Bare,exact
+CA-DSM,49.0887,-122.8954,11,Herbaceous cover,1,Cropland,exact
+CA-EM1,50.3623,-100.2024,11,Herbaceous cover,1,Cropland,exact
+CA-EM2,50.3706,-100.5339,11,Herbaceous cover,1,Cropland,exact
+CA-Gro,48.2167,-82.1556,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+CA-HPC,68.3203,-133.5188,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+CA-KLP,51.5902,-81.7684,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+CA-LP1,55.1119,-122.8414,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-LU1,59.5951,-117.2862,120,Shrubland,3,Shrubland,exact
+CA-LU2,59.4405,-117.2422,120,Shrubland,3,Shrubland,exact
+CA-MA1,50.1645,-97.8762,11,Herbaceous cover,1,Cropland,exact
+CA-MA2,50.171,-97.8762,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+CA-MA3,50.1774,-97.8686,11,Herbaceous cover,1,Cropland,exact
+CA-Man,55.8796,-98.4808,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-Mer,45.4094,-75.5186,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+CA-Mtk,72.6695,-77.9981,140,Lichens and mosses,10,Other,exact
+CA-Na1,46.4722,-67.1,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CA-Ojp,53.9163,-104.692,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-PB1,54.9417,-83.4579,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+CA-PB2,54.9389,-83.4736,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+CA-Qc2,49.7598,-74.5711,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+CA-Qfo,49.6925,-74.3421,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-RBM,49.1313,-123.1964,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+CA-SCB,61.3089,-121.2984,120,Shrubland,3,Shrubland,exact
+CA-SCC,61.3079,-121.2992,120,Shrubland,3,Shrubland,exact
+CA-SF1,54.485,-105.8176,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-SF2,54.2539,-105.8775,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+CA-SF3,54.0916,-106.0053,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+CA-SJ2,53.945,-104.649,130,Grassland,4,Grassland,exact
+CA-SMC,63.1534,-123.2522,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CA-TP1,42.6609,-80.5595,11,Herbaceous cover,1,Cropland,exact
+CA-TP2,42.7744,-80.4588,11,Herbaceous cover,1,Cropland,exact
+CA-TP3,42.7068,-80.3483,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CA-TP4,42.7102,-80.3574,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CA-TPA,42.6947,-80.3487,11,Herbaceous cover,1,Cropland,exact
+CA-TPD,42.6353,-80.5577,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+CA-TVC,68.7462,-133.5017,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+CL-ACF,-40.1726,-73.4439,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CL-SDF,-41.883,-73.676,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CL-SDP,-41.879,-73.666,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+CR-Fsc,10.4189,-85.4732,10,"Cropland, rainfed",1,Cropland,exact
+MX-Aog,26.9968,-108.7892,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+MX-PMm,20.8462,-86.8992,170,"Tree cover, flooded, saline water",5,Wetland,exact
+MX-Tes,27.8446,-109.2977,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+PE-QFR,-3.8344,-73.319,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+PR-xGU,17.9696,-66.8687,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+PR-xLA,18.0212,-67.0769,10,"Cropland, rainfed",1,Cropland,exact
+US-A03,70.4953,-149.8823,140,Lichens and mosses,10,Other,exact
+US-A10,71.3242,-156.6149,140,Lichens and mosses,10,Other,exact
+US-A32,36.8193,-97.8198,11,Herbaceous cover,1,Cropland,exact
+US-A37,36.3106,-97.928,11,Herbaceous cover,1,Cropland,exact
+US-A39,36.3776,-96.069,130,Grassland,4,Grassland,exact
+US-A74,36.8085,-97.5489,11,Herbaceous cover,1,Cropland,exact
+US-ABa,27.1301,-81.2011,130,Grassland,4,Grassland,exact
+US-ABb,27.1346,-81.2031,130,Grassland,4,Grassland,exact
+US-ABc,27.1633,-81.1873,130,Grassland,4,Grassland,exact
+US-ABd,27.1699,-81.2152,130,Grassland,4,Grassland,exact
+US-ABe,27.1656,-81.2161,130,Grassland,4,Grassland,exact
+US-ADR,36.7653,-116.6933,120,Shrubland,3,Shrubland,exact
+US-Akn,33.3825,-81.5653,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-ALQ,46.0308,-89.6067,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-AR1,36.4267,-99.42,130,Grassland,4,Grassland,exact
+US-AR2,36.6358,-99.5975,130,Grassland,4,Grassland,exact
+US-ARb,35.5497,-98.0402,130,Grassland,4,Grassland,exact
+US-ARc,35.5465,-98.04,130,Grassland,4,Grassland,exact
+US-ARM,36.6058,-97.4888,11,Herbaceous cover,1,Cropland,exact
+US-ASH,36.1697,-120.201,11,Herbaceous cover,1,Cropland,exact
+US-ASM,36.1777,-120.2026,11,Herbaceous cover,1,Cropland,exact
+US-Aud,31.5907,-110.5104,120,Shrubland,3,Shrubland,exact
+US-Bar,44.0646,-71.2881,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+US-Bi1,38.0992,-121.4993,11,Herbaceous cover,1,Cropland,exact
+US-Bi2,38.1091,-121.5351,11,Herbaceous cover,1,Cropland,exact
+US-BRG,39.2167,-86.5406,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+US-BZB,64.6955,-148.3208,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-BZF,64.7013,-148.3121,120,Shrubland,3,Shrubland,exact
+US-BZo,64.6936,-148.33,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-CAK,64.8618,-163.7002,120,Shrubland,3,Shrubland,exact
+US-CdM,37.5241,-109.7471,120,Shrubland,3,Shrubland,exact
+US-Ced,39.8379,-74.3791,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-CF1,46.7815,-117.0821,11,Herbaceous cover,1,Cropland,exact
+US-CF2,46.784,-117.0908,11,Herbaceous cover,1,Cropland,exact
+US-CF3,46.7551,-117.1261,11,Herbaceous cover,1,Cropland,exact
+US-CF4,46.7518,-117.1285,11,Herbaceous cover,1,Cropland,exact
+US-CGG,37.938,-121.9761,130,Grassland,4,Grassland,exact
+US-ChR,35.9311,-84.3324,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-CLF,40.6366,-77.9424,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+US-Cms,71.3202,-156.6223,140,Lichens and mosses,10,Other,exact
+US-CMW,31.6637,-110.1777,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-Cop,38.09,-109.39,120,Shrubland,3,Shrubland,exact
+US-CRK,31.4629,-95.3415,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-CRT,41.6285,-83.3471,11,Herbaceous cover,1,Cropland,exact
+US-CS1,44.1031,-89.5379,11,Herbaceous cover,1,Cropland,exact
+US-CS2,44.1467,-89.5002,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-CS3,44.1394,-89.5727,11,Herbaceous cover,1,Cropland,exact
+US-CS4,44.1597,-89.5475,11,Herbaceous cover,1,Cropland,exact
+US-CS5,44.1095,-89.5377,11,Herbaceous cover,1,Cropland,exact
+US-CS6,44.4297,-89.544,11,Herbaceous cover,1,Cropland,exact
+US-CS8,44.4338,-89.5364,11,Herbaceous cover,1,Cropland,exact
+US-Cst,33.0442,-91.9204,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Cwt,35.0592,-83.4275,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-DFC,43.3448,-89.7117,11,Herbaceous cover,1,Cropland,exact
+US-DFK,43.3453,-89.7154,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+US-Dix,39.9712,-74.4346,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Dk1,35.9712,-79.0934,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+US-Dk2,35.9736,-79.1004,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-Dk3,35.9782,-79.0942,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Dmg,38.0015,-121.6691,11,Herbaceous cover,1,Cropland,exact
+US-DPW,28.0521,-81.4361,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-DS1,38.1335,-121.539,11,Herbaceous cover,1,Cropland,exact
+US-DS2,38.1375,-121.514,11,Herbaceous cover,1,Cropland,exact
+US-DS3,38.1235,-121.549,11,Herbaceous cover,1,Cropland,exact
+US-EA4,29.6633,-98.3816,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-EA5,29.3584,-99.9576,10,"Cropland, rainfed",1,Cropland,exact
+US-EA6,29.6561,-99.9588,120,Shrubland,3,Shrubland,exact
+US-EDN,37.6156,-122.114,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-EKH,36.8094,-121.7523,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-EKN,36.8357,-121.7328,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-EKP,36.8558,-121.7488,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Elm,25.5519,-80.7826,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-EML,63.8784,-149.2536,130,Grassland,4,Grassland,exact
+US-Esm,25.4379,-80.5946,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-EvM,25.3539,-80.381,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-Fcr,65.3968,-148.9348,120,Shrubland,3,Shrubland,exact
+US-Fmf,35.1426,-111.7273,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Fo1,70.085,-148.5671,140,Lichens and mosses,10,Other,exact
+US-Fo2,70.0229,-148.6598,140,Lichens and mosses,10,Other,exact
+US-Fuf,35.089,-111.762,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Fwf,35.4454,-111.7718,120,Shrubland,3,Shrubland,exact
+US-GLE,41.3665,-106.2399,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Ha1,42.5378,-72.1715,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+US-HB1,33.3455,-79.1957,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-HB2,33.3242,-79.244,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-HB3,33.3482,-79.2322,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-HB4,33.2015,-79.2975,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-HBK,43.9397,-71.7181,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+US-Hn2,46.6889,-119.4641,120,Shrubland,3,Shrubland,exact
+US-Hn3,46.6878,-119.4614,120,Shrubland,3,Shrubland,exact
+US-Ho2,45.209,-68.747,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Ho3,45.2072,-68.7265,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-HRA,34.5852,-91.7517,11,Herbaceous cover,1,Cropland,exact
+US-HRC,34.5888,-91.7517,11,Herbaceous cover,1,Cropland,exact
+US-Hsm,38.2368,-122.0212,130,Grassland,4,Grassland,exact
+US-HVs,69.1672,-148.8569,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+US-HWB,40.8608,-77.8488,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+US-IAB,42.0001,-93.7016,11,Herbaceous cover,1,Cropland,exact
+US-IAC,41.9984,-93.7016,11,Herbaceous cover,1,Cropland,exact
+US-IAM,41.9994,-93.7042,11,Herbaceous cover,1,Cropland,exact
+US-ICh,68.6068,-149.2958,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+US-ICs,68.6058,-149.311,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+US-ICt,68.6063,-149.3041,130,Grassland,4,Grassland,exact
+US-Jo1,32.582,-106.635,120,Shrubland,3,Shrubland,exact
+US-Jo2,32.5849,-106.6032,120,Shrubland,3,Shrubland,exact
+US-KFS,39.0561,-95.1907,130,Grassland,4,Grassland,exact
+US-Kon,39.0824,-96.5603,130,Grassland,4,Grassland,exact
+US-KPL,60.5382,-150.5061,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-KS1,28.4583,-80.6709,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-KS2,28.6086,-80.6715,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-KS3,28.7084,-80.7427,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-LA2,29.8587,-90.2869,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-LA3,29.4936,-89.9153,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-Lin,36.3566,-119.0922,11,Herbaceous cover,1,Cropland,exact
+US-Los,46.0827,-89.9786,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-LS1,31.5615,-110.1403,120,Shrubland,3,Shrubland,exact
+US-MBP,47.5051,-93.4893,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-Me1,44.5794,-121.5,120,Shrubland,3,Shrubland,exact
+US-Me3,44.3154,-121.6078,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Me5,44.4372,-121.5668,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Me6,44.3232,-121.6044,120,Shrubland,3,Shrubland,exact
+US-Me7,44.4534,-121.5619,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-MEF,39.1006,-105.1024,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-MMS,39.3232,-86.4133,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-MN1,45.6168,-96.1269,11,Herbaceous cover,1,Cropland,exact
+US-MN2,45.627,-96.1271,11,Herbaceous cover,1,Cropland,exact
+US-MN3,45.6091,-96.1265,11,Herbaceous cover,1,Cropland,exact
+US-Mo1,39.2298,-92.1167,11,Herbaceous cover,1,Cropland,exact
+US-Mo2,38.9488,-91.9945,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-Mo3,39.2322,-92.1493,11,Herbaceous cover,1,Cropland,exact
+US-MOz,38.7441,-92.2,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-Mpj,34.4382,-106.2385,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-MtB,32.416,-110.7256,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Myb,38.0499,-121.765,11,Herbaceous cover,1,Cropland,exact
+US-MZA,43.0441,-76.7897,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-NC1,35.8118,-76.7119,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-NC2,35.803,-76.6685,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-NC3,35.799,-76.656,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-NC4,35.7817,-75.9135,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-NC5,36.1565,-78.7878,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-Ne1,41.1651,-96.4766,11,Herbaceous cover,1,Cropland,exact
+US-Ne2,41.1649,-96.4701,11,Herbaceous cover,1,Cropland,exact
+US-Ne3,41.1797,-96.4397,11,Herbaceous cover,1,Cropland,exact
+US-NGB,71.28,-156.6092,140,Lichens and mosses,10,Other,exact
+US-NGC,64.8618,-163.7002,120,Shrubland,3,Shrubland,exact
+US-NR1,40.0329,-105.547,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-NR3,40.052,-105.5864,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+US-NSa,36.6029,-119.5061,11,Herbaceous cover,1,Cropland,exact
+US-NSb,36.3354,-120.1183,11,Herbaceous cover,1,Cropland,exact
+US-Oho,41.5545,-83.8438,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-ONA,27.3836,-81.9509,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-OPE,39.0293,-76.8457,130,Grassland,4,Grassland,exact
+US-OWC,41.3793,-82.5124,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-PAS,27.3944,-81.951,130,Grassland,4,Grassland,exact
+US-PFb,45.972,-90.3232,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-PFc,45.9677,-90.3088,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-PFd,45.9689,-90.301,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-PFf,45.9458,-90.2944,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-PFg,45.9735,-90.2723,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-PFh,45.9557,-90.2406,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-PFi,45.9749,-90.2327,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-PFj,45.9619,-90.227,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-PFk,45.9149,-90.3425,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-PFL,45.9409,-90.3177,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-PFm,45.9207,-90.3099,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-PFn,45.9392,-90.2823,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-PFp,45.9365,-90.2641,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-PFq,45.9271,-90.2475,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-PFr,45.9245,-90.2475,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-PFt,45.9197,-90.2288,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-PLo,42.7496,-70.9157,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-Prr,65.1237,-147.4876,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+US-PSH,36.2347,-119.9247,11,Herbaceous cover,1,Cropland,exact
+US-PSL,36.8276,-120.1397,11,Herbaceous cover,1,Cropland,exact
+US-RC1,46.7837,-117.0777,11,Herbaceous cover,1,Cropland,exact
+US-RC2,46.7776,-117.0807,11,Herbaceous cover,1,Cropland,exact
+US-RC3,46.991,-118.598,11,Herbaceous cover,1,Cropland,exact
+US-RC4,46.758,-116.949,11,Herbaceous cover,1,Cropland,exact
+US-RC5,47.01,-119.248,130,Grassland,4,Grassland,exact
+US-RGA,34.4159,-91.6733,11,Herbaceous cover,1,Cropland,exact
+US-RGB,39.5782,-121.8579,11,Herbaceous cover,1,Cropland,exact
+US-RGF,37.6995,-121.1369,11,Herbaceous cover,1,Cropland,exact
+US-RGo,39.6805,-122.0026,11,Herbaceous cover,1,Cropland,exact
+US-RGW,33.6216,-91.4306,11,Herbaceous cover,1,Cropland,exact
+US-Rls,43.1439,-116.7356,120,Shrubland,3,Shrubland,exact
+US-Rms,43.0645,-116.7486,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Ro1,44.7143,-93.0898,11,Herbaceous cover,1,Cropland,exact
+US-Ro2,44.7288,-93.0888,11,Herbaceous cover,1,Cropland,exact
+US-Ro3,44.7217,-93.0893,11,Herbaceous cover,1,Cropland,exact
+US-Ro4,44.6781,-93.0723,11,Herbaceous cover,1,Cropland,exact
+US-Ro5,44.691,-93.0576,11,Herbaceous cover,1,Cropland,exact
+US-Ro6,44.6946,-93.0578,11,Herbaceous cover,1,Cropland,exact
+US-Rpf,65.1198,-147.429,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+US-RRC,37.3344,-77.2065,210,Water bodies,9,Water,exact
+US-Rwe,43.0653,-116.7591,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Rwf,43.1207,-116.7231,120,Shrubland,3,Shrubland,exact
+US-Rws,43.1675,-116.7132,120,Shrubland,3,Shrubland,exact
+US-Sag,69.5131,-148.5676,140,Lichens and mosses,10,Other,exact
+US-SD1,41.2048,-86.0296,11,Herbaceous cover,1,Cropland,exact
+US-SD2,41.1785,-85.9977,11,Herbaceous cover,1,Cropland,exact
+US-Seg,34.3603,-106.7003,120,Shrubland,3,Shrubland,exact
+US-Ses,34.335,-106.7448,120,Shrubland,3,Shrubland,exact
+US-SHC,39.4315,-120.2398,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Slt,39.9138,-74.596,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+US-Sne,38.0369,-121.7547,11,Herbaceous cover,1,Cropland,exact
+US-Snf,38.0402,-121.7272,11,Herbaceous cover,1,Cropland,exact
+US-SP1,29.7381,-82.2188,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-SRC,31.9083,-110.8395,120,Shrubland,3,Shrubland,exact
+US-SRG,31.7894,-110.8277,120,Shrubland,3,Shrubland,exact
+US-SRM,31.8214,-110.8661,120,Shrubland,3,Shrubland,exact
+US-Srr,38.2006,-122.0264,130,Grassland,4,Grassland,exact
+US-SRS,31.8173,-110.8508,120,Shrubland,3,Shrubland,exact
+US-SSH,40.6658,-77.9041,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-Sta,41.3966,-106.8024,120,Shrubland,3,Shrubland,exact
+US-StJ,39.0882,-75.4372,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-Syv,46.2421,-89.3459,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-TaS,25.1908,-80.6391,210,Water bodies,9,Water,exact
+US-TKs,68.6337,-149.5769,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+US-TLR,35.9168,-76.1463,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-Ton,38.4309,-120.966,120,Shrubland,3,Shrubland,exact
+US-Tw1,38.1074,-121.6469,11,Herbaceous cover,1,Cropland,exact
+US-Tw2,38.0969,-121.6365,11,Herbaceous cover,1,Cropland,exact
+US-Tw3,38.1152,-121.6469,11,Herbaceous cover,1,Cropland,exact
+US-Tw4,38.1027,-121.6413,11,Herbaceous cover,1,Cropland,exact
+US-Tw5,38.1072,-121.6426,11,Herbaceous cover,1,Cropland,exact
+US-Twt,38.1087,-121.6531,11,Herbaceous cover,1,Cropland,exact
+US-Uaf,64.8663,-147.8555,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+US-UC1,40.7536,-78.0056,11,Herbaceous cover,1,Cropland,exact
+US-UC2,40.7559,-77.9998,11,Herbaceous cover,1,Cropland,exact
+US-UiA,40.0646,-88.1961,11,Herbaceous cover,1,Cropland,exact
+US-UiB,40.0628,-88.1984,11,Herbaceous cover,1,Cropland,exact
+US-UiC,40.0628,-88.1961,11,Herbaceous cover,1,Cropland,exact
+US-UiD,40.0646,-88.1985,11,Herbaceous cover,1,Cropland,exact
+US-UiE,40.0629,-88.2033,11,Herbaceous cover,1,Cropland,exact
+US-UiF,40.0665,-88.2015,11,Herbaceous cover,1,Cropland,exact
+US-UiG,40.0629,-88.2009,11,Herbaceous cover,1,Cropland,exact
+US-UMd,45.5625,-84.6975,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-UTB,40.7848,-113.8299,200,Bare areas,7,Bare,exact
+US-UTD,38.1038,-109.5952,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+US-UTE,37.7353,-111.5708,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-UTJ,37.2818,-109.5348,11,Herbaceous cover,1,Cropland,exact
+US-UTL,40.1877,-109.6579,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+US-UTM,38.5879,-109.5775,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-UTP,41.0604,-112.1013,210,Water bodies,9,Water,exact
+US-UTV,40.1266,-109.9546,120,Shrubland,3,Shrubland,exact
+US-UTW,39.4453,-110.7288,120,Shrubland,3,Shrubland,exact
+US-Var,38.4133,-120.9508,130,Grassland,4,Grassland,exact
+US-Vcm,35.8885,-106.5322,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-Vcp,35.8641,-106.5965,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-VT1,40.4064,-87.5214,11,Herbaceous cover,1,Cropland,exact
+US-VT2,40.4018,-87.5213,11,Herbaceous cover,1,Cropland,exact
+US-WCr,45.8058,-90.0795,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+US-Whs,31.7438,-110.0522,120,Shrubland,3,Shrubland,exact
+US-Wjs,34.4258,-105.8617,130,Grassland,4,Grassland,exact
+US-Wkg,31.7365,-109.9419,120,Shrubland,3,Shrubland,exact
+US-WPT,41.4646,-82.9962,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+US-WT1,34.3674,-101.8154,11,Herbaceous cover,1,Cropland,exact
+US-xAB,45.7624,-122.3303,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xAE,35.4106,-99.0588,130,Grassland,4,Grassland,exact
+US-xBA,71.2824,-156.6194,140,Lichens and mosses,10,Other,exact
+US-xBL,39.0603,-78.0716,130,Grassland,4,Grassland,exact
+US-xBN,65.154,-147.5026,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xBR,44.0639,-71.2873,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+US-xCL,33.4012,-97.57,130,Grassland,4,Grassland,exact
+US-xCP,40.8155,-104.7456,130,Grassland,4,Grassland,exact
+US-xDC,47.1617,-99.1066,130,Grassland,4,Grassland,exact
+US-xDJ,63.881100000000004,-145.7514,71,"Tree cover, needleleaved, evergreen, closed (>40%)",2,Forest,exact
+US-xDL,32.5417,-87.8039,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-xDS,28.125,-81.4362,130,Grassland,4,Grassland,exact
+US-xGR,35.689,-83.5019,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+US-xHE,63.8757,-149.2133,130,Grassland,4,Grassland,exact
+US-xJE,31.1948,-84.4686,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xJR,32.5907,-106.8425,120,Shrubland,3,Shrubland,exact
+US-xKZ,39.1008,-96.5631,130,Grassland,4,Grassland,exact
+US-xLE,31.8539,-88.1612,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+US-xMB,38.2483,-109.3883,120,Shrubland,3,Shrubland,exact
+US-xML,37.3783,-80.5248,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xNG,46.7697,-100.9154,130,Grassland,4,Grassland,exact
+US-xNQ,40.1776,-112.4524,120,Shrubland,3,Shrubland,exact
+US-xNW,40.0543,-105.5824,10,"Cropland, rainfed",1,Cropland,exact
+US-xPU,19.5531,-155.3173,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xRM,40.2759,-105.5459,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xRN,35.9641,-84.2826,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xSB,29.6893,-81.9934,120,Shrubland,3,Shrubland,exact
+US-xSC,38.8929,-78.1395,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xSE,38.8901,-76.56,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xSJ,37.1088,-119.7323,10,"Cropland, rainfed",1,Cropland,exact
+US-xSL,40.4619,-103.0293,11,Herbaceous cover,1,Cropland,exact
+US-xSP,37.0334,-119.26220000000001,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xSR,31.9107,-110.8355,120,Shrubland,3,Shrubland,exact
+US-xST,45.5089,-89.5864,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xTE,37.0058,-119.006,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xTL,68.6611,-149.3705,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+US-xTR,45.4937,-89.5857,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xUK,39.0404,-95.1921,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xUN,46.2339,-89.5373,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+US-xWD,47.1282,-99.2414,130,Grassland,4,Grassland,exact
+US-xWR,45.8205,-121.9519,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-xYE,44.9535,-110.5391,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+US-YK1,61.2723,-163.2228,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+US-YK2,61.2548,-163.259,130,Grassland,4,Grassland,exact
+US-ZF2,40.7939,-87.5355,11,Herbaceous cover,1,Cropland,exact
+ZA-Uby,-27.3952,32.5889,130,Grassland,4,Grassland,exact
+ZA-Spk,-28.70408,29.52614,120,Shrubland,3,Shrubland,exact
+ZA-Jks,-33.99029,18.95543,12,Tree or shrub cover,1,Cropland,exact
+ZA-BfS,-28.8906,24.86112,120,Shrubland,3,Shrubland,exact
+ZA-BfK,-28.856483,24.83985,120,Shrubland,3,Shrubland,exact
+KR-WdE,34.35956,126.67779,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+KR-UAO,36.41682,128.79904,11,Herbaceous cover,1,Cropland,exact
+KR-TwC,37.30493,127.31743,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+KR-TwB,37.30406,127.31395,61,"Tree cover, broadleaved, deciduous, closed (>40%)",2,Forest,exact
+KR-SmM,37.93894,126.95471,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+KR-ScC,37.22141,129.29863,11,Herbaceous cover,1,Cropland,exact
+KR-PcD,37.48184,128.51604,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+KR-Nj2,35.0269,126.8219,11,Herbaceous cover,1,Cropland,exact
+KR-Nj1,35.02753,126.82093,11,Herbaceous cover,1,Cropland,exact
+KR-Kw2,37.74869,127.14888,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+KR-Kw1,37.74843,127.16261,61,"Tree cover, broadleaved, deciduous, closed (>40%)",2,Forest,exact
+KR-JjM,33.31798,126.56772,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+KR-Hnm,34.5538,126.56992,11,Herbaceous cover,1,Cropland,exact
+KR-HcM,37.61938,127.84571,61,"Tree cover, broadleaved, deciduous, closed (>40%)",2,Forest,exact
+KR-HPK,34.47722,126.48105,10,"Cropland, rainfed",1,Cropland,exact
+KR-GmS,35.75089,126.81378,11,Herbaceous cover,1,Cropland,exact
+KR-GmR,35.74862,126.86432,11,Herbaceous cover,1,Cropland,exact
+KR-GmP,35.74502,126.85222,11,Herbaceous cover,1,Cropland,exact
+KR-CmF,37.1599,127.65365,11,Herbaceous cover,1,Cropland,exact
+KR-CRK,38.2013,127.2497,11,Herbaceous cover,1,Cropland,exact
+KR-AdC,36.50565,126.35909,11,Herbaceous cover,1,Cropland,exact
+TH-Mae,18.42264,99.72025,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+TH-Kog,18.81267,98.90225,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+RU-Tur,64.208885,100.463554,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-SkP,62.25471,129.61855,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-Sk2,62.241356,129.65047,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-NeF,62.315617,129.49997,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-NeC,62.314842,129.50008,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-NeB,62.325935,129.48734,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-Ege,60.015514,133.824,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+MY-LHP,4.201007,114.03908,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+MN-Udg,48.25649,106.85116,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+MN-Nkh,47.693592,107.48934,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+MN-Kbu,47.21397,108.737335,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+MN-Hst,47.59293,105.85497,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+KH-Kmp,12.744579,105.47857,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Ynf,26.751,128.21266,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Yms,34.79028,135.84094,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Toc,42.70973,141.5659,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Tmk,42.739307,141.51483,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+JP-Tmd,42.735912,141.52315,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Tkb,36.173378,140.17664,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Tgf,36.11353,140.09488,10,"Cropland, rainfed",1,Cropland,exact
+JP-Tef,45.05581,142.10712,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Tak,36.146168,137.42311,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Ta2,36.140038,137.37071,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Srk,40.565483,140.12779,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Spp,42.986843,141.38533,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Shn,35.865753,137.93256,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+JP-Sb2,45.10339,141.6808,10,"Cropland, rainfed",1,Cropland,exact
+JP-Sb1,45.104702,141.68797,10,"Cropland, rainfed",1,Cropland,exact
+JP-SMF,35.261528,137.07875,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Om2,34.542454,135.50822,190,Urban areas,6,Settlement,exact
+JP-Nuf,35.152416,136.9719,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+JP-NsM,36.91604,139.936,10,"Cropland, rainfed",1,Cropland,exact
+JP-NsC,36.915054,139.93684,10,"Cropland, rainfed",1,Cropland,exact
+JP-Nkm,35.808064,137.83388,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Mse,36.05393,140.02693,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+JP-MMF,44.321884,142.26152,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-MBF,44.38406,142.31862,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Kzw,36.406788,138.57257,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+JP-Khw,33.13658,130.70834,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-KaP,36.08313,140.24033,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+JP-Hc3,34.539673,133.91173,11,Herbaceous cover,1,Cropland,exact
+JP-Hc2,34.537518,133.92755,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+JP-Fmt,35.638744,139.37975,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Fjy,35.45454,138.76225,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-Fhk,35.443554,138.7647,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+JP-BBY,43.322998,141.81065,10,"Cropland, rainfed",1,Cropland,exact
+JP-Api,40.001358,140.93658,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+ID-Pag,-2.3239167,113.90439,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+ID-PaD,-2.3460708,114.03641,160,"Tree cover, flooded, fresh or brakish water",5,Wetland,exact
+ID-PaB,-2.340796,114.0379,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Lsh,45.27984,127.57821,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+CN-HaM,37.607433,101.332,130,Grassland,4,Grassland,exact
+UK-AMo,55.792545,-3.2436917,130,Grassland,4,Grassland,exact
+SE-Svb,64.25611,19.7745,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+SE-Sto,68.35594,19.045208,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+SE-Nor,60.0865,17.479504,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+SE-Htm,56.09763,13.41897,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+SE-Deg,64.18203,19.55654,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+NO-Hur,60.37163,11.07949,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+NL-Loo,52.166447,5.74355,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+IT-TrF,45.82376,7.56089,130,Grassland,4,Grassland,exact
+IT-Tor,45.84444,7.578055,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+IT-Ren,46.58686,11.43369,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+IT-Noe,40.606174,8.151694,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+IT-Niv,45.49091,7.13943,130,Grassland,4,Grassland,exact
+IT-MBo,46.01468,11.045831,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+IT-Lsn,45.740482,12.750297,10,"Cropland, rainfed",1,Cropland,exact
+IT-Cp2,41.704266,12.357293,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+IT-BFt,45.197754,10.741966,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+IT-BCi,40.52375,14.957444,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+IE-Cra,53.32308,-7.64177,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+GL-ZaH,74.4733,-20.550869,140,Lichens and mosses,10,Other,exact
+GL-ZaF,74.48152,-20.555773,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+GL-NuF,64.130936,-51.386066,130,Grassland,4,Grassland,exact
+GL-Dsk,69.25349,-53.51413,130,Grassland,4,Grassland,exact
+GF-Guy,5.2787,-52.9248,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FR-Tou,43.572857,1.37474,11,Herbaceous cover,1,Cropland,exact
+FR-Pue,43.7413,3.5957,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FR-Mej,48.1184,-1.79635,11,Herbaceous cover,1,Cropland,exact
+FR-Lus,46.414246,0.1206518,11,Herbaceous cover,1,Cropland,exact
+FR-Lqu,45.6444,2.7349,130,Grassland,4,Grassland,exact
+FR-Lam,43.496437,1.237878,11,Herbaceous cover,1,Cropland,exact
+FR-LGt,47.322918,2.284102,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+FR-Hes,48.6741,7.06465,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+FR-Gri,48.84422,1.95191,11,Herbaceous cover,1,Cropland,exact
+FR-Fon,48.476357,2.780096,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+FR-FBn,43.24079,5.67865,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FR-EM2,49.87211,3.02065,11,Herbaceous cover,1,Cropland,exact
+FR-CLt,45.0414,6.41053,130,Grassland,4,Grassland,exact
+FR-Bil,44.493652,-0.956092,11,Herbaceous cover,1,Cropland,exact
+FR-Aur,43.54965,1.106103,11,Herbaceous cover,1,Cropland,exact
+FI-Var,67.7549,29.61,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FI-Sod,67.36239,26.63859,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FI-Sii,61.83265,24.19285,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+FI-Let,60.64183,23.95952,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FI-Ken,67.98721,24.24301,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FI-Hyy,61.847410000000004,24.29477,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FI-Ant,63.16347,27.234991,10,"Cropland, rainfed",1,Cropland,exact
+ES-LMa,39.94033,-5.77465,11,Herbaceous cover,1,Cropland,exact
+DK-Vng,56.037476,9.160709,11,Herbaceous cover,1,Cropland,exact
+DK-Sor,55.48587,11.644645,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+DK-Skj,55.91273,8.40481,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+DK-RCW,55.680683,12.101398,11,Herbaceous cover,1,Cropland,exact
+DK-Gds,56.0737,9.3341,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-Tha,50.962597,13.565333,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-RuW,50.50493,6.3309627,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-RuS,50.865906,6.4471445,11,Herbaceous cover,1,Cropland,exact
+DE-RuR,50.621914,6.304126,130,Grassland,4,Grassland,exact
+DE-Msr,47.80918,11.456168,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-Kli,50.893044,13.5223,11,Herbaceous cover,1,Cropland,exact
+DE-Hzd,50.96381,13.48978,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-HoH,52.08656,11.22235,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+DE-Har,47.93391,7.59814,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-Hai,51.079212,10.452168,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+DE-Gwg,47.570835,11.032604,130,Grassland,4,Grassland,exact
+DE-GsB,52.029648,11.10478,130,Grassland,4,Grassland,exact
+DE-Gri,50.950005,13.512533,130,Grassland,4,Grassland,exact
+DE-Geb,51.09973,10.91463,11,Herbaceous cover,1,Cropland,exact
+DE-Fen,47.832905,11.060701,130,Grassland,4,Grassland,exact
+DE-Brs,52.29663,10.44871,11,Herbaceous cover,1,Cropland,exact
+DE-Amv,52.1757,6.95537,10,"Cropland, rainfed",1,Cropland,exact
+CZ-wet,49.02465,14.77035,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+CZ-Lnz,48.68155,16.946331,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+CZ-BK1,49.502075,18.536882,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CH-Dav,46.81533,9.85591,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CD-Ygb,0.814444,24.502472,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BE-Vie,50.304962,5.998099,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+BE-Maa,50.97987,5.631851,110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),4,Grassland,exact
+BE-Lon,50.55162,4.746234,11,Herbaceous cover,1,Cropland,exact
+BE-Dor,50.311874,4.968113,130,Grassland,4,Grassland,exact
+BE-Bra,51.30761,4.51984,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+VU-Coc,-15.444423,167.19131,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+ML-Kem,15.2875,-1.543056,10,"Cropland, rainfed",1,Cropland,exact
+KE-Mkt,-3.425859,38.140663,130,Grassland,4,Grassland,exact
+KE-Kpt,-1.6141866,37.13311,10,"Cropland, rainfed",1,Cropland,exact
+KE-Chk,-3.6663,38.350185,120,Shrubland,3,Shrubland,exact
+KE-Aq2,-1.566199,37.100166,120,Shrubland,3,Shrubland,exact
+KE-Aq1,-1.57781,37.067047,130,Grassland,4,Grassland,exact
+IT-SR2,43.73202,10.29091,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+ID-JOP,-1.69306,103.39139,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+CR-AqC,9.938369,-83.7289,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-SnB,31.6905,121.6563,10,"Cropland, rainfed",1,Cropland,exact
+CN-Sb2,42.39117,117.37017,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Sb1,42.40907,117.31461,110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),4,Grassland,exact
+BW-Nxr,-19.548056,23.179167,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+BW-Gum,-18.964722,22.37111,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+BJ-Nhu,9.74,1.6,120,Shrubland,3,Shrubland,exact
+BJ-Db1,6.607338,2.543043,10,"Cropland, rainfed",1,Cropland,exact
+BJ-Bfg,9.791,1.718,62,"Tree cover, broadleaved, deciduous, open (15-40%)",2,Forest,exact
+ZM-Mon,-15.4391,23.2525,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+UK-HpF,52.24809,-0.0498267,11,Herbaceous cover,1,Cropland,exact
+UK-HgF,52.552177,0.515057,130,Grassland,4,Grassland,exact
+UK-Gwr,54.85464,-5.988278,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+UK-Gnn,54.96185,-6.760763,110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),4,Grassland,exact
+UK-GaB,55.10994,-6.529928,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+UK-Cvn,52.43339,0.162177,11,Herbaceous cover,1,Cropland,exact
+UK-CCr,52.2542,-3.93357,110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),4,Grassland,exact
+UK-BnB,54.82326,-6.66984,110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),4,Grassland,exact
+UK-Ags,53.3097,-4.30044,130,Grassland,4,Grassland,exact
+SN-Nkr,14.49581,-16.45357,10,"Cropland, rainfed",1,Cropland,exact
+SN-Dhr,15.40256,-15.43214,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+SJ-Adv,78.186,15.923,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+SE-Trb,64.180916,19.837284,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+SE-St1,68.35415,19.050333,210,Water bodies,9,Water,exact
+SE-Srj,64.17498,19.56381,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+SE-Ros,64.16522,19.79074,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+SE-Hmr,64.15955,19.551497,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+SE-HfM,64.15955,19.551497,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+SD-Dem,13.2829,30.4783,130,Grassland,4,Grassland,exact
+RU-Ha1,54.72517,90.00215,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+RU-Fyo,56.46153,32.922085,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+RU-Fy4,56.4727,33.0413,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+RU-Fy3,56.4435,33.0478,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-Fy2,56.4476,32.90188,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+RU-Che,68.61304,161.34143,80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",2,Forest,exact
+RU-Ch2,68.61689,161.35089,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+PA-SPs,9.31378,-79.63143,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+PA-SPn,9.31814,-79.6346,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+NO-Ikr,69.34,25.3,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+NO-Fns,60.59384,7.5271025,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+NO-And,69.1422,16.01975,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+NL-Vkp,51.980934,5.618825,130,Grassland,4,Grassland,exact
+NL-Hrw,51.972466,5.641228,130,Grassland,4,Grassland,exact
+IT-SRo,43.72786,10.284445,120,Shrubland,3,Shrubland,exact
+IT-PT1,45.20087,9.061039,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+IT-NiG,45.51919,7.171434,130,Grassland,4,Grassland,exact
+IT-MtM,46.687134,10.579597,130,Grassland,4,Grassland,exact
+IT-Lav,45.9562,11.28132,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+IT-CA3,42.38,12.0222,11,Herbaceous cover,1,Cropland,exact
+IT-CA2,42.37722,12.026039,11,Herbaceous cover,1,Cropland,exact
+IT-CA1,42.38041,12.026561,11,Herbaceous cover,1,Cropland,exact
+IT-Bsn,45.11924,7.160429,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+IT-BsB,45.11823,7.161995,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+IT-Arz,45.61902,10.00228,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+IL-Yat,31.345045,35.051987,120,Shrubland,3,Shrubland,exact
+IL-RmH,32.5555,34.947285,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+IE-Gwr,52.6365,-7.011306,11,Herbaceous cover,1,Cropland,exact
+IE-CaN,52.85879,-6.918136,11,Herbaceous cover,1,Cropland,exact
+IE-CaC,52.85879,-6.918136,11,Herbaceous cover,1,Cropland,exact
+GH-Ank,5.268543,-2.694206,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FR-Nzn,48.005814,-2.81721,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+FR-Mau,43.385,1.29306,11,Herbaceous cover,1,Cropland,exact
+FR-LBr,44.71711,-0.7693,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FI-Sar,63.15143,27.199064,10,"Cropland, rainfed",1,Cropland,exact
+FI-Ruk,64.68398,25.106318,10,"Cropland, rainfed",1,Cropland,exact
+FI-Rk2,61.182884,25.262684,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+FI-Qvd,60.295242,22.391607,10,"Cropland, rainfed",1,Cropland,exact
+FI-Pap,63.13806,27.246117,11,Herbaceous cover,1,Cropland,exact
+FI-Nsv,62.8639,24.08382,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+FI-Jok,60.8986,23.51345,10,"Cropland, rainfed",1,Cropland,exact
+ES-Yst,38.338932,-2.3506052,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+ES-VDA,42.15111,1.4473800000000001,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+ES-TzM,39.265785,-1.9397246,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+ES-Srn,40.15047,-0.8380832,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+ES-Pzb,38.362118,-4.767329,11,Herbaceous cover,1,Cropland,exact
+ES-Pdu,37.016975,-3.609228,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+ES-Mzn,40.089497,-0.827409,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+ES-MtN,36.99234,-6.4826016,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+ES-MtB,37.020206,-6.5544033,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+ES-Mcd,39.58819,-0.39969,10,"Cropland, rainfed",1,Cropland,exact
+ES-LM2,39.934593,-5.775881,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+ES-LM1,39.94269,-5.778683,11,Herbaceous cover,1,Cropland,exact
+ES-LJu,36.926594,-2.752115,120,Shrubland,3,Shrubland,exact
+ES-Hen,38.411087,-1.697534,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+ES-HeB,38.40475,-1.726215,120,Shrubland,3,Shrubland,exact
+ES-HdD,38.49679,-5.111296,11,Herbaceous cover,1,Cropland,exact
+ES-Gdn,37.91084,-3.228489,12,Tree or shrub cover,1,Cropland,exact
+ES-FtD,36.99854,-6.434575,210,Water bodies,9,Water,exact
+ES-Dnn,36.9968,-6.5118,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+ES-Crg,39.11926,-0.95852,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+ES-Cnd,37.914997,-3.227659,12,Tree or shrub cover,1,Cropland,exact
+ES-Amo,36.833405,-2.2522173,153,Sparse herbaceous cover (<15%),3,Shrubland,exact
+ES-Agu,36.939384,-2.034044,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+ES-Abr,38.70184,-6.785881,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+EE-Stg,58.023636,26.070753,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+EE-Rng,57.913143,26.694048,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+EE-Pts,58.562298,24.369932,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+DK-Fou,56.4842,9.58722,130,Grassland,4,Grassland,exact
+DK-Eng,55.69053,12.19175,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+DE-Zrk,53.875942,12.88901,130,Grassland,4,Grassland,exact
+DE-Spw,51.89225,14.03369,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+DE-SfS,47.80629,11.32757,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-Seh,50.870625,6.449653,11,Herbaceous cover,1,Cropland,exact
+DE-SbM,51.764927,10.51799,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-RuM,50.929787,6.2969923,11,Herbaceous cover,1,Cropland,exact
+DE-RuC,50.5031,6.336,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-Rns,51.494953,9.932118,11,Herbaceous cover,1,Cropland,exact
+DE-Obe,50.7864,13.72168,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-Lnf,51.328217,10.3678,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+DE-Lkb,49.099617,13.3046665,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+DE-Hte,54.213055,12.179944,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+DE-Hdn,53.86825,13.268543,11,Herbaceous cover,1,Cropland,exact
+DE-Etn,48.268486,7.878243,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+DE-Akm,53.86617,13.68342,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+CZ-Stn,49.035976,17.9699,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+CZ-RAJ,49.44372,16.696512,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CZ-LnG,48.704224,16.926247,130,Grassland,4,Grassland,exact
+CZ-KrP,49.573257,15.078773,11,Herbaceous cover,1,Cropland,exact
+CZ-BK2,49.49443,18.54285,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CH-Tnk,47.48058,8.911775,11,Herbaceous cover,1,Cropland,exact
+CH-Rtb,47.3804,8.9934,130,Grassland,4,Grassland,exact
+CH-Rh2,47.3,9.5,130,Grassland,4,Grassland,exact
+CH-Rh1,47.3,9.5,130,Grassland,4,Grassland,exact
+CH-Oe3,47.28542,7.732438,11,Herbaceous cover,1,Cropland,exact
+CH-Oe2,47.286415,7.73375,11,Herbaceous cover,1,Cropland,exact
+CH-Oe1,47.28583,7.731944,11,Herbaceous cover,1,Cropland,exact
+CH-Lae,47.478333,8.364389,60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",2,Forest,exact
+CH-Fru,47.115833,8.537778,130,Grassland,4,Grassland,exact
+CH-Frk,46.577637,8.421592,130,Grassland,4,Grassland,exact
+CH-For,46.527206,6.7595406,10,"Cropland, rainfed",1,Cropland,exact
+CH-Crs,47.0436,7.0475,11,Herbaceous cover,1,Cropland,exact
+CH-Cha,47.21022,8.410444,130,Grassland,4,Grassland,exact
+CH-Aws,46.58311,9.790639,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CG-Tch,-4.2891665,11.656417,62,"Tree cover, broadleaved, deciduous, open (15-40%)",2,Forest,exact
+BE-Lcr,51.11218,3.85043,10,"Cropland, rainfed",1,Cropland,exact
+AT-Zoe,47.842247,14.444137,90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",2,Forest,exact
+AT-PsM,47.58145,14.347197,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+AT-Nsd,47.76914,16.758492,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+AT-Neu,47.116318,11.320229,130,Grassland,4,Grassland,exact
+AT-Mmg,47.316563,10.970089,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Zha,38.97514,100.4464,11,Herbaceous cover,1,Cropland,exact
+CN-Yuc,36.8287,116.5701,11,Herbaceous cover,1,Cropland,exact
+CN-You,38.01419,100.24206,130,Grassland,4,Grassland,exact
+CN-Yan,37.82861,107.49278,130,Grassland,4,Grassland,exact
+CN-YaS,37.70877,107.22655,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+CN-Xi2,43.55444,116.6714,130,Grassland,4,Grassland,exact
+CN-Wnb,40.42876,106.74229,200,Bare areas,7,Bare,exact
+CN-Sdq,42.00119,101.13741,130,Grassland,4,Grassland,exact
+CN-Qng,33.46807,108.49102,70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Nmn,42.94611,120.72694,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+CN-Mxn,31.6948,103.8951,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Lch,37.88936,114.69289,10,"Cropland, rainfed",1,Cropland,exact
+CN-Jzh,41.14806,121.20167,11,Herbaceous cover,1,Cropland,exact
+CN-Jng,37.83869,101.1145,130,Grassland,4,Grassland,exact
+CN-Huz,38.76519,100.3186,130,Grassland,4,Grassland,exact
+CN-HeM,41.99029,101.13349,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+CN-HeD,42.1135,100.9872,200,Bare areas,7,Bare,exact
+CN-HaW,37.607655,101.32899,130,Grassland,4,Grassland,exact
+CN-Ha2,37.6086,101.3269,130,Grassland,4,Grassland,exact
+CN-GuT,34.35481,100.4872,130,Grassland,4,Grassland,exact
+CN-Erg,50.1869,119.3889,130,Grassland,4,Grassland,exact
+CN-Dzo,19.546,109.475,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Du2,42.0467,116.2836,130,Grassland,4,Grassland,exact
+CN-Dsh,38.83992,98.9406,130,Grassland,4,Grassland,exact
+CN-Dmn,38.85551,100.37223,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+CN-Din,23.1733,112.5361,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Dda,41.64397,110.33147,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+CN-Dan,30.4978,91.0664,130,Grassland,4,Grassland,exact
+CN-DaW,30.4691,91.0624,130,Grassland,4,Grassland,exact
+CN-BeO,40.02621,116.39143,190,Urban areas,6,Settlement,exact
+CN-Ash,24.53806,101.02917,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+CN-Aro,38.04734,100.46432,130,Grassland,4,Grassland,exact
+NZ-BFm,-43.593528,171.929611,130,Grassland,4,Grassland,exact
+AU-Fog,-12.5452,131.3072,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+AU-Rgf,-32.506102,116.966827,11,Herbaceous cover,1,Cropland,exact
+AU-Dry,-15.2588,132.3706,122,Shrubland deciduous,3,Shrubland,exact
+NZ-BFu,-43.591833,171.926833,130,Grassland,4,Grassland,exact
+AU-Wgt,-42.09139,147.07944,62,"Tree cover, broadleaved, deciduous, open (15-40%)",2,Forest,exact
+AU-APL,-36.862222,147.320833,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Col,-33.42,116.237,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Ctr,-16.103219,145.446922,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Gin,-31.376351,115.71377,62,"Tree cover, broadleaved, deciduous, open (15-40%)",2,Forest,exact
+NZ-ADw,-43.64935,172.34952,130,Grassland,4,Grassland,exact
+NZ-Kop,-37.387875,175.55389,180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",5,Wetland,exact
+AU-GWW,-30.1914,120.65417,122,Shrubland deciduous,3,Shrubland,exact
+NZ-Lau,-45.038904,169.681109,190,Urban areas,6,Settlement,exact
+AU-Lit,-13.17904,130.79455,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Emr,-23.85872,148.4746,110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),4,Grassland,exact
+AU-How,-12.4952,131.15005,122,Shrubland deciduous,3,Shrubland,exact
+AU-Rob,-17.11746943,145.6301375,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Sno,-36.375649,148.43585,100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),2,Forest,exact
+AU-DaS,-14.1592,131.3881,122,Shrubland deciduous,3,Shrubland,exact
+AU-Whr,-36.6732,145.0294,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Wom,-37.422506,144.094046,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Tum,-35.6566,148.1516,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Cpr,-34.0027,140.5877,120,Shrubland,3,Shrubland,exact
+NZ-ADd,-43.64405,172.35465,130,Grassland,4,Grassland,exact
+AU-Ya1,-33.613469,150.734864,122,Shrubland deciduous,3,Shrubland,exact
+AU-MvA,-30.543,150.02,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+AU-Ync,-34.9878,146.2908,10,"Cropland, rainfed",1,Cropland,exact
+AU-MvB,-30.697,150.09,40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",10,Other,exact
+AU-Rig,-36.6499,145.5759,130,Grassland,4,Grassland,exact
+AU-Wrr,-43.09502,146.65452,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-Wac,-37.4259,145.1878,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+NZ-Oxf,-43.2609,172.21588,130,Grassland,4,Grassland,exact
+AU-Cum,-33.615278000000004,150.723611,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+AU-TTE,-22.287,133.64,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+AU-Otw,-38.525,142.81,11,Herbaceous cover,1,Cropland,exact
+AU-Wel,-32.5727,148.9843,30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",1,Cropland,exact
+AU-Cow,-16.238189,145.42715,50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",2,Forest,exact
+NZ-Cla,-43.78628,171.59558,10,"Cropland, rainfed",1,Cropland,exact
+AU-RDF,-14.563639,132.477567,122,Shrubland deciduous,3,Shrubland,exact
+AU-Stp,-17.1507,133.3502,122,Shrubland deciduous,3,Shrubland,exact
+AU-Sam,-27.38806,152.87778,122,Shrubland deciduous,3,Shrubland,exact
+AU-Lox,-34.47035,140.65512,20,"Cropland, irrigated or post-flooding",1,Cropland,exact
+AU-Ya2,-33.620812,150.763284,120,Shrubland,3,Shrubland,exact
+AU-Sil,-42.090556,147.0875,62,"Tree cover, broadleaved, deciduous, open (15-40%)",2,Forest,exact
+AU-Ade,-13.0769,131.1178,120,Shrubland,3,Shrubland,exact
+AU-Lon,-23.52327,144.31042,150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",3,Shrubland,exact
+NZ-ScF,-37.46,175.22,210,Water bodies,9,Water,exact
+AU-Boy,-32.477093000000004,116.938559,62,"Tree cover, broadleaved, deciduous, open (15-40%)",2,Forest,exact
+AU-Fle,-19.887285,146.189138,110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),4,Grassland,exact
+AU-ASM,-22.283,133.249,120,Shrubland,3,Shrubland,exact
+AU-DaP,-14.0633,131.3181,11,Herbaceous cover,1,Cropland,exact

@@ -4,6 +4,64 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — TRENDY v11 data access investigation
+
+### Purpose
+
+Scoped access options for gridded annual per-model NBP/NEE and ET from TRENDY
+S3 simulations, ~1990–2020, for an interannual variability analysis (detrended
+SD per model per grid cell, median across models).
+
+### Key finding: no anonymous path exists for any TRENDY version
+
+v11 (GCB 2022, through 2021), v12 (GCB 2023), and v13 (GCB 2024) all use the
+same controlled-access model — email agreement with coordinators + co-authorship
+negotiation. The TRENDY website is currently offline (HTTP 410). The GCB 2022
+supplement (doi.org/10.18160/GCP-2022) contains only global/national totals
+in Excel; no gridded outputs in any public repository.
+
+### Access options assessed
+
+| Path | Per-model gridded? | NBP? | ET? | Friction | Circular? |
+|------|--------------------|------|-----|----------|-----------|
+| TRENDY direct (s.a.sitch@exeter.ac.uk) | Yes | Yes (nbp) | Yes (evapotrans) | High — email + co-author negotiation | No |
+| ISIMIP3 (data.isimip.org) | Yes | Yes (nbp) | Yes | Medium — self-service portal | No |
+| FLUXCOM (MPI-BGC) | Yes (147 members) | Yes (NEE) | Yes | Low — lightweight registration | **Yes — unsuitable** |
+| GLEAM v4 | Yes | No | ET only | Low | No |
+| GCB supplement | No (totals only) | — | — | None | Moot |
+| Global Carbon Atlas | No (visualisations only) | — | — | None | Moot |
+
+### TRENDY direct access details
+
+- Contact: Stephen Sitch (s.a.sitch@exeter.ac.uk); Pierre Friedlingstein co-PI
+- Variables confirmed distributed: nbp, gpp, ra, rh, npp, evapotrans, mrro, mrso
+- Format: NetCDF, global gridded, native model resolution (commonly 0.5° or 1°), monthly or annual
+- Size: ~19 GiB per model (one-model JSBACH v11 deposit at WDC-Climate); full ensemble substantially larger
+- S3 simulation = transient CO₂ + climate + land use change (correct scenario)
+- Co-authorship expectation: "depending on importance of TRENDY data in the study" — negotiate upfront
+
+### ISIMIP3 as parallel track
+
+ISIMIP3b runs many of the same DGVMs (LPJmL, ORCHIDEE, JULES, CLM5, etc.) under
+standardised forcing. Historical + SSP simulations are S3-equivalent. Variables
+include nbp and evapotranspiration. Self-service registration at data.isimip.org.
+Worth evaluating before committing to the TRENDY direct-contact path.
+
+### FLUXCOM excluded
+
+FLUXCOM (147 ML ensemble members, NEE + ET, CC BY 4.0, low-friction) is methodologically
+unsuitable: trained on FLUXNET eddy covariance observations, making it circular for a
+FLUXNET representativeness analysis. Spatial patterns largely reflect tower locations.
+
+### Recommended next steps
+
+1. Email Stephen Sitch — FLUXNET coordination paper is a strong case; co-authorship
+   question should be clarified upfront (expect 2–4 weeks response).
+2. Simultaneously evaluate ISIMIP3 portal for variable coverage, temporal range,
+   and model overlap with TRENDY before committing to either path.
+
+---
+
 ## 2026-06-25 — LULC axis upgraded to ESA CCI LC v2.1.1 (2022)
 
 ### Data

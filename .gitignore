@@ -42,6 +42,9 @@ renv/profiles/*/renv/staging/
 .DS_Store
 Thumbs.db
 
+# TRENDY v14 NetCDF data — too large, re-downloadable via scripts/download_trendy_v14.sh
+data/external/trendy/v14-gcb2025/
+
 # DuckDB things
 data/hive
 data/duckdb/fluxnet.duckdb

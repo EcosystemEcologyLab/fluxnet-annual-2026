@@ -4,6 +4,67 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — TRENDY v14-gcb2025 download complete
+
+### Result
+
+**100/100 files, 0 failures. 126.7 GB. Duration: 1h 53m (20:56–22:50 local, 2026-06-24).**
+
+All 20 models × 5 variables (nbp, gpp, evapotrans, ra, rh; arh for LPJ-GUESS) downloaded
+to `data/external/trendy/v14-gcb2025/`. Files are at native model resolution, annual,
+1959–2024 coverage, NetCDF format.
+
+### Key technical note
+
+The Wasabi S3 URL requires the `trendyv14-gcb2025/` prefix to be **stripped** before
+prepending the base URL. The GCB browser JavaScript does this automatically; manual
+curl/wget must replicate it. Correct pattern:
+```
+https://s3.eu-west-1.wasabisys.com/gcb-2025-upload/land/output/{MODEL}/S3/{file}.nc
+```
+**Not:** `…/land/output/trendyv14-gcb2025/{MODEL}/…` (403 Forbidden).
+
+The initial download run used the wrong URL and was killed after a few minutes.
+The manifest (`data/external/trendy/download_manifest.csv`) was corrected and the
+download relaunched cleanly.
+
+### Per-model disk usage
+
+| Model | Size |
+|-------|------|
+| DLEM | 31 GB |
+| JULES-ES | 19 GB |
+| ED | 19 GB |
+| CLASSIC | 9.5 GB |
+| ISAM | 6.7 GB |
+| LPJwsl | 6.2 GB |
+| ORCHIDEE | 4.1 GB |
+| CLM | 4.1 GB |
+| LPX-Bern | 4.0 GB |
+| TEM | 3.8 GB |
+| VISIT-UT | 3.7 GB |
+| IBIS | 3.5 GB |
+| CARDAMOM | 3.5 GB |
+| LPJml | 3.4 GB |
+| ELM | 1.7 GB |
+| LPJ-GUESS | 1.4 GB |
+| JSBACH | 1.4 GB |
+| CABLE-POP | 1.0 GB |
+| CLM-FATES | 0.9 GB |
+| ELM-FATES | 0.3 GB |
+
+### Files committed
+
+- `scripts/download_trendy_v14.sh` — download script (resume-capable, 3-retry)
+- `data/external/trendy/download_manifest.csv` — 100-file manifest with corrected URLs
+- `data/external/trendy/fileIndex_merged_v4.json` — full GCB file index (28,695 entries)
+
+### Files gitignored (data, not committed)
+
+- `data/external/trendy/v14-gcb2025/` — all NetCDF files
+
+---
+
 ## 2026-06-25 — GCB TRENDY v14-gcb2025 data hub characterisation
 
 ### Access

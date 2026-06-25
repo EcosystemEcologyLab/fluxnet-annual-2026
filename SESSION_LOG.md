@@ -4,6 +4,72 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — Zenodo TRENDY v10 deposit characterisation (doi:10.5281/zenodo.7598697)
+
+### Record
+
+- **DOI (use version 3):** doi:10.5281/zenodo.7598697
+  (The linked record 6884342 is version 2 — RData files. Version 3 = NetCDF, 18.32 GB.)
+- **Title:** TRENDYv10 DGVM output for: Process-oriented analysis of dominant sources
+  of uncertainty in the land carbon sink
+- **Creator:** Mike O'Sullivan, University of Exeter (m.osullivan@exeter.ac.uk)
+- **Licence:** CC BY 4.0 — **openly and anonymously downloadable, no agreement required**
+- **Temporal coverage:** 1901–2020 (120 years annual)
+- **Spatial resolution:** 1° × 1°, 360 × 180 global grid
+- **Models (19):** CABLE-POP, CLASSIC, CLASSIC-N, CLM5.0, DLEM, IBIS, ISAM,
+  ISBA-CTRIP, JSBACH, JULES-ES-1.1, LPJ-GUESS, LPJ, LPX-Bern, OCN, ORCHIDEE,
+  ORCHIDEEv3, SDGVM, VISIT, YIBs
+
+### File structure
+
+86 files total. Each gridded NetCDF has dimensions `[lon=360, lat=180, time=120, models=19]` —
+**all 19 models are present as a 4th dimension, not ensemble statistics.**
+
+Key gridded files (each ~626 MB, S0/S1/S2/S3 variants):
+
+| Variable | Description | S3 gridded file |
+|----------|-------------|-----------------|
+| nbp | Net biome production | `trendyv10_S3_nbp_1901-2020_annual_gridded.nc` |
+| npp | Net primary production | trendyv10_S3_npp_... |
+| rh | Heterotrophic respiration | trendyv10_S3_rh_... |
+| cSoil | Soil carbon | trendyv10_S3_cSoil_... |
+| cVeg | Vegetation carbon | trendyv10_S3_cVeg_... |
+| cProduct | Product carbon (S3 only) | trendyv10_S3_cProduct_... |
+
+GPP is **regional totals only** (~4 MB), not gridded. ET is **absent from the deposit entirely**.
+
+Selective download is supported — individual files via plain HTTP GET:
+`https://zenodo.org/records/7598697/files/<filename>`
+
+### IAV analysis requirements assessment
+
+| Requirement | Status | Notes |
+|-------------|--------|-------|
+| Per-model outputs (not ensemble means) | ✅ | All 19 models in each file (4th dimension) |
+| Annual NBP, globally gridded | ✅ | 626 MB, S3, 1901–2020 |
+| ≥30 years coverage (1990–2020) | ✅ | 1901–2020 available |
+| ET / evapotranspiration | ❌ | **Not present in any version** |
+| CC BY 4.0, anonymous download | ✅ | No registration, no agreement |
+| NetCDF, terra/R-readable | ✅ | Version 3 only (v2 is RData) |
+
+### ET gap — options
+
+The deposit is a carbon-cycle uncertainty paper (O'Sullivan et al. 2022 GRL). Hydrological
+variables were not included. For ET:
+
+1. **Email Mike O'Sullivan** (m.osullivan@exeter.ac.uk) — may have evapotranspiration
+   from the same TRENDY v10 run not included in this deposit
+2. **Email Stephen Sitch** for official TRENDY v10/v11 evapotranspiration output
+3. **GLEAM v4** — single model but high quality, freely downloadable, covers ET fully
+4. **Scope IAV analysis to NBP only** if the science allows it
+
+### Decision pending
+
+NBP is immediately downloadable (626 MB, one file). ET requires an additional contact
+or alternative source. Decision needed before download proceeds.
+
+---
+
 ## 2026-06-25 — TRENDY v11 data access investigation
 
 ### Purpose

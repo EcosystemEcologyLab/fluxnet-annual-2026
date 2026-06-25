@@ -4,6 +4,99 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — TRENDY v14-gcb2025 grid characterisation
+
+### Pre-inspection fix: trailing `\r` in filenames
+
+All 100 downloaded NetCDF files had a trailing carriage return (`\r`) in their
+filenames because the download script used bash `read` on a CSV written with CRLF
+line endings. Renamed all 100 files and fixed the manifest CSV before inspection.
+The download script (`scripts/download_trendy_v14.sh`) should use `tr -d '\r'`
+when reading CSV fields — noted for future re-runs.
+
+### Grid summary (nbp S3, all 20 models)
+
+| Model | Dims (lon×lat) | Resolution | Lon range | Lat dir | Land px | Ntime | Notes |
+|-------|---------------|-----------|-----------|---------|---------|-------|-------|
+| CABLE-POP | 360×180 | 1.0°×1.0° | −180–180 | S→N | 15,069 | 3900 | fill=−99999 |
+| CARDAMOM | 720×360 | 0.5°×0.5° | −180–180 | S→N | 54,718 | 264 | **ntime=264 (22 years monthly?)** |
+| CLASSIC | 360×180 | 1.0°×1.0° | −180–180 | S→N | 16,671 | 3888 | |
+| CLM | 288×192 | 1.25°×0.9424° | **0–360** | S→N | 21,013 | 3900 | Gaussian-lat |
+| CLM-FATES | 144×80 | 2.5°×1.8947° | −180–180 | S→N | 4,071 | 3888 | **lat only to −59.7°** |
+| DLEM | 720×360 | 0.5°×0.5° | −180–180 | S→N | **0** | 325 | **⚠ 0 land pixels — fill issue** |
+| ED | 720×360 | 0.5°×0.5° | −180–180 | S→N | 62,570 | 3900 | |
+| ELM | 288×192 | 1.25°×0.9424° | −180–180 | S→N | 20,975 | 3900 | Gaussian-lat |
+| ELM-FATES | 144×80 | 2.5°×1.8947° | **0–360** | S→N | 3,993 | 3888 | **lat only to −59.7°** |
+| IBIS | 720×360 | 0.5°×0.5° | −180–180 | S→N | 58,124 | 3900 | |
+| ISAM | 720×360 | 0.5°×0.5° | **0–360** | S→N | 59,184 | 3900 | |
+| JSBACH | 192×96 | 1.875°×1.8652° | −180–180 | S→N | 4,420 | 3888 | Gaussian-lat; lat ±88.57° |
+| JULES-ES | 720×360 | 0.5°×0.5° | −180–180 | S→N | 67,420 | 3900 | fill=−999 |
+| LPJ-GUESS | 720×360 | 0.5°×0.5° | −180–180 | S→N | 59,172 | 325 | rh=arh; **ntime=325** |
+| LPJml | 720×360 | 0.5°×0.5° | −180–180 | S→N | 67,420 | 325 | **ntime=325; time unit=years** |
+| LPJwsl | 720×360 | 0.5°×0.5° | −180–180 | S→N | 62,482 | 3900 | filename=LPJ-EOSIM |
+| LPX-Bern | 720×360 | 0.5°×0.5° | −180–180 | S→N | 64,012 | 3900 | |
+| ORCHIDEE | 720×360 | 0.5°×0.5° | −180–180 | S→N | 67,420 | 3900 | |
+| TEM | 720×360 | 0.5°×0.5° | −180–180 | S→N | 62,608 | 3900 | filename=GDSTEM |
+| VISIT-UT | 720×360 | 0.5°×0.5° | −180–180 | **N→S** | 58,697 | 3900 | **⚠ lat reversed; no fill attr** |
+
+### Grid classes
+
+**0.5° (720×360) — majority (13 models):**
+ED, IBIS, ISAM, JULES-ES, LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM,
+VISIT-UT, CARDAMOM, DLEM
+
+**1° (360×180) — 2 models:** CABLE-POP, CLASSIC
+
+**1.25°×0.9424° Gaussian-lat (288×192) — 2 models:** CLM, ELM
+
+**1.875°×1.8652° Gaussian-lat (192×96) — 1 model:** JSBACH
+
+**2.5°×1.8947° coarse (144×80) — 2 models:** CLM-FATES, ELM-FATES (lat only to −59.7°)
+
+### Oddities requiring attention in regridding
+
+1. **DLEM — 0 land pixels:** No fill value attribute set; all values may be unmasked
+   zeros or the fill value coincides with valid data. Inspect before including.
+
+2. **CARDAMOM — only 264 time steps:** Other models have 3888–3900 (monthly ~325 years).
+   264 months = 22 years. CARDAMOM may only cover ~2001–2022. Verify temporal extent
+   before using for 1990–2020 window.
+
+3. **LPJ-GUESS, LPJml, CARDAMOM, DLEM — ntime=325:** 325 values at what resolution?
+   LPJml time unit is "years since 1700" → 325 annual steps = 1700–2024. ✅ correct for
+   annual data. LPJ-GUESS similarly annual. CARDAMOM ntime=264 with monthly units.
+
+4. **VISIT-UT — latitude N→S (reversed):** All other models are S→N. terra/R will
+   handle this on load but regridding code should not assume consistent orientation.
+
+5. **CLM, ISAM, ELM-FATES — longitude 0–360:** All others are −180–180.
+   Requires `terra::rotate()` or equivalent before co-registration.
+
+6. **CLM, ELM, JSBACH — non-integer resolution (Gaussian latitude):**
+   dlat ≈ 0.9424° or 1.8652°. These are spectral model Gaussian grids.
+   Nearest-neighbour regrid to a common grid is correct; bilinear also acceptable.
+
+7. **CLM-FATES, ELM-FATES — southern extent only to −59.7°:** Antarctica missing.
+   Not a problem for most land analyses but worth flagging.
+
+8. **LPJwsl — filename prefix is LPJ-EOSIM:** Directory is LPJwsl, file is
+   `LPJ-EOSIM_S3_nbp.nc`. This is the newer name for the model. No functional issue.
+
+9. **JULES-ES — fill value is −999 (not −99999):** Different from the majority.
+   Ensure fill value is read from the file attribute, not hardcoded.
+
+10. **ELM-FATES — fill value is NaN:** No numeric fill; masked array approach required.
+
+### Recommended common grid for regridding
+
+**0.5° × 0.5°** (720×360, −180–180, S→N) — matches 13 of 20 models natively.
+The 7 non-native models (CABLE-POP, CLASSIC at 1°; CLM, ELM at 1.25°; CLM-FATES,
+ELM-FATES at 2.5°; JSBACH at ~1.9°) all regrid cleanly to 0.5°. All non-native
+models have coarser resolution, so 0.5° involves oversampling (replication), not
+downsampling — no information is invented.
+
+---
+
 ## 2026-06-25 — TRENDY v14-gcb2025 download complete
 
 ### Result

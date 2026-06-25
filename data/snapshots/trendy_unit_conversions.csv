@@ -1,0 +1,39 @@
+model,variable,native_unit,converted_unit,conversion_factor,temporal_aggregation
+CABLE-POP,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers (each x1000x86400x30.4375)
+CABLE-POP,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers (each x86400x30.4375)
+CLASSIC,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers (LaTeX unit notation = kg m-2 s-1)
+CLASSIC,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers (LaTeX unit notation = kg m-2 s-1)
+CLM,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers (hours-encoded time convention)
+CLM,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers (hours-encoded time convention)
+CLM-FATES,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+CLM-FATES,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+DLEM,nbp,kg m-2 s-1,gC m-2 yr-1,31557600000,annual rate x365.25x86400x1000 (325 annual layers)
+DLEM,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers (NaN fill no _FillValue attr)
+ED,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+ED,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+ELM,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+ELM,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+ELM-FATES,nbp,kg m-2 s-1 (assumed),gC m-2 yr-1,2629800000,sum 12 monthly layers (no units attr in file)
+ELM-FATES,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+IBIS,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+IBIS,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+ISAM,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+ISAM,evapotrans,kg/m2/s,mm yr-1,2629800,sum 12 monthly layers (slash notation = kg m-2 s-1)
+JSBACH,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers (hours-encoded time convention)
+JSBACH,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers (hours-encoded time convention)
+JULES-ES,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+JULES-ES,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+LPJ-GUESS,nbp,kg m-2 s-1,gC m-2 yr-1,31557600000,annual rate x365.25x86400x1000 (325 annual layers)
+LPJ-GUESS,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+LPJml,nbp,kg m-2 s-1,gC m-2 yr-1,31557600000,annual rate x365.25x86400x1000 (325 annual layers)
+LPJml,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+LPJwsl,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+LPJwsl,evapotrans,kg m-2 s-1 (assumed),mm yr-1,2629800,sum 12 monthly layers (no units attr in file)
+LPX-Bern,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+LPX-Bern,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+ORCHIDEE,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+ORCHIDEE,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+TEM,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers
+TEM,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers
+VISIT-UT,nbp,kg m-2 s-1,gC m-2 yr-1,2629800000,sum 12 monthly layers (N-to-S lat; years-encoded time)
+VISIT-UT,evapotrans,kg m-2 s-1,mm yr-1,2629800,sum 12 monthly layers (N-to-S lat; years-encoded time)

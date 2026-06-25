@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-25T00:36:51Z",
+  "pipeline_version": "a355ed6",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif"
+  ],
+  "notes": "Per-site AGB re-classified under hybrid binning scheme. Biomass values unchanged from original extraction (ESA CCI Biomass v7.0, band 18 = 'ESACCI-BIOMASS-L4-AGB-MERGED-1000m-2024-fv7.0'). Hybrid bins: fixed bin 1 (0-5 Mg/ha); bins 2-7 are six equal-area quantile bins from global KG-land distribution with biomass >= 5 Mg/ha. Quantile breakpoints (Mg/ha): q1 = 13, q2 = 27, q3 = 51, q4 = 94, q5 = 171. NA values (0 site(s)) assigned to bin 1 (biomass_method = na_assigned_low). Citation: Santoro & Cartus (2024) CEDA doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903"
+}

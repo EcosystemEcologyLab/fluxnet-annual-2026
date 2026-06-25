@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-24T19:39:00Z",
+  "pipeline_version": "78235d0",
+  "input_sources": [
+    "data/external/koppen_beck2023/2041_2070/ssp245/koppen_geiger_0p00833333.tif",
+    "Beck et al. (2023) KG SSP2-4.5 2041-2070 1 km raster — figshare doi:10.6084/m9.figshare.21789074.v2"
+  ],
+  "notes": "Global land area per KG class under SSP2-4.5, 2041-2070 projection. Method: terra::cellSize(mask=TRUE, unit='km') + terra::zonal(fun='sum'). Total land: 147,322,862 km². Elapsed (zonal): 5.2 s."
+}

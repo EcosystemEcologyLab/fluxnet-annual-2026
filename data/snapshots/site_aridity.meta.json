@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-05-26T16:45:55Z",
-  "pipeline_version": "47596c6",
+  "run_datetime_utc": "2026-06-24T19:07:16Z",
+  "pipeline_version": "fe6fe1f",
   "input_sources": [
-    "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv",
-    "CGIAR Global Aridity Index v3.1 (Zomer et al. 2022) - figshare 7504448 file 56300327, Global-AI_ET0__annual_v3_1/ai_v31_yr.tif (downloaded 2026-05-26)"
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif"
   ],
-  "notes": "aridity_index = raw_integer * 0.0001 (i.e. /10000) per Zomer 2022 scaling. 716 sites via terra::extract (nearest cell). NA: 0"
+  "notes": "767-site re-extraction (snapshot 20260624T095651). ai_value = raw_integer * 0.0001 per CGIAR v3.1. Ocean pixels (raw value 0) treated as NA; recovered via buffer/nearest-land fallback. unep_class_5: canonical UNEP 5-class (thresholds 0.05/0.20/0.50/0.65). unep_class_7: 5-class + FAO humid subdivisions at 1.0 and 2.0. Replaces prior version (which had single unep_class column)."
 }

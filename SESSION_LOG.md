@@ -4,6 +4,97 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-24 — Biomass axis hybrid re-binning: equal-area quantile scheme
+
+### Summary
+
+Replaced the fixed-breakpoint biomass binning scheme (0-5, 5-25, 25-50, 50-100,
+100-200, 200-400, >400 Mg/ha) with a hybrid scheme: one fixed near-zero bin
+plus six equal-area quantile bins computed from the area-weighted global distribution
+of vegetated land (biomass ≥ 5 Mg/ha, KG-land mask, 147.3 M km²).
+
+### Computed quantile breakpoints (canonical)
+
+| Quantile | Cumulative area fraction | Breakpoint (Mg/ha) |
+|---|---|---|
+| q1 | 1/6 | **13.0** |
+| q2 | 2/6 | **27.0** |
+| q3 | 3/6 | **51.0** |
+| q4 | 4/6 | **94.0** |
+| q5 | 5/6 | **171.0** |
+
+Vegetated land area (≥ 5 Mg/ha, KG mask): **70,162,294 km²** (47.6% of total land).
+Bin 1 (0–5 Mg/ha): **52.4%** of total land, unchanged from previous.
+
+Computed via 1 Mg/ha histogram (5–1000 Mg/ha, 995 bins + catch-all),
+terra::zonal() area sum, cumulative area crossings. Breakpoints rounded to 1 d.p.
+
+### Global distribution (hybrid bins, 2024, KG land mask)
+
+| Bin | Range (Mg/ha) | Global % | Equal-area target % |
+|---|---|---|---|
+| 1 | 0–5 (fixed) | 52.4 | — |
+| 2 | 5–13.0 | 8.3 | 7.9 |
+| 3 | 13.0–27.0 | 8.0 | 7.9 |
+| 4 | 27.0–51.0 | 7.7 | 7.9 |
+| 5 | 51.0–94.0 | 8.0 | 7.9 |
+| 6 | 94.0–171.0 | 7.9 | 7.9 |
+| 7 | >171.0 | 7.9 | 7.9 |
+
+Bins 2–7 achieve ≈1/6 each (7.7–8.3% vs target 7.9%) — minor residual from
+histogram discretization at 1 Mg/ha precision.
+
+### Network distribution and sampling ratios (767 sites)
+
+| Bin | Range (Mg/ha) | Network % | Global % | Ratio |
+|---|---|---|---|---|
+| 1 | 0–5 | 31.6 | 52.4 | **0.60×** under-sampled |
+| 2 | 5–13.0 | 13.7 | 8.3 | 1.66× |
+| 3 | 13.0–27.0 | 10.8 | 8.0 | 1.36× |
+| 4 | 27.0–51.0 | 8.7 | 7.7 | 1.14× |
+| 5 | 51.0–94.0 | 13.6 | 8.0 | **1.69×** |
+| 6 | 94.0–171.0 | 15.0 | 7.9 | **1.91×** over-sampled |
+| 7 | >171.0 | 6.6 | 7.9 | **0.84×** under-sampled |
+
+Key patterns under equal-area bins:
+- Bin 1 (non-vegetated): strongly under-sampled (0.60×), as expected — EC towers are
+  not deployed on bare/desert/ice surfaces.
+- Bins 2–6 (sparse to temperate-forest biomass): all over-sampled. The gradient of
+  over-sampling peaks in bin 6 (94–171 Mg/ha, 1.91×) — the typical AGB range of
+  North American and European temperate and boreal forests, where FLUXNET is densest.
+- Bin 7 (>171 Mg/ha, dense and tropical forest): **under-sampled at 0.84×** despite
+  this bin containing 7.9% of global land. This is the clearest actionable gap:
+  high-biomass tropical and subtropical forests are under-represented. Under the old
+  fixed binning, the equivalent signal was masked because bin 7 (>400 Mg/ha) held
+  only 0.04% of global land (dominated by the highest-AGB tropical pixels) while
+  bin 6 (200–400) held 6.3% — making the tropical under-sampling harder to read.
+
+### Updated representativeness metrics
+
+| Scheme | J | H |
+|---|---|---|
+| Fixed bins (previous) | 0.6262 | 0.1684 |
+| **Hybrid equal-area (new)** | **0.6385** | **0.1656** |
+
+J increases by +0.012, H decreases by -0.003 — small improvements reflecting that
+the equal-area binning distributes global land more evenly across bins, reducing
+inflation from the near-empty bin 7 (>400 Mg/ha) that depressed J under the old scheme.
+Both schemes place the biomass axis in the same interpretive position relative to
+KG and aridity axes.
+
+### Files updated
+
+| File | Change |
+|---|---|
+| `scripts/figure_representativeness_biomass.R` | Replaced fixed bins with dynamic equal-area quantile scheme |
+| `data/snapshots/site_biomass_cci_v7.csv` | `biomass_bin` and `biomass_bin_label` updated for all 767 sites |
+| `data/snapshots/biomass_cci_v7_global_distribution.csv` | 7 bins, hybrid breakpoints, global area fractions |
+| `data/snapshots/representativeness_metrics.csv` | `biomass_cci_v7` row updated (aggregation_level: 7bin_hybrid) |
+| `review/figures/representativeness/fig_representativeness_biomass.png` | Rebuilt with hybrid bin labels |
+| `review/figures/representativeness/methods_biomass.md` | Rewritten with axis framing + hybrid scheme + quantile method |
+
+---
+
 ## 2026-06-24 — Biomass representativeness axis: ESA CCI Biomass v7.0 (2024)
 
 ### Data and download

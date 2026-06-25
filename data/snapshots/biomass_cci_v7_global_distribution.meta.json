@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-06-24T20:55:49Z",
-  "pipeline_version": "aa409b2",
+  "run_datetime_utc": "2026-06-25T00:37:04Z",
+  "pipeline_version": "a355ed6",
   "input_sources": [
     "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif",
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
   ],
-  "notes": "Global land area per AGB bin (7 bins). Biomass raster resampled to KG 0.00833° grid. KG-land pixels with NA biomass assigned to bin 1. terra::cellSize(kg_rast, mask=TRUE) + terra::zonal(fun='sum'). Total land: 147,322,862 km²  (matches KG land mask baseline 147,322,862 km²). Resample: bilinear. Zonal elapsed: 7.4 s."
+  "notes": "Global land area per AGB bin (7 hybrid bins). Hybrid scheme: fixed bin 1 (0-5 Mg/ha); bins 2-7 are equal-area quantile bins for land with biomass >= 5 Mg/ha. Quantile breakpoints (Mg/ha): q1 = 13, q2 = 27, q3 = 51, q4 = 94, q5 = 171. Vegetated land (>= 5 Mg/ha): 70,162,294 km2. Biomass raster band 18 (2024) resampled to KG 0.00833 deg grid (bilinear). KG-land pixels with NA biomass -> assigned value 0 (-> bin 1). terra::cellSize(kg_rast, mask=TRUE) + terra::zonal(fun='sum'). Total land: 147,322,862 km2 (matches KG land mask baseline 147,322,862 km2)."
 }

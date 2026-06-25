@@ -2,31 +2,18 @@
 ## Above-ground biomass (AGB) representativeness axis.
 ## Data: ESA CCI Biomass v7.0, AGB Mg/ha.
 ##
-## Resolution used: 1km pre-aggregated product (ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif).
-## The native 100m product is distributed as ~300 tiles per year (~18 GB). The
-## pre-aggregated 1km file (1.4 GB) is used for both site extraction and global
-## distribution. EC tower footprints extend 0.5-3 km, so 1km matches the
-## flux-relevant scale better than any single 100m pixel.
+## HYBRID BINNING SCHEME:
+##   Bin 1: 0-5 Mg/ha (fixed) — separates near-zero / bare / ice / desert
+##           from vegetated land.
+##   Bins 2-7: six equal-area quantile bins computed from the area-weighted
+##           global distribution of KG-land pixels with biomass >= 5 Mg/ha.
 ##
-## Land mask: Beck 2023 KG raster (1991-2020) aligned to 0.00833° grid ensures
-## total land = 147.3 M km², consistent with the KG and aridity axes.
+## Quantile breakpoints are computed at runtime from the global raster.
+## The five breakpoints (at cumulative area fractions 1/6 through 5/6 of
+## vegetated land) are documented in methods_biomass.md and site meta.
 ##
-## Seven-bin classification (Mg/ha):
-##   Bin 1:  0- 5   Bare/ice/desert
-##   Bin 2:  5-25   Sparse to open vegetation
-##   Bin 3: 25-50   Shrubland/savanna
-##   Bin 4: 50-100  Open forest
-##   Bin 5: 100-200 Temperate forest
-##   Bin 6: 200-400 Wet/boreal forest
-##   Bin 7: >400    Tropical forest
-##
-## Breakpoints above 25 Mg/ha follow IPCC AR6 and major assessment conventions.
-## The 0-5 and 5-25 splits are pragmatic: they separate non-vegetated land from
-## sparsely-vegetated dryland/grassland. Document this in methods.
-##
-## NA handling:
-##   - Sites with NA biomass → classified as bin 1 (biomass_method = na_assigned_low)
-##   - KG-land pixels with NA biomass in global distribution → assigned to bin 1
+## Land mask: Beck 2023 KG raster (1991-2020) at 0.00833 deg, total land
+## 147.3 M km2 — consistent with KG and aridity axes.
 
 if (file.exists(".env")) dotenv::load_dot_env()
 source("R/pipeline_config.R")
@@ -47,6 +34,8 @@ kg_path      <- file.path("data", "external", "koppen_beck2023", "1991_2020",
                           "koppen_geiger_0p00833333.tif")
 snap_path    <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                           "fluxnet_shuttle_snapshot_20260624T095651.csv")
+site_in      <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                          "site_biomass_cci_v7.csv")
 site_out     <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                           "site_biomass_cci_v7.csv")
 glob_out     <- file.path(FLUXNET_DATA_ROOT, "snapshots",
@@ -57,165 +46,203 @@ out_dir      <- file.path("review", "figures", "representativeness")
 fig_out      <- file.path(out_dir, "fig_representativeness_biomass.png")
 methods_out  <- file.path(out_dir, "methods_biomass.md")
 
-for (p in c(biomass_path, kg_path, snap_path)) {
+for (p in c(biomass_path, kg_path, snap_path, site_in)) {
   if (!file.exists(p)) stop("Required file not found: ", p, call. = FALSE)
 }
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-# ---- Bin definitions --------------------------------------------------------
-BIN_BREAKS  <- c(0, 5, 25, 50, 100, 200, 400, Inf)
-BIN_CODES   <- 1:7
-BIN_LABELS  <- c(
-  "Bare/ice/desert",       # 0-5
-  "Sparse vegetation",     # 5-25
-  "Shrubland/savanna",     # 25-50
-  "Open forest",           # 50-100
-  "Temperate forest",      # 100-200
-  "Wet/boreal forest",     # 200-400
-  "Tropical forest"        # >400
-)
-BIN_COLORS  <- c(
-  "#f7f4f9",   # 0-5   very light gray/lavender
-  "#f0e1c4",   # 5-25  pale yellow
-  "#d4d491",   # 25-50 yellow-green
-  "#a3c585",   # 50-100 light green
-  "#6cb375",   # 100-200 medium green
-  "#2e8b57",   # 200-400 forest green
-  "#14532d"    # >400  dark green
-)
-
-classify_biomass <- function(agb) {
-  bin <- findInterval(agb, BIN_BREAKS[-length(BIN_BREAKS)], left.open = FALSE)
-  bin[bin == 0] <- 1L   # anything < 0 → bin 1 (clamp)
-  bin[bin > 7]  <- 7L   # clamp upper
-  as.integer(bin)
-}
-
 # ---- Load rasters -----------------------------------------------------------
 message("Loading biomass raster ...")
 bio_rast_all <- terra::rast(biomass_path)
-message("  Dims: ", nrow(bio_rast_all), " × ", ncol(bio_rast_all),
-        "  Layers: ", terra::nlyr(bio_rast_all),
-        "  CRS: ", terra::crs(bio_rast_all, describe = TRUE)$name)
-message("  Layer names: ", paste(names(bio_rast_all), collapse = ", "))
-
-# v7.0 1km MERGED contains all available years as bands.
-# Select the last layer (most recent year).
 n_layers  <- terra::nlyr(bio_rast_all)
 lyr_names <- names(bio_rast_all)
-selected_layer <- n_layers
-selected_name  <- lyr_names[selected_layer]
-bio_rast <- bio_rast_all[[selected_layer]]
-message("  Using layer ", selected_layer, ": '", selected_name, "' (most recent)")
+message("  Dims: ", nrow(bio_rast_all), " x ", ncol(bio_rast_all),
+        "  Layers: ", n_layers,
+        "  CRS: ", terra::crs(bio_rast_all, describe = TRUE)$name)
+message("  Layer names: ", paste(lyr_names, collapse = ", "))
+
+BAND_YEAR <- 18L   # band 18 = 2024
+if (BAND_YEAR > n_layers)
+  stop("Band ", BAND_YEAR, " not found: raster has ", n_layers, " layers.")
+selected_name <- lyr_names[BAND_YEAR]
+bio_rast <- bio_rast_all[[BAND_YEAR]]
+message("  Using band ", BAND_YEAR, ": '", selected_name, "' (2024)")
+rm(bio_rast_all); gc()
 
 message("Loading KG land mask raster ...")
 kg_rast <- terra::rast(kg_path)
 
-# ---- Step 1: Per-site biomass extraction ------------------------------------
-message("\nLoading snapshot ...")
-snapshot    <- readr::read_csv(snap_path, show_col_types = FALSE)
-site_coords <- snapshot |>
-  dplyr::distinct(site_id, location_lat, location_long) |>
-  dplyr::filter(!is.na(location_lat), !is.na(location_long))
-N <- nrow(site_coords)
-message("Sites: ", N)
+# ---- Resample biomass to KG grid and apply land mask ------------------------
+message("\nResampling biomass to KG 0.00833 deg grid (bilinear) ...")
+t0 <- proc.time()
+bio_aligned <- terra::resample(bio_rast, kg_rast, method = "bilinear",
+                               threads = TRUE)
+message("  Elapsed: ", round((proc.time() - t0)[["elapsed"]], 1), " s")
 
-message("Extracting biomass at site coordinates ...")
-pts <- terra::vect(
-  data.frame(x = site_coords$location_long, y = site_coords$location_lat),
-  geom = c("x", "y"), crs = "EPSG:4326"
+# KG-land pixels with NA biomass -> assign 0 (-> bin 1)
+bio_land <- terra::ifel(!is.na(kg_rast) & is.na(bio_aligned), 0, bio_aligned)
+
+# Cell areas masked to KG land
+message("Computing cell areas ...")
+cell_areas <- terra::cellSize(kg_rast, mask = TRUE, unit = "km")
+
+# ---- Step 1: Area-weighted quantile breakpoints ----------------------------
+message("\nStep 1: Computing area-weighted quantile breakpoints (biomass >= 5 Mg/ha) ...")
+
+# Fine histogram: 1 Mg/ha bins from 5 to 1000; catch-all for >= 1000
+HIST_MAX  <- 1000L
+HIST_STEP <- 1L
+hist_lo  <- seq(5, HIST_MAX - HIST_STEP, by = HIST_STEP)
+hist_hi  <- hist_lo + HIST_STEP
+hist_ids <- seq_along(hist_lo)
+catch_id <- max(hist_ids) + 1L
+
+hist_rcl <- rbind(
+  cbind(hist_lo, hist_hi, as.numeric(hist_ids)),
+  c(HIST_MAX, 1e6, as.numeric(catch_id))
 )
-bio_raw <- terra::extract(bio_rast, pts, ID = FALSE)
-names(bio_raw)[1] <- "biomass_value_mg_ha"
-site_coords$biomass_value_mg_ha <- bio_raw$biomass_value_mg_ha
 
-n_na <- sum(is.na(site_coords$biomass_value_mg_ha))
-message("  NA sites: ", n_na, " / ", N, " → assigned to bin 1 (biomass_method = na_assigned_low)")
+bio_veg <- terra::ifel(bio_land >= 5, bio_land, NA)
+message("  Classifying to fine histogram bins (", length(hist_ids),
+        " bins at ", HIST_STEP, " Mg/ha, plus catch-all) ...")
+t1 <- proc.time()
+bio_hist_bins <- terra::classify(bio_veg, hist_rcl, right = FALSE,
+                                 include.lowest = TRUE)
+message("  Classify elapsed: ", round((proc.time() - t1)[["elapsed"]], 1), " s")
+
+message("  Zonal sum (area per fine bin) ...")
+t2 <- proc.time()
+hist_areas <- terra::zonal(cell_areas, bio_hist_bins, fun = "sum", na.rm = TRUE)
+message("  Zonal elapsed: ", round((proc.time() - t2)[["elapsed"]], 1), " s")
+names(hist_areas) <- c("hist_bin", "area_km2")
+hist_areas <- hist_areas[!is.na(hist_areas$hist_bin), ]
+
+# Map bin IDs to lower edges; sort and compute cumulative area
+bin_lo_vec <- c(hist_lo, HIST_MAX)
+hist_areas$lo <- bin_lo_vec[hist_areas$hist_bin]
+hist_areas <- hist_areas[order(hist_areas$lo), ]
+hist_areas$cum_area <- cumsum(hist_areas$area_km2)
+total_veg_area_km2 <- tail(hist_areas$cum_area, 1)
+message("  Vegetated land (>= 5 Mg/ha): ",
+        format(round(total_veg_area_km2), big.mark = ","), " km2")
+
+# 5 quantile breakpoints at 1/6, 2/6, 3/6, 4/6, 5/6 of vegetated area
+Q_PROBS <- (1:5) / 6
+q_raw <- vapply(Q_PROBS, function(f) {
+  target <- f * total_veg_area_km2
+  idx    <- which(hist_areas$cum_area >= target)[1]
+  hist_areas$lo[idx] + HIST_STEP  # upper edge of the crossing bin
+}, numeric(1))
+q_breaks <- round(q_raw, 1)  # canonical breakpoints to 1 decimal place
+
+message("  Quantile breakpoints (Mg/ha): ",
+        paste(paste0("q", 1:5, " = ", q_breaks), collapse = ", "))
+
+# ---- Dynamic bin definitions ------------------------------------------------
+BIN_BREAKS <- c(0, 5, q_breaks, Inf)
+BIN_CODES  <- 1:7
+BIN_COLORS <- c(
+  "#f7f4f9",   # bin 1: 0-5     near-zero/bare/ice
+  "#f0e1c4",   # bin 2: 5-q1   very sparse
+  "#d4d491",   # bin 3: q1-q2
+  "#a3c585",   # bin 4: q2-q3
+  "#6cb375",   # bin 5: q3-q4
+  "#2e8b57",   # bin 6: q4-q5
+  "#14532d"    # bin 7: >q5    dense forest
+)
+
+fmt_q <- function(x) sprintf("%.1f", x)
+BIN_LABELS <- c(
+  "0–5 Mg/ha",
+  sprintf("5–%s Mg/ha",           fmt_q(q_breaks[1])),
+  sprintf("%s–%s Mg/ha", fmt_q(q_breaks[1]), fmt_q(q_breaks[2])),
+  sprintf("%s–%s Mg/ha", fmt_q(q_breaks[2]), fmt_q(q_breaks[3])),
+  sprintf("%s–%s Mg/ha", fmt_q(q_breaks[3]), fmt_q(q_breaks[4])),
+  sprintf("%s–%s Mg/ha", fmt_q(q_breaks[4]), fmt_q(q_breaks[5])),
+  sprintf(">%s Mg/ha",                 fmt_q(q_breaks[5]))
+)
+
+classify_biomass <- function(agb) {
+  bin <- findInterval(agb, BIN_BREAKS[-length(BIN_BREAKS)], left.open = FALSE)
+  bin[bin == 0] <- 1L
+  bin[bin > 7]  <- 7L
+  as.integer(bin)
+}
+
+# ---- Step 2: Re-classify sites from existing site CSV ----------------------
+message("\nStep 2: Re-classifying sites under hybrid binning ...")
+site_coords <- readr::read_csv(site_in, show_col_types = FALSE)
+n_sites <- nrow(site_coords)
+n_na    <- sum(is.na(site_coords$biomass_value_mg_ha))
+message("  Sites: ", n_sites, "  |  NA biomass -> bin 1: ", n_na)
 
 site_coords <- site_coords |>
   dplyr::mutate(
-    biomass_method   = dplyr::if_else(is.na(biomass_value_mg_ha),
-                                      "na_assigned_low", "exact"),
-    agb_for_bin      = dplyr::if_else(is.na(biomass_value_mg_ha), 0,
-                                      biomass_value_mg_ha),
-    biomass_bin      = classify_biomass(agb_for_bin),
+    agb_for_bin       = dplyr::if_else(is.na(biomass_value_mg_ha), 0,
+                                       biomass_value_mg_ha),
+    biomass_bin       = classify_biomass(agb_for_bin),
     biomass_bin_label = factor(BIN_LABELS[biomass_bin], levels = BIN_LABELS)
   ) |>
   dplyr::select(site_id, location_lat, location_long,
                 biomass_value_mg_ha, biomass_bin, biomass_bin_label,
                 biomass_method)
 
-n_sites <- nrow(site_coords)
-
-cat("\n=== SITE BIOMASS DISTRIBUTION (", n_sites, "sites) ===\n")
+cat("\n=== SITE BIOMASS DISTRIBUTION (", n_sites, "sites, hybrid bins) ===\n")
 bin_tbl <- site_coords |>
   dplyr::count(biomass_bin, biomass_bin_label, name = "n") |>
   dplyr::arrange(biomass_bin) |>
   dplyr::mutate(pct = round(100 * n / n_sites, 1))
 print(as.data.frame(bin_tbl))
 
-na_sites <- site_coords[site_coords$biomass_method == "na_assigned_low", "site_id"]
-if (length(na_sites$site_id) > 0)
-  message("NA sites: ", paste(na_sites$site_id, collapse = ", "))
-
 readr::write_csv(site_coords, site_out)
 message("Saved: ", site_out)
+
 write_output_metadata(
   site_out,
   input_sources = c(snap_path, biomass_path),
   notes = paste0(
-    "Per-site AGB extraction from ESA CCI Biomass v7.0 1km pre-aggregated product. ",
-    "Raster layer used: '", selected_name, "' (layer ", selected_layer, " of ", n_layers, "). ",
-    "Bin definitions: 0-5, 5-25, 25-50, 50-100, 100-200, 200-400, >400 Mg/ha. ",
+    "Per-site AGB re-classified under hybrid binning scheme. ",
+    "Biomass values unchanged from original extraction (ESA CCI Biomass v7.0, ",
+    "band ", BAND_YEAR, " = '", selected_name, "'). ",
+    "Hybrid bins: fixed bin 1 (0-5 Mg/ha); bins 2-7 are six equal-area quantile ",
+    "bins from global KG-land distribution with biomass >= 5 Mg/ha. ",
+    "Quantile breakpoints (Mg/ha): ",
+    paste(paste0("q", 1:5, " = ", q_breaks), collapse = ", "), ". ",
     "NA values (", n_na, " site(s)) assigned to bin 1 (biomass_method = na_assigned_low). ",
-    "1km resolution chosen: EC tower footprints 0.5-3 km; 100m sub-pixel gives no ",
-    "additional information for coarse bin classification. Snapshot: 20260624T095651 ",
-    "(", N, " sites). Citation: Santoro & Cartus (2024) CEDA doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903"
+    "Citation: Santoro & Cartus (2024) CEDA doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903"
   )
 )
 
-# ---- Step 2: Global area-weighted distribution ------------------------------
-message("\nAligning biomass raster to KG land mask ...")
-t0 <- proc.time()
-# Resample biomass to KG grid (bilinear for continuous values)
-bio_aligned <- terra::resample(bio_rast, kg_rast, method = "bilinear",
-                               threads = TRUE)
-message("  Resample elapsed: ", round((proc.time() - t0)[["elapsed"]], 1), " s")
-
-# For KG-land pixels where biomass is NA → assign 0 (→ bin 1)
-bio_land <- terra::ifel(!is.na(kg_rast) & is.na(bio_aligned), 0, bio_aligned)
-
-message("Classifying to 7 bins ...")
-rcl <- matrix(c(
-  0,   5,  1,
-  5,  25,  2,
-  25,  50,  3,
-  50, 100,  4,
-  100, 200,  5,
-  200, 400,  6,
-  400, 1e6,  7
+# ---- Step 3: Global area-weighted distribution under hybrid bins -----------
+message("\nStep 3: Global distribution under hybrid 7-bin scheme ...")
+rcl_7 <- matrix(c(
+  0,           5,           1,
+  5,           q_breaks[1], 2,
+  q_breaks[1], q_breaks[2], 3,
+  q_breaks[2], q_breaks[3], 4,
+  q_breaks[3], q_breaks[4], 5,
+  q_breaks[4], q_breaks[5], 6,
+  q_breaks[5], 1e6,         7
 ), ncol = 3, byrow = TRUE)
-bio_bins <- terra::classify(bio_land, rcl, right = FALSE, include.lowest = TRUE)
+bio_bins <- terra::classify(bio_land, rcl_7, right = FALSE, include.lowest = TRUE)
 
-message("Computing cell areas and zonal sums ...")
-cell_areas <- terra::cellSize(kg_rast, mask = TRUE, unit = "km")
-t1 <- proc.time()
+message("  Zonal area sum (7 bins) ...")
+t3 <- proc.time()
 zone_areas <- terra::zonal(cell_areas, bio_bins, fun = "sum", na.rm = TRUE)
-elapsed_z  <- round((proc.time() - t1)[["elapsed"]], 1)
+message("  Elapsed: ", round((proc.time() - t3)[["elapsed"]], 1), " s")
 names(zone_areas) <- c("biomass_bin", "global_land_area_km2")
 zone_areas <- zone_areas[!is.na(zone_areas$biomass_bin) &
                            zone_areas$biomass_bin %in% 1:7, ]
 
 total_land_km2 <- sum(zone_areas$global_land_area_km2)
-message("  Total land: ", format(round(total_land_km2), big.mark = ","), " km²",
-        "  (KG baseline: 147,322,862 km²)")
-message("  Elapsed (zonal): ", elapsed_z, " s")
+message("  Total land: ", format(round(total_land_km2), big.mark = ","),
+        " km2  (KG baseline: 147,322,862 km2)")
 
 dist_df <- data.frame(
   biomass_bin       = 1:7,
   biomass_bin_label = BIN_LABELS,
-  biomass_min_mg_ha = head(BIN_BREAKS, -1),
-  biomass_max_mg_ha = c(BIN_BREAKS[-c(1, length(BIN_BREAKS))], NA_real_)
+  biomass_min_mg_ha = c(0, 5, q_breaks),
+  biomass_max_mg_ha = c(5, q_breaks, NA_real_)
 ) |>
   dplyr::left_join(zone_areas, by = "biomass_bin") |>
   dplyr::mutate(
@@ -223,11 +250,14 @@ dist_df <- data.frame(
     global_land_fraction = global_land_area_km2 / total_land_km2
   )
 
-cat("\n=== GLOBAL BIOMASS DISTRIBUTION ===\n")
+cat("\n=== GLOBAL BIOMASS DISTRIBUTION (hybrid bins) ===\n")
+veg_area_per_bin <- total_veg_area_km2 / 6
 print(as.data.frame(dplyr::mutate(dist_df,
-  area_pct = round(global_land_fraction * 100, 1))[,
-  c("biomass_bin", "biomass_bin_label", "biomass_min_mg_ha", "area_pct")]),
+  area_pct      = round(global_land_fraction * 100, 1),
+  target_pct    = round(c(NA_real_, rep(veg_area_per_bin / total_land_km2 * 100, 6)), 1)
+  )[, c("biomass_bin", "biomass_bin_label", "area_pct", "target_pct")]),
   row.names = FALSE)
+cat("  (target_pct = equal-area ideal for bins 2-7)\n")
 
 readr::write_csv(dist_df, glob_out)
 message("Saved: ", glob_out)
@@ -235,16 +265,23 @@ write_output_metadata(
   glob_out,
   input_sources = c(biomass_path, kg_path),
   notes = paste0(
-    "Global land area per AGB bin (7 bins). Biomass raster resampled to KG 0.00833° grid. ",
-    "KG-land pixels with NA biomass assigned to bin 1. ",
+    "Global land area per AGB bin (7 hybrid bins). ",
+    "Hybrid scheme: fixed bin 1 (0-5 Mg/ha); bins 2-7 are equal-area quantile bins ",
+    "for land with biomass >= 5 Mg/ha. ",
+    "Quantile breakpoints (Mg/ha): ",
+    paste(paste0("q", 1:5, " = ", q_breaks), collapse = ", "), ". ",
+    "Vegetated land (>= 5 Mg/ha): ",
+    format(round(total_veg_area_km2), big.mark = ","), " km2. ",
+    "Biomass raster band ", BAND_YEAR, " (2024) resampled to KG 0.00833 deg grid (bilinear). ",
+    "KG-land pixels with NA biomass -> assigned value 0 (-> bin 1). ",
     "terra::cellSize(kg_rast, mask=TRUE) + terra::zonal(fun='sum'). ",
-    "Total land: ", format(round(total_land_km2), big.mark = ","), " km²  ",
-    "(matches KG land mask baseline 147,322,862 km²). ",
-    "Resample: bilinear. Zonal elapsed: ", elapsed_z, " s."
+    "Total land: ", format(round(total_land_km2), big.mark = ","), " km2 ",
+    "(matches KG land mask baseline 147,322,862 km2)."
   )
 )
 
-# ---- Step 3: Metrics --------------------------------------------------------
+# ---- Step 4: Representativeness metrics ------------------------------------
+message("\nStep 4: Representativeness metrics ...")
 compute_repr_metrics <- function(p, q) {
   p[is.na(p)] <- 0; q[is.na(q)] <- 0
   list(
@@ -260,20 +297,20 @@ q_net    <- vapply(1:7, function(b) {
 }, numeric(1L))
 
 m <- compute_repr_metrics(p_global, q_net)
-message(sprintf("\nBiomass metrics — J = %.4f, H = %.4f", m$weighted_jaccard, m$hellinger_distance))
+message(sprintf("  Biomass metrics (hybrid) — J = %.4f, H = %.4f",
+                m$weighted_jaccard, m$hellinger_distance))
+message("  Previous fixed-bin metrics:  J = 0.6262, H = 0.1684")
 
-# Cross-class sampling ratios
-cat("\n=== SAMPLING RATIOS (network / global) ===\n")
+cat("\n=== SAMPLING RATIOS (network / global, hybrid bins) ===\n")
 sr_df <- data.frame(
   bin   = 1:7,
   label = BIN_LABELS,
-  p     = round(p_global * 100, 1),
-  q     = round(q_net    * 100, 1),
+  p_pct = round(p_global * 100, 1),
+  q_pct = round(q_net    * 100, 1),
   ratio = round(q_net / p_global, 3)
 )
 print(as.data.frame(sr_df), row.names = FALSE)
 
-# Append to metrics CSV
 old_met <- if (file.exists(metrics_out)) {
   readr::read_csv(metrics_out, show_col_types = FALSE) |>
     dplyr::filter(axis != "biomass_cci_v7")
@@ -284,18 +321,19 @@ old_met <- if (file.exists(metrics_out)) {
 }
 metrics_df <- dplyr::bind_rows(
   old_met,
-  data.frame(axis = "biomass_cci_v7", aggregation_level = "7bin",
+  data.frame(axis = "biomass_cci_v7", aggregation_level = "7bin_hybrid",
              n_classes = 7L, weighted_jaccard = m$weighted_jaccard,
              hellinger_distance = m$hellinger_distance)
 )
 readr::write_csv(metrics_df, metrics_out)
 message("Saved: ", metrics_out)
+
 cat("\n=== FULL METRICS TABLE ===\n")
 print(as.data.frame(dplyr::mutate(metrics_df,
   J = round(weighted_jaccard, 3), H = round(hellinger_distance, 3)
 )[, c("axis", "aggregation_level", "J", "H")]), row.names = FALSE)
 
-# ---- Step 4: Figure ---------------------------------------------------------
+# ---- Step 5: Figure ---------------------------------------------------------
 base_theme <- theme_minimal(base_size = 10, base_family = "sans") +
   theme(
     panel.grid.major.x = element_blank(),
@@ -307,10 +345,6 @@ base_theme <- theme_minimal(base_size = 10, base_family = "sans") +
   )
 
 bin_factor <- factor(BIN_LABELS, levels = BIN_LABELS)
-bar_labels_map <- c(
-  "global"  = "Global land",
-  "network" = "FLUXNET\n(767 sites)"
-)
 
 plot_long <- data.frame(
   class_id = bin_factor,
@@ -321,7 +355,7 @@ plot_long <- data.frame(
   tidyr::pivot_longer(c(global, network), names_to = "bar", values_to = "fraction") |>
   dplyr::mutate(
     bar = factor(bar, levels = c("global", "network"),
-                 labels = c(bar_labels_map["global"], bar_labels_map["network"])),
+                 labels = c("Global land", "FLUXNET\n(767 sites)")),
     label = dplyr::case_when(
       fraction >= 0.07  ~ sprintf("%d\n%.1f%%", as.integer(class_id), fraction * 100),
       fraction >= 0.03  ~ sprintf("%d  %.1f%%", as.integer(class_id), fraction * 100),
@@ -337,12 +371,9 @@ bars_panel <- ggplot(plot_long, aes(x = bar, y = fraction, fill = class_id)) +
   scale_fill_manual(
     values = setNames(BIN_COLORS, BIN_LABELS),
     breaks = BIN_LABELS,
-    labels = c("1: 0–5 Mg/ha  (bare/ice)", "2: 5–25  (sparse)",
-               "3: 25–50  (shrub/savanna)", "4: 50–100  (open forest)",
-               "5: 100–200  (temperate)", "6: 200–400  (wet/boreal)",
-               "7: >400  (tropical)"),
-    name  = NULL,
-    guide = guide_legend(ncol = 1, override.aes = list(colour = NA))
+    labels = paste0(1:7, ": ", BIN_LABELS),
+    name   = NULL,
+    guide  = guide_legend(ncol = 1, override.aes = list(colour = NA))
   ) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.01)),
                      labels = scales::percent_format(accuracy = 1),
@@ -356,6 +387,17 @@ bars_panel <- ggplot(plot_long, aes(x = bar, y = fraction, fill = class_id)) +
   base_theme +
   theme(legend.key.size = unit(0.35, "cm"),
         legend.text     = element_text(size = 7, family = "sans"))
+
+# x-axis labels for the ratio panel (abbreviated ranges)
+xlab_ratio <- c(
+  sprintf("1\n(0–5)"),
+  sprintf("2\n(5–%s)", fmt_q(q_breaks[1])),
+  sprintf("3\n(%s–%s)", fmt_q(q_breaks[1]), fmt_q(q_breaks[2])),
+  sprintf("4\n(%s–%s)", fmt_q(q_breaks[2]), fmt_q(q_breaks[3])),
+  sprintf("5\n(%s–%s)", fmt_q(q_breaks[3]), fmt_q(q_breaks[4])),
+  sprintf("6\n(%s–%s)", fmt_q(q_breaks[4]), fmt_q(q_breaks[5])),
+  sprintf("7\n(>%s)",        fmt_q(q_breaks[5]))
+)
 
 ratio_df <- data.frame(
   class_id       = bin_factor,
@@ -379,17 +421,16 @@ ratio_panel <- ggplot(ratio_df, aes(x = class_id, y = sampling_ratio,
     name   = "Sampling ratio\n(network / global)",
     trans  = "log2",
     breaks = c(0.125, 0.25, 0.5, 1, 2, 4, 8, 16),
-    labels = c("0.13×", "0.25×", "0.5×", "1×", "2×", "4×", "8×", "16×"),
+    labels = c("0.13×", "0.25×", "0.5×", "1×",
+               "2×", "4×", "8×", "16×"),
     limits = c(0.03, 24)
   ) +
-  scale_x_discrete(name = NULL,
-                   labels = c("1\n(0-5)", "2\n(5-25)", "3\n(25-50)",
-                              "4\n(50-100)", "5\n(100-200)", "6\n(200-400)", "7\n(>400)")) +
+  scale_x_discrete(name = NULL, labels = xlab_ratio) +
   base_theme +
   theme(
     panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
     panel.grid.major.x = element_blank(),
-    axis.text.x        = element_text(size = 7.5),
+    axis.text.x        = element_text(size = 7),
     axis.title.y       = element_text(size = 8),
     legend.position    = "none"
   )
@@ -401,9 +442,23 @@ fig <- (bars_panel / ratio_panel +
 ggsave(fig_out, plot = fig, width = 7.5, height = 6.5, dpi = 200, bg = "white")
 message("Saved: ", fig_out)
 
-# ---- Step 5: Methods text ---------------------------------------------------
+# ---- Step 6: Methods text ---------------------------------------------------
 methods_lines <- c(
   "# Methods: Above-Ground Biomass Representativeness (ESA CCI Biomass v7.0)",
+  "",
+  "## Axis description",
+  "",
+  "This axis measures network coverage of the global aboveground biomass density",
+  "distribution. Biomass is framed as a continuous stock variable (Mg dry matter",
+  "per hectare) rather than as a biome stratification: the question is whether the",
+  "FLUXNET tower network samples the full range of biomass densities found across",
+  "global land, not whether it samples named biome types.",
+  "",
+  "This framing is most relevant for:",
+  "  - Carbon stock estimation and upscaling from flux measurements",
+  "  - Biomass product validation (ESA CCI, GEDI, ICESat-2)",
+  "  - Forest-carbon accounting, where representativeness across the biomass",
+  "    density gradient determines the reliability of tower-based benchmarks",
   "",
   "## Data source",
   "",
@@ -418,59 +473,94 @@ methods_lines <- c(
   "doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903",
   "",
   "Variable: above-ground biomass (AGB), Mg/ha. Native resolution: 100 m,",
-  "distributed as 1°x1° tiles (~300 tiles per year, ~18 GB). The pre-aggregated",
-  "1km product (single global file, 1.4 GB) was used for this analysis.",
+  "distributed as 1 deg x 1 deg tiles (~300 tiles per year, ~18 GB). The",
+  "pre-aggregated 1 km product (single global file, 1.4 GB) was used for this",
+  "analysis. Band used: band 18 (year 2024).",
   "",
   "Resolution rationale: EC tower footprints extend 0.5-3 km depending on wind",
-  "speed and stability; a single 100m pixel does not represent the flux footprint",
-  "better than a 1km mean. Using the 1km product also aligns naturally with the",
-  "Beck 2023 KG land mask (0.00833° ~1km), enabling direct grid alignment.",
-  "The 1km file was downloaded from the CEDA aggregated/ directory via anonymous",
+  "speed and stability; a single 100 m pixel does not represent the flux footprint",
+  "better than a 1 km mean. Using the 1 km product aligns naturally with the",
+  "Beck 2023 KG land mask (0.00833 deg ~ 1 km), enabling direct grid alignment.",
+  "The 1 km file was downloaded from the CEDA aggregated/ directory via anonymous",
   "HTTP (no authentication required).",
   "",
-  "## Bin definitions",
+  "## Hybrid bin scheme",
   "",
-  "Seven log-spaced bins (Mg/ha):",
+  "Seven bins using a hybrid fixed + equal-area quantile scheme:",
   "",
-  "  Bin 1:  0-5    Bare/ice/desert",
-  "  Bin 2:  5-25   Sparse to open vegetation",
-  "  Bin 3: 25-50   Shrubland/savanna",
-  "  Bin 4: 50-100  Open forest",
-  "  Bin 5: 100-200 Temperate forest",
-  "  Bin 6: 200-400 Wet/boreal forest",
-  "  Bin 7: >400    Tropical forest",
+  "  Bin 1: 0-5 Mg/ha (fixed) — separates near-zero / bare / ice / desert land",
+  "         from vegetated land. Eddy covariance is rarely deployed on bare or",
+  "         ice-covered surfaces; a single class absorbs all non-vegetated land.",
   "",
-  "Breakpoints at 25, 50, 100, 200, 400 Mg/ha follow conventions used in IPCC",
-  "AR6 Working Group I (Chapter 2: Changing State of the Climate System) and in",
-  "major above-ground carbon stock assessments (Spawn et al. 2020 Sci Data;",
-  "Santoro et al. 2021 Earth Syst Sci Data). The 0-5 and 5-25 Mg/ha cuts are",
-  "pragmatic: bin 1 captures deserts, ice sheets, and bare/unvegetated land",
-  "where eddy covariance is unlikely or impossible; bin 2 captures dryland",
-  "grasslands, open shrublands, and sparsely vegetated semi-arid zones. These",
-  "two lower bins are judgment-based choices that are not drawn from literature",
-  "conventions, and reviewers should be aware of this.",
+  "  Bins 2-7: six equal-area quantile bins computed from the global distribution",
+  "         of KG-land pixels with biomass >= 5 Mg/ha (area-weighted). Each bin",
+  "         contains approximately 1/6 of the total area of vegetated land, producing",
+  "         six equally-sized slices of the biomass density gradient. This ensures",
+  "         that no single bin dominates the figure and that the full range from",
+  "         sparse to dense vegetation is represented without any pre-specified",
+  "         ecological interpretation tied to the breakpoints.",
   "",
-  "## Per-site extraction",
+  sprintf("  Quantile breakpoints (Mg/ha): %s",
+          paste(paste0("q", 1:5, " = ", q_breaks), collapse = ", ")),
+  "",
+  paste0("  Bin 1:  0-5 Mg/ha          (fixed lower cut)"),
+  paste0("  Bin 2:  5-", q_breaks[1], " Mg/ha       (1st sixth of vegetated land)"),
+  paste0("  Bin 3:  ", q_breaks[1], "-", q_breaks[2], " Mg/ha      (2nd sixth)"),
+  paste0("  Bin 4:  ", q_breaks[2], "-", q_breaks[3], " Mg/ha     (3rd sixth)"),
+  paste0("  Bin 5:  ", q_breaks[3], "-", q_breaks[4], " Mg/ha    (4th sixth)"),
+  paste0("  Bin 6:  ", q_breaks[4], "-", q_breaks[5], " Mg/ha   (5th sixth)"),
+  paste0("  Bin 7:  >", q_breaks[5], " Mg/ha        (6th sixth / top sixth)"),
+  "",
+  "These breakpoints are data-dependent and will be recomputed if the biomass product",
+  "is updated or replaced. The values above were computed from ESA CCI Biomass v7.0,",
+  sprintf("band 18 (year 2024), using %d Mg/ha histogram bins over the",
+          length(hist_lo)),
+  sprintf("range 5--%d Mg/ha plus a catch-all.", HIST_MAX),
+  "",
+  "## Quantile computation method",
+  "",
+  "Area-weighted quantiles were computed from the global raster as follows:",
+  "  1. terra::resample(biomass, kg_rast, method='bilinear') to align biomass to",
+  "     the KG 0.00833 deg grid.",
+  "  2. Apply KG land mask: KG-land pixels with NA biomass -> assigned value 0",
+  "     (-> bin 1) via terra::ifel().",
+  "  3. Mask to pixels with biomass >= 5 Mg/ha.",
+  sprintf("  4. Classify into fine histogram bins (%d Mg/ha step, range 5--%d Mg/ha",
+          HIST_STEP, HIST_MAX),
+  "     plus catch-all) using terra::classify().",
+  "  5. Sum pixel area per histogram bin: terra::zonal(cellSize(kg_rast,",
+  "     mask=TRUE, unit='km'), ..., fun='sum').",
+  "  6. Compute cumulative area; find values at cumulative fractions 1/6 through",
+  "     5/6 of total vegetated area (upper edge of the crossing histogram bin).",
+  "  7. Round each breakpoint to 1 decimal place (canonical values used for all",
+  "     downstream classification and reporting).",
+  "",
+  sprintf("Total vegetated land (>= 5 Mg/ha): %s km^2.",
+          format(round(total_veg_area_km2), big.mark = ",")),
+  "",
+  "## Per-site classification",
+  "",
+  "Per-site biomass values (Mg/ha) were extracted previously from ESA CCI Biomass",
+  "v7.0 band 18 at each site's reported lat/lon using terra::extract() (nearest",
+  "pixel, 1 km raster). Bin assignments were recomputed here from those stored",
+  "values using the new hybrid breakpoints; no re-extraction was necessary.",
   "",
   "Site coordinates from fluxnet_shuttle_snapshot_20260624T095651.csv (767 sites).",
-  "terra::extract() with the 1km raster at each site's reported lat/lon.",
   "Sites returning NA (ocean pixels, ice sheets, or biomass product coverage",
   "gaps) were assigned to bin 1 with biomass_method = 'na_assigned_low'.",
-  "This is consistent with the all-land framing: NA within the biomass product",
-  "indicates no significant above-ground woody biomass.",
   sprintf("NA sites in this extraction: %d of %d.", n_na, n_sites),
   "",
   "## Global distribution and land mask",
   "",
-  "Cross-axis consistency requires using the same land mask as the KG and aridity",
-  "axes. The Beck 2023 KG raster (1991-2020, 0.00833° grid, 147,322,862 km^2",
-  "total land) is used as the land mask.",
+  "The Beck 2023 KG raster (1991-2020, 0.00833 deg grid, 147,322,862 km^2",
+  "total land) is used as the land mask for cross-axis consistency with the KG",
+  "and aridity representativeness axes.",
   "",
   "Method:",
   "  1. terra::resample(biomass, kg_rast, method='bilinear') to align grids.",
   "  2. KG-land pixels where resampled biomass is NA -> assigned to value 0",
   "     (-> bin 1) using terra::ifel().",
-  "  3. terra::classify() with the 7-bin matrix.",
+  "  3. terra::classify() with the 7-bin hybrid matrix.",
   "  4. terra::cellSize(kg_rast, mask=TRUE, unit='km') for pixel areas.",
   "  5. terra::zonal(cell_areas, biomass_bins, fun='sum') to sum area per bin.",
   "",
@@ -488,15 +578,21 @@ methods_lines <- c(
   sprintf("  H = %.4f  (0 = identical, 1 = completely different)",
           m$hellinger_distance),
   "",
+  "For comparison, the previous fixed-bin scheme (0-5, 5-25, 25-50, 50-100,",
+  "100-200, 200-400, >400 Mg/ha) yielded J = 0.6262, H = 0.1684.",
+  "",
   "## Interpretive note",
   "",
-  "Bins 1-2 (0-25 Mg/ha) capture deserts, ice, and sparse dryland vegetation.",
-  "These biomes are intrinsically difficult to sample with eddy covariance (EC)",
-  "towers due to logistical challenges and the low carbon flux signal. The",
-  "representativeness signal that is most actionable for tower network design",
-  "lies in bins 3-7 (>25 Mg/ha): shrublands, forests, and tropical vegetation.",
-  "Under-representation in these bins points to specific forest types or",
-  "geographic regions where new towers would improve global synthesis coverage."
+  "Under the hybrid binning scheme, bins 2-7 each represent approximately 1/6 of",
+  "global vegetated land. A perfectly representative network would place an equal",
+  "fraction of towers in each vegetated bin. Deviations from equal sampling reveal",
+  "where the network is over- or under-represented across the biomass density",
+  "gradient. This axis is most actionable for:",
+  "  - Identifying biomass density ranges where new tower placement would improve",
+  "    global carbon synthesis coverage",
+  "  - Validating satellite biomass products across a representative density range",
+  "  - Assessing whether tower-based upscaling correctly weights high-biomass",
+  "    forests (which store disproportionate carbon)"
 )
 writeLines(methods_lines, methods_out)
 message("Saved: ", methods_out)

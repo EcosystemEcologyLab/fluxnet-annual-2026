@@ -1,768 +1,768 @@
 site_id,location_lat,location_long,biomass_value_mg_ha,biomass_bin,biomass_bin_label,biomass_method
-AR-Bal,-37.7596,-58.3024,14,2,Sparse vegetation,exact
-AR-CCa,-35.621,-61.3181,7,2,Sparse vegetation,exact
-AR-CCg,-35.9244,-61.1855,4,1,Bare/ice/desert,exact
-AR-TF1,-54.9733,-66.7335,35,3,Shrubland/savanna,exact
-AR-TF2,-54.8269,-68.4549,45,3,Shrubland/savanna,exact
-BR-CST,-7.9682,-38.3842,18,2,Sparse vegetation,exact
-BR-ITA,-23.0604,-48.6467,70,4,Open forest,exact
-BR-Ji3,-10.1866,-61.8725,248,6,Wet/boreal forest,exact
-BR-Ma2,-2.6091,-60.2093,264,6,Wet/boreal forest,exact
-BR-Ma3,-2.3907,-59.8835,242,6,Wet/boreal forest,exact
-BR-Npw,-16.498,-56.412,52,4,Open forest,exact
-BR-Sa1,-2.8567,-54.9589,253,6,Wet/boreal forest,exact
-BR-Sa3,-3.018,-54.9714,265,6,Wet/boreal forest,exact
-BR-SM1,-30.2771,-53.1479,8,2,Sparse vegetation,exact
-BR-Xpw,-16.373,-56.461,9,2,Sparse vegetation,exact
-CA-ARB,52.695,-83.9452,29,3,Shrubland/savanna,exact
-CA-ARF,52.7008,-83.955,49,3,Shrubland/savanna,exact
-CA-BOU,50.5244,-63.2064,80,4,Open forest,exact
-CA-Ca1,49.8673,-125.3336,151,5,Temperate forest,exact
-CA-Ca2,49.8705,-125.2909,232,6,Wet/boreal forest,exact
-CA-Ca3,49.5346,-124.9004,296,6,Wet/boreal forest,exact
-CA-Cbo,44.3184,-79.9341,163,5,Temperate forest,exact
-CA-CF1,58.6658,-93.83,2,1,Bare/ice/desert,exact
-CA-CF2,58.6658,-93.83,2,1,Bare/ice/desert,exact
-CA-CF3,58.6658,-93.8304,4,1,Bare/ice/desert,exact
-CA-DB2,49.119,-122.9951,68,4,Open forest,exact
-CA-DBB,49.1293,-122.9849,31,3,Shrubland/savanna,exact
-CA-DSM,49.0887,-122.8954,4,1,Bare/ice/desert,exact
-CA-EM1,50.3623,-100.2024,2,1,Bare/ice/desert,exact
-CA-EM2,50.3706,-100.5339,1,1,Bare/ice/desert,exact
-CA-Gro,48.2167,-82.1556,196,5,Temperate forest,exact
-CA-HPC,68.3203,-133.5188,29,3,Shrubland/savanna,exact
-CA-KLP,51.5902,-81.7684,4,1,Bare/ice/desert,exact
-CA-LP1,55.1119,-122.8414,60,4,Open forest,exact
-CA-LU1,59.5951,-117.2862,26,3,Shrubland/savanna,exact
-CA-LU2,59.4405,-117.2422,45,3,Shrubland/savanna,exact
-CA-MA1,50.1645,-97.8762,9,2,Sparse vegetation,exact
-CA-MA2,50.171,-97.8762,38,3,Shrubland/savanna,exact
-CA-MA3,50.1774,-97.8686,16,2,Sparse vegetation,exact
-CA-Man,55.8796,-98.4808,105,5,Temperate forest,exact
-CA-Mer,45.4094,-75.5186,69,4,Open forest,exact
-CA-Mtk,72.6695,-77.9981,0,1,Bare/ice/desert,exact
-CA-Na1,46.4722,-67.1,126,5,Temperate forest,exact
-CA-Ojp,53.9163,-104.692,89,4,Open forest,exact
-CA-PB1,54.9417,-83.4579,12,2,Sparse vegetation,exact
-CA-PB2,54.9389,-83.4736,23,2,Sparse vegetation,exact
-CA-Qc2,49.7598,-74.5711,108,5,Temperate forest,exact
-CA-Qfo,49.6925,-74.3421,94,4,Open forest,exact
-CA-RBM,49.1313,-123.1964,4,1,Bare/ice/desert,exact
-CA-SCB,61.3089,-121.2984,12,2,Sparse vegetation,exact
-CA-SCC,61.3079,-121.2992,12,2,Sparse vegetation,exact
-CA-SF1,54.485,-105.8176,63,4,Open forest,exact
-CA-SF2,54.2539,-105.8775,139,5,Temperate forest,exact
-CA-SF3,54.0916,-106.0053,160,5,Temperate forest,exact
-CA-SJ2,53.945,-104.649,74,4,Open forest,exact
-CA-SMC,63.1534,-123.2522,20,2,Sparse vegetation,exact
-CA-TP1,42.6609,-80.5595,55,4,Open forest,exact
-CA-TP2,42.7744,-80.4588,103,5,Temperate forest,exact
-CA-TP3,42.7068,-80.3483,124,5,Temperate forest,exact
-CA-TP4,42.7102,-80.3574,134,5,Temperate forest,exact
-CA-TPA,42.6947,-80.3487,81,4,Open forest,exact
-CA-TPD,42.6353,-80.5577,145,5,Temperate forest,exact
-CA-TVC,68.7462,-133.5017,1,1,Bare/ice/desert,exact
-CL-ACF,-40.1726,-73.4439,270,6,Wet/boreal forest,exact
-CL-SDF,-41.883,-73.676,125,5,Temperate forest,exact
-CL-SDP,-41.879,-73.666,110,5,Temperate forest,exact
-CR-Fsc,10.4189,-85.4732,29,3,Shrubland/savanna,exact
-MX-Aog,26.9968,-108.7892,56,4,Open forest,exact
-MX-PMm,20.8462,-86.8992,29,3,Shrubland/savanna,exact
-MX-Tes,27.8446,-109.2977,18,2,Sparse vegetation,exact
-PE-QFR,-3.8344,-73.319,113,5,Temperate forest,exact
-PR-xGU,17.9696,-66.8687,41,3,Shrubland/savanna,exact
-PR-xLA,18.0212,-67.0769,4,1,Bare/ice/desert,exact
-US-A03,70.4953,-149.8823,1,1,Bare/ice/desert,exact
-US-A10,71.3242,-156.6149,3,1,Bare/ice/desert,exact
-US-A32,36.8193,-97.8198,0,1,Bare/ice/desert,exact
-US-A37,36.3106,-97.928,0,1,Bare/ice/desert,exact
-US-A39,36.3776,-96.069,26,3,Shrubland/savanna,exact
-US-A74,36.8085,-97.5489,0,1,Bare/ice/desert,exact
-US-ABa,27.1301,-81.2011,1,1,Bare/ice/desert,exact
-US-ABb,27.1346,-81.2031,1,1,Bare/ice/desert,exact
-US-ABc,27.1633,-81.1873,8,2,Sparse vegetation,exact
-US-ABd,27.1699,-81.2152,0,1,Bare/ice/desert,exact
-US-ABe,27.1656,-81.2161,0,1,Bare/ice/desert,exact
-US-ADR,36.7653,-116.6933,0,1,Bare/ice/desert,exact
-US-Akn,33.3825,-81.5653,55,4,Open forest,exact
-US-ALQ,46.0308,-89.6067,113,5,Temperate forest,exact
-US-AR1,36.4267,-99.42,2,1,Bare/ice/desert,exact
-US-AR2,36.6358,-99.5975,0,1,Bare/ice/desert,exact
-US-ARb,35.5497,-98.0402,0,1,Bare/ice/desert,exact
-US-ARc,35.5465,-98.04,0,1,Bare/ice/desert,exact
-US-ARM,36.6058,-97.4888,0,1,Bare/ice/desert,exact
-US-ASH,36.1697,-120.201,4,1,Bare/ice/desert,exact
-US-ASM,36.1777,-120.2026,6,2,Sparse vegetation,exact
-US-Aud,31.5907,-110.5104,0,1,Bare/ice/desert,exact
-US-Bar,44.0646,-71.2881,146,5,Temperate forest,exact
-US-Bi1,38.0992,-121.4993,1,1,Bare/ice/desert,exact
-US-Bi2,38.1091,-121.5351,0,1,Bare/ice/desert,exact
-US-BRG,39.2167,-86.5406,51,4,Open forest,exact
-US-BZB,64.6955,-148.3208,114,5,Temperate forest,exact
-US-BZF,64.7013,-148.3121,157,5,Temperate forest,exact
-US-BZo,64.6936,-148.33,144,5,Temperate forest,exact
-US-CAK,64.8618,-163.7002,10,2,Sparse vegetation,exact
-US-CdM,37.5241,-109.7471,4,1,Bare/ice/desert,exact
-US-Ced,39.8379,-74.3791,30,3,Shrubland/savanna,exact
-US-CF1,46.7815,-117.0821,0,1,Bare/ice/desert,exact
-US-CF2,46.784,-117.0908,0,1,Bare/ice/desert,exact
-US-CF3,46.7551,-117.1261,0,1,Bare/ice/desert,exact
-US-CF4,46.7518,-117.1285,0,1,Bare/ice/desert,exact
-US-CGG,37.938,-121.9761,4,1,Bare/ice/desert,exact
-US-ChR,35.9311,-84.3324,164,5,Temperate forest,exact
-US-CLF,40.6366,-77.9424,57,4,Open forest,exact
-US-Cms,71.3202,-156.6223,2,1,Bare/ice/desert,exact
-US-CMW,31.6637,-110.1777,12,2,Sparse vegetation,exact
-US-Cop,38.09,-109.39,2,1,Bare/ice/desert,exact
-US-CRK,31.4629,-95.3415,86,4,Open forest,exact
-US-CRT,41.6285,-83.3471,2,1,Bare/ice/desert,exact
-US-CS1,44.1031,-89.5379,34,3,Shrubland/savanna,exact
-US-CS2,44.1467,-89.5002,47,3,Shrubland/savanna,exact
-US-CS3,44.1394,-89.5727,14,2,Sparse vegetation,exact
-US-CS4,44.1597,-89.5475,20,2,Sparse vegetation,exact
-US-CS5,44.1095,-89.5377,34,3,Shrubland/savanna,exact
-US-CS6,44.4297,-89.544,15,2,Sparse vegetation,exact
-US-CS8,44.4338,-89.5364,23,2,Sparse vegetation,exact
-US-Cst,33.0442,-91.9204,101,5,Temperate forest,exact
-US-Cwt,35.0592,-83.4275,202,6,Wet/boreal forest,exact
-US-DFC,43.3448,-89.7117,22,2,Sparse vegetation,exact
-US-DFK,43.3453,-89.7154,22,2,Sparse vegetation,exact
-US-Dix,39.9712,-74.4346,27,3,Shrubland/savanna,exact
-US-Dk1,35.9712,-79.0934,155,5,Temperate forest,exact
-US-Dk2,35.9736,-79.1004,177,5,Temperate forest,exact
-US-Dk3,35.9782,-79.0942,155,5,Temperate forest,exact
-US-Dmg,38.0015,-121.6691,3,1,Bare/ice/desert,exact
-US-DPW,28.0521,-81.4361,25,3,Shrubland/savanna,exact
-US-DS1,38.1335,-121.539,0,1,Bare/ice/desert,exact
-US-DS2,38.1375,-121.514,0,1,Bare/ice/desert,exact
-US-DS3,38.1235,-121.549,0,1,Bare/ice/desert,exact
-US-EA4,29.6633,-98.3816,34,3,Shrubland/savanna,exact
-US-EA5,29.3584,-99.9576,17,2,Sparse vegetation,exact
-US-EA6,29.6561,-99.9588,5,2,Sparse vegetation,exact
-US-EDN,37.6156,-122.114,8,2,Sparse vegetation,exact
-US-EKH,36.8094,-121.7523,3,1,Bare/ice/desert,exact
-US-EKN,36.8357,-121.7328,9,2,Sparse vegetation,exact
-US-EKP,36.8558,-121.7488,12,2,Sparse vegetation,exact
-US-Elm,25.5519,-80.7826,9,2,Sparse vegetation,exact
-US-EML,63.8784,-149.2536,11,2,Sparse vegetation,exact
-US-Esm,25.4379,-80.5946,15,2,Sparse vegetation,exact
-US-EvM,25.3539,-80.381,18,2,Sparse vegetation,exact
-US-Fcr,65.3968,-148.9348,32,3,Shrubland/savanna,exact
-US-Fmf,35.1426,-111.7273,20,2,Sparse vegetation,exact
-US-Fo1,70.085,-148.5671,7,2,Sparse vegetation,exact
-US-Fo2,70.0229,-148.6598,9,2,Sparse vegetation,exact
-US-Fuf,35.089,-111.762,22,2,Sparse vegetation,exact
-US-Fwf,35.4454,-111.7718,14,2,Sparse vegetation,exact
-US-GLE,41.3665,-106.2399,28,3,Shrubland/savanna,exact
-US-Ha1,42.5378,-72.1715,169,5,Temperate forest,exact
-US-HB1,33.3455,-79.1957,59,4,Open forest,exact
-US-HB2,33.3242,-79.244,104,5,Temperate forest,exact
-US-HB3,33.3482,-79.2322,103,5,Temperate forest,exact
-US-HB4,33.2015,-79.2975,43,3,Shrubland/savanna,exact
-US-HBK,43.9397,-71.7181,186,5,Temperate forest,exact
-US-Hn2,46.6889,-119.4641,1,1,Bare/ice/desert,exact
-US-Hn3,46.6878,-119.4614,1,1,Bare/ice/desert,exact
-US-Ho2,45.209,-68.747,134,5,Temperate forest,exact
-US-Ho3,45.2072,-68.7265,112,5,Temperate forest,exact
-US-HRA,34.5852,-91.7517,3,1,Bare/ice/desert,exact
-US-HRC,34.5888,-91.7517,3,1,Bare/ice/desert,exact
-US-Hsm,38.2368,-122.0212,4,1,Bare/ice/desert,exact
-US-HVs,69.1672,-148.8569,0,1,Bare/ice/desert,exact
-US-HWB,40.8608,-77.8488,19,2,Sparse vegetation,exact
-US-IAB,42.0001,-93.7016,1,1,Bare/ice/desert,exact
-US-IAC,41.9984,-93.7016,1,1,Bare/ice/desert,exact
-US-IAM,41.9994,-93.7042,1,1,Bare/ice/desert,exact
-US-ICh,68.6068,-149.2958,0,1,Bare/ice/desert,exact
-US-ICs,68.6058,-149.311,0,1,Bare/ice/desert,exact
-US-ICt,68.6063,-149.3041,0,1,Bare/ice/desert,exact
-US-Jo1,32.582,-106.635,0,1,Bare/ice/desert,exact
-US-Jo2,32.5849,-106.6032,0,1,Bare/ice/desert,exact
-US-KFS,39.0561,-95.1907,33,3,Shrubland/savanna,exact
-US-Kon,39.0824,-96.5603,2,1,Bare/ice/desert,exact
-US-KPL,60.5382,-150.5061,104,5,Temperate forest,exact
-US-KS1,28.4583,-80.6709,20,2,Sparse vegetation,exact
-US-KS2,28.6086,-80.6715,35,3,Shrubland/savanna,exact
-US-KS3,28.7084,-80.7427,2,1,Bare/ice/desert,exact
-US-LA2,29.8587,-90.2869,41,3,Shrubland/savanna,exact
-US-LA3,29.4936,-89.9153,0,1,Bare/ice/desert,exact
-US-Lin,36.3566,-119.0922,1,1,Bare/ice/desert,exact
-US-Los,46.0827,-89.9786,80,4,Open forest,exact
-US-LS1,31.5615,-110.1403,2,1,Bare/ice/desert,exact
-US-MBP,47.5051,-93.4893,88,4,Open forest,exact
-US-Me1,44.5794,-121.5,62,4,Open forest,exact
-US-Me3,44.3154,-121.6078,18,2,Sparse vegetation,exact
-US-Me5,44.4372,-121.5668,80,4,Open forest,exact
-US-Me6,44.3232,-121.6044,19,2,Sparse vegetation,exact
-US-Me7,44.4534,-121.5619,36,3,Shrubland/savanna,exact
-US-MEF,39.1006,-105.1024,11,2,Sparse vegetation,exact
-US-MMS,39.3232,-86.4133,198,5,Temperate forest,exact
-US-MN1,45.6168,-96.1269,0,1,Bare/ice/desert,exact
-US-MN2,45.627,-96.1271,0,1,Bare/ice/desert,exact
-US-MN3,45.6091,-96.1265,1,1,Bare/ice/desert,exact
-US-Mo1,39.2298,-92.1167,2,1,Bare/ice/desert,exact
-US-Mo2,38.9488,-91.9945,8,2,Sparse vegetation,exact
-US-Mo3,39.2322,-92.1493,7,2,Sparse vegetation,exact
-US-MOz,38.7441,-92.2,145,5,Temperate forest,exact
-US-Mpj,34.4382,-106.2385,12,2,Sparse vegetation,exact
-US-MtB,32.416,-110.7256,51,4,Open forest,exact
-US-Myb,38.0499,-121.765,5,2,Sparse vegetation,exact
-US-MZA,43.0441,-76.7897,68,4,Open forest,exact
-US-NC1,35.8118,-76.7119,67,4,Open forest,exact
-US-NC2,35.803,-76.6685,101,5,Temperate forest,exact
-US-NC3,35.799,-76.656,89,4,Open forest,exact
-US-NC4,35.7817,-75.9135,129,5,Temperate forest,exact
-US-NC5,36.1565,-78.7878,110,5,Temperate forest,exact
-US-Ne1,41.1651,-96.4766,0,1,Bare/ice/desert,exact
-US-Ne2,41.1649,-96.4701,0,1,Bare/ice/desert,exact
-US-Ne3,41.1797,-96.4397,0,1,Bare/ice/desert,exact
-US-NGB,71.28,-156.6092,10,2,Sparse vegetation,exact
-US-NGC,64.8618,-163.7002,10,2,Sparse vegetation,exact
-US-NR1,40.0329,-105.547,53,4,Open forest,exact
-US-NR3,40.052,-105.5864,19,2,Sparse vegetation,exact
-US-NSa,36.6029,-119.5061,1,1,Bare/ice/desert,exact
-US-NSb,36.3354,-120.1183,0,1,Bare/ice/desert,exact
-US-Oho,41.5545,-83.8438,108,5,Temperate forest,exact
-US-ONA,27.3836,-81.9509,7,2,Sparse vegetation,exact
-US-OPE,39.0293,-76.8457,109,5,Temperate forest,exact
-US-OWC,41.3793,-82.5124,45,3,Shrubland/savanna,exact
-US-PAS,27.3944,-81.951,8,2,Sparse vegetation,exact
-US-PFb,45.972,-90.3232,84,4,Open forest,exact
-US-PFc,45.9677,-90.3088,114,5,Temperate forest,exact
-US-PFd,45.9689,-90.301,114,5,Temperate forest,exact
-US-PFf,45.9458,-90.2944,94,4,Open forest,exact
-US-PFg,45.9735,-90.2723,123,5,Temperate forest,exact
-US-PFh,45.9557,-90.2406,117,5,Temperate forest,exact
-US-PFi,45.9749,-90.2327,120,5,Temperate forest,exact
-US-PFj,45.9619,-90.227,124,5,Temperate forest,exact
-US-PFk,45.9149,-90.3425,110,5,Temperate forest,exact
-US-PFL,45.9409,-90.3177,95,4,Open forest,exact
-US-PFm,45.9207,-90.3099,102,5,Temperate forest,exact
-US-PFn,45.9392,-90.2823,108,5,Temperate forest,exact
-US-PFp,45.9365,-90.2641,122,5,Temperate forest,exact
-US-PFq,45.9271,-90.2475,113,5,Temperate forest,exact
-US-PFr,45.9245,-90.2475,113,5,Temperate forest,exact
-US-PFt,45.9197,-90.2288,111,5,Temperate forest,exact
-US-PLo,42.7496,-70.9157,54,4,Open forest,exact
-US-Prr,65.1237,-147.4876,91,4,Open forest,exact
-US-PSH,36.2347,-119.9247,4,1,Bare/ice/desert,exact
-US-PSL,36.8276,-120.1397,8,2,Sparse vegetation,exact
-US-RC1,46.7837,-117.0777,0,1,Bare/ice/desert,exact
-US-RC2,46.7776,-117.0807,0,1,Bare/ice/desert,exact
-US-RC3,46.991,-118.598,0,1,Bare/ice/desert,exact
-US-RC4,46.758,-116.949,0,1,Bare/ice/desert,exact
-US-RC5,47.01,-119.248,11,2,Sparse vegetation,exact
-US-RGA,34.4159,-91.6733,8,2,Sparse vegetation,exact
-US-RGB,39.5782,-121.8579,0,1,Bare/ice/desert,exact
-US-RGF,37.6995,-121.1369,10,2,Sparse vegetation,exact
-US-RGo,39.6805,-122.0026,10,2,Sparse vegetation,exact
-US-RGW,33.6216,-91.4306,15,2,Sparse vegetation,exact
-US-Rls,43.1439,-116.7356,2,1,Bare/ice/desert,exact
-US-Rms,43.0645,-116.7486,13,2,Sparse vegetation,exact
-US-Ro1,44.7143,-93.0898,2,1,Bare/ice/desert,exact
-US-Ro2,44.7288,-93.0888,2,1,Bare/ice/desert,exact
-US-Ro3,44.7217,-93.0893,2,1,Bare/ice/desert,exact
-US-Ro4,44.6781,-93.0723,14,2,Sparse vegetation,exact
-US-Ro5,44.691,-93.0576,6,2,Sparse vegetation,exact
-US-Ro6,44.6946,-93.0578,6,2,Sparse vegetation,exact
-US-Rpf,65.1198,-147.429,59,4,Open forest,exact
-US-RRC,37.3344,-77.2065,100,5,Temperate forest,exact
-US-Rwe,43.0653,-116.7591,7,2,Sparse vegetation,exact
-US-Rwf,43.1207,-116.7231,5,2,Sparse vegetation,exact
-US-Rws,43.1675,-116.7132,0,1,Bare/ice/desert,exact
-US-Sag,69.5131,-148.5676,1,1,Bare/ice/desert,exact
-US-SD1,41.2048,-86.0296,1,1,Bare/ice/desert,exact
-US-SD2,41.1785,-85.9977,13,2,Sparse vegetation,exact
-US-Seg,34.3603,-106.7003,0,1,Bare/ice/desert,exact
-US-Ses,34.335,-106.7448,5,2,Sparse vegetation,exact
-US-SHC,39.4315,-120.2398,76,4,Open forest,exact
-US-Slt,39.9138,-74.596,69,4,Open forest,exact
-US-Sne,38.0369,-121.7547,3,1,Bare/ice/desert,exact
-US-Snf,38.0402,-121.7272,0,1,Bare/ice/desert,exact
-US-SP1,29.7381,-82.2188,60,4,Open forest,exact
-US-SRC,31.9083,-110.8395,0,1,Bare/ice/desert,exact
-US-SRG,31.7894,-110.8277,1,1,Bare/ice/desert,exact
-US-SRM,31.8214,-110.8661,0,1,Bare/ice/desert,exact
-US-Srr,38.2006,-122.0264,4,1,Bare/ice/desert,exact
-US-SRS,31.8173,-110.8508,0,1,Bare/ice/desert,exact
-US-SSH,40.6658,-77.9041,166,5,Temperate forest,exact
-US-Sta,41.3966,-106.8024,0,1,Bare/ice/desert,exact
-US-StJ,39.0882,-75.4372,19,2,Sparse vegetation,exact
-US-Syv,46.2421,-89.3459,99,4,Open forest,exact
-US-TaS,25.1908,-80.6391,20,2,Sparse vegetation,exact
-US-TKs,68.6337,-149.5769,0,1,Bare/ice/desert,exact
-US-TLR,35.9168,-76.1463,141,5,Temperate forest,exact
-US-Ton,38.4309,-120.966,8,2,Sparse vegetation,exact
-US-Tw1,38.1074,-121.6469,3,1,Bare/ice/desert,exact
-US-Tw2,38.0969,-121.6365,4,1,Bare/ice/desert,exact
-US-Tw3,38.1152,-121.6469,1,1,Bare/ice/desert,exact
-US-Tw4,38.1027,-121.6413,3,1,Bare/ice/desert,exact
-US-Tw5,38.1072,-121.6426,3,1,Bare/ice/desert,exact
-US-Twt,38.1087,-121.6531,3,1,Bare/ice/desert,exact
-US-Uaf,64.8663,-147.8555,97,4,Open forest,exact
-US-UC1,40.7536,-78.0056,99,4,Open forest,exact
-US-UC2,40.7559,-77.9998,69,4,Open forest,exact
-US-UiA,40.0646,-88.1961,2,1,Bare/ice/desert,exact
-US-UiB,40.0628,-88.1984,2,1,Bare/ice/desert,exact
-US-UiC,40.0628,-88.1961,2,1,Bare/ice/desert,exact
-US-UiD,40.0646,-88.1985,2,1,Bare/ice/desert,exact
-US-UiE,40.0629,-88.2033,5,2,Sparse vegetation,exact
-US-UiF,40.0665,-88.2015,5,2,Sparse vegetation,exact
-US-UiG,40.0629,-88.2009,5,2,Sparse vegetation,exact
-US-UMd,45.5625,-84.6975,73,4,Open forest,exact
-US-UTB,40.7848,-113.8299,0,1,Bare/ice/desert,exact
-US-UTD,38.1038,-109.5952,1,1,Bare/ice/desert,exact
-US-UTE,37.7353,-111.5708,0,1,Bare/ice/desert,exact
-US-UTJ,37.2818,-109.5348,0,1,Bare/ice/desert,exact
-US-UTL,40.1877,-109.6579,0,1,Bare/ice/desert,exact
-US-UTM,38.5879,-109.5775,4,1,Bare/ice/desert,exact
-US-UTP,41.0604,-112.1013,1,1,Bare/ice/desert,exact
-US-UTV,40.1266,-109.9546,0,1,Bare/ice/desert,exact
-US-UTW,39.4453,-110.7288,0,1,Bare/ice/desert,exact
-US-Var,38.4133,-120.9508,6,2,Sparse vegetation,exact
-US-Vcm,35.8885,-106.5322,4,1,Bare/ice/desert,exact
-US-Vcp,35.8641,-106.5965,30,3,Shrubland/savanna,exact
-US-VT1,40.4064,-87.5214,0,1,Bare/ice/desert,exact
-US-VT2,40.4018,-87.5213,0,1,Bare/ice/desert,exact
-US-WCr,45.8058,-90.0795,112,5,Temperate forest,exact
-US-Whs,31.7438,-110.0522,5,2,Sparse vegetation,exact
-US-Wjs,34.4258,-105.8617,0,1,Bare/ice/desert,exact
-US-Wkg,31.7365,-109.9419,0,1,Bare/ice/desert,exact
-US-WPT,41.4646,-82.9962,10,2,Sparse vegetation,exact
-US-WT1,34.3674,-101.8154,0,1,Bare/ice/desert,exact
-US-xAB,45.7624,-122.3303,212,6,Wet/boreal forest,exact
-US-xAE,35.4106,-99.0588,0,1,Bare/ice/desert,exact
-US-xBA,71.2824,-156.6194,8,2,Sparse vegetation,exact
-US-xBL,39.0603,-78.0716,16,2,Sparse vegetation,exact
-US-xBN,65.154,-147.5026,85,4,Open forest,exact
-US-xBR,44.0639,-71.2873,146,5,Temperate forest,exact
-US-xCL,33.4012,-97.57,10,2,Sparse vegetation,exact
-US-xCP,40.8155,-104.7456,0,1,Bare/ice/desert,exact
-US-xDC,47.1617,-99.1066,1,1,Bare/ice/desert,exact
-US-xDJ,63.881100000000004,-145.7514,27,3,Shrubland/savanna,exact
-US-xDL,32.5417,-87.8039,155,5,Temperate forest,exact
-US-xDS,28.125,-81.4362,21,2,Sparse vegetation,exact
-US-xGR,35.689,-83.5019,102,5,Temperate forest,exact
-US-xHE,63.8757,-149.2133,0,1,Bare/ice/desert,exact
-US-xJE,31.1948,-84.4686,42,3,Shrubland/savanna,exact
-US-xJR,32.5907,-106.8425,0,1,Bare/ice/desert,exact
-US-xKZ,39.1008,-96.5631,3,1,Bare/ice/desert,exact
-US-xLE,31.8539,-88.1612,133,5,Temperate forest,exact
-US-xMB,38.2483,-109.3883,0,1,Bare/ice/desert,exact
-US-xML,37.3783,-80.5248,212,6,Wet/boreal forest,exact
-US-xNG,46.7697,-100.9154,2,1,Bare/ice/desert,exact
-US-xNQ,40.1776,-112.4524,0,1,Bare/ice/desert,exact
-US-xNW,40.0543,-105.5824,19,2,Sparse vegetation,exact
-US-xPU,19.5531,-155.3173,16,2,Sparse vegetation,exact
-US-xRM,40.2759,-105.5459,56,4,Open forest,exact
-US-xRN,35.9641,-84.2826,127,5,Temperate forest,exact
-US-xSB,29.6893,-81.9934,12,2,Sparse vegetation,exact
-US-xSC,38.8929,-78.1395,185,5,Temperate forest,exact
-US-xSE,38.8901,-76.56,150,5,Temperate forest,exact
-US-xSJ,37.1088,-119.7323,6,2,Sparse vegetation,exact
-US-xSL,40.4619,-103.0293,0,1,Bare/ice/desert,exact
-US-xSP,37.0334,-119.26220000000001,59,4,Open forest,exact
-US-xSR,31.9107,-110.8355,0,1,Bare/ice/desert,exact
-US-xST,45.5089,-89.5864,112,5,Temperate forest,exact
-US-xTE,37.0058,-119.006,92,4,Open forest,exact
-US-xTL,68.6611,-149.3705,0,1,Bare/ice/desert,exact
-US-xTR,45.4937,-89.5857,114,5,Temperate forest,exact
-US-xUK,39.0404,-95.1921,53,4,Open forest,exact
-US-xUN,46.2339,-89.5373,146,5,Temperate forest,exact
-US-xWD,47.1282,-99.2414,0,1,Bare/ice/desert,exact
-US-xWR,45.8205,-121.9519,264,6,Wet/boreal forest,exact
-US-xYE,44.9535,-110.5391,4,1,Bare/ice/desert,exact
-US-YK1,61.2723,-163.2228,5,2,Sparse vegetation,exact
-US-YK2,61.2548,-163.259,0,1,Bare/ice/desert,exact
-US-ZF2,40.7939,-87.5355,8,2,Sparse vegetation,exact
-ZA-Uby,-27.3952,32.5889,13,2,Sparse vegetation,exact
-ZA-Spk,-28.70408,29.52614,6,2,Sparse vegetation,exact
-ZA-Jks,-33.99029,18.95543,4,1,Bare/ice/desert,exact
-ZA-BfS,-28.8906,24.86112,0,1,Bare/ice/desert,exact
-ZA-BfK,-28.856483,24.83985,0,1,Bare/ice/desert,exact
-KR-WdE,34.35956,126.67779,29,3,Shrubland/savanna,exact
-KR-UAO,36.41682,128.79904,75,4,Open forest,exact
-KR-TwC,37.30493,127.31743,121,5,Temperate forest,exact
-KR-TwB,37.30406,127.31395,121,5,Temperate forest,exact
-KR-SmM,37.93894,126.95471,61,4,Open forest,exact
-KR-ScC,37.22141,129.29863,132,5,Temperate forest,exact
-KR-PcD,37.48184,128.51604,165,5,Temperate forest,exact
-KR-Nj2,35.0269,126.8219,7,2,Sparse vegetation,exact
-KR-Nj1,35.02753,126.82093,7,2,Sparse vegetation,exact
-KR-Kw2,37.74869,127.14888,112,5,Temperate forest,exact
-KR-Kw1,37.74843,127.16261,115,5,Temperate forest,exact
-KR-JjM,33.31798,126.56772,61,4,Open forest,exact
-KR-Hnm,34.5538,126.56992,20,2,Sparse vegetation,exact
-KR-HcM,37.61938,127.84571,165,5,Temperate forest,exact
-KR-HPK,34.47722,126.48105,11,2,Sparse vegetation,exact
-KR-GmS,35.75089,126.81378,2,1,Bare/ice/desert,exact
-KR-GmR,35.74862,126.86432,2,1,Bare/ice/desert,exact
-KR-GmP,35.74502,126.85222,4,1,Bare/ice/desert,exact
-KR-CmF,37.1599,127.65365,21,2,Sparse vegetation,exact
-KR-CRK,38.2013,127.2497,0,1,Bare/ice/desert,exact
-KR-AdC,36.50565,126.35909,26,3,Shrubland/savanna,exact
-TH-Mae,18.42264,99.72025,97,4,Open forest,exact
-TH-Kog,18.81267,98.90225,212,6,Wet/boreal forest,exact
-RU-Tur,64.208885,100.463554,2,1,Bare/ice/desert,exact
-RU-SkP,62.25471,129.61855,61,4,Open forest,exact
-RU-Sk2,62.241356,129.65047,63,4,Open forest,exact
-RU-NeF,62.315617,129.49997,18,2,Sparse vegetation,exact
-RU-NeC,62.314842,129.50008,17,2,Sparse vegetation,exact
-RU-NeB,62.325935,129.48734,13,2,Sparse vegetation,exact
-RU-Ege,60.015514,133.824,85,4,Open forest,exact
-MY-LHP,4.201007,114.03908,208,6,Wet/boreal forest,exact
-MN-Udg,48.25649,106.85116,26,3,Shrubland/savanna,exact
-MN-Nkh,47.693592,107.48934,0,1,Bare/ice/desert,exact
-MN-Kbu,47.21397,108.737335,0,1,Bare/ice/desert,exact
-MN-Hst,47.59293,105.85497,0,1,Bare/ice/desert,exact
-KH-Kmp,12.744579,105.47857,161,5,Temperate forest,exact
-JP-Ynf,26.751,128.21266,43,3,Shrubland/savanna,exact
-JP-Yms,34.79028,135.84094,177,5,Temperate forest,exact
-JP-Toc,42.70973,141.5659,88,4,Open forest,exact
-JP-Tmk,42.739307,141.51483,48,3,Shrubland/savanna,exact
-JP-Tmd,42.735912,141.52315,49,3,Shrubland/savanna,exact
-JP-Tkb,36.173378,140.17664,88,4,Open forest,exact
-JP-Tgf,36.11353,140.09488,22,2,Sparse vegetation,exact
-JP-Tef,45.05581,142.10712,91,4,Open forest,exact
-JP-Tak,36.146168,137.42311,174,5,Temperate forest,exact
-JP-Ta2,36.140038,137.37071,120,5,Temperate forest,exact
-JP-Srk,40.565483,140.12779,242,6,Wet/boreal forest,exact
-JP-Spp,42.986843,141.38533,70,4,Open forest,exact
-JP-Shn,35.865753,137.93256,24,2,Sparse vegetation,exact
-JP-Sb2,45.10339,141.6808,0,1,Bare/ice/desert,exact
-JP-Sb1,45.104702,141.68797,0,1,Bare/ice/desert,exact
-JP-SMF,35.261528,137.07875,82,4,Open forest,exact
-JP-Om2,34.542454,135.50822,1,1,Bare/ice/desert,exact
-JP-Nuf,35.152416,136.9719,16,2,Sparse vegetation,exact
-JP-NsM,36.91604,139.936,60,4,Open forest,exact
-JP-NsC,36.915054,139.93684,60,4,Open forest,exact
-JP-Nkm,35.808064,137.83388,126,5,Temperate forest,exact
-JP-Mse,36.05393,140.02693,14,2,Sparse vegetation,exact
-JP-MMF,44.321884,142.26152,76,4,Open forest,exact
-JP-MBF,44.38406,142.31862,85,4,Open forest,exact
-JP-Kzw,36.406788,138.57257,122,5,Temperate forest,exact
-JP-Khw,33.13658,130.70834,118,5,Temperate forest,exact
-JP-KaP,36.08313,140.24033,24,2,Sparse vegetation,exact
-JP-Hc3,34.539673,133.91173,10,2,Sparse vegetation,exact
-JP-Hc2,34.537518,133.92755,14,2,Sparse vegetation,exact
-JP-Fmt,35.638744,139.37975,60,4,Open forest,exact
-JP-Fjy,35.45454,138.76225,99,4,Open forest,exact
-JP-Fhk,35.443554,138.7647,112,5,Temperate forest,exact
-JP-BBY,43.322998,141.81065,17,2,Sparse vegetation,exact
-JP-Api,40.001358,140.93658,160,5,Temperate forest,exact
-ID-Pag,-2.3239167,113.90439,178,5,Temperate forest,exact
-ID-PaD,-2.3460708,114.03641,104,5,Temperate forest,exact
-ID-PaB,-2.340796,114.0379,104,5,Temperate forest,exact
-CN-Lsh,45.27984,127.57821,49,3,Shrubland/savanna,exact
-CN-HaM,37.607433,101.332,0,1,Bare/ice/desert,exact
-UK-AMo,55.792545,-3.2436917,0,1,Bare/ice/desert,exact
-SE-Svb,64.25611,19.7745,99,4,Open forest,exact
-SE-Sto,68.35594,19.045208,13,2,Sparse vegetation,exact
-SE-Nor,60.0865,17.479504,94,4,Open forest,exact
-SE-Htm,56.09763,13.41897,88,4,Open forest,exact
-SE-Deg,64.18203,19.55654,53,4,Open forest,exact
-NO-Hur,60.37163,11.07949,68,4,Open forest,exact
-NL-Loo,52.166447,5.74355,150,5,Temperate forest,exact
-IT-TrF,45.82376,7.56089,61,4,Open forest,exact
-IT-Tor,45.84444,7.578055,17,2,Sparse vegetation,exact
-IT-Ren,46.58686,11.43369,120,5,Temperate forest,exact
-IT-Noe,40.606174,8.151694,39,3,Shrubland/savanna,exact
-IT-Niv,45.49091,7.13943,0,1,Bare/ice/desert,exact
-IT-MBo,46.01468,11.045831,39,3,Shrubland/savanna,exact
-IT-Lsn,45.740482,12.750297,3,1,Bare/ice/desert,exact
-IT-Cp2,41.704266,12.357293,20,2,Sparse vegetation,exact
-IT-BFt,45.197754,10.741966,37,3,Shrubland/savanna,exact
-IT-BCi,40.52375,14.957444,7,2,Sparse vegetation,exact
-IE-Cra,53.32308,-7.64177,5,2,Sparse vegetation,exact
-GL-ZaH,74.4733,-20.550869,0,1,Bare/ice/desert,exact
-GL-ZaF,74.48152,-20.555773,0,1,Bare/ice/desert,exact
-GL-NuF,64.130936,-51.386066,1,1,Bare/ice/desert,exact
-GL-Dsk,69.25349,-53.51413,0,1,Bare/ice/desert,exact
-GF-Guy,5.2787,-52.9248,301,6,Wet/boreal forest,exact
-FR-Tou,43.572857,1.37474,9,2,Sparse vegetation,exact
-FR-Pue,43.7413,3.5957,87,4,Open forest,exact
-FR-Mej,48.1184,-1.79635,17,2,Sparse vegetation,exact
-FR-Lus,46.414246,0.1206518,7,2,Sparse vegetation,exact
-FR-Lqu,45.6444,2.7349,10,2,Sparse vegetation,exact
-FR-Lam,43.496437,1.237878,14,2,Sparse vegetation,exact
-FR-LGt,47.322918,2.284102,128,5,Temperate forest,exact
-FR-Hes,48.6741,7.06465,124,5,Temperate forest,exact
-FR-Gri,48.84422,1.95191,6,2,Sparse vegetation,exact
-FR-Fon,48.476357,2.780096,105,5,Temperate forest,exact
-FR-FBn,43.24079,5.67865,103,5,Temperate forest,exact
-FR-EM2,49.87211,3.02065,2,1,Bare/ice/desert,exact
-FR-CLt,45.0414,6.41053,0,1,Bare/ice/desert,exact
-FR-Bil,44.493652,-0.956092,29,3,Shrubland/savanna,exact
-FR-Aur,43.54965,1.106103,32,3,Shrubland/savanna,exact
-FI-Var,67.7549,29.61,79,4,Open forest,exact
-FI-Sod,67.36239,26.63859,47,3,Shrubland/savanna,exact
-FI-Sii,61.83265,24.19285,45,3,Shrubland/savanna,exact
-FI-Let,60.64183,23.95952,124,5,Temperate forest,exact
-FI-Ken,67.98721,24.24301,57,4,Open forest,exact
-FI-Hyy,61.847410000000004,24.29477,114,5,Temperate forest,exact
-FI-Ant,63.16347,27.234991,22,2,Sparse vegetation,exact
-ES-LMa,39.94033,-5.77465,9,2,Sparse vegetation,exact
-DK-Vng,56.037476,9.160709,15,2,Sparse vegetation,exact
-DK-Sor,55.48587,11.644645,82,4,Open forest,exact
-DK-Skj,55.91273,8.40481,1,1,Bare/ice/desert,exact
-DK-RCW,55.680683,12.101398,9,2,Sparse vegetation,exact
-DK-Gds,56.0737,9.3341,103,5,Temperate forest,exact
-DE-Tha,50.962597,13.565333,170,5,Temperate forest,exact
-DE-RuW,50.50493,6.3309627,205,6,Wet/boreal forest,exact
-DE-RuS,50.865906,6.4471445,8,2,Sparse vegetation,exact
-DE-RuR,50.621914,6.304126,55,4,Open forest,exact
-DE-Msr,47.80918,11.456168,87,4,Open forest,exact
-DE-Kli,50.893044,13.5223,29,3,Shrubland/savanna,exact
-DE-Hzd,50.96381,13.48978,193,5,Temperate forest,exact
-DE-HoH,52.08656,11.22235,134,5,Temperate forest,exact
-DE-Har,47.93391,7.59814,49,3,Shrubland/savanna,exact
-DE-Hai,51.079212,10.452168,205,6,Wet/boreal forest,exact
-DE-Gwg,47.570835,11.032604,177,5,Temperate forest,exact
-DE-GsB,52.029648,11.10478,4,1,Bare/ice/desert,exact
-DE-Gri,50.950005,13.512533,185,5,Temperate forest,exact
-DE-Geb,51.09973,10.91463,0,1,Bare/ice/desert,exact
-DE-Fen,47.832905,11.060701,58,4,Open forest,exact
-DE-Brs,52.29663,10.44871,22,2,Sparse vegetation,exact
-DE-Amv,52.1757,6.95537,22,2,Sparse vegetation,exact
-CZ-wet,49.02465,14.77035,55,4,Open forest,exact
-CZ-Lnz,48.68155,16.946331,127,5,Temperate forest,exact
-CZ-BK1,49.502075,18.536882,243,6,Wet/boreal forest,exact
-CH-Dav,46.81533,9.85591,39,3,Shrubland/savanna,exact
-CD-Ygb,0.814444,24.502472,213,6,Wet/boreal forest,exact
-BE-Vie,50.304962,5.998099,149,5,Temperate forest,exact
-BE-Maa,50.97987,5.631851,24,2,Sparse vegetation,exact
-BE-Lon,50.55162,4.746234,8,2,Sparse vegetation,exact
-BE-Dor,50.311874,4.968113,90,4,Open forest,exact
-BE-Bra,51.30761,4.51984,100,5,Temperate forest,exact
-VU-Coc,-15.444423,167.19131,24,2,Sparse vegetation,exact
-ML-Kem,15.2875,-1.543056,1,1,Bare/ice/desert,exact
-KE-Mkt,-3.425859,38.140663,20,2,Sparse vegetation,exact
-KE-Kpt,-1.6141866,37.13311,0,1,Bare/ice/desert,exact
-KE-Chk,-3.6663,38.350185,14,2,Sparse vegetation,exact
-KE-Aq2,-1.566199,37.100166,0,1,Bare/ice/desert,exact
-KE-Aq1,-1.57781,37.067047,0,1,Bare/ice/desert,exact
-IT-SR2,43.73202,10.29091,78,4,Open forest,exact
-ID-JOP,-1.69306,103.39139,61,4,Open forest,exact
-CR-AqC,9.938369,-83.7289,85,4,Open forest,exact
-CN-SnB,31.6905,121.6563,0,1,Bare/ice/desert,exact
-CN-Sb2,42.39117,117.37017,37,3,Shrubland/savanna,exact
-CN-Sb1,42.40907,117.31461,30,3,Shrubland/savanna,exact
-BW-Nxr,-19.548056,23.179167,2,1,Bare/ice/desert,exact
-BW-Gum,-18.964722,22.37111,28,3,Shrubland/savanna,exact
-BJ-Nhu,9.74,1.6,7,2,Sparse vegetation,exact
-BJ-Db1,6.607338,2.543043,22,2,Sparse vegetation,exact
-BJ-Bfg,9.791,1.718,30,3,Shrubland/savanna,exact
-ZM-Mon,-15.4391,23.2525,8,2,Sparse vegetation,exact
-UK-HpF,52.24809,-0.0498267,4,1,Bare/ice/desert,exact
-UK-HgF,52.552177,0.515057,10,2,Sparse vegetation,exact
-UK-Gwr,54.85464,-5.988278,16,2,Sparse vegetation,exact
-UK-Gnn,54.96185,-6.760763,8,2,Sparse vegetation,exact
-UK-GaB,55.10994,-6.529928,10,2,Sparse vegetation,exact
-UK-Cvn,52.43339,0.162177,0,1,Bare/ice/desert,exact
-UK-CCr,52.2542,-3.93357,1,1,Bare/ice/desert,exact
-UK-BnB,54.82326,-6.66984,15,2,Sparse vegetation,exact
-UK-Ags,53.3097,-4.30044,4,1,Bare/ice/desert,exact
-SN-Nkr,14.49581,-16.45357,0,1,Bare/ice/desert,exact
-SN-Dhr,15.40256,-15.43214,0,1,Bare/ice/desert,exact
-SJ-Adv,78.186,15.923,0,1,Bare/ice/desert,exact
-SE-Trb,64.180916,19.837284,79,4,Open forest,exact
-SE-St1,68.35415,19.050333,10,2,Sparse vegetation,exact
-SE-Srj,64.17498,19.56381,57,4,Open forest,exact
-SE-Ros,64.16522,19.79074,85,4,Open forest,exact
-SE-Hmr,64.15955,19.551497,70,4,Open forest,exact
-SE-HfM,64.15955,19.551497,70,4,Open forest,exact
-SD-Dem,13.2829,30.4783,0,1,Bare/ice/desert,exact
-RU-Ha1,54.72517,90.00215,0,1,Bare/ice/desert,exact
-RU-Fyo,56.46153,32.922085,198,5,Temperate forest,exact
-RU-Fy4,56.4727,33.0413,41,3,Shrubland/savanna,exact
-RU-Fy3,56.4435,33.0478,176,5,Temperate forest,exact
-RU-Fy2,56.4476,32.90188,189,5,Temperate forest,exact
-RU-Che,68.61304,161.34143,11,2,Sparse vegetation,exact
-RU-Ch2,68.61689,161.35089,15,2,Sparse vegetation,exact
-PA-SPs,9.31378,-79.63143,70,4,Open forest,exact
-PA-SPn,9.31814,-79.6346,70,4,Open forest,exact
-NO-Ikr,69.34,25.3,4,1,Bare/ice/desert,exact
-NO-Fns,60.59384,7.5271025,0,1,Bare/ice/desert,exact
-NO-And,69.1422,16.01975,0,1,Bare/ice/desert,exact
-NL-Vkp,51.980934,5.618825,1,1,Bare/ice/desert,exact
-NL-Hrw,51.972466,5.641228,19,2,Sparse vegetation,exact
-IT-SRo,43.72786,10.284445,42,3,Shrubland/savanna,exact
-IT-PT1,45.20087,9.061039,22,2,Sparse vegetation,exact
-IT-NiG,45.51919,7.171434,0,1,Bare/ice/desert,exact
-IT-MtM,46.687134,10.579597,61,4,Open forest,exact
-IT-Lav,45.9562,11.28132,147,5,Temperate forest,exact
-IT-CA3,42.38,12.0222,2,1,Bare/ice/desert,exact
-IT-CA2,42.37722,12.026039,2,1,Bare/ice/desert,exact
-IT-CA1,42.38041,12.026561,7,2,Sparse vegetation,exact
-IT-Bsn,45.11924,7.160429,92,4,Open forest,exact
-IT-BsB,45.11823,7.161995,92,4,Open forest,exact
-IT-Arz,45.61902,10.00228,26,3,Shrubland/savanna,exact
-IL-Yat,31.345045,35.051987,19,2,Sparse vegetation,exact
-IL-RmH,32.5555,34.947285,12,2,Sparse vegetation,exact
-IE-Gwr,52.6365,-7.011306,0,1,Bare/ice/desert,exact
-IE-CaN,52.85879,-6.918136,8,2,Sparse vegetation,exact
-IE-CaC,52.85879,-6.918136,8,2,Sparse vegetation,exact
-GH-Ank,5.268543,-2.694206,280,6,Wet/boreal forest,exact
-FR-Nzn,48.005814,-2.81721,8,2,Sparse vegetation,exact
-FR-Mau,43.385,1.29306,40,3,Shrubland/savanna,exact
-FR-LBr,44.71711,-0.7693,70,4,Open forest,exact
-FI-Sar,63.15143,27.199064,94,4,Open forest,exact
-FI-Ruk,64.68398,25.106318,39,3,Shrubland/savanna,exact
-FI-Rk2,61.182884,25.262684,131,5,Temperate forest,exact
-FI-Qvd,60.295242,22.391607,48,3,Shrubland/savanna,exact
-FI-Pap,63.13806,27.246117,56,4,Open forest,exact
-FI-Nsv,62.8639,24.08382,48,3,Shrubland/savanna,exact
-FI-Jok,60.8986,23.51345,33,3,Shrubland/savanna,exact
-ES-Yst,38.338932,-2.3506052,76,4,Open forest,exact
-ES-VDA,42.15111,1.4473800000000001,71,4,Open forest,exact
-ES-TzM,39.265785,-1.9397246,1,1,Bare/ice/desert,exact
-ES-Srn,40.15047,-0.8380832,11,2,Sparse vegetation,exact
-ES-Pzb,38.362118,-4.767329,2,1,Bare/ice/desert,exact
-ES-Pdu,37.016975,-3.609228,18,2,Sparse vegetation,exact
-ES-Mzn,40.089497,-0.827409,13,2,Sparse vegetation,exact
-ES-MtN,36.99234,-6.4826016,6,2,Sparse vegetation,exact
-ES-MtB,37.020206,-6.5544033,9,2,Sparse vegetation,exact
-ES-Mcd,39.58819,-0.39969,2,1,Bare/ice/desert,exact
-ES-LM2,39.934593,-5.775881,8,2,Sparse vegetation,exact
-ES-LM1,39.94269,-5.778683,9,2,Sparse vegetation,exact
-ES-LJu,36.926594,-2.752115,42,3,Shrubland/savanna,exact
-ES-Hen,38.411087,-1.697534,10,2,Sparse vegetation,exact
-ES-HeB,38.40475,-1.726215,8,2,Sparse vegetation,exact
-ES-HdD,38.49679,-5.111296,0,1,Bare/ice/desert,exact
-ES-Gdn,37.91084,-3.228489,2,1,Bare/ice/desert,exact
-ES-FtD,36.99854,-6.434575,2,1,Bare/ice/desert,exact
-ES-Dnn,36.9968,-6.5118,9,2,Sparse vegetation,exact
-ES-Crg,39.11926,-0.95852,10,2,Sparse vegetation,exact
-ES-Cnd,37.914997,-3.227659,2,1,Bare/ice/desert,exact
-ES-Amo,36.833405,-2.2522173,0,1,Bare/ice/desert,exact
-ES-Agu,36.939384,-2.034044,0,1,Bare/ice/desert,exact
-ES-Abr,38.70184,-6.785881,0,1,Bare/ice/desert,exact
-EE-Stg,58.023636,26.070753,170,5,Temperate forest,exact
-EE-Rng,57.913143,26.694048,62,4,Open forest,exact
-EE-Pts,58.562298,24.369932,11,2,Sparse vegetation,exact
-DK-Fou,56.4842,9.58722,8,2,Sparse vegetation,exact
-DK-Eng,55.69053,12.19175,5,2,Sparse vegetation,exact
-DE-Zrk,53.875942,12.88901,11,2,Sparse vegetation,exact
-DE-Spw,51.89225,14.03369,157,5,Temperate forest,exact
-DE-SfS,47.80629,11.32757,102,5,Temperate forest,exact
-DE-Seh,50.870625,6.449653,4,1,Bare/ice/desert,exact
-DE-SbM,51.764927,10.51799,81,4,Open forest,exact
-DE-RuM,50.929787,6.2969923,5,2,Sparse vegetation,exact
-DE-RuC,50.5031,6.336,205,6,Wet/boreal forest,exact
-DE-Rns,51.494953,9.932118,25,3,Shrubland/savanna,exact
-DE-Obe,50.7864,13.72168,219,6,Wet/boreal forest,exact
-DE-Lnf,51.328217,10.3678,175,5,Temperate forest,exact
-DE-Lkb,49.099617,13.3046665,95,4,Open forest,exact
-DE-Hte,54.213055,12.179944,26,3,Shrubland/savanna,exact
-DE-Hdn,53.86825,13.268543,0,1,Bare/ice/desert,exact
-DE-Etn,48.268486,7.878243,226,6,Wet/boreal forest,exact
-DE-Akm,53.86617,13.68342,43,3,Shrubland/savanna,exact
-CZ-Stn,49.035976,17.9699,173,5,Temperate forest,exact
-CZ-RAJ,49.44372,16.696512,67,4,Open forest,exact
-CZ-LnG,48.704224,16.926247,50,4,Open forest,exact
-CZ-KrP,49.573257,15.078773,38,3,Shrubland/savanna,exact
-CZ-BK2,49.49443,18.54285,222,6,Wet/boreal forest,exact
-CH-Tnk,47.48058,8.911775,52,4,Open forest,exact
-CH-Rtb,47.3804,8.9934,66,4,Open forest,exact
-CH-Rh2,47.3,9.5,55,4,Open forest,exact
-CH-Rh1,47.3,9.5,55,4,Open forest,exact
-CH-Oe3,47.28542,7.732438,48,3,Shrubland/savanna,exact
-CH-Oe2,47.286415,7.73375,48,3,Shrubland/savanna,exact
-CH-Oe1,47.28583,7.731944,48,3,Shrubland/savanna,exact
-CH-Lae,47.478333,8.364389,259,6,Wet/boreal forest,exact
-CH-Fru,47.115833,8.537778,52,4,Open forest,exact
-CH-Frk,46.577637,8.421592,0,1,Bare/ice/desert,exact
-CH-For,46.527206,6.7595406,40,3,Shrubland/savanna,exact
-CH-Crs,47.0436,7.0475,32,3,Shrubland/savanna,exact
-CH-Cha,47.21022,8.410444,39,3,Shrubland/savanna,exact
-CH-Aws,46.58311,9.790639,26,3,Shrubland/savanna,exact
-CG-Tch,-4.2891665,11.656417,1,1,Bare/ice/desert,exact
-BE-Lcr,51.11218,3.85043,10,2,Sparse vegetation,exact
-AT-Zoe,47.842247,14.444137,297,6,Wet/boreal forest,exact
-AT-PsM,47.58145,14.347197,87,4,Open forest,exact
-AT-Nsd,47.76914,16.758492,13,2,Sparse vegetation,exact
-AT-Neu,47.116318,11.320229,65,4,Open forest,exact
-AT-Mmg,47.316563,10.970089,198,5,Temperate forest,exact
-CN-Zha,38.97514,100.4464,3,1,Bare/ice/desert,exact
-CN-Yuc,36.8287,116.5701,0,1,Bare/ice/desert,exact
-CN-You,38.01419,100.24206,0,1,Bare/ice/desert,exact
-CN-Yan,37.82861,107.49278,0,1,Bare/ice/desert,exact
-CN-YaS,37.70877,107.22655,0,1,Bare/ice/desert,exact
-CN-Xi2,43.55444,116.6714,0,1,Bare/ice/desert,exact
-CN-Wnb,40.42876,106.74229,0,1,Bare/ice/desert,exact
-CN-Sdq,42.00119,101.13741,6,2,Sparse vegetation,exact
-CN-Qng,33.46807,108.49102,100,5,Temperate forest,exact
-CN-Nmn,42.94611,120.72694,0,1,Bare/ice/desert,exact
-CN-Mxn,31.6948,103.8951,61,4,Open forest,exact
-CN-Lch,37.88936,114.69289,0,1,Bare/ice/desert,exact
-CN-Jzh,41.14806,121.20167,0,1,Bare/ice/desert,exact
-CN-Jng,37.83869,101.1145,0,1,Bare/ice/desert,exact
-CN-Huz,38.76519,100.3186,0,1,Bare/ice/desert,exact
-CN-HeM,41.99029,101.13349,4,1,Bare/ice/desert,exact
-CN-HeD,42.1135,100.9872,0,1,Bare/ice/desert,exact
-CN-HaW,37.607655,101.32899,0,1,Bare/ice/desert,exact
-CN-Ha2,37.6086,101.3269,0,1,Bare/ice/desert,exact
-CN-GuT,34.35481,100.4872,0,1,Bare/ice/desert,exact
-CN-Erg,50.1869,119.3889,0,1,Bare/ice/desert,exact
-CN-Dzo,19.546,109.475,52,4,Open forest,exact
-CN-Du2,42.0467,116.2836,0,1,Bare/ice/desert,exact
-CN-Dsh,38.83992,98.9406,0,1,Bare/ice/desert,exact
-CN-Dmn,38.85551,100.37223,2,1,Bare/ice/desert,exact
-CN-Din,23.1733,112.5361,154,5,Temperate forest,exact
-CN-Dda,41.64397,110.33147,0,1,Bare/ice/desert,exact
-CN-Dan,30.4978,91.0664,0,1,Bare/ice/desert,exact
-CN-DaW,30.4691,91.0624,0,1,Bare/ice/desert,exact
-CN-BeO,40.02621,116.39143,9,2,Sparse vegetation,exact
-CN-Ash,24.53806,101.02917,84,4,Open forest,exact
-CN-Aro,38.04734,100.46432,0,1,Bare/ice/desert,exact
-NZ-BFm,-43.593528,171.929611,0,1,Bare/ice/desert,exact
-AU-Fog,-12.5452,131.3072,53,4,Open forest,exact
-AU-Rgf,-32.506102,116.966827,1,1,Bare/ice/desert,exact
-AU-Dry,-15.2588,132.3706,6,2,Sparse vegetation,exact
-NZ-BFu,-43.591833,171.926833,0,1,Bare/ice/desert,exact
-AU-Wgt,-42.09139,147.07944,187,5,Temperate forest,exact
-AU-APL,-36.862222,147.320833,8,2,Sparse vegetation,exact
-AU-Col,-33.42,116.237,103,5,Temperate forest,exact
-AU-Ctr,-16.103219,145.446922,322,6,Wet/boreal forest,exact
-AU-Gin,-31.376351,115.71377,128,5,Temperate forest,exact
-NZ-ADw,-43.64935,172.34952,0,1,Bare/ice/desert,exact
-NZ-Kop,-37.387875,175.55389,15,2,Sparse vegetation,exact
-AU-GWW,-30.1914,120.65417,7,2,Sparse vegetation,exact
-NZ-Lau,-45.038904,169.681109,0,1,Bare/ice/desert,exact
-AU-Lit,-13.17904,130.79455,16,2,Sparse vegetation,exact
-AU-Emr,-23.85872,148.4746,0,1,Bare/ice/desert,exact
-AU-How,-12.4952,131.15005,30,3,Shrubland/savanna,exact
-AU-Rob,-17.11746943,145.6301375,296,6,Wet/boreal forest,exact
-AU-Sno,-36.375649,148.43585,69,4,Open forest,exact
-AU-DaS,-14.1592,131.3881,8,2,Sparse vegetation,exact
-AU-Whr,-36.6732,145.0294,74,4,Open forest,exact
-AU-Wom,-37.422506,144.094046,214,6,Wet/boreal forest,exact
-AU-Tum,-35.6566,148.1516,120,5,Temperate forest,exact
-AU-Cpr,-34.0027,140.5877,0,1,Bare/ice/desert,exact
-NZ-ADd,-43.64405,172.35465,0,1,Bare/ice/desert,exact
-AU-Ya1,-33.613469,150.734864,46,3,Shrubland/savanna,exact
-AU-MvA,-30.543,150.02,13,2,Sparse vegetation,exact
-AU-Ync,-34.9878,146.2908,0,1,Bare/ice/desert,exact
-AU-MvB,-30.697,150.09,9,2,Sparse vegetation,exact
-AU-Rig,-36.6499,145.5759,0,1,Bare/ice/desert,exact
-AU-Wrr,-43.09502,146.65452,465,7,Tropical forest,exact
-AU-Wac,-37.4259,145.1878,230,6,Wet/boreal forest,exact
-NZ-Oxf,-43.2609,172.21588,3,1,Bare/ice/desert,exact
-AU-Cum,-33.615278000000004,150.723611,87,4,Open forest,exact
-AU-TTE,-22.287,133.64,1,1,Bare/ice/desert,exact
-AU-Otw,-38.525,142.81,0,1,Bare/ice/desert,exact
-AU-Wel,-32.5727,148.9843,11,2,Sparse vegetation,exact
-AU-Cow,-16.238189,145.42715,279,6,Wet/boreal forest,exact
-NZ-Cla,-43.78628,171.59558,18,2,Sparse vegetation,exact
-AU-RDF,-14.563639,132.477567,6,2,Sparse vegetation,exact
-AU-Stp,-17.1507,133.3502,1,1,Bare/ice/desert,exact
-AU-Sam,-27.38806,152.87778,105,5,Temperate forest,exact
-AU-Lox,-34.47035,140.65512,2,1,Bare/ice/desert,exact
-AU-Ya2,-33.620812,150.763284,31,3,Shrubland/savanna,exact
-AU-Sil,-42.090556,147.0875,150,5,Temperate forest,exact
-AU-Ade,-13.0769,131.1178,8,2,Sparse vegetation,exact
-AU-Lon,-23.52327,144.31042,0,1,Bare/ice/desert,exact
-NZ-ScF,-37.46,175.22,1,1,Bare/ice/desert,exact
-AU-Boy,-32.477093000000004,116.938559,82,4,Open forest,exact
-AU-Fle,-19.887285,146.189138,7,2,Sparse vegetation,exact
-AU-ASM,-22.283,133.249,16,2,Sparse vegetation,exact
-AU-DaP,-14.0633,131.3181,6,2,Sparse vegetation,exact
+AR-Bal,-37.7596,-58.3024,14,3,13.0–27.0 Mg/ha,exact
+AR-CCa,-35.621,-61.3181,7,2,5–13.0 Mg/ha,exact
+AR-CCg,-35.9244,-61.1855,4,1,0–5 Mg/ha,exact
+AR-TF1,-54.9733,-66.7335,35,4,27.0–51.0 Mg/ha,exact
+AR-TF2,-54.8269,-68.4549,45,4,27.0–51.0 Mg/ha,exact
+BR-CST,-7.9682,-38.3842,18,3,13.0–27.0 Mg/ha,exact
+BR-ITA,-23.0604,-48.6467,70,5,51.0–94.0 Mg/ha,exact
+BR-Ji3,-10.1866,-61.8725,248,7,>171.0 Mg/ha,exact
+BR-Ma2,-2.6091,-60.2093,264,7,>171.0 Mg/ha,exact
+BR-Ma3,-2.3907,-59.8835,242,7,>171.0 Mg/ha,exact
+BR-Npw,-16.498,-56.412,52,5,51.0–94.0 Mg/ha,exact
+BR-Sa1,-2.8567,-54.9589,253,7,>171.0 Mg/ha,exact
+BR-Sa3,-3.018,-54.9714,265,7,>171.0 Mg/ha,exact
+BR-SM1,-30.2771,-53.1479,8,2,5–13.0 Mg/ha,exact
+BR-Xpw,-16.373,-56.461,9,2,5–13.0 Mg/ha,exact
+CA-ARB,52.695,-83.9452,29,4,27.0–51.0 Mg/ha,exact
+CA-ARF,52.7008,-83.955,49,4,27.0–51.0 Mg/ha,exact
+CA-BOU,50.5244,-63.2064,80,5,51.0–94.0 Mg/ha,exact
+CA-Ca1,49.8673,-125.3336,151,6,94.0–171.0 Mg/ha,exact
+CA-Ca2,49.8705,-125.2909,232,7,>171.0 Mg/ha,exact
+CA-Ca3,49.5346,-124.9004,296,7,>171.0 Mg/ha,exact
+CA-Cbo,44.3184,-79.9341,163,6,94.0–171.0 Mg/ha,exact
+CA-CF1,58.6658,-93.83,2,1,0–5 Mg/ha,exact
+CA-CF2,58.6658,-93.83,2,1,0–5 Mg/ha,exact
+CA-CF3,58.6658,-93.8304,4,1,0–5 Mg/ha,exact
+CA-DB2,49.119,-122.9951,68,5,51.0–94.0 Mg/ha,exact
+CA-DBB,49.1293,-122.9849,31,4,27.0–51.0 Mg/ha,exact
+CA-DSM,49.0887,-122.8954,4,1,0–5 Mg/ha,exact
+CA-EM1,50.3623,-100.2024,2,1,0–5 Mg/ha,exact
+CA-EM2,50.3706,-100.5339,1,1,0–5 Mg/ha,exact
+CA-Gro,48.2167,-82.1556,196,7,>171.0 Mg/ha,exact
+CA-HPC,68.3203,-133.5188,29,4,27.0–51.0 Mg/ha,exact
+CA-KLP,51.5902,-81.7684,4,1,0–5 Mg/ha,exact
+CA-LP1,55.1119,-122.8414,60,5,51.0–94.0 Mg/ha,exact
+CA-LU1,59.5951,-117.2862,26,3,13.0–27.0 Mg/ha,exact
+CA-LU2,59.4405,-117.2422,45,4,27.0–51.0 Mg/ha,exact
+CA-MA1,50.1645,-97.8762,9,2,5–13.0 Mg/ha,exact
+CA-MA2,50.171,-97.8762,38,4,27.0–51.0 Mg/ha,exact
+CA-MA3,50.1774,-97.8686,16,3,13.0–27.0 Mg/ha,exact
+CA-Man,55.8796,-98.4808,105,6,94.0–171.0 Mg/ha,exact
+CA-Mer,45.4094,-75.5186,69,5,51.0–94.0 Mg/ha,exact
+CA-Mtk,72.6695,-77.9981,0,1,0–5 Mg/ha,exact
+CA-Na1,46.4722,-67.1,126,6,94.0–171.0 Mg/ha,exact
+CA-Ojp,53.9163,-104.692,89,5,51.0–94.0 Mg/ha,exact
+CA-PB1,54.9417,-83.4579,12,2,5–13.0 Mg/ha,exact
+CA-PB2,54.9389,-83.4736,23,3,13.0–27.0 Mg/ha,exact
+CA-Qc2,49.7598,-74.5711,108,6,94.0–171.0 Mg/ha,exact
+CA-Qfo,49.6925,-74.3421,94,6,94.0–171.0 Mg/ha,exact
+CA-RBM,49.1313,-123.1964,4,1,0–5 Mg/ha,exact
+CA-SCB,61.3089,-121.2984,12,2,5–13.0 Mg/ha,exact
+CA-SCC,61.3079,-121.2992,12,2,5–13.0 Mg/ha,exact
+CA-SF1,54.485,-105.8176,63,5,51.0–94.0 Mg/ha,exact
+CA-SF2,54.2539,-105.8775,139,6,94.0–171.0 Mg/ha,exact
+CA-SF3,54.0916,-106.0053,160,6,94.0–171.0 Mg/ha,exact
+CA-SJ2,53.945,-104.649,74,5,51.0–94.0 Mg/ha,exact
+CA-SMC,63.1534,-123.2522,20,3,13.0–27.0 Mg/ha,exact
+CA-TP1,42.6609,-80.5595,55,5,51.0–94.0 Mg/ha,exact
+CA-TP2,42.7744,-80.4588,103,6,94.0–171.0 Mg/ha,exact
+CA-TP3,42.7068,-80.3483,124,6,94.0–171.0 Mg/ha,exact
+CA-TP4,42.7102,-80.3574,134,6,94.0–171.0 Mg/ha,exact
+CA-TPA,42.6947,-80.3487,81,5,51.0–94.0 Mg/ha,exact
+CA-TPD,42.6353,-80.5577,145,6,94.0–171.0 Mg/ha,exact
+CA-TVC,68.7462,-133.5017,1,1,0–5 Mg/ha,exact
+CL-ACF,-40.1726,-73.4439,270,7,>171.0 Mg/ha,exact
+CL-SDF,-41.883,-73.676,125,6,94.0–171.0 Mg/ha,exact
+CL-SDP,-41.879,-73.666,110,6,94.0–171.0 Mg/ha,exact
+CR-Fsc,10.4189,-85.4732,29,4,27.0–51.0 Mg/ha,exact
+MX-Aog,26.9968,-108.7892,56,5,51.0–94.0 Mg/ha,exact
+MX-PMm,20.8462,-86.8992,29,4,27.0–51.0 Mg/ha,exact
+MX-Tes,27.8446,-109.2977,18,3,13.0–27.0 Mg/ha,exact
+PE-QFR,-3.8344,-73.319,113,6,94.0–171.0 Mg/ha,exact
+PR-xGU,17.9696,-66.8687,41,4,27.0–51.0 Mg/ha,exact
+PR-xLA,18.0212,-67.0769,4,1,0–5 Mg/ha,exact
+US-A03,70.4953,-149.8823,1,1,0–5 Mg/ha,exact
+US-A10,71.3242,-156.6149,3,1,0–5 Mg/ha,exact
+US-A32,36.8193,-97.8198,0,1,0–5 Mg/ha,exact
+US-A37,36.3106,-97.928,0,1,0–5 Mg/ha,exact
+US-A39,36.3776,-96.069,26,3,13.0–27.0 Mg/ha,exact
+US-A74,36.8085,-97.5489,0,1,0–5 Mg/ha,exact
+US-ABa,27.1301,-81.2011,1,1,0–5 Mg/ha,exact
+US-ABb,27.1346,-81.2031,1,1,0–5 Mg/ha,exact
+US-ABc,27.1633,-81.1873,8,2,5–13.0 Mg/ha,exact
+US-ABd,27.1699,-81.2152,0,1,0–5 Mg/ha,exact
+US-ABe,27.1656,-81.2161,0,1,0–5 Mg/ha,exact
+US-ADR,36.7653,-116.6933,0,1,0–5 Mg/ha,exact
+US-Akn,33.3825,-81.5653,55,5,51.0–94.0 Mg/ha,exact
+US-ALQ,46.0308,-89.6067,113,6,94.0–171.0 Mg/ha,exact
+US-AR1,36.4267,-99.42,2,1,0–5 Mg/ha,exact
+US-AR2,36.6358,-99.5975,0,1,0–5 Mg/ha,exact
+US-ARb,35.5497,-98.0402,0,1,0–5 Mg/ha,exact
+US-ARc,35.5465,-98.04,0,1,0–5 Mg/ha,exact
+US-ARM,36.6058,-97.4888,0,1,0–5 Mg/ha,exact
+US-ASH,36.1697,-120.201,4,1,0–5 Mg/ha,exact
+US-ASM,36.1777,-120.2026,6,2,5–13.0 Mg/ha,exact
+US-Aud,31.5907,-110.5104,0,1,0–5 Mg/ha,exact
+US-Bar,44.0646,-71.2881,146,6,94.0–171.0 Mg/ha,exact
+US-Bi1,38.0992,-121.4993,1,1,0–5 Mg/ha,exact
+US-Bi2,38.1091,-121.5351,0,1,0–5 Mg/ha,exact
+US-BRG,39.2167,-86.5406,51,5,51.0–94.0 Mg/ha,exact
+US-BZB,64.6955,-148.3208,114,6,94.0–171.0 Mg/ha,exact
+US-BZF,64.7013,-148.3121,157,6,94.0–171.0 Mg/ha,exact
+US-BZo,64.6936,-148.33,144,6,94.0–171.0 Mg/ha,exact
+US-CAK,64.8618,-163.7002,10,2,5–13.0 Mg/ha,exact
+US-CdM,37.5241,-109.7471,4,1,0–5 Mg/ha,exact
+US-Ced,39.8379,-74.3791,30,4,27.0–51.0 Mg/ha,exact
+US-CF1,46.7815,-117.0821,0,1,0–5 Mg/ha,exact
+US-CF2,46.784,-117.0908,0,1,0–5 Mg/ha,exact
+US-CF3,46.7551,-117.1261,0,1,0–5 Mg/ha,exact
+US-CF4,46.7518,-117.1285,0,1,0–5 Mg/ha,exact
+US-CGG,37.938,-121.9761,4,1,0–5 Mg/ha,exact
+US-ChR,35.9311,-84.3324,164,6,94.0–171.0 Mg/ha,exact
+US-CLF,40.6366,-77.9424,57,5,51.0–94.0 Mg/ha,exact
+US-Cms,71.3202,-156.6223,2,1,0–5 Mg/ha,exact
+US-CMW,31.6637,-110.1777,12,2,5–13.0 Mg/ha,exact
+US-Cop,38.09,-109.39,2,1,0–5 Mg/ha,exact
+US-CRK,31.4629,-95.3415,86,5,51.0–94.0 Mg/ha,exact
+US-CRT,41.6285,-83.3471,2,1,0–5 Mg/ha,exact
+US-CS1,44.1031,-89.5379,34,4,27.0–51.0 Mg/ha,exact
+US-CS2,44.1467,-89.5002,47,4,27.0–51.0 Mg/ha,exact
+US-CS3,44.1394,-89.5727,14,3,13.0–27.0 Mg/ha,exact
+US-CS4,44.1597,-89.5475,20,3,13.0–27.0 Mg/ha,exact
+US-CS5,44.1095,-89.5377,34,4,27.0–51.0 Mg/ha,exact
+US-CS6,44.4297,-89.544,15,3,13.0–27.0 Mg/ha,exact
+US-CS8,44.4338,-89.5364,23,3,13.0–27.0 Mg/ha,exact
+US-Cst,33.0442,-91.9204,101,6,94.0–171.0 Mg/ha,exact
+US-Cwt,35.0592,-83.4275,202,7,>171.0 Mg/ha,exact
+US-DFC,43.3448,-89.7117,22,3,13.0–27.0 Mg/ha,exact
+US-DFK,43.3453,-89.7154,22,3,13.0–27.0 Mg/ha,exact
+US-Dix,39.9712,-74.4346,27,4,27.0–51.0 Mg/ha,exact
+US-Dk1,35.9712,-79.0934,155,6,94.0–171.0 Mg/ha,exact
+US-Dk2,35.9736,-79.1004,177,7,>171.0 Mg/ha,exact
+US-Dk3,35.9782,-79.0942,155,6,94.0–171.0 Mg/ha,exact
+US-Dmg,38.0015,-121.6691,3,1,0–5 Mg/ha,exact
+US-DPW,28.0521,-81.4361,25,3,13.0–27.0 Mg/ha,exact
+US-DS1,38.1335,-121.539,0,1,0–5 Mg/ha,exact
+US-DS2,38.1375,-121.514,0,1,0–5 Mg/ha,exact
+US-DS3,38.1235,-121.549,0,1,0–5 Mg/ha,exact
+US-EA4,29.6633,-98.3816,34,4,27.0–51.0 Mg/ha,exact
+US-EA5,29.3584,-99.9576,17,3,13.0–27.0 Mg/ha,exact
+US-EA6,29.6561,-99.9588,5,2,5–13.0 Mg/ha,exact
+US-EDN,37.6156,-122.114,8,2,5–13.0 Mg/ha,exact
+US-EKH,36.8094,-121.7523,3,1,0–5 Mg/ha,exact
+US-EKN,36.8357,-121.7328,9,2,5–13.0 Mg/ha,exact
+US-EKP,36.8558,-121.7488,12,2,5–13.0 Mg/ha,exact
+US-Elm,25.5519,-80.7826,9,2,5–13.0 Mg/ha,exact
+US-EML,63.8784,-149.2536,11,2,5–13.0 Mg/ha,exact
+US-Esm,25.4379,-80.5946,15,3,13.0–27.0 Mg/ha,exact
+US-EvM,25.3539,-80.381,18,3,13.0–27.0 Mg/ha,exact
+US-Fcr,65.3968,-148.9348,32,4,27.0–51.0 Mg/ha,exact
+US-Fmf,35.1426,-111.7273,20,3,13.0–27.0 Mg/ha,exact
+US-Fo1,70.085,-148.5671,7,2,5–13.0 Mg/ha,exact
+US-Fo2,70.0229,-148.6598,9,2,5–13.0 Mg/ha,exact
+US-Fuf,35.089,-111.762,22,3,13.0–27.0 Mg/ha,exact
+US-Fwf,35.4454,-111.7718,14,3,13.0–27.0 Mg/ha,exact
+US-GLE,41.3665,-106.2399,28,4,27.0–51.0 Mg/ha,exact
+US-Ha1,42.5378,-72.1715,169,6,94.0–171.0 Mg/ha,exact
+US-HB1,33.3455,-79.1957,59,5,51.0–94.0 Mg/ha,exact
+US-HB2,33.3242,-79.244,104,6,94.0–171.0 Mg/ha,exact
+US-HB3,33.3482,-79.2322,103,6,94.0–171.0 Mg/ha,exact
+US-HB4,33.2015,-79.2975,43,4,27.0–51.0 Mg/ha,exact
+US-HBK,43.9397,-71.7181,186,7,>171.0 Mg/ha,exact
+US-Hn2,46.6889,-119.4641,1,1,0–5 Mg/ha,exact
+US-Hn3,46.6878,-119.4614,1,1,0–5 Mg/ha,exact
+US-Ho2,45.209,-68.747,134,6,94.0–171.0 Mg/ha,exact
+US-Ho3,45.2072,-68.7265,112,6,94.0–171.0 Mg/ha,exact
+US-HRA,34.5852,-91.7517,3,1,0–5 Mg/ha,exact
+US-HRC,34.5888,-91.7517,3,1,0–5 Mg/ha,exact
+US-Hsm,38.2368,-122.0212,4,1,0–5 Mg/ha,exact
+US-HVs,69.1672,-148.8569,0,1,0–5 Mg/ha,exact
+US-HWB,40.8608,-77.8488,19,3,13.0–27.0 Mg/ha,exact
+US-IAB,42.0001,-93.7016,1,1,0–5 Mg/ha,exact
+US-IAC,41.9984,-93.7016,1,1,0–5 Mg/ha,exact
+US-IAM,41.9994,-93.7042,1,1,0–5 Mg/ha,exact
+US-ICh,68.6068,-149.2958,0,1,0–5 Mg/ha,exact
+US-ICs,68.6058,-149.311,0,1,0–5 Mg/ha,exact
+US-ICt,68.6063,-149.3041,0,1,0–5 Mg/ha,exact
+US-Jo1,32.582,-106.635,0,1,0–5 Mg/ha,exact
+US-Jo2,32.5849,-106.6032,0,1,0–5 Mg/ha,exact
+US-KFS,39.0561,-95.1907,33,4,27.0–51.0 Mg/ha,exact
+US-Kon,39.0824,-96.5603,2,1,0–5 Mg/ha,exact
+US-KPL,60.5382,-150.5061,104,6,94.0–171.0 Mg/ha,exact
+US-KS1,28.4583,-80.6709,20,3,13.0–27.0 Mg/ha,exact
+US-KS2,28.6086,-80.6715,35,4,27.0–51.0 Mg/ha,exact
+US-KS3,28.7084,-80.7427,2,1,0–5 Mg/ha,exact
+US-LA2,29.8587,-90.2869,41,4,27.0–51.0 Mg/ha,exact
+US-LA3,29.4936,-89.9153,0,1,0–5 Mg/ha,exact
+US-Lin,36.3566,-119.0922,1,1,0–5 Mg/ha,exact
+US-Los,46.0827,-89.9786,80,5,51.0–94.0 Mg/ha,exact
+US-LS1,31.5615,-110.1403,2,1,0–5 Mg/ha,exact
+US-MBP,47.5051,-93.4893,88,5,51.0–94.0 Mg/ha,exact
+US-Me1,44.5794,-121.5,62,5,51.0–94.0 Mg/ha,exact
+US-Me3,44.3154,-121.6078,18,3,13.0–27.0 Mg/ha,exact
+US-Me5,44.4372,-121.5668,80,5,51.0–94.0 Mg/ha,exact
+US-Me6,44.3232,-121.6044,19,3,13.0–27.0 Mg/ha,exact
+US-Me7,44.4534,-121.5619,36,4,27.0–51.0 Mg/ha,exact
+US-MEF,39.1006,-105.1024,11,2,5–13.0 Mg/ha,exact
+US-MMS,39.3232,-86.4133,198,7,>171.0 Mg/ha,exact
+US-MN1,45.6168,-96.1269,0,1,0–5 Mg/ha,exact
+US-MN2,45.627,-96.1271,0,1,0–5 Mg/ha,exact
+US-MN3,45.6091,-96.1265,1,1,0–5 Mg/ha,exact
+US-Mo1,39.2298,-92.1167,2,1,0–5 Mg/ha,exact
+US-Mo2,38.9488,-91.9945,8,2,5–13.0 Mg/ha,exact
+US-Mo3,39.2322,-92.1493,7,2,5–13.0 Mg/ha,exact
+US-MOz,38.7441,-92.2,145,6,94.0–171.0 Mg/ha,exact
+US-Mpj,34.4382,-106.2385,12,2,5–13.0 Mg/ha,exact
+US-MtB,32.416,-110.7256,51,5,51.0–94.0 Mg/ha,exact
+US-Myb,38.0499,-121.765,5,2,5–13.0 Mg/ha,exact
+US-MZA,43.0441,-76.7897,68,5,51.0–94.0 Mg/ha,exact
+US-NC1,35.8118,-76.7119,67,5,51.0–94.0 Mg/ha,exact
+US-NC2,35.803,-76.6685,101,6,94.0–171.0 Mg/ha,exact
+US-NC3,35.799,-76.656,89,5,51.0–94.0 Mg/ha,exact
+US-NC4,35.7817,-75.9135,129,6,94.0–171.0 Mg/ha,exact
+US-NC5,36.1565,-78.7878,110,6,94.0–171.0 Mg/ha,exact
+US-Ne1,41.1651,-96.4766,0,1,0–5 Mg/ha,exact
+US-Ne2,41.1649,-96.4701,0,1,0–5 Mg/ha,exact
+US-Ne3,41.1797,-96.4397,0,1,0–5 Mg/ha,exact
+US-NGB,71.28,-156.6092,10,2,5–13.0 Mg/ha,exact
+US-NGC,64.8618,-163.7002,10,2,5–13.0 Mg/ha,exact
+US-NR1,40.0329,-105.547,53,5,51.0–94.0 Mg/ha,exact
+US-NR3,40.052,-105.5864,19,3,13.0–27.0 Mg/ha,exact
+US-NSa,36.6029,-119.5061,1,1,0–5 Mg/ha,exact
+US-NSb,36.3354,-120.1183,0,1,0–5 Mg/ha,exact
+US-Oho,41.5545,-83.8438,108,6,94.0–171.0 Mg/ha,exact
+US-ONA,27.3836,-81.9509,7,2,5–13.0 Mg/ha,exact
+US-OPE,39.0293,-76.8457,109,6,94.0–171.0 Mg/ha,exact
+US-OWC,41.3793,-82.5124,45,4,27.0–51.0 Mg/ha,exact
+US-PAS,27.3944,-81.951,8,2,5–13.0 Mg/ha,exact
+US-PFb,45.972,-90.3232,84,5,51.0–94.0 Mg/ha,exact
+US-PFc,45.9677,-90.3088,114,6,94.0–171.0 Mg/ha,exact
+US-PFd,45.9689,-90.301,114,6,94.0–171.0 Mg/ha,exact
+US-PFf,45.9458,-90.2944,94,6,94.0–171.0 Mg/ha,exact
+US-PFg,45.9735,-90.2723,123,6,94.0–171.0 Mg/ha,exact
+US-PFh,45.9557,-90.2406,117,6,94.0–171.0 Mg/ha,exact
+US-PFi,45.9749,-90.2327,120,6,94.0–171.0 Mg/ha,exact
+US-PFj,45.9619,-90.227,124,6,94.0–171.0 Mg/ha,exact
+US-PFk,45.9149,-90.3425,110,6,94.0–171.0 Mg/ha,exact
+US-PFL,45.9409,-90.3177,95,6,94.0–171.0 Mg/ha,exact
+US-PFm,45.9207,-90.3099,102,6,94.0–171.0 Mg/ha,exact
+US-PFn,45.9392,-90.2823,108,6,94.0–171.0 Mg/ha,exact
+US-PFp,45.9365,-90.2641,122,6,94.0–171.0 Mg/ha,exact
+US-PFq,45.9271,-90.2475,113,6,94.0–171.0 Mg/ha,exact
+US-PFr,45.9245,-90.2475,113,6,94.0–171.0 Mg/ha,exact
+US-PFt,45.9197,-90.2288,111,6,94.0–171.0 Mg/ha,exact
+US-PLo,42.7496,-70.9157,54,5,51.0–94.0 Mg/ha,exact
+US-Prr,65.1237,-147.4876,91,5,51.0–94.0 Mg/ha,exact
+US-PSH,36.2347,-119.9247,4,1,0–5 Mg/ha,exact
+US-PSL,36.8276,-120.1397,8,2,5–13.0 Mg/ha,exact
+US-RC1,46.7837,-117.0777,0,1,0–5 Mg/ha,exact
+US-RC2,46.7776,-117.0807,0,1,0–5 Mg/ha,exact
+US-RC3,46.991,-118.598,0,1,0–5 Mg/ha,exact
+US-RC4,46.758,-116.949,0,1,0–5 Mg/ha,exact
+US-RC5,47.01,-119.248,11,2,5–13.0 Mg/ha,exact
+US-RGA,34.4159,-91.6733,8,2,5–13.0 Mg/ha,exact
+US-RGB,39.5782,-121.8579,0,1,0–5 Mg/ha,exact
+US-RGF,37.6995,-121.1369,10,2,5–13.0 Mg/ha,exact
+US-RGo,39.6805,-122.0026,10,2,5–13.0 Mg/ha,exact
+US-RGW,33.6216,-91.4306,15,3,13.0–27.0 Mg/ha,exact
+US-Rls,43.1439,-116.7356,2,1,0–5 Mg/ha,exact
+US-Rms,43.0645,-116.7486,13,3,13.0–27.0 Mg/ha,exact
+US-Ro1,44.7143,-93.0898,2,1,0–5 Mg/ha,exact
+US-Ro2,44.7288,-93.0888,2,1,0–5 Mg/ha,exact
+US-Ro3,44.7217,-93.0893,2,1,0–5 Mg/ha,exact
+US-Ro4,44.6781,-93.0723,14,3,13.0–27.0 Mg/ha,exact
+US-Ro5,44.691,-93.0576,6,2,5–13.0 Mg/ha,exact
+US-Ro6,44.6946,-93.0578,6,2,5–13.0 Mg/ha,exact
+US-Rpf,65.1198,-147.429,59,5,51.0–94.0 Mg/ha,exact
+US-RRC,37.3344,-77.2065,100,6,94.0–171.0 Mg/ha,exact
+US-Rwe,43.0653,-116.7591,7,2,5–13.0 Mg/ha,exact
+US-Rwf,43.1207,-116.7231,5,2,5–13.0 Mg/ha,exact
+US-Rws,43.1675,-116.7132,0,1,0–5 Mg/ha,exact
+US-Sag,69.5131,-148.5676,1,1,0–5 Mg/ha,exact
+US-SD1,41.2048,-86.0296,1,1,0–5 Mg/ha,exact
+US-SD2,41.1785,-85.9977,13,3,13.0–27.0 Mg/ha,exact
+US-Seg,34.3603,-106.7003,0,1,0–5 Mg/ha,exact
+US-Ses,34.335,-106.7448,5,2,5–13.0 Mg/ha,exact
+US-SHC,39.4315,-120.2398,76,5,51.0–94.0 Mg/ha,exact
+US-Slt,39.9138,-74.596,69,5,51.0–94.0 Mg/ha,exact
+US-Sne,38.0369,-121.7547,3,1,0–5 Mg/ha,exact
+US-Snf,38.0402,-121.7272,0,1,0–5 Mg/ha,exact
+US-SP1,29.7381,-82.2188,60,5,51.0–94.0 Mg/ha,exact
+US-SRC,31.9083,-110.8395,0,1,0–5 Mg/ha,exact
+US-SRG,31.7894,-110.8277,1,1,0–5 Mg/ha,exact
+US-SRM,31.8214,-110.8661,0,1,0–5 Mg/ha,exact
+US-Srr,38.2006,-122.0264,4,1,0–5 Mg/ha,exact
+US-SRS,31.8173,-110.8508,0,1,0–5 Mg/ha,exact
+US-SSH,40.6658,-77.9041,166,6,94.0–171.0 Mg/ha,exact
+US-Sta,41.3966,-106.8024,0,1,0–5 Mg/ha,exact
+US-StJ,39.0882,-75.4372,19,3,13.0–27.0 Mg/ha,exact
+US-Syv,46.2421,-89.3459,99,6,94.0–171.0 Mg/ha,exact
+US-TaS,25.1908,-80.6391,20,3,13.0–27.0 Mg/ha,exact
+US-TKs,68.6337,-149.5769,0,1,0–5 Mg/ha,exact
+US-TLR,35.9168,-76.1463,141,6,94.0–171.0 Mg/ha,exact
+US-Ton,38.4309,-120.966,8,2,5–13.0 Mg/ha,exact
+US-Tw1,38.1074,-121.6469,3,1,0–5 Mg/ha,exact
+US-Tw2,38.0969,-121.6365,4,1,0–5 Mg/ha,exact
+US-Tw3,38.1152,-121.6469,1,1,0–5 Mg/ha,exact
+US-Tw4,38.1027,-121.6413,3,1,0–5 Mg/ha,exact
+US-Tw5,38.1072,-121.6426,3,1,0–5 Mg/ha,exact
+US-Twt,38.1087,-121.6531,3,1,0–5 Mg/ha,exact
+US-Uaf,64.8663,-147.8555,97,6,94.0–171.0 Mg/ha,exact
+US-UC1,40.7536,-78.0056,99,6,94.0–171.0 Mg/ha,exact
+US-UC2,40.7559,-77.9998,69,5,51.0–94.0 Mg/ha,exact
+US-UiA,40.0646,-88.1961,2,1,0–5 Mg/ha,exact
+US-UiB,40.0628,-88.1984,2,1,0–5 Mg/ha,exact
+US-UiC,40.0628,-88.1961,2,1,0–5 Mg/ha,exact
+US-UiD,40.0646,-88.1985,2,1,0–5 Mg/ha,exact
+US-UiE,40.0629,-88.2033,5,2,5–13.0 Mg/ha,exact
+US-UiF,40.0665,-88.2015,5,2,5–13.0 Mg/ha,exact
+US-UiG,40.0629,-88.2009,5,2,5–13.0 Mg/ha,exact
+US-UMd,45.5625,-84.6975,73,5,51.0–94.0 Mg/ha,exact
+US-UTB,40.7848,-113.8299,0,1,0–5 Mg/ha,exact
+US-UTD,38.1038,-109.5952,1,1,0–5 Mg/ha,exact
+US-UTE,37.7353,-111.5708,0,1,0–5 Mg/ha,exact
+US-UTJ,37.2818,-109.5348,0,1,0–5 Mg/ha,exact
+US-UTL,40.1877,-109.6579,0,1,0–5 Mg/ha,exact
+US-UTM,38.5879,-109.5775,4,1,0–5 Mg/ha,exact
+US-UTP,41.0604,-112.1013,1,1,0–5 Mg/ha,exact
+US-UTV,40.1266,-109.9546,0,1,0–5 Mg/ha,exact
+US-UTW,39.4453,-110.7288,0,1,0–5 Mg/ha,exact
+US-Var,38.4133,-120.9508,6,2,5–13.0 Mg/ha,exact
+US-Vcm,35.8885,-106.5322,4,1,0–5 Mg/ha,exact
+US-Vcp,35.8641,-106.5965,30,4,27.0–51.0 Mg/ha,exact
+US-VT1,40.4064,-87.5214,0,1,0–5 Mg/ha,exact
+US-VT2,40.4018,-87.5213,0,1,0–5 Mg/ha,exact
+US-WCr,45.8058,-90.0795,112,6,94.0–171.0 Mg/ha,exact
+US-Whs,31.7438,-110.0522,5,2,5–13.0 Mg/ha,exact
+US-Wjs,34.4258,-105.8617,0,1,0–5 Mg/ha,exact
+US-Wkg,31.7365,-109.9419,0,1,0–5 Mg/ha,exact
+US-WPT,41.4646,-82.9962,10,2,5–13.0 Mg/ha,exact
+US-WT1,34.3674,-101.8154,0,1,0–5 Mg/ha,exact
+US-xAB,45.7624,-122.3303,212,7,>171.0 Mg/ha,exact
+US-xAE,35.4106,-99.0588,0,1,0–5 Mg/ha,exact
+US-xBA,71.2824,-156.6194,8,2,5–13.0 Mg/ha,exact
+US-xBL,39.0603,-78.0716,16,3,13.0–27.0 Mg/ha,exact
+US-xBN,65.154,-147.5026,85,5,51.0–94.0 Mg/ha,exact
+US-xBR,44.0639,-71.2873,146,6,94.0–171.0 Mg/ha,exact
+US-xCL,33.4012,-97.57,10,2,5–13.0 Mg/ha,exact
+US-xCP,40.8155,-104.7456,0,1,0–5 Mg/ha,exact
+US-xDC,47.1617,-99.1066,1,1,0–5 Mg/ha,exact
+US-xDJ,63.881100000000004,-145.7514,27,4,27.0–51.0 Mg/ha,exact
+US-xDL,32.5417,-87.8039,155,6,94.0–171.0 Mg/ha,exact
+US-xDS,28.125,-81.4362,21,3,13.0–27.0 Mg/ha,exact
+US-xGR,35.689,-83.5019,102,6,94.0–171.0 Mg/ha,exact
+US-xHE,63.8757,-149.2133,0,1,0–5 Mg/ha,exact
+US-xJE,31.1948,-84.4686,42,4,27.0–51.0 Mg/ha,exact
+US-xJR,32.5907,-106.8425,0,1,0–5 Mg/ha,exact
+US-xKZ,39.1008,-96.5631,3,1,0–5 Mg/ha,exact
+US-xLE,31.8539,-88.1612,133,6,94.0–171.0 Mg/ha,exact
+US-xMB,38.2483,-109.3883,0,1,0–5 Mg/ha,exact
+US-xML,37.3783,-80.5248,212,7,>171.0 Mg/ha,exact
+US-xNG,46.7697,-100.9154,2,1,0–5 Mg/ha,exact
+US-xNQ,40.1776,-112.4524,0,1,0–5 Mg/ha,exact
+US-xNW,40.0543,-105.5824,19,3,13.0–27.0 Mg/ha,exact
+US-xPU,19.5531,-155.3173,16,3,13.0–27.0 Mg/ha,exact
+US-xRM,40.2759,-105.5459,56,5,51.0–94.0 Mg/ha,exact
+US-xRN,35.9641,-84.2826,127,6,94.0–171.0 Mg/ha,exact
+US-xSB,29.6893,-81.9934,12,2,5–13.0 Mg/ha,exact
+US-xSC,38.8929,-78.1395,185,7,>171.0 Mg/ha,exact
+US-xSE,38.8901,-76.56,150,6,94.0–171.0 Mg/ha,exact
+US-xSJ,37.1088,-119.7323,6,2,5–13.0 Mg/ha,exact
+US-xSL,40.4619,-103.0293,0,1,0–5 Mg/ha,exact
+US-xSP,37.0334,-119.26220000000001,59,5,51.0–94.0 Mg/ha,exact
+US-xSR,31.9107,-110.8355,0,1,0–5 Mg/ha,exact
+US-xST,45.5089,-89.5864,112,6,94.0–171.0 Mg/ha,exact
+US-xTE,37.0058,-119.006,92,5,51.0–94.0 Mg/ha,exact
+US-xTL,68.6611,-149.3705,0,1,0–5 Mg/ha,exact
+US-xTR,45.4937,-89.5857,114,6,94.0–171.0 Mg/ha,exact
+US-xUK,39.0404,-95.1921,53,5,51.0–94.0 Mg/ha,exact
+US-xUN,46.2339,-89.5373,146,6,94.0–171.0 Mg/ha,exact
+US-xWD,47.1282,-99.2414,0,1,0–5 Mg/ha,exact
+US-xWR,45.8205,-121.9519,264,7,>171.0 Mg/ha,exact
+US-xYE,44.9535,-110.5391,4,1,0–5 Mg/ha,exact
+US-YK1,61.2723,-163.2228,5,2,5–13.0 Mg/ha,exact
+US-YK2,61.2548,-163.259,0,1,0–5 Mg/ha,exact
+US-ZF2,40.7939,-87.5355,8,2,5–13.0 Mg/ha,exact
+ZA-Uby,-27.3952,32.5889,13,3,13.0–27.0 Mg/ha,exact
+ZA-Spk,-28.70408,29.52614,6,2,5–13.0 Mg/ha,exact
+ZA-Jks,-33.99029,18.95543,4,1,0–5 Mg/ha,exact
+ZA-BfS,-28.8906,24.86112,0,1,0–5 Mg/ha,exact
+ZA-BfK,-28.856483,24.83985,0,1,0–5 Mg/ha,exact
+KR-WdE,34.35956,126.67779,29,4,27.0–51.0 Mg/ha,exact
+KR-UAO,36.41682,128.79904,75,5,51.0–94.0 Mg/ha,exact
+KR-TwC,37.30493,127.31743,121,6,94.0–171.0 Mg/ha,exact
+KR-TwB,37.30406,127.31395,121,6,94.0–171.0 Mg/ha,exact
+KR-SmM,37.93894,126.95471,61,5,51.0–94.0 Mg/ha,exact
+KR-ScC,37.22141,129.29863,132,6,94.0–171.0 Mg/ha,exact
+KR-PcD,37.48184,128.51604,165,6,94.0–171.0 Mg/ha,exact
+KR-Nj2,35.0269,126.8219,7,2,5–13.0 Mg/ha,exact
+KR-Nj1,35.02753,126.82093,7,2,5–13.0 Mg/ha,exact
+KR-Kw2,37.74869,127.14888,112,6,94.0–171.0 Mg/ha,exact
+KR-Kw1,37.74843,127.16261,115,6,94.0–171.0 Mg/ha,exact
+KR-JjM,33.31798,126.56772,61,5,51.0–94.0 Mg/ha,exact
+KR-Hnm,34.5538,126.56992,20,3,13.0–27.0 Mg/ha,exact
+KR-HcM,37.61938,127.84571,165,6,94.0–171.0 Mg/ha,exact
+KR-HPK,34.47722,126.48105,11,2,5–13.0 Mg/ha,exact
+KR-GmS,35.75089,126.81378,2,1,0–5 Mg/ha,exact
+KR-GmR,35.74862,126.86432,2,1,0–5 Mg/ha,exact
+KR-GmP,35.74502,126.85222,4,1,0–5 Mg/ha,exact
+KR-CmF,37.1599,127.65365,21,3,13.0–27.0 Mg/ha,exact
+KR-CRK,38.2013,127.2497,0,1,0–5 Mg/ha,exact
+KR-AdC,36.50565,126.35909,26,3,13.0–27.0 Mg/ha,exact
+TH-Mae,18.42264,99.72025,97,6,94.0–171.0 Mg/ha,exact
+TH-Kog,18.81267,98.90225,212,7,>171.0 Mg/ha,exact
+RU-Tur,64.208885,100.463554,2,1,0–5 Mg/ha,exact
+RU-SkP,62.25471,129.61855,61,5,51.0–94.0 Mg/ha,exact
+RU-Sk2,62.241356,129.65047,63,5,51.0–94.0 Mg/ha,exact
+RU-NeF,62.315617,129.49997,18,3,13.0–27.0 Mg/ha,exact
+RU-NeC,62.314842,129.50008,17,3,13.0–27.0 Mg/ha,exact
+RU-NeB,62.325935,129.48734,13,3,13.0–27.0 Mg/ha,exact
+RU-Ege,60.015514,133.824,85,5,51.0–94.0 Mg/ha,exact
+MY-LHP,4.201007,114.03908,208,7,>171.0 Mg/ha,exact
+MN-Udg,48.25649,106.85116,26,3,13.0–27.0 Mg/ha,exact
+MN-Nkh,47.693592,107.48934,0,1,0–5 Mg/ha,exact
+MN-Kbu,47.21397,108.737335,0,1,0–5 Mg/ha,exact
+MN-Hst,47.59293,105.85497,0,1,0–5 Mg/ha,exact
+KH-Kmp,12.744579,105.47857,161,6,94.0–171.0 Mg/ha,exact
+JP-Ynf,26.751,128.21266,43,4,27.0–51.0 Mg/ha,exact
+JP-Yms,34.79028,135.84094,177,7,>171.0 Mg/ha,exact
+JP-Toc,42.70973,141.5659,88,5,51.0–94.0 Mg/ha,exact
+JP-Tmk,42.739307,141.51483,48,4,27.0–51.0 Mg/ha,exact
+JP-Tmd,42.735912,141.52315,49,4,27.0–51.0 Mg/ha,exact
+JP-Tkb,36.173378,140.17664,88,5,51.0–94.0 Mg/ha,exact
+JP-Tgf,36.11353,140.09488,22,3,13.0–27.0 Mg/ha,exact
+JP-Tef,45.05581,142.10712,91,5,51.0–94.0 Mg/ha,exact
+JP-Tak,36.146168,137.42311,174,7,>171.0 Mg/ha,exact
+JP-Ta2,36.140038,137.37071,120,6,94.0–171.0 Mg/ha,exact
+JP-Srk,40.565483,140.12779,242,7,>171.0 Mg/ha,exact
+JP-Spp,42.986843,141.38533,70,5,51.0–94.0 Mg/ha,exact
+JP-Shn,35.865753,137.93256,24,3,13.0–27.0 Mg/ha,exact
+JP-Sb2,45.10339,141.6808,0,1,0–5 Mg/ha,exact
+JP-Sb1,45.104702,141.68797,0,1,0–5 Mg/ha,exact
+JP-SMF,35.261528,137.07875,82,5,51.0–94.0 Mg/ha,exact
+JP-Om2,34.542454,135.50822,1,1,0–5 Mg/ha,exact
+JP-Nuf,35.152416,136.9719,16,3,13.0–27.0 Mg/ha,exact
+JP-NsM,36.91604,139.936,60,5,51.0–94.0 Mg/ha,exact
+JP-NsC,36.915054,139.93684,60,5,51.0–94.0 Mg/ha,exact
+JP-Nkm,35.808064,137.83388,126,6,94.0–171.0 Mg/ha,exact
+JP-Mse,36.05393,140.02693,14,3,13.0–27.0 Mg/ha,exact
+JP-MMF,44.321884,142.26152,76,5,51.0–94.0 Mg/ha,exact
+JP-MBF,44.38406,142.31862,85,5,51.0–94.0 Mg/ha,exact
+JP-Kzw,36.406788,138.57257,122,6,94.0–171.0 Mg/ha,exact
+JP-Khw,33.13658,130.70834,118,6,94.0–171.0 Mg/ha,exact
+JP-KaP,36.08313,140.24033,24,3,13.0–27.0 Mg/ha,exact
+JP-Hc3,34.539673,133.91173,10,2,5–13.0 Mg/ha,exact
+JP-Hc2,34.537518,133.92755,14,3,13.0–27.0 Mg/ha,exact
+JP-Fmt,35.638744,139.37975,60,5,51.0–94.0 Mg/ha,exact
+JP-Fjy,35.45454,138.76225,99,6,94.0–171.0 Mg/ha,exact
+JP-Fhk,35.443554,138.7647,112,6,94.0–171.0 Mg/ha,exact
+JP-BBY,43.322998,141.81065,17,3,13.0–27.0 Mg/ha,exact
+JP-Api,40.001358,140.93658,160,6,94.0–171.0 Mg/ha,exact
+ID-Pag,-2.3239167,113.90439,178,7,>171.0 Mg/ha,exact
+ID-PaD,-2.3460708,114.03641,104,6,94.0–171.0 Mg/ha,exact
+ID-PaB,-2.340796,114.0379,104,6,94.0–171.0 Mg/ha,exact
+CN-Lsh,45.27984,127.57821,49,4,27.0–51.0 Mg/ha,exact
+CN-HaM,37.607433,101.332,0,1,0–5 Mg/ha,exact
+UK-AMo,55.792545,-3.2436917,0,1,0–5 Mg/ha,exact
+SE-Svb,64.25611,19.7745,99,6,94.0–171.0 Mg/ha,exact
+SE-Sto,68.35594,19.045208,13,3,13.0–27.0 Mg/ha,exact
+SE-Nor,60.0865,17.479504,94,6,94.0–171.0 Mg/ha,exact
+SE-Htm,56.09763,13.41897,88,5,51.0–94.0 Mg/ha,exact
+SE-Deg,64.18203,19.55654,53,5,51.0–94.0 Mg/ha,exact
+NO-Hur,60.37163,11.07949,68,5,51.0–94.0 Mg/ha,exact
+NL-Loo,52.166447,5.74355,150,6,94.0–171.0 Mg/ha,exact
+IT-TrF,45.82376,7.56089,61,5,51.0–94.0 Mg/ha,exact
+IT-Tor,45.84444,7.578055,17,3,13.0–27.0 Mg/ha,exact
+IT-Ren,46.58686,11.43369,120,6,94.0–171.0 Mg/ha,exact
+IT-Noe,40.606174,8.151694,39,4,27.0–51.0 Mg/ha,exact
+IT-Niv,45.49091,7.13943,0,1,0–5 Mg/ha,exact
+IT-MBo,46.01468,11.045831,39,4,27.0–51.0 Mg/ha,exact
+IT-Lsn,45.740482,12.750297,3,1,0–5 Mg/ha,exact
+IT-Cp2,41.704266,12.357293,20,3,13.0–27.0 Mg/ha,exact
+IT-BFt,45.197754,10.741966,37,4,27.0–51.0 Mg/ha,exact
+IT-BCi,40.52375,14.957444,7,2,5–13.0 Mg/ha,exact
+IE-Cra,53.32308,-7.64177,5,2,5–13.0 Mg/ha,exact
+GL-ZaH,74.4733,-20.550869,0,1,0–5 Mg/ha,exact
+GL-ZaF,74.48152,-20.555773,0,1,0–5 Mg/ha,exact
+GL-NuF,64.130936,-51.386066,1,1,0–5 Mg/ha,exact
+GL-Dsk,69.25349,-53.51413,0,1,0–5 Mg/ha,exact
+GF-Guy,5.2787,-52.9248,301,7,>171.0 Mg/ha,exact
+FR-Tou,43.572857,1.37474,9,2,5–13.0 Mg/ha,exact
+FR-Pue,43.7413,3.5957,87,5,51.0–94.0 Mg/ha,exact
+FR-Mej,48.1184,-1.79635,17,3,13.0–27.0 Mg/ha,exact
+FR-Lus,46.414246,0.1206518,7,2,5–13.0 Mg/ha,exact
+FR-Lqu,45.6444,2.7349,10,2,5–13.0 Mg/ha,exact
+FR-Lam,43.496437,1.237878,14,3,13.0–27.0 Mg/ha,exact
+FR-LGt,47.322918,2.284102,128,6,94.0–171.0 Mg/ha,exact
+FR-Hes,48.6741,7.06465,124,6,94.0–171.0 Mg/ha,exact
+FR-Gri,48.84422,1.95191,6,2,5–13.0 Mg/ha,exact
+FR-Fon,48.476357,2.780096,105,6,94.0–171.0 Mg/ha,exact
+FR-FBn,43.24079,5.67865,103,6,94.0–171.0 Mg/ha,exact
+FR-EM2,49.87211,3.02065,2,1,0–5 Mg/ha,exact
+FR-CLt,45.0414,6.41053,0,1,0–5 Mg/ha,exact
+FR-Bil,44.493652,-0.956092,29,4,27.0–51.0 Mg/ha,exact
+FR-Aur,43.54965,1.106103,32,4,27.0–51.0 Mg/ha,exact
+FI-Var,67.7549,29.61,79,5,51.0–94.0 Mg/ha,exact
+FI-Sod,67.36239,26.63859,47,4,27.0–51.0 Mg/ha,exact
+FI-Sii,61.83265,24.19285,45,4,27.0–51.0 Mg/ha,exact
+FI-Let,60.64183,23.95952,124,6,94.0–171.0 Mg/ha,exact
+FI-Ken,67.98721,24.24301,57,5,51.0–94.0 Mg/ha,exact
+FI-Hyy,61.847410000000004,24.29477,114,6,94.0–171.0 Mg/ha,exact
+FI-Ant,63.16347,27.234991,22,3,13.0–27.0 Mg/ha,exact
+ES-LMa,39.94033,-5.77465,9,2,5–13.0 Mg/ha,exact
+DK-Vng,56.037476,9.160709,15,3,13.0–27.0 Mg/ha,exact
+DK-Sor,55.48587,11.644645,82,5,51.0–94.0 Mg/ha,exact
+DK-Skj,55.91273,8.40481,1,1,0–5 Mg/ha,exact
+DK-RCW,55.680683,12.101398,9,2,5–13.0 Mg/ha,exact
+DK-Gds,56.0737,9.3341,103,6,94.0–171.0 Mg/ha,exact
+DE-Tha,50.962597,13.565333,170,6,94.0–171.0 Mg/ha,exact
+DE-RuW,50.50493,6.3309627,205,7,>171.0 Mg/ha,exact
+DE-RuS,50.865906,6.4471445,8,2,5–13.0 Mg/ha,exact
+DE-RuR,50.621914,6.304126,55,5,51.0–94.0 Mg/ha,exact
+DE-Msr,47.80918,11.456168,87,5,51.0–94.0 Mg/ha,exact
+DE-Kli,50.893044,13.5223,29,4,27.0–51.0 Mg/ha,exact
+DE-Hzd,50.96381,13.48978,193,7,>171.0 Mg/ha,exact
+DE-HoH,52.08656,11.22235,134,6,94.0–171.0 Mg/ha,exact
+DE-Har,47.93391,7.59814,49,4,27.0–51.0 Mg/ha,exact
+DE-Hai,51.079212,10.452168,205,7,>171.0 Mg/ha,exact
+DE-Gwg,47.570835,11.032604,177,7,>171.0 Mg/ha,exact
+DE-GsB,52.029648,11.10478,4,1,0–5 Mg/ha,exact
+DE-Gri,50.950005,13.512533,185,7,>171.0 Mg/ha,exact
+DE-Geb,51.09973,10.91463,0,1,0–5 Mg/ha,exact
+DE-Fen,47.832905,11.060701,58,5,51.0–94.0 Mg/ha,exact
+DE-Brs,52.29663,10.44871,22,3,13.0–27.0 Mg/ha,exact
+DE-Amv,52.1757,6.95537,22,3,13.0–27.0 Mg/ha,exact
+CZ-wet,49.02465,14.77035,55,5,51.0–94.0 Mg/ha,exact
+CZ-Lnz,48.68155,16.946331,127,6,94.0–171.0 Mg/ha,exact
+CZ-BK1,49.502075,18.536882,243,7,>171.0 Mg/ha,exact
+CH-Dav,46.81533,9.85591,39,4,27.0–51.0 Mg/ha,exact
+CD-Ygb,0.814444,24.502472,213,7,>171.0 Mg/ha,exact
+BE-Vie,50.304962,5.998099,149,6,94.0–171.0 Mg/ha,exact
+BE-Maa,50.97987,5.631851,24,3,13.0–27.0 Mg/ha,exact
+BE-Lon,50.55162,4.746234,8,2,5–13.0 Mg/ha,exact
+BE-Dor,50.311874,4.968113,90,5,51.0–94.0 Mg/ha,exact
+BE-Bra,51.30761,4.51984,100,6,94.0–171.0 Mg/ha,exact
+VU-Coc,-15.444423,167.19131,24,3,13.0–27.0 Mg/ha,exact
+ML-Kem,15.2875,-1.543056,1,1,0–5 Mg/ha,exact
+KE-Mkt,-3.425859,38.140663,20,3,13.0–27.0 Mg/ha,exact
+KE-Kpt,-1.6141866,37.13311,0,1,0–5 Mg/ha,exact
+KE-Chk,-3.6663,38.350185,14,3,13.0–27.0 Mg/ha,exact
+KE-Aq2,-1.566199,37.100166,0,1,0–5 Mg/ha,exact
+KE-Aq1,-1.57781,37.067047,0,1,0–5 Mg/ha,exact
+IT-SR2,43.73202,10.29091,78,5,51.0–94.0 Mg/ha,exact
+ID-JOP,-1.69306,103.39139,61,5,51.0–94.0 Mg/ha,exact
+CR-AqC,9.938369,-83.7289,85,5,51.0–94.0 Mg/ha,exact
+CN-SnB,31.6905,121.6563,0,1,0–5 Mg/ha,exact
+CN-Sb2,42.39117,117.37017,37,4,27.0–51.0 Mg/ha,exact
+CN-Sb1,42.40907,117.31461,30,4,27.0–51.0 Mg/ha,exact
+BW-Nxr,-19.548056,23.179167,2,1,0–5 Mg/ha,exact
+BW-Gum,-18.964722,22.37111,28,4,27.0–51.0 Mg/ha,exact
+BJ-Nhu,9.74,1.6,7,2,5–13.0 Mg/ha,exact
+BJ-Db1,6.607338,2.543043,22,3,13.0–27.0 Mg/ha,exact
+BJ-Bfg,9.791,1.718,30,4,27.0–51.0 Mg/ha,exact
+ZM-Mon,-15.4391,23.2525,8,2,5–13.0 Mg/ha,exact
+UK-HpF,52.24809,-0.0498267,4,1,0–5 Mg/ha,exact
+UK-HgF,52.552177,0.515057,10,2,5–13.0 Mg/ha,exact
+UK-Gwr,54.85464,-5.988278,16,3,13.0–27.0 Mg/ha,exact
+UK-Gnn,54.96185,-6.760763,8,2,5–13.0 Mg/ha,exact
+UK-GaB,55.10994,-6.529928,10,2,5–13.0 Mg/ha,exact
+UK-Cvn,52.43339,0.162177,0,1,0–5 Mg/ha,exact
+UK-CCr,52.2542,-3.93357,1,1,0–5 Mg/ha,exact
+UK-BnB,54.82326,-6.66984,15,3,13.0–27.0 Mg/ha,exact
+UK-Ags,53.3097,-4.30044,4,1,0–5 Mg/ha,exact
+SN-Nkr,14.49581,-16.45357,0,1,0–5 Mg/ha,exact
+SN-Dhr,15.40256,-15.43214,0,1,0–5 Mg/ha,exact
+SJ-Adv,78.186,15.923,0,1,0–5 Mg/ha,exact
+SE-Trb,64.180916,19.837284,79,5,51.0–94.0 Mg/ha,exact
+SE-St1,68.35415,19.050333,10,2,5–13.0 Mg/ha,exact
+SE-Srj,64.17498,19.56381,57,5,51.0–94.0 Mg/ha,exact
+SE-Ros,64.16522,19.79074,85,5,51.0–94.0 Mg/ha,exact
+SE-Hmr,64.15955,19.551497,70,5,51.0–94.0 Mg/ha,exact
+SE-HfM,64.15955,19.551497,70,5,51.0–94.0 Mg/ha,exact
+SD-Dem,13.2829,30.4783,0,1,0–5 Mg/ha,exact
+RU-Ha1,54.72517,90.00215,0,1,0–5 Mg/ha,exact
+RU-Fyo,56.46153,32.922085,198,7,>171.0 Mg/ha,exact
+RU-Fy4,56.4727,33.0413,41,4,27.0–51.0 Mg/ha,exact
+RU-Fy3,56.4435,33.0478,176,7,>171.0 Mg/ha,exact
+RU-Fy2,56.4476,32.90188,189,7,>171.0 Mg/ha,exact
+RU-Che,68.61304,161.34143,11,2,5–13.0 Mg/ha,exact
+RU-Ch2,68.61689,161.35089,15,3,13.0–27.0 Mg/ha,exact
+PA-SPs,9.31378,-79.63143,70,5,51.0–94.0 Mg/ha,exact
+PA-SPn,9.31814,-79.6346,70,5,51.0–94.0 Mg/ha,exact
+NO-Ikr,69.34,25.3,4,1,0–5 Mg/ha,exact
+NO-Fns,60.59384,7.5271025,0,1,0–5 Mg/ha,exact
+NO-And,69.1422,16.01975,0,1,0–5 Mg/ha,exact
+NL-Vkp,51.980934,5.618825,1,1,0–5 Mg/ha,exact
+NL-Hrw,51.972466,5.641228,19,3,13.0–27.0 Mg/ha,exact
+IT-SRo,43.72786,10.284445,42,4,27.0–51.0 Mg/ha,exact
+IT-PT1,45.20087,9.061039,22,3,13.0–27.0 Mg/ha,exact
+IT-NiG,45.51919,7.171434,0,1,0–5 Mg/ha,exact
+IT-MtM,46.687134,10.579597,61,5,51.0–94.0 Mg/ha,exact
+IT-Lav,45.9562,11.28132,147,6,94.0–171.0 Mg/ha,exact
+IT-CA3,42.38,12.0222,2,1,0–5 Mg/ha,exact
+IT-CA2,42.37722,12.026039,2,1,0–5 Mg/ha,exact
+IT-CA1,42.38041,12.026561,7,2,5–13.0 Mg/ha,exact
+IT-Bsn,45.11924,7.160429,92,5,51.0–94.0 Mg/ha,exact
+IT-BsB,45.11823,7.161995,92,5,51.0–94.0 Mg/ha,exact
+IT-Arz,45.61902,10.00228,26,3,13.0–27.0 Mg/ha,exact
+IL-Yat,31.345045,35.051987,19,3,13.0–27.0 Mg/ha,exact
+IL-RmH,32.5555,34.947285,12,2,5–13.0 Mg/ha,exact
+IE-Gwr,52.6365,-7.011306,0,1,0–5 Mg/ha,exact
+IE-CaN,52.85879,-6.918136,8,2,5–13.0 Mg/ha,exact
+IE-CaC,52.85879,-6.918136,8,2,5–13.0 Mg/ha,exact
+GH-Ank,5.268543,-2.694206,280,7,>171.0 Mg/ha,exact
+FR-Nzn,48.005814,-2.81721,8,2,5–13.0 Mg/ha,exact
+FR-Mau,43.385,1.29306,40,4,27.0–51.0 Mg/ha,exact
+FR-LBr,44.71711,-0.7693,70,5,51.0–94.0 Mg/ha,exact
+FI-Sar,63.15143,27.199064,94,6,94.0–171.0 Mg/ha,exact
+FI-Ruk,64.68398,25.106318,39,4,27.0–51.0 Mg/ha,exact
+FI-Rk2,61.182884,25.262684,131,6,94.0–171.0 Mg/ha,exact
+FI-Qvd,60.295242,22.391607,48,4,27.0–51.0 Mg/ha,exact
+FI-Pap,63.13806,27.246117,56,5,51.0–94.0 Mg/ha,exact
+FI-Nsv,62.8639,24.08382,48,4,27.0–51.0 Mg/ha,exact
+FI-Jok,60.8986,23.51345,33,4,27.0–51.0 Mg/ha,exact
+ES-Yst,38.338932,-2.3506052,76,5,51.0–94.0 Mg/ha,exact
+ES-VDA,42.15111,1.4473800000000001,71,5,51.0–94.0 Mg/ha,exact
+ES-TzM,39.265785,-1.9397246,1,1,0–5 Mg/ha,exact
+ES-Srn,40.15047,-0.8380832,11,2,5–13.0 Mg/ha,exact
+ES-Pzb,38.362118,-4.767329,2,1,0–5 Mg/ha,exact
+ES-Pdu,37.016975,-3.609228,18,3,13.0–27.0 Mg/ha,exact
+ES-Mzn,40.089497,-0.827409,13,3,13.0–27.0 Mg/ha,exact
+ES-MtN,36.99234,-6.4826016,6,2,5–13.0 Mg/ha,exact
+ES-MtB,37.020206,-6.5544033,9,2,5–13.0 Mg/ha,exact
+ES-Mcd,39.58819,-0.39969,2,1,0–5 Mg/ha,exact
+ES-LM2,39.934593,-5.775881,8,2,5–13.0 Mg/ha,exact
+ES-LM1,39.94269,-5.778683,9,2,5–13.0 Mg/ha,exact
+ES-LJu,36.926594,-2.752115,42,4,27.0–51.0 Mg/ha,exact
+ES-Hen,38.411087,-1.697534,10,2,5–13.0 Mg/ha,exact
+ES-HeB,38.40475,-1.726215,8,2,5–13.0 Mg/ha,exact
+ES-HdD,38.49679,-5.111296,0,1,0–5 Mg/ha,exact
+ES-Gdn,37.91084,-3.228489,2,1,0–5 Mg/ha,exact
+ES-FtD,36.99854,-6.434575,2,1,0–5 Mg/ha,exact
+ES-Dnn,36.9968,-6.5118,9,2,5–13.0 Mg/ha,exact
+ES-Crg,39.11926,-0.95852,10,2,5–13.0 Mg/ha,exact
+ES-Cnd,37.914997,-3.227659,2,1,0–5 Mg/ha,exact
+ES-Amo,36.833405,-2.2522173,0,1,0–5 Mg/ha,exact
+ES-Agu,36.939384,-2.034044,0,1,0–5 Mg/ha,exact
+ES-Abr,38.70184,-6.785881,0,1,0–5 Mg/ha,exact
+EE-Stg,58.023636,26.070753,170,6,94.0–171.0 Mg/ha,exact
+EE-Rng,57.913143,26.694048,62,5,51.0–94.0 Mg/ha,exact
+EE-Pts,58.562298,24.369932,11,2,5–13.0 Mg/ha,exact
+DK-Fou,56.4842,9.58722,8,2,5–13.0 Mg/ha,exact
+DK-Eng,55.69053,12.19175,5,2,5–13.0 Mg/ha,exact
+DE-Zrk,53.875942,12.88901,11,2,5–13.0 Mg/ha,exact
+DE-Spw,51.89225,14.03369,157,6,94.0–171.0 Mg/ha,exact
+DE-SfS,47.80629,11.32757,102,6,94.0–171.0 Mg/ha,exact
+DE-Seh,50.870625,6.449653,4,1,0–5 Mg/ha,exact
+DE-SbM,51.764927,10.51799,81,5,51.0–94.0 Mg/ha,exact
+DE-RuM,50.929787,6.2969923,5,2,5–13.0 Mg/ha,exact
+DE-RuC,50.5031,6.336,205,7,>171.0 Mg/ha,exact
+DE-Rns,51.494953,9.932118,25,3,13.0–27.0 Mg/ha,exact
+DE-Obe,50.7864,13.72168,219,7,>171.0 Mg/ha,exact
+DE-Lnf,51.328217,10.3678,175,7,>171.0 Mg/ha,exact
+DE-Lkb,49.099617,13.3046665,95,6,94.0–171.0 Mg/ha,exact
+DE-Hte,54.213055,12.179944,26,3,13.0–27.0 Mg/ha,exact
+DE-Hdn,53.86825,13.268543,0,1,0–5 Mg/ha,exact
+DE-Etn,48.268486,7.878243,226,7,>171.0 Mg/ha,exact
+DE-Akm,53.86617,13.68342,43,4,27.0–51.0 Mg/ha,exact
+CZ-Stn,49.035976,17.9699,173,7,>171.0 Mg/ha,exact
+CZ-RAJ,49.44372,16.696512,67,5,51.0–94.0 Mg/ha,exact
+CZ-LnG,48.704224,16.926247,50,4,27.0–51.0 Mg/ha,exact
+CZ-KrP,49.573257,15.078773,38,4,27.0–51.0 Mg/ha,exact
+CZ-BK2,49.49443,18.54285,222,7,>171.0 Mg/ha,exact
+CH-Tnk,47.48058,8.911775,52,5,51.0–94.0 Mg/ha,exact
+CH-Rtb,47.3804,8.9934,66,5,51.0–94.0 Mg/ha,exact
+CH-Rh2,47.3,9.5,55,5,51.0–94.0 Mg/ha,exact
+CH-Rh1,47.3,9.5,55,5,51.0–94.0 Mg/ha,exact
+CH-Oe3,47.28542,7.732438,48,4,27.0–51.0 Mg/ha,exact
+CH-Oe2,47.286415,7.73375,48,4,27.0–51.0 Mg/ha,exact
+CH-Oe1,47.28583,7.731944,48,4,27.0–51.0 Mg/ha,exact
+CH-Lae,47.478333,8.364389,259,7,>171.0 Mg/ha,exact
+CH-Fru,47.115833,8.537778,52,5,51.0–94.0 Mg/ha,exact
+CH-Frk,46.577637,8.421592,0,1,0–5 Mg/ha,exact
+CH-For,46.527206,6.7595406,40,4,27.0–51.0 Mg/ha,exact
+CH-Crs,47.0436,7.0475,32,4,27.0–51.0 Mg/ha,exact
+CH-Cha,47.21022,8.410444,39,4,27.0–51.0 Mg/ha,exact
+CH-Aws,46.58311,9.790639,26,3,13.0–27.0 Mg/ha,exact
+CG-Tch,-4.2891665,11.656417,1,1,0–5 Mg/ha,exact
+BE-Lcr,51.11218,3.85043,10,2,5–13.0 Mg/ha,exact
+AT-Zoe,47.842247,14.444137,297,7,>171.0 Mg/ha,exact
+AT-PsM,47.58145,14.347197,87,5,51.0–94.0 Mg/ha,exact
+AT-Nsd,47.76914,16.758492,13,3,13.0–27.0 Mg/ha,exact
+AT-Neu,47.116318,11.320229,65,5,51.0–94.0 Mg/ha,exact
+AT-Mmg,47.316563,10.970089,198,7,>171.0 Mg/ha,exact
+CN-Zha,38.97514,100.4464,3,1,0–5 Mg/ha,exact
+CN-Yuc,36.8287,116.5701,0,1,0–5 Mg/ha,exact
+CN-You,38.01419,100.24206,0,1,0–5 Mg/ha,exact
+CN-Yan,37.82861,107.49278,0,1,0–5 Mg/ha,exact
+CN-YaS,37.70877,107.22655,0,1,0–5 Mg/ha,exact
+CN-Xi2,43.55444,116.6714,0,1,0–5 Mg/ha,exact
+CN-Wnb,40.42876,106.74229,0,1,0–5 Mg/ha,exact
+CN-Sdq,42.00119,101.13741,6,2,5–13.0 Mg/ha,exact
+CN-Qng,33.46807,108.49102,100,6,94.0–171.0 Mg/ha,exact
+CN-Nmn,42.94611,120.72694,0,1,0–5 Mg/ha,exact
+CN-Mxn,31.6948,103.8951,61,5,51.0–94.0 Mg/ha,exact
+CN-Lch,37.88936,114.69289,0,1,0–5 Mg/ha,exact
+CN-Jzh,41.14806,121.20167,0,1,0–5 Mg/ha,exact
+CN-Jng,37.83869,101.1145,0,1,0–5 Mg/ha,exact
+CN-Huz,38.76519,100.3186,0,1,0–5 Mg/ha,exact
+CN-HeM,41.99029,101.13349,4,1,0–5 Mg/ha,exact
+CN-HeD,42.1135,100.9872,0,1,0–5 Mg/ha,exact
+CN-HaW,37.607655,101.32899,0,1,0–5 Mg/ha,exact
+CN-Ha2,37.6086,101.3269,0,1,0–5 Mg/ha,exact
+CN-GuT,34.35481,100.4872,0,1,0–5 Mg/ha,exact
+CN-Erg,50.1869,119.3889,0,1,0–5 Mg/ha,exact
+CN-Dzo,19.546,109.475,52,5,51.0–94.0 Mg/ha,exact
+CN-Du2,42.0467,116.2836,0,1,0–5 Mg/ha,exact
+CN-Dsh,38.83992,98.9406,0,1,0–5 Mg/ha,exact
+CN-Dmn,38.85551,100.37223,2,1,0–5 Mg/ha,exact
+CN-Din,23.1733,112.5361,154,6,94.0–171.0 Mg/ha,exact
+CN-Dda,41.64397,110.33147,0,1,0–5 Mg/ha,exact
+CN-Dan,30.4978,91.0664,0,1,0–5 Mg/ha,exact
+CN-DaW,30.4691,91.0624,0,1,0–5 Mg/ha,exact
+CN-BeO,40.02621,116.39143,9,2,5–13.0 Mg/ha,exact
+CN-Ash,24.53806,101.02917,84,5,51.0–94.0 Mg/ha,exact
+CN-Aro,38.04734,100.46432,0,1,0–5 Mg/ha,exact
+NZ-BFm,-43.593528,171.929611,0,1,0–5 Mg/ha,exact
+AU-Fog,-12.5452,131.3072,53,5,51.0–94.0 Mg/ha,exact
+AU-Rgf,-32.506102,116.966827,1,1,0–5 Mg/ha,exact
+AU-Dry,-15.2588,132.3706,6,2,5–13.0 Mg/ha,exact
+NZ-BFu,-43.591833,171.926833,0,1,0–5 Mg/ha,exact
+AU-Wgt,-42.09139,147.07944,187,7,>171.0 Mg/ha,exact
+AU-APL,-36.862222,147.320833,8,2,5–13.0 Mg/ha,exact
+AU-Col,-33.42,116.237,103,6,94.0–171.0 Mg/ha,exact
+AU-Ctr,-16.103219,145.446922,322,7,>171.0 Mg/ha,exact
+AU-Gin,-31.376351,115.71377,128,6,94.0–171.0 Mg/ha,exact
+NZ-ADw,-43.64935,172.34952,0,1,0–5 Mg/ha,exact
+NZ-Kop,-37.387875,175.55389,15,3,13.0–27.0 Mg/ha,exact
+AU-GWW,-30.1914,120.65417,7,2,5–13.0 Mg/ha,exact
+NZ-Lau,-45.038904,169.681109,0,1,0–5 Mg/ha,exact
+AU-Lit,-13.17904,130.79455,16,3,13.0–27.0 Mg/ha,exact
+AU-Emr,-23.85872,148.4746,0,1,0–5 Mg/ha,exact
+AU-How,-12.4952,131.15005,30,4,27.0–51.0 Mg/ha,exact
+AU-Rob,-17.11746943,145.6301375,296,7,>171.0 Mg/ha,exact
+AU-Sno,-36.375649,148.43585,69,5,51.0–94.0 Mg/ha,exact
+AU-DaS,-14.1592,131.3881,8,2,5–13.0 Mg/ha,exact
+AU-Whr,-36.6732,145.0294,74,5,51.0–94.0 Mg/ha,exact
+AU-Wom,-37.422506,144.094046,214,7,>171.0 Mg/ha,exact
+AU-Tum,-35.6566,148.1516,120,6,94.0–171.0 Mg/ha,exact
+AU-Cpr,-34.0027,140.5877,0,1,0–5 Mg/ha,exact
+NZ-ADd,-43.64405,172.35465,0,1,0–5 Mg/ha,exact
+AU-Ya1,-33.613469,150.734864,46,4,27.0–51.0 Mg/ha,exact
+AU-MvA,-30.543,150.02,13,3,13.0–27.0 Mg/ha,exact
+AU-Ync,-34.9878,146.2908,0,1,0–5 Mg/ha,exact
+AU-MvB,-30.697,150.09,9,2,5–13.0 Mg/ha,exact
+AU-Rig,-36.6499,145.5759,0,1,0–5 Mg/ha,exact
+AU-Wrr,-43.09502,146.65452,465,7,>171.0 Mg/ha,exact
+AU-Wac,-37.4259,145.1878,230,7,>171.0 Mg/ha,exact
+NZ-Oxf,-43.2609,172.21588,3,1,0–5 Mg/ha,exact
+AU-Cum,-33.615278000000004,150.723611,87,5,51.0–94.0 Mg/ha,exact
+AU-TTE,-22.287,133.64,1,1,0–5 Mg/ha,exact
+AU-Otw,-38.525,142.81,0,1,0–5 Mg/ha,exact
+AU-Wel,-32.5727,148.9843,11,2,5–13.0 Mg/ha,exact
+AU-Cow,-16.238189,145.42715,279,7,>171.0 Mg/ha,exact
+NZ-Cla,-43.78628,171.59558,18,3,13.0–27.0 Mg/ha,exact
+AU-RDF,-14.563639,132.477567,6,2,5–13.0 Mg/ha,exact
+AU-Stp,-17.1507,133.3502,1,1,0–5 Mg/ha,exact
+AU-Sam,-27.38806,152.87778,105,6,94.0–171.0 Mg/ha,exact
+AU-Lox,-34.47035,140.65512,2,1,0–5 Mg/ha,exact
+AU-Ya2,-33.620812,150.763284,31,4,27.0–51.0 Mg/ha,exact
+AU-Sil,-42.090556,147.0875,150,6,94.0–171.0 Mg/ha,exact
+AU-Ade,-13.0769,131.1178,8,2,5–13.0 Mg/ha,exact
+AU-Lon,-23.52327,144.31042,0,1,0–5 Mg/ha,exact
+NZ-ScF,-37.46,175.22,1,1,0–5 Mg/ha,exact
+AU-Boy,-32.477093000000004,116.938559,82,5,51.0–94.0 Mg/ha,exact
+AU-Fle,-19.887285,146.189138,7,2,5–13.0 Mg/ha,exact
+AU-ASM,-22.283,133.249,16,3,13.0–27.0 Mg/ha,exact
+AU-DaP,-14.0633,131.3181,6,2,5–13.0 Mg/ha,exact

@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-06-24T20:54:29Z",
-  "pipeline_version": "aa409b2",
+  "run_datetime_utc": "2026-06-25T00:36:51Z",
+  "pipeline_version": "a355ed6",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
     "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif"
   ],
-  "notes": "Per-site AGB extraction from ESA CCI Biomass v7.0 1km pre-aggregated product. Raster layer used: 'ESACCI-BIOMASS-L4-AGB-MERGED-1000m-2024-fv7.0' (layer 18 of 18). Bin definitions: 0-5, 5-25, 25-50, 50-100, 100-200, 200-400, >400 Mg/ha. NA values (0 site(s)) assigned to bin 1 (biomass_method = na_assigned_low). 1km resolution chosen: EC tower footprints 0.5-3 km; 100m sub-pixel gives no additional information for coarse bin classification. Snapshot: 20260624T095651 (767 sites). Citation: Santoro & Cartus (2024) CEDA doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903"
+  "notes": "Per-site AGB re-classified under hybrid binning scheme. Biomass values unchanged from original extraction (ESA CCI Biomass v7.0, band 18 = 'ESACCI-BIOMASS-L4-AGB-MERGED-1000m-2024-fv7.0'). Hybrid bins: fixed bin 1 (0-5 Mg/ha); bins 2-7 are six equal-area quantile bins from global KG-land distribution with biomass >= 5 Mg/ha. Quantile breakpoints (Mg/ha): q1 = 13, q2 = 27, q3 = 51, q4 = 94, q5 = 171. NA values (0 site(s)) assigned to bin 1 (biomass_method = na_assigned_low). Citation: Santoro & Cartus (2024) CEDA doi:10.5285/6429d1aafe1e43b9b414e4a5a7f8b903"
 }

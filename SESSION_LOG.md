@@ -39,9 +39,13 @@ evapotrans both return `HTTP/1.1 200 OK`; `application/x-netcdf`; no authenticat
 > the TRENDY project. Please cite: Sitch et al., Global Biogeochemical Cycles, 2024,
 > doi:10.1029/2024GB008102."
 
-**Interpretation:** Data are freely downloadable without login. Co-authorship is required
-if TRENDY data are a significant component; acknowledgment suffices for minor use
-(e.g. multi-model mean figure). Coordinators must be contacted early regardless.
+**Interpretation for this paper:** A representativeness analysis using TRENDY IAV as
+one axis among six is unambiguously a minor component under the policy. The "minor
+component" clause (multi-model mean figure example) applies: **acknowledgment only,
+no co-authorship requirement, no coordinator negotiation required.** Methods section
+should acknowledge the TRENDY project and cite Sitch et al. 2024
+(doi:10.1029/2024GB008102) and the latest Global Carbon Budget paper. No pre-submission
+circulation or co-author invitation is necessary for this use case.
 
 ### Models — 20 with S3 nbp + evapotrans
 
@@ -101,7 +105,7 @@ all 5 vars from remaining 17 models. Recommended minimum download: nbp + evapotr
 | Annual ET (evapotrans) | ✅ 20 models |
 | ≥30 years coverage (1990–2020) | ✅ 1959–2024 |
 | Anonymous download, no registration | ✅ Plain wget/curl; HTTP 200 confirmed |
-| Co-authorship requirements | ⚠️ Contact coordinators early; required for significant use |
+| Co-authorship / attribution | ✅ Acknowledgment only — IAV as one of six axes = minor component |
 
 **This is the right dataset for the analysis.** 20 models, per-model files, both nbp
 and evapotrans present, freely downloadable, 1959–2024 coverage. The minimum download

@@ -4,6 +4,119 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — GCB TRENDY v14-gcb2025 data hub characterisation
+
+### Access
+
+**Base URL (Wasabi S3, anonymous):**
+`https://s3.eu-west-1.wasabisys.com/gcb-2025-upload/land/output/`
+
+File pattern: `{base}/{MODEL}/S3/{prefix}_S3_{var}.nc`
+
+**Browser + wget-script interface:** https://mdosullivan.github.io/GCB/
+
+**Machine-readable file index:**
+`https://raw.githubusercontent.com/mdosullivan/GCB/main/fileIndex_merged_v4.json`
+(28,695 entries — ground truth for filenames and sizes)
+
+**Anonymous access confirmed:** HEAD requests on CABLE-POP S3 nbp and ORCHIDEE S3
+evapotrans both return `HTTP/1.1 200 OK`; `application/x-netcdf`; no authentication.
+
+### Terms of use (verbatim)
+
+> "These data are freely available under the following data policy. Our main objective
+> is to make all data available to the wider scientific community. For the most recent
+> data set (TRENDY-GCB2025 and ocean-GCB25 used in Global Carbon Budget 2025),
+> co-authorship of the contributing modellers depends on the importance of the TRENDY
+> or GCB-ocean data in your study and must be discussed with the respective coordinators
+> early in the process. TRENDY coordinators: Stephen Sitch – s.a.sitch@exeter.ac.uk,
+> Mike O'Sullivan – m.osullivan@exeter.ac.uk. All studies should be circulated to the
+> modelling groups prior to submission. If TRENDY-GCB2025 forms a significant part of
+> a publication or conference presentation, the modelling groups and coordinators should
+> be invited as co-authors, with sufficient lead time (minimum 3 weeks before submission;
+> earlier engagement is encouraged). If TRENDY results are only a minor component (for
+> example, a figure showing the multi-model mean), then it is sufficient to acknowledge
+> the TRENDY project. Please cite: Sitch et al., Global Biogeochemical Cycles, 2024,
+> doi:10.1029/2024GB008102."
+
+**Interpretation:** Data are freely downloadable without login. Co-authorship is required
+if TRENDY data are a significant component; acknowledgment suffices for minor use
+(e.g. multi-model mean figure). Coordinators must be contacted early regardless.
+
+### Models — 20 with S3 nbp + evapotrans
+
+Note: several models have filename prefixes that differ from the directory name (marked *).
+
+| Model dir | Filename prefix | nbp | gpp | evapotrans | ra | rh | Size/var |
+|-----------|----------------|-----|-----|------------|----|----|----------|
+| CABLE-POP | CABLE-POP | ✅ | ✅ | ✅ | ✅ | ✅ | 180–228 MB |
+| CARDAMOM | CARDAMOM | ✅ | ✅ | ✅ | ✅ | ✅ | 655–794 MB |
+| CLASSIC | CLASSIC | ✅ | ✅ | ✅ | ✅ | ✅ | ~2,016 MB |
+| CLM | CLM6.0* | ✅ | ✅ | ✅ | ✅ | ✅ | ~863 MB |
+| CLM-FATES | CLM-FATES | ✅ | ✅ | ✅ | ✅ | ✅ | ~180 MB |
+| DLEM | DLEM | ✅ | ✅ | ✅ | ✅ | ✅ | 673 MB – 8,087 MB |
+| ED | EDv3* | ✅ | ✅ | ✅ | ✅ | ✅ | ~4,043 MB |
+| ELM | E3SM* | ✅ | ✅ | ✅ | ✅ | ✅ | 199–863 MB |
+| ELM-FATES | ELM-FATES | ✅ | ✅ | ✅ | ✅ | ✅ | 55–65 MB |
+| IBIS | IBIS | ✅ | ✅ | ✅ | ✅ | ✅ | 678–790 MB |
+| ISAM | ISAM | ✅ | ✅ | ✅ | ✅ | ✅ | 809 MB – 1,802 MB |
+| JSBACH | JSBACH | ✅ | ✅ | ✅ | ✅ | ✅ | ~287 MB |
+| JULES-ES | JULES* | ✅ | ✅ | ✅ | ✅ | ✅ | ~4,044 MB |
+| LPJ-GUESS | LPJ-GUESS | ✅ | ✅ | ✅ | ✅ | ⚠️ arh | 37–798 MB |
+| LPJml | LPJmL* | ✅ | ✅ | ✅ | ✅ | ✅ | 80–944 MB |
+| LPJwsl | LPJwsl | ✅ | ✅ | ✅ | ✅ | ✅ | 814 MB – 1,836 MB |
+| LPX-Bern | LPX-Bern | ✅ | ✅ | ✅ | ✅ | ✅ | 816–880 MB |
+| ORCHIDEE | ORCHIDEE | ✅ | ✅ | ✅ | ✅ | ✅ | 763–941 MB |
+| TEM | GDSTEM* | ✅ | ✅ | ✅ | ✅ | ✅ | 681–880 MB |
+| VISIT-UT | VISIT-UT | ✅ | ✅ | ✅ | ✅ | ✅ | 657–840 MB |
+
+*Non-standard prefix: download scripts must use the filename prefix, not the directory name.
+LPJ-GUESS has `arh` (above-ground rh) not `rh` — treat as partial match for rh.
+iMAPLE, SDGVM, OCN, ISBA-CTRIP present in directory but have no S3 target-variable files.
+
+### Temporal coverage and resolution
+
+GCB 2025 cycle: **1959–2024** (files modified July–September 2025). Year range is in
+NetCDF headers, not filenames. For 1990–2020 IAV analysis, only ~half the time dimension
+is used but the whole file must be downloaded (no HTTP range subsetting).
+
+### Download size estimates
+
+| Scope | Files | Approx. size |
+|-------|-------|-------------|
+| nbp only, 20 models | 20 | ~16 GB |
+| nbp + evapotrans, 20 models | 40 | **~32 GB** |
+| All 5 vars (nbp, gpp, evapotrans, ra, rh), 20 models | 100 | ~135 GB |
+
+DLEM and JULES-ES/ED are outliers (~4–8 GB/var). Excluding those 3 models: ~88 GB for
+all 5 vars from remaining 17 models. Recommended minimum download: nbp + evapotrans
+= ~32 GB.
+
+### IAV analysis requirements assessment
+
+| Requirement | Status |
+|-------------|--------|
+| Per-model outputs (not ensemble means) | ✅ Separate file per model per variable |
+| Annual NBP, globally gridded | ✅ 20 models |
+| Annual ET (evapotrans) | ✅ 20 models |
+| ≥30 years coverage (1990–2020) | ✅ 1959–2024 |
+| Anonymous download, no registration | ✅ Plain wget/curl; HTTP 200 confirmed |
+| Co-authorship requirements | ⚠️ Contact coordinators early; required for significant use |
+
+**This is the right dataset for the analysis.** 20 models, per-model files, both nbp
+and evapotrans present, freely downloadable, 1959–2024 coverage. The minimum download
+for the IAV analysis (nbp + evapotrans, all 20 models) is ~32 GB.
+
+### Key operational notes for download
+
+- Use the file index JSON as the manifest: `fileIndex_merged_v4.json`
+- Filename prefixes differ from directory names for CLM (→ CLM6.0), JULES-ES (→ JULES),
+  ED (→ EDv3), ELM (→ E3SM), TEM (→ GDSTEM), LPJml (→ LPJmL)
+- LPJ-GUESS rh is named `arh`; treat accordingly
+- wget/curl works directly: no API key, no session cookie required
+
+---
+
 ## 2026-06-25 — Zenodo TRENDY v10 deposit characterisation (doi:10.5281/zenodo.7598697)
 
 ### Record

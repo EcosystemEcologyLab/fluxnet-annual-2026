@@ -4,6 +4,53 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — ESA CCI Land Cover version availability audit
+
+### Question
+
+Can the LULC representativeness axis be upgraded from v2.0.7 (2015) to v2.1.1 or newer?
+Investigation of available download paths without downloading.
+
+### Findings
+
+**CEDA DAP (anonymous access):**
+- Only two versions present: `v1.6.1/` and `v2.0.7/` (both last modified 2024-09-11).
+- `v2.1.1` returns HTTP 404 on both `dap.ceda.ac.uk` and `data.ceda.ac.uk`.
+- v2.0.7 is anonymously accessible; 24 per-year files (GeoTIFF + NetCDF), 1992–2015.
+- CEDA catalogue entry for v2.0.7 explicitly notes: *"Maps for 2016–2020 have been
+  produced via Copernicus C3S and can be downloaded from CDS."* No newer version on CEDA.
+
+**Copernicus CDS (`cds.climate.copernicus.eu/datasets/satellite-land-cover`):**
+- Hosts `v2.0.7cds` (1992–2015) and `v2.1.1` (2016–present, updated 2025-04-19).
+- Both versions use identical algorithm, 300m resolution, and LCCS class system.
+- Format: **NetCDF-4 only** (no GeoTIFF via CDS). `terra::rast()` handles this.
+- Auth: free CDS account + `~/.cdsapirc` key required — **not bypassable**.
+
+**UCL CCI Viewer (`maps.elie.ucl.ac.be/CCI/viewer/`):**
+- Hosts 1992–2022 (v2.0.7 + v2.1.1); email registration only (lightweight, no API key).
+- Also NetCDF.
+
+**Newer versions:** No evidence of v2.1.2 or v3.0 anywhere. v2.1.1 is current; the C3S
+operational service continues annual updates under the same version label.
+
+### Summary table
+
+| Source | Version | Years | Format | Auth |
+|--------|---------|-------|--------|------|
+| CEDA DAP | v2.0.7 | 1992–2015 | GeoTIFF + NetCDF | None (anonymous) |
+| Copernicus CDS | v2.0.7cds + v2.1.1 | 1992–~2024 | NetCDF-4 | Free account + API key |
+| UCL CCI Viewer | v2.0.7 + v2.1.1 | 1992–2022 | NetCDF | Email registration |
+
+### Decision context
+
+Current axis uses 2015 (v2.0.7, CEDA, GeoTIFF). Upgrading to 2020–2024 requires a free
+CDS account (~15 min setup). FLUXNET tower locations are stable 2015–2022, so per-site
+class assignments are unlikely to change for most sites. The over/under-sampling pattern
+(Wetland 3.63×, Bare 0.05×) is structurally robust to the year difference. No decision
+made this session; findings logged for paper methods documentation.
+
+---
+
 ## 2026-06-25 — Land cover representativeness axis: ESA CCI LC v2.0.7 (2015)
 
 ### Download and data source

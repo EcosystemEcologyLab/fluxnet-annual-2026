@@ -4,6 +4,91 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — LULC axis upgraded to ESA CCI LC v2.1.1 (2022)
+
+### Data
+
+ESA CCI / C3S Land Cover v2.1.1, year 2022, downloaded from Copernicus CDS
+(`satellite-land-cover`, version `v2_1_1`, year `2022`).
+File: `C3S-LC-L4-LCCS-Map-300m-P1Y-2022-v2.1.1.nc` (2.2 GB NetCDF-4, 5 variables;
+`lccs_class` band used). Year 2022 is the most recent available (CDS range: 1992–2022;
+2023/2024 updates expected 2026). Licence accepted via CDS user account 2026-06-24.
+
+Key API note: version string must use underscores (`v2_1_1`) — dots (`v2.1.1`) return
+400 Bad Request. The download Python script is `logs/dl_cci_lc_v211.py` (scratchpad);
+parameters documented in `data/external/cci_landcover/README.md`.
+
+### Results: v2.1.1 (2022)
+
+Total land: **147,322,862 km²** — exact KG baseline match.
+
+| Class | Global % | Network % | Ratio |
+|-------|----------|-----------|-------|
+| Cropland | 15.1 | 27.4 | **1.82×** over |
+| Forest | 29.1 | 36.8 | 1.27× |
+| Shrubland | 15.1 | 11.1 | 0.74× |
+| Grassland | 9.3 | 12.4 | 1.33× |
+| Wetland | 2.1 | 7.6 | **3.66×** over |
+| Settlement | 0.6 | 0.5 | 0.89× |
+| Bare | 12.9 | 0.7 | **0.05×** under |
+| Snow/Ice | 9.9 | 0.0 | **0.00×** absent |
+| Water | 2.5 | 0.8 | 0.32× |
+| Other | 3.4 | 2.9 | 0.83× |
+
+**J = 0.556, H = 0.337**
+
+### Comparison: v2.0.7 (2015) vs v2.1.1 (2022)
+
+| Class | v2.0.7 Global % | v2.1.1 Global % | Δ | v2.0.7 Network % | v2.1.1 Network % | Δ | v2.0.7 Ratio | v2.1.1 Ratio |
+|-------|----------------|----------------|---|------------------|------------------|---|--------------|--------------|
+| Cropland | 15.1 | 15.1 | 0.0 | 27.1 | 27.4 | +0.3 | 1.79× | 1.82× |
+| Forest | 29.0 | 29.1 | +0.1 | 36.8 | 36.8 | 0.0 | 1.27× | 1.27× |
+| Shrubland | 15.1 | 15.1 | 0.0 | 11.5 | 11.1 | −0.4 | 0.76× | 0.74× |
+| Grassland | 9.3 | 9.3 | 0.0 | 12.5 | 12.4 | −0.1 | 1.34× | 1.33× |
+| Wetland | 2.0 | 2.1 | +0.1 | 7.4 | 7.6 | +0.2 | 3.63× | 3.66× |
+| Settlement | 0.5 | 0.6 | +0.1 | 0.4 | 0.5 | +0.1 | 0.77× | 0.89× |
+| Bare | 13.1 | 12.9 | −0.2 | 0.7 | 0.7 | 0.0 | 0.05× | 0.05× |
+| Snow/Ice | 9.9 | 9.9 | 0.0 | 0.0 | 0.0 | 0.0 | 0.00× | 0.00× |
+| Water | 2.5 | 2.5 | 0.0 | 0.8 | 0.8 | 0.0 | 0.32× | 0.32× |
+| Other | 3.4 | 3.4 | 0.0 | 2.9 | 2.9 | 0.0 | 0.84× | 0.83× |
+
+| Version | J | H |
+|---------|---|---|
+| v2.0.7 (2015) | 0.558 | 0.337 |
+| v2.1.1 (2022) | 0.556 | 0.337 |
+
+### Interpretation
+
+**The substantive findings are unchanged.** All differences between 2015 and 2022
+are ≤ 0.2 percentage points in global fractions. ~7 sites changed class
+(Shrubland −3, Grassland −1, Cropland +2, Wetland +1, Settlement +1) — consistent
+with well-known post-2015 LULC change signals (urban expansion, cropland intensification).
+
+The structural story holds exactly:
+- **Wetland** most over-sampled (3.63× → 3.66×): research priority, not a gap
+- **Bare** most under-sampled (0.05× both versions): dryland coverage gap
+- **Snow/Ice** absent from network (0.00× both versions): structurally expected
+- **Cropland** over-sampled (1.79× → 1.82×): agricultural flux monitoring priority
+
+J and H are effectively unchanged (ΔJ = −0.002, ΔH = 0.000). The 2022 map is
+the better choice for the paper (7 more years of LULC change captured, same
+conclusions, CDS source citable). Cross-axis ranking unchanged.
+
+### Files changed
+
+| File | Change |
+|------|--------|
+| `scripts/figure_representativeness_landcover.R` | Updated to v2.1.1 NetCDF; dynamic file discovery in v2.1.1/ dir |
+| `data/external/cci_landcover/README.md` | Documents both versions; CDS download instructions; terra usage note |
+| `.gitignore` | Added `v2.1.1/*.nc`, `v2.1.1/*.zip` patterns |
+| `data/snapshots/site_landcover_cci.csv` | Re-extracted for all 767 sites from 2022 map |
+| `data/snapshots/landcover_cci_global_distribution.csv` | v2.1.1 global fractions |
+| `data/snapshots/representativeness_metrics.csv` | Updated landcover_cci row (J=0.556, H=0.337) |
+| `review/figures/representativeness/fig_representativeness_landcover.png` | Rebuilt from v2.1.1 data |
+| `review/figures/representativeness/methods_landcover.md` | Updated version/year/source; comparison note |
+
+---
+
 ## 2026-06-25 — ESA CCI Land Cover version availability audit
 
 ### Question

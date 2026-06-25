@@ -1,4 +1,4 @@
-# Methods: Land Use / Land Cover Representativeness (ESA CCI Land Cover v2.0.7)
+# Methods: Land Use / Land Cover Representativeness (ESA CCI Land Cover v2.1.1)
 
 ## Axis description
 
@@ -15,19 +15,25 @@ separate visible class given its high stakeholder relevance.
 
 ## Data source
 
-ESA Climate Change Initiative — Land Cover project, version 2.0.7, year 2015.
-The v2.1.1 product (extending to 2020) requires CDS authentication and is not
-anonymously accessible; v2.0.7 (2015) is the most recent year available via
-CEDA anonymous HTTP. The class legend and aggregation scheme are identical
-across v2.0.7 and v2.1.1.
+ESA Climate Change Initiative — Land Cover project, version 2.1.1, year 2022.
+v2.1.1 is the continuation of the ESA CCI LC programme under Copernicus C3S,
+using an identical algorithm, 300m resolution, and LCCS class system as v2.0.7.
+The class legend and aggregation scheme are unchanged between v2.0.7 and v2.1.1.
 
-Distribution: CEDA — http://data.ceda.ac.uk/neodc/esacci/land_cover/data/
-land_cover_maps/v2.0.7/
-File: ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif (312 MB GeoTIFF, 300m, 37 LCCS integer classes).
+Distribution: Copernicus Climate Data Store (CDS).
+Dataset: satellite-land-cover (version v2_1_1, year 2022).
+Licence: ESA CCI Land Cover licence, accepted via CDS user account.
+Downloaded: 2026-06-24.
+File: C3S-LC-L4-LCCS-Map-300m-P1Y-2022-v2.1.1.nc (NetCDF-4, 300m, 37 LCCS integer classes).
 
-Citation: ESA Climate Change Initiative — Land Cover project, 2017. Land Cover
-CCI Product User Guide v2.0. Accessed via CEDA Data Archive.
-Annual land cover maps from the ESA CCI Land Cover project.
+Note: v2.0.7 (1992-2015) was the version used in an earlier draft of this
+analysis; it was the most recent year available via anonymous CEDA download.
+v2.1.1 (2016-2022) requires CDS account authentication (free registration).
+The substantive findings are unchanged between the two versions — see
+SESSION_LOG.md (2026-06-25) for the comparison table.
+
+Citation: ESA Climate Change Initiative — Land Cover project. Land Cover CCI
+Product User Guide v2.0. European Space Agency.
 http://www.esa-landcover-cci.org
 
 ## Why ESA CCI rather than MODIS IGBP
@@ -47,9 +53,8 @@ for the global distribution, not as a site validator.
 ## Aggregation scheme
 
 The 37 native LCCS class codes were aggregated to 10 high-level categories
-following the ESA CCI LC v2.0.7 Product User Guide Table 2 (standard
-cross-walk published by the project). The 10 categories and their constituent
-LCCS codes are:
+following the ESA CCI LC Product User Guide Table 2 (standard cross-walk
+published by the project; identical between v2.0.7 and v2.1.1):
 
   1.  Cropland   : 10, 11, 12, 20, 30
   2.  Forest     : 50, 60-62, 70-72, 80-82, 90, 100
@@ -66,12 +71,10 @@ LCCS codes are:
 
 Notes on ambiguous classes:
   - Class 30 (Mosaic cropland >50% / nat veg <50%) -> Cropland (crop-dominated)
-  - Class 40 (Mosaic nat veg >50% / cropland <50%) -> Other (not crop-dominated,
-    not clearly grassland/shrubland; ESA CCI Other = mosaic categories that
-    don't fit the main categories)
+  - Class 40 (Mosaic nat veg >50% / cropland <50%) -> Other (not crop-dominated)
   - Class 100 (Mosaic tree/shrub >50% / herbaceous <50%) -> Forest (tree-dominated)
   - Class 110 (Mosaic herbaceous >50% / tree/shrub <50%) -> Grassland
-  - Class 140 (Lichens and mosses) -> Other (ESA CCI includes this in Other)
+  - Class 140 (Lichens and mosses) -> Other (ESA CCI definition)
   - Classes 150-153 (Sparse vegetation) -> Shrubland (ESA CCI: Shrubland incl.
     sparse vegetation)
   - Class 0 (No data) excluded from all analysis
@@ -95,7 +98,7 @@ intermediate codes (do not use bilinear for categorical data).
 
 The KG land mask was applied to restrict analysis to 147.3 M km2 of
 global land, consistent with the KG, biomass, and aridity axes.
-Inland water pixels within the KG mask (class 9: Water bodies) represent 2.47% of total land area — retained as a separate visible class.
+Inland water pixels within the KG mask (class 9: Water bodies) represent 2.48% of total land area — retained as a separate visible class.
 
 terra::cellSize(kg_rast, mask=TRUE, unit='km') + terra::zonal(fun='sum')
 were used to compute area per class.
@@ -114,8 +117,8 @@ Weighted Jaccard (J) and Hellinger distance (H) as described in
 methods_koppen_beck2023.md. p_k = global land fraction in class k;
 q_k = fraction of 767-site FLUXNET network in class k.
 
-  J = 0.5583  (0 = no overlap, 1 = identical distribution)
-  H = 0.3369  (0 = identical, 1 = completely different)
+  J = 0.5557  (0 = no overlap, 1 = identical distribution)
+  H = 0.3372  (0 = identical, 1 = completely different)
 
 ## Interpretive note
 

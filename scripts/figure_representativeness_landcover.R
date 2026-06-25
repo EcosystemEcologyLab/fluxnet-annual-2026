@@ -1,17 +1,19 @@
 ## figure_representativeness_landcover.R
 ## Land use / land cover representativeness axis.
-## Data: ESA CCI Land Cover v2.0.7, year 2015 (most recent anonymously
-##       accessible release; v2.1.1 / 2020 is CDS-authenticated only).
+## Data: ESA CCI Land Cover v2.1.1, year 2022 (most recent available via CDS;
+##       downloaded from Copernicus Climate Data Store, CDS API key required).
+##       v2.0.7 (1992-2015) was the previous version — see git history.
 ##
-## Native resolution: 300 m global GeoTIFF (single band, integer LCCS codes).
-## High-level aggregation: 37 native LCCS classes -> 9 categories using the
-## published ESA CCI LC cross-walk from the v2.0.7 Product User Guide, Table 2.
+## Native resolution: 300 m global NetCDF-4 (single variable, integer LCCS codes).
+## High-level aggregation: 37 native LCCS classes -> 10 categories using the
+## published ESA CCI LC cross-walk (PUG Table 2). Aggregation scheme is
+## IDENTICAL between v2.0.7 and v2.1.1 (same LCCS class system throughout).
 ##
 ## Land mask: Beck 2023 KG raster (0.00833 deg) — same as biomass/KG/aridity axes.
-## Global distribution: biomass resampled to KG grid with method = "near"
+## Global distribution: resampled to KG grid with method = "near"
 ##   (nearest-neighbour preserves discrete class values).
 ##
-## ---- AGGREGATION MAPPING (ESA CCI v2.0.7 PUG Table 2, 10 high-level) ------
+## ---- AGGREGATION MAPPING (ESA CCI PUG Table 2, 10 high-level) ------
 ## Class  1 Cropland    : 10 11 12 20 30
 ## Class  2 Forest      : 50 60 61 62 70 71 72 80 81 82 90 100
 ## Class  3 Shrubland   : 120 121 122 150 151 152 153
@@ -45,8 +47,18 @@ library(ggplot2)
 library(patchwork)
 
 # ---- Paths ------------------------------------------------------------------
-lc_path     <- file.path("data", "external", "cci_landcover",
-                         "ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif")
+lc_dir      <- file.path("data", "external", "cci_landcover", "v2.1.1")
+# terra::rast() will pick the land cover variable from the NetCDF; we find the
+# file dynamically since the CDS filename encodes the request date.
+nc_files    <- list.files(lc_dir, pattern = "\\.nc$", full.names = TRUE)
+if (length(nc_files) == 0)
+  stop("No NetCDF found in ", lc_dir,
+       " — run dl_cci_lc_v211.py first.", call. = FALSE)
+# Use the largest NC file (the classification map; companion files are smaller)
+lc_path     <- nc_files[which.max(file.size(nc_files))]
+message("Using NetCDF: ", basename(lc_path),
+        " (", round(file.size(lc_path) / 1e6), " MB)")
+
 legend_path <- file.path("data", "external", "cci_landcover",
                          "ESACCI-LC-Legend.csv")
 kg_path     <- file.path("data", "external", "koppen_beck2023", "1991_2020",
@@ -63,33 +75,17 @@ out_dir     <- file.path("review", "figures", "representativeness")
 fig_out     <- file.path(out_dir, "fig_representativeness_landcover.png")
 methods_out <- file.path(out_dir, "methods_landcover.md")
 
-for (p in c(lc_path, legend_path, kg_path, snap_path)) {
+for (p in c(legend_path, kg_path, snap_path)) {
   if (!file.exists(p)) stop("Required file not found: ", p, call. = FALSE)
 }
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-LC_VERSION  <- "2.0.7"
-LC_YEAR     <- 2015L
+LC_VERSION  <- "2.1.1"
+LC_YEAR     <- 2022L
 LC_FILENAME <- basename(lc_path)
 
 # ---- Aggregation mapping: native LCCS -> high-level -------------------------
-# Source: ESA CCI LC v2.0.7 Product User Guide Table 2 (standard cross-walk).
-# 10 high-level classes matching the ESA CCI published categories.
-#
-# Key decisions for ambiguous mosaic classes:
-# Class 30 (Mosaic cropland >50% / nat veg <50%) -> Cropland: crop-dominated.
-# Class 40 (Mosaic nat veg >50% / cropland <50%) -> Other: not crop-dominated
-#   and not clearly grassland/shrubland — fits "mosaic categories that don't fit
-#   above" in the ESA CCI Other class definition.
-# Class 100 (Mosaic tree/shrub >50% / herbaceous <50%) -> Forest:
-#   woody cover >50%, tree-and-shrub dominated.
-# Class 110 (Mosaic herbaceous >50% / tree/shrub <50%) -> Grassland:
-#   herbaceous-dominated.
-# Class 140 (Lichens and mosses) -> Other: fits "lichens/mosses" in Other
-#   per ESA CCI product documentation.
-# Classes 150-153 (Sparse vegetation) -> Shrubland: ESA CCI groups
-#   "Shrubland (including sparse vegetation)" as one category.
-# Classes 200-202 (Bare areas) -> Bare: separate category per product spec.
+# Source: ESA CCI LC PUG Table 2 (standard cross-walk; identical across v2.x).
 NATIVE_TO_HL <- c(
   "10"  = 1L, "11"  = 1L, "12"  = 1L, "20"  = 1L, "30"  = 1L,
   "50"  = 2L, "60"  = 2L, "61"  = 2L, "62"  = 2L,
@@ -105,7 +101,6 @@ NATIVE_TO_HL <- c(
   "210" = 9L,
   "40"  = 10L, "140" = 10L
 )
-# Class 0 (No data) -> excluded (not in NATIVE_TO_HL)
 
 HL_CODES <- 1:10
 HL_NAMES <- c(
@@ -122,9 +117,6 @@ HL_NAMES <- c(
 )
 
 # ---- High-level colors: area-weighted mean of native class RGB --------------
-# Computed from ESACCI-LC-Legend.csv (same RGB values as published QML file).
-# Snow/Ice native color is #ffffff (white) — substituted with #e0f3f8 (pale blue)
-# for visibility in stacked bars on white backgrounds.
 legend_raw <- readr::read_delim(legend_path, delim = ";",
                                 show_col_types = FALSE) |>
   dplyr::rename(code = NB_LAB, label = LCCOwnLabel, R = R, G = G, B = B) |>
@@ -151,7 +143,6 @@ hl_colors_df <- legend_raw |>
   )
 
 HL_COLORS <- hl_colors_df$color_hex[match(HL_CODES, hl_colors_df$hl_class)]
-# Safety fallback if any class is missing
 HL_COLORS[is.na(HL_COLORS)] <- "#cccccc"
 names(HL_COLORS) <- HL_NAMES
 
@@ -160,24 +151,39 @@ for (i in seq_along(HL_NAMES))
   message("  ", i, ": ", HL_NAMES[i], " -> ", HL_COLORS[i])
 
 # ---- Helper: native raster class codes -> high-level raster ----------------
-# Build a terra::classify() matrix from the mapping.
 rcl_hl <- do.call(rbind, lapply(names(NATIVE_TO_HL), function(k) {
   code <- as.integer(k)
   hl   <- NATIVE_TO_HL[k]
   c(code, code, hl)
 }))
 rcl_hl <- rcl_hl[order(rcl_hl[, 1]), ]
-# Anything not in the mapping (class 0 / no data) -> NA.
-# Use right = NA for exact-value matching (each row is from == to == single code).
-# right = TRUE would create empty half-open intervals (code, code] for all but
-# the lowest value, silently missing most classes. right = NA → [from, to].
+# right = NA: exact-value matching ([from, to] with from == to == single code).
+# right = TRUE creates empty half-open intervals (code, code] — silently wrong.
 
 # ---- Load rasters -----------------------------------------------------------
-message("\nLoading CCI Land Cover raster ...")
-lc_rast <- terra::rast(lc_path)
+message("\nLoading CCI Land Cover NetCDF ...")
+lc_rast_raw <- terra::rast(lc_path)
+message("  Layers in file: ", terra::nlyr(lc_rast_raw))
+message("  Layer names: ", paste(names(lc_rast_raw), collapse = ", "))
+
+# The CDS NetCDF contains one layer named "lccs_class" (land cover) plus
+# companion layers (processed_flag, current_pixel_state, observation_count,
+# change_count). Select the classification layer.
+lyr_names  <- names(lc_rast_raw)
+lc_lyr_idx <- grep("lccs_class", lyr_names, ignore.case = TRUE)
+if (length(lc_lyr_idx) == 0) {
+  # Fallback: use layer 1 (classification is always first)
+  lc_lyr_idx <- 1L
+  message("  'lccs_class' not found by name — using layer 1")
+} else {
+  message("  Selected layer: ", lyr_names[lc_lyr_idx[1]])
+}
+lc_rast <- lc_rast_raw[[lc_lyr_idx[1]]]
+
 message("  Dims: ", nrow(lc_rast), " x ", ncol(lc_rast),
-        "  CRS: ", terra::crs(lc_rast, describe = TRUE)$name,
-        "  Classes: integer LCCS codes")
+        "  CRS: ", terra::crs(lc_rast, describe = TRUE)$name)
+message("  Extent: ", paste(round(as.vector(terra::ext(lc_rast)), 2),
+                            collapse = " "))
 
 message("Loading KG land mask ...")
 kg_rast <- terra::rast(kg_path)
@@ -196,7 +202,6 @@ pts <- terra::vect(
   geom = c("x", "y"), crs = "EPSG:4326"
 )
 
-# Primary extraction (exact point)
 lc_raw <- terra::extract(lc_rast, pts, ID = FALSE)
 names(lc_raw)[1] <- "cci_native_class"
 site_coords$cci_native_class <- as.integer(lc_raw$cci_native_class)
@@ -205,7 +210,6 @@ n_na_primary <- sum(is.na(site_coords$cci_native_class) |
                     site_coords$cci_native_class == 0, na.rm = TRUE)
 message("  NA/NoData sites after primary extraction: ", n_na_primary)
 
-# Nearest-land recovery within 3 deg window for NA sites
 recover_landcover <- function(lat, lon, rast, window_deg = 3) {
   ext_w <- terra::ext(lon - window_deg, lon + window_deg,
                       lat - window_deg, lat + window_deg)
@@ -255,14 +259,12 @@ if (length(recovery_sites) > 0) {
 n_na_final <- sum(is.na(site_coords$cci_native_class), na.rm = TRUE)
 message("  NA after recovery: ", n_na_final)
 
-# Map to high-level classes
 site_coords <- site_coords |>
   dplyr::mutate(
     code_str = as.character(cci_native_class),
     cci_high_level_class = as.integer(NATIVE_TO_HL[code_str])
   )
 
-# Add label columns
 native_labels <- setNames(legend_raw$label, as.character(legend_raw$code))
 hl_labels     <- setNames(HL_NAMES, as.character(HL_CODES))
 
@@ -293,9 +295,9 @@ write_output_metadata(
   input_sources = c(snap_path, lc_path, legend_path),
   notes = paste0(
     "Per-site land cover extraction from ESA CCI LC v", LC_VERSION,
-    " (year ", LC_YEAR, ", 300m native resolution). ",
-    "Native LCCS codes -> 9 high-level classes using published ESA CCI LC",
-    " v2.0.7 PUG Table 2 cross-walk. ",
+    " (year ", LC_YEAR, ", 300m native resolution, CDS download). ",
+    "Native LCCS codes -> 10 high-level classes using published ESA CCI LC",
+    " PUG Table 2 cross-walk (aggregation scheme identical across v2.x). ",
     "Extraction: terra::extract() at site lat/lon; nearest-land recovery",
     " within 3-deg window for NA/NoData sites. ",
     "Recovery needed: ", length(recovery_sites), " site(s); ",
@@ -315,16 +317,13 @@ lc_aligned <- terra::resample(lc_rast, kg_rast, method = "near",
                               threads = TRUE)
 message("  Resample elapsed: ", round((proc.time() - t0)[["elapsed"]], 1), " s")
 
-# Map native codes -> high-level (within KG land mask).
-# right = NA: exact-value matching ([from, to] with from == to == single code).
 lc_hl <- terra::classify(lc_aligned, rcl_hl, others = NA, right = NA)
-# Mask to KG land
 lc_hl_land <- terra::mask(lc_hl, kg_rast)
 
 message("  Computing cell areas ...")
 cell_areas <- terra::cellSize(kg_rast, mask = TRUE, unit = "km")
 
-message("  Zonal sum (9 classes) ...")
+message("  Zonal sum (10 classes) ...")
 t1 <- proc.time()
 zone_areas <- terra::zonal(cell_areas, lc_hl_land, fun = "sum", na.rm = TRUE)
 message("  Zonal elapsed: ", round((proc.time() - t1)[["elapsed"]], 1), " s")
@@ -346,7 +345,6 @@ dist_df <- data.frame(
     global_land_fraction = global_land_area_km2 / total_land_km2
   )
 
-# Water fraction check
 water_frac <- dist_df$global_land_fraction[dist_df$cci_high_level_class == 9]
 message("  Water fraction within KG land mask: ",
         round(water_frac * 100, 2), "% (retained as separate class)")
@@ -363,9 +361,9 @@ write_output_metadata(
   glob_out,
   input_sources = c(lc_path, kg_path, legend_path),
   notes = paste0(
-    "Global land area per CCI LC high-level class (9 classes). ",
+    "Global land area per CCI LC high-level class (10 classes). ",
     "ESA CCI LC v", LC_VERSION, " (year ", LC_YEAR,
-    ") resampled to KG 0.00833 deg grid with method='near'",
+    ", CDS download) resampled to KG 0.00833 deg grid with method='near'",
     " (nearest-neighbour; preserves discrete class codes). ",
     "KG land mask applied. Class 0 (No data) excluded. ",
     "Total land: ", format(round(total_land_km2), big.mark = ","), " km2 ",
@@ -384,7 +382,6 @@ compute_repr_metrics <- function(p, q) {
   )
 }
 
-# Fraction of sites in each class; sites with NA hl_class are not counted
 valid_sites <- site_coords[!is.na(site_coords$cci_high_level_class), ]
 n_valid <- nrow(valid_sites)
 p_global <- dist_df$global_land_fraction
@@ -430,8 +427,6 @@ print(as.data.frame(dplyr::mutate(metrics_df,
 )[, c("axis", "aggregation_level", "J", "H")]), row.names = FALSE)
 
 # ---- Step 4: Figure ---------------------------------------------------------
-# Class ordering: Forest, Cropland, Grassland, Shrubland, Sparse/Bare,
-# Wetland, Settlement, Snow/Ice, Water (descending global area)
 CLASS_ORDER <- HL_NAMES[order(-p_global)]
 
 base_theme <- theme_minimal(base_size = 10, base_family = "sans") +
@@ -488,7 +483,6 @@ bars_panel <- ggplot(plot_long, aes(x = bar, y = fraction, fill = class_id)) +
   theme(legend.key.size = unit(0.35, "cm"),
         legend.text     = element_text(size = 7.5, family = "sans"))
 
-# Ratio panel
 ratio_df <- data.frame(
   class_id = class_factor,
   p        = p_global,
@@ -545,7 +539,7 @@ message("Saved: ", fig_out)
 # ---- Step 5: Methods text ---------------------------------------------------
 water_pct <- round(water_frac * 100, 2)
 methods_lines <- c(
-  "# Methods: Land Use / Land Cover Representativeness (ESA CCI Land Cover v2.0.7)",
+  "# Methods: Land Use / Land Cover Representativeness (ESA CCI Land Cover v2.1.1)",
   "",
   "## Axis description",
   "",
@@ -562,19 +556,25 @@ methods_lines <- c(
   "",
   "## Data source",
   "",
-  "ESA Climate Change Initiative — Land Cover project, version 2.0.7, year 2015.",
-  "The v2.1.1 product (extending to 2020) requires CDS authentication and is not",
-  "anonymously accessible; v2.0.7 (2015) is the most recent year available via",
-  "CEDA anonymous HTTP. The class legend and aggregation scheme are identical",
-  "across v2.0.7 and v2.1.1.",
+  "ESA Climate Change Initiative — Land Cover project, version 2.1.1, year 2022.",
+  "v2.1.1 is the continuation of the ESA CCI LC programme under Copernicus C3S,",
+  "using an identical algorithm, 300m resolution, and LCCS class system as v2.0.7.",
+  "The class legend and aggregation scheme are unchanged between v2.0.7 and v2.1.1.",
   "",
-  "Distribution: CEDA — http://data.ceda.ac.uk/neodc/esacci/land_cover/data/",
-  "land_cover_maps/v2.0.7/",
-  paste0("File: ", LC_FILENAME, " (312 MB GeoTIFF, 300m, 37 LCCS integer classes)."),
+  "Distribution: Copernicus Climate Data Store (CDS).",
+  "Dataset: satellite-land-cover (version v2_1_1, year 2022).",
+  "Licence: ESA CCI Land Cover licence, accepted via CDS user account.",
+  paste0("Downloaded: ", format(Sys.Date(), "%Y-%m-%d"), "."),
+  paste0("File: ", LC_FILENAME, " (NetCDF-4, 300m, 37 LCCS integer classes)."),
   "",
-  "Citation: ESA Climate Change Initiative — Land Cover project, 2017. Land Cover",
-  "CCI Product User Guide v2.0. Accessed via CEDA Data Archive.",
-  "Annual land cover maps from the ESA CCI Land Cover project.",
+  "Note: v2.0.7 (1992-2015) was the version used in an earlier draft of this",
+  "analysis; it was the most recent year available via anonymous CEDA download.",
+  "v2.1.1 (2016-2022) requires CDS account authentication (free registration).",
+  "The substantive findings are unchanged between the two versions — see",
+  "SESSION_LOG.md (2026-06-25) for the comparison table.",
+  "",
+  "Citation: ESA Climate Change Initiative — Land Cover project. Land Cover CCI",
+  "Product User Guide v2.0. European Space Agency.",
   "http://www.esa-landcover-cci.org",
   "",
   "## Why ESA CCI rather than MODIS IGBP",
@@ -594,9 +594,8 @@ methods_lines <- c(
   "## Aggregation scheme",
   "",
   "The 37 native LCCS class codes were aggregated to 10 high-level categories",
-  "following the ESA CCI LC v2.0.7 Product User Guide Table 2 (standard",
-  "cross-walk published by the project). The 10 categories and their constituent",
-  "LCCS codes are:",
+  "following the ESA CCI LC Product User Guide Table 2 (standard cross-walk",
+  "published by the project; identical between v2.0.7 and v2.1.1):",
   "",
   "  1.  Cropland   : 10, 11, 12, 20, 30",
   "  2.  Forest     : 50, 60-62, 70-72, 80-82, 90, 100",
@@ -613,12 +612,10 @@ methods_lines <- c(
   "",
   "Notes on ambiguous classes:",
   "  - Class 30 (Mosaic cropland >50% / nat veg <50%) -> Cropland (crop-dominated)",
-  "  - Class 40 (Mosaic nat veg >50% / cropland <50%) -> Other (not crop-dominated,",
-  "    not clearly grassland/shrubland; ESA CCI Other = mosaic categories that",
-  "    don't fit the main categories)",
+  "  - Class 40 (Mosaic nat veg >50% / cropland <50%) -> Other (not crop-dominated)",
   "  - Class 100 (Mosaic tree/shrub >50% / herbaceous <50%) -> Forest (tree-dominated)",
   "  - Class 110 (Mosaic herbaceous >50% / tree/shrub <50%) -> Grassland",
-  "  - Class 140 (Lichens and mosses) -> Other (ESA CCI includes this in Other)",
+  "  - Class 140 (Lichens and mosses) -> Other (ESA CCI definition)",
   "  - Classes 150-153 (Sparse vegetation) -> Shrubland (ESA CCI: Shrubland incl.",
   "    sparse vegetation)",
   "  - Class 0 (No data) excluded from all analysis",

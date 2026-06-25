@@ -4,6 +4,46 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — TRENDY v14 compute: second status check (~7 h elapsed)
+
+### Job status
+
+PID 64895 confirmed running. Runtime: 7 h 11 min (431 CPU-min reported by `ps`).
+RSS now 1.9 GB (up from 1.36 GB at previous check), consistent with ISAM's larger
+file being loaded into terra. No new intermediate tifs since last check — still at
+16/36. Log unchanged from 12:18:39; the rotation progress bar has advanced from
+`====---` to `========---` (~80% complete).
+
+### Current bottleneck: ISAM nbp (0–360 lon rotation)
+
+ISAM nbp started at 12:18:39 and is still running (~2h 15min and counting).
+File sizes from download manifest:
+
+| File | Size |
+|---|---|
+| ISAM_S3_nbp.nc | 810 MB |
+| ISAM_S3_evapotrans.nc | 1.8 GB |
+
+Both ISAM files require 0–360 → −180–180 rotation before processing. Terra's
+`rotate()` materialises the full raster in memory before writing. With 810 MB
+on disk the rotation alone appears to take ~2–3 h; the 1.8 GB evapotrans file
+will likely take proportionally longer (estimate 4–6 h). ISAM alone may consume
+6–9 h of the total job time.
+
+### Revised runtime and completion estimate
+
+With 10 models remaining after ISAM (JSBACH, JULES-ES, LPJ-GUESS, LPJml,
+LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT), and ISAM's evapotrans potentially
+running into late tonight, completion is now estimated at **2026-06-26 morning**,
+possibly earlier if most remaining models are small.
+
+### No new issues
+
+No new errors or warnings beyond the CLM-FATES and ELM issues documented in the
+previous status entry.
+
+---
+
 ## 2026-06-25 — TRENDY v14 compute: mid-run status (~5 h elapsed)
 
 ### Job status

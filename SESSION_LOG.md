@@ -4,6 +4,109 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — TRENDY v14 IAV/median representativeness compute launch
+
+### Pre-launch diagnosis
+
+#### DLEM (previously reported as 0 land pixels)
+
+Both DLEM files matched manifest sizes exactly (nbp: 673,932,068 bytes; evapotrans:
+8,087,080,676 bytes). No redownload required.
+
+Root cause of "0 land pixels" finding: DLEM uses IEEE NaN as the fill value with no
+`_FillValue` attribute. Python netCDF4 with `set_auto_mask=True` does not mask NaN
+without an explicit fill attribute, so all 259,200 cells per layer appeared unmasked
+but with NaN values. Terra reads NaN → R NA → masked correctly. Terra inspection
+confirmed ~61,486 non-NA land pixels per layer in the analysis window — consistent
+with other 0.5° models. DLEM is included in the ensemble.
+
+DLEM unit conversion note: NBP is stored as 325 **annual** time steps (not monthly),
+so conversion is `kgC m⁻² s⁻¹ × 31,557,600 s yr⁻¹ × 1000 g kg⁻¹ → gC m⁻² yr⁻¹`.
+Evapotrans is 3900 **monthly** steps (standard monthly aggregation).
+
+#### Analysis time window
+
+Model start/end years extracted via Python netCDF4 from all 19 models:
+
+| Constraint | Model | Year |
+|---|---|---|
+| Latest start year | CLM-FATES | 1701 |
+| Earliest end year | CLASSIC, ELM, DLEM | 2023 |
+
+**Analysis window: 1990–2023 (34 years).**
+
+The 1990 lower bound applied because max(1990, 1701) = 1990. Three models end at
+2023 (CLASSIC, ELM, DLEM), making 2023 the binding upper constraint. CLM, JSBACH,
+VISIT-UT, ELM-FATES have hours- or fractional-years-encoded time axes that Python
+could not parse to calendar years; ntime (3888–3900) and the 270-year offset
+identified in terra::time() indicate they cover ≥1990–2023.
+
+#### Unit inventory
+
+All 19 models provide NBP and evapotrans in `kg m⁻² s⁻¹` (or equivalent notation):
+CLASSIC uses LaTeX superscript notation; ISAM uses slash notation; ELM-FATES NBP and
+LPJwsl evapotrans have no units attribute (TRENDY protocol default `kg m⁻² s⁻¹`
+assumed). Full inventory written to `data/snapshots/trendy_unit_conversions.csv`.
+
+Standard conversion applied throughout:
+- Monthly data (16 models for NBP; all 19 for ET): `× 1000 × 86400 × 30.4375` per
+  monthly layer, then sum 12 layers per year → gC m⁻² yr⁻¹ or mm yr⁻¹.
+- Annual NBP (DLEM, LPJ-GUESS, LPJml): `× 1000 × 86400 × 365.25` per annual layer.
+
+#### terra::time() offset bug
+
+`terra::time()` on these NetCDF files returns numeric decimal years offset by +270
+years (e.g., CABLE-POP 1700–2024 reported as 1970–2294). Root cause: terra misparses
+non-zero-padded origin dates (e.g., `"months since 1700-1-16"`) and falls back to
+the Unix epoch (1970-01-01), producing a systematic +270 shift. Workaround: bypassed
+`terra::time()` entirely; years inferred from known model start years (verified via
+Python) and layer count. Fix documented in `scripts/figure_representativeness_trendy_compute.R`.
+
+#### ncdf4 availability
+
+`ncdf4` is not in the project renv. `terra::writeCDF()` depends on ncdf4. Switched
+all intermediate and output writes to GeoTIFF (`terra::writeRaster(..., gdal="COMPRESS=DEFLATE")`).
+File extensions are `.tif` throughout. Impact: none for the compute; the wrap-up
+session will read `.tif` via terra.
+
+### Background compute launch
+
+Script: `scripts/figure_representativeness_trendy_compute.R`
+
+| Parameter | Value |
+|---|---|
+| Ensemble | 19 models (CARDAMOM excluded — 22-year span too short for IAV) |
+| Analysis window | 1990–2023 (34 years) |
+| Target grid | 0.5° × 0.5°, 720 × 360, lon −180–180, lat S→N |
+| Land mask | Beck 2023 KG 1991–2020 at 0.5° (`koppen_geiger_0p5.tif`) |
+| Near-zero bins | NBP: < 5 gC m⁻² yr⁻¹; ET: < 5 mm yr⁻¹ |
+| PID | 64895 |
+| PID file | `logs/trendy_analysis.pid` |
+| Internal log | `logs/trendy_analysis_20260625_072258.log` |
+| nohup redirect | `logs/trendy_analysis_20260625_072256.log` |
+| Launch command | `nohup caffeinate -dimsu Rscript scripts/figure_representativeness_trendy_compute.R > logs/trendy_analysis_20260625_072256.log 2>&1 &` |
+
+**Verified running**: CABLE-POP nbp processed in 76 s and intermediate written to
+`data/external/trendy/derived/intermediate/CABLE-POP_nbp_regridded.tif`.
+
+**Expected runtime**: 3–6 hours (Step 1: 19 models × 2 variables × ~1–5 min each
+depending on file size; Step 2: ensemble statistics from intermediates; Step 3–4:
+site extraction and binning).
+
+**Expected disk usage when complete**: ~8 GB intermediates (19 × 2 vars × ~35 MB each
+for 34-layer 0.5° tif = ~1.3 GB) + 4 × ~3 MB final ensemble tifs. Total: ~1.5 GB.
+
+### Outputs produced on completion
+
+`data/external/trendy/derived/intermediate/<model>_{nbp,evapotrans}_regridded.tif` (38 files)
+`data/external/trendy/derived/trendy_{nee,et}_{iav,median}.tif` (4 files)
+`data/snapshots/site_trendy_{nee,et}_{iav,median}.csv` (4 files + meta.json each)
+`data/snapshots/trendy_{nee,et}_{iav,median}_global_distribution.csv` (4 files + meta.json each)
+`data/snapshots/representativeness_metrics.csv` (4 new rows appended)
+`logs/trendy_analysis_complete.marker`
+
+---
+
 ## 2026-06-25 — TRENDY v14-gcb2025 grid characterisation
 
 ### Pre-inspection fix: trailing `\r` in filenames

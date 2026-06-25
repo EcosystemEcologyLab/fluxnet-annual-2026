@@ -4,6 +4,64 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-25 — TRENDY v14 compute: mid-run status (~5 h elapsed)
+
+### Job status
+
+Background job PID 64895 confirmed running (process at 99% CPU, ~1.36 GB RSS,
+launch command `caffeinate -dimsu Rscript scripts/figure_representativeness_trendy_compute.R`).
+Internal log: `logs/trendy_analysis_20260625_072258.log`.
+
+### Progress
+
+16 of 36 intermediate tifs completed (8 full models × 2 variables). Currently
+loading ISAM nbp with 0–360 → −180–180 longitude rotation in progress.
+
+| Status | Models |
+|---|---|
+| Complete (both vars) | CABLE-POP, CLASSIC, CLM, DLEM, ED, ELM, ELM-FATES, IBIS |
+| In progress | ISAM (nbp loading; lon rotation ~45% complete at 12:18 UTC) |
+| Failed | CLM-FATES |
+| Pending | JSBACH, JULES-ES, LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT |
+
+### Issues found during Step 1
+
+**CLM-FATES — dropped from ensemble.** Both CLM-FATES files failed with
+`[rast] longitude is not regularly spaced`. Terra cannot load an irregularly
+spaced longitude grid. The error was caught and logged; the script continues.
+Ensemble size is now **18 models** (not 19). No manual intervention required;
+the script's `MODELS_OK <- intersect(mdl_ok_nbp, mdl_ok_et)` logic will
+exclude CLM-FATES automatically from all ensemble steps.
+
+**ELM — missing 2023 data (both variables).** Log warning: `WARNING: ELM
+{nbp,evapotrans} has no data for year 2023`. ELM has 3900 monthly layers
+(1698–2022, 325 years), not 3912 (through 2023). The regridded tif has an
+all-NA 34th layer. The `compute_detrended_sd()` function requires all 34 years
+to be non-NA (`rowSums(is.na(vals)) == 0`), so ELM pixels will be excluded
+from the **IAV maps** (NEE-IAV, ET-IAV). ELM will still contribute to
+**median maps** if `terra::median(..., na.rm=TRUE)` is used — check
+`process_axis()` in the compute script before the wrap-up session.
+
+**IBIS — very large files.** IBIS nbp took 73 min; IBIS evapotrans took 3 h 1 min
+(09:17 → 12:18). Combined 4 h 14 min for one model. This suggests the remaining
+models may run longer than the original 3–6 h estimate.
+
+### Revised runtime estimate
+
+5 h elapsed; 10 models remaining + Steps 2–4 (ensemble statistics, site
+extraction, binning, representativeness metrics). Estimated completion:
+**late evening 2026-06-25**, possibly into early 2026-06-26 if any remaining
+files are IBIS-scale.
+
+### Completion check
+
+```bash
+ls -la logs/trendy_analysis_complete.marker   # exists → job done
+tail -20 logs/trendy_analysis_20260625_072258.log
+```
+
+---
+
 ## 2026-06-25 — TRENDY v14 IAV/median representativeness compute launch
 
 ### Pre-launch diagnosis

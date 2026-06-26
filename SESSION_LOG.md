@@ -4,6 +4,25 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-26 — TRENDY v14 compute: ~30 min status check
+
+### Job status
+
+PID 2066 running. Elapsed: ~30 min. CPU time: 29:36. RSS: ~1.35 GB.
+Still 16/36 intermediate TIFs — no new files written since launch.
+ISAM nbp lon rotation in progress; progress bar advanced from `====` to `====---`,
+consistent with the previous run's ~2–3 h rotation time for this file.
+
+### Check command
+
+```bash
+ps -p $(cat logs/trendy_analysis.pid) -o pid,etime,cputime,rss && \
+  tail -3 logs/trendy_analysis_20260626_051950.log && \
+  echo "Intermediates: $(ls data/external/trendy/derived/intermediate/*.tif 2>/dev/null | wc -l | tr -d ' ')/36"
+```
+
+---
+
 ## 2026-06-26 — TRENDY v14 compute: resumed after power outage
 
 ### Pre-relaunch checks

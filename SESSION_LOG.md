@@ -4,6 +4,40 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-26 — TRENDY v14 compute: job died mid-run (power outage)
+
+### Outcome
+
+Background job PID 64895 died due to a power outage on 2026-06-25. The process
+did not exit cleanly — no completion marker, no error logged. The log cuts off
+at 12:18:39 mid-progress-bar on ISAM nbp lon rotation.
+
+### State at death
+
+16 of 36 intermediate regridded TIFs completed (8 models × 2 variables):
+
+| Status | Models |
+|---|---|
+| Complete (both vars) | CABLE-POP, CLASSIC, CLM, DLEM, ED, ELM, ELM-FATES, IBIS |
+| Died mid-processing | ISAM (nbp lon rotation ~80% complete) |
+| Not started | JSBACH, JULES-ES, LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT |
+| Failed (pre-existing) | CLM-FATES |
+
+All 16 completed TIFs are intact in `data/external/trendy/derived/intermediate/`.
+The ISAM nbp TIF was not written (process died before `terra::writeRaster()`
+would have completed). The job can be resumed — the script will need to re-run
+ISAM nbp and all subsequent models.
+
+### Next step
+
+Relaunch `scripts/figure_representativeness_trendy_compute.R` with `caffeinate`.
+The script does not checkpoint intermediate TIFs, so it will re-process from the
+start unless the script is modified to skip models whose output TIFs already
+exist in `intermediate/`. Consider adding a skip-if-exists guard before
+relaunching to avoid reprocessing the 8 completed models (~7 h of compute).
+
+---
+
 ## 2026-06-25 — TRENDY v14 compute: second status check (~7 h elapsed)
 
 ### Job status

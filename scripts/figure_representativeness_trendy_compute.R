@@ -273,10 +273,17 @@ for (mdl in MODELS_19) {
     inter_path <- file.path(INTER_DIR, paste0(mdl, "_", v, "_regridded.tif"))
 
     if (file.exists(inter_path)) {
-      msg("  SKIP (exists): ", basename(inter_path))
-      if (v == "nbp")        mdl_ok_nbp <- c(mdl_ok_nbp, mdl)
-      if (v == "evapotrans") mdl_ok_et  <- c(mdl_ok_et,  mdl)
-      next
+      ok <- tryCatch({
+        r_chk <- rast(inter_path)
+        ncol(r_chk) == 720L && nrow(r_chk) == 360L && nlyr(r_chk) == N_YEARS
+      }, error = function(e) FALSE)
+      if (ok) {
+        msg("  Skipping ", mdl, " ", v, " (already complete)")
+        if (v == "nbp")        mdl_ok_nbp <- c(mdl_ok_nbp, mdl)
+        if (v == "evapotrans") mdl_ok_et  <- c(mdl_ok_et,  mdl)
+        next
+      }
+      msg("  WARNING: ", basename(inter_path), " exists but failed validation — reprocessing")
     }
 
     r_annual <- tryCatch(

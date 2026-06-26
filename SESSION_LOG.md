@@ -4,6 +4,90 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-26 — TRENDY v14 compute: resumed after power outage
+
+### Pre-relaunch checks
+
+**Skip-if-exists guard upgraded (commit 3a6616a).** The existing check used
+only `file.exists()`. Replaced with: open with `terra::rast()`, confirm
+720×360×34 dimensions, skip only if all three pass. Corrupt or partial TIFs
+now fall through to reprocessing with a warning log line.
+
+**16 intermediate TIFs verified intact.** All 16 files in
+`data/external/trendy/derived/intermediate/` opened cleanly with correct
+dimensions (720×360×34). No partial ISAM nbp TIF was present — the process
+died before `writeRaster()` completed, so ISAM will be reprocessed from scratch.
+
+### Relaunch
+
+```bash
+nohup caffeinate -dimsu Rscript scripts/figure_representativeness_trendy_compute.R \
+    > logs/trendy_analysis_resume_20260626_051947.log 2>&1 &
+```
+
+- **PID:** 2066
+- **External (nohup) log:** `logs/trendy_analysis_resume_20260626_051947.log`
+- **Internal (script) log:** `logs/trendy_analysis_20260626_051950.log`
+
+### Confirmed skip behaviour
+
+From the internal log (first 30 lines):
+
+```
+[2026-06-26 05:19:50]   Skipping CABLE-POP nbp (already complete)
+[2026-06-26 05:19:50]   Skipping CABLE-POP evapotrans (already complete)
+... (8 models × 2 variables skipped in <1 s)
+[2026-06-26 05:19:50]   ERROR loading CLM-FATES nbp: [rast] longitude is not regularly spaced
+[2026-06-26 05:19:50]   ERROR loading CLM-FATES evapotrans: [rast] longitude is not regularly spaced
+[2026-06-26 05:19:51]   Loading ISAM nbp (ISAM_S3_nbp.nc)
+[2026-06-26 05:19:51]     Rotating longitude 0-360 → -180-180
+```
+
+All 8 completed models were skipped instantly. CLM-FATES failed as before.
+ISAM nbp lon rotation in progress at launch.
+
+### Remaining work
+
+10 models to reprocess: ISAM (nbp redo + evapotrans), JSBACH, JULES-ES,
+LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT. Based on prior
+timing, ISAM alone will take ~6–9 h. Completion estimated **2026-06-27 morning**.
+
+---
+
+## 2026-06-26 — TRENDY v14 compute: job died mid-run (power outage)
+
+### Outcome
+
+Background job PID 64895 died due to a power outage on 2026-06-25. The process
+did not exit cleanly — no completion marker, no error logged. The log cuts off
+at 12:18:39 mid-progress-bar on ISAM nbp lon rotation.
+
+### State at death
+
+16 of 36 intermediate regridded TIFs completed (8 models × 2 variables):
+
+| Status | Models |
+|---|---|
+| Complete (both vars) | CABLE-POP, CLASSIC, CLM, DLEM, ED, ELM, ELM-FATES, IBIS |
+| Died mid-processing | ISAM (nbp lon rotation ~80% complete) |
+| Not started | JSBACH, JULES-ES, LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT |
+| Failed (pre-existing) | CLM-FATES |
+
+All 16 completed TIFs are intact in `data/external/trendy/derived/intermediate/`.
+The ISAM nbp TIF was not written (process died before `terra::writeRaster()`
+would have completed). The job can be resumed — the script will need to re-run
+ISAM nbp and all subsequent models.
+
+### Next step
+
+Relaunch `scripts/figure_representativeness_trendy_compute.R` with `caffeinate`.
+The script does not checkpoint intermediate TIFs, so it will re-process from the
+start unless the script is modified to skip models whose output TIFs already
+exist in `intermediate/`. Consider adding a skip-if-exists guard before
+relaunching to avoid reprocessing the 8 completed models (~7 h of compute).
+
+---
+
 ## 2026-06-25 — TRENDY v14 compute: second status check (~7 h elapsed)
 
 ### Job status

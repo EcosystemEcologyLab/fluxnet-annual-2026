@@ -4,6 +4,37 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-26 — TRENDY v14 compute: ~9 h 8 min status check
+
+### Job status
+
+PID 2066 running. Elapsed: 9 h 8 min. CPU time: ~548 min (~9.1 h, near 100% CPU).
+RSS: ~1.47 GB. No errors. Completion marker absent.
+
+### Progress
+
+18/36 intermediate TIFs (was 17/36 at previous check — ISAM nbp completed since then).
+
+| Status | Detail |
+|---|---|
+| Completed (both vars) | CABLE-POP, CLASSIC, CLM, DLEM, ED, ELM, ELM-FATES, IBIS (8 models, 16 TIFs from Jun 25) |
+| Completed this run | ISAM nbp — saved at 11:40:06 (6 h 21 min after restart) |
+| In progress | ISAM evapotrans — lon rotation started 11:40:07, ~2 h 46 min elapsed |
+| Pending | JSBACH, JULES-ES, LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT (9 models) |
+| Failed (pre-existing) | CLM-FATES |
+
+**ISAM evapotrans lon rotation** progress bar at time of check: `=========---`
+(partial view; rotation actively printing). ISAM evapotrans file is 1.8 GB vs 810 MB for
+nbp (2.2× larger). ISAM nbp rotation took 6 h 21 min; evapotrans estimated **tonight**,
+possibly late evening.
+
+### Completion estimate
+
+ISAM evapotrans is the current bottleneck. After it writes, 9 models remain.
+Revised completion estimate: **2026-06-27 morning**.
+
+---
+
 ## 2026-06-26 — TRENDY v14 compute: ~3 h 45 min status check
 
 ### Job status

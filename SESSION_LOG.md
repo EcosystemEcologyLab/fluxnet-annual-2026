@@ -4,6 +4,20 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-26 — TRENDY v14 compute: ~3 h 45 min status check
+
+### Job status
+
+PID 2066 running. Elapsed: 3 h 45 min. CPU time: 225 min (100% CPU).
+RSS: ~1.27 GB. Still 16/36 intermediate TIFs.
+
+ISAM nbp lon rotation progress bar: `================---` (~80% complete),
+significantly advanced from `====---` at the 30-min check. ISAM nbp writeRaster
+likely within the next hour. ISAM evapotrans (1.8 GB file) will follow —
+estimated 4–6 h based on prior run. No new errors in log.
+
+---
+
 ## 2026-06-26 — TRENDY v14 compute: ~30 min status check
 
 ### Job status

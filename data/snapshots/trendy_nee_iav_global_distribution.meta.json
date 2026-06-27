@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-27T12:35:32Z",
+  "pipeline_version": "af2d0f5",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_nee_iav.tif",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"
+  ],
+  "notes": "Ensemble-median TRENDY v14 trendy_nee_iav global distribution. Analysis window 1990-2023. 17 models. Near-zero bin cut: 5 gC m-2 yr-1. Quantile breakpoints: 21.3, 31.9, 42.1, 54.4, 70.9."
+}

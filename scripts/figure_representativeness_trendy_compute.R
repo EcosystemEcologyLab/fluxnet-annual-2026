@@ -389,7 +389,7 @@ extract_sites <- function(r_map, kg_mask, sites, val_col, low_cut, axis_label) {
   coords_mat <- as.matrix(sites[, c("location_long", "location_lat")])
 
   raw <- terra::extract(r_map, coords_mat, method = "simple")
-  vals    <- raw[[2]]
+  vals    <- raw[[1]]
   methods <- rep("exact", nrow(sites))
 
   # Nearest-land recovery (within 3°) for NA sites

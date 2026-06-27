@@ -4,6 +4,52 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-27 — TRENDY v14 compute: completed + Step 3 bug fixed
+
+### Outcome
+
+TRENDY v14 compute completed overnight. All 4 ensemble TIFs written. Per-site
+extraction (Step 3) crashed at the end due to a terra API change; fixed and
+re-run completed in ~2 s this morning.
+
+### Bug: `terra::extract()` return shape changed in terra 1.9.27
+
+In terra 1.9.27, `terra::extract(rast, matrix)` returns a **1-column** data
+frame (values only, no ID column). The script assumed a 2-column return
+(`raw[[2]]` = values), causing `subscript out of bounds`.
+
+**Fix (line 392, `extract_sites`):** `raw[[2]]` → `raw[[1]]`.
+
+### Final ensemble
+
+17 models contributed both nbp and evapotrans intermediates (34 TIFs).
+CLM-FATES and JSBACH excluded — both have irregularly spaced grids incompatible
+with `terra::rast()`. CLM-FATES failed from the start; JSBACH failed in this
+morning's re-run (irregular latitude spacing), confirming it never produced
+intermediates in the overnight run.
+
+### Representativeness metrics (4 new axes added to `representativeness_metrics.csv`)
+
+| Axis | Aggregation | J | H |
+|---|---|---|---|
+| trendy_nee_iav | 7bin_hybrid | 0.507 | 0.316 |
+| trendy_et_iav | 7bin_hybrid | 0.663 | 0.224 |
+| trendy_nee_median | 7bin_hybrid | 0.495 | 0.320 |
+| trendy_et_median | 7bin_hybrid | 0.459 | 0.345 |
+
+FLUXNET network is best represented for ET variability (J ≈ 0.66) and least
+represented for NEE and ET magnitude (J ≈ 0.46–0.51). Consistent with the
+pattern seen for biomass and Koppen climate.
+
+### Outputs written
+
+- `data/snapshots/site_trendy_{nee_iav,et_iav,nee_median,et_median}.csv` + `.meta.json`
+- `data/snapshots/trendy_{nee_iav,et_iav,nee_median,et_median}_global_distribution.csv` + `.meta.json`
+- `data/snapshots/representativeness_metrics.csv` (updated, now 17 rows)
+- `logs/trendy_analysis_complete.marker`
+
+---
+
 ## 2026-06-26 — TRENDY v14 compute: ~9 h 8 min status check
 
 ### Job status

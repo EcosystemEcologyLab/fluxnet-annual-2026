@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-27T12:35:32Z",
+  "pipeline_version": "af2d0f5",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_et_iav.tif",
+    "data/snapshots/site_biomass_cci_v7.csv"
+  ],
+  "notes": "Per-site extraction of ensemble-median TRENDY v14 trendy_et_iav. 767 sites. Nearest-land recovery within 3 deg for NA sites. 7-bin hybrid scheme: fixed near-zero bin 0-5 mm yr-1; 6 equal-area quantile bins above. Breakpoints: 17.5, 24.2, 32, 41.8, 58.1."
+}

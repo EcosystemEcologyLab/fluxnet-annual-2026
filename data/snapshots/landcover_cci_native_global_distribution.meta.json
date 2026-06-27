@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-06-27T16:09:59Z",
+  "pipeline_version": "df2ef69",
+  "input_sources": [
+    "data/external/cci_landcover/v2.1.1/C3S-LC-L4-LCCS-Map-300m-P1Y-2022-v2.1.1.nc",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif",
+    "data/external/cci_landcover/ESACCI-LC-Legend.csv"
+  ],
+  "notes": "Global land area per ESA CCI LC v2.1.1 native LCCS class (37 classes, year 2022). Resampled to KG 0.00833 deg (nearest-neighbour). KG land mask applied. Class 0 excluded. Total land: 147,322,862 km2."
+}

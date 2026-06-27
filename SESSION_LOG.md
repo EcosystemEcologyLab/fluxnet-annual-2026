@@ -4,6 +4,82 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-27 — LULC representativeness extended to three aggregation levels
+
+### Aggregation lookup table
+
+A three-level lookup was built mapping each of the 37 native LCCS codes to
+Level 2 (22 classes) and high-level (10 classes). Level 2 is the ESA CCI LCCS
+intermediate hierarchy implicit in the class naming convention:
+
+- Cropland splits into: rainfed (10/11/12), irrigated (20), mosaic cropland
+  (30). Mosaic nat-veg/cropland (40) is a separate L2 class (maps to
+  high-level "Other", not Cropland).
+- Forest splits into: BL evergreen (50), BL deciduous (60–62), NL evergreen
+  (70–72), NL deciduous (80–82), mixed (90), mosaic tree-shrub/herb (100).
+- Wetland stays three classes: flooded forest fresh/brackish (160), flooded
+  forest saline (170), flooded shrub/herb (180).
+- Lichens/mosses (140) becomes its own L2 class (→ high-level "Other").
+- Sparse vegetation (150–153) is a distinct L2 class (→ high-level Shrubland).
+
+All 22 Level 2 classes present in the global distribution with non-zero area.
+
+Lookup saved: `data/snapshots/cci_landcover_aggregation_lookup.csv`
+
+### Metrics — three aggregation levels
+
+| Level | n classes | J | H |
+|---|---|---|---|
+| High-level (10) | 10 | 0.556 | 0.337 |
+| Level 2 (22) | 22 | 0.478 | 0.368 |
+| Native (37) | 37 | 0.441 | 0.395 |
+
+Pattern confirmed: J decreases and H increases with finer aggregation,
+consistent with the KG climate axis (where 5-class J > 13-class J > 30-class
+J). The 10-class view conceals substantial within-group heterogeneity.
+
+### Notable sampling patterns — visible at Level 2, hidden at 10-class
+
+**Within Forest:** NL evergreen (boreal conifer) over-sampled (2.70×); BL
+evergreen (tropical broadleaf) under-sampled (0.54×). The 10-class Forest
+sum masks this trade-off entirely (J inflated at high-level).
+
+**Within Cropland:** Rainfed cropland over-sampled (2.21×). Irrigated
+cropland slightly under-represented relative to its global area. The mosaic
+cropland/nat-veg class (L2-3) also over-sampled.
+
+**Within Wetland:** Flooded shrub/herb is the most over-sampled class across
+the entire L2 analysis (4.03×); flooded forest freshwater 3.49×. This
+over-sampling is buried inside the moderate-J "Wetland" bar at 10-class.
+
+**Bare areas (L2-20 = HL-7):** Dramatically under-sampled at all levels
+(ratio 0.05× at high-level). Snow/Ice (HL-8) has zero FLUXNET sites.
+
+**At native resolution (37-class):** The most over-sampled native class is
+"Shrub or herbaceous cover, flooded" (code 180), 4.03×. "Herbaceous cover"
+(rainfed cropland subtype, code 11) is 3.81×. NL evergreen closed-to-open
+(code 70) is 3.32×. Shrubland evergreen (121), sparse shrub (152), and
+consolidated/unconsolidated bare areas (201/202) have zero FLUXNET sites.
+
+### Outputs produced
+
+- `scripts/figure_representativeness_landcover.R` (extended script)
+- `data/snapshots/cci_landcover_aggregation_lookup.csv`
+- `data/snapshots/site_landcover_cci.csv` (extended: lulc_native, lulc_level2, lulc_highlevel columns)
+- `data/snapshots/landcover_cci_highlevel_global_distribution.csv` (renamed from landcover_cci_global_distribution.csv)
+- `data/snapshots/landcover_cci_level2_global_distribution.csv`
+- `data/snapshots/landcover_cci_native_global_distribution.csv`
+- `data/snapshots/representativeness_metrics.csv` (19 rows, was 17)
+- `review/figures/representativeness/fig_representativeness_landcover_highlevel.png`
+- `review/figures/representativeness/fig_representativeness_landcover_level2.png`
+- `review/figures/representativeness/fig_representativeness_landcover_native.png`
+- `review/figures/representativeness/methods_landcover.md` (updated)
+
+Cached KG-aligned native raster: `data/external/cci_landcover/v2.1.1/cci_lc_2022_kg_aligned_native.tif`
+(252 MB, resampling time 191 s; subsequent runs skip resampling)
+
+---
+
 ## 2026-06-27 — TRENDY v14 representativeness wrap-up
 
 ### Step 1: Verification — outputs confirmed

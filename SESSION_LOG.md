@@ -4,6 +4,88 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-27 — TRENDY v14 representativeness wrap-up
+
+### Step 1: Verification — outputs confirmed
+
+All four derived ensemble maps verified:
+
+| File | Dims | Non-NA pixels |
+|---|---|---|
+| trendy_nee_iav.tif | 360 × 720 | 94,589 |
+| trendy_et_iav.tif | 360 × 720 | 94,589 |
+| trendy_nee_median.tif | 360 × 720 | 94,589 |
+| trendy_et_median.tif | 360 × 720 | 94,589 |
+
+All four site CSVs (`site_trendy_*.csv`) and global distribution CSVs
+(`trendy_*_global_distribution.csv`) present with `.meta.json` companions.
+Four new rows confirmed in `representativeness_metrics.csv` (now 17 rows total).
+
+Disk usage: 4 final TIFs ≈ 1.2 MB; 34 intermediate TIFs (per-model regridded)
+= 252 MB in `data/external/trendy/derived/intermediate/`.
+
+### Step 2: ELM handling — correction to prior session log note
+
+**The session log entry of 2026-06-26 stated:**
+> "ELM pixels excluded from IAV maps (all-years-non-NA requirement) but included
+> in median maps (na.rm=TRUE)"
+
+**This was incorrect.** ELM is excluded from all four ensemble maps, not only IAV.
+
+The reason: all three per-pixel stat functions (`compute_detrended_sd`,
+`compute_mean_abs`, `compute_mean`) use an identical complete-row requirement:
+```r
+complete <- rowSums(is.na(vals)) == 0L
+```
+ELM's 2023 annual layer is NA for all pixels (log confirms:
+`WARNING: ELM nbp has no data for year 2023`; same for evapotrans).
+Consequently, no pixel passes `complete = TRUE` for ELM → ELM's per-pixel stat
+raster is all NA for all four axes.
+
+The ensemble median is then computed with `app(stk, na.rm = TRUE)` across 17
+model layers. ELM's NA values are excluded at the ensemble step, not at the
+per-pixel step. Effective ensemble size: **16 models** per pixel for all four axes.
+
+The `na.rm = TRUE` in the ensemble step does not "include" ELM — it prevents
+ELM's NA from propagating to the ensemble output.
+
+### Step 3: J/H metrics and sampling patterns
+
+| Axis | J | H | Most over-sampled bin | Under-sampled bin |
+|---|---|---|---|---|
+| trendy_nee_iav | 0.507 | 0.316 | Bin 5 (42.1–54.4 gC m⁻² yr⁻¹), 2.29× | Bin 1 (0–5), 0.07× |
+| trendy_et_iav | 0.663 | 0.224 | Bin 4 (24.2–32.0 mm yr⁻¹), 1.81× | Bin 1 (0–5), 0.00× |
+| trendy_nee_median | 0.495 | 0.320 | Bin 5 (41.8–54.3 gC m⁻² yr⁻¹), 2.12× | Bin 1 (0–5), 0.07× |
+| trendy_et_median | 0.459 | 0.345 | Bin 5 (394.0–634.7 mm yr⁻¹), 2.63× | Bin 1 (0–5), 0.00× |
+
+Pattern: consistent with biomass and KG axes — the network over-samples
+intermediate flux bins (temperate/boreal-margin forests and grasslands) and
+strongly under-samples the near-zero bin (arid, sparse, or high-latitude pixels).
+ET-IAV is the best-sampled axis (J = 0.663); ET-median the worst (J = 0.459).
+
+### Step 4: NEE-median vs. biomass pixel comparison
+
+Pearson r = **0.55**, Spearman ρ = **0.89** across 94,589 shared non-NA pixels
+(NEE-median ensemble map vs. ESA CCI Biomass v7.0 band 18, resampled to 0.5°).
+
+The strong rank correlation confirms high-biomass pixels tend to have high
+TRENDY-ensemble NEE magnitude. The weaker linear correlation reflects a
+nonlinear relationship: tropical forests drive the high-biomass / high-NEE corner,
+but semi-arid and boreal systems occupy a broad range of NEE magnitudes at low
+biomass. Network representativeness implications are parallel: the same over-sampling
+of intermediate bins, the same under-sampling of tropical high-flux classes.
+
+### Outputs produced in this session
+
+- `scripts/figure_representativeness_trendy_wrap.R` — figure + methods script
+- `review/figures/representativeness/fig_representativeness_trendy_nee_iav.png`
+- `review/figures/representativeness/fig_representativeness_trendy_et_iav.png`
+- `review/figures/representativeness/fig_representativeness_trendy_nee_median.png`
+- `review/figures/representativeness/fig_representativeness_trendy_et_median.png`
+- `review/figures/representativeness/methods_trendy_iav.md`
+
+---
+
 ## 2026-06-27 — TRENDY v14 compute: completed + Step 3 bug fixed
 
 ### Outcome

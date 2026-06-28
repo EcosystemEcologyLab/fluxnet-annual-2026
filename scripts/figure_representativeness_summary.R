@@ -1,432 +1,594 @@
 ## figure_representativeness_summary.R
-## Multi-network representativeness summary figures (Rep001-Rep007).
 ##
-## Rep001-Rep006: Dot-plot summaries of weighted Jaccard across 11 axes.
-##   make_summary_figure(network, mode, overlay_network, output_path)
-##   mode = "single" | "overlay" | "delta"
+## Rep001–007: per-category sampling-ratio panels (Rep001–006)
+## and Jaccard trajectory across four network generations (Rep007).
 ##
-## Rep007: Trajectory figure — weighted Jaccard across 4 network generations
-##   for 6 selected axes.
+## Rep001: current_767  (single)
+## Rep002: marconi      (single)
+## Rep003: la_thuile    (single)
+## Rep004: fluxnet2015  (single)
+## Rep005: current_767 vs fluxnet2015 (overlay)
+## Rep006: current_767 minus fluxnet2015 (delta)
+## Rep007: Jaccard trajectory, 6 axes across 4 network generations
 ##
-## Rep007 six-axis qualitative palette (ColorBrewer Paired):
-##   KG present-day (5-class)   = "#e31a1c"  # red
-##   LULC (high-level)          = "#6a3d9a"  # purple
-##   Aridity (5-class)          = "#ff7f00"  # orange
-##   Biomass (7-bin hybrid)     = "#33a02c"  # dark green
-##   TRENDY NEE-IAV (7-bin)     = "#1f78b4"  # dark blue
-##   TRENDY ET-median (7-bin)   = "#b15928"  # brown
+## Six axes (fixed order, top to bottom in each figure):
+##   1. Beck 2023 KG present-day, 13-class (koppen_twoletter)
+##   2. ESA CCI Land Cover, 10-class high-level
+##   3. CGIAR Aridity UNEP, 7-class
+##   4. ESA CCI Biomass v7, 7-bin hybrid
+##   5. TRENDY NEE-IAV, 7-bin hybrid
+##   6. TRENDY ET-median, 7-bin hybrid
+##
+## Rep007 six-axis qualitative palette: Okabe-Ito (colorblind-safe).
 
-if (file.exists(".env")) dotenv::load_dot_env()
-source("R/pipeline_config.R")
-source("R/utils.R")
-check_pipeline_config()
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(readr)
+  library(ggplot2)
+  library(patchwork)
+  library(fs)
+})
 
-library(ggplot2)
-library(patchwork)
-library(dplyr)
-library(readr)
-library(tidyr)
+SNAP <- "data/snapshots"
+EXT  <- "data/external"
+OUTD <- "review/figures/representativeness"
+fs::dir_create(OUTD)
 
-# ---- Output directory --------------------------------------------------------
-out_dir <- file.path("review", "figures", "representativeness")
-dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
-
-# ---- Data source -------------------------------------------------------------
-METRICS_CSV <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                          "representativeness_metrics.csv")
-if (!file.exists(METRICS_CSV))
-  stop("representativeness_metrics.csv not found — run all axis scripts first.",
-       call. = FALSE)
-
-metrics_all <- readr::read_csv(METRICS_CSV, show_col_types = FALSE)
-
-# ---- Rep007 six-axis qualitative palette (ColorBrewer Paired) ----------------
-# Used as single representative color per axis in the trajectory figure.
-# Colors chosen for perceptual distinctness on white background.
-TRAJ_PAL <- c(
-  "KG (present-day)"  = "#e31a1c",   # red
-  "LULC"              = "#6a3d9a",   # purple
-  "Aridity"           = "#ff7f00",   # orange
-  "Biomass"           = "#33a02c",   # dark green
-  "TRENDY NEE-IAV"    = "#1f78b4",   # dark blue
-  "TRENDY ET-median"  = "#b15928"    # brown
-)
-
-# ---- Axis selection for summary figures (11 representative rows) --------------
-# One aggregation level per major axis group; includes both aridity scales.
-SUMMARY_AXES <- c(
-  "KG present-day (5-class)",
-  "KG SSP2-4.5 2041-70 (5-class)",
-  "KG SSP5-8.5 2071-99 (5-class)",
-  "Aridity (5-class)",
-  "Aridity (7-class)",
-  "Biomass AGB (7-bin)",
-  "Land cover (10-class)",
-  "TRENDY NEE-IAV (7-bin)",
-  "TRENDY NEE-median (7-bin)",
-  "TRENDY ET-IAV (7-bin)",
-  "TRENDY ET-median (7-bin)"
-)
-
-SUMMARY_SEL <- data.frame(
-  axis = c(
-    "koppen_beck2023",
-    "koppen_beck2023_future_ssp245_2041_2070",
-    "koppen_beck2023_future_ssp585_2071_2099",
-    "aridity_unep5",
-    "aridity_unep7",
-    "biomass_cci_v7",
-    "landcover_cci",
-    "trendy_nee_iav",
-    "trendy_nee_median",
-    "trendy_et_iav",
-    "trendy_et_median"
-  ),
-  aggregation_level = c(
-    "5class", "5class", "5class",
-    "unep5", "unep7",
-    "7bin_hybrid",
-    "high_level",
-    "7bin_hybrid", "7bin_hybrid", "7bin_hybrid", "7bin_hybrid"
-  ),
-  axis_label = SUMMARY_AXES,
+# ---- 1. KG 13-class (twoletter) colors ----------------------------------------
+# Mean RGB of 30-class Beck 2023 legend members per two-letter group.
+kg_leg_lines <- readLines(file.path(EXT, "koppen_beck2023", "legend.txt"))
+kg_leg_lines <- kg_leg_lines[grepl("^\\s+\\d+:", kg_leg_lines)]
+kg_leg_df <- data.frame(
+  koppen_class = sub("^\\s*\\d+:\\s+(\\S+)\\s+.*",  "\\1", kg_leg_lines),
+  r = as.integer(sub(".*\\[(\\d+)\\s+\\d+\\s+\\d+\\].*", "\\1", kg_leg_lines)),
+  g = as.integer(sub(".*\\[\\d+\\s+(\\d+)\\s+\\d+\\].*", "\\1", kg_leg_lines)),
+  b = as.integer(sub(".*\\[\\d+\\s+\\d+\\s+(\\d+)\\].*", "\\1", kg_leg_lines)),
   stringsAsFactors = FALSE
 )
 
-# ---- Network ordering, labels, and colors ------------------------------------
-NET_LEVELS  <- c("marconi", "la_thuile", "fluxnet2015", "current_767")
-NET_LABELS  <- c(
-  marconi     = "Marconi (n=35)",
-  la_thuile   = "La Thuile (n=252)",
-  fluxnet2015 = "FLUXNET2015 (n=212)",
-  current_767 = "Current (n=767)"
-)
-NET_COLORS  <- c(
-  marconi     = "#999999",
-  la_thuile   = "#fdae61",
-  fluxnet2015 = "#2c7bb6",
-  current_767 = "#1a9641"
+TL_ORDER <- c("Af","Am","Aw","BS","BW","Cf","Cs","Cw","Df","Ds","Dw","EF","ET")
+KG_COLORS <- setNames(
+  vapply(TL_ORDER, function(tl) {
+    members <- kg_leg_df[substr(kg_leg_df$koppen_class, 1L, 2L) == tl, ]
+    grDevices::rgb(mean(members$r), mean(members$g), mean(members$b), maxColorValue = 255)
+  }, character(1L)),
+  TL_ORDER
 )
 
-# ---- Shared theme ------------------------------------------------------------
-base_theme <- theme_minimal(base_size = 10, base_family = "sans") +
-  theme(
-    panel.grid.minor  = element_blank(),
-    plot.background   = element_rect(fill = "white", colour = NA),
-    panel.background  = element_rect(fill = "white", colour = NA),
-    plot.title        = element_text(size = 10, face = "bold"),
-    legend.background = element_rect(fill = "white", colour = NA)
+# ---- 2. LULC high-level (10-class) colors ------------------------------------
+# Mean RGB of constituent native LCCS classes per high-level group.
+lc_lut <- readr::read_csv(
+  file.path(SNAP, "cci_landcover_aggregation_lookup.csv"),
+  show_col_types = FALSE
+)
+lc_hl_colors <- lc_lut |>
+  dplyr::group_by(lulc_highlevel) |>
+  dplyr::summarise(R = mean(R), G = mean(G), B = mean(B), .groups = "drop") |>
+  dplyr::mutate(
+    hex = grDevices::rgb(R, G, B, maxColorValue = 255),
+    hex = dplyr::if_else(lulc_highlevel == 8L, "#e0f3f8", hex)
   )
+LULC_COLORS <- setNames(lc_hl_colors$hex, as.character(lc_hl_colors$lulc_highlevel))
 
-# ---- Helper: filter metrics to selected axes for one network -----------------
-get_summary_data <- function(network_val) {
-  metrics_all |>
-    dplyr::filter(network == network_val) |>
-    dplyr::inner_join(SUMMARY_SEL, by = c("axis", "aggregation_level")) |>
+# ---- 3. Aridity 7-class palette (from aridity figure script) ----------------
+ARIDITY_ORDER <- c("Hyper-Arid","Arid","Semi-Arid","Dry Sub-Humid",
+                    "Humid (low)","Humid (moderate)","Hyper-Humid")
+ARIDITY_COLORS <- c(
+  "Hyper-Arid"       = "#d73027",
+  "Arid"             = "#fc8d59",
+  "Semi-Arid"        = "#ffff33",
+  "Dry Sub-Humid"    = "#66bd63",
+  "Humid (low)"      = "#74add1",
+  "Humid (moderate)" = "#4575b4",
+  "Hyper-Humid"      = "#313695"
+)
+
+# ---- 4. Biomass 7-bin palette (from biomass figure script) ------------------
+BIO_COLORS <- c(
+  "1" = "#f7f4f9",
+  "2" = "#f0e1c4",
+  "3" = "#d4d491",
+  "4" = "#a3c585",
+  "5" = "#6cb375",
+  "6" = "#2e8b57",
+  "7" = "#14532d"
+)
+
+# ---- 5. TRENDY NEE-IAV 7-bin palette (from trendy wrap script) --------------
+NEE_COLORS <- c(
+  "1" = "#f4faf0",
+  "2" = "#c8e8a4",
+  "3" = "#9acb72",
+  "4" = "#67ae42",
+  "5" = "#3d8c27",
+  "6" = "#1f6415",
+  "7" = "#0b3e09"
+)
+
+# ---- 6. TRENDY ET-median 7-bin palette (from trendy wrap script) ------------
+ET_COLORS <- c(
+  "1" = "#f0f8ff",
+  "2" = "#bcd8f4",
+  "3" = "#82bce8",
+  "4" = "#4498d5",
+  "5" = "#1d74b3",
+  "6" = "#0c4f84",
+  "7" = "#06305a"
+)
+
+# ---- 7. Rep007 six-axis qualitative palette (Okabe-Ito, colorblind-safe) ----
+REP007_AXES   <- c("KG (13-class)","LULC (10-class)","Aridity (7-class)",
+                   "Biomass (7-bin)","TRENDY NEE-IAV","TRENDY ET-median")
+REP007_COLORS <- c(
+  "KG (13-class)"     = "#D55E00",  # vermilion
+  "LULC (10-class)"   = "#CC79A7",  # reddish pink
+  "Aridity (7-class)" = "#E69F00",  # amber
+  "Biomass (7-bin)"   = "#009E73",  # green
+  "TRENDY NEE-IAV"    = "#0072B2",  # blue
+  "TRENDY ET-median"  = "#56B4E9"   # sky blue
+)
+
+# ---- Load global distributions -----------------------------------------------
+kg_global <- readr::read_csv(
+  file.path(SNAP, "koppen_beck2023_global_distribution.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::group_by(koppen_twoletter) |>
+  dplyr::summarise(global_land_fraction = sum(global_land_fraction), .groups = "drop") |>
+  dplyr::rename(class = koppen_twoletter)
+
+arid_global <- readr::read_csv(
+  file.path(SNAP, "aridity_unep7_global_distribution.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::rename(class = unep_class)
+
+bio_global <- readr::read_csv(
+  file.path(SNAP, "biomass_cci_v7_global_distribution.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::mutate(class = as.character(biomass_bin))
+
+lulc_global <- readr::read_csv(
+  file.path(SNAP, "landcover_cci_highlevel_global_distribution.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::mutate(class = as.character(cci_high_level_class))
+
+nee_iav_global <- readr::read_csv(
+  file.path(SNAP, "trendy_nee_iav_global_distribution.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::mutate(class = as.character(bin))
+
+et_med_global <- readr::read_csv(
+  file.path(SNAP, "trendy_et_median_global_distribution.csv"),
+  show_col_types = FALSE
+) |>
+  dplyr::mutate(class = as.character(bin))
+
+# ---- Per-site CSV loader -----------------------------------------------------
+site_file <- function(axis_tag, network) {
+  suffix <- if (network == "current_767") "" else paste0("_", network)
+  file.path(SNAP, paste0("site_", axis_tag, suffix, ".csv"))
+}
+
+count_sites <- function(df, class_col) {
+  n_total <- nrow(df)
+  df |>
+    dplyr::filter(!is.na(.data[[class_col]])) |>
+    dplyr::count(.data[[class_col]], name = "n") |>
+    dplyr::rename(class = 1) |>
     dplyr::mutate(
-      axis_label = factor(axis_label, levels = rev(SUMMARY_AXES))
+      class        = as.character(class),
+      network_frac = n / n_total
     )
 }
 
+load_kg_counts    <- function(net) {
+  readr::read_csv(site_file("koppen_beck2023", net), show_col_types = FALSE) |>
+    count_sites("koppen_twoletter")
+}
+load_arid_counts  <- function(net) {
+  readr::read_csv(site_file("aridity", net), show_col_types = FALSE) |>
+    count_sites("unep_class_7")
+}
+load_bio_counts   <- function(net) {
+  readr::read_csv(site_file("biomass_cci_v7", net), show_col_types = FALSE) |>
+    count_sites("biomass_bin")
+}
+load_lulc_counts  <- function(net) {
+  readr::read_csv(site_file("landcover_cci", net), show_col_types = FALSE) |>
+    count_sites("lulc_highlevel")
+}
+load_trendy_counts <- function(axis_tag, bin_col, net) {
+  readr::read_csv(site_file(axis_tag, net), show_col_types = FALSE) |>
+    count_sites(bin_col)
+}
+
+# ---- Merge site counts with global distribution to compute sampling ratio ----
+merge_sr <- function(site_counts, global_df) {
+  global_df |>
+    dplyr::left_join(site_counts |> dplyr::select(class, n, network_frac),
+                     by = "class") |>
+    dplyr::mutate(
+      n            = dplyr::coalesce(n, 0L),
+      network_frac = dplyr::coalesce(network_frac, 0.0),
+      sampling_ratio = dplyr::if_else(
+        global_land_fraction > 0 & network_frac > 0,
+        network_frac / global_land_fraction,
+        NA_real_
+      ),
+      log2_sr = dplyr::if_else(!is.na(sampling_ratio), log2(sampling_ratio), NA_real_)
+    )
+}
+
+# ---- Load all six axes for one network, returning a named list of data frames --
+load_all_axes <- function(network) {
+  kg <- merge_sr(load_kg_counts(network),
+    kg_global |> dplyr::select(class, global_land_fraction)
+  ) |>
+    dplyr::mutate(
+      class_label = class,
+      class_order = match(class, TL_ORDER),
+      color_hex   = KG_COLORS[class]
+    )
+
+  lulc <- merge_sr(load_lulc_counts(network),
+    lulc_global |> dplyr::select(class, global_land_fraction, cci_high_level_class_name)
+  ) |>
+    dplyr::mutate(
+      class_label = cci_high_level_class_name,
+      class_order = as.integer(class),
+      color_hex   = LULC_COLORS[class]
+    )
+
+  aridity <- merge_sr(load_arid_counts(network),
+    arid_global |> dplyr::select(class, global_land_fraction)
+  ) |>
+    dplyr::mutate(
+      class_label = class,
+      class_order = match(class, ARIDITY_ORDER),
+      color_hex   = ARIDITY_COLORS[class]
+    )
+
+  biomass <- merge_sr(load_bio_counts(network),
+    bio_global |> dplyr::select(class, global_land_fraction, biomass_bin_label)
+  ) |>
+    dplyr::mutate(
+      class_label = biomass_bin_label,
+      class_order = as.integer(class),
+      color_hex   = BIO_COLORS[class]
+    )
+
+  nee_iav <- merge_sr(
+    load_trendy_counts("trendy_nee_iav", "trendy_nee_iav_bin", network),
+    nee_iav_global |> dplyr::select(class, global_land_fraction, bin_label)
+  ) |>
+    dplyr::mutate(
+      class_label = bin_label,
+      class_order = as.integer(class),
+      color_hex   = NEE_COLORS[class]
+    )
+
+  et_median <- merge_sr(
+    load_trendy_counts("trendy_et_median", "trendy_et_median_bin", network),
+    et_med_global |> dplyr::select(class, global_land_fraction, bin_label)
+  ) |>
+    dplyr::mutate(
+      class_label = bin_label,
+      class_order = as.integer(class),
+      color_hex   = ET_COLORS[class]
+    )
+
+  list(kg = kg, lulc = lulc, aridity = aridity,
+       biomass = biomass, nee_iav = nee_iav, et_median = et_median)
+}
+
+# ---- Shared theme and axis metadata ------------------------------------------
+AXIS_KEYS   <- c("kg","lulc","aridity","biomass","nee_iav","et_median")
+AXIS_TITLES <- c(
+  kg        = "Beck 2023 KG (13-class)",
+  lulc      = "ESA CCI Land Cover (10-class)",
+  aridity   = "CGIAR Aridity UNEP (7-class)",
+  biomass   = "ESA CCI Biomass v7 (7-bin)",
+  nee_iav   = "TRENDY NEE-IAV (7-bin)",
+  et_median = "TRENDY ET-median (7-bin)"
+)
+
+LOG2_BREAKS <- c(-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5)
+LOG2_LABELS <- c("1/32×","1/16×","1/8×","1/4×","1/2×",
+                 "1×","2×","4×","8×","16×","32×")
+LOG2_LIMITS <- c(-5.2, 5.2)
+
+base_theme <- theme_minimal(base_size = 9) +
+  theme(
+    plot.background   = element_rect(fill = "white", colour = NA),
+    panel.background  = element_rect(fill = "white", colour = NA),
+    panel.grid.minor  = element_blank(),
+    legend.background = element_rect(fill = "white", colour = NA)
+  )
+
+ordered_df <- function(df) {
+  df |>
+    dplyr::arrange(class_order) |>
+    dplyr::mutate(class_label = factor(class_label, levels = unique(class_label)))
+}
+
+# ---- Panel builders ----------------------------------------------------------
+
+make_panel_single <- function(df, axis_key, show_xlab = FALSE) {
+  df     <- ordered_df(df)
+  colors <- setNames(df$color_hex, as.character(df$class_label))
+
+  ggplot(df, aes(x = log2_sr, y = class_label, fill = class_label)) +
+    geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
+    geom_col(width = 0.72, na.rm = TRUE, show.legend = FALSE) +
+    scale_fill_manual(values = colors) +
+    scale_x_continuous(
+      limits = LOG2_LIMITS,
+      breaks = LOG2_BREAKS,
+      labels = LOG2_LABELS,
+      name   = if (show_xlab) "Sampling ratio (network / global)" else NULL,
+      expand = expansion(mult = 0)
+    ) +
+    scale_y_discrete(name = NULL) +
+    labs(subtitle = AXIS_TITLES[[axis_key]]) +
+    base_theme +
+    theme(
+      plot.subtitle      = element_text(size = 7.5, face = "plain", colour = "grey30"),
+      axis.text.y        = element_text(size = 7),
+      axis.text.x        = if (show_xlab) element_text(size = 7) else element_blank(),
+      axis.ticks.x       = if (show_xlab) element_line() else element_blank(),
+      axis.title.x       = element_text(size = 8),
+      panel.grid.major.x = element_line(colour = "grey88", linewidth = 0.3),
+      panel.grid.major.y = element_blank()
+    )
+}
+
+make_panel_overlay <- function(df_a, df_b, axis_key, lbl_a, lbl_b, show_xlab = FALSE) {
+  df_a <- ordered_df(df_a) |> dplyr::mutate(net_grp = lbl_a)
+  df_b <- df_b |>
+    dplyr::arrange(class_order) |>
+    dplyr::mutate(
+      class_label = factor(class_label, levels = levels(df_a$class_label)),
+      net_grp = lbl_b
+    )
+  df_both <- dplyr::bind_rows(df_a, df_b) |>
+    dplyr::mutate(net_grp = factor(net_grp, levels = c(lbl_b, lbl_a)))
+
+  colors <- setNames(df_a$color_hex, as.character(df_a$class_label))
+
+  ggplot(df_both,
+         aes(x = log2_sr, y = class_label, fill = class_label, alpha = net_grp)) +
+    geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
+    geom_col(position = position_dodge(width = 0.85), width = 0.8,
+             na.rm = TRUE, show.legend = FALSE) +
+    scale_fill_manual(values = colors) +
+    scale_alpha_manual(values = setNames(c(0.42, 1.0), c(lbl_b, lbl_a)),
+                       guide = "none") +
+    scale_x_continuous(
+      limits = LOG2_LIMITS,
+      breaks = LOG2_BREAKS,
+      labels = LOG2_LABELS,
+      name   = if (show_xlab) "Sampling ratio (network / global)" else NULL,
+      expand = expansion(mult = 0)
+    ) +
+    scale_y_discrete(name = NULL) +
+    labs(subtitle = AXIS_TITLES[[axis_key]]) +
+    base_theme +
+    theme(
+      plot.subtitle      = element_text(size = 7.5, face = "plain", colour = "grey30"),
+      axis.text.y        = element_text(size = 7),
+      axis.text.x        = if (show_xlab) element_text(size = 7) else element_blank(),
+      axis.ticks.x       = if (show_xlab) element_line() else element_blank(),
+      axis.title.x       = element_text(size = 8),
+      panel.grid.major.x = element_line(colour = "grey88", linewidth = 0.3),
+      panel.grid.major.y = element_blank()
+    )
+}
+
+make_panel_delta <- function(df_a, df_b, axis_key, show_xlab = FALSE) {
+  delta_df <- df_a |>
+    dplyr::select(class, class_label, class_order, sampling_ratio) |>
+    dplyr::rename(sr_a = sampling_ratio) |>
+    dplyr::left_join(
+      df_b |> dplyr::select(class, sampling_ratio) |> dplyr::rename(sr_b = sampling_ratio),
+      by = "class"
+    ) |>
+    dplyr::mutate(
+      sr_a       = dplyr::coalesce(sr_a, 0.0),
+      sr_b       = dplyr::coalesce(sr_b, 0.0),
+      delta      = sr_a - sr_b,
+      fill_color = dplyr::if_else(delta >= 0, "#2166ac", "#d6604d")
+    ) |>
+    ordered_df()
+
+  ggplot(delta_df, aes(x = delta, y = class_label, fill = fill_color)) +
+    geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
+    geom_col(width = 0.72, na.rm = TRUE, show.legend = FALSE) +
+    scale_fill_identity() +
+    scale_x_continuous(
+      name   = if (show_xlab) "Delta sampling ratio (current − FLUXNET2015)" else NULL,
+      expand = expansion(mult = 0.05)
+    ) +
+    scale_y_discrete(name = NULL) +
+    labs(subtitle = AXIS_TITLES[[axis_key]]) +
+    base_theme +
+    theme(
+      plot.subtitle      = element_text(size = 7.5, face = "plain", colour = "grey30"),
+      axis.text.y        = element_text(size = 7),
+      axis.text.x        = if (show_xlab) element_text(size = 7) else element_blank(),
+      axis.ticks.x       = if (show_xlab) element_line() else element_blank(),
+      axis.title.x       = element_text(size = 8),
+      panel.grid.major.x = element_line(colour = "grey88", linewidth = 0.3),
+      panel.grid.major.y = element_blank()
+    )
+}
+
+# ---- Network labels ----------------------------------------------------------
+NET_LABELS <- c(
+  current_767 = "Current FLUXNET (n=767)",
+  marconi     = "Marconi (n=35)",
+  la_thuile   = "La Thuile (n=252)",
+  fluxnet2015 = "FLUXNET2015 (n=212)"
+)
+
 # ---- make_summary_figure() ---------------------------------------------------
-#' @param network      character; one of NET_LEVELS
-#' @param mode         "single" | "overlay" | "delta"
-#' @param overlay_network character; required for overlay/delta modes
-#' @param output_path  character or NULL; if supplied, saves PNG + meta.json
+#' @param network         one of: "current_767", "marconi", "la_thuile", "fluxnet2015"
+#' @param mode            "single" | "overlay" | "delta"
+#' @param overlay_network second network for overlay/delta (e.g., "fluxnet2015")
+#' @param output_path     if supplied, saves PNG at that path
 make_summary_figure <- function(network,
                                 mode            = c("single", "overlay", "delta"),
                                 overlay_network = NULL,
                                 output_path     = NULL) {
-  mode <- match.arg(mode)
-
+  mode  <- match.arg(mode)
   if (mode %in% c("overlay", "delta") && is.null(overlay_network))
-    stop("`overlay_network` must be supplied for mode '", mode, "'.",
-         call. = FALSE)
+    stop("`overlay_network` required for mode '", mode, "'.", call. = FALSE)
 
-  df_a    <- get_summary_data(network)
-  lbl_a   <- NET_LABELS[[network]]
-  col_a   <- NET_COLORS[[network]]
+  axes_a <- load_all_axes(network)
+  lbl_a  <- NET_LABELS[[network]]
 
   if (mode == "single") {
+    panels <- lapply(seq_along(AXIS_KEYS), function(i) {
+      make_panel_single(axes_a[[AXIS_KEYS[[i]]]], AXIS_KEYS[[i]],
+                        show_xlab = (i == length(AXIS_KEYS)))
+    })
+    fig_title <- paste0("Representativeness — ", lbl_a)
 
-    p <- ggplot(df_a, aes(x = weighted_jaccard, y = axis_label)) +
-      geom_vline(xintercept = 1, linetype = "dashed",
-                 colour = "grey60", linewidth = 0.4) +
-      geom_segment(aes(x = 0, xend = weighted_jaccard,
-                       y = axis_label, yend = axis_label),
-                   colour = "grey78", linewidth = 0.5) +
-      geom_point(colour = col_a, size = 3.5) +
-      geom_text(aes(label = sprintf("%.3f", weighted_jaccard)),
-                hjust = -0.3, size = 2.6, family = "sans",
-                colour = "grey25") +
-      scale_x_continuous(
-        name   = "Weighted Jaccard (J)",
-        limits = c(0, 1.12),
-        breaks = seq(0, 1, by = 0.2),
-        expand = expansion(mult = 0)
-      ) +
-      scale_y_discrete(name = NULL) +
-      labs(title = paste0("Representativeness — ", lbl_a)) +
-      base_theme +
-      theme(
-        panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
-        panel.grid.major.x = element_blank()
-      )
+  } else {
+    axes_b <- load_all_axes(overlay_network)
+    lbl_b  <- NET_LABELS[[overlay_network]]
 
-    dims <- c(7.5, 6.0)
+    if (mode == "overlay") {
+      panels <- lapply(seq_along(AXIS_KEYS), function(i) {
+        make_panel_overlay(axes_a[[AXIS_KEYS[[i]]]], axes_b[[AXIS_KEYS[[i]]]],
+                           AXIS_KEYS[[i]], lbl_a, lbl_b,
+                           show_xlab = (i == length(AXIS_KEYS)))
+      })
+      fig_title <- paste0("Representativeness — ", lbl_a, " vs. ", lbl_b)
 
-  } else if (mode == "overlay") {
-
-    df_b  <- get_summary_data(overlay_network)
-    lbl_b <- NET_LABELS[[overlay_network]]
-    col_b <- NET_COLORS[[overlay_network]]
-
-    df_both <- dplyr::bind_rows(
-      dplyr::mutate(df_a, net_lbl = lbl_a),
-      dplyr::mutate(df_b, net_lbl = lbl_b)
-    ) |>
-      dplyr::mutate(net_lbl = factor(net_lbl, levels = c(lbl_a, lbl_b)))
-
-    p <- ggplot(df_both,
-                aes(x = weighted_jaccard, y = axis_label,
-                    colour = net_lbl, shape = net_lbl)) +
-      geom_vline(xintercept = 1, linetype = "dashed",
-                 colour = "grey60", linewidth = 0.4) +
-      geom_point(size = 3, position = position_dodge(width = 0.55)) +
-      scale_colour_manual(
-        values = setNames(c(col_a, col_b), c(lbl_a, lbl_b)),
-        name   = NULL
-      ) +
-      scale_shape_manual(
-        values = setNames(c(16L, 17L), c(lbl_a, lbl_b)),
-        name   = NULL
-      ) +
-      scale_x_continuous(
-        name   = "Weighted Jaccard (J)",
-        limits = c(0, 1.05),
-        breaks = seq(0, 1, by = 0.2),
-        expand = expansion(mult = 0)
-      ) +
-      scale_y_discrete(name = NULL) +
-      labs(title = paste0("Representativeness — ", lbl_a, " vs. ", lbl_b)) +
-      base_theme +
-      theme(
-        panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
-        panel.grid.major.x = element_blank(),
-        legend.position    = "bottom"
-      )
-
-    dims <- c(8.5, 6.5)
-
-  } else {  # delta
-
-    df_b  <- get_summary_data(overlay_network)
-    lbl_b <- NET_LABELS[[overlay_network]]
-
-    df_delta <- dplyr::inner_join(
-      dplyr::select(df_a, axis_label, j_a = weighted_jaccard),
-      dplyr::select(df_b, axis_label, j_b = weighted_jaccard),
-      by = "axis_label"
-    ) |>
-      dplyr::mutate(
-        delta     = j_a - j_b,
-        direction = ifelse(delta >= 0, "gain", "loss")
-      )
-
-    p <- ggplot(df_delta, aes(x = delta, y = axis_label, fill = direction)) +
-      geom_vline(xintercept = 0, colour = "grey50", linewidth = 0.5) +
-      geom_col(width = 0.6, colour = NA) +
-      geom_text(
-        aes(label   = sprintf("%+.3f", delta),
-            hjust   = ifelse(delta >= 0, -0.15, 1.15)),
-        size = 2.6, family = "sans", colour = "grey25"
-      ) +
-      scale_fill_manual(
-        values = c(gain = "#1a9641", loss = "#d73027"),
-        guide  = "none"
-      ) +
-      scale_x_continuous(
-        name   = paste0("Δ Weighted Jaccard (", lbl_a, " − ", lbl_b, ")"),
-        limits = c(-0.4, 0.4),
-        breaks = seq(-0.4, 0.4, by = 0.1)
-      ) +
-      scale_y_discrete(name = NULL) +
-      labs(title = paste0("Representativeness change: ", lbl_a, " vs. ", lbl_b)) +
-      base_theme +
-      theme(
-        panel.grid.major.y = element_line(colour = "grey92", linewidth = 0.3),
-        panel.grid.major.x = element_line(colour = "grey92", linewidth = 0.3)
-      )
-
-    dims <- c(7.5, 6.0)
+    } else {
+      panels <- lapply(seq_along(AXIS_KEYS), function(i) {
+        make_panel_delta(axes_a[[AXIS_KEYS[[i]]]], axes_b[[AXIS_KEYS[[i]]]],
+                         AXIS_KEYS[[i]],
+                         show_xlab = (i == length(AXIS_KEYS)))
+      })
+      fig_title <- paste0("Representativeness change — ", lbl_a, " minus ", lbl_b)
+    }
   }
+
+  fig <- patchwork::wrap_plots(panels, ncol = 1) +
+    patchwork::plot_annotation(
+      title = fig_title,
+      theme = theme(
+        plot.title      = element_text(size = 11, face = "bold"),
+        plot.background = element_rect(fill = "white", colour = NA)
+      )
+    )
 
   if (!is.null(output_path)) {
-    ggsave(output_path, plot = p, width = dims[1], height = dims[2],
-           dpi = 200, bg = "white")
+    ggplot2::ggsave(output_path, fig,
+                    width = 7, height = 14, dpi = 300, bg = "white")
     message("Saved: ", output_path)
-    write_output_metadata(
-      output_path,
-      input_sources = METRICS_CSV,
-      notes = paste0(
-        "make_summary_figure(network='", network, "', mode='", mode, "'",
-        if (!is.null(overlay_network))
-          paste0(", overlay_network='", overlay_network, "'")
-        else "",
-        ")"
-      )
-    )
   }
 
-  invisible(p)
+  invisible(fig)
 }
 
-# ---- make_trajectory_figure() ------------------------------------------------
-#' @param output_path character or NULL; if supplied, saves PNG + meta.json
-make_trajectory_figure <- function(output_path = NULL) {
-
-  # 6 axes shown in trajectory — matches TRAJ_PAL order
-  traj_axes <- data.frame(
-    axis = c(
-      "koppen_beck2023",
-      "landcover_cci",
-      "aridity_unep5",
-      "biomass_cci_v7",
-      "trendy_nee_iav",
-      "trendy_et_median"
-    ),
-    aggregation_level = c(
-      "5class",
-      "high_level",
-      "unep5",
-      "7bin_hybrid",
-      "7bin_hybrid",
-      "7bin_hybrid"
-    ),
-    traj_label = c(
-      "KG (present-day)",
-      "LULC",
-      "Aridity",
-      "Biomass",
-      "TRENDY NEE-IAV",
-      "TRENDY ET-median"
-    ),
-    stringsAsFactors = FALSE
+# ---- Rep007: Jaccard trajectory across four network generations --------------
+make_rep007 <- function(output_path = NULL) {
+  metrics <- readr::read_csv(
+    file.path(SNAP, "representativeness_metrics.csv"),
+    show_col_types = FALSE
   )
 
-  traj_df <- metrics_all |>
-    dplyr::inner_join(traj_axes, by = c("axis", "aggregation_level")) |>
-    dplyr::mutate(
-      network    = factor(network, levels = NET_LEVELS),
-      traj_label = factor(traj_label, levels = names(TRAJ_PAL))
-    )
-
-  net_x_labels <- c(
+  NET_ORDER   <- c("marconi", "la_thuile", "fluxnet2015", "current_767")
+  NET_XLABELS <- c(
     marconi     = "Marconi\n(n=35)",
     la_thuile   = "La Thuile\n(n=252)",
     fluxnet2015 = "FLUXNET2015\n(n=212)",
     current_767 = "Current\n(n=767)"
   )
 
-  p <- ggplot(traj_df,
-              aes(x = network, y = weighted_jaccard,
-                  colour = traj_label, group = traj_label)) +
+  traj_sel <- tibble::tribble(
+    ~axis,                ~aggregation_level,  ~axis_label,
+    "koppen_beck2023",    "13class_twoletter", "KG (13-class)",
+    "landcover_cci",      "high_level",        "LULC (10-class)",
+    "aridity_unep7",      "unep7",             "Aridity (7-class)",
+    "biomass_cci_v7",     "7bin_hybrid",       "Biomass (7-bin)",
+    "trendy_nee_iav",     "7bin_hybrid",       "TRENDY NEE-IAV",
+    "trendy_et_median",   "7bin_hybrid",       "TRENDY ET-median"
+  )
+
+  traj_df <- metrics |>
+    dplyr::inner_join(traj_sel, by = c("axis", "aggregation_level")) |>
+    dplyr::mutate(
+      network    = factor(network, levels = NET_ORDER),
+      axis_label = factor(axis_label, levels = REP007_AXES)
+    )
+
+  p <- ggplot(traj_df, aes(x = network, y = weighted_jaccard,
+                            colour = axis_label, group = axis_label)) +
     geom_line(linewidth = 0.9) +
-    geom_point(size = 2.8) +
-    scale_colour_manual(
-      values = TRAJ_PAL,
-      name   = "Representativeness axis"
-    ) +
-    scale_x_discrete(
-      name   = "FLUXNET network generation",
-      labels = net_x_labels
-    ) +
+    geom_point(size = 2.6) +
+    scale_colour_manual(values = REP007_COLORS, name = NULL) +
+    scale_x_discrete(labels = NET_XLABELS) +
     scale_y_continuous(
       name   = "Weighted Jaccard (J)",
-      limits = c(0.1, 0.82),
-      breaks = seq(0.1, 0.8, by = 0.1)
+      limits = c(0, 1),
+      breaks = seq(0, 1, by = 0.2),
+      expand = expansion(mult = 0.02)
     ) +
-    labs(
-      title    = "Representativeness trajectory across FLUXNET network generations",
-      subtitle = "Weighted Jaccard (J): 0 = no overlap with global land distribution, 1 = perfect match"
-    ) +
+    labs(title = "Representativeness trajectory across FLUXNET network generations") +
     base_theme +
     theme(
-      panel.grid.major = element_line(colour = "grey92", linewidth = 0.3),
       legend.position  = "right",
-      plot.subtitle    = element_text(size = 8, colour = "grey45")
+      legend.key.size  = unit(0.6, "lines"),
+      legend.text      = element_text(size = 8),
+      axis.text.x      = element_text(size = 9),
+      axis.title.y     = element_text(size = 9),
+      panel.grid.major = element_line(colour = "grey88", linewidth = 0.3)
     )
 
   if (!is.null(output_path)) {
-    ggsave(output_path, plot = p, width = 9, height = 5.5, dpi = 200,
-           bg = "white")
+    ggplot2::ggsave(output_path, p,
+                    width = 7, height = 4.5, dpi = 300, bg = "white")
     message("Saved: ", output_path)
-    write_output_metadata(
-      output_path,
-      input_sources = METRICS_CSV,
-      notes = paste0(
-        "Trajectory figure: weighted Jaccard for 6 selected axes across ",
-        "4 FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, current_767). ",
-        "Axes: KG 5-class, LULC high-level, Aridity 5-class, Biomass 7-bin, ",
-        "TRENDY NEE-IAV 7-bin, TRENDY ET-median 7-bin."
-      )
-    )
   }
 
   invisible(p)
 }
 
-# ---- Produce Rep001-Rep007 ---------------------------------------------------
-message("\n--- Rep001: current_767 (single) ---")
-make_summary_figure(
-  network     = "current_767",
-  mode        = "single",
-  output_path = file.path(out_dir, "fig_repr_summary_Rep001_current767.png")
-)
+# ---- Produce all seven figures -----------------------------------------------
 
-message("\n--- Rep002: fluxnet2015 (single) ---")
-make_summary_figure(
-  network     = "fluxnet2015",
-  mode        = "single",
-  output_path = file.path(out_dir, "fig_repr_summary_Rep002_fluxnet2015.png")
-)
+message("Rep001: current_767 (single)")
+make_summary_figure("current_767", "single",
+  output_path = file.path(OUTD, "fig_rep001_current.png"))
 
-message("\n--- Rep003: la_thuile (single) ---")
-make_summary_figure(
-  network     = "la_thuile",
-  mode        = "single",
-  output_path = file.path(out_dir, "fig_repr_summary_Rep003_la_thuile.png")
-)
+message("Rep002: marconi (single)")
+make_summary_figure("marconi", "single",
+  output_path = file.path(OUTD, "fig_rep002_marconi.png"))
 
-message("\n--- Rep004: marconi (single) ---")
-make_summary_figure(
-  network     = "marconi",
-  mode        = "single",
-  output_path = file.path(out_dir, "fig_repr_summary_Rep004_marconi.png")
-)
+message("Rep003: la_thuile (single)")
+make_summary_figure("la_thuile", "single",
+  output_path = file.path(OUTD, "fig_rep003_la_thuile.png"))
 
-message("\n--- Rep005: current_767 vs fluxnet2015 (overlay) ---")
-make_summary_figure(
-  network         = "current_767",
-  mode            = "overlay",
-  overlay_network = "fluxnet2015",
-  output_path     = file.path(out_dir,
-                              "fig_repr_summary_Rep005_overlay_cur_f2015.png")
-)
+message("Rep004: fluxnet2015 (single)")
+make_summary_figure("fluxnet2015", "single",
+  output_path = file.path(OUTD, "fig_rep004_fluxnet2015.png"))
 
-message("\n--- Rep006: current_767 minus fluxnet2015 (delta) ---")
-make_summary_figure(
-  network         = "current_767",
-  mode            = "delta",
-  overlay_network = "fluxnet2015",
-  output_path     = file.path(out_dir,
-                              "fig_repr_summary_Rep006_delta_cur_f2015.png")
-)
+message("Rep005: current_767 vs fluxnet2015 (overlay)")
+make_summary_figure("current_767", "overlay", overlay_network = "fluxnet2015",
+  output_path = file.path(OUTD, "fig_rep005_fluxnet2015_vs_current.png"))
 
-message("\n--- Rep007: trajectory across all 4 generations ---")
-make_trajectory_figure(
-  output_path = file.path(out_dir, "fig_repr_summary_Rep007_trajectory.png")
-)
+message("Rep006: current_767 minus fluxnet2015 (delta)")
+make_summary_figure("current_767", "delta", overlay_network = "fluxnet2015",
+  output_path = file.path(OUTD, "fig_rep006_delta_2015_to_current.png"))
 
-message("\nAll 7 representativeness summary figures complete.")
-message("Output directory: ", out_dir)
+message("Rep007: Jaccard trajectory")
+make_rep007(output_path = file.path(OUTD, "fig_rep007_jaccard_trajectory.png"))
+
+message("Done!")

@@ -4,14 +4,94 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
-## 2026-06-28 — Representativeness summary figures (Rep001–Rep007)
+## 2026-06-28 — Representativeness summary figures (Rep001–Rep007) — CORRECTED
 
 ### Overview
 
-Built `scripts/figure_representativeness_summary.R` to produce seven multi-network
-representativeness summary figures. The script reads `data/snapshots/representativeness_metrics.csv`
-(76 rows: 4 networks × 19 axis-aggregation combinations) and produces dot-plot summaries
-(Rep001–Rep006) and a trajectory figure (Rep007). Run time: <5 seconds (CSV only, no raster I/O).
+Rebuilt `scripts/figure_representativeness_summary.R` (replacing an incorrect earlier version —
+see the entry below this one, which produced wrong visualization types and was superseded).
+Correct outputs: seven per-category sampling-ratio figures (Rep001–007). Run time: ~5 seconds
+(CSV + legend file reads only; no raster I/O).
+
+### Step 1: Color palettes reviewed
+
+All five existing per-axis figure scripts were read to extract color schemes before writing code.
+
+| Script | Color approach |
+|--------|----------------|
+| `figure_representativeness_kg.R` | Mean RGB of 30-class Beck 2023 `legend.txt` members per two-letter group via `grDevices::rgb()` |
+| `figure_representativeness_landcover.R` | Mean RGB of native LCCS codes per HL group from aggregation lookup; Snow/Ice override `#e0f3f8` |
+| `figure_representativeness_aridity.R` | Hardcoded 7-hex diverging: `#d73027` (Hyper-Arid) → `#313695` (Hyper-Humid) |
+| `figure_representativeness_biomass.R` | 7-hex pale-cream → dark-green: `#f7f4f9` → `#14532d` |
+| `figure_representativeness_trendy_wrap.R` | NEE `PAL_GREEN`: `#f4faf0` → `#0b3e09`; ET `PAL_BLUE`: `#f0f8ff` → `#06305a` |
+
+### Step 2: Rep007 six-axis qualitative palette proposed
+
+Six Okabe-Ito colors (colorblind-safe, perceptually distinct on white background):
+
+| Axis | Label | Hex |
+|------|-------|-----|
+| Beck 2023 KG (13-class) | vermilion | `#D55E00` |
+| ESA CCI LULC (10-class) | reddish pink | `#CC79A7` |
+| CGIAR Aridity (7-class) | amber | `#E69F00` |
+| ESA CCI Biomass (7-bin) | green | `#009E73` |
+| TRENDY NEE-IAV (7-bin) | blue | `#0072B2` |
+| TRENDY ET-median (7-bin) | sky blue | `#56B4E9` |
+
+### Step 3: make_summary_figure() implementation
+
+Six axes (fixed order, top-to-bottom panels):
+1. Beck 2023 KG present-day, 13-class (`koppen_twoletter` aggregation)
+2. ESA CCI Land Cover, 10-class high-level
+3. CGIAR Aridity UNEP, 7-class
+4. ESA CCI Biomass v7, 7-bin hybrid
+5. TRENDY NEE-IAV, 7-bin hybrid
+6. TRENDY ET-median, 7-bin hybrid
+
+Each panel: horizontal bars, X = log2(sampling_ratio), reference line at 1×.
+Sampling ratio computed per-class from raw site CSVs and global distribution CSVs — NOT
+from the aggregate Jaccard row in `representativeness_metrics.csv`.
+
+Implementation note: log2(sampling_ratio) plotted on a linear axis (correct ggplot2 approach
+for bars anchored at log2(1)=0); x-axis labels show multiplicative equivalents (1/4×, 1×, 4×…).
+Classes absent from a network (network_frac = 0) produce `NA` log2_sr and no bar is drawn.
+
+Three modes:
+- `"single"`: one opaque bar per class, filled by axis palette
+- `"overlay"`: two dodged bars per class; reference (historical) at alpha=0.42, current at alpha=1.0
+- `"delta"`: one bar per class showing `sr_current − sr_reference` on linear scale; blue=+, red=−
+
+### Figures produced
+
+| ID | Mode | Network(s) | File | Dims |
+|----|------|------------|------|------|
+| Rep001 | single | current_767 | `fig_rep001_current.png` | 7×14 in, 300 dpi |
+| Rep002 | single | marconi | `fig_rep002_marconi.png` | 7×14 in, 300 dpi |
+| Rep003 | single | la_thuile | `fig_rep003_la_thuile.png` | 7×14 in, 300 dpi |
+| Rep004 | single | fluxnet2015 | `fig_rep004_fluxnet2015.png` | 7×14 in, 300 dpi |
+| Rep005 | overlay | current_767 vs fluxnet2015 | `fig_rep005_fluxnet2015_vs_current.png` | 7×14 in, 300 dpi |
+| Rep006 | delta | current_767 − fluxnet2015 | `fig_rep006_delta_2015_to_current.png` | 7×14 in, 300 dpi |
+| Rep007 | trajectory | all 4 generations × 6 axes | `fig_rep007_jaccard_trajectory.png` | 7×4.5 in, 300 dpi |
+
+All in `review/figures/representativeness/`. White background (`bg="white"` in ggsave).
+
+### Key observations
+
+**Current network (Rep001):** Cs (Mediterranean) and Cf (temperate humid) strongly
+overrepresented in KG; Hyper-Arid and Bare land drastically underrepresented across
+aridity and LULC; mid-range biomass bins (27–94 Mg/ha) and mid-range TRENDY NEE-IAV
+bins (42–70 gC m⁻² yr⁻¹) are slightly over-sampled relative to global land area.
+
+**Trajectory (Rep007):** All six axes show monotonic improvement from Marconi (n=35)
+to current (n=767). Aridity (7-class) has the highest J throughout (J=0.479→0.667).
+KG (13-class) has the lowest J throughout (J=0.223→0.373), indicating climate-zone
+representativeness has improved the least proportionally with network expansion.
+TRENDY ET-median shows a non-monotonic dip at La Thuile (J=0.381 < Marconi J=0.416)
+before recovering to J=0.459 in the current network.
+
+---
+
+## 2026-06-28 — Representativeness summary figures (Rep001–Rep007)
 
 ### Color palettes reviewed (Step 1)
 

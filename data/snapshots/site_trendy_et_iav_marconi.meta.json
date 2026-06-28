@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-06-28T15:14:48Z",
+  "pipeline_version": "17e1199",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_et_iav.tif"
+  ],
+  "notes": "Historical network: marconi (35 sites). TRENDY v14 trendy_et_iav. 7-bin hybrid with canonical breakpoints from current-network analysis. Nearest-land recovery within 3°."
+}

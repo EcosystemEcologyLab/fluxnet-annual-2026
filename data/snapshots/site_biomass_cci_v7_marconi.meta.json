@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-06-28T15:14:48Z",
+  "pipeline_version": "17e1199",
+  "input_sources": [
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif"
+  ],
+  "notes": "Historical network: marconi (35 sites). ESA CCI Biomass v7.0, band 18. Hybrid bins: fixed bin 1 (0-5 Mg/ha); bins 2-7 canonical quantile breakpoints: 13, 27, 51, 94, 171 Mg/ha. Nearest-land recovery within 3°."
+}

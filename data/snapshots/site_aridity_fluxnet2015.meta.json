@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-06-28T15:14:50Z",
+  "pipeline_version": "17e1199",
+  "input_sources": [
+    "data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif"
+  ],
+  "notes": "Historical network: fluxnet2015 (212 sites). CGIAR Aridity v3.1. ai_value = raw * 0.0001. UNEP 5-class thresholds: 0.05/0.20/0.50/0.65. UNEP 7-class adds FAO humid subdivisions at 1.0 and 2.0. Nearest-land recovery within 3°."
+}

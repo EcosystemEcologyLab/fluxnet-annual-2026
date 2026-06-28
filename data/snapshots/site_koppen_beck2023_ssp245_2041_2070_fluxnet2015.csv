@@ -1,0 +1,213 @@
+site_id,location_lat,location_long,koppen_class_code,koppen_class,koppen_class_name,koppen_main,koppen_main_name,koppen_method
+AR-SLu,-33.4648,-66.4598,6,BSh,"Arid, steppe, hot",B,Arid,exact
+AR-Vir,-28.2395,-56.1886,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+AT-Neu,47.1167,11.3175,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+AU-Ade,-13.0769,131.1178,3,Aw,"Tropical, savannah",A,Tropical,exact
+AU-ASM,-22.283,133.249,4,BWh,"Arid, desert, hot",B,Arid,exact
+AU-Cpr,-34.0021,140.5891,4,BWh,"Arid, desert, hot",B,Arid,exact
+AU-Cum,-33.6152,150.7236,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+AU-DaP,-14.0633,131.3181,3,Aw,"Tropical, savannah",A,Tropical,exact
+AU-DaS,-14.1593,131.3881,3,Aw,"Tropical, savannah",A,Tropical,exact
+AU-Dry,-15.2588,132.3706,3,Aw,"Tropical, savannah",A,Tropical,exact
+AU-Emr,-23.8587,148.4746,6,BSh,"Arid, steppe, hot",B,Arid,exact
+AU-Fog,-12.5452,131.3072,3,Aw,"Tropical, savannah",A,Tropical,exact
+AU-Gin,-31.3764,115.7138,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+AU-GWW,-30.1913,120.6541,4,BWh,"Arid, desert, hot",B,Arid,exact
+AU-How,-12.4943,131.1523,3,Aw,"Tropical, savannah",A,Tropical,exact
+AU-Lox,-34.4704,140.6551,6,BSh,"Arid, steppe, hot",B,Arid,exact
+AU-RDF,-14.5636,132.4776,3,Aw,"Tropical, savannah",A,Tropical,exact
+AU-Rig,-36.6499,145.5759,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+AU-Rob,-17.1175,145.6301,2,Am,"Tropical, monsoon",A,Tropical,exact
+AU-Stp,-17.1507,133.3502,6,BSh,"Arid, steppe, hot",B,Arid,exact
+AU-TTE,-22.287,133.64,4,BWh,"Arid, desert, hot",B,Arid,exact
+AU-Tum,-35.6566,148.1517,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+AU-Wac,-37.4259,145.1878,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+AU-Whr,-36.6732,145.0294,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+AU-Wom,-37.4222,144.0944,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+AU-Ync,-34.9893,146.2907,6,BSh,"Arid, steppe, hot",B,Arid,exact
+BE-Bra,51.3076,4.5198,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+BE-Lon,50.5516,4.7462,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+BE-Vie,50.3049,5.9981,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+BR-Sa1,-2.8567,-54.9589,2,Am,"Tropical, monsoon",A,Tropical,exact
+BR-Sa3,-3.018,-54.9714,2,Am,"Tropical, monsoon",A,Tropical,exact
+CA-Gro,48.2167,-82.1556,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-Man,55.8796,-98.4808,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-NS1,55.8792,-98.4839,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-NS2,55.9058,-98.5247,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-NS3,55.9117,-98.3822,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-NS4,55.9144,-98.3806,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-NS5,55.8631,-98.485,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-NS6,55.9167,-98.9644,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-NS7,56.6358,-99.9483,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-Oas,53.6289,-106.1978,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-Obs,53.9872,-105.1178,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-Qfo,49.6925,-74.3421,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-SF1,54.485,-105.8176,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-SF2,54.2539,-105.8775,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-SF3,54.0916,-106.0053,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CA-TP1,42.6609,-80.5595,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+CA-TP2,42.7744,-80.4588,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+CA-TP3,42.7068,-80.3483,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+CA-TP4,42.7102,-80.3574,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+CA-TPD,42.6353,-80.5577,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+CG-Tch,-4.2892,11.6564,3,Aw,"Tropical, savannah",A,Tropical,exact
+CH-Cha,47.2102,8.4104,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+CH-Dav,46.8153,9.8559,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CH-Fru,47.1158,8.5378,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+CH-Lae,47.4783,8.3644,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+CH-Oe1,47.2858,7.7319,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+CH-Oe2,47.2864,7.7337,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+CN-Cha,42.4025,128.0958,21,Dwa,"Cold, dry winter, hot summer",D,Cold,exact
+CN-Cng,44.5934,123.5092,21,Dwa,"Cold, dry winter, hot summer",D,Cold,exact
+CN-Dan,30.4978,91.0664,23,Dwc,"Cold, dry winter, cold summer",D,Cold,exact
+CN-Din,23.1733,112.5361,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+CN-Du2,42.0467,116.2836,21,Dwa,"Cold, dry winter, hot summer",D,Cold,exact
+CN-Du3,42.0551,116.2809,21,Dwa,"Cold, dry winter, hot summer",D,Cold,exact
+CN-Ha2,37.6086,101.3269,23,Dwc,"Cold, dry winter, cold summer",D,Cold,exact
+CN-HaM,37.37,101.18,29,ET,"Polar, tundra",E,Polar,exact
+CN-Qia,26.7414,115.0581,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+CN-Sw2,41.7902,111.8971,7,BSk,"Arid, steppe, cold",B,Arid,exact
+CZ-BK1,49.5021,18.5369,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CZ-BK2,49.4944,18.5429,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+CZ-wet,49.0247,14.7704,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Akm,53.8662,13.6834,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Geb,51.0997,10.9146,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Gri,50.95,13.5126,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Hai,51.0792,10.4522,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Kli,50.8931,13.5224,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Lkb,49.0996,13.3047,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+DE-Lnf,51.3282,10.3678,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Obe,50.7867,13.7213,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+DE-RuR,50.6219,6.3041,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-RuS,50.8659,6.4471,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Seh,50.8706,6.4497,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-SfN,47.8064,11.3275,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Spw,51.8922,14.0337,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Tha,50.9626,13.5651,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DE-Zrk,53.8759,12.889,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DK-Eng,55.6905,12.1918,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DK-Fou,56.4842,9.5872,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+DK-Sor,55.4859,11.6446,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+ES-Amo,36.8336,-2.2523,4,BWh,"Arid, desert, hot",B,Arid,exact
+ES-LgS,37.0979,-2.9658,18,Dsb,"Cold, dry summer, warm summer",D,Cold,exact
+ES-LJu,36.9266,-2.7521,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+ES-Ln2,36.9695,-3.4758,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+FI-Hyy,61.8474,24.2948,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+FI-Jok,60.8986,23.5134,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+FI-Let,60.6418,23.9595,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+FI-Lom,67.9972,24.2092,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+FI-Sod,67.3624,26.6386,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+FR-Fon,48.4764,2.7801,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+FR-Gri,48.8442,1.9519,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+FR-LBr,44.7171,-0.7693,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+FR-Pue,43.7413,3.5957,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+GF-Guy,5.2788,-52.9249,2,Am,"Tropical, monsoon",A,Tropical,exact
+GH-Ank,5.2685,-2.6942,2,Am,"Tropical, monsoon",A,Tropical,exact
+GL-NuF,64.1308,-51.3861,29,ET,"Polar, tundra",E,Polar,exact
+GL-ZaF,74.4814,-20.5545,29,ET,"Polar, tundra",E,Polar,exact
+GL-ZaH,74.4733,-20.5503,29,ET,"Polar, tundra",E,Polar,exact
+IT-BCi,40.5237,14.9574,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-CA1,42.3804,12.0266,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-CA2,42.3772,12.026,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-CA3,42.38,12.0222,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-Col,41.8494,13.5881,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+IT-Cp2,41.7043,12.3573,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-Cpz,41.7052,12.3761,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-Isp,45.8126,8.6336,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+IT-La2,45.9542,11.2853,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+IT-Lav,45.9562,11.2813,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+IT-MBo,46.0147,11.0458,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+IT-Noe,40.6062,8.1517,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-PT1,45.2009,9.061,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+IT-Ren,46.5869,11.4337,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+IT-Ro1,42.4081,11.93,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-Ro2,42.3903,11.9209,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-SR2,43.732,10.2909,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-SRo,43.7279,10.2844,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+IT-Tor,45.8444,7.5781,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+JP-MBF,44.3869,142.3186,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+JP-SMF,35.2617,137.0788,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+MY-PSO,2.973,102.3062,1,Af,"Tropical, rainforest",A,Tropical,exact
+NL-Hor,52.2403,5.0713,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+NL-Loo,52.1666,5.7436,15,Cfb,"Temperate, no dry season, warm summer",C,Temperate,exact
+PA-SPn,9.3181,-79.6346,2,Am,"Tropical, monsoon",A,Tropical,exact
+PA-SPs,9.3138,-79.6314,2,Am,"Tropical, monsoon",A,Tropical,exact
+RU-Che,68.613,161.3414,19,Dsc,"Cold, dry summer, cold summer",D,Cold,exact
+RU-Cok,70.8291,147.4943,19,Dsc,"Cold, dry summer, cold summer",D,Cold,exact
+RU-Fyo,56.4615,32.9221,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+RU-Ha1,54.7252,90.0022,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+RU-Sam,72.3738,126.4958,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+RU-SkP,62.255,129.168,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+RU-Tks,71.5943,128.8878,29,ET,"Polar, tundra",E,Polar,exact
+RU-Vrk,67.0547,62.9405,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+SD-Dem,13.2829,30.4783,4,BWh,"Arid, desert, hot",B,Arid,exact
+SE-St1,68.3541,19.0503,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+SJ-Adv,78.186,15.923,29,ET,"Polar, tundra",E,Polar,exact
+SJ-Blv,78.9216,11.8311,29,ET,"Polar, tundra",E,Polar,exact
+SN-Dhr,15.4028,-15.4322,4,BWh,"Arid, desert, hot",B,Arid,exact
+US-AR1,36.4267,-99.42,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-AR2,36.6358,-99.5975,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-ARb,35.5497,-98.0402,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-ARc,35.5465,-98.04,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-ARM,36.6058,-97.4888,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-Atq,70.4696,-157.4089,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+US-Blo,38.8953,-120.6328,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-Cop,38.09,-109.39,7,BSk,"Arid, steppe, cold",B,Arid,exact
+US-CRT,41.6285,-83.3471,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+US-GBT,41.3658,-106.2397,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+US-GLE,41.3665,-106.2399,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+US-Goo,34.2547,-89.8735,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-Ha1,42.5378,-72.1715,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+US-IB2,41.8406,-88.241,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+US-Ivo,68.4865,-155.7503,27,Dfc,"Cold, no dry season, cold summer",D,Cold,exact
+US-KS1,28.4583,-80.6709,2,Am,"Tropical, monsoon",A,Tropical,exact
+US-KS2,28.6086,-80.6715,2,Am,"Tropical, monsoon",A,Tropical,exact
+US-Lin,36.3566,-119.0922,6,BSh,"Arid, steppe, hot",B,Arid,exact
+US-Los,46.0827,-89.9792,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-LWW,34.9604,-97.9789,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-Me1,44.5794,-121.5,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+US-Me2,44.4526,-121.5589,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+US-Me3,44.3154,-121.6078,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+US-Me4,44.4992,-121.6224,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+US-Me5,44.4372,-121.5668,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+US-Me6,44.3233,-121.6078,9,Csb,"Temperate, dry summer, warm summer",C,Temperate,exact
+US-MMS,39.3232,-86.4131,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-Myb,38.0499,-121.765,7,BSk,"Arid, steppe, cold",B,Arid,exact
+US-Ne1,41.1651,-96.4766,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+US-Ne2,41.1649,-96.4701,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+US-Ne3,41.1797,-96.4397,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+US-NR1,40.0329,-105.5464,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Oho,41.5545,-83.8438,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+US-ORv,40.0201,-83.0183,14,Cfa,"Temperate, no dry season, hot summer",C,Temperate,exact
+US-PFa,45.9459,-90.2723,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Prr,65.1237,-147.4876,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-SRC,31.9083,-110.8395,6,BSh,"Arid, steppe, hot",B,Arid,exact
+US-SRG,31.7894,-110.8277,6,BSh,"Arid, steppe, hot",B,Arid,exact
+US-SRM,31.8214,-110.8661,6,BSh,"Arid, steppe, hot",B,Arid,exact
+US-Sta,41.3966,-106.8024,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Syv,46.242,-89.3477,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Ton,38.4309,-120.966,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-Tw1,38.1074,-121.6469,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-Tw2,38.0969,-121.6365,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-Tw3,38.1152,-121.6469,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-Tw4,38.1027,-121.6413,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-Twt,38.1087,-121.6531,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-UMB,45.5598,-84.7138,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-UMd,45.5625,-84.6975,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Var,38.4133,-120.9508,8,Csa,"Temperate, dry summer, hot summer",C,Temperate,exact
+US-WCr,45.8059,-90.0799,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Whs,31.7438,-110.0522,6,BSh,"Arid, steppe, hot",B,Arid,exact
+US-Wi0,46.6188,-91.0814,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi1,46.7305,-91.2329,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi2,46.6869,-91.1528,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi3,46.6347,-91.0987,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi4,46.7393,-91.1663,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi5,46.6531,-91.0858,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi6,46.6249,-91.2982,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi7,46.6491,-91.0693,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi8,46.7223,-91.2524,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wi9,46.7385,-91.0746,26,Dfb,"Cold, no dry season, warm summer",D,Cold,exact
+US-Wkg,31.7365,-109.9419,6,BSh,"Arid, steppe, hot",B,Arid,exact
+US-WPT,41.4646,-82.9962,25,Dfa,"Cold, no dry season, hot summer",D,Cold,exact
+ZA-Kru,-25.0197,31.4969,6,BSh,"Arid, steppe, hot",B,Arid,exact
+ZM-Mon,-15.4391,23.2525,3,Aw,"Tropical, savannah",A,Tropical,exact

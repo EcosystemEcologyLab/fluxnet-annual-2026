@@ -4,6 +4,75 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-28 — Representativeness summary figures (Rep001–Rep007)
+
+### Overview
+
+Built `scripts/figure_representativeness_summary.R` to produce seven multi-network
+representativeness summary figures. The script reads `data/snapshots/representativeness_metrics.csv`
+(76 rows: 4 networks × 19 axis-aggregation combinations) and produces dot-plot summaries
+(Rep001–Rep006) and a trajectory figure (Rep007). Run time: <5 seconds (CSV only, no raster I/O).
+
+### Color palettes reviewed (Step 1)
+
+Before writing the script, all five existing per-axis figure scripts were read to extract
+their color schemes:
+
+| Script | Color approach |
+|--------|----------------|
+| `figure_representativeness_kg.R` | RGB from Beck 2023 `legend.txt` via `grDevices::rgb(r,g,b,maxColorValue=255)` |
+| `figure_representativeness_landcover.R` | RGB from `ESACCI-LC-Legend.csv` columns; unweighted mean for aggregated levels |
+| `figure_representativeness_aridity.R` | Explicit hex: red → yellow → green → blue diverging continuum |
+| `figure_representativeness_biomass.R` | 7-bin pale-cream → dark-green sequence (`#f7f4f9` → `#14532d`) |
+| `figure_representativeness_trendy_wrap.R` | NEE: pale→dark green (`PAL_GREEN`); ET: pale→dark blue (`PAL_BLUE`) |
+
+None of the existing scripts uses a unified qualitative palette across axes.
+
+### Rep007 six-axis qualitative palette
+
+Proposed palette (ColorBrewer Paired; perceptually distinct on white background):
+
+| Axis | Color | Hex |
+|------|-------|-----|
+| KG present-day (5-class) | red | `#e31a1c` |
+| LULC (high-level) | purple | `#6a3d9a` |
+| Aridity (5-class) | orange | `#ff7f00` |
+| Biomass (7-bin hybrid) | dark green | `#33a02c` |
+| TRENDY NEE-IAV (7-bin) | dark blue | `#1f78b4` |
+| TRENDY ET-median (7-bin) | brown | `#b15928` |
+
+### Figures produced
+
+| ID | Mode | Networks | File | Dims |
+|----|------|----------|------|------|
+| Rep001 | single | current_767 | `fig_repr_summary_Rep001_current767.png` | 7.5×6.0 in |
+| Rep002 | single | fluxnet2015 | `fig_repr_summary_Rep002_fluxnet2015.png` | 7.5×6.0 in |
+| Rep003 | single | la_thuile | `fig_repr_summary_Rep003_la_thuile.png` | 7.5×6.0 in |
+| Rep004 | single | marconi | `fig_repr_summary_Rep004_marconi.png` | 7.5×6.0 in |
+| Rep005 | overlay | current_767 vs fluxnet2015 | `fig_repr_summary_Rep005_overlay_cur_f2015.png` | 8.5×6.5 in |
+| Rep006 | delta | current_767 − fluxnet2015 | `fig_repr_summary_Rep006_delta_cur_f2015.png` | 7.5×6.0 in |
+| Rep007 | trajectory | all 4 generations | `fig_repr_summary_Rep007_trajectory.png` | 9.0×5.5 in |
+
+All figures in `review/figures/representativeness/`. 200 dpi, white background.
+Each figure accompanied by a companion `.meta.json` file.
+
+### Axis selection for Rep001–Rep006
+
+11 representative axis-aggregation rows (one per major axis group):
+KG present-day 5-class, KG SSP2-4.5 5-class, KG SSP5-8.5 5-class,
+Aridity 5-class, Aridity 7-class, Biomass 7-bin, LULC high-level,
+TRENDY NEE-IAV 7-bin, TRENDY NEE-median 7-bin, TRENDY ET-IAV 7-bin, TRENDY ET-median 7-bin.
+
+### Key trajectory observations (Rep007)
+
+Aridity (5-class) shows the strongest improvement from Marconi to current (J: 0.479 → 0.694).
+LULC high-level also gains substantially (0.349 → 0.556 from Marconi to current).
+KG 5-class is notably flat (0.317 → 0.401) — climate-zone representativeness has
+not improved proportionally to network size. TRENDY ET-median shows a non-monotonic
+trajectory (La Thuile 0.381 < Marconi 0.416) before recovering to 0.459 in the current network.
+
+---
+
 ## 2026-06-28 — Historical network representativeness: Marconi, La Thuile, FLUXNET2015
 
 ### Overview

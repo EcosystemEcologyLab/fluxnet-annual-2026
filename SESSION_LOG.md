@@ -4,6 +4,110 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-28 — Historical network representativeness: Marconi, La Thuile, FLUXNET2015
+
+### Overview
+
+Per-site representativeness classifications extracted for three historical FLUXNET
+networks across all 11 axes used in the current 767-site analysis. Script:
+`scripts/extract_historical_sites_representativeness.R`. Run time: ~4 seconds.
+
+### Input CSV verification
+
+| Network | Expected | Found | NA coords | Notes |
+|---------|----------|-------|-----------|-------|
+| Marconi (Falge et al. 2001) | 35 | 35 | 0 | cols: site_id, marconi_code, marconi_name, location_lat, location_long |
+| La Thuile (2007) | 252 | 252 | 0 | cols: site_id, site_name, location_lat, location_long |
+| FLUXNET2015 (Pastorello et al. 2020) | 212 | 212 | 0 | cols: site_id, site_name, location_lat, location_long |
+
+All three CSVs use `location_lat` / `location_long` — no harmonization needed.
+
+### Raster extractions and nearest-land recoveries
+
+- **Marconi (35 sites):** 0 nearest-land recoveries — all sites extracted exactly
+- **La Thuile (252 sites):** 2 recoveries — CN-Do2 at 0.006° and CN-Do3 at 0.01°
+  (both assigned KG class 14, Cfa — consistent across present-day and both future scenarios)
+- **FLUXNET2015 (212 sites):** 0 nearest-land recoveries
+
+Total nearest-land recoveries: 2 of 499 site-extractions (0.4%).
+
+### Site CSVs produced
+
+30 site CSVs + 30 `.meta.json` companions written to `data/snapshots/`:
+
+```
+site_koppen_beck2023_{marconi,la_thuile,fluxnet2015}.csv        (10 cols; includes koppen_twoletter)
+site_koppen_beck2023_ssp245_2041_2070_{network}.csv             (9 cols; matches existing future structure)
+site_koppen_beck2023_ssp585_2071_2099_{network}.csv             (9 cols)
+site_aridity_{network}.csv                                       (7 cols; ai_value + unep_class_5 + unep_class_7)
+site_biomass_cci_v7_{network}.csv                                (7 cols)
+site_landcover_cci_{network}.csv                                 (14 cols; all three LULC levels)
+site_trendy_{nee_iav,et_iav,nee_median,et_median}_{network}.csv (7 cols each)
+```
+
+Column structure matches the corresponding current-network CSVs exactly.
+Canonical breakpoints (biomass: 5/13/27/51/94/171 Mg/ha; TRENDY: read from
+existing global distribution CSVs) applied unchanged across all networks.
+
+### Representativeness metrics update
+
+`data/snapshots/representativeness_metrics.csv` updated with `network` column
+(existing rows tagged `current_767`; `n_sites` column added).
+
+**Final table:** 76 rows = 4 networks × 19 axis-aggregation combinations:
+- KG present-day: 3 agg levels; KG SSP2-4.5: 3; KG SSP5-8.5: 3
+- Aridity UNEP 5-class, 7-class: 2
+- Biomass 7-bin: 1; LULC 3 levels: 3; TRENDY 4 axes: 4
+
+#### Weighted Jaccard by network — KG 5-class (summary axis)
+
+| Network | n | J | H |
+|---------|---|---|---|
+| FLUXNET2015 | 212 | 0.404 | 0.318 |
+| Current (767) | 767 | 0.401 | 0.329 |
+| La Thuile | 252 | 0.335 | 0.392 |
+| Marconi | 35 | 0.317 | 0.504 |
+
+#### Top-3 axes by weighted Jaccard per network
+
+**Marconi (n=35):**
+1. `trendy_et_iav` 7bin: J=0.531, H=0.294
+2. `aridity_unep7`: J=0.479, H=0.401
+3. `aridity_unep5`: J=0.479, H=0.397
+
+**La Thuile (n=252):**
+1. `trendy_et_iav` 7bin: J=0.632, H=0.246
+2. `aridity_unep5`: J=0.560, H=0.305
+3. `landcover_cci` high_level: J=0.553, H=0.329
+
+**FLUXNET2015 (n=212):**
+1. `trendy_et_iav` 7bin: J=0.669, H=0.227
+2. `aridity_unep5`: J=0.665, H=0.258
+3. `aridity_unep7`: J=0.598, H=0.285
+
+**Current (n=767):**
+1. `aridity_unep5`: J=0.694, H=0.211
+2. `trendy_et_iav` 7bin: J=0.663, H=0.224
+3. `aridity_unep7`: J=0.667, H=0.217
+
+#### Trends across network generations
+
+ET-IAV is the best-represented axis throughout all four network generations,
+reflecting tower placement in productive ecosystems. Aridity representativeness
+improves monotonically from Marconi → current network (J=0.479 → 0.694 for
+UNEP-5). KG 5-class sees marginal improvement from La Thuile → current (0.335
+→ 0.401), but FLUXNET2015 (0.404) is nearly equivalent to the full 767-site
+network — the KG gain from expanding from 212 to 767 sites is modest. LULC
+shows the largest improvement from Marconi → La Thuile (high-level: 0.349 →
+0.553), with further gains to 0.556 in the current network. Marconi's small
+size (n=35) drives its high Hellinger distances on most axes.
+
+### Disk usage
+
+~499 KB across 30 CSV + 30 JSON files.
+
+---
+
 ## 2026-06-27 — LULC representativeness extended to three aggregation levels
 
 ### Aggregation lookup table

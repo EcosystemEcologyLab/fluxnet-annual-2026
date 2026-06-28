@@ -4,6 +4,241 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-27 — LULC representativeness extended to three aggregation levels
+
+### Aggregation lookup table
+
+A three-level lookup was built mapping each of the 37 native LCCS codes to
+Level 2 (22 classes) and high-level (10 classes). Level 2 is the ESA CCI LCCS
+intermediate hierarchy implicit in the class naming convention:
+
+- Cropland splits into: rainfed (10/11/12), irrigated (20), mosaic cropland
+  (30). Mosaic nat-veg/cropland (40) is a separate L2 class (maps to
+  high-level "Other", not Cropland).
+- Forest splits into: BL evergreen (50), BL deciduous (60–62), NL evergreen
+  (70–72), NL deciduous (80–82), mixed (90), mosaic tree-shrub/herb (100).
+- Wetland stays three classes: flooded forest fresh/brackish (160), flooded
+  forest saline (170), flooded shrub/herb (180).
+- Lichens/mosses (140) becomes its own L2 class (→ high-level "Other").
+- Sparse vegetation (150–153) is a distinct L2 class (→ high-level Shrubland).
+
+All 22 Level 2 classes present in the global distribution with non-zero area.
+
+Lookup saved: `data/snapshots/cci_landcover_aggregation_lookup.csv`
+
+### Metrics — three aggregation levels
+
+| Level | n classes | J | H |
+|---|---|---|---|
+| High-level (10) | 10 | 0.556 | 0.337 |
+| Level 2 (22) | 22 | 0.478 | 0.368 |
+| Native (37) | 37 | 0.441 | 0.395 |
+
+Pattern confirmed: J decreases and H increases with finer aggregation,
+consistent with the KG climate axis (where 5-class J > 13-class J > 30-class
+J). The 10-class view conceals substantial within-group heterogeneity.
+
+### Notable sampling patterns — visible at Level 2, hidden at 10-class
+
+**Within Forest:** NL evergreen (boreal conifer) over-sampled (2.70×); BL
+evergreen (tropical broadleaf) under-sampled (0.54×). The 10-class Forest
+sum masks this trade-off entirely (J inflated at high-level).
+
+**Within Cropland:** Rainfed cropland over-sampled (2.21×). Irrigated
+cropland slightly under-represented relative to its global area. The mosaic
+cropland/nat-veg class (L2-3) also over-sampled.
+
+**Within Wetland:** Flooded shrub/herb is the most over-sampled class across
+the entire L2 analysis (4.03×); flooded forest freshwater 3.49×. This
+over-sampling is buried inside the moderate-J "Wetland" bar at 10-class.
+
+**Bare areas (L2-20 = HL-7):** Dramatically under-sampled at all levels
+(ratio 0.05× at high-level). Snow/Ice (HL-8) has zero FLUXNET sites.
+
+**At native resolution (37-class):** The most over-sampled native class is
+"Shrub or herbaceous cover, flooded" (code 180), 4.03×. "Herbaceous cover"
+(rainfed cropland subtype, code 11) is 3.81×. NL evergreen closed-to-open
+(code 70) is 3.32×. Shrubland evergreen (121), sparse shrub (152), and
+consolidated/unconsolidated bare areas (201/202) have zero FLUXNET sites.
+
+### Outputs produced
+
+- `scripts/figure_representativeness_landcover.R` (extended script)
+- `data/snapshots/cci_landcover_aggregation_lookup.csv`
+- `data/snapshots/site_landcover_cci.csv` (extended: lulc_native, lulc_level2, lulc_highlevel columns)
+- `data/snapshots/landcover_cci_highlevel_global_distribution.csv` (renamed from landcover_cci_global_distribution.csv)
+- `data/snapshots/landcover_cci_level2_global_distribution.csv`
+- `data/snapshots/landcover_cci_native_global_distribution.csv`
+- `data/snapshots/representativeness_metrics.csv` (19 rows, was 17)
+- `review/figures/representativeness/fig_representativeness_landcover_highlevel.png`
+- `review/figures/representativeness/fig_representativeness_landcover_level2.png`
+- `review/figures/representativeness/fig_representativeness_landcover_native.png`
+- `review/figures/representativeness/methods_landcover.md` (updated)
+
+Cached KG-aligned native raster: `data/external/cci_landcover/v2.1.1/cci_lc_2022_kg_aligned_native.tif`
+(252 MB, resampling time 191 s; subsequent runs skip resampling)
+
+---
+
+## 2026-06-27 — TRENDY v14 representativeness wrap-up
+
+### Step 1: Verification — outputs confirmed
+
+All four derived ensemble maps verified:
+
+| File | Dims | Non-NA pixels |
+|---|---|---|
+| trendy_nee_iav.tif | 360 × 720 | 94,589 |
+| trendy_et_iav.tif | 360 × 720 | 94,589 |
+| trendy_nee_median.tif | 360 × 720 | 94,589 |
+| trendy_et_median.tif | 360 × 720 | 94,589 |
+
+All four site CSVs (`site_trendy_*.csv`) and global distribution CSVs
+(`trendy_*_global_distribution.csv`) present with `.meta.json` companions.
+Four new rows confirmed in `representativeness_metrics.csv` (now 17 rows total).
+
+Disk usage: 4 final TIFs ≈ 1.2 MB; 34 intermediate TIFs (per-model regridded)
+= 252 MB in `data/external/trendy/derived/intermediate/`.
+
+### Step 2: ELM handling — correction to prior session log note
+
+**The session log entry of 2026-06-26 stated:**
+> "ELM pixels excluded from IAV maps (all-years-non-NA requirement) but included
+> in median maps (na.rm=TRUE)"
+
+**This was incorrect.** ELM is excluded from all four ensemble maps, not only IAV.
+
+The reason: all three per-pixel stat functions (`compute_detrended_sd`,
+`compute_mean_abs`, `compute_mean`) use an identical complete-row requirement:
+```r
+complete <- rowSums(is.na(vals)) == 0L
+```
+ELM's 2023 annual layer is NA for all pixels (log confirms:
+`WARNING: ELM nbp has no data for year 2023`; same for evapotrans).
+Consequently, no pixel passes `complete = TRUE` for ELM → ELM's per-pixel stat
+raster is all NA for all four axes.
+
+The ensemble median is then computed with `app(stk, na.rm = TRUE)` across 17
+model layers. ELM's NA values are excluded at the ensemble step, not at the
+per-pixel step. Effective ensemble size: **16 models** per pixel for all four axes.
+
+The `na.rm = TRUE` in the ensemble step does not "include" ELM — it prevents
+ELM's NA from propagating to the ensemble output.
+
+### Step 3: J/H metrics and sampling patterns
+
+| Axis | J | H | Most over-sampled bin | Under-sampled bin |
+|---|---|---|---|---|
+| trendy_nee_iav | 0.507 | 0.316 | Bin 5 (42.1–54.4 gC m⁻² yr⁻¹), 2.29× | Bin 1 (0–5), 0.07× |
+| trendy_et_iav | 0.663 | 0.224 | Bin 4 (24.2–32.0 mm yr⁻¹), 1.81× | Bin 1 (0–5), 0.00× |
+| trendy_nee_median | 0.495 | 0.320 | Bin 5 (41.8–54.3 gC m⁻² yr⁻¹), 2.12× | Bin 1 (0–5), 0.07× |
+| trendy_et_median | 0.459 | 0.345 | Bin 5 (394.0–634.7 mm yr⁻¹), 2.63× | Bin 1 (0–5), 0.00× |
+
+Pattern: consistent with biomass and KG axes — the network over-samples
+intermediate flux bins (temperate/boreal-margin forests and grasslands) and
+strongly under-samples the near-zero bin (arid, sparse, or high-latitude pixels).
+ET-IAV is the best-sampled axis (J = 0.663); ET-median the worst (J = 0.459).
+
+### Step 4: NEE-median vs. biomass pixel comparison
+
+Pearson r = **0.55**, Spearman ρ = **0.89** across 94,589 shared non-NA pixels
+(NEE-median ensemble map vs. ESA CCI Biomass v7.0 band 18, resampled to 0.5°).
+
+The strong rank correlation confirms high-biomass pixels tend to have high
+TRENDY-ensemble NEE magnitude. The weaker linear correlation reflects a
+nonlinear relationship: tropical forests drive the high-biomass / high-NEE corner,
+but semi-arid and boreal systems occupy a broad range of NEE magnitudes at low
+biomass. Network representativeness implications are parallel: the same over-sampling
+of intermediate bins, the same under-sampling of tropical high-flux classes.
+
+### Outputs produced in this session
+
+- `scripts/figure_representativeness_trendy_wrap.R` — figure + methods script
+- `review/figures/representativeness/fig_representativeness_trendy_nee_iav.png`
+- `review/figures/representativeness/fig_representativeness_trendy_et_iav.png`
+- `review/figures/representativeness/fig_representativeness_trendy_nee_median.png`
+- `review/figures/representativeness/fig_representativeness_trendy_et_median.png`
+- `review/figures/representativeness/methods_trendy_iav.md`
+
+---
+
+## 2026-06-27 — TRENDY v14 compute: completed + Step 3 bug fixed
+
+### Outcome
+
+TRENDY v14 compute completed overnight. All 4 ensemble TIFs written. Per-site
+extraction (Step 3) crashed at the end due to a terra API change; fixed and
+re-run completed in ~2 s this morning.
+
+### Bug: `terra::extract()` return shape changed in terra 1.9.27
+
+In terra 1.9.27, `terra::extract(rast, matrix)` returns a **1-column** data
+frame (values only, no ID column). The script assumed a 2-column return
+(`raw[[2]]` = values), causing `subscript out of bounds`.
+
+**Fix (line 392, `extract_sites`):** `raw[[2]]` → `raw[[1]]`.
+
+### Final ensemble
+
+17 models contributed both nbp and evapotrans intermediates (34 TIFs).
+CLM-FATES and JSBACH excluded — both have irregularly spaced grids incompatible
+with `terra::rast()`. CLM-FATES failed from the start; JSBACH failed in this
+morning's re-run (irregular latitude spacing), confirming it never produced
+intermediates in the overnight run.
+
+### Representativeness metrics (4 new axes added to `representativeness_metrics.csv`)
+
+| Axis | Aggregation | J | H |
+|---|---|---|---|
+| trendy_nee_iav | 7bin_hybrid | 0.507 | 0.316 |
+| trendy_et_iav | 7bin_hybrid | 0.663 | 0.224 |
+| trendy_nee_median | 7bin_hybrid | 0.495 | 0.320 |
+| trendy_et_median | 7bin_hybrid | 0.459 | 0.345 |
+
+FLUXNET network is best represented for ET variability (J ≈ 0.66) and least
+represented for NEE and ET magnitude (J ≈ 0.46–0.51). Consistent with the
+pattern seen for biomass and Koppen climate.
+
+### Outputs written
+
+- `data/snapshots/site_trendy_{nee_iav,et_iav,nee_median,et_median}.csv` + `.meta.json`
+- `data/snapshots/trendy_{nee_iav,et_iav,nee_median,et_median}_global_distribution.csv` + `.meta.json`
+- `data/snapshots/representativeness_metrics.csv` (updated, now 17 rows)
+- `logs/trendy_analysis_complete.marker`
+
+---
+
+## 2026-06-26 — TRENDY v14 compute: ~9 h 8 min status check
+
+### Job status
+
+PID 2066 running. Elapsed: 9 h 8 min. CPU time: ~548 min (~9.1 h, near 100% CPU).
+RSS: ~1.47 GB. No errors. Completion marker absent.
+
+### Progress
+
+18/36 intermediate TIFs (was 17/36 at previous check — ISAM nbp completed since then).
+
+| Status | Detail |
+|---|---|
+| Completed (both vars) | CABLE-POP, CLASSIC, CLM, DLEM, ED, ELM, ELM-FATES, IBIS (8 models, 16 TIFs from Jun 25) |
+| Completed this run | ISAM nbp — saved at 11:40:06 (6 h 21 min after restart) |
+| In progress | ISAM evapotrans — lon rotation started 11:40:07, ~2 h 46 min elapsed |
+| Pending | JSBACH, JULES-ES, LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT (9 models) |
+| Failed (pre-existing) | CLM-FATES |
+
+**ISAM evapotrans lon rotation** progress bar at time of check: `=========---`
+(partial view; rotation actively printing). ISAM evapotrans file is 1.8 GB vs 810 MB for
+nbp (2.2× larger). ISAM nbp rotation took 6 h 21 min; evapotrans estimated **tonight**,
+possibly late evening.
+
+### Completion estimate
+
+ISAM evapotrans is the current bottleneck. After it writes, 9 models remain.
+Revised completion estimate: **2026-06-27 morning**.
+
+---
+
 ## 2026-06-26 — TRENDY v14 compute: ~3 h 45 min status check
 
 ### Job status

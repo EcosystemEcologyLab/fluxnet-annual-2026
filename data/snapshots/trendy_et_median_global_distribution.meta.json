@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-27T12:35:33Z",
+  "pipeline_version": "af2d0f5",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_et_median.tif",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"
+  ],
+  "notes": "Ensemble-median TRENDY v14 trendy_et_median global distribution. Analysis window 1990-2023. 17 models. Near-zero bin cut: 5 mm yr-1. Quantile breakpoints: 143.4, 263.9, 394, 634.7, 968.6."
+}

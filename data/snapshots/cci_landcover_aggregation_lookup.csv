@@ -1,0 +1,38 @@
+lulc_native,lulc_native_name,lulc_level2,lulc_level2_name,lulc_highlevel,lulc_highlevel_name,R,G,B
+10,"Cropland, rainfed",1,Rainfed cropland,1,Cropland,255,255,100
+11,Herbaceous cover,1,Rainfed cropland,1,Cropland,255,255,100
+12,Tree or shrub cover,1,Rainfed cropland,1,Cropland,255,255,0
+20,"Cropland, irrigated or post-flooding",2,Irrigated cropland,1,Cropland,170,240,240
+30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",3,Mosaic cropland/nat-veg,1,Cropland,220,240,100
+40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",4,Mosaic nat-veg/cropland,10,Other,200,200,100
+50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",5,BL evergreen forest,2,Forest,0,100,0
+60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",6,BL deciduous forest,2,Forest,0,160,0
+61,"Tree cover, broadleaved, deciduous, closed (>40%)",6,BL deciduous forest,2,Forest,0,160,0
+62,"Tree cover, broadleaved, deciduous, open (15-40%)",6,BL deciduous forest,2,Forest,170,200,0
+70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",7,NL evergreen forest,2,Forest,0,60,0
+71,"Tree cover, needleleaved, evergreen, closed (>40%)",7,NL evergreen forest,2,Forest,0,60,0
+72,"Tree cover, needleleaved, evergreen, open (15-40%)",7,NL evergreen forest,2,Forest,0,80,0
+80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",8,NL deciduous forest,2,Forest,40,80,0
+81,"Tree cover, needleleaved, deciduous, closed (>40%)",8,NL deciduous forest,2,Forest,40,80,0
+82,"Tree cover, needleleaved, deciduous, open (15-40%)",8,NL deciduous forest,2,Forest,40,100,0
+90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",9,Mixed forest,2,Forest,120,130,0
+100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),10,Mosaic tree-shrub/herb,2,Forest,140,160,0
+110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),11,Mosaic herb/tree-shrub,4,Grassland,190,150,0
+120,Shrubland,12,Shrubland,3,Shrubland,150,100,0
+121,Shrubland evergreen,12,Shrubland,3,Shrubland,120,75,0
+122,Shrubland deciduous,12,Shrubland,3,Shrubland,150,100,0
+130,Grassland,13,Grassland,4,Grassland,255,180,50
+140,Lichens and mosses,14,Lichens and mosses,10,Other,255,220,210
+150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",15,Sparse vegetation,3,Shrubland,255,235,175
+151,Sparse tree (<15%),15,Sparse vegetation,3,Shrubland,255,200,100
+152,Sparse shrub (<15%),15,Sparse vegetation,3,Shrubland,255,210,120
+153,Sparse herbaceous cover (<15%),15,Sparse vegetation,3,Shrubland,255,235,175
+160,"Tree cover, flooded, fresh or brakish water",16,Flooded forest (freshwater),5,Wetland,0,120,90
+170,"Tree cover, flooded, saline water",17,Flooded forest (saline),5,Wetland,0,150,120
+180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",18,Flooded shrub/herb,5,Wetland,0,220,130
+190,Urban areas,19,Urban areas,6,Settlement,195,20,0
+200,Bare areas,20,Bare areas,7,Bare,255,245,215
+201,Consolidated bare areas,20,Bare areas,7,Bare,220,220,220
+202,Unconsolidated bare areas,20,Bare areas,7,Bare,255,245,215
+210,Water bodies,21,Water bodies,9,Water,0,70,200
+220,Permanent snow and ice,22,Permanent snow and ice,8,Snow/Ice,255,255,255

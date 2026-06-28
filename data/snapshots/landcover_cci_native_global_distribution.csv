@@ -1,0 +1,38 @@
+lulc_native,lulc_native_name,lulc_level2,lulc_level2_name,lulc_highlevel,lulc_highlevel_name,global_land_area_km2,global_land_fraction
+10,"Cropland, rainfed",1,Rainfed cropland,1,Cropland,8121805.288414821,0.05512929335978248
+11,Herbaceous cover,1,Rainfed cropland,1,Cropland,7606837.635548025,0.0516337893680544
+12,Tree or shrub cover,1,Rainfed cropland,1,Cropland,192274.48047417402,0.0013051231669861125
+20,"Cropland, irrigated or post-flooding",2,Irrigated cropland,1,Cropland,2411744.937450111,0.016370472997587402
+30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",3,Mosaic cropland/nat-veg,1,Cropland,3846593.3917470723,0.02610995560702662
+40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%) ",4,Mosaic nat-veg/cropland,10,Other,3581685.4568737596,0.024311810153355522
+50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",5,BL evergreen forest,2,Forest,12699998.661336988,0.08620521263522463
+60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",6,BL deciduous forest,2,Forest,5987272.256841302,0.04064048286692101
+61,"Tree cover, broadleaved, deciduous, closed (>40%)",6,BL deciduous forest,2,Forest,840914.640492171,0.005707971104941013
+62,"Tree cover, broadleaved, deciduous, open (15-40%)",6,BL deciduous forest,2,Forest,3626591.2938706875,0.02461662256555426
+70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",7,NL evergreen forest,2,Forest,6357592.1225916,0.04315414476731459
+71,"Tree cover, needleleaved, evergreen, closed (>40%)",7,NL evergreen forest,2,Forest,2405252.887494281,0.01632640617822745
+72,"Tree cover, needleleaved, evergreen, open (15-40%)",7,NL evergreen forest,2,Forest,1011.5660732984543,6.866321073619097e-6
+80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",8,NL deciduous forest,2,Forest,4968803.479018226,0.033727307527630646
+81,"Tree cover, needleleaved, deciduous, closed (>40%)",8,NL deciduous forest,2,Forest,4043.0685126781464,2.744359193479704e-5
+82,"Tree cover, needleleaved, deciduous, open (15-40%)",8,NL deciduous forest,2,Forest,0.6259070038795471,4.248539531234287e-9
+90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",9,Mixed forest,2,Forest,2139986.1464006007,0.014525825215124697
+100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),10,Mosaic tree-shrub/herb,2,Forest,3794347.8507263362,0.025755322658391273
+110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),11,Mosaic herb/tree-shrub,4,Grassland,1105021.4652661234,0.007500678773278338
+120,Shrubland,12,Shrubland,3,Shrubland,10894629.107435703,0.07395070218767497
+121,Shrubland evergreen,12,Shrubland,3,Shrubland,225348.07382532954,0.0015296205250942716
+122,Shrubland deciduous,12,Shrubland,3,Shrubland,2118773.006833628,0.014381834396243848
+130,Grassland,13,Grassland,4,Grassland,12651984.38316717,0.08587930070644965
+140,Lichens and mosses,14,Lichens and mosses,10,Other,1484633.0533293858,0.010077411144708665
+150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",15,Sparse vegetation,3,Shrubland,8629532.57140956,0.05857565107669413
+151,Sparse tree (<15%),15,Sparse vegetation,3,Shrubland,6.553785622119904,4.4485869501741124e-8
+152,Sparse shrub (<15%),15,Sparse vegetation,3,Shrubland,63673.21133351326,4.32201834704387e-4
+153,Sparse herbaceous cover (<15%),15,Sparse vegetation,3,Shrubland,290356.4700355232,0.001970885344706836
+160,"Tree cover, flooded, fresh or brakish water",16,Flooded forest (freshwater),5,Wetland,879322.1885252148,0.00596867434856148
+170,"Tree cover, flooded, saline water",17,Flooded forest (saline),5,Wetland,213636.0941388607,0.0014501218002380921
+180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",18,Flooded shrub/herb,5,Wetland,1954170.16576159,0.013264541135562254
+190,Urban areas,19,Urban areas,6,Settlement,867652.9704142511,0.0058894658812720406
+200,Bare areas,20,Bare areas,7,Bare,18876087.94868709,0.1281273501462296
+201,Consolidated bare areas,20,Bare areas,7,Bare,105228.92426966131,7.142742321428817e-4
+202,Unconsolidated bare areas,20,Bare areas,7,Bare,94715.78420871496,6.429130061628493e-4
+210,Water bodies,21,Water bodies,9,Water,3659509.690012999,0.02484006647407195
+220,Permanent snow and ice,22,Permanent snow and ice,8,Snow/Ice,14621824.74031742,0.09925020816666408

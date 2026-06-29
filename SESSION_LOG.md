@@ -4,6 +4,59 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Rep006 + Rep007–018 three-fix aesthetic pass (label anchor, legend inside, y-axis zero)
+
+### Overview
+
+Applied three fixes to `scripts/figure_representativeness_summary.R`, regenerated
+all 13 affected figures (Rep006 + Rep007–018), confirmed visually and by timestamp.
+Log: `logs/fig_repr_summary_fixes5_20260629T155325.log`.
+
+### Fix 1 (Rep006): Panel labels and J statistics moved to top-right corner
+
+In `make_panel_count_diff()`, changed panel label annotation from top-left
+(`x = -Inf, hjust = -0.3`) to top-right (`x = Inf, hjust = 1.3`), matching the
+J annotation already at top-right. J `vjust` lowered from `1.5` to `3.5` to sit
+below the panel label. Left side of each count-diff panel is now clear of
+annotations, preventing overlap with bar labels.
+
+Rep001–005 retain existing arrangement (A–F in top-left, J in top-right);
+only `make_panel_count_diff()` was changed.
+
+### Fix 2 (Rep007–018): Legend moved inside plot area, top-left corner
+
+Updated `traj_theme` to place the legend inside the plot canvas:
+
+```r
+legend.position      = c(0.05, 0.95),
+legend.justification = c(0, 1),
+legend.background    = element_rect(fill = adjustcolor("white", 0.8),
+                                    colour = "black", linewidth = 0.2),
+legend.key.size      = unit(0.4, "cm"),
+legend.text          = element_text(size = 7),
+legend.spacing.y     = unit(0.05, "cm")
+```
+
+Per-function `legend.key.size` and `legend.text` overrides removed from
+`make_traj_no_bars()` and `make_traj_with_bars()` since they are now set in
+`traj_theme`. The legend box has a semi-transparent white fill and a thin
+black border. All 12 trajectory figures now have identical plot canvas widths
+regardless of legend entry count (2–6 entries).
+
+### Fix 3 (Rep007–018): Y-axis lower bound anchored at zero with no bottom expansion
+
+Added `expand = expansion(mult = c(0, 0.05))` to both `make_traj_no_bars()` and
+`make_traj_with_bars()` `scale_y_continuous()` calls. Suppresses the default 5%
+bottom expansion that previously pushed the axis into negative values (below 0).
+Upper expansion retained at 5%. Secondary y-axis (n sites) inherits the same
+lower bound via the primary scale transformation.
+
+Visual verification: Rep007, Rep008, and Rep014 (5-entry legend) inspected. All
+show legend box in top-left corner, y-axis tick at 0.00 touching the panel border,
+no negative-space gap below the bottom data points.
+
+---
+
 ## 2026-06-29 — Rep001–Rep006 four-fix aesthetic pass (alignment, titles, labels, Rep006 axis)
 
 ### Overview

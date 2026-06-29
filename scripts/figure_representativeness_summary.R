@@ -682,18 +682,16 @@ make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE,
       axis.title.x  = element_text(size = 8)
     )
 
-  # Panel label: top-left corner, inset from border
+  # Panel label and J: both top-right for Rep006 (bars occupy left; top-left left clear)
   if (!is.null(panel_label)) {
-    p <- p + annotate("text", x = -Inf, y = Inf, label = panel_label,
-                      hjust = -0.3, vjust = 1.5,
+    p <- p + annotate("text", x = Inf, y = Inf, label = panel_label,
+                      hjust = 1.3, vjust = 1.5,
                       size = 3.5, fontface = "bold", colour = "grey10")
   }
-
-  # J for current network: top-right corner, inset from border
   if (!is.na(j_val)) {
     p <- p + annotate("text", x = Inf, y = Inf,
                       label = sprintf("J = %.3f", j_val),
-                      hjust = 1.3, vjust = 1.5, size = 2.5, colour = "grey20")
+                      hjust = 1.3, vjust = 3.5, size = 2.5, colour = "grey20")
   }
 
   p
@@ -825,17 +823,26 @@ NET_XLABELS_BARE <- c("Marconi","La Thuile","FLUXNET2015","Current")
 
 traj_theme <- theme_minimal(base_size = 9) +
   theme(
-    plot.background   = element_rect(fill = "white", colour = NA),
-    panel.background  = element_rect(fill = "white", colour = NA),
-    panel.border      = element_rect(colour = "black", fill = NA, linewidth = 0.4),
-    panel.grid.major  = element_blank(),
-    panel.grid.minor  = element_blank(),
-    axis.ticks        = element_line(colour = "black"),
-    axis.ticks.length = unit(-0.15, "cm"),
-    axis.text.x       = element_text(margin = margin(t = 5)),
-    axis.text.y       = element_text(margin = margin(r = 5)),
-    legend.background = element_rect(fill = "white", colour = NA),
-    legend.position   = "right"
+    plot.background      = element_rect(fill = "white", colour = NA),
+    panel.background     = element_rect(fill = "white", colour = NA),
+    panel.border         = element_rect(colour = "black", fill = NA, linewidth = 0.4),
+    panel.grid.major     = element_blank(),
+    panel.grid.minor     = element_blank(),
+    axis.ticks           = element_line(colour = "black"),
+    axis.ticks.length    = unit(-0.15, "cm"),
+    axis.text.x          = element_text(margin = margin(t = 5)),
+    axis.text.y          = element_text(margin = margin(r = 5)),
+    # Legend inside plot area: identical canvas width regardless of entry count
+    legend.position      = c(0.05, 0.95),
+    legend.justification = c(0, 1),
+    legend.background    = element_rect(
+      fill      = grDevices::adjustcolor("white", alpha.f = 0.8),
+      colour    = "black",
+      linewidth = 0.2
+    ),
+    legend.key.size  = unit(0.4, "cm"),
+    legend.text      = element_text(size = 7),
+    legend.spacing.y = unit(0.05, "cm")
   )
 
 # Build trajectory data frame for one set of axis configurations
@@ -868,14 +875,14 @@ make_traj_no_bars <- function(traj_df, colors, xlabels, title_str, output_path,
     scale_colour_manual(name = NULL, values = colors) +
     scale_x_continuous(breaks = 1:4, labels = xlabels,
                        limits = c(0.6, 4.4), expand = expansion(mult = 0)) +
-    scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25),
-                       name = "Weighted Jaccard") +
+    scale_y_continuous(
+      name   = "Weighted Jaccard",
+      limits = c(0, 1),
+      breaks = seq(0, 1, 0.25),
+      expand = expansion(mult = c(0, 0.05))
+    ) +
     labs(title = title_str, x = NULL) +
-    traj_theme +
-    theme(
-      legend.key.size = unit(0.5, "cm"),
-      legend.text     = element_text(size = 8)
-    )
+    traj_theme
   ggplot2::ggsave(output_path, p, width = width_in, height = height_in, dpi = dpi, bg = "white")
   message("Saved: ", output_path)
 }
@@ -911,6 +918,7 @@ make_traj_with_bars <- function(traj_df, colors, xlabels, title_str, output_path
       name   = "Weighted Jaccard",
       limits = c(0, 1),
       breaks = seq(0, 1, 0.25),
+      expand = expansion(mult = c(0, 0.05)),
       sec.axis = sec_axis(
         ~ . * MAX_SITES,
         name   = "n sites",
@@ -921,8 +929,6 @@ make_traj_with_bars <- function(traj_df, colors, xlabels, title_str, output_path
     labs(title = title_str, x = NULL, caption = caption_str) +
     traj_theme +
     theme(
-      legend.key.size    = unit(0.5, "cm"),
-      legend.text        = element_text(size = 8),
       axis.title.y.right = element_text(size = 8, colour = "grey50"),
       axis.text.y.right  = element_text(size = 7, colour = "grey50"),
       axis.ticks.y.right = element_line(colour = "grey70"),

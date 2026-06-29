@@ -4,6 +4,101 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Representativeness figures Rep001–Rep010
+
+### Overview
+
+Rewrote `scripts/figure_representativeness_summary.R` to produce all ten figures in a single
+script. Run time: < 30 s (no raster I/O; reads from CSVs only).
+
+### Fig 001–005: 2×3 bar-grid panels
+
+Layout: top row (KG 13-class | LULC 10-class HL | Aridity 7-class), bottom row
+(Biomass 7-bin | NEE-IAV 7-bin | ET-median 7-bin). X-axis ±log₂(5) = ±2.32,
+with 1/5×, 1/2×, 1×, 2×, 5× tick labels. Black-outline bars, truncated at ±5×
+with actual ratio annotated.
+
+**Truncated bars per figure (total across all 6 panels):**
+
+| Figure | Network | Truncated |
+|--------|---------|-----------|
+| Rep001 | current_767 | 5 |
+| Rep002 | marconi | 5 |
+| Rep003 | la_thuile | 7 |
+| Rep004 | fluxnet2015 | 6 |
+
+All truncations are extreme overrepresentation (the class is much more common in the
+network than globally) — none are extreme underrepresentation, which would indicate
+classes the network systematically misses.
+
+Fig 005 (overlay) shows current_767 (dark, α=1.0) and FLUXNET2015 (pale, α=0.42)
+grouped side-by-side per class, with a shared top legend.
+
+### Fig 006: Count difference (current − FLUXNET2015)
+
+**All count differences are non-negative (n_negative = 0 for every axis).** The current
+767-site network has more sites in every single class across all six axes than FLUXNET2015
+did. This reflects the 767-vs-212 expansion and broader geographic coverage. No class
+regressed. Largest absolute gains:
+
+| Axis | max |Δ| |
+|------|---------|
+| ET-median (7-bin) | 199 |
+| Aridity (7-class) | 195 |
+| Biomass (7-bin) | 184 |
+| KG (13-class) | 180 |
+| LULC (10-class HL) | 180 |
+| TRENDY NEE-IAV (7-bin) | 153 |
+
+Because all bars are positive (blue), Fig 006 functions as a gain-per-class map rather
+than a gain/loss map. The largest per-class gains are in whichever class the current
+network added the most new sites to.
+
+### Fig 007–008: Trajectory, 6 default axes
+
+Fig 007 (no count bars) and Fig 008 (with count bars and secondary n_sites axis)
+show the same Jaccard trajectory. Adding the count bars in Fig 008 makes visible the
+asymmetric sampling effort: Marconi (n=35) → La Thuile (n=252) is a 7× jump that
+drives a modest Jaccard improvement; La Thuile → FLUXNET2015 is only a small
+additional 20 sites, yet in some axes Jaccard barely changes or even drops slightly.
+The La Thuile → FLUXNET2015 "kink" (visible in Fig 008) is the main new insight from
+the count-bar version.
+
+### Fig 009: Trajectory, 3 native-resolution categorical axes
+
+KG 30-class (J ≈ 0.21–0.35), LULC 37-class native (J ≈ 0.23–0.44), Aridity 7-class
+(J ≈ 0.48–0.67). At finer categorical resolution, J drops uniformly relative to the
+aggregated axes (expected — harder test). The rank ordering of the three axes is
+preserved: Aridity > LULC > KG. No trajectory change that wasn't already visible in
+Fig 007/008; the value of Fig 009 is showing the penalty from coarser aggregation
+on the Jaccard scalar.
+
+### Fig 010: Trajectory, 5 continuous axes at 30-bin hybrid
+
+Five lines (Biomass, NEE-IAV, NEE-median, ET-IAV, ET-median). The ET-IAV and
+ET-median lines sit above NEE-IAV and NEE-median for the current network (higher
+representativeness for ET than NEE), consistent with the 7-bin trajectories. The
+NEE-IAV / NEE-median pair is nearly coincident (similar climate signal); the ET-IAV /
+ET-median pair is more separated (IAV smoother, median skewed by seasonal signal).
+
+**Fig 010 five-axis palette decisions (documented in script):**
+
+| Axis | Color | Rationale |
+|------|-------|-----------|
+| Biomass | `#009E73` | Okabe-Ito green |
+| TRENDY NEE-IAV | `#0072B2` | Okabe-Ito blue |
+| TRENDY NEE-median | `#1a5276` | Darkened navy — same blue family, clearly darker |
+| TRENDY ET-IAV | `#56B4E9` | Okabe-Ito sky blue |
+| TRENDY ET-median | `#00898e` | Teal — midpoint between green and sky blue |
+
+### Files changed
+
+- **Replaced script:** `scripts/figure_representativeness_summary.R` (594 → ~580 lines, complete rewrite)
+- **New figures (×10):** `review/figures/representativeness/fig_rep001_current.png` through `fig_rep010_jaccard_trajectory_30bin_continuous.png`
+- **Removed stale:** `review/figures/representativeness/fig_rep006_delta_2015_to_current.png` (old delta-SR version)
+
+---
+
 ## 2026-06-29 — 30-bin hybrid representativeness for continuous axes
 
 ### Overview

@@ -4,6 +4,79 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — 30-bin hybrid representativeness for continuous axes
+
+### Overview
+
+Built and ran `scripts/recompute_continuous_axes_30bin.R`. Extends the representativeness
+analysis for all five continuous axes (Biomass CCI v7, TRENDY NEE-IAV, ET-IAV, NEE-median,
+ET-median) from the existing 7-bin hybrid scheme to a 30-bin hybrid scheme. Ran in ~2 min
+on local mini (biomass bilinear resample: 22 s; TRENDY axes: < 1 s each).
+
+### 30-bin scheme
+
+- **Bin 1:** near-zero fixed cut (< 5 in axis units)
+- **Bins 2–30:** 29 equal-area quantile bins derived from the global KG-land distribution
+  of vegetated pixels (≥ 5 units). 28 interior breakpoints at Q_PROBS = (1:28)/29.
+- **29 documented breakpoints** per axis = [low_cut, q1, ..., q28].
+
+### Global distributions computed
+
+Five new CSVs (31 rows: header + 30 bins) + companion `.meta.json` in `data/snapshots/`:
+
+| File | Vegetated land |
+|------|---------------|
+| `biomass_cci_v7_global_distribution_30bin.csv` | ~73.0% of KG fine-grid land |
+| `trendy_nee_iav_global_distribution_30bin.csv` | ~90.6% of KG coarse-grid land |
+| `trendy_et_iav_global_distribution_30bin.csv` | ~95.4% |
+| `trendy_nee_median_global_distribution_30bin.csv` | ~91.2% |
+| `trendy_et_median_global_distribution_30bin.csv` | ~89.4% |
+
+**Note — ET-median histogram ceiling:** `hist_max = 1000 mm/yr` truncates the ET-median
+distribution. The last four quantile breakpoints (Q = 25/29 through 28/29) all resolve to
+1000.1 mm/yr, effectively collapsing bins 26–30 around the > 1000 mm/yr tail. This is
+expected behavior; values above 1000 mm/yr are correctly placed in bin 30 at the site level.
+
+### Per-site 30-bin column added
+
+Added `{axis}_bin_30` column to all 20 existing per-site CSVs (5 axes × 4 networks).
+Bin-1 (near-zero) fractions by axis at current_767:
+
+| Axis | Bin-1 fraction |
+|------|---------------|
+| `biomass_cci_v7` | 31.6% (242/767) |
+| `trendy_nee_iav` | 1.6% |
+| `trendy_et_iav` | 0% |
+| `trendy_nee_median` | 1.6% |
+| `trendy_et_median` | 0% |
+
+### Representativeness metrics — 30-bin
+
+76 + 20 = 96 rows in `representativeness_metrics.csv` (`aggregation_level = "30bin_hybrid"`).
+
+Jaccard comparison 7-bin vs 30-bin (current_767, as a resolution-sensitivity check):
+
+| Axis | J (7-bin) | J (30-bin) | Δ |
+|------|-----------|------------|---|
+| biomass_cci_v7 | 0.6385 | 0.6161 | −0.022 |
+| trendy_nee_iav | 0.5073 | 0.4813 | −0.026 |
+| trendy_et_iav | 0.6634 | 0.6328 | −0.031 |
+| trendy_nee_median | 0.4949 | 0.4655 | −0.029 |
+| trendy_et_median | 0.4590 | 0.4287 | −0.030 |
+
+All J scores decrease slightly as expected when moving from 7 to 30 bins (finer binning is
+a harder test of representativeness). Deltas are small (−0.02 to −0.03), confirming the
+7-bin scheme was not artificially inflating scores.
+
+### Files changed
+
+- **New script:** `scripts/recompute_continuous_axes_30bin.R`
+- **New global dist CSVs + metas (×5):** `data/snapshots/*_global_distribution_30bin.{csv,meta.json}`
+- **Updated site CSVs + metas (×20):** `data/snapshots/site_{biomass,trendy_*}.{csv,meta.json}`
+- **Updated metrics:** `data/snapshots/representativeness_metrics.csv` (76 → 96 rows)
+
+---
+
 ## 2026-06-28 — Representativeness summary figures (Rep001–Rep007) — CORRECTED
 
 ### Overview

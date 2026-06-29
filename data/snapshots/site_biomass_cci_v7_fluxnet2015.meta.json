@@ -1,8 +1,9 @@
 {
-  "run_datetime_utc": "2026-06-28T15:14:51Z",
-  "pipeline_version": "17e1199",
+  "run_datetime_utc": "2026-06-29T16:06:27Z",
+  "pipeline_version": "6d07d89",
   "input_sources": [
-    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif"
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
   ],
-  "notes": "Historical network: fluxnet2015 (212 sites). ESA CCI Biomass v7.0, band 18. Hybrid bins: fixed bin 1 (0-5 Mg/ha); bins 2-7 canonical quantile breakpoints: 13, 27, 51, 94, 171 Mg/ha. Nearest-land recovery within 3°."
+  "notes": "Per-site biomass_cci_v7 site classifications (all networks). Column 'biomass_bin': existing 7-bin hybrid (unchanged). Column 'biomass_bin_30': new 30-bin hybrid added. 30-bin scheme: bin 1 = < 5 Mg/ha; bins 2–30 = 29 equal-area quantile bins. 29 breakpoints (Mg/ha): 5.0, 7.0, 8.0, 10.0, 12.0, 13.0, 16.0, 18.0, 21.0, 24.0, 28.0, 32.0, 37.0, 42.0, 48.0, 55.0, 62.0, 70.0, 80.0, 90.0, 102.0, 115.0, 129.0, 146.0, 167.0, 196.0, 239.0, 278.0, 312.0."
 }

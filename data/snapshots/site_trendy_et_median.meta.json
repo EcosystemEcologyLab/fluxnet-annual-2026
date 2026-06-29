@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-06-27T12:35:33Z",
-  "pipeline_version": "af2d0f5",
+  "run_datetime_utc": "2026-06-29T16:06:27Z",
+  "pipeline_version": "6d07d89",
   "input_sources": [
     "data/external/trendy/derived/trendy_et_median.tif",
-    "data/snapshots/site_biomass_cci_v7.csv"
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"
   ],
-  "notes": "Per-site extraction of ensemble-median TRENDY v14 trendy_et_median. 767 sites. Nearest-land recovery within 3 deg for NA sites. 7-bin hybrid scheme: fixed near-zero bin 0-5 mm yr-1; 6 equal-area quantile bins above. Breakpoints: 143.4, 263.9, 394, 634.7, 968.6."
+  "notes": "Per-site trendy_et_median site classifications (all networks). Column 'trendy_et_median_bin': existing 7-bin hybrid (unchanged). Column 'trendy_et_median_bin_30': new 30-bin hybrid added. 30-bin scheme: bin 1 = < 5 mm yr-1; bins 2–30 = 29 equal-area quantile bins. 29 breakpoints (mm yr-1): 5.0, 28.1, 56.2, 88.7, 118.7, 148.6, 173.8, 198.4, 223.6, 248.2, 272.8, 298.5, 322.2, 350.2, 378.9, 410.6, 445.7, 491.0, 545.2, 611.5, 682.7, 749.6, 813.4, 881.4, 954.8, 1000.1, 1000.1, 1000.1, 1000.1."
 }

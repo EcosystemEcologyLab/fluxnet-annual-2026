@@ -1,0 +1,50 @@
+FIGURE LEGEND — fig_rep002_marconi.png
+=======================================
+
+TITLE: Marconi (n = 35) — sampling ratio per class
+
+DESCRIPTION:
+Six-panel grid showing the representativeness of the Marconi FLUXNET network
+(n = 35 sites, the inaugural FLUXNET community circa 1999) relative to global
+vegetated land area, assessed across the same six classification axes as
+fig_rep001 (current network). This figure provides the historical baseline for
+the trajectory analysis in fig_rep007/008.
+
+PANEL LAYOUT (2 rows × 3 columns, labelled A–F):
+  A — Köppen-Geiger climate (Beck 2023, 13-class)
+  B — ESA CCI Land Cover v2.1.1 (10-class, high-level)
+  C — CGIAR Aridity Index v3.1 (7-class, UNEP scheme)
+  D — ESA CCI Biomass v7, 2024 estimate (7-bin hybrid)
+  E — TRENDY v14 NEE-IAV (7-bin hybrid)
+  F — TRENDY v14 ET-median (7-bin hybrid)
+
+NOTE: The Marconi network was heavily concentrated in temperate Europe and
+North America. Strong over-sampling of Cfb (oceanic) and Dfb (continental
+humid) KG classes; severe under-sampling of tropical and arid zones.
+
+X AXIS: Sampling ratio on log₂ scale; range ±5× (log₂ ±2.32). See Rep001 legend.
+Y AXIS: Classes ordered by global land area (largest at top).
+
+GLOBAL LAND AREA DENOMINATORS: Same as fig_rep001.
+
+CLASSIFICATION SCHEMES: Same as fig_rep001.
+
+REPRESENTATIVENESS METRIC: Weighted Jaccard (J). See fig_rep001 legend.
+
+JACCARD VALUES (marconi, n = 35):
+  A. KG (13-class):            J = 0.223
+  B. LULC (10-class HL):       J = 0.349
+  C. Aridity (7-class UNEP):   J = 0.479
+  D. Biomass (7-bin hybrid):   J = 0.313
+  E. NEE-IAV (7-bin hybrid):   J = 0.385
+  F. ET-median (7-bin hybrid): J = 0.317
+
+CONTEXT: Marconi J values are the lowest of the four networks, reflecting the
+strong geographic and climatic bias of the earliest FLUXNET generation toward
+temperate Northern Hemisphere ecosystems.
+
+DATA SOURCES: Same as fig_rep001.
+
+FIGURE SCRIPT: scripts/figure_representativeness_summary.R
+OUTPUT PATH:   review/figures/representativeness/fig_rep002_marconi.png
+DIMENSIONS:    9 × 7 inches, 200 dpi

@@ -4,6 +4,71 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Representativeness figures Rep001–Rep008 aesthetic overhaul + legend files
+
+### Overview
+
+Applied a consistent publication-quality aesthetic update to all eight primary
+representativeness figures (`scripts/figure_representativeness_summary.R`), and
+wrote detailed plain-text figure legend files for each.
+
+### Aesthetic changes (Rep001–008)
+
+**Theme updates (applied globally via `base_theme` and `traj_theme`):**
+- Added `panel.border = element_rect(colour = "black", fill = NA, linewidth = 0.4)` — black frame around each panel
+- Added `panel.grid.major = element_blank()` — removed all grey gridlines (previously only minor gridlines were blanked)
+- Added `axis.ticks = element_line(colour = "black")` + `axis.ticks.length = unit(-0.15, "cm")` — inward tick marks
+- Added `axis.text.x/y` margin padding (`margin(t=5)` / `margin(r=5)`) to prevent tick-label overlap with inward ticks
+- Added `COUNT_DIFF_XLIM <- c(-210, 210)` constant for Rep006 (fixed symmetric range; max observed delta = 199)
+
+**Panel labels A–F (Rep001–006):** bold capital letter in top-left corner of each panel
+via `annotate("text", ..., fontface = "bold")` at `x = LOG2_XLIM[1] + 0.08, y = n_lev + 0.45`.
+
+**J corner annotation:** Jaccard value in top-right of each panel. Single network:
+`"J = X.XXX"`. Overlay (Rep005): two stacked labels — `"J = X.XXX (current)"` above
+`"J = X.XXX (2015)"`. Count-diff (Rep006): `"J = X.XXX"` for current network only,
+anchored to `COUNT_DIFF_XLIM[2]`.
+
+**AXES6 title updates:**
+- KG: `"Köppen-Geiger (Beck 2023, 13-class)"`
+- LULC: `"ESA CCI Land Cover v2.1.1 (10-class, high-level)"`
+- Aridity: `"CGIAR Aridity Index v3.1 (7-class, UNEP scheme)"`
+- Biomass: `"ESA CCI Biomass v7, 2024 estimate (7-bin hybrid)"` (subtitle only; trajectory uses 18-bin)
+- NEE-IAV: `"TRENDY v14 NEE-IAV (7-bin hybrid)"` / ET-median: `"TRENDY v14 ET-median (7-bin hybrid)"`
+
+**Rep007–008 (trajectory figures):** updated `TRAJ6_COLORS` key from
+`"Biomass (7-bin)"` → `"Biomass (18-bin)"` and `ax_specs_6` from
+`agg="7bin_hybrid"` → `agg="18bin_hybrid"` for all three continuous axes (Biomass,
+NEE-IAV, ET-median). The trajectory J values now reflect the 18-bin scheme throughout.
+
+### Legend files written
+
+Eight plain-text figure legend files at `review/figures/representativeness/`:
+
+| File | Content |
+|------|---------|
+| `fig_rep001_current.legend.txt` | Panel layout, axis schemes, J values (current_767), data sources |
+| `fig_rep002_marconi.legend.txt` | Marconi J values, historical context |
+| `fig_rep003_la_thuile.legend.txt` | La Thuile J values, context vs Marconi |
+| `fig_rep004_fluxnet2015.legend.txt` | FLUXNET2015 J values, context vs La Thuile |
+| `fig_rep005_fluxnet2015_vs_current.legend.txt` | Delta J table (current vs 2015), LULC note |
+| `fig_rep006_delta_count_2015_to_current.legend.txt` | Max deltas by axis, bar colour scheme |
+| `fig_rep007_jaccard_trajectory.legend.txt` | Full J table (all 4 networks × 6 axes), key patterns |
+| `fig_rep008_jaccard_trajectory_with_counts.legend.txt` | Same + secondary axis description, ET-median ceiling note |
+
+### Jaccard values at 18-bin hybrid (Rep007–008)
+
+| Axis | Marconi | La Thuile | FLUXNET2015 | Current |
+|------|---------|-----------|-------------|---------|
+| KG (13-class) | 0.223 | 0.292 | 0.365 | 0.373 |
+| LULC (10-class) | 0.349 | 0.553 | 0.582 | 0.556 |
+| Aridity (7-class) | 0.479 | 0.531 | 0.598 | 0.667 |
+| Biomass (18-bin) | 0.313 | 0.490 | 0.540 | 0.616 |
+| NEE-IAV (18-bin) | 0.385 | 0.411 | 0.477 | 0.486 |
+| ET-median (18-bin) | 0.317 | 0.363 | 0.366 | 0.433 |
+
+---
+
 ## 2026-06-29 — Representativeness figures Rep011–Rep018 (aggregation sensitivity)
 
 ### Overview

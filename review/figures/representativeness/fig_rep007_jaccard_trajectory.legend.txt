@@ -1,0 +1,65 @@
+FIGURE LEGEND — fig_rep007_jaccard_trajectory.png
+==================================================
+
+TITLE: FLUXNET representativeness trajectory — Jaccard similarity across four network generations
+
+DESCRIPTION:
+Single-panel trajectory figure showing the weighted Jaccard similarity index (J)
+for six classification axes across four successive FLUXNET network generations:
+Marconi (n=35), La Thuile (n=252), FLUXNET2015 (n=212), and Current (n=767).
+Each coloured line traces how representativeness on one axis has evolved as the
+network grew, contracted (FLUXNET2015 quality filter), and expanded again.
+
+X AXIS:
+  Four network generations in chronological order:
+    1 = Marconi (n = 35, ~1999)
+    2 = La Thuile (n = 252, ~2007)
+    3 = FLUXNET2015 (n = 212, ~2015)
+    4 = Current (n = 767, Shuttle snapshot 2026)
+  Labels include sample sizes: Marconi (n=35), La Thuile (n=252), etc.
+
+Y AXIS:
+  Weighted Jaccard similarity index J ∈ [0, 1].
+  J = 1: perfect proportional representation relative to global KG-land area.
+  J = 0: no overlap between network and global land distributions.
+
+CLASSIFICATION AXES AND LINE COLORS:
+  KG (13-class):     vermilion (#D55E00) — Marconi 0.223 → La Thuile 0.292
+                       → FLUXNET2015 0.365 → Current 0.373
+  LULC (10-class):   reddish-pink (#CC79A7) — Marconi 0.349 → La Thuile 0.553
+                       → FLUXNET2015 0.582 → Current 0.556
+  Aridity (7-class): amber (#E69F00) — Marconi 0.479 → La Thuile 0.531
+                       → FLUXNET2015 0.598 → Current 0.667
+  Biomass (18-bin):  green (#009E73) — Marconi 0.313 → La Thuile 0.490
+                       → FLUXNET2015 0.540 → Current 0.616
+  TRENDY NEE-IAV:    blue (#0072B2) — Marconi 0.385 → La Thuile 0.411
+                       → FLUXNET2015 0.477 → Current 0.486
+  TRENDY ET-median:  sky blue (#56B4E9) — Marconi 0.317 → La Thuile 0.363
+                       → FLUXNET2015 0.366 → Current 0.433
+
+AXIS-SPECIFIC BINNING (for continuous axes):
+  Biomass: 18-bin hybrid (1 near-zero bin + 17 equal-area quantile bins;
+           global land denominator: fine KG raster, ~147.3 M km²)
+  NEE-IAV: 18-bin hybrid (same scheme applied to TRENDY v14 NEE-IAV field)
+  ET-median: 18-bin hybrid (ceiling at 1000 mm yr⁻¹; 1 collapsed break at 18-bin)
+
+REPRESENTATIVENESS METRIC: Weighted Jaccard (J) = Σ min(p,q) / Σ max(p,q),
+  where p = global KG-land class fractions, q = network class fractions.
+
+KEY PATTERNS:
+  - All axes improve monotonically from Marconi to Current, except LULC which
+    dips slightly from FLUXNET2015 (0.582) to Current (0.556).
+  - Aridity shows the largest absolute gain from Marconi to Current (+0.188).
+  - KG (13-class) remains the lowest J at all time steps, reflecting the
+    structural difficulty of representing 13 climate classes with <800 sites.
+  - The La Thuile→FLUXNET2015 transition (quality filter reducing 252→212 sites)
+    maintains or improves J on most axes, confirming the quality filter preferentially
+    retained geographically well-distributed sites.
+
+THIS FIGURE DIFFERS FROM fig_rep008 by omitting the secondary site-count bar overlay.
+
+DATA SOURCES: Same as fig_rep001.
+
+FIGURE SCRIPT: scripts/figure_representativeness_summary.R
+OUTPUT PATH:   review/figures/representativeness/fig_rep007_jaccard_trajectory.png
+DIMENSIONS:    6 × 4 inches, 200 dpi

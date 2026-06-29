@@ -438,9 +438,9 @@ LOG2_BREAKS <- c(-LOG2_MAX, -1, 0, 1, LOG2_MAX)
 LOG2_LABELS <- c("1/5×","1/2×","1×","2×","5×")
 LOG2_XLIM   <- c(-LOG2_MAX - 0.25, LOG2_MAX + 0.25)
 
-# Fixed symmetric range for Rep006 count-difference panels.
-# Max observed delta (current minus FLUXNET2015) = 199 sites; 210 gives ~5% headroom.
-COUNT_DIFF_XLIM <- c(-210, 210)
+# Rep006 x-axis: all observed deltas are positive (current always ≥ FLUXNET2015).
+# Zero is the left edge; max observed = 199, so 220 gives ~10% headroom.
+COUNT_DIFF_XLIM <- c(0, 220)
 
 base_theme <- theme_minimal(base_size = 9) +
   theme(
@@ -500,8 +500,6 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE,
 
   j_val    <- get_j(ax$m_axis, ax$m_agg, network)
   col_vals  <- setNames(df$color_hex, as.character(df$class_label))
-  n_lev     <- nlevels(df$class_label)
-  y_top     <- n_lev + 0.45   # inside expanded margin above top bar
 
   p <- ggplot(df, aes(x = log2_sr_clip, y = class_label, fill = class_label)) +
     geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
@@ -512,10 +510,8 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE,
                        expand = expansion(mult = 0),
                        name   = if (show_xlab) "Sampling ratio (network / global)" else NULL) +
     scale_y_discrete(name = NULL) +
-    labs(subtitle = ax$title) +
     base_theme +
     theme(
-      plot.subtitle = element_text(size = 7.5, face = "plain", colour = "grey30"),
       axis.text.y   = element_text(size = 6.5, margin = margin(r = 5)),
       axis.text.x   = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
                       else element_blank(),
@@ -533,17 +529,18 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE,
     )
   }
 
-  # Panel label A–F (top-left)
+  # Panel label A–F: top-left corner, inset from border
   if (!is.null(panel_label)) {
-    p <- p + annotate("text", x = LOG2_XLIM[1] + 0.08, y = y_top,
-                      label = panel_label, hjust = 0, vjust = 0,
+    p <- p + annotate("text", x = -Inf, y = Inf, label = panel_label,
+                      hjust = -0.3, vjust = 1.5,
                       size = 3.5, fontface = "bold", colour = "grey10")
   }
 
-  # J value (top-right)
+  # J value: top-right corner, inset from border
   if (!is.na(j_val)) {
-    p <- p + annotate("text", x = LOG2_XLIM[2] - 0.08, y = y_top,
-                      label = sprintf("J = %.3f", j_val), hjust = 1, vjust = 0,
+    p <- p + annotate("text", x = Inf, y = Inf,
+                      label = sprintf("J = %.3f", j_val),
+                      hjust = 1.3, vjust = 1.5,
                       size = 2.5, colour = "grey20")
   }
 
@@ -576,8 +573,6 @@ make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE,
     dplyr::mutate(net_grp = factor(net_grp, levels = c(lbl_a, lbl_b)))
 
   col_vals <- setNames(df_a$color_hex, as.character(df_a$class_label))
-  n_lev    <- nlevels(df_a$class_label)
-  y_top    <- n_lev + 0.45
 
   p <- ggplot(df_both, aes(x = log2_sr_clip, y = class_label,
                             fill = class_label, alpha = net_grp)) +
@@ -596,37 +591,35 @@ make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE,
                        expand = expansion(mult = 0),
                        name   = if (show_xlab) "Sampling ratio (network / global)" else NULL) +
     scale_y_discrete(name = NULL) +
-    labs(subtitle = ax$title) +
     base_theme +
     theme(
-      plot.subtitle = element_text(size = 7.5, face = "plain", colour = "grey30"),
-      axis.text.y   = element_text(size = 6.5, margin = margin(r = 5)),
-      axis.text.x   = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
-                      else element_blank(),
-      axis.ticks.x  = if (show_xlab) element_line() else element_blank(),
-      axis.title.x  = element_text(size = 8),
+      axis.text.y     = element_text(size = 6.5, margin = margin(r = 5)),
+      axis.text.x     = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
+                        else element_blank(),
+      axis.ticks.x    = if (show_xlab) element_line() else element_blank(),
+      axis.title.x    = element_text(size = 8),
       legend.position = "top",
       legend.title    = element_text(size = 7.5),
       legend.text     = element_text(size = 7)
     )
 
-  # Panel label (top-left)
+  # Panel label: top-left corner, inset from border
   if (!is.null(panel_label)) {
-    p <- p + annotate("text", x = LOG2_XLIM[1] + 0.08, y = y_top,
-                      label = panel_label, hjust = 0, vjust = 0,
+    p <- p + annotate("text", x = -Inf, y = Inf, label = panel_label,
+                      hjust = -0.3, vjust = 1.5,
                       size = 3.5, fontface = "bold", colour = "grey10")
   }
 
-  # J values stacked (top-right) — current above, 2015 below
+  # J values stacked: top-right corner, inset from border — current above, 2015 below
   if (!is.na(j_a)) {
-    p <- p + annotate("text", x = LOG2_XLIM[2] - 0.08, y = y_top,
+    p <- p + annotate("text", x = Inf, y = Inf,
                       label = sprintf("J = %.3f (current)", j_a),
-                      hjust = 1, vjust = 0, size = 2.2, colour = "grey20")
+                      hjust = 1.3, vjust = 1.5, size = 2.2, colour = "grey20")
   }
   if (!is.na(j_b)) {
-    p <- p + annotate("text", x = LOG2_XLIM[2] - 0.08, y = y_top - 0.4,
+    p <- p + annotate("text", x = Inf, y = Inf,
                       label = sprintf("J = %.3f (2015)", j_b),
-                      hjust = 1, vjust = 0, size = 2.2, colour = "grey40")
+                      hjust = 1.3, vjust = 3.5, size = 2.2, colour = "grey40")
   }
 
   p
@@ -666,26 +659,22 @@ make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE,
     )
 
   j_val  <- get_j(ax$m_axis, ax$m_agg, net_a)  # J for current network
-  n_lev  <- nlevels(delta_df$class_label)
-  y_top  <- n_lev + 0.45
 
+  # Zero is the left axis edge — no separate vline needed.
   p <- ggplot(delta_df, aes(x = delta, y = class_label, fill = bar_color)) +
-    geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
     geom_col(width = 0.72, show.legend = FALSE,
              colour = "black", linewidth = 0.25) +
     geom_text(aes(x = ann_x, label = delta, hjust = ann_hjust),
               size = 2.2, colour = "grey15") +
     scale_fill_identity() +
     scale_x_continuous(
-      name   = if (show_xlab) "Site count change (current − FLUXNET2015)" else NULL,
+      name   = if (show_xlab) "Site count added (current − FLUXNET2015)" else NULL,
       limits = COUNT_DIFF_XLIM,
       expand = expansion(mult = 0)
     ) +
     scale_y_discrete(name = NULL) +
-    labs(subtitle = ax$title) +
     base_theme +
     theme(
-      plot.subtitle = element_text(size = 7.5, face = "plain", colour = "grey30"),
       axis.text.y   = element_text(size = 6.5, margin = margin(r = 5)),
       axis.text.x   = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
                       else element_blank(),
@@ -693,18 +682,18 @@ make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE,
       axis.title.x  = element_text(size = 8)
     )
 
-  # Panel label (top-left)
+  # Panel label: top-left corner, inset from border
   if (!is.null(panel_label)) {
-    p <- p + annotate("text", x = COUNT_DIFF_XLIM[1] + 4, y = y_top,
-                      label = panel_label, hjust = 0, vjust = 0,
+    p <- p + annotate("text", x = -Inf, y = Inf, label = panel_label,
+                      hjust = -0.3, vjust = 1.5,
                       size = 3.5, fontface = "bold", colour = "grey10")
   }
 
-  # J value for current network (top-right)
+  # J for current network: top-right corner, inset from border
   if (!is.na(j_val)) {
-    p <- p + annotate("text", x = COUNT_DIFF_XLIM[2] - 4, y = y_top,
-                      label = sprintf("J = %.3f", j_val), hjust = 1, vjust = 0,
-                      size = 2.5, colour = "grey20")
+    p <- p + annotate("text", x = Inf, y = Inf,
+                      label = sprintf("J = %.3f", j_val),
+                      hjust = 1.3, vjust = 1.5, size = 2.5, colour = "grey20")
   }
 
   p
@@ -746,29 +735,65 @@ make_grid_fig <- function(network, output_path,
   })
 
   title_str <- if (mode == "overlay") {
-    paste0("Current FLUXNET (n=767) vs FLUXNET2015 (n=212) — sampling ratio per class")
+    "Current FLUXNET (n=767) vs FLUXNET2015 (n=212) — sampling ratio per class"
   } else if (mode == "count_diff") {
-    "Site count change per class: Current FLUXNET − FLUXNET2015"
+    "Site count added per class: Current FLUXNET − FLUXNET2015"
   } else {
     paste0(NET_TITLES[[network]], " — sampling ratio per class")
   }
 
-  combined <- (panels[[1]] | panels[[2]] | panels[[3]]) /
-              (panels[[4]] | panels[[5]] | panels[[6]]) +
-    plot_annotation(
-      title   = title_str,
-      caption = "X axis: sampling ratio = network fraction / global KG-land fraction, log₂ scale.\n1× = proportional representation. Bars clipped at ±5×; actual ratio annotated.",
-      theme   = theme(
-        plot.title    = element_text(size = 10, face = "bold"),
-        plot.caption  = element_text(size = 6.5, colour = "grey40", hjust = 0),
-        plot.background = element_rect(fill = "white", colour = NA)
-      )
-    )
-
-  if (mode == "overlay") {
-    combined <- combined + plot_layout(guides = "collect") &
-      theme(legend.position = "top")
+  caption_str <- if (mode == "count_diff") {
+    "X axis: site count added = current FLUXNET − FLUXNET2015 sites per class. Zero is the left axis edge; all classes show net additions."
+  } else {
+    "X axis: sampling ratio = network fraction / global KG-land fraction, log₂ scale. 1× = proportional representation. Bars clipped at ±5×; actual ratio annotated."
   }
+
+  # For overlay mode: extract shared legend then strip per-panel legends.
+  if (mode == "overlay") {
+    tmp_grob   <- ggplotGrob(panels[[1]])
+    leg_idx    <- which(tmp_grob$layout$name == "guide-box")
+    shared_leg <- if (length(leg_idx) > 0) tmp_grob$grobs[[leg_idx]] else NULL
+    panels     <- lapply(panels, function(p) p + theme(legend.position = "none"))
+  }
+
+  # Convert panels to grobs and equalise the y-axis label column width so every
+  # panel's plot region starts at the same horizontal position on the page.
+  grobs <- lapply(panels, ggplotGrob)
+  ax_l_cols <- vapply(grobs, function(g) {
+    idx <- which(g$layout$name == "axis-l")
+    if (length(idx) == 0L) NA_real_ else as.double(g$layout$l[idx[1L]])
+  }, numeric(1L))
+  valid <- !is.na(ax_l_cols)
+  if (any(valid)) {
+    w_list <- lapply(which(valid), function(i) grobs[[i]]$widths[ax_l_cols[i]])
+    w_max  <- do.call(grid::unit.pmax, w_list)
+    for (i in seq_along(grobs)) {
+      if (valid[i]) grobs[[i]]$widths[ax_l_cols[i]] <- w_max
+    }
+  }
+
+  # Arrange in 2×3 grid; for overlay mode prepend the shared legend row.
+  grid_body <- gridExtra::arrangeGrob(grobs = grobs, nrow = 2, ncol = 3)
+  if (mode == "overlay" && !is.null(shared_leg)) {
+    grid_body <- gridExtra::arrangeGrob(
+      shared_leg, grid_body, nrow = 2,
+      heights = grid::unit(c(0.45, 1), c("cm", "null"))
+    )
+  }
+
+  # Wrap with title and caption using plain grid text grobs.
+  title_grob   <- grid::textGrob(
+    title_str, hjust = 0, x = 0.01,
+    gp = grid::gpar(fontface = "bold", fontsize = 10)
+  )
+  caption_grob <- grid::textGrob(
+    caption_str, hjust = 0, x = 0.01,
+    gp = grid::gpar(fontsize = 6.5, col = "grey40")
+  )
+  combined <- gridExtra::arrangeGrob(
+    title_grob, grid_body, caption_grob, nrow = 3,
+    heights = grid::unit(c(0.45, 1, 0.55), c("cm", "null", "cm"))
+  )
 
   ggplot2::ggsave(output_path, combined, width = width_in, height = height_in,
                   dpi = dpi, bg = "white")
@@ -953,25 +978,12 @@ make_grid_fig(
 )
 
 message("\n=== Fig 006: count difference current_767 minus fluxnet2015 ===")
-panels_006 <- lapply(AXES6_KEYS, function(k) {
-  ax        <- AXES6[[k]]
-  show_xlab <- k %in% c("biomass","nee_iav","et_median")
-  make_panel_count_diff(ax, "current_767", "fluxnet2015", show_xlab = show_xlab)
-})
-combined_006 <- (panels_006[[1]] | panels_006[[2]] | panels_006[[3]]) /
-                (panels_006[[4]] | panels_006[[5]] | panels_006[[6]]) +
-  plot_annotation(
-    title   = "Site count change per class: Current FLUXNET − FLUXNET2015",
-    caption = "Blue: current network has more sites in this class. Red: fewer sites.\nCount label = current − FLUXNET2015.",
-    theme   = theme(
-      plot.title   = element_text(size = 10, face = "bold"),
-      plot.caption = element_text(size = 6.5, colour = "grey40", hjust = 0),
-      plot.background = element_rect(fill = "white", colour = NA)
-    )
-  )
-ggplot2::ggsave(file.path(OUTD, "fig_rep006_delta_count_2015_to_current.png"),
-                combined_006, width = 10, height = 7, dpi = 300, bg = "white")
-message("Saved: fig_rep006_delta_count_2015_to_current.png")
+make_grid_fig(
+  "current_767",
+  file.path(OUTD, "fig_rep006_delta_count_2015_to_current.png"),
+  mode            = "count_diff",
+  overlay_network = "fluxnet2015"
+)
 
 # Count-diff summary for reporting
 for (k in AXES6_KEYS) {

@@ -4,6 +4,83 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Rep001–Rep006 four-fix aesthetic pass (alignment, titles, labels, Rep006 axis)
+
+### Overview
+
+Applied four fixes to `scripts/figure_representativeness_summary.R` for
+Rep001–Rep006, regenerated all 18 figures, confirmed visually and by timestamp.
+Log: `logs/fig_repr_summary_fixes4_20260629T153411.log`.
+
+### Fix 1: Vertical alignment of 1× / zero reference line
+
+Replaced the patchwork `(p1|p2|p3)/(p4|p5|p6) + plot_annotation(...)` compositor
+in `make_grid_fig()` with a gtable-based approach using packages already in the
+renv (`grid`, `gtable`, `gridExtra`):
+
+1. Convert all 6 panels to grobs via `ggplotGrob()`.
+2. Identify the `"axis-l"` column index in each grob's layout.
+3. Collect axis-l widths, compute the maximum via `grid::unit.pmax()`, and set
+   all 6 panels to that maximum width.
+4. Arrange with `gridExtra::arrangeGrob(nrow=2, ncol=3)`.
+5. Title and caption added as `grid::textGrob()` rows via a 3-row
+   `gridExtra::arrangeGrob()` with `grid::unit(c(0.45, 1, 0.55), c("cm","null","cm"))` heights.
+
+Overlay legend (Rep005): extracted from the first panel grob via `guide-box`
+layout name lookup; stripped from all panels before equalisation; added as
+a `0.45 cm` row above the grid body.
+
+Note: `cowplot` is available in the R system library but not in the renv — the
+gtable approach avoids adding a new project dependency.
+
+Visual verification: rendered Rep001 PNG inspected; the 1× line falls at the same
+horizontal pixel position across all six panels despite panels A–C having short
+y-axis labels (two-letter KG codes) and panels D–F having long labels (e.g.
+"42.1–54.4 gC m⁻² yr⁻¹").
+
+### Fix 2: Per-panel subtitles removed
+
+Removed `labs(subtitle = ax$title)` and `plot.subtitle = element_text(...)` from
+`make_panel_single()`, `make_panel_overlay()`, and `make_panel_count_diff()`.
+Overall figure title retained in the gridExtra title row.
+
+### Fix 3: Panel labels A–F repositioned inside plot area
+
+Changed annotation coordinates from data-space (`x = LOG2_XLIM[1] + 0.08, y = n_lev + 0.45`)
+to infinite-coordinate form (`x = -Inf, y = Inf, hjust = -0.3, vjust = 1.5`).
+This places each label at a fixed inset from the top-left corner of the plot area
+regardless of the number of classes, without relying on the now-absent subtitle
+row for extra vertical space.
+
+J annotations updated symmetrically: `x = Inf, y = Inf, hjust = 1.3, vjust = 1.5`
+(single J) and `vjust = 3.5` for the 2015 J line in the overlay panels.
+
+### Fix 4 (Rep006): x-axis starts at zero; Rep006 routed through make_grid_fig
+
+`COUNT_DIFF_XLIM` changed from `c(-210, 210)` to `c(0, 220)` (all observed
+deltas are positive; max = 199 sites). The `geom_vline(xintercept=0)` removed
+from `make_panel_count_diff()` — the left axis edge serves this role.
+X-axis label changed to "Site count added (current − FLUXNET2015)".
+
+The bespoke patchwork execution block for Rep006 (lines 981–999 previously) was
+replaced with a single `make_grid_fig(..., mode="count_diff", ...)` call,
+routing Rep006 through the same aligned compositor as Rep001–005.
+
+### PNG modification timestamps (Jun 29 15:34, this session)
+
+| File | Size |
+|------|------|
+| `fig_rep001_current.png` | 198 KB |
+| `fig_rep002_marconi.png` | 195 KB |
+| `fig_rep003_la_thuile.png` | 198 KB |
+| `fig_rep004_fluxnet2015.png` | 199 KB |
+| `fig_rep005_fluxnet2015_vs_current.png` | 213 KB |
+| `fig_rep006_delta_count_2015_to_current.png` | 222 KB |
+| `fig_rep007_jaccard_trajectory.png` | 138 KB |
+| `fig_rep008_jaccard_trajectory_with_counts.png` | 142 KB |
+
+---
+
 ## 2026-06-29 — Rep001–Rep008 confirmed regenerated on disk
 
 ### Overview

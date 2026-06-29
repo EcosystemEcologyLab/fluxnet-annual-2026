@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-29T18:51:14Z",
+  "pipeline_version": "f3b5bac",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_nee_iav.tif",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"
+  ],
+  "notes": "20-bin hybrid global distribution for trendy_nee_iav. Bin 1: near-zero (< 5 gC m-2 yr-1). Bins 2–20: 19 equal-area quantile bins. Q_PROBS = (1:18)/19. KG land mask: koppen_geiger_0p5.tif. Total KG land: 165,495,091 km2. 19 documented breakpoints (gC m-2 yr-1): 5.0, 11.0, 16.5, 20.8, 24.4, 27.8, 31.0, 34.0, 37.1, 40.5, 44.0, 47.8, 51.7, 55.9, 60.4, 65.7, 72.2, 81.0, 95.8."
+}

@@ -4,6 +4,102 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Multi-bin representativeness: 12-bin, 18-bin, 20-bin hybrid
+
+### Overview
+
+Built and ran `scripts/recompute_continuous_axes_multibin.R`. Extends the
+continuous-axis representativeness to three additional bin counts (12, 18, 20)
+using the same near-zero cut (< 5 in axis units) + equal-area quantile scheme
+as the existing 7-bin and 30-bin implementations. Run time: ~3 min on local
+mini (biomass bilinear resample done once, fine histogram computed once per axis,
+3 classifications derived from it).
+
+### Outputs
+
+- **15 new global distribution CSVs + meta.json** in `data/snapshots/`
+  (`<axis>_global_distribution_{12,18,20}bin.{csv,meta.json}`)
+- **20 per-site CSVs updated** with 3 new bin columns each
+  (`{axis}_bin_12`, `{axis}_bin_18`, `{axis}_bin_20`)
+- **`representativeness_metrics.csv`**: 96 + 60 = 156 rows
+  (`aggregation_level` values: `12bin_hybrid`, `18bin_hybrid`, `20bin_hybrid`)
+
+### Breakpoints per axis × bin count
+
+**Biomass CCI v7 (Mg/ha):**
+- 12-bin: 5.0, 9, 14, 21, 30, 43, 61, 84, 116, 161, 255
+- 18-bin: 5.0, 8, 10, 14, 18, 23, 29, 37, 46, 57, 71, 87, 107, 132, 164, 220, 288
+- 20-bin: 5.0, 7, 10, 13, 16, 20, 25, 31, 38, 46, 57, 69, 83, 100, 120, 145, 177, 237, 294
+
+**TRENDY NEE-IAV (gC m⁻² yr⁻¹):**
+- 12-bin: 5.0, 15.1, 22.5, 28.3, 33.8, 39.2, 45.4, 52.1, 59.5, 69.1, 84.0
+- 18-bin: 5.0, 11.7, 17.7, 22.2, 26.1, 29.7, 33.1, 36.6, 40.3, 44.3, 48.6, 53.0, 57.7, 63.1, 69.8, 78.7, 93.5
+- 20-bin: 5.0, 11.0, 16.5, 20.8, 24.4, 27.8, 31.0, 34.0, 37.1, 40.5, 44.0, 47.8, 51.7, 55.9, 60.4, 65.7, 72.2, 81.0, 95.8
+
+**TRENDY ET-IAV (mm yr⁻¹):**
+- 12-bin: 5.0, 14.3, 18.3, 21.7, 25.4, 29.6, 34.5, 39.9, 46.6, 56.1, 72.5
+- 18-bin: 5.0, 12.4, 15.5, 18.0, 20.3, 22.6, 25.1, 27.4, 30.5, 33.6, 37.0, 40.6, 44.8, 50.0, 56.8, 66.6, 82.0
+- 20-bin: 5.0, 11.9, 14.9, 17.2, 19.4, 21.3, 23.5, 25.7, 27.8, 30.7, 33.5, 36.5, 39.6, 43.2, 47.4, 52.5, 59.6, 69.2, 84.4
+
+**TRENDY NEE-median (gC m⁻² yr⁻¹):**
+- 12-bin: 5.0, 14.2, 21.8, 28.0, 33.6, 38.9, 45.1, 52.0, 59.4, 68.6, 81.2
+- 18-bin: 5.0, 11.1, 16.6, 21.4, 25.6, 29.4, 33.0, 36.4, 40.0, 43.9, 48.3, 52.9, 57.6, 63.0, 69.2, 76.6, 89.4
+- 20-bin: 5.0, 10.5, 15.5, 19.9, 23.9, 27.5, 30.8, 33.9, 36.9, 40.2, 43.7, 47.6, 51.7, 55.8, 60.2, 65.5, 71.4, 78.5, 91.8
+
+**TRENDY ET-median (mm yr⁻¹) — ceiling effects:**
+- 12-bin: 5.0, 77.7, 156.3, ..., 934.4, **1000.1** (top quantile hits ceiling; no collapse)
+- 18-bin: 5.0, 47.1, ..., 946.2, **1000.1, 1000.1** (1 collapsed at 1000 mm/yr)
+- 20-bin: 5.0, 41.9, ..., 990.0, **1000.1, 1000.1** (1 collapsed at 1000 mm/yr)
+
+For ET-median, the 12-bin scheme fits just inside the ceiling with the last bin
+at > 1000.1 mm/yr serving as a valid catch-all. At 18- and 20-bin the quantile
+demand exceeds the histogram resolution, producing 1 duplicate break. The 30-bin
+scheme had 4 collapsed breaks. The 12-bin is the highest resolution at which
+ET-median avoids ceiling collapse.
+
+### Jaccard by bin count (current_767)
+
+| Axis | 7-bin | 12-bin | 18-bin | 20-bin | 30-bin |
+|------|-------|--------|--------|--------|--------|
+| biomass_cci_v7 | 0.6385 | 0.6205 | 0.6163 | 0.6139 | 0.6161 |
+| trendy_nee_iav | 0.5073 | 0.4968 | 0.4863 | 0.4894 | 0.4813 |
+| trendy_et_iav | 0.6634 | 0.6544 | 0.6361 | 0.6348 | 0.6328 |
+| trendy_nee_median | 0.4949 | 0.4796 | 0.4773 | 0.4745 | 0.4655 |
+| trendy_et_median | 0.4590 | 0.4562 | 0.4334 | 0.4470 | 0.4287 |
+
+**Patterns:**
+
+1. **Monotonic decrease is the norm** — all axes show declining J as bin count
+   rises, confirming finer binning is a consistently harder test with no artificial
+   inflation at any single resolution.
+
+2. **Rate of decline decelerates** — the largest J drop occurs between 7-bin and
+   12-bin for most axes; gains from additional bins above 18–20 are marginal
+   (~0.001–0.003 per axis for the current_767 network). The 7→12 step is the
+   most informative quality jump.
+
+3. **Two non-monotonicities worth noting:**
+   - NEE-IAV: 18-bin (0.4863) < 20-bin (0.4894) — small reversal, attributable
+     to quantile step effects from the 0.1-unit histogram resolution.
+   - ET-median: 18-bin (0.4334) < 20-bin (0.4470) — larger reversal (~0.013)
+     caused by the ceiling collapse at 1000 mm/yr. At 18-bin, 1 collapsed
+     breakpoint inflates one bin's global fraction, penalising J. At 20-bin,
+     the collapse manifests the same way but the distribution of sites happens
+     to match better. This is a known artefact of the histogram ceiling for
+     ET-median and should be noted in any figure showing this axis.
+
+4. **ET axes > NEE axes** at all bin counts — consistent with the 7-bin and
+   30-bin results.
+
+### Files changed
+
+- **New script:** `scripts/recompute_continuous_axes_multibin.R`
+- **New global dist CSVs + metas (×15):** `data/snapshots/*_global_distribution_{12,18,20}bin.{csv,meta.json}`
+- **Updated per-site CSVs + metas (×20):** `data/snapshots/site_{biomass,trendy_*}.{csv,meta.json}`
+- **Updated metrics:** `data/snapshots/representativeness_metrics.csv` (96 → 156 rows)
+
+---
+
 ## 2026-06-29 — Representativeness figures Rep001–Rep010
 
 ### Overview

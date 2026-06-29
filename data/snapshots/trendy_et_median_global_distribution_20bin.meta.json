@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-29T18:51:15Z",
+  "pipeline_version": "f3b5bac",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_et_median.tif",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"
+  ],
+  "notes": "20-bin hybrid global distribution for trendy_et_median. Bin 1: near-zero (< 5 mm yr-1). Bins 2–20: 19 equal-area quantile bins. Q_PROBS = (1:18)/19. KG land mask: koppen_geiger_0p5.tif. Total KG land: 165,495,091 km2. 19 documented breakpoints (mm yr-1): 5.0, 41.9, 90.2, 135.4, 176.5, 214.5, 251.8, 290.7, 327.9, 370.5, 419.1, 480.7, 565.4, 672.5, 772.7, 874.1, 990.0, 1000.1, 1000.1."
+}

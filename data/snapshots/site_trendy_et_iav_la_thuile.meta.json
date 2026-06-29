@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-06-29T16:06:27Z",
-  "pipeline_version": "6d07d89",
+  "run_datetime_utc": "2026-06-29T18:51:16Z",
+  "pipeline_version": "f3b5bac",
   "input_sources": [
     "data/external/trendy/derived/trendy_et_iav.tif",
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"
   ],
-  "notes": "Per-site trendy_et_iav site classifications (all networks). Column 'trendy_et_iav_bin': existing 7-bin hybrid (unchanged). Column 'trendy_et_iav_bin_30': new 30-bin hybrid added. 30-bin scheme: bin 1 = < 5 mm yr-1; bins 2–30 = 29 equal-area quantile bins. 29 breakpoints (mm yr-1): 5.0, 9.9, 13.1, 14.9, 16.3, 17.8, 19.3, 20.6, 21.9, 23.2, 24.8, 26.1, 27.5, 29.3, 31.1, 33.0, 34.9, 36.9, 38.9, 41.2, 43.5, 46.3, 49.3, 52.9, 57.4, 62.9, 69.6, 78.5, 92.7."
+  "notes": "Per-site trendy_et_iav site classifications (all networks). Existing columns: trendy_et_iav_bin (7-bin), trendy_et_iav_bin_30 (30-bin). New columns: trendy_et_iav_bin_12, trendy_et_iav_bin_18, trendy_et_iav_bin_20. Near-zero cut = 5 mm yr-1."
 }

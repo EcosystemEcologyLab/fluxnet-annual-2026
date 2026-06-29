@@ -4,6 +4,38 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Rep001–Rep008 confirmed regenerated on disk
+
+### Overview
+
+Re-ran `scripts/figure_representativeness_summary.R` (commit `2243d84`) to confirm
+all eight primary representativeness figures are present on disk with modification
+timestamps matching a clean post-edit run. Log: `logs/fig_repr_summary_regen_20260629T150450.log`.
+
+### Files written — modification timestamps (Jun 29 15:04, this session)
+
+| File | Size |
+|------|------|
+| `review/figures/representativeness/fig_rep001_current.png` | 234 KB |
+| `review/figures/representativeness/fig_rep002_marconi.png` | 230 KB |
+| `review/figures/representativeness/fig_rep003_la_thuile.png` | 235 KB |
+| `review/figures/representativeness/fig_rep004_fluxnet2015.png` | 235 KB |
+| `review/figures/representativeness/fig_rep005_fluxnet2015_vs_current.png` | 264 KB |
+| `review/figures/representativeness/fig_rep006_delta_count_2015_to_current.png` | 256 KB |
+| `review/figures/representativeness/fig_rep007_jaccard_trajectory.png` | 138 KB |
+| `review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.png` | 142 KB |
+
+All 18 figures (Rep001–018) completed with no R errors. Truncated bar counts as expected
+(Rep001: 5, Rep002: 5, Rep003: 7, Rep004: 6). No gridlines, black panel frame, inward ticks,
+panel labels A–F, J corner annotations, and 18-bin continuous axes (Rep007–008) all confirmed
+present in the generating code at commit `2243d84`.
+
+Note: Rep006 `message()` line omits the directory prefix in its output (`Saved: fig_rep006…`),
+but `ggsave()` uses `file.path(OUTD, …)` so the file lands in the correct subdirectory —
+confirmed by `ls` check.
+
+---
+
 ## 2026-06-29 — Representativeness figures Rep001–Rep008 aesthetic overhaul + legend files
 
 ### Overview

@@ -1,0 +1,63 @@
+FIGURE LEGEND — fig_rep008_jaccard_trajectory_with_counts.png
+=============================================================
+
+TITLE: FLUXNET representativeness trajectory — Jaccard similarity with site count overlay
+
+DESCRIPTION:
+Single-panel trajectory figure identical to fig_rep007, with the addition of a
+light grey bar chart (right y-axis) showing absolute site count for each network
+generation. The bar overlay contextualises changes in Jaccard similarity against
+the underlying sample size. The La Thuile → FLUXNET2015 contraction (252→212)
+and the current expansion (212→767) are immediately visible in the bar series.
+
+X AXIS:
+  Four network generations in chronological order (same as fig_rep007).
+
+PRIMARY Y AXIS (left):
+  Weighted Jaccard similarity index J ∈ [0, 1]. Six coloured lines, one per axis.
+
+SECONDARY Y AXIS (right):
+  Site count (absolute number of sites). Grey bars at width 0.38 per network,
+  with black outline (linewidth 0.3). Axis scaled so the maximum (767 sites)
+  aligns with J = 1.0 on the primary axis for visual proportionality.
+  Secondary axis range: 0 – 767 sites.
+
+CLASSIFICATION AXES AND LINE COLORS (same as fig_rep007):
+  KG (13-class):     vermilion (#D55E00)
+  LULC (10-class):   reddish-pink (#CC79A7)
+  Aridity (7-class): amber (#E69F00)
+  Biomass (18-bin):  green (#009E73)
+  TRENDY NEE-IAV:    blue (#0072B2)
+  TRENDY ET-median:  sky blue (#56B4E9)
+
+JACCARD VALUES (all four networks; 18-bin hybrid for continuous axes):
+  Axis              Marconi  La Thuile  FLUXNET2015  Current
+  KG (13-class)     0.223    0.292      0.365        0.373
+  LULC (10-class)   0.349    0.553      0.582        0.556
+  Aridity (7-class) 0.479    0.531      0.598        0.667
+  Biomass (18-bin)  0.313    0.490      0.540        0.616
+  NEE-IAV (18-bin)  0.385    0.411      0.477        0.486
+  ET-median (18-bin)0.317    0.363      0.366        0.433
+
+SITE COUNTS BY GENERATION:
+  Marconi: 35 | La Thuile: 252 | FLUXNET2015: 212 | Current: 767
+
+AXIS-SPECIFIC NOTES:
+  Biomass (18-bin): fine KG raster denominator (~147.3 M km²). 18-bin hybrid
+    = 1 near-zero bin (<5 Mg/ha) + 17 equal-area quantile bins over vegetated range.
+  NEE-IAV (18-bin): TRENDY v14 multi-model ensemble median absolute IAV
+    (µmol CO₂ m⁻² s⁻¹); coarse KG denominator (~132.6 M km²).
+  ET-median (18-bin): TRENDY v14 multi-model ensemble median annual ET
+    (mm yr⁻¹); ceiling at 1000 mm yr⁻¹. At 18-bin resolution one breakpoint
+    collapses at the ceiling (one collapsed break), resulting in 17 effective bins.
+    This produces a minor histogram artefact: 18-bin J (0.433 at current) can be
+    slightly non-monotonic relative to 20-bin J depending on network — compare
+    fig_rep018 for full bin-count sensitivity.
+
+REPRESENTATIVENESS METRIC: Weighted Jaccard (J). See fig_rep007 legend.
+
+DATA SOURCES: Same as fig_rep001.
+
+FIGURE SCRIPT: scripts/figure_representativeness_summary.R
+OUTPUT PATH:   review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.png
+DIMENSIONS:    6 × 4 inches, 200 dpi

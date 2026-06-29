@@ -111,12 +111,12 @@ ET7_COLORS  <- c("1"="#f0f8ff","2"="#bcd8f4","3"="#82bce8",
 
 # ---- 1f. Trajectory qualitative palettes (Okabe-Ito) -----------------------
 
-# 6-axis palette for Fig 007–008
+# 6-axis palette for Fig 007–008 (continuous axes at 18-bin from this version onward)
 TRAJ6_COLORS <- c(
   "KG (13-class)"     = "#D55E00",   # vermilion
   "LULC (10-class)"   = "#CC79A7",   # reddish pink
   "Aridity (7-class)" = "#E69F00",   # amber
-  "Biomass (7-bin)"   = "#009E73",   # green
+  "Biomass (18-bin)"  = "#009E73",   # green
   "TRENDY NEE-IAV"    = "#0072B2",   # blue
   "TRENDY ET-median"  = "#56B4E9"    # sky blue
 )
@@ -317,7 +317,7 @@ get_j <- function(axis, agg, net) {
 # color_hex; specify the global_df, metrics lookup keys, and display title.
 AXES6 <- list(
   kg = list(
-    title   = "Beck 2023 KG (13-class)",
+    title   = "Köppen-Geiger (Beck 2023, 13-class)",
     m_axis  = "koppen_beck2023", m_agg = "13class_twoletter",
     load_fn = function(net) {
       readr::read_csv(site_csv("koppen_beck2023", net), show_col_types = FALSE) |>
@@ -333,7 +333,7 @@ AXES6 <- list(
     }
   ),
   lulc = list(
-    title   = "ESA CCI Land Cover (10-class HL)",
+    title   = "ESA CCI Land Cover v2.1.1 (10-class, high-level)",
     m_axis  = "landcover_cci", m_agg = "high_level",
     load_fn = function(net) {
       readr::read_csv(site_csv("landcover_cci", net), show_col_types = FALSE) |>
@@ -352,7 +352,7 @@ AXES6 <- list(
     }
   ),
   aridity = list(
-    title   = "CGIAR Aridity UNEP (7-class)",
+    title   = "CGIAR Aridity Index v3.1 (7-class, UNEP scheme)",
     m_axis  = "aridity_unep7", m_agg = "unep7",
     load_fn = function(net) {
       readr::read_csv(site_csv("aridity", net), show_col_types = FALSE) |>
@@ -368,7 +368,7 @@ AXES6 <- list(
     }
   ),
   biomass = list(
-    title   = "ESA CCI Biomass v7 (7-bin hybrid)",
+    title   = "ESA CCI Biomass v7, 2024 estimate (7-bin hybrid)",
     m_axis  = "biomass_cci_v7", m_agg = "7bin_hybrid",
     load_fn = function(net) {
       readr::read_csv(site_csv("biomass_cci_v7", net), show_col_types = FALSE) |>
@@ -387,7 +387,7 @@ AXES6 <- list(
     }
   ),
   nee_iav = list(
-    title   = "TRENDY NEE-IAV (7-bin hybrid)",
+    title   = "TRENDY v14 NEE-IAV (7-bin hybrid)",
     m_axis  = "trendy_nee_iav", m_agg = "7bin_hybrid",
     load_fn = function(net) {
       readr::read_csv(site_csv("trendy_nee_iav", net), show_col_types = FALSE) |>
@@ -406,7 +406,7 @@ AXES6 <- list(
     }
   ),
   et_median = list(
-    title   = "TRENDY ET-median (7-bin hybrid)",
+    title   = "TRENDY v14 ET-median (7-bin hybrid)",
     m_axis  = "trendy_et_median", m_agg = "7bin_hybrid",
     load_fn = function(net) {
       readr::read_csv(site_csv("trendy_et_median", net), show_col_types = FALSE) |>
@@ -438,11 +438,19 @@ LOG2_BREAKS <- c(-LOG2_MAX, -1, 0, 1, LOG2_MAX)
 LOG2_LABELS <- c("1/5×","1/2×","1×","2×","5×")
 LOG2_XLIM   <- c(-LOG2_MAX - 0.25, LOG2_MAX + 0.25)
 
+# Fixed symmetric range for Rep006 count-difference panels.
+# Max observed delta (current minus FLUXNET2015) = 199 sites; 210 gives ~5% headroom.
+COUNT_DIFF_XLIM <- c(-210, 210)
+
 base_theme <- theme_minimal(base_size = 9) +
   theme(
     plot.background   = element_rect(fill = "white", colour = NA),
     panel.background  = element_rect(fill = "white", colour = NA),
+    panel.border      = element_rect(colour = "black", fill = NA, linewidth = 0.4),
+    panel.grid.major  = element_blank(),
     panel.grid.minor  = element_blank(),
+    axis.ticks        = element_line(colour = "black"),
+    axis.ticks.length = unit(-0.15, "cm"),
     legend.background = element_rect(fill = "white", colour = NA)
   )
 
@@ -482,7 +490,8 @@ prep_clip <- function(df) {
 # 6. SINGLE-NETWORK PANEL (Figs 001–004)
 # ============================================================================
 
-make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE) {
+make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE,
+                               panel_label = NULL) {
   site_counts <- ax$load_fn(network)
   df <- merge_sr(site_counts, ax$global_df) |>
     ax$augment_fn() |>
@@ -490,9 +499,9 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE) {
     prep_clip()
 
   j_val    <- get_j(ax$m_axis, ax$m_agg, network)
-  j_str    <- if (!is.na(j_val)) sprintf("  J=%.3f", j_val) else ""
-  subtitle  <- paste0(ax$title, j_str)
   col_vals  <- setNames(df$color_hex, as.character(df$class_label))
+  n_lev     <- nlevels(df$class_label)
+  y_top     <- n_lev + 0.45   # inside expanded margin above top bar
 
   p <- ggplot(df, aes(x = log2_sr_clip, y = class_label, fill = class_label)) +
     geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
@@ -503,16 +512,15 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE) {
                        expand = expansion(mult = 0),
                        name   = if (show_xlab) "Sampling ratio (network / global)" else NULL) +
     scale_y_discrete(name = NULL) +
-    labs(subtitle = subtitle) +
+    labs(subtitle = ax$title) +
     base_theme +
     theme(
-      plot.subtitle      = element_text(size = 7.5, face = "plain", colour = "grey30"),
-      axis.text.y        = element_text(size = 6.5),
-      axis.text.x        = if (show_xlab) element_text(size = 7) else element_blank(),
-      axis.ticks.x       = if (show_xlab) element_line() else element_blank(),
-      axis.title.x       = element_text(size = 8),
-      panel.grid.major.x = element_line(colour = "grey88", linewidth = 0.3),
-      panel.grid.major.y = element_blank()
+      plot.subtitle = element_text(size = 7.5, face = "plain", colour = "grey30"),
+      axis.text.y   = element_text(size = 6.5, margin = margin(r = 5)),
+      axis.text.x   = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
+                      else element_blank(),
+      axis.ticks.x  = if (show_xlab) element_line() else element_blank(),
+      axis.title.x  = element_text(size = 8)
     )
 
   # Truncated-bar annotations
@@ -524,6 +532,21 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE) {
       inherit.aes = FALSE, size = 2.2, colour = "grey15", fontface = "plain"
     )
   }
+
+  # Panel label A–F (top-left)
+  if (!is.null(panel_label)) {
+    p <- p + annotate("text", x = LOG2_XLIM[1] + 0.08, y = y_top,
+                      label = panel_label, hjust = 0, vjust = 0,
+                      size = 3.5, fontface = "bold", colour = "grey10")
+  }
+
+  # J value (top-right)
+  if (!is.na(j_val)) {
+    p <- p + annotate("text", x = LOG2_XLIM[2] - 0.08, y = y_top,
+                      label = sprintf("J = %.3f", j_val), hjust = 1, vjust = 0,
+                      size = 2.5, colour = "grey20")
+  }
+
   p
 }
 
@@ -531,7 +554,8 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE) {
 # 7. OVERLAY PANEL (Fig 005: current_767 vs fluxnet2015)
 # ============================================================================
 
-make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE) {
+make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE,
+                               panel_label = NULL) {
   counts_a <- ax$load_fn(net_a)
   counts_b <- ax$load_fn(net_b)
   df_a <- merge_sr(counts_a, ax$global_df) |> ax$augment_fn() |> prep_ordered() |> prep_clip()
@@ -541,8 +565,6 @@ make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE) 
 
   j_a <- get_j(ax$m_axis, ax$m_agg, net_a)
   j_b <- get_j(ax$m_axis, ax$m_agg, net_b)
-  j_str <- sprintf("  J=%.3f / %.3f", j_a, j_b)
-  subtitle <- paste0(ax$title, j_str)
 
   lbl_a <- "Current (n=767)"
   lbl_b <- "FLUXNET2015 (n=212)"
@@ -554,9 +576,11 @@ make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE) 
     dplyr::mutate(net_grp = factor(net_grp, levels = c(lbl_a, lbl_b)))
 
   col_vals <- setNames(df_a$color_hex, as.character(df_a$class_label))
+  n_lev    <- nlevels(df_a$class_label)
+  y_top    <- n_lev + 0.45
 
-  ggplot(df_both, aes(x = log2_sr_clip, y = class_label,
-                      fill = class_label, alpha = net_grp)) +
+  p <- ggplot(df_both, aes(x = log2_sr_clip, y = class_label,
+                            fill = class_label, alpha = net_grp)) +
     geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
     geom_col(position = position_dodge(width = 0.85), width = 0.8,
              na.rm = TRUE, colour = "black", linewidth = 0.2,
@@ -572,27 +596,48 @@ make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE) 
                        expand = expansion(mult = 0),
                        name   = if (show_xlab) "Sampling ratio (network / global)" else NULL) +
     scale_y_discrete(name = NULL) +
-    labs(subtitle = subtitle) +
+    labs(subtitle = ax$title) +
     base_theme +
     theme(
-      plot.subtitle      = element_text(size = 7.5, face = "plain", colour = "grey30"),
-      axis.text.y        = element_text(size = 6.5),
-      axis.text.x        = if (show_xlab) element_text(size = 7) else element_blank(),
-      axis.ticks.x       = if (show_xlab) element_line() else element_blank(),
-      axis.title.x       = element_text(size = 8),
-      panel.grid.major.x = element_line(colour = "grey88", linewidth = 0.3),
-      panel.grid.major.y = element_blank(),
-      legend.position    = "top",
-      legend.title       = element_text(size = 7.5),
-      legend.text        = element_text(size = 7)
+      plot.subtitle = element_text(size = 7.5, face = "plain", colour = "grey30"),
+      axis.text.y   = element_text(size = 6.5, margin = margin(r = 5)),
+      axis.text.x   = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
+                      else element_blank(),
+      axis.ticks.x  = if (show_xlab) element_line() else element_blank(),
+      axis.title.x  = element_text(size = 8),
+      legend.position = "top",
+      legend.title    = element_text(size = 7.5),
+      legend.text     = element_text(size = 7)
     )
+
+  # Panel label (top-left)
+  if (!is.null(panel_label)) {
+    p <- p + annotate("text", x = LOG2_XLIM[1] + 0.08, y = y_top,
+                      label = panel_label, hjust = 0, vjust = 0,
+                      size = 3.5, fontface = "bold", colour = "grey10")
+  }
+
+  # J values stacked (top-right) — current above, 2015 below
+  if (!is.na(j_a)) {
+    p <- p + annotate("text", x = LOG2_XLIM[2] - 0.08, y = y_top,
+                      label = sprintf("J = %.3f (current)", j_a),
+                      hjust = 1, vjust = 0, size = 2.2, colour = "grey20")
+  }
+  if (!is.na(j_b)) {
+    p <- p + annotate("text", x = LOG2_XLIM[2] - 0.08, y = y_top - 0.4,
+                      label = sprintf("J = %.3f (2015)", j_b),
+                      hjust = 1, vjust = 0, size = 2.2, colour = "grey40")
+  }
+
+  p
 }
 
 # ============================================================================
 # 8. COUNT-DIFFERENCE PANEL (Fig 006)
 # ============================================================================
 
-make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE) {
+make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE,
+                                   panel_label = NULL) {
   counts_a <- ax$load_fn(net_a)
   counts_b <- ax$load_fn(net_b)
 
@@ -620,7 +665,11 @@ make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE) {
       ann_hjust = dplyr::if_else(delta >= 0L, 0, 1)
     )
 
-  ggplot(delta_df, aes(x = delta, y = class_label, fill = bar_color)) +
+  j_val  <- get_j(ax$m_axis, ax$m_agg, net_a)  # J for current network
+  n_lev  <- nlevels(delta_df$class_label)
+  y_top  <- n_lev + 0.45
+
+  p <- ggplot(delta_df, aes(x = delta, y = class_label, fill = bar_color)) +
     geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
     geom_col(width = 0.72, show.legend = FALSE,
              colour = "black", linewidth = 0.25) +
@@ -629,20 +678,36 @@ make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE) {
     scale_fill_identity() +
     scale_x_continuous(
       name   = if (show_xlab) "Site count change (current − FLUXNET2015)" else NULL,
-      expand = expansion(mult = 0.1)
+      limits = COUNT_DIFF_XLIM,
+      expand = expansion(mult = 0)
     ) +
     scale_y_discrete(name = NULL) +
     labs(subtitle = ax$title) +
     base_theme +
     theme(
-      plot.subtitle      = element_text(size = 7.5, face = "plain", colour = "grey30"),
-      axis.text.y        = element_text(size = 6.5),
-      axis.text.x        = if (show_xlab) element_text(size = 7) else element_blank(),
-      axis.ticks.x       = if (show_xlab) element_line() else element_blank(),
-      axis.title.x       = element_text(size = 8),
-      panel.grid.major.x = element_line(colour = "grey88", linewidth = 0.3),
-      panel.grid.major.y = element_blank()
+      plot.subtitle = element_text(size = 7.5, face = "plain", colour = "grey30"),
+      axis.text.y   = element_text(size = 6.5, margin = margin(r = 5)),
+      axis.text.x   = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
+                      else element_blank(),
+      axis.ticks.x  = if (show_xlab) element_line() else element_blank(),
+      axis.title.x  = element_text(size = 8)
     )
+
+  # Panel label (top-left)
+  if (!is.null(panel_label)) {
+    p <- p + annotate("text", x = COUNT_DIFF_XLIM[1] + 4, y = y_top,
+                      label = panel_label, hjust = 0, vjust = 0,
+                      size = 3.5, fontface = "bold", colour = "grey10")
+  }
+
+  # J value for current network (top-right)
+  if (!is.na(j_val)) {
+    p <- p + annotate("text", x = COUNT_DIFF_XLIM[2] - 4, y = y_top,
+                      label = sprintf("J = %.3f", j_val), hjust = 1, vjust = 0,
+                      size = 2.5, colour = "grey20")
+  }
+
+  p
 }
 
 # ============================================================================
@@ -663,15 +728,20 @@ make_grid_fig <- function(network, output_path,
   mode <- match.arg(mode)
 
   # Build 6 panels in 2×3 order: kg lulc aridity / biomass nee_iav et_median
-  panels <- lapply(AXES6_KEYS, function(k) {
-    ax       <- AXES6[[k]]
+  # Panel labels A–F in reading order
+  panels <- lapply(seq_along(AXES6_KEYS), function(i) {
+    k         <- AXES6_KEYS[i]
+    ax        <- AXES6[[k]]
     show_xlab <- k %in% c("biomass","nee_iav","et_median")  # bottom row
+    lbl       <- LETTERS[i]
     if (mode == "single") {
-      make_panel_single(ax, network, metrics_df, show_xlab = show_xlab)
+      make_panel_single(ax, network, metrics_df, show_xlab = show_xlab, panel_label = lbl)
     } else if (mode == "overlay") {
-      make_panel_overlay(ax, network, overlay_network, metrics_df, show_xlab = show_xlab)
+      make_panel_overlay(ax, network, overlay_network, metrics_df,
+                         show_xlab = show_xlab, panel_label = lbl)
     } else {
-      make_panel_count_diff(ax, network, overlay_network, show_xlab = show_xlab)
+      make_panel_count_diff(ax, network, overlay_network,
+                            show_xlab = show_xlab, panel_label = lbl)
     }
   })
 
@@ -732,7 +802,13 @@ traj_theme <- theme_minimal(base_size = 9) +
   theme(
     plot.background   = element_rect(fill = "white", colour = NA),
     panel.background  = element_rect(fill = "white", colour = NA),
+    panel.border      = element_rect(colour = "black", fill = NA, linewidth = 0.4),
+    panel.grid.major  = element_blank(),
     panel.grid.minor  = element_blank(),
+    axis.ticks        = element_line(colour = "black"),
+    axis.ticks.length = unit(-0.15, "cm"),
+    axis.text.x       = element_text(margin = margin(t = 5)),
+    axis.text.y       = element_text(margin = margin(r = 5)),
     legend.background = element_rect(fill = "white", colour = NA),
     legend.position   = "right"
   )
@@ -918,9 +994,9 @@ ax_specs_6 <- list(
   "KG (13-class)"     = list(axis="koppen_beck2023",   agg="13class_twoletter"),
   "LULC (10-class)"   = list(axis="landcover_cci",     agg="high_level"),
   "Aridity (7-class)" = list(axis="aridity_unep7",     agg="unep7"),
-  "Biomass (7-bin)"   = list(axis="biomass_cci_v7",    agg="7bin_hybrid"),
-  "TRENDY NEE-IAV"    = list(axis="trendy_nee_iav",    agg="7bin_hybrid"),
-  "TRENDY ET-median"  = list(axis="trendy_et_median",  agg="7bin_hybrid")
+  "Biomass (18-bin)"  = list(axis="biomass_cci_v7",    agg="18bin_hybrid"),
+  "TRENDY NEE-IAV"    = list(axis="trendy_nee_iav",    agg="18bin_hybrid"),
+  "TRENDY ET-median"  = list(axis="trendy_et_median",  agg="18bin_hybrid")
 )
 traj_df_6 <- build_traj_df(ax_specs_6)
 make_traj_no_bars(

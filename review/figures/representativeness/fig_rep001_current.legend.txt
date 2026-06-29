@@ -1,0 +1,85 @@
+FIGURE LEGEND — fig_rep001_current.png
+=======================================
+
+TITLE: Current FLUXNET (n = 767) — sampling ratio per class
+
+DESCRIPTION:
+Six-panel grid showing the representativeness of the current FLUXNET network
+(n = 767 sites) relative to global vegetated land area, assessed across six
+independent classification axes. Each horizontal bar shows the log₂ sampling
+ratio for one class: the fraction of sites falling in that class divided by
+the fraction of global vegetated land in that class. A value of 1× (log₂ = 0)
+indicates proportional representation; values above 1× indicate over-sampling
+relative to global land area; values below 1× indicate under-sampling.
+
+PANEL LAYOUT (2 rows × 3 columns, labelled A–F):
+  A — Köppen-Geiger climate (Beck 2023, 13-class)
+  B — ESA CCI Land Cover v2.1.1 (10-class, high-level)
+  C — CGIAR Aridity Index v3.1 (7-class, UNEP scheme)
+  D — ESA CCI Biomass v7, 2024 estimate (7-bin hybrid)
+  E — TRENDY v14 NEE-IAV (7-bin hybrid)
+  F — TRENDY v14 ET-median (7-bin hybrid)
+
+NOTE: Panels D–F show 7-bin hybrid classification (legacy); see fig_rep007/008
+for the updated 18-bin hybrid results used in the main analysis.
+
+X AXIS:
+  Sampling ratio = (network class fraction) / (global KG-land class fraction),
+  displayed on a log₂ scale. Axis range ±2.32 (±5× linear). Bars truncated at
+  ±5×; actual ratio annotated on truncated bars. Reference line at 1× (log₂ = 0).
+
+Y AXIS:
+  Individual classes for each axis, ordered by global land area (largest at top).
+
+GLOBAL LAND AREA DENOMINATORS:
+  Panels A–C: global vegetated land area from Beck 2023 KG raster at 0.5° resolution
+              (coarse KG grid, ~132.6 M km²)
+  Panel D:    global vegetated land from Beck 2023 KG raster at 0.00833° resolution
+              (fine-resolution biomass/KG intersection, ~147.3 M km²)
+  Panels E–F: TRENDY v14 multi-model ensemble land mask at 0.5° resolution
+
+CLASSIFICATION SCHEMES:
+  A. Köppen-Geiger (Beck 2023): 13 aggregated two-letter classes (e.g. Af, Am, Aw,
+     BSh, BSk, BWh, BWk, Cfa, Cfb, Csa, Csb, Dfa, Dfb, etc.) from the 1991–2020
+     climatological period. Source: Beck et al. 2023, Sci. Data.
+  B. ESA CCI Land Cover v2.1.1: 10 high-level aggregated classes collapsing the
+     native 37-class product. Source: ESA CCI Land Cover project.
+  C. CGIAR Aridity Index v3.1: 7 UNEP aridity zones (hyperarid, arid, semi-arid,
+     dry sub-humid, humid, sub-humid, per-humid) based on AI = P/PET.
+     Source: Trabucco & Zomer 2019, CGIAR-CSI.
+  D. ESA CCI Biomass v7 (2024 estimate): 7 equal-area quantile bins with a
+     near-zero (< 5 Mg/ha) first bin capturing unvegetated or sparse land;
+     remaining 6 bins divide the vegetated range by equal global land area.
+  E. TRENDY v14 NEE inter-annual variability: 7 equal-area hybrid bins of the
+     multi-model ensemble median absolute IAV field (µmol CO₂ m⁻² s⁻¹).
+  F. TRENDY v14 ET median: 7 equal-area hybrid bins of the multi-model ensemble
+     median annual ET field (mm yr⁻¹); ceiling at 1000 mm yr⁻¹.
+
+REPRESENTATIVENESS METRIC:
+  Weighted Jaccard similarity (J) — displayed in top-right of each panel:
+    J = Σ min(p_i, q_i) / Σ max(p_i, q_i)
+  where p_i = global KG-land fraction of class i,
+        q_i = network fraction of class i.
+  J = 1 indicates perfect representativeness; J = 0 indicates no overlap.
+
+JACCARD VALUES (current_767, 18-bin for D–F where applicable):
+  A. KG (13-class):           J = 0.373
+  B. LULC (10-class HL):      J = 0.556
+  C. Aridity (7-class UNEP):  J = 0.667
+  D. Biomass (7-bin hybrid):  J = 0.616   [legacy 7-bin; see Rep007–008 for 18-bin]
+  E. NEE-IAV (7-bin hybrid):  J = 0.486   [legacy 7-bin]
+  F. ET-median (7-bin hybrid):J = 0.433   [legacy 7-bin]
+
+NETWORKS: Current FLUXNET (n = 767 sites, Shuttle snapshot development mode).
+
+DATA SOURCES:
+  - Site locations: FLUXNET Shuttle (flux_listall()), development snapshot
+  - KG climatology: Beck et al. 2023, Sci. Data 10:158
+  - Land cover: ESA CCI Land Cover v2.1.1 (2020 epoch)
+  - Aridity: CGIAR Aridity Index v3.1 (Trabucco & Zomer 2019)
+  - Biomass: ESA CCI Biomass v7 (2024 estimate, Santoro et al.)
+  - TRENDY NEE/ET: TRENDY v14 multi-model ensemble (multi-year median)
+
+FIGURE SCRIPT: scripts/figure_representativeness_summary.R
+OUTPUT PATH:   review/figures/representativeness/fig_rep001_current.png
+DIMENSIONS:    9 × 7 inches, 200 dpi

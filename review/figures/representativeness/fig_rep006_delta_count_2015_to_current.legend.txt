@@ -1,0 +1,62 @@
+FIGURE LEGEND — fig_rep006_delta_count_2015_to_current.png
+===========================================================
+
+TITLE: Site count change per class: Current FLUXNET − FLUXNET2015
+
+DESCRIPTION:
+Six-panel grid showing the absolute site count change from FLUXNET2015 (n = 212)
+to the current FLUXNET network (n = 767) for each class across six classification
+axes. Each bar shows (current count − FLUXNET2015 count). Blue bars indicate net
+site additions; red bars indicate net site losses. Integer counts are annotated on
+each bar. All axes show only additions in this comparison (n_negative = 0 across
+all axes), reflecting the cumulative growth of the network.
+
+PANEL LAYOUT (2 rows × 3 columns, labelled A–F):
+  A — Köppen-Geiger climate (Beck 2023, 13-class)
+  B — ESA CCI Land Cover v2.1.1 (10-class, high-level)
+  C — CGIAR Aridity Index v3.1 (7-class, UNEP scheme)
+  D — ESA CCI Biomass v7, 2024 estimate (7-bin hybrid)
+  E — TRENDY v14 NEE-IAV (7-bin hybrid)
+  F — TRENDY v14 ET-median (7-bin hybrid)
+
+X AXIS:
+  Site count change (current − FLUXNET2015). Fixed symmetric range: ±210 sites.
+  The largest observed delta is 199 sites (ET-median axis, highest ET bin); the
+  fixed range provides ~5% headroom without distorting between-panel comparison.
+
+Y AXIS: Classes ordered by global land area (largest at top).
+
+BAR COLOR:
+  Blue (#2c7bb6):  net site addition (current > FLUXNET2015)
+  Red (#d7191c):   net site reduction (current < FLUXNET2015)
+
+NOTE ON LULC: All 555 additional sites (767 − 212) fall into classes already
+represented in FLUXNET2015; no entirely new land cover classes appear. The
+largest absolute gain is in crop/built-up areas.
+
+SUMMARY OF MAX ABSOLUTE DELTAS (all positive in this comparison):
+  A. KG (13-class):           max delta = 180 sites (Cfb class)
+  B. LULC (10-class HL):      max delta = 180 sites
+  C. Aridity (7-class UNEP):  max delta = 195 sites (humid class)
+  D. Biomass (7-bin hybrid):  max delta = 184 sites
+  E. NEE-IAV (7-bin hybrid):  max delta = 153 sites
+  F. ET-median (7-bin hybrid):max delta = 199 sites (highest ET bin)
+
+REPRESENTATIVENESS METRIC: Weighted Jaccard (J) for the current network
+  is shown in the top-right corner of each panel. These are the same J values
+  as shown in fig_rep001 panels A–F.
+
+JACCARD VALUES (current_767):
+  A. KG (13-class):            J = 0.373
+  B. LULC (10-class HL):       J = 0.556
+  C. Aridity (7-class UNEP):   J = 0.667
+  D. Biomass (7-bin hybrid):   J = 0.616
+  E. NEE-IAV (7-bin hybrid):   J = 0.486
+  F. ET-median (7-bin hybrid): J = 0.433
+
+CLASSIFICATION SCHEMES: Same as fig_rep001.
+DATA SOURCES: Same as fig_rep001.
+
+FIGURE SCRIPT: scripts/figure_representativeness_summary.R
+OUTPUT PATH:   review/figures/representativeness/fig_rep006_delta_count_2015_to_current.png
+DIMENSIONS:    9 × 7 inches, 200 dpi

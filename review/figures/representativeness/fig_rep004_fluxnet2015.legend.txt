@@ -1,0 +1,48 @@
+FIGURE LEGEND — fig_rep004_fluxnet2015.png
+===========================================
+
+TITLE: FLUXNET2015 (n = 212) — sampling ratio per class
+
+DESCRIPTION:
+Six-panel grid showing the representativeness of the FLUXNET2015 dataset
+(n = 212 sites) relative to global vegetated land area, assessed across the
+same six classification axes as fig_rep001. FLUXNET2015 applied quality control
+and standardised processing that reduced the La Thuile site count while improving
+data consistency. This figure represents the previous-generation benchmark against
+which the current network expansion is evaluated in fig_rep005–006.
+
+PANEL LAYOUT (2 rows × 3 columns, labelled A–F):
+  A — Köppen-Geiger climate (Beck 2023, 13-class)
+  B — ESA CCI Land Cover v2.1.1 (10-class, high-level)
+  C — CGIAR Aridity Index v3.1 (7-class, UNEP scheme)
+  D — ESA CCI Biomass v7, 2024 estimate (7-bin hybrid)
+  E — TRENDY v14 NEE-IAV (7-bin hybrid)
+  F — TRENDY v14 ET-median (7-bin hybrid)
+
+X AXIS: Sampling ratio on log₂ scale; range ±5× (log₂ ±2.32). See Rep001 legend.
+Y AXIS: Classes ordered by global land area (largest at top).
+
+GLOBAL LAND AREA DENOMINATORS: Same as fig_rep001.
+
+CLASSIFICATION SCHEMES: Same as fig_rep001.
+
+REPRESENTATIVENESS METRIC: Weighted Jaccard (J). See fig_rep001 legend.
+
+JACCARD VALUES (fluxnet2015, n = 212):
+  A. KG (13-class):            J = 0.365
+  B. LULC (10-class HL):       J = 0.582
+  C. Aridity (7-class UNEP):   J = 0.598
+  D. Biomass (7-bin hybrid):   J = 0.540
+  E. NEE-IAV (7-bin hybrid):   J = 0.477
+  F. ET-median (7-bin hybrid): J = 0.366
+
+CONTEXT: Despite fewer sites than La Thuile (212 vs 252), FLUXNET2015 achieves
+equal or higher J on most axes, suggesting better geographic distribution of the
+quality-controlled subset. LULC J (0.582) exceeds the current network (0.556)
+due to differences in vegetation class proportions at qualifying sites.
+
+DATA SOURCES: Same as fig_rep001.
+
+FIGURE SCRIPT: scripts/figure_representativeness_summary.R
+OUTPUT PATH:   review/figures/representativeness/fig_rep004_fluxnet2015.png
+DIMENSIONS:    9 × 7 inches, 200 dpi

@@ -4,6 +4,107 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Representativeness figures Rep011–Rep018 (aggregation sensitivity)
+
+### Overview
+
+Added eight Jaccard aggregation-sensitivity figures to
+`scripts/figure_representativeness_summary.R`. Each figure plots weighted Jaccard
+across the four network generations (Marconi → La Thuile → FLUXNET2015 → Current)
+at every available aggregation resolution for one axis, using a single-hue
+sequential palette (lightest = coarsest, darkest = finest). Background count bars
+with black outline and secondary n_sites axis throughout.
+
+Also updated Rep008–Rep010: added `colour = "black", linewidth = 0.3` to background
+count bars (was fill-only, nearly invisible). The same fix applies to all
+`make_traj_with_bars()` calls including the new Rep011–018.
+
+### Shading factors
+
+All 8 figures use `shade_palette()` (base R only; no new packages):
+
+| n shades | Lightening factors (lightest → darkest) |
+|----------|----------------------------------------|
+| 2 (Aridity) | 0.45, 1.00 |
+| 3 (KG, LULC) | 0.30, 0.65, 1.00 |
+| 5 (all continuous) | 0.25, 0.50, 0.75, 1.00, 1.30 |
+
+Factor ≤ 1: blend base color toward white (`rgb = base * f + (1-f)`).
+Factor > 1: darken below base (`rgb = base * (2-f)`, so f=1.30 → multiply by 0.70).
+Legend order: finest at top (factor vector reversed before `setNames()`).
+
+### Generated hex shades (darkest → lightest per axis)
+
+| Figure | Base (Okabe-Ito) | Shade sequence (finest → coarsest) |
+|--------|-----------------|-------------------------------------|
+| Rep011 KG | #D55E00 vermilion | #D55E00 → #E49659 → #F2CFB3 |
+| Rep012 LULC | #CC79A7 reddish pink | #CC79A7 → #DEA8C6 → #F0D7E5 |
+| Rep013 Aridity | #E69F00 amber | #E69F00 → #F4D48C |
+| Rep014 Biomass | #009E73 green | #006F51 → #009E73 → #40B696 → #80CFB9 → #BFE7DC |
+| Rep015 NEE-IAV | #0072B2 blue | #00507D → #0072B2 → #4095C5 → #80B9D9 → #BFDCEC |
+| Rep016 NEE-median | #1a5276 dark navy | #123953 → #1A5276 → #537D98 → #8DA9BB → #C6D4DD |
+| Rep017 ET-IAV | #56B4E9 sky blue | #3C7EA3 → #56B4E9 → #80C7EF → #ABDAF4 → #D5ECFA |
+| Rep018 ET-median | #00898e teal | #006063 → #00898E → #40A7AA → #80C4C7 → #BFE2E3 |
+
+### Trajectory patterns per figure
+
+**Rep011 KG (30-class / 13-class / 5-class):**
+Current_767: J = 0.350 / 0.373 / 0.401. Monotonic at all networks. The 5→13
+step (~0.027) is slightly larger than 13→30 (~0.023). No new structural patterns
+revealed by finer aggregation — uniform shift down. Marconi lowest at all resolutions.
+
+**Rep012 LULC (37-class / 22-class / 10-class):**
+Current_767: J = 0.441 / 0.478 / 0.556. Monotonic. The 10→22 step (~0.078) is
+roughly twice the 22→37 step (~0.037), reflecting that high-level aggregation
+merges heterogeneous classes and inflates J substantially. Marconi shows sharp
+drops at finer resolution (35 sites cannot cover 37 native LULC classes).
+
+**Rep013 Aridity (7-class / 5-class):**
+Current_767: J = 0.667 / 0.694. Near-parallel lines across all networks; gap
+~0.02–0.04. The 5-vs-7 class choice has negligible practical impact. The only
+addition going 5→7 is a Hyper-Arid sub-class not well sampled by any network.
+
+**Rep014 Biomass (7/12/18/20/30-bin):**
+Current_767: J = 0.639 / 0.621 / 0.616 / 0.614 / 0.616. Largest step at 7→12
+(~0.018); lines cluster within ~0.007 J above 12-bin. Biomass representativeness
+is stable to bin count above 12 bins. Marginal non-monotonicity at 30-bin vs
+20-bin (~0.002) is not visually prominent.
+
+**Rep015 NEE-IAV (7/12/18/20/30-bin):**
+Current_767: J = 0.507 / 0.497 / 0.486 / 0.489 / 0.481. Slightly wider spread
+than biomass. Mild non-monotonicity at 18/20 (~0.003) visible at current_767 but
+small enough to be unobtrusive in the figure.
+
+**Rep016 NEE-median (7/12/18/20/30-bin):**
+Current_767: J = 0.495 / 0.480 / 0.477 / 0.475 / 0.466. Steady monotonic
+descent; no clustering above 12-bin. Most sensitive of the continuous axes to
+bin-count choice (0.029 J range from 7 to 30 bin).
+
+**Rep017 ET-IAV (7/12/18/20/30-bin):**
+Current_767: J = 0.663 / 0.654 / 0.636 / 0.635 / 0.633. Highest J of the 5
+continuous axes throughout. Lines cluster above 12-bin (18/20/30-bin within
+~0.003 J), pattern mirrors biomass. Near-plateau from 18-bin onward.
+
+**Rep018 ET-median (7/12/18/20/30-bin):**
+Current_767: J = 0.459 / 0.456 / 0.433 / 0.447 / 0.429. Non-monotonicity at
+18/20-bin is visible at figure scale: the 18-bin line dips below 20-bin at the
+current_767 point (~0.014 gap, clearly visible on 0–1 y-axis). The crossing occurs
+only at current_767; all other networks are correctly monotonic. Caption added
+in the figure noting the ceiling artefact at 1000 mm yr⁻¹.
+
+### Files changed
+
+- **Script updated:** `scripts/figure_representativeness_summary.R`
+  - `shade_palette()` helper added (section 1g; base R only, no new packages)
+  - 8 single-hue sequential color vectors (KG_AGG_COLORS … ETMED_AGG_COLORS)
+  - `make_traj_with_bars()`: bars now `colour = "black", linewidth = 0.3, alpha = 0.4`
+  - `caption_str` parameter added to `make_traj_with_bars()`
+  - Section 12 execution block (Rep011–018)
+- **8 new figures:** `review/figures/representativeness/fig_rep01{1..8}_*.png`
+- **3 updated figures:** Rep008, Rep009, Rep010 (bar styling fix; regenerated)
+
+---
+
 ## 2026-06-29 — Multi-bin representativeness: 12-bin, 18-bin, 20-bin hybrid
 
 ### Overview

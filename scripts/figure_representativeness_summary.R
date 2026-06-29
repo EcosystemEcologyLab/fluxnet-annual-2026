@@ -141,6 +141,81 @@ TRAJ5_COLORS <- c(
   "TRENDY ET-median"      = "#00898e"
 )
 
+# ---- 1g. Sequential single-hue palettes for Rep011-018 ----------------------
+#
+# shade_palette(base_hex, factors): returns length(factors) hex colors.
+#   f <= 1: blend base toward white  (f=1 = pure base, f=0 = white)
+#   f > 1:  darken below base        (f=1.3 → multiply RGB by 0.7)
+# No external packages — uses only base grDevices.
+shade_palette <- function(base_hex, factors) {
+  base_rgb <- as.numeric(grDevices::col2rgb(base_hex) / 255)  # plain vector [R, G, B]
+  vapply(factors, function(f) {
+    if (f <= 1) {
+      rgb_new <- base_rgb * f + (1 - f)
+    } else {
+      rgb_new <- base_rgb * (2 - f)
+    }
+    rgb_new <- pmax(0, pmin(1, rgb_new))
+    grDevices::rgb(rgb_new[1L], rgb_new[2L], rgb_new[3L])
+  }, character(1L))
+}
+
+# Documented shading factors (lightest → darkest within each family):
+#   3-shade: f = 0.30, 0.65, 1.00  (light, medium, base)
+#   5-shade: f = 0.25, 0.50, 0.75, 1.00, 1.30  (very light → dark)
+#   2-shade: f = 0.45, 1.00  (light, base)
+#
+# Legend ordering: finest-first (darkest shade at top of legend).
+# setNames(rev(shades), c(finest, ..., coarsest)) achieves this.
+
+# Rep011: KG — vermilion #D55E00
+KG_AGG_COLORS <- setNames(
+  rev(shade_palette("#D55E00", c(0.30, 0.65, 1.00))),
+  c("30-class", "13-class", "5-class")
+)
+
+# Rep012: LULC — reddish pink #CC79A7
+LULC_AGG_COLORS <- setNames(
+  rev(shade_palette("#CC79A7", c(0.30, 0.65, 1.00))),
+  c("37-class (native)", "22-class (level 2)", "10-class (high level)")
+)
+
+# Rep013: Aridity — amber #E69F00, 2 shades
+ARID_AGG_COLORS <- setNames(
+  rev(shade_palette("#E69F00", c(0.45, 1.00))),
+  c("7-class", "5-class")
+)
+
+# Rep014: Biomass — green #009E73
+BIO_AGG_COLORS <- setNames(
+  rev(shade_palette("#009E73", c(0.25, 0.50, 0.75, 1.00, 1.30))),
+  c("30-bin", "20-bin", "18-bin", "12-bin", "7-bin")
+)
+
+# Rep015: NEE-IAV — blue #0072B2
+NEEIAV_AGG_COLORS <- setNames(
+  rev(shade_palette("#0072B2", c(0.25, 0.50, 0.75, 1.00, 1.30))),
+  c("30-bin", "20-bin", "18-bin", "12-bin", "7-bin")
+)
+
+# Rep016: NEE-median — dark navy #1a5276
+NEEMED_AGG_COLORS <- setNames(
+  rev(shade_palette("#1a5276", c(0.25, 0.50, 0.75, 1.00, 1.30))),
+  c("30-bin", "20-bin", "18-bin", "12-bin", "7-bin")
+)
+
+# Rep017: ET-IAV — sky blue #56B4E9
+ETIAV_AGG_COLORS <- setNames(
+  rev(shade_palette("#56B4E9", c(0.25, 0.50, 0.75, 1.00, 1.30))),
+  c("30-bin", "20-bin", "18-bin", "12-bin", "7-bin")
+)
+
+# Rep018: ET-median — teal #00898e
+ETMED_AGG_COLORS <- setNames(
+  rev(shade_palette("#00898e", c(0.25, 0.50, 0.75, 1.00, 1.30))),
+  c("30-bin", "20-bin", "18-bin", "12-bin", "7-bin")
+)
+
 # ============================================================================
 # 2. GLOBAL DISTRIBUTIONS (loaded once, normalized to class key = character)
 # ============================================================================
@@ -706,6 +781,7 @@ make_traj_no_bars <- function(traj_df, colors, xlabels, title_str, output_path,
 
 # Trajectory plot WITH count bars + secondary axis (Figs 008–010)
 make_traj_with_bars <- function(traj_df, colors, xlabels, title_str, output_path,
+                                 caption_str = NULL,
                                  width_in = 7, height_in = 5, dpi = 300) {
   traj_df$axis_label <- factor(traj_df$axis_label, levels = names(colors))
 
@@ -717,7 +793,8 @@ make_traj_with_bars <- function(traj_df, colors, xlabels, title_str, output_path
   p <- ggplot() +
     # Background bars (drawn first, behind lines)
     geom_col(data = bars_df, aes(x = net_x, y = y_scaled),
-             fill = "#d9d9d9", alpha = 0.5, width = 0.38, inherit.aes = FALSE) +
+             fill = "#d9d9d9", colour = "black", linewidth = 0.3,
+             alpha = 0.4, width = 0.38, inherit.aes = FALSE) +
     # Lines
     geom_line(data = traj_df,
               aes(x = net_x, y = jaccard, colour = axis_label, group = axis_label),
@@ -740,14 +817,15 @@ make_traj_with_bars <- function(traj_df, colors, xlabels, title_str, output_path
         labels = c("0","200","400","600","800")
       )
     ) +
-    labs(title = title_str, x = NULL) +
+    labs(title = title_str, x = NULL, caption = caption_str) +
     traj_theme +
     theme(
-      legend.key.size  = unit(0.5, "cm"),
-      legend.text      = element_text(size = 8),
+      legend.key.size    = unit(0.5, "cm"),
+      legend.text        = element_text(size = 8),
       axis.title.y.right = element_text(size = 8, colour = "grey50"),
       axis.text.y.right  = element_text(size = 7, colour = "grey50"),
-      axis.ticks.y.right = element_line(colour = "grey70")
+      axis.ticks.y.right = element_line(colour = "grey70"),
+      plot.caption       = element_text(size = 6.5, colour = "grey40", hjust = 0)
     )
 
   ggplot2::ggsave(output_path, p, width = width_in, height = height_in, dpi = dpi, bg = "white")
@@ -891,3 +969,127 @@ make_traj_with_bars(
 )
 
 message("\n=== All 10 figures complete ===")
+
+# ============================================================================
+# 12. AGGREGATION SENSITIVITY FIGURES (Figs 011–018)
+#
+# One figure per axis; each shows weighted Jaccard across the four network
+# generations at every aggregation resolution available for that axis.
+# Single-hue sequential palette: lightest = coarsest, darkest = finest.
+# Background count bars and secondary y-axis as in Figs 008-010.
+# ============================================================================
+
+message("\n=== Fig 011: KG aggregation sensitivity ===")
+ax_specs_kg_agg <- list(
+  "30-class" = list(axis = "koppen_beck2023", agg = "30class"),
+  "13-class" = list(axis = "koppen_beck2023", agg = "13class_twoletter"),
+  "5-class"  = list(axis = "koppen_beck2023", agg = "5class")
+)
+make_traj_with_bars(
+  build_traj_df(ax_specs_kg_agg), KG_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard aggregation sensitivity — Beck 2023 KG climate zones",
+  file.path(OUTD, "fig_rep011_jaccard_kg_aggregation.png")
+)
+
+message("\n=== Fig 012: LULC aggregation sensitivity ===")
+ax_specs_lulc_agg <- list(
+  "37-class (native)"     = list(axis = "landcover_cci", agg = "native"),
+  "22-class (level 2)"    = list(axis = "landcover_cci", agg = "level2"),
+  "10-class (high level)" = list(axis = "landcover_cci", agg = "high_level")
+)
+make_traj_with_bars(
+  build_traj_df(ax_specs_lulc_agg), LULC_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard aggregation sensitivity — ESA CCI land cover",
+  file.path(OUTD, "fig_rep012_jaccard_lulc_aggregation.png")
+)
+
+message("\n=== Fig 013: Aridity aggregation sensitivity ===")
+ax_specs_arid_agg <- list(
+  "7-class" = list(axis = "aridity_unep7", agg = "unep7"),
+  "5-class" = list(axis = "aridity_unep5", agg = "unep5")
+)
+make_traj_with_bars(
+  build_traj_df(ax_specs_arid_agg), ARID_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard aggregation sensitivity — CGIAR aridity (UNEP)",
+  file.path(OUTD, "fig_rep013_jaccard_aridity_aggregation.png")
+)
+
+message("\n=== Fig 014: Biomass bin-count sensitivity ===")
+ax_specs_bio_agg <- list(
+  "30-bin" = list(axis = "biomass_cci_v7", agg = "30bin_hybrid"),
+  "20-bin" = list(axis = "biomass_cci_v7", agg = "20bin_hybrid"),
+  "18-bin" = list(axis = "biomass_cci_v7", agg = "18bin_hybrid"),
+  "12-bin" = list(axis = "biomass_cci_v7", agg = "12bin_hybrid"),
+  "7-bin"  = list(axis = "biomass_cci_v7", agg = "7bin_hybrid")
+)
+make_traj_with_bars(
+  build_traj_df(ax_specs_bio_agg), BIO_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard bin-count sensitivity — ESA CCI Biomass (hybrid bins)",
+  file.path(OUTD, "fig_rep014_jaccard_biomass_aggregation.png")
+)
+
+message("\n=== Fig 015: NEE-IAV bin-count sensitivity ===")
+ax_specs_neeiav_agg <- list(
+  "30-bin" = list(axis = "trendy_nee_iav", agg = "30bin_hybrid"),
+  "20-bin" = list(axis = "trendy_nee_iav", agg = "20bin_hybrid"),
+  "18-bin" = list(axis = "trendy_nee_iav", agg = "18bin_hybrid"),
+  "12-bin" = list(axis = "trendy_nee_iav", agg = "12bin_hybrid"),
+  "7-bin"  = list(axis = "trendy_nee_iav", agg = "7bin_hybrid")
+)
+make_traj_with_bars(
+  build_traj_df(ax_specs_neeiav_agg), NEEIAV_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard bin-count sensitivity — TRENDY NEE interannual variability",
+  file.path(OUTD, "fig_rep015_jaccard_nee_iav_aggregation.png")
+)
+
+message("\n=== Fig 016: NEE-median bin-count sensitivity ===")
+ax_specs_neemed_agg <- list(
+  "30-bin" = list(axis = "trendy_nee_median", agg = "30bin_hybrid"),
+  "20-bin" = list(axis = "trendy_nee_median", agg = "20bin_hybrid"),
+  "18-bin" = list(axis = "trendy_nee_median", agg = "18bin_hybrid"),
+  "12-bin" = list(axis = "trendy_nee_median", agg = "12bin_hybrid"),
+  "7-bin"  = list(axis = "trendy_nee_median", agg = "7bin_hybrid")
+)
+make_traj_with_bars(
+  build_traj_df(ax_specs_neemed_agg), NEEMED_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard bin-count sensitivity — TRENDY NEE long-run median",
+  file.path(OUTD, "fig_rep016_jaccard_nee_median_aggregation.png")
+)
+
+message("\n=== Fig 017: ET-IAV bin-count sensitivity ===")
+ax_specs_etiav_agg <- list(
+  "30-bin" = list(axis = "trendy_et_iav", agg = "30bin_hybrid"),
+  "20-bin" = list(axis = "trendy_et_iav", agg = "20bin_hybrid"),
+  "18-bin" = list(axis = "trendy_et_iav", agg = "18bin_hybrid"),
+  "12-bin" = list(axis = "trendy_et_iav", agg = "12bin_hybrid"),
+  "7-bin"  = list(axis = "trendy_et_iav", agg = "7bin_hybrid")
+)
+make_traj_with_bars(
+  build_traj_df(ax_specs_etiav_agg), ETIAV_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard bin-count sensitivity — TRENDY ET interannual variability",
+  file.path(OUTD, "fig_rep017_jaccard_et_iav_aggregation.png")
+)
+
+message("\n=== Fig 018: ET-median bin-count sensitivity ===")
+ax_specs_etmed_agg <- list(
+  "30-bin" = list(axis = "trendy_et_median", agg = "30bin_hybrid"),
+  "20-bin" = list(axis = "trendy_et_median", agg = "20bin_hybrid"),
+  "18-bin" = list(axis = "trendy_et_median", agg = "18bin_hybrid"),
+  "12-bin" = list(axis = "trendy_et_median", agg = "12bin_hybrid"),
+  "7-bin"  = list(axis = "trendy_et_median", agg = "7bin_hybrid")
+)
+# ET-median: at the current_767 point, 18-bin J (0.433) < 20-bin J (0.447) due to
+# histogram ceiling collapse at 1000 mm yr⁻¹. Non-monotonicity is visible at
+# figure scale (~0.014 gap); noted in caption.
+make_traj_with_bars(
+  build_traj_df(ax_specs_etmed_agg), ETMED_AGG_COLORS, NET_XLABELS_BARE,
+  "Jaccard bin-count sensitivity — TRENDY ET long-run median",
+  file.path(OUTD, "fig_rep018_jaccard_et_median_aggregation.png"),
+  caption_str = paste0(
+    "Note: at Current network, 18-bin J (0.433) < 20-bin J (0.447). ",
+    "Artefact of histogram ceiling at 1000 mm yr⁻¹ causing one collapsed ",
+    "breakpoint at 18-bin; does not affect other networks or axes."
+  )
+)
+
+message("\n=== All 18 figures complete ===")

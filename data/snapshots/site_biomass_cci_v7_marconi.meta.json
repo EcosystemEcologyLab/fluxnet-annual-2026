@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-29T18:51:15Z",
+  "pipeline_version": "f3b5bac",
+  "input_sources": [
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "Per-site biomass_cci_v7 site classifications (all networks). Existing columns: biomass_bin (7-bin), biomass_bin_30 (30-bin). New columns: biomass_bin_12, biomass_bin_18, biomass_bin_20. Near-zero cut = 5 Mg/ha."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-28T15:14:51Z",
+  "pipeline_version": "17e1199",
+  "input_sources": [
+    "data/external/cci_landcover/v2.1.1/cci_lc_2022_kg_aligned_native.tif",
+    "data/snapshots/cci_landcover_aggregation_lookup.csv"
+  ],
+  "notes": "Historical network: fluxnet2015 (212 sites). ESA CCI Land Cover v2.1.1, 2022. Three aggregation levels: native LCCS (37 classes), level2 (22 classes), high-level (10 classes). Aggregation via cci_landcover_aggregation_lookup.csv. Nearest-land recovery within 3°."
+}

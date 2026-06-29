@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-06-29T18:50:45Z",
+  "pipeline_version": "f3b5bac",
+  "input_sources": [
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "12-bin hybrid global distribution for biomass_cci_v7. Bin 1: near-zero (< 5 Mg/ha). Bins 2–12: 11 equal-area quantile bins. Q_PROBS = (1:10)/11. KG land mask: koppen_geiger_0p00833333.tif. Total KG land: 147,322,862 km2. 11 documented breakpoints (Mg/ha): 5.0, 9.0, 14.0, 21.0, 30.0, 43.0, 61.0, 84.0, 116.0, 161.0, 255.0."
+}

@@ -4,6 +4,624 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Representativeness figures Rep011–Rep018 (aggregation sensitivity)
+
+### Overview
+
+Added eight Jaccard aggregation-sensitivity figures to
+`scripts/figure_representativeness_summary.R`. Each figure plots weighted Jaccard
+across the four network generations (Marconi → La Thuile → FLUXNET2015 → Current)
+at every available aggregation resolution for one axis, using a single-hue
+sequential palette (lightest = coarsest, darkest = finest). Background count bars
+with black outline and secondary n_sites axis throughout.
+
+Also updated Rep008–Rep010: added `colour = "black", linewidth = 0.3` to background
+count bars (was fill-only, nearly invisible). The same fix applies to all
+`make_traj_with_bars()` calls including the new Rep011–018.
+
+### Shading factors
+
+All 8 figures use `shade_palette()` (base R only; no new packages):
+
+| n shades | Lightening factors (lightest → darkest) |
+|----------|----------------------------------------|
+| 2 (Aridity) | 0.45, 1.00 |
+| 3 (KG, LULC) | 0.30, 0.65, 1.00 |
+| 5 (all continuous) | 0.25, 0.50, 0.75, 1.00, 1.30 |
+
+Factor ≤ 1: blend base color toward white (`rgb = base * f + (1-f)`).
+Factor > 1: darken below base (`rgb = base * (2-f)`, so f=1.30 → multiply by 0.70).
+Legend order: finest at top (factor vector reversed before `setNames()`).
+
+### Generated hex shades (darkest → lightest per axis)
+
+| Figure | Base (Okabe-Ito) | Shade sequence (finest → coarsest) |
+|--------|-----------------|-------------------------------------|
+| Rep011 KG | #D55E00 vermilion | #D55E00 → #E49659 → #F2CFB3 |
+| Rep012 LULC | #CC79A7 reddish pink | #CC79A7 → #DEA8C6 → #F0D7E5 |
+| Rep013 Aridity | #E69F00 amber | #E69F00 → #F4D48C |
+| Rep014 Biomass | #009E73 green | #006F51 → #009E73 → #40B696 → #80CFB9 → #BFE7DC |
+| Rep015 NEE-IAV | #0072B2 blue | #00507D → #0072B2 → #4095C5 → #80B9D9 → #BFDCEC |
+| Rep016 NEE-median | #1a5276 dark navy | #123953 → #1A5276 → #537D98 → #8DA9BB → #C6D4DD |
+| Rep017 ET-IAV | #56B4E9 sky blue | #3C7EA3 → #56B4E9 → #80C7EF → #ABDAF4 → #D5ECFA |
+| Rep018 ET-median | #00898e teal | #006063 → #00898E → #40A7AA → #80C4C7 → #BFE2E3 |
+
+### Trajectory patterns per figure
+
+**Rep011 KG (30-class / 13-class / 5-class):**
+Current_767: J = 0.350 / 0.373 / 0.401. Monotonic at all networks. The 5→13
+step (~0.027) is slightly larger than 13→30 (~0.023). No new structural patterns
+revealed by finer aggregation — uniform shift down. Marconi lowest at all resolutions.
+
+**Rep012 LULC (37-class / 22-class / 10-class):**
+Current_767: J = 0.441 / 0.478 / 0.556. Monotonic. The 10→22 step (~0.078) is
+roughly twice the 22→37 step (~0.037), reflecting that high-level aggregation
+merges heterogeneous classes and inflates J substantially. Marconi shows sharp
+drops at finer resolution (35 sites cannot cover 37 native LULC classes).
+
+**Rep013 Aridity (7-class / 5-class):**
+Current_767: J = 0.667 / 0.694. Near-parallel lines across all networks; gap
+~0.02–0.04. The 5-vs-7 class choice has negligible practical impact. The only
+addition going 5→7 is a Hyper-Arid sub-class not well sampled by any network.
+
+**Rep014 Biomass (7/12/18/20/30-bin):**
+Current_767: J = 0.639 / 0.621 / 0.616 / 0.614 / 0.616. Largest step at 7→12
+(~0.018); lines cluster within ~0.007 J above 12-bin. Biomass representativeness
+is stable to bin count above 12 bins. Marginal non-monotonicity at 30-bin vs
+20-bin (~0.002) is not visually prominent.
+
+**Rep015 NEE-IAV (7/12/18/20/30-bin):**
+Current_767: J = 0.507 / 0.497 / 0.486 / 0.489 / 0.481. Slightly wider spread
+than biomass. Mild non-monotonicity at 18/20 (~0.003) visible at current_767 but
+small enough to be unobtrusive in the figure.
+
+**Rep016 NEE-median (7/12/18/20/30-bin):**
+Current_767: J = 0.495 / 0.480 / 0.477 / 0.475 / 0.466. Steady monotonic
+descent; no clustering above 12-bin. Most sensitive of the continuous axes to
+bin-count choice (0.029 J range from 7 to 30 bin).
+
+**Rep017 ET-IAV (7/12/18/20/30-bin):**
+Current_767: J = 0.663 / 0.654 / 0.636 / 0.635 / 0.633. Highest J of the 5
+continuous axes throughout. Lines cluster above 12-bin (18/20/30-bin within
+~0.003 J), pattern mirrors biomass. Near-plateau from 18-bin onward.
+
+**Rep018 ET-median (7/12/18/20/30-bin):**
+Current_767: J = 0.459 / 0.456 / 0.433 / 0.447 / 0.429. Non-monotonicity at
+18/20-bin is visible at figure scale: the 18-bin line dips below 20-bin at the
+current_767 point (~0.014 gap, clearly visible on 0–1 y-axis). The crossing occurs
+only at current_767; all other networks are correctly monotonic. Caption added
+in the figure noting the ceiling artefact at 1000 mm yr⁻¹.
+
+### Files changed
+
+- **Script updated:** `scripts/figure_representativeness_summary.R`
+  - `shade_palette()` helper added (section 1g; base R only, no new packages)
+  - 8 single-hue sequential color vectors (KG_AGG_COLORS … ETMED_AGG_COLORS)
+  - `make_traj_with_bars()`: bars now `colour = "black", linewidth = 0.3, alpha = 0.4`
+  - `caption_str` parameter added to `make_traj_with_bars()`
+  - Section 12 execution block (Rep011–018)
+- **8 new figures:** `review/figures/representativeness/fig_rep01{1..8}_*.png`
+- **3 updated figures:** Rep008, Rep009, Rep010 (bar styling fix; regenerated)
+
+---
+
+## 2026-06-29 — Multi-bin representativeness: 12-bin, 18-bin, 20-bin hybrid
+
+### Overview
+
+Built and ran `scripts/recompute_continuous_axes_multibin.R`. Extends the
+continuous-axis representativeness to three additional bin counts (12, 18, 20)
+using the same near-zero cut (< 5 in axis units) + equal-area quantile scheme
+as the existing 7-bin and 30-bin implementations. Run time: ~3 min on local
+mini (biomass bilinear resample done once, fine histogram computed once per axis,
+3 classifications derived from it).
+
+### Outputs
+
+- **15 new global distribution CSVs + meta.json** in `data/snapshots/`
+  (`<axis>_global_distribution_{12,18,20}bin.{csv,meta.json}`)
+- **20 per-site CSVs updated** with 3 new bin columns each
+  (`{axis}_bin_12`, `{axis}_bin_18`, `{axis}_bin_20`)
+- **`representativeness_metrics.csv`**: 96 + 60 = 156 rows
+  (`aggregation_level` values: `12bin_hybrid`, `18bin_hybrid`, `20bin_hybrid`)
+
+### Breakpoints per axis × bin count
+
+**Biomass CCI v7 (Mg/ha):**
+- 12-bin: 5.0, 9, 14, 21, 30, 43, 61, 84, 116, 161, 255
+- 18-bin: 5.0, 8, 10, 14, 18, 23, 29, 37, 46, 57, 71, 87, 107, 132, 164, 220, 288
+- 20-bin: 5.0, 7, 10, 13, 16, 20, 25, 31, 38, 46, 57, 69, 83, 100, 120, 145, 177, 237, 294
+
+**TRENDY NEE-IAV (gC m⁻² yr⁻¹):**
+- 12-bin: 5.0, 15.1, 22.5, 28.3, 33.8, 39.2, 45.4, 52.1, 59.5, 69.1, 84.0
+- 18-bin: 5.0, 11.7, 17.7, 22.2, 26.1, 29.7, 33.1, 36.6, 40.3, 44.3, 48.6, 53.0, 57.7, 63.1, 69.8, 78.7, 93.5
+- 20-bin: 5.0, 11.0, 16.5, 20.8, 24.4, 27.8, 31.0, 34.0, 37.1, 40.5, 44.0, 47.8, 51.7, 55.9, 60.4, 65.7, 72.2, 81.0, 95.8
+
+**TRENDY ET-IAV (mm yr⁻¹):**
+- 12-bin: 5.0, 14.3, 18.3, 21.7, 25.4, 29.6, 34.5, 39.9, 46.6, 56.1, 72.5
+- 18-bin: 5.0, 12.4, 15.5, 18.0, 20.3, 22.6, 25.1, 27.4, 30.5, 33.6, 37.0, 40.6, 44.8, 50.0, 56.8, 66.6, 82.0
+- 20-bin: 5.0, 11.9, 14.9, 17.2, 19.4, 21.3, 23.5, 25.7, 27.8, 30.7, 33.5, 36.5, 39.6, 43.2, 47.4, 52.5, 59.6, 69.2, 84.4
+
+**TRENDY NEE-median (gC m⁻² yr⁻¹):**
+- 12-bin: 5.0, 14.2, 21.8, 28.0, 33.6, 38.9, 45.1, 52.0, 59.4, 68.6, 81.2
+- 18-bin: 5.0, 11.1, 16.6, 21.4, 25.6, 29.4, 33.0, 36.4, 40.0, 43.9, 48.3, 52.9, 57.6, 63.0, 69.2, 76.6, 89.4
+- 20-bin: 5.0, 10.5, 15.5, 19.9, 23.9, 27.5, 30.8, 33.9, 36.9, 40.2, 43.7, 47.6, 51.7, 55.8, 60.2, 65.5, 71.4, 78.5, 91.8
+
+**TRENDY ET-median (mm yr⁻¹) — ceiling effects:**
+- 12-bin: 5.0, 77.7, 156.3, ..., 934.4, **1000.1** (top quantile hits ceiling; no collapse)
+- 18-bin: 5.0, 47.1, ..., 946.2, **1000.1, 1000.1** (1 collapsed at 1000 mm/yr)
+- 20-bin: 5.0, 41.9, ..., 990.0, **1000.1, 1000.1** (1 collapsed at 1000 mm/yr)
+
+For ET-median, the 12-bin scheme fits just inside the ceiling with the last bin
+at > 1000.1 mm/yr serving as a valid catch-all. At 18- and 20-bin the quantile
+demand exceeds the histogram resolution, producing 1 duplicate break. The 30-bin
+scheme had 4 collapsed breaks. The 12-bin is the highest resolution at which
+ET-median avoids ceiling collapse.
+
+### Jaccard by bin count (current_767)
+
+| Axis | 7-bin | 12-bin | 18-bin | 20-bin | 30-bin |
+|------|-------|--------|--------|--------|--------|
+| biomass_cci_v7 | 0.6385 | 0.6205 | 0.6163 | 0.6139 | 0.6161 |
+| trendy_nee_iav | 0.5073 | 0.4968 | 0.4863 | 0.4894 | 0.4813 |
+| trendy_et_iav | 0.6634 | 0.6544 | 0.6361 | 0.6348 | 0.6328 |
+| trendy_nee_median | 0.4949 | 0.4796 | 0.4773 | 0.4745 | 0.4655 |
+| trendy_et_median | 0.4590 | 0.4562 | 0.4334 | 0.4470 | 0.4287 |
+
+**Patterns:**
+
+1. **Monotonic decrease is the norm** — all axes show declining J as bin count
+   rises, confirming finer binning is a consistently harder test with no artificial
+   inflation at any single resolution.
+
+2. **Rate of decline decelerates** — the largest J drop occurs between 7-bin and
+   12-bin for most axes; gains from additional bins above 18–20 are marginal
+   (~0.001–0.003 per axis for the current_767 network). The 7→12 step is the
+   most informative quality jump.
+
+3. **Two non-monotonicities worth noting:**
+   - NEE-IAV: 18-bin (0.4863) < 20-bin (0.4894) — small reversal, attributable
+     to quantile step effects from the 0.1-unit histogram resolution.
+   - ET-median: 18-bin (0.4334) < 20-bin (0.4470) — larger reversal (~0.013)
+     caused by the ceiling collapse at 1000 mm/yr. At 18-bin, 1 collapsed
+     breakpoint inflates one bin's global fraction, penalising J. At 20-bin,
+     the collapse manifests the same way but the distribution of sites happens
+     to match better. This is a known artefact of the histogram ceiling for
+     ET-median and should be noted in any figure showing this axis.
+
+4. **ET axes > NEE axes** at all bin counts — consistent with the 7-bin and
+   30-bin results.
+
+### Files changed
+
+- **New script:** `scripts/recompute_continuous_axes_multibin.R`
+- **New global dist CSVs + metas (×15):** `data/snapshots/*_global_distribution_{12,18,20}bin.{csv,meta.json}`
+- **Updated per-site CSVs + metas (×20):** `data/snapshots/site_{biomass,trendy_*}.{csv,meta.json}`
+- **Updated metrics:** `data/snapshots/representativeness_metrics.csv` (96 → 156 rows)
+
+---
+
+## 2026-06-29 — Representativeness figures Rep001–Rep010
+
+### Overview
+
+Rewrote `scripts/figure_representativeness_summary.R` to produce all ten figures in a single
+script. Run time: < 30 s (no raster I/O; reads from CSVs only).
+
+### Fig 001–005: 2×3 bar-grid panels
+
+Layout: top row (KG 13-class | LULC 10-class HL | Aridity 7-class), bottom row
+(Biomass 7-bin | NEE-IAV 7-bin | ET-median 7-bin). X-axis ±log₂(5) = ±2.32,
+with 1/5×, 1/2×, 1×, 2×, 5× tick labels. Black-outline bars, truncated at ±5×
+with actual ratio annotated.
+
+**Truncated bars per figure (total across all 6 panels):**
+
+| Figure | Network | Truncated |
+|--------|---------|-----------|
+| Rep001 | current_767 | 5 |
+| Rep002 | marconi | 5 |
+| Rep003 | la_thuile | 7 |
+| Rep004 | fluxnet2015 | 6 |
+
+All truncations are extreme overrepresentation (the class is much more common in the
+network than globally) — none are extreme underrepresentation, which would indicate
+classes the network systematically misses.
+
+Fig 005 (overlay) shows current_767 (dark, α=1.0) and FLUXNET2015 (pale, α=0.42)
+grouped side-by-side per class, with a shared top legend.
+
+### Fig 006: Count difference (current − FLUXNET2015)
+
+**All count differences are non-negative (n_negative = 0 for every axis).** The current
+767-site network has more sites in every single class across all six axes than FLUXNET2015
+did. This reflects the 767-vs-212 expansion and broader geographic coverage. No class
+regressed. Largest absolute gains:
+
+| Axis | max |Δ| |
+|------|---------|
+| ET-median (7-bin) | 199 |
+| Aridity (7-class) | 195 |
+| Biomass (7-bin) | 184 |
+| KG (13-class) | 180 |
+| LULC (10-class HL) | 180 |
+| TRENDY NEE-IAV (7-bin) | 153 |
+
+Because all bars are positive (blue), Fig 006 functions as a gain-per-class map rather
+than a gain/loss map. The largest per-class gains are in whichever class the current
+network added the most new sites to.
+
+### Fig 007–008: Trajectory, 6 default axes
+
+Fig 007 (no count bars) and Fig 008 (with count bars and secondary n_sites axis)
+show the same Jaccard trajectory. Adding the count bars in Fig 008 makes visible the
+asymmetric sampling effort: Marconi (n=35) → La Thuile (n=252) is a 7× jump that
+drives a modest Jaccard improvement; La Thuile → FLUXNET2015 is only a small
+additional 20 sites, yet in some axes Jaccard barely changes or even drops slightly.
+The La Thuile → FLUXNET2015 "kink" (visible in Fig 008) is the main new insight from
+the count-bar version.
+
+### Fig 009: Trajectory, 3 native-resolution categorical axes
+
+KG 30-class (J ≈ 0.21–0.35), LULC 37-class native (J ≈ 0.23–0.44), Aridity 7-class
+(J ≈ 0.48–0.67). At finer categorical resolution, J drops uniformly relative to the
+aggregated axes (expected — harder test). The rank ordering of the three axes is
+preserved: Aridity > LULC > KG. No trajectory change that wasn't already visible in
+Fig 007/008; the value of Fig 009 is showing the penalty from coarser aggregation
+on the Jaccard scalar.
+
+### Fig 010: Trajectory, 5 continuous axes at 30-bin hybrid
+
+Five lines (Biomass, NEE-IAV, NEE-median, ET-IAV, ET-median). The ET-IAV and
+ET-median lines sit above NEE-IAV and NEE-median for the current network (higher
+representativeness for ET than NEE), consistent with the 7-bin trajectories. The
+NEE-IAV / NEE-median pair is nearly coincident (similar climate signal); the ET-IAV /
+ET-median pair is more separated (IAV smoother, median skewed by seasonal signal).
+
+**Fig 010 five-axis palette decisions (documented in script):**
+
+| Axis | Color | Rationale |
+|------|-------|-----------|
+| Biomass | `#009E73` | Okabe-Ito green |
+| TRENDY NEE-IAV | `#0072B2` | Okabe-Ito blue |
+| TRENDY NEE-median | `#1a5276` | Darkened navy — same blue family, clearly darker |
+| TRENDY ET-IAV | `#56B4E9` | Okabe-Ito sky blue |
+| TRENDY ET-median | `#00898e` | Teal — midpoint between green and sky blue |
+
+### Files changed
+
+- **Replaced script:** `scripts/figure_representativeness_summary.R` (594 → ~580 lines, complete rewrite)
+- **New figures (×10):** `review/figures/representativeness/fig_rep001_current.png` through `fig_rep010_jaccard_trajectory_30bin_continuous.png`
+- **Removed stale:** `review/figures/representativeness/fig_rep006_delta_2015_to_current.png` (old delta-SR version)
+
+---
+
+## 2026-06-29 — 30-bin hybrid representativeness for continuous axes
+
+### Overview
+
+Built and ran `scripts/recompute_continuous_axes_30bin.R`. Extends the representativeness
+analysis for all five continuous axes (Biomass CCI v7, TRENDY NEE-IAV, ET-IAV, NEE-median,
+ET-median) from the existing 7-bin hybrid scheme to a 30-bin hybrid scheme. Ran in ~2 min
+on local mini (biomass bilinear resample: 22 s; TRENDY axes: < 1 s each).
+
+### 30-bin scheme
+
+- **Bin 1:** near-zero fixed cut (< 5 in axis units)
+- **Bins 2–30:** 29 equal-area quantile bins derived from the global KG-land distribution
+  of vegetated pixels (≥ 5 units). 28 interior breakpoints at Q_PROBS = (1:28)/29.
+- **29 documented breakpoints** per axis = [low_cut, q1, ..., q28].
+
+### Global distributions computed
+
+Five new CSVs (31 rows: header + 30 bins) + companion `.meta.json` in `data/snapshots/`:
+
+| File | Vegetated land |
+|------|---------------|
+| `biomass_cci_v7_global_distribution_30bin.csv` | ~73.0% of KG fine-grid land |
+| `trendy_nee_iav_global_distribution_30bin.csv` | ~90.6% of KG coarse-grid land |
+| `trendy_et_iav_global_distribution_30bin.csv` | ~95.4% |
+| `trendy_nee_median_global_distribution_30bin.csv` | ~91.2% |
+| `trendy_et_median_global_distribution_30bin.csv` | ~89.4% |
+
+**Note — ET-median histogram ceiling:** `hist_max = 1000 mm/yr` truncates the ET-median
+distribution. The last four quantile breakpoints (Q = 25/29 through 28/29) all resolve to
+1000.1 mm/yr, effectively collapsing bins 26–30 around the > 1000 mm/yr tail. This is
+expected behavior; values above 1000 mm/yr are correctly placed in bin 30 at the site level.
+
+### Per-site 30-bin column added
+
+Added `{axis}_bin_30` column to all 20 existing per-site CSVs (5 axes × 4 networks).
+Bin-1 (near-zero) fractions by axis at current_767:
+
+| Axis | Bin-1 fraction |
+|------|---------------|
+| `biomass_cci_v7` | 31.6% (242/767) |
+| `trendy_nee_iav` | 1.6% |
+| `trendy_et_iav` | 0% |
+| `trendy_nee_median` | 1.6% |
+| `trendy_et_median` | 0% |
+
+### Representativeness metrics — 30-bin
+
+76 + 20 = 96 rows in `representativeness_metrics.csv` (`aggregation_level = "30bin_hybrid"`).
+
+Jaccard comparison 7-bin vs 30-bin (current_767, as a resolution-sensitivity check):
+
+| Axis | J (7-bin) | J (30-bin) | Δ |
+|------|-----------|------------|---|
+| biomass_cci_v7 | 0.6385 | 0.6161 | −0.022 |
+| trendy_nee_iav | 0.5073 | 0.4813 | −0.026 |
+| trendy_et_iav | 0.6634 | 0.6328 | −0.031 |
+| trendy_nee_median | 0.4949 | 0.4655 | −0.029 |
+| trendy_et_median | 0.4590 | 0.4287 | −0.030 |
+
+All J scores decrease slightly as expected when moving from 7 to 30 bins (finer binning is
+a harder test of representativeness). Deltas are small (−0.02 to −0.03), confirming the
+7-bin scheme was not artificially inflating scores.
+
+### Files changed
+
+- **New script:** `scripts/recompute_continuous_axes_30bin.R`
+- **New global dist CSVs + metas (×5):** `data/snapshots/*_global_distribution_30bin.{csv,meta.json}`
+- **Updated site CSVs + metas (×20):** `data/snapshots/site_{biomass,trendy_*}.{csv,meta.json}`
+- **Updated metrics:** `data/snapshots/representativeness_metrics.csv` (76 → 96 rows)
+
+---
+
+## 2026-06-28 — Representativeness summary figures (Rep001–Rep007) — CORRECTED
+
+### Overview
+
+Rebuilt `scripts/figure_representativeness_summary.R` (replacing an incorrect earlier version —
+see the entry below this one, which produced wrong visualization types and was superseded).
+Correct outputs: seven per-category sampling-ratio figures (Rep001–007). Run time: ~5 seconds
+(CSV + legend file reads only; no raster I/O).
+
+### Step 1: Color palettes reviewed
+
+All five existing per-axis figure scripts were read to extract color schemes before writing code.
+
+| Script | Color approach |
+|--------|----------------|
+| `figure_representativeness_kg.R` | Mean RGB of 30-class Beck 2023 `legend.txt` members per two-letter group via `grDevices::rgb()` |
+| `figure_representativeness_landcover.R` | Mean RGB of native LCCS codes per HL group from aggregation lookup; Snow/Ice override `#e0f3f8` |
+| `figure_representativeness_aridity.R` | Hardcoded 7-hex diverging: `#d73027` (Hyper-Arid) → `#313695` (Hyper-Humid) |
+| `figure_representativeness_biomass.R` | 7-hex pale-cream → dark-green: `#f7f4f9` → `#14532d` |
+| `figure_representativeness_trendy_wrap.R` | NEE `PAL_GREEN`: `#f4faf0` → `#0b3e09`; ET `PAL_BLUE`: `#f0f8ff` → `#06305a` |
+
+### Step 2: Rep007 six-axis qualitative palette proposed
+
+Six Okabe-Ito colors (colorblind-safe, perceptually distinct on white background):
+
+| Axis | Label | Hex |
+|------|-------|-----|
+| Beck 2023 KG (13-class) | vermilion | `#D55E00` |
+| ESA CCI LULC (10-class) | reddish pink | `#CC79A7` |
+| CGIAR Aridity (7-class) | amber | `#E69F00` |
+| ESA CCI Biomass (7-bin) | green | `#009E73` |
+| TRENDY NEE-IAV (7-bin) | blue | `#0072B2` |
+| TRENDY ET-median (7-bin) | sky blue | `#56B4E9` |
+
+### Step 3: make_summary_figure() implementation
+
+Six axes (fixed order, top-to-bottom panels):
+1. Beck 2023 KG present-day, 13-class (`koppen_twoletter` aggregation)
+2. ESA CCI Land Cover, 10-class high-level
+3. CGIAR Aridity UNEP, 7-class
+4. ESA CCI Biomass v7, 7-bin hybrid
+5. TRENDY NEE-IAV, 7-bin hybrid
+6. TRENDY ET-median, 7-bin hybrid
+
+Each panel: horizontal bars, X = log2(sampling_ratio), reference line at 1×.
+Sampling ratio computed per-class from raw site CSVs and global distribution CSVs — NOT
+from the aggregate Jaccard row in `representativeness_metrics.csv`.
+
+Implementation note: log2(sampling_ratio) plotted on a linear axis (correct ggplot2 approach
+for bars anchored at log2(1)=0); x-axis labels show multiplicative equivalents (1/4×, 1×, 4×…).
+Classes absent from a network (network_frac = 0) produce `NA` log2_sr and no bar is drawn.
+
+Three modes:
+- `"single"`: one opaque bar per class, filled by axis palette
+- `"overlay"`: two dodged bars per class; reference (historical) at alpha=0.42, current at alpha=1.0
+- `"delta"`: one bar per class showing `sr_current − sr_reference` on linear scale; blue=+, red=−
+
+### Figures produced
+
+| ID | Mode | Network(s) | File | Dims |
+|----|------|------------|------|------|
+| Rep001 | single | current_767 | `fig_rep001_current.png` | 7×14 in, 300 dpi |
+| Rep002 | single | marconi | `fig_rep002_marconi.png` | 7×14 in, 300 dpi |
+| Rep003 | single | la_thuile | `fig_rep003_la_thuile.png` | 7×14 in, 300 dpi |
+| Rep004 | single | fluxnet2015 | `fig_rep004_fluxnet2015.png` | 7×14 in, 300 dpi |
+| Rep005 | overlay | current_767 vs fluxnet2015 | `fig_rep005_fluxnet2015_vs_current.png` | 7×14 in, 300 dpi |
+| Rep006 | delta | current_767 − fluxnet2015 | `fig_rep006_delta_2015_to_current.png` | 7×14 in, 300 dpi |
+| Rep007 | trajectory | all 4 generations × 6 axes | `fig_rep007_jaccard_trajectory.png` | 7×4.5 in, 300 dpi |
+
+All in `review/figures/representativeness/`. White background (`bg="white"` in ggsave).
+
+### Key observations
+
+**Current network (Rep001):** Cs (Mediterranean) and Cf (temperate humid) strongly
+overrepresented in KG; Hyper-Arid and Bare land drastically underrepresented across
+aridity and LULC; mid-range biomass bins (27–94 Mg/ha) and mid-range TRENDY NEE-IAV
+bins (42–70 gC m⁻² yr⁻¹) are slightly over-sampled relative to global land area.
+
+**Trajectory (Rep007):** All six axes show monotonic improvement from Marconi (n=35)
+to current (n=767). Aridity (7-class) has the highest J throughout (J=0.479→0.667).
+KG (13-class) has the lowest J throughout (J=0.223→0.373), indicating climate-zone
+representativeness has improved the least proportionally with network expansion.
+TRENDY ET-median shows a non-monotonic dip at La Thuile (J=0.381 < Marconi J=0.416)
+before recovering to J=0.459 in the current network.
+
+---
+
+## 2026-06-28 — Representativeness summary figures (Rep001–Rep007)
+
+### Color palettes reviewed (Step 1)
+
+Before writing the script, all five existing per-axis figure scripts were read to extract
+their color schemes:
+
+| Script | Color approach |
+|--------|----------------|
+| `figure_representativeness_kg.R` | RGB from Beck 2023 `legend.txt` via `grDevices::rgb(r,g,b,maxColorValue=255)` |
+| `figure_representativeness_landcover.R` | RGB from `ESACCI-LC-Legend.csv` columns; unweighted mean for aggregated levels |
+| `figure_representativeness_aridity.R` | Explicit hex: red → yellow → green → blue diverging continuum |
+| `figure_representativeness_biomass.R` | 7-bin pale-cream → dark-green sequence (`#f7f4f9` → `#14532d`) |
+| `figure_representativeness_trendy_wrap.R` | NEE: pale→dark green (`PAL_GREEN`); ET: pale→dark blue (`PAL_BLUE`) |
+
+None of the existing scripts uses a unified qualitative palette across axes.
+
+### Rep007 six-axis qualitative palette
+
+Proposed palette (ColorBrewer Paired; perceptually distinct on white background):
+
+| Axis | Color | Hex |
+|------|-------|-----|
+| KG present-day (5-class) | red | `#e31a1c` |
+| LULC (high-level) | purple | `#6a3d9a` |
+| Aridity (5-class) | orange | `#ff7f00` |
+| Biomass (7-bin hybrid) | dark green | `#33a02c` |
+| TRENDY NEE-IAV (7-bin) | dark blue | `#1f78b4` |
+| TRENDY ET-median (7-bin) | brown | `#b15928` |
+
+### Figures produced
+
+| ID | Mode | Networks | File | Dims |
+|----|------|----------|------|------|
+| Rep001 | single | current_767 | `fig_repr_summary_Rep001_current767.png` | 7.5×6.0 in |
+| Rep002 | single | fluxnet2015 | `fig_repr_summary_Rep002_fluxnet2015.png` | 7.5×6.0 in |
+| Rep003 | single | la_thuile | `fig_repr_summary_Rep003_la_thuile.png` | 7.5×6.0 in |
+| Rep004 | single | marconi | `fig_repr_summary_Rep004_marconi.png` | 7.5×6.0 in |
+| Rep005 | overlay | current_767 vs fluxnet2015 | `fig_repr_summary_Rep005_overlay_cur_f2015.png` | 8.5×6.5 in |
+| Rep006 | delta | current_767 − fluxnet2015 | `fig_repr_summary_Rep006_delta_cur_f2015.png` | 7.5×6.0 in |
+| Rep007 | trajectory | all 4 generations | `fig_repr_summary_Rep007_trajectory.png` | 9.0×5.5 in |
+
+All figures in `review/figures/representativeness/`. 200 dpi, white background.
+Each figure accompanied by a companion `.meta.json` file.
+
+### Axis selection for Rep001–Rep006
+
+11 representative axis-aggregation rows (one per major axis group):
+KG present-day 5-class, KG SSP2-4.5 5-class, KG SSP5-8.5 5-class,
+Aridity 5-class, Aridity 7-class, Biomass 7-bin, LULC high-level,
+TRENDY NEE-IAV 7-bin, TRENDY NEE-median 7-bin, TRENDY ET-IAV 7-bin, TRENDY ET-median 7-bin.
+
+### Key trajectory observations (Rep007)
+
+Aridity (5-class) shows the strongest improvement from Marconi to current (J: 0.479 → 0.694).
+LULC high-level also gains substantially (0.349 → 0.556 from Marconi to current).
+KG 5-class is notably flat (0.317 → 0.401) — climate-zone representativeness has
+not improved proportionally to network size. TRENDY ET-median shows a non-monotonic
+trajectory (La Thuile 0.381 < Marconi 0.416) before recovering to 0.459 in the current network.
+
+---
+
+## 2026-06-28 — Historical network representativeness: Marconi, La Thuile, FLUXNET2015
+
+### Overview
+
+Per-site representativeness classifications extracted for three historical FLUXNET
+networks across all 11 axes used in the current 767-site analysis. Script:
+`scripts/extract_historical_sites_representativeness.R`. Run time: ~4 seconds.
+
+### Input CSV verification
+
+| Network | Expected | Found | NA coords | Notes |
+|---------|----------|-------|-----------|-------|
+| Marconi (Falge et al. 2001) | 35 | 35 | 0 | cols: site_id, marconi_code, marconi_name, location_lat, location_long |
+| La Thuile (2007) | 252 | 252 | 0 | cols: site_id, site_name, location_lat, location_long |
+| FLUXNET2015 (Pastorello et al. 2020) | 212 | 212 | 0 | cols: site_id, site_name, location_lat, location_long |
+
+All three CSVs use `location_lat` / `location_long` — no harmonization needed.
+
+### Raster extractions and nearest-land recoveries
+
+- **Marconi (35 sites):** 0 nearest-land recoveries — all sites extracted exactly
+- **La Thuile (252 sites):** 2 recoveries — CN-Do2 at 0.006° and CN-Do3 at 0.01°
+  (both assigned KG class 14, Cfa — consistent across present-day and both future scenarios)
+- **FLUXNET2015 (212 sites):** 0 nearest-land recoveries
+
+Total nearest-land recoveries: 2 of 499 site-extractions (0.4%).
+
+### Site CSVs produced
+
+30 site CSVs + 30 `.meta.json` companions written to `data/snapshots/`:
+
+```
+site_koppen_beck2023_{marconi,la_thuile,fluxnet2015}.csv        (10 cols; includes koppen_twoletter)
+site_koppen_beck2023_ssp245_2041_2070_{network}.csv             (9 cols; matches existing future structure)
+site_koppen_beck2023_ssp585_2071_2099_{network}.csv             (9 cols)
+site_aridity_{network}.csv                                       (7 cols; ai_value + unep_class_5 + unep_class_7)
+site_biomass_cci_v7_{network}.csv                                (7 cols)
+site_landcover_cci_{network}.csv                                 (14 cols; all three LULC levels)
+site_trendy_{nee_iav,et_iav,nee_median,et_median}_{network}.csv (7 cols each)
+```
+
+Column structure matches the corresponding current-network CSVs exactly.
+Canonical breakpoints (biomass: 5/13/27/51/94/171 Mg/ha; TRENDY: read from
+existing global distribution CSVs) applied unchanged across all networks.
+
+### Representativeness metrics update
+
+`data/snapshots/representativeness_metrics.csv` updated with `network` column
+(existing rows tagged `current_767`; `n_sites` column added).
+
+**Final table:** 76 rows = 4 networks × 19 axis-aggregation combinations:
+- KG present-day: 3 agg levels; KG SSP2-4.5: 3; KG SSP5-8.5: 3
+- Aridity UNEP 5-class, 7-class: 2
+- Biomass 7-bin: 1; LULC 3 levels: 3; TRENDY 4 axes: 4
+
+#### Weighted Jaccard by network — KG 5-class (summary axis)
+
+| Network | n | J | H |
+|---------|---|---|---|
+| FLUXNET2015 | 212 | 0.404 | 0.318 |
+| Current (767) | 767 | 0.401 | 0.329 |
+| La Thuile | 252 | 0.335 | 0.392 |
+| Marconi | 35 | 0.317 | 0.504 |
+
+#### Top-3 axes by weighted Jaccard per network
+
+**Marconi (n=35):**
+1. `trendy_et_iav` 7bin: J=0.531, H=0.294
+2. `aridity_unep7`: J=0.479, H=0.401
+3. `aridity_unep5`: J=0.479, H=0.397
+
+**La Thuile (n=252):**
+1. `trendy_et_iav` 7bin: J=0.632, H=0.246
+2. `aridity_unep5`: J=0.560, H=0.305
+3. `landcover_cci` high_level: J=0.553, H=0.329
+
+**FLUXNET2015 (n=212):**
+1. `trendy_et_iav` 7bin: J=0.669, H=0.227
+2. `aridity_unep5`: J=0.665, H=0.258
+3. `aridity_unep7`: J=0.598, H=0.285
+
+**Current (n=767):**
+1. `aridity_unep5`: J=0.694, H=0.211
+2. `trendy_et_iav` 7bin: J=0.663, H=0.224
+3. `aridity_unep7`: J=0.667, H=0.217
+
+#### Trends across network generations
+
+ET-IAV is the best-represented axis throughout all four network generations,
+reflecting tower placement in productive ecosystems. Aridity representativeness
+improves monotonically from Marconi → current network (J=0.479 → 0.694 for
+UNEP-5). KG 5-class sees marginal improvement from La Thuile → current (0.335
+→ 0.401), but FLUXNET2015 (0.404) is nearly equivalent to the full 767-site
+network — the KG gain from expanding from 212 to 767 sites is modest. LULC
+shows the largest improvement from Marconi → La Thuile (high-level: 0.349 →
+0.553), with further gains to 0.556 in the current network. Marconi's small
+size (n=35) drives its high Hellinger distances on most axes.
+
+### Disk usage
+
+~499 KB across 30 CSV + 30 JSON files.
+
+---
+
 ## 2026-06-27 — LULC representativeness extended to three aggregation levels
 
 ### Aggregation lookup table

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-06-28T15:14:48Z",
+  "pipeline_version": "17e1199",
+  "input_sources": [
+    "data/external/koppen_beck2023/2041_2070/ssp245/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "Historical network: la_thuile (252 sites). Beck et al. (2023) KG SSP2-4.5 2041-2070. Nearest-land recovery within 3°."
+}

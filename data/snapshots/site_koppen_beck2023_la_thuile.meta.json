@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-06-28T15:14:48Z",
+  "pipeline_version": "17e1199",
+  "input_sources": [
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "Historical network: la_thuile (252 sites). Beck et al. (2023) KG 1991-2020. terra::extract(); nearest-land recovery within 3° for NA sites."
+}

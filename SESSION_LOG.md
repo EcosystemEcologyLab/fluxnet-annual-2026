@@ -4,6 +4,93 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-29 — Targeted code review: representativeness pipeline (six risk areas)
+
+### Scope
+
+Scripts reviewed: `figure_representativeness_trendy_compute.R`,
+`figure_representativeness_trendy_wrap.R`, `figure_representativeness_landcover.R`,
+`recompute_continuous_axes_30bin.R`, `recompute_continuous_axes_multibin.R`,
+`extract_historical_sites_representativeness.R`, `figure_representativeness_summary.R`,
+and per-axis figure scripts in `scripts/`. Data file:
+`data/snapshots/cci_landcover_aggregation_lookup.csv`,
+`data/snapshots/representativeness_metrics.csv`.
+
+### 1. ELM handling in TRENDY compute — Minor issue + real bug
+
+ELM is listed in `MODELS_19` and survives into `MODELS_OK` — it is never excluded
+by code. Its effective absence from all four axes (NEE-IAV, NEE-median, ET-IAV,
+ET-median) is data-driven: ELM has no 2023 data, so the shared
+`complete <- rowSums(is.na(vals)) == 0L` guard produces an all-NA stat map,
+and `app(stk, fun = function(v) median(v, na.rm = TRUE))` ignores it silently.
+The SESSION_LOG correction ("ELM excluded from all four axes") is factually
+accurate, but the mechanism is implicit. No stale "IAV only" comments found.
+
+Two problems:
+- No comment in the compute script explains why ELM, despite being in `MODELS_OK`,
+  contributes nothing. A reader has no indication of this.
+- If ELM's 2023 data is ever back-filled in the source NetCDF, ELM silently
+  re-enters all four ensemble maps on next run.
+
+**Real bug:** Step 4 of `figure_representativeness_trendy_compute.R` (the block
+that writes back to `representativeness_metrics.csv`) builds `new_rows` without
+`network` or `n_sites` columns. If the compute script is re-run, it will write
+4 TRENDY rows with those columns missing, corrupting the metrics file schema.
+Currently masked because `extract_historical_sites_representativeness.R` ran
+afterwards and overwrote those rows.
+
+Fix needed: `setdiff(MODELS_OK, "ELM")` with explanatory comment; add `network`
+and `n_sites` to `new_rows` in Step 4.
+
+### 2. Near-zero cut (< 5) — Minor issue
+
+The 5.0 threshold is consistent across all scripts (no conflicting values), but
+is not centrally defined:
+
+| Script | How defined |
+|---|---|
+| `trendy_compute.R` lines 74–75 | Named constants `NBP_LOW_CUT <- 5.0`, `ET_LOW_CUT <- 5.0` |
+| `recompute_continuous_axes_30bin.R` | `low_cut = 5.0` repeated 5× in per-axis config |
+| `recompute_continuous_axes_multibin.R` | Same, 5× |
+| `figure_representativeness_biomass.R` | Magic number `5` / `5 Mg/ha`, 8+ occurrences, no named constant |
+| `extract_historical_sites_representativeness.R` line 313 | Embedded in `BIOMASS_BREAKS <- c(0, 5, 13, …)`, not separately named |
+
+Changing the threshold requires edits in at least four scripts.
+Fix needed (optional): top-level `LOW_CUT <- 5.0` in the recompute and biomass scripts.
+
+### 3. terra::extract() return shape — Clean
+
+All calls in scope correctly handle the post-1.9.27 1-column data frame return.
+Verified: `trendy_compute.R` (`raw[[1]]`), `aridity.R` (`[[1L]]` / `[[2L]]` with
+`ID=TRUE`), `extract_historical_sites.R` (`raw[[1]]`), `kg_future.R` (column rename
+then `$koppen_class_code`). No call assumes an old 2-column shape for a non-`ID=TRUE`
+call.
+
+### 4. terra::time() bypass — Clean
+
+`terra::time()` appears only in two comment lines in `trendy_compute.R` explaining
+why it is bypassed. `get_years()` uses a `MODEL_START_YR` lookup table instead.
+No other in-scope script calls `terra::time()`.
+
+### 5. LULC Level 2 aggregation lookup — Clean
+
+`cci_landcover_aggregation_lookup.csv`: 37 rows, 37 unique native LCCS class codes,
+zero NAs in any column, no duplicate rows. The 37 values match the non-zero CCI LC
+v2.1.1 classes exactly (class 0 / no-data absent, which is correct). All three
+aggregation levels (`lulc_native`, `lulc_level2`, `lulc_highlevel`) fully populated.
+
+### 6. representativeness_metrics.csv schema — Clean
+
+156 rows, 0 NAs anywhere. `aggregation_level` uniformly snake_case (`18bin_hybrid`
+etc. — no hyphens or spaces across all 156 rows). `n_sites` is integer-typed with
+four expected values (35, 212, 252, 767). `weighted_jaccard` and
+`hellinger_distance` are numeric with no NAs. `network` has exactly 4 expected
+values (`current_767`, `fluxnet2015`, `la_thuile`, `marconi`). Note: the Item 1
+bug means a re-run of `figure_representativeness_trendy_compute.R` would inject
+schema-broken rows into this file on next run.
+
+---
+
 ## 2026-06-29 — Rep006 + Rep007–018 three-fix aesthetic pass (label anchor, legend inside, y-axis zero)
 
 ### Overview

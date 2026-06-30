@@ -4,6 +4,88 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Flux median figure audit and TRENDY snapshot commit
+
+### Task 1: Flux median figure output audit
+
+Checked all expected outputs from `scripts/figure_flux_medians_by_igbp.R`.
+
+**Present (all timestamped 07:03–07:04):**
+- `review/figures/methods_flux_medians.md` ✓
+- `scripts/figure_flux_medians_by_igbp.R` ✓
+- All 5 PNGs at `review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png` ✓
+- All 5 CSVs at `data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv` ✓
+
+**Missing:**
+- All 5 `.meta.json` companions for the flux median CSVs — `write_output_metadata()` was not called for these files. Action required: add metadata generation to the script and regenerate.
+
+### Normalized heights per IGBP class (from CSVs)
+
+**NEP** (max = EBF 382.2 gC m⁻² yr⁻¹, n=38 sites):
+
+| Class | h | Median | n |
+|-------|---|--------|---|
+| EBF | 1.000 | 382.2 | 38 |
+| MF  | 0.740 | 282.6 | 22 |
+| DBF | 0.785 | 299.8 | 60 |
+| ENF | 0.388 | 148.2 | 95 |
+| CSH | 0.105 | 40.1  | 11 |
+| OSH | 0.038 | 14.6  | 32 |
+| WSA | 0.739 | 282.3 | 15 |
+| SAV | 0.073 | 28.0  | 10 |
+| GRA | 0.247 | 94.2  | 120 |
+| WET | 0.157 | 60.1  | 90 |
+| CRO | 0.483 | 184.5 | 107 |
+| CVM | 0.065 | 24.7  | 7 |
+
+**GPP** (max = EBF 2326.1 gC m⁻² yr⁻¹, n=37):
+EBF=1.000, MF=0.703, DBF=0.686, ENF=0.646, CSH=0.393, OSH=0.166,
+WSA=0.537, SAV=0.397, GRA=0.566, WET=0.309, CRO=0.588, CVM=0.566
+
+**TER** (max = EBF 1826.3 gC m⁻² yr⁻¹, n=37):
+EBF=1.000, MF=0.701, DBF=0.698, ENF=0.625, CSH=0.472, OSH=0.177,
+WSA=0.521, SAV=0.525, GRA=0.652, WET=0.339, CRO=0.611, CVM=0.467
+
+**ET** (max = EBF 825.0 mm yr⁻¹, n=38):
+EBF=1.000, MF=0.638, DBF=0.618, ENF=0.545, CSH=0.570, OSH=0.310,
+WSA=0.723, SAV=0.511, GRA=0.646, WET=0.592, CRO=0.716, CVM=0.620
+
+**H** (max = WSA 57.8 W m⁻², n=17):
+EBF=0.477, MF=0.431, DBF=0.415, ENF=0.516, CSH=0.517, OSH=0.688,
+WSA=1.000, SAV=0.830, GRA=0.337, WET=0.256, CRO=0.274, CVM=0.283
+
+### NEP sign check — resolved
+
+All 12 IGBP class-level NEP medians are positive (range: OSH 14.6 → EBF 382.2
+gC m⁻² yr⁻¹). No negative class-level medians. Per-flux proportional normalization
+(divide by maximum positive class median) is valid without modification for all five
+fluxes. Sign question raised in the prior session is closed.
+
+### Three barely-visible NEP classes (h < 0.10)
+
+| Class | h | Median |
+|---|---|---|
+| OSH | 0.038 | 14.6 gC m⁻² yr⁻¹ |
+| CVM | 0.065 | 24.7 gC m⁻² yr⁻¹ |
+| SAV | 0.073 | 28.0 gC m⁻² yr⁻¹ |
+
+These are near-carbon-neutral at the class-median level and will appear as thin
+slivers in the scaffold figure. All positive — no sign handling required.
+
+### Task 2: TRENDY snapshot commit
+
+Committed `data/snapshots/site_trendy_*.csv` (4 files), `data/snapshots/*_global_distribution.meta.json` (4 files), and `data/snapshots/representativeness_metrics.csv` as commit `29dafe9` ("Regenerate TRENDY snapshots after ELM-fix verification (2026-06-29)"). Pushed to origin/main.
+
+### Remaining uncommitted tracked changes
+
+| File | Action needed |
+|---|---|
+| `review/figures/climate/fig_environmental_response_era5.png` | Commit once script reviewed |
+| `outputs/session_info.txt` | Routine; can bundle with next substantive commit |
+| `renv/activate.R` | Routine renv update; bundle separately |
+
+---
+
 ## 2026-06-30 — Session reconnect: status summary
 
 Reconnected after mid-session disconnect. All substantive work from today's session was

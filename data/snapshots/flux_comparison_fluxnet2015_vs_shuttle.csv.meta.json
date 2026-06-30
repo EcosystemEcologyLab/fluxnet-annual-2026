@@ -1,0 +1,16 @@
+{
+  "run_datetime_utc": "2026-06-30T21:15:05Z",
+  "pipeline_version": "16e0ffb",
+  "data_sources": {
+    "fluxnet2015": "data/snapshots/site_flux_medians_fluxnet2015.csv",
+    "shuttle": "data/snapshots/site_flux_medians_shuttle.csv"
+  },
+  "exclusion_rules": {
+    "CVM": "absent from FLUXNET2015 release site list (no x-coordinate)",
+    "CSH": "n=2 in FLUXNET2015, below the n>=5 reliability threshold",
+    "non_standard_igbp": "Sites labelled BSV, DNF, or SNO are excluded by construction: class statistics are computed only over the 12 STANDARD_IGBP labels (EBF, MF, DBF, ENF, CSH, OSH, WSA, SAV, GRA, WET, CRO, CVM); these sites never contribute to any plotted class."
+  },
+  "std_dev_definition": "sd of per-site median values within an IGBP class (cross-site spread), NOT the within-site year-to-year spread and NOT read from a literal std_dev column (igbp_class_flux_distributions_*.csv stores cv = sd/|mean|, not sd itself, and does not store the class mean needed to back sd out of cv). Recomputed directly here from the same per-site source CSVs (site_flux_medians_fluxnet2015.csv / site_flux_medians_shuttle.csv) those distribution files use, so n_sites and median are consistent with them.",
+  "diff_definition": "diff = shuttle_median - fluxnet2015_median; pct_diff = 100 * diff / abs(fluxnet2015_median)",
+  "notes": "Companion table to fig_flux_comparison_{nep,gpp,ter,et,h}.png. Includes all 12 STANDARD_IGBP classes (CVM and CSH flagged excluded=TRUE, not dropped) for transparency; only the 10 non-excluded classes appear in the figures."
+}

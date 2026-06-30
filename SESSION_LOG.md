@@ -4,6 +4,668 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 release YY data inventory
+
+### Task
+
+Checked whether the original FLUXNET2015 release (Pastorello et al. 2020)
+YY product is present on disk for the 212 sites listed in
+`data/snapshots/sites_fluxnet2015_clean.csv`. This is distinct from any
+current FLUXNET Shuttle reprocessing of the same sites — the two are
+different data products even when they cover the same site-years.
+
+### Result
+
+**0 of 212 sites have the original FLUXNET2015 release YY product locally.
+212 of 212 lack it.**
+
+### File-naming patterns observed
+
+`data/extracted/` contains 759 site-product directories, all following the
+**FLUXNET Shuttle / ONEFlux reprocessing convention**, not the FLUXNET2015
+release convention:
+
+```
+<NETWORK>_<site_id>_FLUXNET_<years>_v1.3_r1/
+  <NETWORK>_<site_id>_FLUXNET_FLUXMET_YY_<years>_v1.3_r1.csv
+  <NETWORK>_<site_id>_FLUXNET_BIFVARINFO_YY_<years>_v1.3_r1.csv
+  <NETWORK>_<site_id>_FLUXNET_ERA5_YY_<years>_v1.3_r1.csv
+  ...
+```
+
+Network prefixes observed: `AMF`, `CNF`, `EUF`, `FLX`, `ICOS`, `JPF`, `KOF`,
+`SAEON`, `TERN`. Note that an `FLX`-prefixed directory does **not** by
+itself indicate a FLUXNET2015 release file — these are shuttle-product
+directories that happen to use the `FLX` network code.
+
+The classic FLUXNET2015 release filename pattern —
+`FLX_<site_id>_FLUXNET2015_FULLSET_YY_<years>_<vers>.csv` — was searched
+for explicitly (`FULLSET`, `FLUXNET2015` tokens) and does not appear
+anywhere in `data/raw/`, `data/extracted/`, `data/external/`,
+`data/processed/`, or elsewhere in the repository.
+
+### Where FLUXNET2015 data is NOT found
+
+- `data/raw/` — empty
+- `data/extracted/` — 759 dirs, all shuttle-product naming, zero `FULLSET` matches
+- `data/external/` — only static rasters (aridity, CCI biomass/landcover, GEZ,
+  Köppen, TRENDY, WorldClim); no flux tower data; no FLUXNET2015-related zip
+  archives (only 5 unrelated raster zips: WorldClim, Köppen, GEZ, aridity, CCI LC)
+- `data/processed/` — only `.rds`/`.meta.json` derivatives of the shuttle
+  pipeline (`flux_data_*_yy.rds` etc.), not raw release files
+
+### What does exist (derived artifacts, not the release itself)
+
+Every other repository hit for "fluxnet2015" is a derived artifact built
+from the 212-site list, not the original release data:
+
+- `data/snapshots/sites_fluxnet2015*.csv`, `years_fluxnet2015.csv` —
+  site/year lookup tables
+- `data/snapshots/site_{aridity,koppen_beck2023,trendy,landcover,biomass}_*_fluxnet2015.csv/.meta.json`
+  — external-raster extractions joined to the FLUXNET2015 site list
+- `data/lists/FLUXNET2015.xlsx`, `FLUXNET2015_SiteLocations.xlsx` — site
+  metadata spreadsheets, no flux data
+- `review/figures/.../fig_*FLUXNET2015*.png` — comparison/coverage figures
+
+### Conclusion
+
+The original Pastorello et al. (2020) FLUXNET2015 release YY product is not
+present anywhere on this machine. Only shuttle-reprocessed v1.3_r1 data
+exists for these 212 sites. A download is needed to obtain the original
+release data for comparison/validation purposes. No analysis was performed
+beyond this inventory.
+
+---
+
+## 2026-06-30 — Flux median meta.json companions added
+
+Closed the gap flagged in the same-day "Flux median figure audit" entry below:
+the five flux median CSVs had no `.meta.json` companions.
+
+**`scripts/figure_flux_medians_by_igbp.R` updated** to source
+`R/pipeline_config.R` / `R/utils.R`, call `check_pipeline_config()`, and call
+`write_output_metadata()` (in place of a hand-rolled `jsonlite::write_json()`
+call) for each of the five CSVs. Future re-runs of the script now produce
+correctly-named, standard-format companions automatically.
+
+**Five companion files written:**
+`data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.meta.json`. Each
+documents, via the standard `write_output_metadata()` fields
+(`run_datetime_utc`, `pipeline_version`, `input_sources`, `notes`):
+
+- Source: FLUXNET Shuttle snapshot `fluxnet_shuttle_snapshot_20260624T095651.csv` (767 sites)
+- Data product: FLUXMET YY v1.3_r1
+- Per-flux variable and source priority (e.g. NEP: `NEE_VUT_REF` preferred,
+  `NEE_CUT_REF` fallback; GPP/TER: NT preferred, DT fallback per site; ET:
+  derived from `LE_F_MDS`; H: `H_F_MDS` direct)
+- QC threshold: 0.80
+- Per-site aggregation: median across qualifying years
+- Class scheme: 12 standard FLUXNET IGBP classes
+- Cross-class aggregation: median of site medians
+- Units (NEP/GPP/TER in gC m⁻² yr⁻¹, ET in mm yr⁻¹, H in W m⁻²)
+
+The script was re-run to generate these; the five CSVs and five PNGs were
+byte-identical to the prior run (no data change, metadata-only addition).
+
+**Old, incorrectly-named meta.json files removed.** The original run had
+written `data/snapshots/flux_medians_by_igbp_*.csv.meta.json` (extension
+appended after `.csv` rather than replacing it, and with thinner ad hoc
+content). These did not match the project's `write_output_metadata()` naming
+convention (`tools::file_path_sans_ext()` + `.meta.json`) used everywhere
+else in the repo. Removed after confirming with the user, since
+`data/snapshots/` deletions require explicit confirmation per CLAUDE.md.
+
+---
+
+## 2026-06-30 — Flux median figure audit and TRENDY snapshot commit
+
+### Task 1: Flux median figure output audit
+
+Checked all expected outputs from `scripts/figure_flux_medians_by_igbp.R`.
+
+**Present (all timestamped 07:03–07:04):**
+- `review/figures/methods_flux_medians.md` ✓
+- `scripts/figure_flux_medians_by_igbp.R` ✓
+- All 5 PNGs at `review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png` ✓
+- All 5 CSVs at `data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv` ✓
+
+**Missing:**
+- All 5 `.meta.json` companions for the flux median CSVs — `write_output_metadata()` was not called for these files. Action required: add metadata generation to the script and regenerate.
+
+### Normalized heights per IGBP class (from CSVs)
+
+**NEP** (max = EBF 382.2 gC m⁻² yr⁻¹, n=38 sites):
+
+| Class | h | Median | n |
+|-------|---|--------|---|
+| EBF | 1.000 | 382.2 | 38 |
+| MF  | 0.740 | 282.6 | 22 |
+| DBF | 0.785 | 299.8 | 60 |
+| ENF | 0.388 | 148.2 | 95 |
+| CSH | 0.105 | 40.1  | 11 |
+| OSH | 0.038 | 14.6  | 32 |
+| WSA | 0.739 | 282.3 | 15 |
+| SAV | 0.073 | 28.0  | 10 |
+| GRA | 0.247 | 94.2  | 120 |
+| WET | 0.157 | 60.1  | 90 |
+| CRO | 0.483 | 184.5 | 107 |
+| CVM | 0.065 | 24.7  | 7 |
+
+**GPP** (max = EBF 2326.1 gC m⁻² yr⁻¹, n=37):
+EBF=1.000, MF=0.703, DBF=0.686, ENF=0.646, CSH=0.393, OSH=0.166,
+WSA=0.537, SAV=0.397, GRA=0.566, WET=0.309, CRO=0.588, CVM=0.566
+
+**TER** (max = EBF 1826.3 gC m⁻² yr⁻¹, n=37):
+EBF=1.000, MF=0.701, DBF=0.698, ENF=0.625, CSH=0.472, OSH=0.177,
+WSA=0.521, SAV=0.525, GRA=0.652, WET=0.339, CRO=0.611, CVM=0.467
+
+**ET** (max = EBF 825.0 mm yr⁻¹, n=38):
+EBF=1.000, MF=0.638, DBF=0.618, ENF=0.545, CSH=0.570, OSH=0.310,
+WSA=0.723, SAV=0.511, GRA=0.646, WET=0.592, CRO=0.716, CVM=0.620
+
+**H** (max = WSA 57.8 W m⁻², n=17):
+EBF=0.477, MF=0.431, DBF=0.415, ENF=0.516, CSH=0.517, OSH=0.688,
+WSA=1.000, SAV=0.830, GRA=0.337, WET=0.256, CRO=0.274, CVM=0.283
+
+### NEP sign check — resolved
+
+All 12 IGBP class-level NEP medians are positive (range: OSH 14.6 → EBF 382.2
+gC m⁻² yr⁻¹). No negative class-level medians. Per-flux proportional normalization
+(divide by maximum positive class median) is valid without modification for all five
+fluxes. Sign question raised in the prior session is closed.
+
+### Three barely-visible NEP classes (h < 0.10)
+
+| Class | h | Median |
+|---|---|---|
+| OSH | 0.038 | 14.6 gC m⁻² yr⁻¹ |
+| CVM | 0.065 | 24.7 gC m⁻² yr⁻¹ |
+| SAV | 0.073 | 28.0 gC m⁻² yr⁻¹ |
+
+These are near-carbon-neutral at the class-median level and will appear as thin
+slivers in the scaffold figure. All positive — no sign handling required.
+
+### Task 2: TRENDY snapshot commit
+
+Committed `data/snapshots/site_trendy_*.csv` (4 files), `data/snapshots/*_global_distribution.meta.json` (4 files), and `data/snapshots/representativeness_metrics.csv` as commit `29dafe9` ("Regenerate TRENDY snapshots after ELM-fix verification (2026-06-29)"). Pushed to origin/main.
+
+### Remaining uncommitted tracked changes
+
+| File | Action needed |
+|---|---|
+| `review/figures/climate/fig_environmental_response_era5.png` | Commit once script reviewed |
+| `outputs/session_info.txt` | Routine; can bundle with next substantive commit |
+| `renv/activate.R` | Routine renv update; bundle separately |
+
+---
+
+## 2026-06-30 — Session reconnect: status summary
+
+Reconnected after mid-session disconnect. All substantive work from today's session was
+committed (three commits: 099851b, 08405d4, 4b7c89b) and the SESSION_LOG entries are
+current. No work was lost.
+
+**Uncommitted tracked changes pending review:**
+
+| File(s) | Reason uncommitted |
+|---|---|
+| `data/snapshots/site_trendy_*.csv` (4 CSVs) | Regenerated during 2026-06-29 ELM-fix run; not staged |
+| `data/snapshots/*_global_distribution.meta.json` (4) | Same run — metadata timestamps updated |
+| `data/snapshots/representativeness_metrics.csv` | Minor diff from same run |
+| `review/figures/climate/fig_environmental_response_era5.png` | Regenerated figure, not staged |
+| `outputs/session_info.txt`, `renv/activate.R` | Routine session/renv updates |
+
+TRENDY snapshot CSVs and the climate figure should be committed once reviewed.
+
+---
+
+## 2026-06-30 — Proportional-height scaffold figures and methods document for IGBP flux medians
+
+### Outputs produced
+
+**Methods document:** `review/figures/methods_flux_medians.md` — living record of
+methodological decisions for the IGBP-class flux median analysis, covering data
+source, variable preferences, QC threshold, partitioning policy, class scheme,
+normalization, ordering convention, and companion table format.
+
+**Script:** `scripts/figure_flux_medians_by_igbp.R` — produces all five figures
+and companion tables from `data/snapshots/site_flux_medians_shuttle.csv`.
+
+**Five scaffold figures** (300 dpi, 7 × 4.5 in, white background):
+
+| File | Description |
+|------|-------------|
+| `review/figures/flux_medians/fig_flux_nep_by_igbp.png` | NEP scaffold |
+| `review/figures/flux_medians/fig_flux_gpp_by_igbp.png` | GPP scaffold |
+| `review/figures/flux_medians/fig_flux_ter_by_igbp.png` | TER scaffold |
+| `review/figures/flux_medians/fig_flux_et_by_igbp.png`  | ET scaffold  |
+| `review/figures/flux_medians/fig_flux_h_by_igbp.png`   | H scaffold   |
+
+Layout: 6 columns × 2 rows (top: EBF–OSH; bottom: WSA–CVM). Black rectangles on
+a common ground line per row. Height = class median / max class median within flux.
+
+**Five companion CSV tables** at `data/snapshots/flux_medians_by_igbp_*.csv`
+(columns: igbp_class, igbp_name, median, n_sites, total_site_years, std_dev,
+normalized_height) plus `.meta.json` companions.
+
+### Normalization summary: which class sets height = 1.0
+
+| Flux | Max class | Max median |
+|------|-----------|------------|
+| NEP  | EBF | 382 gC m⁻² yr⁻¹ |
+| GPP  | EBF | 2326 gC m⁻² yr⁻¹ |
+| TER  | EBF | 1826 gC m⁻² yr⁻¹ |
+| ET   | EBF | 825 mm yr⁻¹ |
+| **H** | **WSA** | **58 W m⁻²** |
+
+For all carbon and water fluxes, EBF sets the normalization maximum. For H, WSA
+(woody savanna) is the maximum class, reflecting strong sensible heat partitioning
+in open woody savanna ecosystems.
+
+### Normalized heights — full tables
+
+**NEP** (max = EBF 382 gC m⁻² yr⁻¹):
+
+| Class | h | Median | n |
+|-------|---|--------|---|
+| EBF | 1.000 | 382.2 | 38 |
+| MF  | 0.740 | 282.7 | 22 |
+| DBF | 0.785 | 299.8 | 60 |
+| ENF | 0.388 | 148.2 | 95 |
+| CSH | 0.105 | 40.1  | 11 |
+| **OSH** | **0.038** | **14.6** | **32** |
+| WSA | 0.739 | 282.3 | 15 |
+| **SAV** | **0.073** | **28.0** | **10** |
+| GRA | 0.247 | 94.2  | 120 |
+| WET | 0.157 | 60.1  | 90 |
+| CRO | 0.483 | 184.5 | 107 |
+| **CVM** | **0.065** | **24.7** | **7** |
+
+**GPP** (max = EBF 2326 gC m⁻² yr⁻¹):
+EBF=1.000, MF=0.703, DBF=0.686, ENF=0.646, CSH=0.393, OSH=0.166,
+WSA=0.537, SAV=0.397, GRA=0.566, WET=0.309, CRO=0.588, CVM=0.566
+
+**TER** (max = EBF 1826 gC m⁻² yr⁻¹):
+EBF=1.000, MF=0.701, DBF=0.698, ENF=0.625, CSH=0.472, OSH=0.177,
+WSA=0.521, SAV=0.525, GRA=0.652, WET=0.339, CRO=0.611, CVM=0.467
+
+**ET** (max = EBF 825 mm yr⁻¹):
+EBF=1.000, MF=0.638, DBF=0.618, ENF=0.545, CSH=0.570, OSH=0.310,
+WSA=0.723, SAV=0.511, GRA=0.646, WET=0.592, CRO=0.716, CVM=0.620
+
+**H** (max = WSA 57.8 W m⁻²):
+EBF=0.477, MF=0.431, DBF=0.415, ENF=0.516, CSH=0.517, OSH=0.688,
+WSA=1.000, SAV=0.830, GRA=0.337, WET=0.256, CRO=0.274, CVM=0.283
+
+### Barely-visible classes (normalized height < 0.10)
+
+Three NEP classes have heights below 0.10 and will appear as very thin slivers
+in the scaffold figure:
+
+| Class | NEP norm height | NEP median (gC m⁻² yr⁻¹) |
+|-------|-----------------|---------------------------|
+| OSH | 0.038 | 14.6 |
+| CVM | 0.065 | 24.7 |
+| SAV | 0.073 | 28.0 |
+
+These classes are near-carbon-neutral at the class-median level. All three values
+are positive (carbon sinks), so no normalization issue arises from negative values.
+The silhouette design will need to accommodate very-short ecosystem icons for OSH
+and near-zero-NEP classes. For H, WET (0.256), CRO (0.274), and CVM (0.283) are
+the smallest but none fall below 0.25 — comfortably visible.
+
+### NEP sign check
+
+All 12 IGBP class medians for NEP are positive (carbon sinks, range 15–382 gC
+m⁻² yr⁻¹). No negative class-level NEP values. Per-flux normalization (divide by
+max positive median) is valid without modification for all five fluxes. Note:
+individual site medians may be negative (carbon sources) within a class, but the
+class-level median is positive in all cases.
+
+---
+
+## 2026-06-30 — NT/DT partitioning fallback added to per-site flux assessment
+
+### Change
+
+`scripts/assess_flux_data_by_igbp_shuttle.R` updated to add daytime-partitioning
+(DT) as a fallback for GPP and TER when nighttime-partitioning (NT) yields zero
+qualifying years for a site. Decision is per-site (not per-year) to avoid mixing
+partitioning methods within a site's median calculation. DT columns at YY
+resolution carry no dedicated QC flag; quality is gated by the same NEE
+QC threshold (≥ 0.80) used for the VUT/CUT decision. Two new columns added to
+`site_flux_medians_shuttle.csv`: `gpp_partition` and `ter_partition`
+("NT" or "DT" or NA).
+
+Output CSVs regenerated; `igbp_class_flux_distributions_shuttle.csv` also updated
+to reflect the expanded GPP/TER site counts.
+
+### Partitioning method summary (network-wide)
+
+| Variable | NT sites | DT sites | NA (no data) |
+|---|---|---|---|
+| GPP | 579 | 38 | 150 |
+| TER | 579 | 38 | 150 |
+
+DT fallback adds 38 sites across the network; NT remains the dominant method.
+
+### NT-only vs NT+DT: per-IGBP class impact
+
+| Class | n_total | n_GPP NT-only | +DT | n_GPP total | GPP median NT-only | GPP median NT+DT |
+|---|---|---|---|---|---|---|
+| EBF | 42 | 22 | +15 | 37 | 1845 | 2326 |
+| MF  | 24 | 20 | +2  | 22 | 1635 | 1635 |
+| DBF | 78 | 58 | +2  | 60 | 1567 | 1597 |
+| ENF | 113 | 91 | +4  | 95 | 1503 | 1503 |
+| CSH | 12  | 11 | 0   | 11 | 915  | 915  |
+| OSH | 39  | 28 | +3  | 31 | 348  | 387  |
+| WSA | 18  | 15 | 0   | 15 | 1248 | 1248 |
+| SAV | 13  | 10 | 0   | 10 | 924  | 924  |
+| GRA | 143 | 116 | +4 | 120 | 1317 | 1317 |
+| WET | 116 | 86 | +3  | 89 | 725  | 719  |
+| CRO | 138 | 105 | +2 | 107 | 1357 | 1367 |
+| CVM | 9   | 7  | 0   | 7  | 1317 | 1317 |
+
+EBF is the most affected class: 15 additional sites recovered via DT fallback
+(from 22 to 37, nearly doubling GPP coverage). These are predominantly tropical
+forest sites where NT partitioning fails due to low respiration-to-GPP ratio at
+night or data quality issues (e.g. sites in Africa, Southeast Asia, and tropical
+Americas). The EBF GPP median shifts from 1845 to 2326 gC m⁻² yr⁻¹ when DT
+sites are included — DT-based tropical forests tend to report higher GPP, which
+is physically plausible given daytime partitioning's typically higher GPP estimates.
+The DT-only EBF sites listed in the log include BJ-Gui, GH-Ank, GF-Guy, CD-Ygb,
+ID-JOP, CR-AqC, AU-Fog, AU-Ctr, AU-Rob, AU-Cow.
+
+### Updated per-flux availability (767 shuttle sites)
+
+| Flux | n sites (NT+DT) | % | vs NT-only |
+|---|---|---|---|
+| NEP (NEE) | 621 | 81.0% | unchanged |
+| GPP | 617 | 80.4% | +38 sites |
+| TER | 617 | 80.4% | +38 sites |
+| ET | 639 | 83.3% | unchanged |
+| H | 646 | 84.2% | unchanged |
+
+### Updated IGBP class counts (n sites with usable GPP)
+
+| Class | n_total | n_NEP | n_GPP (NT+DT) | n_TER (NT+DT) |
+|---|---|---|---|---|
+| EBF | 42 | 38 | **37** | **37** |
+| MF  | 24 | 22 | 22 | 22 |
+| DBF | 78 | 60 | 60 | 60 |
+| ENF | 113 | 95 | 95 | 95 |
+| CSH | 12  | 11 | 11 | 11 |
+| OSH | 39  | 32 | 31 | 31 |
+| WSA | 18  | 15 | 15 | 15 |
+| SAV | 13  | 10 | 10 | 10 |
+| GRA | 143 | 120 | 120 | 120 |
+| WET | 116 | 90 | 89 | 89 |
+| CRO | 138 | 107 | 107 | 107 |
+| CVM | 9   | 7  | 7 | 7 |
+
+---
+
+## 2026-06-30 — Per-site annual flux medians and IGBP distribution assessment (shuttle network)
+
+### Script and outputs
+
+`scripts/assess_flux_data_by_igbp_shuttle.R`. Two output CSVs + companion
+`.meta.json` files committed to `data/snapshots/`:
+- `site_flux_medians_shuttle.csv` — one row per shuttle site, per-variable median
+  across QC-passing years (QC ≥ 0.80), VUT/CUT fallback tracked
+- `igbp_class_flux_distributions_shuttle.csv` — median, IQR, min, max, CV per
+  IGBP class × flux variable
+
+Source: FLUXMET YY v1.3_r1 files from `data/extracted/`. Snapshot:
+`fluxnet_shuttle_snapshot_20260624T095651.csv` (767 sites).
+
+### Overall data availability
+
+| Scope | Count |
+|---|---|
+| Sites in snapshot | 767 |
+| Sites with FLUXMET YY file | 759 |
+| Sites with usable data ≥ 1 flux | 646 |
+| Sites with usable data for all 5 fluxes | 578 |
+
+8 sites have no YY file (failed download or YY not produced for that site).
+121 sites have a YY file but no year passes QC ≥ 0.80 for NEE (these may have
+only ERA5 or BIFVARINFO files with no FLUXMET content, or all years below threshold).
+
+### Per-flux availability (fraction of 767 sites with ≥ 1 usable year)
+
+| Flux | n sites | % |
+|---|---|---|
+| NEP (NEE) | 621 | 81.0% |
+| GPP | 579 | 75.5% |
+| TER | 579 | 75.5% |
+| ET (from LE) | 639 | 83.3% |
+| H | 646 | 84.2% |
+
+ET and H have slightly higher availability than NEP/GPP/TER. GPP and TER lag NEP
+by ~40 sites, indicating sites where NEE_VUT_REF is available but nighttime
+partitioning either failed or produced -9999 values for GPP_NT_VUT_REF /
+RECO_NT_VUT_REF. This pattern is most pronounced in EBF (38 sites with NEP data,
+only 22 with GPP/TER).
+
+### VUT vs CUT fallback usage
+
+91.7% of qualifying site-years use VUT. 45 sites use CUT exclusively across all
+their qualifying years, suggesting older data or sites not included in the
+FLUXNET2015-era VUT processing. CUT-only sites are a minority but non-trivial
+fraction (~6% of sites with usable NEE data).
+
+### IGBP class site counts (n sites with usable data per flux)
+
+All 12 standard IGBP classes are present in the shuttle network.
+No class has n < 5 for any flux.
+
+| Class | n_total | n_NEP | n_GPP | n_TER | n_ET | n_H |
+|---|---|---|---|---|---|---|
+| EBF | 42 | 38 | 22 | 22 | 38 | 39 |
+| MF  | 24 | 22 | 20 | 20 | 22 | 23 |
+| DBF | 78 | 60 | 58 | 58 | 60 | 60 |
+| ENF | 113 | 95 | 91 | 91 | 100 | 100 |
+| CSH | 12 | 11 | 11 | 11 | 11 | 11 |
+| OSH | 39 | 32 | 28 | 28 | 33 | 34 |
+| WSA | 18 | 15 | 15 | 15 | 17 | 17 |
+| SAV | 13 | 10 | 10 | 10 | 12 | 12 |
+| GRA | 143 | 120 | 116 | 116 | 123 | 123 |
+| WET | 116 | 90 | 86 | 86 | 93 | 93 |
+| CRO | 138 | 107 | 105 | 105 | 109 | 110 |
+| CVM | 9 | 7 | 7 | 7 | 7 | 8 |
+
+CVM and CSH are the smallest classes (9 and 12 sites respectively). CSH has
+reasonable coverage (11 sites per flux); CVM has 7–8, which may be borderline
+for silhouette plots depending on the figure design. No n < 5 flags.
+
+### Non-standard IGBP labels
+
+22 sites carry non-standard labels: BSV (barren/sparse vegetation), DNF
+(deciduous needleleaf forest — sometimes listed as a 13th IGBP class), SNO
+(permanent snow/ice). These are excluded from the 12-class scheme. Of these,
+14 have usable NEP data. They will be reported as "other" in figure legends.
+
+### Median of site medians per IGBP class (headline values for silhouette plots)
+
+| Class | NEP (gC m⁻² yr⁻¹) | GPP | TER | ET (mm yr⁻¹) | H (W m⁻²) |
+|---|---|---|---|---|---|
+| EBF | 382 | 1845 | 1354 | 825 | 27.6 |
+| MF  | 283 | 1635 | 1280 | 526 | 24.9 |
+| DBF | 300 | 1567 | 1271 | 510 | 24.0 |
+| ENF | 148 | 1503 | 1141 | 450 | 29.8 |
+| CSH | 40  | 915  | 862  | 471 | 29.9 |
+| OSH | 15  | 348  | 315  | 256 | 39.7 |
+| WSA | 282 | 1248 | 952  | 596 | 57.8 |
+| SAV | 28  | 924  | 958  | 421 | 48.0 |
+| GRA | 94  | 1317 | 1190 | 533 | 19.5 |
+| WET | 60  | 725  | 620  | 488 | 14.8 |
+| CRO | 185 | 1357 | 1107 | 591 | 15.8 |
+| CVM | 25  | 1317 | 853  | 512 | 16.3 |
+
+Notable patterns:
+- EBF has highest GPP (1845 gC m⁻² yr⁻¹) and ET (825 mm yr⁻¹) — consistent
+  with tropical forest energy and carbon cycling.
+- OSH has the lowest GPP and ET, reflecting arid/semi-arid conditions.
+- SAV has near-zero median NEP (28 gC m⁻² yr⁻¹) and negative TER > GPP balance
+  (median NEP positive but close to carbon neutral) — reasonable for savanna.
+- WSA shows high H (57.8 W m⁻²) relative to ET, indicating strong sensible heat
+  flux in woody savanna ecosystems.
+- WET and CRO have the lowest H, consistent with high ET partitioning.
+
+### Distribution spread notes
+
+Full CV values in `igbp_class_flux_distributions_shuttle.csv`. Qualitatively:
+GPP and TER are tighter within-class than NEP (which is the residual and
+accumulates error from both). ET spread is moderate across most classes.
+EBF has high GPP spread (n=22, tropical forests span a wide range of
+productivity) — this is the class most likely to require within-class
+stratification in figure design.
+
+### Unit conventions
+
+- NEP = −NEE (sign flip); gC m⁻² yr⁻¹ (YY product pre-integrated)
+- ET: LE_F_MDS [W m⁻²] × 31,557,600 [s yr⁻¹] / 2.45×10⁶ [J kg⁻¹]; mm yr⁻¹
+- H: H_F_MDS [W m⁻²]; annual mean, not converted
+- QC threshold: ≥ 0.80 applied to NEE_VUT_REF_QC (or CUT fallback), LE_F_MDS_QC,
+  H_F_MDS_QC independently
+
+---
+
+## 2026-06-30 — Fix ELM explicit exclusion and metrics write block in TRENDY compute
+
+### Fix 1a: Explicit ELM exclusion (figure_representativeness_trendy_compute.R line 325)
+
+Added `MODELS_OK <- setdiff(MODELS_OK, "ELM")` immediately after the
+`intersect(mdl_ok_nbp, mdl_ok_et)` call. ELM's intermediates exist (Step 1 skips
+them) but ELM is now dropped from `MODELS_OK` before Step 2 and Step 3 run. The
+ensemble is now explicitly 16 models. The `n_models < 15L` guard was lowered to
+`< 14L` to reflect the new expected floor. The log now reads:
+
+> Models with both nbp and evapotrans intermediates (excl. ELM): 16
+
+Prior behaviour: ELM was implicitly excluded via all-NA stat maps (its 2023 layer
+is missing), but appeared in `MODELS_OK` and the completion marker. A future
+back-fill of ELM's 2023 NetCDF layer would have silently re-included it in all
+four ensemble maps.
+
+### Fix 1b: network and n_sites columns added to metrics write block (Step 4, line 669–680)
+
+`new_rows` in Step 4 previously lacked `network` and `n_sites` columns, which
+would have corrupted `representativeness_metrics.csv` on re-run. Two changes:
+
+1. **`new_rows`** now includes `network = "current_767"` and `n_sites = n_sites`
+   (767, from the site CSV loaded at line 261). Column order matches the existing
+   CSV schema: `axis, aggregation_level, n_classes, weighted_jaccard,
+   hellinger_distance, network, n_sites`.
+
+2. **`existing_metrics` filter** was over-broad: it removed all rows where axis
+   was one of the four TRENDY axes regardless of network, which would have dropped
+   60 historical-network rows on re-run. Fixed to remove only `current_767` +
+   `7bin_hybrid` rows for those axes — the four rows this script is about to
+   rewrite.
+
+3. **Empty-file fallback** data frame updated to include `network` (character) and
+   `n_sites` (integer) columns.
+
+### Verification
+
+Script re-run: `logs/trendy_analysis_20260629_161646.log`. All outputs confirmed:
+- Step 1: all intermediates skipped (already complete)
+- Step 2: all 4 TIFs skipped (already complete)
+- Step 3: 4 axes extracted cleanly; J values unchanged from prior run
+- Step 4: `representativeness_metrics.csv` written with 156 data rows (157 including
+  header), 80 TRENDY rows preserved, 16 TRENDY 7bin_hybrid rows (4 axes × 4 networks)
+
+---
+
+## 2026-06-29 — Targeted code review: representativeness pipeline (six risk areas)
+
+### Scope
+
+Scripts reviewed: `figure_representativeness_trendy_compute.R`,
+`figure_representativeness_trendy_wrap.R`, `figure_representativeness_landcover.R`,
+`recompute_continuous_axes_30bin.R`, `recompute_continuous_axes_multibin.R`,
+`extract_historical_sites_representativeness.R`, `figure_representativeness_summary.R`,
+and per-axis figure scripts in `scripts/`. Data file:
+`data/snapshots/cci_landcover_aggregation_lookup.csv`,
+`data/snapshots/representativeness_metrics.csv`.
+
+### 1. ELM handling in TRENDY compute — Minor issue + real bug
+
+ELM is listed in `MODELS_19` and survives into `MODELS_OK` — it is never excluded
+by code. Its effective absence from all four axes (NEE-IAV, NEE-median, ET-IAV,
+ET-median) is data-driven: ELM has no 2023 data, so the shared
+`complete <- rowSums(is.na(vals)) == 0L` guard produces an all-NA stat map,
+and `app(stk, fun = function(v) median(v, na.rm = TRUE))` ignores it silently.
+The SESSION_LOG correction ("ELM excluded from all four axes") is factually
+accurate, but the mechanism is implicit. No stale "IAV only" comments found.
+
+Two problems:
+- No comment in the compute script explains why ELM, despite being in `MODELS_OK`,
+  contributes nothing. A reader has no indication of this.
+- If ELM's 2023 data is ever back-filled in the source NetCDF, ELM silently
+  re-enters all four ensemble maps on next run.
+
+**Real bug:** Step 4 of `figure_representativeness_trendy_compute.R` (the block
+that writes back to `representativeness_metrics.csv`) builds `new_rows` without
+`network` or `n_sites` columns. If the compute script is re-run, it will write
+4 TRENDY rows with those columns missing, corrupting the metrics file schema.
+Currently masked because `extract_historical_sites_representativeness.R` ran
+afterwards and overwrote those rows.
+
+Fix needed: `setdiff(MODELS_OK, "ELM")` with explanatory comment; add `network`
+and `n_sites` to `new_rows` in Step 4.
+
+### 2. Near-zero cut (< 5) — Minor issue
+
+The 5.0 threshold is consistent across all scripts (no conflicting values), but
+is not centrally defined:
+
+| Script | How defined |
+|---|---|
+| `trendy_compute.R` lines 74–75 | Named constants `NBP_LOW_CUT <- 5.0`, `ET_LOW_CUT <- 5.0` |
+| `recompute_continuous_axes_30bin.R` | `low_cut = 5.0` repeated 5× in per-axis config |
+| `recompute_continuous_axes_multibin.R` | Same, 5× |
+| `figure_representativeness_biomass.R` | Magic number `5` / `5 Mg/ha`, 8+ occurrences, no named constant |
+| `extract_historical_sites_representativeness.R` line 313 | Embedded in `BIOMASS_BREAKS <- c(0, 5, 13, …)`, not separately named |
+
+Changing the threshold requires edits in at least four scripts.
+Fix needed (optional): top-level `LOW_CUT <- 5.0` in the recompute and biomass scripts.
+
+### 3. terra::extract() return shape — Clean
+
+All calls in scope correctly handle the post-1.9.27 1-column data frame return.
+Verified: `trendy_compute.R` (`raw[[1]]`), `aridity.R` (`[[1L]]` / `[[2L]]` with
+`ID=TRUE`), `extract_historical_sites.R` (`raw[[1]]`), `kg_future.R` (column rename
+then `$koppen_class_code`). No call assumes an old 2-column shape for a non-`ID=TRUE`
+call.
+
+### 4. terra::time() bypass — Clean
+
+`terra::time()` appears only in two comment lines in `trendy_compute.R` explaining
+why it is bypassed. `get_years()` uses a `MODEL_START_YR` lookup table instead.
+No other in-scope script calls `terra::time()`.
+
+### 5. LULC Level 2 aggregation lookup — Clean
+
+`cci_landcover_aggregation_lookup.csv`: 37 rows, 37 unique native LCCS class codes,
+zero NAs in any column, no duplicate rows. The 37 values match the non-zero CCI LC
+v2.1.1 classes exactly (class 0 / no-data absent, which is correct). All three
+aggregation levels (`lulc_native`, `lulc_level2`, `lulc_highlevel`) fully populated.
+
+### 6. representativeness_metrics.csv schema — Clean
+
+156 rows, 0 NAs anywhere. `aggregation_level` uniformly snake_case (`18bin_hybrid`
+etc. — no hyphens or spaces across all 156 rows). `n_sites` is integer-typed with
+four expected values (35, 212, 252, 767). `weighted_jaccard` and
+`hellinger_distance` are numeric with no NAs. `network` has exactly 4 expected
+values (`current_767`, `fluxnet2015`, `la_thuile`, `marconi`). Note: the Item 1
+bug means a re-run of `figure_representativeness_trendy_compute.R` would inject
+schema-broken rows into this file on next run.
+
+---
+
 ## 2026-06-29 — Rep006 + Rep007–018 three-fix aesthetic pass (label anchor, legend inside, y-axis zero)
 
 ### Overview

@@ -4,6 +4,26 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Session reconnect: status summary
+
+Reconnected after mid-session disconnect. All substantive work from today's session was
+committed (three commits: 099851b, 08405d4, 4b7c89b) and the SESSION_LOG entries are
+current. No work was lost.
+
+**Uncommitted tracked changes pending review:**
+
+| File(s) | Reason uncommitted |
+|---|---|
+| `data/snapshots/site_trendy_*.csv` (4 CSVs) | Regenerated during 2026-06-29 ELM-fix run; not staged |
+| `data/snapshots/*_global_distribution.meta.json` (4) | Same run — metadata timestamps updated |
+| `data/snapshots/representativeness_metrics.csv` | Minor diff from same run |
+| `review/figures/climate/fig_environmental_response_era5.png` | Regenerated figure, not staged |
+| `outputs/session_info.txt`, `renv/activate.R` | Routine session/renv updates |
+
+TRENDY snapshot CSVs and the climate figure should be committed once reviewed.
+
+---
+
 ## 2026-06-30 — Proportional-height scaffold figures and methods document for IGBP flux medians
 
 ### Outputs produced

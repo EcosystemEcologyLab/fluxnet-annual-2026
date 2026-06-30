@@ -4,6 +4,43 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 release download complete
+
+Follow-up to the same-day "FLUXNET2015 release portal investigation and
+download launch" entry below. The background download (PID 85603,
+`logs/fluxnet2015_download_20260630_130019.log`) finished on its own.
+
+**Result: 206/206 sites complete, 0 failures, 0 retries needed.**
+
+| | |
+|---|---|
+| Duration | 0h 45m |
+| Succeeded this run | 203 |
+| Skipped (already present, from the earlier smoke test) | 3 |
+| Failed | 0 |
+| Bytes downloaded this run | 12.02 GB |
+| Total on disk | 13 GB |
+
+Verified independently of the script's own summary: 206 site directories
+under `data/raw/fluxnet2015/`, 206 `.zip` files, one per site — matches the
+206-site CC-BY-4.0-scoped list (212-site CSV minus the 6 Tier-2-only
+sites). Every ZIP passed checksum + `unzip -tq` integrity verification on
+first attempt; no site needed a retry.
+
+`logs/fluxnet2015_pi_contacts_20260630_130019.csv` has 203 data rows (the
+203 sites downloaded in this run; the 3 skipped sites' PI contacts were
+already recorded in the earlier smoke-test PI-contacts log) — this is the
+contact list for the CC-BY-4.0 "recommended" practice of notifying data
+providers of forthcoming publications, and the source for per-site DOI
+citations in the eventual paper.
+
+The FLUXNET2015 release YY product is now available locally at
+`data/raw/fluxnet2015/<site_id>/FLX_<site_id>_FLUXNET2015_FULLSET_<years>_<ver>.zip`
+(not yet extracted — extraction is a separate task) for use as the
+reference comparison axis against current FLUXNET Shuttle reprocessing.
+
+---
+
 ## 2026-06-30 — FLUXNET2015 release portal investigation and download launch
 
 ### Task

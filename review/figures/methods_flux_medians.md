@@ -166,3 +166,44 @@ class in the fixed grid order. Columns:
 | `normalized_height` | `median / max(median)` — the value used in the figure |
 
 Unit conventions: NEP, GPP, TER in gC m⁻² yr⁻¹; ET in mm yr⁻¹; H in W m⁻².
+
+---
+
+## Comparison plots: FLUXNET2015 release vs current Shuttle
+
+*Added 2026-06-30. Source script: `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R`.*
+
+Five scatter plots (`review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png`) compare IGBP-class median fluxes between the original FLUXNET2015 release and the current FLUXNET Shuttle reprocessing, one point per IGBP class.
+
+### Data source per axis
+
+- **X axis:** `data/snapshots/site_flux_medians_fluxnet2015.csv` — per-site medians computed from the FLUXNET2015 release (Pastorello et al. 2020) FULLSET YY product, 206 of 212 sites (see SESSION_LOG.md 2026-06-30, "FLUXNET2015 release: extraction and IGBP-class flux assessment").
+- **Y axis:** `data/snapshots/site_flux_medians_shuttle.csv` — per-site medians computed from the current FLUXNET Shuttle YY product (FLUXMET YY v1.3_r1), 767 sites.
+- Both axes use identical per-site aggregation logic (VUT preferred / CUT fallback; NT preferred / DT fallback per site; QC ≥ 0.80; median across qualifying years per site), so the comparison isolates differences in the underlying data and processing rather than differences in aggregation method.
+
+### Excluded classes
+
+- **CVM** — absent from the FLUXNET2015 release site list entirely (0 sites); the 9 CVM sites in the current Shuttle network were added or reclassified after the 2015/2020 release, so there is no FLUXNET2015 x-coordinate to plot.
+- **CSH** — n=2 in FLUXNET2015, below the n≥ 5 reliability threshold used elsewhere in this methods document (see "IGBP class scheme" above); plotted positions for n=2 classes are not considered reliable enough for a network-comparison figure.
+- **BSV, DNF, SNO** (non-standard IGBP labels) — excluded by construction: class statistics are computed only over the 12 standard IGBP labels, so sites carrying these labels never contribute to any plotted class.
+- Remaining 10 plotted classes: EBF, MF, DBF, ENF, OSH, WSA, SAV, GRA, WET, CRO. All exclusions and their rationale are also stated in each figure's caption.
+
+### Std-dev framing
+
+Error bars are ± 1 SD of the **cross-site spread of per-site median values within each IGBP class** — i.e. how much sites within a class disagree with each other — not the within-site year-to-year variability, and not a measurement uncertainty. A class with a wide error bar has ecologically or methodologically heterogeneous sites; a class with a narrow error bar has consistent sites. `igbp_class_flux_distributions_*.csv` stores `cv` (= sd/|mean|) rather than a literal `std_dev` column, and does not store the class mean needed to back sd out of cv, so this std_dev was recomputed directly from the per-site median CSVs that those distribution files are themselves built from (same n_sites and median, by construction).
+
+### 1:1 line interpretation
+
+The dashed diagonal is x = y (FLUXNET2015 median = Shuttle median). A class plotted **above** the line has a higher median flux in the current Shuttle reprocessing than in the FLUXNET2015 release; a class **below** the line has a lower median flux in the current reprocessing. Distance from the line reflects the combined effect of (a) genuine network evolution (different sites, different site-years, longer records) and (b) ONEFlux processing-pipeline differences between the 2020 FLUXNET2015 release and the current Shuttle processing — this figure cannot, by itself, separate those two effects.
+
+### Processing-version confound
+
+The FLUXNET2015 release and the current Shuttle reprocessing are built from different ONEFlux pipeline versions in addition to different site/year coverage (see CLAUDE.md hard rule #1 and SESSION_LOG.md 2026-06-30, "FLUXNET2015 release YY data inventory" — these are explicitly distinct data products, never to be conflated as repeated measurements of the same underlying processing). A finding here ("current Shuttle GPP is X% lower for class Y") should be read as the combined effect of network evolution and processing changes, not attributed to either cause alone without further investigation (e.g. re-running ONEFlux at the current version on the FLUXNET2015-era site-years, which this figure does not do).
+
+### GRA and EBF: large-n, not small-sample noise
+
+GRA and EBF are the two largest-n classes in both networks (GRA: n=34 FLUXNET2015 / n=120 Shuttle for NEP; EBF: n=14 / n=38) and both show consistent, substantial shifts across multiple fluxes (GRA: GPP/TER roughly 37-44% lower in FLUXNET2015 than current Shuttle; EBF: TER ~27% lower, ET ~11% lower in FLUXNET2015). Because these are the best-sampled classes in the comparison, these shifts are unlikely to be small-sample artifacts in the way the CSH/SAV shifts plausibly are (n=2-8), and are flagged here as the shifts most worth a deeper methodological look.
+
+### Citation requirements
+
+Any use of this comparison (including the figures and companion table) must cite Pastorello et al. 2020 (doi:10.1038/s41597-020-0534-3) for the FLUXNET2015 release data, per the CC-BY-4.0 data policy this download was scoped to (SESSION_LOG.md 2026-06-30, "FLUXNET2015 release portal investigation and download launch"). Per-site tower DOIs for citation in the eventual paper are recorded in the PI-contacts log written during download (`logs/fluxnet2015_pi_contacts_20260630_130019.csv` and the two earlier smoke-test logs), and individual site DOIs are available from the FLUXNET2015 download manifest for each site.

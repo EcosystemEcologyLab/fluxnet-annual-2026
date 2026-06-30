@@ -4,6 +4,133 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 vs Shuttle comparison plots: four-sided tick marks
+
+Fixed `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R`: the panel
+frame previously showed tick marks only on the left (y) and bottom (x)
+axes, with bare lines on the right and top. Added a duplicated secondary
+axis to both `scale_x_continuous()` and `scale_y_continuous()`:
+
+```r
+scale_x_continuous(..., sec.axis = dup_axis(name = NULL, labels = NULL))
+scale_y_continuous(..., sec.axis = dup_axis(name = NULL, labels = NULL))
+```
+
+`dup_axis()` mirrors the primary axis onto the opposite side; `name = NULL`
+suppresses the duplicated axis title and `labels = NULL` suppresses its
+numeric labels, leaving inward-facing tick marks only (same orientation as
+the primary axes, via the existing `fluxnet_theme()` inward
+`axis.ticks.length`).
+
+**Confirmed: all five comparison figures re-rendered** in a single script
+run (`review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png`,
+same timestamp, 300 dpi, white background) — visually verified two of the
+five (NEP, H) show tick marks on all four sides, numeric labels retained
+only on the left/bottom. No other change to plot content, data, or the
+companion CSV/meta.json/methods document.
+
+### Files
+
+- `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` (updated, committed)
+- `review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png` (regenerated, committed)
+
+---
+
+## 2026-06-30 — FLUXNET2015 vs Shuttle: IGBP-class flux comparison plots
+
+Built `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R`, producing
+five scatter plots comparing IGBP-class median fluxes between the
+FLUXNET2015 release (x axis) and the current FLUXNET Shuttle reprocessing
+(y axis), plus a combined companion table and a methods-document extension.
+
+### Dependency added: ggrepel
+
+Manual label offsetting (nudge + hjust/vjust) left real overlaps in the ET
+and TER figures where classes cluster closely (ENF/DBF/MF, WSA/SAV/CRO).
+Confirmed with the user before installing: added `ggrepel` (0.9.8) via the
+documented procedure in CLAUDE.md — installed and snapshotted on the
+**macos** profile, then the new entry copied into the **codespace** profile
+lockfile via the `json` module per the documented copy step. All five
+figures now use `ggrepel::geom_text_repel()` with `seed = 42` for
+reproducible label placement.
+
+### Confirmation: five comparison plots produced
+
+`review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png`,
+300 dpi, 7×5 in, white background. Each plots 10 of the 12 standard IGBP
+classes (CVM and CSH excluded, see below); equal x/y axis ranges with 10%
+padding, ±1 SD error bars in both directions, dashed 1:1 reference line,
+IGBP-palette-coloured points (`R/plot_constants.R::IGBP_colours`), and an
+in-figure caption stating both exclusions.
+
+### Per-flux summary
+
+| Flux | Points | X range (FLUXNET2015) | Y range (Shuttle) |
+|------|--------|------------------------|---------------------|
+| NEP | 10 | −0.16 to 443.90 gC m⁻² yr⁻¹ | 14.62 to 382.16 gC m⁻² yr⁻¹ |
+| GPP | 10 | 267.88 to 2101.17 gC m⁻² yr⁻¹ | 386.83 to 2326.14 gC m⁻² yr⁻¹ |
+| TER | 10 | 136.15 to 1327.77 gC m⁻² yr⁻¹ | 322.62 to 1826.35 gC m⁻² yr⁻¹ |
+| ET  | 10 | 251.49 to 733.55 mm yr⁻¹ | 255.77 to 825.02 mm yr⁻¹ |
+| H   | 10 | 11.49 to 58.57 W m⁻² | 14.79 to 57.80 W m⁻² |
+
+### Class with the largest absolute shift, per flux (diff = shuttle − fluxnet2015)
+
+| Flux | Class | Diff | % diff | Direction |
+|------|-------|------|--------|-----------|
+| NEP | MF  | +165.11 gC m⁻² yr⁻¹ | +140.5% | Shuttle higher |
+| GPP | GRA | +573.52 gC m⁻² yr⁻¹ | +77.2%  | Shuttle higher |
+| TER | SAV | +555.94 gC m⁻² yr⁻¹ | +138.2% | Shuttle higher |
+| ET  | MF  | +162.75 mm yr⁻¹ | +44.8% | Shuttle higher |
+| H   | GRA | −13.02 W m⁻² | −40.1% | Shuttle lower |
+
+Runners-up (2nd/3rd furthest from the 1:1 line, by absolute diff): NEP —
+SAV (−163.50, −85.4%), WSA (+89.51, +46.4%); GPP — SAV (+313.01, +51.2%),
+WSA (+229.95, +22.6%); TER — EBF (+498.58, +37.5%), GRA (+434.99, +57.6%);
+ET — EBF (+91.48, +12.5%), GRA (+81.24, +18.0%); H — SAV (−7.34, −13.3%),
+CRO (+4.36, +38.0%).
+
+Across all five fluxes, the current Shuttle reprocessing reports higher
+median fluxes than the FLUXNET2015 release for nearly every class and
+flux — the dominant pattern is points above the 1:1 line, not scatter
+around it. GRA and EBF (the two largest-n classes in both networks) show
+this shift consistently across multiple fluxes and are flagged in the
+methods document as unlikely to be small-sample noise (see "GRA and EBF:
+large-n, not small-sample noise" section).
+
+### Companion table
+
+`data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv` (60 rows: 12
+standard IGBP classes × 5 fluxes) + `.meta.json`. Confirmed: CVM (all 5
+rows, `fluxnet2015_median`/`_sd`/`_n_sites` = NA, `excluded=TRUE`) and CSH
+(all 5 rows, real computed stats from n=2, `excluded=TRUE`) are present
+and flagged with reasons in the `notes` column, not dropped — sorted by
+flux then by standard IGBP class order as specified.
+
+### Methods document extended
+
+`review/figures/methods_flux_medians.md` — confirmed a new "Comparison
+plots: FLUXNET2015 release vs current Shuttle" section was appended,
+covering: data source per axis, excluded classes and rationale, std-dev
+framing (cross-site spread within class — recomputed directly from the
+per-site CSVs, since `igbp_class_flux_distributions_*.csv` stores `cv`
+rather than a literal `std_dev` column and doesn't retain the class mean
+needed to back one out), 1:1 line interpretation, the processing-version
+confound (FLUXNET2015 release vs current Shuttle differ in ONEFlux
+pipeline version as well as site/year coverage — this figure cannot
+separate the two effects), the GRA/EBF large-n shift flag, and citation
+requirements (Pastorello et al. 2020 + per-site DOIs via the PI-contacts
+log from the FLUXNET2015 download).
+
+### Files
+
+- `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` (committed)
+- `review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png` (committed)
+- `data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv` + `.meta.json` (committed)
+- `review/figures/methods_flux_medians.md` (updated, committed)
+- `renv/profiles/macos/renv.lock`, `renv/profiles/codespace/renv.lock` (ggrepel added, committed)
+
+---
+
 ## 2026-06-30 — FLUXNET2015 release: extraction and IGBP-class flux assessment
 
 Built `scripts/assess_flux_data_by_igbp_fluxnet2015.R`, the FLUXNET2015-release

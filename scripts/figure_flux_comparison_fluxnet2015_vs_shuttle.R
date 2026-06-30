@@ -224,8 +224,10 @@ make_comparison_plot <- function(df, flux_title, unit_str, out_file) {
               seed = 42, min.segment.length = 0.3, segment.size = 0.25,
               segment.colour = "grey50", box.padding = 0.4, point.padding = 0.3) +
     scale_fill_igbp() +
-    scale_x_continuous(limits = lims, expand = expansion(mult = 0)) +
-    scale_y_continuous(limits = lims, expand = expansion(mult = 0)) +
+    scale_x_continuous(limits = lims, expand = expansion(mult = 0),
+                        sec.axis = dup_axis(name = NULL, labels = NULL)) +
+    scale_y_continuous(limits = lims, expand = expansion(mult = 0),
+                        sec.axis = dup_axis(name = NULL, labels = NULL)) +
     labs(
       title   = paste(strwrap(paste0(flux_title,
                   ": FLUXNET2015 release vs current FLUXNET Shuttle"),

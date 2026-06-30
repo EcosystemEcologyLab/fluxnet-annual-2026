@@ -4,6 +4,87 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — NT/DT partitioning fallback added to per-site flux assessment
+
+### Change
+
+`scripts/assess_flux_data_by_igbp_shuttle.R` updated to add daytime-partitioning
+(DT) as a fallback for GPP and TER when nighttime-partitioning (NT) yields zero
+qualifying years for a site. Decision is per-site (not per-year) to avoid mixing
+partitioning methods within a site's median calculation. DT columns at YY
+resolution carry no dedicated QC flag; quality is gated by the same NEE
+QC threshold (≥ 0.80) used for the VUT/CUT decision. Two new columns added to
+`site_flux_medians_shuttle.csv`: `gpp_partition` and `ter_partition`
+("NT" or "DT" or NA).
+
+Output CSVs regenerated; `igbp_class_flux_distributions_shuttle.csv` also updated
+to reflect the expanded GPP/TER site counts.
+
+### Partitioning method summary (network-wide)
+
+| Variable | NT sites | DT sites | NA (no data) |
+|---|---|---|---|
+| GPP | 579 | 38 | 150 |
+| TER | 579 | 38 | 150 |
+
+DT fallback adds 38 sites across the network; NT remains the dominant method.
+
+### NT-only vs NT+DT: per-IGBP class impact
+
+| Class | n_total | n_GPP NT-only | +DT | n_GPP total | GPP median NT-only | GPP median NT+DT |
+|---|---|---|---|---|---|---|
+| EBF | 42 | 22 | +15 | 37 | 1845 | 2326 |
+| MF  | 24 | 20 | +2  | 22 | 1635 | 1635 |
+| DBF | 78 | 58 | +2  | 60 | 1567 | 1597 |
+| ENF | 113 | 91 | +4  | 95 | 1503 | 1503 |
+| CSH | 12  | 11 | 0   | 11 | 915  | 915  |
+| OSH | 39  | 28 | +3  | 31 | 348  | 387  |
+| WSA | 18  | 15 | 0   | 15 | 1248 | 1248 |
+| SAV | 13  | 10 | 0   | 10 | 924  | 924  |
+| GRA | 143 | 116 | +4 | 120 | 1317 | 1317 |
+| WET | 116 | 86 | +3  | 89 | 725  | 719  |
+| CRO | 138 | 105 | +2 | 107 | 1357 | 1367 |
+| CVM | 9   | 7  | 0   | 7  | 1317 | 1317 |
+
+EBF is the most affected class: 15 additional sites recovered via DT fallback
+(from 22 to 37, nearly doubling GPP coverage). These are predominantly tropical
+forest sites where NT partitioning fails due to low respiration-to-GPP ratio at
+night or data quality issues (e.g. sites in Africa, Southeast Asia, and tropical
+Americas). The EBF GPP median shifts from 1845 to 2326 gC m⁻² yr⁻¹ when DT
+sites are included — DT-based tropical forests tend to report higher GPP, which
+is physically plausible given daytime partitioning's typically higher GPP estimates.
+The DT-only EBF sites listed in the log include BJ-Gui, GH-Ank, GF-Guy, CD-Ygb,
+ID-JOP, CR-AqC, AU-Fog, AU-Ctr, AU-Rob, AU-Cow.
+
+### Updated per-flux availability (767 shuttle sites)
+
+| Flux | n sites (NT+DT) | % | vs NT-only |
+|---|---|---|---|
+| NEP (NEE) | 621 | 81.0% | unchanged |
+| GPP | 617 | 80.4% | +38 sites |
+| TER | 617 | 80.4% | +38 sites |
+| ET | 639 | 83.3% | unchanged |
+| H | 646 | 84.2% | unchanged |
+
+### Updated IGBP class counts (n sites with usable GPP)
+
+| Class | n_total | n_NEP | n_GPP (NT+DT) | n_TER (NT+DT) |
+|---|---|---|---|---|
+| EBF | 42 | 38 | **37** | **37** |
+| MF  | 24 | 22 | 22 | 22 |
+| DBF | 78 | 60 | 60 | 60 |
+| ENF | 113 | 95 | 95 | 95 |
+| CSH | 12  | 11 | 11 | 11 |
+| OSH | 39  | 32 | 31 | 31 |
+| WSA | 18  | 15 | 15 | 15 |
+| SAV | 13  | 10 | 10 | 10 |
+| GRA | 143 | 120 | 120 | 120 |
+| WET | 116 | 90 | 89 | 89 |
+| CRO | 138 | 107 | 107 | 107 |
+| CVM | 9   | 7  | 7 | 7 |
+
+---
+
 ## 2026-06-30 — Per-site annual flux medians and IGBP distribution assessment (shuttle network)
 
 ### Script and outputs

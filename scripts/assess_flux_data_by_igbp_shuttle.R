@@ -21,6 +21,15 @@
 ##   Use VUT if NEE_VUT_REF != -9999 and NEE_VUT_REF_QC >= QC_THRESH.
 ##   Fall back to CUT if VUT unavailable but CUT meets QC_THRESH.
 ##   LE and H are gated on their own QC columns independently.
+##
+## NT/DT partitioning fallback (per site, GPP and TER only):
+##   First preference: NT (nighttime partitioning) — GPP_NT_{VUT/CUT}_REF.
+##   Fallback: DT (daytime partitioning) — GPP_DT_{VUT/CUT}_REF — only when
+##   NT yields 0 qualifying years for that site.
+##   Decision is per-site (not per-year) to avoid mixing methods within a site.
+##   Note: GPP_DT/RECO_DT at YY resolution carry no dedicated QC column; quality
+##   is gated by the same NEE QC threshold used for the VUT/CUT decision.
+##   Tracked in gpp_partition and ter_partition output columns ("NT" or "DT").
 
 suppressPackageStartupMessages({
   library(dplyr)
@@ -54,7 +63,12 @@ write_meta <- function(output_path, notes = "") {
     snapshot_csv      = SNAP_CSV,
     yy_product        = "FLUXMET_YY v1.3_r1",
     qc_threshold      = QC_THRESH,
-    partitioning      = "NT (nighttime)",
+    partitioning_policy = paste0(
+      "NT preferred (GPP_NT_VUT/CUT_REF, RECO_NT_VUT/CUT_REF). ",
+      "DT fallback (GPP_DT_VUT/CUT_REF, RECO_DT_VUT/CUT_REF) used only ",
+      "when NT yields 0 qualifying years for a site. Decision is per-site, ",
+      "not per-year, to avoid mixing partitioning methods within a site median. ",
+      "DT columns carry no dedicated QC at YY resolution; NEE QC gates quality."),
     vut_cut_policy    = paste0(
       "VUT used when NEE_VUT_REF_QC >= ", QC_THRESH,
       "; CUT fallback when VUT QC fails or value is -9999"),
@@ -130,6 +144,8 @@ process_site <- function(path, site_id) {
   needed <- c("NEE_VUT_REF","NEE_VUT_REF_QC","NEE_CUT_REF","NEE_CUT_REF_QC",
               "GPP_NT_VUT_REF","GPP_NT_CUT_REF",
               "RECO_NT_VUT_REF","RECO_NT_CUT_REF",
+              "GPP_DT_VUT_REF","GPP_DT_CUT_REF",
+              "RECO_DT_VUT_REF","RECO_DT_CUT_REF",
               "LE_F_MDS","LE_F_MDS_QC","H_F_MDS","H_F_MDS_QC")
   missing_cols <- setdiff(needed, names(yy))
   if (length(missing_cols) > 0L) {
@@ -152,14 +168,20 @@ process_site <- function(path, site_id) {
               r$NEE_CUT_REF_QC >= QC_THRESH
 
     if (vut_ok) {
-      nee_val <- r$NEE_VUT_REF; gpp_val <- r$GPP_NT_VUT_REF
-      ter_val <- r$RECO_NT_VUT_REF; carbon_src <- "VUT"
+      nee_val    <- r$NEE_VUT_REF
+      gpp_nt_val <- r$GPP_NT_VUT_REF; ter_nt_val <- r$RECO_NT_VUT_REF
+      gpp_dt_val <- r$GPP_DT_VUT_REF; ter_dt_val <- r$RECO_DT_VUT_REF
+      carbon_src <- "VUT"
     } else if (cut_ok) {
-      nee_val <- r$NEE_CUT_REF; gpp_val <- r$GPP_NT_CUT_REF
-      ter_val <- r$RECO_NT_CUT_REF; carbon_src <- "CUT"
+      nee_val    <- r$NEE_CUT_REF
+      gpp_nt_val <- r$GPP_NT_CUT_REF; ter_nt_val <- r$RECO_NT_CUT_REF
+      gpp_dt_val <- r$GPP_DT_CUT_REF; ter_dt_val <- r$RECO_DT_CUT_REF
+      carbon_src <- "CUT"
     } else {
-      nee_val <- NA_real_; gpp_val <- NA_real_
-      ter_val <- NA_real_; carbon_src <- NA_character_
+      nee_val    <- NA_real_
+      gpp_nt_val <- NA_real_; ter_nt_val <- NA_real_
+      gpp_dt_val <- NA_real_; ter_dt_val <- NA_real_
+      carbon_src <- NA_character_
     }
 
     # NEP = -NEE (sign flip)
@@ -177,7 +199,9 @@ process_site <- function(path, site_id) {
     h_val <- if (h_ok) r$H_F_MDS else NA_real_
 
     rows[[i]] <- data.frame(
-      year = yr, nep = nep_val, gpp = gpp_val, ter = ter_val,
+      year = yr, nep = nep_val,
+      gpp_nt = gpp_nt_val, ter_nt = ter_nt_val,
+      gpp_dt = gpp_dt_val, ter_dt = ter_dt_val,
       et = et_val, h = h_val, carbon_src = carbon_src,
       stringsAsFactors = FALSE
     )
@@ -185,37 +209,59 @@ process_site <- function(path, site_id) {
 
   site_yy <- bind_rows(rows)
 
+  # ---- NT/DT site-level decision for GPP and TER ----
+  # Use NT if it yields ≥1 qualifying year; fall back to DT otherwise.
+  # Decision is per-flux (GPP and TER decided independently).
+  n_gpp_nt <- sum(!is.na(site_yy$gpp_nt))
+  n_ter_nt  <- sum(!is.na(site_yy$ter_nt))
+
+  if (n_gpp_nt > 0L) {
+    gpp_vals      <- site_yy$gpp_nt
+    gpp_partition <- "NT"
+  } else if (sum(!is.na(site_yy$gpp_dt)) > 0L) {
+    gpp_vals      <- site_yy$gpp_dt
+    gpp_partition <- "DT"
+  } else {
+    gpp_vals      <- rep(NA_real_, nrow(site_yy))
+    gpp_partition <- NA_character_
+  }
+
+  if (n_ter_nt > 0L) {
+    ter_vals      <- site_yy$ter_nt
+    ter_partition <- "NT"
+  } else if (sum(!is.na(site_yy$ter_dt)) > 0L) {
+    ter_vals      <- site_yy$ter_dt
+    ter_partition <- "DT"
+  } else {
+    ter_vals      <- rep(NA_real_, nrow(site_yy))
+    ter_partition <- NA_character_
+  }
+
+  src_of <- function(vals, srcs) {
+    s <- srcs[!is.na(vals)]
+    if (length(s) == 0L) NA_character_
+    else { u <- unique(s); if (length(u) == 1L) u else "BOTH" }
+  }
+
   data.frame(
-    site_id      = site_id,
-    n_years_nee  = sum(!is.na(site_yy$nep)),
-    n_years_gpp  = sum(!is.na(site_yy$gpp)),
-    n_years_ter  = sum(!is.na(site_yy$ter)),
-    n_years_le   = sum(!is.na(site_yy$et)),
-    n_years_h    = sum(!is.na(site_yy$h)),
-    nep_median   = median(site_yy$nep, na.rm = TRUE),
-    gpp_median   = median(site_yy$gpp, na.rm = TRUE),
-    ter_median   = median(site_yy$ter, na.rm = TRUE),
-    et_median    = median(site_yy$et,  na.rm = TRUE),
-    h_median     = median(site_yy$h,   na.rm = TRUE),
-    # Source: most common variant used (or "BOTH" if mixed)
-    nep_source   = {
-      srcs <- site_yy$carbon_src[!is.na(site_yy$nep)]
-      if (length(srcs) == 0L) NA_character_
-      else { u <- unique(srcs); if (length(u) == 1L) u else "BOTH" }
-    },
-    gpp_source   = {
-      srcs <- site_yy$carbon_src[!is.na(site_yy$gpp)]
-      if (length(srcs) == 0L) NA_character_
-      else { u <- unique(srcs); if (length(u) == 1L) u else "BOTH" }
-    },
-    ter_source   = {
-      srcs <- site_yy$carbon_src[!is.na(site_yy$ter)]
-      if (length(srcs) == 0L) NA_character_
-      else { u <- unique(srcs); if (length(u) == 1L) u else "BOTH" }
-    },
-    # VUT fraction (for reporting)
-    vut_frac_nee = mean(site_yy$carbon_src[!is.na(site_yy$nep)] == "VUT",
-                        na.rm = TRUE),
+    site_id       = site_id,
+    n_years_nee   = sum(!is.na(site_yy$nep)),
+    n_years_gpp   = sum(!is.na(gpp_vals)),
+    n_years_ter   = sum(!is.na(ter_vals)),
+    n_years_le    = sum(!is.na(site_yy$et)),
+    n_years_h     = sum(!is.na(site_yy$h)),
+    nep_median    = median(site_yy$nep, na.rm = TRUE),
+    gpp_median    = median(gpp_vals,    na.rm = TRUE),
+    ter_median    = median(ter_vals,    na.rm = TRUE),
+    et_median     = median(site_yy$et,  na.rm = TRUE),
+    h_median      = median(site_yy$h,   na.rm = TRUE),
+    nep_source    = src_of(site_yy$nep, site_yy$carbon_src),
+    gpp_source    = src_of(gpp_vals,    site_yy$carbon_src),
+    ter_source    = src_of(ter_vals,    site_yy$carbon_src),
+    gpp_partition = gpp_partition,
+    ter_partition = ter_partition,
+    vut_frac_nee  = mean(site_yy$carbon_src[!is.na(site_yy$nep)] == "VUT",
+                         na.rm = TRUE),
     stringsAsFactors = FALSE
   )
 }
@@ -244,13 +290,37 @@ medians_final <- medians_out |>
   select(site_id, igbp_class = igbp, location_lat, location_long,
          n_years_nee, n_years_gpp, n_years_ter, n_years_le, n_years_h,
          nep_median, gpp_median, ter_median, et_median, h_median,
-         nep_source, gpp_source, ter_source, vut_frac_nee)
+         nep_source, gpp_source, ter_source,
+         gpp_partition, ter_partition, vut_frac_nee)
+
+# ---- NT/DT partition summary ----
+n_nt_gpp <- sum(medians_final$gpp_partition == "NT", na.rm = TRUE)
+n_dt_gpp <- sum(medians_final$gpp_partition == "DT", na.rm = TRUE)
+n_na_gpp <- sum(is.na(medians_final$gpp_partition))
+n_nt_ter <- sum(medians_final$ter_partition == "NT", na.rm = TRUE)
+n_dt_ter <- sum(medians_final$ter_partition == "DT", na.rm = TRUE)
+n_na_ter <- sum(is.na(medians_final$ter_partition))
+
+msg("\nPartitioning method summary:")
+msg(sprintf("  GPP: NT=%d  DT=%d  NA=%d", n_nt_gpp, n_dt_gpp, n_na_gpp))
+msg(sprintf("  TER: NT=%d  DT=%d  NA=%d", n_nt_ter, n_dt_ter, n_na_ter))
+
+# NT-only vs NT+DT GPP/TER medians (sites that gained data via DT fallback)
+if (n_dt_gpp > 0L || n_dt_ter > 0L) {
+  msg("\nSites gaining GPP via DT fallback:")
+  dt_gpp_sites <- medians_final |>
+    filter(gpp_partition == "DT") |>
+    select(site_id, igbp_class, n_years_gpp, gpp_median)
+  print(as.data.frame(dt_gpp_sites), row.names = FALSE)
+}
 
 write_csv(medians_final, OUT_MEDIANS)
 msg("Saved: ", OUT_MEDIANS)
 write_meta(OUT_MEDIANS, notes = paste0(
   "QC threshold ", QC_THRESH,
-  ". LE_F_MDS used for ET; H_F_MDS used for H. ",
+  ". NT-preferred partitioning with DT fallback when NT has 0 qualifying years. ",
+  "gpp_partition/ter_partition: 'NT' or 'DT' or NA. ",
+  "LE_F_MDS used for ET; H_F_MDS used for H. ",
   "vut_frac_nee = fraction of qualifying site-years using VUT (vs CUT) for NEE."))
 
 # ---- Step 2: IGBP class distribution ----------------------------------------
@@ -297,6 +367,27 @@ if (nrow(low_n) > 0L) {
   msg("  Classes with n<5 for at least one flux: ",
       paste(low_n$igbp_type, collapse = ", "))
 }
+
+# NT-only vs NT+DT comparison per IGBP class (for SESSION_LOG)
+msg("\nNT-only vs NT+DT GPP/TER availability by IGBP class:")
+nt_dt_cmp <- medians_final |>
+  filter(igbp_class %in% STANDARD_IGBP) |>
+  group_by(igbp_class) |>
+  summarise(
+    n_sites       = n(),
+    n_gpp_nt      = sum(gpp_partition == "NT", na.rm = TRUE),
+    n_gpp_dt_gain = sum(gpp_partition == "DT", na.rm = TRUE),
+    n_gpp_total   = sum(!is.na(gpp_partition)),
+    n_ter_nt      = sum(ter_partition == "NT", na.rm = TRUE),
+    n_ter_dt_gain = sum(ter_partition == "DT", na.rm = TRUE),
+    n_ter_total   = sum(!is.na(ter_partition)),
+    gpp_med_nt    = median(gpp_median[gpp_partition == "NT"], na.rm = TRUE),
+    gpp_med_all   = median(gpp_median[!is.na(gpp_partition)], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  arrange(match(igbp_class, STANDARD_IGBP))
+
+print(as.data.frame(nt_dt_cmp), row.names = FALSE)
 
 # ---- Step 3: distribution shape per IGBP class ------------------------------
 msg("\n=== STEP 3: Distribution shape per IGBP class ===")

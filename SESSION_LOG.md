@@ -4,6 +4,133 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Per-site annual flux medians and IGBP distribution assessment (shuttle network)
+
+### Script and outputs
+
+`scripts/assess_flux_data_by_igbp_shuttle.R`. Two output CSVs + companion
+`.meta.json` files committed to `data/snapshots/`:
+- `site_flux_medians_shuttle.csv` — one row per shuttle site, per-variable median
+  across QC-passing years (QC ≥ 0.80), VUT/CUT fallback tracked
+- `igbp_class_flux_distributions_shuttle.csv` — median, IQR, min, max, CV per
+  IGBP class × flux variable
+
+Source: FLUXMET YY v1.3_r1 files from `data/extracted/`. Snapshot:
+`fluxnet_shuttle_snapshot_20260624T095651.csv` (767 sites).
+
+### Overall data availability
+
+| Scope | Count |
+|---|---|
+| Sites in snapshot | 767 |
+| Sites with FLUXMET YY file | 759 |
+| Sites with usable data ≥ 1 flux | 646 |
+| Sites with usable data for all 5 fluxes | 578 |
+
+8 sites have no YY file (failed download or YY not produced for that site).
+121 sites have a YY file but no year passes QC ≥ 0.80 for NEE (these may have
+only ERA5 or BIFVARINFO files with no FLUXMET content, or all years below threshold).
+
+### Per-flux availability (fraction of 767 sites with ≥ 1 usable year)
+
+| Flux | n sites | % |
+|---|---|---|
+| NEP (NEE) | 621 | 81.0% |
+| GPP | 579 | 75.5% |
+| TER | 579 | 75.5% |
+| ET (from LE) | 639 | 83.3% |
+| H | 646 | 84.2% |
+
+ET and H have slightly higher availability than NEP/GPP/TER. GPP and TER lag NEP
+by ~40 sites, indicating sites where NEE_VUT_REF is available but nighttime
+partitioning either failed or produced -9999 values for GPP_NT_VUT_REF /
+RECO_NT_VUT_REF. This pattern is most pronounced in EBF (38 sites with NEP data,
+only 22 with GPP/TER).
+
+### VUT vs CUT fallback usage
+
+91.7% of qualifying site-years use VUT. 45 sites use CUT exclusively across all
+their qualifying years, suggesting older data or sites not included in the
+FLUXNET2015-era VUT processing. CUT-only sites are a minority but non-trivial
+fraction (~6% of sites with usable NEE data).
+
+### IGBP class site counts (n sites with usable data per flux)
+
+All 12 standard IGBP classes are present in the shuttle network.
+No class has n < 5 for any flux.
+
+| Class | n_total | n_NEP | n_GPP | n_TER | n_ET | n_H |
+|---|---|---|---|---|---|---|
+| EBF | 42 | 38 | 22 | 22 | 38 | 39 |
+| MF  | 24 | 22 | 20 | 20 | 22 | 23 |
+| DBF | 78 | 60 | 58 | 58 | 60 | 60 |
+| ENF | 113 | 95 | 91 | 91 | 100 | 100 |
+| CSH | 12 | 11 | 11 | 11 | 11 | 11 |
+| OSH | 39 | 32 | 28 | 28 | 33 | 34 |
+| WSA | 18 | 15 | 15 | 15 | 17 | 17 |
+| SAV | 13 | 10 | 10 | 10 | 12 | 12 |
+| GRA | 143 | 120 | 116 | 116 | 123 | 123 |
+| WET | 116 | 90 | 86 | 86 | 93 | 93 |
+| CRO | 138 | 107 | 105 | 105 | 109 | 110 |
+| CVM | 9 | 7 | 7 | 7 | 7 | 8 |
+
+CVM and CSH are the smallest classes (9 and 12 sites respectively). CSH has
+reasonable coverage (11 sites per flux); CVM has 7–8, which may be borderline
+for silhouette plots depending on the figure design. No n < 5 flags.
+
+### Non-standard IGBP labels
+
+22 sites carry non-standard labels: BSV (barren/sparse vegetation), DNF
+(deciduous needleleaf forest — sometimes listed as a 13th IGBP class), SNO
+(permanent snow/ice). These are excluded from the 12-class scheme. Of these,
+14 have usable NEP data. They will be reported as "other" in figure legends.
+
+### Median of site medians per IGBP class (headline values for silhouette plots)
+
+| Class | NEP (gC m⁻² yr⁻¹) | GPP | TER | ET (mm yr⁻¹) | H (W m⁻²) |
+|---|---|---|---|---|---|
+| EBF | 382 | 1845 | 1354 | 825 | 27.6 |
+| MF  | 283 | 1635 | 1280 | 526 | 24.9 |
+| DBF | 300 | 1567 | 1271 | 510 | 24.0 |
+| ENF | 148 | 1503 | 1141 | 450 | 29.8 |
+| CSH | 40  | 915  | 862  | 471 | 29.9 |
+| OSH | 15  | 348  | 315  | 256 | 39.7 |
+| WSA | 282 | 1248 | 952  | 596 | 57.8 |
+| SAV | 28  | 924  | 958  | 421 | 48.0 |
+| GRA | 94  | 1317 | 1190 | 533 | 19.5 |
+| WET | 60  | 725  | 620  | 488 | 14.8 |
+| CRO | 185 | 1357 | 1107 | 591 | 15.8 |
+| CVM | 25  | 1317 | 853  | 512 | 16.3 |
+
+Notable patterns:
+- EBF has highest GPP (1845 gC m⁻² yr⁻¹) and ET (825 mm yr⁻¹) — consistent
+  with tropical forest energy and carbon cycling.
+- OSH has the lowest GPP and ET, reflecting arid/semi-arid conditions.
+- SAV has near-zero median NEP (28 gC m⁻² yr⁻¹) and negative TER > GPP balance
+  (median NEP positive but close to carbon neutral) — reasonable for savanna.
+- WSA shows high H (57.8 W m⁻²) relative to ET, indicating strong sensible heat
+  flux in woody savanna ecosystems.
+- WET and CRO have the lowest H, consistent with high ET partitioning.
+
+### Distribution spread notes
+
+Full CV values in `igbp_class_flux_distributions_shuttle.csv`. Qualitatively:
+GPP and TER are tighter within-class than NEP (which is the residual and
+accumulates error from both). ET spread is moderate across most classes.
+EBF has high GPP spread (n=22, tropical forests span a wide range of
+productivity) — this is the class most likely to require within-class
+stratification in figure design.
+
+### Unit conventions
+
+- NEP = −NEE (sign flip); gC m⁻² yr⁻¹ (YY product pre-integrated)
+- ET: LE_F_MDS [W m⁻²] × 31,557,600 [s yr⁻¹] / 2.45×10⁶ [J kg⁻¹]; mm yr⁻¹
+- H: H_F_MDS [W m⁻²]; annual mean, not converted
+- QC threshold: ≥ 0.80 applied to NEE_VUT_REF_QC (or CUT fallback), LE_F_MDS_QC,
+  H_F_MDS_QC independently
+
+---
+
 ## 2026-06-30 — Fix ELM explicit exclusion and metrics write block in TRENDY compute
 
 ### Fix 1a: Explicit ELM exclusion (figure_representativeness_trendy_compute.R line 325)

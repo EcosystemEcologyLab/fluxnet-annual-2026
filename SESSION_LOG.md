@@ -4,6 +4,38 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 vs Shuttle comparison plots: titles removed, axis labels carry the variable
+
+Updated `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` to match
+field convention (research figures don't carry titles; axis labels
+identify the variables, captions tell the story):
+
+- Removed `plot.title` from `comparison_theme()` and dropped the `title =`
+  argument from `labs()` (previously a wrapped two-line title naming the
+  flux and both datasets).
+- `make_comparison_plot()`'s second argument changed from a descriptive
+  flux title (e.g. "Net Ecosystem Production (NEP)") to the flux code
+  (e.g. `"NEP"`, via `toupper(flux_key)`), used to build both axis labels:
+  `"FLUXNET2015 median <CODE> ± SD (<unit>)"` and `"FLUXNET Shuttle median
+  <CODE> ± SD (<unit>)"` — exactly matching the requested label table for
+  all five fluxes (NEP/GPP/TER in gC m⁻² yr⁻¹, ET in mm yr⁻¹, H in W m⁻²).
+- The in-figure caption (CVM/CSH exclusions, 1:1 line, ±1 SD definition)
+  is unchanged — kept as a caveat, not a title.
+
+**Confirmed: all five PNGs re-rendered** in a single script run —
+`review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png`,
+mtimes moved from 14:24 to 14:32 (2026-06-30), file sizes shrank by
+~9-11 KB each consistent with the removed title text. Visually verified
+NEP and H: no title, axis labels carry the flux code and units, caption
+and four-sided tick marks (from the prior entry) both retained.
+
+### Files
+
+- `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` (updated, committed)
+- `review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png` (regenerated, committed)
+
+---
+
 ## 2026-06-30 — FLUXNET2015 vs Shuttle comparison plots: four-sided tick marks
 
 Fixed `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R`: the panel

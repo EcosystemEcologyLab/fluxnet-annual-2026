@@ -4,6 +4,38 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 vs Shuttle comparison plots: four-sided tick marks
+
+Fixed `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R`: the panel
+frame previously showed tick marks only on the left (y) and bottom (x)
+axes, with bare lines on the right and top. Added a duplicated secondary
+axis to both `scale_x_continuous()` and `scale_y_continuous()`:
+
+```r
+scale_x_continuous(..., sec.axis = dup_axis(name = NULL, labels = NULL))
+scale_y_continuous(..., sec.axis = dup_axis(name = NULL, labels = NULL))
+```
+
+`dup_axis()` mirrors the primary axis onto the opposite side; `name = NULL`
+suppresses the duplicated axis title and `labels = NULL` suppresses its
+numeric labels, leaving inward-facing tick marks only (same orientation as
+the primary axes, via the existing `fluxnet_theme()` inward
+`axis.ticks.length`).
+
+**Confirmed: all five comparison figures re-rendered** in a single script
+run (`review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png`,
+same timestamp, 300 dpi, white background) — visually verified two of the
+five (NEP, H) show tick marks on all four sides, numeric labels retained
+only on the left/bottom. No other change to plot content, data, or the
+companion CSV/meta.json/methods document.
+
+### Files
+
+- `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` (updated, committed)
+- `review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png` (regenerated, committed)
+
+---
+
 ## 2026-06-30 — FLUXNET2015 vs Shuttle: IGBP-class flux comparison plots
 
 Built `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R`, producing

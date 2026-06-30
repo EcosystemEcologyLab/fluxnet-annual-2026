@@ -189,15 +189,13 @@ comparison_theme <- function() {
       legend.position  = "none",
       plot.background  = element_rect(fill = "white", colour = NA),
       panel.background = element_rect(fill = "white", colour = NA),
-      plot.title       = element_text(size = 11, hjust = 0.5, face = "bold",
-                                       margin = margin(b = 8), lineheight = 1.1),
       plot.caption     = element_text(size = 7, colour = "grey30", hjust = 0,
                                        margin = margin(t = 8), lineheight = 1.2),
       axis.title       = element_text(size = 10)
     )
 }
 
-make_comparison_plot <- function(df, flux_title, unit_str, out_file) {
+make_comparison_plot <- function(df, flux_code, unit_str, out_file) {
   # Joint range across x, y, and their error-bar extents, with small padding.
   all_vals <- c(df$fluxnet2015_median - df$fluxnet2015_sd,
                 df$fluxnet2015_median + df$fluxnet2015_sd,
@@ -229,11 +227,8 @@ make_comparison_plot <- function(df, flux_title, unit_str, out_file) {
     scale_y_continuous(limits = lims, expand = expansion(mult = 0),
                         sec.axis = dup_axis(name = NULL, labels = NULL)) +
     labs(
-      title   = paste(strwrap(paste0(flux_title,
-                  ": FLUXNET2015 release vs current FLUXNET Shuttle"),
-                  width = 64), collapse = "\n"),
-      x       = paste0("FLUXNET2015 median ± SD (", unit_str, ")"),
-      y       = paste0("FLUXNET Shuttle median ± SD (", unit_str, ")"),
+      x       = paste0("FLUXNET2015 median ", flux_code, " ± SD (", unit_str, ")"),
+      y       = paste0("FLUXNET Shuttle median ", flux_code, " ± SD (", unit_str, ")"),
       caption = paste(strwrap(CAPTION, width = 100), collapse = "\n")
     ) +
     comparison_theme()
@@ -276,7 +271,7 @@ for (flux_key in names(FLUXES)) {
     top_shift = if (nrow(df_ranked) > 0L) df_ranked[1, ] else NULL
   )
 
-  make_comparison_plot(df, fd$title, fd$unit, fd$file)
+  make_comparison_plot(df, toupper(flux_key), fd$unit, fd$file)
 }
 
 # ---- Extend methods document ----------------------------------------------------

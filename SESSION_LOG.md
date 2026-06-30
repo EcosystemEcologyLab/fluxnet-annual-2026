@@ -4,6 +4,53 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Fix ELM explicit exclusion and metrics write block in TRENDY compute
+
+### Fix 1a: Explicit ELM exclusion (figure_representativeness_trendy_compute.R line 325)
+
+Added `MODELS_OK <- setdiff(MODELS_OK, "ELM")` immediately after the
+`intersect(mdl_ok_nbp, mdl_ok_et)` call. ELM's intermediates exist (Step 1 skips
+them) but ELM is now dropped from `MODELS_OK` before Step 2 and Step 3 run. The
+ensemble is now explicitly 16 models. The `n_models < 15L` guard was lowered to
+`< 14L` to reflect the new expected floor. The log now reads:
+
+> Models with both nbp and evapotrans intermediates (excl. ELM): 16
+
+Prior behaviour: ELM was implicitly excluded via all-NA stat maps (its 2023 layer
+is missing), but appeared in `MODELS_OK` and the completion marker. A future
+back-fill of ELM's 2023 NetCDF layer would have silently re-included it in all
+four ensemble maps.
+
+### Fix 1b: network and n_sites columns added to metrics write block (Step 4, line 669–680)
+
+`new_rows` in Step 4 previously lacked `network` and `n_sites` columns, which
+would have corrupted `representativeness_metrics.csv` on re-run. Two changes:
+
+1. **`new_rows`** now includes `network = "current_767"` and `n_sites = n_sites`
+   (767, from the site CSV loaded at line 261). Column order matches the existing
+   CSV schema: `axis, aggregation_level, n_classes, weighted_jaccard,
+   hellinger_distance, network, n_sites`.
+
+2. **`existing_metrics` filter** was over-broad: it removed all rows where axis
+   was one of the four TRENDY axes regardless of network, which would have dropped
+   60 historical-network rows on re-run. Fixed to remove only `current_767` +
+   `7bin_hybrid` rows for those axes — the four rows this script is about to
+   rewrite.
+
+3. **Empty-file fallback** data frame updated to include `network` (character) and
+   `n_sites` (integer) columns.
+
+### Verification
+
+Script re-run: `logs/trendy_analysis_20260629_161646.log`. All outputs confirmed:
+- Step 1: all intermediates skipped (already complete)
+- Step 2: all 4 TIFs skipped (already complete)
+- Step 3: 4 axes extracted cleanly; J values unchanged from prior run
+- Step 4: `representativeness_metrics.csv` written with 156 data rows (157 including
+  header), 80 TRENDY rows preserved, 16 TRENDY 7bin_hybrid rows (4 axes × 4 networks)
+
+---
+
 ## 2026-06-29 — Targeted code review: representativeness pipeline (six risk areas)
 
 ### Scope

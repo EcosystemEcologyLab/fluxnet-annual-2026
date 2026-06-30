@@ -318,9 +318,14 @@ for (mdl in MODELS_19) {
 
 # Only include models where BOTH nbp and evapotrans succeeded
 MODELS_OK <- intersect(unique(mdl_ok_nbp), unique(mdl_ok_et))
+# ELM excluded: lacks 2023 data, so its per-pixel stat maps are all-NA under
+# the complete-row requirement. Excluding here makes the exclusion explicit
+# rather than implicit, so a future TRENDY back-fill of ELM's 2023 layer
+# doesn't silently re-include ELM without conscious decision.
+MODELS_OK <- setdiff(MODELS_OK, "ELM")
 n_models  <- length(MODELS_OK)
-msg("\nModels with both nbp and evapotrans intermediates: ", n_models)
-if (n_models < 15L) {
+msg("\nModels with both nbp and evapotrans intermediates (excl. ELM): ", n_models)
+if (n_models < 14L) {
   stop("Too few models (", n_models, ") — check errors above before continuing.")
 }
 
@@ -647,12 +652,18 @@ msg("\n=== STEP 4: Representativeness metrics ===")
 
 existing_metrics <- if (file.exists(METRICS_CSV)) {
   readr::read_csv(METRICS_CSV, show_col_types = FALSE) |>
-    dplyr::filter(!axis %in% c("trendy_nee_iav", "trendy_et_iav",
-                                "trendy_nee_median", "trendy_et_median"))
+    # Remove only the four rows this script is about to rewrite:
+    # current_767 network, 7bin_hybrid aggregation, four TRENDY axes.
+    # Historical-network rows and other aggregation levels are preserved.
+    dplyr::filter(!(axis %in% c("trendy_nee_iav", "trendy_et_iav",
+                                 "trendy_nee_median", "trendy_et_median") &
+                    aggregation_level == "7bin_hybrid" &
+                    network == "current_767"))
 } else {
   data.frame(axis = character(), aggregation_level = character(),
              n_classes = integer(), weighted_jaccard = numeric(),
-             hellinger_distance = numeric())
+             hellinger_distance = numeric(), network = character(),
+             n_sites = integer())
 }
 
 new_rows <- data.frame(
@@ -663,7 +674,9 @@ new_rows <- data.frame(
   weighted_jaccard = c(res_nee_iav$J, res_et_iav$J,
                        res_nee_median$J, res_et_median$J),
   hellinger_distance = c(res_nee_iav$H, res_et_iav$H,
-                         res_nee_median$H, res_et_median$H)
+                         res_nee_median$H, res_et_median$H),
+  network = "current_767",
+  n_sites = n_sites
 )
 
 metrics_final <- dplyr::bind_rows(existing_metrics, new_rows)

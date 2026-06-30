@@ -4,6 +4,142 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 release portal investigation and download launch
+
+### Task
+
+Following the same-day inventory showing 0/212 sites had the original
+FLUXNET2015 release locally, investigated the fluxnet.org portal's access
+mechanism, then built and launched a download of the FLUXNET2015 release
+FULLSET product (which contains the YY/annual resolution file) for the
+project's 212-site comparison list.
+
+### Portal investigation
+
+- **Authentication:** WordPress username/password session login at
+  `https://fluxnet.org/login/` (`FLUXNET_USERNAME`/`FLUXNET_PASSWORD` from
+  `.env`). `fluxnet.org/robots.txt` explicitly disallows AI-crawler user
+  agents (ClaudeBot, GPTBot, CCBot, etc.) for `ai-train`; this investigation
+  used plain `curl` (not on that disallow list) to read public documentation
+  pages and used the registered account's own credentials, as the user
+  instructed, for the authenticated parts.
+- **The site's "Download Historical Data" page** (gate for FLUXNET2015
+  access; the main "Download Data" page now points to the FLUXNET Shuttle)
+  is itself a thin wrapper around a documented JSON API:
+  `POST https://amfcdn.lbl.gov/api/v1/data_download` — the same AmeriFlux
+  Cyberinfrastructure (AMFCDN) backend used by AmeriFlux's own BASE/FLUXNET
+  download portal. The API does **not** require the WordPress session
+  cookie (confirmed by calling it from a bare `curl` process with no
+  cookies); it only takes `user_id`/`user_email` as identifying fields. The
+  download script still performs the WordPress login, both because the task
+  asked for `.env` credentials to be used and because it lets the script
+  read the account's canonical `user_id`/`user_email` from the post-login
+  page at runtime instead of hardcoding them in a committed file.
+- **Request body:** `{user_id, user_email, site_ids[], intended_use,
+  description, data_policy, data_product, data_variant, is_test}`.
+  `data_policy` is `"CCBY4.0"` or `"TIER2"`; `data_product` is
+  `"FLUXNET2015"`; `data_variant` is `"SUBSET"` or `"FULLSET"`.
+- **Response:** synchronous JSON manifest listing every file in the
+  site's ZIP (confirming the YY filename pattern below) plus a
+  `data_urls[]` array with one **direct, unauthenticated, per-site download
+  URL** per request, an MD5 `download_checksum`, and `download_size`. One
+  ZIP per site bundles all five temporal resolutions (HR/DD/WW/MM/YY) plus
+  AUX files — not split by resolution.
+- **Bulk download:** the API accepts an array of site IDs in one request
+  (the UI has a "select all sites" button), so a single call could in
+  principle request all sites at once. The download script instead issues
+  one request per site, to keep per-site retry/resume logic simple and
+  matched to the task's required directory layout.
+- **Filename pattern — confirmed exactly as hypothesized:**
+  ZIP: `FLX_<site_id>_FLUXNET2015_FULLSET_<years>_<sitever>-<codever>.zip`;
+  inside it, the YY product:
+  `FLX_<site_id>_FLUXNET2015_FULLSET_YY_<years>_<sitever>-<codever>.csv`.
+
+### Data policy / attribution tier — correction to the "acknowledgment only" assumption
+
+- **CC-BY-4.0 (formerly Tier 1):** open, free for research/education.
+  Required: cite Pastorello et al. 2020 (doi:10.1038/s41597-020-0534-3) and
+  list each site's FLUXNET ID / DOI. Recommended (not required): notify
+  data providers of forthcoming publications.
+- **Tier 2:** required (not just recommended): contact data providers when
+  beginning research that could lead to a publication, give them ≥3 weeks
+  to contribute once a first draft exists; substantive contributions result
+  in **co-authorship**. Critically, the policy states that *mixing
+  CC-BY-4.0 and Tier 2 data means the entire synthesis is treated as Tier
+  2* — it is not separable per site.
+- Six sites in the 212-site list (`RU-Sam`, `RU-SkP`, `RU-Tks`, `RU-Vrk`,
+  `SE-St1`, `ZA-Kru`) are Tier-2-only. **Per user decision (2026-06-30),
+  these six sites were excluded from this download**, scoping the request
+  to the open CC-BY-4.0 tier only (206 of 212 sites) and avoiding the Tier
+  2 contact/co-authorship obligation. This means the original
+  "acknowledgment only" framing was not quite right for the full 212-site
+  list as given — it only holds once the six Tier-2-only sites are dropped.
+
+### Download script: `scripts/download_fluxnet2015.sh`
+
+Bash (not R — this is HTTP/JSON glue, not analysis code; mirrors the style
+of `scripts/download_trendy_v14.sh`). Logs in, reads the account's
+`user_id`/`user_email` from the post-login page, builds the 206-site list
+(212-site CSV minus the 6 Tier-2-only sites), then per site: requests a
+download URL from the AMFCDN API (3 retries, exponential backoff 10/20/40s),
+downloads the ZIP, and verifies it (exact byte size match, MD5 checksum
+match, `unzip -tq` integrity test) before counting it complete. Resume-safe:
+an existing valid ZIP is skipped without re-requesting. Does not extract
+ZIPs. PI contact emails returned per request are logged to
+`logs/fluxnet2015_pi_contacts_<timestamp>.csv` (supports the CC-BY-4.0
+"recommended" practice of notifying data providers, and future per-site DOI
+citation). Credentials are read from `.env` via targeted `grep`/`cut` (not
+`source .env` — line 53, `FLUXNET_EXTRACT_RESOLUTIONS=y m d`, is unquoted
+and breaks naive `source`/`set -a` sourcing) and are never written to any
+log. `data/raw/` is already covered by `.gitignore`, so no gitignore change
+was needed.
+
+Note: macOS ships bash 3.2 (no `mapfile`/`readarray`); the site-list read
+uses a portable `while read` loop instead.
+
+Smoke-tested on 3 sites (AT-Neu, FI-Hyy, US-Ha1) in the foreground first —
+download, checksum/zip verification, and resume/skip-on-rerun all confirmed
+working — before launching the full run.
+
+### Background launch
+
+```
+nohup caffeinate -dimsu bash scripts/download_fluxnet2015.sh \
+    > logs/fluxnet2015_download_nohup.out 2>&1 &
+disown
+echo $! > logs/fluxnet2015_download.pid
+```
+
+- **PID:** 85603 (`logs/fluxnet2015_download.pid`)
+- **Log:** `logs/fluxnet2015_download_20260630_130019.log`
+- **Check status:** `tail -f logs/fluxnet2015_download_20260630_130019.log`
+  or `ps -p $(cat logs/fluxnet2015_download.pid)`
+- **Kill:** `kill $(cat logs/fluxnet2015_download.pid)`
+
+### Timing / disk estimate (from first 16 of 206 sites, 0 failures)
+
+- 16/206 sites complete (13 downloaded in the background run + 3 from the
+  foreground smoke test, which the resume logic correctly skipped on
+  rerun), 0 failures, ~1.0 GB on disk so far.
+- Per-site time: median ~14s, range 4–38s (scales with each site's record
+  length/file size — short 2–3 year AU/AR towers at the fast end, long
+  multi-decade EU/US towers like FI-Hyy at the slow end).
+- Sustained throughput: ~2.9 MB/s; per-site size ranged 20.6–180.1 MB
+  (mean across the 16 sampled so far: ~56 MB/site).
+- **Preliminary estimate for all 206 sites** (sample-based, will firm up as
+  more long-record flagship towers are sampled): total disk usage roughly
+  **9–12 GB**, total wall-clock roughly **45–75 minutes**.
+
+### Files
+
+- `scripts/download_fluxnet2015.sh` (committed)
+- `data/raw/fluxnet2015/<site_id>/FLX_<site_id>_FLUXNET2015_FULLSET_<years>_<ver>.zip`
+  (gitignored, not committed — the data is the deliverable, not a commit)
+- `logs/fluxnet2015_download_20260630_130019.log`,
+  `logs/fluxnet2015_pi_contacts_20260630_130019.csv` (gitignored)
+
+---
+
 ## 2026-06-30 — FLUXNET2015 release YY data inventory
 
 ### Task

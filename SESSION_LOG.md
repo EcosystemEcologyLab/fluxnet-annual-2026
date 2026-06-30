@@ -4,6 +4,56 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Three-panel NEP/ET/H combo figure (single-column)
+
+Built `scripts/figure_flux_comparison_combo.R`, a new script (separate from
+`figure_flux_comparison_fluxnet2015_vs_shuttle.R`) that stacks the NEP, ET,
+and H FLUXNET2015-vs-Shuttle comparison panels vertically into one
+single-column journal figure. Reads
+`data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv` directly (the
+already-computed per-class comparison table) rather than recomputing
+per-class statistics from the raw per-site CSVs a second time, so the combo
+panels are guaranteed numerically identical to the standalone figures.
+
+### Layout
+
+- **Panel A** (top) = NEP, **Panel B** (middle) = ET, **Panel C** (bottom) = H.
+- Stacked with `patchwork` (`p1 / p2 / p3`, equal heights) — confirmed
+  available in the project library, no new dependency needed.
+- Each panel keeps full standalone-plot aesthetics: dashed 1:1 line, ±1 SD
+  error bars in both directions, IGBP-palette-coloured points, `ggrepel`
+  class labels, four-sided inward tick marks, white background, no
+  gridlines, equal x/y range with 10% padding computed independently per
+  panel (NEP/ET/H have different scales).
+- Axis labels per panel match the requested table exactly (e.g. panel A:
+  "FLUXNET2015 median NEP ± SD (gC m⁻² yr⁻¹)" / "FLUXNET Shuttle median NEP
+  ± SD (gC m⁻² yr⁻¹)"). No figure title.
+- **Panel tags (A/B/C):** initially used patchwork's `plot_annotation(tag_levels=...)`
+  with a custom `plot.tag.position`, but that positions the tag relative to
+  the *full* subplot bounding box (including the y-axis label column), which
+  collided with the "1000" y-axis tick label in panel A. Fixed by switching
+  to a per-panel `annotate("text", x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6, ...)`
+  layer, which anchors to each panel's own plot area and is immune to
+  axis-label-width differences between panels. Re-rendered and confirmed
+  clean (no overlap) in all three panels.
+- Single shared caption below panel C (italic, small, grey, two lines):
+  "CVM excluded: absent from FLUXNET2015 release. CSH excluded: n=2 sites
+  in FLUXNET2015, below n≥5 threshold." — no per-panel captions.
+
+### Output
+
+`review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png` —
+confirmed 1050×2850 px at 300 dpi = exactly 3.5 × 9.5 in (single-column
+width per spec; height tuned for three roughly-square panels plus caption).
+White background, no transparency.
+
+### Files
+
+- `scripts/figure_flux_comparison_combo.R` (committed)
+- `review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png` (committed)
+
+---
+
 ## 2026-06-30 — FLUXNET2015 vs Shuttle comparison plots: titles removed, axis labels carry the variable
 
 Updated `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` to match

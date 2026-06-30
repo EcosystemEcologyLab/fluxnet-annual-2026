@@ -4,6 +4,163 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 release: extraction and IGBP-class flux assessment
+
+Built `scripts/assess_flux_data_by_igbp_fluxnet2015.R`, the FLUXNET2015-release
+counterpart to `scripts/assess_flux_data_by_igbp_shuttle.R` — same VUT/CUT,
+NT/DT, QC≥0.80, per-site-median logic, applied to the FLUXNET2015 release
+ZIPs downloaded earlier today instead of the current Shuttle reprocessing.
+
+### Extraction (Step 1)
+
+**206 of 206 ZIP directories extracted successfully — 0 failures.** Only the
+`FULLSET_YY` CSV was extracted per site (not the full ZIP — the HR file
+alone is 100–270 MB/site and isn't needed for an annual-resolution
+assessment; DD/WW/MM/AUX/ERAI files remain available by re-extracting from
+the retained ZIPs in `data/raw/fluxnet2015/` if needed later).
+`data/extracted/fluxnet2015/`: 206 site directories, 206 CSVs, 5.0 MB total.
+`data/extracted/` is already covered by `.gitignore` (line 6) — no separate
+entry was needed.
+
+26 sites' YY files lack the `*_CUT_REF*` column family entirely (`NEE_CUT_REF`,
+`NEE_CUT_REF_QC`, `GPP_NT_CUT_REF`, `RECO_NT_CUT_REF`, `GPP_DT_CUT_REF`,
+`RECO_DT_CUT_REF`) — e.g. AU-GWW, AU-Lox, AU-Rob, CN-Dan, CN-Du3, DE-Zrk,
+DK-Fou, ES-Ln2, IT-Isp, IT-SR2, SJ-Blv, US-ARb, US-ARc, US-KS1, US-Lin,
+US-LWW, US-Me1, US-ORv, US-Tw2/3/4, US-Wi0/1/2/5/6/7/8/9. These are
+NA-filled by the existing fallback logic (handled identically to a missing
+column in the shuttle script) and simply cannot fall back to CUT — VUT is
+used exclusively for these sites. All other expected columns were present
+in every extracted file.
+
+The 6 undownloaded Tier-2-only sites (RU-Sam, RU-SkP, RU-Tks, RU-Vrk,
+SE-St1, ZA-Kru) were confirmed absent as ZIP directories (not extraction
+failures) and appear as all-NA rows in the output CSV.
+
+### Outputs
+
+- `data/snapshots/site_flux_medians_fluxnet2015.csv` (212 rows: 206 with
+  data + 6 all-NA Tier-2-only rows) + `.meta.json`
+- `data/snapshots/igbp_class_flux_distributions_fluxnet2015.csv` (60 rows:
+  12 IGBP classes × 5 fluxes) + `.meta.json`
+
+### Per-flux site count: FLUXNET2015 vs current Shuttle
+
+| Flux | FLUXNET2015 (of 212) | Shuttle (of 767) |
+|------|----------------------|-------------------|
+| NEP  | 172 | 621 |
+| GPP  | 172 | 617 |
+| TER  | 172 | 617 |
+| ET   | 179 | 639 |
+| H    | 180 | 646 |
+
+(Sites in the FLUXNET2015 list with zero usable years: 212 − 172 = 40 for
+carbon fluxes, comprising the 6 undownloaded Tier-2 sites plus 34 sites
+that failed the QC≥0.80 threshold for every available year.)
+
+### IGBP-class site counts, FLUXNET2015 vs Shuttle (n with usable data; NEP/GPP/TER/ET/H)
+
+| Class | FLUXNET2015 | Shuttle |
+|-------|-------------|---------|
+| EBF | 14/14/14/14/15 | 38/37/37/38/39 |
+| MF  | 9/9/9/9/9 | 22/22/22/22/23 |
+| DBF | 22/22/22/22/22 | 60/60/60/60/60 |
+| ENF | 36/36/36/40/40 | 95/95/95/100/100 |
+| CSH | 2/2/2/2/2 | 11/11/11/11/11 |
+| OSH | 8/8/8/9/9 | 32/31/31/33/34 |
+| WSA | 6/6/6/6/6 | 15/15/15/17/17 |
+| SAV | 7/7/7/8/8 | 10/10/10/12/12 |
+| GRA | 34/34/34/34/34 | 120/120/120/123/123 |
+| WET | 16/16/16/16/16 | 90/89/89/93/93 |
+| CRO | 17/17/17/18/18 | 107/107/107/109/110 |
+| CVM | **absent (0 sites)** | 7/7/7/7/8 |
+
+**CVM is absent from the FLUXNET2015 site list entirely** — the 9 CVM
+sites in the current Shuttle network are all sites added/reclassified
+since the 2015/2020 release. No classes are present in FLUXNET2015 but
+absent from Shuttle.
+
+**Classes with n<5 for at least one flux in FLUXNET2015: CSH** (n=2 for
+all five fluxes — below the n≥5 threshold for the distribution-shape
+table; flagged for possible exclusion or merging in the comparison
+figure). The non-standard "OTHER" bucket (1 site, IGBP="DNF") is also
+n<5 but is already excluded from the 12-class comparison by design.
+
+### Median values per IGBP class per flux, FLUXNET2015 (gC m⁻² yr⁻¹ for NEP/GPP/TER, mm yr⁻¹ for ET, W m⁻² for H)
+
+| Class | NEP | GPP | TER | ET | H |
+|-------|-----|-----|-----|-----|-----|
+| EBF | 443.9 | 2101.2 | 1327.8 | 733.5 | 25.5 |
+| MF  | 117.5 | 1533.6 | 1179.3 | 363.5 | 20.9 |
+| DBF | 377.0 | 1492.9 | 1055.2 | 458.5 | 25.0 |
+| ENF | 179.8 | 1280.4 | 783.7  | 385.5 | 32.8 |
+| CSH | 251.8 | 1454.0 | 1206.4 | 687.5 | 46.6 |
+| OSH | -0.16 | 267.9  | 136.2  | 251.5 | 39.8 |
+| WSA | 192.8 | 1018.4 | 884.8  | 571.8 | 58.6 |
+| SAV | 191.5 | 610.8  | 402.3  | 442.0 | 55.3 |
+| GRA | 37.3  | 743.2  | 755.0  | 451.9 | 32.5 |
+| WET | 72.7  | 846.5  | 761.3  | 470.3 | 14.1 |
+| CRO | 216.1 | 1284.4 | 1027.3 | 571.8 | 11.5 |
+| CVM | — | — | — | — | — |
+
+### Largest median shifts, FLUXNET2015 − Shuttle (top 3 per flux)
+
+| Flux | Class | FLUXNET2015 | Shuttle | Diff | % diff |
+|------|-------|-------------|---------|------|--------|
+| NEP | SAV | 191.48 | 27.98 | +163.50 | +584.3% |
+| NEP | CSH | 251.83 | 40.12 | +211.71 | +527.6% |
+| NEP | MF  | 117.54 | 282.65 | −165.11 | −58.4% |
+| GPP | CSH | 1454.0 | 914.8 | +539.2 | +58.9% |
+| GPP | GRA | 743.2  | 1316.7 | −573.5 | −43.6% |
+| GPP | SAV | 610.8  | 923.9 | −313.0 | −33.9% |
+| TER | EBF | 1327.8 | 1826.3 | −498.6 | −27.3% |
+| TER | GRA | 755.0  | 1190.0 | −435.0 | −36.6% |
+| TER | SAV | 402.3  | 958.2 | −555.9 | −58.0% |
+| ET  | EBF | 733.5  | 825.0 | −91.5 | −11.1% |
+| ET  | MF  | 363.5  | 526.2 | −162.8 | −30.9% |
+| ET  | CSH | 687.5  | 470.6 | +216.9 | +46.1% |
+| H   | SAV | 55.3   | 48.0  | +7.3  | +15.3% |
+| H   | GRA | 32.5   | 19.5  | +13.0 | +66.9% |
+| H   | CSH | 46.6   | 29.9  | +16.7 | +55.9% |
+
+SAV and CSH show the largest and most consistent shifts across fluxes
+(both n=7–8 and n=2 respectively in FLUXNET2015 — small samples, so these
+shifts should be read with caution alongside the n<5 flag on CSH above).
+GRA and EBF — the two largest-n classes in both networks — also show
+substantial, consistent TER/GPP reductions in FLUXNET2015 relative to
+Shuttle (GRA: −37 to −44% on GPP/TER; EBF: −27% on TER, −11% on ET),
+plausibly reflecting genuine differences between the 2020 release
+processing and the current Shuttle reprocessing for these large,
+well-sampled classes, rather than small-sample noise.
+
+### VUT/CUT and NT/DT distribution: FLUXNET2015 vs Shuttle
+
+- **Mean VUT fraction of site-years:** FLUXNET2015 = 0.992, Shuttle = 0.917.
+  FLUXNET2015 relies on VUT almost exclusively; Shuttle draws more often on
+  the CUT fallback (consistent with the 26 FLUXNET2015 sites that have no
+  CUT columns at all, vs. broader USTAR-threshold-variant availability in
+  the current reprocessing).
+- **GPP/TER partition — FLUXNET2015: NT=172, DT=0, NA=40. Shuttle: NT=579,
+  DT=38, NA=150.** This is the opposite of the expected direction: DT
+  fallback was never triggered in FLUXNET2015 (every site with any
+  qualifying GPP/TER years had NT data; the 40 NA sites have no GPP/TER
+  data at all rather than DT-only data), whereas the current Shuttle
+  reprocessing successfully rescues 38 sites via DT fallback that would
+  otherwise have zero GPP/TER years. This likely reflects ONEFlux pipeline
+  improvements between the 2020 FLUXNET2015 release and the current
+  Shuttle processing, rather than DT being "less standard" in 2020 in the
+  sense of being used more often.
+
+### Files
+
+- `scripts/assess_flux_data_by_igbp_fluxnet2015.R` (committed)
+- `data/snapshots/site_flux_medians_fluxnet2015.csv` + `.meta.json` (committed)
+- `data/snapshots/igbp_class_flux_distributions_fluxnet2015.csv` + `.meta.json` (committed)
+- `data/extracted/fluxnet2015/<site_id>/FLX_<site_id>_FLUXNET2015_FULLSET_YY_*.csv`
+  (gitignored, not committed)
+- `logs/assess_igbp_flux_fluxnet2015_20260630T140044.log` (gitignored)
+
+---
+
 ## 2026-06-30 — FLUXNET2015 release download complete
 
 Follow-up to the same-day "FLUXNET2015 release portal investigation and

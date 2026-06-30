@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-06-27T12:35:32Z",
-  "pipeline_version": "af2d0f5",
+  "run_datetime_utc": "2026-06-30T13:18:39Z",
+  "pipeline_version": "c31c3c9",
   "input_sources": [
     "data/external/trendy/derived/trendy_nee_median.tif",
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"
   ],
-  "notes": "Ensemble-median TRENDY v14 trendy_nee_median global distribution. Analysis window 1990-2023. 17 models. Near-zero bin cut: 5 gC m-2 yr-1. Quantile breakpoints: 20.5, 31.7, 41.8, 54.3, 70.2."
+  "notes": "Ensemble-median TRENDY v14 trendy_nee_median global distribution. Analysis window 1990-2023. 16 models. Near-zero bin cut: 5 gC m-2 yr-1. Quantile breakpoints: 20.5, 31.7, 41.8, 54.3, 70.2."
 }

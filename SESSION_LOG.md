@@ -4,6 +4,111 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Proportional-height scaffold figures and methods document for IGBP flux medians
+
+### Outputs produced
+
+**Methods document:** `review/figures/methods_flux_medians.md` — living record of
+methodological decisions for the IGBP-class flux median analysis, covering data
+source, variable preferences, QC threshold, partitioning policy, class scheme,
+normalization, ordering convention, and companion table format.
+
+**Script:** `scripts/figure_flux_medians_by_igbp.R` — produces all five figures
+and companion tables from `data/snapshots/site_flux_medians_shuttle.csv`.
+
+**Five scaffold figures** (300 dpi, 7 × 4.5 in, white background):
+
+| File | Description |
+|------|-------------|
+| `review/figures/flux_medians/fig_flux_nep_by_igbp.png` | NEP scaffold |
+| `review/figures/flux_medians/fig_flux_gpp_by_igbp.png` | GPP scaffold |
+| `review/figures/flux_medians/fig_flux_ter_by_igbp.png` | TER scaffold |
+| `review/figures/flux_medians/fig_flux_et_by_igbp.png`  | ET scaffold  |
+| `review/figures/flux_medians/fig_flux_h_by_igbp.png`   | H scaffold   |
+
+Layout: 6 columns × 2 rows (top: EBF–OSH; bottom: WSA–CVM). Black rectangles on
+a common ground line per row. Height = class median / max class median within flux.
+
+**Five companion CSV tables** at `data/snapshots/flux_medians_by_igbp_*.csv`
+(columns: igbp_class, igbp_name, median, n_sites, total_site_years, std_dev,
+normalized_height) plus `.meta.json` companions.
+
+### Normalization summary: which class sets height = 1.0
+
+| Flux | Max class | Max median |
+|------|-----------|------------|
+| NEP  | EBF | 382 gC m⁻² yr⁻¹ |
+| GPP  | EBF | 2326 gC m⁻² yr⁻¹ |
+| TER  | EBF | 1826 gC m⁻² yr⁻¹ |
+| ET   | EBF | 825 mm yr⁻¹ |
+| **H** | **WSA** | **58 W m⁻²** |
+
+For all carbon and water fluxes, EBF sets the normalization maximum. For H, WSA
+(woody savanna) is the maximum class, reflecting strong sensible heat partitioning
+in open woody savanna ecosystems.
+
+### Normalized heights — full tables
+
+**NEP** (max = EBF 382 gC m⁻² yr⁻¹):
+
+| Class | h | Median | n |
+|-------|---|--------|---|
+| EBF | 1.000 | 382.2 | 38 |
+| MF  | 0.740 | 282.7 | 22 |
+| DBF | 0.785 | 299.8 | 60 |
+| ENF | 0.388 | 148.2 | 95 |
+| CSH | 0.105 | 40.1  | 11 |
+| **OSH** | **0.038** | **14.6** | **32** |
+| WSA | 0.739 | 282.3 | 15 |
+| **SAV** | **0.073** | **28.0** | **10** |
+| GRA | 0.247 | 94.2  | 120 |
+| WET | 0.157 | 60.1  | 90 |
+| CRO | 0.483 | 184.5 | 107 |
+| **CVM** | **0.065** | **24.7** | **7** |
+
+**GPP** (max = EBF 2326 gC m⁻² yr⁻¹):
+EBF=1.000, MF=0.703, DBF=0.686, ENF=0.646, CSH=0.393, OSH=0.166,
+WSA=0.537, SAV=0.397, GRA=0.566, WET=0.309, CRO=0.588, CVM=0.566
+
+**TER** (max = EBF 1826 gC m⁻² yr⁻¹):
+EBF=1.000, MF=0.701, DBF=0.698, ENF=0.625, CSH=0.472, OSH=0.177,
+WSA=0.521, SAV=0.525, GRA=0.652, WET=0.339, CRO=0.611, CVM=0.467
+
+**ET** (max = EBF 825 mm yr⁻¹):
+EBF=1.000, MF=0.638, DBF=0.618, ENF=0.545, CSH=0.570, OSH=0.310,
+WSA=0.723, SAV=0.511, GRA=0.646, WET=0.592, CRO=0.716, CVM=0.620
+
+**H** (max = WSA 57.8 W m⁻²):
+EBF=0.477, MF=0.431, DBF=0.415, ENF=0.516, CSH=0.517, OSH=0.688,
+WSA=1.000, SAV=0.830, GRA=0.337, WET=0.256, CRO=0.274, CVM=0.283
+
+### Barely-visible classes (normalized height < 0.10)
+
+Three NEP classes have heights below 0.10 and will appear as very thin slivers
+in the scaffold figure:
+
+| Class | NEP norm height | NEP median (gC m⁻² yr⁻¹) |
+|-------|-----------------|---------------------------|
+| OSH | 0.038 | 14.6 |
+| CVM | 0.065 | 24.7 |
+| SAV | 0.073 | 28.0 |
+
+These classes are near-carbon-neutral at the class-median level. All three values
+are positive (carbon sinks), so no normalization issue arises from negative values.
+The silhouette design will need to accommodate very-short ecosystem icons for OSH
+and near-zero-NEP classes. For H, WET (0.256), CRO (0.274), and CVM (0.283) are
+the smallest but none fall below 0.25 — comfortably visible.
+
+### NEP sign check
+
+All 12 IGBP class medians for NEP are positive (carbon sinks, range 15–382 gC
+m⁻² yr⁻¹). No negative class-level NEP values. Per-flux normalization (divide by
+max positive median) is valid without modification for all five fluxes. Note:
+individual site medians may be negative (carbon sources) within a class, but the
+class-level median is positive in all cases.
+
+---
+
 ## 2026-06-30 — NT/DT partitioning fallback added to per-site flux assessment
 
 ### Change

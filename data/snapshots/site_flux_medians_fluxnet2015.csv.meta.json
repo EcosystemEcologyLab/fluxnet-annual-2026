@@ -1,0 +1,19 @@
+{
+  "run_datetime_utc": "2026-06-30T21:00:52Z",
+  "pipeline_version": "7fdcdea",
+  "source": "FLUXNET2015 release (Pastorello et al. 2020, Sci Data 7:225, doi:10.1038/s41597-020-0534-3), FULLSET product, CC-BY-4.0 tier. Downloaded via the AmeriFlux Cyberinfrastructure data API (see SESSION_LOG.md 2026-06-30, \"FLUXNET2015 release portal investigation and download launch\").",
+  "source_zips": "data/raw/fluxnet2015",
+  "site_csv": "data/snapshots/sites_fluxnet2015_clean.csv",
+  "site_coverage": "206 of 212 sites in data/snapshots/sites_fluxnet2015_clean.csv. Six Tier-2-only sites were not downloaded per the CC-BY-4.0 scope decision (2026-06-30): RU-Sam, RU-SkP, RU-Tks, RU-Vrk, SE-St1, ZA-Kru. These appear here as all-NA rows (no ZIP directory found), not as extraction failures.",
+  "yy_product": "FLUXNET2015 FULLSET YY (annual resolution)",
+  "qc_threshold": 0.8,
+  "partitioning_policy": "NT preferred (GPP_NT_VUT/CUT_REF, RECO_NT_VUT/CUT_REF). DT fallback (GPP_DT_VUT/CUT_REF, RECO_DT_VUT/CUT_REF) used only when NT yields 0 qualifying years for a site. Decision is per-site, not per-year. Identical policy to site_flux_medians_shuttle.csv for direct comparability.",
+  "vut_cut_policy": "VUT used when NEE_VUT_REF_QC >= 0.8; CUT fallback when VUT QC fails or value is -9999",
+  "unit_nep_gpp_ter": "gC m-2 yr-1 (pre-integrated YY product; NEP = -NEE)",
+  "unit_et": "mm yr-1 via LE_F_MDS [W m-2] * 31557600 [s yr-1] / lambda [J kg-1]; lambda = 2450000 J/kg. Derivation: 1 kg m-2 = 1 mm depth, so ET [mm yr-1] = LE * secs / lambda.",
+  "unit_h": "W m-2 (annual mean LE_F_MDS equivalent; not converted)",
+  "le_column": "LE_F_MDS with LE_F_MDS_QC",
+  "h_column": "H_F_MDS with H_F_MDS_QC",
+  "network": "fluxnet2015",
+  "notes": "QC threshold 0.8. NT-preferred partitioning with DT fallback when NT has 0 qualifying years. gpp_partition/ter_partition: 'NT' or 'DT' or NA. LE_F_MDS used for ET; H_F_MDS used for H. vut_frac_nee = fraction of qualifying site-years using VUT (vs CUT) for NEE. network = 'fluxnet2015' for all rows (added for comparability when combined with site_flux_medians_shuttle.csv, which has no such column)."
+}

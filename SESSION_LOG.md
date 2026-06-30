@@ -4,6 +4,46 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Flux median meta.json companions added
+
+Closed the gap flagged in the same-day "Flux median figure audit" entry below:
+the five flux median CSVs had no `.meta.json` companions.
+
+**`scripts/figure_flux_medians_by_igbp.R` updated** to source
+`R/pipeline_config.R` / `R/utils.R`, call `check_pipeline_config()`, and call
+`write_output_metadata()` (in place of a hand-rolled `jsonlite::write_json()`
+call) for each of the five CSVs. Future re-runs of the script now produce
+correctly-named, standard-format companions automatically.
+
+**Five companion files written:**
+`data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.meta.json`. Each
+documents, via the standard `write_output_metadata()` fields
+(`run_datetime_utc`, `pipeline_version`, `input_sources`, `notes`):
+
+- Source: FLUXNET Shuttle snapshot `fluxnet_shuttle_snapshot_20260624T095651.csv` (767 sites)
+- Data product: FLUXMET YY v1.3_r1
+- Per-flux variable and source priority (e.g. NEP: `NEE_VUT_REF` preferred,
+  `NEE_CUT_REF` fallback; GPP/TER: NT preferred, DT fallback per site; ET:
+  derived from `LE_F_MDS`; H: `H_F_MDS` direct)
+- QC threshold: 0.80
+- Per-site aggregation: median across qualifying years
+- Class scheme: 12 standard FLUXNET IGBP classes
+- Cross-class aggregation: median of site medians
+- Units (NEP/GPP/TER in gC m⁻² yr⁻¹, ET in mm yr⁻¹, H in W m⁻²)
+
+The script was re-run to generate these; the five CSVs and five PNGs were
+byte-identical to the prior run (no data change, metadata-only addition).
+
+**Old, incorrectly-named meta.json files removed.** The original run had
+written `data/snapshots/flux_medians_by_igbp_*.csv.meta.json` (extension
+appended after `.csv` rather than replacing it, and with thinner ad hoc
+content). These did not match the project's `write_output_metadata()` naming
+convention (`tools::file_path_sans_ext()` + `.meta.json`) used everywhere
+else in the repo. Removed after confirming with the user, since
+`data/snapshots/` deletions require explicit confirmation per CLAUDE.md.
+
+---
+
 ## 2026-06-30 — Flux median figure audit and TRENDY snapshot commit
 
 ### Task 1: Flux median figure output audit

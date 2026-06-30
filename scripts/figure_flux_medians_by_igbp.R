@@ -9,18 +9,25 @@
 ##
 ## Outputs:
 ##   review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png  (300 dpi)
-##   data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv + .meta.json
+##   data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv
+##   data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.meta.json
+##     (via write_output_metadata(), R/utils.R)
+
+if (file.exists(".env")) dotenv::load_dot_env()
+source("R/pipeline_config.R")
+source("R/utils.R")
+check_pipeline_config()
 
 suppressPackageStartupMessages({
   library(dplyr)
   library(readr)
   library(ggplot2)
-  library(jsonlite)
 })
 
 msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...)
 
 # ---- Constants ---------------------------------------------------------------
+SNAPSHOT_CSV <- "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv"
 MEDIANS_CSV  <- "data/snapshots/site_flux_medians_shuttle.csv"
 OUT_FIG_DIR  <- "review/figures/flux_medians"
 OUT_CSV_DIR  <- "data/snapshots"
@@ -52,7 +59,13 @@ FLUXES <- list(
     unit     = "gC m⁻² yr⁻¹",
     title    = "Net Ecosystem Production (NEP) by IGBP class",
     fig_file = "fig_flux_nep_by_igbp.png",
-    csv_file = "flux_medians_by_igbp_nep.csv"
+    csv_file = "flux_medians_by_igbp_nep.csv",
+    source_priority = paste0(
+      "NEP = -NEE (sign flip; positive = net carbon uptake). NEE_VUT_REF ",
+      "preferred; NEE_CUT_REF fallback when VUT is unavailable or fails QC. ",
+      "VUT/CUT decision made per site-year and applied jointly to NEE, GPP, ",
+      "and TER for that year."
+    )
   ),
   gpp = list(
     val      = "gpp_median",
@@ -60,7 +73,15 @@ FLUXES <- list(
     unit     = "gC m⁻² yr⁻¹",
     title    = "Gross Primary Productivity (GPP) by IGBP class",
     fig_file = "fig_flux_gpp_by_igbp.png",
-    csv_file = "flux_medians_by_igbp_gpp.csv"
+    csv_file = "flux_medians_by_igbp_gpp.csv",
+    source_priority = paste0(
+      "GPP_NT_VUT_REF (or GPP_NT_CUT_REF under the CUT fallback) preferred. ",
+      "GPP_DT_VUT_REF (or GPP_DT_CUT_REF) used as a site-level fallback only ",
+      "when NT partitioning yields zero qualifying years for a site. NT/DT ",
+      "choice is made per site, not per year, to avoid mixing partitioning ",
+      "methods within a site's median; recorded per site in gpp_partition ",
+      "('NT'/'DT') in the source table."
+    )
   ),
   ter = list(
     val      = "ter_median",
@@ -68,7 +89,12 @@ FLUXES <- list(
     unit     = "gC m⁻² yr⁻¹",
     title    = "Total Ecosystem Respiration (TER) by IGBP class",
     fig_file = "fig_flux_ter_by_igbp.png",
-    csv_file = "flux_medians_by_igbp_ter.csv"
+    csv_file = "flux_medians_by_igbp_ter.csv",
+    source_priority = paste0(
+      "RECO_NT_VUT_REF (or RECO_NT_CUT_REF) preferred; RECO_DT_VUT_REF (or ",
+      "RECO_DT_CUT_REF) fallback under the same per-site NT/DT policy as GPP; ",
+      "recorded per site in ter_partition ('NT'/'DT') in the source table."
+    )
   ),
   et = list(
     val      = "et_median",
@@ -76,7 +102,12 @@ FLUXES <- list(
     unit     = "mm yr⁻¹",
     title    = "Evapotranspiration (ET) by IGBP class",
     fig_file = "fig_flux_et_by_igbp.png",
-    csv_file = "flux_medians_by_igbp_et.csv"
+    csv_file = "flux_medians_by_igbp_et.csv",
+    source_priority = paste0(
+      "Derived from LE_F_MDS [W m⁻²] x 31,557,600 [s yr⁻¹] / lambda [J kg⁻¹], ",
+      "lambda = 2.45e6 J/kg (latent heat of vaporisation); 1 kg m⁻² = 1 mm ",
+      "water depth. No NT/DT or VUT/CUT distinction applies to LE."
+    )
   ),
   h = list(
     val      = "h_median",
@@ -84,7 +115,11 @@ FLUXES <- list(
     unit     = "W m⁻²",
     title    = "Sensible heat flux (H) by IGBP class",
     fig_file = "fig_flux_h_by_igbp.png",
-    csv_file = "flux_medians_by_igbp_h.csv"
+    csv_file = "flux_medians_by_igbp_h.csv",
+    source_priority = paste0(
+      "H_F_MDS [W m⁻²], annual mean of gap-filled half-hourly/hourly records; ",
+      "no unit conversion applied. No NT/DT or VUT/CUT distinction applies to H."
+    )
   )
 )
 
@@ -160,7 +195,7 @@ make_figure <- function(tbl, flux_title, fig_file) {
 }
 
 # ---- Helper: write CSV + meta.json -------------------------------------------
-write_table <- function(tbl, flux_key, unit_str, csv_file) {
+write_table <- function(tbl, flux_key, unit_str, csv_file, source_priority) {
   csv_path <- file.path(OUT_CSV_DIR, csv_file)
 
   out <- tbl |>
@@ -174,22 +209,30 @@ write_table <- function(tbl, flux_key, unit_str, csv_file) {
   write_csv(out, csv_path)
   msg("  Table:  ", csv_path)
 
-  meta <- list(
-    run_datetime_utc  = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
-    pipeline_version  = system("git rev-parse --short HEAD", intern = TRUE),
-    source_csv        = MEDIANS_CSV,
-    flux_variable     = flux_key,
-    unit              = unit_str,
-    igbp_class_order  = IGBP_ORDER,
-    normalization     = paste0(
-      "normalized_height = median / max(median) within this flux; ",
-      "heights are not comparable across flux tables"),
-    qc_threshold      = 0.80,
-    notes             = ""
+  notes <- paste0(
+    "Source: FLUXNET Shuttle snapshot ", basename(SNAPSHOT_CSV),
+    " (767 sites). Data product: FLUXMET YY v1.3_r1. ",
+    "Variable: ", toupper(flux_key), ". Source priority: ", source_priority, " ",
+    "QC threshold: 0.80 (governing QC flag must be >= 0.80 for a site-year to ",
+    "qualify; NEE_VUT_REF_QC/NEE_CUT_REF_QC gates NEP/GPP/TER, LE_F_MDS_QC ",
+    "gates ET, H_F_MDS_QC gates H). ",
+    "Per-site aggregation: median across qualifying years, computed per site. ",
+    "Class scheme: 12 standard FLUXNET IGBP classes (",
+    paste(IGBP_ORDER, collapse = ", "),
+    "); non-standard classes (BSV, DNF, SNO) excluded from this summary. ",
+    "Cross-class aggregation: each class value is the median of site medians ",
+    "(not a site-year pooled median). ",
+    "Units: ", unit_str, ". ",
+    "normalized_height = median / max(median) within this flux table; ",
+    "heights are not comparable across flux tables. ",
+    "Generated by scripts/figure_flux_medians_by_igbp.R from ", MEDIANS_CSV, "."
   )
-  jsonlite::write_json(meta,
-    paste0(csv_path, ".meta.json"),
-    pretty = TRUE, auto_unbox = TRUE)
+
+  write_output_metadata(
+    csv_path,
+    input_sources = c(SNAPSHOT_CSV, MEDIANS_CSV),
+    notes = notes
+  )
   invisible(csv_path)
 }
 
@@ -230,7 +273,7 @@ for (flux_key in names(FLUXES)) {
     msg("  Sign check OK: all class medians non-negative for ", flux_key)
   }
 
-  write_table(tbl, flux_key, fd$unit, fd$csv_file)
+  write_table(tbl, flux_key, fd$unit, fd$csv_file, fd$source_priority)
   make_figure(tbl, fd$title, fd$fig_file)
 }
 

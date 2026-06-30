@@ -4,6 +4,79 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — FLUXNET2015 release YY data inventory
+
+### Task
+
+Checked whether the original FLUXNET2015 release (Pastorello et al. 2020)
+YY product is present on disk for the 212 sites listed in
+`data/snapshots/sites_fluxnet2015_clean.csv`. This is distinct from any
+current FLUXNET Shuttle reprocessing of the same sites — the two are
+different data products even when they cover the same site-years.
+
+### Result
+
+**0 of 212 sites have the original FLUXNET2015 release YY product locally.
+212 of 212 lack it.**
+
+### File-naming patterns observed
+
+`data/extracted/` contains 759 site-product directories, all following the
+**FLUXNET Shuttle / ONEFlux reprocessing convention**, not the FLUXNET2015
+release convention:
+
+```
+<NETWORK>_<site_id>_FLUXNET_<years>_v1.3_r1/
+  <NETWORK>_<site_id>_FLUXNET_FLUXMET_YY_<years>_v1.3_r1.csv
+  <NETWORK>_<site_id>_FLUXNET_BIFVARINFO_YY_<years>_v1.3_r1.csv
+  <NETWORK>_<site_id>_FLUXNET_ERA5_YY_<years>_v1.3_r1.csv
+  ...
+```
+
+Network prefixes observed: `AMF`, `CNF`, `EUF`, `FLX`, `ICOS`, `JPF`, `KOF`,
+`SAEON`, `TERN`. Note that an `FLX`-prefixed directory does **not** by
+itself indicate a FLUXNET2015 release file — these are shuttle-product
+directories that happen to use the `FLX` network code.
+
+The classic FLUXNET2015 release filename pattern —
+`FLX_<site_id>_FLUXNET2015_FULLSET_YY_<years>_<vers>.csv` — was searched
+for explicitly (`FULLSET`, `FLUXNET2015` tokens) and does not appear
+anywhere in `data/raw/`, `data/extracted/`, `data/external/`,
+`data/processed/`, or elsewhere in the repository.
+
+### Where FLUXNET2015 data is NOT found
+
+- `data/raw/` — empty
+- `data/extracted/` — 759 dirs, all shuttle-product naming, zero `FULLSET` matches
+- `data/external/` — only static rasters (aridity, CCI biomass/landcover, GEZ,
+  Köppen, TRENDY, WorldClim); no flux tower data; no FLUXNET2015-related zip
+  archives (only 5 unrelated raster zips: WorldClim, Köppen, GEZ, aridity, CCI LC)
+- `data/processed/` — only `.rds`/`.meta.json` derivatives of the shuttle
+  pipeline (`flux_data_*_yy.rds` etc.), not raw release files
+
+### What does exist (derived artifacts, not the release itself)
+
+Every other repository hit for "fluxnet2015" is a derived artifact built
+from the 212-site list, not the original release data:
+
+- `data/snapshots/sites_fluxnet2015*.csv`, `years_fluxnet2015.csv` —
+  site/year lookup tables
+- `data/snapshots/site_{aridity,koppen_beck2023,trendy,landcover,biomass}_*_fluxnet2015.csv/.meta.json`
+  — external-raster extractions joined to the FLUXNET2015 site list
+- `data/lists/FLUXNET2015.xlsx`, `FLUXNET2015_SiteLocations.xlsx` — site
+  metadata spreadsheets, no flux data
+- `review/figures/.../fig_*FLUXNET2015*.png` — comparison/coverage figures
+
+### Conclusion
+
+The original Pastorello et al. (2020) FLUXNET2015 release YY product is not
+present anywhere on this machine. Only shuttle-reprocessed v1.3_r1 data
+exists for these 212 sites. A download is needed to obtain the original
+release data for comparison/validation purposes. No analysis was performed
+beyond this inventory.
+
+---
+
 ## 2026-06-30 — Flux median meta.json companions added
 
 Closed the gap flagged in the same-day "Flux median figure audit" entry below:

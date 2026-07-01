@@ -274,6 +274,16 @@ fig_whittaker_worldclim <- function(
     ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim,
                  z = .data$median_nee)
   ) +
+    # Points drawn first (behind), hexagons second (in front) — site-level
+    # MAT/MAP values are visible only where they poke out from under the
+    # density summary, rather than obscuring it.
+    ggplot2::geom_point(
+      ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim),
+      size        = 1.4,
+      colour      = "grey30",
+      alpha       = 0.50,
+      inherit.aes = FALSE
+    ) +
     ggplot2::stat_summary_hex(
       fun   = function(x) if (all(is.na(x))) NA_real_
                           else median(x, na.rm = TRUE),
@@ -296,13 +306,6 @@ fig_whittaker_worldclim <- function(
         barheight      = style$colorbar_height,
         direction      = "horizontal"
       )
-    ) +
-    ggplot2::geom_point(
-      ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim),
-      size        = 1.4,
-      colour      = "grey30",
-      alpha       = 0.50,
-      inherit.aes = FALSE
     ) +
     ggplot2::annotate(
       "text",

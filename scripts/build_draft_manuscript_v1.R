@@ -68,7 +68,7 @@ legends <- list(
        fix_dims = NULL),
   list(src = "review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.legend.txt",
        dst = "fig_04_jaccard_trajectory_with_counts.legend.txt",
-       fix_dims = "DIMENSIONS:    3.5 x 5 inches, 300 dpi"),
+       fix_dims = "DIMENSIONS:    3.5 x 4 inches, 300 dpi"),
   list(src = "review/figures/representativeness/fig_rep001_current.legend.txt",
        dst = "fig_05_current_network_sampling_ratios.legend.txt",
        fix_dims = "DIMENSIONS:    7 x 5 inches, 300 dpi")

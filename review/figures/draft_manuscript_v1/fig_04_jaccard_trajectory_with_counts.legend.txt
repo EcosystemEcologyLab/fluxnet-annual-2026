@@ -60,4 +60,4 @@ DATA SOURCES: Same as fig_rep001.
 
 FIGURE SCRIPT: scripts/figure_representativeness_summary.R
 OUTPUT PATH:   review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.png
-DIMENSIONS:    3.5 x 5 inches, 300 dpi
+DIMENSIONS:    3.5 x 4 inches, 300 dpi

@@ -963,7 +963,14 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     ggplot2::labs(x = "Year", y = "Cumulative site-years") +
     fluxnet_theme(base_size = base_size) +
     ggplot2::theme(
-      legend.position  = "right",
+      # Legend inside the plot, top-left, just clear of the y-axis line —
+      # early-year cumulative values are near zero there, so it sits on
+      # open background rather than over the stacked area.
+      legend.position         = "inside",
+      legend.position.inside  = c(0.09, 0.97),
+      legend.justification    = c(0, 1),
+      legend.background       = ggplot2::element_blank(),
+      legend.key              = ggplot2::element_rect(fill = NA, colour = NA),
       legend.text      = ggplot2::element_text(size = max(as.integer(base_size) - 10L, 6L)),
       legend.title     = ggplot2::element_text(size = max(as.integer(base_size) - 8L, 7L)),
       legend.key.size  = grid::unit(14, "pt")

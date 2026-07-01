@@ -4,6 +4,36 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-01 — Swap draft-manuscript Figures 4 and 5
+
+Swapped Figures 4 and 5 in `review/figures/draft_manuscript_v1/` to align
+the figure numbering with the manuscript's section order: the six-panel
+current-network sampling-ratio figure now appears earlier in the paper (as
+Fig 4) than the Jaccard-similarity trajectory-with-counts figure (now Fig 5,
+was previously Fig 4).
+
+Renamed via a temporary intermediate name to avoid the two files clashing
+mid-swap. Confirmed all four affected files were renamed:
+
+- `fig_04_jaccard_trajectory_with_counts.png` → `fig_05_jaccard_trajectory_with_counts.png`
+- `fig_04_jaccard_trajectory_with_counts.legend.txt` → `fig_05_jaccard_trajectory_with_counts.legend.txt`
+- `fig_05_current_network_sampling_ratios.png` → `fig_04_current_network_sampling_ratios.png`
+- `fig_05_current_network_sampling_ratios.legend.txt` → `fig_04_current_network_sampling_ratios.legend.txt`
+
+Neither legend's body text contained an internal "Figure 4"/"Figure 5"
+cross-reference to fix — both legends refer to their source figure by its
+representativeness-script name (`fig_rep008`/`fig_rep001`), not by draft
+position, so no caption text needed editing.
+
+Updated `scripts/build_draft_manuscript_v1.R` (figure copy map and legend
+copy map) so the `fig_rep001_current` → `fig_04_*` and `fig_rep008_jaccard_*`
+→ `fig_05_*` mapping is now the source of truth; re-ran the script and
+confirmed it reproduces the swapped filenames exactly, so future re-runs of
+the full pipeline will regenerate the correct (swapped) numbering rather
+than reverting it.
+
+---
+
 ## 2026-07-01 — BADM land-management coverage investigation
 
 Investigated BADM ("Biological, Ancillary, Disturbance and Metadata")

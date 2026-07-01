@@ -33,10 +33,10 @@ figs <- list(
        dst = "fig_02_whittaker_current.png"),
   list(src = "review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png",
        dst = "fig_03_flux_comparison_combo_nep_et_h.png"),
-  list(src = "review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.png",
-       dst = "fig_04_jaccard_trajectory_with_counts.png"),
   list(src = "review/figures/representativeness/fig_rep001_current.png",
-       dst = "fig_05_current_network_sampling_ratios.png")
+       dst = "fig_04_current_network_sampling_ratios.png"),
+  list(src = "review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.png",
+       dst = "fig_05_jaccard_trajectory_with_counts.png")
 )
 
 for (f in figs) {
@@ -53,6 +53,9 @@ for (f in figs) {
 # source .legend.txt -> descriptive draft-manuscript legend filename
 # Fig 4/5 legends already existed (Rep008/Rep001) and are copied verbatim
 # except for a corrected DIMENSIONS line reflecting this session's resize.
+# Fig 4 and Fig 5 were swapped 2026-07-01 to match the manuscript section
+# order (sampling ratios now precedes the Jaccard trajectory) — see
+# SESSION_LOG.md 2026-07-01.
 legends <- list(
   list(src = "review/figures/candidates/fig_03_map_current.legend.txt",
        dst = "fig_01a_map_current_network.legend.txt",
@@ -66,12 +69,12 @@ legends <- list(
   list(src = "review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.legend.txt",
        dst = "fig_03_flux_comparison_combo_nep_et_h.legend.txt",
        fix_dims = NULL),
-  list(src = "review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.legend.txt",
-       dst = "fig_04_jaccard_trajectory_with_counts.legend.txt",
-       fix_dims = "DIMENSIONS:    3.5 x 4 inches, 300 dpi"),
   list(src = "review/figures/representativeness/fig_rep001_current.legend.txt",
-       dst = "fig_05_current_network_sampling_ratios.legend.txt",
-       fix_dims = "DIMENSIONS:    7 x 5 inches, 300 dpi")
+       dst = "fig_04_current_network_sampling_ratios.legend.txt",
+       fix_dims = "DIMENSIONS:    7 x 5 inches, 300 dpi"),
+  list(src = "review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.legend.txt",
+       dst = "fig_05_jaccard_trajectory_with_counts.legend.txt",
+       fix_dims = "DIMENSIONS:    3.5 x 4 inches, 300 dpi")
 )
 
 for (l in legends) {

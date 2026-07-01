@@ -4,6 +4,67 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Draft manuscript figure rebuild, stage 3: four style refinements
+
+Four targeted style changes to the source scripts behind Fig 1A, 1B, 2, and
+4 (from the stage-1/2 rebuild above), followed by `Rscript
+scripts/build_draft_manuscript_v1.R` to propagate all four into
+`review/figures/draft_manuscript_v1/`.
+
+### Fig 1A — smaller, semi-transparent points
+
+`R/figures/fig_maps.R::fig_map_point_network()`: added a `pt_alpha`
+parameter (default `0.9`, so the aridity-backdrop and other existing callers
+are unaffected). `scripts/generate_point_maps.R`: the white-backdrop call
+now passes `pt_size = 1.0` (was 2.0) and `pt_alpha = 0.65`. Re-rendered at
+3.5×3.5in@300dpi (confirmed 1050×1050 px) — density is now visibly darker
+where points overlap in Europe and the eastern/central US, as intended.
+
+### Fig 1B — legend moved inside the plot
+
+`R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp()`: changed
+`legend.position` from `"right"` to `"inside"`, with
+`legend.position.inside = c(0.09, 0.97)` and `legend.justification = c(0,
+1)` (top-left anchor, small horizontal offset off the y-axis line),
+`legend.background = element_blank()` and `legend.key = element_rect(fill =
+NA, colour = NA)` (no box/border of any kind). This corner is where the
+cumulative stacked area is lowest in early years, so the legend sits on open
+background rather than over data. Re-rendered at 3.5×3.5in@300dpi (confirmed
+1050×1050 px) — no overlap with the plotted area, no visible border.
+
+### Fig 2 — point/hexagon layer order
+
+`R/figures/fig_climate.R::fig_whittaker_worldclim()`: moved the
+`geom_point()` layer (per-site MAT/MAP markers) to immediately after
+`ggplot()` and before `stat_summary_hex()`, so points now render behind the
+hexbin density summary instead of on top of it. No styling changed on either
+layer (same size/colour/alpha). Re-rendered at 3.5×3.5in@300dpi (confirmed
+1050×1050 px).
+
+### Fig 4 — 20% shorter
+
+`scripts/figure_representativeness_summary.R`: the Rep008
+`make_traj_with_bars()` call now passes `height_in = 4` (was 5); width
+unchanged at 3.5in. Re-rendered at 3.5×4in@300dpi (confirmed 1050×1200 px).
+Inspected the rendered PNG at the new height: primary y-axis title
+("Weighted Jaccard"), secondary y-axis title ("n sites"), and the six-entry
+inside legend all remain clear of each other and of the data — **no font
+size adjustment was needed**.
+
+### draft_manuscript_v1/ refresh
+
+Re-ran `scripts/build_draft_manuscript_v1.R`; all four affected files
+(`fig_01a_map_current_network.png`, `fig_01b_cumulative_siteyears_igbp.png`,
+`fig_02_whittaker_current.png`, `fig_04_jaccard_trajectory_with_counts.png`)
+were copied through with their new pixel dimensions confirmed
+(1050×1050 ×3, and 1050×1200 for Fig 4). Updated the build script's
+`fix_dims` override for Fig 4's legend from `"3.5 x 5 inches"` to `"3.5 x 4
+inches"`, so the copied `fig_04_jaccard_trajectory_with_counts.legend.txt`
+now states the correct new size. Figs 3 and 5 were untouched by this round
+and were simply re-copied unchanged.
+
+---
+
 ## 2026-06-30 — Draft manuscript figure rebuild, stage 2: draft_manuscript_v1/ assembly
 
 Followed on directly from the stage-1 rebuild (below): assembled the six

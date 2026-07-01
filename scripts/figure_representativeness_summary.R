@@ -1049,7 +1049,7 @@ make_traj_with_bars(
   NET_XLABELS_BARE,
   NULL,   # draft-manuscript style: no figure title
   file.path(OUTD, "fig_rep008_jaccard_trajectory_with_counts.png"),
-  width_in = 3.5, height_in = 5
+  width_in = 3.5, height_in = 4
 )
 
 message("\n=== Fig 009: Jaccard trajectory (3 native-resolution axes, with count bars) ===")

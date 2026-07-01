@@ -1086,6 +1086,7 @@ fig_map_country_sites <- function(metadata,
 #' @param aridity_df Optional pre-loaded data frame from \code{.aridity_raster_df()}.
 #'   Pass to avoid re-reading the raster when generating both backdrop variants.
 #' @param pt_size Numeric. Point size (default \code{2.0}).
+#' @param pt_alpha Numeric. Point transparency (default \code{0.9}).
 #' @param title Character or \code{NULL}. Map title.
 #'
 #' @return A ggplot object.
@@ -1104,6 +1105,7 @@ fig_map_point_network <- function(metadata,
                                    backdrop   = c("white", "aridity"),
                                    aridity_df = NULL,
                                    pt_size    = 2.0,
+                                   pt_alpha   = 0.9,
                                    title      = NULL) {
   backdrop <- match.arg(backdrop)
   .disable_s2()
@@ -1139,7 +1141,7 @@ fig_map_point_network <- function(metadata,
       color  = "black",
       size   = pt_size,
       stroke = 0.4,
-      alpha  = 0.9
+      alpha  = pt_alpha
     ) +
     ggplot2::labs(
       subtitle = paste0("n = ", nrow(sites_clean), " sites")

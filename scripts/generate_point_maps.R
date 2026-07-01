@@ -73,7 +73,8 @@ message("\n── fig_03: current network (white) ──")
 p03_white <- fig_map_point_network(
   metadata   = shuttle_meta,
   backdrop   = "white",
-  pt_size    = 2.0,
+  pt_size    = 1.0,     # ~half the original 2.0 (draft-manuscript style)
+  pt_alpha   = 0.65,    # semi-transparent so overlap density is visible (Europe, N. America)
   title      = NULL
 ) +
   ggplot2::labs(subtitle = NULL)   # draft-manuscript style: no title/subtitle (n reported in legend)

@@ -1,0 +1,90 @@
+FIGURE LEGEND — fig_flux_comparison_combo_nep_et_h.png
+=========================================================
+
+TITLE: Comparison of per-IGBP-class median flux values between FLUXNET2015
+and the FLUXNET Shuttle network: net ecosystem production, evapotranspiration,
+and sensible heat flux
+
+DESCRIPTION:
+Three vertically-stacked panels (A, B, C — tagged directly on each panel, no
+external legend needed for the tag) comparing, for each IGBP vegetation
+class, the median flux value computed from the (comparison-only) FLUXNET2015
+release against the median flux value computed from the current FLUXNET
+Shuttle network. Each point is one IGBP class; the dashed diagonal is the 1:1
+line (equal medians in both datasets); horizontal and vertical error bars
+show ±1 standard deviation in the FLUXNET2015 and Shuttle medians
+respectively. Points are coloured by IGBP class (R/plot_constants.R shared
+palette) and additionally labelled directly with the class code via
+ggrepel — there is no separate colour-key legend. No plot titles are
+rendered on any panel; a single shared caption below panel C records the
+two class exclusions (see Exclusions, below).
+
+PANELS AND AXES:
+  A (top)    — Net Ecosystem Production (NEP)
+               x: FLUXNET2015 median NEP ± SD (gC m⁻² yr⁻¹)
+               y: FLUXNET Shuttle median NEP ± SD (gC m⁻² yr⁻¹)
+  B (middle) — Evapotranspiration (ET)
+               x: FLUXNET2015 median ET ± SD (mm yr⁻¹)
+               y: FLUXNET Shuttle median ET ± SD (mm yr⁻¹)
+  C (bottom) — Sensible heat flux (H)
+               x: FLUXNET2015 median H ± SD (W m⁻²)
+               y: FLUXNET Shuttle median H ± SD (W m⁻²)
+Each panel has an independently-computed axis range (equal x/y limits with
+10% padding, since NEP/ET/H have very different natural scales) and
+four-sided black inward tick marks (duplicated secondary axis, no labels),
+solid black panel border, and no gridlines.
+
+COLOUR CODING:
+scale_fill_igbp() — the shared R/plot_constants.R::IGBP_colours palette,
+applied per point (one point per IGBP class per panel).
+
+DATA SOURCE AND IMPORTANT DATA-USE NOTE:
+Reads the pre-computed per-class comparison table
+data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv directly (rather
+than recomputing per-class statistics a second time), which is itself built
+from two per-site median tables: data/snapshots/site_flux_medians_shuttle.csv
+(current FLUXNET Shuttle snapshot,
+fluxnet_shuttle_snapshot_20260624T095651.csv, 767 sites — primary data) and
+data/snapshots/site_flux_medians_fluxnet2015.csv (FLUXNET2015 release).
+FLUXNET2015 is used here strictly as a **comparison/validation dataset**,
+never as primary data for the Annual Paper, per CLAUDE.md §1; every axis
+label in this figure explicitly names which dataset ("FLUXNET2015" vs
+"FLUXNET Shuttle") each value comes from, satisfying the project's labelling
+requirement for non-Shuttle data.
+
+CLASSIFICATION SCHEME AND EXCLUSIONS:
+Class statistics are computed only over the 12 STANDARD_IGBP labels (EBF,
+MF, DBF, ENF, CSH, OSH, WSA, SAV, GRA, WET, CRO, CVM); sites labelled BSV,
+DNF, or SNO are excluded by construction and never contribute to any class
+shown. Of the 12 standard classes, only 10 are plotted:
+  - CVM excluded: absent from the FLUXNET2015 site release (no
+    FLUXNET2015-side coordinate to compare against)
+  - CSH excluded: n = 2 sites in FLUXNET2015, below the project's n ≥ 5
+    per-class reliability threshold
+Both exclusions are stated in the figure's own caption as well as here.
+
+STATISTICAL DEFINITIONS:
+Median = per-class median of per-site median flux values (not a
+site-year-weighted or flux-weighted mean). Standard deviation = SD of
+per-site median values *within* an IGBP class (cross-site spread across
+sites in that class), not the within-site year-to-year variability, and not
+read from any literal "std_dev" column in the underlying distribution
+files. QC threshold: both per-site median tables use QC_THRESH = 0.80 for
+inclusion of a site-year — a deliberate, documented override of this
+project's pipeline-wide default (QC_THRESHOLD_YY = 0.50 in
+R/pipeline_config.R), applied identically to both the FLUXNET2015 and
+Shuttle medians so the comparison remains apples-to-apples.
+
+NETWORK AND SITE COUNTS:
+FLUXNET Shuttle: current snapshot, 767 sites (before per-class QC/n≥5
+filtering — the number of sites actually contributing to each plotted point
+varies by class and is not repeated here; see the underlying
+site_flux_medians_shuttle.csv for per-class n). FLUXNET2015: full release
+site list (comparison dataset only).
+
+REPRODUCIBILITY:
+Script: scripts/figure_flux_comparison_combo.R
+Upstream tables built by: scripts/assess_flux_data_by_igbp_shuttle.R,
+  scripts/assess_flux_data_by_igbp_fluxnet2015.R
+Output: review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png
+DIMENSIONS: 3.5 × 9.5 inches, 300 dpi, white background

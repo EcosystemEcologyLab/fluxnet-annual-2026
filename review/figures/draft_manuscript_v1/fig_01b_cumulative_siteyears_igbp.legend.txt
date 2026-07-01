@@ -1,0 +1,80 @@
+FIGURE LEGEND — fig_dur11_CumulativeSiteYears_IGBP.png
+========================================================
+
+TITLE: Cumulative FLUXNET site-years by IGBP vegetation class, with
+historical dataset trajectories
+
+DESCRIPTION:
+Stacked-area chart showing the cumulative number of site-years of observed
+data contributed by the FLUXNET Shuttle network over time (1991–2024),
+partitioned by IGBP vegetation class. Three additional lines trace the
+cumulative site-years reached by three prior static FLUXNET data releases
+(Marconi 2000, La Thuile 2007, FLUXNET2015) as historical reference
+trajectories, each directly labelled at its final (peak) year rather than
+via a legend. Vertical dashed grey lines mark the three historical release
+years (2000, 2007, 2015). No plot title is rendered.
+
+AXES:
+  X — Year (calendar year, 1991–2024; breaks every 5 years)
+  Y — Cumulative site-years (running total of site-years of observed valid
+      data, summed across all sites and, for the Shuttle stack, all IGBP
+      classes)
+
+Four-sided black tick marks (inward) are drawn on all axes via a duplicated
+secondary axis with no labels; only the primary (bottom/left) ticks carry
+text.
+
+COLOUR CODING:
+Shuttle background stack coloured by IGBP class using the fixed
+R/plot_constants.R::IGBP_colours palette (15 classes: ENF, EBF, DNF, DBF, MF,
+WSA, SAV, GRA, SHR, OSH, CRO, WET, URB, NV, CSH — forests stacked at the
+bottom in dark green, barren/other classes at the top in grey); only classes
+actually present in the current network appear in the legend key. The three
+historical dataset lines use a separate qualitative palette (Marconi green
+#2ECC71, La Thuile red #E74C3C, FLUXNET2015 blue #3498DB) and are labelled
+directly on the plot rather than via the IGBP legend key.
+
+REFERENCE LINES:
+Vertical dashed grey lines (linetype "dashed", colour grey55) at x = 2000,
+2007, 2015 — the release years of the three historical comparison datasets.
+
+NETWORK AND SITE COUNT:
+FLUXNET Shuttle network, current development-mode snapshot: n = 767 sites,
+reaching roughly 5,000–5,500 cumulative observed site-years by the most
+recent year in the presence table. Marconi (n = 35), La Thuile (n = 252),
+and FLUXNET2015 (n = 212) site-year trajectories are shown strictly as
+non-Shuttle comparison/illustration data (CLAUDE.md §1) — they are not used
+as primary data anywhere in this project.
+
+DATA SOURCES:
+  - Shuttle site list and IGBP class: current snapshot
+    data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv (767 sites)
+  - Shuttle per-year data presence (observed valid site-years, not merely
+    site deployment span): data/snapshots/site_year_data_presence.csv
+    (has_data flag per site × year)
+  - Historical site lists and first/last year lookups (comparison-only,
+    non-Shuttle): data/snapshots/sites_marconi_clean.csv +
+    years_marconi.csv; sites_la_thuile_clean.csv + years_la_thuile.csv;
+    sites_fluxnet2015_clean.csv + years_fluxnet2015.csv
+
+CLASSIFICATION SCHEME:
+IGBP land-cover classification as reported in the Shuttle snapshot's `igbp`
+column. Sites with missing first_year, missing igbp, or an igbp code outside
+the standard 15-class set are dropped from the Shuttle stack (but not from
+the historical comparison lines, which use only first_year/last_year).
+
+EXCLUSION NOTES:
+Historical dataset "active year" counts are computed by expanding each
+site's [first_year, last_year] span to one row per active year and summing
+per calendar year — this is a span-based estimate for the three historical
+datasets, not an observed-data-presence count (unlike the Shuttle series,
+which uses the presence table's has_data flag). This distinction means the
+Shuttle and historical series are not perfectly like-for-like, and is a
+known caveat carried over from the underlying figure function.
+
+REPRODUCIBILITY:
+Function: fig_cumulative_siteyears_igbp() in R/figures/fig_network_growth.R
+Script:   scripts/generate_duration_histograms.R (figure "Dur11" in that
+          script's numbered sequence of 11 duration/growth figures)
+Output:   review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png
+DIMENSIONS: 3.5 × 3.5 inches, 300 dpi, white background

@@ -4,6 +4,75 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Draft manuscript figure rebuild, stage 2: draft_manuscript_v1/ assembly
+
+Followed on directly from the stage-1 rebuild (below): assembled the six
+rebuilt candidate figures into a new `review/figures/draft_manuscript_v1/`
+directory under descriptive filenames, with a matching `.legend.txt` for
+each. Source figures in their original directories
+(`review/figures/candidates/`, `network/`, `whittaker/`,
+`representativeness/`, `flux_medians/`) were not modified by this step —
+confirmed via `git status` (no `M` entries in those directories other than a
+pre-existing, unrelated modification to `fig_environmental_response_era5.png`
+from earlier in the day, left untouched).
+
+### Fig 1B copy-method decision
+
+The task specification offered a choice: copy `fig_dur11_...png` directly
+into `draft_manuscript_v1/`, or add a script that produces the file at the
+draft path directly. Chose neither literally — instead wrote
+**`scripts/build_draft_manuscript_v1.R`**, a small committed, reusable copy
+script that performs the regenerate-then-copy step explicitly for all six
+figures (not just Fig 1B), reading from each figure's existing canonical
+pipeline-script output location and writing the renamed copy plus its
+legend into `draft_manuscript_v1/`. This replaces the "dated one-off shell
+command" pattern the 2026-06-30 audit (below) flagged as the missing-source
+gap for the old `fig_02b_cumulative_siteyears_igbp.png` — the two-step
+process is now documented in one place instead of implicit in shell history.
+Re-running this script after any future figure rebuild reproduces
+`draft_manuscript_v1/` deterministically; it does not call
+`check_pipeline_config()` since it touches no flux data or credentials, only
+filesystem copies (and stops loudly if a source figure is missing).
+
+### Legends
+
+- **Fig 4 and Fig 5** already had legend files (`fig_rep008_..._legend.txt`,
+  `fig_rep001_..._legend.txt`, written in an earlier session). Copied
+  verbatim into `draft_manuscript_v1/` under the new descriptive names,
+  **except** the `DIMENSIONS:` line, which the build script rewrites to
+  match this session's resize (3.5 × 5in and 7 × 5in respectively, both at
+  300 dpi) — the original lines still said the pre-rebuild 6×4in/9×7in @
+  200dpi, which would have been factually wrong in a manuscript-facing
+  legend. No other content in those two legends was altered.
+- **Fig 1A, 1B, 2, and 3** had no legend files before this session. Wrote
+  new detailed prose legends (`review/figures/candidates/fig_03_map_current
+  .legend.txt`, `review/figures/network/fig_dur11_CumulativeSiteYears_IGBP
+  .legend.txt`, `review/figures/candidates/fig_05_whittaker_current
+  .legend.txt`, `review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h
+  .legend.txt`) covering what each figure shows, axes/units, data source,
+  classification/binning scheme, network and site count, colour coding,
+  reference lines, exclusion notes, and the source script — each stored
+  alongside its source figure (matching the existing Fig 4/5 convention)
+  and copied into `draft_manuscript_v1/` by the same build script.
+  Fig 3's legend explicitly documents the FLUXNET2015 comparison-data usage
+  and the CVM/CSH exclusions per CLAUDE.md §1's data-source labelling
+  requirement.
+
+### Final contents of `review/figures/draft_manuscript_v1/`
+
+| File | Dimensions (px @ 300 dpi) | Legend |
+|---|---|---|
+| `fig_01a_map_current_network.png` | 1050×1050 (3.5×3.5in) | ✓ |
+| `fig_01b_cumulative_siteyears_igbp.png` | 1050×1050 (3.5×3.5in) | ✓ |
+| `fig_02_whittaker_current.png` | 1050×1050 (3.5×3.5in) | ✓ |
+| `fig_03_flux_comparison_combo_nep_et_h.png` | 1050×2850 (3.5×9.5in) | ✓ |
+| `fig_04_jaccard_trajectory_with_counts.png` | 1050×1500 (3.5×5in) | ✓ |
+| `fig_05_current_network_sampling_ratios.png` | 2100×1500 (7×5in) | ✓ |
+
+All six figures and six legends confirmed present.
+
+---
+
 ## 2026-06-30 — Draft manuscript figure rebuild, stage 1: source figures
 
 Rebuilt the five source figures identified in the same-day figure audit

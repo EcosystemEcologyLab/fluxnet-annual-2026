@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-07-01T17:01:41Z",
+  "pipeline_version": "cfac10c",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/extracted/*/*_BIF_*.csv"
+  ],
+  "notes": "BADM source: BIF files shipped in FLUXNET Shuttle download packages, data/extracted/*/*_BIF_*.csv (read directly, not the cached data/processed/badm.rds). Variable groups searched: DM, HARV, HARV_M, TILL, TILL_M, FERT, FERT_M, GRZ, GRZ_M, IRR, IRR_M, BURN, THIN, LU, DRA - NONE of these standard AmeriFlux BADM management templates were found anywhere in the network's BIF files. Coverage definition: 'any record present in this category' means EITHER (a) the site's single coarse DOM_DIST_MGMT categorical tag matches (Grazing -> mgmt_grazing, Fire -> mgmt_burning, Forestry -> mgmt_forestry_unspecified when no harvest/ thinning keyword confirms which), OR (b) a case-insensitive keyword match in the free-text SITE_DESC field (harvest, till/plow/disk, fertili[sz]e, graz/livestock/cattle/sheep/pasture, irrigat, thinn, burn/fire, drain/water table/rewet/ditch). mgmt_other = DOM_DIST_MGMT tag of Agriculture or Land cover change with no specific subtype resolved by text mining. Sites with no extracted BIF file (has_badm_record = FALSE) have NA (unknown), not FALSE, for all management flags. wtd_group_present flags GRP_WTD (water-table-depth measurement) presence; this is an ancillary environmental-monitoring signal, NOT itself evidence of active drainage/ water-table management, and is deliberately excluded from any_management. Snapshot date/source: fluxnet_shuttle_snapshot_20260624T095651.csv"
+}

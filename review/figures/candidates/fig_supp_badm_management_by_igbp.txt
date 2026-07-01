@@ -1,0 +1,7 @@
+Supplementary Figure — BADM Management-Record Counts by IGBP Class
+
+Heat map of the number of FLUXNET Shuttle sites (of 759 sites with an extracted BIF/BADM file) carrying a management-relevant record in each of 10 categories, by IGBP land-cover class. Cell values are site counts; IGBP x-axis labels are coloured with the network's standard IGBP palette (R/plot_constants.R).
+
+Categories combine two BADM sources: the coarse structured DOM_DIST_MGMT (Dominant Disturbance/Management) categorical tag (used for Grazing, Burning, and Forestry-unspecified) and case-insensitive keyword mining of the free-text SITE_DESC field (used for Harvest, Tillage, Fertilization, Irrigation, Thinning, Drainage/water table, and to refine Grazing/Burning). 'Other/unclassified' = a DOM_DIST_MGMT tag of Agriculture or Land cover change with no specific subtype resolved by text mining. See review/figures/methods_badm_management.md for full method and limitations — the network's BIF files contain NO standard AmeriFlux event-based management BADM groups (HARV_M, TILL_M, FERT_M, GRZ_M, IRR, BURN, THIN); this figure is a best-effort proxy, not a count of discrete management events.
+
+Data source: FLUXNET Shuttle download packages, data/extracted/*/*_BIF_*.csv. Snapshot: fluxnet_shuttle_snapshot_20260624T095651.csv.

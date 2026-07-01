@@ -1,0 +1,232 @@
+dimension,group,management_type,n_sites_with_badm,n_sites_positive,pct
+igbp,BSV,any_management,7,0,0
+igbp,BSV,mgmt_burning,7,0,0
+igbp,BSV,mgmt_drainage_wtd,7,0,0
+igbp,BSV,mgmt_fertilization,7,0,0
+igbp,BSV,mgmt_forestry_unspecified,7,0,0
+igbp,BSV,mgmt_grazing,7,0,0
+igbp,BSV,mgmt_harvest,7,0,0
+igbp,BSV,mgmt_irrigation,7,0,0
+igbp,BSV,mgmt_other,7,0,0
+igbp,BSV,mgmt_thinning,7,0,0
+igbp,BSV,mgmt_tillage,7,0,0
+igbp,CRO,any_management,137,94,68.6
+igbp,CRO,mgmt_burning,137,0,0
+igbp,CRO,mgmt_drainage_wtd,137,10,7.3
+igbp,CRO,mgmt_fertilization,137,10,7.3
+igbp,CRO,mgmt_forestry_unspecified,137,0,0
+igbp,CRO,mgmt_grazing,137,6,4.4
+igbp,CRO,mgmt_harvest,137,23,16.8
+igbp,CRO,mgmt_irrigation,137,25,18.2
+igbp,CRO,mgmt_other,137,29,21.2
+igbp,CRO,mgmt_thinning,137,0,0
+igbp,CRO,mgmt_tillage,137,29,21.2
+igbp,CSH,any_management,12,4,33.3
+igbp,CSH,mgmt_burning,12,3,25
+igbp,CSH,mgmt_drainage_wtd,12,0,0
+igbp,CSH,mgmt_fertilization,12,0,0
+igbp,CSH,mgmt_forestry_unspecified,12,0,0
+igbp,CSH,mgmt_grazing,12,0,0
+igbp,CSH,mgmt_harvest,12,0,0
+igbp,CSH,mgmt_irrigation,12,0,0
+igbp,CSH,mgmt_other,12,1,8.3
+igbp,CSH,mgmt_thinning,12,0,0
+igbp,CSH,mgmt_tillage,12,1,8.3
+igbp,CVM,any_management,9,7,77.8
+igbp,CVM,mgmt_burning,9,1,11.1
+igbp,CVM,mgmt_drainage_wtd,9,3,33.3
+igbp,CVM,mgmt_fertilization,9,1,11.1
+igbp,CVM,mgmt_forestry_unspecified,9,0,0
+igbp,CVM,mgmt_grazing,9,2,22.2
+igbp,CVM,mgmt_harvest,9,0,0
+igbp,CVM,mgmt_irrigation,9,0,0
+igbp,CVM,mgmt_other,9,2,22.2
+igbp,CVM,mgmt_thinning,9,0,0
+igbp,CVM,mgmt_tillage,9,1,11.1
+igbp,DBF,any_management,77,24,31.2
+igbp,DBF,mgmt_burning,77,6,7.8
+igbp,DBF,mgmt_drainage_wtd,77,1,1.3
+igbp,DBF,mgmt_fertilization,77,1,1.3
+igbp,DBF,mgmt_forestry_unspecified,77,9,11.7
+igbp,DBF,mgmt_grazing,77,2,2.6
+igbp,DBF,mgmt_harvest,77,1,1.3
+igbp,DBF,mgmt_irrigation,77,0,0
+igbp,DBF,mgmt_other,77,5,6.5
+igbp,DBF,mgmt_thinning,77,1,1.3
+igbp,DBF,mgmt_tillage,77,2,2.6
+igbp,DNF,any_management,13,3,23.1
+igbp,DNF,mgmt_burning,13,2,15.4
+igbp,DNF,mgmt_drainage_wtd,13,0,0
+igbp,DNF,mgmt_fertilization,13,0,0
+igbp,DNF,mgmt_forestry_unspecified,13,0,0
+igbp,DNF,mgmt_grazing,13,2,15.4
+igbp,DNF,mgmt_harvest,13,0,0
+igbp,DNF,mgmt_irrigation,13,0,0
+igbp,DNF,mgmt_other,13,0,0
+igbp,DNF,mgmt_thinning,13,0,0
+igbp,DNF,mgmt_tillage,13,0,0
+igbp,EBF,any_management,42,6,14.3
+igbp,EBF,mgmt_burning,42,0,0
+igbp,EBF,mgmt_drainage_wtd,42,1,2.4
+igbp,EBF,mgmt_fertilization,42,3,7.1
+igbp,EBF,mgmt_forestry_unspecified,42,1,2.4
+igbp,EBF,mgmt_grazing,42,0,0
+igbp,EBF,mgmt_harvest,42,1,2.4
+igbp,EBF,mgmt_irrigation,42,0,0
+igbp,EBF,mgmt_other,42,1,2.4
+igbp,EBF,mgmt_thinning,42,0,0
+igbp,EBF,mgmt_tillage,42,1,2.4
+igbp,ENF,any_management,112,59,52.7
+igbp,ENF,mgmt_burning,112,31,27.7
+igbp,ENF,mgmt_drainage_wtd,112,7,6.2
+igbp,ENF,mgmt_fertilization,112,1,0.9
+igbp,ENF,mgmt_forestry_unspecified,112,18,16.1
+igbp,ENF,mgmt_grazing,112,6,5.4
+igbp,ENF,mgmt_harvest,112,6,5.4
+igbp,ENF,mgmt_irrigation,112,1,0.9
+igbp,ENF,mgmt_other,112,1,0.9
+igbp,ENF,mgmt_thinning,112,3,2.7
+igbp,ENF,mgmt_tillage,112,6,5.4
+igbp,GRA,any_management,140,63,45
+igbp,GRA,mgmt_burning,140,18,12.9
+igbp,GRA,mgmt_drainage_wtd,140,6,4.3
+igbp,GRA,mgmt_fertilization,140,14,10
+igbp,GRA,mgmt_forestry_unspecified,140,0,0
+igbp,GRA,mgmt_grazing,140,45,32.1
+igbp,GRA,mgmt_harvest,140,5,3.6
+igbp,GRA,mgmt_irrigation,140,1,0.7
+igbp,GRA,mgmt_other,140,2,1.4
+igbp,GRA,mgmt_thinning,140,0,0
+igbp,GRA,mgmt_tillage,140,3,2.1
+igbp,MF,any_management,24,9,37.5
+igbp,MF,mgmt_burning,24,3,12.5
+igbp,MF,mgmt_drainage_wtd,24,1,4.2
+igbp,MF,mgmt_fertilization,24,0,0
+igbp,MF,mgmt_forestry_unspecified,24,2,8.3
+igbp,MF,mgmt_grazing,24,0,0
+igbp,MF,mgmt_harvest,24,2,8.3
+igbp,MF,mgmt_irrigation,24,0,0
+igbp,MF,mgmt_other,24,1,4.2
+igbp,MF,mgmt_thinning,24,1,4.2
+igbp,MF,mgmt_tillage,24,1,4.2
+igbp,OSH,any_management,39,20,51.3
+igbp,OSH,mgmt_burning,39,8,20.5
+igbp,OSH,mgmt_drainage_wtd,39,5,12.8
+igbp,OSH,mgmt_fertilization,39,0,0
+igbp,OSH,mgmt_forestry_unspecified,39,0,0
+igbp,OSH,mgmt_grazing,39,7,17.9
+igbp,OSH,mgmt_harvest,39,2,5.1
+igbp,OSH,mgmt_irrigation,39,0,0
+igbp,OSH,mgmt_other,39,0,0
+igbp,OSH,mgmt_thinning,39,0,0
+igbp,OSH,mgmt_tillage,39,2,5.1
+igbp,SAV,any_management,13,4,30.8
+igbp,SAV,mgmt_burning,13,0,0
+igbp,SAV,mgmt_drainage_wtd,13,0,0
+igbp,SAV,mgmt_fertilization,13,1,7.7
+igbp,SAV,mgmt_forestry_unspecified,13,0,0
+igbp,SAV,mgmt_grazing,13,3,23.1
+igbp,SAV,mgmt_harvest,13,1,7.7
+igbp,SAV,mgmt_irrigation,13,0,0
+igbp,SAV,mgmt_other,13,0,0
+igbp,SAV,mgmt_thinning,13,0,0
+igbp,SAV,mgmt_tillage,13,0,0
+igbp,SNO,any_management,2,0,0
+igbp,SNO,mgmt_burning,2,0,0
+igbp,SNO,mgmt_drainage_wtd,2,0,0
+igbp,SNO,mgmt_fertilization,2,0,0
+igbp,SNO,mgmt_forestry_unspecified,2,0,0
+igbp,SNO,mgmt_grazing,2,0,0
+igbp,SNO,mgmt_harvest,2,0,0
+igbp,SNO,mgmt_irrigation,2,0,0
+igbp,SNO,mgmt_other,2,0,0
+igbp,SNO,mgmt_thinning,2,0,0
+igbp,SNO,mgmt_tillage,2,0,0
+igbp,WET,any_management,114,37,32.5
+igbp,WET,mgmt_burning,114,4,3.5
+igbp,WET,mgmt_drainage_wtd,114,19,16.7
+igbp,WET,mgmt_fertilization,114,0,0
+igbp,WET,mgmt_forestry_unspecified,114,0,0
+igbp,WET,mgmt_grazing,114,8,7
+igbp,WET,mgmt_harvest,114,2,1.8
+igbp,WET,mgmt_irrigation,114,0,0
+igbp,WET,mgmt_other,114,8,7
+igbp,WET,mgmt_thinning,114,0,0
+igbp,WET,mgmt_tillage,114,6,5.3
+igbp,WSA,any_management,18,6,33.3
+igbp,WSA,mgmt_burning,18,1,5.6
+igbp,WSA,mgmt_drainage_wtd,18,0,0
+igbp,WSA,mgmt_fertilization,18,0,0
+igbp,WSA,mgmt_forestry_unspecified,18,1,5.6
+igbp,WSA,mgmt_grazing,18,5,27.8
+igbp,WSA,mgmt_harvest,18,0,0
+igbp,WSA,mgmt_irrigation,18,0,0
+igbp,WSA,mgmt_other,18,1,5.6
+igbp,WSA,mgmt_thinning,18,0,0
+igbp,WSA,mgmt_tillage,18,0,0
+region,Africa,any_management,23,10,43.5
+region,Africa,mgmt_burning,23,1,4.3
+region,Africa,mgmt_drainage_wtd,23,2,8.7
+region,Africa,mgmt_fertilization,23,0,0
+region,Africa,mgmt_forestry_unspecified,23,0,0
+region,Africa,mgmt_grazing,23,7,30.4
+region,Africa,mgmt_harvest,23,1,4.3
+region,Africa,mgmt_irrigation,23,0,0
+region,Africa,mgmt_other,23,0,0
+region,Africa,mgmt_thinning,23,0,0
+region,Africa,mgmt_tillage,23,3,13
+region,Asia,any_management,104,17,16.3
+region,Asia,mgmt_burning,104,6,5.8
+region,Asia,mgmt_drainage_wtd,104,4,3.8
+region,Asia,mgmt_fertilization,104,3,2.9
+region,Asia,mgmt_forestry_unspecified,104,0,0
+region,Asia,mgmt_grazing,104,5,4.8
+region,Asia,mgmt_harvest,104,2,1.9
+region,Asia,mgmt_irrigation,104,3,2.9
+region,Asia,mgmt_other,104,0,0
+region,Asia,mgmt_thinning,104,0,0
+region,Asia,mgmt_tillage,104,2,1.9
+region,Australia,any_management,53,1,1.9
+region,Australia,mgmt_burning,53,0,0
+region,Australia,mgmt_drainage_wtd,53,0,0
+region,Australia,mgmt_fertilization,53,1,1.9
+region,Australia,mgmt_forestry_unspecified,53,0,0
+region,Australia,mgmt_grazing,53,0,0
+region,Australia,mgmt_harvest,53,0,0
+region,Australia,mgmt_irrigation,53,0,0
+region,Australia,mgmt_other,53,0,0
+region,Australia,mgmt_thinning,53,0,0
+region,Australia,mgmt_tillage,53,0,0
+region,Europe,any_management,196,58,29.6
+region,Europe,mgmt_burning,196,8,4.1
+region,Europe,mgmt_drainage_wtd,196,19,9.7
+region,Europe,mgmt_fertilization,196,14,7.1
+region,Europe,mgmt_forestry_unspecified,196,0,0
+region,Europe,mgmt_grazing,196,14,7.1
+region,Europe,mgmt_harvest,196,12,6.1
+region,Europe,mgmt_irrigation,196,1,0.5
+region,Europe,mgmt_other,196,0,0
+region,Europe,mgmt_thinning,196,1,0.5
+region,Europe,mgmt_tillage,196,15,7.7
+region,N. America,any_management,354,235,66.4
+region,N. America,mgmt_burning,354,60,16.9
+region,N. America,mgmt_drainage_wtd,354,27,7.6
+region,N. America,mgmt_fertilization,354,12,3.4
+region,N. America,mgmt_forestry_unspecified,354,30,8.5
+region,N. America,mgmt_grazing,354,52,14.7
+region,N. America,mgmt_harvest,354,26,7.3
+region,N. America,mgmt_irrigation,354,22,6.2
+region,N. America,mgmt_other,354,49,13.8
+region,N. America,mgmt_thinning,354,4,1.1
+region,N. America,mgmt_tillage,354,31,8.8
+region,S. America,any_management,29,15,51.7
+region,S. America,mgmt_burning,29,2,6.9
+region,S. America,mgmt_drainage_wtd,29,1,3.4
+region,S. America,mgmt_fertilization,29,1,3.4
+region,S. America,mgmt_forestry_unspecified,29,1,3.4
+region,S. America,mgmt_grazing,29,8,27.6
+region,S. America,mgmt_harvest,29,2,6.9
+region,S. America,mgmt_irrigation,29,1,3.4
+region,S. America,mgmt_other,29,2,6.9
+region,S. America,mgmt_thinning,29,0,0
+region,S. America,mgmt_tillage,29,1,3.4

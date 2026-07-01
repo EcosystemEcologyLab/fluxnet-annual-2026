@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-07-01T17:01:41Z",
+  "pipeline_version": "cfac10c",
+  "input_sources": [
+    "data/snapshots/badm_management_coverage.csv"
+  ],
+  "notes": "Cross-tabulation of badm_management_coverage.csv by IGBP class and by region (6-way regional bucket derived from ISO2 site-ID country-code prefix via countrycode::countrycode(..., 'un.regionsub.name'), NOT from network/hub membership). n_sites_with_badm is the denominator (sites with an extracted BIF file in this IGBP/region group); n_sites_positive / pct are computed over that denominator only."
+}

@@ -4,6 +4,123 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-01 — BADM land-management coverage investigation
+
+Investigated BADM ("Biological, Ancillary, Disturbance and Metadata")
+land-management documentation across the FLUXNET Shuttle network, to support
+discussion-section prose on how network expansion into managed lands
+(crops, forests, grasslands, wetlands) aligns with GHG-monitoring and Paris
+Agreement carbon-accounting priorities. Script: `scripts/investigate_badm_management.R`.
+Full method and limitations: `review/figures/methods_badm_management.md`.
+
+### Location of BADM data
+
+BADM ships inside every site's FLUXNET Shuttle download package as a BIF
+file (`data/extracted/<SITE_DIR>/*_BIF_*.csv`), plus a pre-concatenated
+cache at `data/processed/badm.rds`. 759 of 767 shuttle-network sites (99.0%)
+have an extracted BIF file; the 8 not-yet-extracted sites are logged to
+`outputs/unknown_log.csv` as unknown (not "unmanaged").
+
+### Major surprise: no event-based management BADM exists in this network
+
+A full-text search of all 759 BIF files for the standard AmeriFlux
+event-based management variable-group tokens (`DM`, `HARV`, `HARV_M`,
+`TILL`, `TILL_M`, `FERT`, `FERT_M`, `GRZ`, `GRZ_M`, `IRR`, `IRR_M`, `BURN`,
+`THIN`, `LU`, `DRA`) returned **zero matches, network-wide**. The FLUXNET
+Shuttle's BIF export is a reduced ONEFlux-processing-time metadata set, not
+the full AmeriFlux BADM template — it never carries dated, quantified
+management events. The only structured management signal available is a
+single coarse categorical tag, `DOM_DIST_MGMT` (values: Agriculture, Fire,
+Forestry, Grazing, Hydrologic event, Drought, Land cover change, Storm or
+wind, Temperature extreme, Pests and disease, Undisturbed), present at a
+minority of sites. To recover category-level detail (harvest vs. tillage
+vs. fertilization vs. irrigation, etc.) the script additionally text-mines
+the free-text `SITE_DESC` field for management keywords — a heuristic,
+not a controlled vocabulary; see limitations below.
+
+### Coverage rates
+
+- **336 / 759 BADM sites (44.3%)** carry at least one management-relevant
+  record (structured `DOM_DIST_MGMT` tag or `SITE_DESC` keyword match).
+- By category (of 759): grazing 86 (11.3%), burning 77 (10.1%),
+  drainage/water-table 53 (7.0%), tillage 52 (6.9%), other/unclassified 51
+  (6.7%), harvest 43 (5.7%), fertilization 31 (4.1%), forestry-unspecified
+  31 (4.1%), irrigation 27 (3.6%), thinning 5 (0.7%, the weakest category
+  by far).
+
+### IGBP class patterns
+
+Best documented: `CVM` cropland/vegetation mosaic (78%, n=9, small sample),
+**croplands `CRO`** (68.6%, n=137), evergreen needleleaf forest `ENF`
+(52.7%, n=112), open shrubland `OSH` (51.3%, n=39). Grasslands `GRA` sit at
+45.0% (n=140) and wetlands `WET` at 32.5% (n=114) — wetland "management"
+documentation is almost entirely the drainage/water-table text-mining
+category (19/114), with no dedicated wetland-management BADM group.
+Least documented: **evergreen broadleaf forest `EBF`** (14.3%, n=42) and
+`DNF` (23.1%, n=13) — tropical/boreal needleleaf forests are the weak spot
+for forest-management documentation, not temperate forests. Croplands are
+clearly better documented than grasslands, as expected; forests are
+documented for generic "Forestry" management (31 sites) but almost never
+for thinning specifically (5 sites network-wide, mostly `ENF`).
+
+### Regional patterns
+
+`any_management` by region: N. America 66.4% (n=354), S. America 51.7%
+(n=29), Africa 43.5% (n=23), Europe 29.6% (n=196), Asia 16.3% (n=104),
+**Australia 1.9% (n=53)** — by far the weakest, and a striking outlier
+worth checking against TERN's BADM submission conventions before citing in
+the paper: it more plausibly reflects that TERN's BIF exports rarely
+populate `SITE_DESC`/`DOM_DIST_MGMT` at all, rather than Australian towers
+sitting in more pristine landscapes.
+
+### Illustrative examples (5 sites, full detail in methods doc)
+
+- **US-Ne1** (irrigated cropland, Mead NE, `CRO`) — fertilization + irrigation
+  + tillage; one of the classic Nebraska Ne1/Ne2/Ne3 irrigation-gradient trio.
+- **US-Bar** (managed temperate forest, Bartlett Experimental Forest NH,
+  `DBF`) — `DOM_DIST_MGMT: Forestry`, USDA Forest Service managed since 1931.
+- **FR-Mej** (grazed grassland + maize rotation, Brittany, `GRA`) — grazing
+  recovered only via `SITE_DESC` text mining, no structured tag present.
+- **DK-Skj** (rewetted wetland meadow, Jutland, `WET`) — drained for
+  agriculture in the 1960s, restored 2002; textbook drainage/water-table
+  management narrative, captured only by free-text mining.
+- **US-ARb** (prescribed-burn tallgrass prairie, ARM SGP OK, `GRA`) — paired
+  with unburned control US-ARc; burn date and grazing recovered entirely
+  from `SITE_DESC`, no `DOM_DIST_MGMT` tag recorded for this site.
+
+### Known limitations (full list in methods doc)
+
+1. BADM in this network records *whether* a management type is ever
+   mentioned, never event dates, rates, or frequency — coverage is a
+   documentation proxy, not an intensity or recency measure.
+2. `SITE_DESC` keyword mining is a heuristic prone to both false positives
+   (historical land-use mentions) and false negatives (non-keyword phrasing).
+3. Absence of a record is not evidence of absence of management — only 48%
+   of sites have any `SITE_DESC` text at all; the 44.3% coverage figure
+   should not be read as "56% of sites are confirmed unmanaged."
+4. Regional bucketing folds Mexico, Central America, and the Caribbean into
+   "S. America" due to a `countrycode` package limitation
+   (`un.regionsub.name` lumps all of Latin America into one label in the
+   installed version) — documented as a deliberate simplification.
+5. Three sites carry non-standard IGBP codes (`BSV`, `CVM`, `SNO`) absent
+   from the repo's standard 15-class palette (`R/plot_constants.R`); these
+   were nearly dropped silently from the supplementary figure by an
+   `intersect()` against the palette order and were fixed to appear with a
+   neutral grey label instead.
+
+### Outputs
+
+- `data/snapshots/badm_management_coverage.csv` (+ `.meta.json`) — one row
+  per shuttle site, presence flags for 10 management categories.
+- `data/snapshots/badm_management_summary.csv` (+ `.meta.json`) — IGBP x
+  management-type and region x management-type cross-tabs.
+- `review/figures/candidates/fig_supp_badm_management_by_igbp.png` (+
+  `.txt` caption) — heat map, 300 dpi, white background, IGBP-coloured
+  x-axis labels.
+- `review/figures/methods_badm_management.md` — full method and limitations.
+
+---
+
 ## 2026-06-30 — Draft manuscript figure rebuild, stage 3: four style refinements
 
 Four targeted style changes to the source scripts behind Fig 1A, 1B, 2, and

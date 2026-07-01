@@ -4,6 +4,66 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-01 — Verify and correct network record-length claim (Figs/text "10+ / 20+ year sites")
+
+Verified the draft-manuscript sentence "Roughly 174 sites now hold 10 or more
+years of data and 44 hold 20 or more, giving the network multi-decadal
+records at a substantial subset of sites" against the current 767-site
+shuttle snapshot. The claimed 174/44 did not match any single well-defined
+methodology already established in the pipeline.
+
+### Definitions tested
+
+| Definition | ≥10 yr | ≥20 yr |
+|---|---|---|
+| Nominal span (`last_year − first_year + 1`, manifest) | 229 | 62 |
+| Nominal span (no +1) | 197 | 58 |
+| NEE-only presence, pre-QC, annual table | 149 | 36 |
+| NEE-only presence, post-QC, annual table | 148 | 36 |
+| Broad 12-var presence, pre-QC, annual table | 161 | 43 |
+| Broad 12-var presence, monthly, QC-passing, any month/yr | 218 | 59 |
+| Broad 12-var presence, monthly, QC-passing, **≥6 months/yr** | **196** | **53** |
+| NEE-only presence, monthly, QC-passing, ≥6 months/yr | 187 | 48 |
+
+None reproduced 174/44 exactly; reasonable definitions span roughly
+148–229 for the 10-year threshold and 36–62 for the 20-year threshold.
+
+### Definition selected as canonical
+
+**Broad 12-var presence, monthly resolution, QC-passing, ≥6 months present
+per year** — chosen as the strictest well-justified option. It extends the
+network's own established "broad 12-variable" presence convention
+(`compute_site_year_presence()` in `R/utils.R`, agreed 2026-05-07 — a
+site-month counts if any of NEE/GPP/RECO [VUT+CUT, NT+DT] or LE_F_MDS/
+H_F_MDS is non-NA) in two ways: (1) applied to `monthly_qc` (QC_THRESHOLD_MM
+= 0.50 already enforced) rather than raw monthly data, and (2) requires
+≥6 of 12 months present within a year for that year to count as a "record
+year," rather than the base convention's "any month present" bar — a
+single-month year is not a meaningful year of record for a duration claim.
+
+**Result: 196 sites hold ≥10 record years; 53 hold ≥20.** The corrected
+sentence: *"Roughly 196 sites now hold 10 or more years of data and 53 hold
+20 or more, giving the network multi-decadal records at a substantial
+subset of sites."* This undercuts the original claim by 22 sites (10-yr
+threshold) and overshoots it by 9 sites (20-yr threshold) — a moderate but
+non-trivial correction.
+
+### Implementation
+
+New script `scripts/compute_site_record_length.R` computes this from
+`monthly_qc` in `data/duckdb/fluxnet.duckdb`, joined onto the full 767-site
+master snapshot so zero-record-year sites appear explicitly (not silently
+dropped). Outputs:
+
+- `data/snapshots/site_record_length.csv` (+ `.meta.json`) — one row per
+  site: `n_record_years`, `ge_10yr`, `ge_20yr`.
+- `data/snapshots/site_year_data_presence_qc_monthly.csv` (+ `.meta.json`)
+  — intermediate per-site-year `n_months_present` output of
+  `compute_site_year_presence()` on QC-passing data, before the ≥6-month
+  filter is applied.
+
+---
+
 ## 2026-07-01 — Swap draft-manuscript Figures 4 and 5
 
 Swapped Figures 4 and 5 in `review/figures/draft_manuscript_v1/` to align

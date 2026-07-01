@@ -1,0 +1,768 @@
+site_id,igbp,network,n_record_years,ge_10yr,ge_20yr
+AR-Bal,CRO,AmeriFlux,0,FALSE,FALSE
+AR-CCa,CRO,AmeriFlux,8,FALSE,FALSE
+AR-CCg,GRA,AmeriFlux,6,FALSE,FALSE
+AR-TF1,WET,AmeriFlux,2,FALSE,FALSE
+AR-TF2,WET,AmeriFlux,2,FALSE,FALSE
+BR-CST,DNF,AmeriFlux,2,FALSE,FALSE
+BR-ITA,EBF,AmeriFlux,4,FALSE,FALSE
+BR-Ji3,EBF,AmeriFlux;LBA,5,FALSE,FALSE
+BR-Ma2,EBF,AmeriFlux;LBA,18,TRUE,FALSE
+BR-Ma3,CVM,AmeriFlux;LBA,7,FALSE,FALSE
+BR-Npw,WSA,AmeriFlux,4,FALSE,FALSE
+BR-Sa1,EBF,AmeriFlux;LBA,7,FALSE,FALSE
+BR-Sa3,EBF,AmeriFlux,4,FALSE,FALSE
+BR-SM1,CRO,AmeriFlux,1,FALSE,FALSE
+BR-Xpw,GRA,AmeriFlux,5,FALSE,FALSE
+CA-ARB,WET,AmeriFlux,12,TRUE,FALSE
+CA-ARF,WET,AmeriFlux,13,TRUE,FALSE
+CA-BOU,WET,AmeriFlux,1,FALSE,FALSE
+CA-Ca1,ENF,AmeriFlux;Fluxnet-Canada,13,TRUE,FALSE
+CA-Ca2,ENF,AmeriFlux;Fluxnet-Canada,10,TRUE,FALSE
+CA-Ca3,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,20,TRUE,TRUE
+CA-Cbo,DBF,AmeriFlux;Fluxnet-Canada,28,TRUE,TRUE
+CA-CF1,WET,AmeriFlux,0,FALSE,FALSE
+CA-CF2,WET,AmeriFlux,2,FALSE,FALSE
+CA-CF3,WET,AmeriFlux,3,FALSE,FALSE
+CA-DB2,WET,AmeriFlux,5,FALSE,FALSE
+CA-DBB,WET,AmeriFlux,9,FALSE,FALSE
+CA-DSM,WET,AmeriFlux,3,FALSE,FALSE
+CA-EM1,WET,AmeriFlux,3,FALSE,FALSE
+CA-EM2,WET,AmeriFlux,3,FALSE,FALSE
+CA-Gro,MF,AmeriFlux;Fluxnet-Canada;Phenocam,10,TRUE,FALSE
+CA-HPC,ENF,AmeriFlux,1,FALSE,FALSE
+CA-KLP,WET,AmeriFlux,10,TRUE,FALSE
+CA-LP1,ENF,AmeriFlux,18,TRUE,FALSE
+CA-LU1,OSH,AmeriFlux,2,FALSE,FALSE
+CA-LU2,OSH,AmeriFlux,2,FALSE,FALSE
+CA-MA1,CRO,AmeriFlux,3,FALSE,FALSE
+CA-MA2,CRO,AmeriFlux,2,FALSE,FALSE
+CA-MA3,GRA,AmeriFlux,3,FALSE,FALSE
+CA-Man,ENF,AmeriFlux;Fluxnet-Canada,15,TRUE,FALSE
+CA-Mer,WET,AmeriFlux;Fluxnet-Canada;Phenocam,23,TRUE,TRUE
+CA-Mtk,GRA,AmeriFlux,0,FALSE,FALSE
+CA-Na1,ENF,AmeriFlux;Fluxnet-Canada,2,FALSE,FALSE
+CA-Ojp,ENF,AmeriFlux;Fluxnet-Canada,11,TRUE,FALSE
+CA-PB1,WET,AmeriFlux,4,FALSE,FALSE
+CA-PB2,WET,AmeriFlux,5,FALSE,FALSE
+CA-Qc2,MF,AmeriFlux;Fluxnet-Canada,3,FALSE,FALSE
+CA-Qfo,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,7,FALSE,FALSE
+CA-RBM,WET,AmeriFlux,3,FALSE,FALSE
+CA-SCB,WET,AmeriFlux,5,FALSE,FALSE
+CA-SCC,ENF,AmeriFlux,8,FALSE,FALSE
+CA-SF1,ENF,AmeriFlux;Fluxnet-Canada,3,FALSE,FALSE
+CA-SF2,ENF,AmeriFlux;Fluxnet-Canada,4,FALSE,FALSE
+CA-SF3,OSH,AmeriFlux;Fluxnet-Canada,5,FALSE,FALSE
+CA-SJ2,ENF,AmeriFlux;Fluxnet-Canada,6,FALSE,FALSE
+CA-SMC,ENF,AmeriFlux,1,FALSE,FALSE
+CA-TP1,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,18,TRUE,FALSE
+CA-TP2,ENF,AmeriFlux;Fluxnet-Canada,2,FALSE,FALSE
+CA-TP3,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,17,TRUE,FALSE
+CA-TP4,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,22,TRUE,TRUE
+CA-TPA,CRO,AmeriFlux,4,FALSE,FALSE
+CA-TPD,DBF,AmeriFlux;Fluxnet-Canada;Phenocam,12,TRUE,FALSE
+CA-TVC,OSH,AmeriFlux,1,FALSE,FALSE
+CL-ACF,ENF,AmeriFlux,3,FALSE,FALSE
+CL-SDF,EBF,AmeriFlux,6,FALSE,FALSE
+CL-SDP,WET,AmeriFlux,8,FALSE,FALSE
+CR-Fsc,CRO,AmeriFlux,4,FALSE,FALSE
+MX-Aog,DBF,AmeriFlux;MexFlux,3,FALSE,FALSE
+MX-PMm,WET,AmeriFlux;MexFlux,2,FALSE,FALSE
+MX-Tes,DBF,AmeriFlux;MexFlux,5,FALSE,FALSE
+PE-QFR,WET,AmeriFlux,3,FALSE,FALSE
+PR-xGU,EBF,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+PR-xLA,GRA,AmeriFlux;NEON;Phenocam,4,FALSE,FALSE
+US-A03,BSV,AmeriFlux,6,FALSE,FALSE
+US-A10,BSV,AmeriFlux,11,TRUE,FALSE
+US-A32,GRA,AmeriFlux,1,FALSE,FALSE
+US-A37,CVM,AmeriFlux,1,FALSE,FALSE
+US-A39,CRO,AmeriFlux,1,FALSE,FALSE
+US-A74,CRO,AmeriFlux,2,FALSE,FALSE
+US-ABa,GRA,AmeriFlux;LTAR,3,FALSE,FALSE
+US-ABb,GRA,AmeriFlux;LTAR,3,FALSE,FALSE
+US-ABc,GRA,AmeriFlux,3,FALSE,FALSE
+US-ABd,GRA,AmeriFlux;LTAR,3,FALSE,FALSE
+US-ABe,WET,AmeriFlux;LTAR,3,FALSE,FALSE
+US-ADR,BSV,AmeriFlux,5,FALSE,FALSE
+US-Akn,MF,AmeriFlux,8,FALSE,FALSE
+US-ALQ,WET,AmeriFlux;AmeriFlux,8,FALSE,FALSE
+US-AR1,GRA,AmeriFlux,4,FALSE,FALSE
+US-AR2,GRA,AmeriFlux,3,FALSE,FALSE
+US-ARb,GRA,AmeriFlux,2,FALSE,FALSE
+US-ARc,GRA,AmeriFlux,2,FALSE,FALSE
+US-ARM,CRO,AmeriFlux;Phenocam,23,TRUE,TRUE
+US-ASH,DBF,AmeriFlux,0,FALSE,FALSE
+US-ASM,DBF,AmeriFlux,0,FALSE,FALSE
+US-Aud,GRA,AmeriFlux,20,TRUE,TRUE
+US-Bar,DBF,AmeriFlux;Phenocam,20,TRUE,TRUE
+US-Bi1,CRO,AmeriFlux;Phenocam,8,FALSE,FALSE
+US-Bi2,CRO,AmeriFlux;Phenocam,8,FALSE,FALSE
+US-BRG,GRA,AmeriFlux,4,FALSE,FALSE
+US-BZB,WET,AmeriFlux,14,TRUE,FALSE
+US-BZF,WET,AmeriFlux,14,TRUE,FALSE
+US-BZo,WET,AmeriFlux,8,FALSE,FALSE
+US-CAK,GRA,AmeriFlux,1,FALSE,FALSE
+US-CdM,WSA,AmeriFlux,6,FALSE,FALSE
+US-Ced,CSH,AmeriFlux,9,FALSE,FALSE
+US-CF1,CRO,AmeriFlux;LTAR;Phenocam,5,FALSE,FALSE
+US-CF2,CRO,AmeriFlux;LTAR;Phenocam,4,FALSE,FALSE
+US-CF3,CRO,AmeriFlux;LTAR;Phenocam,4,FALSE,FALSE
+US-CF4,CRO,AmeriFlux;LTAR;Phenocam,5,FALSE,FALSE
+US-CGG,GRA,AmeriFlux,5,FALSE,FALSE
+US-ChR,DBF,AmeriFlux;Phenocam,14,TRUE,FALSE
+US-CLF,CVM,AmeriFlux,2,FALSE,FALSE
+US-Cms,WET,AmeriFlux,4,FALSE,FALSE
+US-CMW,DBF,AmeriFlux,21,TRUE,TRUE
+US-Cop,GRA,AmeriFlux,5,FALSE,FALSE
+US-CRK,ENF,AmeriFlux,4,FALSE,FALSE
+US-CRT,CRO,AmeriFlux;Phenocam,3,FALSE,FALSE
+US-CS1,CRO,AmeriFlux,1,FALSE,FALSE
+US-CS2,ENF,AmeriFlux,3,FALSE,FALSE
+US-CS3,CRO,AmeriFlux,1,FALSE,FALSE
+US-CS4,CRO,AmeriFlux,1,FALSE,FALSE
+US-CS5,CRO,AmeriFlux,1,FALSE,FALSE
+US-CS6,CRO,AmeriFlux,0,FALSE,FALSE
+US-CS8,CRO,AmeriFlux,0,FALSE,FALSE
+US-Cst,ENF,AmeriFlux,5,FALSE,FALSE
+US-Cwt,DBF,AmeriFlux;Phenocam,13,TRUE,FALSE
+US-DFC,CRO,AmeriFlux,6,FALSE,FALSE
+US-DFK,CRO,AmeriFlux,2,FALSE,FALSE
+US-Dix,MF,AmeriFlux,3,FALSE,FALSE
+US-Dk1,GRA,AmeriFlux,8,FALSE,FALSE
+US-Dk2,DBF,AmeriFlux;Phenocam,8,FALSE,FALSE
+US-Dk3,ENF,AmeriFlux,8,FALSE,FALSE
+US-Dmg,WET,AmeriFlux;Phenocam,4,FALSE,FALSE
+US-DPW,WET,AmeriFlux,4,FALSE,FALSE
+US-DS1,CRO,AmeriFlux,2,FALSE,FALSE
+US-DS2,CRO,AmeriFlux,4,FALSE,FALSE
+US-DS3,CRO,AmeriFlux;Phenocam,3,FALSE,FALSE
+US-EA4,MF,AmeriFlux,3,FALSE,FALSE
+US-EA5,CSH,AmeriFlux,2,FALSE,FALSE
+US-EA6,WSA,AmeriFlux,0,FALSE,FALSE
+US-EDN,WET,AmeriFlux,7,FALSE,FALSE
+US-EKH,WET,AmeriFlux;Phenocam,2,FALSE,FALSE
+US-EKN,WET,AmeriFlux,2,FALSE,FALSE
+US-EKP,WET,AmeriFlux,2,FALSE,FALSE
+US-Elm,WET,AmeriFlux;LTER,15,TRUE,FALSE
+US-EML,OSH,AmeriFlux;LTER,15,TRUE,FALSE
+US-Esm,WET,AmeriFlux;LTER,15,TRUE,FALSE
+US-EvM,WET,AmeriFlux;LTER,3,FALSE,FALSE
+US-Fcr,OSH,AmeriFlux,3,FALSE,FALSE
+US-Fmf,ENF,AmeriFlux,5,FALSE,FALSE
+US-Fo1,WET,AmeriFlux,1,FALSE,FALSE
+US-Fo2,WET,AmeriFlux,0,FALSE,FALSE
+US-Fuf,ENF,AmeriFlux,5,FALSE,FALSE
+US-Fwf,GRA,AmeriFlux,6,FALSE,FALSE
+US-GLE,ENF,AmeriFlux,16,TRUE,FALSE
+US-Ha1,DBF,AmeriFlux;LTER;Phenocam,34,TRUE,TRUE
+US-HB1,WET,AmeriFlux;Phenocam,7,FALSE,FALSE
+US-HB2,ENF,AmeriFlux;Phenocam,6,FALSE,FALSE
+US-HB3,ENF,AmeriFlux;Phenocam,6,FALSE,FALSE
+US-HB4,WET,AmeriFlux;Phenocam,5,FALSE,FALSE
+US-HBK,DBF,AmeriFlux,8,FALSE,FALSE
+US-Hn2,GRA,AmeriFlux,1,FALSE,FALSE
+US-Hn3,OSH,AmeriFlux,1,FALSE,FALSE
+US-Ho2,ENF,AmeriFlux,27,TRUE,TRUE
+US-Ho3,ENF,AmeriFlux,16,TRUE,FALSE
+US-HRA,CRO,AmeriFlux;Phenocam,5,FALSE,FALSE
+US-HRC,CRO,AmeriFlux;Phenocam,2,FALSE,FALSE
+US-Hsm,WET,AmeriFlux;Phenocam,5,FALSE,FALSE
+US-HVs,WET,AmeriFlux,0,FALSE,FALSE
+US-HWB,CVM,AmeriFlux;LTAR,3,FALSE,FALSE
+US-IAB,CRO,AmeriFlux,6,FALSE,FALSE
+US-IAC,CRO,AmeriFlux,6,FALSE,FALSE
+US-IAM,CRO,AmeriFlux,6,FALSE,FALSE
+US-ICh,OSH,AmeriFlux;Phenocam,18,TRUE,FALSE
+US-ICs,WET,AmeriFlux;Phenocam,17,TRUE,FALSE
+US-ICt,OSH,AmeriFlux;Phenocam,14,TRUE,FALSE
+US-Jo1,OSH,AmeriFlux;LTER,12,TRUE,FALSE
+US-Jo2,OSH,AmeriFlux;LTER,10,TRUE,FALSE
+US-KFS,GRA,AmeriFlux;Phenocam,13,TRUE,FALSE
+US-Kon,GRA,AmeriFlux;Phenocam,16,TRUE,FALSE
+US-KPL,WET,AmeriFlux,4,FALSE,FALSE
+US-KS1,ENF,AmeriFlux,1,FALSE,FALSE
+US-KS2,CSH,AmeriFlux,4,FALSE,FALSE
+US-KS3,WET,AmeriFlux,1,FALSE,FALSE
+US-LA2,WET,AmeriFlux,4,FALSE,FALSE
+US-LA3,WET,AmeriFlux,3,FALSE,FALSE
+US-Lin,CRO,AmeriFlux,1,FALSE,FALSE
+US-Los,WET,AmeriFlux;Phenocam,21,TRUE,TRUE
+US-LS1,GRA,AmeriFlux,5,FALSE,FALSE
+US-MBP,WET,AmeriFlux;Phenocam,16,TRUE,FALSE
+US-Me1,ENF,AmeriFlux,1,FALSE,FALSE
+US-Me3,ENF,AmeriFlux,6,FALSE,FALSE
+US-Me5,ENF,AmeriFlux,3,FALSE,FALSE
+US-Me6,ENF,AmeriFlux;Phenocam,16,TRUE,FALSE
+US-Me7,ENF,AmeriFlux,2,FALSE,FALSE
+US-MEF,ENF,AmeriFlux,2,FALSE,FALSE
+US-MMS,DBF,AmeriFlux;Phenocam,25,TRUE,TRUE
+US-MN1,CRO,AmeriFlux,8,FALSE,FALSE
+US-MN2,CRO,AmeriFlux,8,FALSE,FALSE
+US-MN3,CRO,AmeriFlux,5,FALSE,FALSE
+US-Mo1,CRO,AmeriFlux;LTAR;Phenocam,9,FALSE,FALSE
+US-Mo2,GRA,AmeriFlux;LTAR;Phenocam,7,FALSE,FALSE
+US-Mo3,CRO,AmeriFlux;LTAR;Phenocam,8,FALSE,FALSE
+US-MOz,DBF,AmeriFlux;Phenocam,18,TRUE,FALSE
+US-Mpj,WSA,AmeriFlux;Phenocam,18,TRUE,FALSE
+US-MtB,ENF,AmeriFlux,15,TRUE,FALSE
+US-Myb,WET,AmeriFlux;Phenocam,15,TRUE,FALSE
+US-MZA,WET,AmeriFlux,0,FALSE,FALSE
+US-NC1,ENF,AmeriFlux;USCCC,8,FALSE,FALSE
+US-NC2,ENF,AmeriFlux;Phenocam;USCCC,21,TRUE,TRUE
+US-NC3,ENF,AmeriFlux;USCCC,7,FALSE,FALSE
+US-NC4,WET,AmeriFlux;Phenocam,13,TRUE,FALSE
+US-NC5,ENF,AmeriFlux,1,FALSE,FALSE
+US-Ne1,CRO,AmeriFlux,24,TRUE,TRUE
+US-Ne2,CRO,AmeriFlux,24,TRUE,TRUE
+US-Ne3,CRO,AmeriFlux,22,TRUE,TRUE
+US-NGB,SNO,AmeriFlux;Phenocam,6,FALSE,FALSE
+US-NGC,GRA,AmeriFlux,3,FALSE,FALSE
+US-NR1,ENF,AmeriFlux;Phenocam,27,TRUE,TRUE
+US-NR3,GRA,AmeriFlux,7,FALSE,FALSE
+US-NSa,CRO,AmeriFlux,1,FALSE,FALSE
+US-NSb,CRO,AmeriFlux,1,FALSE,FALSE
+US-Oho,DBF,AmeriFlux;USCCC,10,TRUE,FALSE
+US-ONA,GRA,AmeriFlux;LTAR,7,FALSE,FALSE
+US-OPE,CRO,AmeriFlux;LTAR;Phenocam,1,FALSE,FALSE
+US-OWC,WET,AmeriFlux,7,FALSE,FALSE
+US-PAS,GRA,AmeriFlux;LTAR,2,FALSE,FALSE
+US-PFb,ENF,AmeriFlux,0,FALSE,FALSE
+US-PFc,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFd,WET,AmeriFlux,0,FALSE,FALSE
+US-PFf,GRA,AmeriFlux,0,FALSE,FALSE
+US-PFg,ENF,AmeriFlux,0,FALSE,FALSE
+US-PFh,ENF,AmeriFlux,0,FALSE,FALSE
+US-PFi,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFj,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFk,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFL,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFm,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFn,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFp,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFq,DBF,AmeriFlux,0,FALSE,FALSE
+US-PFr,WET,AmeriFlux,0,FALSE,FALSE
+US-PFt,ENF,AmeriFlux,0,FALSE,FALSE
+US-PLo,WET,AmeriFlux,2,FALSE,FALSE
+US-Prr,ENF,AmeriFlux,12,TRUE,FALSE
+US-PSH,DBF,AmeriFlux,0,FALSE,FALSE
+US-PSL,DBF,AmeriFlux,0,FALSE,FALSE
+US-RC1,CRO,AmeriFlux;LTAR,5,FALSE,FALSE
+US-RC2,CRO,AmeriFlux;LTAR,5,FALSE,FALSE
+US-RC3,CRO,AmeriFlux,5,FALSE,FALSE
+US-RC4,CRO,AmeriFlux,5,FALSE,FALSE
+US-RC5,CRO,AmeriFlux,2,FALSE,FALSE
+US-RGA,CRO,AmeriFlux;Phenocam,4,FALSE,FALSE
+US-RGB,CRO,AmeriFlux;Phenocam,3,FALSE,FALSE
+US-RGF,CRO,AmeriFlux;Phenocam,2,FALSE,FALSE
+US-RGo,CRO,AmeriFlux;Phenocam,4,FALSE,FALSE
+US-RGW,CRO,AmeriFlux;Phenocam,3,FALSE,FALSE
+US-Rls,CSH,AmeriFlux;LTAR;Phenocam,9,FALSE,FALSE
+US-Rms,CSH,AmeriFlux;LTAR;Phenocam,9,FALSE,FALSE
+US-Ro1,CRO,AmeriFlux;Phenocam,13,TRUE,FALSE
+US-Ro2,CRO,AmeriFlux;Phenocam,7,FALSE,FALSE
+US-Ro3,CRO,AmeriFlux,4,FALSE,FALSE
+US-Ro4,GRA,AmeriFlux;Phenocam,12,TRUE,FALSE
+US-Ro5,CRO,AmeriFlux;Phenocam,8,FALSE,FALSE
+US-Ro6,CRO,AmeriFlux;Phenocam,8,FALSE,FALSE
+US-Rpf,DBF,AmeriFlux,16,TRUE,FALSE
+US-RRC,WET,AmeriFlux;Phenocam,3,FALSE,FALSE
+US-Rwe,CSH,AmeriFlux,5,FALSE,FALSE
+US-Rwf,CSH,AmeriFlux;LTAR,10,TRUE,FALSE
+US-Rws,OSH,AmeriFlux;LTAR;Phenocam,9,FALSE,FALSE
+US-Sag,WET,AmeriFlux,0,FALSE,FALSE
+US-SD1,CRO,AmeriFlux,2,FALSE,FALSE
+US-SD2,CRO,AmeriFlux,2,FALSE,FALSE
+US-Seg,GRA,AmeriFlux;Phenocam,19,TRUE,FALSE
+US-Ses,OSH,AmeriFlux;Phenocam,19,TRUE,FALSE
+US-SHC,ENF,AmeriFlux;Phenocam,4,FALSE,FALSE
+US-Slt,DBF,AmeriFlux;Phenocam,18,TRUE,FALSE
+US-Sne,GRA,AmeriFlux;Phenocam,4,FALSE,FALSE
+US-Snf,GRA,AmeriFlux;Phenocam,2,FALSE,FALSE
+US-SP1,ENF,AmeriFlux;Phenocam,20,TRUE,TRUE
+US-SRC,OSH,AmeriFlux,6,FALSE,FALSE
+US-SRG,GRA,AmeriFlux;LTAR;Phenocam,18,TRUE,FALSE
+US-SRM,WSA,AmeriFlux;LTAR;Phenocam,22,TRUE,TRUE
+US-Srr,WET,AmeriFlux,4,FALSE,FALSE
+US-SRS,WSA,AmeriFlux,8,FALSE,FALSE
+US-SSH,DBF,AmeriFlux;Phenocam,5,FALSE,FALSE
+US-Sta,OSH,AmeriFlux,3,FALSE,FALSE
+US-StJ,WET,AmeriFlux;Phenocam,6,FALSE,FALSE
+US-Syv,MF,AmeriFlux;Phenocam,20,TRUE,TRUE
+US-TaS,WET,AmeriFlux;LTER,6,FALSE,FALSE
+US-TKs,CSH,AmeriFlux,8,FALSE,FALSE
+US-TLR,MF,AmeriFlux,1,FALSE,FALSE
+US-Ton,WSA,AmeriFlux;Phenocam,25,TRUE,TRUE
+US-Tw1,WET,AmeriFlux;Phenocam,13,TRUE,FALSE
+US-Tw2,CRO,AmeriFlux,1,FALSE,FALSE
+US-Tw3,CRO,AmeriFlux;Phenocam,5,FALSE,FALSE
+US-Tw4,WET,AmeriFlux;Phenocam,11,TRUE,FALSE
+US-Tw5,WET,AmeriFlux;Phenocam,2,FALSE,FALSE
+US-Twt,CRO,AmeriFlux;Phenocam,8,FALSE,FALSE
+US-Uaf,ENF,AmeriFlux,23,TRUE,TRUE
+US-UC1,CVM,AmeriFlux;LTAR,6,FALSE,FALSE
+US-UC2,CVM,AmeriFlux;LTAR,6,FALSE,FALSE
+US-UiA,CRO,AmeriFlux,10,TRUE,FALSE
+US-UiB,CRO,AmeriFlux,17,TRUE,FALSE
+US-UiC,CRO,AmeriFlux,17,TRUE,FALSE
+US-UiD,GRA,AmeriFlux,8,FALSE,FALSE
+US-UiE,CRO,AmeriFlux,7,FALSE,FALSE
+US-UiF,CRO,AmeriFlux,5,FALSE,FALSE
+US-UiG,CRO,AmeriFlux,6,FALSE,FALSE
+US-UMd,DBF,AmeriFlux;Phenocam,19,TRUE,FALSE
+US-UTB,BSV,AmeriFlux;UFLUX,2,FALSE,FALSE
+US-UTD,CRO,AmeriFlux;UFLUX,1,FALSE,FALSE
+US-UTE,CRO,AmeriFlux;UFLUX,1,FALSE,FALSE
+US-UTJ,CRO,AmeriFlux;UFLUX,2,FALSE,FALSE
+US-UTL,CRO,AmeriFlux;UFLUX,1,FALSE,FALSE
+US-UTM,WET,AmeriFlux;UFLUX,2,FALSE,FALSE
+US-UTP,WET,AmeriFlux;UFLUX,0,FALSE,FALSE
+US-UTV,CRO,AmeriFlux;UFLUX,2,FALSE,FALSE
+US-UTW,CRO,AmeriFlux;UFLUX,4,FALSE,FALSE
+US-Var,GRA,AmeriFlux;Phenocam,25,TRUE,TRUE
+US-Vcm,ENF,AmeriFlux,18,TRUE,FALSE
+US-Vcp,ENF,AmeriFlux,19,TRUE,FALSE
+US-VT1,CRO,AmeriFlux,2,FALSE,FALSE
+US-VT2,CRO,AmeriFlux,2,FALSE,FALSE
+US-WCr,DBF,AmeriFlux;Phenocam,23,TRUE,TRUE
+US-Whs,OSH,AmeriFlux;LTAR;Phenocam,19,TRUE,FALSE
+US-Wjs,SAV,AmeriFlux,19,TRUE,FALSE
+US-Wkg,GRA,AmeriFlux;LTAR;Phenocam,22,TRUE,TRUE
+US-WPT,WET,AmeriFlux,3,FALSE,FALSE
+US-WT1,CRO,AmeriFlux,1,FALSE,FALSE
+US-xAB,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xAE,GRA,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xBA,WET,AmeriFlux;NEON;Phenocam,4,FALSE,FALSE
+US-xBL,DBF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xBN,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xBR,DBF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xCL,GRA,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xCP,GRA,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xDC,GRA,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xDJ,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xDL,MF,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xDS,CVM,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xGR,DBF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xHE,OSH,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xJE,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xJR,OSH,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xKZ,GRA,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xLE,DBF,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xMB,OSH,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xML,DBF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xNG,GRA,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xNQ,OSH,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xNW,ENF,AmeriFlux;NEON;Phenocam,4,FALSE,FALSE
+US-xPU,EBF,AmeriFlux;NEON,6,FALSE,FALSE
+US-xRM,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xRN,DBF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xSB,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xSC,DBF,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xSE,DBF,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xSJ,SAV,AmeriFlux;NEON,6,FALSE,FALSE
+US-xSL,CRO,AmeriFlux;NEON,6,FALSE,FALSE
+US-xSP,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xSR,OSH,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xST,DBF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xTE,ENF,AmeriFlux;NEON,6,FALSE,FALSE
+US-xTL,WET,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xTR,DBF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xUK,DBF,AmeriFlux;NEON;Phenocam,5,FALSE,FALSE
+US-xUN,MF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xWD,GRA,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xWR,ENF,AmeriFlux;NEON;Phenocam,6,FALSE,FALSE
+US-xYE,ENF,AmeriFlux;NEON,6,FALSE,FALSE
+US-YK1,WET,AmeriFlux,4,FALSE,FALSE
+US-YK2,WET,AmeriFlux,4,FALSE,FALSE
+US-ZF2,CRO,AmeriFlux,1,FALSE,FALSE
+ZA-Uby,GRA,EFTEON SAEON;European Fluxes Database,2,FALSE,FALSE
+ZA-Spk,GRA,EFTEON SAEON;European Fluxes Database,2,FALSE,FALSE
+ZA-Jks,GRA,EFTEON SAEON;European Fluxes Database,1,FALSE,FALSE
+ZA-BfS,OSH,EFTEON SAEON;European Fluxes Database,5,FALSE,FALSE
+ZA-BfK,OSH,EFTEON SAEON;European Fluxes Database,5,FALSE,FALSE
+KR-WdE,EBF,AsiaFlux;KoFlux,4,FALSE,FALSE
+KR-UAO,CRO,AsiaFlux;KoFlux,3,FALSE,FALSE
+KR-TwC,ENF,NA,1,FALSE,FALSE
+KR-TwB,DBF,NA,1,FALSE,FALSE
+KR-SmM,MF,NA,7,FALSE,FALSE
+KR-ScC,ENF,AsiaFlux;KoFlux,4,FALSE,FALSE
+KR-PcD,DBF,AsiaFlux;KoFlux,4,FALSE,FALSE
+KR-Nj2,CRO,AsiaFlux;KoFlux,2,FALSE,FALSE
+KR-Nj1,CRO,NA,2,FALSE,FALSE
+KR-Kw2,DBF,AsiaFlux;KoFlux,4,FALSE,FALSE
+KR-Kw1,ENF,NA,5,FALSE,FALSE
+KR-JjM,MF,AsiaFlux;KoFlux,4,FALSE,FALSE
+KR-Hnm,CRO,AsiaFlux;KoFlux,4,FALSE,FALSE
+KR-HcM,MF,AsiaFlux;KoFlux,4,FALSE,FALSE
+KR-HPK,CRO,AsiaFlux;KoFlux,3,FALSE,FALSE
+KR-GmS,CRO,AsiaFlux;KoFlux,3,FALSE,FALSE
+KR-GmR,CRO,AsiaFlux;KoFlux,3,FALSE,FALSE
+KR-GmP,CRO,NA,2,FALSE,FALSE
+KR-CmF,CRO,NA,8,FALSE,FALSE
+KR-CRK,CRO,AsiaFlux;KoFlux,7,FALSE,FALSE
+KR-AdC,ENF,AsiaFlux;KoFlux,4,FALSE,FALSE
+TH-Mae,DBF,AsiaFlux;JapanFlux,10,TRUE,FALSE
+TH-Kog,EBF,AsiaFlux;JapanFlux,5,FALSE,FALSE
+RU-Tur,DNF,AsiaFlux;JapanFlux,0,FALSE,FALSE
+RU-SkP,DNF,AsiaFlux;JapanFlux;PAGE21,8,FALSE,FALSE
+RU-Sk2,ENF,AsiaFlux;JapanFlux,3,FALSE,FALSE
+RU-NeF,DNF,JapanFlux,1,FALSE,FALSE
+RU-NeC,OSH,JapanFlux,1,FALSE,FALSE
+RU-NeB,GRA,JapanFlux,0,FALSE,FALSE
+RU-Ege,DNF,JapanFlux,5,FALSE,FALSE
+MY-LHP,EBF,AsiaFlux;JapanFlux,8,FALSE,FALSE
+MN-Udg,DNF,JapanFlux,2,FALSE,FALSE
+MN-Nkh,GRA,JapanFlux,6,FALSE,FALSE
+MN-Kbu,GRA,AsiaFlux;JapanFlux,6,FALSE,FALSE
+MN-Hst,GRA,JapanFlux,6,FALSE,FALSE
+KH-Kmp,EBF,JapanFlux,2,FALSE,FALSE
+JP-Ynf,EBF,AsiaFlux;JapanFlux,8,FALSE,FALSE
+JP-Yms,DBF,AsiaFlux;JapanFlux,23,TRUE,TRUE
+JP-Toc,DBF,JapanFlux,4,FALSE,FALSE
+JP-Tmk,DNF,AsiaFlux;JapanFlux,3,FALSE,FALSE
+JP-Tmd,GRA,AsiaFlux;JapanFlux,17,TRUE,FALSE
+JP-Tkb,ENF,JapanFlux,1,FALSE,FALSE
+JP-Tgf,GRA,AsiaFlux,0,FALSE,FALSE
+JP-Tef,DNF,AsiaFlux;JapanFlux,22,TRUE,TRUE
+JP-Tak,DBF,AsiaFlux;JapanFlux,23,TRUE,TRUE
+JP-Ta2,ENF,AsiaFlux;JapanFlux,11,TRUE,FALSE
+JP-Srk,DBF,AsiaFlux;JapanFlux,6,FALSE,FALSE
+JP-Spp,DBF,AsiaFlux;JapanFlux,19,TRUE,FALSE
+JP-Shn,MF,JapanFlux,3,FALSE,FALSE
+JP-Sb2,WET,JapanFlux,1,FALSE,FALSE
+JP-Sb1,WET,JapanFlux,3,FALSE,FALSE
+JP-SMF,MF,AsiaFlux;JapanFlux,12,TRUE,FALSE
+JP-Om2,GRA,AsiaFlux;JapanFlux,2,FALSE,FALSE
+JP-Nuf,DBF,JapanFlux,2,FALSE,FALSE
+JP-NsM,GRA,AsiaFlux;JapanFlux,11,TRUE,FALSE
+JP-NsC,GRA,AsiaFlux;JapanFlux,11,TRUE,FALSE
+JP-Nkm,ENF,AsiaFlux;JapanFlux,0,FALSE,FALSE
+JP-Mse,CRO,AsiaFlux;JapanFlux,8,FALSE,FALSE
+JP-MMF,MF,AsiaFlux;JapanFlux,7,FALSE,FALSE
+JP-MBF,DBF,AsiaFlux,7,FALSE,FALSE
+JP-Kzw,MF,AsiaFlux;JapanFlux,7,FALSE,FALSE
+JP-Khw,ENF,AsiaFlux;JapanFlux,15,TRUE,FALSE
+JP-KaP,CRO,JapanFlux,0,FALSE,FALSE
+JP-Hc3,CRO,JapanFlux,2,FALSE,FALSE
+JP-Hc2,CRO,AsiaFlux;JapanFlux,0,FALSE,FALSE
+JP-Fmt,MF,JapanFlux,10,TRUE,FALSE
+JP-Fjy,ENF,AsiaFlux;JapanFlux,20,TRUE,TRUE
+JP-Fhk,DNF,AsiaFlux;JapanFlux,18,TRUE,FALSE
+JP-BBY,WET,AsiaFlux;JapanFlux,6,FALSE,FALSE
+JP-Api,DBF,AsiaFlux;JapanFlux,23,TRUE,TRUE
+ID-Pag,EBF,AsiaFlux;JapanFlux,12,TRUE,FALSE
+ID-PaD,EBF,AsiaFlux;JapanFlux,14,TRUE,FALSE
+ID-PaB,OSH,AsiaFlux;JapanFlux,13,TRUE,FALSE
+CN-Lsh,DNF,AsiaFlux;JapanFlux,4,FALSE,FALSE
+CN-HaM,GRA,AsiaFlux;JapanFlux,13,TRUE,FALSE
+UK-AMo,WET,European Fluxes Database;ICOS,22,TRUE,TRUE
+SE-Svb,ENF,European Fluxes Database;ICOS,11,TRUE,FALSE
+SE-Sto,WET,European Fluxes Database;ICOS,3,FALSE,FALSE
+SE-Nor,ENF,European Fluxes Database;ICOS,6,FALSE,FALSE
+SE-Htm,ENF,European Fluxes Database;ICOS,7,FALSE,FALSE
+SE-Deg,WET,European Fluxes Database;ICOS,5,FALSE,FALSE
+NO-Hur,ENF,European Fluxes Database;ICOS,1,FALSE,FALSE
+NL-Loo,ENF,European Fluxes Database;ICOS,28,TRUE,TRUE
+IT-TrF,DNF,European Fluxes Database;ICOS,13,TRUE,FALSE
+IT-Tor,GRA,European Fluxes Database;ICOS,17,TRUE,FALSE
+IT-Ren,ENF,European Fluxes Database;ICOS,25,TRUE,TRUE
+IT-Noe,CSH,European Fluxes Database;ICOS,2,FALSE,FALSE
+IT-Niv,GRA,European Fluxes Database;ICOS,0,FALSE,FALSE
+IT-MBo,GRA,European Fluxes Database;ICOS,20,TRUE,TRUE
+IT-Lsn,OSH,European Fluxes Database;ICOS,9,FALSE,FALSE
+IT-Cp2,MF,European Fluxes Database;ICOS,12,TRUE,FALSE
+IT-BFt,DBF,European Fluxes Database;ICOS,5,FALSE,FALSE
+IT-BCi,CRO,European Fluxes Database;ICOS,19,TRUE,FALSE
+IE-Cra,WET,European Fluxes Database;ICOS,2,FALSE,FALSE
+GL-ZaH,GRA,European Fluxes Database;ICOS,0,FALSE,FALSE
+GL-ZaF,WET,European Fluxes Database;ICOS,2,FALSE,FALSE
+GL-NuF,WET,European Fluxes Database;ICOS,0,FALSE,FALSE
+GL-Dsk,OSH,European Fluxes Database;ICOS,5,FALSE,FALSE
+GF-Guy,EBF,European Fluxes Database;ICOS,8,FALSE,FALSE
+FR-Tou,GRA,European Fluxes Database;ICOS,7,FALSE,FALSE
+FR-Pue,EBF,European Fluxes Database;ICOS,24,TRUE,TRUE
+FR-Mej,GRA,European Fluxes Database;ICOS,6,FALSE,FALSE
+FR-Lus,GRA,European Fluxes Database;ICOS,2,FALSE,FALSE
+FR-Lqu,GRA,European Fluxes Database;ICOS,2,FALSE,FALSE
+FR-Lam,CRO,European Fluxes Database;ICOS,4,FALSE,FALSE
+FR-LGt,WET,European Fluxes Database;ICOS,7,FALSE,FALSE
+FR-Hes,DBF,European Fluxes Database;ICOS,24,TRUE,TRUE
+FR-Gri,CRO,European Fluxes Database;ICOS,19,TRUE,FALSE
+FR-Fon,DBF,European Fluxes Database;ICOS,5,FALSE,FALSE
+FR-FBn,ENF,European Fluxes Database;ICOS,17,TRUE,FALSE
+FR-EM2,CRO,European Fluxes Database;ICOS,8,FALSE,FALSE
+FR-CLt,GRA,European Fluxes Database;ICOS,5,FALSE,FALSE
+FR-Bil,ENF,European Fluxes Database;ICOS,11,TRUE,FALSE
+FR-Aur,CRO,European Fluxes Database;ICOS,20,TRUE,TRUE
+FI-Var,ENF,European Fluxes Database;ICOS,9,FALSE,FALSE
+FI-Sod,ENF,European Fluxes Database;ICOS,2,FALSE,FALSE
+FI-Sii,WET,European Fluxes Database;ICOS,7,FALSE,FALSE
+FI-Let,ENF,European Fluxes Database;ICOS,15,TRUE,FALSE
+FI-Ken,ENF,European Fluxes Database;ICOS,7,FALSE,FALSE
+FI-Hyy,ENF,European Fluxes Database;ICOS,28,TRUE,TRUE
+FI-Ant,GRA,European Fluxes Database;ICOS,1,FALSE,FALSE
+ES-LMa,SAV,European Fluxes Database;ICOS,5,FALSE,FALSE
+DK-Vng,CRO,European Fluxes Database;ICOS,3,FALSE,FALSE
+DK-Sor,DBF,European Fluxes Database;ICOS,29,TRUE,TRUE
+DK-Skj,WET,European Fluxes Database;ICOS,2,FALSE,FALSE
+DK-RCW,DBF,European Fluxes Database;ICOS,2,FALSE,FALSE
+DK-Gds,ENF,European Fluxes Database;ICOS,3,FALSE,FALSE
+DE-Tha,ENF,European Fluxes Database;ICOS,28,TRUE,TRUE
+DE-RuW,ENF,European Fluxes Database;ICOS,13,TRUE,FALSE
+DE-RuS,CRO,European Fluxes Database;ICOS,14,TRUE,FALSE
+DE-RuR,GRA,European Fluxes Database;ICOS,14,TRUE,FALSE
+DE-Msr,ENF,European Fluxes Database;ICOS,4,FALSE,FALSE
+DE-Kli,CRO,European Fluxes Database;ICOS,7,FALSE,FALSE
+DE-Hzd,DBF,European Fluxes Database;ICOS,3,FALSE,FALSE
+DE-HoH,DBF,European Fluxes Database;ICOS,10,TRUE,FALSE
+DE-Har,ENF,European Fluxes Database;ICOS,5,FALSE,FALSE
+DE-Hai,DBF,European Fluxes Database;ICOS,25,TRUE,TRUE
+DE-Gwg,GRA,European Fluxes Database;ICOS,1,FALSE,FALSE
+DE-GsB,GRA,European Fluxes Database;ICOS,10,TRUE,FALSE
+DE-Gri,GRA,European Fluxes Database;ICOS,21,TRUE,TRUE
+DE-Geb,CRO,European Fluxes Database;ICOS,4,FALSE,FALSE
+DE-Fen,GRA,European Fluxes Database;ICOS,1,FALSE,FALSE
+DE-Brs,CRO,European Fluxes Database;ICOS,2,FALSE,FALSE
+DE-Amv,WET,European Fluxes Database;ICOS,2,FALSE,FALSE
+CZ-wet,WET,European Fluxes Database;ICOS,19,TRUE,FALSE
+CZ-Lnz,DBF,European Fluxes Database;ICOS,10,TRUE,FALSE
+CZ-BK1,ENF,European Fluxes Database;ICOS,21,TRUE,TRUE
+CH-Dav,ENF,European Fluxes Database;ICOS,28,TRUE,TRUE
+CD-Ygb,MF,European Fluxes Database;ICOS,3,FALSE,FALSE
+BE-Vie,MF,European Fluxes Database;ICOS,28,TRUE,TRUE
+BE-Maa,CSH,European Fluxes Database;ICOS,9,FALSE,FALSE
+BE-Lon,CRO,European Fluxes Database;ICOS,21,TRUE,TRUE
+BE-Dor,GRA,European Fluxes Database;ICOS,14,TRUE,FALSE
+BE-Bra,ENF,European Fluxes Database;ICOS,24,TRUE,TRUE
+VU-Coc,EBF,NA,3,FALSE,FALSE
+ML-Kem,WSA,CarboAfrica,2,FALSE,FALSE
+KE-Mkt,CRO,Unaffiliated,3,FALSE,FALSE
+KE-Kpt,GRA,Unaffiliated,5,FALSE,FALSE
+KE-Chk,WSA,Unaffiliated,2,FALSE,FALSE
+KE-Aq2,CRO,Unaffiliated,1,FALSE,FALSE
+KE-Aq1,CRO,Unaffiliated,1,FALSE,FALSE
+IT-SR2,ENF,European Fluxes Database;ICOS,12,TRUE,FALSE
+ID-JOP,EBF,AsiaFlux,11,TRUE,FALSE
+CR-AqC,EBF,Unaffiliated,8,FALSE,FALSE
+CN-SnB,WET,USCCC,1,FALSE,FALSE
+CN-Sb2,ENF,Unaffiliated,4,FALSE,FALSE
+CN-Sb1,DNF,Unaffiliated,4,FALSE,FALSE
+BW-Nxr,GRA,Unaffiliated,1,FALSE,FALSE
+BW-Gum,WET,Unaffiliated,3,FALSE,FALSE
+BJ-Nhu,SAV,Unaffiliated,9,FALSE,FALSE
+BJ-Db1,CRO,Unaffiliated,3,FALSE,FALSE
+BJ-Bfg,DBF,Unaffiliated,7,FALSE,FALSE
+ZM-Mon,DBF,CarboAfrica;EFTEON SAEON;European Fluxes Database,2,FALSE,FALSE
+UK-HpF,CRO,European Fluxes Database,2,FALSE,FALSE
+UK-HgF,GRA,European Fluxes Database,2,FALSE,FALSE
+UK-Gwr,GRA,European Fluxes Database,3,FALSE,FALSE
+UK-Gnn,GRA,European Fluxes Database,3,FALSE,FALSE
+UK-GaB,GRA,European Fluxes Database,3,FALSE,FALSE
+UK-Cvn,GRA,European Fluxes Database,1,FALSE,FALSE
+UK-CCr,GRA,European Fluxes Database,3,FALSE,FALSE
+UK-BnB,GRA,European Fluxes Database,4,FALSE,FALSE
+UK-Ags,GRA,European Fluxes Database,2,FALSE,FALSE
+SN-Nkr,CRO,European Fluxes Database,7,FALSE,FALSE
+SN-Dhr,GRA,CarboAfrica;European Fluxes Database;GHG-Europe,10,TRUE,FALSE
+SJ-Adv,WET,NA,0,FALSE,FALSE
+SE-Trb,WET,European Fluxes Database,2,FALSE,FALSE
+SE-St1,WET,CarboEuropeIP;Carbomont;European Fluxes Database;PAGE21,6,FALSE,FALSE
+SE-Srj,WET,European Fluxes Database,4,FALSE,FALSE
+SE-Ros,ENF,European Fluxes Database,6,FALSE,FALSE
+SE-Hmr,WET,European Fluxes Database,4,FALSE,FALSE
+SE-HfM,WET,European Fluxes Database,4,FALSE,FALSE
+SD-Dem,SAV,CarboAfrica;European Fluxes Database,2,FALSE,FALSE
+RU-Ha1,GRA,European Fluxes Database;TCOS-Siberia,3,FALSE,FALSE
+RU-Fyo,ENF,European Fluxes Database;GHG-Europe;InGOS;TCOS-Siberia,26,TRUE,TRUE
+RU-Fy4,WET,European Fluxes Database,4,FALSE,FALSE
+RU-Fy3,OSH,European Fluxes Database,3,FALSE,FALSE
+RU-Fy2,ENF,European Fluxes Database,9,FALSE,FALSE
+RU-Che,WET,European Fluxes Database;PAGE21;TCOS-Siberia,7,FALSE,FALSE
+RU-Ch2,WET,European Fluxes Database;PAGE21,7,FALSE,FALSE
+PA-SPs,GRA,European Fluxes Database,3,FALSE,FALSE
+PA-SPn,DBF,European Fluxes Database,3,FALSE,FALSE
+NO-Ikr,WET,European Fluxes Database,3,FALSE,FALSE
+NO-Fns,SNO,European Fluxes Database,7,FALSE,FALSE
+NO-And,WET,European Fluxes Database,7,FALSE,FALSE
+NL-Vkp,GRA,European Fluxes Database,11,TRUE,FALSE
+NL-Hrw,GRA,European Fluxes Database,8,FALSE,FALSE
+IT-SRo,ENF,CarboEuroFlux;CarboEuropeIP;CarboExtreme;European Fluxes Database;Medeflu,14,TRUE,FALSE
+IT-PT1,DBF,NA,0,FALSE,FALSE
+IT-NiG,GRA,European Fluxes Database,5,FALSE,FALSE
+IT-MtM,GRA,European Fluxes Database,0,FALSE,FALSE
+IT-Lav,ENF,CarboEuroFlux;CarboEuropeIP;CarboItaly;European Fluxes Database;GHG-Europe,18,TRUE,FALSE
+IT-CA3,DBF,European Fluxes Database;GHG-Europe,3,FALSE,FALSE
+IT-CA2,CRO,European Fluxes Database;GHG-Europe,3,FALSE,FALSE
+IT-CA1,DBF,European Fluxes Database;GHG-Europe,4,FALSE,FALSE
+IT-Bsn,GRA,European Fluxes Database,2,FALSE,FALSE
+IT-BsB,DBF,European Fluxes Database,4,FALSE,FALSE
+IT-Arz,OSH,European Fluxes Database,9,FALSE,FALSE
+IL-Yat,ENF,CarboEuroFlux;CarboEuropeIP;European Fluxes Database,24,TRUE,TRUE
+IL-RmH,EBF,European Fluxes Database,0,FALSE,FALSE
+IE-Gwr,CRO,European Fluxes Database,0,FALSE,FALSE
+IE-CaN,CRO,European Fluxes Database,4,FALSE,FALSE
+IE-CaC,CRO,European Fluxes Database,5,FALSE,FALSE
+GH-Ank,EBF,CarboAfrica;European Fluxes Database,3,FALSE,FALSE
+FR-Nzn,GRA,European Fluxes Database,9,FALSE,FALSE
+FR-Mau,GRA,European Fluxes Database;GHG-Europe,7,FALSE,FALSE
+FR-LBr,ENF,CarboEuroFlux;CarboEuropeIP;CarboExtreme;EuroFlux;European Fluxes Database;GHG-Europe,10,TRUE,FALSE
+FI-Sar,CRO,European Fluxes Database,1,FALSE,FALSE
+FI-Ruk,CRO,European Fluxes Database,4,FALSE,FALSE
+FI-Rk2,ENF,European Fluxes Database,4,FALSE,FALSE
+FI-Qvd,CRO,European Fluxes Database,6,FALSE,FALSE
+FI-Pap,CRO,European Fluxes Database,1,FALSE,FALSE
+FI-Nsv,CVM,European Fluxes Database,3,FALSE,FALSE
+FI-Jok,CRO,European Fluxes Database;GHG-Europe,4,FALSE,FALSE
+ES-Yst,ENF,European Fluxes Database;GHG-Europe,4,FALSE,FALSE
+ES-VDA,GRA,CarboEuropeIP;Carbomont;European Fluxes Database,2,FALSE,FALSE
+ES-TzM,DBF,European Fluxes Database,4,FALSE,FALSE
+ES-Srn,EBF,European Fluxes Database,2,FALSE,FALSE
+ES-Pzb,GRA,European Fluxes Database,4,FALSE,FALSE
+ES-Pdu,WET,European Fluxes Database;GHG-Europe;InGOS,0,FALSE,FALSE
+ES-Mzn,EBF,European Fluxes Database,2,FALSE,FALSE
+ES-MtN,CSH,European Fluxes Database,1,FALSE,FALSE
+ES-MtB,OSH,European Fluxes Database,4,FALSE,FALSE
+ES-Mcd,EBF,European Fluxes Database,7,FALSE,FALSE
+ES-LM2,SAV,European Fluxes Database,11,TRUE,FALSE
+ES-LM1,SAV,European Fluxes Database,11,TRUE,FALSE
+ES-LJu,OSH,European Fluxes Database;GHG-Europe,20,TRUE,TRUE
+ES-Hen,ENF,European Fluxes Database,6,FALSE,FALSE
+ES-HeB,ENF,European Fluxes Database,6,FALSE,FALSE
+ES-HdD,SAV,European Fluxes Database,1,FALSE,FALSE
+ES-Gdn,SAV,European Fluxes Database;GHG-Europe,6,FALSE,FALSE
+ES-FtD,WET,European Fluxes Database,4,FALSE,FALSE
+ES-Dnn,OSH,European Fluxes Database,0,FALSE,FALSE
+ES-Crg,CSH,European Fluxes Database,3,FALSE,FALSE
+ES-Cnd,WSA,European Fluxes Database,7,FALSE,FALSE
+ES-Amo,OSH,CarboEuropeIP;European Fluxes Database;GHG-Europe,11,TRUE,FALSE
+ES-Agu,OSH,CarboEuropeIP;European Fluxes Database;GHG-Europe,15,TRUE,FALSE
+ES-Abr,SAV,European Fluxes Database,5,FALSE,FALSE
+EE-Stg,ENF,European Fluxes Database,9,FALSE,FALSE
+EE-Rng,WET,European Fluxes Database;GHG-Europe,1,FALSE,FALSE
+EE-Pts,WET,European Fluxes Database;GHG-Europe,2,FALSE,FALSE
+DK-Fou,CRO,CarboEuropeIP;European Fluxes Database,0,FALSE,FALSE
+DK-Eng,GRA,CarboEuropeIP;European Fluxes Database,0,FALSE,FALSE
+DE-Zrk,WET,NA,10,TRUE,FALSE
+DE-Spw,WET,European Fluxes Database;IMECC,6,FALSE,FALSE
+DE-SfS,WET,European Fluxes Database;TERENO,11,TRUE,FALSE
+DE-Seh,CRO,CarboEuropeIP;European Fluxes Database,4,FALSE,FALSE
+DE-SbM,WET,European Fluxes Database,2,FALSE,FALSE
+DE-RuM,CRO,European Fluxes Database,9,FALSE,FALSE
+DE-RuC,OSH,European Fluxes Database,11,TRUE,FALSE
+DE-Rns,CRO,European Fluxes Database,4,FALSE,FALSE
+DE-Obe,ENF,CarboEuropeIP;European Fluxes Database,17,TRUE,FALSE
+DE-Lnf,DBF,European Fluxes Database;GHG-Europe;InGOS,19,TRUE,FALSE
+DE-Lkb,ENF,European Fluxes Database;GHG-Europe,5,FALSE,FALSE
+DE-Hte,WET,EuroFlux;European Fluxes Database,10,TRUE,FALSE
+DE-Hdn,CRO,European Fluxes Database,3,FALSE,FALSE
+DE-Etn,DBF,European Fluxes Database,1,FALSE,FALSE
+DE-Akm,WET,European Fluxes Database,10,TRUE,FALSE
+CZ-Stn,DBF,European Fluxes Database,15,TRUE,FALSE
+CZ-RAJ,ENF,European Fluxes Database,13,TRUE,FALSE
+CZ-LnG,GRA,European Fluxes Database,6,FALSE,FALSE
+CZ-KrP,CRO,European Fluxes Database,10,TRUE,FALSE
+CZ-BK2,GRA,CarboEuropeIP;Carbomont;European Fluxes Database;GHG-Europe,7,FALSE,FALSE
+CH-Tnk,CRO,European Fluxes Database,1,FALSE,FALSE
+CH-Rtb,GRA,European Fluxes Database,14,TRUE,FALSE
+CH-Rh2,GRA,European Fluxes Database,4,FALSE,FALSE
+CH-Rh1,GRA,European Fluxes Database,4,FALSE,FALSE
+CH-Oe3,GRA,European Fluxes Database,10,TRUE,FALSE
+CH-Oe2,CRO,CarboEuropeIP;European Fluxes Database;GHG-Europe;Swiss FluxNet,21,TRUE,TRUE
+CH-Oe1,GRA,CarboEuropeIP;European Fluxes Database;GreenGrass;Swiss FluxNet,10,TRUE,FALSE
+CH-Lae,MF,CarboEuropeIP;European Fluxes Database;GHG-Europe;Swiss FluxNet,21,TRUE,TRUE
+CH-Fru,GRA,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,19,TRUE,FALSE
+CH-Frk,GRA,European Fluxes Database,2,FALSE,FALSE
+CH-For,CRO,European Fluxes Database,1,FALSE,FALSE
+CH-Crs,GRA,European Fluxes Database,2,FALSE,FALSE
+CH-Cha,GRA,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,18,TRUE,FALSE
+CH-Aws,GRA,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,13,TRUE,FALSE
+CG-Tch,SAV,CarboAfrica;European Fluxes Database,4,FALSE,FALSE
+BE-Lcr,DBF,European Fluxes Database,4,FALSE,FALSE
+AT-Zoe,MF,European Fluxes Database;LTER,10,TRUE,FALSE
+AT-PsM,WET,European Fluxes Database;LTER,5,FALSE,FALSE
+AT-Nsd,WET,European Fluxes Database;LTER,5,FALSE,FALSE
+AT-Neu,GRA,CarboEuropeIP;European Fluxes Database;GHG-Europe,19,TRUE,FALSE
+AT-Mmg,ENF,European Fluxes Database,4,FALSE,FALSE
+CN-Zha,WET,ChinaFLUX,13,TRUE,FALSE
+CN-Yuc,CRO,ChinaFLUX,9,FALSE,FALSE
+CN-You,GRA,ChinaFLUX,10,TRUE,FALSE
+CN-Yan,OSH,NA,3,FALSE,FALSE
+CN-YaS,OSH,ChinaFLUX,10,TRUE,FALSE
+CN-Xi2,GRA,ChinaFLUX,8,FALSE,FALSE
+CN-Wnb,BSV,ChinaFLUX,1,FALSE,FALSE
+CN-Sdq,OSH,ChinaFLUX,11,TRUE,FALSE
+CN-Qng,DNF,ChinaFLUX,2,FALSE,FALSE
+CN-Nmn,CRO,ChinaFLUX,5,FALSE,FALSE
+CN-Mxn,MF,ChinaFLUX,3,FALSE,FALSE
+CN-Lch,CRO,NA,12,TRUE,FALSE
+CN-Jzh,CRO,ChinaFLUX,5,FALSE,FALSE
+CN-Jng,GRA,ChinaFLUX,6,FALSE,FALSE
+CN-Huz,BSV,ChinaFLUX,10,TRUE,FALSE
+CN-HeM,DBF,ChinaFLUX,12,TRUE,FALSE
+CN-HeD,BSV,ChinaFLUX,4,FALSE,FALSE
+CN-HaW,WET,ChinaFLUX,6,FALSE,FALSE
+CN-Ha2,OSH,ChinaFLUX,7,FALSE,FALSE
+CN-GuT,GRA,ChinaFLUX,3,FALSE,FALSE
+CN-Erg,GRA,ChinaFLUX,3,FALSE,FALSE
+CN-Dzo,EBF,ChinaFLUX,9,FALSE,FALSE
+CN-Du2,GRA,ChinaFLUX,8,FALSE,FALSE
+CN-Dsh,GRA,ChinaFLUX,11,TRUE,FALSE
+CN-Dmn,CRO,ChinaFLUX,13,TRUE,FALSE
+CN-Din,EBF,ChinaFLUX,8,FALSE,FALSE
+CN-Dda,GRA,ChinaFLUX,3,FALSE,FALSE
+CN-Dan,GRA,ChinaFLUX,6,FALSE,FALSE
+CN-DaW,WET,ChinaFLUX,5,FALSE,FALSE
+CN-BeO,MF,ChinaFLUX,9,FALSE,FALSE
+CN-Ash,EBF,ChinaFLUX,11,TRUE,FALSE
+CN-Aro,GRA,ChinaFLUX,11,TRUE,FALSE
+NZ-BFm,GRA,OzFlux,3,FALSE,FALSE
+AU-Fog,GRA,OzFlux,3,FALSE,FALSE
+AU-Rgf,CVM,OzFlux,9,FALSE,FALSE
+AU-Dry,WSA,OzFlux,14,TRUE,FALSE
+NZ-BFu,GRA,OzFlux,2,FALSE,FALSE
+AU-Wgt,GRA,OzFlux,2,FALSE,FALSE
+AU-APL,WET,OzFlux,5,FALSE,FALSE
+AU-Col,EBF,OzFlux,2,FALSE,FALSE
+AU-Ctr,EBF,OzFlux,8,FALSE,FALSE
+AU-Gin,EBF,OzFlux,13,TRUE,FALSE
+NZ-ADw,GRA,OzFlux,8,FALSE,FALSE
+NZ-Kop,WET,OzFlux,4,FALSE,FALSE
+AU-GWW,EBF,OzFlux,11,TRUE,FALSE
+NZ-Lau,GRA,OzFlux,6,FALSE,FALSE
+AU-Lit,WSA,TERN,10,TRUE,FALSE
+AU-Emr,GRA,OzFlux,2,FALSE,FALSE
+AU-How,WSA,OzFlux,24,TRUE,TRUE
+AU-Rob,EBF,OzFlux,12,TRUE,FALSE
+AU-Sno,EBF,OzFlux,2,FALSE,FALSE
+AU-DaS,WSA,OzFlux,18,TRUE,FALSE
+AU-Whr,EBF,OzFlux,9,FALSE,FALSE
+AU-Wom,EBF,TERN,12,TRUE,FALSE
+AU-Tum,EBF,OzFlux,19,TRUE,FALSE
+AU-Cpr,WSA,TERN,15,TRUE,FALSE
+NZ-ADd,GRA,OzFlux,5,FALSE,FALSE
+AU-Ya1,GRA,OzFlux,3,FALSE,FALSE
+AU-MvA,CRO,OzFlux,1,FALSE,FALSE
+AU-Ync,GRA,OzFlux,13,TRUE,FALSE
+AU-MvB,CRO,OzFlux,1,FALSE,FALSE
+AU-Rig,GRA,OzFlux,6,FALSE,FALSE
+AU-Wrr,EBF,OzFlux,8,FALSE,FALSE
+AU-Wac,EBF,OzFlux,3,FALSE,FALSE
+NZ-Oxf,GRA,OzFlux,5,FALSE,FALSE
+AU-Cum,EBF,TERN,12,TRUE,FALSE
+AU-TTE,SAV,OzFlux,10,TRUE,FALSE
+AU-Otw,GRA,OzFlux,3,FALSE,FALSE
+AU-Wel,GRA,OzFlux,2,FALSE,FALSE
+AU-Cow,EBF,OzFlux,17,TRUE,FALSE
+NZ-Cla,GRA,OzFlux,2,FALSE,FALSE
+AU-RDF,WSA,OzFlux,2,FALSE,FALSE
+AU-Stp,GRA,OzFlux,17,TRUE,FALSE
+AU-Sam,GRA,OzFlux,8,FALSE,FALSE
+AU-Lox,DBF,OzFlux,0,FALSE,FALSE
+AU-Ya2,GRA,OzFlux,3,FALSE,FALSE
+AU-Sil,GRA,OzFlux,5,FALSE,FALSE
+AU-Ade,WSA,OzFlux,1,FALSE,FALSE
+AU-Lon,GRA,OzFlux,5,FALSE,FALSE
+NZ-ScF,GRA,OzFlux,4,FALSE,FALSE
+AU-Boy,EBF,TERN,8,FALSE,FALSE
+AU-Fle,WSA,OzFlux,4,FALSE,FALSE
+AU-ASM,SAV,TERN,12,TRUE,FALSE
+AU-DaP,GRA,OzFlux,5,FALSE,FALSE

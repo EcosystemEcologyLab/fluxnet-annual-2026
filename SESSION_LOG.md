@@ -4,6 +4,204 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Draft manuscript figure audit
+
+Audit only — no files rebuilt, copied, or otherwise changed. Evidence
+trail: source scripts, `git log`, run logs in `logs/`, and file
+timestamps/pixel dimensions read directly from disk.
+
+### Summary table
+
+| # | Figure | Exists | PNG mtime | Source script (mtime) | Snapshot used | Rendered size | Target | Legend |
+|---|--------|--------|-----------|------------------------|----------------|----------------|--------|--------|
+| 1A | fig_03_map_current.png | Yes | Jun 15 05:38 | `scripts/generate_point_maps.R` (Jun 3 16:44) | `fluxnet_shuttle_snapshot_20260601T224043.csv` (759 sites) — **not current** | 12 × 7 in @150 dpi | single (3.5 in) | absent |
+| 1B | fig_02b_cumulative_siteyears_igbp.png | Yes | Jun 2 17:13 | `scripts/generate_duration_histograms.R` (May 24 08:30) via `R/figures/fig_network_growth.R` | `fluxnet_shuttle_snapshot_20260601T224043.csv` (759 sites) — **not current** | 14 × 7 in @150 dpi | single (3.5 in) | absent |
+| 2 | fig_05_whittaker_current.png | Yes | Jun 2 17:02 | `scripts/generate_whittaker.R` (Jun 2 17:01) via `R/figures/fig_climate.R` | Inferred `fluxnet_shuttle_snapshot_20260601T224043.csv` (759 sites, not directly logged) — **not current** | 14 × 7 in @150 dpi | single (3.5 in) | absent |
+| 3 | fig_flux_comparison_combo_nep_et_h.png | Yes | Jun 30 14:41 | `scripts/figure_flux_comparison_combo.R` (Jun 30 14:41) | `fluxnet_shuttle_snapshot_20260624T095651.csv` (767 sites, via `site_flux_medians_shuttle.csv`) — **current** | 3.5 × 9.5 in @300 dpi | single (3.5 in) | absent |
+| 4 | fig_rep008_jaccard_trajectory_with_counts.png | Yes | Jun 29 15:53 | `scripts/figure_representativeness_summary.R` (Jun 29 15:53) | No direct shuttle snapshot read; built from per-site extraction CSVs consistent with the 767-site June 24 snapshot, **but** two of those inputs (TRENDY NEE-IAV/ET-median) were regenerated Jun 30 06:18, ~14.5 h **after** this PNG was rendered — potentially stale | 7 × 5 in @300 dpi | single (3.5 in) — **rendered at double-column width** | present (`fig_rep008_jaccard_trajectory_with_counts.legend.txt`) |
+| 5 | fig_rep001_current.png | Yes | Jun 29 15:53 | `scripts/figure_representativeness_summary.R` (Jun 29 15:53) | Same as #4 — per-site inputs match 767-site snapshot; TRENDY axes regenerated after this PNG's render time | 10 × 7 in @300 dpi | double (7 in) — **43% oversized on width** | present (`fig_rep001_current.legend.txt`) |
+
+### Per-figure detail
+
+**1A — `fig_03_map_current.png`**
+Produced by `fig_map_point_network()` (`R/figures/fig_maps.R`), called from
+`scripts/generate_point_maps.R`. The script picks the shuttle snapshot
+**dynamically at runtime** — `sort(list.files(..., pattern =
+"fluxnet_shuttle_snapshot.*\\.csv$"), decreasing = TRUE)[[1]]`, not a
+hardcoded path — so it is not broken, just not re-run since the June 24
+snapshot appeared. `logs/generate_point_maps_20260615.log` confirms both
+the snapshot actually used
+(`fluxnet_shuttle_snapshot_20260601T224043.csv`) and the site count loaded
+(`Sites loaded: Shuttle=759`), vs. 767 in the current snapshot — **8 sites
+missing**. Saved at `width=12, height=7, dpi=150` — both the dimensions
+(should be ~3.5 in for single column) and the dpi (project convention
+elsewhere is 300) deviate. Style: points are a single solid fill colour
+(`#0072B2`, not IGBP- or hub-coloured — this map doesn't classify by IGBP
+at all), built on `theme_void()` (map figures don't carry axis ticks by
+convention, so the "ticks on 4 sides" rule doesn't apply here), but it
+**does carry an explicit bold title** ("FLUXNET Shuttle 2025 — current
+network") plus a subtitle ("n = 759 sites") — both would need removing
+for the "no title" convention, and the subtitle's site count would need
+updating regardless.
+
+**1B — `fig_02b_cumulative_siteyears_igbp.png`**
+This exact filename is not produced directly by any current script — it
+is a **copied/renamed file**. Confirmed via `git log --diff-filter=A`
+(commit `b9fd996`, "dur11 added as fig_02b") and `run_figures_20260506.sh`
+line 53-55: `cp review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png
+review/figures/candidates/fig_02b_cumulative_siteyears_igbp.png`. The
+actual generator is `fig_cumulative_siteyears_igbp()` in
+`R/figures/fig_network_growth.R`, called from
+`scripts/generate_duration_histograms.R`, saved to
+`review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png` and then
+copied into `candidates/` by a separate one-off shell script. A rebuild
+must reproduce **both** steps (regenerate dur11, then re-copy) or the
+candidate file will silently diverge from its stated source again.
+`logs/generate_duration_histograms_20260602.log` confirms
+`Using snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260601T224043.csv`
+— same 759-site snapshot as 1A, not current. Saved at
+`width=14, height=7, dpi=150`. Style: correctly uses the shared
+`scale_fill_igbp()` palette (`R/plot_constants.R`) via
+`fluxnet_theme()`— inward ticks on the primary (left/bottom) axes and no
+gridlines, but no `sec.axis`/`dup_axis` mirroring, so no tick marks on the
+top/right sides (the four-sided-tick convention was only introduced this
+session, for figure 3 below, and hasn't been retrofitted here). No title
+found in the plot code (`labs(x=, y=)` only) — conforms on that point.
+
+**2 — `fig_05_whittaker_current.png`**
+Produced by `fig_whittaker_worldclim()` (`R/figures/fig_climate.R`),
+called from `scripts/generate_whittaker.R` as "Whit01". Same dynamic
+snapshot-selection pattern as 1A/1B; no `message("Using snapshot: ...")`
+call in this script, so the exact file isn't directly logged, but given
+the same run date (Jun 2) and the sibling scripts' confirmed selection of
+`fluxnet_shuttle_snapshot_20260601T224043.csv` that day, it almost
+certainly used the same 759-site snapshot — **inferred, not directly
+confirmed, not current**. Saved at `width=14, height=7 (approx, via
+WHITTAKER_STYLE), dpi=150`. Style: colours a hexbin summary by median NEE
+(`colorspace::scale_fill_continuous_diverging`), not by IGBP — this figure
+doesn't classify by IGBP at all, so palette consistency doesn't apply.
+Built on `theme_classic()` + an added `panel.border` (gives a box) with
+inward primary-axis ticks only (`axis.ticks.length = unit(-4, "pt")`,
+no `sec.axis`) — same "no four-sided ticks yet" gap as 1B. No title in the
+populated-data code path (only a "No data" fallback title for the
+empty-data edge case) — conforms.
+
+**3 — `fig_flux_comparison_combo_nep_et_h.png`**
+Built this session (see the "Three-panel NEP/ET/H combo figure" entry
+directly below). Reads `data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv`,
+which is itself derived from `site_flux_medians_shuttle.csv`
+(`scripts/assess_flux_data_by_igbp_shuttle.R`, `SNAP_CSV` hardcoded to
+`fluxnet_shuttle_snapshot_20260624T095651.csv`, 767 sites) — **matches the
+current snapshot exactly**. `3.5 × 9.5 in @ 300 dpi` — correct single-column
+width. Style: `scale_fill_igbp()`, four-sided ticks via `dup_axis()`, no
+gridlines, no title, in-panel A/B/C tags, single shared caption — the
+figure this session's style conventions were defined for, so it conforms
+by construction. Included here as the positive baseline for the
+cross-figure checks below.
+
+**4 — `fig_rep008_jaccard_trajectory_with_counts.png`** and
+**5 — `fig_rep001_current.png`**
+Both from `scripts/figure_representativeness_summary.R` (single script
+produces figures 001–018). Neither reads a shuttle snapshot file
+directly; both are built from pre-extracted per-site CSVs
+(`data/snapshots/site_{koppen_beck2023,landcover_cci,aridity,
+biomass_cci_v7,trendy_nee_iav,trendy_et_median}.csv` for the
+`current_767`-labelled network) plus
+`data/snapshots/representativeness_metrics.csv` (Jaccard values, figure
+4 only). `site_koppen_beck2023.csv` has 767 data rows and an mtime (Jun 24
+11:07) shortly after the current snapshot (Jun 24 09:56) — consistent with
+767 sites being current. However, **two of the six axis inputs
+(`site_trendy_nee_iav.csv`, `site_trendy_et_median.csv`) and
+`representativeness_metrics.csv` itself have mtime Jun 30 06:18 — today,
+and about 14.5 hours *after* these two PNGs were rendered (Jun 29
+15:53)**. That Jun 30 06:18 regeneration corresponds to the "Regenerate
+TRENDY snapshots after ELM-fix verification" commit (`29dafe9`, logged
+earlier this session's history) — so both figures likely predate that
+correction and should be treated as **potentially stale** pending
+re-render, even though their site-count assumption (767) is itself
+correct. Rendered dimensions: rep008 `7 × 5 in @300 dpi` (double-column
+size, but the audit table target for this figure is single-column —
+**mismatch**); rep001 `10 × 7 in @300 dpi` (target double-column ≈7 in —
+**43% oversized on width**). Both have `.legend.txt` files alongside them
+(the only two of the five audited figures that do). Style: built on
+`theme_minimal()` with `panel.grid.major/minor = element_blank()` (no
+gridlines — conforms) and inward `axis.ticks.length = unit(-0.15, "cm")`
+on the primary axes, but no `panel.border` found in the visible theme
+code — `theme_minimal()` has no box frame by default, so these figures
+likely lack the black box frame the other figures have, in addition to
+lacking four-sided ticks. Both carry explicit titles composited via
+`grid::textGrob()`/`gridExtra::arrangeGrob()` (e.g. rep001: "Current
+FLUXNET network (n=767) — sampling ratio per class"; rep008: "Jaccard
+representativeness trajectory with network size — 6 default axes") — would
+need removing for the "no title" convention. Palette: neither uses IGBP
+classes at all — the six axes are Köppen-Geiger, ESA CCI land cover
+(LULC, a distinct scheme from IGBP), aridity/biomass/TRENDY bins — each
+with its own locally-defined colour palette (`KG13_COLORS`,
+`LULC_HL_COLORS`, `ARIDITY_COLORS`, etc.) in
+`figure_representativeness_summary.R` itself, not `R/plot_constants.R`.
+This is appropriate (not a deviation) since none of these six axes is
+IGBP classification.
+
+### Cross-figure findings
+
+- **Snapshot consistency — no.** Three figures (1A, 1B, 2) resolve their
+  shuttle snapshot dynamically at runtime and happened to run on
+  2026-06-02/03, before the current June 24 snapshot existed, so they used
+  the 759-site `...20260601T224043.csv` snapshot. One figure (3) hardcodes
+  the current 767-site `...20260624T095651.csv` snapshot and matches. Two
+  figures (4, 5) don't read a shuttle snapshot directly but are built from
+  per-site extractions that do match the current 767-site snapshot's site
+  list — though two of those extractions were refreshed *after* the PNGs
+  were rendered. Note the dynamic-selection scripts (1A/1B/2) would pick up
+  the current snapshot automatically on their next run — no code change
+  needed, just a re-run.
+- **IGBP palette consistency — consistent where applicable.** Only two of
+  the five figures classify anything by IGBP (1B and 3), and both
+  correctly use the shared `R/plot_constants.R::IGBP_colours` via
+  `scale_fill_igbp()`. The other three figures don't plot IGBP classes at
+  all (1A: solid colour map; 2: continuous NEE density; 4/5: Köppen-Geiger,
+  ESA CCI land cover, aridity/biomass/TRENDY bins — distinct classification
+  schemes with their own appropriate custom palettes), so there is no
+  palette inconsistency to report for them.
+- **Site count (n=767) — inconsistent across figures, each internally
+  correct for its own inputs.** 1A/1B/2 assumed 759 sites (stale relative
+  to the current 767-site snapshot). 3 assumes 767 sites (current). 4/5
+  assume 767 sites via the `current_767`-labelled per-site extractions
+  (currently accurate, but see the TRENDY-input staleness note above).
+- **QC filter (flux-related figures) — only figure 3 applies a QC filter**
+  (the other four are geographic/climate/representativeness figures with
+  no per-record QC concept). Figure 3's underlying per-site medians
+  (`scripts/assess_flux_data_by_igbp_shuttle.R` /
+  `assess_flux_data_by_igbp_fluxnet2015.R`) both use `QC_THRESH = 0.80`,
+  applied identically to both networks — consistent. Note this 0.80
+  threshold is a deliberate, explicitly-documented override of the
+  project-wide default in `R/pipeline_config.R`
+  (`QC_THRESHOLD_YY = 0.50`), not an inconsistency bug — flagged here only
+  for visibility since it's a real deviation from the general pipeline
+  default, made intentionally for this analysis.
+
+### Rebuild punch list (for later action, not done here)
+
+- 1A, 1B, 2: re-run against the current snapshot (no code change needed —
+  dynamic selection will pick it up); re-render at single-column
+  dimensions (~3.5 in) and 300 dpi instead of the current 12–14 in @150 dpi;
+  remove titles/subtitles; add `sec.axis`/`dup_axis()` for four-sided
+  ticks if that convention is meant to apply repo-wide.
+- 1B specifically: fix the missing direct source — either add a script
+  that produces `fig_02b_cumulative_siteyears_igbp.png` under that name
+  directly, or keep the two-step regenerate-then-copy process documented
+  somewhere other than a dated one-off shell script.
+- 4, 5: confirm whether the Jun 30 TRENDY regeneration changed the
+  Jaccard/sampling-ratio results before treating them as final; re-render
+  at the correct target widths (3.5 in single-column for 4, 7 in
+  double-column for 5 — currently 7 in and 10 in respectively); remove
+  titles; add a `panel.border` box and four-sided ticks if that convention
+  applies here too.
+- All five: no figure currently has a `.legend.txt` for 1A/1B/2/3; only
+  4/5 have one already.
+
+---
+
 ## 2026-06-30 — Three-panel NEP/ET/H combo figure (single-column)
 
 Built `scripts/figure_flux_comparison_combo.R`, a new script (separate from

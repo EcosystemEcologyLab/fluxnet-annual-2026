@@ -49,7 +49,18 @@ WHITTAKER_STYLE <- list(
   legend_just = c(0, 1),
   detail_x    = 0.02,
   detail_y    = 0.98,
-  nee_lims    = NULL
+  nee_lims    = NULL,
+  # Absolute point sizes below are calibrated for the 14x7in poster canvas.
+  # Callers rendering at a different physical size (e.g. a single-column
+  # square draft-manuscript figure) should pass a modified copy with smaller
+  # values — see generate_whittaker.R's whit01_style override.
+  axis_text_size    = 22,
+  axis_title_size   = 24,
+  legend_text_size  = 20,
+  legend_title_size = 22,
+  detail_text_size  = 6.5,
+  colorbar_width    = 15,
+  colorbar_height   = 0.8
 )
 
 # ---- fig_whittaker_worldclim ------------------------------------------------
@@ -281,8 +292,8 @@ fig_whittaker_worldclim <- function(
       fill = ggplot2::guide_colorbar(
         title          = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
         title.position = "top",
-        barwidth       = 15,
-        barheight      = 0.8,
+        barwidth       = style$colorbar_width,
+        barheight      = style$colorbar_height,
         direction      = "horizontal"
       )
     ) +
@@ -298,12 +309,14 @@ fig_whittaker_worldclim <- function(
       x     = -Inf, y = Inf,
       label = detail_str,
       hjust = -0.07, vjust = 1.3,
-      size  = 6.5                          # ≈ 18 pt (size * 2.835)
+      size  = style$detail_text_size
     ) +
     ggplot2::coord_cartesian(
       xlim = style$xlim,
       ylim = style$ylim
     ) +
+    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(
       x = expression("Mean Annual Temperature (" * degree * "C)"),
       y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
@@ -332,15 +345,16 @@ fig_whittaker_worldclim <- function(
       panel.border           = ggplot2::element_rect(color = "black", fill = NA,
                                                      linewidth = 0.8),
       panel.background       = ggplot2::element_blank(),
-      axis.text              = ggplot2::element_text(color = "black", size = 22),
+      axis.text              = ggplot2::element_text(color = "black",
+                                                      size = style$axis_text_size),
       axis.ticks             = ggplot2::element_line(color = "black"),
       axis.ticks.length      = grid::unit(-4, "pt"),
       axis.ticks.length.x    = grid::unit(-4, "pt"),
       axis.ticks.length.y    = grid::unit(-4, "pt"),
       # element_text (NOT element_markdown) — required for plotmath expressions
-      axis.title             = ggplot2::element_text(size = 24),
-      legend.text            = ggplot2::element_text(size = 20),
-      legend.title           = ggplot2::element_text(size = 22),
+      axis.title             = ggplot2::element_text(size = style$axis_title_size),
+      legend.text            = ggplot2::element_text(size = style$legend_text_size),
+      legend.title           = ggplot2::element_text(size = style$legend_title_size),
       legend.position        = "inside",
       legend.position.inside = style$legend_pos,
       legend.justification   = style$legend_just,

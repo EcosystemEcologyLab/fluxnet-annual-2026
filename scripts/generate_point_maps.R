@@ -74,11 +74,12 @@ p03_white <- fig_map_point_network(
   metadata   = shuttle_meta,
   backdrop   = "white",
   pt_size    = 2.0,
-  title      = "FLUXNET Shuttle 2025 — current network"
-)
+  title      = NULL
+) +
+  ggplot2::labs(subtitle = NULL)   # draft-manuscript style: no title/subtitle (n reported in legend)
 path03w <- file.path(out_dir, "fig_03_map_current.png")
-ggplot2::ggsave(path03w, plot = p03_white, width = 12, height = 7,
-                units = "in", dpi = 150, bg = "white")
+ggplot2::ggsave(path03w, plot = p03_white, width = 3.5, height = 3.5,
+                units = "in", dpi = 300, bg = "white")
 message("  Saved: ", path03w)
 
 message("── fig_03: current network (aridity) ──")

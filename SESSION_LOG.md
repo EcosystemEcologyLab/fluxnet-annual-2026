@@ -4,6 +4,137 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-06-30 — Draft manuscript figure rebuild, stage 1: source figures
+
+Rebuilt the five source figures identified in the same-day figure audit
+(below) at consistent, journal-ready specifications: 300 dpi, no
+titles/subtitles, axis labels with units, four-sided inward black tick marks
+(`sec.axis = dup_axis(name = NULL, labels = NULL)` on continuous scales),
+black panel border, no gridlines, white background, and the shared
+`R/plot_constants.R::IGBP_colours` palette where IGBP classes are plotted.
+All figures now read `data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv`
+(767 sites). Only the specific save calls/functions feeding each candidate
+figure were changed — sibling outputs of the same scripts (e.g. the aridity
+map variant, Dur01–10, Whit02–09, Rep002–018) were left at their existing
+dimensions/styling except where noted.
+
+### Fig 1A — `review/figures/candidates/fig_03_map_current.png`
+
+`scripts/generate_point_maps.R`: `title = NULL` and stripped the subtitle
+(`labs(subtitle = NULL)`) from the white-backdrop network map call only;
+resized that save call from 12×7in@150dpi to **3.5×3.5in@300dpi**
+(confirmed 1050×1050 px). Snapshot picked up dynamically as before (already
+current — no date-selection bug); site count is now 767 (was 759 in the
+audited PNG). Point colour unchanged (`#0072B2`, single fill). The square
+canvas leaves vertical whitespace above/below the map — `coord_sf()`
+preserves true geographic aspect (~2.55:1 for a global extent), so a square
+figure necessarily under-fills on one axis. This is an accepted tradeoff of
+the requested square single-column format, not a bug.
+
+### Fig 1B — `review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png`
+
+`R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp()`: added
+`sec.axis = dup_axis(name = NULL, labels = NULL)` to both the x (Year) and y
+(Cumulative site-years) continuous scales for four-sided ticks; floored the
+base-size-derived legend/label font formulas (`max(base_size - 10, 6)`, etc.)
+so they degrade gracefully at small `base_size` instead of going
+negative/erroring — this function's font sizes were originally hand-tuned
+only for the 36pt poster call size. `scripts/generate_duration_histograms.R`:
+Dur11 call now passes `base_size = 9L` plus a small legend-size override, and
+its dedicated `ggsave()` resized from 14×7in@150dpi to **3.5×3.5in@300dpi**
+(confirmed 1050×1050 px). No title was present in the original function (only
+`labs(x=, y=)`) — nothing to remove. IGBP palette was already correct
+(`scale_fill_igbp()`) — no change. The choice between copying this file
+directly into `draft_manuscript_v1/` vs. adding a dedicated build script is
+recorded in the stage-2 log entry below.
+
+### Fig 2 — `review/figures/candidates/fig_05_whittaker_current.png`
+
+`R/figures/fig_climate.R::fig_whittaker_worldclim()`: added
+`sec.axis = dup_axis(name = NULL, labels = NULL)` to both continuous axes
+(applies to all Whit01–09 calls, not just Whit01 — purely additive, no
+titles/data changed for the others). **Hexagon-regularity investigation**
+(requested before applying any fix): the original 14×7in figure's hexbin
+grid is constructed by `hexbin::hexbin(shape = ybins/xbins)`, which — given
+equal `bins` counts on x and y in `stat_summary_hex()` — always reduces to
+`shape = 1`, i.e. hexbin assumes the *rendered panel* is square, independent
+of the underlying MAT/MAP data-unit ranges (50°C vs 4000mm). The 14×7in
+figure violated that assumption (2:1 landscape), producing visibly stretched
+hexagons. Rendering at the requested 3.5×3.5in **square** format satisfies
+the shape=1 assumption directly — inspected the rendered PNG and hexagons
+are regular (flat-top width:height ≈ 1.15:1, the expected ratio for a
+regular hexagon). **No `coord_fixed()` or hexbin parameter change was
+needed or applied.**
+Font/legend sizes in `WHITTAKER_STYLE` were hard-coded absolute point values
+calibrated for the 14×7in poster canvas (axis text 22pt, axis title 24pt,
+colourbar 15 lines wide, etc.) — at 3.5×3.5in these overflowed the panel
+entirely on first render (title/legend text overlapping the data, colourbar
+spanning off-canvas). Made these six sizes configurable fields on
+`WHITTAKER_STYLE` (defaults unchanged, so Whit02–09 render identically to
+before) and added a `utils::modifyList()` override in
+`scripts/generate_whittaker.R` supplying much smaller absolute sizes
+(axis text 7pt, axis title 8pt, legend text/title 6/7pt, detail-label 2.3,
+colourbar width/height as explicit `grid::unit(1.3, "in")` /
+`grid::unit(0.12, "in")`) for the Whit01 call only. Confirmed 1050×1050 px;
+legend, axis labels, and the "FLUXNET Shuttle 2025 / N = 767 sites | 4236
+site-years" inset are all legible with no overlap. No title present in the
+populated-data branch (unchanged).
+
+### Fig 4 — `review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.png`
+
+`scripts/figure_representativeness_summary.R::make_traj_with_bars()`: added
+`sec.axis = dup_axis(name = NULL, labels = NULL)` to the x scale only (the
+y-axis already carries a meaningful secondary "n sites" axis on the right,
+which supplies the right-side ticks). Panel border was already present
+(`traj_theme` sets `panel.border = element_rect(colour = "black", ...)`) —
+the audit's claim that this figure "likely lacks" a border did not match
+what is actually in the current script; no change was needed there. Rep008
+call: `title_str` argument changed to `NULL` (removes the bold title text
+above the plot; the function still supports non-`NULL` titles for other
+callers) and resized from the function default 7×5in to **3.5×5in@300dpi**
+(confirmed 1050×1500 px). **Jaccard-value check:** compared
+`data/snapshots/representativeness_metrics.csv` immediately before vs. after
+commit `29dafe9` ("Regenerate TRENDY snapshots after ELM-fix verification",
+2026-06-29) — the `18bin_hybrid` / `current_767` rows for `trendy_nee_iav`
+and `trendy_et_median` (the two axes this 6-axis default config actually
+uses) are byte-identical across that commit; all diffs in that commit were
+last-decimal floating-point noise on unrelated aggregation levels/networks.
+**No material change to the plotted trajectory** — re-rendering was a
+formality that reads whatever CSV is on disk (no snapshot-date selection
+logic in this script to go stale in the first place).
+
+### Fig 5 — `review/figures/representativeness/fig_rep001_current.png`
+
+`make_grid_fig()`: added a `show_title` parameter (default `TRUE`, so
+Rep002–006 are unaffected) that skips the bold title row entirely when
+`FALSE`; the caption row is kept regardless (captions are not titles).
+`make_panel_single()`: added `sec.axis = dup_axis(name = NULL, labels =
+NULL)` to the x (log2 sampling-ratio) scale, and changed `axis.ticks.x` from
+conditional-on-`show_xlab` to always-drawn (`element_line()`) — tick *marks*
+now appear on all 6 panels top and bottom; only the tick *text*/axis title
+stay restricted to the bottom row (A/B/C top row show no numbers, matching
+the original space-saving layout). The y-axis is a discrete
+(`scale_y_discrete()`) per-class category axis — ggplot2 does not support
+`sec.axis` on discrete scales, so right-side tick marks were not added for
+y; the panel border's right edge still closes the box visually. Panel border
+was already present in `base_theme` (same audit discrepancy as Fig 4, above)
+— no change needed. Rep001 call: `show_title = FALSE`, resized from the
+function default 10×7in to **7×5in@300dpi** (confirmed 2100×1500 px).
+**Overflow bug found and fixed during rebuild:** at the narrower 7in width
+(3 panel columns ≈ 2.2in each vs. ~3.3in at 10in), the x-axis title
+"Sampling ratio (network / global)" no longer fit the panel width and was
+being clipped mid-word ("...network / glol") in the first render. Shortened
+to "Sampling ratio" (the full definition is unchanged in the figure caption:
+"X axis: sampling ratio = network fraction / global KG-land fraction, log₂
+scale..."); re-rendered clean. This label change only applies to
+`make_panel_single()` (Rep001–004); `make_panel_overlay()`'s equivalent
+label (Rep005, out of scope, not resized) was left as-is. Jaccard values for
+this figure use the same `representativeness_metrics.csv` rows checked for
+Fig 4 above (13-class KG, 10-class LULC, 7-class aridity, 7-bin biomass/NEE-
+IAV/ET-median, all `current_767`) — unaffected by the TRENDY-refresh commit.
+
+---
+
 ## 2026-06-30 — Draft manuscript figure audit
 
 Audit only — no files rebuilt, copied, or otherwise changed. Evidence

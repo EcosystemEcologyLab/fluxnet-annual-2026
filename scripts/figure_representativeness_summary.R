@@ -508,14 +508,22 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE,
     scale_fill_manual(values = col_vals) +
     scale_x_continuous(limits = LOG2_XLIM, breaks = LOG2_BREAKS, labels = LOG2_LABELS,
                        expand = expansion(mult = 0),
-                       name   = if (show_xlab) "Sampling ratio (network / global)" else NULL) +
+                       # Shortened from "Sampling ratio (network / global)" —
+                       # at the 7in draft-manuscript width (3 panel columns)
+                       # the full string overflowed the panel and was clipped.
+                       # The full definition remains in the figure caption.
+                       name   = if (show_xlab) "Sampling ratio" else NULL,
+                       sec.axis = dup_axis(name = NULL, labels = NULL)) +
     scale_y_discrete(name = NULL) +
     base_theme +
     theme(
       axis.text.y   = element_text(size = 6.5, margin = margin(r = 5)),
+      # Tick marks always drawn (top + bottom, via dup_axis) for the four-sided
+      # frame convention; only the bottom-row panels also show tick text/title
+      # to avoid redundant labels stacked across the 2x3 grid.
       axis.text.x   = if (show_xlab) element_text(size = 7, margin = margin(t = 5))
                       else element_blank(),
-      axis.ticks.x  = if (show_xlab) element_line() else element_blank(),
+      axis.ticks.x  = element_line(),
       axis.title.x  = element_text(size = 8)
     )
 
@@ -711,7 +719,8 @@ NET_TITLES <- c(
 make_grid_fig <- function(network, output_path,
                           mode = c("single", "overlay", "count_diff"),
                           overlay_network = NULL,
-                          width_in = 10, height_in = 7, dpi = 300) {
+                          width_in = 10, height_in = 7, dpi = 300,
+                          show_title = TRUE) {
   mode <- match.arg(mode)
 
   # Build 6 panels in 2×3 order: kg lulc aridity / biomass nee_iav et_median
@@ -779,19 +788,26 @@ make_grid_fig <- function(network, output_path,
     )
   }
 
-  # Wrap with title and caption using plain grid text grobs.
-  title_grob   <- grid::textGrob(
-    title_str, hjust = 0, x = 0.01,
-    gp = grid::gpar(fontface = "bold", fontsize = 10)
-  )
+  # Wrap with title (optional) and caption using plain grid text grobs.
   caption_grob <- grid::textGrob(
     caption_str, hjust = 0, x = 0.01,
     gp = grid::gpar(fontsize = 6.5, col = "grey40")
   )
-  combined <- gridExtra::arrangeGrob(
-    title_grob, grid_body, caption_grob, nrow = 3,
-    heights = grid::unit(c(0.45, 1, 0.55), c("cm", "null", "cm"))
-  )
+  if (show_title) {
+    title_grob <- grid::textGrob(
+      title_str, hjust = 0, x = 0.01,
+      gp = grid::gpar(fontface = "bold", fontsize = 10)
+    )
+    combined <- gridExtra::arrangeGrob(
+      title_grob, grid_body, caption_grob, nrow = 3,
+      heights = grid::unit(c(0.45, 1, 0.55), c("cm", "null", "cm"))
+    )
+  } else {
+    combined <- gridExtra::arrangeGrob(
+      grid_body, caption_grob, nrow = 2,
+      heights = grid::unit(c(1, 0.55), c("null", "cm"))
+    )
+  }
 
   ggplot2::ggsave(output_path, combined, width = width_in, height = height_in,
                   dpi = dpi, bg = "white")
@@ -913,7 +929,8 @@ make_traj_with_bars <- function(traj_df, colors, xlabels, title_str, output_path
                size = 2.5, na.rm = TRUE) +
     scale_colour_manual(name = NULL, values = colors) +
     scale_x_continuous(breaks = 1:4, labels = xlabels,
-                       limits = c(0.6, 4.4), expand = expansion(mult = 0)) +
+                       limits = c(0.6, 4.4), expand = expansion(mult = 0),
+                       sec.axis = dup_axis(name = NULL, labels = NULL)) +
     scale_y_continuous(
       name   = "Weighted Jaccard",
       limits = c(0, 1),
@@ -947,7 +964,9 @@ message("\n=== Fig 001: current_767 single-network grid ===")
 n_trunc_001 <- make_grid_fig(
   "current_767",
   file.path(OUTD, "fig_rep001_current.png"),
-  mode = "single"
+  mode = "single",
+  width_in = 7, height_in = 5,
+  show_title = FALSE
 )
 message("  Truncated bars: ", n_trunc_001)
 
@@ -1028,8 +1047,9 @@ message("\n=== Fig 008: Jaccard trajectory (6 axes, with count bars) ===")
 make_traj_with_bars(
   traj_df_6, TRAJ6_COLORS,
   NET_XLABELS_BARE,
-  "Jaccard representativeness trajectory with network size — 6 default axes",
-  file.path(OUTD, "fig_rep008_jaccard_trajectory_with_counts.png")
+  NULL,   # draft-manuscript style: no figure title
+  file.path(OUTD, "fig_rep008_jaccard_trajectory_with_counts.png"),
+  width_in = 3.5, height_in = 5
 )
 
 message("\n=== Fig 009: Jaccard trajectory (3 native-resolution axes, with count bars) ===")

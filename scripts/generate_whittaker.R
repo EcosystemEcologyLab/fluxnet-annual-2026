@@ -114,13 +114,30 @@ save_whit <- function(p, name, style = shared_style) {
 # Whit01 — FLUXNET Shuttle 2025 (full network, all years)
 # ============================================================
 message("\n── Whit01: FLUXNET Shuttle 2025 ──")
-whit01 <- fig_whittaker_worldclim(
+# Draft-manuscript single-column square format (candidate fig_05). Font/legend
+# sizes in WHITTAKER_STYLE are calibrated for the 14x7in poster canvas used by
+# Whit02-09 below, so this call overrides them with much smaller absolute
+# sizes to stay legible (not overflowing) at 3.5x3.5in.
+whit01_sq <- fig_whittaker_worldclim(
   data_yy      = data_yy,
   site_meta    = shuttle_meta,
   detail_label = "FLUXNET Shuttle 2025",
-  style        = shared_style
+  style        = utils::modifyList(shared_style, list(
+    width_in          = 3.5,
+    height_in         = 3.5,
+    axis_text_size    = 7,
+    axis_title_size   = 8,
+    legend_text_size  = 6,
+    legend_title_size = 7,
+    detail_text_size  = 2.3,
+    colorbar_width    = grid::unit(1.3, "in"),
+    colorbar_height   = grid::unit(0.12, "in")
+  ))
 )
-save_whit(whit01, "fig_whit01_ShuttleFull")
+path01 <- file.path(out_dir, "fig_whit01_ShuttleFull.png")
+ggplot2::ggsave(path01, plot = whit01_sq, width = 3.5, height = 3.5,
+                units = "in", dpi = 300, bg = "white")
+message("Saved: ", path01, " (3.5 x 3.5 in, 300 dpi)")
 
 # ============================================================
 # Whit02 — Marconi 2000

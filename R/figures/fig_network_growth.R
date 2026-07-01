@@ -942,7 +942,7 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                    label  = .data$dataset,
                    colour = .data$dataset),
       fill        = "white",
-      size        = base_size * 0.22,
+      size        = max(base_size * 0.22, 2.2),
       linewidth   = 0.5,
       fontface    = "bold",
       vjust       = -0.4,
@@ -950,20 +950,22 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     ) +
     ggplot2::scale_colour_manual(values = hist_colours, guide = "none") +
     ggplot2::scale_x_continuous(
-      limits = c(yr_min, yr_max),
-      breaks = seq(1990L, 2025L, by = 5L),
-      expand = ggplot2::expansion(mult = c(0.01, 0.01))
+      limits   = c(yr_min, yr_max),
+      breaks   = seq(1990L, 2025L, by = 5L),
+      expand   = ggplot2::expansion(mult = c(0.01, 0.01)),
+      sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)
     ) +
     ggplot2::scale_y_continuous(
-      breaks = scales::pretty_breaks(n = 6),
-      expand = ggplot2::expansion(mult = c(0, 0.18))
+      breaks   = scales::pretty_breaks(n = 6),
+      expand   = ggplot2::expansion(mult = c(0, 0.18)),
+      sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)
     ) +
     ggplot2::labs(x = "Year", y = "Cumulative site-years") +
     fluxnet_theme(base_size = base_size) +
     ggplot2::theme(
       legend.position  = "right",
-      legend.text      = ggplot2::element_text(size = as.integer(base_size) - 10L),
-      legend.title     = ggplot2::element_text(size = as.integer(base_size) - 8L),
+      legend.text      = ggplot2::element_text(size = max(as.integer(base_size) - 10L, 6L)),
+      legend.title     = ggplot2::element_text(size = max(as.integer(base_size) - 8L, 7L)),
       legend.key.size  = grid::unit(14, "pt")
     )
 }

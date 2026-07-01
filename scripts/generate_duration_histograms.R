@@ -327,11 +327,17 @@ dur11 <- fig_cumulative_siteyears_igbp(
   shuttle_meta      = shuttle_meta,
   sites_marconi     = sites_marconi,
   sites_la_thuile   = sites_la_thuile,
-  sites_fluxnet2015 = sites_fluxnet2015
-)
+  sites_fluxnet2015 = sites_fluxnet2015,
+  base_size         = 9L
+) +
+  ggplot2::theme(
+    legend.text      = ggplot2::element_text(size = 5.5),
+    legend.title     = ggplot2::element_text(size = 6.5),
+    legend.key.size  = grid::unit(7, "pt")
+  )
 path11 <- file.path(out_dir, "fig_dur11_CumulativeSiteYears_IGBP.png")
 ggplot2::ggsave(path11, plot = dur11,
-                width = 14, height = 7, units = "in", dpi = 150, bg = "white")
+                width = 3.5, height = 3.5, units = "in", dpi = 300, bg = "white")
 message("Saved: ", path11)
 
 message("\nDone. All 11 figures generated: Dur01-11.")

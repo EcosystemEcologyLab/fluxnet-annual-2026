@@ -1,0 +1,36 @@
+fig_whit_global_frequency.png -- Global ice-free land, Whittaker frequency hexbin
+================================================================================
+Data source: WorldClim v2.1, 2.5 arc-minute BIO1 (mean annual temperature) and BIO12 (annual precipitation).
+  wc2.1_2.5m_bio_1.tif / wc2.1_2.5m_bio_12.tif -- NOT FLUXNET Shuttle data (see CLAUDE.md Hard Rule #1);
+  used here only as a global background/context layer, not as primary data for the Annual Paper.
+Land mask: ALL ICE-FREE LAND (not the vegetated mask used elsewhere in this paper). Built from ESA CCI
+  land cover 2015 (300 m, ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif): class 210 (water bodies) and
+  class 220 (permanent snow/ice) excluded; class 0 (no data) excluded; all other classes retained as land.
+  Aggregated to the WorldClim 2.5 arc-min grid (exact 15x integer factor, no reprojection) and thresholded
+  at >=50% ice-free-land fraction per WorldClim cell. A latitude < -60 degree backstop additionally excludes
+  Antarctica.
+Area weighting: cosine-of-latitude pixel weighting (weight = cos(latitude in radians)), applied per
+  WorldClim pixel, because WorldClim is an equal-angle (not equal-area) grid and raw pixel counts would
+  over-weight high latitudes. Every density/frequency calculation below uses this weight, not pixel counts.
+Axis ranges: MAT (x) = [-15, 35] degC, MAP (y) = [0, 4000] mm/yr -- read directly from WHITTAKER_STYLE in
+  R/figures/fig_climate.R and identical to Figure 2 (fig_whit01_ShuttleFull.png / fig_02_whittaker_current.png),
+  so this figure registers with Figure 2 when layered as a slide background. Panel = 3.5 x 3.5 in, 300 dpi,
+  matching fig_whit01_ShuttleFull.png exactly.
+Clipping: 0.94% of global ice-free land-area weight falls outside
+  the MAT axis range (cold tundra/taiga colder than -15 degC MAT) and 0.24% falls outside
+  the MAP axis range (wet tropical areas above 4000 mm/yr); neither axis was extended to
+  accommodate these tails -- per instruction, the Figure 2 axis window was matched exactly instead.
+Source script: scripts/generate_whittaker_global.R (functions build_global_landclimate(),
+  fig_whittaker_global_frequency(), fig_whittaker_global_contour() in R/figures/fig_climate.R).
+Generated: 2026-07-02T20:49:51Z
+
+Color scale: neutral single-hue sequential ramp (colorspace 'Blues 3'), NOT the diverging NEE scale used
+  in Figure 2 -- this background represents land area, which has no NEE. Fill = area-weighted land-pixel
+  frequency summed within each hexagon, log10 scale (log10 chosen because land area is extremely
+  right-skewed across climate space -- most hexagons contain little area, a few contain a large fraction).
+  Empty hexagons (zero land pixels) are not drawn.
+Hex bin domain: pixel data pre-clipped to the MAT/MAP axis ranges above before hexbinning (bins = 15, same
+  as fig_whittaker_worldclim()), so hex-cell geometry matches Figure 2's hexbin grid exactly for overlay
+  registration.
+98.82% of global ice-free land-area weight is shown within the displayed axis window.
+

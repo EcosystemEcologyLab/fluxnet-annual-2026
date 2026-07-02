@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-07-01T23:39:48Z",
+  "pipeline_version": "f943e48",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Intermediate output of compute_site_record_length.R, produced by calling the established compute_site_year_presence() (R/utils.R, agreed 2026-05-07) on QC-passing monthly data (monthly_qc, QC_THRESHOLD_MM = 0.50), rather than raw monthly. n_months_present is unfiltered here (the >=6-months-per-year 'record year' bar is applied downstream, in data/snapshots/site_record_length.csv). See that file's own .meta.json for the full record-length definition."
+}

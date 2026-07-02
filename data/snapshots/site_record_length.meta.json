@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-07-01T23:39:48Z",
+  "pipeline_version": "f943e48",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv"
+  ],
+  "notes": "Canonical 'years of data' metric for manuscript record-length claims. n_record_years = count of site-years where a 'record year' requires >=6 of 12 months with at least one of NEE_VUT_REF, NEE_CUT_REF, GPP_NT_VUT_REF, GPP_DT_VUT_REF, GPP_NT_CUT_REF, GPP_DT_CUT_REF, RECO_NT_VUT_REF, RECO_DT_VUT_REF, RECO_NT_CUT_REF, RECO_DT_CUT_REF, LE_F_MDS, or H_F_MDS non-NA, computed from monthly_qc (QC_THRESHOLD_MM = 0.50 already applied). This extends the established broad-12-var presence convention in compute_site_year_presence() (R/utils.R, agreed 2026-05-07, used for is_functionally_active()) with an added >=6-months-present-per-year threshold, which that convention does not itself apply (its own bar is 'any month present'). ge_10yr/ge_20yr are boolean flags at n_record_years >= 10 / >= 20. Sites absent from monthly_qc (not yet extracted/QC'd) get n_record_years = 0, not NA — check has_data-style presence separately if 'unknown' vs 'zero years' matters for a given use. See SESSION_LOG.md 2026-07-01 for the definition discussion and alternative counts under other definitions."
+}

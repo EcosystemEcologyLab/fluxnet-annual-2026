@@ -4,6 +4,208 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-02 — Global ice-free-land Whittaker background figures (WorldClim + ESA CCI)
+
+Two new talk-slide background figures were generated in Whittaker (MAT × MAP)
+climate space, intended to sit under the network-distribution panels
+(`fig_whit01_ShuttleFull.png` / `fig_02_whittaker_current.png`). Unlike those
+panels, these represent **global ice-free land area**, not FLUXNET sites, and
+carry no NEE information. Full step-by-step provenance is in
+`review/figures/whittaker/RUN_LOG_whittaker_global.txt`.
+
+### Data sources (non-Shuttle, background/context use only — CLAUDE.md Hard Rule #1)
+
+- **MAT/MAP**: WorldClim v2.1, 2.5 arc-minute BIO1/BIO12 —
+  `data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif` /
+  `..._bio_12.tif` (the same rasters used as the per-site-extract fallback in
+  `fig_whittaker_worldclim()`).
+- **Land mask**: ESA CCI land cover 2015, 300 m —
+  `data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif`.
+  Class 210 (water bodies) and class 220 (permanent snow/ice) excluded; class
+  0 (no data) excluded; all other classes retained as **all ice-free land**
+  (not the vegetated mask used elsewhere in the paper). Aggregated to the
+  WorldClim grid via an exact 15× integer factor (no reprojection needed —
+  the two grids are natively co-aligned) and thresholded at ≥50% ice-free-land
+  fraction per WorldClim cell, plus a latitude < −60° backstop for Antarctica.
+- **Area weighting**: cosine-of-latitude pixel weighting (`cos(lat)`), since
+  WorldClim is an equal-angle, not equal-area, grid. Every density/frequency
+  calculation uses this weight, not raw pixel counts.
+
+### Axis ranges and clipping
+
+Axis ranges, hex bin count, and panel dimensions were read directly from
+`WHITTAKER_STYLE` / `fig_whittaker_worldclim()` in `R/figures/fig_climate.R`
+and matched exactly: MAT ∈ [−15, 35] °C, MAP ∈ [0, 4000] mm/yr, 15 hex bins,
+3.5 × 3.5 in @ 300 dpi (the same style override used for
+`fig_whit01_ShuttleFull.png`). 0.94% of global ice-free land-area weight
+falls outside the MAT range (cold tundra/taiga colder than −15 °C) and 0.24%
+falls outside the MAP range (wet tropical tails above 4000 mm/yr); per
+instruction, neither axis was extended — 98.82% of global land area is shown
+within the displayed window, and the clip is stated in both legend files.
+
+### Outputs
+
+- `review/figures/whittaker/fig_whit_global_frequency.png` — area-weighted
+  hexbin frequency, log10 fill on a neutral sequential (Blues) scale, hex
+  geometry identical to Figure 2 for overlay registration.
+- `review/figures/whittaker/fig_whit_global_contour.png` — 95%/99%
+  highest-density-region contour lines (white background, no fill), computed
+  from a weighted 2D KDE over the *full, unclipped* global distribution (so
+  the percentages are honest to "global ice-free land area"), then displayed
+  through the same Figure 2 axis window.
+- Both have companion `.legend.txt` files stating data source, land mask,
+  area-weighting method, axis ranges/clipping, color-scale meaning, and the
+  source script.
+- New functions `build_global_landclimate()`, `fig_whittaker_global_frequency()`,
+  `fig_whittaker_global_contour()`, and internal helpers `.weighted_density_grid()`
+  / `.hdr_levels()` (a dependency-free weighted 2D KDE + highest-density-region
+  contour implementation — no `ks`/`spatstat` added) were added to
+  `R/figures/fig_climate.R` alongside `fig_whittaker_worldclim()`, which was
+  left byte-for-byte unmodified (confirmed via `git diff --stat`: 368
+  insertions, 0 deletions). Driven by `scripts/generate_whittaker_global.R`.
+
+### Process note
+
+A bug was found and fixed during this session: the run-log safety net
+originally relied on `on.exit()` registered at the top level of the Rscript,
+which does not fire on normal script completion (only when an enclosing R
+function call exits). Fixed by wrapping the pipeline body in a function
+called via `tryCatch()`, with the final outcome line written unconditionally
+afterward — verified on a clean re-run. No automated tests were added for the
+new functions (`testthat` is not installed in this environment and was not
+installed per the no-new-dependencies rule); the two new pure helper
+functions were instead sanity-checked by hand against synthetic data with a
+known analytic answer, consistent with this repo's existing precedent of no
+tests for `fig_climate.R`'s other exported (plot/IO-heavy) functions.
+
+---
+
+## 2026-07-02 — Site counts by IGBP class, total vs. recent (2015+) additions
+
+Snapshot: `data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv`
+(767 sites, dated 2026-06-24). One row per site; `igbp` and `first_year`
+both fully populated (no NA/blank), no duplicate `site_id`.
+
+### Total sites per IGBP class (all 767 sites, descending)
+
+| IGBP | Class name | Total sites |
+|---|---|---:|
+| GRA | Grassland | 143 |
+| CRO | Cropland | 138 |
+| WET | Permanent wetland | 116 |
+| ENF | Evergreen needleleaf forest | 113 |
+| DBF | Deciduous broadleaf forest | 78 |
+| EBF | Evergreen broadleaf forest | 42 |
+| OSH | Open shrubland | 39 |
+| MF | Mixed forest | 24 |
+| WSA | Woody savanna | 18 |
+| DNF | Deciduous needleleaf forest | 13 |
+| SAV | Savanna | 13 |
+| CSH | Closed shrubland | 12 |
+| CVM | Cropland/natural vegetation mosaic | 9 |
+| BSV | Barren or sparsely vegetated | 7 |
+| SNO | Snow and ice | 2 |
+
+**The "ENF and DBF dominate the accumulated record" claim does not hold by
+total site count.** GRA (143) and CRO (138) are the two largest classes,
+followed by WET (116); ENF ranks 4th (113) and DBF 5th (78). CRO, GRA, and
+WET together account for 397 of 767 sites (52%), more than ENF+DBF combined
+(191, 25%).
+
+### Sites first added in the most recent decade (`first_year` ≥ 2015)
+
+Network-wide: 390 of 767 sites (51%) have `first_year` ≥ 2015.
+
+| IGBP | Recent sites (≥2015) | Class total | Share of class |
+|---|---:|---:|---:|
+| CRO | 90 | 138 | 65.2% |
+| GRA | 73 | 143 | 51.0% |
+| WET | 68 | 116 | 58.6% |
+| ENF | 49 | 113 | 43.4% |
+| DBF | 40 | 78 | 51.3% |
+| OSH | 18 | 39 | 46.2% |
+| EBF | 12 | 42 | 28.6% |
+| MF | 9 | 24 | 37.5% |
+| CVM | 8 | 9 | 88.9% |
+| CSH | 6 | 12 | 50.0% |
+| BSV | 5 | 7 | 71.4% |
+| SAV | 4 | 13 | 30.8% |
+| WSA | 5 | 18 | 27.8% |
+| DNF | 2 | 13 | 15.4% |
+| SNO | 1 | 2 | 50.0% |
+
+By absolute count, CRO (90), GRA (73), and WET (68) contributed the most new
+sites since 2015 — the same three classes that lead the total-count table.
+By share of class total, CVM (88.9%), BSV (71.4%), and CRO (65.2%) grew
+fastest relative to their pre-2015 base, though CVM/BSV are small classes
+(9 and 7 sites total) so their high shares reflect a low base rather than
+large absolute growth. ENF and DNF — two of the longest-established forest
+classes — show the lowest recent shares (43.4% and 15.4%), consistent with
+those networks being comparatively mature/saturated rather than still
+expanding.
+
+---
+
+## 2026-07-01 — Verify and correct network record-length claim (Figs/text "10+ / 20+ year sites")
+
+Verified the draft-manuscript sentence "Roughly 174 sites now hold 10 or more
+years of data and 44 hold 20 or more, giving the network multi-decadal
+records at a substantial subset of sites" against the current 767-site
+shuttle snapshot. The claimed 174/44 did not match any single well-defined
+methodology already established in the pipeline.
+
+### Definitions tested
+
+| Definition | ≥10 yr | ≥20 yr |
+|---|---|---|
+| Nominal span (`last_year − first_year + 1`, manifest) | 229 | 62 |
+| Nominal span (no +1) | 197 | 58 |
+| NEE-only presence, pre-QC, annual table | 149 | 36 |
+| NEE-only presence, post-QC, annual table | 148 | 36 |
+| Broad 12-var presence, pre-QC, annual table | 161 | 43 |
+| Broad 12-var presence, monthly, QC-passing, any month/yr | 218 | 59 |
+| Broad 12-var presence, monthly, QC-passing, **≥6 months/yr** | **196** | **53** |
+| NEE-only presence, monthly, QC-passing, ≥6 months/yr | 187 | 48 |
+
+None reproduced 174/44 exactly; reasonable definitions span roughly
+148–229 for the 10-year threshold and 36–62 for the 20-year threshold.
+
+### Definition selected as canonical
+
+**Broad 12-var presence, monthly resolution, QC-passing, ≥6 months present
+per year** — chosen as the strictest well-justified option. It extends the
+network's own established "broad 12-variable" presence convention
+(`compute_site_year_presence()` in `R/utils.R`, agreed 2026-05-07 — a
+site-month counts if any of NEE/GPP/RECO [VUT+CUT, NT+DT] or LE_F_MDS/
+H_F_MDS is non-NA) in two ways: (1) applied to `monthly_qc` (QC_THRESHOLD_MM
+= 0.50 already enforced) rather than raw monthly data, and (2) requires
+≥6 of 12 months present within a year for that year to count as a "record
+year," rather than the base convention's "any month present" bar — a
+single-month year is not a meaningful year of record for a duration claim.
+
+**Result: 196 sites hold ≥10 record years; 53 hold ≥20.** The corrected
+sentence: *"Roughly 196 sites now hold 10 or more years of data and 53 hold
+20 or more, giving the network multi-decadal records at a substantial
+subset of sites."* This undercuts the original claim by 22 sites (10-yr
+threshold) and overshoots it by 9 sites (20-yr threshold) — a moderate but
+non-trivial correction.
+
+### Implementation
+
+New script `scripts/compute_site_record_length.R` computes this from
+`monthly_qc` in `data/duckdb/fluxnet.duckdb`, joined onto the full 767-site
+master snapshot so zero-record-year sites appear explicitly (not silently
+dropped). Outputs:
+
+- `data/snapshots/site_record_length.csv` (+ `.meta.json`) — one row per
+  site: `n_record_years`, `ge_10yr`, `ge_20yr`.
+- `data/snapshots/site_year_data_presence_qc_monthly.csv` (+ `.meta.json`)
+  — intermediate per-site-year `n_months_present` output of
+  `compute_site_year_presence()` on QC-passing data, before the ≥6-month
+  filter is applied.
+
+---
+
 ## 2026-07-01 — Swap draft-manuscript Figures 4 and 5
 
 Swapped Figures 4 and 5 in `review/figures/draft_manuscript_v1/` to align

@@ -4,6 +4,65 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-02 — Methods section source material compiled (read-and-report)
+
+Compiled the source material needed to draft the Methods section of the
+FLUXNET Annual Paper, per a read-and-report task that modified no analysis,
+figure, or data file (verified via `git status` before/after — only the
+compilation files themselves were written). Full compiled content is in
+`review/methods_source_compilation.txt` (the run log, ~470 lines) and its
+readable copy `review/methods_source_compilation.md`.
+
+**`methods_*.md` files found (8, all under `review/figures/`):**
+`methods_koppen_beck2023.md`, `methods_koppen_beck2023_future.md`,
+`methods_biomass.md`, `methods_aridity_unep.md`, `methods_landcover.md`,
+`methods_trendy_iav.md`, `methods_flux_medians.md`,
+`methods_badm_management.md`. Also found (different path, requirements spec
+not a per-axis doc): `docs/methods_requirements.md`.
+
+**Eight sections compiled:** per-axis representativeness methods (Köppen,
+ESA CCI Biomass, CGIAR aridity, ESA CCI land cover, TRENDY IAV/ET — with the
+hybrid near-zero-bin + equal-area-quantile construction confirmed for
+Biomass and all four TRENDY axes); representativeness metric definitions
+(sampling ratio, weighted Jaccard, Hellinger — code quoted verbatim from
+`scripts/figure_representativeness_landcover.R` and
+`scripts/figure_representativeness_summary.R`); TRENDY v14-gcb2025 ensemble
+construction (20 models downloaded, 3 excluded for technical reasons, 17
+remain, 16 effective per pixel after the ELM all-NA case); snapshot
+definition (`fluxnet_shuttle_snapshot_20260624T095651.csv`, 767 sites, a
+single `flux_listall()` call, not assembled over a window); site
+selection/QC (pipeline default `QC_THRESHOLD_YY = 0.50` vs. the flux-median
+analyses' deliberate `QC_THRESH = 0.80` override, both with file:line
+citations); the FLUXNET2015 comparison (206/212 sites, CVM/CSH exclusion
+rules); the new Figure 2's HDR contour method (WorldClim BIO1/BIO12, ESA
+CCI 2015 ice-free-land mask, cosine-of-latitude weighting, 201×201 weighted
+KDE grid — grep-verified against current code, retired Mahalanobis
+statistic deliberately excluded); and round-robin harmonization.
+
+**Notable findings, not just facts:**
+- The task's "7-bin vs 18-bin schemes" phrasing doesn't match any single
+  doc verbatim — the actual finding is that `methods_biomass.md` and
+  `methods_trendy_iav.md` still report only 7-bin numbers as canonical,
+  but `scripts/figure_representativeness_summary.R` moved the continuous
+  axes' summary-figure default to 18-bin — both docs are stale relative to
+  current code and flagged as such.
+- No persistent identifier (PID/DOI) exists for the snapshot or the
+  repository: `docs/methods_requirements.md`'s data/code-availability
+  templates have literal unfilled `[PID]` / `[ZENODO DOI]` placeholders.
+  Per-site identifiers exist for ICOS (handle.net, not a DOI) but not TERN.
+- Round-robin harmonization: not found anywhere in the repo, not even a
+  design document — only one generic, unelaborated "cross-hub validation
+  if applicable" bullet in the requirements spec.
+- `docs/methods_requirements.md` itself carries stale placeholder facts
+  (672-site snapshot, 2026-04-14 download date) that must not be used as
+  current values — flagged explicitly rather than propagated.
+
+Every item not found is stated as an explicit "not found, searched X" line
+in the run log rather than inferred, per the task's accuracy-first
+instruction.
+
+---
+
 ## 2026-07-02 — Draft-manuscript Figure 2 replaced with the both-contours version
 
 Follow-on to the same day's Mahalanobis coverage / annotation-free overlay

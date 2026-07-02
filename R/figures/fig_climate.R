@@ -806,6 +806,126 @@ whittaker_hdr_coverage <- function(density_grid, site_mat, site_map, probs = c(0
   }))
 }
 
+#' FLUXNET network coverage of global ice-free land, Mahalanobis-distance definition
+#'
+#' An area-weighted coverage metric that replaces the cell-count coverage in
+#' \code{\link{whittaker_hdr_coverage}} with a grid-independent one: a land
+#' pixel counts as "sampled" if its exact (MAT, MAP) position lies within
+#' Mahalanobis distance \code{d} of at least one FLUXNET site's exact (MAT,
+#' MAP) position -- sites are never snapped to a grid cell, only land pixels
+#' (already gridded at native WorldClim resolution) are aggregated.
+#'
+#' The Mahalanobis metric uses the covariance of the \strong{area-weighted
+#' global ice-free-land climate distribution} (\code{land_climate}), not the
+#' site/tower distribution: \code{d(x, s) = sqrt((x - s)' Sigma^-1 (x - s))},
+#' where \code{Sigma} is the weighted covariance of \code{(mat, map)} across
+#' all land pixels. Distances are computed once, for every land pixel, as the
+#' minimum over all sites (a loop over the small site list with a vectorised
+#' distance computation over the large pixel vector -- paying the full
+#' pixel-by-site cost exactly once), then reused to tabulate coverage at
+#' every threshold and region cheaply.
+#'
+#' Optional region restriction (e.g. the 95%/99% highest-density-region
+#' envelopes) reuses \code{\link{.hdr_levels}} on a supplied
+#' \code{density_grid}, with land pixels (not sites) snapped to their nearest
+#' grid node purely to classify region membership.
+#'
+#' @param land_climate Data frame from \code{\link{build_global_landclimate}}
+#'   (columns \code{mat}, \code{map}, \code{weight}).
+#' @param site_mat,site_map Numeric vectors of FLUXNET site MAT (degC) and
+#'   MAP (mm/yr) exact positions (not snapped to any grid).
+#' @param thresholds Numeric vector of Mahalanobis-distance thresholds
+#'   (default \code{c(0.25, 0.5, 1.0)}).
+#' @param density_grid Optional density grid (as from
+#'   \code{.weighted_density_grid()}) used to additionally restrict coverage
+#'   to the highest-density-region envelopes named in \code{hdr_probs}. When
+#'   \code{NULL}, only the unrestricted ("all") region is reported.
+#' @param hdr_probs Numeric vector of HDR coverage probabilities (default
+#'   \code{c(0.95, 0.99)}), used only when \code{density_grid} is supplied.
+#'
+#' @return A list with elements \code{table} (a data frame with columns
+#'   \code{region}, \code{threshold}, \code{area_weighted_coverage}) and
+#'   \code{covariance} (the 2x2 weighted covariance matrix of the land
+#'   climate distribution used to define the metric, with row/col names
+#'   \code{mat}/\code{map}) and \code{mean} (the weighted mean MAT/MAP used
+#'   to centre the distance calculation).
+#'
+#' @export
+whittaker_mahalanobis_coverage <- function(
+  land_climate,
+  site_mat,
+  site_map,
+  thresholds   = c(0.25, 0.5, 1.0),
+  density_grid = NULL,
+  hdr_probs    = c(0.95, 0.99)
+) {
+  .check_cols_climate(land_climate, c("mat", "map", "weight"))
+  keep     <- !is.na(site_mat) & !is.na(site_map)
+  site_mat <- site_mat[keep]
+  site_map <- site_map[keep]
+
+  mat <- land_climate$mat
+  map <- land_climate$map
+  w   <- land_climate$weight
+  wsum <- sum(w)
+
+  # --- area-weighted covariance of the global land-climate distribution ------
+  mx <- sum(w * mat) / wsum
+  my <- sum(w * map) / wsum
+  sxx <- sum(w * (mat - mx)^2) / wsum
+  syy <- sum(w * (map - my)^2) / wsum
+  sxy <- sum(w * (mat - mx) * (map - my)) / wsum
+  Sigma <- matrix(c(sxx, sxy, sxy, syy), nrow = 2,
+                  dimnames = list(c("mat", "map"), c("mat", "map")))
+
+  # --- whitening transform: Sigma^-1 = V diag(e) V', so ------------------------
+  # --- (x-s)' Sigma^-1 (x-s) = || diag(sqrt(e)) V' (x-s) ||^2 -----------------
+  eig  <- eigen(solve(Sigma), symmetric = TRUE)
+  Tmat <- diag(sqrt(eig$values), nrow = 2) %*% t(eig$vectors)
+
+  px <- Tmat[1, 1] * (mat - mx) + Tmat[1, 2] * (map - my)
+  py <- Tmat[2, 1] * (mat - mx) + Tmat[2, 2] * (map - my)
+  sx <- Tmat[1, 1] * (site_mat - mx) + Tmat[1, 2] * (site_map - my)
+  sy <- Tmat[2, 1] * (site_mat - mx) + Tmat[2, 2] * (site_map - my)
+
+  # --- per-pixel minimum Mahalanobis distance to any site (computed once) ----
+  min_dist <- rep(Inf, length(px))
+  for (j in seq_along(sx)) {
+    min_dist <- pmin(min_dist, sqrt((px - sx[j])^2 + (py - sy[j])^2))
+  }
+
+  region_defs <- list(all = rep(TRUE, length(mat)))
+  if (!is.null(density_grid)) {
+    nx <- length(density_grid$xbin)
+    ny <- length(density_grid$ybin)
+    dx <- density_grid$xbin[2] - density_grid$xbin[1]
+    dy <- density_grid$ybin[2] - density_grid$ybin[1]
+    ix <- pmin(nx, pmax(1L, round((mat - density_grid$xbin[1]) / dx) + 1L))
+    iy <- pmin(ny, pmax(1L, round((map - density_grid$ybin[1]) / dy) + 1L))
+    pix_density <- density_grid$density[cbind(ix, iy)]
+    levels <- .hdr_levels(density_grid$density, probs = hdr_probs)
+    for (i in seq_along(hdr_probs)) {
+      region_defs[[paste0("hdr_", hdr_probs[i] * 100)]] <- pix_density >= levels[i]
+    }
+  }
+
+  tbl <- do.call(rbind, lapply(names(region_defs), function(region_name) {
+    in_region     <- region_defs[[region_name]]
+    region_w      <- w[in_region]
+    region_dist   <- min_dist[in_region]
+    region_wsum   <- sum(region_w)
+    do.call(rbind, lapply(thresholds, function(d) {
+      data.frame(
+        region                 = region_name,
+        threshold              = d,
+        area_weighted_coverage = sum(region_w[region_dist <= d]) / region_wsum
+      )
+    }))
+  }))
+
+  list(table = tbl, covariance = Sigma, mean = c(mat = mx, map = my))
+}
+
 
 # ---- Internal helpers -------------------------------------------------------
 

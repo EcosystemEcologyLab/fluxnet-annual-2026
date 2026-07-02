@@ -4,6 +4,87 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-02 — Mahalanobis-distance climate-space coverage; annotation-free Figure 2 contour overlays
+
+Follow-on to the same day's earlier Whittaker overlay/coverage session
+(below). Full step-by-step provenance is in
+`review/figures/whittaker/RUN_LOG_whittaker_coverage_mahalanobis.txt`.
+
+### New coverage metric
+
+The grid-cell coverage statistic from the previous run is retired (not
+deleted — `data/snapshots/whittaker_climate_coverage.csv` is unchanged on
+disk; its `.meta.json` gained a `superseded_by` note) and replaced by an
+area-weighted, grid-independent **Mahalanobis-distance** metric: a global
+ice-free-land pixel counts as "sampled" if its exact (MAT, MAP) position is
+within Mahalanobis distance *d* of at least one of the 759 (of 767) FLUXNET
+network sites with known WorldClim MAT/MAP — using each site's exact point
+value, never snapped to a grid cell. The Mahalanobis metric uses the
+covariance of the **area-weighted global ice-free-land climate
+distribution** (not the tower distribution):
+
+```
+Sigma (mat, map) =  [ 157.148    3238.686 ]
+                     [3238.686  557286.432 ]
+```
+
+(weighted mean MAT = 13.72 °C, MAP = 792.75 mm/yr; SD ≈ 12.54 °C, 746.5
+mm/yr). New function `whittaker_mahalanobis_coverage()` in
+`R/figures/fig_climate.R` computes each land pixel's minimum whitened
+distance to any site once (verified against `stats::mahalanobis()` to
+floating-point precision, max diff 7.8e-16), then reuses that vector to
+tabulate coverage cheaply across every threshold/region combination.
+`whittaker_hdr_coverage()` (the old grid-cell function) is untouched, kept
+for provenance, but its output is not used in these results.
+
+### Headline numbers (reference threshold d = 0.5)
+
+| Region | Area-weighted coverage |
+|---|---:|
+| All global ice-free land (unrestricted) | 99.22% |
+| Within the 95% HDR region | 99.98% |
+| Within the 99% HDR region | 99.63% |
+
+Full three-threshold (d = 0.25, 0.5, 1.0) × three-region table committed to
+`data/snapshots/whittaker_climate_coverage_mahalanobis.csv` with a
+`.meta.json` documenting the metric, the covariance source, the thresholds,
+the land mask, the area-weighting method, and the FLUXNET snapshot
+(`fluxnet_shuttle_snapshot_20260624T095651.csv`).
+
+**Why this is so much higher than the retired grid-cell metric (~6–10%):**
+this is not a bug (independently re-derived via `stats::mahalanobis()` and
+confirmed identical). The covariance is computed from the *full* global land
+distribution, which is inflated by rare extreme climates (deserts, arctic
+tundra, very wet mountains), so a "half-sigma" Mahalanobis ball around each
+of 759 broadly-distributed sites is physically large in original MAT/MAP
+units. The union of 759 overlapping site-neighbourhoods genuinely blankets
+almost all non-extreme climate space — a fundamentally more permissive
+notion of coverage than requiring a site to fall in the exact same discrete
+grid cell.
+
+### Figure regeneration
+
+`fig_whit_fig2_with_95contour.png`, `fig_whit_fig2_with_99contour.png`, and
+`fig_whit_fig2_with_both_contours.png` were regenerated with the in-panel
+contour label / "Global ice-free land area (HDR)" text block removed
+(`scale_linetype_manual(..., guide = "none")`); the NEE colorbar and the N
+sites/site-years inset (both inherited from the unmodified
+`fig_whittaker_worldclim()`) are unchanged. Same 3.5×3.5in/300dpi panel,
+same cached-contour reuse. Each figure's `.legend.txt` now carries the full
+contour explanation plus the reference (d=0.5) coverage number, since no
+in-panel legend remains to explain the lines.
+
+### Process note
+
+Same run-log discipline as prior sessions (tryCatch-wrapped pipeline,
+unconditional final outcome line). One mid-run correctness check worth
+recording: a fresh QA pass on the surprisingly high headline numbers was run
+*before* committing — cross-checking the new Mahalanobis implementation
+against R's own `stats::mahalanobis()` — rather than accepting an unusual
+result at face value.
+
+---
+
 ## 2026-07-02 — Whittaker global-density figure, Figure 2 HDR contour overlays, and network climate-space coverage statistics
 
 Follow-on to the same day's earlier global ice-free-land Whittaker session

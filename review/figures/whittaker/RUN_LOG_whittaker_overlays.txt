@@ -79,3 +79,28 @@
 2026-07-02T22:13:10Z attempting: re-commit and re-push the corrected RUN_LOG_whittaker_overlays.txt (new commit, not an amend, per project convention).
 2026-07-02T22:13:45Z completed: committed (ce0335c) and pushed to origin/main (cc94946..ce0335c).
 2026-07-02T22:13:50Z outcome: SUCCESS -- Task 1 (fig_whit_global_density.png supersedes the hexbin, 2 rendering bugs found and fixed), Task 2 (fig_whit_fig2_with_99contour.png / _95contour.png / _both_contours.png, each with a legend, layered on the unmodified Figure 2), and Task 3 (whittaker_hdr_coverage(): headline numbers a=0.0924 b=0.0669 c=0.0977 d=0.0945 at base resolution 201x201, bin-sensitivity sweep across 5 resolutions, data/snapshots/whittaker_climate_coverage.csv + .meta.json) are all complete and independently verified (visual QA, git diff, statistic values). SESSION_LOG.md entry written. All deliverables committed and pushed across two commits: cc94946 (scripts, figures, legends, CSV/meta, R/figures/fig_climate.R, SESSION_LOG.md) and ce0335c (this run log's ordering correction).
+2026-07-02T22:26:00Z attempting: source R/pipeline_config.R, R/plot_constants.R, R/figures/fig_climate.R and run check_pipeline_config()
+2026-07-02T22:26:01Z completed: pipeline config sourced and checked
+2026-07-02T22:26:01Z attempting: check for cached land_climate/density_grid from scripts/generate_whittaker_global.R at data/processed/whittaker_global_landclimate.rds and data/processed/whittaker_global_density_grid.rds (avoids recomputing the density surface)
+2026-07-02T22:26:02Z found: both RDS caches present. Loaded land_climate (8,341,020 rows) and density_grid (201x201) without recomputation.
+2026-07-02T22:26:02Z computation: reusing the same 3.5x3.5in/300dpi style override as scripts/generate_whittaker_global.R and fig_whit01_ShuttleFull.png -- xlim=[-15,35] degC, ylim=[0,4000] mm/yr.
+2026-07-02T22:26:02Z computation: 1.18% of global ice-free land-area weight falls outside the displayed Figure 2 axis window (previous session's fig_whit_global_* run reported 1.18% total outside the axes -- see below for the exact match/comparison).
+2026-07-02T22:26:02Z attempting: load Figure 2 inputs -- data/duckdb/fluxnet.duckdb::annual_converted (FLUXMET) and the latest data/snapshots/fluxnet_shuttle_snapshot*.csv, to reconstruct the exact fig_whit01_ShuttleFull.png plot object via the unmodified fig_whittaker_worldclim()
+2026-07-02T22:26:02Z completed: loaded data_yy (6,108 rows, FLUXMET annual_converted) and shuttle_meta from data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv (767 sites).
+2026-07-02T22:26:02Z attempting: build the Figure 2 base plot via the unmodified fig_whittaker_worldclim(data_yy, shuttle_meta, ...) -- identical call to scripts/generate_whittaker.R's Whit01
+2026-07-02T22:26:03Z completed: fig2_base built (unmodified fig_whittaker_worldclim() call; not saved directly -- used only as the base layer for the three overlays below).
+2026-07-02T22:26:03Z attempting: fig_whittaker_global_contour(density_grid = density_grid) to obtain the shared contour_df (95%/99% HDR lines) for the three overlays
+2026-07-02T22:26:03Z completed: contour_df has 1126 rows, probs present: 0.99, 0.95
+2026-07-02T22:26:03Z attempting: build and save fig_whit_fig2_with_99contour.png (Figure 2 + 99% HDR contour only)
+2026-07-02T22:26:03Z completed: wrote review/figures/whittaker/fig_whit_fig2_with_99contour.png (3.5 x 3.5 in, 300 dpi, white bg).
+2026-07-02T22:26:03Z attempting: build and save fig_whit_fig2_with_95contour.png (Figure 2 + 95% HDR contour only)
+2026-07-02T22:26:04Z completed: wrote review/figures/whittaker/fig_whit_fig2_with_95contour.png (3.5 x 3.5 in, 300 dpi, white bg).
+2026-07-02T22:26:04Z attempting: build and save fig_whit_fig2_with_both_contours.png (Figure 2 + both 95% solid and 99% dashed HDR contours)
+2026-07-02T22:26:04Z completed: wrote review/figures/whittaker/fig_whit_fig2_with_both_contours.png (3.5 x 3.5 in, 300 dpi, white bg).
+2026-07-02T22:26:04Z attempting: read data/snapshots/whittaker_climate_coverage_mahalanobis.csv (written by scripts/generate_whittaker_coverage_mahalanobis.R, which must run BEFORE this script) for the reference (d=0.5) coverage number cited in the legends below
+2026-07-02T22:26:04Z completed: read data/snapshots/whittaker_climate_coverage_mahalanobis.csv. Reference (d=0.5) area-weighted coverage -- all land = 0.9922, within 95% HDR = 0.9998, within 99% HDR = 0.9963.
+2026-07-02T22:26:04Z attempting: write legend .txt files for the three overlay figures (now carrying the full contour explanation, since the in-panel legend/label was removed from the figures themselves)
+2026-07-02T22:26:04Z completed: wrote review/figures/whittaker/fig_whit_fig2_with_99contour.legend.txt
+2026-07-02T22:26:04Z completed: wrote review/figures/whittaker/fig_whit_fig2_with_95contour.legend.txt
+2026-07-02T22:26:04Z completed: wrote review/figures/whittaker/fig_whit_fig2_with_both_contours.legend.txt
+2026-07-02T22:26:04Z outcome: SUCCESS -- three Figure 2 contour overlays (no in-panel annotation) + legends (with the Mahalanobis coverage stat), all written.

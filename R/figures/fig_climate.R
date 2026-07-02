@@ -530,27 +530,39 @@ fig_whittaker_global_frequency <- function(
 #' clipped from view (not recomputed).
 #'
 #' @param land_climate Data frame from \code{\link{build_global_landclimate}}
-#'   (columns \code{mat}, \code{map}, \code{weight}).
+#'   (columns \code{mat}, \code{map}, \code{weight}). Ignored (may be
+#'   \code{NULL}) when \code{density_grid} is supplied directly.
 #' @param style Named list of visual parameters, defaults to
 #'   \code{\link{WHITTAKER_STYLE}}.
 #' @param probs Numeric vector of coverage probabilities for the contour
 #'   lines (default \code{c(0.95, 0.99)}).
-#' @param gridsize Integer length-2 vector, KDE evaluation grid size.
+#' @param gridsize Integer length-2 vector, KDE evaluation grid size. Ignored
+#'   when \code{density_grid} is supplied.
+#' @param density_grid Optional pre-computed density grid (a list with
+#'   \code{xbin}, \code{ybin}, \code{density}, as returned by
+#'   \code{\link{build_global_landclimate}} + \code{.weighted_density_grid()}).
+#'   Pass this to reuse an already-computed density surface (e.g. shared with
+#'   \code{\link{fig_whittaker_global_density}} and coverage-statistic code)
+#'   instead of recomputing it here. When \code{NULL} (default), the density
+#'   grid is computed from \code{land_climate}, preserving prior behaviour.
 #'
 #' @return A list with elements \code{plot} (the ggplot object) and
 #'   \code{contour_df} (the underlying contour-line coordinates).
 #'
 #' @export
 fig_whittaker_global_contour <- function(
-  land_climate,
-  style    = WHITTAKER_STYLE,
-  probs    = c(0.95, 0.99),
-  gridsize = c(201, 201)
+  land_climate = NULL,
+  style        = WHITTAKER_STYLE,
+  probs        = c(0.95, 0.99),
+  gridsize     = c(201, 201),
+  density_grid = NULL
 ) {
-  .check_cols_climate(land_climate, c("mat", "map", "weight"))
-
-  dg     <- .weighted_density_grid(land_climate$mat, land_climate$map,
-                                   land_climate$weight, gridsize = gridsize)
+  if (is.null(density_grid)) {
+    .check_cols_climate(land_climate, c("mat", "map", "weight"))
+    density_grid <- .weighted_density_grid(land_climate$mat, land_climate$map,
+                                           land_climate$weight, gridsize = gridsize)
+  }
+  dg     <- density_grid
   levels <- .hdr_levels(dg$density, probs = probs)
 
   contour_df <- do.call(rbind, lapply(seq_along(probs), function(i) {
@@ -607,6 +619,191 @@ fig_whittaker_global_contour <- function(
     )
 
   list(plot = p, contour_df = contour_df)
+}
+
+#' Global ice-free land — Whittaker continuous density shading (WorldClim + CCI)
+#'
+#' Draws the same weighted 2D kernel density surface used by
+#' \code{\link{fig_whittaker_global_contour}} as continuous shading (a
+#' smoothly interpolated raster) rather than discrete hexagons, on a neutral
+#' sequential colour scale. Supersedes the discrete hexbin produced by
+#' \code{\link{fig_whittaker_global_frequency}} for talk-slide backgrounds,
+#' since a continuous field reads more cleanly under overlaid points/contours.
+#'
+#' Unlike \code{\link{fig_whittaker_global_frequency}}, no data pre-clipping
+#' is needed before plotting: \code{density_grid} is already a fixed regular
+#' grid, and \code{coord_cartesian()} windows the display to
+#' \code{style$xlim}/\code{style$ylim} exactly as the other Whittaker figures
+#' do.
+#'
+#' @param density_grid A density grid as returned by
+#'   \code{.weighted_density_grid()} (list with \code{xbin}, \code{ybin},
+#'   \code{density}) -- typically the same object passed to
+#'   \code{\link{fig_whittaker_global_contour}}, so the shading and the
+#'   contour lines are guaranteed consistent.
+#' @param style Named list of visual parameters, defaults to
+#'   \code{\link{WHITTAKER_STYLE}}.
+#' @param source_label Character. Data-source line shown in the inset text.
+#'
+#' @return A list with elements \code{plot} (the ggplot object) and
+#'   \code{frac_kept} (fraction of total grid mass that falls within
+#'   \code{style$xlim}/\code{style$ylim}, i.e. is visible in the displayed
+#'   window).
+#'
+#' @export
+fig_whittaker_global_density <- function(
+  density_grid,
+  style        = WHITTAKER_STYLE,
+  source_label = "WorldClim v2.1 x ESA CCI LC 2015"
+) {
+  if (!requireNamespace("colorspace", quietly = TRUE)) {
+    stop("Package 'colorspace' is required for fig_whittaker_global_density().",
+         call. = FALSE)
+  }
+
+  grid_df <- expand.grid(mat = density_grid$xbin, map = density_grid$ybin)
+  grid_df$density <- as.vector(density_grid$density)
+
+  in_window <- grid_df$mat >= style$xlim[1] & grid_df$mat <= style$xlim[2] &
+               grid_df$map >= style$ylim[1] & grid_df$map <= style$ylim[2]
+  frac_kept <- sum(grid_df$density[in_window]) / sum(grid_df$density)
+
+  # Plot only the grid cells inside the display window: the KDE's padded
+  # domain extends far beyond style$xlim/ylim (down to near-zero density in
+  # the tails), and colour-scale limits computed over that full padded grid
+  # would compress every visible cell into a sliver of the scale. Restricting
+  # both the plotted data AND the colour domain to what is actually shown
+  # keeps the shading legible and matches the visible window exactly.
+  grid_df <- grid_df[in_window, ]
+
+  # Even within the visible window, a Gaussian-kernel density estimate over a
+  # skewed, heavy-tailed global distribution can span dozens of orders of
+  # magnitude between its peak and its faintest visible tail (real feature of
+  # the KDE, not a bug) -- e.g. a rare cold+wet MAT/MAP corner sits many
+  # bandwidths from the bulk of the data. A log10 scale spanning that full
+  # range makes for an uninformative colourbar (e.g. "1e-56, 1e-40, ...").
+  # Floor the colour domain 6 orders of magnitude below the visible peak and
+  # squish anything below that into the lightest shade: differences beyond
+  # that point are visually and scientifically indistinguishable from zero.
+  dens_max  <- max(grid_df$density)
+  dens_floor <- dens_max * 1e-6
+  fill_limits <- c(dens_floor, dens_max)
+
+  detail_str <- paste0(
+    source_label, "\n",
+    "all ice-free land, area-weighted\n",
+    sprintf("%.1f%% of global land area shown", 100 * frac_kept)
+  )
+
+  p <- ggplot2::ggplot(
+    grid_df,
+    ggplot2::aes(x = .data$mat, y = .data$map, fill = .data$density)
+  ) +
+    ggplot2::geom_raster(interpolate = TRUE) +
+    colorspace::scale_fill_continuous_sequential(
+      palette  = "Blues 3",
+      trans    = "log10",
+      limits   = fill_limits,
+      oob      = scales::squish,
+      na.value = NA
+    ) +
+    ggplot2::guides(
+      fill = ggplot2::guide_colorbar(
+        title          = "Area-weighted land\ndensity (log10)",
+        title.position = "top",
+        barwidth       = style$colorbar_width,
+        barheight      = style$colorbar_height,
+        direction      = "horizontal"
+      )
+    ) +
+    ggplot2::annotate(
+      "text",
+      x     = -Inf, y = Inf,
+      label = detail_str,
+      hjust = -0.05, vjust = 1.3,
+      size  = style$detail_text_size
+    ) +
+    ggplot2::coord_cartesian(
+      xlim = style$xlim,
+      ylim = style$ylim
+    ) +
+    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::labs(
+      x = expression("Mean Annual Temperature (" * degree * "C)"),
+      y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
+    ) +
+    .whittaker_theme(style)
+
+  list(plot = p, frac_kept = frac_kept)
+}
+
+#' FLUXNET network coverage of global ice-free-land HDR climate-space envelopes
+#'
+#' Computes how much of the global ice-free-land climate-space footprint the
+#' FLUXNET network reaches, relative to the same highest-density-region (HDR)
+#' envelopes drawn by \code{\link{fig_whittaker_global_contour}}. For each
+#' target probability in \code{probs}, a site's MAT/MAP position is snapped
+#' to the nearest node of \code{density_grid} (the same discretisation the
+#' HDR envelope is defined on), and four numbers are returned:
+#' \enumerate{
+#'   \item \code{cell_coverage} — of the grid cells inside the HDR region
+#'     (\code{density >= level}), the fraction that contain at least one site.
+#'   \item \code{area_weighted_coverage} — of the global ice-free land-area
+#'     weight inside the HDR region, the fraction that falls in
+#'     site-containing cells.
+#' }
+#' both computed once per \code{probs} entry (so, with the default
+#' \code{probs = c(0.95, 0.99)}, this yields the four numbers a-d described
+#' in the coverage-statistics task).
+#'
+#' @param density_grid A density grid as returned by
+#'   \code{.weighted_density_grid()} (list with \code{xbin}, \code{ybin},
+#'   \code{density}) — the same object used for the contour/shading figures,
+#'   so the coverage statistics are defined against the identical envelopes.
+#' @param site_mat,site_map Numeric vectors of FLUXNET site MAT (degC) and
+#'   MAP (mm/yr) positions, one row per site (should come from the same
+#'   WorldClim source as \code{density_grid} so coordinates are directly
+#'   comparable).
+#' @param probs Numeric vector of target HDR coverage probabilities (default
+#'   \code{c(0.95, 0.99)}).
+#'
+#' @return A data frame with one row per \code{probs} entry and columns
+#'   \code{prob}, \code{hdr_level}, \code{n_cells_region}, \code{n_sites},
+#'   \code{cell_coverage}, \code{area_weighted_coverage}.
+#'
+#' @export
+whittaker_hdr_coverage <- function(density_grid, site_mat, site_map, probs = c(0.95, 0.99)) {
+  nx <- length(density_grid$xbin)
+  ny <- length(density_grid$ybin)
+  dx <- density_grid$xbin[2] - density_grid$xbin[1]
+  dy <- density_grid$ybin[2] - density_grid$ybin[1]
+
+  keep <- !is.na(site_mat) & !is.na(site_map)
+  site_mat <- site_mat[keep]
+  site_map <- site_map[keep]
+
+  ix <- pmin(nx, pmax(1L, round((site_mat - density_grid$xbin[1]) / dx) + 1L))
+  iy <- pmin(ny, pmax(1L, round((site_map - density_grid$ybin[1]) / dy) + 1L))
+  site_cell <- (iy - 1L) * nx + ix
+
+  has_site <- logical(nx * ny)
+  has_site[unique(site_cell)] <- TRUE
+
+  dens_vec <- as.vector(density_grid$density)
+  levels   <- .hdr_levels(density_grid$density, probs = probs)
+
+  do.call(rbind, lapply(seq_along(probs), function(i) {
+    in_region <- dens_vec >= levels[i]
+    data.frame(
+      prob                   = probs[i],
+      hdr_level              = levels[i],
+      n_cells_region         = sum(in_region),
+      n_sites                = length(unique(site_cell)),
+      cell_coverage          = sum(has_site[in_region]) / sum(in_region),
+      area_weighted_coverage = sum(dens_vec[in_region][has_site[in_region]]) / sum(dens_vec[in_region])
+    )
+  }))
 }
 
 

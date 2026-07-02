@@ -85,3 +85,75 @@
 2026-07-02T21:00:20Z confirmed outputs on disk: review/figures/whittaker/fig_whit_global_frequency.png, fig_whit_global_contour.png, fig_whit_global_frequency.legend.txt, fig_whit_global_contour.legend.txt, scripts/generate_whittaker_global.R, and the new functions in R/figures/fig_climate.R (fig_whittaker_worldclim() and WHITTAKER_STYLE confirmed unmodified via git diff --stat: 368 insertions, 0 deletions).
 2026-07-02T21:00:25Z known gap (disclosed, not hidden): no automated unit tests were added for the new R/ functions -- testthat is not installed in this environment and was not installed per the "no new package dependencies without discussion" rule; .hdr_levels()/.weighted_density_grid() were instead sanity-checked by hand against synthetic data with a known analytic answer (see above), matching this repo's existing precedent of no tests for fig_climate.R's other exported functions.
 2026-07-02T21:00:30Z outcome: TASK COMPLETE -- both global Whittaker background figures, both legends, the driver script, and the new R/figures/fig_climate.R functions are on disk and verified. Proceeding to write the SESSION_LOG.md entry and commit/push.
+2026-07-02T21:52:20Z attempting: source R/pipeline_config.R, R/plot_constants.R, R/figures/fig_climate.R and run check_pipeline_config()
+2026-07-02T21:52:21Z completed: pipeline config sourced and checked
+2026-07-02T21:52:21Z attempting: check WorldClim BIO1 raster exists at data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif
+2026-07-02T21:52:21Z found: data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif
+2026-07-02T21:52:21Z attempting: check WorldClim BIO12 raster exists at data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif
+2026-07-02T21:52:21Z found: data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif
+2026-07-02T21:52:21Z attempting: check ESA CCI land-cover raster (ice/water mask source) exists at data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif
+2026-07-02T21:52:21Z found: data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif
+2026-07-02T21:52:21Z attempting: build_global_landclimate() -- reclassify CCI land cover (class 210 water, 220 ice -> excluded; class 0 no-data -> NA; all other classes -> ice-free land), aggregate to WorldClim grid (factor 15, exact), threshold at >=0.5 ice-free-land fraction, apply Antarctica lat < -60 backstop, compute cos(lat) area weights. This reads/streams the full 300 m global CCI raster (~312 MB on disk) and may take several minutes.
+2026-07-02T21:53:19Z completed: build_global_landclimate() returned 8,341,020 ice-free land pixels (of 37,324,800 total WorldClim grid cells) in 58.2 s. MAT range [-24.15, 31.17] degC. MAP range [0, 8626] mm/yr.
+2026-07-02T21:53:19Z computation: axis ranges read from WHITTAKER_STYLE (R/figures/fig_climate.R) -- xlim = [-15, 35] degC, ylim = [0, 4000] mm/yr, hex bins = 15, panel = 3.5 x 3.5 in @ 300 dpi (matching fig_whit01_ShuttleFull.png).
+2026-07-02T21:53:20Z computation: clip diagnostics vs Figure 2 axis window -- 0.94% of global land-area weight falls outside MAT range [-15,35] (mostly cold tundra/taiga MAT < -15), 0.24% falls outside MAP range [0,4000] (wet tropical tails MAP > 4000). 98.82% of global ice-free land area is shown within the displayed axis window.
+2026-07-02T21:53:20Z attempting: .weighted_density_grid() -- weighted 2D KDE over the FULL unclipped global ice-free-land distribution (linear binning + separable Gaussian smoothing), gridsize 201x201 (base resolution)
+2026-07-02T21:53:21Z completed: density_grid computed in 0.9 s. Grid 201x201, sum(density) = 6,077,832 (mass-preserving vs. sum(land_climate$weight) = 6,077,832).
+2026-07-02T21:53:21Z attempting: cache land_climate and density_grid to data/processed (gitignored) for reuse by scripts/generate_whittaker_overlays.R
+2026-07-02T21:53:26Z completed: wrote data/processed/whittaker_global_landclimate.rds and data/processed/whittaker_global_density_grid.rds
+2026-07-02T21:53:26Z attempting: build fig_whittaker_global_density() (continuous shading of the shared density_grid, log10 fill)
+2026-07-02T21:53:26Z completed: wrote review/figures/whittaker/fig_whit_global_density.png (3.5 x 3.5 in, 300 dpi, white bg). 96.95% of global land-area density mass shown after axis clipping.
+2026-07-02T21:53:26Z attempting: build fig_whittaker_global_contour() reusing the SAME density_grid computed above (no recompute), 95%/99% highest-density-region contours, then clipped to the Figure 2 axis window for display
+2026-07-02T21:53:26Z completed: wrote review/figures/whittaker/fig_whit_global_contour.png (3.5 x 3.5 in, 300 dpi, white bg). Contour coordinate range: MAT [-21.9, 32.3], MAP [-169.2, 4292]. At least one contour extends beyond the Figure 2 axis window and is visibly clipped/open at a plot edge.
+2026-07-02T21:53:26Z attempting: write legend .txt files for both figures
+2026-07-02T21:53:26Z completed: wrote review/figures/whittaker/fig_whit_global_density.legend.txt
+2026-07-02T21:53:26Z completed: wrote review/figures/whittaker/fig_whit_global_contour.legend.txt
+2026-07-02T21:53:26Z outcome: SUCCESS -- both PNGs, both legend .txt files, and the data/processed/ RDS caches were written.
+2026-07-02T21:56:52Z attempting: source R/pipeline_config.R, R/plot_constants.R, R/figures/fig_climate.R and run check_pipeline_config()
+2026-07-02T21:56:53Z completed: pipeline config sourced and checked
+2026-07-02T21:56:53Z attempting: check WorldClim BIO1 raster exists at data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif
+2026-07-02T21:56:53Z found: data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif
+2026-07-02T21:56:53Z attempting: check WorldClim BIO12 raster exists at data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif
+2026-07-02T21:56:53Z found: data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif
+2026-07-02T21:56:53Z attempting: check ESA CCI land-cover raster (ice/water mask source) exists at data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif
+2026-07-02T21:56:53Z found: data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif
+2026-07-02T21:56:53Z attempting: build_global_landclimate() -- reclassify CCI land cover (class 210 water, 220 ice -> excluded; class 0 no-data -> NA; all other classes -> ice-free land), aggregate to WorldClim grid (factor 15, exact), threshold at >=0.5 ice-free-land fraction, apply Antarctica lat < -60 backstop, compute cos(lat) area weights. This reads/streams the full 300 m global CCI raster (~312 MB on disk) and may take several minutes.
+2026-07-02T21:57:51Z completed: build_global_landclimate() returned 8,341,020 ice-free land pixels (of 37,324,800 total WorldClim grid cells) in 58.6 s. MAT range [-24.15, 31.17] degC. MAP range [0, 8626] mm/yr.
+2026-07-02T21:57:51Z computation: axis ranges read from WHITTAKER_STYLE (R/figures/fig_climate.R) -- xlim = [-15, 35] degC, ylim = [0, 4000] mm/yr, hex bins = 15, panel = 3.5 x 3.5 in @ 300 dpi (matching fig_whit01_ShuttleFull.png).
+2026-07-02T21:57:51Z computation: clip diagnostics vs Figure 2 axis window -- 0.94% of global land-area weight falls outside MAT range [-15,35] (mostly cold tundra/taiga MAT < -15), 0.24% falls outside MAP range [0,4000] (wet tropical tails MAP > 4000). 98.82% of global ice-free land area is shown within the displayed axis window.
+2026-07-02T21:57:51Z attempting: .weighted_density_grid() -- weighted 2D KDE over the FULL unclipped global ice-free-land distribution (linear binning + separable Gaussian smoothing), gridsize 201x201 (base resolution)
+2026-07-02T21:57:52Z completed: density_grid computed in 0.9 s. Grid 201x201, sum(density) = 6,077,832 (mass-preserving vs. sum(land_climate$weight) = 6,077,832).
+2026-07-02T21:57:52Z attempting: cache land_climate and density_grid to data/processed (gitignored) for reuse by scripts/generate_whittaker_overlays.R
+2026-07-02T21:57:57Z completed: wrote data/processed/whittaker_global_landclimate.rds and data/processed/whittaker_global_density_grid.rds
+2026-07-02T21:57:57Z attempting: build fig_whittaker_global_density() (continuous shading of the shared density_grid, log10 fill)
+2026-07-02T21:57:58Z completed: wrote review/figures/whittaker/fig_whit_global_density.png (3.5 x 3.5 in, 300 dpi, white bg). 96.95% of global land-area density mass shown after axis clipping.
+2026-07-02T21:57:58Z attempting: build fig_whittaker_global_contour() reusing the SAME density_grid computed above (no recompute), 95%/99% highest-density-region contours, then clipped to the Figure 2 axis window for display
+2026-07-02T21:57:58Z completed: wrote review/figures/whittaker/fig_whit_global_contour.png (3.5 x 3.5 in, 300 dpi, white bg). Contour coordinate range: MAT [-21.9, 32.3], MAP [-169.2, 4292]. At least one contour extends beyond the Figure 2 axis window and is visibly clipped/open at a plot edge.
+2026-07-02T21:57:58Z attempting: write legend .txt files for both figures
+2026-07-02T21:57:58Z completed: wrote review/figures/whittaker/fig_whit_global_density.legend.txt
+2026-07-02T21:57:58Z completed: wrote review/figures/whittaker/fig_whit_global_contour.legend.txt
+2026-07-02T21:57:58Z outcome: SUCCESS -- both PNGs, both legend .txt files, and the data/processed/ RDS caches were written.
+2026-07-02T21:58:56Z attempting: source R/pipeline_config.R, R/plot_constants.R, R/figures/fig_climate.R and run check_pipeline_config()
+2026-07-02T21:58:57Z completed: pipeline config sourced and checked
+2026-07-02T21:58:57Z attempting: check WorldClim BIO1 raster exists at data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif
+2026-07-02T21:58:57Z found: data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif
+2026-07-02T21:58:57Z attempting: check WorldClim BIO12 raster exists at data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif
+2026-07-02T21:58:57Z found: data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif
+2026-07-02T21:58:57Z attempting: check ESA CCI land-cover raster (ice/water mask source) exists at data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif
+2026-07-02T21:58:57Z found: data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif
+2026-07-02T21:58:57Z attempting: build_global_landclimate() -- reclassify CCI land cover (class 210 water, 220 ice -> excluded; class 0 no-data -> NA; all other classes -> ice-free land), aggregate to WorldClim grid (factor 15, exact), threshold at >=0.5 ice-free-land fraction, apply Antarctica lat < -60 backstop, compute cos(lat) area weights. This reads/streams the full 300 m global CCI raster (~312 MB on disk) and may take several minutes.
+2026-07-02T21:59:55Z completed: build_global_landclimate() returned 8,341,020 ice-free land pixels (of 37,324,800 total WorldClim grid cells) in 58.2 s. MAT range [-24.15, 31.17] degC. MAP range [0, 8626] mm/yr.
+2026-07-02T21:59:56Z computation: axis ranges read from WHITTAKER_STYLE (R/figures/fig_climate.R) -- xlim = [-15, 35] degC, ylim = [0, 4000] mm/yr, hex bins = 15, panel = 3.5 x 3.5 in @ 300 dpi (matching fig_whit01_ShuttleFull.png).
+2026-07-02T21:59:56Z computation: clip diagnostics vs Figure 2 axis window -- 0.94% of global land-area weight falls outside MAT range [-15,35] (mostly cold tundra/taiga MAT < -15), 0.24% falls outside MAP range [0,4000] (wet tropical tails MAP > 4000). 98.82% of global ice-free land area is shown within the displayed axis window.
+2026-07-02T21:59:56Z attempting: .weighted_density_grid() -- weighted 2D KDE over the FULL unclipped global ice-free-land distribution (linear binning + separable Gaussian smoothing), gridsize 201x201 (base resolution)
+2026-07-02T21:59:57Z completed: density_grid computed in 0.9 s. Grid 201x201, sum(density) = 6,077,832 (mass-preserving vs. sum(land_climate$weight) = 6,077,832).
+2026-07-02T21:59:57Z attempting: cache land_climate and density_grid to data/processed (gitignored) for reuse by scripts/generate_whittaker_overlays.R
+2026-07-02T22:00:02Z completed: wrote data/processed/whittaker_global_landclimate.rds and data/processed/whittaker_global_density_grid.rds
+2026-07-02T22:00:02Z attempting: build fig_whittaker_global_density() (continuous shading of the shared density_grid, log10 fill)
+2026-07-02T22:00:02Z completed: wrote review/figures/whittaker/fig_whit_global_density.png (3.5 x 3.5 in, 300 dpi, white bg). 96.95% of global land-area density mass shown after axis clipping.
+2026-07-02T22:00:02Z attempting: build fig_whittaker_global_contour() reusing the SAME density_grid computed above (no recompute), 95%/99% highest-density-region contours, then clipped to the Figure 2 axis window for display
+2026-07-02T22:00:02Z completed: wrote review/figures/whittaker/fig_whit_global_contour.png (3.5 x 3.5 in, 300 dpi, white bg). Contour coordinate range: MAT [-21.9, 32.3], MAP [-169.2, 4292]. At least one contour extends beyond the Figure 2 axis window and is visibly clipped/open at a plot edge.
+2026-07-02T22:00:02Z attempting: write legend .txt files for both figures
+2026-07-02T22:00:02Z completed: wrote review/figures/whittaker/fig_whit_global_density.legend.txt
+2026-07-02T22:00:02Z completed: wrote review/figures/whittaker/fig_whit_global_contour.legend.txt
+2026-07-02T22:00:02Z outcome: SUCCESS -- both PNGs, both legend .txt files, and the data/processed/ RDS caches were written.

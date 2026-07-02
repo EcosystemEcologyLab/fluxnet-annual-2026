@@ -1,8 +1,8 @@
 ## scripts/generate_whittaker_global.R
-## Generates two global ice-free-land Whittaker background figures
-## (WorldClim v2.1 MAT/MAP climate space), for use as talk-slide backgrounds
-## under the network-distribution Whittaker panels (fig_whit01_ShuttleFull.png
-## / fig_02_whittaker_current.png). These figures represent global land area,
+## Generates global ice-free-land Whittaker background figures (WorldClim
+## v2.1 MAT/MAP climate space), for use as talk-slide backgrounds under the
+## network-distribution Whittaker panels (fig_whit01_ShuttleFull.png /
+## fig_02_whittaker_current.png). These figures represent global land area,
 ## not FLUXNET sites, and carry no NEE information.
 ##
 ## NON-SHUTTLE DATA NOTICE: this script uses WorldClim v2.1 (BIO1/BIO12) and
@@ -11,8 +11,17 @@
 ## layers for talk slides, not as primary data for the Annual Paper.
 ##
 ## Outputs (review/figures/whittaker/):
-##   fig_whit_global_frequency.png        + .legend.txt
+##   fig_whit_global_density.png          + .legend.txt   (continuous shading;
+##                                                          supersedes the retired
+##                                                          fig_whit_global_frequency.png hexbin)
 ##   fig_whit_global_contour.png          + .legend.txt
+##
+## Also caches (gitignored, data/processed/) for reuse by
+## scripts/generate_whittaker_overlays.R, so the Figure 2 contour overlays and
+## the climate-space coverage statistics are computed from the exact same
+## density surface as these figures, not a separately recomputed one:
+##   data/processed/whittaker_global_landclimate.rds
+##   data/processed/whittaker_global_density_grid.rds
 ##
 ## Run log (written continuously, independent of terminal output):
 ##   review/figures/whittaker/RUN_LOG_whittaker_global.txt
@@ -128,20 +137,44 @@ run_pipeline <- function() {
      sprintf("%.2f%%", 100 * frac_map_clipped), " falls outside MAP range [0,4000] (wet tropical tails MAP > 4000). ",
      sprintf("%.2f%%", 100 * frac_both_kept), " of global ice-free land area is shown within the displayed axis window.")
 
-  # ---- Figure 1: frequency hexbin ----------------------------------------------
-  rl("attempting: build fig_whittaker_global_frequency() (area-weighted hexbin, log10 fill, bins=15, clipped to axis window before binning)")
-  freq_result <- fig_whittaker_global_frequency(land_climate, style = style_3x3)
-  freq_path   <- file.path(out_dir, "fig_whit_global_frequency.png")
-  ggplot2::ggsave(freq_path, plot = freq_result$plot,
+  # ---- Shared density surface: computed ONCE, reused for the density figure, ----
+  # ---- the contour figure, cached to disk for the overlays/coverage companion ---
+  # ---- script (scripts/generate_whittaker_overlays.R), so the shading, the -----
+  # ---- contours, and the coverage statistics all derive from the identical -----
+  # ---- density surface -- no separately defined envelope. -----------------------
+  rl("attempting: .weighted_density_grid() -- weighted 2D KDE over the FULL unclipped global ice-free-land distribution (linear binning + separable Gaussian smoothing), gridsize 201x201 (base resolution)")
+  t_dg <- Sys.time()
+  density_grid <- .weighted_density_grid(land_climate$mat, land_climate$map,
+                                         land_climate$weight, gridsize = c(201, 201))
+  elapsed_dg <- round(as.numeric(difftime(Sys.time(), t_dg, units = "secs")), 1)
+  rl("completed: density_grid computed in ", elapsed_dg, " s. Grid 201x201, sum(density) = ",
+     format(sum(density_grid$density), big.mark = ","), " (mass-preserving vs. sum(land_climate$weight) = ",
+     format(total_weight, big.mark = ","), ").")
+
+  cache_dir <- "data/processed"
+  rl("attempting: cache land_climate and density_grid to ", cache_dir,
+     " (gitignored) for reuse by scripts/generate_whittaker_overlays.R")
+  if (!dir.exists(cache_dir)) dir.create(cache_dir, recursive = TRUE)
+  saveRDS(land_climate, file.path(cache_dir, "whittaker_global_landclimate.rds"))
+  saveRDS(density_grid, file.path(cache_dir, "whittaker_global_density_grid.rds"))
+  rl("completed: wrote ", file.path(cache_dir, "whittaker_global_landclimate.rds"), " and ",
+     file.path(cache_dir, "whittaker_global_density_grid.rds"))
+
+  # ---- Figure 1: continuous density shading (supersedes the retired hexbin) -----
+  rl("attempting: build fig_whittaker_global_density() (continuous shading of the shared density_grid, log10 fill)")
+  density_result <- fig_whittaker_global_density(density_grid, style = style_3x3)
+  density_path   <- file.path(out_dir, "fig_whit_global_density.png")
+  ggplot2::ggsave(density_path, plot = density_result$plot,
                   width = style_3x3$width_in, height = style_3x3$height_in,
                   units = "in", dpi = 300, bg = "white")
-  rl("completed: wrote ", freq_path, " (3.5 x 3.5 in, 300 dpi, white bg). ",
-     sprintf("%.2f%%", 100 * freq_result$frac_kept), " of global land-area weight shown after axis clipping.")
+  rl("completed: wrote ", density_path, " (3.5 x 3.5 in, 300 dpi, white bg). ",
+     sprintf("%.2f%%", 100 * density_result$frac_kept), " of global land-area density mass shown after axis clipping.")
 
-  # ---- Figure 2: HDR contour envelope -------------------------------------------
-  rl("attempting: build fig_whittaker_global_contour() (weighted KDE over FULL unclipped global distribution, ",
-     "95%/99% highest-density-region contours, then clipped to the Figure 2 axis window for display)")
-  contour_result <- fig_whittaker_global_contour(land_climate, style = style_3x3, probs = c(0.95, 0.99))
+  # ---- Figure 2: HDR contour envelope (reuses density_grid -- no recompute) -----
+  rl("attempting: build fig_whittaker_global_contour() reusing the SAME density_grid computed above (no recompute), ",
+     "95%/99% highest-density-region contours, then clipped to the Figure 2 axis window for display")
+  contour_result <- fig_whittaker_global_contour(style = style_3x3, probs = c(0.95, 0.99),
+                                                 density_grid = density_grid)
   contour_path   <- file.path(out_dir, "fig_whit_global_contour.png")
   ggplot2::ggsave(contour_path, plot = contour_result$plot,
                   width = style_3x3$width_in, height = style_3x3$height_in,
@@ -186,27 +219,29 @@ run_pipeline <- function() {
     " falls outside\n  the MAP axis range (wet tropical areas above 4000 mm/yr); neither axis was extended to\n",
     "  accommodate these tails -- per instruction, the Figure 2 axis window was matched exactly instead.\n",
     "Source script: scripts/generate_whittaker_global.R (functions build_global_landclimate(),\n",
-    "  fig_whittaker_global_frequency(), fig_whittaker_global_contour() in R/figures/fig_climate.R).\n",
+    "  fig_whittaker_global_density(), fig_whittaker_global_contour() in R/figures/fig_climate.R).\n",
     "Generated: ", format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"), "\n"
   )
 
-  freq_legend <- paste0(
-    "fig_whit_global_frequency.png -- Global ice-free land, Whittaker frequency hexbin\n",
-    "================================================================================\n",
+  density_legend <- paste0(
+    "fig_whit_global_density.png -- Global ice-free land, Whittaker continuous density shading\n",
+    "=============================================================================================\n",
     legend_common,
     "\n",
     "Color scale: neutral single-hue sequential ramp (colorspace 'Blues 3'), NOT the diverging NEE scale used\n",
-    "  in Figure 2 -- this background represents land area, which has no NEE. Fill = area-weighted land-pixel\n",
-    "  frequency summed within each hexagon, log10 scale (log10 chosen because land area is extremely\n",
-    "  right-skewed across climate space -- most hexagons contain little area, a few contain a large fraction).\n",
-    "  Empty hexagons (zero land pixels) are not drawn.\n",
-    "Hex bin domain: pixel data pre-clipped to the MAT/MAP axis ranges above before hexbinning (bins = 15, same\n",
-    "  as fig_whittaker_worldclim()), so hex-cell geometry matches Figure 2's hexbin grid exactly for overlay\n",
-    "  registration.\n",
-    sprintf("%.2f%% of global ice-free land-area weight is shown within the displayed axis window.\n", 100 * freq_result$frac_kept)
+    "  in Figure 2 -- this background represents land area, which has no NEE. Fill = the same weighted 2D KDE\n",
+    "  surface (.weighted_density_grid()) used for the 95%/99% HDR contours in fig_whit_global_contour.png, log10\n",
+    "  scale (log10 chosen because land-area density is extremely right-skewed across climate space).\n",
+    "Supersedes: this continuous-shaded panel replaces the earlier discrete hexbin\n",
+    "  (fig_whit_global_frequency.png, produced by fig_whittaker_global_frequency() -- that function remains in\n",
+    "  R/figures/fig_climate.R for any other caller but is no longer invoked by this driver script).\n",
+    "Consistency: this shading, the fig_whit_global_contour.png HDR lines, and the Figure 2 contour overlays and\n",
+    "  coverage statistics in scripts/generate_whittaker_overlays.R all derive from the SAME density_grid object\n",
+    "  (base resolution 201x201), computed once by this script and cached to data/processed/ for reuse.\n",
+    sprintf("%.2f%% of global ice-free land-area density mass is shown within the displayed axis window.\n", 100 * density_result$frac_kept)
   )
-  writeLines(freq_legend, file.path(out_dir, "fig_whit_global_frequency.legend.txt"))
-  rl("completed: wrote ", file.path(out_dir, "fig_whit_global_frequency.legend.txt"))
+  writeLines(density_legend, file.path(out_dir, "fig_whit_global_density.legend.txt"))
+  rl("completed: wrote ", file.path(out_dir, "fig_whit_global_density.legend.txt"))
 
   contour_legend <- paste0(
     "fig_whit_global_contour.png -- Global ice-free land, Whittaker density-contour envelope\n",
@@ -216,12 +251,13 @@ run_pipeline <- function() {
     "Color scale: none -- white background, no fill. Two contour lines only (solid = 95%, dashed = 99%),\n",
     "  colour grey20, intended as a clean envelope layer to sit under network points on talk slides.\n",
     "Contour method: highest-density-region (HDR) contours enclosing 95% and 99% of GLOBAL (unclipped)\n",
-    "  ice-free land-area weight, from a weighted 2D kernel density estimate (linear binning onto a 201x201\n",
-    "  grid + separable Gaussian smoothing, bandwidth via a weighted Scott's-rule reference using the\n",
-    "  effective sample size of the area weights; implemented in .weighted_density_grid()/.hdr_levels() in\n",
-    "  R/figures/fig_climate.R -- no new package dependency). The density estimate itself uses the FULL,\n",
-    "  unclipped global distribution so the 95%/99% figures are honest to 'global ice-free land area'; the\n",
-    "  same Figure 2 axis window is then applied for display only.\n",
+    "  ice-free land-area weight, from THE SAME weighted 2D kernel density estimate used for\n",
+    "  fig_whit_global_density.png (linear binning onto a 201x201 grid + separable Gaussian smoothing,\n",
+    "  bandwidth via a weighted Scott's-rule reference using the effective sample size of the area weights;\n",
+    "  implemented in .weighted_density_grid()/.hdr_levels() in R/figures/fig_climate.R -- no new package\n",
+    "  dependency). The density estimate itself uses the FULL, unclipped global distribution so the 95%/99%\n",
+    "  figures are honest to 'global ice-free land area'; the same Figure 2 axis window is then applied for\n",
+    "  display only.\n",
     if (contour_open_at_edge) {
       paste0("  NOTE: at least one contour line extends beyond the displayed axis window and appears open/clipped\n",
              "  at a plot edge on this panel -- this reflects real land area outside the Figure 2 climate-space\n",
@@ -242,8 +278,8 @@ pipeline_error <- tryCatch({
 }, error = function(e) e)
 
 if (is.null(pipeline_error)) {
-  rl("outcome: SUCCESS -- both PNGs and both legend .txt files written.")
-  message("\nDone: fig_whit_global_frequency.png, fig_whit_global_contour.png and their legends written to ", out_dir)
+  rl("outcome: SUCCESS -- both PNGs, both legend .txt files, and the data/processed/ RDS caches were written.")
+  message("\nDone: fig_whit_global_density.png, fig_whit_global_contour.png and their legends written to ", out_dir)
 } else {
   rl("ERROR: ", conditionMessage(pipeline_error))
   rl("outcome: FAILED -- see the last 'attempting' line above for what was in progress when the script stopped.")

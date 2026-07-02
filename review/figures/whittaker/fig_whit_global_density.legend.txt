@@ -1,5 +1,5 @@
-fig_whit_global_contour.png -- Global ice-free land, Whittaker density-contour envelope
-==========================================================================================
+fig_whit_global_density.png -- Global ice-free land, Whittaker continuous density shading
+=============================================================================================
 Data source: WorldClim v2.1, 2.5 arc-minute BIO1 (mean annual temperature) and BIO12 (annual precipitation).
   wc2.1_2.5m_bio_1.tif / wc2.1_2.5m_bio_12.tif -- NOT FLUXNET Shuttle data (see CLAUDE.md Hard Rule #1);
   used here only as a global background/context layer, not as primary data for the Annual Paper.
@@ -24,17 +24,15 @@ Source script: scripts/generate_whittaker_global.R (functions build_global_landc
   fig_whittaker_global_density(), fig_whittaker_global_contour() in R/figures/fig_climate.R).
 Generated: 2026-07-02T22:00:02Z
 
-Color scale: none -- white background, no fill. Two contour lines only (solid = 95%, dashed = 99%),
-  colour grey20, intended as a clean envelope layer to sit under network points on talk slides.
-Contour method: highest-density-region (HDR) contours enclosing 95% and 99% of GLOBAL (unclipped)
-  ice-free land-area weight, from THE SAME weighted 2D kernel density estimate used for
-  fig_whit_global_density.png (linear binning onto a 201x201 grid + separable Gaussian smoothing,
-  bandwidth via a weighted Scott's-rule reference using the effective sample size of the area weights;
-  implemented in .weighted_density_grid()/.hdr_levels() in R/figures/fig_climate.R -- no new package
-  dependency). The density estimate itself uses the FULL, unclipped global distribution so the 95%/99%
-  figures are honest to 'global ice-free land area'; the same Figure 2 axis window is then applied for
-  display only.
-  NOTE: at least one contour line extends beyond the displayed axis window and appears open/clipped
-  at a plot edge on this panel -- this reflects real land area outside the Figure 2 climate-space
-  window (see clipping percentages above), not a rendering error.
+Color scale: neutral single-hue sequential ramp (colorspace 'Blues 3'), NOT the diverging NEE scale used
+  in Figure 2 -- this background represents land area, which has no NEE. Fill = the same weighted 2D KDE
+  surface (.weighted_density_grid()) used for the 95%/99% HDR contours in fig_whit_global_contour.png, log10
+  scale (log10 chosen because land-area density is extremely right-skewed across climate space).
+Supersedes: this continuous-shaded panel replaces the earlier discrete hexbin
+  (fig_whit_global_frequency.png, produced by fig_whittaker_global_frequency() -- that function remains in
+  R/figures/fig_climate.R for any other caller but is no longer invoked by this driver script).
+Consistency: this shading, the fig_whit_global_contour.png HDR lines, and the Figure 2 contour overlays and
+  coverage statistics in scripts/generate_whittaker_overlays.R all derive from the SAME density_grid object
+  (base resolution 201x201), computed once by this script and cached to data/processed/ for reuse.
+96.95% of global ice-free land-area density mass is shown within the displayed axis window.
 

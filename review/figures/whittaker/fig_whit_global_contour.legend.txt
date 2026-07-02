@@ -21,18 +21,19 @@ Clipping: 0.94% of global ice-free land-area weight falls outside
   the MAP axis range (wet tropical areas above 4000 mm/yr); neither axis was extended to
   accommodate these tails -- per instruction, the Figure 2 axis window was matched exactly instead.
 Source script: scripts/generate_whittaker_global.R (functions build_global_landclimate(),
-  fig_whittaker_global_frequency(), fig_whittaker_global_contour() in R/figures/fig_climate.R).
-Generated: 2026-07-02T20:49:51Z
+  fig_whittaker_global_density(), fig_whittaker_global_contour() in R/figures/fig_climate.R).
+Generated: 2026-07-02T22:00:02Z
 
 Color scale: none -- white background, no fill. Two contour lines only (solid = 95%, dashed = 99%),
   colour grey20, intended as a clean envelope layer to sit under network points on talk slides.
 Contour method: highest-density-region (HDR) contours enclosing 95% and 99% of GLOBAL (unclipped)
-  ice-free land-area weight, from a weighted 2D kernel density estimate (linear binning onto a 201x201
-  grid + separable Gaussian smoothing, bandwidth via a weighted Scott's-rule reference using the
-  effective sample size of the area weights; implemented in .weighted_density_grid()/.hdr_levels() in
-  R/figures/fig_climate.R -- no new package dependency). The density estimate itself uses the FULL,
-  unclipped global distribution so the 95%/99% figures are honest to 'global ice-free land area'; the
-  same Figure 2 axis window is then applied for display only.
+  ice-free land-area weight, from THE SAME weighted 2D kernel density estimate used for
+  fig_whit_global_density.png (linear binning onto a 201x201 grid + separable Gaussian smoothing,
+  bandwidth via a weighted Scott's-rule reference using the effective sample size of the area weights;
+  implemented in .weighted_density_grid()/.hdr_levels() in R/figures/fig_climate.R -- no new package
+  dependency). The density estimate itself uses the FULL, unclipped global distribution so the 95%/99%
+  figures are honest to 'global ice-free land area'; the same Figure 2 axis window is then applied for
+  display only.
   NOTE: at least one contour line extends beyond the displayed axis window and appears open/clipped
   at a plot edge on this panel -- this reflects real land area outside the Figure 2 climate-space
   window (see clipping percentages above), not a rendering error.

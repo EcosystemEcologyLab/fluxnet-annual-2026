@@ -4,6 +4,90 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-02 — Whittaker global-density figure, Figure 2 HDR contour overlays, and network climate-space coverage statistics
+
+Follow-on to the same day's earlier global ice-free-land Whittaker session
+(below). Full step-by-step provenance is in
+`review/figures/whittaker/RUN_LOG_whittaker_overlays.txt`.
+
+### Task 1 — continuous density shading supersedes the hexbin
+
+`fig_whit_global_frequency.png` (discrete hexbin) is superseded by
+`review/figures/whittaker/fig_whit_global_density.png`: continuous shading of
+the *same* weighted 2D KDE surface (`.weighted_density_grid()`) that draws
+the HDR contours, on a neutral sequential (Blues, log10) scale, same
+3.5×3.5in/300dpi panel as Figure 2. `fig_whittaker_global_frequency()` is
+untouched in `R/figures/fig_climate.R` (kept for any other caller); the
+driver script (`scripts/generate_whittaker_global.R`) simply stopped calling
+it. Two bugs were found and fixed during generation, both now verified by
+visual QA: (1) the fill scale's colour domain was computed over the KDE's
+full padded grid rather than the visible window, saturating the entire
+panel to one shade; (2) even restricted to the visible window, the Gaussian
+KDE's tails span ~48 orders of magnitude (a real feature of a Gaussian
+kernel over skewed, heavy-tailed climate data, not a bug), so the colour
+domain is now floored 6 orders of magnitude below the visible peak for a
+legible colourbar.
+
+### Task 2 — three Figure 2 + HDR contour overlays
+
+Three new figures overlay the existing 95%/99% global ice-free-land HDR
+contours on the *unmodified* Figure 2 (built by calling the unmodified
+`fig_whittaker_worldclim()` and adding a `geom_path()` layer on top of its
+returned ggplot object — neither the source Figure 2 PNG nor that function
+was changed, verified via `git status`/`git diff`):
+`fig_whit_fig2_with_99contour.png`, `fig_whit_fig2_with_95contour.png`,
+`fig_whit_fig2_with_both_contours.png` (solid 95% / dashed 99%, black for
+visibility over the coloured hexbins, small in-panel linetype legend). All
+in `review/figures/whittaker/`, 3.5×3.5in/300dpi, each with a `.legend.txt`.
+
+### Task 3 — climate-space coverage statistics
+
+Headline numbers, computed against the same HDR envelopes the contours draw,
+at the base grid resolution (201×201):
+
+| Statistic | Value |
+|---|---:|
+| (a) Cell-count coverage, 95% HDR region | 9.24% |
+| (b) Cell-count coverage, 99% HDR region | 6.69% |
+| (c) Area-weighted coverage, 95% HDR region | 9.77% |
+| (d) Area-weighted coverage, 99% HDR region | 9.45% |
+
+759 of 767 current-network sites have known WorldClim MAT/MAP, occupying 527
+distinct grid cells. A bin-sensitivity sweep (gridsizes 181/191/201/211/221)
+found roughly ±20–30% relative spread around each base value but consistent
+order of magnitude throughout: cell_coverage@95% ∈ [7.85%, 10.86%],
+cell_coverage@99% ∈ [5.67%, 7.84%], area_weighted_coverage@95% ∈
+[8.29%, 11.42%], area_weighted_coverage@99% ∈ [8.02%, 11.03%] — moderately
+bin-sensitive but not qualitatively unstable. 1.18% of global ice-free
+land-area weight falls outside the displayed Figure 2 axis window, an exact
+match to the prior session's figure (cross-check confirms the two runs'
+land-mask/clip accounting agree). Full sweep table committed to
+`data/snapshots/whittaker_climate_coverage.csv` with a `.meta.json`
+documenting grid resolution, the HDR envelope definition, the land mask, the
+area-weighting method, and the FLUXNET snapshot used
+(`fluxnet_shuttle_snapshot_20260624T095651.csv`, 767 sites).
+
+### Reuse, not recompute
+
+`fig_whittaker_global_contour()` gained an optional `density_grid=` argument
+(backward compatible; falls back to its old land_climate-based computation
+when absent). `scripts/generate_whittaker_global.R` now computes the base
+201×201 density grid once and caches it (`data/processed/*.rds`, gitignored)
+for the new companion script `scripts/generate_whittaker_overlays.R`, which
+reused the cache rather than rebuilding it — so the density shading, the
+contour lines, and the coverage statistics all derive from the identical
+density surface. New shared building block: `whittaker_hdr_coverage()`
+(one implementation used for the base run and every sensitivity-sweep
+resolution).
+
+### Process note
+
+Same run-log discipline as the prior session (final outcome line written
+unconditionally via a `tryCatch()`-wrapped pipeline function, not
+`on.exit()` at script top level, which does not fire on normal completion).
+
+---
+
 ## 2026-07-02 — Global ice-free-land Whittaker background figures (WorldClim + ESA CCI)
 
 Two new talk-slide background figures were generated in Whittaker (MAT × MAP)

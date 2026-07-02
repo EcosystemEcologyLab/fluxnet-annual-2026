@@ -1,0 +1,21 @@
+fig_whit_fig2_with_95contour.png -- Figure 2 with the 95% global ice-free-land HDR contour overlaid
+========================================================================================================
+Base layer: Figure 2 (fig_whit01_ShuttleFull.png / fig_02_whittaker_current.png) -- the FLUXNET network
+  hexbin, coloured by median site NEE, built by calling the UNMODIFIED fig_whittaker_worldclim() with the
+  latest Shuttle snapshot (data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv, 767 sites) and
+  data/duckdb/fluxnet.duckdb::annual_converted (dataset == 'FLUXMET'). Neither the source Figure 2 file nor
+  fig_whittaker_worldclim() was modified -- these overlays are a geom_path() layer added on top of its
+  returned ggplot object, then re-saved under a new filename.
+Overlay layer: highest-density-region (HDR) contour(s) of GLOBAL (unclipped) ice-free-land area, from the
+  SAME density_grid used by fig_whit_global_density.png and fig_whit_global_contour.png (WorldClim v2.1
+  BIO1/BIO12 x ESA CCI LC 2015 ice-free-land mask, cosine-of-latitude area weighting, weighted 2D KDE,
+  201x201 base grid -- see fig_whit_global_contour.legend.txt for the full method). Drawn in solid black
+  here (rather than fig_whit_global_contour.png's grey20) for visibility over Figure 2's coloured hexbins.
+Axis ranges: MAT (x) = [-15, 35] degC, MAP (y) = [0, 4000] mm/yr -- identical to Figure 2 (this IS Figure 2, layered).
+Panel = 3.5 x 3.5 in, 300 dpi.
+Source script: scripts/generate_whittaker_overlays.R (fig_whittaker_worldclim(), fig_whittaker_global_contour()
+  in R/figures/fig_climate.R).
+Generated: 2026-07-02T22:00:33Z
+
+Line: solid black line = the boundary enclosing 95% of global ice-free land-area weight in MAT/MAP space.
+

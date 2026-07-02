@@ -2,40 +2,46 @@
 ## Companion to scripts/generate_whittaker_global.R. Reuses the density
 ## surface computed there (data/processed/whittaker_global_density_grid.rds,
 ## cached by that script -- falls back to recomputing via the same functions
-## if the cache is absent) for two purposes:
+## if the cache is absent) to overlay the existing 95%/99% highest-density-
+## region (HDR) global ice-free-land contours on top of the CURRENT Figure 2
+## (fig_whit01_ShuttleFull.png / fig_02_whittaker_current.png, the network
+## hexbin coloured by median NEE), built by calling the UNMODIFIED
+## fig_whittaker_worldclim() and adding geom_path() layers on top of its
+## returned ggplot object. Neither the source Figure 2 nor
+## fig_whittaker_worldclim() is modified.
 ##
-##  Task 2: overlay the existing 95%/99% highest-density-region (HDR) global
-##  ice-free-land contours on top of the CURRENT Figure 2
-##  (fig_whit01_ShuttleFull.png / fig_02_whittaker_current.png, the network
-##  hexbin coloured by median NEE), built by calling the UNMODIFIED
-##  fig_whittaker_worldclim() and adding geom_path() layers on top of its
-##  returned ggplot object. Neither the source Figure 2 nor
-##  fig_whittaker_worldclim() is modified.
+## The contour overlays carry NO in-panel annotation (no contour-line label,
+## no "Global ice-free land area (HDR)" text block) -- only the NEE colorbar
+## and N-sites/site-years inset that belong to the base Figure 2. The contour
+## explanation, and the current climate-space coverage statistic, live in
+## each figure's .legend.txt instead.
 ##
-##  Task 3: climate-space coverage statistics -- how much of the global
-##  ice-free-land HDR envelope (same envelope the contours draw) the FLUXNET
-##  network's site climate positions reach, at cell-count and area-weighted
-##  resolution, for both the 95% and 99% envelopes, plus a bin-resolution
-##  sensitivity sweep.
+## Climate-space coverage statistics (how much of the global ice-free-land
+## HDR envelope the FLUXNET network reaches) are computed by the companion
+## script scripts/generate_whittaker_coverage_mahalanobis.R, NOT here --
+## run that script FIRST; this script reads its output CSV
+## (data/snapshots/whittaker_climate_coverage_mahalanobis.csv) to cite the
+## reference coverage number in the legend text. (The retired grid-cell
+## coverage computation that used to live in this script has been removed --
+## re-running it here would silently overwrite the superseded_by note that
+## script adds to data/snapshots/whittaker_climate_coverage.meta.json.)
 ##
 ## NON-SHUTTLE DATA NOTICE: WorldClim v2.1 / ESA CCI land cover (2015) are
 ## used only as background/context (climate-space envelope), per CLAUDE.md
 ## Hard Rule #1. The FLUXNET site positions themselves come from the Shuttle
-## snapshot CSV named in the run log / coverage CSV metadata.
+## snapshot CSV named in the run log.
 ##
 ## Outputs (review/figures/whittaker/):
 ##   fig_whit_fig2_with_99contour.png    + .legend.txt
 ##   fig_whit_fig2_with_95contour.png    + .legend.txt
 ##   fig_whit_fig2_with_both_contours.png + .legend.txt
 ##
-## Outputs (data/snapshots/, committed):
-##   whittaker_climate_coverage.csv + .meta.json
-##
 ## Run log (written continuously, independent of terminal output; shared with
 ## the orchestrating agent's own entries for this task):
 ##   review/figures/whittaker/RUN_LOG_whittaker_overlays.txt
 ##
 ## Run from repo root: Rscript scripts/generate_whittaker_overlays.R
+## (run scripts/generate_whittaker_coverage_mahalanobis.R first)
 
 out_dir      <- file.path("review", "figures", "whittaker")
 run_log_path <- file.path(out_dir, "RUN_LOG_whittaker_overlays.txt")
@@ -187,6 +193,12 @@ run_pipeline <- function() {
 
   line_map <- c("95%" = "solid", "99%" = "dashed")
 
+  # No in-panel annotation: the contour lines are drawn, but their meaning
+  # (which line = which %) is explained only in the figure's .legend.txt, not
+  # on the plot itself. guide = "none" suppresses the linetype legend/key
+  # while still mapping prob_label -> linetype so solid/dashed is correct.
+  # The base plot's own NEE colorbar and N-sites/site-years inset (both
+  # built by the unmodified fig_whittaker_worldclim()) are left untouched.
   add_contour_layer <- function(base_plot, df) {
     df$prob_label <- droplevels(df$prob_label)
     base_plot +
@@ -201,7 +213,7 @@ run_pipeline <- function() {
       ) +
       ggplot2::scale_linetype_manual(
         values = line_map[levels(df$prob_label)],
-        name   = "Global ice-free\nland area (HDR)"
+        guide  = "none"
       )
   }
 
@@ -227,25 +239,53 @@ run_pipeline <- function() {
                   units = "in", dpi = 300, bg = "white")
   rl("completed: wrote ", path_both, " (3.5 x 3.5 in, 300 dpi, white bg).")
 
-  # ---- Task 2 legends ----------------------------------------------------------
-  rl("attempting: write legend .txt files for the three overlay figures")
+  # ---- Read the Mahalanobis coverage statistic for the legend text -----------
+  rl("attempting: read data/snapshots/whittaker_climate_coverage_mahalanobis.csv (written by scripts/generate_whittaker_coverage_mahalanobis.R, which must run BEFORE this script) for the reference (d=0.5) coverage number cited in the legends below")
+  maha_csv <- "data/snapshots/whittaker_climate_coverage_mahalanobis.csv"
+  if (!file.exists(maha_csv)) {
+    rl("MISSING INPUT: ", maha_csv, " not found. Run scripts/generate_whittaker_coverage_mahalanobis.R first. Not substituting -- stopping.")
+    stop("Mahalanobis coverage CSV not found: ", maha_csv, call. = FALSE)
+  }
+  maha_tbl <- readr::read_csv(maha_csv, show_col_types = FALSE)
+  ref_all <- maha_tbl$area_weighted_coverage[maha_tbl$region == "all" & maha_tbl$threshold == 0.5]
+  ref_95  <- maha_tbl$area_weighted_coverage[maha_tbl$region == "hdr_95" & maha_tbl$threshold == 0.5]
+  ref_99  <- maha_tbl$area_weighted_coverage[maha_tbl$region == "hdr_99" & maha_tbl$threshold == 0.5]
+  rl("completed: read ", maha_csv, ". Reference (d=0.5) area-weighted coverage -- all land = ",
+     sprintf("%.4f", ref_all), ", within 95% HDR = ", sprintf("%.4f", ref_95),
+     ", within 99% HDR = ", sprintf("%.4f", ref_99), ".")
+
+  # ---- Legends ------------------------------------------------------------------
+  rl("attempting: write legend .txt files for the three overlay figures (now carrying the full contour explanation, since the in-panel legend/label was removed from the figures themselves)")
   overlay_legend_common <- paste0(
     "Base layer: Figure 2 (fig_whit01_ShuttleFull.png / fig_02_whittaker_current.png) -- the FLUXNET network\n",
     "  hexbin, coloured by median site NEE, built by calling the UNMODIFIED fig_whittaker_worldclim() with the\n",
     "  latest Shuttle snapshot (", snap_file, ", ", format(nrow(shuttle_meta), big.mark = ","), " sites) and\n",
     "  data/duckdb/fluxnet.duckdb::annual_converted (dataset == 'FLUXMET'). Neither the source Figure 2 file nor\n",
     "  fig_whittaker_worldclim() was modified -- these overlays are a geom_path() layer added on top of its\n",
-    "  returned ggplot object, then re-saved under a new filename.\n",
+    "  returned ggplot object, then re-saved under a new filename. The NEE colorbar and the N-sites/site-years\n",
+    "  inset text are inherited unchanged from that base layer.\n",
     "Overlay layer: highest-density-region (HDR) contour(s) of GLOBAL (unclipped) ice-free-land area, from the\n",
     "  SAME density_grid used by fig_whit_global_density.png and fig_whit_global_contour.png (WorldClim v2.1\n",
     "  BIO1/BIO12 x ESA CCI LC 2015 ice-free-land mask, cosine-of-latitude area weighting, weighted 2D KDE,\n",
     "  201x201 base grid -- see fig_whit_global_contour.legend.txt for the full method). Drawn in solid black\n",
     "  here (rather than fig_whit_global_contour.png's grey20) for visibility over Figure 2's coloured hexbins.\n",
+    "  NO in-panel label or legend identifies the contour line(s) on the figure itself -- that explanation lives\n",
+    "  only in this text file.\n",
+    "Climate-space coverage (Mahalanobis-distance definition, reference threshold d=0.5 -- see\n",
+    "  data/snapshots/whittaker_climate_coverage_mahalanobis.csv/.meta.json for the full 3-threshold x 3-region\n",
+    "  table and method, including the covariance matrix used): the FLUXNET network's site MAT/MAP positions\n",
+    "  cover ", sprintf("%.2f%%", 100 * ref_all), " of global ice-free land area (all climates) within d=0.5 of some\n",
+    "  site, ", sprintf("%.2f%%", 100 * ref_95), " within the 95% HDR region shown here, and ",
+    sprintf("%.2f%%", 100 * ref_99), " within the 99%\n",
+    "  HDR region -- this metric is substantially more permissive than the retired grid-cell coverage metric (see\n",
+    "  data/snapshots/whittaker_climate_coverage.meta.json's superseded_by note) because it credits a site with\n",
+    "  covering a whole climate-space neighbourhood (scaled by the full global land-climate covariance) rather than\n",
+    "  only the exact grid cell it falls in.\n",
     "Axis ranges: MAT (x) = [", style_3x3$xlim[1], ", ", style_3x3$xlim[2], "] degC, MAP (y) = [",
     style_3x3$ylim[1], ", ", style_3x3$ylim[2], "] mm/yr -- identical to Figure 2 (this IS Figure 2, layered).\n",
     "Panel = 3.5 x 3.5 in, 300 dpi.\n",
     "Source script: scripts/generate_whittaker_overlays.R (fig_whittaker_worldclim(), fig_whittaker_global_contour()\n",
-    "  in R/figures/fig_climate.R).\n",
+    "  in R/figures/fig_climate.R); coverage statistic from scripts/generate_whittaker_coverage_mahalanobis.R.\n",
     "Generated: ", format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"), "\n"
   )
 
@@ -253,7 +293,8 @@ run_pipeline <- function() {
     "fig_whit_fig2_with_99contour.png -- Figure 2 with the 99% global ice-free-land HDR contour overlaid\n",
     "========================================================================================================\n",
     overlay_legend_common,
-    "\nLine: dashed black line = the boundary enclosing 99% of global ice-free land-area weight in MAT/MAP space.\n"
+    "\nLine: dashed black line, no in-panel label = the boundary enclosing 99% of global ice-free land-area weight\n",
+    "  in MAT/MAP space.\n"
   ), file.path(out_dir, "fig_whit_fig2_with_99contour.legend.txt"))
   rl("completed: wrote ", file.path(out_dir, "fig_whit_fig2_with_99contour.legend.txt"))
 
@@ -261,7 +302,8 @@ run_pipeline <- function() {
     "fig_whit_fig2_with_95contour.png -- Figure 2 with the 95% global ice-free-land HDR contour overlaid\n",
     "========================================================================================================\n",
     overlay_legend_common,
-    "\nLine: solid black line = the boundary enclosing 95% of global ice-free land-area weight in MAT/MAP space.\n"
+    "\nLine: solid black line, no in-panel label = the boundary enclosing 95% of global ice-free land-area weight\n",
+    "  in MAT/MAP space.\n"
   ), file.path(out_dir, "fig_whit_fig2_with_95contour.legend.txt"))
   rl("completed: wrote ", file.path(out_dir, "fig_whit_fig2_with_95contour.legend.txt"))
 
@@ -270,136 +312,10 @@ run_pipeline <- function() {
     "=============================================================================================================\n",
     overlay_legend_common,
     "\nLines: solid black = 95% HDR boundary (inner, smaller envelope). Dashed black = 99% HDR boundary (outer,\n",
-    "  larger envelope). The two are visually distinguished by line type only (both black), labelled in a small\n",
-    "  in-panel legend ('Global ice-free land area (HDR)').\n"
+    "  larger envelope). The two are visually distinguished by line type only (both black); no in-panel label or\n",
+    "  legend identifies them on the figure -- that identification is given here.\n"
   ), file.path(out_dir, "fig_whit_fig2_with_both_contours.legend.txt"))
   rl("completed: wrote ", file.path(out_dir, "fig_whit_fig2_with_both_contours.legend.txt"))
-
-  # ---- Task 3: climate-space coverage statistics ------------------------------
-  rl("attempting: load per-site WorldClim MAT/MAP (data/snapshots/site_worldclim.csv) and join to the current network site list for coverage statistics")
-  worldclim_csv <- "data/snapshots/site_worldclim.csv"
-  if (!file.exists(worldclim_csv)) {
-    rl("MISSING INPUT: ", worldclim_csv, " not found. Not substituting -- stopping.")
-    stop("site_worldclim.csv not found: ", worldclim_csv, call. = FALSE)
-  }
-  site_wc <- readr::read_csv(worldclim_csv, show_col_types = FALSE)
-  site_climate <- shuttle_meta |>
-    dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
-    dplyr::inner_join(site_wc, by = "site_id") |>
-    dplyr::filter(!is.na(.data$mat_worldclim), !is.na(.data$map_worldclim))
-  rl("completed: ", nrow(site_climate), " of ", nrow(shuttle_meta),
-     " network sites have known WorldClim MAT/MAP (site_worldclim.csv join); these are the site positions used for coverage.")
-
-  rl("attempting: whittaker_hdr_coverage() at BASE resolution (201x201, the density_grid already loaded/cached above) -- computes the four headline coverage numbers a-d")
-  cov_base <- whittaker_hdr_coverage(density_grid, site_climate$mat_worldclim, site_climate$map_worldclim,
-                                     probs = c(0.95, 0.99))
-  cov_base$gridsize_x <- length(density_grid$xbin)
-  cov_base$gridsize_y <- length(density_grid$ybin)
-  cov_base$is_base    <- TRUE
-  for (i in seq_len(nrow(cov_base))) {
-    rl("statistic: prob=", cov_base$prob[i], " hdr_level=", signif(cov_base$hdr_level[i], 6),
-       " n_cells_region=", cov_base$n_cells_region[i], " n_sites_in_region_cells=", cov_base$n_sites[i],
-       " cell_coverage=", sprintf("%.6f", cov_base$cell_coverage[i]),
-       " area_weighted_coverage=", sprintf("%.6f", cov_base$area_weighted_coverage[i]),
-       " (base resolution 201x201)")
-  }
-  a_val <- cov_base$cell_coverage[cov_base$prob == 0.95]
-  b_val <- cov_base$cell_coverage[cov_base$prob == 0.99]
-  c_val <- cov_base$area_weighted_coverage[cov_base$prob == 0.95]
-  d_val <- cov_base$area_weighted_coverage[cov_base$prob == 0.99]
-  rl("computation: HEADLINE NUMBERS (base resolution 201x201) -- ",
-     "(a) cell-count coverage of 95% HDR region = ", sprintf("%.4f", a_val), "; ",
-     "(b) cell-count coverage of 99% HDR region = ", sprintf("%.4f", b_val), "; ",
-     "(c) area-weighted coverage of 95% HDR region = ", sprintf("%.4f", c_val), "; ",
-     "(d) area-weighted coverage of 99% HDR region = ", sprintf("%.4f", d_val), ".")
-
-  # ---- Bin-sensitivity sweep ---------------------------------------------------
-  rl("attempting: bin-sensitivity sweep -- recompute the four numbers at gridsizes 181x181, 191x191, 201x201(base), 211x211, 221x221")
-  sweep_sizes <- list(c(181L, 181L), c(191L, 191L), c(201L, 201L), c(211L, 211L), c(221L, 221L))
-  sweep_results <- lapply(sweep_sizes, function(gs) {
-    if (identical(gs, c(201L, 201L))) {
-      dg_i <- density_grid  # reuse the already-computed base grid, no recompute
-      rl("computation: gridsize ", gs[1], "x", gs[2], " -- reused the cached base density_grid (no recompute).")
-    } else {
-      t0 <- Sys.time()
-      dg_i <- .weighted_density_grid(land_climate$mat, land_climate$map, land_climate$weight, gridsize = gs)
-      el   <- round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 1)
-      rl("computation: gridsize ", gs[1], "x", gs[2], " -- .weighted_density_grid() recomputed in ", el, " s (deliberate, for the sensitivity sweep; same land_climate as the base run).")
-    }
-    cov_i <- whittaker_hdr_coverage(dg_i, site_climate$mat_worldclim, site_climate$map_worldclim,
-                                    probs = c(0.95, 0.99))
-    cov_i$gridsize_x <- gs[1]
-    cov_i$gridsize_y <- gs[2]
-    cov_i$is_base    <- identical(gs, c(201L, 201L))
-    for (i in seq_len(nrow(cov_i))) {
-      rl("statistic: gridsize=", gs[1], "x", gs[2], " prob=", cov_i$prob[i],
-         " cell_coverage=", sprintf("%.6f", cov_i$cell_coverage[i]),
-         " area_weighted_coverage=", sprintf("%.6f", cov_i$area_weighted_coverage[i]))
-    }
-    cov_i
-  })
-  sweep_df <- do.call(rbind, sweep_results)
-  rl("completed: bin-sensitivity sweep produced ", nrow(sweep_df), " rows (5 gridsizes x 2 probs).")
-
-  range_a <- range(sweep_df$cell_coverage[sweep_df$prob == 0.95])
-  range_b <- range(sweep_df$cell_coverage[sweep_df$prob == 0.99])
-  range_c <- range(sweep_df$area_weighted_coverage[sweep_df$prob == 0.95])
-  range_d <- range(sweep_df$area_weighted_coverage[sweep_df$prob == 0.99])
-  rl("computation: SENSITIVITY RANGE across gridsizes 181..221 -- ",
-     "(a) cell_coverage@95%: [", sprintf("%.4f", range_a[1]), ", ", sprintf("%.4f", range_a[2]), "]; ",
-     "(b) cell_coverage@99%: [", sprintf("%.4f", range_b[1]), ", ", sprintf("%.4f", range_b[2]), "]; ",
-     "(c) area_weighted_coverage@95%: [", sprintf("%.4f", range_c[1]), ", ", sprintf("%.4f", range_c[2]), "]; ",
-     "(d) area_weighted_coverage@99%: [", sprintf("%.4f", range_d[1]), ", ", sprintf("%.4f", range_d[2]), "].")
-
-  # ---- Write committed CSV + .meta.json ----------------------------------------
-  rl("attempting: write data/snapshots/whittaker_climate_coverage.csv (full sensitivity-sweep table) and its .meta.json")
-  csv_path <- "data/snapshots/whittaker_climate_coverage.csv"
-  sweep_df_out <- sweep_df[, c("gridsize_x", "gridsize_y", "is_base", "prob", "hdr_level",
-                               "n_cells_region", "n_sites", "cell_coverage", "area_weighted_coverage")]
-  readr::write_csv(sweep_df_out, csv_path)
-
-  notes <- paste0(
-    "FLUXNET-network coverage of global ice-free-land HDR climate-space envelopes (MAT x MAP Whittaker space). ",
-    "One row per (grid resolution x HDR probability). is_base=TRUE marks the 201x201 base resolution used by ",
-    "fig_whit_global_density.png / fig_whit_global_contour.png / the Figure 2 overlays. ",
-    "HEADLINE NUMBERS (base 201x201): (a) cell-count coverage of the 95% HDR region = ", sprintf("%.4f", a_val),
-    "; (b) cell-count coverage of the 99% HDR region = ", sprintf("%.4f", b_val),
-    "; (c) area-weighted coverage of the 95% HDR region = ", sprintf("%.4f", c_val),
-    "; (d) area-weighted coverage of the 99% HDR region = ", sprintf("%.4f", d_val), ". ",
-    "Bin-sensitivity range across gridsizes {181,191,201,211,221} (all square): ",
-    "cell_coverage@95% in [", sprintf("%.4f", range_a[1]), ",", sprintf("%.4f", range_a[2]), "]; ",
-    "cell_coverage@99% in [", sprintf("%.4f", range_b[1]), ",", sprintf("%.4f", range_b[2]), "]; ",
-    "area_weighted_coverage@95% in [", sprintf("%.4f", range_c[1]), ",", sprintf("%.4f", range_c[2]), "]; ",
-    "area_weighted_coverage@99% in [", sprintf("%.4f", range_d[1]), ",", sprintf("%.4f", range_d[2]), "]. ",
-    sprintf("%.2f%%", 100 * frac_outside_axes), " of global ice-free land-area weight falls outside the displayed ",
-    "Figure 2 axis window (MAT -15..35 degC, MAP 0..4000 mm/yr). ",
-    "HDR envelope definition: highest-density-region contour of a weighted 2D kernel density estimate (linear ",
-    "binning + separable Gaussian smoothing, weighted Scott's-rule bandwidth) over the FULL unclipped global ",
-    "ice-free-land pixel distribution; probs=c(0.95,0.99); implemented in .weighted_density_grid()/.hdr_levels() ",
-    "in R/figures/fig_climate.R. Coverage definition: a site's MAT/MAP position is snapped to the nearest ",
-    "density-grid node; cell_coverage = fraction of grid cells with density>=hdr_level that contain >=1 site; ",
-    "area_weighted_coverage = fraction of the density mass within the HDR region that falls in site-containing ",
-    "cells; implemented in whittaker_hdr_coverage() in R/figures/fig_climate.R. ",
-    "Land mask: ESA CCI land cover 2015 (ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif), class 210 (water) and ",
-    "220 (permanent snow/ice) excluded, class 0 (no data) excluded, all else = ice-free land; aggregated to the ",
-    "WorldClim 2.5 arc-min grid (exact 15x factor) and thresholded at >=50% ice-free-land fraction per cell; ",
-    "latitude < -60 deg backstop additionally excludes Antarctica. Area weighting: cosine of latitude ",
-    "(WorldClim is an equal-angle, not equal-area, grid). ",
-    "FLUXNET snapshot used for site positions: ", snap_file, " (", nrow(shuttle_meta), " network sites; ",
-    nrow(site_climate), " with known WorldClim MAT/MAP via data/snapshots/site_worldclim.csv). ",
-    "Non-Shuttle background data (WorldClim v2.1 BIO1/BIO12, ESA CCI LC 2015) per CLAUDE.md Hard Rule #1 -- ",
-    "used only to define the climate-space envelope, not as primary Annual Paper data. ",
-    "Source script: scripts/generate_whittaker_overlays.R."
-  )
-  write_output_metadata(
-    csv_path,
-    input_sources = c(snap_file, worldclim_csv,
-                      "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif",
-                      "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif",
-                      "data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif"),
-    notes = notes
-  )
-  rl("completed: wrote ", csv_path, " (", nrow(sweep_df_out), " rows) and its .meta.json companion.")
 
   invisible(TRUE)
 }
@@ -410,10 +326,9 @@ pipeline_error <- tryCatch({
 }, error = function(e) e)
 
 if (is.null(pipeline_error)) {
-  rl("outcome: SUCCESS -- three Figure 2 contour overlays + legends, the coverage CSV + meta.json, all written.")
+  rl("outcome: SUCCESS -- three Figure 2 contour overlays (no in-panel annotation) + legends (with the Mahalanobis coverage stat), all written.")
   message("\nDone: fig_whit_fig2_with_99contour.png, fig_whit_fig2_with_95contour.png, ",
-          "fig_whit_fig2_with_both_contours.png and their legends written to ", out_dir,
-          "; data/snapshots/whittaker_climate_coverage.csv + .meta.json written.")
+          "fig_whit_fig2_with_both_contours.png and their legends written to ", out_dir)
 } else {
   rl("ERROR: ", conditionMessage(pipeline_error))
   rl("outcome: FAILED -- see the last 'attempting' line above for what was in progress when the script stopped.")

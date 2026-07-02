@@ -4,6 +4,41 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-02 — Draft-manuscript Figure 2 replaced with the both-contours version
+
+Follow-on to the same day's Mahalanobis coverage / annotation-free overlay
+session (below). Full step-by-step provenance is in
+`review/figures/draft_manuscript_v1/RUN_LOG_fig2_swap.txt`.
+
+`review/figures/draft_manuscript_v1/fig_02_whittaker_current.png` (Figure 2
+of the draft manuscript figure set) is replaced with
+`review/figures/whittaker/fig_whit_fig2_with_both_contours.png` — the
+FLUXNET network hexbin coloured by median NEE, with the 95% (solid) and 99%
+(dashed) global ice-free-land HDR contours overlaid and no in-panel contour
+label. `scripts/build_draft_manuscript_v1.R` was updated so the swap is
+reproducible on future rebuilds: the figure-copy map's Figure 2 entry now
+sources the both-contours PNG instead of the plain
+`fig_05_whittaker_current.png`, and the whole build script was re-run
+(exit code 0; all 6 figures/legends regenerated, the other 5 confirmed
+byte-identical/unchanged since their sources didn't move).
+
+Figure 2's legend was rewritten from scratch (not copied from the source
+figure's own `.legend.txt`, which carries the retired Mahalanobis coverage
+statistic) as a hardcoded block in the build script, so it reproduces
+deterministically without that statistic. The new legend documents both
+layers — the unmodified `fig_whittaker_worldclim()` base layer (767 sites,
+NEE hexbin, diverging blue-red scale, site points, N/site-years inset) and
+the HDR contour overlay (95% = where most global land area sits, 99% =
+extends to rarer climatic extremes; identified only in this legend, not by
+an in-panel label) — states the 1.18% of global land area falling outside
+the displayed axis window, and cites the source scripts
+(`scripts/generate_whittaker_overlays.R`, functions in
+`R/figures/fig_climate.R`) and axis ranges (MAT −15 to 35, MAP 0 to 4000).
+No coverage or reach percentage appears anywhere in the new legend
+(verified by grep before committing).
+
+---
+
 ## 2026-07-02 — Mahalanobis-distance climate-space coverage; annotation-free Figure 2 contour overlays
 
 Follow-on to the same day's earlier Whittaker overlay/coverage session

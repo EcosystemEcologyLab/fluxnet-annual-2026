@@ -1,78 +1,98 @@
-FIGURE LEGEND — fig_05_whittaker_current.png
+FIGURE LEGEND — fig_02_whittaker_current.png
 ==============================================
 
 TITLE: Whittaker climate-space distribution of the current FLUXNET network,
-coloured by median annual net ecosystem exchange
+coloured by median annual net ecosystem exchange, with global ice-free-land
+climate-space contours overlaid
 
 DESCRIPTION:
-Hexagonal-binned scatter plot placing every current FLUXNET Shuttle site in
-Whittaker climate space (mean annual temperature × mean annual
-precipitation). Each hexagonal bin is coloured by the median annual net
-ecosystem exchange (NEE) observed across all site-years falling within that
-climate-space bin; bins with no observed flux data are left uncoloured
-(NA, not drawn). Individual site locations are additionally overplotted as
-semi-transparent grey points so that sampling density within each hexagon is
-visible alongside the flux colour. No biome-boundary polygons are drawn —
-despite the "Whittaker" name (a reference to the classic biome diagram this
-plot type is based on), this implementation shows only the hexbin/point
-climate distribution, not biome classification outlines. No plot title is
-rendered.
+Two layers on one panel.
+
+BASE LAYER: hexagonal-binned scatter plot placing every current FLUXNET
+Shuttle site (N = 767 sites) in Whittaker climate space — mean annual
+temperature (MAT, WorldClim v2.1 BIO1) by mean annual precipitation (MAP,
+BIO12). Each hexagonal bin is coloured by the median annual net ecosystem
+exchange (NEE_VUT_REF, with a coalesce fallback to NEE_CUT_REF for
+CUT-only sites) observed across all site-years falling within that
+climate-space bin, on a diverging blue-white-red scale centred on
+NEE = 0 (white); bins with no observed flux data are left uncoloured (NA,
+not drawn). Individual site locations are additionally overplotted as
+semi-transparent grey points so that sampling density within each hexagon
+is visible alongside the flux colour. An inset reports the site count and
+site-year count (N sites | site-years). This base layer is built by the
+unmodified fig_whittaker_worldclim() and is otherwise identical to the
+no-contour version of this figure used in earlier drafts.
+
+OVERLAY: two contour lines mark the 95% (solid) and 99% (dashed)
+highest-density regions (HDR) of the area-weighted distribution of global
+ice-free land in the same MAT/MAP space — i.e. where global land area is
+concentrated in climate space, independent of the FLUXNET network. The
+density surface is computed from WorldClim v2.1 BIO1/BIO12 over an ESA
+CCI land-cover 2015 ice-free-land mask (water bodies and permanent
+snow/ice excluded, plus a latitude backstop for Antarctica), area-weighted
+by the cosine of latitude (WorldClim is an equal-angle, not equal-area,
+grid), via a weighted 2D kernel density estimate over the full, unclipped
+global distribution. The 95% contour marks the climates where most global
+land area sits; the 99% contour extends further out to include rarer
+climatic extremes. The two lines are distinguished by line type only
+(both black) and are identified in this legend rather than by an
+in-panel label or key — no contour text or legend box is drawn on the
+figure itself.
+
+A small fraction of global land area (1.18%) falls in climates outside
+the displayed axis ranges (MAT below -15 or above 35 degC; MAP above
+4000 mm/yr) and is not shown, on either layer.
 
 AXES:
   X — Mean Annual Temperature (°C), fixed range -15 to 35
   Y — Mean Annual Precipitation (mm yr⁻¹), fixed range 0 to 4000
 
-Four-sided black tick marks (inward) are drawn on all axes via a duplicated
-secondary axis with no labels. Panel has a solid black border and no
-gridlines.
+Four-sided black tick marks (inward) are drawn on all axes via a
+duplicated secondary axis with no labels. Panel has a solid black border
+and no gridlines.
 
-COLOUR SCALE:
+COLOUR SCALE (base layer only — the overlay has no fill/colour):
 Diverging blue–white–red scale (colorspace "Blue-Red 3"), centred on
 NEE = 0 (white), blue = net carbon uptake (negative NEE), red = net carbon
 release (positive NEE). Colour limits are computed from the 5th–95th
-percentile of the *full*, unfiltered annual Shuttle NEE distribution (not
-just the sites/years shown in this panel), so the scale is directly
-comparable across the family of Whittaker figures this same script produces
-for other network snapshots (Marconi, La Thuile, FLUXNET2015, and Shuttle
-sub-snapshots at 2000/2007/2015) — none of which are part of this
-draft-manuscript figure set.
+percentile of the full, unfiltered annual Shuttle NEE distribution.
 
-BINNING:
-Hexagonal binning via ggplot2::stat_summary_hex(), 15 bins along each axis;
-summary statistic per bin is the median of per-site median annual NEE values
-(median-of-medians, not a flux-weighted or site-year-weighted mean).
+BINNING (base layer):
+Hexagonal binning via ggplot2::stat_summary_hex(), 15 bins along each
+axis; summary statistic per bin is the median of per-site median annual
+NEE values (median-of-medians).
 
 NETWORK AND SITE COUNT:
-FLUXNET Shuttle network, current development-mode snapshot: N = 767 sites;
-inset text on the figure reports N = 767 sites | 4,236 site-years — the
-site-year count reflects only site-years with a valid climate match and a
-finite annual NEE value (see Exclusions).
+FLUXNET Shuttle network, current development-mode snapshot: N = 767
+sites; inset text on the figure reports N = 767 sites | 4,236 site-years.
 
 DATA SOURCES:
-  - Site list: current snapshot
-    data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv (767 sites)
-  - Climate (MAT/MAP): WorldClim v2.1, 2.5 arc-minute BIO1 (annual mean
-    temperature) and BIO12 (annual precipitation), pre-extracted per site in
-    data/snapshots/site_worldclim.csv, with on-the-fly terra::extract() from
-    the WorldClim GeoTIFFs as a fallback for any site not already in that
-    table
-  - Flux data: annual_converted table in the project's DuckDB database
-    (data/duckdb/fluxnet.duckdb), FLUXMET dataset, after QC filtering
-    (04_qc.R) and unit conversion (05_units.R); NEE_VUT_REF is used with a
-    coalesce fallback to NEE_CUT_REF for the ~36 CUT-only sites that carry no
-    VUT-partitioned value, per the project's per-site QC fallback rule
-    (CLAUDE.md — QC Flag Reference)
+  - Site list: data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv
+    (767 sites)
+  - Climate (MAT/MAP), both layers: WorldClim v2.1, 2.5 arc-minute BIO1
+    and BIO12; base layer uses the pre-extracted per-site table
+    data/snapshots/site_worldclim.csv (fallback: on-the-fly
+    terra::extract()); overlay uses the full global BIO1/BIO12 GeoTIFFs
+  - Land mask (overlay only): ESA CCI land cover 2015
+    (ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif)
+  - Flux data (base layer only): annual_converted table in the project's
+    DuckDB database (data/duckdb/fluxnet.duckdb), FLUXMET dataset, after
+    QC filtering (04_qc.R) and unit conversion (05_units.R)
 
-EXCLUSIONS:
-Sites lacking a WorldClim climate match, or with no finite annual NEE value
-after the VUT/CUT coalesce, are dropped from both the hexbin summary and the
-overlaid points (retained in the site-year and colour-scale denominators
-only where noted above). No IGBP or other classification filter is applied.
+EXCLUSIONS (base layer):
+Sites lacking a WorldClim climate match, or with no finite annual NEE
+value after the VUT/CUT coalesce, are dropped from both the hexbin
+summary and the overlaid points. No IGBP or other classification filter
+is applied.
 
 REPRODUCIBILITY:
-Function: fig_whittaker_worldclim() in R/figures/fig_climate.R
-Script:   scripts/generate_whittaker.R (figure "Whit01" in that script's
-          numbered sequence of 9 Whittaker figures)
-Output:   review/figures/whittaker/fig_whit01_ShuttleFull.png, copied to
-          review/figures/candidates/fig_05_whittaker_current.png
+Base layer function: fig_whittaker_worldclim() in R/figures/fig_climate.R
+Overlay functions:   fig_whittaker_global_contour(),
+                     build_global_landclimate(), .weighted_density_grid(),
+                     .hdr_levels() in R/figures/fig_climate.R
+Source script:       scripts/generate_whittaker_overlays.R
+Output:              review/figures/whittaker/fig_whit_fig2_with_both_contours.png,
+                     copied to
+                     review/figures/draft_manuscript_v1/fig_02_whittaker_current.png
+                     by scripts/build_draft_manuscript_v1.R
 DIMENSIONS: 3.5 × 3.5 inches, 300 dpi, white background

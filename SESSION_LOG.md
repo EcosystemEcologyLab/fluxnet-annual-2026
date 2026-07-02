@@ -4,6 +4,72 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-02 — Site counts by IGBP class, total vs. recent (2015+) additions
+
+Snapshot: `data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv`
+(767 sites, dated 2026-06-24). One row per site; `igbp` and `first_year`
+both fully populated (no NA/blank), no duplicate `site_id`.
+
+### Total sites per IGBP class (all 767 sites, descending)
+
+| IGBP | Class name | Total sites |
+|---|---|---:|
+| GRA | Grassland | 143 |
+| CRO | Cropland | 138 |
+| WET | Permanent wetland | 116 |
+| ENF | Evergreen needleleaf forest | 113 |
+| DBF | Deciduous broadleaf forest | 78 |
+| EBF | Evergreen broadleaf forest | 42 |
+| OSH | Open shrubland | 39 |
+| MF | Mixed forest | 24 |
+| WSA | Woody savanna | 18 |
+| DNF | Deciduous needleleaf forest | 13 |
+| SAV | Savanna | 13 |
+| CSH | Closed shrubland | 12 |
+| CVM | Cropland/natural vegetation mosaic | 9 |
+| BSV | Barren or sparsely vegetated | 7 |
+| SNO | Snow and ice | 2 |
+
+**The "ENF and DBF dominate the accumulated record" claim does not hold by
+total site count.** GRA (143) and CRO (138) are the two largest classes,
+followed by WET (116); ENF ranks 4th (113) and DBF 5th (78). CRO, GRA, and
+WET together account for 397 of 767 sites (52%), more than ENF+DBF combined
+(191, 25%).
+
+### Sites first added in the most recent decade (`first_year` ≥ 2015)
+
+Network-wide: 390 of 767 sites (51%) have `first_year` ≥ 2015.
+
+| IGBP | Recent sites (≥2015) | Class total | Share of class |
+|---|---:|---:|---:|
+| CRO | 90 | 138 | 65.2% |
+| GRA | 73 | 143 | 51.0% |
+| WET | 68 | 116 | 58.6% |
+| ENF | 49 | 113 | 43.4% |
+| DBF | 40 | 78 | 51.3% |
+| OSH | 18 | 39 | 46.2% |
+| EBF | 12 | 42 | 28.6% |
+| MF | 9 | 24 | 37.5% |
+| CVM | 8 | 9 | 88.9% |
+| CSH | 6 | 12 | 50.0% |
+| BSV | 5 | 7 | 71.4% |
+| SAV | 4 | 13 | 30.8% |
+| WSA | 5 | 18 | 27.8% |
+| DNF | 2 | 13 | 15.4% |
+| SNO | 1 | 2 | 50.0% |
+
+By absolute count, CRO (90), GRA (73), and WET (68) contributed the most new
+sites since 2015 — the same three classes that lead the total-count table.
+By share of class total, CVM (88.9%), BSV (71.4%), and CRO (65.2%) grew
+fastest relative to their pre-2015 base, though CVM/BSV are small classes
+(9 and 7 sites total) so their high shares reflect a low base rather than
+large absolute growth. ENF and DNF — two of the longest-established forest
+classes — show the lowest recent shares (43.4% and 15.4%), consistent with
+those networks being comparatively mature/saturated rather than still
+expanding.
+
+---
+
 ## 2026-07-01 — Verify and correct network record-length claim (Figs/text "10+ / 20+ year sites")
 
 Verified the draft-manuscript sentence "Roughly 174 sites now hold 10 or more

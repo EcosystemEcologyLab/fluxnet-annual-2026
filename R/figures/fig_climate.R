@@ -330,7 +330,375 @@ fig_whittaker_worldclim <- function(
 }
 
 
+# ---- Global (WorldClim + CCI) ice-free land background figures --------------
+# Added for talk-slide backgrounds that sit under the network-distribution
+# Whittaker panels (fig_whit01_ShuttleFull.png / fig_02_whittaker_current.png).
+# These represent global ice-free land area, not FLUXNET sites, and carry no
+# NEE information -- fig_whittaker_worldclim() above is untouched.
+
+#' Build the global ice-free-land MAT/MAP pixel table
+#'
+#' Reads the WorldClim v2.1 2.5 arc-minute BIO1 (MAT) and BIO12 (MAP) rasters,
+#' builds an ice-free land mask from the ESA CCI land-cover product (excluding
+#' water bodies, permanent snow/ice, and a latitude backstop for Antarctica),
+#' and returns one row per WorldClim pixel that survives the mask, with an
+#' area weight proportional to \code{cos(latitude)} (WorldClim is an
+#' equal-angle grid, so raw pixel counts over-weight high latitudes).
+#'
+#' @param bio1_path Character. Path to the WorldClim BIO1 (MAT, degC) GeoTIFF.
+#' @param bio12_path Character. Path to the WorldClim BIO12 (MAP, mm/yr) GeoTIFF.
+#' @param landcover_path Character. Path to the ESA CCI land-cover GeoTIFF
+#'   used to build the ice/water mask. Must use CCI class codes (0 = no data,
+#'   210 = water bodies, 220 = permanent snow/ice; all other codes = land).
+#' @param antarctica_lat_cutoff Numeric. Latitude (deg) south of which pixels
+#'   are excluded regardless of land-cover class, as a backstop for any
+#'   coastline/no-data gaps in the CCI product over Antarctica.
+#' @param land_frac_threshold Numeric in (0, 1). Minimum fraction of
+#'   ice-free-land sub-pixels (from the aggregated CCI mask) required to keep
+#'   a WorldClim pixel.
+#'
+#' @return A data frame with columns \code{mat} (degC), \code{map} (mm/yr),
+#'   \code{lat} (deg), and \code{weight} (\code{cos(lat * pi / 180)}).
+#'
+#' @export
+build_global_landclimate <- function(
+  bio1_path      = "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif",
+  bio12_path     = "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif",
+  landcover_path = "data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif",
+  antarctica_lat_cutoff = -60,
+  land_frac_threshold    = 0.5
+) {
+  if (!requireNamespace("terra", quietly = TRUE)) {
+    stop("Package 'terra' is required for build_global_landclimate().", call. = FALSE)
+  }
+  if (!file.exists(bio1_path))  stop("WorldClim BIO1 raster not found: ",  bio1_path,  call. = FALSE)
+  if (!file.exists(bio12_path)) stop("WorldClim BIO12 raster not found: ", bio12_path, call. = FALSE)
+  if (!file.exists(landcover_path)) {
+    stop("Land-cover raster not found: ", landcover_path, call. = FALSE)
+  }
+
+  r_bio1  <- terra::rast(bio1_path)
+  r_bio12 <- terra::rast(bio12_path)
+  r_cci   <- terra::rast(landcover_path)
+
+  # Ice-free land indicator at CCI native resolution: NA = no data,
+  # 0 = water/ice (excluded), 1 = ice-free land.
+  r_land01 <- terra::classify(
+    r_cci,
+    rcl    = matrix(c(0, NA, 210, 0, 220, 0), ncol = 2, byrow = TRUE),
+    others = 1
+  )
+
+  agg_fact <- round(terra::res(r_bio1)[1] / terra::res(r_cci)[1])
+  r_landfrac <- terra::aggregate(r_land01, fact = agg_fact, fun = "mean", na.rm = TRUE)
+  if (!terra::compareGeom(r_landfrac, r_bio1, stopOnError = FALSE)) {
+    stop("Aggregated land-cover grid does not align with the WorldClim grid ",
+         "(expected an exact integer aggregation factor).", call. = FALSE)
+  }
+
+  r_mask <- r_landfrac >= land_frac_threshold
+  r_lat  <- terra::init(r_bio1, "y")
+  r_mask[r_lat < antarctica_lat_cutoff] <- FALSE
+
+  stack <- c(r_bio1, r_bio12, r_mask)
+  names(stack) <- c("mat", "map", "is_land")
+
+  df <- as.data.frame(stack, xy = TRUE, na.rm = FALSE)
+  df <- df[!is.na(df$is_land) & df$is_land == 1 & !is.na(df$mat) & !is.na(df$map), ]
+
+  data.frame(
+    mat    = df$mat,
+    map    = df$map,
+    lat    = df$y,
+    weight = cos(df$y * pi / 180)
+  )
+}
+
+#' Global ice-free land — Whittaker frequency hexbin (WorldClim + CCI)
+#'
+#' Bins global ice-free land pixels into the same MAT/MAP hexagonal grid used
+#' by \code{\link{fig_whittaker_worldclim}}, shaded by area-weighted pixel
+#' frequency on a log10 scale. Intended as a neutral background layer (no NEE
+#' information) for overlaying the network distribution on talk slides.
+#'
+#' Pixel data are clipped to \code{style$xlim}/\code{style$ylim} before
+#' hexbinning so the hex-cell geometry matches
+#' \code{\link{fig_whittaker_worldclim}} exactly (identical bin domain and
+#' \code{bins = 15}), which is required for the two figures to register when
+#' layered.
+#'
+#' @param land_climate Data frame from \code{\link{build_global_landclimate}}
+#'   (columns \code{mat}, \code{map}, \code{weight}).
+#' @param style Named list of visual parameters, defaults to
+#'   \code{\link{WHITTAKER_STYLE}}.
+#' @param source_label Character. Data-source line shown in the inset text.
+#'
+#' @return A list with elements \code{plot} (the ggplot object) and
+#'   \code{frac_kept} (fraction of total global land-area weight that falls
+#'   within \code{style$xlim}/\code{style$ylim}, i.e. was not clipped).
+#'
+#' @export
+fig_whittaker_global_frequency <- function(
+  land_climate,
+  style        = WHITTAKER_STYLE,
+  source_label = "WorldClim v2.1 x ESA CCI LC 2015"
+) {
+  for (pkg in c("hexbin", "colorspace")) {
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop("Package '", pkg, "' is required for fig_whittaker_global_frequency().",
+           call. = FALSE)
+    }
+  }
+  .check_cols_climate(land_climate, c("mat", "map", "weight"))
+
+  clipped <- dplyr::filter(
+    land_climate,
+    .data$mat >= style$xlim[1], .data$mat <= style$xlim[2],
+    .data$map >= style$ylim[1], .data$map <= style$ylim[2]
+  )
+  frac_kept <- sum(clipped$weight) / sum(land_climate$weight)
+
+  detail_str <- paste0(
+    source_label, "\n",
+    "all ice-free land, area-weighted\n",
+    sprintf("%.1f%% of global land area shown", 100 * frac_kept)
+  )
+
+  p <- ggplot2::ggplot(
+    clipped,
+    ggplot2::aes(x = .data$mat, y = .data$map, z = .data$weight)
+  ) +
+    ggplot2::stat_summary_hex(
+      fun   = function(w) if (all(is.na(w))) NA_real_ else sum(w, na.rm = TRUE),
+      bins  = 15,
+      alpha = 0.9
+    ) +
+    colorspace::scale_fill_continuous_sequential(
+      palette  = "Blues 3",
+      trans    = "log10",
+      na.value = NA
+    ) +
+    ggplot2::guides(
+      fill = ggplot2::guide_colorbar(
+        title          = "Area-weighted land\nfrequency (log10)",
+        title.position = "top",
+        barwidth       = style$colorbar_width,
+        barheight      = style$colorbar_height,
+        direction      = "horizontal"
+      )
+    ) +
+    ggplot2::annotate(
+      "text",
+      x     = -Inf, y = Inf,
+      label = detail_str,
+      hjust = -0.05, vjust = 1.3,
+      size  = style$detail_text_size
+    ) +
+    ggplot2::coord_cartesian(
+      xlim = style$xlim,
+      ylim = style$ylim
+    ) +
+    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::labs(
+      x = expression("Mean Annual Temperature (" * degree * "C)"),
+      y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
+    ) +
+    .whittaker_theme(style)
+
+  list(plot = p, frac_kept = frac_kept)
+}
+
+#' Global ice-free land — Whittaker density-contour envelope (WorldClim + CCI)
+#'
+#' Draws highest-density-region contour lines enclosing \code{probs} (default
+#' 95% and 99%) of global ice-free land area in MAT/MAP climate space, on a
+#' plain white background with no fill. Intended as a clean envelope layer
+#' under network points on talk slides.
+#'
+#' The kernel density estimate is computed from the \emph{full, unclipped}
+#' global pixel distribution (so the 95%/99% figures are honest to "global
+#' ice-free land area" rather than to whatever falls inside the display
+#' window), using area (cosine-of-latitude) weights. The estimate uses
+#' weighted linear binning onto a regular grid followed by separable Gaussian
+#' smoothing (bandwidth from a weighted Scott's-rule reference, effective
+#' sample size accounting for the pixel weights); this avoids adding a new
+#' package dependency (no \code{ks}/\code{spatstat}). The same
+#' \code{style$xlim}/\code{style$ylim} axis window as
+#' \code{\link{fig_whittaker_worldclim}} is then applied for display via
+#' \code{coord_cartesian()}; any part of a contour outside that window is
+#' clipped from view (not recomputed).
+#'
+#' @param land_climate Data frame from \code{\link{build_global_landclimate}}
+#'   (columns \code{mat}, \code{map}, \code{weight}).
+#' @param style Named list of visual parameters, defaults to
+#'   \code{\link{WHITTAKER_STYLE}}.
+#' @param probs Numeric vector of coverage probabilities for the contour
+#'   lines (default \code{c(0.95, 0.99)}).
+#' @param gridsize Integer length-2 vector, KDE evaluation grid size.
+#'
+#' @return A list with elements \code{plot} (the ggplot object) and
+#'   \code{contour_df} (the underlying contour-line coordinates).
+#'
+#' @export
+fig_whittaker_global_contour <- function(
+  land_climate,
+  style    = WHITTAKER_STYLE,
+  probs    = c(0.95, 0.99),
+  gridsize = c(201, 201)
+) {
+  .check_cols_climate(land_climate, c("mat", "map", "weight"))
+
+  dg     <- .weighted_density_grid(land_climate$mat, land_climate$map,
+                                   land_climate$weight, gridsize = gridsize)
+  levels <- .hdr_levels(dg$density, probs = probs)
+
+  contour_df <- do.call(rbind, lapply(seq_along(probs), function(i) {
+    cl <- grDevices::contourLines(x = dg$xbin, y = dg$ybin, z = dg$density,
+                                  levels = levels[i])
+    if (length(cl) == 0L) return(NULL)
+    do.call(rbind, lapply(seq_along(cl), function(j) {
+      data.frame(x = cl[[j]]$x, y = cl[[j]]$y, piece = j, prob = probs[i])
+    }))
+  }))
+  if (is.null(contour_df) || nrow(contour_df) == 0L) {
+    stop("fig_whittaker_global_contour: no contour lines found at levels ",
+         paste(round(levels, 6), collapse = ", "), call. = FALSE)
+  }
+  contour_df$prob_label <- factor(paste0(contour_df$prob * 100, "%"),
+                                  levels = paste0(sort(probs, decreasing = TRUE) * 100, "%"))
+  # Smallest prob (innermost, most-certain core) drawn solid; larger probs
+  # (outer, wider envelope) drawn with progressively broken lines.
+  probs_asc <- sort(unique(probs))
+  linetypes <- stats::setNames(
+    rep(c("solid", "dashed", "dotted"), length.out = length(probs_asc)),
+    paste0(probs_asc * 100, "%")
+  )
+
+  p <- ggplot2::ggplot() +
+    ggplot2::geom_path(
+      data = contour_df,
+      ggplot2::aes(x = .data$x, y = .data$y,
+                  group = interaction(.data$prob, .data$piece),
+                  linetype = .data$prob_label),
+      colour    = "grey20",
+      linewidth = 0.6
+    ) +
+    ggplot2::scale_linetype_manual(
+      values = linetypes,
+      name   = "Global ice-free\nland area"
+    ) +
+    ggplot2::coord_cartesian(
+      xlim = style$xlim,
+      ylim = style$ylim
+    ) +
+    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::labs(
+      x = expression("Mean Annual Temperature (" * degree * "C)"),
+      y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
+    ) +
+    .whittaker_theme(style) +
+    ggplot2::theme(
+      panel.background = ggplot2::element_rect(fill = "white", color = NA),
+      legend.position   = "inside",
+      legend.position.inside = style$legend_pos,
+      legend.justification   = style$legend_just
+    )
+
+  list(plot = p, contour_df = contour_df)
+}
+
+
 # ---- Internal helpers -------------------------------------------------------
+
+#' Weighted 2D kernel density estimate via linear binning + Gaussian smoothing
+#'
+#' A dependency-free (no \code{ks}/\code{spatstat}) weighted 2D KDE: each
+#' point's weight is distributed onto the four nearest nodes of a regular
+#' grid (linear binning, mass-preserving), then the grid is smoothed with a
+#' separable Gaussian kernel implemented as two row-stochastic matrix
+#' multiplications and finally renormalised so the discretised grid mass
+#' exactly equals \code{sum(w)}. Bandwidth follows a weighted Scott's-rule
+#' reference (\code{sigma * n_eff^(-1/6)}), where \code{n_eff} is the
+#' effective sample size accounting for unequal weights.
+#'
+#' @param x,y Numeric vectors of equal length.
+#' @param w Numeric vector of positive weights, same length as \code{x}/\code{y}.
+#' @param gridsize Integer length-2 vector, number of grid nodes in x and y.
+#' @param pad Numeric. Fractional padding added beyond \code{range(x)}/\code{range(y)}
+#'   so the smoothed density is not truncated at the data extent.
+#'
+#' @return A list with \code{xbin}, \code{ybin} (grid node coordinates) and
+#'   \code{density} (an \code{nx} by \code{ny} matrix of grid mass, summing
+#'   to \code{sum(w)}).
+#' @noRd
+.weighted_density_grid <- function(x, y, w, gridsize = c(201, 201), pad = 0.02) {
+  nx <- gridsize[1]; ny <- gridsize[2]
+
+  rx <- range(x); ry <- range(y)
+  padx <- diff(rx) * pad; pady <- diff(ry) * pad
+  xbin <- seq(rx[1] - padx, rx[2] + padx, length.out = nx)
+  ybin <- seq(ry[1] - pady, ry[2] + pady, length.out = ny)
+
+  wsum <- sum(w)
+  mx   <- sum(w * x) / wsum
+  my   <- sum(w * y) / wsum
+  sx   <- sqrt(sum(w * (x - mx)^2) / wsum)
+  sy   <- sqrt(sum(w * (y - my)^2) / wsum)
+  neff <- wsum^2 / sum(w^2)
+  bw   <- c(sx, sy) * neff^(-1/6)
+
+  # --- linear binning: distribute each point's weight over its 4 neighbours ---
+  ix <- findInterval(x, xbin, all.inside = TRUE)
+  iy <- findInterval(y, ybin, all.inside = TRUE)
+  fx <- (x - xbin[ix]) / (xbin[ix + 1L] - xbin[ix])
+  fy <- (y - ybin[iy]) / (ybin[iy + 1L] - ybin[iy])
+
+  acc <- numeric(nx * ny)
+  add_corner <- function(lin, wt) {
+    s <- rowsum(wt, lin, reorder = FALSE)
+    idx <- as.integer(rownames(s))
+    acc[idx] <<- acc[idx] + s[, 1]
+  }
+  add_corner((iy - 1L) * nx + ix,        w * (1 - fx) * (1 - fy))
+  add_corner((iy - 1L) * nx + (ix + 1L), w * fx       * (1 - fy))
+  add_corner(iy * nx + ix,               w * (1 - fx) * fy)
+  add_corner(iy * nx + (ix + 1L),        w * fx       * fy)
+  grid <- matrix(acc, nrow = nx, ncol = ny)
+
+  # --- separable Gaussian smoothing (row-stochastic kernel matrices) ---------
+  gauss_mat <- function(centers, bandwidth) {
+    k <- stats::dnorm(outer(centers, centers, "-"), sd = bandwidth)
+    k / rowSums(k)
+  }
+  gx   <- gauss_mat(xbin, bw[1])
+  gy   <- gauss_mat(ybin, bw[2])
+  dens <- gx %*% grid %*% t(gy)
+  dens <- dens * (sum(grid) / sum(dens))  # exact mass preservation
+
+  list(xbin = xbin, ybin = ybin, density = dens)
+}
+
+#' Highest-density-region thresholds from a density grid
+#'
+#' Sorts grid cell masses in descending order and finds, for each target
+#' coverage probability, the density value such that all cells at or above it
+#' contain at least that fraction of the total grid mass. Passing the
+#' returned levels to \code{\link[grDevices]{contourLines}} draws the
+#' corresponding highest-density-region contour.
+#'
+#' @param density_grid Numeric matrix of grid cell masses (need not be
+#'   normalised).
+#' @param probs Numeric vector of target coverage probabilities in (0, 1).
+#'
+#' @return Numeric vector of density thresholds, same length as \code{probs}.
+#' @noRd
+.hdr_levels <- function(density_grid, probs) {
+  v   <- sort(as.vector(density_grid), decreasing = TRUE)
+  cum <- cumsum(v) / sum(v)
+  vapply(probs, function(p) v[which(cum >= p)[1]], numeric(1))
+}
 
 #' Build the ggplot2 theme for Whittaker figures
 #'

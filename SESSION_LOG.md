@@ -4,6 +4,82 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-02 — Global ice-free-land Whittaker background figures (WorldClim + ESA CCI)
+
+Two new talk-slide background figures were generated in Whittaker (MAT × MAP)
+climate space, intended to sit under the network-distribution panels
+(`fig_whit01_ShuttleFull.png` / `fig_02_whittaker_current.png`). Unlike those
+panels, these represent **global ice-free land area**, not FLUXNET sites, and
+carry no NEE information. Full step-by-step provenance is in
+`review/figures/whittaker/RUN_LOG_whittaker_global.txt`.
+
+### Data sources (non-Shuttle, background/context use only — CLAUDE.md Hard Rule #1)
+
+- **MAT/MAP**: WorldClim v2.1, 2.5 arc-minute BIO1/BIO12 —
+  `data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif` /
+  `..._bio_12.tif` (the same rasters used as the per-site-extract fallback in
+  `fig_whittaker_worldclim()`).
+- **Land mask**: ESA CCI land cover 2015, 300 m —
+  `data/external/cci_landcover/ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif`.
+  Class 210 (water bodies) and class 220 (permanent snow/ice) excluded; class
+  0 (no data) excluded; all other classes retained as **all ice-free land**
+  (not the vegetated mask used elsewhere in the paper). Aggregated to the
+  WorldClim grid via an exact 15× integer factor (no reprojection needed —
+  the two grids are natively co-aligned) and thresholded at ≥50% ice-free-land
+  fraction per WorldClim cell, plus a latitude < −60° backstop for Antarctica.
+- **Area weighting**: cosine-of-latitude pixel weighting (`cos(lat)`), since
+  WorldClim is an equal-angle, not equal-area, grid. Every density/frequency
+  calculation uses this weight, not raw pixel counts.
+
+### Axis ranges and clipping
+
+Axis ranges, hex bin count, and panel dimensions were read directly from
+`WHITTAKER_STYLE` / `fig_whittaker_worldclim()` in `R/figures/fig_climate.R`
+and matched exactly: MAT ∈ [−15, 35] °C, MAP ∈ [0, 4000] mm/yr, 15 hex bins,
+3.5 × 3.5 in @ 300 dpi (the same style override used for
+`fig_whit01_ShuttleFull.png`). 0.94% of global ice-free land-area weight
+falls outside the MAT range (cold tundra/taiga colder than −15 °C) and 0.24%
+falls outside the MAP range (wet tropical tails above 4000 mm/yr); per
+instruction, neither axis was extended — 98.82% of global land area is shown
+within the displayed window, and the clip is stated in both legend files.
+
+### Outputs
+
+- `review/figures/whittaker/fig_whit_global_frequency.png` — area-weighted
+  hexbin frequency, log10 fill on a neutral sequential (Blues) scale, hex
+  geometry identical to Figure 2 for overlay registration.
+- `review/figures/whittaker/fig_whit_global_contour.png` — 95%/99%
+  highest-density-region contour lines (white background, no fill), computed
+  from a weighted 2D KDE over the *full, unclipped* global distribution (so
+  the percentages are honest to "global ice-free land area"), then displayed
+  through the same Figure 2 axis window.
+- Both have companion `.legend.txt` files stating data source, land mask,
+  area-weighting method, axis ranges/clipping, color-scale meaning, and the
+  source script.
+- New functions `build_global_landclimate()`, `fig_whittaker_global_frequency()`,
+  `fig_whittaker_global_contour()`, and internal helpers `.weighted_density_grid()`
+  / `.hdr_levels()` (a dependency-free weighted 2D KDE + highest-density-region
+  contour implementation — no `ks`/`spatstat` added) were added to
+  `R/figures/fig_climate.R` alongside `fig_whittaker_worldclim()`, which was
+  left byte-for-byte unmodified (confirmed via `git diff --stat`: 368
+  insertions, 0 deletions). Driven by `scripts/generate_whittaker_global.R`.
+
+### Process note
+
+A bug was found and fixed during this session: the run-log safety net
+originally relied on `on.exit()` registered at the top level of the Rscript,
+which does not fire on normal script completion (only when an enclosing R
+function call exits). Fixed by wrapping the pipeline body in a function
+called via `tryCatch()`, with the final outcome line written unconditionally
+afterward — verified on a clean re-run. No automated tests were added for the
+new functions (`testthat` is not installed in this environment and was not
+installed per the no-new-dependencies rule); the two new pure helper
+functions were instead sanity-checked by hand against synthetic data with a
+known analytic answer, consistent with this repo's existing precedent of no
+tests for `fig_climate.R`'s other exported (plot/IO-heavy) functions.
+
+---
+
 ## 2026-07-02 — Site counts by IGBP class, total vs. recent (2015+) additions
 
 Snapshot: `data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv`

@@ -4,6 +4,51 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-05 — Data-treatment code review of the six draft_manuscript_v1 figures
+
+Read-and-report review, written to `review/figure_data_treatment_review.md`
+(narrative for co-authors/Methods, then a `file:line` provenance appendix).
+No analysis, figure, or data file modified — `git status` before/after shows
+only the three pre-existing dirty tracked files, none from this task.
+
+Traced each of the six figures from `scripts/build_draft_manuscript_v1.R`
+(a pure copy/rename utility) → figure script → `R/figures/` function → source
+data. Central findings:
+
+- **Two flux figures, two QC thresholds, two data paths.** Fig 2 (Whittaker
+  NEE hexbin) reads DuckDB `annual_converted`, QC-gated at the pipeline default
+  **0.50** (`R/pipeline_config.R:49`, applied `scripts/04_qc.R:80-147`,
+  unit-converted `05_units.R:56-58`). Fig 3 (FLUXNET2015 vs Shuttle medians)
+  bypasses DuckDB entirely, reading raw `data/extracted/` YY CSVs and applying
+  a stricter local **0.80** (`scripts/assess_flux_data_by_igbp_shuttle.R:43`,
+  FLUXNET2015 side `..._fluxnet2015.R:54`). Same 0.80 both sides of the
+  comparison, but not the same as Fig 2 or the pipeline.
+- **Binning drift is real and figure-specific.** For the continuous
+  representativeness axes, Fig 4 (sampling-ratio grid) uses the **7-bin** hybrid
+  (`figure_representativeness_summary.R:371-410`) while Fig 5 (Jaccard
+  trajectory) uses **18-bin** (`:1034-1036`).
+- **Hellinger retained but retired from the figures:** computed and stored
+  (`figure_representativeness_landcover.R:325-329` and every per-axis compute
+  script → `representativeness_metrics.csv`) but never referenced by the summary
+  script; Fig 5 plots weighted Jaccard only.
+- **Fallbacks confirmed per-site (not per-year):** VUT→CUT and NT→DT selection,
+  with exact code cited (`assess_flux_data_by_igbp_shuttle.R:165-238`;
+  `04_qc.R:105-127`).
+- **Unit conversions quoted from code:** NEP = −NEE; ET = LE_F_MDS × (365.25·86400)
+  / 2.45e6 → mm yr⁻¹; H = H_F_MDS unconverted (`assess_...shuttle.R:44-45,187-199`).
+- **Snapshot:** single-`flux_listall()` 767-site file
+  `fluxnet_shuttle_snapshot_20260624T095651.csv`; Figs 1A/1B/2 select it by
+  newest-file glob (not pinned), Fig 3 pins it, Figs 4/5 use pre-computed
+  `current_767` CSVs.
+- **Doc drift flagged, not trusted:** `docs/methods_requirements.md` still cites
+  672 sites / 2026-04-14 / `[PID]`/`[ZENODO DOI]` placeholders (`:39-40,73,234-254`);
+  Fig 2's hardcoded legend says 767 sites while its committed PNG was rendered
+  from a 759-site snapshot.
+
+Every "not found" is recorded as an explicit searched-X line in the report.
+
+---
+
 ## 2026-07-02 — Methods section source material compiled (read-and-report)
 
 Compiled the source material needed to draft the Methods section of the

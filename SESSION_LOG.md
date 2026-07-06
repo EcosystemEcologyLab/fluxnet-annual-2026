@@ -4,6 +4,37 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-07-06 — Figure inventory / findability guide for review/figures/
+
+Read-and-report task. Produced `review/figures/FIGURE_INVENTORY.md`, a
+category-level findability guide so co-authors can locate the pool of
+alternatives to each figure in the current draft. Companion run log at
+`review/figures/RUN_LOG_figure_inventory.txt`.
+
+Enumerated 199 image files (all `.png`; no pdf/svg/jpg/eps/tif found): 183
+across 17 category subdirectories plus 16 loose unfiled images directly under
+`review/figures/`. Documentation files (`.md`/`.txt`/`.legend.txt`) counted
+separately, not as figures. Per-category counts recorded in the run log.
+
+Draft mapping: traced all six `draft_manuscript_v1/` figures back to their
+source categories via the `scripts/build_draft_manuscript_v1.R` copy map
+(candidates → 1A, network → 1B, whittaker → 2, flux_medians → 3,
+representativeness → 4 and 5), with verbatim source paths. Figure 2 check:
+the build script points to `whittaker/fig_whit_fig2_with_both_contours.png`
+(the intended both-contours version) — not stale, does not point at the
+no-contour output.
+
+Descriptions taken from sibling `.legend.txt` where present; legend-less
+categories described from their writing scripts. One provenance gap flagged:
+`diagnostic/` (3 files) has no current writing script and no legend, so it is
+described from filenames only.
+
+No figure or data file was modified, moved, or renamed. `git status` before
+and after shows working-tree changes limited to the three written files
+(`FIGURE_INVENTORY.md`, `RUN_LOG_figure_inventory.txt`, this `SESSION_LOG.md`
+entry); the only other dirty tracked files are three pre-existing ones from
+earlier sessions, unchanged by this task.
+
 ## 2026-07-05 — Data-treatment code review of the six draft_manuscript_v1 figures
 
 Read-and-report review, written to `review/figure_data_treatment_review.md`

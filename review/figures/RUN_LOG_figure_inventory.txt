@@ -1,0 +1,11 @@
+2026-07-06T16:10:56Z started figure inventory task
+2026-07-06T16:11:00Z baseline git status captured. Pre-existing dirty tracked files (NOT from this task): data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv.meta.json, renv/activate.R, review/figures/climate/fig_environmental_response_era5.png. Only new file from this task so far: review/figures/RUN_LOG_figure_inventory.txt.
+2026-07-06T16:11:00Z reading CLAUDE.md and SESSION_LOG.md for context.
+2026-07-06T16:14:00Z enumerated review/figures/: 199 image files total (183 in 17 subdir-categories + 16 loose unfiled). Doc files (.md/.txt/.legend.txt) counted separately, not as figures.
+2026-07-06T16:14:00Z per-category image counts: anomalies=2, Anomalies_GEZ=8, Anomalies_KG=23 (3 top + level1=10 + level2=10), candidates=12, climate=2, diagnostic=3, draft_manuscript_v1=6, envresponse=10, flux_medians=11, historical=7, latitudinal=1, maps=9, maps_point=4, network=16, representativeness=44 (incl trendy_preview subdir=6), timeseries=10, whittaker=15. Loose unfiled=16.
+2026-07-06T16:14:00Z read build_draft_manuscript_v1.R copy map. Figure 2 source = review/figures/whittaker/fig_whit_fig2_with_both_contours.png (both-contours version, NOT the stale no-contour output). No stale mapping.
+2026-07-06T16:14:00Z read six draft-source legends for category descriptions; traced legend-less categories to writer scripts. diagnostic/: no current writer script and no legend found (fig_diag_map_*); will describe from filenames and flag.
+2026-07-06T16:14:00Z writing review/figures/FIGURE_INVENTORY.md.
+2026-07-06T16:18:00Z wrote review/figures/FIGURE_INVENTORY.md.
+2026-07-06T16:18:00Z verification: git status shows NO figure or data file modified, moved, or renamed by this task. Tracked modifications are only the three pre-existing dirty files from earlier sessions (flux_comparison_fluxnet2015_vs_shuttle.csv.meta.json, renv/activate.R, climate/fig_environmental_response_era5.png), byte-identical to the baseline captured at start. New files from this task: review/figures/FIGURE_INVENTORY.md and review/figures/RUN_LOG_figure_inventory.txt (plus the SESSION_LOG.md entry to follow). Rplots.pdf was already untracked at session start; not created by this task.
+2026-07-06T16:18:00Z writing SESSION_LOG.md entry, then committing the three files.

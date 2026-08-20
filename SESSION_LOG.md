@@ -4,6 +4,91 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-08-20 — Köppen-Geiger classification unified: computed locally from ERA5
+
+Replaced two previously-inconsistent per-figure-family KG sources for the
+current 767-site FLUXNET Shuttle network — BADM `CLIMATE_KOEPPEN` metadata
+(used by `Anomalies_KG` figures) and Beck et al. (2023) 1 km raster
+extraction (used by `representativeness` figures) — with a single locally
+computed classification, following the method ICOS's own
+`KG_classification` script uses: the Beck et al. rule cascade applied to a
+1991–2020 monthly temperature/precipitation normal built from each site's
+own ERA5 monthly reanalysis data (already bundled with every FLUXNET Shuttle
+download, `*_FLUXNET_ERA5_MM_*.csv`, ingested as `dataset = 'ERA5'` rows in
+the DuckDB `monthly` table). Full methods write-up:
+`review/figures/representativeness/methods_koppen_era5.md`.
+
+**New code:** `R/climate_classification.R` (`classify_koppen_geiger()` — a
+faithful line-for-line port of the ICOS/Beck boolean rule cascade, hemisphere
+-agnostic via the warmer-half-year comparison, not a latitude flag;
+`compute_era5_monthly_climatology()`; `compute_site_koppen_era5()`),
+`scripts/step5_compute_koppen_era5.R`, three new constants in
+`R/pipeline_config.R` (`KG_ERA5_PERIOD`, `KG_ERA5_MIN_YEARS`,
+`KG_ERA5_MAP_MAX_MM`).
+
+**Units gotcha caught before it caused damage:** `P_ERA` in the bundled ERA5
+monthly file is a daily-mean value (mm/day), not a monthly total —
+confirmed on-disk before writing any classification code. Skipping the
+`× days_in_month` step (as the ICOS script does) would have silently
+corrupted every aridity/seasonality threshold.
+
+**Result of the first live run:** 759/767 current-network sites have ERA5
+monthly rows in DuckDB (8 sites — DK-Eng, DK-Fou, ES-Pdu, IT-MtM, IT-PT1,
+JP-Nkm, JP-Tgf, SJ-Adv — have none); of those, 734 classified successfully.
+25 sites (e.g. IT-MBo, BR-Ji3, JP-Tak, NO-And, PE-QFR, US-HB4) were left
+unclassified because every candidate year's computed annual `P_ERA` total
+exceeded the 5000 mm/yr plausibility screen (764 site-year exclusions
+logged) — this is the same ERA5 spatial-averaging precipitation artifact
+already documented in `docs/known_issues.md` §9a, here manifesting as a
+systematic per-site scaling issue rather than scattered site-years, and
+correctly caught by the screening rather than silently propagated into a
+wrong KG class. Agreement with the two retired sources, both still carried
+as QA comparison columns in `site_koppen_era5.csv`: 56.0% full-code
+agreement vs. BADM `CLIMATE_KOEPPEN` (580 comparable sites — this
+disagreement rate is exactly why a single authoritative source was wanted),
+69.2% full-code / 84.6% main-group agreement vs. the retired Beck 2023
+raster extraction (734 comparable sites).
+
+**Consumers updated:** `scripts/generate_kg_availability_heatmaps.R` now
+reads `site_koppen_era5.csv` instead of extracting fresh from BADM (ran
+clean — 3 heatmaps + 20 anomaly-context figures regenerated via
+`generate_kg_anomaly_figures.R`, no code changes needed downstream since
+column names match). `scripts/figure_representativeness_kg.R`'s
+`sites_path` now points at `site_koppen_era5.csv`.
+`scripts/figure_representativeness_summary.R`'s KG `load_fn` is
+network-conditional (`current_767` → `site_koppen_era5.csv`, every other
+network → unchanged Beck-2023-raster files, since FLUXNET2015/La
+Thuile/MARCONI aren't Shuttle sites with bundled ERA5 data). Scope
+deliberately excludes those historical-network comparisons, the global
+land-area backdrop, and the future-scenario figures — all stay Beck-2023-raster-based, per decision, and are documented as such in a new pointer
+note at the top of the (still-authoritative-for-those-cases)
+`methods_koppen_beck2023.md`.
+
+**Pre-existing, unrelated hazard found and fixed along the way:**
+`scripts/figure_representativeness_kg.R`'s tail (writing
+`representativeness_metrics.csv`) unconditionally overwrote that entire
+157-row, 7-column file (every axis: aridity, biomass, landcover, TRENDY,
+KG-future; every network: current_767/fluxnet2015/la_thuile/marconi) with a
+bare 3-row/3-column frame missing the `axis`/`network`/`n_classes`/`n_sites`
+columns every other script and `figure_representativeness_summary.R`'s
+`get_j()` lookups depend on. This predates today's change and is unrelated
+to it, but the approved plan's verification step called for re-running this
+script. Backed up the file first, then fixed the tail to upsert (read
+existing, drop only the `axis == "koppen_beck2023" & network ==
+"current_767"` rows, re-add the 3 fresh rows, preserve everything else) —
+mirrors the pattern `extract_historical_sites_representativeness.R` Step 4
+already uses for its own updates. Verified the row-identity set (axis,
+aggregation_level, network) is unchanged before/after (156 data rows both
+times); only the 3 targeted rows' values changed, `n_sites` now correctly
+759 (was 767) reflecting the ERA5-classified sample. New Jaccard/Hellinger
+values for the current network: 30-class J=0.357 (was 0.350), 5-class
+J=0.458 (was 0.401), two-letter J=0.423 (was 0.373) — a real shift, not
+noise, consistent with the ERA5-vs-Beck-raster disagreement rate reported
+above. `scripts/figure_representativeness_summary.R` then ran clean, all 18
+figures (001–018) regenerated with no errors.
+
+---
+
 ## 2026-07-06 — Figure inventory / findability guide for review/figures/
 
 Read-and-report task. Produced `review/figures/FIGURE_INVENTORY.md`, a

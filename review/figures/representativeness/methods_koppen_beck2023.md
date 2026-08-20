@@ -1,3 +1,14 @@
+**Scope note (added 2026-08-20):** as of `scripts/step5_compute_koppen_era5.R`,
+per-site classification for the **current 767-site FLUXNET Shuttle network** is
+computed locally from each site's own ERA5 monthly reanalysis data instead of the
+raster method described below — see `methods_koppen_era5.md` for that method. This
+raster-based method described here remains authoritative for: the area-weighted
+global land-area backdrop distribution (there is no per-pixel ERA5 monthly record
+for the whole globe), the future-scenario figures, and the historical-network
+comparisons (FLUXNET2015, La Thuile, MARCONI — not Shuttle sites with bundled ERA5
+monthly data). `site_koppen_beck2023.csv`'s Beck-derived class is retained as a QA
+comparison column (`beck2023_kg_class`) in `site_koppen_era5.csv`.
+
 Per-site Köppen-Geiger classes were assigned from the Beck et al. (2023) present-day
 (1991–2020) map at 1 km resolution, which provides 30 classes under the standard
 Köppen-Geiger scheme (Af, Am, Aw, BWh, BWk, BSh, BSk, Csa, Csb, Csc, Cwa, Cwb,

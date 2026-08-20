@@ -1,8 +1,14 @@
 # scripts/generate_kg_availability_heatmaps.R
 #
 # Step 3 of the KG analysis workflow:
-#   1. Normalise CLIMATE_KOEPPEN capitalisation (Bsk -> BSk) in badm.rds
-#   2. Join KG classification from badm.rds to
+#   1. Load ERA5-derived KG classification from
+#      data/snapshots/site_koppen_era5.csv (scripts/step5_compute_koppen_era5.R)
+#      — the current-network authoritative KG source (see
+#      review/figures/representativeness/methods_koppen_era5.md). Previously
+#      this step extracted CLIMATE_KOEPPEN directly from BADM; that field is
+#      still available as a comparison column (badm_kg_class) in the ERA5
+#      file but is no longer the source used here.
+#   2. Join KG classification to
 #      data/snapshots/long_record_site_candidates_gez.csv
 #   3. Save enriched table to
 #      data/snapshots/long_record_site_candidates_gez_kg.csv
@@ -38,43 +44,28 @@ check_pipeline_config()
 MIN_NEE_YEARS <- 8L
 OUT_DIR       <- file.path("review", "figures", "Anomalies_KG")
 SNAPSHOTS_DIR <- file.path(FLUXNET_DATA_ROOT, "snapshots")
-PROCESSED_DIR <- file.path(FLUXNET_DATA_ROOT, "processed")
 FIGURE_WIDTH  <- 18   # inches
 FIGURE_HEIGHT <- 12   # inches
 FIGURE_DPI    <- 150
 
 fs::dir_create(OUT_DIR)
 
-# ---- 1. Load and normalise BADM ----------------------------------------------
+# ---- 1. Load ERA5-derived KG classification -----------------------------------
 
-badm_path <- file.path(PROCESSED_DIR, "badm.rds")
-message("Loading BADM: ", badm_path)
-badm <- readRDS(badm_path)
-
-# Normalise capitalisation: Bsk -> BSk (same climate class, different case)
-n_bsk <- sum(badm$VARIABLE == "CLIMATE_KOEPPEN" & badm$DATAVALUE == "Bsk",
-             na.rm = TRUE)
-if (n_bsk > 0L) {
-  message(sprintf("  Normalising %d 'Bsk' -> 'BSk' entries in BADM", n_bsk))
-  badm$DATAVALUE[badm$VARIABLE == "CLIMATE_KOEPPEN" &
-                   badm$DATAVALUE == "Bsk"] <- "BSk"
-  saveRDS(badm, badm_path)
-  message("  Saved normalised badm.rds")
-} else {
-  message("  No 'Bsk' entries found — BADM already normalised")
-}
-
-# Extract one KG code per site (take the first value; no site has duplicates)
-kg_per_site <- badm |>
-  dplyr::filter(.data$VARIABLE == "CLIMATE_KOEPPEN", !is.na(.data$DATAVALUE)) |>
-  dplyr::distinct(.data$SITE_ID, .keep_all = TRUE) |>
-  dplyr::select(site_id = "SITE_ID", kg_class = "DATAVALUE") |>
-  dplyr::mutate(
-    kg_second = substr(.data$kg_class, 1L, 2L),
-    kg_main   = substr(.data$kg_class, 1L, 1L)
+kg_era5_path <- file.path(SNAPSHOTS_DIR, "site_koppen_era5.csv")
+if (!file.exists(kg_era5_path)) {
+  stop(
+    "ERA5 KG classification not found: ", kg_era5_path, "\n",
+    "Run scripts/step5_compute_koppen_era5.R first.",
+    call. = FALSE
   )
+}
+message("Loading ERA5-derived KG classification: ", kg_era5_path)
+kg_per_site <- readr::read_csv(kg_era5_path, show_col_types = FALSE) |>
+  dplyr::select("site_id", "kg_class", "kg_second", "kg_main")
 
-cat(sprintf("\nKG codes available for %d sites\n", nrow(kg_per_site)))
+cat(sprintf("\nKG codes available for %d sites\n",
+            sum(!is.na(kg_per_site$kg_class))))
 
 # ---- 2. Join KG to GEZ candidates and save -----------------------------------
 

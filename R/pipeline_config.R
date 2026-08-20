@@ -48,6 +48,20 @@ QC_THRESHOLD_MM <- 0.50 # monthly
 #' @export
 QC_THRESHOLD_YY <- 0.50 # annual
 
+# Köppen-Geiger (ERA5-derived) classification constants — see
+# R/climate_classification.R and scripts/step5_compute_koppen_era5.R.
+# Change here to adjust pipeline-wide KG classification behaviour.
+
+#' @export
+KG_ERA5_PERIOD <- c(1991L, 2020L) # matches Beck et al. (2023) present-day window
+
+#' @export
+KG_ERA5_MIN_YEARS <- 20L # of 30 candidate years required per site to classify
+
+#' @export
+KG_ERA5_MAP_MAX_MM <- 5000 # mm/yr; site-years above this are reanalysis
+# spatial-averaging artifacts, not real climate — see docs/known_issues.md §9a
+
 #' Check pipeline configuration
 #'
 #' Validates that all required environment variables are set, that the

@@ -55,7 +55,13 @@ assignment, regional grouping, and metadata fields used in the analysis.
 - IGBP classification source (BADM/BIF files)
 - UN subregional grouping (countrycode package, iso2c to un.regionsub.name)
 - FAO Global Ecological Zone assignment (GEZ 2010 shapefile, spatial join)
-- Koppen-Geiger climate classification (from BADM CLIMATE_KOEPPEN variable)
+- Koppen-Geiger climate classification (computed locally from each site's
+  bundled ERA5 monthly reanalysis data, per the Beck et al. rule cascade
+  applied to a 1991-2020 normal — see
+  `review/figures/representativeness/methods_koppen_era5.md`. Historical-
+  network comparisons and the global land-area backdrop still use the Beck
+  2023 raster; BADM CLIMATE_KOEPPEN is retained only as a QA comparison
+  column, not the classification source, as of 2026-08-20)
 - Functionally active site definition (≥3 months valid NEE in last 4 years)
 - Historical dataset site lists (Marconi, La Thuile, FLUXNET2015)
 
@@ -126,7 +132,8 @@ summaries were calculated.
 - Minimum data requirements for anomaly analysis
   (≥8 valid NEE years, ≥4 sites per stratum)
 - GEZ × IGBP × subregion stratification for anomaly figures
-- Koppen-Geiger stratification (Level 1 and Level 2)
+- Koppen-Geiger stratification (Level 1 and Level 2; classes sourced from
+  `data/snapshots/site_koppen_era5.csv` as of 2026-08-20 — see §5.3 note above)
 
 **Primary code files:**
 - `R/figures/fig_anomaly_context.R` — anomaly calculation and plotting

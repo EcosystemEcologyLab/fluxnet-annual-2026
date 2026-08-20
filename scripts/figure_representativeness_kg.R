@@ -4,6 +4,15 @@
 ## distribution (Beck 2023, 1991-2020, 1 km) against the 767-site
 ## FLUXNET network distribution.
 ##
+## Network-side classification is computed locally from each site's own
+## ERA5 monthly reanalysis data (site_koppen_era5.csv, produced by
+## scripts/step5_compute_koppen_era5.R) — see
+## review/figures/representativeness/methods_koppen_era5.md. The global
+## land-area backdrop remains the Beck 2023 raster (there is no per-pixel
+## ERA5 monthly record for the whole globe), so the two sides of each bar
+## chart are sourced differently by necessity; this is documented in the
+## methods doc, not a lingering inconsistency.
+##
 ## Outputs (review/figures/representativeness/):
 ##   fig_representativeness_kg_30class.png  — 30 KG classes
 ##   fig_representativeness_kg_5class.png   — 5 main classes + sampling-ratio panel (right)
@@ -31,7 +40,7 @@ leg_path   <- file.path(kg_dir, "legend.txt")
 global_path <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          "koppen_beck2023_global_distribution.csv")
 sites_path  <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                         "site_koppen_beck2023.csv")
+                         "site_koppen_era5.csv")
 out_dir     <- file.path("review", "figures", "representativeness")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -401,17 +410,38 @@ m_tl <- compute_repr_metrics(p_tl, q_tl)
 message(sprintf("Metrics — two-letter: J = %.4f, H = %.4f",
                 m_tl$weighted_jaccard, m_tl$hellinger_distance))
 
-# ---- Write metrics CSV -------------------------------------------------------
-metrics_df <- data.frame(
-  aggregation_level  = c("5class", "13class_twoletter", "30class"),
-  weighted_jaccard   = c(m5$weighted_jaccard,  m_tl$weighted_jaccard,  m30$weighted_jaccard),
-  hellinger_distance = c(m5$hellinger_distance, m_tl$hellinger_distance, m30$hellinger_distance),
-  stringsAsFactors   = FALSE
+# ---- Update metrics CSV (upsert, not overwrite) ------------------------------
+# NOTE: representativeness_metrics.csv is a shared, multi-axis, multi-network
+# file (see extract_historical_sites_representativeness.R Step 4 for the
+# sibling upsert pattern). This block used to unconditionally overwrite the
+# entire file with just these 3 rows, destroying every other axis/network's
+# data on every run — fixed 2026-08-20. Only the rows for this axis/network
+# are replaced; everything else is preserved.
+new_rows <- data.frame(
+  axis                = "koppen_beck2023",
+  aggregation_level   = c("5class", "13class_twoletter", "30class"),
+  n_classes           = c(5L, 13L, 30L),
+  weighted_jaccard    = c(m5$weighted_jaccard,  m_tl$weighted_jaccard,  m30$weighted_jaccard),
+  hellinger_distance  = c(m5$hellinger_distance, m_tl$hellinger_distance, m30$hellinger_distance),
+  network             = "current_767",
+  n_sites             = n_sites,
+  stringsAsFactors    = FALSE
 )
+
 metrics_path <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                           "representativeness_metrics.csv")
-readr::write_csv(metrics_df, metrics_path)
-message("Saved metrics: ", metrics_path)
+if (file.exists(metrics_path)) {
+  existing <- readr::read_csv(metrics_path, show_col_types = FALSE)
+  # drop any prior rows for this exact axis/network combination, then re-add
+  existing <- existing |>
+    dplyr::filter(!(.data$axis == "koppen_beck2023" & .data$network == "current_767"))
+  metrics_final <- dplyr::bind_rows(existing, new_rows) |>
+    dplyr::arrange(.data$axis, .data$aggregation_level, .data$network)
+} else {
+  metrics_final <- new_rows
+}
+readr::write_csv(metrics_final, metrics_path)
+message("Updated metrics (upsert): ", metrics_path, " (", nrow(metrics_final), " total rows)")
 
 message("\n=== TWO-LETTER CLASS SUMMARY ===")
 print(as.data.frame(dplyr::select(

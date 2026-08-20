@@ -317,10 +317,17 @@ get_j <- function(axis, agg, net) {
 # color_hex; specify the global_df, metrics lookup keys, and display title.
 AXES6 <- list(
   kg = list(
-    title   = "Köppen-Geiger (Beck 2023, 13-class)",
+    title   = "Köppen-Geiger (13-class)",
     m_axis  = "koppen_beck2023", m_agg = "13class_twoletter",
     load_fn = function(net) {
-      readr::read_csv(site_csv("koppen_beck2023", net), show_col_types = FALSE) |>
+      # current_767: computed locally from ERA5 (site_koppen_era5.csv, see
+      # scripts/step5_compute_koppen_era5.R). Historical-network comparisons
+      # (fluxnet2015/la_thuile/marconi) stay on the Beck 2023 raster
+      # extraction — those aren't Shuttle sites with bundled ERA5 monthly
+      # data. Column names (koppen_class/koppen_twoletter/koppen_main) match
+      # across both sources, so only the file lookup differs.
+      kg_base <- if (net == "current_767") "koppen_era5" else "koppen_beck2023"
+      readr::read_csv(site_csv(kg_base, net), show_col_types = FALSE) |>
         count_sites("koppen_twoletter")
     },
     global_df = kg13_global,

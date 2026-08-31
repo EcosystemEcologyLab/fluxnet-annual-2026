@@ -1,0 +1,34 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+[2026-08-31 13:26:09] === ALT Figure 2: regular hexagons + points-in-front, 50% smaller ===
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-08-31 13:26:10] Loaded cached density_grid (201x201)
+[2026-08-31 13:26:11] Loaded data_yy (6,108 rows) and shuttle_meta (775 sites) from data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv
+[2026-08-31 13:26:11] Building base plot via fig_whittaker_worldclim(hex_regular=TRUE, points_in_front=TRUE, point_size=0.7)
+fig_whittaker_worldclim: extracted WorldClim for 17 sites not in worldclim_csv.
+[2026-08-31 13:26:12] Computing contour_df via fig_whittaker_global_contour(density_grid=density_grid)
+Warning message:
+Removed 137 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+[2026-08-31 13:26:12] Saved: review/figures/candidates/ALT_fig_02_whittaker_current.png (3.5 x 3.5 in, 300 dpi)
+[2026-08-31 13:26:12] Saved: review/figures/candidates/ALT_fig_02_whittaker_current.txt
+[2026-08-31 13:26:12] === ALT Figure 2 complete ===

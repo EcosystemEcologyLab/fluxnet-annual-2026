@@ -1,0 +1,36 @@
+ALT Figure 2 -- regular hexagons, points in front at 50% size
+
+Alternative to review/figures/draft_manuscript_v1/fig_02_whittaker_current.png,
+prepared for review before deciding whether to adopt these changes in the
+production figure. Same base layer (FLUXNET network hexbin coloured by
+median site NEE) and same 95% solid / 99% dashed global ice-free-land HDR
+contour overlay as fig_02 -- only two things differ:
+
+1. Hexagons are now REGULAR (equilateral), not vertically elongated. Root
+   cause: ggplot2::stat_summary_hex()'s default binwidth divides the FULL
+   unclipped MAT/MAP data range by `bins`, and draws each hexagon assuming
+   1 MAT unit and 1 MAP unit render at equal physical length -- true only
+   by coincidence of the panel's incidental aspect ratio after legend/
+   axis-label margins are subtracted from the 3.5x3.5in canvas. Fixed via
+   two new fig_whittaker_worldclim() parameters (R/figures/fig_climate.R):
+   hex_regular = TRUE computes binwidth explicitly from style$xlim/ylim
+   and swaps coord_cartesian() for coord_fixed(ratio = diff(xlim)/
+   diff(ylim)), which pins the MAT:MAP physical-length ratio by
+   construction. Both new parameters default to FALSE/unchanged, so no
+   other existing figure (generate_whittaker.R's whit01-07,
+   00_candidate_figures.R, fig_02_whittaker_current.png itself) is
+   affected by this change.
+
+2. Per-site points are drawn IN FRONT of the hexagons (points_in_front =
+   TRUE), not behind, and are 50% smaller (point_size = 0.7 vs the
+   original 1.4).
+
+Data sources: identical to fig_02_whittaker_current.png -- see
+review/figures/whittaker/fig_whit_fig2_with_both_contours.legend.txt for
+the full method (WorldClim v2.1, ESA CCI land cover 2015, DuckDB
+annual_converted FLUXMET, Shuttle snapshot, Mahalanobis coverage stat).
+Shuttle snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv (775 sites).
+
+Source script: scripts/generate_whittaker_alt_fig02.R
+Function change: fig_whittaker_worldclim() in R/figures/fig_climate.R
+Generated: 2026-08-31T20:26:12Z

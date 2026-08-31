@@ -100,6 +100,28 @@ WHITTAKER_STYLE <- list(
 #'   inset text (e.g. \code{"FLUXNET Shuttle 2025"}).
 #' @param style Named list of visual parameters.  Defaults to
 #'   \code{\link{WHITTAKER_STYLE}}.
+#' @param hex_regular Logical (default \code{FALSE}, preserving existing
+#'   behaviour for all current callers). When \code{TRUE}, hexagon
+#'   \code{binwidth} is computed explicitly from \code{style$xlim}/
+#'   \code{style$ylim} (instead of ggplot2's default, which sizes bins from
+#'   the full unclipped data range) and \code{\link[ggplot2]{coord_fixed}} is
+#'   used in place of \code{\link[ggplot2]{coord_cartesian}}, with
+#'   \code{ratio} set so that one MAT unit and one MAP unit render at a fixed
+#'   physical-length ratio. Without this, hexagons drawn via
+#'   \code{ggplot2::stat_summary_hex()} are only visually regular by
+#'   coincidence -- their shape depends on the rendered panel's incidental
+#'   physical aspect ratio (legend/axis-label margins, requested figure
+#'   width/height), not on the MAT/MAP data ranges, and stretch whenever that
+#'   incidental aspect ratio doesn't match \code{diff(style$ylim)/diff(style$xlim)}.
+#' @param hex_bins Integer, number of hexagon bins spanning \code{style$xlim}
+#'   (and, when \code{hex_regular = TRUE}, \code{style$ylim}). Default 15,
+#'   matching the previous hardcoded value.
+#' @param points_in_front Logical (default \code{FALSE}, preserving existing
+#'   behaviour). When \code{FALSE}, per-site points are drawn behind the
+#'   hexagons (visible only where they poke out). When \code{TRUE}, hexagons
+#'   are drawn first and points are drawn on top.
+#' @param point_size Numeric, per-site point size (default 1.4, matching the
+#'   previous hardcoded value).
 #'
 #' @return A ggplot object.
 #'
@@ -115,11 +137,15 @@ WHITTAKER_STYLE <- list(
 fig_whittaker_worldclim <- function(
   data_yy,
   site_meta,
-  worldclim_dir = "data/external/worldclim/climate/wc2.1_2.5m/",
-  worldclim_csv = "data/snapshots/site_worldclim.csv",
-  year_cutoff   = NULL,
-  detail_label  = NULL,
-  style         = WHITTAKER_STYLE
+  worldclim_dir   = "data/external/worldclim/climate/wc2.1_2.5m/",
+  worldclim_csv   = "data/snapshots/site_worldclim.csv",
+  year_cutoff     = NULL,
+  detail_label    = NULL,
+  style           = WHITTAKER_STYLE,
+  hex_regular     = FALSE,
+  hex_bins        = 15,
+  points_in_front = FALSE,
+  point_size      = 1.4
 ) {
 
   for (pkg in c("hexbin", "colorspace")) {
@@ -269,27 +295,58 @@ fig_whittaker_worldclim <- function(
   )
 
   # --- build plot -------------------------------------------------------------
+  # Hexagon regularity: ggplot2::stat_summary_hex()'s default binwidth (one
+  # scalar `bins` split evenly across the FULL, unclipped x and y data range)
+  # only renders as a visually regular hexagon when the rendered panel's
+  # incidental physical aspect ratio happens to match diff(y range)/diff(x
+  # range) -- true by coincidence, not by construction. When hex_regular =
+  # TRUE, binwidth is computed explicitly from style$xlim/style$ylim, and
+  # coord_fixed(ratio = diff(xlim)/diff(ylim)) -- ggplot2's `ratio` is
+  # expressed as physical-y-per-physical-x, i.e. the panel's height/width =
+  # (diff(ylim)/diff(xlim)) * ratio, so ratio = diff(xlim)/diff(ylim) is what
+  # makes height/width == 1 (a square panel) -- pins the physical length of
+  # one MAT unit relative to one MAP unit, so hex width:height is regular by
+  # construction regardless of legend/axis-label margins or requested figure
+  # size (with hex_bins equal in both directions, this also always yields a
+  # square panel, since the same ratio value satisfies both conditions).
+  hex_binwidth <- if (isTRUE(hex_regular)) {
+    c(diff(range(style$xlim)) / hex_bins, diff(range(style$ylim)) / hex_bins)
+  } else {
+    NULL   # ggplot2 default: hex_binwidth(bins, scales) from the full data range
+  }
+  hex_ratio <- diff(range(style$xlim)) / diff(range(style$ylim))
+
+  point_layer <- ggplot2::geom_point(
+    ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim),
+    size        = point_size,
+    colour      = "grey30",
+    alpha       = 0.50,
+    inherit.aes = FALSE
+  )
+  hex_layer <- ggplot2::stat_summary_hex(
+    fun      = function(x) if (all(is.na(x))) NA_real_
+                           else median(x, na.rm = TRUE),
+    bins     = hex_bins,
+    binwidth = hex_binwidth,
+    alpha    = 0.85
+  )
+
   p <- ggplot2::ggplot(
     plot_data,
     ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim,
                  z = .data$median_nee)
-  ) +
-    # Points drawn first (behind), hexagons second (in front) — site-level
-    # MAT/MAP values are visible only where they poke out from under the
-    # density summary, rather than obscuring it.
-    ggplot2::geom_point(
-      ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim),
-      size        = 1.4,
-      colour      = "grey30",
-      alpha       = 0.50,
-      inherit.aes = FALSE
-    ) +
-    ggplot2::stat_summary_hex(
-      fun   = function(x) if (all(is.na(x))) NA_real_
-                          else median(x, na.rm = TRUE),
-      bins  = 15,
-      alpha = 0.85
-    ) +
+  )
+  # Layer order controls what's drawn on top. Default (points_in_front =
+  # FALSE): points first/behind, hexagons second/in front — site-level
+  # MAT/MAP values are visible only where they poke out from under the
+  # density summary. points_in_front = TRUE reverses this.
+  p <- if (isTRUE(points_in_front)) {
+    p + hex_layer + point_layer
+  } else {
+    p + point_layer + hex_layer
+  }
+
+  p <- p +
     colorspace::scale_fill_continuous_diverging(
       palette  = "Blue-Red 3",
       mid      = 0,
@@ -314,10 +371,11 @@ fig_whittaker_worldclim <- function(
       hjust = -0.07, vjust = 1.3,
       size  = style$detail_text_size
     ) +
-    ggplot2::coord_cartesian(
-      xlim = style$xlim,
-      ylim = style$ylim
-    ) +
+    (if (isTRUE(hex_regular)) {
+      ggplot2::coord_fixed(ratio = hex_ratio, xlim = style$xlim, ylim = style$ylim)
+    } else {
+      ggplot2::coord_cartesian(xlim = style$xlim, ylim = style$ylim)
+    }) +
     ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(

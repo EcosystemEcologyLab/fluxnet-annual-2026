@@ -1,36 +1,70 @@
-ALT Figure 2 -- regular hexagons, points in front at 50% size
+ALT Figure 2 (updated) -- charcoal points, pale-tan NEE centre, tightened inset
 
-Alternative to review/figures/draft_manuscript_v1/fig_02_whittaker_current.png,
-prepared for review before deciding whether to adopt these changes in the
-production figure. Same base layer (FLUXNET network hexbin coloured by
-median site NEE) and same 95% solid / 99% dashed global ice-free-land HDR
-contour overlay as fig_02 -- only two things differ:
+Candidate only -- NOT promoted to review/figures/draft_manuscript_v1/. Revision of the
+ALT_fig_02_whittaker_current.png built earlier this session (commit 505d130), which fixed
+hexagon regularity and points-in-front/half-size; those two changes are unchanged here
+(hex_regular = TRUE, points_in_front = TRUE). This revision changes point styling, the NEE
+colour-scale centre, and the inset text/spacing. Same 95% solid / 99% dashed global
+ice-free-land HDR contour overlay as fig_02 and the prior ALT -- geometry and registration
+unchanged.
 
-1. Hexagons are now REGULAR (equilateral), not vertically elongated. Root
-   cause: ggplot2::stat_summary_hex()'s default binwidth divides the FULL
-   unclipped MAT/MAP data range by `bins`, and draws each hexagon assuming
-   1 MAT unit and 1 MAP unit render at equal physical length -- true only
-   by coincidence of the panel's incidental aspect ratio after legend/
-   axis-label margins are subtracted from the 3.5x3.5in canvas. Fixed via
-   two new fig_whittaker_worldclim() parameters (R/figures/fig_climate.R):
-   hex_regular = TRUE computes binwidth explicitly from style$xlim/ylim
-   and swaps coord_cartesian() for coord_fixed(ratio = diff(xlim)/
-   diff(ylim)), which pins the MAT:MAP physical-length ratio by
-   construction. Both new parameters default to FALSE/unchanged, so no
-   other existing figure (generate_whittaker.R's whit01-07,
-   00_candidate_figures.R, fig_02_whittaker_current.png itself) is
-   affected by this change.
+1. POINT STYLING: per-site points recoloured from grey30 to a quiet dark charcoal
+   (#2B2B2B), resized from the prior ALT's 0.7 to 0.35 (~half again), and
+   reduced to alpha = 0.35 so dense clusters build tone while individual points in the
+   temperate cloud do not blob together -- points read as fine texture for network
+   location/density, subordinate to the NEE hexbin colour. point_colour and point_alpha
+   are new backward-compatible fig_whittaker_worldclim() parameters (R/figures/
+   fig_climate.R), defaulting to the unchanged prior values (grey30 / 0.50) for every
+   other caller.
 
-2. Per-site points are drawn IN FRONT of the hexagons (points_in_front =
-   TRUE), not behind, and are 50% smaller (point_size = 0.7 vs the
-   original 1.4).
+2. NEE COLOUR SCALE: centre recoloured from near-white (#F6F6F6) to a pale tan
+   (#F0E2C4) so near-zero hexes hold their edges against the white panel.
+   Blue and red endpoints, zero-centring, colour limits, and squish out-of-bounds handling
+   are unchanged -- pinned to diverging_hcl(2, "Blue-Red 3")'s exact endpoint hex codes
+   (#002F70 / #5F1415). Implemented via the new nee_mid_colour parameter, which rebuilds
+   the fill scale as ggplot2::scale_fill_gradient2() (Lab-space interpolation) instead of
+   the stock colorspace::scale_fill_continuous_diverging() HCL interpolation -- a
+   same-endpoints custom HCL two-half reconstruction (matching diverging_hcl's own
+   interpolation exactly) was tried first and rejected: sweeping hue from blue (H=255) to
+   an off-hue tan centre (H~90) passes through green/teal partway, visible here because the
+   centre keeps colour (chroma ~26) rather than dropping to achromatic white the way the
+   stock palette's centre does. nee_mid_colour defaults to NULL (unchanged stock scale) for
+   every other caller.
 
-Data sources: identical to fig_02_whittaker_current.png -- see
-review/figures/whittaker/fig_whit_fig2_with_both_contours.legend.txt for
-the full method (WorldClim v2.1, ESA CCI land cover 2015, DuckDB
-annual_converted FLUXMET, Shuttle snapshot, Mahalanobis coverage stat).
+3. INSET WORDING (fixed): the previous "N = <n> sites | <n> site-years" line conflated two
+   different counts -- <n> sites was the full network snapshot count, computed before any
+   NEE filtering, while <n> site-years came from a separately NEE-filtered subset (see this
+   session's earlier "775 vs 638 sites" finding, SESSION_LOG.md 2026-08-31). Relabelled to
+   three lines, computed programmatically at run time from the same data used to build the
+   figure (see RUN_LOG_alt_fig02_update.txt for the exact values this run computed):
+     "775 sites total"  -- full current Shuttle snapshot site count
+     "638 with annual NEE"  -- sites with >=1 qualifying NEE_VUT_REF or NEE_CUT_REF
+     "4227 site-years"  -- sum of qualifying years across those sites
+   (137 sites lack qualifying NEE: some have no annual_converted row at all, others have NEE = NA on both VUT and CUT.) Per-site points
+   remain shown for ALL network sites regardless of NEE availability (points are
+   deliberately not gated on NEE) -- only the hexbin colouring is NEE-only. Implemented via
+   the new detail_lines parameter (character vector, one line each, appended after
+   detail_label); defaults to NULL (unchanged single auto-built line) for every other
+   caller.
+
+4. INSET/LEGEND SPACING (tightened): inter-line spacing within the inset text block reduced
+   (style$detail_lineheight = 0.92 vs. ggplot2's default 1.2), the legend/colorbar position
+   nudged up under the now-4-line block (style$legend_pos = c(0.02, 0.80), was c(0.02,
+   0.88)), and padding around the colorbar reduced (style$legend_margin, style$
+   legend_title_margin). All three are new optional style-list fields read by
+   R/figures/fig_climate.R's .whittaker_theme() / detail-text annotate() call, each a no-op
+   when absent -- every other style list (WHITTAKER_STYLE and all existing overrides) is
+   unaffected. The block stays anchored in the upper-left (unchanged x=-Inf/y=Inf anchor);
+   only its own internal and surrounding spacing changed.
+
+Data sources: identical to fig_02_whittaker_current.png and the prior ALT -- see
+review/figures/whittaker/fig_whit_fig2_with_both_contours.legend.txt for the full method
+(WorldClim v2.1, ESA CCI land cover 2015, DuckDB annual_converted FLUXMET, Shuttle
+snapshot, Mahalanobis coverage stat).
 Shuttle snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv (775 sites).
 
-Source script: scripts/generate_whittaker_alt_fig02.R
-Function change: fig_whittaker_worldclim() in R/figures/fig_climate.R
-Generated: 2026-08-31T20:26:12Z
+Source script: scripts/generate_whittaker_alt_fig02_update.R (successor to
+scripts/generate_whittaker_alt_fig02.R)
+Function changes: fig_whittaker_worldclim(), .whittaker_theme() in R/figures/fig_climate.R
+Run log: review/figures/candidates/RUN_LOG_alt_fig02_update.txt
+Generated: 2026-08-31T21:05:57Z

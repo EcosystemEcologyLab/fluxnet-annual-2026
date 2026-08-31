@@ -1,0 +1,41 @@
+2026-08-31T21:05:55Z STARTED: generate_whittaker_alt_fig02_update.R
+2026-08-31T21:05:55Z decision: OVERWRITE review/figures/candidates/ALT_fig_02_whittaker_current.png (and its .txt) in place -- not a newly-versioned successor. Rationale: this is a revision of the same candidate built earlier this session (commit 505d130), and review/figures/candidates/ is a working/iterative area (see e.g. the fig_01-fig_06 numbered candidates already there), not a permanent archive -- the prior ALT_fig_02 PNG/txt remain recoverable from git history (commit 505d130) if needed.
+2026-08-31T21:05:55Z attempting: check for .env, R/pipeline_config.R, R/plot_constants.R, R/figures/fig_climate.R
+2026-08-31T21:05:55Z found: .env at .env
+2026-08-31T21:05:55Z found: R/pipeline_config.R
+2026-08-31T21:05:55Z found: R/plot_constants.R
+2026-08-31T21:05:55Z found: R/figures/fig_climate.R
+2026-08-31T21:05:55Z completed: sourced R/pipeline_config.R, R/plot_constants.R, R/figures/fig_climate.R
+2026-08-31T21:05:55Z attempting: check_pipeline_config()
+2026-08-31T21:05:56Z completed: check_pipeline_config() ran (see console/stdout above for its own warnings, not duplicated into this run log)
+2026-08-31T21:05:56Z attempting: verify fig_whittaker_worldclim() exposes point_colour, point_alpha, nee_mid_colour, detail_lines (added earlier this session to R/figures/fig_climate.R)
+2026-08-31T21:05:56Z found: fig_whittaker_worldclim() has all required parameters (point_colour, point_alpha, nee_mid_colour, detail_lines, detail_hjust)
+2026-08-31T21:05:56Z attempting: locate cached density_grid at data/processed/whittaker_global_density_grid.rds
+2026-08-31T21:05:56Z found: data/processed/whittaker_global_density_grid.rds
+2026-08-31T21:05:56Z completed: loaded density_grid (201x201)
+2026-08-31T21:05:56Z attempting: locate DuckDB database at data/duckdb/fluxnet.duckdb
+2026-08-31T21:05:56Z found: data/duckdb/fluxnet.duckdb
+2026-08-31T21:05:56Z found: table 'annual_converted' in data/duckdb/fluxnet.duckdb
+2026-08-31T21:05:56Z computed: data_yy has 6,108 rows (dataset == 'FLUXMET', site_id/TIMESTAMP/NEE_VUT_REF/NEE_CUT_REF)
+2026-08-31T21:05:56Z attempting: locate fluxnet_shuttle_snapshot*.csv under data/snapshots
+2026-08-31T21:05:56Z found: data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv (most recent of 28 snapshot file(s) checked)
+2026-08-31T21:05:56Z computed: shuttle_meta has 775 sites
+2026-08-31T21:05:56Z attempting: compute the three inset counts (network total / NEE-bearing / site-years) from data_yy + shuttle_meta -- same logic as fig_whittaker_worldclim()'s own n_sites/n_site_years internals, replicated here only to report the extra 'NEE-bearing sites' count that function does not itself expose
+2026-08-31T21:05:56Z computed: n_sites (network total) = 775
+2026-08-31T21:05:56Z computed: n_nee_sites (>=1 qualifying NEE_VUT_REF or NEE_CUT_REF) = 638
+2026-08-31T21:05:56Z computed: n_site_years (sum of qualifying-year counts across n_nee_sites) = 4227
+2026-08-31T21:05:56Z computed: sites with NO qualifying NEE (n_sites - n_nee_sites) = 137 -- remainder is sites with no annual_converted row at all, or NEE NA on both VUT and CUT
+2026-08-31T21:05:56Z computed: inset_lines = c("775 sites total", "638 with annual NEE", "4227 site-years")
+2026-08-31T21:05:56Z computed: point_colour = '#2B2B2B' (was 'grey30'), point_size = 0.35 (was 0.7 in the base ALT / 1.4 in the original), point_alpha = 0.35 (was 0.50)
+2026-08-31T21:05:56Z computed: nee_mid_colour = '#F0E2C4' (was near-white '#F6F6F6'); blue/red endpoints pinned to diverging_hcl(2,'Blue-Red 3') = '#002F70'/'#5F1415', unchanged
+2026-08-31T21:05:56Z computed: style_3x3$detail_lineheight = 0.92, style_3x3$legend_pos = c(0.02, 0.815) (was c(0.02, 0.88)), style_3x3$legend_margin (t,r,b,l pt) = c(0, 2, 0, 2), style_3x3$legend_title_margin (t,r,b,l pt) = c(0, 0, 0, 0), style_3x3$legend_box_margin (t,r,b,l pt) = c(0, 0, 0, 0) -- see R/figures/fig_climate.R's .whittaker_theme() for how these are consumed (no-op when absent)
+2026-08-31T21:05:56Z attempting: build base plot via fig_whittaker_worldclim(hex_regular=TRUE, points_in_front=TRUE, point_size=0.35, point_colour='#2B2B2B', point_alpha=0.35, nee_mid_colour='#F0E2C4', detail_lines=inset_lines, detail_hjust=0)
+2026-08-31T21:05:57Z completed: fig2_update_base built
+2026-08-31T21:05:57Z attempting: fig_whittaker_global_contour(density_grid=density_grid) for contour_df (95%/99% HDR)
+2026-08-31T21:05:57Z completed: contour_df has 1126 rows, probs present: 0.99, 0.95
+2026-08-31T21:05:57Z completed: contour layer added (same fig_whittaker_global_contour() call, same density_grid, as the base ALT and production fig_02 -- registration unaffected by the point/colour/inset changes above since they share this plot object's coordinate system)
+2026-08-31T21:05:57Z attempting: ggsave(review/figures/candidates/ALT_fig_02_whittaker_current.png, width=3.5, height=3.5, dpi=300, bg='white')
+2026-08-31T21:05:57Z completed: wrote review/figures/candidates/ALT_fig_02_whittaker_current.png
+2026-08-31T21:05:57Z attempting: writeLines(...) to review/figures/candidates/ALT_fig_02_whittaker_current.txt
+2026-08-31T21:05:57Z completed: wrote review/figures/candidates/ALT_fig_02_whittaker_current.txt
+2026-08-31T21:05:57Z outcome: SUCCESS -- ALT_fig_02_whittaker_current.png (+.txt) updated in review/figures/candidates.

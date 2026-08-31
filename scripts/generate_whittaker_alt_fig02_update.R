@@ -126,7 +126,8 @@ run_pipeline <- function() {
   # ---- Step: verify the new fig_whittaker_worldclim() parameters this script depends on ----
   rl("attempting: verify fig_whittaker_worldclim() exposes point_colour, point_alpha, ",
      "nee_mid_colour, detail_lines (added earlier this session to R/figures/fig_climate.R)")
-  required_params <- c("point_colour", "point_alpha", "nee_mid_colour", "detail_lines", "detail_hjust")
+  required_params <- c("point_colour", "point_alpha", "nee_mid_colour", "detail_lines",
+                        "detail_hjust", "detail_x_offset")
   have_params <- names(formals(fig_whittaker_worldclim))
   missing_params <- setdiff(required_params, have_params)
   if (length(missing_params) > 0L) {
@@ -248,17 +249,33 @@ run_pipeline <- function() {
   legend_margin_trbl       <- c(t = 0, r = 2, b = 0, l = 2)
   legend_title_margin_trbl <- c(t = 0, r = 0, b = 0, l = 0)
   legend_box_margin_trbl   <- c(t = 0, r = 0, b = 0, l = 0)
-  legend_pos_new           <- c(0.02, 0.815)   # was c(0.02, 0.88); first tried 0.80 (moved the
-                                                # legend DOWN/away, widening the gap -- wrong
-                                                # direction: legend.position.inside's y is the
-                                                # fraction from the panel BOTTOM, so closing a gap
-                                                # to text anchored near the panel TOP means
-                                                # INCREASING y), then 0.855 (overshot: legend
-                                                # title overlapped/obscured "4227 site-years",
-                                                # confirmed by rendering and zooming into the
-                                                # inset region). 0.815 sits the legend directly
-                                                # under the 4-line block with a small,
-                                                # non-overlapping gap.
+  detail_x_offset_new      <- 0.6              # MAT data units; xlim = c(-15,35) (50-unit range)
+                                                # -- shifts the inset text block right by this
+                                                # much so it clears the left axis border with a
+                                                # clean margin instead of touching/overlapping it
+                                                # (detail_hjust=0 gives the text zero inherent
+                                                # margin at x=-Inf). Found by rendering and
+                                                # zooming into the axis/text corner at 1.7, 1.0,
+                                                # 0.6, and 0.3 data units in turn: 1.7 and 1.0 both
+                                                # cleared comfortably; 0.3 left a visibly thin,
+                                                # marginal gap; 0.6 is the smallest of the four
+                                                # tried that still reads as a clean, unambiguous
+                                                # margin, not a marginal one -- see run log.
+  legend_pos_new           <- c(0.02 + detail_x_offset_new / diff(range(WHITTAKER_STYLE$xlim)), 0.815)
+                                                # x: 0.02 -> 0.032 -- shifted right by the same
+                                                # fraction of the x-axis range as detail_x_offset_new
+                                                # above, so the legend/colorbar moves in step with
+                                                # the text block (whole inset block as one unit).
+                                                # y: was 0.88; first tried 0.80 (moved the legend
+                                                # DOWN/away, widening the gap -- wrong direction:
+                                                # legend.position.inside's y is the fraction from
+                                                # the panel BOTTOM, so closing a gap to text
+                                                # anchored near the panel TOP means INCREASING y),
+                                                # then 0.855 (overshot: legend title overlapped/
+                                                # obscured "4227 site-years", confirmed by
+                                                # rendering and zooming into the inset region).
+                                                # 0.815 sits the legend directly under the 4-line
+                                                # block with a small, non-overlapping gap.
 
   style_3x3 <- utils::modifyList(WHITTAKER_STYLE, list(
     width_in            = 3.5,
@@ -278,17 +295,21 @@ run_pipeline <- function() {
     legend_box_margin   = do.call(ggplot2::margin, c(as.list(legend_box_margin_trbl), unit = "pt"))
   ))
   rl("computed: style_3x3$detail_lineheight = ", style_3x3$detail_lineheight,
-     ", style_3x3$legend_pos = c(", paste(legend_pos_new, collapse = ", "), ") (was c(0.02, 0.88))",
+     ", style_3x3$legend_pos = c(", paste(legend_pos_new, collapse = ", "), ") (x: 0.02 -> ",
+     round(legend_pos_new[1], 4), ", y unchanged at 0.815 from the prior revision)",
      ", style_3x3$legend_margin (t,r,b,l pt) = c(", paste(legend_margin_trbl, collapse = ", "), ")",
      ", style_3x3$legend_title_margin (t,r,b,l pt) = c(", paste(legend_title_margin_trbl, collapse = ", "), ")",
      ", style_3x3$legend_box_margin (t,r,b,l pt) = c(", paste(legend_box_margin_trbl, collapse = ", "), ")",
-     " -- see R/figures/fig_climate.R's .whittaker_theme() for how these are consumed (no-op when absent)")
+     ", detail_x_offset = ", detail_x_offset_new, " MAT data units (new this revision -- fixes",
+     " the inset text clipping the left axis)",
+     " -- see R/figures/fig_climate.R's .whittaker_theme() for how the legend_* style fields are",
+     " consumed (no-op when absent)")
 
   # ---- Step: base layer -----------------------------------------------------------
   rl("attempting: build base plot via fig_whittaker_worldclim(hex_regular=TRUE, ",
      "points_in_front=TRUE, point_size=", point_size_new, ", point_colour='", point_colour_new,
      "', point_alpha=", point_alpha_new, ", nee_mid_colour='", nee_mid_new,
-     "', detail_lines=inset_lines, detail_hjust=0)")
+     "', detail_lines=inset_lines, detail_hjust=0, detail_x_offset=", detail_x_offset_new, ")")
   fig2_update_base <- fig_whittaker_worldclim(
     data_yy         = data_yy,
     site_meta       = shuttle_meta,
@@ -301,7 +322,8 @@ run_pipeline <- function() {
     point_alpha     = point_alpha_new,
     nee_mid_colour  = nee_mid_new,
     detail_lines    = inset_lines,
-    detail_hjust    = 0
+    detail_hjust    = 0,
+    detail_x_offset = detail_x_offset_new
   )
   rl("completed: fig2_update_base built")
 

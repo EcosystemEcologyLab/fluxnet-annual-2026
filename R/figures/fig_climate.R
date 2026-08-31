@@ -159,6 +159,15 @@ WHITTAKER_STYLE <- list(
 #'   short count lines), the default \code{-0.07} visibly mis-aligns lines
 #'   left/right of each other by a few pixels; pass \code{0} (true per-line
 #'   left-justification) for clean multi-line alignment.
+#' @param detail_x_offset Numeric, in MAT data units (default \code{0},
+#'   preserving existing behaviour: \code{x = -Inf}, i.e. the text starts
+#'   exactly at the panel's left edge -- with \code{detail_hjust = 0} this
+#'   sits flush against the axis, no margin). When non-zero, \code{x} is set
+#'   to \code{style$xlim[1] + detail_x_offset} instead, shifting the whole
+#'   inset text block right by that many data units to clear the axis with a
+#'   margin. Does not affect the legend/colorbar's own position
+#'   (\code{style$legend_pos}) -- shift that separately to move the whole
+#'   inset block (text + colorbar) together.
 #'
 #' @return A ggplot object.
 #'
@@ -187,7 +196,8 @@ fig_whittaker_worldclim <- function(
   point_alpha     = 0.50,
   nee_mid_colour  = NULL,
   detail_lines    = NULL,
-  detail_hjust    = -0.07
+  detail_hjust    = -0.07,
+  detail_x_offset = 0
 ) {
 
   for (pkg in c("hexbin", "colorspace")) {
@@ -438,7 +448,11 @@ fig_whittaker_worldclim <- function(
     ) +
     ggplot2::annotate(
       "text",
-      x          = -Inf, y = Inf,
+      # detail_x_offset == 0 (default): x = -Inf, unchanged from prior
+      # behaviour (panel's exact left edge). Non-zero: a finite x in data
+      # units, shifting the block right to clear the axis with a margin.
+      x          = if (detail_x_offset == 0) -Inf else style$xlim[1] + detail_x_offset,
+      y = Inf,
       label      = detail_str,
       hjust      = detail_hjust, vjust = 1.3,
       size       = style$detail_text_size,

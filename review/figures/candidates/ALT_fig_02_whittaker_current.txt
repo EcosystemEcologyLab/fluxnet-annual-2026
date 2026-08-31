@@ -67,4 +67,4 @@ Source script: scripts/generate_whittaker_alt_fig02_update.R (successor to
 scripts/generate_whittaker_alt_fig02.R)
 Function changes: fig_whittaker_worldclim(), .whittaker_theme() in R/figures/fig_climate.R
 Run log: review/figures/candidates/RUN_LOG_alt_fig02_update.txt
-Generated: 2026-08-31T21:05:57Z
+Generated: 2026-08-31T21:25:29Z

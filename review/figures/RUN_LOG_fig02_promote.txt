@@ -1,0 +1,29 @@
+2026-08-31T21:25:24Z STARTED: promote_fig02_to_draft.R
+2026-08-31T21:25:24Z attempting: resolve the ALT-generating script. Task text named scripts/generate_whittaker_alt_fig02.R; checking both that path and its successor, scripts/generate_whittaker_alt_fig02_update.R (which is the one that actually produced the current review/figures/candidates/ALT_fig_02_whittaker_current.png -- confirmed via git log --oneline -1 on that PNG before this run: commit adf9890, 'Update ALT_fig_02: charcoal points, pale-tan NEE centre, tightened inset', authored by scripts/generate_whittaker_alt_fig02_update.R, not the original script)
+2026-08-31T21:25:24Z found: scripts/generate_whittaker_alt_fig02.R (original base ALT script -- superseded, not used below)
+2026-08-31T21:25:24Z found: scripts/generate_whittaker_alt_fig02_update.R -- USING THIS SCRIPT (resolves the task-text/actual-state discrepancy noted above)
+2026-08-31T21:25:24Z attempting: verify R/figures/fig_climate.R's fig_whittaker_worldclim() exposes detail_x_offset (the new parameter fixing the inset block's left-axis clip)
+2026-08-31T21:25:25Z found: fig_whittaker_worldclim() has detail_x_offset
+2026-08-31T21:25:25Z found: scripts/generate_whittaker_alt_fig02_update.R sets detail_x_offset_new -- 'detail_x_offset_new      <- 0.6              # MAT data units; xlim = c(-15,35) (50-unit range)'
+2026-08-31T21:25:25Z attempting: Rscript scripts/generate_whittaker_alt_fig02_update.R (regenerates review/figures/candidates/ALT_fig_02_whittaker_current.png with the inset-clip fix; its own run log, review/figures/candidates/RUN_LOG_alt_fig02_update.txt, records every input/value/file for that regeneration in full -- not duplicated here)
+2026-08-31T21:25:29Z completed: review/figures/candidates/ALT_fig_02_whittaker_current.png regenerated (245306 bytes, mtime 2026-08-31T21:25:29Z)
+2026-08-31T21:25:29Z attempting: check for review/figures/draft_manuscript_v1/deprecated
+2026-08-31T21:25:29Z completed: created review/figures/draft_manuscript_v1/deprecated (did not exist)
+2026-08-31T21:25:29Z attempting: locate current draft Figure 2 PNG at review/figures/draft_manuscript_v1/fig_02_whittaker_current.png
+2026-08-31T21:25:29Z found: review/figures/draft_manuscript_v1/fig_02_whittaker_current.png
+2026-08-31T21:25:29Z decision: no collision at review/figures/draft_manuscript_v1/deprecated/fig_02_whittaker_current.png -- preserving filename as-is
+2026-08-31T21:25:29Z completed: moved review/figures/draft_manuscript_v1/fig_02_whittaker_current.png -> review/figures/draft_manuscript_v1/deprecated/fig_02_whittaker_current.png
+2026-08-31T21:25:29Z attempting: locate current draft Figure 2 legend at review/figures/draft_manuscript_v1/fig_02_whittaker_current.legend.txt
+2026-08-31T21:25:29Z found: review/figures/draft_manuscript_v1/fig_02_whittaker_current.legend.txt
+2026-08-31T21:25:29Z decision: no collision at review/figures/draft_manuscript_v1/deprecated/fig_02_whittaker_current.legend.txt -- preserving filename as-is
+2026-08-31T21:25:29Z completed: moved review/figures/draft_manuscript_v1/fig_02_whittaker_current.legend.txt -> review/figures/draft_manuscript_v1/deprecated/fig_02_whittaker_current.legend.txt
+2026-08-31T21:25:29Z attempting: verify scripts/build_draft_manuscript_v1.R's Figure 2 source path (edited before this script ran -- verifying, not performing, that edit; see the script header note on why)
+2026-08-31T21:25:29Z found: scripts/build_draft_manuscript_v1.R already has the new Figure 2 source line
+2026-08-31T21:25:29Z SOURCE-PATH CHANGE (verbatim) -- OLD: list(src = "review/figures/whittaker/fig_whit_fig2_with_both_contours.png", | NEW: list(src = "review/figures/candidates/ALT_fig_02_whittaker_current.png",
+2026-08-31T21:25:29Z attempting: Rscript scripts/build_draft_manuscript_v1.R (rebuilds review/figures/draft_manuscript_v1/ from the updated source map, including the new Figure 2 source)
+2026-08-31T21:25:31Z completed: Rscript scripts/build_draft_manuscript_v1.R ran successfully (18 lines of output, not duplicated here)
+2026-08-31T21:25:31Z attempting: verify review/figures/draft_manuscript_v1/fig_02_whittaker_current.png exists post-rebuild and matches the regenerated ALT candidate
+2026-08-31T21:25:31Z completed: review/figures/draft_manuscript_v1/fig_02_whittaker_current.png matches review/figures/candidates/ALT_fig_02_whittaker_current.png byte-for-byte (md5 c7c5877cf14c194d50b46b453d8bd0ab)
+2026-08-31T21:25:31Z completed: review/figures/draft_manuscript_v1/fig_02_whittaker_current.legend.txt present post-rebuild
+2026-08-31T21:25:31Z summary: moved review/figures/draft_manuscript_v1/deprecated/fig_02_whittaker_current.png and review/figures/draft_manuscript_v1/deprecated/fig_02_whittaker_current.legend.txt (prior draft Figure 2, preserved); promoted review/figures/candidates/ALT_fig_02_whittaker_current.png to review/figures/draft_manuscript_v1/fig_02_whittaker_current.png (+ review/figures/draft_manuscript_v1/fig_02_whittaker_current.legend.txt) via scripts/build_draft_manuscript_v1.R
+2026-08-31T21:25:31Z outcome: SUCCESS -- ALT_fig_02_whittaker_current.png regenerated with the inset-clip fix, prior draft Figure 2 moved to review/figures/draft_manuscript_v1/deprecated/, and review/figures/draft_manuscript_v1/fig_02_whittaker_current.png (+.legend.txt) promoted.

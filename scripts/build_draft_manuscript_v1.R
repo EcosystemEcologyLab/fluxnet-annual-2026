@@ -17,16 +17,28 @@
 ## undocumented one-off shell command, addressing the "missing direct
 ## source" gap noted in the 2026-06-30 figure audit.
 ##
-## Fig 2 note: as of 2026-07-02, Figure 2's source is
-## review/figures/whittaker/fig_whit_fig2_with_both_contours.png — the
-## network hexbin (fig_whittaker_worldclim(), unmodified) with the 95%
-## solid / 99% dashed global ice-free-land HDR contours overlaid (no
-## in-panel contour label; see scripts/generate_whittaker_overlays.R). This
-## replaces the earlier no-contour fig_05_whittaker_current.png source. Its
-## legend is NOT copied from the source figure's own .legend.txt (that file
-## carries the retired Mahalanobis coverage statistic, which must not appear
-## in the manuscript legend) — it is instead hardcoded below so the swap
-## reproduces deterministically without that statistic.
+## Fig 2 note: as of 2026-08-31, Figure 2's source is
+## review/figures/candidates/ALT_fig_02_whittaker_current.png — promoted
+## from candidate status (see SESSION_LOG.md 2026-08-31, "ALT_fig_02
+## promoted to draft Figure 2"). Same network hexbin + 95% solid / 99%
+## dashed global ice-free-land HDR contour overlay as the prior source
+## (review/figures/whittaker/fig_whit_fig2_with_both_contours.png, built by
+## scripts/generate_whittaker_overlays.R), built instead by
+## scripts/generate_whittaker_alt_fig02_update.R via fig_whittaker_worldclim()
+## with hex_regular = TRUE (previously-elongated hexagons now regular) and
+## points_in_front = TRUE (previously grey points behind the hexbins, now a
+## quiet dark charcoal, half-size, drawn on top), a pale-tan NEE
+## colour-scale centre (was near-white; blue/red endpoints unchanged), and a
+## corrected/tightened inset (the previous "N = <n> sites | <n> site-years"
+## line conflated the full network count with a separately NEE-filtered
+## count — see SESSION_LOG.md 2026-08-31, "775 vs 638 sites"). The prior
+## source and its build output are preserved at
+## review/figures/draft_manuscript_v1/deprecated/. Its legend is NOT copied
+## from the source figure's own .txt (that file uses the candidates/
+## folder's plain-caption convention, not this manuscript legend's format,
+## and separately never carried the retired Mahalanobis coverage statistic
+## in the first place) — it is instead hardcoded below so the swap
+## reproduces deterministically.
 
 library(fs)
 
@@ -40,7 +52,7 @@ figs <- list(
        dst = "fig_01a_map_current_network.png"),
   list(src = "review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png",
        dst = "fig_01b_cumulative_siteyears_igbp.png"),
-  list(src = "review/figures/whittaker/fig_whit_fig2_with_both_contours.png",
+  list(src = "review/figures/candidates/ALT_fig_02_whittaker_current.png",
        dst = "fig_02_whittaker_current.png"),
   list(src = "review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png",
        dst = "fig_03_flux_comparison_combo_nep_et_h.png"),
@@ -101,12 +113,14 @@ for (l in legends) {
 }
 
 # ---- Fig 2 legend: hardcoded (base layer + contour overlay, no coverage stat) ----
-# fig_whit_fig2_with_both_contours.legend.txt (the source figure's own legend,
-# written by scripts/generate_whittaker_overlays.R) carries the retired
-# Mahalanobis coverage statistic and is NOT copied here. This block writes the
-# manuscript legend directly so it reproduces deterministically without that
-# statistic; keep this text in sync by hand if the base layer or overlay
-# method changes materially.
+# ALT_fig_02_whittaker_current.txt (the source figure's own caption, written
+# by scripts/generate_whittaker_alt_fig02_update.R) uses the candidates/
+# folder's plain-caption convention, not this manuscript legend's format, so
+# is NOT copied here (same as the pre-promotion source). This block writes
+# the manuscript legend directly so it reproduces deterministically; keep
+# this text in sync by hand if the base layer or overlay method changes
+# materially. Updated 2026-08-31 for the ALT_fig_02 promotion -- see
+# SESSION_LOG.md 2026-08-31, "ALT_fig_02 promoted to draft Figure 2".
 fig02_legend <- c(
   "FIGURE LEGEND — fig_02_whittaker_current.png",
   "==============================================",
@@ -119,19 +133,29 @@ fig02_legend <- c(
   "Two layers on one panel.",
   "",
   "BASE LAYER: hexagonal-binned scatter plot placing every current FLUXNET",
-  "Shuttle site (N = 767 sites) in Whittaker climate space — mean annual",
+  "Shuttle site (N = 775 sites) in Whittaker climate space — mean annual",
   "temperature (MAT, WorldClim v2.1 BIO1) by mean annual precipitation (MAP,",
   "BIO12). Each hexagonal bin is coloured by the median annual net ecosystem",
   "exchange (NEE_VUT_REF, with a coalesce fallback to NEE_CUT_REF for",
   "CUT-only sites) observed across all site-years falling within that",
-  "climate-space bin, on a diverging blue-white-red scale centred on",
-  "NEE = 0 (white); bins with no observed flux data are left uncoloured (NA,",
-  "not drawn). Individual site locations are additionally overplotted as",
-  "semi-transparent grey points so that sampling density within each hexagon",
-  "is visible alongside the flux colour. An inset reports the site count and",
-  "site-year count (N sites | site-years). This base layer is built by the",
-  "unmodified fig_whittaker_worldclim() and is otherwise identical to the",
-  "no-contour version of this figure used in earlier drafts.",
+  "climate-space bin, on a diverging blue-tan-red scale centred on",
+  "NEE = 0 (pale tan); bins with no observed flux data are left uncoloured",
+  "(NA, not drawn). Hexagons are regular (equilateral) by construction",
+  "(fig_whittaker_worldclim(..., hex_regular = TRUE) -- binwidth computed",
+  "explicitly from the axis limits and coord_fixed() pins the MAT:MAP",
+  "physical-length ratio; the previous no-hex_regular figure used in earlier",
+  "drafts rendered hexagons visibly elongated on the vertical/MAP axis, a",
+  "rendering artefact of ggplot2::stat_summary_hex()'s default bin sizing,",
+  "not a data issue). Individual site locations are additionally overplotted",
+  "as small, low-opacity dark charcoal points, drawn in front of the",
+  "hexagons (points_in_front = TRUE), so sampling density within each",
+  "hexagon reads as fine texture without obscuring the flux colour beneath.",
+  "Points are shown for ALL network sites regardless of NEE availability —",
+  "only the hexbin colouring is restricted to sites with qualifying NEE (see",
+  "inset, below). An inset in the upper-left reports three counts, computed",
+  "at figure-build time from the data (not hardcoded): the full network site",
+  "count, the count of those sites with at least one qualifying annual NEE",
+  "value, and the resulting site-year count.",
   "",
   "OVERLAY: two contour lines mark the 95% (solid) and 99% (dashed)",
   "highest-density regions (HDR) of the area-weighted distribution of global",
@@ -162,10 +186,13 @@ fig02_legend <- c(
   "and no gridlines.",
   "",
   "COLOUR SCALE (base layer only — the overlay has no fill/colour):",
-  "Diverging blue–white–red scale (colorspace \"Blue-Red 3\"), centred on",
-  "NEE = 0 (white), blue = net carbon uptake (negative NEE), red = net carbon",
-  "release (positive NEE). Colour limits are computed from the 5th–95th",
-  "percentile of the full, unfiltered annual Shuttle NEE distribution.",
+  "Diverging blue–tan–red scale, centred on NEE = 0 (pale tan, #F0E2C4),",
+  "blue = net carbon uptake (negative NEE), red = net carbon release",
+  "(positive NEE). Blue/red endpoints (#002F70/#5F1415) are unchanged from",
+  "the colorspace \"Blue-Red 3\" palette used in earlier drafts (which centred",
+  "on near-white instead of pale tan); colour limits (computed from the",
+  "5th–95th percentile of the full, unfiltered annual Shuttle NEE",
+  "distribution) and zero-centring are also unchanged.",
   "",
   "BINNING (base layer):",
   "Hexagonal binning via ggplot2::stat_summary_hex(), 15 bins along each",
@@ -173,12 +200,13 @@ fig02_legend <- c(
   "NEE values (median-of-medians).",
   "",
   "NETWORK AND SITE COUNT:",
-  "FLUXNET Shuttle network, current development-mode snapshot: N = 767",
-  "sites; inset text on the figure reports N = 767 sites | 4,236 site-years.",
+  "FLUXNET Shuttle network, current development-mode snapshot: N = 775",
+  "sites (638 with a qualifying annual NEE value); inset text on the figure",
+  "reports \"775 sites total\", \"638 with annual NEE\", \"4227 site-years\".",
   "",
   "DATA SOURCES:",
-  "  - Site list: data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
-  "    (767 sites)",
+  "  - Site list: data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv",
+  "    (775 sites)",
   "  - Climate (MAT/MAP), both layers: WorldClim v2.1, 2.5 arc-minute BIO1",
   "    and BIO12; base layer uses the pre-extracted per-site table",
   "    data/snapshots/site_worldclim.csv (fallback: on-the-fly",
@@ -191,20 +219,27 @@ fig02_legend <- c(
   "",
   "EXCLUSIONS (base layer):",
   "Sites lacking a WorldClim climate match, or with no finite annual NEE",
-  "value after the VUT/CUT coalesce, are dropped from both the hexbin",
-  "summary and the overlaid points. No IGBP or other classification filter",
-  "is applied.",
+  "value after the VUT/CUT coalesce, are dropped from the hexbin summary",
+  "(but not from the overlaid points — see BASE LAYER, above). No IGBP or",
+  "other classification filter is applied.",
   "",
   "REPRODUCIBILITY:",
   "Base layer function: fig_whittaker_worldclim() in R/figures/fig_climate.R",
+  "  (hex_regular = TRUE, points_in_front = TRUE, point_colour = \"#2B2B2B\",",
+  "  point_size = 0.35, point_alpha = 0.35, nee_mid_colour = \"#F0E2C4\",",
+  "  detail_lines = <the three counts above>, detail_hjust = 0,",
+  "  detail_x_offset = 0.6)",
   "Overlay functions:   fig_whittaker_global_contour(),",
   "                     build_global_landclimate(), .weighted_density_grid(),",
   "                     .hdr_levels() in R/figures/fig_climate.R",
-  "Source script:       scripts/generate_whittaker_overlays.R",
-  "Output:              review/figures/whittaker/fig_whit_fig2_with_both_contours.png,",
+  "Source script:       scripts/generate_whittaker_alt_fig02_update.R",
+  "Output:              review/figures/candidates/ALT_fig_02_whittaker_current.png,",
   "                     copied to",
   "                     review/figures/draft_manuscript_v1/fig_02_whittaker_current.png",
   "                     by scripts/build_draft_manuscript_v1.R",
+  "Prior version:       review/figures/draft_manuscript_v1/deprecated/",
+  "                     (moved 2026-08-31, not overwritten -- see",
+  "                     SESSION_LOG.md and review/figures/RUN_LOG_fig02_promote.txt)",
   "DIMENSIONS: 3.5 × 3.5 inches, 300 dpi, white background"
 )
 fig02_legend_path <- file.path(out_dir, "fig_02_whittaker_current.legend.txt")

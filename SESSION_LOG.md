@@ -4,6 +4,79 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-08-31 — CLAUDE.md git-workflow clarification; two comparison/Whittaker ALT candidate figures
+
+### CLAUDE.md: git commit/push and Rule #4 clarified
+
+Reviewed CLAUDE.md's git-related rules against actual repo practice at the user's request.
+Found two problems: (a) "Autonomy and Permissions" instructed asking before `push to git` on a
+local machine — directly contradicting Session Log rule 5's "commit and push immediately," for
+the exact environment (no `CODESPACE_NAME`) most work happens in; (b) Hard Rule #4 claimed
+"Figures and outputs are also gitignored," which is false for `review/figures/` (explicitly
+git-tracked per `.gitignore`'s own comment: "review/ is intentionally git-tracked for offline
+figure review") though true for `outputs/` (gitignored, with one deliberate tracked exception,
+`outputs/session_info.txt`).
+
+Fixed both: git commit/push (not force-push) is now stated as autonomous in every environment,
+cross-referenced from both Rule #4 and the Session Log section; Rule #4 now correctly describes
+`review/figures/` as tracked (commit alongside the generating script) and `outputs/` as
+gitignored-with-one-exception. Commit 4006d45.
+
+### ALT_fig_03: FLUXNET2015-vs-Shuttle comparison restricted to common sites AND years
+
+Built a new candidate figure isolating ONEFlux processing-version effects from
+network-composition effects in the NEP/ET/H combo comparison: for each flux (matched
+independently), a site-year only contributes to either axis if BOTH FLUXNET2015 and the current
+Shuttle reprocessing have a QC-passing (>=0.80) value for that exact calendar year — so
+`fluxnet2015_n_sites == shuttle_n_sites` per class by construction. 150 of 206 FLUXNET2015 sites
+overlap the current Shuttle network (Shuttle YY files carry full historical records, not just
+recent years, so the overlap is real rather than near-empty); 9 of the original 10 plotted
+classes retain >=5 common sites (SAV newly drops out at n=3, joining the already-excluded
+CSH/CVM).
+
+Output: `review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.png` (+.txt),
+`data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv` (+.meta.json),
+`scripts/figure_flux_comparison_combo_alt_common_siteyears.R`. Commit 4cdaf6a.
+
+### ALT_fig_02: regular hexagons + points-in-front, half-size (candidate); NEE site-coverage finding
+
+Root-caused why `fig_02_whittaker_current.png`'s hexagons render vertically elongated:
+`ggplot2::stat_summary_hex()`'s default binwidth splits `bins` evenly across the *full,
+unclipped* MAT/MAP data range, and `GeomHex$draw_group` draws each hexagon assuming 1 MAT
+data-unit and 1 MAP data-unit render at an equal physical length — true only by coincidence of
+the panel's incidental aspect ratio once legend/axis-label margins are subtracted from the
+3.5x3.5in canvas (confirmed by tracing ggplot2's `hexBinSummarise`/`GeomHex$draw_group` source
+directly, not by inference). MAT spans ~50 degC vs MAP's ~4000 mm/yr, so that coincidence
+doesn't hold.
+
+Fixed via two new, backward-compatible parameters on `fig_whittaker_worldclim()`
+(`R/figures/fig_climate.R`), both defaulting to the prior behaviour so every other existing
+caller (`generate_whittaker.R`'s whit01-07, `00_candidate_figures.R`,
+`generate_whittaker_overlays.R` / `fig_02_whittaker_current.png` itself) is unaffected:
+`hex_regular = TRUE` (binwidth computed explicitly from `style$xlim`/`style$ylim`, and
+`coord_fixed(ratio = diff(xlim)/diff(ylim))` replaces `coord_cartesian()`, pinning the MAT:MAP
+physical-length ratio by construction — also yields an exactly square panel with equal
+`hex_bins` in both directions) and `points_in_front = TRUE` (+ `point_size`, default unchanged
+at 1.4: draws the point layer after the hexagon layer instead of before).
+
+Output: `review/figures/candidates/ALT_fig_02_whittaker_current.png` (+.txt, built with
+`hex_regular=TRUE, points_in_front=TRUE, point_size=0.7` — 50% of the original 1.4), contour
+overlay geometry/registration unchanged. `scripts/generate_whittaker_alt_fig02.R`. Commit
+505d130.
+
+**Follow-up finding (NEE site coverage):** the figure's "N = 775 sites | 4227 site-years" inset
+text is misleading — `n_sites` (775) is the full current Shuttle snapshot count, computed
+*before* any NEE filtering, while the site-years count comes from a separately NEE-filtered
+subset. Only **638 of the 775 sites** actually have a qualifying `NEE_VUT_REF`/`NEE_CUT_REF`
+value: 17 sites have no `annual_converted`/FLUXMET row at all, and a further 120 have annual
+rows but NEE is `NA` on both VUT and CUT. Per-site grey points are also not gated on NEE
+availability, so points still appear for some of the 137 NEE-less sites. This is present in both
+`fig_02_whittaker_current.png` and the new ALT figure (inherited from existing
+`fig_whittaker_worldclim()` logic, not introduced by this session's changes) — not yet fixed,
+pending a decision on how to relabel it.
+
+---
+
 ## 2026-08-20 — Köppen-Geiger classification unified: computed locally from ERA5
 
 Replaced two previously-inconsistent per-figure-family KG sources for the

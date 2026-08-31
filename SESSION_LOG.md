@@ -6,6 +6,48 @@ Convention: Claude Code prepends new entries at the top of this file (reverse ch
 
 ## 2026-08-31 — CLAUDE.md git-workflow clarification; two comparison/Whittaker ALT candidate figures
 
+### ALT_fig_02 promoted to draft Figure 2: inset clip fixed, prior draft version deprecated
+
+Fixed a clip and promoted the ALT_fig_02 candidate (see the entry below) to
+`review/figures/draft_manuscript_v1/fig_02_whittaker_current.png`.
+
+**Inset shifted to clear the axis.** The upper-left inset block (four text lines + NEE
+colourbar) was touching/overlapping the left panel border — a side effect of the previous
+entry's `detail_hjust = 0` fix (needed for consistent multi-line alignment, but it also removed
+the small margin the old `hjust = -0.07` had incidentally provided). Fixed via a new
+`detail_x_offset` parameter on `fig_whittaker_worldclim()` (`R/figures/fig_climate.R`, default
+`0` = unchanged `x = -Inf` behaviour for every other caller): shifts the text block right by a
+plain data-unit offset from the axis. `scripts/generate_whittaker_alt_fig02_update.R` sets it to
+`0.6` MAT-units — the smallest of four values tried (1.7, 1.0, 0.6, 0.3, checked by rendering and
+zooming into the axis/text corner each time) that still reads as an unambiguous, clean margin
+rather than a marginal one. The legend/colorbar's `style$legend_pos` x-position was shifted by
+the equivalent fraction of the axis range (`0.02` → `0.032`) so the whole inset block (text +
+colorbar) moves together as one unit, per the task's requirement. Nothing else changed: vertical
+position, line spacing, colourbar size, wording, counts, points, tan scale centre, and contours
+are all identical to the prior entry's figure. The three site counts remain computed from the
+data at run time (not hardcoded) — reconfirmed in this run's log at **775 sites total, 638 with
+annual NEE, 4227 site-years**.
+
+**Promoted to draft.** `review/figures/draft_manuscript_v1/deprecated/` created (did not exist).
+The prior draft Figure 2 — `fig_02_whittaker_current.png` (elongated hexagons, grey points behind
+the hexbins, near-white scale centre, conflated site-count wording) and its `.legend.txt` — were
+**moved** (not copied, not overwritten) into that folder, filenames preserved, no naming
+collision. `scripts/build_draft_manuscript_v1.R`'s Figure 2 source was changed from
+`review/figures/whittaker/fig_whit_fig2_with_both_contours.png` to
+`review/figures/candidates/ALT_fig_02_whittaker_current.png`, and its hardcoded Figure 2 legend
+text rewritten to describe the promoted figure's actual content (regular hexagons, charcoal
+points in front, pale-tan centre, the three-count inset, current 775/638/4227 counts, updated
+reproducibility parameters). Re-running that script confirmed
+`draft_manuscript_v1/fig_02_whittaker_current.png` now matches the regenerated ALT candidate
+byte-for-byte (md5 `c7c5877cf14c194d50b46b453d8bd0ab`).
+
+Orchestrated by the new `scripts/promote_fig02_to_draft.R`, with a full durable run log at
+`review/figures/RUN_LOG_fig02_promote.txt` (every input located/missing, every computed value,
+every file written, including the exact old→new Figure 2 source line and the resolved
+discrepancy between the task's script name and the actual script — `generate_whittaker_alt_fig02.R`
+vs. its successor `generate_whittaker_alt_fig02_update.R`, which is the one that actually built
+the current candidate — logged and used explicitly rather than silently guessed).
+
 ### ALT_fig_02 updated: charcoal points, pale-tan NEE centre, tightened/corrected inset (candidate only)
 
 Revised the ALT_fig_02_whittaker_current.png candidate built earlier this session (see the

@@ -6,6 +6,54 @@ Convention: Claude Code prepends new entries at the top of this file (reverse ch
 
 ## 2026-08-31 — CLAUDE.md git-workflow clarification; two comparison/Whittaker ALT candidate figures
 
+### ALT_fig_02 updated: charcoal points, pale-tan NEE centre, tightened/corrected inset (candidate only)
+
+Revised the ALT_fig_02_whittaker_current.png candidate built earlier this session (see the
+ALT_fig_02 entry below) — candidate only, still **not promoted** to
+`review/figures/draft_manuscript_v1/`; `scripts/build_draft_manuscript_v1.R` was not touched.
+`hex_regular = TRUE` and `points_in_front = TRUE` (the earlier fix) are unchanged. Four further
+changes, all driven by four new backward-compatible `fig_whittaker_worldclim()` parameters
+(`R/figures/fig_climate.R`, defaults matching prior behaviour so no other caller is affected):
+
+1. **Point styling** — per-site points recoloured `grey30` → a quiet dark charcoal (`#2B2B2B`),
+   resized 0.7 → 0.35, alpha reduced to 0.35, via new `point_colour`/`point_alpha` parameters —
+   points now read as fine location/density texture, subordinate to the NEE hexbin colour,
+   without the temperate-cloud points blobbing together.
+2. **NEE colour-scale centre** — recoloured near-white (`#F6F6F6`) → pale tan (`#F0E2C4`) via a
+   new `nee_mid_colour` parameter. Blue/red endpoints, zero-centring, limits, and squish
+   out-of-bounds handling are byte-identical (pinned to `diverging_hcl(2, "Blue-Red 3")`'s exact
+   endpoint hex codes, `#002F70`/`#5F1415`); implemented as `ggplot2::scale_fill_gradient2()`
+   rather than the stock HCL-interpolated scale — a same-endpoints custom HCL two-half
+   reconstruction was tried first and rejected (sweeping hue from blue, H=255, to the tan
+   centre's H~90 passes visibly through green/teal, since the centre keeps chroma instead of
+   dropping to achromatic white the way the stock palette's does).
+3. **Inset wording corrected** — the "N = 775 sites | 4227 site-years" line conflated two
+   different counts (see this session's earlier "775 vs 638 sites" finding, logged below).
+   Relabelled to three lines, computed programmatically at run time (not hardcoded), via a new
+   `detail_lines` parameter: **"775 sites total" / "638 with annual NEE" / "4227 site-years"**.
+   Points remain shown for all 775 network sites regardless of NEE availability; only the hexbin
+   colouring is NEE-only (638 of 775).
+4. **Inset/legend spacing tightened** — inter-line spacing reduced (new `style$detail_lineheight`
+   field), the legend nudged up under the now 4-line block (`style$legend_pos` `c(0.02, 0.88)` →
+   `c(0.02, 0.815)`), and colorbar padding reduced (new `style$legend_margin`/
+   `legend_title_margin`/`legend_box_margin` fields, all no-ops when absent). A fifth new
+   parameter, `detail_hjust` (default `-0.07`, unchanged), was added after the three-line block
+   revealed that grid's multi-line text justification shifts differently-width lines
+   proportionally under a non-zero `hjust` — set to `0` here for clean left-alignment.
+
+Two tuning mistakes were made and corrected by rendering and visually inspecting before
+finalizing (both recorded in the durable run log, not just this summary): `legend_pos` was first
+moved the wrong direction (0.80, widening the gap instead of closing it — `legend.position.inside`'s
+y is measured from the panel bottom), then overshot (0.855, overlapping the legend title with
+"4227 site-years") before landing on 0.815.
+
+Output: `review/figures/candidates/ALT_fig_02_whittaker_current.png` (+`.txt`, overwritten in
+place — logged as a deliberate choice over a versioned successor), built by
+`scripts/generate_whittaker_alt_fig02_update.R` (successor to
+`scripts/generate_whittaker_alt_fig02.R`), with a full durable run log at
+`review/figures/candidates/RUN_LOG_alt_fig02_update.txt` (every input located/missing, every
+computed value, every file written, timestamped and flushed per line).
+
 ### CLAUDE.md: git commit/push and Rule #4 clarified
 
 Reviewed CLAUDE.md's git-related rules against actual repo practice at the user's request.

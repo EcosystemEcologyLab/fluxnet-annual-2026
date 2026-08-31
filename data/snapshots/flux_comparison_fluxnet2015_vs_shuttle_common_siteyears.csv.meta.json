@@ -1,0 +1,14 @@
+{
+  "run_datetime_utc": "2026-08-31T19:42:30Z",
+  "pipeline_version": "734d5f2",
+  "data_sources": {
+    "fluxnet2015_raw": "data/extracted/fluxnet2015",
+    "shuttle_raw": "data/extracted (FLUXMET_YY files)",
+    "shuttle_igbp_class_source": "data/snapshots/site_flux_medians_shuttle.csv"
+  },
+  "qc_threshold": 0.8,
+  "method": "Alternative to flux_comparison_fluxnet2015_vs_shuttle.csv: restricts each site's FLUXNET2015 and Shuttle per-flux median to ONLY the calendar years where BOTH datasets have a QC-passing (>=0.8) value for that flux, matched independently per flux (NEP/ET/H). fluxnet2015_n_sites == shuttle_n_sites by construction (same site set contributes to both axes). Isolates ONEFlux processing-version differences from network-composition/coverage differences -- see review/figures/methods_flux_medians.md, 'Processing-version confound'.",
+  "reliability_threshold": 5,
+  "igbp_class_source": "current Shuttle classification only (site_flux_medians_shuttle.csv), one label per site used for both axes",
+  "notes": "Candidate/supplemental analysis; not part of the numbered pipeline. Does not modify or depend on figure_flux_comparison_combo.R or its outputs."
+}

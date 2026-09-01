@@ -51,7 +51,7 @@ library(fs)
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 SITE_AUTHORS_FILE <- "outputs/authorship/site_authors.csv"
-SNAPSHOT_FILE     <- "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+SNAPSHOT_FILE     <- "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"
 BADM_FILE         <- "data/processed/badm.rds"
 OUTPUT_DIR        <- "outputs/authorship"
 DIAG_DIR          <- file.path(OUTPUT_DIR, "diagnostics")

@@ -1,3 +1,3 @@
-Followup tasks logged by authorship_models.R at 2026-05-12T22:28:33Z
+Followup tasks logged by authorship_models.R at 2026-09-01T19:15:35Z
 
-[FOLLOWUP-A]  RESOLVED 2026-05-20 — 5-year sites remain in the '<5' row (lower author count). Current implementation is correct; no rubric change or data recomputation required. Headline stays at 2,905 invited authors.
+[FOLLOWUP-A]  Resolve rubric row label for exactly 5 years of data. Labels '<5 years' and '6-10 years' leave a gap; current code assigns 5 years -> '<5' row (lower author count). Affects 56 site(s). Decision deferred at 2026-05-07 team meeting.

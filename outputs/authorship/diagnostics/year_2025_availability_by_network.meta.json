@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-05-12T22:28:44Z",
-  "pipeline_version": "858733d",
+  "run_datetime_utc": "2026-09-01T19:16:07Z",
+  "pipeline_version": "e2d1732",
   "input_sources": [
     "data/snapshots/site_year_data_presence.csv",
     "outputs/authorship/site_authors.csv"

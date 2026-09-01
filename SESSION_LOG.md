@@ -6,6 +6,229 @@ Convention: Claude Code prepends new entries at the top of this file (reverse ch
 
 ## 2026-09-01 — Shuttle gap download: 22 new sites since the 20260624 frozen snapshot
 
+### Authorship rubric audit: code verified against the authoritative slot table, run on 781 sites (read-only)
+
+Read-and-report task — **no scripts, rubric, data, or figures were modified.**
+The only intended write is this entry; see "git status before/after" at the
+end for one disclosed deviation.
+
+#### Step 1 — What each script does
+
+- **`scripts/authorship_models.R`** — the slot-assignment script. Reads
+  `data/snapshots/site_year_data_presence.csv` (models.R:60,138),
+  `data/snapshots/site_candidates_full.csv` (models.R:61,139 — read but never
+  referenced again after line 139; dead input) and
+  `data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv`
+  (models.R:62,140). Computes `years_of_data`/`max_year` per site from the
+  presence file (models.R:305–317), inner-joins to the snapshot for
+  `submitting_network` (models.R:326–336), applies `apply_rubric()`
+  (models.R:123–127) to get `n_invited_authors`, and writes
+  `outputs/authorship/site_authors.csv`, `authors_by_network.csv`,
+  `authors_by_network.png`, `diagnostics/sites_with_no_presence.csv`, and
+  `followup_tasks.txt` (models.R:404–564). **This is the only one of the
+  three that assigns slots.**
+- **`scripts/authorship_diagnostics.R`** — diagnostics only; does not assign
+  slots. Reads `outputs/authorship/site_authors.csv` and
+  `authors_by_network.csv` (diagnostics.R:32–33,97–98) plus
+  `data/snapshots/site_year_data_presence.csv` directly (diagnostics.R:30,99).
+  A `SNAPSHOT_FILE` constant is set (diagnostics.R:31) but never read anywhere
+  in the file — dead. Writes three diagnostic CSVs: sites with no presence
+  data, a what-if sensitivity re-run with 5-year sites moved to the 6–10 row,
+  and 2025 data-availability-by-network (diagnostics.R:135–146, 207–220,
+  260–272). It carries its own copy of the rubric table (diagnostics.R:43–50,
+  commented "must stay in sync") for the sensitivity check only.
+- **`scripts/authorship_invitations.R`** — builds the per-contact invitation
+  list; does not assign slots, only consumes the already-assigned
+  `n_invited_authors` from `site_authors.csv` (invitations.R:53,76,409–413,
+  renamed `n_invited_authors_for_site`). Reads
+  `data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv`
+  (invitations.R:54,77, for `team_member_*` contact fields) and
+  `data/processed/badm.rds` (invitations.R:55,78, BADM fallback contacts).
+  Writes `outputs/authorship/authorship_invitations.csv` and
+  `diagnostics/contact_coverage_comparison.csv` (invitations.R:511–553).
+
+#### Step 2 — Rubric vs. code, cell by cell
+
+**Row bands** — `row_bin()`, authorship_models.R:100–108: `<=5L~1L,
+<=10L~2L, <=15L~3L, <=20L~4L, TRUE~5L`. Matches "5 or fewer / 6 to 10 / 11 to
+15 / 16 to 20 / 21 or more" exactly, including 5 landing in the "5 or fewer"
+band (**MATCH**). Note: the script's own comments (models.R:71,96,240–245,
+DECISION-A) flag this as an "open"/unresolved gap between "<5" and "6–10"
+labels — but against the authoritative rubric handed to me for this audit,
+"5 or fewer" is unambiguous and the code's behaviour already matches it. Not
+a divergence; the script's internal uncertainty is stale relative to the now
+authoritative wording.
+
+**Recency bands** — `latency_col()`, authorship_models.R:114–116, thresholds
+`c(3, 2)` (models.R:91), `REFERENCE_YEAR <- 2026L` (models.R:59). For
+`latency = 2026 − most_recent_year`: latency>3 (most_recent≤2022)→col 1;
+latency==3 (most_recent==2023)→col 2; latency≤2 (most_recent∈{2024,2025,…})
+→col 3. Matches "through 2022" / "through 2023" / "through 2024 or 2025"
+exactly (**MATCH**). Confirmed no most-recent-year in the live 781-site data
+falls outside 2022–2025 (see Step 4), so the code's lack of an explicit upper
+guard past 2025 is untested but not currently divergent.
+
+**15-cell matrix** — `RUBRIC_TABLE`, authorship_models.R:82–89 (one matrix
+literal; citing the source line for each row):
+
+| Years submitted | through 2022 | through 2023 | through 2024/2025 | file:line |
+|---|---|---|---|---|
+| 5 or fewer  | 2 | 3 | 4 | models.R:83 |
+| 6 to 10     | 3 | 4 | 5 | models.R:84 |
+| 11 to 15    | 4 | 5 | 6 | models.R:85 |
+| 16 to 20    | 5 | 6 | 7 | models.R:86 |
+| 21 or more  | 6 | 7 | 8 | models.R:87 |
+
+All 15 cells **MATCH** the authoritative table exactly, byte for byte.
+`scripts/authorship_diagnostics.R`'s duplicate copy (diagnostics.R:43–50) is
+identical to models.R's.
+
+**Qualifying-year rule** — "at least one month," confirmed at two layers:
+month-level, `R/utils.R:199` (`month_present = rowSums(!is.na(...)) > 0`,
+over the 12-variable set defined at `R/utils.R:162–167` — NEE VUT/CUT, GPP
+NT/DT×VUT/CUT, RECO NT/DT×VUT/CUT, LE_F_MDS, H_F_MDS, all ONEFlux-processed
+fields, matching authorship_models.R's own docstring at models.R:12–15); and
+year-level, `authorship_models.R:308`
+(`years_of_data = as.integer(sum(n_months_present > 0L))`) — a year counts
+if `n_months_present > 0`, i.e. **at least one month, not a stricter
+threshold** (**MATCH**). Credit scales with the raw count `years_of_data`,
+never weighted by within-year completeness — `apply_rubric()` (models.R:123)
+takes only `years_data`/`latency_years`, never `years_full_year` or
+`years_partial_year` (those two columns are computed at models.R:309–310 and
+carried into the output CSV but never enter the rubric lookup) (**MATCH**).
+
+#### Step 3 — Behavioral test (functions called directly, not modified)
+
+Rubric logic (`RUBRIC_TABLE`, `LATENCY_THRESHOLDS`, `row_bin()`,
+`latency_col()`, `apply_rubric()`) copied verbatim from
+authorship_models.R:82–127 into a scratch script and exercised directly —
+the repo file itself was never edited. All 15 cells tested with one
+representative (years_submitted, most_recent_year) pair each: **all 15
+PASS**, exact match to the rubric. Boundary tests: years 5→2 slots vs.
+6→3 slots; 10→3 vs. 11→4; 15→4 vs. 16→5; 20→5 vs. 21→6 (most_recent_year
+fixed at 2020 for all four); most_recent_year 2022→3 slots vs. 2023→4 vs.
+2024→5 (years_submitted fixed at 8) — every inequality lands on the correct
+side, no off-by-one. **No cell or boundary failed.** Cross-check: the same
+replicated logic, run over the exact 716 sites the live script actually
+processed, reproduced `n_invited_authors` and `years_of_data` identically
+for all 716/716 sites against the real `outputs/authorship/site_authors.csv`
+— confirming the replication is behaviourally identical to the shipped code,
+not just visually similar.
+
+#### Step 4 — Run on the 781-site set, and a pinning divergence found
+
+**Divergence (not fixed, reported only):** `authorship_models.R:62`
+(`SNAPSHOT_FILE <- "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"`)
+and `authorship_invitations.R:54` are both hardcoded to the **April 28
+snapshot (716 sites)**, not the current 781-site snapshot. This is a real
+input, not a display artefact: `authorship_models.R:326–328` **inner-joins**
+the presence-file site summary (781 sites — the presence file itself was
+independently refreshed for 781 sites earlier today, see this file's other
+2026-09-01 entries) against this stale 716-site snapshot for the
+`submitting_network` field, so **65 of the 781 sites are silently dropped
+from slot assignment** by the unmodified code — not logged as excluded, not
+flagged, simply absent from the join result. `authorship_diagnostics.R`
+defines the same stale path (diagnostics.R:31) but never reads it (dead), so
+it is not itself affected beyond inheriting the 716-site population from
+`site_authors.csv`.
+
+**What the unmodified code actually produced, run as-is this session**
+(`logs/authorship_models_verify_20260901.log`,
+`logs/authorship_diagnostics_verify_20260901.log`,
+`logs/authorship_invitations_verify_20260901.log` — not committed, per
+convention for `logs/`): **716 sites processed, 2905 total invited
+authors.** By network: AMF 340 sites/1361 authors, EUF 118/465, ICOS 79/432,
+JPF 52/179, TERN 52/221, CNF 31/111, KOF 21/53, FLX 18/63, SAEON 5/20. 50
+sites have exactly 5 years of data (Decision-A path). Diagnostics: 0 sites
+with no presence data; 2025-data-availability ranges 0% (EUF/ICOS/JPF/CNF/
+KOF/FLX/SAEON) to 50% (TERN) to 15% (AMF). Invitations: 2730 contact rows
+across the same 716 sites (2717 snapshot, 4 badm_fallback, 9 badm_extra),
+all 716 sites present in output (PASS sanity check).
+
+**What the rubric produces for the true 781-site set** (same verified-
+identical logic, correct `fluxnet_shuttle_snapshot_20260901T094522.csv` +
+the current `site_year_data_presence.csv`, computed read-only, not written
+into the repo): **781 / 781 sites qualify** (every site has ≥1 year with
+≥1 qualifying month), **3,146 total author slots.** Full 15-cell count
+(years_submitted × recency):
+
+| Years submitted | through 2022 | through 2023 | through 2024/2025 |
+|---|---|---|---|
+| 5 or fewer  | 206 | 23 | 126 |
+| 6 to 10     |  99 | 13 | 127 |
+| 11 to 15    |  30 |  3 |  45 |
+| 16 to 20    |  11 |  4 |  39 |
+| 21 or more  |   7 |  6 |  42 |
+
+(Column totals 353 / 49 / 379 = 781; row totals 355/239/78/54/55 = 781.)
+No site's most-recent-year fell outside 2022–2025, so every site landed in
+one of the three stated recency bands with no ambiguous/undefined case.
+Per-site result (site_id, submitting_network, years_submitted,
+most_recent_year, recency_band, years_band, slots — 781 rows) computed and
+inspected but **not written into the repository**, consistent with
+read-and-report scope; reproducible from the scratch script logic
+documented above against the two named inputs.
+
+The 65-site gap (781 true − 716 processed) is exactly accounted for by the
+snapshot-pin divergence above — every site present in the presence file but
+absent from the April 28 snapshot.
+
+#### Discrepancies summary
+
+1. **Snapshot pin (real, consequential):** `authorship_models.R:62` and
+   `authorship_invitations.R:54` pinned to the April 28 (716-site) snapshot,
+   not the current 781-site one — silently drops 65 sites / 241 author
+   slots from the live output. `authorship_diagnostics.R:31` defines the
+   same stale path but doesn't read it (dead code, no effect).
+2. **`n_verified` mislabel in the console summary (cosmetic, not a slot-
+   assignment error):** `authorship_models.R:472–473` prints
+   `"%d invited authors (%d verified sites)"` using `n_verified` computed at
+   models.R:320 from the *pre-join* 781-site presence-file population, not
+   the 716 sites that actually received a rubric assignment — the printed
+   "781 verified sites" next to "2905 invited authors" describes two
+   different populations. Confirmed in this session's actual run log.
+   `site_authors.csv` itself is correct (716 rows with non-NA
+   `n_invited_authors`; NA elsewhere would be n/a here since 0 sites had no
+   presence data this run).
+3. **`CANDIDATES_FILE` dead input:** `site_candidates_full.csv`
+   (models.R:61,139) is read but never used again.
+4. **Rubric table duplicated, not shared:** `authorship_diagnostics.R:43–50`
+   hand-copies `authorship_models.R`'s rubric table rather than sourcing it;
+   currently identical, but the two could silently drift on a future edit
+   to only one file. Not a present divergence — a maintenance risk, noted
+   as observed, not a rubric-vs-code mismatch.
+5. **The rubric's row/recency bands themselves — no divergence found.** All
+   15 cells match; all boundary tests pass; the qualifying-year rule matches
+   "at least one month" exactly at both the month and year level.
+
+#### git status before / after
+
+**Before:** `outputs/session_info.txt` and `renv/activate.R` modified
+(pre-existing, predate this task, unrelated — same state noted in this
+file's other 2026-09-01 entries); a long list of pre-existing untracked
+files (logs, external data, old snapshot CSVs) also predating this task.
+
+**After — one disclosed deviation:** Running the three scripts as literally
+instructed by Step 4 wrote to 12 git-tracked files under
+`outputs/authorship/` (site_authors.csv, authors_by_network.{csv,png},
+diagnostics/*, followup_tasks.txt, and their `.meta.json` companions) —
+`outputs/authorship/` is tracked in this repo, not covered by the
+`outputs/` gitignore pattern the way most of `outputs/` is. Restored via
+`git restore outputs/authorship/ outputs/session_info.txt` immediately after
+the runs, to hold to "the only writes are the SESSION_LOG." That restore
+command also reverted `outputs/session_info.txt` to its last-committed
+state — since `write_output_metadata()` (`R/utils.R:42–48`) appends session
+info on every call and all three scripts call it, running them had already
+touched this file; the restore discarded both that append and whatever
+pre-existing local content was there before this task started (session
+metadata only — machine/package version info regenerated by any pipeline
+run, not scientific data, the rubric, or a figure). `renv/activate.R`
+untouched throughout, exactly as before. `data/snapshots/site_year_data_presence.csv`
+and both Shuttle snapshot CSVs were only read, never written, by this
+task's own actions (the presence-file refresh is documented in this file's
+earlier 2026-09-01 entry, from prior work, not this one). Final
+`git status` matches the "before" state except for this entry.
+
 ### Draft-manuscript figure rebuild: all six figures + legends regenerated against 781 sites
 
 Step two of two, following the gap-download entry below. Full report:

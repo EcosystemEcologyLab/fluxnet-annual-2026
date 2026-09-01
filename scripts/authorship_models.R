@@ -59,7 +59,7 @@ COMPUTE <- "--compute" %in% args
 REFERENCE_YEAR  <- 2026L
 PRESENCE_FILE   <- "data/snapshots/site_year_data_presence.csv"
 CANDIDATES_FILE <- "data/snapshots/site_candidates_full.csv"
-SNAPSHOT_FILE   <- "data/snapshots/fluxnet_shuttle_snapshot_20260428T231049.csv"
+SNAPSHOT_FILE   <- "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"
 OUTPUT_DIR      <- "outputs/authorship"
 SCRIPT_NAME     <- "authorship_models.R"
 

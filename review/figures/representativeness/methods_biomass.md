@@ -98,7 +98,7 @@ values using the new hybrid breakpoints; no re-extraction was necessary.
 Site coordinates from fluxnet_shuttle_snapshot_20260624T095651.csv (767 sites).
 Sites returning NA (ocean pixels, ice sheets, or biomass product coverage
 gaps) were assigned to bin 1 with biomass_method = 'na_assigned_low'.
-NA sites in this extraction: 0 of 767.
+NA sites in this extraction: 0 of 781.
 
 ## Global distribution and land mask
 
@@ -122,8 +122,8 @@ Weighted Jaccard (J) and Hellinger distance (H) as described in
 methods_koppen_beck2023.md. p_k = global land fraction in bin k;
 q_k = fraction of 767-site FLUXNET network in bin k.
 
-  J = 0.6385  (0 = no overlap, 1 = identical distribution)
-  H = 0.1656  (0 = identical, 1 = completely different)
+  J = 0.6362  (0 = no overlap, 1 = identical distribution)
+  H = 0.1663  (0 = identical, 1 = completely different)
 
 For comparison, the previous fixed-bin scheme (0-5, 5-25, 25-50, 50-100,
 100-200, 200-400, >400 Mg/ha) yielded J = 0.6262, H = 0.1684.

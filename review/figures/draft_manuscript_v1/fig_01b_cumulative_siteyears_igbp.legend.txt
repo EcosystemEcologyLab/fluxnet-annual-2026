@@ -6,7 +6,7 @@ historical dataset trajectories
 
 DESCRIPTION:
 Stacked-area chart showing the cumulative number of site-years of observed
-data contributed by the FLUXNET Shuttle network over time (1991–2024),
+data contributed by the FLUXNET Shuttle network over time (1991–2025),
 partitioned by IGBP vegetation class. Three additional lines trace the
 cumulative site-years reached by three prior static FLUXNET data releases
 (Marconi 2000, La Thuile 2007, FLUXNET2015) as historical reference
@@ -15,7 +15,7 @@ via a legend. Vertical dashed grey lines mark the three historical release
 years (2000, 2007, 2015). No plot title is rendered.
 
 AXES:
-  X — Year (calendar year, 1991–2024; breaks every 5 years)
+  X — Year (calendar year, 1991–2025; breaks every 5 years)
   Y — Cumulative site-years (running total of site-years of observed valid
       data, summed across all sites and, for the Shuttle stack, all IGBP
       classes)
@@ -39,16 +39,18 @@ Vertical dashed grey lines (linetype "dashed", colour grey55) at x = 2000,
 2007, 2015 — the release years of the three historical comparison datasets.
 
 NETWORK AND SITE COUNT:
-FLUXNET Shuttle network, current development-mode snapshot: n = 767 sites,
-reaching roughly 5,000–5,500 cumulative observed site-years by the most
-recent year in the presence table. Marconi (n = 35), La Thuile (n = 252),
+FLUXNET Shuttle network, current development-mode snapshot: n = 781 sites
+(updated 2026-09-01; was 767), reaching 6,106 cumulative observed site-years
+by the most recent year in the presence table (data/snapshots/
+site_year_data_presence.csv, refreshed 2026-09-01 — was stale since
+2026-05-24 before this update). Marconi (n = 35), La Thuile (n = 252),
 and FLUXNET2015 (n = 212) site-year trajectories are shown strictly as
 non-Shuttle comparison/illustration data (CLAUDE.md §1) — they are not used
 as primary data anywhere in this project.
 
 DATA SOURCES:
-  - Shuttle site list and IGBP class: current snapshot
-    data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv (767 sites)
+  - Shuttle site list and IGBP class: pinned snapshot
+    data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv (781 sites)
   - Shuttle per-year data presence (observed valid site-years, not merely
     site deployment span): data/snapshots/site_year_data_presence.csv
     (has_data flag per site × year)

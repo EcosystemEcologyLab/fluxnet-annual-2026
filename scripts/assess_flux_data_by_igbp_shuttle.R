@@ -44,7 +44,7 @@ QC_THRESH   <- 0.80          # minimum QC fraction to retain a site-year
 LAMBDA      <- 2.45e6        # latent heat of vaporisation, J kg-1
 SECS_YR     <- 365.25 * 86400
 NA_FLAG     <- -9999
-SNAP_CSV    <- "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv"
+SNAP_CSV    <- "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"  # pinned 2026-09-01, see SESSION_LOG.md
 OUT_MEDIANS <- "data/snapshots/site_flux_medians_shuttle.csv"
 OUT_IGBP    <- "data/snapshots/igbp_class_flux_distributions_shuttle.csv"
 

@@ -3,8 +3,8 @@
 ## Rep001–Rep010: FLUXNET network representativeness figures.
 ##
 ## Figs 001–004  single-network 2×3 bar grids (sampling ratio, log2 scale)
-## Fig  005      overlay 2×3 grid (current_767 vs FLUXNET2015)
-## Fig  006      count-difference 2×3 grid (current_767 minus FLUXNET2015)
+## Fig  005      overlay 2×3 grid (current_781 vs FLUXNET2015)
+## Fig  006      count-difference 2×3 grid (current_781 minus FLUXNET2015)
 ## Figs 007–008  Jaccard trajectory, 6 default axes (no bars / with count bars)
 ## Fig  009      Jaccard trajectory, 3 native-resolution categorical axes
 ## Fig  010      Jaccard trajectory, 5 continuous axes at 30-bin hybrid
@@ -272,7 +272,7 @@ metrics_df <- readr::read_csv(
 # ============================================================================
 
 site_csv <- function(base, network) {
-  suffix <- if (network == "current_767") "" else paste0("_", network)
+  suffix <- if (network == "current_781") "" else paste0("_", network)
   file.path(SNAP, paste0("site_", base, suffix, ".csv"))
 }
 
@@ -320,13 +320,13 @@ AXES6 <- list(
     title   = "Köppen-Geiger (13-class)",
     m_axis  = "koppen_beck2023", m_agg = "13class_twoletter",
     load_fn = function(net) {
-      # current_767: computed locally from ERA5 (site_koppen_era5.csv, see
+      # current_781: computed locally from ERA5 (site_koppen_era5.csv, see
       # scripts/step5_compute_koppen_era5.R). Historical-network comparisons
       # (fluxnet2015/la_thuile/marconi) stay on the Beck 2023 raster
       # extraction — those aren't Shuttle sites with bundled ERA5 monthly
       # data. Column names (koppen_class/koppen_twoletter/koppen_main) match
       # across both sources, so only the file lookup differs.
-      kg_base <- if (net == "current_767") "koppen_era5" else "koppen_beck2023"
+      kg_base <- if (net == "current_781") "koppen_era5" else "koppen_beck2023"
       readr::read_csv(site_csv(kg_base, net), show_col_types = FALSE) |>
         count_sites("koppen_twoletter")
     },
@@ -563,7 +563,7 @@ make_panel_single <- function(ax, network, metrics_df, show_xlab = FALSE,
 }
 
 # ============================================================================
-# 7. OVERLAY PANEL (Fig 005: current_767 vs fluxnet2015)
+# 7. OVERLAY PANEL (Fig 005: current_781 vs fluxnet2015)
 # ============================================================================
 
 make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE,
@@ -578,7 +578,7 @@ make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE,
   j_a <- get_j(ax$m_axis, ax$m_agg, net_a)
   j_b <- get_j(ax$m_axis, ax$m_agg, net_b)
 
-  lbl_a <- "Current (n=767)"
+  lbl_a <- "Current (n=781)"
   lbl_b <- "FLUXNET2015 (n=212)"
 
   df_both <- dplyr::bind_rows(
@@ -598,7 +598,7 @@ make_panel_overlay <- function(ax, net_a, net_b, metrics_df, show_xlab = FALSE,
     scale_fill_manual(values = col_vals) +
     scale_alpha_manual(
       name   = "Network",
-      values = c("Current (n=767)" = 1.0, "FLUXNET2015 (n=212)" = 0.42),
+      values = c("Current (n=781)" = 1.0, "FLUXNET2015 (n=212)" = 0.42),
       guide  = guide_legend(override.aes = list(fill = "grey50",
                                                 colour = "black", linewidth = 0.25))
     ) +
@@ -717,7 +717,7 @@ make_panel_count_diff <- function(ax, net_a, net_b, show_xlab = FALSE,
 # ============================================================================
 
 NET_TITLES <- c(
-  current_767 = "Current FLUXNET network (n=767)",
+  current_781 = "Current FLUXNET network (n=781)",
   marconi     = "Marconi Conference (n=35)",
   la_thuile   = "La Thuile (n=252)",
   fluxnet2015 = "FLUXNET2015 (n=212)"
@@ -749,7 +749,7 @@ make_grid_fig <- function(network, output_path,
   })
 
   title_str <- if (mode == "overlay") {
-    "Current FLUXNET (n=767) vs FLUXNET2015 (n=212) — sampling ratio per class"
+    "Current FLUXNET (n=781) vs FLUXNET2015 (n=212) — sampling ratio per class"
   } else if (mode == "count_diff") {
     "Site count added per class: Current FLUXNET − FLUXNET2015"
   } else {
@@ -834,14 +834,14 @@ make_grid_fig <- function(network, output_path,
 # 10. TRAJECTORY FIGURES (Figs 007–010)
 # ============================================================================
 
-NET_ORDER <- c("marconi", "la_thuile", "fluxnet2015", "current_767")
+NET_ORDER <- c("marconi", "la_thuile", "fluxnet2015", "current_781")
 NET_X     <- setNames(1:4, NET_ORDER)
-NET_NSITES <- c(marconi=35L, la_thuile=252L, fluxnet2015=212L, current_767=767L)
+NET_NSITES <- c(marconi=35L, la_thuile=252L, fluxnet2015=212L, current_781=781L)
 MAX_SITES  <- max(NET_NSITES)
 
 # Labels with n for Fig 007; without n for Fig 008-010
 NET_XLABELS_N    <- c("Marconi\n(n=35)","La Thuile\n(n=252)",
-                       "FLUXNET2015\n(n=212)","Current\n(n=767)")
+                       "FLUXNET2015\n(n=212)","Current\n(n=781)")
 NET_XLABELS_BARE <- c("Marconi","La Thuile","FLUXNET2015","Current")
 
 traj_theme <- theme_minimal(base_size = 9) +
@@ -967,9 +967,9 @@ make_traj_with_bars <- function(traj_df, colors, xlabels, title_str, output_path
 # 11. EXECUTE ALL 10 FIGURES
 # ============================================================================
 
-message("\n=== Fig 001: current_767 single-network grid ===")
+message("\n=== Fig 001: current_781 single-network grid ===")
 n_trunc_001 <- make_grid_fig(
-  "current_767",
+  "current_781",
   file.path(OUTD, "fig_rep001_current.png"),
   mode = "single",
   width_in = 7, height_in = 5,
@@ -1001,17 +1001,17 @@ n_trunc_004 <- make_grid_fig(
 )
 message("  Truncated bars: ", n_trunc_004)
 
-message("\n=== Fig 005: overlay current_767 vs fluxnet2015 ===")
+message("\n=== Fig 005: overlay current_781 vs fluxnet2015 ===")
 make_grid_fig(
-  "current_767",
+  "current_781",
   file.path(OUTD, "fig_rep005_fluxnet2015_vs_current.png"),
   mode = "overlay",
   overlay_network = "fluxnet2015"
 )
 
-message("\n=== Fig 006: count difference current_767 minus fluxnet2015 ===")
+message("\n=== Fig 006: count difference current_781 minus fluxnet2015 ===")
 make_grid_fig(
-  "current_767",
+  "current_781",
   file.path(OUTD, "fig_rep006_delta_count_2015_to_current.png"),
   mode            = "count_diff",
   overlay_network = "fluxnet2015"
@@ -1020,7 +1020,7 @@ make_grid_fig(
 # Count-diff summary for reporting
 for (k in AXES6_KEYS) {
   ax <- AXES6[[k]]
-  cnts_a <- ax$load_fn("current_767")
+  cnts_a <- ax$load_fn("current_781")
   cnts_b <- ax$load_fn("fluxnet2015")
   all_cl <- ax$global_df |> dplyr::select(class) |> dplyr::mutate(class = as.character(class))
   cnt_a_full <- all_cl |> dplyr::left_join(cnts_a |> dplyr::select(class, n), by="class") |>
@@ -1199,7 +1199,7 @@ ax_specs_etmed_agg <- list(
   "12-bin" = list(axis = "trendy_et_median", agg = "12bin_hybrid"),
   "7-bin"  = list(axis = "trendy_et_median", agg = "7bin_hybrid")
 )
-# ET-median: at the current_767 point, 18-bin J (0.433) < 20-bin J (0.447) due to
+# ET-median: at the current_781 point, 18-bin J (0.433) < 20-bin J (0.447) due to
 # histogram ceiling collapse at 1000 mm yr⁻¹. Non-monotonicity is visible at
 # figure scale (~0.014 gap); noted in caption.
 make_traj_with_bars(

@@ -18,14 +18,14 @@ message("Loading ", length(tif_files), " WorldClim TIF files ...")
 wc_rast <- terra::rast(tif_files)
 message("  Layers: ", paste(names(wc_rast)[c(1, 12)], collapse = ", "), " ...")
 
-# ---- Load site coordinates from latest snapshot ----------------------------
-snap_file <- sort(
-  list.files(file.path(FLUXNET_DATA_ROOT, "snapshots"),
-             pattern = "fluxnet_shuttle_snapshot.*\\.csv$",
-             full.names = TRUE),
-  decreasing = TRUE
-)[[1]]
-message("Snapshot: ", basename(snap_file))
+# ---- Load site coordinates from the pinned snapshot -------------------------
+# Pinned explicitly (not the newest-file glob) so every draft-manuscript
+# figure shares one reference snapshot and cannot silently diverge -- see
+# SESSION_LOG.md 2026-09-01.
+snap_file <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                        "fluxnet_shuttle_snapshot_20260901T094522.csv")
+if (!file.exists(snap_file)) stop("Pinned snapshot not found: ", snap_file)
+message("Snapshot (pinned): ", basename(snap_file))
 snapshot <- readr::read_csv(snap_file, show_col_types = FALSE)
 
 site_coords <- snapshot |>

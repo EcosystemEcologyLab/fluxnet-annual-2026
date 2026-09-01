@@ -5,7 +5,7 @@
 ##   (2) 7-class extended scheme with humid subdivisions (FAO-derived)
 ##
 ## Steps executed in order:
-##   1. Per-site AI extraction for all 767 sites (20260624 snapshot)
+##   1. Per-site AI extraction for the current network (20260901 snapshot)
 ##   2. Global area-weighted distributions for both schemes
 ##   3. Representativeness metrics for both schemes; update representativeness_metrics.csv
 ##   4. Two stacked-bar + ratio-panel figures
@@ -46,7 +46,7 @@ ar_dir      <- file.path("data", "external", "aridity",
                          "Global-AI_ET0__annual_v3_1")
 rast_path   <- file.path(ar_dir, "ai_v31_yr.tif")
 snap_path   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                         "fluxnet_shuttle_snapshot_20260624T095651.csv")
+                         "fluxnet_shuttle_snapshot_20260901T094522.csv")  # pinned 2026-09-01
 site_out    <- file.path(FLUXNET_DATA_ROOT, "snapshots", "site_aridity.csv")
 glob5_out   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                          "aridity_unep5_global_distribution.csv")
@@ -112,7 +112,7 @@ site_coords <- snapshot |>
 N <- nrow(site_coords)
 message("Sites with coordinates: ", N)
 
-# ---- Step 1: Per-site extraction (767 sites) --------------------------------
+# ---- Step 1: Per-site extraction (current network) ------------------------
 message("\nExtracting AI at exact site coordinates ...")
 pts <- terra::vect(
   data.frame(x = site_coords$location_long, y = site_coords$location_lat),
@@ -233,7 +233,7 @@ write_output_metadata(
   site_out,
   input_sources = c(snap_path, rast_path),
   notes = paste0(
-    "767-site re-extraction (snapshot 20260624T095651). ",
+    paste0(N, "-site re-extraction (snapshot 20260901T094522). "),
     "ai_value = raw_integer * 0.0001 per CGIAR v3.1. ",
     "Ocean pixels (raw value 0) treated as NA; recovered via buffer/nearest-land fallback. ",
     "unep_class_5: canonical UNEP 5-class (thresholds 0.05/0.20/0.50/0.65). ",
@@ -378,24 +378,33 @@ print(as.data.frame(dplyr::mutate(samp7,
   g = round(global*100,1), n = round(network*100,1), r = round(ratio,2)
 )[, c("unep_class","g","n","r")]))
 
-# Update metrics CSV: keep KG rows, replace any aridity rows, append new ones
+# NETWORK_LABEL pinned to the current 781-site network (SESSION_LOG.md
+# 2026-09-01). Upsert scoped to (axis, network) -- NOT a bare axis-prefix
+# filter -- so historical-network (marconi/la_thuile/fluxnet2015) rows for
+# these axes are preserved, not wiped. (Fixed 2026-09-01: the prior
+# `filter(!grepl("^aridity", axis))` dropped every network's row for both
+# aridity axes and never wrote a network/n_sites column at all.)
+NETWORK_LABEL <- "current_781"
 old_met <- if (file.exists(metrics_out)) {
   readr::read_csv(metrics_out, show_col_types = FALSE) |>
-    dplyr::filter(!grepl("^aridity", axis))  # drop old aridity rows
+    dplyr::filter(!(grepl("^aridity", axis) & network == NETWORK_LABEL))
 } else {
   data.frame(axis = character(), aggregation_level = character(),
              n_classes = integer(), weighted_jaccard = numeric(),
-             hellinger_distance = numeric())
+             hellinger_distance = numeric(), network = character(),
+             n_sites = integer())
 }
 
 metrics_df <- dplyr::bind_rows(
   old_met,
   data.frame(axis = "aridity_unep5", aggregation_level = "unep5", n_classes = 5L,
              weighted_jaccard = m5$weighted_jaccard,
-             hellinger_distance = m5$hellinger_distance),
+             hellinger_distance = m5$hellinger_distance,
+             network = NETWORK_LABEL, n_sites = N),
   data.frame(axis = "aridity_unep7", aggregation_level = "unep7", n_classes = 7L,
              weighted_jaccard = m7$weighted_jaccard,
-             hellinger_distance = m7$hellinger_distance)
+             hellinger_distance = m7$hellinger_distance,
+             network = NETWORK_LABEL, n_sites = N)
 )
 readr::write_csv(metrics_df, metrics_out)
 message("Saved: ", metrics_out)
@@ -473,7 +482,7 @@ make_plot_df <- function(dist_df, q_vec, class_levels, bar_label_fn) {
     dplyr::mutate(
       bar = factor(bar,
                    levels = c("global", "network"),
-                   labels = c("Global land", "FLUXNET\n(767 sites)")),
+                   labels = c("Global land", sprintf("FLUXNET\n(%d sites)", N))),
       label = bar_label_fn(as.character(unep_class), fraction)
     )
 }

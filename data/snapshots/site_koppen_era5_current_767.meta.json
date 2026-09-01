@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-08-20T22:17:36Z",
+  "pipeline_version": "71f76e8",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/processed/badm.rds",
+    "data/snapshots/site_koppen_beck2023.csv"
+  ],
+  "notes": "KG class computed locally from ERA5 monthly reanalysis data bundled with each site's FLUXNET Shuttle download (dataset='ERA5' rows in the DuckDB monthly table), following the Beck et al. classification rule cascade applied to a 1991-2020 monthly T/P normal (matches Beck et al. 2023's own present-day window). Requires >= 20 valid years of the 30; site-years with computed annual P_ERA total > 5000 mm/yr excluded as reanalysis spatial-averaging artifacts (docs/known_issues.md §9a). badm_kg_class/beck2023_kg_class are retained comparison columns only, not used for classification. Scope: current 767-site Shuttle network only — historical-network comparisons and the global land-area backdrop remain Beck-2023-raster-based."
+}

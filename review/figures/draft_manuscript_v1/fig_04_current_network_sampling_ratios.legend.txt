@@ -1,11 +1,12 @@
 FIGURE LEGEND — fig_rep001_current.png
 =======================================
 
-TITLE: Current FLUXNET (n = 767) — sampling ratio per class
+TITLE: Current FLUXNET (n = 781) — sampling ratio per class
 
 DESCRIPTION:
 Six-panel grid showing the representativeness of the current FLUXNET network
-(n = 767 sites) relative to global vegetated land area, assessed across six
+(n = 781 sites; updated 2026-09-01, was 767) relative to global vegetated
+land area, assessed across six
 independent classification axes. Each horizontal bar shows the log₂ sampling
 ratio for one class: the fraction of sites falling in that class divided by
 the fraction of global vegetated land in that class. A value of 1× (log₂ = 0)
@@ -62,15 +63,24 @@ REPRESENTATIVENESS METRIC:
         q_i = network fraction of class i.
   J = 1 indicates perfect representativeness; J = 0 indicates no overlap.
 
-JACCARD VALUES (current_767, 18-bin for D–F where applicable):
-  A. KG (13-class):           J = 0.373
-  B. LULC (10-class HL):      J = 0.556
-  C. Aridity (7-class UNEP):  J = 0.667
-  D. Biomass (7-bin hybrid):  J = 0.616   [legacy 7-bin; see Rep007–008 for 18-bin]
-  E. NEE-IAV (7-bin hybrid):  J = 0.486   [legacy 7-bin]
-  F. ET-median (7-bin hybrid):J = 0.433   [legacy 7-bin]
+JACCARD VALUES (current_781, updated 2026-09-01 — see below for prior
+current_767 values; 7-bin hybrid for D–F, matching this figure's actual
+panels, not the 18-bin used in Rep007/008):
+  A. KG (13-class):           J = 0.420  (was 0.423 at current_767)
+  B. LULC (10-class HL):      J = 0.567  (was 0.556 at current_767)
+  C. Aridity (7-class UNEP):  J = 0.666  (was 0.667 at current_767)
+  D. Biomass (7-bin hybrid):  J = 0.636  (was 0.626 at current_767)
+  E. NEE-IAV (7-bin hybrid):  J = 0.506  (was 0.494 at current_767)
+  F. ET-median (7-bin hybrid):J = 0.456  (was 0.446 at current_767)
+Prior current_767 values recomputed here from
+data/snapshots/representativeness_metrics.csv (network == "current_767" rows,
+preserved unchanged alongside the new current_781 rows — see SESSION_LOG.md
+2026-09-01). Panel A's prior value in this file (0.373) did not match either
+current_767 or current_781 as actually recorded and predates this update;
+not otherwise investigated here (see docs/ report for the flag).
 
-NETWORKS: Current FLUXNET (n = 767 sites, Shuttle snapshot development mode).
+NETWORKS: Current FLUXNET (n = 781 sites, Shuttle snapshot development mode;
+updated 2026-09-01, was 767).
 
 DATA SOURCES:
   - Site locations: FLUXNET Shuttle (flux_listall()), development snapshot

@@ -4,6 +4,310 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-01 — Shuttle gap download: 22 new sites since the 20260624 frozen snapshot
+
+### Draft-manuscript figure rebuild: all six figures + legends regenerated against 781 sites
+
+Step two of two, following the gap-download entry below. Full report:
+`docs/figure_rebuild_781_20260901.md`. Shuttle-team email recorded at
+`docs/correspondence/shuttle_release_query_20260901.md`.
+
+**Deprecated, not overwritten.** All six prior draft figures/legends (plus
+`RUN_LOG_fig2_swap.txt`) moved via `git mv` into
+`review/figures/draft_manuscript_v1/deprecated/draft_manuscript_v1_20260624/`,
+mirroring the existing deprecation convention. Found in the process: Fig 2's
+most recent build had drifted onto an ad hoc 775-site dev snapshot instead
+of the 767-site frozen one, because its source script picked the newest
+snapshot file by glob rather than a pin — exactly the divergence this
+rebuild's pinning requirement closes.
+
+**Pipeline prerequisite rebuilt first.** `data/duckdb/fluxnet.duckdb` still
+reflected only 759 sites; reran `03b_create_database.R` → `04_qc.R` →
+`05_units.R` to bring `annual_converted` (and all other `*_converted`
+tables) to 781 sites — required for Fig 2's DuckDB-based NEE layer and for
+the ERA5-based current-network Köppen axis feeding Fig 4/5.
+
+**Housekeeping, autonomous (rename within the repo):** `data/extracted/fluxnet2015/`
+(a non-Shuttle FLUXNET2015 comparison download whose filenames broke every
+`flux_discover_files()` scan of `data/extracted/`) permanently relocated to
+`data/fluxnet2015_comparison/` and added to `.gitignore`; the two other
+scripts that referenced its old path were updated so they aren't left
+broken.
+
+**Every figure script pinned** to `fluxnet_shuttle_snapshot_20260901T094522.csv`
+explicitly — newest-file globs and hardcoded `20260624` paths both removed —
+across `generate_point_maps.R`, `generate_duration_histograms.R`,
+`generate_whittaker_alt_fig02_update.R` (the actually-wired Fig 2 source,
+not the two scripts named in the task — flagged), `step1_extract_worldclim.R`,
+`assess_flux_data_by_igbp_shuttle.R`, `step5_compute_koppen_era5.R`, and
+the representativeness-axis extraction scripts (biomass, land cover,
+aridity, KG, TRENDY). Network label `current_767` → `current_781` renamed
+throughout `figure_representativeness_summary.R` and the axis scripts, with
+the old `current_767` per-site CSVs and metrics rows archived/preserved
+(`_current_767` suffix; `representativeness_metrics.csv` keeps both), not
+deleted.
+
+**Two script bugs found and fixed en route:** (1) `figure_representativeness_biomass.R`
+/ `_landcover.R` / `_aridity.R` each upserted `representativeness_metrics.csv`
+with an axis-only filter that silently dropped every *other* network's row
+for that axis and wrote no `network`/`n_sites` column at all — rescoped to
+`(axis, network)`, matching the correct pattern already used elsewhere. (2)
+`recompute_continuous_axes_30bin.R` / `_multibin.R` appended to that same
+file with no dedup guard against a re-run — added a `distinct(...,
+.keep_all = TRUE)` safety net. (3) `site_year_data_presence.csv` (feeds
+Fig 1B) was stale since 2026-05-24 with no current refresh path; a new
+script, `scripts/refresh_site_year_presence.R`, rebuilds it from DuckDB.
+(4) Two axes (biomass, land cover) had no fresh-extraction path at all in
+their current scripts — a new script,
+`scripts/extract_current_network_biomass_landcover.R`, fills that gap using
+the same method already established for the historical networks.
+
+**Fig 2's hardcoded legend count fixed, made dynamic.** The figure's own
+inset text was already computed at run time; the bug was one level up —
+`build_draft_manuscript_v1.R` had the site/NEE/site-year counts hand-typed
+into its legend string. `generate_whittaker_alt_fig02_update.R` now writes
+a small counts sidecar (`ALT_fig_02_whittaker_current.counts.json`) that
+`build_draft_manuscript_v1.R` reads and interpolates — new counts: **781
+sites, 656 with qualifying annual NEE, 4,303 site-years** (was 638 / 4,227
+on 775 sites). The other five legends had no generating script at all
+(hand-authored at each figure's creation) — edited by hand against the
+actual regenerated data.
+
+**Six flagged sites — all confirmed handled per spec, none re-pulled or
+reprocessed this session:** DE-Hai/FR-CLt/FR-EM2 render from their on-disk
+(newer) release despite the live listing now showing older; DE-Hte/JP-Api
+render from on-disk (older) release despite a newer live listing; **IT-SR2**
+confirmed present (not silently dropped by the broken FLX→ICOS metadata
+join, which only ever affected `flux_discover_files()`'s own optional
+merge) in every per-site covariate file, `site_flux_medians_shuttle.csv`,
+and DuckDB `annual_converted` (11 years of non-NA NEE, 2013–2023) —
+contributing to Fig 2's hexbin colouring and Fig 3's ENF class.
+
+**Fig 3 — 15 of the 22 new sites qualify at the existing local QC_THRESH =
+0.80** (US-KLS, US-LS2, US-xHA, US-xKA, US-ZF1, JP-Tgf, IT-Ro1, IT-Ro2,
+IT-PT1, IT-MtP, IT-MtM, IT-Cpz, ES-Pdu, ES-LgS, DK-Eng); 7 have zero
+qualifying site-years at that threshold (US-xTA, JP-Nkm, HK-MPM, SJ-Adv,
+FI-Si2, ES-Ln2, DK-Fou). No IGBP class crosses the project's n≥5
+reliability threshold in either direction — every plotted class already
+had n≥7 before this addition-only update.
+
+**Old vs new headline numbers** (full tables in the report): sites 767→781
+(775→781 for Fig 2's actual prior build); Fig 4/5 current-network weighted
+Jaccard moved by ≤0.02 on every one of the six default axes; per-IGBP
+Shuttle N in Fig 3 increased for every non-excluded class (e.g. DBF 60→64,
+GRA 120→126). One pre-existing inaccuracy found and flagged rather than
+silently corrected: Fig 4/5's legends cited KG J = 0.373, matching neither
+the current_767 (0.423) nor current_781 (0.420) value actually on record.
+
+Verified: all six figures render with fresh 2026-09-01 timestamps, every
+legend count/N/J cross-checked against the regenerated data directly (not
+estimated), frozen snapshot and its byte content untouched. Committed:
+the deprecation moves, all six regenerated figures/legends and their
+upstream source figures, the regenerated `data/snapshots/*.csv` covariate
+and metrics files (git-tracked, not gitignored), new/edited scripts, the
+two reports, the correspondence file, and this entry.
+`data/extracted/`, `data/raw/`, `data/duckdb/`, and the relocated
+`data/fluxnet2015_comparison/` remain gitignored.
+
+### Reconciled today's Shuttle listing against `data/extracted/`; downloaded the delta
+
+Step one of two (download and record only — no figure or analysis-script changes).
+The paper's frozen snapshot, `data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv`
+(767 sites), was **not modified**. `flux_listall()` called today returned **781 sites**
+(no hubs missing); persisted immediately to
+`data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv`.
+
+`data/extracted/` was inventoried with `flux_discover_files()` — run against a
+read-only, file-level symlink copy that excluded the one non-Shuttle subdirectory
+present there, `data/extracted/fluxnet2015/` (a FLUXNET2015 comparison dataset;
+its filenames don't match the Shuttle naming convention and crash
+`flux_discover_files()` if included — nothing in `data/extracted/` itself was
+touched). Found **759 sites already on disk**, giving a **delta of 22 sites**
+(8 already listed in the frozen snapshot but never downloaded; 14 genuinely new
+to the Shuttle since 20260624). **Zero sites have been removed** from the
+Shuttle since the freeze — all 767 frozen sites are still listed live.
+
+Separately (not acted on): **5 on-disk sites have a product `_r` version tag
+that differs from today's live listing** (DE-Hai, FR-CLt, FR-EM2 showing a
+*lower* live release than what's on disk — worth flagging to the Shuttle team;
+DE-Hte and JP-Api showing a newer one), and **IT-SR2** changed hub
+(`FLX`→`ICOS`) between the frozen snapshot and today, which breaks
+`flux_discover_files()`'s metadata join for that site. Full detail, tables, and
+the download/verification results (20 OK, 2 expected-CUT-only WARNs, 0 FAIL —
+including a corrupt-zip retry for IT-Cpz) are in
+`docs/shuttle_gap_download_20260901.md`.
+
+All 22 sites were downloaded (`flux_download()`, subset to the delta manifest)
+and extracted (`flux_extract()`, `y m d` resolutions) into `data/extracted/`;
+`data/raw/` zips were deleted after verification per `FLUXNET_DELETE_ZIPS=TRUE`.
+`data/extracted/` and `data/raw/` are gitignored; the only committed artifacts
+from this session are the new snapshot CSV, the report above, and this entry.
+
+---
+
+## 2026-08-31 — CLAUDE.md git-workflow clarification; two comparison/Whittaker ALT candidate figures
+
+### ALT_fig_02 promoted to draft Figure 2: inset clip fixed, prior draft version deprecated
+
+Fixed a clip and promoted the ALT_fig_02 candidate (see the entry below) to
+`review/figures/draft_manuscript_v1/fig_02_whittaker_current.png`.
+
+**Inset shifted to clear the axis.** The upper-left inset block (four text lines + NEE
+colourbar) was touching/overlapping the left panel border — a side effect of the previous
+entry's `detail_hjust = 0` fix (needed for consistent multi-line alignment, but it also removed
+the small margin the old `hjust = -0.07` had incidentally provided). Fixed via a new
+`detail_x_offset` parameter on `fig_whittaker_worldclim()` (`R/figures/fig_climate.R`, default
+`0` = unchanged `x = -Inf` behaviour for every other caller): shifts the text block right by a
+plain data-unit offset from the axis. `scripts/generate_whittaker_alt_fig02_update.R` sets it to
+`0.6` MAT-units — the smallest of four values tried (1.7, 1.0, 0.6, 0.3, checked by rendering and
+zooming into the axis/text corner each time) that still reads as an unambiguous, clean margin
+rather than a marginal one. The legend/colorbar's `style$legend_pos` x-position was shifted by
+the equivalent fraction of the axis range (`0.02` → `0.032`) so the whole inset block (text +
+colorbar) moves together as one unit, per the task's requirement. Nothing else changed: vertical
+position, line spacing, colourbar size, wording, counts, points, tan scale centre, and contours
+are all identical to the prior entry's figure. The three site counts remain computed from the
+data at run time (not hardcoded) — reconfirmed in this run's log at **775 sites total, 638 with
+annual NEE, 4227 site-years**.
+
+**Promoted to draft.** `review/figures/draft_manuscript_v1/deprecated/` created (did not exist).
+The prior draft Figure 2 — `fig_02_whittaker_current.png` (elongated hexagons, grey points behind
+the hexbins, near-white scale centre, conflated site-count wording) and its `.legend.txt` — were
+**moved** (not copied, not overwritten) into that folder, filenames preserved, no naming
+collision. `scripts/build_draft_manuscript_v1.R`'s Figure 2 source was changed from
+`review/figures/whittaker/fig_whit_fig2_with_both_contours.png` to
+`review/figures/candidates/ALT_fig_02_whittaker_current.png`, and its hardcoded Figure 2 legend
+text rewritten to describe the promoted figure's actual content (regular hexagons, charcoal
+points in front, pale-tan centre, the three-count inset, current 775/638/4227 counts, updated
+reproducibility parameters). Re-running that script confirmed
+`draft_manuscript_v1/fig_02_whittaker_current.png` now matches the regenerated ALT candidate
+byte-for-byte (md5 `c7c5877cf14c194d50b46b453d8bd0ab`).
+
+Orchestrated by the new `scripts/promote_fig02_to_draft.R`, with a full durable run log at
+`review/figures/RUN_LOG_fig02_promote.txt` (every input located/missing, every computed value,
+every file written, including the exact old→new Figure 2 source line and the resolved
+discrepancy between the task's script name and the actual script — `generate_whittaker_alt_fig02.R`
+vs. its successor `generate_whittaker_alt_fig02_update.R`, which is the one that actually built
+the current candidate — logged and used explicitly rather than silently guessed).
+
+### ALT_fig_02 updated: charcoal points, pale-tan NEE centre, tightened/corrected inset (candidate only)
+
+Revised the ALT_fig_02_whittaker_current.png candidate built earlier this session (see the
+ALT_fig_02 entry below) — candidate only, still **not promoted** to
+`review/figures/draft_manuscript_v1/`; `scripts/build_draft_manuscript_v1.R` was not touched.
+`hex_regular = TRUE` and `points_in_front = TRUE` (the earlier fix) are unchanged. Four further
+changes, all driven by four new backward-compatible `fig_whittaker_worldclim()` parameters
+(`R/figures/fig_climate.R`, defaults matching prior behaviour so no other caller is affected):
+
+1. **Point styling** — per-site points recoloured `grey30` → a quiet dark charcoal (`#2B2B2B`),
+   resized 0.7 → 0.35, alpha reduced to 0.35, via new `point_colour`/`point_alpha` parameters —
+   points now read as fine location/density texture, subordinate to the NEE hexbin colour,
+   without the temperate-cloud points blobbing together.
+2. **NEE colour-scale centre** — recoloured near-white (`#F6F6F6`) → pale tan (`#F0E2C4`) via a
+   new `nee_mid_colour` parameter. Blue/red endpoints, zero-centring, limits, and squish
+   out-of-bounds handling are byte-identical (pinned to `diverging_hcl(2, "Blue-Red 3")`'s exact
+   endpoint hex codes, `#002F70`/`#5F1415`); implemented as `ggplot2::scale_fill_gradient2()`
+   rather than the stock HCL-interpolated scale — a same-endpoints custom HCL two-half
+   reconstruction was tried first and rejected (sweeping hue from blue, H=255, to the tan
+   centre's H~90 passes visibly through green/teal, since the centre keeps chroma instead of
+   dropping to achromatic white the way the stock palette's does).
+3. **Inset wording corrected** — the "N = 775 sites | 4227 site-years" line conflated two
+   different counts (see this session's earlier "775 vs 638 sites" finding, logged below).
+   Relabelled to three lines, computed programmatically at run time (not hardcoded), via a new
+   `detail_lines` parameter: **"775 sites total" / "638 with annual NEE" / "4227 site-years"**.
+   Points remain shown for all 775 network sites regardless of NEE availability; only the hexbin
+   colouring is NEE-only (638 of 775).
+4. **Inset/legend spacing tightened** — inter-line spacing reduced (new `style$detail_lineheight`
+   field), the legend nudged up under the now 4-line block (`style$legend_pos` `c(0.02, 0.88)` →
+   `c(0.02, 0.815)`), and colorbar padding reduced (new `style$legend_margin`/
+   `legend_title_margin`/`legend_box_margin` fields, all no-ops when absent). A fifth new
+   parameter, `detail_hjust` (default `-0.07`, unchanged), was added after the three-line block
+   revealed that grid's multi-line text justification shifts differently-width lines
+   proportionally under a non-zero `hjust` — set to `0` here for clean left-alignment.
+
+Two tuning mistakes were made and corrected by rendering and visually inspecting before
+finalizing (both recorded in the durable run log, not just this summary): `legend_pos` was first
+moved the wrong direction (0.80, widening the gap instead of closing it — `legend.position.inside`'s
+y is measured from the panel bottom), then overshot (0.855, overlapping the legend title with
+"4227 site-years") before landing on 0.815.
+
+Output: `review/figures/candidates/ALT_fig_02_whittaker_current.png` (+`.txt`, overwritten in
+place — logged as a deliberate choice over a versioned successor), built by
+`scripts/generate_whittaker_alt_fig02_update.R` (successor to
+`scripts/generate_whittaker_alt_fig02.R`), with a full durable run log at
+`review/figures/candidates/RUN_LOG_alt_fig02_update.txt` (every input located/missing, every
+computed value, every file written, timestamped and flushed per line).
+
+### CLAUDE.md: git commit/push and Rule #4 clarified
+
+Reviewed CLAUDE.md's git-related rules against actual repo practice at the user's request.
+Found two problems: (a) "Autonomy and Permissions" instructed asking before `push to git` on a
+local machine — directly contradicting Session Log rule 5's "commit and push immediately," for
+the exact environment (no `CODESPACE_NAME`) most work happens in; (b) Hard Rule #4 claimed
+"Figures and outputs are also gitignored," which is false for `review/figures/` (explicitly
+git-tracked per `.gitignore`'s own comment: "review/ is intentionally git-tracked for offline
+figure review") though true for `outputs/` (gitignored, with one deliberate tracked exception,
+`outputs/session_info.txt`).
+
+Fixed both: git commit/push (not force-push) is now stated as autonomous in every environment,
+cross-referenced from both Rule #4 and the Session Log section; Rule #4 now correctly describes
+`review/figures/` as tracked (commit alongside the generating script) and `outputs/` as
+gitignored-with-one-exception. Commit 4006d45.
+
+### ALT_fig_03: FLUXNET2015-vs-Shuttle comparison restricted to common sites AND years
+
+Built a new candidate figure isolating ONEFlux processing-version effects from
+network-composition effects in the NEP/ET/H combo comparison: for each flux (matched
+independently), a site-year only contributes to either axis if BOTH FLUXNET2015 and the current
+Shuttle reprocessing have a QC-passing (>=0.80) value for that exact calendar year — so
+`fluxnet2015_n_sites == shuttle_n_sites` per class by construction. 150 of 206 FLUXNET2015 sites
+overlap the current Shuttle network (Shuttle YY files carry full historical records, not just
+recent years, so the overlap is real rather than near-empty); 9 of the original 10 plotted
+classes retain >=5 common sites (SAV newly drops out at n=3, joining the already-excluded
+CSH/CVM).
+
+Output: `review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.png` (+.txt),
+`data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv` (+.meta.json),
+`scripts/figure_flux_comparison_combo_alt_common_siteyears.R`. Commit 4cdaf6a.
+
+### ALT_fig_02: regular hexagons + points-in-front, half-size (candidate); NEE site-coverage finding
+
+Root-caused why `fig_02_whittaker_current.png`'s hexagons render vertically elongated:
+`ggplot2::stat_summary_hex()`'s default binwidth splits `bins` evenly across the *full,
+unclipped* MAT/MAP data range, and `GeomHex$draw_group` draws each hexagon assuming 1 MAT
+data-unit and 1 MAP data-unit render at an equal physical length — true only by coincidence of
+the panel's incidental aspect ratio once legend/axis-label margins are subtracted from the
+3.5x3.5in canvas (confirmed by tracing ggplot2's `hexBinSummarise`/`GeomHex$draw_group` source
+directly, not by inference). MAT spans ~50 degC vs MAP's ~4000 mm/yr, so that coincidence
+doesn't hold.
+
+Fixed via two new, backward-compatible parameters on `fig_whittaker_worldclim()`
+(`R/figures/fig_climate.R`), both defaulting to the prior behaviour so every other existing
+caller (`generate_whittaker.R`'s whit01-07, `00_candidate_figures.R`,
+`generate_whittaker_overlays.R` / `fig_02_whittaker_current.png` itself) is unaffected:
+`hex_regular = TRUE` (binwidth computed explicitly from `style$xlim`/`style$ylim`, and
+`coord_fixed(ratio = diff(xlim)/diff(ylim))` replaces `coord_cartesian()`, pinning the MAT:MAP
+physical-length ratio by construction — also yields an exactly square panel with equal
+`hex_bins` in both directions) and `points_in_front = TRUE` (+ `point_size`, default unchanged
+at 1.4: draws the point layer after the hexagon layer instead of before).
+
+Output: `review/figures/candidates/ALT_fig_02_whittaker_current.png` (+.txt, built with
+`hex_regular=TRUE, points_in_front=TRUE, point_size=0.7` — 50% of the original 1.4), contour
+overlay geometry/registration unchanged. `scripts/generate_whittaker_alt_fig02.R`. Commit
+505d130.
+
+**Follow-up finding (NEE site coverage):** the figure's "N = 775 sites | 4227 site-years" inset
+text is misleading — `n_sites` (775) is the full current Shuttle snapshot count, computed
+*before* any NEE filtering, while the site-years count comes from a separately NEE-filtered
+subset. Only **638 of the 775 sites** actually have a qualifying `NEE_VUT_REF`/`NEE_CUT_REF`
+value: 17 sites have no `annual_converted`/FLUXMET row at all, and a further 120 have annual
+rows but NEE is `NA` on both VUT and CUT. Per-site grey points are also not gated on NEE
+availability, so points still appear for some of the 137 NEE-less sites. This is present in both
+`fig_02_whittaker_current.png` and the new ALT figure (inherited from existing
+`fig_whittaker_worldclim()` logic, not introduced by this session's changes) — not yet fixed,
+pending a decision on how to relabel it.
+
+---
+
 ## 2026-08-20 — Köppen-Geiger classification unified: computed locally from ERA5
 
 Replaced two previously-inconsistent per-figure-family KG sources for the

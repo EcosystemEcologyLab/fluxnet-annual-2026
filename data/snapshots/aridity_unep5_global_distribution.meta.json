@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-06-24T19:07:45Z",
-  "pipeline_version": "fe6fe1f",
+  "run_datetime_utc": "2026-09-01T18:02:43Z",
+  "pipeline_version": "8cf4be9",
   "input_sources": [
     "data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif"
   ],

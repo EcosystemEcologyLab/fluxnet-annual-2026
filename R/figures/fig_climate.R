@@ -100,6 +100,74 @@ WHITTAKER_STYLE <- list(
 #'   inset text (e.g. \code{"FLUXNET Shuttle 2025"}).
 #' @param style Named list of visual parameters.  Defaults to
 #'   \code{\link{WHITTAKER_STYLE}}.
+#' @param hex_regular Logical (default \code{FALSE}, preserving existing
+#'   behaviour for all current callers). When \code{TRUE}, hexagon
+#'   \code{binwidth} is computed explicitly from \code{style$xlim}/
+#'   \code{style$ylim} (instead of ggplot2's default, which sizes bins from
+#'   the full unclipped data range) and \code{\link[ggplot2]{coord_fixed}} is
+#'   used in place of \code{\link[ggplot2]{coord_cartesian}}, with
+#'   \code{ratio} set so that one MAT unit and one MAP unit render at a fixed
+#'   physical-length ratio. Without this, hexagons drawn via
+#'   \code{ggplot2::stat_summary_hex()} are only visually regular by
+#'   coincidence -- their shape depends on the rendered panel's incidental
+#'   physical aspect ratio (legend/axis-label margins, requested figure
+#'   width/height), not on the MAT/MAP data ranges, and stretch whenever that
+#'   incidental aspect ratio doesn't match \code{diff(style$ylim)/diff(style$xlim)}.
+#' @param hex_bins Integer, number of hexagon bins spanning \code{style$xlim}
+#'   (and, when \code{hex_regular = TRUE}, \code{style$ylim}). Default 15,
+#'   matching the previous hardcoded value.
+#' @param points_in_front Logical (default \code{FALSE}, preserving existing
+#'   behaviour). When \code{FALSE}, per-site points are drawn behind the
+#'   hexagons (visible only where they poke out). When \code{TRUE}, hexagons
+#'   are drawn first and points are drawn on top.
+#' @param point_size Numeric, per-site point size (default 1.4, matching the
+#'   previous hardcoded value).
+#' @param point_colour Character, per-site point colour (default
+#'   \code{"grey30"}, matching the previous hardcoded value).
+#' @param point_alpha Numeric, per-site point alpha/opacity (default
+#'   \code{0.50}, matching the previous hardcoded value).
+#' @param nee_mid_colour Character or \code{NULL} (default \code{NULL},
+#'   preserving existing behaviour: the stock
+#'   \code{colorspace::scale_fill_continuous_diverging(palette = "Blue-Red 3")}
+#'   scale, whose centre is near-white, \code{"#F6F6F6"}). When a hex colour
+#'   is supplied, the fill scale is rebuilt as
+#'   \code{ggplot2::scale_fill_gradient2()} with \code{low}/\code{high}
+#'   fixed to \code{colorspace::diverging_hcl(2, palette = "Blue-Red 3")}'s
+#'   exact endpoint colours (\code{"#002F70"}/\code{"#5F1415"}) -- identical
+#'   blue/red ends, identical \code{midpoint = 0} zero-centring, identical
+#'   \code{limits}/\code{oob} -- and \code{mid} set to \code{nee_mid_colour}.
+#'   (A same-endpoints custom HCL two-half reconstruction, matching
+#'   \code{diverging_hcl}'s own polar-coordinate interpolation exactly, was
+#'   tried first and rejected: linearly sweeping hue from blue (H=255) to an
+#'   off-hue tan centre (H~90) passes THROUGH green/teal hues partway, which
+#'   is not hidden the way it is in the stock palette, where chroma drops to
+#'   0 at the achromatic white centre before hue would matter.
+#'   \code{gradient2}'s Lab-space interpolation has no such hue-wraparound
+#'   artifact.)
+#' @param detail_lines Character vector or \code{NULL} (default \code{NULL},
+#'   preserving existing behaviour: a single auto-built
+#'   \code{"N = <n_sites> sites | <n_site_years> site-years"} line). When
+#'   supplied, these lines (each rendered on its own line, after
+#'   \code{detail_label} if also given) replace that auto-built line
+#'   verbatim -- e.g. to report additional counts (sites with vs. without
+#'   qualifying NEE) without hardcoding wording into this shared function.
+#' @param detail_hjust Numeric (default \code{-0.07}, matching the previous
+#'   hardcoded value). \code{hjust} for the inset \code{annotate("text")}
+#'   call. Grid's multi-line text justification applies a non-zero
+#'   \code{hjust} proportionally to each line's own string width, so with
+#'   \code{detail_lines} of similar length but different width (e.g. several
+#'   short count lines), the default \code{-0.07} visibly mis-aligns lines
+#'   left/right of each other by a few pixels; pass \code{0} (true per-line
+#'   left-justification) for clean multi-line alignment.
+#' @param detail_x_offset Numeric, in MAT data units (default \code{0},
+#'   preserving existing behaviour: \code{x = -Inf}, i.e. the text starts
+#'   exactly at the panel's left edge -- with \code{detail_hjust = 0} this
+#'   sits flush against the axis, no margin). When non-zero, \code{x} is set
+#'   to \code{style$xlim[1] + detail_x_offset} instead, shifting the whole
+#'   inset text block right by that many data units to clear the axis with a
+#'   margin. Does not affect the legend/colorbar's own position
+#'   (\code{style$legend_pos}) -- shift that separately to move the whole
+#'   inset block (text + colorbar) together.
 #'
 #' @return A ggplot object.
 #'
@@ -115,11 +183,21 @@ WHITTAKER_STYLE <- list(
 fig_whittaker_worldclim <- function(
   data_yy,
   site_meta,
-  worldclim_dir = "data/external/worldclim/climate/wc2.1_2.5m/",
-  worldclim_csv = "data/snapshots/site_worldclim.csv",
-  year_cutoff   = NULL,
-  detail_label  = NULL,
-  style         = WHITTAKER_STYLE
+  worldclim_dir   = "data/external/worldclim/climate/wc2.1_2.5m/",
+  worldclim_csv   = "data/snapshots/site_worldclim.csv",
+  year_cutoff     = NULL,
+  detail_label    = NULL,
+  style           = WHITTAKER_STYLE,
+  hex_regular     = FALSE,
+  hex_bins        = 15,
+  points_in_front = FALSE,
+  point_size      = 1.4,
+  point_colour    = "grey30",
+  point_alpha     = 0.50,
+  nee_mid_colour  = NULL,
+  detail_lines    = NULL,
+  detail_hjust    = -0.07,
+  detail_x_offset = 0
 ) {
 
   for (pkg in c("hexbin", "colorspace")) {
@@ -263,33 +341,80 @@ fig_whittaker_worldclim <- function(
   }
 
   # --- inset detail text (top-left) -------------------------------------------
+  # detail_lines = NULL (default): unchanged auto-built "N = ... sites |
+  # ... site-years" line. Supplying detail_lines overrides just that last
+  # line (detail_label, if given, is still prepended) -- lets a caller report
+  # different/additional counts without hardcoding wording into this shared
+  # function; see e.g. scripts/generate_whittaker_alt_fig02_update.R.
   detail_str <- paste0(
     if (!is.null(detail_label)) paste0(detail_label, "\n") else "",
-    "N = ", n_sites, " sites | ", n_site_years, " site-years"
+    if (is.null(detail_lines)) {
+      paste0("N = ", n_sites, " sites | ", n_site_years, " site-years")
+    } else {
+      paste(detail_lines, collapse = "\n")
+    }
   )
 
   # --- build plot -------------------------------------------------------------
+  # Hexagon regularity: ggplot2::stat_summary_hex()'s default binwidth (one
+  # scalar `bins` split evenly across the FULL, unclipped x and y data range)
+  # only renders as a visually regular hexagon when the rendered panel's
+  # incidental physical aspect ratio happens to match diff(y range)/diff(x
+  # range) -- true by coincidence, not by construction. When hex_regular =
+  # TRUE, binwidth is computed explicitly from style$xlim/style$ylim, and
+  # coord_fixed(ratio = diff(xlim)/diff(ylim)) -- ggplot2's `ratio` is
+  # expressed as physical-y-per-physical-x, i.e. the panel's height/width =
+  # (diff(ylim)/diff(xlim)) * ratio, so ratio = diff(xlim)/diff(ylim) is what
+  # makes height/width == 1 (a square panel) -- pins the physical length of
+  # one MAT unit relative to one MAP unit, so hex width:height is regular by
+  # construction regardless of legend/axis-label margins or requested figure
+  # size (with hex_bins equal in both directions, this also always yields a
+  # square panel, since the same ratio value satisfies both conditions).
+  hex_binwidth <- if (isTRUE(hex_regular)) {
+    c(diff(range(style$xlim)) / hex_bins, diff(range(style$ylim)) / hex_bins)
+  } else {
+    NULL   # ggplot2 default: hex_binwidth(bins, scales) from the full data range
+  }
+  hex_ratio <- diff(range(style$xlim)) / diff(range(style$ylim))
+
+  point_layer <- ggplot2::geom_point(
+    ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim),
+    size        = point_size,
+    colour      = point_colour,
+    alpha       = point_alpha,
+    inherit.aes = FALSE
+  )
+  hex_layer <- ggplot2::stat_summary_hex(
+    fun      = function(x) if (all(is.na(x))) NA_real_
+                           else median(x, na.rm = TRUE),
+    bins     = hex_bins,
+    binwidth = hex_binwidth,
+    alpha    = 0.85
+  )
+
   p <- ggplot2::ggplot(
     plot_data,
     ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim,
                  z = .data$median_nee)
-  ) +
-    # Points drawn first (behind), hexagons second (in front) — site-level
-    # MAT/MAP values are visible only where they poke out from under the
-    # density summary, rather than obscuring it.
-    ggplot2::geom_point(
-      ggplot2::aes(x = .data$mat_worldclim, y = .data$map_worldclim),
-      size        = 1.4,
-      colour      = "grey30",
-      alpha       = 0.50,
-      inherit.aes = FALSE
-    ) +
-    ggplot2::stat_summary_hex(
-      fun   = function(x) if (all(is.na(x))) NA_real_
-                          else median(x, na.rm = TRUE),
-      bins  = 15,
-      alpha = 0.85
-    ) +
+  )
+  # Layer order controls what's drawn on top. Default (points_in_front =
+  # FALSE): points first/behind, hexagons second/in front — site-level
+  # MAT/MAP values are visible only where they poke out from under the
+  # density summary. points_in_front = TRUE reverses this.
+  p <- if (isTRUE(points_in_front)) {
+    p + hex_layer + point_layer
+  } else {
+    p + point_layer + hex_layer
+  }
+
+  # nee_mid_colour = NULL (default): unchanged stock colorspace diverging
+  # scale (near-white centre). Non-NULL: rebuilt as scale_fill_gradient2()
+  # with low/high pinned to diverging_hcl(2, "Blue-Red 3")'s exact endpoint
+  # colours -- identical blue/red ends, identical midpoint = 0, identical
+  # limits/oob -- and mid recoloured. See @param nee_mid_colour above for why
+  # a same-endpoints custom HCL two-half reconstruction (matching
+  # diverging_hcl's own interpolation exactly) was tried and rejected.
+  nee_fill_scale <- if (is.null(nee_mid_colour)) {
     colorspace::scale_fill_continuous_diverging(
       palette  = "Blue-Red 3",
       mid      = 0,
@@ -297,7 +422,21 @@ fig_whittaker_worldclim <- function(
       oob      = scales::squish,
       na.value = NA
       # guide set separately below via guides() so expression() title works
-    ) +
+    )
+  } else {
+    ggplot2::scale_fill_gradient2(
+      low      = "#002F70",   # diverging_hcl(2, "Blue-Red 3")[1] -- unchanged
+      high     = "#5F1415",   # diverging_hcl(2, "Blue-Red 3")[2] -- unchanged
+      mid      = nee_mid_colour,
+      midpoint = 0,
+      limits   = style$nee_lims,
+      oob      = scales::squish,
+      na.value = NA
+    )
+  }
+
+  p <- p +
+    nee_fill_scale +
     ggplot2::guides(
       fill = ggplot2::guide_colorbar(
         title          = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
@@ -309,15 +448,23 @@ fig_whittaker_worldclim <- function(
     ) +
     ggplot2::annotate(
       "text",
-      x     = -Inf, y = Inf,
-      label = detail_str,
-      hjust = -0.07, vjust = 1.3,
-      size  = style$detail_text_size
+      # detail_x_offset == 0 (default): x = -Inf, unchanged from prior
+      # behaviour (panel's exact left edge). Non-zero: a finite x in data
+      # units, shifting the block right to clear the axis with a margin.
+      x          = if (detail_x_offset == 0) -Inf else style$xlim[1] + detail_x_offset,
+      y = Inf,
+      label      = detail_str,
+      hjust      = detail_hjust, vjust = 1.3,
+      size       = style$detail_text_size,
+      # style$detail_lineheight absent -> 1.2, ggplot2::GeomText's own
+      # default lineheight aes, i.e. identical to the prior unset behaviour.
+      lineheight = if (!is.null(style$detail_lineheight)) style$detail_lineheight else 1.2
     ) +
-    ggplot2::coord_cartesian(
-      xlim = style$xlim,
-      ylim = style$ylim
-    ) +
+    (if (isTRUE(hex_regular)) {
+      ggplot2::coord_fixed(ratio = hex_ratio, xlim = style$xlim, ylim = style$ylim)
+    } else {
+      ggplot2::coord_cartesian(xlim = style$xlim, ylim = style$ylim)
+    }) +
     ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(
@@ -1028,7 +1175,7 @@ whittaker_mahalanobis_coverage <- function(
 #' @return A ggplot2 theme object.
 #' @noRd
 .whittaker_theme <- function(style) {
-  ggplot2::theme_classic(base_size = 16) +
+  th <- ggplot2::theme_classic(base_size = 16) +
     ggplot2::theme(
       panel.border           = ggplot2::element_rect(color = "black", fill = NA,
                                                      linewidth = 0.8),
@@ -1048,6 +1195,24 @@ whittaker_mahalanobis_coverage <- function(
       legend.justification   = style$legend_just,
       legend.background      = ggplot2::element_rect(fill = "white", color = NA)
     )
+  # style$legend_margin / style$legend_title_margin / style$legend_box_margin:
+  # absent in WHITTAKER_STYLE and every existing style override, so this is a
+  # no-op (ggplot2 default margins apply) unless a caller adds these fields
+  # explicitly -- e.g. to tighten the padding around an inside-positioned
+  # legend/colorbar. See scripts/generate_whittaker_alt_fig02_update.R.
+  if (!is.null(style$legend_margin)) {
+    th <- th + ggplot2::theme(legend.margin = style$legend_margin)
+  }
+  if (!is.null(style$legend_title_margin)) {
+    th <- th + ggplot2::theme(
+      legend.title = ggplot2::element_text(size = style$legend_title_size,
+                                            margin = style$legend_title_margin)
+    )
+  }
+  if (!is.null(style$legend_box_margin)) {
+    th <- th + ggplot2::theme(legend.box.margin = style$legend_box_margin)
+  }
+  th
 }
 
 #' Check that required columns exist in a data frame

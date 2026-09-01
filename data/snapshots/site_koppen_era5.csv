@@ -56,8 +56,6 @@ BE-Bra,30,10.750363888888888,811.3813666666666,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"
 BE-Dor,30,9.587702777777778,643.6931333333332,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 BE-Lcr,30,10.698736111111112,696.4490666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 BE-Lon,30,10.864816666666668,675.7650333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-BE-Maa,30,10.241022222222222,697.2788666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-BE-Vie,30,8.375705555555555,918.7797333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 BJ-Bfg,30,25.74162777777778,1396.9521,Aw,Aw,A,Aw,Aw,A,era5_local,3,"Tropical, savannah",Tropical,NA,Aw,NA,TRUE
 BJ-Db1,30,26.286519444444444,1404.9051333333334,Aw,Aw,A,Aw,Aw,A,era5_local,3,"Tropical, savannah",Tropical,NA,Aw,NA,TRUE
 BJ-Nhu,30,25.233825,1349.8548666666666,Aw,Aw,A,Aw,Aw,A,era5_local,3,"Tropical, savannah",Tropical,Aw,Aw,TRUE,TRUE
@@ -121,12 +119,10 @@ CA-TP4,30,9.193266666666666,1099.2175666666667,Dfa,Df,D,Dfa,Df,D,era5_local,25,"
 CA-TPA,30,8.509227777777777,1108.8337333333334,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
 CA-TPD,30,9.721463888888888,931.4757333333333,Dfa,Df,D,Dfa,Df,D,era5_local,25,"Cold, no dry season, hot summer",Cold,Dfb,Dfb,FALSE,FALSE
 CA-TVC,30,-8.122349999999999,104.27626666666667,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,Dfc,Dfc,FALSE,FALSE
-CD-Ygb,30,23.90563611111111,2433.6065999999996,Af,Af,A,Af,Af,A,era5_local,1,"Tropical, rainforest",Tropical,Af,Af,TRUE,TRUE
 CG-Tch,30,24.33162777777778,1590.3380666666667,Aw,Aw,A,Aw,Aw,A,era5_local,3,"Tropical, savannah",Tropical,NA,Aw,NA,TRUE
 CH-Aws,30,3.1771027777777774,1332.9461333333334,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,NA,Dfc,NA,TRUE
 CH-Cha,30,9.579927777777778,1182.5493666666666,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
 CH-Crs,30,10.930263888888888,905.8019,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-CH-Dav,30,4.0932916666666666,873.3136333333335,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 CH-For,30,8.647594444444445,1072.3002333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 CH-Frk,30,-0.24713888888888852,1197.6444666666669,ET,ET,E,ET,ET,E,era5_local,29,"Polar, tundra",Polar,NA,ET,NA,TRUE
 CH-Fru,30,7.574483333333333,1503.4291999999998,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
@@ -180,48 +176,29 @@ CN-Yuc,30,13.233125000000001,545.4328,Dwa,Dw,D,Dwa,Dw,D,era5_local,21,"Cold, dry
 CN-Zha,30,8.935302777777778,631.1700666666667,Dwb,Dw,D,Dwb,Dw,D,era5_local,22,"Cold, dry winter, warm summer",Cold,Dsa,BWk,FALSE,FALSE
 CR-AqC,30,19.33938611111111,3000.089966666667,Af,Af,A,Af,Af,A,era5_local,1,"Tropical, rainforest",Tropical,Af,Af,TRUE,TRUE
 CR-Fsc,30,27.249488888888887,1835.0328666666665,Aw,Aw,A,Aw,Aw,A,era5_local,3,"Tropical, savannah",Tropical,Aw,Aw,TRUE,TRUE
-CZ-BK1,30,6.401055555555556,1223.8335333333334,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 CZ-BK2,30,6.082172222222222,1092.0189,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
 CZ-KrP,30,8.311947222222223,604.5559666666667,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
 CZ-LnG,30,9.491227777777778,500.80443333333335,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
-CZ-Lnz,30,10.510530555555555,518.4126,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,BSk,Dfb,FALSE,FALSE
 CZ-RAJ,30,7.672125,660.3521,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
 CZ-Stn,30,8.516633333333333,671.8468,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
-CZ-wet,30,8.292302777777778,571.4314666666667,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 DE-Akm,30,9.296177777777778,2403.402066666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DE-Amv,30,10.372044444444445,750.4336333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DE-Brs,30,9.938238888888888,669.0684,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 DE-Etn,26,10.021644230769231,4117.763269230769,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
-DE-Fen,30,8.078644444444445,1042.6085333333333,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 DE-Geb,30,9.544538888888889,611.8403000000001,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DE-Gri,30,8.395194444444444,913.0325333333333,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
-DE-GsB,30,9.17623611111111,516.6206666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Cfb,FALSE,TRUE
-DE-Gwg,30,6.164938888888889,1172.6762,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
-DE-Hai,30,8.316305555555555,729.2309333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Dfb,FALSE,FALSE
-DE-Har,30,11.454422222222222,594.0937666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
 DE-Hdn,30,9.272658333333332,2464.5783333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
-DE-HoH,30,9.317227777777777,494.73566666666665,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DE-Hte,30,9.659405555555555,607.5053,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Cfb,FALSE,TRUE
-DE-Hzd,30,9.617880555555555,3285.061466666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Dfb,FALSE,FALSE
 DE-Kli,30,7.811075,785.4598666666667,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 DE-Lkb,24,4.6063680555555555,4595.886249999999,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,NA,Dfc,NA,TRUE
 DE-Lnf,30,8.311613888888889,572.2909333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Dfb,NA,FALSE
-DE-Msr,30,7.571858333333333,1160.6819666666665,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 DE-Obe,30,6.405933333333333,965.4549999999999,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Cfb,Dfb,FALSE,TRUE
 DE-Rns,30,9.248494444444445,492.0482,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 DE-RuC,30,7.699975,1153.0368666666668,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
 DE-RuM,30,10.703675,507.6691333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DE-RuR,30,8.037302777777779,884.6440333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 DE-RuS,30,10.728486111111112,571.5275666666666,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DE-RuW,30,8.175958333333334,1095.6655999999998,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 DE-SbM,30,5.990602777777777,3300.857833333333,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Cfb,Dfb,FALSE,TRUE
 DE-Seh,30,10.602147222222222,513.2817333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
 DE-SfS,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Cfb,Dfb,NA,NA
 DE-Spw,30,10.609283333333334,2414.6585666666665,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DE-Tha,30,9.037730555555555,804.5215333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Dfb,TRUE,FALSE
 DE-Zrk,30,9.009527777777778,2655.0587333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Cfb,FALSE,TRUE
 DK-Gds,30,8.236197222222222,918.4582666666666,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-DK-RCW,30,8.972122222222222,451.06049999999993,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,Dfb,Cfb,FALSE,FALSE
 DK-Skj,30,8.879155555555556,779.0029666666668,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
 DK-Sor,30,8.504508333333334,775.8816333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 DK-Vng,30,8.589719444444444,886.9529,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
@@ -242,7 +219,6 @@ ES-Hen,30,16.62997222222222,196.66839999999996,BWk,BW,B,BWk,BW,B,era5_local,5,"A
 ES-LJu,30,11.700041666666667,540.1769666666667,Csb,Cs,C,Csb,Cs,C,era5_local,9,"Temperate, dry summer, warm summer",Temperate,NA,Csb,NA,TRUE
 ES-LM1,30,16.135819444444444,695.5762,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,Csa,NA,TRUE
 ES-LM2,30,16.693844444444444,673.2625666666668,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,Csa,NA,TRUE
-ES-LMa,30,16.548202777777778,723.3152666666666,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,BSk,Csa,FALSE,TRUE
 ES-Mcd,30,17.56341388888889,366.7046666666667,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,NA,BSh,NA,FALSE
 ES-MtB,30,19.044127777777778,1910.701833333333,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
 ES-MtN,30,21.307458333333333,1910.701833333333,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
@@ -253,10 +229,7 @@ ES-TzM,30,14.834352777777777,1359.1763666666666,Csa,Cs,C,Csa,Cs,C,era5_local,8,"
 ES-VDA,30,7.3557805555555555,771.4939,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Dfb,NA,FALSE
 ES-Yst,30,13.636244444444444,398.38280000000003,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,Csa,Csa,FALSE,FALSE
 FI-Ant,30,3.736730555555555,431.30663333333337,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,NA,Dfc,NA,TRUE
-FI-Hyy,30,4.365738888888889,688.5662333333333,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 FI-Jok,30,4.669277777777777,2532.407733333333,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,NA,Dfb,NA,FALSE
-FI-Ken,30,0.8841305555555551,627.2816000000001,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
-FI-Let,30,5.115519444444445,567.3241666666668,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 FI-Nsv,30,3.181011111111111,2571.0564666666664,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 FI-Pap,30,3.4983166666666667,449.9577333333333,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,NA,Dfc,NA,TRUE
 FI-Qvd,30,5.863019444444445,678.2785,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
@@ -265,24 +238,16 @@ FI-Ruk,30,2.919305555555555,2184.7617999999998,Dfc,Df,D,Dfc,Df,D,era5_local,27,"
 FI-Sar,30,3.4101972222222217,503.3880666666667,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,NA,Dfc,NA,TRUE
 FI-Sii,30,4.050830555555556,574.4363999999998,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 FI-Sod,30,0.446780555555556,496.3022,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
-FI-Var,30,-0.3150777777777774,521.9297333333334,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 FR-Aur,30,13.048744444444445,685.2822333333332,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-FR-Bil,30,13.57248888888889,927.2640666666666,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-FR-CLt,30,3.7200055555555553,1523.7227666666665,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
-FR-EM2,30,10.395261111111111,647.6893333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 FR-FBn,30,13.733844444444443,625.6768333333334,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Cfa,Csa,FALSE,TRUE
 FR-Fon,30,11.487180555555556,499.10013333333336,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,Cfb,Cfb,FALSE,FALSE
-FR-Gri,30,11.266666666666666,574.3015,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,BSk,Cfb,FALSE,TRUE
-FR-Hes,30,10.290436111111111,915.2581333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 FR-LBr,30,13.301313888888888,1013.2421333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
-FR-LGt,30,10.33863611111111,676.7709333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 FR-Lam,30,8.938155555555555,667.7423666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfa,TRUE,FALSE
 FR-Lqu,30,8.136505555555555,1311.602933333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 FR-Lus,30,11.906283333333333,771.5567,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 FR-Mau,30,12.879455555555555,572.2459333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfa,NA,FALSE
 FR-Mej,30,11.675894444444443,720.1868,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 FR-Nzn,30,11.417919444444445,912.8695999999999,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-FR-Pue,30,13.901080555555556,930.8250333333334,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
 FR-Tou,30,13.949605555555555,616.5935333333334,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,Cfb,Cfa,FALSE,TRUE
 GF-Guy,30,25.770775,2487.7836333333335,Af,Af,A,Af,Af,A,era5_local,1,"Tropical, rainforest",Tropical,Af,Am,TRUE,FALSE
 GH-Ank,30,25.028458333333333,1861.9027,Af,Af,A,Af,Af,A,era5_local,1,"Tropical, rainforest",Tropical,NA,Am,NA,FALSE
@@ -301,26 +266,20 @@ IE-Gwr,30,11.100744444444445,3274.0240000000003,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,
 IL-RmH,30,20.379869444444445,560.337,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
 IL-Yat,30,18.12018888888889,241.5669333333333,BSh,BS,B,BSh,BS,B,era5_local,6,"Arid, steppe, hot",Arid,Csa,Csa,FALSE,FALSE
 IT-Arz,26,13.79789423076923,3676.0976538461537,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,Cfa,Cfa,TRUE,TRUE
-IT-BCi,30,17.3736,952.5521666666667,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Cfa,Csa,FALSE,TRUE
 IT-BFt,30,14.953775,593.8098666666666,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,BSk,Cfa,FALSE,TRUE
 IT-BsB,30,11.800749999999999,843.7054,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
 IT-Bsn,30,11.493086111111111,627.7203,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
 IT-CA1,30,14.703697222222223,710.4101666666667,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,Csa,NA,TRUE
 IT-CA2,30,14.538294444444444,712.5680000000001,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,Csa,NA,TRUE
 IT-CA3,30,14.398919444444445,657.6251,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,Csa,NA,TRUE
-IT-Cp2,30,16.310552777777776,732.0159,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
 IT-Lav,30,7.030272222222223,1093.9326666666666,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
 IT-Lsn,30,13.666569444444445,997.6444666666666,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,Cfa,Cfa,TRUE,TRUE
-IT-MBo,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Dfc,Dfb,NA,NA
 IT-NiG,30,0.9624972222222221,1052.6584,ET,ET,E,ET,ET,E,era5_local,29,"Polar, tundra",Polar,NA,ET,NA,TRUE
 IT-Niv,30,0.0998388888888891,915.4489666666667,ET,ET,E,ET,ET,E,era5_local,29,"Polar, tundra",Polar,ET,ET,TRUE,TRUE
 IT-Noe,30,16.383166666666668,552.2558333333333,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
-IT-Ren,30,4.451894444444444,866.1938666666665,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
-IT-SR2,30,14.993813888888889,974.5438,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
 IT-SRo,30,15.229891666666667,913.3800333333332,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,Csa,NA,TRUE
 IT-Tor,30,2.9977416666666667,851.8813,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 IT-TrF,30,3.8707833333333332,926.6391666666667,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
-JP-Api,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Dfa,Dfb,NA,NA
 JP-BBY,30,6.723008333333333,4008.1986666666667,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 JP-Fhk,30,9.316225000000001,1844.729033333333,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Cfa,Dfb,FALSE,TRUE
 JP-Fjy,30,9.625124999999999,1969.4295333333332,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Cfa,Cfa,FALSE,FALSE
@@ -336,7 +295,6 @@ JP-Mse,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Cfa,Cfa,NA,NA
 JP-NsC,30,12.065752777777778,3140.8003,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,Cfa,Cfa,TRUE,TRUE
 JP-NsM,30,12.065752777777778,3140.8003,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,Cfa,Cfa,TRUE,TRUE
 JP-Nuf,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Cfa,Cfa,NA,NA
-JP-Om2,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Cfa,Cfa,NA,NA
 JP-SMF,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Cfa,Cfa,NA,NA
 JP-Sb1,27,6.5441820987654324,4187.484888888888,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
 JP-Sb2,27,5.323660493827161,4187.484888888888,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
@@ -389,7 +347,6 @@ MX-PMm,24,26.51550347222222,3866.730541666667,Af,Af,A,Af,Af,A,era5_local,1,"Trop
 MX-Tes,30,23.506841666666666,599.7412333333333,BSh,BS,B,BSh,BS,B,era5_local,6,"Arid, steppe, hot",Arid,Bsh,BSh,FALSE,TRUE
 MY-LHP,30,26.10653888888889,2605.4372666666663,Af,Af,A,Af,Af,A,era5_local,1,"Tropical, rainforest",Tropical,Af,Af,TRUE,TRUE
 NL-Hrw,30,10.462441666666667,858.1188000000001,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
-NL-Loo,30,10.088475,1033.0346333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 NL-Vkp,30,10.315686111111111,819.0740333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
 NO-And,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Dfc,Dfc,NA,NA
 NO-Fns,30,-0.982816666666667,3066.5747666666666,ET,ET,E,ET,ET,E,era5_local,29,"Polar, tundra",Polar,ET,Dfc,TRUE,FALSE
@@ -433,7 +390,6 @@ SE-Ros,30,3.530630555555556,619.4648333333333,Dfc,Df,D,Dfc,Df,D,era5_local,27,"C
 SE-Srj,30,2.7753444444444444,512.0480333333334,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 SE-St1,30,-0.1879416666666664,205.19340000000003,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,Dfc,Dfc,FALSE,FALSE
 SE-Sto,30,0.0983444444444445,390.50699999999995,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
-SE-Svb,30,2.9977416666666667,571.2178333333334,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 SE-Trb,30,2.7544583333333326,2565.8848999999996,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
 SN-Dhr,30,28.789058333333333,379.9324,BWh,BW,B,BWh,BW,B,era5_local,4,"Arid, desert, hot",Arid,Aw,BWh,FALSE,TRUE
 SN-Nkr,30,27.13858611111111,570.6593999999999,BSh,BS,B,BSh,BS,B,era5_local,6,"Arid, steppe, hot",Arid,Aw,BSh,FALSE,TRUE
@@ -758,3 +714,69 @@ ZA-Jks,30,17.190177777777777,1747.7135,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperat
 ZA-Spk,30,17.553005555555554,461.5525666666667,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,Cwb,Cwb,FALSE,FALSE
 ZA-Uby,30,21.440344444444445,1091.3175333333334,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,Aw,Aw,FALSE,FALSE
 ZM-Mon,30,22.414797222222223,503.8849666666666,BSh,BS,B,BSh,BS,B,era5_local,6,"Arid, steppe, hot",Arid,NA,Cwa,NA,FALSE
+BE-Maa,30,10.241022222222222,697.2788666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+BE-Vie,30,8.375705555555555,918.7797333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+CD-Ygb,30,23.90563611111111,2433.6065999999996,Af,Af,A,Af,Af,A,era5_local,1,"Tropical, rainforest",Tropical,Af,Af,TRUE,TRUE
+CH-Dav,30,4.0932916666666666,873.3136333333335,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
+CZ-BK1,30,6.401055555555556,1223.8335333333334,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
+CZ-Lnz,30,10.510530555555555,518.4126,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,BSk,Dfb,FALSE,FALSE
+CZ-wet,30,8.292302777777778,571.4314666666667,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
+DE-Amv,30,10.372044444444445,750.4336333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+DE-Brs,30,9.938238888888888,669.0684,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+DE-Fen,30,8.078644444444445,1042.6085333333333,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
+DE-Gri,30,8.395194444444444,913.0325333333333,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
+DE-GsB,30,9.17623611111111,516.6206666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Cfb,FALSE,TRUE
+DE-Gwg,30,6.164938888888889,1172.6762,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
+DE-Hai,30,8.316305555555555,729.2309333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Dfb,FALSE,FALSE
+DE-Har,30,11.454422222222222,594.0937666666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
+DE-HoH,30,9.317227777777777,494.73566666666665,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+DE-Hte,30,9.659405555555555,607.5053,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Cfb,FALSE,TRUE
+DE-Hzd,30,9.617880555555555,3285.061466666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Dfb,Dfb,FALSE,FALSE
+DE-Msr,30,7.571858333333333,1160.6819666666665,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
+DE-RuR,30,8.037302777777779,884.6440333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+DE-RuW,30,8.175958333333334,1095.6655999999998,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+DE-Tha,30,9.037730555555555,804.5215333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Dfb,TRUE,FALSE
+DK-RCW,30,8.972122222222222,451.06049999999993,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,Dfb,Cfb,FALSE,FALSE
+ES-LMa,30,16.548202777777778,723.3152666666666,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,BSk,Csa,FALSE,TRUE
+FI-Hyy,30,4.365738888888889,688.5662333333333,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
+FI-Ken,30,0.8841305555555551,627.2816000000001,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
+FI-Let,30,5.115519444444445,567.3241666666668,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,Dfb,Dfb,TRUE,TRUE
+FI-Var,30,-0.3150777777777774,521.9297333333334,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
+FR-Bil,30,13.57248888888889,927.2640666666666,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+FR-CLt,30,3.7200055555555553,1523.7227666666665,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
+FR-EM2,30,10.395261111111111,647.6893333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+FR-Gri,30,11.266666666666666,574.3015,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,BSk,Cfb,FALSE,TRUE
+FR-Hes,30,10.290436111111111,915.2581333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+FR-LGt,30,10.33863611111111,676.7709333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+FR-Pue,30,13.901080555555556,930.8250333333334,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
+IT-BCi,30,17.3736,952.5521666666667,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Cfa,Csa,FALSE,TRUE
+IT-Cp2,30,16.310552777777776,732.0159,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
+IT-MBo,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Dfc,Dfb,NA,NA
+IT-Ren,30,4.451894444444444,866.1938666666665,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
+IT-SR2,30,14.993813888888889,974.5438,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,Csa,Csa,TRUE,TRUE
+JP-Api,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Dfa,Dfb,NA,NA
+JP-Om2,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,Cfa,Cfa,NA,NA
+NL-Loo,30,10.088475,1033.0346333333334,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,Cfb,Cfb,TRUE,TRUE
+SE-Svb,30,2.9977416666666667,571.2178333333334,Dfc,Df,D,Dfc,Df,D,era5_local,27,"Cold, no dry season, cold summer",Cold,Dfc,Dfc,TRUE,TRUE
+DK-Fou,30,8.28058888888889,721.6794333333333,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
+ES-Pdu,30,16.579180555555556,2328.5836333333336,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,Csa,NA,TRUE
+IT-Cpz,30,15.464227777777777,855.9554,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,NA,NA,NA
+IT-PT1,30,13.633688888888889,789.2592000000002,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,NA,Cfa,NA,TRUE
+SJ-Adv,30,-5.047338888888889,150.65223333333336,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,NA,ET,NA,FALSE
+IT-MtP,30,5.8109166666666665,571.6022666666667,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,NA,NA,NA
+IT-Ro1,30,15.591922222222223,860.8764666666666,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,NA,NA,NA
+JP-Nkm,0,NA,NA,NA,NA,NA,NA,NA,NA,era5_local,NA,NA,NA,NA,Dfc,NA,NA
+JP-Tgf,30,14.206725,1127.2060333333334,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,NA,Cfa,NA,TRUE
+US-xTA,30,17.64024722222222,1236.4183333333333,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,NA,NA,NA,NA
+ES-LgS,30,6.329566666666667,468.66670000000005,Dsb,Ds,D,Dsb,Ds,D,era5_local,18,"Cold, dry summer, warm summer",Cold,NA,NA,NA,NA
+FI-Si2,30,4.688863888888888,2563.5688,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,NA,NA,NA
+IT-Ro2,30,15.39983611111111,793.803,Csa,Cs,C,Csa,Cs,C,era5_local,8,"Temperate, dry summer, hot summer",Temperate,NA,NA,NA,NA
+US-KLS,30,13.43845,352.75226666666674,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,NA,NA,NA,NA
+DK-Eng,30,8.195244444444445,2593.977366666667,Cfb,Cf,C,Cfb,Cf,C,era5_local,15,"Temperate, no dry season, warm summer",Temperate,NA,Cfb,NA,TRUE
+ES-Ln2,30,8.775391666666668,2328.5836333333336,Csb,Cs,C,Csb,Cs,C,era5_local,9,"Temperate, dry summer, warm summer",Temperate,NA,NA,NA,NA
+IT-MtM,30,6.037722222222222,694.7573,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,Dfb,NA,TRUE
+HK-MPM,30,23.557108333333332,1647.0130666666666,Cfa,Cf,C,Cfa,Cf,C,era5_local,14,"Temperate, no dry season, hot summer",Temperate,NA,NA,NA,NA
+US-xKA,30,12.549080555555555,868.9191333333332,Dfa,Df,D,Dfa,Df,D,era5_local,25,"Cold, no dry season, hot summer",Cold,NA,NA,NA,NA
+US-LS2,30,15.898594444444445,316.22999999999996,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,NA,NA,NA,NA
+US-ZF1,30,10.242347222222222,318.59880000000004,BSk,BS,B,BSk,BS,B,era5_local,7,"Arid, steppe, cold",Arid,NA,NA,NA,NA
+US-xHA,30,8.002308333333334,1127.1006999999997,Dfb,Df,D,Dfb,Df,D,era5_local,26,"Cold, no dry season, warm summer",Cold,NA,NA,NA,NA

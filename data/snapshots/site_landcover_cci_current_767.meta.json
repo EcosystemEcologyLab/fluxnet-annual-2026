@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-06-27T16:10:33Z",
+  "pipeline_version": "df2ef69",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/external/cci_landcover/v2.1.1/C3S-LC-L4-LCCS-Map-300m-P1Y-2022-v2.1.1.nc",
+    "data/external/cci_landcover/ESACCI-LC-Legend.csv"
+  ],
+  "notes": "Per-site land cover at three aggregation levels. Native LCCS code (lulc_native = cci_native_class) from original extraction. Level 2 (lulc_level2, 22 classes) derived from native using LCCS hierarchy. High-level (lulc_highlevel, 10 classes) from ESA CCI PUG Table 2. No re-extraction performed for this update. HL verification: 0 mismatch(es) vs. stored cci_high_level_class."
+}

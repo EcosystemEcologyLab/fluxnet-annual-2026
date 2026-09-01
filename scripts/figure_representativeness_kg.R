@@ -158,7 +158,7 @@ plot30 <- dplyr::tibble(koppen_class = class_order) |>
   dplyr::mutate(
     bar          = factor(bar,
                           levels = c("global", "network"),
-                          labels = c("Global land", "FLUXNET\n(767 sites)")),
+                          labels = c("Global land", sprintf("FLUXNET\n(%d sites)", n_sites))),
     koppen_class = factor(koppen_class, levels = class_order),
     label        = dplyr::if_else(fraction >= 0.015, koppen_class, NA_character_)
   )
@@ -193,7 +193,7 @@ plot5 <- dplyr::tibble(koppen_main = main_order) |>
   dplyr::mutate(
     bar         = factor(bar,
                          levels = c("global", "network"),
-                         labels = c("Global land", "FLUXNET\n(767 sites)")),
+                         labels = c("Global land", sprintf("FLUXNET\n(%d sites)", n_sites))),
     koppen_main = factor(koppen_main, levels = main_order),
     # Two-line label for segments >= 8%; single-line for 3–8%; letter only below 3%
     label = dplyr::case_when(
@@ -423,7 +423,7 @@ new_rows <- data.frame(
   n_classes           = c(5L, 13L, 30L),
   weighted_jaccard    = c(m5$weighted_jaccard,  m_tl$weighted_jaccard,  m30$weighted_jaccard),
   hellinger_distance  = c(m5$hellinger_distance, m_tl$hellinger_distance, m30$hellinger_distance),
-  network             = "current_767",
+  network             = "current_781",
   n_sites             = n_sites,
   stringsAsFactors    = FALSE
 )
@@ -434,7 +434,7 @@ if (file.exists(metrics_path)) {
   existing <- readr::read_csv(metrics_path, show_col_types = FALSE)
   # drop any prior rows for this exact axis/network combination, then re-add
   existing <- existing |>
-    dplyr::filter(!(.data$axis == "koppen_beck2023" & .data$network == "current_767"))
+    dplyr::filter(!(.data$axis == "koppen_beck2023" & .data$network == "current_781"))
   metrics_final <- dplyr::bind_rows(existing, new_rows) |>
     dplyr::arrange(.data$axis, .data$aggregation_level, .data$network)
 } else {
@@ -465,7 +465,7 @@ plotTL <- all_tl |>
   dplyr::mutate(
     bar = factor(bar,
                  levels = c("global_frac", "network_frac"),
-                 labels = c("Global land", "FLUXNET\n(767 sites)")),
+                 labels = c("Global land", sprintf("FLUXNET\n(%d sites)", n_sites))),
     koppen_twoletter_code = factor(koppen_twoletter_code, levels = tl_order),
     label = dplyr::case_when(
       fraction >= 0.07 ~ sprintf("%s\n%s%%", koppen_twoletter_code,

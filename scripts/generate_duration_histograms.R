@@ -46,13 +46,15 @@ if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
 
 # ---- Load data ---------------------------------------------------------------
 
-snap_file <- sort(
-  list.files(file.path(FLUXNET_DATA_ROOT, "snapshots"),
-             pattern = "fluxnet_shuttle_snapshot.*\\.csv$",
-             full.names = TRUE),
-  decreasing = TRUE
-)[[1]]
-message("Using snapshot: ", snap_file)
+# Pinned explicitly (not the newest-file glob) so every draft-manuscript
+# figure shares one reference snapshot and cannot silently diverge — see
+# SESSION_LOG.md 2026-09-01.
+snap_file <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                        "fluxnet_shuttle_snapshot_20260901T094522.csv")
+if (!file.exists(snap_file)) {
+  stop("Pinned snapshot not found: ", snap_file, call. = FALSE)
+}
+message("Using snapshot (pinned): ", snap_file)
 shuttle_meta <- readr::read_csv(snap_file, show_col_types = FALSE)
 
 # NOTE: Historical site lists are comparison-only — non-Shuttle data (see CLAUDE.md §1).

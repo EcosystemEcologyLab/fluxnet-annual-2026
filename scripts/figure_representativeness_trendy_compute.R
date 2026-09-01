@@ -653,12 +653,12 @@ msg("\n=== STEP 4: Representativeness metrics ===")
 existing_metrics <- if (file.exists(METRICS_CSV)) {
   readr::read_csv(METRICS_CSV, show_col_types = FALSE) |>
     # Remove only the four rows this script is about to rewrite:
-    # current_767 network, 7bin_hybrid aggregation, four TRENDY axes.
+    # current_781 network, 7bin_hybrid aggregation, four TRENDY axes.
     # Historical-network rows and other aggregation levels are preserved.
     dplyr::filter(!(axis %in% c("trendy_nee_iav", "trendy_et_iav",
                                  "trendy_nee_median", "trendy_et_median") &
                     aggregation_level == "7bin_hybrid" &
-                    network == "current_767"))
+                    network == "current_781"))
 } else {
   data.frame(axis = character(), aggregation_level = character(),
              n_classes = integer(), weighted_jaccard = numeric(),
@@ -675,7 +675,7 @@ new_rows <- data.frame(
                        res_nee_median$J, res_et_median$J),
   hellinger_distance = c(res_nee_iav$H, res_et_iav$H,
                          res_nee_median$H, res_et_median$H),
-  network = "current_767",
+  network = "current_781",
   n_sites = n_sites
 )
 

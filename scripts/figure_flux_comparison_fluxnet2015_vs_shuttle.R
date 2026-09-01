@@ -294,7 +294,7 @@ methods_addendum <- paste0(
 "assessment\").\n",
 "- **Y axis:** `data/snapshots/site_flux_medians_shuttle.csv` — per-site ",
 "medians computed from the current FLUXNET Shuttle YY product (FLUXMET ",
-"YY v1.3_r1), 767 sites.\n",
+paste0("YY v1.3_r1), ", nrow(sh), " sites.\n"),
 "- Both axes use identical per-site aggregation logic (VUT preferred / ",
 "CUT fallback; NT preferred / DT fallback per site; QC ≥ 0.80; median ",
 "across qualifying years per site), so the comparison isolates ",

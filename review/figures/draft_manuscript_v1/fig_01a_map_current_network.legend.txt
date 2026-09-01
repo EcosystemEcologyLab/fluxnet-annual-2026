@@ -29,7 +29,8 @@ colour-blind-safe), black outline, size 2.0 pt, stroke 0.4, alpha 0.9.
 Colour is constant — it does not encode IGBP, hub, or any other variable.
 
 NETWORK AND SITE COUNT:
-FLUXNET Shuttle network, current development-mode snapshot: n = 767 sites.
+FLUXNET Shuttle network, current development-mode snapshot: n = 781 sites
+(updated 2026-09-01; was 767).
 This figure shows the Shuttle network only — it does not overlay or compare
 against any historical dataset (Marconi, La Thuile, FLUXNET2015). A separate
 companion figure (fig_04_map_snapshots.png, same source script) shows those
@@ -39,17 +40,18 @@ draft-manuscript set.
 
 DATA SOURCE:
 Site coordinates (location_lat, location_long) and site_id from the FLUXNET
-Shuttle snapshot CSV data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv
-(767 sites), obtained via flux_listall()/flux_download() per the project's
+Shuttle snapshot CSV data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv
+(781 sites), obtained via flux_listall()/flux_download() per the project's
 Shuttle-only primary-data policy (CLAUDE.md §1). No FLUXNET2015, AmeriFlux,
-or ICOS-FLUXNET data is used in this figure.
+or ICOS-FLUXNET data is used in this figure. Snapshot is pinned explicitly in
+scripts/generate_point_maps.R, not selected via a newest-file glob.
 
 EXCLUSIONS:
 Sites with missing or out-of-range coordinates (location_lat outside
 [-90, 90] or location_long outside [-180, 180], or either value NA) are
 dropped before plotting. Duplicate site_id rows are collapsed to one point
 per site. No sites were excluded on these grounds in the current snapshot;
-all 767 sites are shown.
+all 781 sites are shown.
 
 BASEMAP:
 Country/coastline outlines from rnaturalearth::ne_countries(scale =

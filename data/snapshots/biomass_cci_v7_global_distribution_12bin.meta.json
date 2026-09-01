@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-06-29T18:50:45Z",
-  "pipeline_version": "f3b5bac",
+  "run_datetime_utc": "2026-09-01T18:07:31Z",
+  "pipeline_version": "8cf4be9",
   "input_sources": [
     "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif",
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"

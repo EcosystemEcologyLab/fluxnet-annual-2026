@@ -1,0 +1,32 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+[2026-08-31 12:42:23] === ALT combo figure: FLUXNET2015 vs Shuttle, common sites AND years ===
+[2026-08-31 12:42:23] Discovering FLUXNET2015 YY files under data/extracted/fluxnet2015
+[2026-08-31 12:42:23]   FLUXNET2015 sites with YY file: 206
+[2026-08-31 12:42:23] Discovering Shuttle YY files under data/extracted (excluding fluxnet2015/)
+[2026-08-31 12:42:23]   Shuttle sites with YY file: 759
+[2026-08-31 12:42:23]   Sites present in BOTH datasets: 150
+[2026-08-31 12:42:23] 
+=== STEP 1: matching years per site per flux ===
+[2026-08-31 12:42:25]   Processing site 50 / 150
+[2026-08-31 12:42:28]   Processing site 100 / 150
+[2026-08-31 12:42:30]   Processing site 150 / 150
+[2026-08-31 12:42:30]   Site-flux rows with >=1 matched year: 369
+[2026-08-31 12:42:30] 
+=== STEP 2: class-level stats ===
+[2026-08-31 12:42:30]   NEP: 9 classes plotted (n_sites range 5-26)
+[2026-08-31 12:42:30]     Excluded (n>0 but below threshold): CSH(n=1), SAV(n=3)
+[2026-08-31 12:42:30]   ET: 9 classes plotted (n_sites range 6-28)
+[2026-08-31 12:42:30]     Excluded (n>0 but below threshold): CSH(n=1), SAV(n=3)
+[2026-08-31 12:42:30]   H: 9 classes plotted (n_sites range 6-28)
+[2026-08-31 12:42:30]     Excluded (n>0 but below threshold): CSH(n=1), SAV(n=3)
+[2026-08-31 12:42:30] Saved: data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv
+[2026-08-31 12:42:30] Saved: data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv.meta.json
+[2026-08-31 12:42:30] 
+=== STEP 3: building ALT combo figure ===
+[2026-08-31 12:42:31] Saved: review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.png (3.5 x 9.5 in, 300 dpi)
+[2026-08-31 12:42:31] Saved: review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.txt
+[2026-08-31 12:42:31] 
+=== ALT combo figure complete ===

@@ -1,0 +1,20 @@
+ALT Figure 3 -- FLUXNET2015 vs Shuttle: NEP/ET/H, common sites AND years
+
+Alternative to fig_03_flux_comparison_combo_nep_et_h.png. Same panel
+layout/aesthetics (A=NEP, B=ET, C=H), but each site's FLUXNET2015 and
+Shuttle medians are computed over ONLY the calendar years where both
+datasets have a QC-passing value for that flux (matched independently per
+flux) -- so fluxnet2015_n_sites == shuttle_n_sites per class by
+construction, and any shift between axes isolates ONEFlux
+processing-version differences from network-composition/coverage change.
+
+Excluded classes: n < 5 common sites for that flux (recomputed per flux;
+differs from the primary figure's fixed {CVM, CSH} set -- see the
+companion CSV for exact per-class/per-flux n and exclusion reasons).
+
+Data source: data/extracted/fluxnet2015/ (FLUXNET2015 FULLSET YY) and
+data/extracted/ (Shuttle FLUXMET YY), QC threshold >= 0.80 on both sides,
+IGBP class from data/snapshots/site_flux_medians_shuttle.csv.
+
+Companion table: data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv
+Script: scripts/figure_flux_comparison_combo_alt_common_siteyears.R

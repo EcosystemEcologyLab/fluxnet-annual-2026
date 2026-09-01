@@ -131,12 +131,12 @@ AXES <- list(
 )
 
 # ---- Network config ----------------------------------------------------------
-NETWORKS   <- c("current_767", "marconi", "la_thuile", "fluxnet2015")
-NET_SIZES  <- c(current_767 = 767L, marconi = 35L,
+NETWORKS   <- c("current_781", "marconi", "la_thuile", "fluxnet2015")
+NET_SIZES  <- c(current_781 = 781L, marconi = 35L,
                 la_thuile   = 252L, fluxnet2015 = 212L)
 
 site_csv_path <- function(site_base, network) {
-  suffix <- if (network == "current_767") "" else paste0("_", network)
+  suffix <- if (network == "current_781") "" else paste0("_", network)
   file.path(SNAP, paste0(site_base, suffix, ".csv"))
 }
 
@@ -473,7 +473,11 @@ for (ax_name in names(AXES)) {
 }
 
 new_metrics_df  <- dplyr::bind_rows(new_rows)
-updated_metrics <- dplyr::bind_rows(existing_metrics, new_metrics_df)
+# new_metrics_df first + distinct(...,.keep_all=TRUE) so a re-run replaces
+# this run's own (axis, aggregation_level, network) rows instead of
+# duplicating them -- bind_rows() alone had no such guard (added 2026-09-01).
+updated_metrics <- dplyr::bind_rows(new_metrics_df, existing_metrics) |>
+  dplyr::distinct(axis, aggregation_level, network, .keep_all = TRUE)
 readr::write_csv(updated_metrics, metrics_path)
 log_msg("Updated metrics: ", nrow(existing_metrics), " + ", nrow(new_metrics_df),
         " = ", nrow(updated_metrics), " rows")
@@ -500,7 +504,7 @@ for (ax_name in names(AXES)) {
 }
 
 log_msg("")
-log_msg("Jaccard by bin count (current_767):")
+log_msg("Jaccard by bin count (current_781):")
 log_msg(sprintf("  %-25s  %8s  %8s  %8s  %8s  %8s",
                 "axis", "7-bin", "12-bin", "18-bin", "20-bin", "30-bin"))
 for (ax_name in names(AXES)) {
@@ -508,7 +512,7 @@ for (ax_name in names(AXES)) {
   get_j <- function(agg_lbl) {
     v <- updated_metrics |>
       dplyr::filter(axis == ax$axis_key, aggregation_level == agg_lbl,
-                    network == "current_767") |>
+                    network == "current_781") |>
       dplyr::pull(weighted_jaccard)
     if (length(v)) round(v[[1L]], 4) else NA_real_
   }

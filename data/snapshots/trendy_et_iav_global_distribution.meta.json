@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-06-30T13:18:39Z",
-  "pipeline_version": "c31c3c9",
+  "run_datetime_utc": "2026-09-01T18:02:50Z",
+  "pipeline_version": "8cf4be9",
   "input_sources": [
     "data/external/trendy/derived/trendy_et_iav.tif",
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"

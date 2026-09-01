@@ -99,7 +99,7 @@ make_fig <- function(axis_key, val_col, bin_col,
                         names_to = "bar", values_to = "fraction") |>
     dplyr::mutate(
       bar = factor(bar, levels = c("global", "network"),
-                   labels = c("Global land", "FLUXNET\n(767 sites)")),
+                   labels = c("Global land", sprintf("FLUXNET\n(%d sites)", n_sites))),
       label = dplyr::case_when(
         fraction >= 0.07  ~ sprintf("%d\n%.1f%%", as.integer(class_id),
                                     fraction * 100),
@@ -492,7 +492,7 @@ methods_lines <- c(
   "",
   "Weighted Jaccard index (J) and Hellinger distance (H) as described in",
   "methods_koppen_beck2023.md. p_k = global land fraction of bin k;",
-  "q_k = fraction of 767-site FLUXNET network assigned to bin k.",
+  "q_k = fraction of current-network FLUXNET assigned to bin k.",
   "",
   "| Axis | J | H |",
   "|---|---|---|",

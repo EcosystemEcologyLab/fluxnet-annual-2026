@@ -6,6 +6,98 @@ Convention: Claude Code prepends new entries at the top of this file (reverse ch
 
 ## 2026-09-01 — Shuttle gap download: 22 new sites since the 20260624 frozen snapshot
 
+### Authorship official run: re-pinned to 781 sites, tagged, handoff package for Trevor Keenan
+
+Follows directly from the read-only audit below (same day). That audit
+found exactly one consequential divergence — both authorship scripts
+pinned to a stale April-28 (716-site) snapshot — and everything else
+(rubric table, boundaries, qualifying-year rule) already correct. This
+entry is the fix and the official write.
+
+**Two-line code change, nothing else touched:**
+`scripts/authorship_models.R:62` and `scripts/authorship_invitations.R:54`
+— `SNAPSHOT_FILE` re-pinned from
+`fluxnet_shuttle_snapshot_20260428T231049.csv` to
+`fluxnet_shuttle_snapshot_20260901T094522.csv`. `RUBRIC_TABLE`, `row_bin()`,
+`latency_col()`, `apply_rubric()`, and the qualifying-year logic are
+byte-identical to before. `authorship_diagnostics.R:31`'s April-28 path
+left alone as instructed (confirmed dead — never read).
+
+**Official run** (`authorship_models.R --compute`, then
+`authorship_invitations.R`, then `authorship_diagnostics.R`; logs at
+`logs/authorship_{models,invitations,diagnostics}_official_20260901.log`,
+not committed per `logs/` convention). Outputs written to
+`outputs/authorship/` and **committed this time** (this folder is
+git-tracked; the prior audit's read-only run was restored, this one is
+not).
+
+**Acceptance check — all pass:**
+- 781 / 781 sites qualify; 3,146 total author slots. ✅
+- 15-cell counts match the audited target exactly:
+
+  | Years submitted | through 2022 | through 2023 | through 2024/2025 |
+  |---|---|---|---|
+  | 5 or fewer | 206 | 23 | 126 |
+  | 6 to 10    |  99 | 13 | 127 |
+  | 11 to 15   |  30 |  3 |  45 |
+  | 16 to 20   |  11 |  4 |  39 |
+  | 21 or more |   7 |  6 |  42 |
+
+  Column totals 353/49/379, row totals 355/239/78/54/55, sum 781 — all ✅.
+- **Join integrity:** 0 of 781 sites have a missing `submitting_network`
+  (checked directly against `site_authors.csv`) — the 65-site gap from the
+  stale pin is closed. ✅
+- **IT-SR2:** present, `submitting_network = ICOS`, 12 qualifying years,
+  most recent 2024, 6 slots. Its FLX→ICOS hub reassignment is still an open
+  question with the Shuttle team (see
+  `docs/correspondence/shuttle_release_query_20260901.md`) but does not
+  affect this join, which keys on `site_id` against the current snapshot's
+  current hub field. ✅
+
+By-network totals: AMF 381 sites/1538 slots, EUF 138/515, ICOS 80/438,
+JPF 54/186, TERN 52/221, CNF 32/116, KOF 21/53, FLX 18/59, SAEON 5/20
+(sums to 781/3146). 56 sites have exactly 5 years of data (Decision-A
+path, unchanged behaviour, now 56 vs. the prior audit's 50 — the count
+grew because the 65 newly-included sites contributed some 5-year cases).
+Contact coverage (`authorship_invitations.csv`, 2,961 rows / 781 sites):
+2,940 rows/779 sites from the snapshot, 2 rows/2 sites `badm_fallback`,
+19 rows/13 sites `badm_extra`, 0 `missing`. **0 sites have slots but no
+routable (named + emailed) contact.**
+
+One pre-existing cosmetic issue observed, not touched (out of scope — not
+one of the two lines authorized for edit): `authorship_diagnostics.R:157,269`
+still print a literal `"All 716 sites..."` string; harmless (no computation
+depends on it) but now numerically stale against the 781-site run.
+
+**Provenance:**
+
+| | |
+|---|---|
+| Git tag | `authorship-781-20260901` |
+| Commit (script edits + outputs) | `3c464a2d6eacb0080e2b9e0a88d3e36848dab22d` |
+| R version | 4.6.0 |
+| renv profile | macos (`renv/profiles/macos/renv.lock`, unmodified by this task) |
+| `fluxnet_shuttle_snapshot_20260901T094522.csv` sha256 | `5591884a5a722e09cef948647a259926d5c7d85b9614c0dd499684a0b4b66d11` |
+| `site_year_data_presence.csv` sha256 | `89e1ecfb71677c1acd9b0185d070894192e1649c67832d6f7ca5bbb4bea7cf33` |
+| `outputs/authorship/site_authors.csv` sha256 | `7fedadd94fa7ff6d35bcbf103fe9942abb423386b5f06ebc9138a4f632405514` |
+| `outputs/authorship/authorship_invitations.csv` sha256 | `fa0ac4c4d0a309ff5f4c2c0f49f20c5fd179703ef8c031d25ceacfc305e1eac5` |
+
+**Handoff package:** `docs/authorship_handoff_keenan_20260901.md` — rubric
+table + qualifying-year rule, both deliverable files' schemas, the totals
+above, pinned-input hashes and exact run commands, an explicit instruction
+not to re-pull via a fresh `flux_listall()` (the live listing drifts
+between calls — verify the snapshot's sha256 first if fetching
+independently), the contact-coverage breakdown, and the five-file "this is
+the code" list (`authorship_models.R`, `authorship_invitations.R`,
+`authorship_diagnostics.R`, `R/utils.R`, `R/pipeline_config.R`).
+
+Committed: the two script edits, all 14 `outputs/authorship/` files
+(including `.meta.json` companions), `outputs/session_info.txt` (updated
+by `write_output_metadata()` on every run of these scripts, as designed —
+not restored this time since this is the official write), the handoff
+doc, and this entry. `renv/activate.R`'s pre-existing, unrelated
+modification is untouched, as in every other entry this session.
+
 ### Authorship rubric audit: code verified against the authoritative slot table, run on 781 sites (read-only)
 
 Read-and-report task — **no scripts, rubric, data, or figures were modified.**

@@ -1,0 +1,65 @@
+FIGURE LEGEND — fig_03_map_current.png
+========================================
+
+TITLE: Global distribution of the current FLUXNET Shuttle network
+
+DESCRIPTION:
+Global point map showing the location of every eddy covariance flux tower
+site in the current FLUXNET network. Each site is plotted as a single
+uniformly-coloured point at its registered latitude/longitude; no
+classification, colour-coding, or size-scaling of points is applied — the
+figure is a simple presence map. An outline-only basemap (country borders,
+light grey land fill) provides geographic context. No plot title or
+subtitle is rendered; site count is reported here rather than on the figure
+itself.
+
+AXES:
+No coordinate axes are drawn (map uses a void theme — no tick marks, tick
+labels, or axis titles). The map is unprojected longitude/latitude
+(equirectangular), cropped to y ∈ [-56°, 85°] to remove empty ocean south of
+the southernmost sites while retaining Australia, New Zealand, southern
+Africa, and southern South America. Because the figure canvas is square
+(3.5 × 3.5 in) while an unclipped global extent is markedly wider than tall
+(~2.55:1), the map itself renders centred with white space above and below
+— an accepted tradeoff of the single-column square format, not missing data.
+
+POINT STYLING:
+Shape 21 (filled circle with outline), fill colour #0072B2 (Okabe-Ito blue,
+colour-blind-safe), black outline, size 2.0 pt, stroke 0.4, alpha 0.9.
+Colour is constant — it does not encode IGBP, hub, or any other variable.
+
+NETWORK AND SITE COUNT:
+FLUXNET Shuttle network, current development-mode snapshot: n = 767 sites.
+This figure shows the Shuttle network only — it does not overlay or compare
+against any historical dataset (Marconi, La Thuile, FLUXNET2015). A separate
+companion figure (fig_04_map_snapshots.png, same source script) shows those
+three historical networks alongside the current Shuttle network as an
+explicitly-labelled four-panel comparison; that figure is not part of this
+draft-manuscript set.
+
+DATA SOURCE:
+Site coordinates (location_lat, location_long) and site_id from the FLUXNET
+Shuttle snapshot CSV data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv
+(767 sites), obtained via flux_listall()/flux_download() per the project's
+Shuttle-only primary-data policy (CLAUDE.md §1). No FLUXNET2015, AmeriFlux,
+or ICOS-FLUXNET data is used in this figure.
+
+EXCLUSIONS:
+Sites with missing or out-of-range coordinates (location_lat outside
+[-90, 90] or location_long outside [-180, 180], or either value NA) are
+dropped before plotting. Duplicate site_id rows are collapsed to one point
+per site. No sites were excluded on these grounds in the current snapshot;
+all 767 sites are shown.
+
+BASEMAP:
+Country/coastline outlines from rnaturalearth::ne_countries(scale =
+"medium", 1:50m resolution), land fill grey97 (near-white), border colour
+black, s2 spherical geometry disabled for the crop/render step to avoid
+outline rendering artefacts.
+
+REPRODUCIBILITY:
+Function: fig_map_point_network() in R/figures/fig_maps.R
+Script:   scripts/generate_point_maps.R
+Output:   review/figures/maps_point/fig_03_map_current.png, copied to
+          review/figures/candidates/fig_03_map_current.png
+DIMENSIONS: 3.5 × 3.5 inches, 300 dpi, white background

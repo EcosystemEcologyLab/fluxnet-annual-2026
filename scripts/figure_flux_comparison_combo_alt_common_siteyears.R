@@ -81,7 +81,7 @@ LAMBDA      <- 2.45e6
 SECS_YR     <- 365.25 * 86400
 NA_FLAG     <- -9999
 
-F15_DIR     <- "data/extracted/fluxnet2015"
+F15_DIR     <- "data/fluxnet2015_comparison"  # relocated out of data/extracted 2026-09-01 (fluxnet2015's non-Shuttle filenames broke flux_discover_files() scans of data/extracted; see SESSION_LOG.md)
 SHUTTLE_MEDIANS_CSV <- "data/snapshots/site_flux_medians_shuttle.csv"
 OUT_CSV     <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv"
 OUT_FIG     <- "review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.png"

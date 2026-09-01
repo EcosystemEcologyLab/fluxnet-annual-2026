@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-06-29T18:51:16Z",
-  "pipeline_version": "f3b5bac",
+  "run_datetime_utc": "2026-09-01T18:08:02Z",
+  "pipeline_version": "8cf4be9",
   "input_sources": [
     "data/external/trendy/derived/trendy_nee_median.tif",
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p5.tif"

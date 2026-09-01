@@ -37,10 +37,10 @@ unchanged.
    session's earlier "775 vs 638 sites" finding, SESSION_LOG.md 2026-08-31). Relabelled to
    three lines, computed programmatically at run time from the same data used to build the
    figure (see RUN_LOG_alt_fig02_update.txt for the exact values this run computed):
-     "775 sites total"  -- full current Shuttle snapshot site count
-     "638 with annual NEE"  -- sites with >=1 qualifying NEE_VUT_REF or NEE_CUT_REF
-     "4227 site-years"  -- sum of qualifying years across those sites
-   (137 sites lack qualifying NEE: some have no annual_converted row at all, others have NEE = NA on both VUT and CUT.) Per-site points
+     "781 sites total"  -- full current Shuttle snapshot site count
+     "656 with annual NEE"  -- sites with >=1 qualifying NEE_VUT_REF or NEE_CUT_REF
+     "4303 site-years"  -- sum of qualifying years across those sites
+   (125 sites lack qualifying NEE: some have no annual_converted row at all, others have NEE = NA on both VUT and CUT.) Per-site points
    remain shown for ALL network sites regardless of NEE availability (points are
    deliberately not gated on NEE) -- only the hexbin colouring is NEE-only. Implemented via
    the new detail_lines parameter (character vector, one line each, appended after
@@ -61,10 +61,10 @@ Data sources: identical to fig_02_whittaker_current.png and the prior ALT -- see
 review/figures/whittaker/fig_whit_fig2_with_both_contours.legend.txt for the full method
 (WorldClim v2.1, ESA CCI land cover 2015, DuckDB annual_converted FLUXMET, Shuttle
 snapshot, Mahalanobis coverage stat).
-Shuttle snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv (775 sites).
+Shuttle snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv (781 sites).
 
 Source script: scripts/generate_whittaker_alt_fig02_update.R (successor to
 scripts/generate_whittaker_alt_fig02.R)
 Function changes: fig_whittaker_worldclim(), .whittaker_theme() in R/figures/fig_climate.R
 Run log: review/figures/candidates/RUN_LOG_alt_fig02_update.txt
-Generated: 2026-08-31T21:25:29Z
+Generated: 2026-09-01T18:03:06Z

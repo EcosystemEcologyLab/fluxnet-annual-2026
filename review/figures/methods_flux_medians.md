@@ -178,7 +178,7 @@ Five scatter plots (`review/figures/flux_medians/fig_flux_comparison_{nep,gpp,te
 ### Data source per axis
 
 - **X axis:** `data/snapshots/site_flux_medians_fluxnet2015.csv` — per-site medians computed from the FLUXNET2015 release (Pastorello et al. 2020) FULLSET YY product, 206 of 212 sites (see SESSION_LOG.md 2026-06-30, "FLUXNET2015 release: extraction and IGBP-class flux assessment").
-- **Y axis:** `data/snapshots/site_flux_medians_shuttle.csv` — per-site medians computed from the current FLUXNET Shuttle YY product (FLUXMET YY v1.3_r1), 767 sites.
+- **Y axis:** `data/snapshots/site_flux_medians_shuttle.csv` — per-site medians computed from the current FLUXNET Shuttle YY product (FLUXMET YY v1.3_r1), 781 sites (updated 2026-09-01; was 767).
 - Both axes use identical per-site aggregation logic (VUT preferred / CUT fallback; NT preferred / DT fallback per site; QC ≥ 0.80; median across qualifying years per site), so the comparison isolates differences in the underlying data and processing rather than differences in aggregation method.
 
 ### Excluded classes

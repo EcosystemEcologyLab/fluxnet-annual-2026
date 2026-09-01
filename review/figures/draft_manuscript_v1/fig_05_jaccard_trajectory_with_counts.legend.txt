@@ -8,7 +8,8 @@ Single-panel trajectory figure identical to fig_rep007, with the addition of a
 light grey bar chart (right y-axis) showing absolute site count for each network
 generation. The bar overlay contextualises changes in Jaccard similarity against
 the underlying sample size. The La Thuile → FLUXNET2015 contraction (252→212)
-and the current expansion (212→767) are immediately visible in the bar series.
+and the current expansion (212→781, updated 2026-09-01, was 767) are
+immediately visible in the bar series.
 
 X AXIS:
   Four network generations in chronological order (same as fig_rep007).
@@ -18,9 +19,9 @@ PRIMARY Y AXIS (left):
 
 SECONDARY Y AXIS (right):
   Site count (absolute number of sites). Grey bars at width 0.38 per network,
-  with black outline (linewidth 0.3). Axis scaled so the maximum (767 sites)
-  aligns with J = 1.0 on the primary axis for visual proportionality.
-  Secondary axis range: 0 – 767 sites.
+  with black outline (linewidth 0.3). Axis scaled so the maximum (781 sites;
+  updated 2026-09-01, was 767) aligns with J = 1.0 on the primary axis for
+  visual proportionality. Secondary axis range: 0 – 781 sites.
 
 CLASSIFICATION AXES AND LINE COLORS (same as fig_rep007):
   KG (13-class):     vermilion (#D55E00)
@@ -30,17 +31,28 @@ CLASSIFICATION AXES AND LINE COLORS (same as fig_rep007):
   TRENDY NEE-IAV:    blue (#0072B2)
   TRENDY ET-median:  sky blue (#56B4E9)
 
-JACCARD VALUES (all four networks; 18-bin hybrid for continuous axes):
+JACCARD VALUES (all four networks; 18-bin hybrid for continuous axes;
+Current = current_781, updated 2026-09-01 — recomputed from
+data/snapshots/representativeness_metrics.csv; prior current_767 value
+shown in parentheses where it differs, that row preserved unchanged in the
+same file):
   Axis              Marconi  La Thuile  FLUXNET2015  Current
-  KG (13-class)     0.223    0.292      0.365        0.373
-  LULC (10-class)   0.349    0.553      0.582        0.556
-  Aridity (7-class) 0.479    0.531      0.598        0.667
-  Biomass (18-bin)  0.313    0.490      0.540        0.616
-  NEE-IAV (18-bin)  0.385    0.411      0.477        0.486
-  ET-median (18-bin)0.317    0.363      0.366        0.433
+  KG (13-class)     0.223    0.292      0.365        0.420 (was 0.423)
+  LULC (10-class)   0.349    0.553      0.582        0.567 (was 0.556)
+  Aridity (7-class) 0.479    0.531      0.598        0.666 (was 0.667)
+  Biomass (18-bin)  0.313    0.490      0.540        0.613 (was 0.616)
+  NEE-IAV (18-bin)  0.385    0.411      0.477        0.484 (was 0.486)
+  ET-median (18-bin)0.317    0.363      0.366        0.432 (was 0.433)
+Marconi/La Thuile/FLUXNET2015 values are unchanged from the prior render —
+global reference distributions and historical-network site lists are not
+affected by this update (see docs/ report, Step 2). The current column's
+prior value in this file for KG (0.373) did not match either current_767
+or current_781 as actually recorded in representativeness_metrics.csv and
+predates this update; not otherwise investigated here.
 
 SITE COUNTS BY GENERATION:
-  Marconi: 35 | La Thuile: 252 | FLUXNET2015: 212 | Current: 767
+  Marconi: 35 | La Thuile: 252 | FLUXNET2015: 212 | Current: 781
+  (Current updated 2026-09-01, was 767)
 
 AXIS-SPECIFIC NOTES:
   Biomass (18-bin): fine KG raster denominator (~147.3 M km²). 18-bin hybrid
@@ -50,9 +62,10 @@ AXIS-SPECIFIC NOTES:
   ET-median (18-bin): TRENDY v14 multi-model ensemble median annual ET
     (mm yr⁻¹); ceiling at 1000 mm yr⁻¹. At 18-bin resolution one breakpoint
     collapses at the ceiling (one collapsed break), resulting in 17 effective bins.
-    This produces a minor histogram artefact: 18-bin J (0.433 at current) can be
-    slightly non-monotonic relative to 20-bin J depending on network — compare
-    fig_rep018 for full bin-count sensitivity.
+    This produces a minor histogram artefact: 18-bin J (0.432 at current_781,
+    was 0.433 at current_767) can be slightly non-monotonic relative to
+    20-bin J depending on network — compare fig_rep018 for full bin-count
+    sensitivity.
 
 REPRESENTATIVENESS METRIC: Weighted Jaccard (J). See fig_rep007 legend.
 

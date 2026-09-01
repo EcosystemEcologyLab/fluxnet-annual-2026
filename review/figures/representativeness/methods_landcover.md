@@ -98,11 +98,12 @@ Level 2 and high-level codes is saved to:
 
 ## Per-site classification
 
-Sites: 767 (snapshot fluxnet_shuttle_snapshot_20260624T095651.csv).
-The native LCCS code per site (cci_native_class) was extracted previously
-from the 300m raster via terra::extract() with nearest-land recovery within
-3 degrees for NA / No-data sites. No re-extraction was performed for this
-update. Level 2 and high-level codes were assigned from the lookup table.
+Sites: 781 (snapshot fluxnet_shuttle_snapshot_20260901T094522.csv).
+The native LCCS code per site (cci_native_class) was extracted fresh for
+the 781-site network (scripts/extract_current_network_biomass_landcover.R,
+2026-09-01) from the 300m raster via terra::extract() with nearest-land
+recovery within 3 degrees for NA / No-data sites. Level 2 and high-level
+codes were assigned from the lookup table (no re-extraction for those).
 
 ## Global distribution
 
@@ -129,13 +130,13 @@ High-level (10 classes): same unweighted mean approach as Level 2.
 
 Weighted Jaccard (J) and Hellinger distance (H) as described in
 methods_koppen_beck2023.md. p_k = global land fraction in class k;
-q_k = fraction of 767-site network in class k.
+q_k = fraction of current-network network in class k.
 
 | Aggregation | n classes | J | H |
 |---|---|---|---|
-| High-level | 10 | 0.556 | 0.337 |
-| Level 2    | 22 | 0.478 | 0.368 |
-| Native     | 37 | 0.441 | 0.395 |
+| High-level | 10 | 0.567 | 0.330 |
+| Level 2    | 22 | 0.489 | 0.364 |
+| Native     | 37 | 0.446 | 0.392 |
 
 J decreases and H increases with finer aggregation, consistent with the
 KG pattern: the coarser 10-class scheme masks within-group heterogeneity.

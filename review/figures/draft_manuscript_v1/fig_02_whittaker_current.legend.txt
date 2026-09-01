@@ -9,7 +9,7 @@ DESCRIPTION:
 Two layers on one panel.
 
 BASE LAYER: hexagonal-binned scatter plot placing every current FLUXNET
-Shuttle site (N = 775 sites) in Whittaker climate space — mean annual
+Shuttle site (N = 781 sites) in Whittaker climate space — mean annual
 temperature (MAT, WorldClim v2.1 BIO1) by mean annual precipitation (MAP,
 BIO12). Each hexagonal bin is coloured by the median annual net ecosystem
 exchange (NEE_VUT_REF, with a coalesce fallback to NEE_CUT_REF for
@@ -76,13 +76,13 @@ axis; summary statistic per bin is the median of per-site median annual
 NEE values (median-of-medians).
 
 NETWORK AND SITE COUNT:
-FLUXNET Shuttle network, current development-mode snapshot: N = 775
-sites (638 with a qualifying annual NEE value); inset text on the figure
-reports "775 sites total", "638 with annual NEE", "4227 site-years".
+FLUXNET Shuttle network, current pinned snapshot: N = 781
+sites (656 with a qualifying annual NEE value); inset text on the figure
+reports "781 sites total", "656 with annual NEE", "4303 site-years".
 
 DATA SOURCES:
-  - Site list: data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv
-    (775 sites)
+  - Site list: data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv
+    (781 sites)
   - Climate (MAT/MAP), both layers: WorldClim v2.1, 2.5 arc-minute BIO1
     and BIO12; base layer uses the pre-extracted per-site table
     data/snapshots/site_worldclim.csv (fallback: on-the-fly

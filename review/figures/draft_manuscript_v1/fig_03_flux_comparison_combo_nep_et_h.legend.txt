@@ -43,8 +43,9 @@ Reads the pre-computed per-class comparison table
 data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv directly (rather
 than recomputing per-class statistics a second time), which is itself built
 from two per-site median tables: data/snapshots/site_flux_medians_shuttle.csv
-(current FLUXNET Shuttle snapshot,
-fluxnet_shuttle_snapshot_20260624T095651.csv, 767 sites — primary data) and
+(current FLUXNET Shuttle snapshot, pinned
+fluxnet_shuttle_snapshot_20260901T094522.csv, 781 sites — primary data;
+updated 2026-09-01, was 767) and
 data/snapshots/site_flux_medians_fluxnet2015.csv (FLUXNET2015 release).
 FLUXNET2015 is used here strictly as a **comparison/validation dataset**,
 never as primary data for the Annual Paper, per CLAUDE.md §1; every axis
@@ -76,11 +77,29 @@ R/pipeline_config.R), applied identically to both the FLUXNET2015 and
 Shuttle medians so the comparison remains apples-to-apples.
 
 NETWORK AND SITE COUNTS:
-FLUXNET Shuttle: current snapshot, 767 sites (before per-class QC/n≥5
-filtering — the number of sites actually contributing to each plotted point
-varies by class and is not repeated here; see the underlying
-site_flux_medians_shuttle.csv for per-class n). FLUXNET2015: full release
-site list (comparison dataset only).
+FLUXNET Shuttle: current pinned snapshot, 781 sites (updated 2026-09-01, was
+767) before per-class QC/n≥5 filtering. Per-class Shuttle n (NEP panel,
+site_flux_medians_shuttle.csv, QC_THRESH = 0.80): EBF 39, MF 22, DBF 64,
+ENF 95, CSH 11 (excluded — see below), OSH 33, WSA 15, SAV 11, GRA 126,
+WET 91, CRO 108, CVM 7 (excluded). FLUXNET2015: full release site list
+(comparison dataset only), n given per class in the underlying CSV.
+
+NEW-SITES NOTE (2026-09-01 network update, 22 sites added since the
+20260624 frozen snapshot): 15 of the 22 have at least one qualifying
+site-year at QC_THRESH = 0.80 and contribute to their class's median (
+US-KLS, US-LS2, US-xHA, US-xKA, US-ZF1, JP-Tgf, IT-Ro1, IT-Ro2, IT-PT1,
+IT-MtP, IT-MtM, IT-Cpz, ES-Pdu, ES-LgS, DK-Eng). 7 have zero qualifying
+site-years at this threshold and do not contribute to any plotted point
+this round (US-xTA, JP-Nkm, HK-MPM, SJ-Adv, FI-Si2, ES-Ln2, DK-Fou) — not
+dropped or excluded by class-level policy, simply no site-year at this
+site currently clears QC_THRESH = 0.80. No IGBP class crosses the
+project's n≥5 per-class reliability threshold in either direction from
+this update: every plotted class already had Shuttle n≥7 before the
+update and only gains sites here (none of the 22 new sites are CSH, the
+smallest class), and CSH/CVM remain excluded for the same reason as
+before (CSH: FLUXNET2015-side n=2; CVM: absent from FLUXNET2015 — see
+CLASSIFICATION SCHEME AND EXCLUSIONS, above; neither exclusion is about
+Shuttle-side sample size).
 
 REPRODUCIBILITY:
 Script: scripts/figure_flux_comparison_combo.R

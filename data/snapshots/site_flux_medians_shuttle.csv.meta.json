@@ -1,7 +1,7 @@
 {
-  "run_datetime_utc": "2026-06-30T13:40:59Z",
-  "pipeline_version": "099851b",
-  "snapshot_csv": "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+  "run_datetime_utc": "2026-09-01T17:59:59Z",
+  "pipeline_version": "8cf4be9",
+  "snapshot_csv": "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
   "yy_product": "FLUXMET_YY v1.3_r1",
   "qc_threshold": 0.8,
   "partitioning_policy": "NT preferred (GPP_NT_VUT/CUT_REF, RECO_NT_VUT/CUT_REF). DT fallback (GPP_DT_VUT/CUT_REF, RECO_DT_VUT/CUT_REF) used only when NT yields 0 qualifying years for a site. Decision is per-site, not per-year, to avoid mixing partitioning methods within a site median. DT columns carry no dedicated QC at YY resolution; NEE QC gates quality.",

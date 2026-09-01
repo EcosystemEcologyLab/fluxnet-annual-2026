@@ -33,7 +33,7 @@ biomass_path <- file.path("data", "external", "cci_biomass",
 kg_path      <- file.path("data", "external", "koppen_beck2023", "1991_2020",
                           "koppen_geiger_0p00833333.tif")
 snap_path    <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                          "fluxnet_shuttle_snapshot_20260624T095651.csv")
+                          "fluxnet_shuttle_snapshot_20260901T094522.csv")  # pinned 2026-09-01
 site_in      <- file.path(FLUXNET_DATA_ROOT, "snapshots",
                           "site_biomass_cci_v7.csv")
 site_out     <- file.path(FLUXNET_DATA_ROOT, "snapshots",
@@ -311,19 +311,28 @@ sr_df <- data.frame(
 )
 print(as.data.frame(sr_df), row.names = FALSE)
 
+# NETWORK_LABEL pinned to the current 781-site network (SESSION_LOG.md
+# 2026-09-01). Upsert scoped to (axis, network) -- NOT a bare axis filter --
+# so historical-network (marconi/la_thuile/fluxnet2015) and other current_*
+# rows for this same axis are preserved, not wiped. (Fixed 2026-09-01: the
+# prior `filter(axis != "biomass_cci_v7")` dropped every network's row for
+# this axis and never wrote a network/n_sites column at all.)
+NETWORK_LABEL <- "current_781"
 old_met <- if (file.exists(metrics_out)) {
   readr::read_csv(metrics_out, show_col_types = FALSE) |>
-    dplyr::filter(axis != "biomass_cci_v7")
+    dplyr::filter(!(axis == "biomass_cci_v7" & network == NETWORK_LABEL))
 } else {
   data.frame(axis = character(), aggregation_level = character(),
              n_classes = integer(), weighted_jaccard = numeric(),
-             hellinger_distance = numeric())
+             hellinger_distance = numeric(), network = character(),
+             n_sites = integer())
 }
 metrics_df <- dplyr::bind_rows(
   old_met,
   data.frame(axis = "biomass_cci_v7", aggregation_level = "7bin_hybrid",
              n_classes = 7L, weighted_jaccard = m$weighted_jaccard,
-             hellinger_distance = m$hellinger_distance)
+             hellinger_distance = m$hellinger_distance,
+             network = NETWORK_LABEL, n_sites = n_sites)
 )
 readr::write_csv(metrics_df, metrics_out)
 message("Saved: ", metrics_out)
@@ -355,7 +364,7 @@ plot_long <- data.frame(
   tidyr::pivot_longer(c(global, network), names_to = "bar", values_to = "fraction") |>
   dplyr::mutate(
     bar = factor(bar, levels = c("global", "network"),
-                 labels = c("Global land", "FLUXNET\n(767 sites)")),
+                 labels = c("Global land", sprintf("FLUXNET\n(%d sites)", n_sites))),
     label = dplyr::case_when(
       fraction >= 0.07  ~ sprintf("%d\n%.1f%%", as.integer(class_id), fraction * 100),
       fraction >= 0.03  ~ sprintf("%d  %.1f%%", as.integer(class_id), fraction * 100),

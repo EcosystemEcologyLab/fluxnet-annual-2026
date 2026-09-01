@@ -179,19 +179,17 @@ run_pipeline <- function() {
   rl("computed: data_yy has ", format(nrow(data_yy), big.mark = ","),
      " rows (dataset == 'FLUXMET', site_id/TIMESTAMP/NEE_VUT_REF/NEE_CUT_REF)")
 
-  snap_dir    <- file.path(FLUXNET_DATA_ROOT, "snapshots")
-  rl("attempting: locate fluxnet_shuttle_snapshot*.csv under ", snap_dir)
-  snap_files <- sort(
-    list.files(snap_dir, pattern = "fluxnet_shuttle_snapshot.*\\.csv$", full.names = TRUE),
-    decreasing = TRUE
-  )
-  if (length(snap_files) == 0L) {
-    rl("MISSING REQUIRED INPUT: no fluxnet_shuttle_snapshot*.csv -- checked directory '",
-       snap_dir, "'. Not substituting -- stopping.")
-    stop("No Shuttle snapshot CSV found.", call. = FALSE)
+  # Pinned explicitly (not the newest-file glob) so every draft-manuscript
+  # figure shares one reference snapshot and cannot silently diverge -- see
+  # SESSION_LOG.md 2026-09-01.
+  snap_dir  <- file.path(FLUXNET_DATA_ROOT, "snapshots")
+  snap_file <- file.path(snap_dir, "fluxnet_shuttle_snapshot_20260901T094522.csv")
+  rl("attempting: locate pinned snapshot at ", snap_file)
+  if (!file.exists(snap_file)) {
+    rl("MISSING REQUIRED INPUT: ", snap_file, " -- checked exact path. Not substituting -- stopping.")
+    stop("Pinned Shuttle snapshot CSV not found: ", snap_file, call. = FALSE)
   }
-  snap_file <- snap_files[[1]]
-  rl("found: ", snap_file, " (most recent of ", length(snap_files), " snapshot file(s) checked)")
+  rl("found: ", snap_file, " (pinned, not the newest-file glob)")
   shuttle_meta <- readr::read_csv(snap_file, show_col_types = FALSE)
   rl("computed: shuttle_meta has ", format(nrow(shuttle_meta), big.mark = ","), " sites")
 
@@ -442,6 +440,21 @@ run_pipeline <- function() {
     paste0("Generated: ", format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"))
   ), out_txt)
   rl("completed: wrote ", out_txt)
+
+  # ---- Step: write a small machine-readable counts sidecar --------------------
+  # Consumed by scripts/build_draft_manuscript_v1.R so the manuscript legend's
+  # site-count text is interpolated from this run's actual computed values
+  # instead of being hand-typed (and going stale on every rebuild) -- see
+  # SESSION_LOG.md 2026-09-01, "Fix hardcoded Fig 2 legend site count".
+  out_counts <- file.path(out_dir, "ALT_fig_02_whittaker_current.counts.json")
+  rl("attempting: writeLines(...) counts sidecar to ", out_counts)
+  counts_json <- sprintf(
+    '{\n  "n_sites": %d,\n  "n_nee_sites": %d,\n  "n_site_years": %d,\n  "snapshot_file": "%s"\n}\n',
+    n_sites, n_nee_sites, n_site_years, snap_file
+  )
+  writeLines(counts_json, out_counts)
+  rl("completed: wrote ", out_counts, " (n_sites=", n_sites, ", n_nee_sites=", n_nee_sites,
+     ", n_site_years=", n_site_years, ")")
 
   invisible(TRUE)
 }

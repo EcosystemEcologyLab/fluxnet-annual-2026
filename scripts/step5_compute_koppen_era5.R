@@ -35,7 +35,7 @@ library(dplyr)
 library(readr)
 
 # ---- Load current-network site list (same pinned snapshot as step4) --------
-snap_file <- "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv"
+snap_file <- "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"  # pinned 2026-09-01, see SESSION_LOG.md
 if (!file.exists(snap_file)) {
   stop("Snapshot not found: ", snap_file, call. = FALSE)
 }

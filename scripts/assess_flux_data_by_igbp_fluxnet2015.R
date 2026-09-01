@@ -56,7 +56,7 @@ LAMBDA      <- 2.45e6
 SECS_YR     <- 365.25 * 86400
 NA_FLAG     <- -9999
 RAW_DIR     <- "data/raw/fluxnet2015"
-EXTRACT_DIR <- "data/extracted/fluxnet2015"
+EXTRACT_DIR <- "data/fluxnet2015_comparison"  # relocated out of data/extracted 2026-09-01 (fluxnet2015's non-Shuttle filenames broke flux_discover_files() scans of data/extracted; see SESSION_LOG.md)
 SITE_CSV    <- "data/snapshots/sites_fluxnet2015_clean.csv"
 SHUTTLE_MEDIANS_CSV <- "data/snapshots/site_flux_medians_shuttle.csv"
 OUT_MEDIANS <- "data/snapshots/site_flux_medians_fluxnet2015.csv"

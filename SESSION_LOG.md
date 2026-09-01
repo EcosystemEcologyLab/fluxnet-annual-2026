@@ -6,6 +6,109 @@ Convention: Claude Code prepends new entries at the top of this file (reverse ch
 
 ## 2026-09-01 — Shuttle gap download: 22 new sites since the 20260624 frozen snapshot
 
+### Draft-manuscript figure rebuild: all six figures + legends regenerated against 781 sites
+
+Step two of two, following the gap-download entry below. Full report:
+`docs/figure_rebuild_781_20260901.md`. Shuttle-team email recorded at
+`docs/correspondence/shuttle_release_query_20260901.md`.
+
+**Deprecated, not overwritten.** All six prior draft figures/legends (plus
+`RUN_LOG_fig2_swap.txt`) moved via `git mv` into
+`review/figures/draft_manuscript_v1/deprecated/draft_manuscript_v1_20260624/`,
+mirroring the existing deprecation convention. Found in the process: Fig 2's
+most recent build had drifted onto an ad hoc 775-site dev snapshot instead
+of the 767-site frozen one, because its source script picked the newest
+snapshot file by glob rather than a pin — exactly the divergence this
+rebuild's pinning requirement closes.
+
+**Pipeline prerequisite rebuilt first.** `data/duckdb/fluxnet.duckdb` still
+reflected only 759 sites; reran `03b_create_database.R` → `04_qc.R` →
+`05_units.R` to bring `annual_converted` (and all other `*_converted`
+tables) to 781 sites — required for Fig 2's DuckDB-based NEE layer and for
+the ERA5-based current-network Köppen axis feeding Fig 4/5.
+
+**Housekeeping, autonomous (rename within the repo):** `data/extracted/fluxnet2015/`
+(a non-Shuttle FLUXNET2015 comparison download whose filenames broke every
+`flux_discover_files()` scan of `data/extracted/`) permanently relocated to
+`data/fluxnet2015_comparison/` and added to `.gitignore`; the two other
+scripts that referenced its old path were updated so they aren't left
+broken.
+
+**Every figure script pinned** to `fluxnet_shuttle_snapshot_20260901T094522.csv`
+explicitly — newest-file globs and hardcoded `20260624` paths both removed —
+across `generate_point_maps.R`, `generate_duration_histograms.R`,
+`generate_whittaker_alt_fig02_update.R` (the actually-wired Fig 2 source,
+not the two scripts named in the task — flagged), `step1_extract_worldclim.R`,
+`assess_flux_data_by_igbp_shuttle.R`, `step5_compute_koppen_era5.R`, and
+the representativeness-axis extraction scripts (biomass, land cover,
+aridity, KG, TRENDY). Network label `current_767` → `current_781` renamed
+throughout `figure_representativeness_summary.R` and the axis scripts, with
+the old `current_767` per-site CSVs and metrics rows archived/preserved
+(`_current_767` suffix; `representativeness_metrics.csv` keeps both), not
+deleted.
+
+**Two script bugs found and fixed en route:** (1) `figure_representativeness_biomass.R`
+/ `_landcover.R` / `_aridity.R` each upserted `representativeness_metrics.csv`
+with an axis-only filter that silently dropped every *other* network's row
+for that axis and wrote no `network`/`n_sites` column at all — rescoped to
+`(axis, network)`, matching the correct pattern already used elsewhere. (2)
+`recompute_continuous_axes_30bin.R` / `_multibin.R` appended to that same
+file with no dedup guard against a re-run — added a `distinct(...,
+.keep_all = TRUE)` safety net. (3) `site_year_data_presence.csv` (feeds
+Fig 1B) was stale since 2026-05-24 with no current refresh path; a new
+script, `scripts/refresh_site_year_presence.R`, rebuilds it from DuckDB.
+(4) Two axes (biomass, land cover) had no fresh-extraction path at all in
+their current scripts — a new script,
+`scripts/extract_current_network_biomass_landcover.R`, fills that gap using
+the same method already established for the historical networks.
+
+**Fig 2's hardcoded legend count fixed, made dynamic.** The figure's own
+inset text was already computed at run time; the bug was one level up —
+`build_draft_manuscript_v1.R` had the site/NEE/site-year counts hand-typed
+into its legend string. `generate_whittaker_alt_fig02_update.R` now writes
+a small counts sidecar (`ALT_fig_02_whittaker_current.counts.json`) that
+`build_draft_manuscript_v1.R` reads and interpolates — new counts: **781
+sites, 656 with qualifying annual NEE, 4,303 site-years** (was 638 / 4,227
+on 775 sites). The other five legends had no generating script at all
+(hand-authored at each figure's creation) — edited by hand against the
+actual regenerated data.
+
+**Six flagged sites — all confirmed handled per spec, none re-pulled or
+reprocessed this session:** DE-Hai/FR-CLt/FR-EM2 render from their on-disk
+(newer) release despite the live listing now showing older; DE-Hte/JP-Api
+render from on-disk (older) release despite a newer live listing; **IT-SR2**
+confirmed present (not silently dropped by the broken FLX→ICOS metadata
+join, which only ever affected `flux_discover_files()`'s own optional
+merge) in every per-site covariate file, `site_flux_medians_shuttle.csv`,
+and DuckDB `annual_converted` (11 years of non-NA NEE, 2013–2023) —
+contributing to Fig 2's hexbin colouring and Fig 3's ENF class.
+
+**Fig 3 — 15 of the 22 new sites qualify at the existing local QC_THRESH =
+0.80** (US-KLS, US-LS2, US-xHA, US-xKA, US-ZF1, JP-Tgf, IT-Ro1, IT-Ro2,
+IT-PT1, IT-MtP, IT-MtM, IT-Cpz, ES-Pdu, ES-LgS, DK-Eng); 7 have zero
+qualifying site-years at that threshold (US-xTA, JP-Nkm, HK-MPM, SJ-Adv,
+FI-Si2, ES-Ln2, DK-Fou). No IGBP class crosses the project's n≥5
+reliability threshold in either direction — every plotted class already
+had n≥7 before this addition-only update.
+
+**Old vs new headline numbers** (full tables in the report): sites 767→781
+(775→781 for Fig 2's actual prior build); Fig 4/5 current-network weighted
+Jaccard moved by ≤0.02 on every one of the six default axes; per-IGBP
+Shuttle N in Fig 3 increased for every non-excluded class (e.g. DBF 60→64,
+GRA 120→126). One pre-existing inaccuracy found and flagged rather than
+silently corrected: Fig 4/5's legends cited KG J = 0.373, matching neither
+the current_767 (0.423) nor current_781 (0.420) value actually on record.
+
+Verified: all six figures render with fresh 2026-09-01 timestamps, every
+legend count/N/J cross-checked against the regenerated data directly (not
+estimated), frozen snapshot and its byte content untouched. Committed:
+the deprecation moves, all six regenerated figures/legends and their
+upstream source figures, the regenerated `data/snapshots/*.csv` covariate
+and metrics files (git-tracked, not gitignored), new/edited scripts, the
+two reports, the correspondence file, and this entry.
+`data/extracted/`, `data/raw/`, `data/duckdb/`, and the relocated
+`data/fluxnet2015_comparison/` remain gitignored.
+
 ### Reconciled today's Shuttle listing against `data/extracted/`; downloaded the delta
 
 Step one of two (download and record only — no figure or analysis-script changes).

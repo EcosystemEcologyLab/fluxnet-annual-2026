@@ -3,8 +3,10 @@
 ## Produces four PNGs: white-background and aridity-backdrop variants of each.
 ##
 ## Outputs (review/figures/maps_point/):
-##   fig_03_map_current.png           — current 759-site network, white backdrop
-##   fig_03_map_current_aridity.png   — current 759-site network, aridity backdrop
+##   fig_03_map_current.png           — current network, white backdrop
+##   fig_03_map_current_aridity.png   — current network, aridity backdrop
+##   (site count is whatever the pinned snapshot below holds — 781 sites as
+##   of 2026-09-01; not hardcoded here, see SESSION_LOG.md)
 ##   fig_04_map_snapshots.png         — 4-panel historical datasets, white backdrop
 ##   fig_04_map_snapshots_aridity.png — 4-panel historical datasets, aridity backdrop
 ##
@@ -39,13 +41,15 @@ fs::dir_create(out_dir)
 
 # ---- Load data ---------------------------------------------------------------
 
-snap_file <- sort(
-  list.files(file.path(FLUXNET_DATA_ROOT, "snapshots"),
-             pattern = "fluxnet_shuttle_snapshot.*\\.csv$",
-             full.names = TRUE),
-  decreasing = TRUE
-)[[1]]
-message("Using snapshot: ", snap_file)
+# Pinned explicitly (not the newest-file glob) so every draft-manuscript
+# figure shares one reference snapshot and cannot silently diverge — see
+# SESSION_LOG.md 2026-09-01.
+snap_file <- file.path(FLUXNET_DATA_ROOT, "snapshots",
+                        "fluxnet_shuttle_snapshot_20260901T094522.csv")
+if (!file.exists(snap_file)) {
+  stop("Pinned snapshot not found: ", snap_file, call. = FALSE)
+}
+message("Using snapshot (pinned): ", snap_file)
 shuttle_meta <- readr::read_csv(snap_file, show_col_types = FALSE)
 
 # NOTE: Historical site lists are comparison-only figures — non-Shuttle data.

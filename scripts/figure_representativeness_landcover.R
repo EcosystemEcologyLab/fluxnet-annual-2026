@@ -81,7 +81,7 @@ legend_path <- file.path("data", "external", "cci_landcover",
 kg_path     <- file.path("data", "external", "koppen_beck2023", "1991_2020",
                          "koppen_geiger_0p00833333.tif")
 snap_path   <- file.path(FLUXNET_DATA_ROOT, "snapshots",
-                         "fluxnet_shuttle_snapshot_20260624T095651.csv")
+                         "fluxnet_shuttle_snapshot_20260901T094522.csv")
 SNAP_DIR    <- file.path(FLUXNET_DATA_ROOT, "snapshots")
 site_csv    <- file.path(SNAP_DIR, "site_landcover_cci.csv")
 out_dir     <- file.path("review", "figures", "representativeness")
@@ -567,13 +567,21 @@ n_hl_present  <- sum(q_hl > 0 | p_hl > 0)
 n_l2_present  <- sum(q_l2 > 0 | p_l2 > 0)
 n_nat_present <- sum(q_nat > 0 | p_nat > 0)
 
+# NETWORK_LABEL pinned to the current 781-site network (SESSION_LOG.md
+# 2026-09-01). Upsert scoped to (axis, network) -- NOT a bare axis filter --
+# so historical-network (marconi/la_thuile/fluxnet2015) and other current_*
+# rows for this same axis are preserved, not wiped. (Fixed 2026-09-01: the
+# prior `filter(axis != "landcover_cci")` dropped every network's row for
+# this axis and never wrote a network/n_sites column at all.)
+NETWORK_LABEL <- "current_781"
 old_met <- if (file.exists(metrics_out)) {
   readr::read_csv(metrics_out, show_col_types = FALSE) |>
-    dplyr::filter(axis != "landcover_cci")
+    dplyr::filter(!(axis == "landcover_cci" & network == NETWORK_LABEL))
 } else {
   data.frame(axis = character(), aggregation_level = character(),
              n_classes = integer(), weighted_jaccard = numeric(),
-             hellinger_distance = numeric())
+             hellinger_distance = numeric(), network = character(),
+             n_sites = integer())
 }
 
 metrics_new <- dplyr::bind_rows(
@@ -585,7 +593,8 @@ metrics_new <- dplyr::bind_rows(
     weighted_jaccard = c(m_hl$weighted_jaccard, m_l2$weighted_jaccard,
                          m_nat$weighted_jaccard),
     hellinger_distance = c(m_hl$hellinger_distance, m_l2$hellinger_distance,
-                           m_nat$hellinger_distance)
+                           m_nat$hellinger_distance),
+    network = NETWORK_LABEL, n_sites = N_sites
   )
 )
 readr::write_csv(metrics_new, metrics_out)
@@ -632,7 +641,7 @@ make_lulc_fig <- function(class_codes, class_names, class_colors,
                         names_to = "bar", values_to = "fraction") |>
     dplyr::mutate(
       bar = factor(bar, levels = c("global", "network"),
-                   labels = c("Global land", "FLUXNET\n(767 sites)")),
+                   labels = c("Global land", sprintf("FLUXNET\n(%d sites)", N_sites))),
       label = dplyr::case_when(
         fraction >= 0.07              ~ sprintf("%.0f%%", fraction * 100),
         fraction >= label_min_frac    ~ sprintf("%.1f%%", fraction * 100),
@@ -932,11 +941,12 @@ methods_lines <- c(
   "",
   "## Per-site classification",
   "",
-  paste0("Sites: 767 (snapshot fluxnet_shuttle_snapshot_20260624T095651.csv)."),
-  "The native LCCS code per site (cci_native_class) was extracted previously",
-  "from the 300m raster via terra::extract() with nearest-land recovery within",
-  "3 degrees for NA / No-data sites. No re-extraction was performed for this",
-  "update. Level 2 and high-level codes were assigned from the lookup table.",
+  paste0("Sites: ", N_sites, " (snapshot fluxnet_shuttle_snapshot_20260901T094522.csv)."),
+  "The native LCCS code per site (cci_native_class) was extracted fresh for",
+  "the 781-site network (scripts/extract_current_network_biomass_landcover.R,",
+  "2026-09-01) from the 300m raster via terra::extract() with nearest-land",
+  "recovery within 3 degrees for NA / No-data sites. Level 2 and high-level",
+  "codes were assigned from the lookup table (no re-extraction for those).",
   "",
   "## Global distribution",
   "",
@@ -963,7 +973,7 @@ methods_lines <- c(
   "",
   "Weighted Jaccard (J) and Hellinger distance (H) as described in",
   "methods_koppen_beck2023.md. p_k = global land fraction in class k;",
-  "q_k = fraction of 767-site network in class k.",
+  "q_k = fraction of current-network network in class k.",
   "",
   "| Aggregation | n classes | J | H |",
   "|---|---|---|---|",

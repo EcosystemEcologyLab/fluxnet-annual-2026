@@ -41,6 +41,7 @@
 ## reproduces deterministically.
 
 library(fs)
+library(jsonlite)
 
 out_dir <- file.path("review", "figures", "draft_manuscript_v1")
 fs::dir_create(out_dir)
@@ -121,6 +122,21 @@ for (l in legends) {
 # this text in sync by hand if the base layer or overlay method changes
 # materially. Updated 2026-08-31 for the ALT_fig_02 promotion -- see
 # SESSION_LOG.md 2026-08-31, "ALT_fig_02 promoted to draft Figure 2".
+# Fig 2 site counts are read from the counts sidecar written by
+# scripts/generate_whittaker_alt_fig02_update.R (n_sites/n_nee_sites/
+# n_site_years/snapshot_file, computed at that script's run time from the
+# pinned snapshot + DuckDB annual_converted table) rather than hand-typed,
+# so the legend text cannot silently drift from what the figure actually
+# plots -- see SESSION_LOG.md 2026-09-01, "Fix hardcoded Fig 2 legend site
+# count". The sidecar is required; this script stops rather than falling
+# back to a stale hardcoded count if it is missing.
+fig02_counts_path <- "review/figures/candidates/ALT_fig_02_whittaker_current.counts.json"
+if (!file.exists(fig02_counts_path)) {
+  stop("Fig 2 counts sidecar not found: ", fig02_counts_path,
+       " — run scripts/generate_whittaker_alt_fig02_update.R first.")
+}
+fig02_counts <- jsonlite::fromJSON(fig02_counts_path)
+
 fig02_legend <- c(
   "FIGURE LEGEND — fig_02_whittaker_current.png",
   "==============================================",
@@ -132,8 +148,9 @@ fig02_legend <- c(
   "DESCRIPTION:",
   "Two layers on one panel.",
   "",
-  "BASE LAYER: hexagonal-binned scatter plot placing every current FLUXNET",
-  "Shuttle site (N = 775 sites) in Whittaker climate space — mean annual",
+  paste0("BASE LAYER: hexagonal-binned scatter plot placing every current FLUXNET"),
+  paste0("Shuttle site (N = ", fig02_counts$n_sites,
+         " sites) in Whittaker climate space — mean annual"),
   "temperature (MAT, WorldClim v2.1 BIO1) by mean annual precipitation (MAP,",
   "BIO12). Each hexagonal bin is coloured by the median annual net ecosystem",
   "exchange (NEE_VUT_REF, with a coalesce fallback to NEE_CUT_REF for",
@@ -200,13 +217,16 @@ fig02_legend <- c(
   "NEE values (median-of-medians).",
   "",
   "NETWORK AND SITE COUNT:",
-  "FLUXNET Shuttle network, current development-mode snapshot: N = 775",
-  "sites (638 with a qualifying annual NEE value); inset text on the figure",
-  "reports \"775 sites total\", \"638 with annual NEE\", \"4227 site-years\".",
+  paste0("FLUXNET Shuttle network, current pinned snapshot: N = ", fig02_counts$n_sites),
+  paste0("sites (", fig02_counts$n_nee_sites,
+         " with a qualifying annual NEE value); inset text on the figure"),
+  paste0("reports \"", fig02_counts$n_sites, " sites total\", \"",
+         fig02_counts$n_nee_sites, " with annual NEE\", \"",
+         fig02_counts$n_site_years, " site-years\"."),
   "",
   "DATA SOURCES:",
-  "  - Site list: data/snapshots/fluxnet_shuttle_snapshot_20260827T102948.csv",
-  "    (775 sites)",
+  paste0("  - Site list: ", fig02_counts$snapshot_file),
+  paste0("    (", fig02_counts$n_sites, " sites)"),
   "  - Climate (MAT/MAP), both layers: WorldClim v2.1, 2.5 arc-minute BIO1",
   "    and BIO12; base layer uses the pre-extracted per-site table",
   "    data/snapshots/site_worldclim.csv (fallback: on-the-fly",

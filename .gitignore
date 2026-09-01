@@ -5,6 +5,11 @@
 data/raw/
 data/extracted/
 data/processed/
+# Non-Shuttle FLUXNET2015 comparison download (raw per-site files, not a
+# snapshot summary) — relocated out of data/extracted/ 2026-09-01 since its
+# filenames broke flux_discover_files() scans of that directory; see
+# SESSION_LOG.md 2026-09-01
+data/fluxnet2015_comparison/
 
 # External rasters — too large or re-downloadable; only README + legend committed
 data/external/aridity/

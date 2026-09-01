@@ -4,6 +4,44 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-01 — Shuttle gap download: 22 new sites since the 20260624 frozen snapshot
+
+### Reconciled today's Shuttle listing against `data/extracted/`; downloaded the delta
+
+Step one of two (download and record only — no figure or analysis-script changes).
+The paper's frozen snapshot, `data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv`
+(767 sites), was **not modified**. `flux_listall()` called today returned **781 sites**
+(no hubs missing); persisted immediately to
+`data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv`.
+
+`data/extracted/` was inventoried with `flux_discover_files()` — run against a
+read-only, file-level symlink copy that excluded the one non-Shuttle subdirectory
+present there, `data/extracted/fluxnet2015/` (a FLUXNET2015 comparison dataset;
+its filenames don't match the Shuttle naming convention and crash
+`flux_discover_files()` if included — nothing in `data/extracted/` itself was
+touched). Found **759 sites already on disk**, giving a **delta of 22 sites**
+(8 already listed in the frozen snapshot but never downloaded; 14 genuinely new
+to the Shuttle since 20260624). **Zero sites have been removed** from the
+Shuttle since the freeze — all 767 frozen sites are still listed live.
+
+Separately (not acted on): **5 on-disk sites have a product `_r` version tag
+that differs from today's live listing** (DE-Hai, FR-CLt, FR-EM2 showing a
+*lower* live release than what's on disk — worth flagging to the Shuttle team;
+DE-Hte and JP-Api showing a newer one), and **IT-SR2** changed hub
+(`FLX`→`ICOS`) between the frozen snapshot and today, which breaks
+`flux_discover_files()`'s metadata join for that site. Full detail, tables, and
+the download/verification results (20 OK, 2 expected-CUT-only WARNs, 0 FAIL —
+including a corrupt-zip retry for IT-Cpz) are in
+`docs/shuttle_gap_download_20260901.md`.
+
+All 22 sites were downloaded (`flux_download()`, subset to the delta manifest)
+and extracted (`flux_extract()`, `y m d` resolutions) into `data/extracted/`;
+`data/raw/` zips were deleted after verification per `FLUXNET_DELETE_ZIPS=TRUE`.
+`data/extracted/` and `data/raw/` are gitignored; the only committed artifacts
+from this session are the new snapshot CSV, the report above, and this entry.
+
+---
+
 ## 2026-08-31 — CLAUDE.md git-workflow clarification; two comparison/Whittaker ALT candidate figures
 
 ### ALT_fig_02 promoted to draft Figure 2: inset clip fixed, prior draft version deprecated

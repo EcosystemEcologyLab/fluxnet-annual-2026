@@ -4,6 +4,47 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-08 — West Africa site lookup: Bénin, Burkina Faso, Cameroon, Ghana, Mali, Niger, Sénégal
+
+Ad hoc lookup requested by David Moore against the current committed Shuttle
+snapshot (`data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv`),
+cross-referenced with the derived `data/snapshots/site_year_data_presence.csv`
+and `data/snapshots/site_record_length.csv`. Read-only — no pipeline scripts
+run, no new outputs written.
+
+**Correction to the requested site list:** two of the six codes given
+(`BJ-Nkr`, `BJ-Dhr`) do not exist in the snapshot. The actual sites are
+`SN-Nkr` (Niakhar) and `SN-Dhr` (Dahra) — both **Sénégal**, not Bénin.
+Site ID prefixes were used to determine country (permitted per CLAUDE.md
+Hard Rule #2, which only bars inferring *hub* from prefix); the `network`
+field for these sites holds hub/consortium values (CarboAfrica, European
+Fluxes Database, GHG-Europe, Unaffiliated), not geography.
+
+### Requested sites
+
+| Site ID | Name | Country | IGBP | Years (range) | Gap years (0 months present) |
+|---|---|---|---|---|---|
+| `GH-Ank` | Ankasa | Ghana | EBF | 2011–2014 | 2013 |
+| `BJ-Db1` | Dangbo | Bénin | CRO | 2022–2024 | — |
+| `BJ-Nhu` | Nalohou | Bénin | SAV | 2008–2017 | — |
+| `BJ-Bfg` | Bellefoungou | Bénin | DBF | 2008–2017 | — |
+| `SN-Nkr` | Niakhar | Sénégal | CRO | 2018–2024 | — |
+| `SN-Dhr` | Dahra | Sénégal | GRA | 2010–2022 | 2014, 2018 |
+
+### Other West Africa sites in the current snapshot
+
+| Site ID | Name | Country | IGBP | Years (range) |
+|---|---|---|---|---|
+| `ML-Kem` | Kelma | Mali | WSA | 2007–2009 |
+
+No sites currently in the Shuttle network for Burkina Faso, Cameroon, or
+Niger.
+
+**Record length:** only `SN-Dhr` clears 10 record-years (`ge_10yr = TRUE`
+in `site_record_length.csv`); none of the seven sites clear 20.
+
+---
+
 ## 2026-09-01 — Shuttle gap download: 22 new sites since the 20260624 frozen snapshot
 
 ### Authorship official run: re-pinned to 781 sites, tagged, handoff package for Trevor Keenan

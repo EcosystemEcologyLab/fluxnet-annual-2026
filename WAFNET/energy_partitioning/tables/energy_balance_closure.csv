@@ -1,0 +1,7 @@
+"site_id","n","slope","intercept","r_squared","note"
+"GH-Ank",17795,0.719784464514919,2.28131190285281,0.73070622257837,"measured (QC=0) half-hours only"
+"BJ-Db1",31255,0.73227837393043,21.8623527702736,0.798799341639089,"measured (QC=0) half-hours only"
+"BJ-Bfg",25734,0.812817301864702,39.0277463271496,0.794466774600549,"measured (QC=0) half-hours only"
+"BJ-Nhu",0,NA,NA,NA,"G_F_MDS column present but 100% NA for this site -- no soil heat flux data at all, not a QC/thinness issue"
+"SN-Nkr",69224,0.0514032614753441,89.6649979267103,0.00107142247222997,"R² = 0.0011 despite n = 69224 -- DATA-QUALITY FLAG, not a usable closure estimate. 26% of qualifying half-hours have |G_F_MDS| > 200 W/m² (consistent across years, not a transient sensor fault); gating additionally on G_F_MDS_QC == 0 does not resolve it (checked 2026-09-08). Needs PI/site-team review before use in any downstream analysis."
+"SN-Dhr",44615,0.92687660675253,18.2504639718955,0.885730551167493,"measured (QC=0) half-hours only"

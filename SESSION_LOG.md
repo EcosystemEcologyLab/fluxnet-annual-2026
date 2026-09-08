@@ -4,6 +4,58 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-08 — WAFNET energy partitioning: pre-analysis report (side analysis, not the Annual Paper)
+
+Standalone West Africa energy-partitioning side analysis requested by David
+Moore. **Not part of the FLUXNET Annual Paper 2026** — all outputs live
+under `WAFNET/energy_partitioning/`, which reads (never writes) the
+repo-root `data/extracted/` BIF metadata and otherwise never touches the
+Annual Paper's `R/`, `scripts/`, `data/`, `outputs/`, or `review/`
+directories. Six sites, humid-to-Sahelian gradient: `GH-Ank`, `BJ-Db1`,
+`BJ-Bfg`, `BJ-Nhu`, `SN-Nkr`, `SN-Dhr`.
+
+This entry covers only the pre-analysis report requested before any of the
+three planned analyses (aridity framing, variance decomposition, surface
+conductance) may begin — see `WAFNET/energy_partitioning/docs/methods_memo.md`
+and `docs/report_back_20260908.md` for full detail.
+
+**Data acquisition:** half-hourly (HH) FLUXNET Shuttle data did not exist
+anywhere in the repo for these sites (the Annual Paper pipeline only ever
+extracts `y m d`; the raw ZIPs from that earlier download had already been
+deleted). Downloaded and extracted fresh via `flux_listall()` +
+`flux_download()` + `flux_extract(resolutions = "h")`, into an isolated
+`FLUXNET_DATA_ROOT` under `WAFNET/energy_partitioning/data/` (gitignored).
+GH-Ank's first download attempt produced a truncated/corrupt ZIP
+(`unzip`: "End-of-central-directory signature not found"); a retry
+succeeded — logged as a transient download issue, not a site-level data gap.
+
+**Pre-analysis report (`code/03_report_variables_and_closure.R`):**
+- Variable availability (percent non-NA, not bare presence) per site —
+  `tables/variable_availability.csv`.
+- Site-years (HH records with non-NA LE_F_MDS or NETRAD): GH-Ank 3
+  (2011–2014), BJ-Db1 3 (2022–2024), BJ-Bfg 10 (2008–2017), BJ-Nhu 10
+  (2008–2017), SN-Nkr 7 (2018–2024), SN-Dhr 11 (2010–2022).
+- Energy balance closure (OLS, `LE_F_MDS + H_F_MDS` ~ `NETRAD - G_F_MDS`,
+  measured half-hours only, `LE_F_MDS_QC == H_F_MDS_QC == 0`): GH-Ank
+  slope 0.72/R² 0.73, BJ-Db1 0.73/0.80, BJ-Bfg 0.81/0.79, SN-Dhr 0.93/0.89 —
+  all physically reasonable. **BJ-Nhu: `G_F_MDS` column present but 100% NA
+  — no soil heat flux data at all for this site, not a QC/thinness issue.**
+  **SN-Nkr: closure unusable as fit (R² = 0.001, n = 69,224) — `G_F_MDS`
+  swings to physically implausible magnitudes (25% of qualifying
+  half-hours |G| > 200 W/m², up to ~860 W/m²) consistently across all 7
+  years, not fixed by also gating on `G_F_MDS_QC == 0`. Flagged as a
+  data-quality question for the PI/site team, not resolved here.**
+- G instrumentation: no `GRP_HEATFLUX`/`GRP_SOILHEATFLUX` BADM group found
+  for any of the six sites — soil heat flux plate depth and whether storage
+  above the plates is included in `G_F_MDS` are **not determinable from
+  Shuttle metadata** for this site set; would need site PI documentation or
+  the AmeriFlux/ICOS site page.
+
+**Status:** stopped here per instruction, pending PI review, before
+starting any of the three analysis tasks.
+
+---
+
 ## 2026-09-08 — West Africa site lookup: Bénin, Burkina Faso, Cameroon, Ghana, Mali, Niger, Sénégal
 
 Ad hoc lookup requested by David Moore against the current committed Shuttle

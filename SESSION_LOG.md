@@ -4,6 +4,49 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-08 — WAFNET energy partitioning: Figure 2 built (side analysis, not the Annual Paper)
+
+First figure of the figure-pack plan below carried out. **Not part of the
+FLUXNET Annual Paper 2026** — see the plan entry immediately below for
+full scope.
+
+**Figure 2 — ground heat flux (G) diagnostic, priority: SN-Nkr**
+(`code/04_figure2_g_diagnostic.R` → `figures/figure2_g_diagnostic_snnkr.pdf`/
+`.png`). Mean diurnal composite of `G` vs `NETRAD` at SN-Nkr, one line pair
+per year (2018–2024); the same composite pooled across all years for the
+other four sites with usable `G` data (BJ-Nhu excluded — no `G` data at
+all); a distribution-of-`G`-by-site panel; a date × hour-of-day heatmap of
+raw `G` at SN-Nkr (color capped at ±300 W m⁻², values to ±860 W m⁻²
+noted). No QC filtering or completeness threshold applied — a raw visual
+diagnostic, not a filtered analysis figure.
+
+**Finding (descriptive, not yet interpreted for the manuscript):** SN-Nkr
+is the only one of the six sites where `G`'s diurnal amplitude (peak ≈
++450 to +480 W m⁻², night ≈ −150 W m⁻²) is comparable in magnitude to its
+own `NETRAD` amplitude — the other four sites' `G` swing is a small
+fraction of their `Rn` swing. The heatmap shows this pattern present
+continuously across all 7 years, not confined to particular dates —
+consistent with a persistent instrumentation/labelling issue or a genuine
+sparse-canopy signal, and not with a transient sensor fault. Logged in
+`docs/methods_memo.md` for the site team; not resolved here.
+
+**Environment bug found and fixed:** `grDevices::cairo_pdf` (originally
+used for the vector PDF output in `code/fig_helpers.R::save_figure()`)
+silently writes **no file at all** on this machine — missing system
+cairo/X11 libraries cause it to emit only a warning while the script
+continues as if it had succeeded. Every figure's PDF output would have
+silently gone missing had this not been caught by checking `figures/`
+after the first run. Fixed by switching to the base `pdf()` device;
+follow-on constraint (plot title/label text must be ASCII, or use
+`expression()` for superscripts) recorded in `methods_memo.md` since it
+applies to every remaining figure in this pack.
+
+**Status:** committed and pushed (`12c6fc9`). Four figures, the
+`site_year_summary.csv` table, and the combined `figure_pack_20260908.pdf`
+assembly remain — see the plan below.
+
+---
+
 ## 2026-09-08 — WAFNET energy partitioning: figure-pack plan (side analysis, not the Annual Paper)
 
 Standalone West Africa energy-partitioning side analysis for David Moore.

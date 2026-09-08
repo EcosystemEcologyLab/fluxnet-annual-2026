@@ -74,6 +74,76 @@ Filtering decisions baked into that script:
   the site PI's own documentation or the AmeriFlux/ICOS site page, not
   something to infer from the FULLSET column names.
 
+## Figure pack (round 2)
+
+### Figure 2 — ground heat flux (G) diagnostic, priority: SN-Nkr
+
+`code/04_figure2_g_diagnostic.R` → `figures/figure2_g_diagnostic_snnkr.{pdf,png}`.
+
+- **No QC filtering, no completeness threshold.** This is a raw visual
+  diagnostic of what the instrument reported, not a filtered analysis
+  figure — MDS gap-filled half-hours are included in every panel; only
+  rows where the relevant variable(s) are NA are dropped.
+- **BJ-Nhu excluded from every panel** — `G_F_MDS` present in header, 100%
+  NA (see pre-analysis report §5), not a genuine zero-amplitude signal.
+- Panel (d)'s color scale is capped at ±300 W m⁻² (`oob = scales::squish`)
+  so the extreme values noted in the pre-analysis (up to ~860 W m⁻²) don't
+  wash out the rest of the record; stated explicitly in the panel title
+  and caption, not just implied by the legend.
+- Used `geom_tile()`, not `geom_raster()`, for panel (d) — the date axis
+  has gaps (missing days within site-years, e.g. SN-Nkr 2018 has 15,711 of
+  a possible 17,568 half-hours) and `geom_raster` assumes a complete
+  regular grid, which shifts pixels out of place when the grid isn't
+  actually complete.
+
+**Finding (descriptive, not yet interpreted for the manuscript):** at
+SN-Nkr, `G`'s diurnal amplitude (peak ≈ +450 to +480 W m⁻², night ≈ −150
+W m⁻²) is comparable in magnitude to `NETRAD`'s diurnal amplitude at the
+same site — unlike any of the other four sites with usable G data, where
+`G`'s diurnal swing is a small fraction of `Rn`'s (GH-Ank and BJ-Db1
+essentially flat; BJ-Bfg and SN-Dhr rise to a modest ~50–100 W m⁻² midday
+bump against an ~450–550 W m⁻² `Rn` peak). The date × hour heatmap (panel
+d) shows the same diurnal pattern present continuously across all 7 years
+(2018–2024), not confined to particular dates — i.e. this is a persistent
+feature of the record, not an episodic sensor fault. This is exactly the
+pattern the pre-analysis flagged as needing PI/site-team review before
+using SN-Nkr's `G_F_MDS` (see Open questions below) — the figure does not
+by itself distinguish a unit/sign/siting error from a genuine sparse-
+canopy signal, both of which are physically compatible with a persistent
+(not episodic) pattern.
+
+### Environment bug found and fixed while building Figure 2
+
+`grDevices::cairo_pdf` (what `fig_helpers.R::save_figure()` originally
+used for the vector PDF output) **silently produces no file at all** on
+this machine — it dlopen()s system cairo/X11 libraries
+(`/opt/X11/lib/libSM.6.dylib`, `libXrender.1.dylib`) that aren't present,
+emits a "failed to load cairo DLL" *warning* (not an error), and the
+script continues as if `ggsave()` had succeeded. Caught only by checking
+`figures/` after the first run and finding no `.pdf` despite a "Saved
+figure" message in the log.
+
+Fixed in `fig_helpers.R` by switching `save_figure()` to the base
+`grDevices::pdf` device, which does write a real file here. Trade-off:
+base `pdf()` only supports 8-bit (Latin-1-range) text — a couple of
+Unicode characters in Figure 2's plain-text titles (em dash `—`,
+superscript minus `⁻`) were silently dropped/mis-substituted (`mbcsToSbcs`
+warnings) before being replaced with ASCII equivalents (`-`, `^-2`).
+`expression()`/plotmath axis labels (e.g. `expression(G~(W~m^-2))`) are
+**not** affected by this — they render via R's graphics engine directly,
+not via the text-encoding path, and are the safer way to get superscripts
+into a plot rendered this way.
+
+**House rule going forward, this figure pack:** keep all `ggtitle`/`labs`/
+`plot_annotation` title and label strings ASCII-only; use `expression()`
+for anything needing superscripts or non-Latin-1 symbols. `caption`
+strings passed to `save_figure()` are stored as plain R character data
+(not yet rendered through this text path) and still contain Unicode
+(em dashes, ², ±, §) — fine for now, but the eventual
+`figure_pack_20260908.pdf` assembly script will need its own unicode-safe
+rendering path for caption text; not resolved here, flagged for that
+script.
+
 ## Open questions / assumptions to revisit before Task 1–3
 
 - **BJ-Nhu has no G data (decision needed):** exclude from Rn−G-dependent

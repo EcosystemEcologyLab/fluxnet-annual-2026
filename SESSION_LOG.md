@@ -4,6 +4,133 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-08 — WAFNET energy partitioning: figure-pack plan (side analysis, not the Annual Paper)
+
+Standalone West Africa energy-partitioning side analysis for David Moore.
+**Not part of the FLUXNET Annual Paper 2026** — all outputs live under
+`WAFNET/energy_partitioning/`, which reads (never writes) the repo-root
+`data/extracted/` BIF metadata and otherwise never touches the Annual
+Paper's `R/`, `scripts/`, `data/`, `outputs/`, or `review/` directories.
+Six sites, humid-to-Sahelian gradient: `GH-Ank`, `BJ-Db1`, `BJ-Bfg`,
+`BJ-Nhu`, `SN-Nkr`, `SN-Dhr`.
+
+This entry is a **plan**, written up before building anything, covering the
+next deliverable: a figure pack to circulate to the WAFNET team (figures
+and captions only — no interpretation written into a manuscript yet). It
+follows on from the pre-analysis report below, which the PI has reviewed.
+
+#### Two decisions carried forward from the pre-analysis review, applied throughout
+
+1. **EF is defined as `LE/(LE+H)`, not `LE/(Rn−G)`.** This is the only
+   option usable at BJ-Nhu, where `G` is entirely missing (see below), and
+   it sidesteps the SN-Nkr `G` problem — a ratio of the two turbulent
+   fluxes is far less sensitive to the energy-balance closure gap than a
+   definition that depends on `G`. Wherever `LE/(Rn−G)` is also computed,
+   it will be labelled explicitly as the alternative definition and kept in
+   a supplementary panel, not the headline figure.
+2. **Every result is reported both for the full record and for a
+   common-year subset**, with the common-year window stated explicitly.
+   Site-years are unbalanced (3–11 per site, see table below) and barely
+   overlap in time, so a full-record-only comparison would confound
+   site-to-site differences with record length and climate epoch.
+
+#### What the pre-analysis already tells us that will shape these figures
+
+- **Site-year imbalance is real and large:** GH-Ank 3 yr (2011–2014),
+  BJ-Db1 3 yr (2022–2024), BJ-Bfg 10 yr (2008–2017), BJ-Nhu 10 yr
+  (2008–2017), SN-Nkr 7 yr (2018–2024), SN-Dhr 11 yr (2010–2022). Records
+  barely overlap — this is exactly what Figure 4 (availability/overlap)
+  and the common-year framing in Figure 5 exist to make visible.
+- **BJ-Nhu has no soil heat flux data at all** — `G_F_MDS` is present in
+  the header but 100% NA across all 175,344 half-hours (not a QC/thinness
+  issue). Any `Rn−G`-based output must exclude BJ-Nhu or substitute an
+  `Rn`-only available-energy term for it specifically. The EF definition
+  above (turbulent-flux ratio) already avoids this for Figure 5; Figure 3's
+  `Rn−G` closure panel will exclude BJ-Nhu and say why in the caption, per
+  the brief.
+- **SN-Nkr's `G_F_MDS` is flagged, not resolved:** closure regression is
+  unusable as a fit (R² = 0.001, slope = 0.05, n = 69,224 measured
+  half-hours); 26% of qualifying half-hours have `|G_F_MDS| > 200 W/m²`
+  (up to ~860 W/m² at the extreme), consistent across all 7 years — not a
+  transient fault, and not fixed by additionally gating on
+  `G_F_MDS_QC == 0`. No `GRP_HEATFLUX`/`GRP_SOILHEATFLUX` BADM group exists
+  for any of the six sites, so plate depth / storage-above-plate treatment
+  cannot be checked from Shuttle metadata for this or any site. Figure 2 is
+  built specifically to let the site team judge, from the diurnal
+  amplitude and the time series/heatmap of raw values, whether this looks
+  like a unit/sign/mislabelling error or a genuine sparse-canopy signal.
+
+#### Planned figure pack
+
+1. **Figure 1 — Wilson et al. (2002) replicate.** Daily cumulative H vs LE
+   (MJ m⁻² d⁻¹), one point per site-year, daytime-only (PAR>0), 48-bin
+   mean diurnal composite, no gap-filling, no closure correction,
+   site-years with >35% missing daytime half-hours dropped. Constant-β rays
+   (0.25/0.5/1/2/3) and constant-(H+LE) diagonals; no vegetation envelopes
+   (six sites can't support them — the beta rays carry the interpretive
+   weight, and the caption will say so). Produced as **three window
+   variants**, per the brief's instruction not to pick one: (a) fixed DOY
+   165–235 (Wilson's window — the Sahel monsoon core, but Ankasa's little
+   dry season), (b) a per-site wet-season window from rainfall climatology
+   (candidate source: in-hand `P_F` half-hourly precipitation, not an
+   external download), (c) a phenology window from EVI/LAI. **(c) is
+   likely to be dropped:** the only ancillary vegetation fields found so
+   far are static single-value BIF entries (canopy height, IGBP class),
+   not an EVI/LAI time series — there is nothing in hand to build a
+   phenology window from without a new external dataset, which would need
+   sign-off first since it's outside the Shuttle-only data this side
+   analysis has used so far. Will confirm once (a) and (b) are built and
+   report survival counts under each window.
+2. **Figure 2 — SN-Nkr ground heat flux diagnostic.** Mean diurnal
+   composite of `G` vs `Rn` per year at SN-Nkr, other five sites shown
+   for comparison where `G` exists; a distribution-by-site panel; a time
+   series/heatmap showing whether the implausible values are continuous or
+   episodic. Built to be self-explanatory for the site team, since this is
+   the figure most likely to prompt a direct question back to them.
+3. **Figure 3 — energy balance closure by site.** `LE+H` vs `Rn−G` scatter
+   with per-site OLS (slope, intercept, R², n) plus the sum-based energy
+   balance ratio alongside the fit, since SN-Nkr will otherwise distort the
+   regression panel. **BJ-Nhu excluded from this figure** (no `G`), per the
+   brief — the closure numbers already in hand for the other four sites
+   (slopes 0.72–0.93, R² 0.73–0.89) look physically reasonable and are not
+   flagged.
+4. **Figure 4 — data availability and overlap.** Timeline of site-years,
+   marking which pass the completeness rule, shading the common-year
+   window; a percent-non-NA-by-variable-and-site panel for the variables
+   the three planned analyses need. Exists so the imbalance above (three
+   site-years at two sites vs. eleven at SN-Dhr) is immediately visible
+   rather than discovered later.
+5. **Figure 5 — EF distributions, revised.** Boxplots of `LE/(LE+H)` by
+   site, three ways: full record, common years only, and equal-years-per-
+   site by repeated subsampling of the longer records (range shown). Tests
+   whether SN-Dhr's wide spread survives once record length is controlled.
+   No separate Bowen-ratio panel (monotone transform of the same quantity,
+   per the brief); a β secondary axis will be added if it reads cleanly.
+
+Also: `tables/site_year_summary.csv` (one row per site-year: daily
+cumulative H, LE, EF, β, total turbulent flux, closure slope/intercept,
+completeness), and assembly of all figures plus numbered captions into
+`figure_pack_20260908.pdf`.
+
+#### Status
+
+Nothing has been built yet beyond a shared plotting-helpers scaffold
+(`code/fig_helpers.R` — theme, site color/order, and a `save_figure()`
+helper that writes PDF+PNG and registers each caption for the combined
+PDF). No figure scripts, no rendered figures, no combined PDF, and no
+`site_year_summary.csv` yet. Estimated remaining effort is roughly 3.5–5
+hours of active development — dominated by writing and iterating the
+filtering/composite logic (Figure 1's three window variants in particular),
+not by compute time on data of this size.
+
+**Next step:** build and commit one figure at a time (script + PDF + PNG
+together), pushing as each lands, rather than in one long unattended batch.
+Data-quality anomalies on the scale of the SN-Nkr `G` finding will be
+logged and flagged in the relevant caption rather than pausing the whole
+run. Awaiting the PI's go-ahead to start.
+
+---
+
 ## 2026-09-08 — WAFNET energy partitioning: pre-analysis report (side analysis, not the Annual Paper)
 
 Standalone West Africa energy-partitioning side analysis requested by David

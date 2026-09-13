@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-09-13T15:27:03Z",
-  "pipeline_version": "a76c502",
+  "run_datetime_utc": "2026-09-13T16:04:29Z",
+  "pipeline_version": "739afa7",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
     "data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif"

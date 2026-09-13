@@ -1293,7 +1293,32 @@ fig_map_point_snapshots <- function(snap_meta,
 #'   grey circles (default `FALSE` — dryland towers only, matching the
 #'   figure's standard caption).
 #' @param pt_size Numeric. Tower point size (default `1.6`).
-#' @param style Named list. Visual parameters; defaults to [MAP_STYLE].
+#' @param style Named list. Visual parameters (base size etc.); defaults to
+#'   [MAP_STYLE]. Note the legend *position* is NOT taken from
+#'   `style$legend_pos` / `style$legend_just` — see `legend_position` below.
+#' @param legend_position Numeric `c(x, y)` in panel-relative (0-1)
+#'   coordinates for the legend anchor. Defaults to an inset sited in the
+#'   empty South Atlantic / southwest Indian Ocean gap (roughly 15S-55S,
+#'   60W-90E, bounded by southern South America, southern Africa and
+#'   Australia), deliberately different from [MAP_STYLE]'s bottom-left
+#'   position — that position sits under this figure's South America,
+#'   southern Africa and Australia tower points. This override is local to
+#'   this figure only; Map01-09 (which use `fig_map_historical()`) are
+#'   unaffected. Chosen empirically (pixel-diffed against a render with the
+#'   legend removed) to clear every tower point and the mainland coastlines
+#'   of South America, Africa and Australia; a handful of single-digit-pixel
+#'   sub-Antarctic islet specks (e.g. South Georgia, Kerguelen) remain
+#'   unavoidably within the box footprint at this legend width — see
+#'   SESSION_LOG.md.
+#' @param legend_justification Numeric `c(x, y)`; anchor point within the
+#'   legend box that `legend_position` places (default `c(0.5, 0.5)` —
+#'   legend centred on `legend_position`).
+#' @param legend_text_size,legend_title_size,legend_key_size Legend text,
+#'   title font size (pt) and key size (lines). Deliberately smaller than
+#'   [MAP_STYLE]'s derived sizes — the inset placement only has room for a
+#'   compact legend between South America and the sub-Antarctic islands to
+#'   its east; the five-class horizontal layout, colours and labels are
+#'   unchanged, only the rendered size is reduced to fit.
 #' @param title Character or `NULL`. Map title.
 #'
 #' @return A ggplot object. `attr(p, "n_dryland")` carries the number of
@@ -1309,11 +1334,16 @@ fig_map_point_snapshots <- function(snap_meta,
 #'
 #' @export
 fig_map_dryland_towers <- function(site_aridity,
-                                    aridity_df = NULL,
-                                    show_humid = FALSE,
-                                    pt_size    = 1.6,
-                                    style      = MAP_STYLE,
-                                    title      = NULL) {
+                                    aridity_df           = NULL,
+                                    show_humid           = FALSE,
+                                    pt_size               = 1.6,
+                                    style                 = MAP_STYLE,
+                                    legend_position       = c(0.514, 0.08),
+                                    legend_justification  = c(0.5, 0.5),
+                                    legend_text_size      = 10,
+                                    legend_title_size     = 11,
+                                    legend_key_size       = 0.9,
+                                    title                 = NULL) {
   .disable_s2()
   .check_meta_cols(site_aridity,
                     c("site_id", "location_lat", "location_long",
@@ -1339,13 +1369,25 @@ fig_map_dryland_towers <- function(site_aridity,
     ggplot2::theme(
       plot.title           = ggplot2::element_text(hjust = 0.5, face = "bold",
                                                     size  = style$base_size * 0.9),
-      legend.position      = style$legend_pos,
-      legend.justification = style$legend_just,
-      legend.direction     = "horizontal",
-      legend.title         = ggplot2::element_text(size  = style$base_size * 0.7,
-                                                    hjust = 0.5),
-      legend.text          = ggplot2::element_text(size  = style$base_size * 0.65),
-      legend.margin        = ggplot2::margin(4, 4, 4, 4)
+      # Inset legend (ocean gap) — intentionally NOT style$legend_pos /
+      # style$legend_just. See legend_position/legend_justification args.
+      legend.position       = legend_position,
+      legend.justification  = legend_justification,
+      legend.direction      = "horizontal",
+      legend.title          = ggplot2::element_text(size  = legend_title_size,
+                                                     hjust = 0.5),
+      legend.text           = ggplot2::element_text(size = legend_text_size),
+      # Compact key/spacing — the inset only has room between South America
+      # and the sub-Antarctic islands to its east; see legend_position docs.
+      legend.key.size       = grid::unit(legend_key_size, "lines"),
+      legend.key.spacing.x  = grid::unit(2, "pt"),
+      legend.margin         = ggplot2::margin(4, 4, 4, 4),
+      # Semi-transparent white box so the legend reads over the coastline /
+      # ocean backdrop it now sits on top of, instead of the page margin.
+      legend.background     = ggplot2::element_rect(
+        fill = ggplot2::alpha("white", 0.85), colour = "grey50", linewidth = 0.3
+      ),
+      legend.box.background = ggplot2::element_blank()
     ) +
     # Categorical AI backdrop (bottom layer)
     ggplot2::geom_tile(

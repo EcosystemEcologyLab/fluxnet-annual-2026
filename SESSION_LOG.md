@@ -4,6 +4,75 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-13 — Dryland flux tower map (Map10) built
+
+Filled the aridity map placeholder identified in `R/figures/fig_maps.R`.
+Extended the existing Map0X pipeline (`scripts/generate_maps.R`) rather than
+adding a parallel script — `Map10` is generated alongside `Map01`-`09` in
+the same run and follows the same `save_map()` / `MAP_STYLE` conventions.
+
+**Site table and filter:** canonical pinned snapshot
+(`data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv`, the same one
+`Map01` and the point-network maps use), filtered to valid lat/long and
+distinct `site_id` — the same filter used by every other `fig_map_*`
+function. **781 sites.**
+
+**Per-site aridity extraction:** consolidated the point-extraction logic
+previously duplicated between `scripts/step2_extract_aridity.R` and
+`scripts/figure_representativeness_aridity.R` into a single reusable
+function, `extract_site_aridity()` (new, in `R/external_data.R`), with
+`classify_aridity_index()` / `classify_aridity_index_7()` for the UNEP
+5-class and extended 7-class schemes. Point-extracts CGIAR Global Aridity
+Index v3.1 (`data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif`,
+raw integer × 0.0001 = AI) at each tower's exact coordinates, with a
+buffer-then-nearest-land fallback for coastal sites landing on ocean pixels.
+Regenerated `data/snapshots/site_aridity.csv` (+ `.meta.json`) — output was
+byte-identical to the prior file (git shows no diff), confirming the
+consolidated function reproduces the existing extraction exactly. Schema
+kept compatible with the pre-existing file (`site_id`, `location_lat`,
+`location_long`, `ai_value`, `unep_class_5`, `unep_class_7`,
+`aridity_method`) so it remains a drop-in regeneration, not a fork. Function
+is written to be extended with future per-site covariates (e.g. a human
+influence index) via `left_join()` on `site_id`.
+
+**Aridity class counts (n = 781 towers):** Hyper-Arid 4 (0.5%), Arid 46
+(5.9%), Semi-Arid 149 (19.1%), Dry Sub-Humid 71 (9.1%), Humid 511 (65.4%).
+Non-humid (dryland) towers: **270**.
+
+**Figure:** new `fig_map_dryland_towers()` in `R/figures/fig_maps.R` —
+categorical AI raster backdrop (resampled to 0.2° via the existing
+`.aridity_raster_df()`, reused from the point-network aridity-backdrop
+maps), thin coastlines, non-humid towers as filled Okabe-Ito-blue circles,
+`show_humid` argument to additionally plot humid towers as open grey
+circles (off by default, matching the standard caption). Colour palette is
+`.AI_COLORS` with `Humid` overridden to grey (`.DRYLAND_AI_COLORS`) since
+this figure's water/ice is white, unlike the existing point-network aridity
+backdrop where Humid is white. Legend is the horizontal 5-class bottom
+legend from `MAP_STYLE`, matching `fig_map_historical()`'s convention.
+Saved: `review/figures/maps/fig_map10_DrylandTowers.png` (standard
+resolution, 150 dpi, `MAP_STYLE` 14×7 in) and its caption text
+(`fig_map10_DrylandTowers_caption.txt`):
+
+> Map of flux tower locations in dryland ecosystems, which include
+> hyper-arid (aridity index, AI, < 0.05), arid (0.05 < AI < 0.20), semi-arid
+> (0.20 < AI < 0.50) and dry sub-humid (0.50 < AI < 0.65) regions. AI is the
+> ratio of mean annual precipitation to potential evapotranspiration (CGIAR
+> Global Aridity Index v3.1). n = 270 towers.
+
+Full `generate_maps.R` run regenerated `Map01`-`09` too (deterministic
+re-render — PNG byte sizes within a few hundred bytes of the prior commit,
+no content change) alongside the new `Map10`; all ten committed together.
+
+**Known pre-existing issue, not touched:** `scripts/generate_env_response_era5.R`
+reads `data/snapshots/site_aridity.csv` expecting an `aridity_index` column
+(via `R/figures/fig_environmental_response.R`'s `aridity_data` contract),
+but the file (as written by `figure_representativeness_aridity.R`, and now
+also by `extract_site_aridity()`) has always used `ai_value` — that script
+would currently fail if run. Predates this session; flagged for a future
+task, not fixed here since it's outside this figure's scope.
+
+---
+
 ## 2026-09-08 — WAFNET energy partitioning: Figure 2 built (side analysis, not the Annual Paper)
 
 First figure of the figure-pack plan below carried out. **Not part of the

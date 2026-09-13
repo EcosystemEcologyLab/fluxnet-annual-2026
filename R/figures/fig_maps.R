@@ -1292,7 +1292,11 @@ fig_map_point_snapshots <- function(snap_meta,
 #' @param show_humid Logical. If `TRUE`, also plot humid-class towers as open
 #'   grey circles (default `FALSE` — dryland towers only, matching the
 #'   figure's standard caption).
-#' @param pt_size Numeric. Tower point size (default `1.6`).
+#' @param pt_size Numeric. Tower point size (default `3.2` — roughly double
+#'   the size used elsewhere in this file, to match the published figure;
+#'   paired with a `stroke = 0.8` grey20 edge on the filled dryland points
+#'   for a crisp border at this larger size. Local to this function — other
+#'   `fig_map_*()` point sizes are unchanged).
 #' @param style Named list. Visual parameters (base size etc.); defaults to
 #'   [MAP_STYLE]. Note the legend *position* is NOT taken from
 #'   `style$legend_pos` / `style$legend_just` — see `legend_position` below.
@@ -1336,7 +1340,7 @@ fig_map_point_snapshots <- function(snap_meta,
 fig_map_dryland_towers <- function(site_aridity,
                                     aridity_df           = NULL,
                                     show_humid           = FALSE,
-                                    pt_size               = 1.6,
+                                    pt_size               = 3.2,
                                     style                 = MAP_STYLE,
                                     legend_position       = c(0.514, 0.08),
                                     legend_justification  = c(0.5, 0.5),
@@ -1407,22 +1411,24 @@ fig_map_dryland_towers <- function(site_aridity,
     ) +
     # Thin coastlines on top of the backdrop
     ggplot2::geom_sf(data = land, fill = NA, colour = "black", linewidth = 0.15) +
-    # Dryland towers: filled blue circles
+    # Dryland towers: filled blue circles, dark edge for a crisp border at
+    # this larger size (grey20, not black — softer against the backdrop)
     ggplot2::geom_point(
       data  = dryland_towers,
       ggplot2::aes(x = .data$location_long, y = .data$location_lat),
-      shape  = 21, fill = "#0072B2", colour = "black",
-      size   = pt_size, stroke = 0.4, alpha = 0.9
+      shape  = 21, fill = "#0072B2", colour = "grey20",
+      size   = pt_size, stroke = 0.8, alpha = 0.9
     )
 
   if (isTRUE(show_humid)) {
-    # Humid towers: open grey circles, for context only
+    # Humid towers: open grey circles, for context only. Same size/stroke as
+    # the dryland points above so the two layers stay proportional.
     p <- p +
       ggplot2::geom_point(
         data  = humid_towers,
         ggplot2::aes(x = .data$location_long, y = .data$location_lat),
         shape  = 1, colour = "grey40",
-        size   = pt_size, stroke = 0.4, alpha = 0.9
+        size   = pt_size, stroke = 0.8, alpha = 0.9
       )
   }
 

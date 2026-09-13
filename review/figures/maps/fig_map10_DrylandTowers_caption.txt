@@ -1,0 +1,1 @@
+Map of flux tower locations in dryland ecosystems, which include hyper-arid (aridity index, AI, < 0.05), arid (0.05 < AI < 0.20), semi-arid (0.20 < AI < 0.50) and dry sub-humid (0.50 < AI < 0.65) regions. AI is the ratio of mean annual precipitation to potential evapotranspiration (CGIAR Global Aridity Index v3.1). n = 270 towers.

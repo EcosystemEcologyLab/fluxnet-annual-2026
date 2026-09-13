@@ -1254,3 +1254,140 @@ fig_map_point_snapshots <- function(snap_meta,
     patchwork::plot_layout(guides = "collect") &
     ggplot2::theme(legend.position = "bottom")
 }
+
+# ---- fig_map_dryland_towers ---------------------------------------------------
+#
+# Dryland flux-tower map (Map10 in the review/figures/maps/ series). Reuses
+# .aridity_raster_df() / .land_sf() from the aridity-backdrop point maps
+# above, and the MAP_STYLE bottom-horizontal-legend convention from
+# fig_map_historical(). Per-site aridity values come from
+# extract_site_aridity() in R/external_data.R (not computed here).
+
+# Colour palette for this figure only. Reuses the .AI_COLORS hex values
+# above (hyper-arid/arid/semi-arid/dry sub-humid) but overrides Humid to grey
+# rather than white — this figure's water/ice is white (unrendered NA cells
+# on a white ggsave() background), so Humid needs its own visible colour.
+.DRYLAND_AI_COLORS <- {
+  cols <- .AI_COLORS
+  cols[["Humid"]] <- "grey70"
+  cols
+}
+
+#' Global map of flux towers in dryland ecosystems, on an aridity backdrop
+#'
+#' Categorical CGIAR Global Aridity Index v3.1 raster (resampled for
+#' plotting, not native resolution — see [.aridity_raster_df()]) as a
+#' five-class backdrop beneath thin country coastlines, with flux towers in
+#' the four non-humid (dryland) classes overlaid as filled blue circles.
+#' Humid-class towers are omitted by default; set `show_humid = TRUE` to add
+#' them as open grey circles for context.
+#'
+#' @param site_aridity Data frame. Per-site aridity table from
+#'   [extract_site_aridity()] (or `data/snapshots/site_aridity.csv`):
+#'   `site_id`, `location_lat`, `location_long`, `ai_value`, `unep_class_5`.
+#' @param aridity_df Optional pre-loaded backdrop data frame from
+#'   `.aridity_raster_df()`. Computed internally (target_res = 0.2) when
+#'   `NULL` — pass a pre-loaded one to avoid re-reading the raster when
+#'   generating multiple figures in the same session.
+#' @param show_humid Logical. If `TRUE`, also plot humid-class towers as open
+#'   grey circles (default `FALSE` — dryland towers only, matching the
+#'   figure's standard caption).
+#' @param pt_size Numeric. Tower point size (default `1.6`).
+#' @param style Named list. Visual parameters; defaults to [MAP_STYLE].
+#' @param title Character or `NULL`. Map title.
+#'
+#' @return A ggplot object. `attr(p, "n_dryland")` carries the number of
+#'   non-humid towers plotted, for use in figure captions.
+#'
+#' @examples
+#' \dontrun{
+#' site_aridity <- readr::read_csv("data/snapshots/site_aridity.csv")
+#' p <- fig_map_dryland_towers(site_aridity)
+#' print(p)
+#' p_ctx <- fig_map_dryland_towers(site_aridity, show_humid = TRUE)
+#' }
+#'
+#' @export
+fig_map_dryland_towers <- function(site_aridity,
+                                    aridity_df = NULL,
+                                    show_humid = FALSE,
+                                    pt_size    = 1.6,
+                                    style      = MAP_STYLE,
+                                    title      = NULL) {
+  .disable_s2()
+  .check_meta_cols(site_aridity,
+                    c("site_id", "location_lat", "location_long",
+                      "ai_value", "unep_class_5"))
+
+  if (is.null(aridity_df)) aridity_df <- .aridity_raster_df()
+  land <- .land_sf()
+
+  towers <- site_aridity |>
+    dplyr::filter(
+      !is.na(.data$location_lat), !is.na(.data$location_long),
+      dplyr::between(.data$location_lat,   -90,  90),
+      dplyr::between(.data$location_long, -180, 180)
+    ) |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE)
+
+  dryland_towers <- dplyr::filter(towers, .data$unep_class_5 != "Humid")
+  humid_towers   <- dplyr::filter(towers, .data$unep_class_5 == "Humid")
+  n_dryland      <- nrow(dryland_towers)
+
+  p <- ggplot2::ggplot() +
+    ggplot2::theme_void(base_size = style$base_size) +
+    ggplot2::theme(
+      plot.title           = ggplot2::element_text(hjust = 0.5, face = "bold",
+                                                    size  = style$base_size * 0.9),
+      legend.position      = style$legend_pos,
+      legend.justification = style$legend_just,
+      legend.direction     = "horizontal",
+      legend.title         = ggplot2::element_text(size  = style$base_size * 0.7,
+                                                    hjust = 0.5),
+      legend.text          = ggplot2::element_text(size  = style$base_size * 0.65),
+      legend.margin        = ggplot2::margin(4, 4, 4, 4)
+    ) +
+    # Categorical AI backdrop (bottom layer)
+    ggplot2::geom_tile(
+      data = aridity_df,
+      ggplot2::aes(x = .data$x, y = .data$y, fill = .data$aridity_class)
+    ) +
+    ggplot2::scale_fill_manual(
+      values   = .DRYLAND_AI_COLORS,
+      name     = "Aridity class (CGIAR AI v3.1)",
+      drop     = FALSE,
+      guide    = ggplot2::guide_legend(
+        nrow           = 1,
+        title.position = "top",
+        title.hjust    = 0.5,
+        override.aes   = list(colour = "grey40", linewidth = 0.2)
+      )
+    ) +
+    # Thin coastlines on top of the backdrop
+    ggplot2::geom_sf(data = land, fill = NA, colour = "black", linewidth = 0.15) +
+    # Dryland towers: filled blue circles
+    ggplot2::geom_point(
+      data  = dryland_towers,
+      ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+      shape  = 21, fill = "#0072B2", colour = "black",
+      size   = pt_size, stroke = 0.4, alpha = 0.9
+    )
+
+  if (isTRUE(show_humid)) {
+    # Humid towers: open grey circles, for context only
+    p <- p +
+      ggplot2::geom_point(
+        data  = humid_towers,
+        ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+        shape  = 1, colour = "grey40",
+        size   = pt_size, stroke = 0.4, alpha = 0.9
+      )
+  }
+
+  p <- p +
+    ggplot2::labs(title = title) +
+    ggplot2::coord_sf(ylim = c(-56, 85), expand = FALSE, datum = NA)
+
+  attr(p, "n_dryland") <- n_dryland
+  p
+}

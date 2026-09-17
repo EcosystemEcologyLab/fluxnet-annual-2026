@@ -1,0 +1,342 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== era5_precip_units_v3_partA.R ===
+
+================ A1: raw *_FLUXNET_MM_*.csv, direct read ================
+IT-MBo: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+US-HB4: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+JP-Tak: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+JP-Mse: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+US-Akn: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+BR-Sa1: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+FI-Hyy: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+JP-Khw: FLUXMET_MM has P_F/P_ERA/TA_F/TA_ERA columns directly = TRUE
+
+-- A1 sample rows (raw files, no DuckDB) --
+ site_id TIMESTAMP    P_F   P_F_QC P_ERA_in_fluxmet_file P_ERA_in_era5_file
+  IT-MBo    200301  2.808 0.965726                27.567             27.567
+  IT-MBo    200302  0.032 1.000000                 7.613              7.613
+  IT-MBo    200303  0.145 1.000000                 8.954              8.954
+  IT-MBo    200304  1.220 1.000000                55.863             55.863
+  IT-MBo    200305  2.826 0.997312                49.780             49.780
+  IT-MBo    200306  4.734 0.970833                51.041             51.041
+  US-HB4    202001  0.000 1.000000              1158.248           1158.248
+  US-HB4    202002  0.000 1.000000              2432.711           2432.711
+  US-HB4    202003  0.998 0.998656              2347.339           2347.339
+  US-HB4    202004  6.070 0.999306              2181.139           2181.139
+  US-HB4    202005 17.792 0.996640              1874.874           1874.874
+  US-HB4    202006  3.707 0.999306              3319.833           3319.833
+  JP-Tak    199801 26.450 0.000000                26.450             26.450
+  JP-Tak    199802 18.190 0.000000                18.190             18.190
+  JP-Tak    199803 18.650 0.000000                18.650             18.650
+  JP-Tak    199804 31.866 0.000000                31.866             31.866
+  JP-Tak    199805 40.536 0.000000                40.536             40.536
+  JP-Tak    199806 48.890 0.000000                48.890             48.890
+  JP-Mse    200201  9.920 0.000000                 9.920              9.920
+  JP-Mse    200202  5.842 0.000000                 5.842              5.842
+  JP-Mse    200203 12.530 0.000000                12.530             12.530
+  JP-Mse    200204  6.188 0.000000                 6.188              6.188
+  JP-Mse    200205 10.672 0.000000                10.672             10.672
+  JP-Mse    200206 17.659 0.000000                17.659             17.659
+  US-Akn    201101  0.080 0.000000                 0.080              0.080
+  US-Akn    201102  0.135 0.000000                 0.135              0.135
+  US-Akn    201103  0.148 0.000000                 0.148              0.148
+  US-Akn    201104  0.072 0.000000                 0.072              0.072
+  US-Akn    201105  0.063 0.000000                 0.063              0.063
+  US-Akn    201106  0.067 0.000000                 0.067              0.067
+  BR-Sa1    200201  8.921 0.670699                 7.352              7.352
+  BR-Sa1    200202  8.256 0.784226                 9.888              9.888
+  BR-Sa1    200203  9.767 0.795699                11.022             11.022
+  BR-Sa1    200204 16.319 0.868056                 9.762              9.762
+  BR-Sa1    200205  6.006 0.699597                 6.759              6.759
+  BR-Sa1    200206  4.109 0.666667                 4.918              4.918
+  FI-Hyy    199701  1.383 0.000000                 1.383              1.383
+  FI-Hyy    199702  1.515 0.000000                 1.515              1.515
+  FI-Hyy    199703  1.380 0.000000                 1.380              1.380
+  FI-Hyy    199704  1.675 0.000000                 1.675              1.675
+  FI-Hyy    199705  1.276 0.000000                 1.276              1.276
+  FI-Hyy    199706  2.031 0.000000                 2.031              2.031
+  JP-Khw    200001  3.083 0.000000                 3.083              3.083
+  JP-Khw    200002  1.919 0.000000                 1.919              1.919
+  JP-Khw    200003  4.541 0.000000                 4.541              4.541
+  JP-Khw    200004  4.546 0.000000                 4.546              4.546
+  JP-Khw    200005  4.740 0.000000                 4.740              4.740
+  JP-Khw    200006 18.028 0.000000                18.028             18.028
+   TA_F TA_ERA_in_fluxmet_file TA_ERA_in_era5_file p_identical_within_file
+ -3.355                 -3.355              -3.355                   FALSE
+ -6.259                 -6.259              -6.259                   FALSE
+  1.235                  1.235               1.235                   FALSE
+  3.055                  3.055               3.055                   FALSE
+  9.773                  9.773               9.773                   FALSE
+ 14.737                 13.971              13.971                   FALSE
+ 12.804                 12.804              12.804                   FALSE
+ 12.438                 12.438              12.438                   FALSE
+ 16.716                 16.926              16.926                   FALSE
+ 19.054                 19.516              19.516                   FALSE
+ 22.105                 22.549              22.549                   FALSE
+ 25.373                 25.978              25.978                   FALSE
+ -5.787                 -4.888              -4.888                    TRUE
+ -3.103                 -2.570              -2.570                    TRUE
+ -0.899                 -0.280              -0.280                    TRUE
+  9.029                  7.647               7.647                    TRUE
+ 12.242                 12.590              12.590                    TRUE
+ 14.361                 14.096              14.096                    TRUE
+  3.946                  3.985               3.985                    TRUE
+  5.158                  4.571               4.571                    TRUE
+  9.893                  9.307               9.307                    TRUE
+ 14.222                 13.256              13.256                    TRUE
+ 16.638                 16.013              16.013                    TRUE
+ 19.502                 19.391              19.391                    TRUE
+  5.549                  5.549               5.549                    TRUE
+ 10.383                 10.383              10.383                    TRUE
+ 13.481                 13.481              13.481                    TRUE
+ 18.353                 18.353              18.353                    TRUE
+ 20.876                 20.876              20.876                    TRUE
+ 25.180                 25.180              25.180                    TRUE
+ 24.916                 25.206              25.206                   FALSE
+ 25.044                 25.279              25.279                   FALSE
+ 24.568                 25.077              25.077                   FALSE
+ 24.449                 25.081              25.081                   FALSE
+ 25.149                 25.193              25.193                   FALSE
+ 25.055                 24.974              24.974                   FALSE
+ -5.566                 -6.007              -6.007                    TRUE
+ -5.005                 -5.116              -5.116                    TRUE
+ -1.649                 -1.490              -1.490                    TRUE
+  0.095                  0.499               0.499                    TRUE
+  6.968                  6.579               6.579                    TRUE
+ 16.091                 15.123              15.123                    TRUE
+  5.382                  5.229               5.229                    TRUE
+  3.088                  3.567               3.567                    TRUE
+  7.778                  8.069               8.069                    TRUE
+ 12.670                 12.970              12.970                    TRUE
+ 17.998                 18.148              18.148                    TRUE
+ 21.602                 21.060              21.060                    TRUE
+ p_identical_cross_file ta_identical_within_file ta_identical_cross_file
+                  FALSE                     TRUE                    TRUE
+                  FALSE                     TRUE                    TRUE
+                  FALSE                     TRUE                    TRUE
+                  FALSE                     TRUE                    TRUE
+                  FALSE                     TRUE                    TRUE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                     TRUE                    TRUE
+                  FALSE                     TRUE                    TRUE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                     TRUE                    TRUE
+                   TRUE                     TRUE                    TRUE
+                   TRUE                     TRUE                    TRUE
+                   TRUE                     TRUE                    TRUE
+                   TRUE                     TRUE                    TRUE
+                   TRUE                     TRUE                    TRUE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                  FALSE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+                   TRUE                    FALSE                   FALSE
+
+-- A1 summary: is P_F == P_ERA and TA_F == TA_ERA WITHIN THE RAW FLUXMET_MM FILE ITSELF? --
+# A tibble: 8 × 5
+  site_id     n n_p_identical_qc0 n_qc0 n_ta_identical
+  <chr>   <int>             <int> <int>          <int>
+1 BR-Sa1      6                 0     0              0
+2 FI-Hyy      6                 6     6              0
+3 IT-MBo      6                 0     0              5
+4 JP-Khw      6                 6     6              0
+5 JP-Mse      6                 6     6              0
+6 JP-Tak      6                 6     6              0
+7 US-Akn      6                 6     6              6
+8 US-HB4      6                 0     0              2
+Saved: review/diagnostics/era5_precip_units_v3/table_a1_raw_file_values.csv
+
+================ A2: ingestion trace + dataset/column coverage ================
+
+--- scripts/03_read.R: lines mentioning 'dataset' or 'ERA5' or 'FLUXMET' ---
+  matching line numbers: 2, 30, 80, 129, 165, 173, 180
+
+--- scripts/duckdb_setup.R: lines mentioning 'dataset' or 'ERA5' or 'FLUXMET' ---
+  matching line numbers: 32, 78, 79, 94, 105, 122, 134, 151, 163, 180, 192, 209, 221
+
+--- scripts/duckdb_update.R: lines mentioning 'dataset' or 'ERA5' or 'FLUXMET' ---
+  matching line numbers: 19, 25, 34, 66, 77, 81, 105, 117, 121, 145, 157, 161, 185, 197, 201, 225, 237, 241
+
+-- dataset value distribution, test sites --
+   site_id dataset   n
+1   BR-Sa1    ERA5 540
+2   BR-Sa1 FLUXMET 120
+3   FI-Hyy    ERA5 540
+4   FI-Hyy FLUXMET 336
+5   IT-MBo    ERA5 528
+6   IT-MBo FLUXMET 264
+7   JP-Khw    ERA5 540
+8   JP-Khw FLUXMET 264
+9   JP-Mse    ERA5 540
+10  JP-Mse FLUXMET  96
+11  JP-Tak    ERA5 540
+12  JP-Tak FLUXMET 288
+13  US-Akn    ERA5 540
+14  US-Akn FLUXMET 144
+15  US-HB4    ERA5 540
+16  US-HB4 FLUXMET  60
+
+-- non-null column coverage per site x dataset --
+   site_id dataset n_pf_nonnull n_pera_nonnull n_taf_nonnull n_taera_nonnull
+1   BR-Sa1    ERA5            0            540             0             540
+2   BR-Sa1 FLUXMET          120            120           120             120
+3   FI-Hyy    ERA5            0            540             0             540
+4   FI-Hyy FLUXMET          336            336           336             336
+5   IT-MBo    ERA5            0            528             0             528
+6   IT-MBo FLUXMET          264            264           264             264
+7   JP-Khw    ERA5            0            540             0             540
+8   JP-Khw FLUXMET          264            264           264             264
+9   JP-Mse    ERA5            0            540             0             540
+10  JP-Mse FLUXMET           96             96            96              96
+11  JP-Tak    ERA5            0            540             0             540
+12  JP-Tak FLUXMET          288            288           288             288
+13  US-Akn    ERA5            0            540             0             540
+14  US-Akn FLUXMET          144            144           144             144
+15  US-HB4    ERA5            0            540             0             540
+16  US-HB4 FLUXMET           60             60            60              60
+Saved: review/diagnostics/era5_precip_units_v3/table_a2_dataset_coverage.csv
+Saved: review/diagnostics/era5_precip_units_v3/table_a2_dataset_dist.csv
+
+================ A3: re-reading v2's own query for dataset constraints ================
+
+-- v2 script lines that query the monthly table for P_F/TA_F --
+[1] "mo_era5 <- dbGetQuery(con, \"SELECT site_id, TIMESTAMP, P_ERA FROM monthly WHERE dataset = 'ERA5'\")"            
+[2] "mo_fluxmet <- dbGetQuery(con, \"SELECT site_id, TIMESTAMP, P_F, P_F_QC FROM monthly WHERE dataset = 'FLUXMET'\")"
+[3] "mo_fluxmet <- mo_fluxmet |> dplyr::mutate(TIMESTAMP = as.Date(TIMESTAMP), year = lubridate::year(TIMESTAMP),"    
+[4] "pf_all <- mo_fluxmet |> dplyr::filter(year >= KG_ERA5_PERIOD[1], year <= KG_ERA5_PERIOD[2]) |>"                  
+[5] "pf_qc0 <- mo_fluxmet |> dplyr::filter(year >= KG_ERA5_PERIOD[1], year <= KG_ERA5_PERIOD[2], P_F_QC == 0) |>"     
+[6] "n_months_total <- mo_fluxmet |> dplyr::filter(year >= KG_ERA5_PERIOD[1], year <= KG_ERA5_PERIOD[2]) |>"          
+[7] "  mo_fluxmet |> dplyr::filter(year >= KG_ERA5_PERIOD[1], year <= KG_ERA5_PERIOD[2], P_F_QC == 0) |>"             
+
+================ A4: P_F_QC polarity verification (root cause) ================
+
+-- Network-wide (n= 74916 site-months): fraction identical to P_ERA, by P_F_QC bin --
+      qc_bin     n frac_identical_to_era5
+1    [0,0.1] 22546             0.98567373
+2  (0.1,0.2]   404             0.05693069
+3  (0.2,0.3]   417             0.04316547
+4  (0.3,0.4]   380             0.02368421
+5  (0.4,0.5]   735             0.01768707
+6  (0.5,0.6]   498             0.01606426
+7  (0.6,0.7]   635             0.01732283
+8  (0.7,0.8]   877             0.01026226
+9  (0.8,0.9]  1368             0.01023392
+10   (0.9,1] 47056             0.00750170
+
+P_F_QC == 0 exactly: n= 22101  frac identical to P_ERA = 1 
+P_F_QC == 1 exactly: n= 38205  frac identical to P_ERA = 0.007930899 
+
+CONCLUSION: P_F_QC=0 means ENTIRELY GAP-FILLED (from ERA5); P_F_QC=1 means ENTIRELY
+ MEASURED (independent) -- the OPPOSITE polarity from the raw HH-resolution System-2
+ convention (0=measured) that v2 applied uncritically to this MM-resolution FRACTION
+ field. v2's 'P_F_QC=0 = fully measured' filter selected exactly the wrong months --
+ the ones guaranteed to be identical to P_ERA by construction. This is the actual
+ root cause of v2's flagged identity: neither ingestion collision (A2 finds none) nor
+ an unconstrained query (A3 finds the query was correctly constrained), but an analyst
+ misreading of an ambiguously-documented, resolution-dependent QC convention.
+Saved: review/diagnostics/era5_precip_units_v3/table_a4_qc_polarity.csv
+
+-- Corrected comparison: ERA5 vs. GENUINELY-measured (P_F_QC>=0.9) tower P_F, 26 excluded sites --
+   site_id   map_era5 map_pf_corrected n_genuine_months has_any_genuine_data
+1   US-HB4 658044.575         2016.110               12                 TRUE
+2   IT-MBo  24150.381        16864.859              188                 TRUE
+3   NO-And   9318.331         8746.009               28                 TRUE
+4   CA-CF2   4963.883         9525.232               12                 TRUE
+5   AU-Fog   5851.213               NA                0                FALSE
+6   BR-Ji3   6879.821               NA                0                FALSE
+7   BR-SM1   5637.838               NA                0                FALSE
+8   DE-SfS   5251.854               NA                0                FALSE
+9   JP-Fmt   5939.714               NA                0                FALSE
+10  JP-KaP   5287.458               NA                0                FALSE
+11  JP-Kzw   5583.852               NA                0                FALSE
+12  JP-MBF   5175.141               NA                0                FALSE
+13  JP-Mse   5187.774               NA                0                FALSE
+14  JP-Nuf   5431.563               NA                0                FALSE
+15  JP-SMF   5431.563               NA                0                FALSE
+16  JP-Shn   6020.625               NA                0                FALSE
+17  JP-Tak   8803.888               NA                0                FALSE
+18  JP-Tkb   5411.866               NA                0                FALSE
+19  JP-Yms   4913.387               NA                0                FALSE
+20  JP-Ynf   6652.844               NA                0                FALSE
+21  KH-Kmp   6637.125               NA                0                FALSE
+22  PE-QFR  10291.840               NA                0                FALSE
+23  US-Cwt   5593.431               NA                0                FALSE
+24  JP-Api   5371.734               NA                0                FALSE
+25  JP-Om2   5337.641               NA                0                FALSE
+26  JP-Nkm   8195.526               NA                0                FALSE
+   ratio_era5_to_genuine_pf
+1               326.3931904
+2                 1.4319942
+3                 1.0654380
+4                 0.5211299
+5                        NA
+6                        NA
+7                        NA
+8                        NA
+9                        NA
+10                       NA
+11                       NA
+12                       NA
+13                       NA
+14                       NA
+15                       NA
+16                       NA
+17                       NA
+18                       NA
+19                       NA
+20                       NA
+21                       NA
+22                       NA
+23                       NA
+24                       NA
+25                       NA
+26                       NA
+
+Sites with ANY genuinely-measured month in 1991-2020: 4 / 26
+Sites with ZERO genuinely-measured months (no ground truth available at all): 22 / 26 --
+ [1] "AU-Fog" "BR-Ji3" "BR-SM1" "DE-SfS" "JP-Fmt" "JP-KaP" "JP-Kzw" "JP-MBF"
+ [9] "JP-Mse" "JP-Nuf" "JP-SMF" "JP-Shn" "JP-Tak" "JP-Tkb" "JP-Yms" "JP-Ynf"
+[17] "KH-Kmp" "PE-QFR" "US-Cwt" "JP-Api" "JP-Om2" "JP-Nkm"
+Saved: review/diagnostics/era5_precip_units_v3/table_a4_corrected_pf_comparison.csv
+
+=== era5_precip_units_v3_partA.R complete ===

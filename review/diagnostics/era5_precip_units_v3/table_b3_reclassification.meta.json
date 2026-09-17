@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T23:02:20Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b2_corrected_vs_both_refs.csv",
+    "R/climate_classification.R (unmodified, sourced)",
+    "data/snapshots/site_koppen_era5.csv"
+  ],
+  "notes": "Before/after KG classification for every site whose empirical factor_estimate clustered away from 1 (not just the 26 previously-excluded sites), using the real, unmodified compute_site_koppen_era5() with P_ERA divided by the nearest canonical factor. Distinguishes newly-recovered (previously unclassified) sites from already-classified sites whose class flips under the mock correction."
+}

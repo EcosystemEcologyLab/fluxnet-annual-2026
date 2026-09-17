@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:59:34Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "data/extracted/*_FLUXNET_{FLUXMET,ERA5}_MM_*.csv (raw, read directly, bypassing DuckDB)"
+  ],
+  "notes": "Sample month values for P_F/P_F_QC/P_ERA/TA_F/TA_ERA read directly from the raw FLUXNET-distributed CSVs (both the FLUXMET_MM file's own bundled ERA5 reference columns, and the standalone ERA5_MM file), for 5 v2-flagged sites and 3 unaffected controls. Tests whether the P_F==P_ERA identity exists in the distributed product itself, before any of this repo's ingestion code runs."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T22:59:34Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_a4_qc_polarity.csv",
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Corrected version of v2's T2 comparison, using P_F_QC>=0.9 (genuinely measured, per A4's polarity finding) instead of the inverted P_F_QC==0 filter. Only 4/26 excluded sites have any genuinely-measured tower precipitation data at all in 1991-2020 (CA-CF2, IT-MBo, NO-And, US-HB4) -- the other 22 (essentially the entire JPF cluster) have zero independent ground truth available from tower data, at any QC level."
+}

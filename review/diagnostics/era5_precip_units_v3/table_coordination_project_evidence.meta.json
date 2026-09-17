@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T23:04:30Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv",
+    "review/diagnostics/era5_precip_units_v3/table_b2_corrected_vs_both_refs.csv"
+  ],
+  "notes": "Curated per-site evidence table (site, hub, product_source_network, oneflux_code_version, estimated factor, uncorrected/corrected MAP, both reference values) in a form suitable for later use in Coordination-Project correspondence. Not drafted as a note, per instruction -- data only."
+}

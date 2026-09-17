@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:59:34Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
+  ],
+  "notes": "dataset value distribution (row counts) per site."
+}

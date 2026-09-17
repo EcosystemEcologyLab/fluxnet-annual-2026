@@ -4,6 +4,78 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — KG source-consistency investigation + counterfactual (read-and-report)
+
+Read-and-report investigation into whether the 2026-08-20 switch of the
+current network's Köppen-Geiger (KG) site classification from Beck et al.
+(2023) raster extraction to a locally computed ERA5-based classification
+created a p/q source mismatch feeding into draft Fig 4/5, plus a
+counterfactual to size the effect. No existing script, figure, legend,
+snapshot CSV, or `representativeness_metrics.csv` was modified. New code:
+`scripts/diagnostics/kg_source_consistency.R`. Full report, provenance
+table, and outputs: `review/diagnostics/kg_source_consistency/` (`report.md`
++ 4 CSVs + `.meta.json` companions). Run log:
+`logs/kg_source_consistency_20260917.log`.
+
+**Verdict: confirmed.** KG is the only representativeness axis where the
+site classification (q) and global reference distribution (p) come from
+different sources — current_781's q is ERA5-local
+(`data/snapshots/site_koppen_era5.csv`), p is still Beck-raster
+(`data/snapshots/koppen_beck2023_global_distribution.csv`). Traced all six
+`AXES6` axes in `scripts/figure_representativeness_summary.R` (LULC,
+Aridity, Biomass, TRENDY NEE-IAV/ET-median all use the identical
+raster/derived-product file for both sides); KG is the sole exception,
+documented as a deliberate, scoped decision in `figure_representativeness_kg.R:6-14`
+and `SESSION_LOG.md:1009-1017` (2026-08-20 entry) — not an oversight, but a
+real mismatch. Confirmed the FLUXNET2015→Current step in Fig 5's KG line
+mixes two classification methods in one trajectory (historical networks
+stay Beck-raster; only `current_781` is ERA5).
+
+**Counterfactual (script re-extracted Beck 2023 KG for the 14 sites added
+between the 767- and 781-site snapshots — `site_koppen_beck2023.csv` on disk
+still only has 767 rows, hardcoded to the old snapshot in
+`step4_extract_koppen_beck2023.R:88` — merged into a diagnostic-only
+`site_koppen_beck2023_current_781.csv`, not written to `data/snapshots/`):
+at two-letter/5-class, switching source raises J by +0.048/+0.058, of which
+~92% is the classification-method effect alone (isolated via a same-755-site
+comparison) and only ~8% is from the 26 sites ERA5 leaves unclassified. At
+30-class the same switch changes J by only +0.001 — an order of magnitude
+smaller; disagreements (69.0% full-code, 77.5% two-letter, 84.5% main-group
+agreement on the 755 comparable sites) net out once spread across 30
+classes. Site-level confusion table shows ERA5 classifies far more sites
+arid (BW+BS: 131 sites) than Beck does for the same 755 sites (87 sites),
+with most of the difference reallocating to Df/Cf (cold/temperate,
+no-dry-season) under Beck.
+
+**Denominator accounting:** of 781 current-network sites, 755 get an ERA5
+KG class; the 26 that don't all have `n_years_used = 0` (every candidate
+1991-2020 year failed the 5000 mm/yr P-screen — 0 sites now lack ERA5 rows
+entirely, unlike the 767-network's 8+25 split). Both `figure_representativeness_summary.R`'s
+`count_sites()` and `figure_representativeness_kg.R`'s `site_fracs()` drop
+unclassified sites from the numerator but keep the full 781 in the
+denominator — network fractions sum to 755/781 ≈ 0.967, not 1.0.
+`representativeness_metrics.csv`'s `n_sites` (781) and the Fig 4/5 legend
+counts (both "n=781") are internally consistent with each other but do not
+disclose that only 755 of those sites actually contributed a KG
+classification.
+
+Flagged, not resolved: the pre-existing unexplained KG two-letter J=0.373
+in the old (pre-2026-09-01) Fig 4/5 legends, already noted in
+`docs/figure_rebuild_781_20260901.md` as matching neither `current_767`
+(0.423) nor `current_781` (0.420) as recorded — a separate, older
+discrepancy from the 0.373→0.423 (767-network) source-switch effect this
+task investigated, which SESSION_LOG.md's own 2026-08-20 entry documents
+and this task's counterfactual independently reproduces at `current_781`.
+
+Report closes with three undecided manuscript options (revert current_781
+to Beck-raster classification; build an ERA5-based global distribution,
+scoped in Task 5 as requiring a new gridded-ERA5 download with no CDS
+credentials currently configured in this repo; or keep ERA5-vs-Beck and
+disclose it in Methods), each with the figures/legend values it would
+change — no option selected, per the task's read-and-report scope.
+
+---
+
 ## 2026-09-13 — Dryland flux tower map (Map10) built
 
 Filled the aridity map placeholder identified in `R/figures/fig_maps.R`.

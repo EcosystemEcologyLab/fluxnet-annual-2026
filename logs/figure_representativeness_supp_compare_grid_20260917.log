@@ -1,0 +1,36 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== figure_representativeness_supp_compare_grid.R ===
+
+================ VERIFICATION: computed vs. stored/published J ================
+   column    axis computed_j reference_j         delta mismatch
+1    left      kg  0.4198469   0.4198469  0.000000e+00    FALSE
+2    left    lulc  0.5671612   0.5671612  0.000000e+00    FALSE
+3    left aridity  0.6659205   0.6659205  0.000000e+00    FALSE
+4    left biomass  0.6362312   0.6362312  0.000000e+00    FALSE
+5    left     nee  0.5057626   0.5057626  0.000000e+00    FALSE
+6    left      et  0.4556037   0.4556037  0.000000e+00    FALSE
+7   right      kg  0.4198469   0.4200000 -1.530945e-04    FALSE
+8   right    igbp  0.3938571   0.3940000 -1.429498e-04    FALSE
+9   right aridity  0.6659205   0.6660000 -7.953913e-05    FALSE
+10  right biomass  0.6362312   0.6360000  2.311650e-04    FALSE
+11  right     nee  0.2326694   0.2330000 -3.305548e-04    FALSE
+12  right      et  0.4889964   0.4890000 -3.550714e-06    FALSE
+
+No mismatches beyond tolerance.
+Saved: review/figures/candidates/table_compare_geospatial_vs_sitelevel_verification.csv
+Saved: review/figures/candidates/Supp_compare_geospatial_vs_sitelevel_grid.png
+Saved: review/figures/candidates/table_compare_geospatial_vs_sitelevel_grid.csv
+
+=== figure_representativeness_supp_compare_grid.R complete ===

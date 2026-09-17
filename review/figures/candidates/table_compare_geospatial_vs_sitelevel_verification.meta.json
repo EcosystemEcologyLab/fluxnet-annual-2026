@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T19:52:32Z",
+  "pipeline_version": "92c00c4",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics.csv",
+    "review/figures/candidates/Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt",
+    "review/figures/candidates/table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv"
+  ],
+  "notes": "Left column J recomputed here from the same stored site+global CSVs figure_representativeness_summary.R's AXES6 reads, checked against representativeness_metrics.csv. Right column J recomputed from table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv, checked against the published Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt values. Mismatches reported, not corrected."
+}

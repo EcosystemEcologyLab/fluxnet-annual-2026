@@ -4,6 +4,75 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — Supplementary comparison grid: geospatial vs. site-level axes, side by side
+
+Built `review/figures/candidates/Supp_compare_geospatial_vs_sitelevel_grid.png`
+(6 rows x 2 columns, current_781 only), placing each fig_rep001_current
+(draft Fig 4) axis next to its Supp_sampling_ratio_siteKG_IGBP_NEE_ET
+counterpart for direct comparison. New script:
+`scripts/figure_representativeness_supp_compare_grid.R`. No existing
+script, figure, legend, snapshot CSV, or `representativeness_metrics.csv`
+was modified — reads only already-stored files, writes only new files.
+
+**Provenance, as specified**: left column recomputed from the same stored
+site-level + global-distribution CSVs `figure_representativeness_summary.R`'s
+`AXES6` reads for current_781 (KG, ESA CCI land cover, Aridity, Biomass,
+TRENDY NEE-IAV, TRENDY ET-median, all at 7-bin hybrid for the continuous
+axes — matching fig_rep001's own resolution), not re-extracted or
+re-derived. Right column read directly from
+`table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv` (KG unchanged, IGBP,
+Aridity unchanged, Biomass unchanged, site-measured NEE, site-measured
+ET), not recomputed from raw site data a second time.
+
+**Rows 1 (KG), 3 (Aridity), 4 (Biomass)** use identical underlying data in
+both columns (both source scripts read the same site+global CSVs for
+these three axes) — computed once, rendered in both columns, labelled
+"unchanged, identical both columns" per instruction; visually confirmed
+byte-for-byte identical bars in the rendered figure.
+
+**Verification (reported, not corrected), per instruction:**
+- Left column: J recomputed from the stored site+global CSVs, checked
+  against `data/snapshots/representativeness_metrics.csv`'s stored
+  current_781 rows (the same lookup `figure_representativeness_summary.R`'s
+  `get_j()` performs) — all 6 axes matched to full floating-point
+  precision (delta = 0 exactly: KG 0.4198469, LULC 0.5671612, Aridity
+  0.6659205, Biomass 0.6362312, TRENDY NEE-IAV 0.5057626, TRENDY ET-median
+  0.4556037).
+- Right column: J recomputed from `table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv`,
+  checked against the 3-decimal values already published in
+  `Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt` — all 6 matched
+  within 5e-4 (consistent with 3-decimal rounding; largest delta -3.3e-4
+  on NEE). **No mismatches found** in either column. Full table:
+  `table_compare_geospatial_vs_sitelevel_verification.csv`.
+
+**One bug caught during build, not shipped**: an early version of the KG
+panel's left-column ordering used `TL_ORDER[match(class, TL_ORDER)]`
+(returns the matched class label itself, not its rank) instead of
+`match(class, TL_ORDER)` (the intended integer rank) — a copy-paste error
+against the working `match()` pattern used for the Aridity axis two lines
+below it. Caught by a `dplyr::bind_rows()` type-mismatch error (this
+column ended up character instead of integer) before the figure was
+finalized; fixed and re-verified. Because `TL_ORDER`'s class codes happen
+to already be in alphabetical order, the resulting figure would likely
+have rendered with the correct row order regardless — the bug affected
+correctness of the code, not visibly the shipped output — but is recorded
+here since it was a real defect, not a non-issue.
+
+**Fig 4 conventions preserved**: log2 sampling-ratio x-axis, ±5x range, 1x
+reference line, shared x scale across all 12 panels, each axis's own
+established class order (KG/Aridity: semantic order; Biomass/NEE/ET:
+ascending bin index; land cover/IGBP: numeric code order), per-panel J,
+and an "n = " annotation wherever the classified count is below 781 (KG
+755/781 both columns; site-measured NEE 636/781; site-measured ET
+656/781; every other panel 781/781).
+
+Outputs: `Supp_compare_geospatial_vs_sitelevel_grid.png` + `.legend.txt`,
+`table_compare_geospatial_vs_sitelevel_grid.csv` (+ `.meta.json`),
+`table_compare_geospatial_vs_sitelevel_verification.csv` (+ `.meta.json`),
+run log `logs/figure_representativeness_supp_compare_grid_20260917.log`.
+
+---
+
 ## 2026-09-17 — Supplementary Jaccard figures: site-measured NEE/ET, site-metadata IGBP, KG unchanged
 
 Built two supplementary representativeness figures addressing a co-author

@@ -4,6 +4,100 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — NEE/ET site-vs-TRENDY diagnostic: artifact ruled out, scale/definition effect confirmed
+
+Read-and-report diagnostic for a co-author decision, investigating why Row
+E′ of `Supp_compare_geospatial_vs_sitelevel_grid.png` (site-measured NEE)
+shows J=0.233 against TRENDY-at-site's J=0.506, while ET (the control,
+Row F/F′) looks well-behaved. New code:
+`scripts/diagnostics/nee_et_site_vs_trendy_core.R` (T1 percentile/ratio,
+T2, T5, T6, T7) and `nee_et_site_vs_trendy_raster.R` (T1 raw-stack
+re-derivation, T3, T4). No existing script, figure, legend, snapshot CSV,
+or `representativeness_metrics.csv` was modified. Full report, all seven
+tests' tables (NEE beside ET), and the paired figure:
+`review/diagnostics/nee_et_site_vs_trendy/`.
+
+**Verdict: no unit-conversion artifact (ruled out with an exact,
+correlation=1.000 match after fixing a bug in the diagnostic script
+itself — see below). The low J is real and explained by two compounding,
+now-quantified effects: a statistical-definition mismatch (measured NEP
+uses median-of-signed-annual-values; TRENDY's `nee_median` uses
+mean-of-absolute-annual-values) and temporal cancellation dominating over
+spatial cancellation.** T3: spatial coarsening 0.5°→4° (64× area) reduces
+global mean |NBP| by only ~22%; temporal cancellation *within a single
+fixed 0.5° pixel across 34 years* inflates `mean(|annual|)` to ~3-4× (site
+pixels) or ~4× (global median — the area-weighted mean is dominated by
+near-zero-denominator outliers and is not usable, reported explicitly
+rather than hidden) relative to `|mean(annual)|`. Ensemble order also
+matters ~2× (median-across-models-first gives 19.6 vs. the stored method's
+35.4 gC m⁻² yr⁻¹). ET shows essentially none of this (cancellation ratio
+0.997; order-of-ensemble 457.15 vs. 457.19, <0.01% apart) — validates the
+method is sound for a strictly non-negative flux.
+
+**T2 (bin saturation):** 73.6% of measured NEE sites fall in the single
+open-ended top bin vs. 9.0% of TRENDY-at-site values — most of Row E′'s
+low J is bin saturation, not a real shift in distribution shape. ET: 7.0%
+vs. 5.6% — negligible.
+
+**T4 (temporal window) ruled out**: recomputing the TRENDY statistic using
+only each site's own QC≥0.80 measured years (approximated via DuckDB,
+n=600 NEE / 599 ET) instead of the full 1990-2023 window changes the value
+by a median of only +0.22 gC m⁻² yr⁻¹ (NEE) / +5.4 mm yr⁻¹ (ET) —
+negligible next to the ~130 gC m⁻² yr⁻¹ gap.
+
+**T5 (management proxy) — opposite of the naive hypothesis**: unmanaged
+forest classes (ENF/EBF/DNF/DBF/MF) show a *larger* median
+measured-minus-TRENDY gap (229.7 gC m⁻² yr⁻¹) than managed
+CRO+GRA+BADM-flagged-managed-WET (117.8), Wilcoxon p=8.3×10⁻⁶ — coherent
+with T3, since forest cells are exactly where a 0.5° pixel's long-run mean
+is most likely to sit near zero (mixed stand ages/histories canceling),
+maximizing the `mean(|·|)` inflation. Explicitly a proxy, not a
+decomposition: TRENDY fire/harvest/land-use-change variables were never
+downloaded for this repo (confirmed absent, only nbp/evapotrans/gpp/ra/rh
+exist on disk).
+
+**T6 (siting bias)**: weak but real for NEE (Spearman ρ=0.164, p=3×10⁻⁵,
+between a site's biomass percentile within its 0.5° cell and its
+measured-minus-TRENDY gap), absent for ET (ρ=0.047, p=0.23) — a minor
+contributor at most.
+
+**One bug caught and fixed during the investigation, reported for the
+record**: T1's raw-monthly-stack re-derivation initially trusted
+`terra::time()` to label CABLE-POP's monthly layers, producing a global
+correlation of ~0.07 against the stored intermediate for nbp (vs. 0.98 for
+the identical evapotrans code path) — a red flag investigated rather than
+dismissed. Root cause: `figure_representativeness_trendy_compute.R:118-122`
+explicitly documents and works around a `terra::time()` bug that misparses
+CABLE-POP's true 1700 start year as 1970 (a systematic +270-year offset);
+the diagnostic script's first draft didn't replicate that documented
+workaround. Fixed to match the pipeline's own `get_years()` logic exactly;
+re-run gave an exact match (r=1.000000, 0/60,271 cells differ, every year,
+both variables) — confirming the pipeline itself has no conversion bug. A
+second near-miss was caught before it reached the report: an early draft
+of the T3 ET order-of-ensemble comparison cited specific numbers that had
+never actually been computed by the script (only the NEE side was
+originally coded) — caught on review, the missing computation was added to
+the script, and the report was corrected to the real re-run values (457.15
+vs. 457.19) before being finalized.
+
+**Code-vs-docs disagreement noted, code treated as authoritative**: a
+prior session's `fig_rep018` caption described a "histogram ceiling at
+1000 mm yr⁻¹" for ET binning; reading `figure_representativeness_trendy_compute.R`
+directly shows the actual mechanism is a general adaptive low-cut rule
+(halves/doubles the first bin's edge if it would capture <1%/>70% of
+land), not a hardcoded 1000mm constant — the caption's description of the
+symptom wasn't wrong for that run, but the mechanism is general-purpose.
+
+**For the co-author decision**: report lays out what Column 1
+(TRENDY-at-site vs. TRENDY-global) and Column 2 (measured vs.
+TRENDY-global) can and cannot claim, which tests bear on each, and three
+options (re-bin on the measured distribution; drop the measured-flux axes
+from the Jaccard framework and present a paired comparison instead, e.g.
+this diagnostic's own T7 figure; keep both with a stated caveat) with the
+exact figures/legends each would touch — no option chosen, per instruction.
+
+---
+
 ## 2026-09-17 — Supplementary comparison grid: geospatial vs. site-level axes, side by side
 
 Built `review/figures/candidates/Supp_compare_geospatial_vs_sitelevel_grid.png`

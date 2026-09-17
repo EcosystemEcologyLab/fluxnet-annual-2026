@@ -4,6 +4,44 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — ERA5 precipitation units v4: scoping the 4x/8x cluster (read-only)
+
+Follow-up to `review/diagnostics/era5_precip_units_v3/`. Read-and-report
+only — no counterfactual, no reclassification, no pipeline edits. New code:
+`scripts/diagnostics/era5_precip_units_v4.R`. Confirmed via `git status`:
+zero changes to the pipeline, figures, legends, snapshot CSVs, or the
+v1/v2/v3 reports/outputs. Full report and 10 output tables:
+`review/diagnostics/era5_precip_units_v4/`.
+
+**Verdict: 123/781 sites cluster near 4x/8x against BADM+BIO12 (v3's
+unrefit Part B result), and that cluster is defined almost entirely by the
+absence of independent ground truth, not by hub, network, or resolution —
+only 4/123 clustered sites have any genuinely-measured tower precipitation
+at all (`P_F_QC≥0.9`), versus 282/323 in the near-1x control group
+(separation score 0.84, by far the strongest of the four grouping
+variables tested).** 15 of the 123 are already among the 26 sites the
+`KG_ERA5_MAP_MAX_MM` screen excludes; **108 currently carry a successful
+KG classification that a future correction would change — the number to
+plan around.** The clustered sites are not regionally concentrated (the
+58-site AmeriFlux subset alone spans -55°S to 71°N), though JPF is
+moderately over-represented (20.3% of the cluster vs. 3.4% of the
+control) and ICOS moderately under-represented. At the only 4 clustered
+sites with an independent gauge, the corrected value is still 2.6x-18.9x
+off from the gauge — the one check not used to fit the factor does not
+confirm the correction (n=4, no real power, reported for transparency).
+Separately, BADM MAP does not look like a WorldClim BIO12 lookup: of 399
+sites with both references plus a gauge, only 1 ties exactly, and BIO12 is
+independently closer to the gauge slightly more often than BADM is (218
+vs. 180) — so v3's two-reference corroboration does not collapse to one
+reference in disguise. Native HH/HR temporal resolution per site was not
+recoverable from the manifest CSV or `file_inventory.rds` (both searched;
+the latter records extracted-file resolution, not native collection
+interval, since only y/m/d were ever extracted) — recovered instead from
+BADM's `PRODUCT_TIME_RESOLUTION` field (759/781 sites). No note to the
+FLUXNET Coordination Project drafted, per scope.
+
+---
+
 ## 2026-09-18 — ERA5 precipitation units v3: QC-polarity error found; network-wide correction test
 
 Follow-up to `review/diagnostics/era5_precip_units_v2/`. New code:

@@ -1,0 +1,87 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== kg_source_consistency.R ===
+767-snapshot sites: 767
+781-snapshot sites: 781
+Removed (767 not in 781): 0
+Added   (781 not in 767): 14 [ES-LgS, ES-Ln2, FI-Si2, HK-MPM, IT-Cpz, IT-MtP, IT-Ro1, IT-Ro2, US-KLS, US-LS2, US-xHA, US-xKA, US-xTA, US-ZF1]
+
+Existing site_koppen_beck2023.csv: 767 rows
+New sites with coordinates to extract: 14
+KG raster: data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif | res=0.00833333 x 0.00833333deg
+NA after exact extraction (new sites): 1
+
+--- Newly extracted sites (Beck 2023 raster) ---
+   site_id koppen_class      koppen_method
+1   US-KLS          Dfa              exact
+2   US-LS2          BSh              exact
+3   US-xHA          Dfb              exact
+4   US-xKA          Dfa              exact
+5   US-xTA          Cfa              exact
+6   US-ZF1          Dfa              exact
+7   HK-MPM          Cwa nearest_land_0.9km
+8   IT-Ro2          Csa              exact
+9   IT-Ro1          Csa              exact
+10  IT-MtP          Dfc              exact
+11  IT-Cpz          Csa              exact
+12  FI-Si2          Dfc              exact
+13  ES-Ln2          Dsb              exact
+14  ES-LgS          Dsb              exact
+
+Beck-raster 781-site set: 781 rows, 0 unclassified (NA)
+Saved: review/diagnostics/kg_source_consistency/site_koppen_beck2023_current_781.csv
+
+ERA5 site classes: 755 classified / 26 unclassified (of 781)
+
+Saved: review/diagnostics/kg_source_consistency/kg_counterfactual_metrics.csv
+Saved: review/diagnostics/kg_source_consistency/kg_sampling_ratios.csv
+
+================ SUMMARY: weighted Jaccard by variant x level ================
+  aggregation_level weighted_jaccard_a_era5_as_built
+1           class30                        0.3511205
+2            class5                        0.4559608
+3         twoletter                        0.4198469
+  weighted_jaccard_b_beck_consistent weighted_jaccard_c_beck_same_sample
+1                          0.3498346                           0.3495244
+2                          0.3984218                           0.4027738
+3                          0.3716111                           0.3753498
+  n_classified_sites_a_era5_as_built n_classified_sites_b_beck_consistent
+1                                755                                  781
+2                                755                                  781
+3                                755                                  781
+  n_classified_sites_c_beck_same_sample
+1                                   755
+2                                   755
+3                                   755
+Saved: review/diagnostics/kg_source_consistency/kg_confusion_twoletter.csv
+Two-letter agreement (755 comparable sites): 585/755 = 77.5%
+
+================ Two-letter classes ranked by |delta network_frac|, (a) vs (b) ================
+   class         q_a        q_b   delta_frac delta_n_sites
+1     BW 0.065300896 0.03072983 -0.034571063           -27
+2     Df 0.313700384 0.34443022  0.030729834            24
+3     BS 0.102432778 0.08066581 -0.021766965           -17
+4     Cf 0.250960307 0.26760563  0.016645327            13
+5     Ds 0.021766965 0.03585147  0.014084507            11
+6     Cs 0.088348271 0.09987196  0.011523688             9
+7     Am 0.005121639 0.01536492  0.010243278             8
+8     Cw 0.007682458 0.01280410  0.005121639             4
+9     Af 0.019206146 0.01536492 -0.003841229            -3
+10    Aw 0.028169014 0.03201024  0.003841229             3
+11    Dw 0.035851472 0.03713188  0.001280410             1
+12    EF 0.000000000 0.00000000  0.000000000             0
+13    ET 0.028169014 0.02816901  0.000000000             0
+Saved: review/diagnostics/kg_source_consistency/kg_class_shift_drivers.csv
+
+=== kg_source_consistency.R complete ===

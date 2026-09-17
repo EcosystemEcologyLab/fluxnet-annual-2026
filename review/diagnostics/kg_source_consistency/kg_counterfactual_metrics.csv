@@ -1,0 +1,10 @@
+variant,variant_label,aggregation_level,n_classes,n_classified_sites,n_total_denominator,weighted_jaccard,hellinger_distance
+a_era5_as_built,(a) as built now: ERA5 site classes vs Beck global,class30,30,755,781,0.35112046448602136,0.44256165982622875
+b_beck_consistent,(b) consistent raster: Beck-raster site classes (781) vs Beck global,class30,30,781,781,0.3498346410566626,0.4409599373007911
+c_beck_same_sample,"(c) same sample, consistent source: Beck-raster classes, restricted to the 755 ERA5-classified sites, vs Beck global",class30,30,755,781,0.3495243718556807,0.43808970016285026
+a_era5_as_built,(a) as built now: ERA5 site classes vs Beck global,class5,5,755,781,0.45596083001152327,0.29900550517939806
+b_beck_consistent,(b) consistent raster: Beck-raster site classes (781) vs Beck global,class5,5,781,781,0.3984217969689395,0.33091049891778873
+c_beck_same_sample,"(c) same sample, consistent source: Beck-raster classes, restricted to the 755 ERA5-classified sites, vs Beck global",class5,5,755,781,0.4027737559984533,0.3269036303629323
+a_era5_as_built,(a) as built now: ERA5 site classes vs Beck global,twoletter,13,755,781,0.4198469054828605,0.38259691533594775
+b_beck_consistent,(b) consistent raster: Beck-raster site classes (781) vs Beck global,twoletter,13,781,781,0.3716110898203183,0.41121593134163
+c_beck_same_sample,"(c) same sample, consistent source: Beck-raster classes, restricted to the 755 ERA5-classified sites, vs Beck global",twoletter,13,755,781,0.37534982428566394,0.4074615215985522

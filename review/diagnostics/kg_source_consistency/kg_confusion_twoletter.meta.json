@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T16:25:42Z",
+  "pipeline_version": "5dc7b71",
+  "input_sources": [
+    "data/snapshots/site_koppen_era5.csv",
+    "review/diagnostics/kg_source_consistency/site_koppen_beck2023_current_781.csv"
+  ],
+  "notes": "Site-level two-letter KG confusion matrix, ERA5-local (rows) vs Beck-2023-raster (cols), for the 755 sites classified by both methods."
+}

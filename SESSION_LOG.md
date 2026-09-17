@@ -4,6 +4,96 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — ERA5 precipitation units v2: closes a circularity gap in the prior verdict
+
+Follow-up diagnostic, superseding the 2026-09-17
+`review/diagnostics/era5_precip_units/` (v1) verdict. New code:
+`scripts/diagnostics/era5_precip_units_v2.R`. No edits to the pipeline,
+figures, legends, snapshot CSVs, or v1's report/outputs (confirmed via
+`git status` — v1's directory shows zero changes). `R/climate_classification.R`
+read only, never edited. Full report and outputs:
+`review/diagnostics/era5_precip_units_v2/`.
+
+**Why this was needed**: v1's "geography, not units" verdict rested on
+ERA5-derived MAP agreeing with tower `P_F` at 24/25 excluded sites. That
+comparison is not independent — `P_F` is reanalysis-filled wherever gap-fill
+applies, and v1's own IT-MBo number (~27,400 mm/yr tower P_F) exceeds any
+recorded annual total anywhere on Earth, at a site independently known to
+receive ~1200 mm/yr. Both series were wrong there, exactly as flagged.
+
+**Verdict: the units question is now settled beyond doubt (not just
+"ruled out" but confirmed via a fully independent, non-circular test),
+but v1's further claim that the other 24 sites are "genuinely wet, real
+places" does not survive scrutiny.** Every FLUXNET Shuttle site bundles
+an annual-resolution `*_FLUXNET_ERA5_YY_*.csv` file produced independently
+by ONEFlux/AmeriFlux's own official processing; summing
+`P_ERA×days_in_month` from the monthly file and comparing against that
+official annual value gives ratio 1.0000 (median), range 0.9947-1.0068,
+across 2,955 site-years at 66 sites — including the two most extreme
+sites, exactly. **P_ERA is definitively a mean daily rate and the
+pipeline's day-weighting formula is exactly correct, everywhere, with no
+exceptions.** But testing whether tower P_F (even restricted to nominally
+fully-measured `P_F_QC=0` months) is truly independent found that
+`TA_ERA`/`VPD_ERA` are numerically IDENTICAL to their "measured" tower
+counterparts at every site checked, including the two confirmed
+anomalies — a "measured" flag does not mean independent of ERA5 for these
+consolidated meteorological variables in this product. A genuinely
+independent source, BADM's PI-reported MAP, disagrees with ERA5 by the
+same 2.7-460x magnitude BIO12 does at every one of the 20 excluded sites
+that have a BADM entry — new evidence v1 did not have, pointing away from
+its conclusion.
+
+**Net result: zero sites show a units problem (confirmed, not just
+inferred); two sites (`US-HB4`, `IT-MBo`) are confirmed genuine data
+errors by convergent evidence (physically impossible magnitudes present
+even in ONEFlux's own official product, near-zero independently-measured
+tower months, and BADM disagreement of 460x/17.7x); the remaining 24
+sites' true climate is genuinely unresolved with data available in this
+repo** — the two theoretically-independent checks (P_F, BADM) point in
+opposite directions, and one of them (P_F) turns out not to be
+independent. `IT-MBo`'s ERA5-derived MAP (15,000-27,000+ mm/yr) is
+confirmed wrong against the task's own independently-known true value
+(~1200 mm/yr); `US-HB4`'s entire 1981-2025 raw monthly record (mean 1798
+mm/day, physically impossible) is confirmed present identically in
+ONEFlux's own bundled annual product, ruling out any downstream summation
+bug as the cause.
+
+**Documentation discrepancy found and reported, not resolved**: the
+project's own `methods_koppen_era5.md` and the 2026-08-20 SESSION_LOG
+entry contradict each other on whether the ICOS reference script
+multiplies by `days_in_month` (methods doc says it does; log entry says
+it does not) — quoted directly in the new report; the MM-vs-YY internal
+consistency test makes resolving which is accurate unnecessary for this
+pipeline's own correctness.
+
+**Reach**: the same TA_ERA=TA_F / VPD_ERA=VPD_F entanglement found at
+"measured" QC months is not precipitation-specific. Consumers of
+`dataset='ERA5'` confirmed by direct grep: `R/climate_classification.R`,
+`R/figures/fig_environmental_response.R` (fig_08, already flagged in
+`docs/known_issues.md` §9a for a silent drop with no exclusion log), and
+a third, independent reimplementation of the same unverified
+"unit-conversion artifact" assumption found in the deprecated
+`R/figures/fig_climate_legacy.R:66-67`. No repository documentation of
+the planned P/PET aridity panel was found (searched decisions_pending.md,
+methods_requirements.md, known_issues.md for PET) — flagged as
+not-found, not assumed.
+
+**D4 recovery counterfactual carried forward from v1 unchanged** (it
+never depended on P_F or BADM, so is unaffected by this correction):
+extending the candidate-year window recovers 1/26 sites; a factor-of-2
+relative screen would push 238 sites below the classification floor. The
+open question this report adds is not "what factor recovers these
+sites" (T1: none exists) but "which of the 26 should be recovered at
+all," which remains unresolved for 24 of them.
+
+Recommendation section re-scopes v1's four options: the P_F-fallback
+option is now flagged as unreliable at these specific sites (P_F is not
+independent here); `US-HB4`/`IT-MBo` should be treated as confirmed
+data-quality issues for upstream correction, not a KG-algorithm question;
+no option chosen, per instruction.
+
+---
+
 ## 2026-09-17 — ERA5 precipitation-units diagnostic: geography, not a units bug (one isolated anomaly)
 
 Read-and-report diagnostic + scoped counterfactual for a co-author

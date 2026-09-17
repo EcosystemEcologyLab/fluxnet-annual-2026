@@ -1,0 +1,66 @@
+FIGURE LEGEND — Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png
+================================================================
+
+TITLE: Supplementary Jaccard trajectory — site-level KG, site-metadata
+IGBP, and site-measured NEE/ET across four network generations
+
+STATUS: Candidate supplementary figure, addressing a co-author comment on
+draft Figs 4/5. Not yet promoted to draft_manuscript_v1/. Companion to
+Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png. Full methods in
+Supp_methods_siteKG_IGBP_NEE_ET.txt (this directory).
+
+DESCRIPTION:
+Single-panel trajectory, directly analogous to draft Fig 5
+(review/figures/representativeness/fig_rep008_jaccard_trajectory_with_counts.png),
+across the same four network generations (Marconi -> La Thuile ->
+FLUXNET2015 -> Current), with the same three axis substitutions as the
+companion sampling-ratio figure. Light grey bars (right axis) show
+absolute site count per generation.
+
+KEY DIFFERENCE FROM DRAFT FIG 5: the NEE and ET lines connect only 2 of
+the 4 points (FLUXNET2015, Current) — La Thuile and Marconi have no
+downloaded flux time series anywhere in this repository (only historical
+site/coordinate lists), so no measured NEE/ET can be computed for them.
+This is an explicit, visible gap in the line (na.rm, not interpolated or
+backfilled), documented in the plot's own caption. KG, Aridity, Biomass,
+and IGBP all have full 4-point coverage.
+
+AXES AND LINE COLORS:
+  KG (13-class, unchanged):              vermilion  #D55E00
+  IGBP (17-class, site metadata):        reddish-pink #CC79A7
+  Aridity (7-class, unchanged):          amber      #E69F00
+  Biomass (7-bin, unchanged):            green      #009E73
+  NEE (site-measured NEP magnitude, 18-bin): blue   #0072B2
+  ET (site-measured, 18-bin):            sky blue   #56B4E9
+
+Continuous axes (NEE/ET) use 18-bin hybrid here (matching draft Fig 5's
+resolution), vs. 7-bin in the companion sampling-ratio figure (matching
+draft Fig 4's resolution) — same convention as the original figure pair.
+
+JACCARD VALUES BY NETWORK GENERATION:
+  Axis                                Marconi  La Thuile  FLUXNET2015  Current
+  KG (13-class, unchanged)             0.223    0.292      0.365        0.420
+  IGBP (17-class, site metadata)       0.182    0.364      0.361        0.394
+  Aridity (7-class, unchanged)         0.479    0.532      0.598        0.666
+  Biomass (7-bin, unchanged)           0.409    0.532      0.554        0.636
+  NEE (site-measured, 18-bin)            --       --       0.173        0.207
+  ET (site-measured, 18-bin)             --       --       0.448        0.450
+KG/Aridity/Biomass values are unchanged from draft Fig 5 (same source data,
+same computation). IGBP is newly computed here (no prior figure used this
+axis). NEE/ET at FLUXNET2015: 172/212 sites have a measured NEP median,
+179/212 have measured ET (site_flux_medians_fluxnet2015.csv, QC=0.80).
+
+SITE COUNTS BY GENERATION: Marconi 35 | La Thuile 252 | FLUXNET2015 212 |
+Current 781 (identical to draft Fig 5).
+
+DATA SOURCES: Same as the companion sampling-ratio figure (see its
+.legend.txt); IGBP additionally uses each historical network's own site
+list (sites_la_thuile_clean.csv, sites_marconi_clean.csv,
+sites_fluxnet2015_clean.csv), all of which carry an `igbp` field natively.
+
+REPRODUCIBILITY:
+  Script: scripts/figure_representativeness_supp_sitelevel.R
+  Run log: logs/figure_representativeness_supp_sitelevel_20260917.log
+  Companion data: table_supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.csv (this directory)
+
+DIMENSIONS: 7 x 5 inches, 300 dpi

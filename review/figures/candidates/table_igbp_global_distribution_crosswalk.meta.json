@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T18:10:22Z",
+  "pipeline_version": "cd6efe5",
+  "input_sources": [
+    "data/snapshots/landcover_cci_native_global_distribution.csv",
+    "review/figures/candidates/table_igbp_esacci_crosswalk.csv"
+  ],
+  "notes": "Global IGBP-class land fraction, built by applying table_igbp_esacci_crosswalk.csv to the existing (unchanged) ESA CCI native-class global distribution. Sums to 1.0 (land-only, no ocean)."
+}

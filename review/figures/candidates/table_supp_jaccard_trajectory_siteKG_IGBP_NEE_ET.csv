@@ -1,0 +1,25 @@
+axis,network,jaccard,net_x,n_sites
+"KG (13-class, unchanged)",marconi,0.2229460105350978,1,35
+"IGBP (17-class, site metadata)",marconi,0.18239564176508113,1,35
+"Aridity (7-class, unchanged)",marconi,0.47898343232265866,1,35
+"Biomass (7-bin, unchanged)",marconi,0.40895124911898173,1,35
+"NEE (site-measured NEP magnitude, 18-bin)",marconi,NA,1,35
+"ET (site-measured, 18-bin)",marconi,NA,1,35
+"KG (13-class, unchanged)",la_thuile,0.2922554786441764,2,252
+"IGBP (17-class, site metadata)",la_thuile,0.364283644358806,2,252
+"Aridity (7-class, unchanged)",la_thuile,0.5319605329040273,2,252
+"Biomass (7-bin, unchanged)",la_thuile,0.5319829942388983,2,252
+"NEE (site-measured NEP magnitude, 18-bin)",la_thuile,NA,2,252
+"ET (site-measured, 18-bin)",la_thuile,NA,2,252
+"KG (13-class, unchanged)",fluxnet2015,0.3650973530962458,3,212
+"IGBP (17-class, site metadata)",fluxnet2015,0.36121410743923976,3,212
+"Aridity (7-class, unchanged)",fluxnet2015,0.5981357264072649,3,212
+"Biomass (7-bin, unchanged)",fluxnet2015,0.5537168011955627,3,212
+"NEE (site-measured NEP magnitude, 18-bin)",fluxnet2015,0.17339922094663662,3,212
+"ET (site-measured, 18-bin)",fluxnet2015,0.4476925228977592,3,212
+"KG (13-class, unchanged)",current_781,0.4198469054828605,4,781
+"IGBP (17-class, site metadata)",current_781,0.39385705015145905,4,781
+"Aridity (7-class, unchanged)",current_781,0.665920460867173,4,781
+"Biomass (7-bin, unchanged)",current_781,0.636231164957332,4,781
+"NEE (site-measured NEP magnitude, 18-bin)",current_781,0.20713454803963077,4,781
+"ET (site-measured, 18-bin)",current_781,0.44951552150698787,4,781

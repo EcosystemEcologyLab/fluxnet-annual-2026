@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T18:10:22Z",
+  "pipeline_version": "cd6efe5",
+  "input_sources": [
+    "data/snapshots/cci_landcover_aggregation_lookup.csv"
+  ],
+  "notes": "Constructed ESA-CCI-native(37-class)->IGBP(17-class) crosswalk for the supplementary co-author-response representativeness figures. Not an official ESA/NASA crosswalk (none found verifiable -- see Supp_methods_siteKG_IGBP_NEE_ET.txt for the search record); built from each scheme's own published class definitions. See the `rationale` column for every non-trivial mapping choice."
+}

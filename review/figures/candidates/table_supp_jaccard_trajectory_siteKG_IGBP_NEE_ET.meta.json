@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T18:10:23Z",
+  "pipeline_version": "cd6efe5",
+  "input_sources": [
+    "review/figures/candidates/Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png"
+  ],
+  "notes": "Per-axis/per-network weighted Jaccard behind Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png. jaccard is NA for NEE/ET at la_thuile/marconi (no measured flux data)."
+}

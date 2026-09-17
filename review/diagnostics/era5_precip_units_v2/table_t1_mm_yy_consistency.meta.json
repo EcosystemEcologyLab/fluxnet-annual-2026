@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:38:23Z",
+  "pipeline_version": "248fc3a",
+  "input_sources": [
+    "data/extracted/*_FLUXNET_ERA5_{MM,YY}_*.csv (raw, official ONEFlux/AmeriFlux product)"
+  ],
+  "notes": "Site-year comparison of sum(P_ERA_month*days_in_month) [computed here from the MM-resolution file] against the officially-bundled YY-resolution file's own P_ERA value. Near-exact agreement (ratio~1.0) at every tested site, INCLUDING excluded/anomalous ones, is authoritative non-circular evidence that (a) P_ERA at MM resolution is a mean daily rate (mm/day), (b) the pipeline's day-weighting formula is correct, and (c) any anomalous magnitude at excluded sites is already present in ONEFlux's own official annual product -- not introduced by this pipeline's monthly-to-annual conversion."
+}

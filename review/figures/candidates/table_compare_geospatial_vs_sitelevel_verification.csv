@@ -1,0 +1,13 @@
+column,axis,computed_j,reference_j,reference_source,delta,tolerance,mismatch
+left,kg,0.4198469054828605,0.4198469054828605,representativeness_metrics.csv,0,1e-6,FALSE
+left,lulc,0.5671611568353636,0.5671611568353636,representativeness_metrics.csv,0,1e-6,FALSE
+left,aridity,0.665920460867173,0.665920460867173,representativeness_metrics.csv,0,1e-6,FALSE
+left,biomass,0.636231164957332,0.636231164957332,representativeness_metrics.csv,0,1e-6,FALSE
+left,nee,0.5057625962521666,0.5057625962521666,representativeness_metrics.csv,0,1e-6,FALSE
+left,et,0.45560370965096225,0.45560370965096225,representativeness_metrics.csv,0,1e-6,FALSE
+right,kg,0.4198469054828604,0.42,Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt,-1.5309451713957367e-4,5e-4,FALSE
+right,igbp,0.39385705015145905,0.394,Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt,-1.4294984854096304e-4,5e-4,FALSE
+right,aridity,0.665920460867173,0.666,Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt,-7.953913282698899e-5,5e-4,FALSE
+right,biomass,0.636231164957332,0.636,Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt,2.3116495733199738e-4,5e-4,FALSE
+right,nee,0.23266944516389657,0.233,Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt,-3.3055483610344716e-4,5e-4,FALSE
+right,et,0.4889964492860726,0.489,Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt,-3.550713927380489e-6,5e-4,FALSE

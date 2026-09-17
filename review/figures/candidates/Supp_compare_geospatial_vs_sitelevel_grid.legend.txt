@@ -1,0 +1,111 @@
+FIGURE LEGEND — Supp_compare_geospatial_vs_sitelevel_grid.png
+================================================================
+
+TITLE: Geospatial vs. site-level representativeness axes, side by side
+(current FLUXNET network, n = 781)
+
+STATUS: Candidate figure, not promoted to draft_manuscript_v1/. Built
+purely from already-stored outputs of two earlier sessions — no new site
+extraction, raster processing, or classification was performed to build
+this figure.
+
+DESCRIPTION:
+6-row x 2-column grid, current network only. Each row is one
+representativeness axis; the left panel is that axis as built for
+fig_rep001_current.png / draft Fig 4 (the "geospatial" version — site
+values point-extracted from a raster or classified from a raster-derived
+source, compared against a raster-derived global distribution); the right
+panel is the corresponding axis from
+Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png (the "site-level" version —
+site values from tower metadata or actual flux measurements). Same log2
+sampling-ratio convention, ±5x range, and 1x reference line as draft Fig 4
+throughout (shared x scale across all 12 panels).
+
+DATA PROVENANCE (per this session's explicit instruction):
+  LEFT column: recomputed here directly from the same stored site-level +
+    global-distribution CSVs that figure_representativeness_summary.R's
+    AXES6 configuration reads for current_781 (7-bin hybrid for the two
+    continuous TRENDY axes, matching fig_rep001's own resolution) — i.e.
+    the same inputs, same computation, not re-extracted from raw rasters
+    and not read from a different/updated source.
+  RIGHT column: read directly from this repo's own
+    table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv (the companion table
+    behind Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png) — not recomputed
+    from raw site data a second time.
+
+ROWS (A/A' — F/F'):
+  1 (A/A') — Koppen-Geiger, 13-class. IDENTICAL DATA in both columns (both
+             read site_koppen_era5.csv vs koppen_beck2023_global_distribution.csv)
+             — unchanged, kept for a complete 6-axis comparison, not
+             re-derived independently per column.
+  2 (B/B') — Land cover: LEFT = ESA CCI Land Cover, 10-class high-level
+             (site_landcover_cci.csv vs landcover_cci_highlevel_global_distribution.csv).
+             RIGHT = IGBP, 17-class (site metadata `igbp` field vs the
+             constructed ESA-CCI->IGBP crosswalk global distribution built
+             in the prior session — table_igbp_global_distribution_crosswalk.csv).
+             Different class sets entirely; not directly comparable
+             class-by-class, only in aggregate pattern.
+  3 (C/C') — CGIAR Aridity Index v3.1, 7-class. IDENTICAL DATA both
+             columns (site_aridity.csv vs aridity_unep7_global_distribution.csv)
+             — unchanged.
+  4 (D/D') — ESA CCI Biomass v7, 7-bin. IDENTICAL DATA both columns
+             (site_biomass_cci_v7.csv vs biomass_cci_v7_global_distribution.csv)
+             — unchanged.
+  5 (E/E') — LEFT = TRENDY v14 NEE-IAV, 7-bin, TRENDY ensemble value
+             sampled at each site's coordinates
+             (site_trendy_nee_iav.csv vs trendy_nee_iav_global_distribution.csv).
+             RIGHT = NEE, site-measured (|NEP| = |-NEE|, per-site median
+             from actual flux data, site_flux_medians_shuttle.csv) vs the
+             UNCHANGED TRENDY nee_median (not nee_iav) global distribution
+             — different TRENDY axis on the global side by necessity (see
+             Supp_methods_siteKG_IGBP_NEE_ET.txt: nee_iav is an
+             interannual-variability metric, not comparable to a measured
+             central-tendency value; nee_median's "mean |flux|" bins are
+             the correct match).
+  6 (F/F') — LEFT = TRENDY v14 ET-median, 7-bin, sampled at site
+             coordinates (site_trendy_et_median.csv vs
+             trendy_et_median_global_distribution.csv). RIGHT = ET,
+             site-measured (per-site median from actual flux data) vs the
+             SAME (unchanged) trendy_et_median_global_distribution.csv —
+             note the global reference values (p) for row 6 are therefore
+             byte-identical between columns; only the site side (q)
+             differs.
+
+Y AXIS: each column uses its own axis's established semantic order — KG:
+Af,Am,Aw,BS,BW,Cf,Cs,Cw,Df,Ds,Dw,EF,ET (both columns, row 1); Aridity:
+Hyper-Arid -> Hyper-Humid (both columns, row 3); Biomass/NEE/ET: ascending
+bin index 1-7 (rows 4-6, both columns); land cover: ESA CCI high-level
+code order 1-10 (row 2 left); IGBP: numeric IGBP code order, ENF..WAT (row
+2 right). Within every row, both columns share the same ordering logic
+(identical order for rows 1/3/4; each column's own natural order for rows
+2/5/6, since the class sets differ or the two sides represent different
+physical quantities).
+
+PER-PANEL ANNOTATIONS: weighted Jaccard (J) in the top-right of every
+panel; classified site count (n) additionally shown wherever n < 781 (rows
+A/A': n=755; row E': n=636; row F': n=656 — all other panels are 781/781
+classified).
+
+VERIFICATION (per this session's explicit instruction — reported, not
+corrected): left-column J values were recomputed here from the stored
+site+global CSVs and checked against data/snapshots/representativeness_metrics.csv's
+stored current_781 rows for the matching (axis, aggregation_level) — all 6
+matched to full floating-point precision (delta = 0 in every case).
+Right-column J values were recomputed from table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv
+and checked against the 3-decimal J values already published in
+Supp_sampling_ratio_siteKG_IGBP_NEE_ET.legend.txt — all 6 matched within
+5e-4 (consistent with 3-decimal rounding in that legend; largest delta
+-3.3e-4, row E'/NEE). No mismatches found. Full verification table:
+table_compare_geospatial_vs_sitelevel_verification.csv (this directory).
+
+REPRODUCIBILITY:
+  Script: scripts/figure_representativeness_supp_compare_grid.R
+  Run log: logs/figure_representativeness_supp_compare_grid_20260917.log
+  Companion data: table_compare_geospatial_vs_sitelevel_grid.csv,
+    table_compare_geospatial_vs_sitelevel_verification.csv (this directory)
+  Upstream sources (not modified by this script): review/figures/representativeness/fig_rep001_current.png
+    (scripts/figure_representativeness_summary.R) and
+    Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png
+    (scripts/figure_representativeness_supp_sitelevel.R)
+
+DIMENSIONS: 9 x 16.3 inches, 300 dpi

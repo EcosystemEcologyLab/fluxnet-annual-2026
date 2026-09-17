@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T19:52:33Z",
+  "pipeline_version": "92c00c4",
+  "input_sources": [
+    "review/figures/candidates/Supp_compare_geospatial_vs_sitelevel_grid.png"
+  ],
+  "notes": "Per-class p/q/sampling-ratio data behind Supp_compare_geospatial_vs_sitelevel_grid.png, left (geospatial) and right (site-level) columns, all 6 rows."
+}

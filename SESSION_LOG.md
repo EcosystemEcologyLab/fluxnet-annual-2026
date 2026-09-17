@@ -4,6 +4,84 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — Representativeness (Jaccard) datasets and the geospatial-vs-site-level logic
+
+Follow-up summary to this session's KG source-consistency investigation
+(below), answering: which datasets feed the six representativeness/Jaccard
+axes in `scripts/figure_representativeness_summary.R` (draft Figs 4 & 5),
+and what rule governs when each is used as a geospatial (global, area-
+weighted) product versus point-extracted at site coordinates. No files
+other than this log entry were touched.
+
+### Dataset summary (all six axes)
+
+| Axis | Dataset | Version / epoch | Resolution |
+|---|---|---|---|
+| Köppen-Geiger (13-class) | Beck et al. (2023) *Sci. Data* 10:724, climatological raster | 1991-2020 | 1 km (`koppen_geiger_0p00833333.tif`) |
+| Köppen-Geiger, site side (current_781 only) | Locally computed from each site's bundled ERA5 monthly reanalysis, via the Beck rule cascade | 1991-2020 normal | site point data, not gridded |
+| Land cover (10-class HL) | ESA CCI Land Cover v2.1.1 | 2020 epoch | native (`cci_lc_2022_kg_aligned_native.tif`) |
+| Aridity (7-class UNEP) | CGIAR Global Aridity Index v3.1 (Trabucco & Zomer 2019) | — | native (`ai_v31_yr.tif`) |
+| Biomass (7-/18-bin hybrid) | ESA CCI Biomass v7.0, band 18 (Santoro et al.) | 2024 estimate | ~1 km |
+| TRENDY NEE-IAV | TRENDY v14 multi-model ensemble (19 DGVMs, GCB2025 protocol), median absolute IAV | multi-year | regridded 0.5° |
+| TRENDY ET-median | Same TRENDY v14 ensemble, median annual ET | multi-year | regridded 0.5° |
+| Site list (all axes) | FLUXNET Shuttle (`flux_listall()`/`flux_download()`) snapshots | per-network pinned snapshot | 781/212/252/35 sites |
+
+### The logic: same raster, two aggregation methods — except KG
+
+For five of the six axes (land cover, aridity, biomass, TRENDY NEE-IAV,
+TRENDY ET-median), **one raster/derived-product is the single source of
+truth**, and the geospatial-vs-site-level choice is purely a question of
+*aggregation method applied to that same raster*, not a choice of dataset:
+
+- **Site-level (q):** `terra::extract()` (point extraction) at each tower's
+  exact lat/lon — the value of the pixel the tower physically sits in.
+- **Geospatial/global (p):** the same raster, area-weighted across the full
+  land mask (`terra::cellSize(mask=TRUE)` + `terra::zonal(sum)`, or the
+  equivalent per-axis zonal/classify call) to get the global land-fraction
+  per class or bin.
+
+Because both sides read the identical file (in landcover/biomass, via a
+shared cache path one script writes and the other reads; in aridity/TRENDY,
+within a single script run on one in-memory raster object — see this
+session's earlier `review/diagnostics/kg_source_consistency/report.md`
+provenance table for exact file:line citations), *p* and *q* are guaranteed
+to describe the same physical quantity, version, and (for biomass) near-
+identical resolution. The weighted Jaccard then measures a genuine
+site-vs-global sampling question, not a data-source artifact.
+
+**KG breaks this pattern for the current network only, by design, not by
+oversight.** Before 2026-08-20, KG followed the same rule as the other five
+axes: Beck 2023 raster, point-extracted at sites for *q*, area-weighted
+globally for *p* — one dataset, two aggregations. On 2026-08-20 (entry
+below), the site-level KG classification was replaced with a computation
+from **non-gridded, per-site tabular data** — each site's own bundled ERA5
+monthly reanalysis time series, run through the Beck classification rule
+cascade in `R/climate_classification.R` — to unify KG across figure
+families (it had separately used BADM metadata for `Anomalies_KG` figures
+and the Beck raster for representativeness figures) onto one source,
+following the method ICOS's own classification script uses. There is no
+gridded, pre-classified ERA5-KG product to match it against globally — that
+would require building an entirely new global raster (the Beck rule cascade
+applied to gridded ERA5 monthly normals; scoped, not built, in this
+session's Task 5) — so the global side (*p*) stayed on the Beck raster by
+explicit scope decision. The result: for `current_781`'s KG axis only, *q*
+and *p* are no longer the same dataset aggregated two ways; they are two
+different classification methods. This session's counterfactual
+(`review/diagnostics/kg_source_consistency/report.md`) sizes that effect at
++0.045-0.053 J (two-letter/5-class) from the method difference alone,
+versus ±0.001-0.002 J from the site-coverage difference or the finer
+30-class aggregation.
+
+Historical networks (Marconi/La Thuile/FLUXNET2015) were left out of the
+2026-08-20 change — they are not Shuttle sites and have no bundled ERA5
+monthly data — so their KG axis still follows the original one-dataset,
+two-aggregations rule (Beck raster, point-extracted). Only `current_781`'s
+KG point in the Fig 5 trajectory uses the ERA5 method, which is why that
+one segment mixes classification methods (see this session's earlier
+entry, Task 2).
+
+---
+
 ## 2026-09-17 — KG source-consistency investigation + counterfactual (read-and-report)
 
 Read-and-report investigation into whether the 2026-08-20 switch of the

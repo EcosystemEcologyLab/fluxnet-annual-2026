@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T20:57:13Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "data/external/trendy/derived/intermediate"
+  ],
+  "notes": "Per-ET-site mean(annual)/mean(annual)-via-ensemble-first ratio (evapotrans, control), native 0.5deg, at each site's TRENDY grid-cell pixel."
+}

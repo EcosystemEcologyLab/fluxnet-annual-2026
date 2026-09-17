@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T20:27:21Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "review/diagnostics/nee_et_site_vs_trendy/table_paired_measured_vs_trendy.csv",
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif",
+    "data/external/trendy/derived/trendy_et_median.tif"
+  ],
+  "notes": "Per-site percentile of its 1km ESA CCI biomass value within its enclosing 0.5deg TRENDY grid cell's 1km biomass population (2500 pixels/cell, grids confirmed perfectly nested 50:1, no resampling). Spearman vs. paired diff: NEE rho=0.164 p=3.17e-05, ET rho=0.047 p=0.226."
+}

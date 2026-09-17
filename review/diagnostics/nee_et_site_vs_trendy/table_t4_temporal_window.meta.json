@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T20:56:26Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (read-only)",
+    "data/external/trendy/derived/intermediate",
+    "review/diagnostics/nee_et_site_vs_trendy/table_paired_measured_vs_trendy.csv"
+  ],
+  "notes": "T4: TRENDY statistic recomputed at each site's own QC-qualifying measured years (QC>=0.80 approximation of assess_flux_data_by_igbp_shuttle.R's threshold, not its exact per-site VUT/CUT decision) vs. the stored full-1990-2023 value, paired difference = measured-years stat minus full-34yr stat."
+}

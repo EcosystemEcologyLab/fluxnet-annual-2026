@@ -1,0 +1,227 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== nee_et_site_vs_trendy_raster.R ===
+Confirmed all 16x2 = 32 intermediate files present.
+
+================ T1 (raster): raw-monthly-stack re-derivation ================
+Reprocessing CABLE-POP nbp from raw monthly NetCDF (native 1deg, 1990-2023)...
+Reprocessing CABLE-POP evapotrans from raw monthly NetCDF...
+
+-- Global reproduction check, CABLE-POP nbp, my-reprocessing vs. stored intermediate TIF, per year --
+   year n_cells max_abs_diff cor
+1  1990   60271            0   1
+2  1991   60271            0   1
+3  1992   60271            0   1
+4  1993   60271            0   1
+5  1994   60271            0   1
+6  1995   60271            0   1
+7  1996   60271            0   1
+8  1997   60271            0   1
+9  1998   60271            0   1
+10 1999   60271            0   1
+11 2000   60271            0   1
+12 2001   60271            0   1
+13 2002   60271            0   1
+14 2003   60271            0   1
+15 2004   60271            0   1
+16 2005   60271            0   1
+17 2006   60271            0   1
+18 2007   60271            0   1
+19 2008   60271            0   1
+20 2009   60271            0   1
+21 2010   60271            0   1
+22 2011   60271            0   1
+23 2012   60271            0   1
+24 2013   60271            0   1
+25 2014   60271            0   1
+26 2015   60271            0   1
+27 2016   60271            0   1
+28 2017   60271            0   1
+29 2018   60271            0   1
+30 2019   60271            0   1
+31 2020   60271            0   1
+32 2021   60271            0   1
+33 2022   60271            0   1
+34 2023   60271            0   1
+
+-- Global reproduction check, CABLE-POP evapotrans --
+   year n_cells max_abs_diff cor
+1  1990   60271            0   1
+2  1991   60271            0   1
+3  1992   60271            0   1
+4  1993   60271            0   1
+5  1994   60271            0   1
+6  1995   60271            0   1
+7  1996   60271            0   1
+8  1997   60271            0   1
+9  1998   60271            0   1
+10 1999   60271            0   1
+11 2000   60271            0   1
+12 2001   60271            0   1
+13 2002   60271            0   1
+14 2003   60271            0   1
+15 2004   60271            0   1
+16 2005   60271            0   1
+17 2006   60271            0   1
+18 2007   60271            0   1
+19 2008   60271            0   1
+20 2009   60271            0   1
+21 2010   60271            0   1
+22 2011   60271            0   1
+23 2012   60271            0   1
+24 2013   60271            0   1
+25 2014   60271            0   1
+26 2015   60271            0   1
+27 2016   60271            0   1
+28 2017   60271            0   1
+29 2018   60271            0   1
+30 2019   60271            0   1
+31 2020   60271            0   1
+32 2021   60271            0   1
+33 2022   60271            0   1
+34 2023   60271            0   1
+
+-- 20-site-pixel re-derivation check (CABLE-POP, single-model, native-1deg-regridded-vs-stored) --
+   site_id        var mean_annual_value_mine mean_annual_value_stored abs_diff
+1   CN-Yan        nbp               3.105399                 3.105399        0
+2   MN-Hst        nbp              45.785474                45.785474        0
+3   US-Mo1        nbp              36.492699                36.492699        0
+4   US-BZo        nbp              32.768293                32.768293        0
+5   US-UiD        nbp              39.233513                39.233513        0
+6   US-Me6        nbp              25.545747                25.545747        0
+7   PE-QFR        nbp              73.509877                73.509877        0
+8   US-ICh        nbp              12.275874                12.275874        0
+9   KR-Nj1        nbp              35.289191                35.289191        0
+10  CA-Gro        nbp              38.550387                38.550387        0
+11  SE-Svb        nbp               8.351898                 8.351898        0
+12  AU-Rob        nbp              35.141979                35.141979        0
+13  US-Ne2        nbp              21.036635                21.036635        0
+14  NZ-BFm        nbp              27.230852                27.230852        0
+15  DE-Lkb        nbp              28.714489                28.714489        0
+16  DE-Hzd        nbp              12.680792                12.680792        0
+17  KR-UAO        nbp              37.339902                37.339902        0
+18  AU-Dry        nbp              17.273352                17.273352        0
+19  US-xTR        nbp              45.203629                45.203629        0
+20  ES-Abr        nbp              14.747250                14.747250        0
+21  US-Snf evapotrans             432.343308               432.343308        0
+22  US-xBL evapotrans             619.520630               619.520630        0
+23  KR-PcD evapotrans             626.906855               626.906855        0
+24  RU-Ch2 evapotrans             159.107229               159.107229        0
+25  US-xWD evapotrans             427.705843               427.705843        0
+26  CA-Gro evapotrans             293.769548               293.769548        0
+27  US-Mo1 evapotrans             706.031320               706.031320        0
+28  US-xWR evapotrans             525.337906               525.337906        0
+29  FI-Var evapotrans             185.627129               185.627129        0
+30  AU-Cow evapotrans            1029.448384              1029.448384        0
+31  US-xTA evapotrans             775.989256               775.989256        0
+32  US-LS1 evapotrans             374.213845               374.213845        0
+33  AU-Rob evapotrans            1099.772271              1099.772271        0
+34  JP-SMF evapotrans             658.567943               658.567943        0
+35  US-Ro4 evapotrans             618.668915               618.668915        0
+36  ES-Yst evapotrans             453.222087               453.222087        0
+37  US-Tw1 evapotrans             432.343308               432.343308        0
+38  IE-CaN evapotrans             403.108770               403.108770        0
+39  JP-MMF evapotrans             433.047571               433.047571        0
+40  US-Var evapotrans             480.291334               480.291334        0
+   rel_diff_pct
+1             0
+2             0
+3             0
+4             0
+5             0
+6             0
+7             0
+8             0
+9             0
+10            0
+11            0
+12            0
+13            0
+14            0
+15            0
+16            0
+17            0
+18            0
+19            0
+20            0
+21            0
+22            0
+23            0
+24            0
+25            0
+26            0
+27            0
+28            0
+29            0
+30            0
+31            0
+32            0
+33            0
+34            0
+35            0
+36            0
+37            0
+38            0
+39            0
+40            0
+
+Max relative difference across 20-pixel sample:  0 %
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_t1_raw_stack_check.csv
+
+================ T3: scale and cancellation ================
+Recomputing ensemble at 0.5/1/2/4 degree (aggregate annual fields THEN recompute per-model stat THEN median-across-models)...
+
+-- Global area-weighted mean vs. spatial aggregation resolution --
+  resolution global_mean_abs_nbp global_mean_et
+1     0.5deg            35.36250       457.1519
+2       1deg            33.19907       474.9461
+3       2deg            30.76556       507.0206
+4       4deg            27.64937       558.6299
+Computing mean(|annual|) vs |mean(annual)| at native 0.5deg (ensemble-median-of-per-model-value)...
+  (area_weighted_mean: excluded 418 non-finite cells, e.g. division-by-near-zero in a ratio raster)
+  (area-weighted mean is sensitive to near-zero-|mean(annual)| denominators even after excluding exact Inf; unweighted land-cell median reported alongside as a robust alternative: 4.003)
+
+-- mean(|annual|) / |mean(annual)| ratio (temporal cancellation), nbp -- global area-weighted: 23990125010 --
+At NEE site pixels: median = 3.127  IQR = [ 1.887 , 6.43 ]
+
+-- Order-of-ensemble-step comparison (nbp) --
+                                                       method
+1 model-stat-first, then median-across-models (STORED METHOD)
+2      ensemble-median-across-models first, then mean|annual|
+  global_area_weighted_mean
+1                  35.36250
+2                  19.57299
+
+-- Order-of-ensemble-step comparison (evapotrans, control) --
+                                                       method
+1 model-stat-first, then median-across-models (STORED METHOD)
+2              ensemble-median-across-models first, then mean
+  global_area_weighted_mean
+1                  457.1519
+2                  457.1891
+
+-- ET (control): mean(annual)/mean(annual)-via-ensemble-first ratio -- global: 0.997 --
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_t3_resolution_aggregation.csv, review/diagnostics/nee_et_site_vs_trendy/table_t3_cancellation_and_order.csv, and per-site cancellation tables
+
+================ T4: temporal window (each site's own measured years) ================
+QC-qualifying site-years (QC>=0.80, VUT-or-CUT, within 1990-2023): 3533
+Sites with >=3 QC-qualifying years in 1990-2023 window, NEE: 600
+Sites with >=3 QC-qualifying years in 1990-2023 window, ET: 599
+
+-- T4 paired difference (measured-years-window TRENDY stat minus stored full-34-yr stat) --
+NEE (n= 600 ): median diff = 0.222  IQR=[ -4.052 , 4.37 ]
+ET  (n= 599 ): median diff = 5.417  IQR=[ -5.896 , 14.428 ]
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_t4_temporal_window.csv
+
+=== nee_et_site_vs_trendy_raster.R complete ===

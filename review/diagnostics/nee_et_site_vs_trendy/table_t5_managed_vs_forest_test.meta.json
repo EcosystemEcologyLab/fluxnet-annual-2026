@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T20:26:44Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "review/diagnostics/nee_et_site_vs_trendy/table_t5_by_igbp_class.csv"
+  ],
+  "notes": "Managed (CRO+GRA+BADM-flagged-managed WET) vs. unmanaged-forest two-group Wilcoxon rank-sum test on the paired difference, NEE and ET."
+}

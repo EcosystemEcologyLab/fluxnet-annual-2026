@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-09-17T20:52:13Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "data/external/trendy/v14-gcb2025/CABLE-POP/S3/CABLE-POP_S3_nbp.nc",
+    "data/external/trendy/v14-gcb2025/CABLE-POP/S3/CABLE-POP_S3_evapotrans.nc",
+    "data/external/trendy/derived/intermediate/CABLE-POP_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/CABLE-POP_evapotrans_regridded.tif"
+  ],
+  "notes": "T1 raw-monthly-stack re-derivation for CABLE-POP (representative monthly-native model), full 1990-2023 global reproduction (see console log for per-year max-abs-diff/correlation) plus this 20-site-pixel sample table. Method: sum(monthly_rate * SECS_MONTH [* KG_TO_G for nbp]) per year at native 1deg, then terra::resample(method='bilinear') to the 0.5deg target grid, identically to figure_representativeness_trendy_compute.R's own pipeline, then compared against the stored intermediate GeoTIFF."
+}

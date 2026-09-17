@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T20:26:44Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "data/snapshots/site_flux_medians_shuttle.csv",
+    "data/snapshots/site_trendy_nee_median.csv",
+    "data/snapshots/site_trendy_et_median.csv"
+  ],
+  "notes": "Site-level paired measured-vs-TRENDY-at-site values for NEE (|NEP| vs trendy_nee_median) and ET (et_median vs trendy_et_median), current_781 network."
+}

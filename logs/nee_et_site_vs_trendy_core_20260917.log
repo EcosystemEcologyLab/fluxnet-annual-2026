@@ -1,0 +1,206 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== nee_et_site_vs_trendy_core.R ===
+Paired NEE sites: 636 | Paired ET sites: 656
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_paired_measured_vs_trendy.csv
+
+================ T1: unit/conversion screen ================
+
+-- Percentiles (measured / TRENDY-at-site) --
+   axis         quantity  pct      value        unit
+1   nee measured_abs_NEP 0.05   13.54082 gC m-2 yr-1
+2   nee measured_abs_NEP 0.25   63.42867 gC m-2 yr-1
+3   nee measured_abs_NEP 0.50  174.54650 gC m-2 yr-1
+4   nee measured_abs_NEP 0.75  366.65375 gC m-2 yr-1
+5   nee measured_abs_NEP 0.95  753.60838 gC m-2 yr-1
+6   nee   trendy_abs_NBP 0.05   19.59097 gC m-2 yr-1
+7   nee   trendy_abs_NBP 0.25   36.01125 gC m-2 yr-1
+8   nee   trendy_abs_NBP 0.50   46.45515 gC m-2 yr-1
+9   nee   trendy_abs_NBP 0.75   58.46554 gC m-2 yr-1
+10  nee   trendy_abs_NBP 0.95   81.97877 gC m-2 yr-1
+11   et      measured_ET 0.05  189.96967     mm yr-1
+12   et      measured_ET 0.25  373.18118     mm yr-1
+13   et      measured_ET 0.50  509.87486     mm yr-1
+14   et      measured_ET 0.75  670.23802     mm yr-1
+15   et      measured_ET 0.95 1028.06932     mm yr-1
+16   et        trendy_ET 0.05  216.98093     mm yr-1
+17   et        trendy_ET 0.25  370.65556     mm yr-1
+18   et        trendy_ET 0.50  480.21014     mm yr-1
+19   et        trendy_ET 0.75  656.27365     mm yr-1
+20   et        trendy_ET 0.95  987.56067     mm yr-1
+
+-- Per-site ratio distribution --
+  axis       X5.      X25.     X50.     X75.      X95.     mean
+1  nee 0.3963488 1.3982390 4.067222 7.200739 18.573356 9.033089
+2   et 0.6357973 0.8332528 0.983775 1.184294  1.974762 1.125309
+
+-- Nearest unit-conversion-factor candidate (12/30/365/1000/2629800:31557600) --
+       axis median_ratio nearest_candidate nearest_candidate_value log_distance
+12...1  nee     4.067222                12                      12     1.081946
+12...2   et     0.983775                12                      12     2.468549
+
+NEE median ratio = 4.067 -- not close (log-distance  1.08 ) to any of the screened factors -> a simple conversion-factor slip is NOT indicated by this test alone.
+ET median ratio = 0.984 -- consistent with ~1:1, no conversion issue.
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_t1_percentiles.csv, review/diagnostics/nee_et_site_vs_trendy/table_t1_ratio_screen.csv
+
+================ T2: bin coverage ================
+
+-- Bin coverage (top bin = bin 7 = '> top edge') --
+ axis             source bin             bin_label   n    fraction
+  nee       measured_NEE   1       0–5 gC m-2 yr-1   7 0.011006289
+  nee       measured_NEE   2  5.0–20.5 gC m-2 yr-1  42 0.066037736
+  nee       measured_NEE   3 20.5–31.7 gC m-2 yr-1  30 0.047169811
+  nee       measured_NEE   4 31.7–41.8 gC m-2 yr-1  27 0.042452830
+  nee       measured_NEE   5 41.8–54.3 gC m-2 yr-1  28 0.044025157
+  nee       measured_NEE   6 54.3–70.2 gC m-2 yr-1  34 0.053459119
+  nee       measured_NEE   7     >70.2 gC m-2 yr-1 468 0.735849057
+  nee trendy_at_site_NEE   1       0–5 gC m-2 yr-1   6 0.009433962
+  nee trendy_at_site_NEE   2  5.0–20.5 gC m-2 yr-1  30 0.047169811
+  nee trendy_at_site_NEE   3 20.5–31.7 gC m-2 yr-1  86 0.135220126
+  nee trendy_at_site_NEE   4 31.7–41.8 gC m-2 yr-1 123 0.193396226
+  nee trendy_at_site_NEE   5 41.8–54.3 gC m-2 yr-1 182 0.286163522
+  nee trendy_at_site_NEE   6 54.3–70.2 gC m-2 yr-1 152 0.238993711
+  nee trendy_at_site_NEE   7     >70.2 gC m-2 yr-1  57 0.089622642
+   et        measured_ET   1           0–5 mm yr-1   0 0.000000000
+   et        measured_ET   2     5.0–143.4 mm yr-1  24 0.036585366
+   et        measured_ET   3   143.4–263.9 mm yr-1  55 0.083841463
+   et        measured_ET   4   263.9–394.0 mm yr-1 111 0.169207317
+   et        measured_ET   5   394.0–634.7 mm yr-1 267 0.407012195
+   et        measured_ET   6   634.7–968.6 mm yr-1 153 0.233231707
+   et        measured_ET   7        >968.6 mm yr-1  46 0.070121951
+   et  trendy_at_site_ET   1           0–5 mm yr-1   0 0.000000000
+   et  trendy_at_site_ET   2     5.0–143.4 mm yr-1  16 0.024390244
+   et  trendy_at_site_ET   3   143.4–263.9 mm yr-1  41 0.062500000
+   et  trendy_at_site_ET   4   263.9–394.0 mm yr-1 156 0.237804878
+   et  trendy_at_site_ET   5   394.0–634.7 mm yr-1 259 0.394817073
+   et  trendy_at_site_ET   6   634.7–968.6 mm yr-1 147 0.224085366
+   et  trendy_at_site_ET   7        >968.6 mm yr-1  37 0.056402439
+
+-- Top-bin ('above top edge') fraction summary --
+  axis             source   n   fraction
+1  nee       measured_NEE 468 0.73584906
+2  nee trendy_at_site_NEE  57 0.08962264
+3   et        measured_ET  46 0.07012195
+4   et  trendy_at_site_ET  37 0.05640244
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_t2_bin_coverage.csv
+
+================ T5: management/definition proxy (IGBP stratification) ================
+BADM management coverage file: 767 sites (767-site snapshot; current network is 781 -- the 14 sites added since have NO row here, not even NA -- see report.md for the exact gap list).
+
+-- NEE: median(measured-TRENDY) by IGBP class --
+   igbp_class   n median_diff      iqr_lo    iqr_hi n_badm_matched
+1         EBF  39   291.25031 165.4389217 650.21872             38
+2         DBF  64   276.11840 156.6550153 386.60256             60
+3          MF  22   236.42893  83.0231726 389.01047             22
+4         WSA  15   215.02010 125.5896955 347.93079             15
+5         DNF   6   209.63355  96.8105315 699.15672              6
+6         CRO 108   163.98402  57.0464702 350.78751            107
+7         ENF  95   157.44198  23.9753015 377.12637             95
+8         GRA 126    83.21689   6.5440296 191.49494            120
+9         BSV   7    72.78017   9.1111650  90.64514              7
+10        WET  91    55.51833  -0.7294083 195.84837             90
+11        OSH  33    33.25297  -1.5710900 108.83332             32
+12        CSH  11    26.28828   4.2521731  61.96106             11
+13        SAV  11    26.13022 -12.5054028 118.65128             10
+14        CVM   7     7.57968 -11.7805348 188.95407              7
+15        SNO   1   -11.00315 -11.0031493 -11.00315              1
+   n_flagged_managed        unit
+1                  6 gC m-2 yr-1
+2                 20 gC m-2 yr-1
+3                  8 gC m-2 yr-1
+4                  4 gC m-2 yr-1
+5                  0 gC m-2 yr-1
+6                 69 gC m-2 yr-1
+7                 51 gC m-2 yr-1
+8                 55 gC m-2 yr-1
+9                  0 gC m-2 yr-1
+10                30 gC m-2 yr-1
+11                15 gC m-2 yr-1
+12                 4 gC m-2 yr-1
+13                 2 gC m-2 yr-1
+14                 5 gC m-2 yr-1
+15                 0 gC m-2 yr-1
+
+-- ET: median(measured-TRENDY) by IGBP class (control) --
+   igbp_class   n median_diff     iqr_lo     iqr_hi n_badm_matched
+1         CSH  11   73.391220  -49.75691  164.08551             11
+2         WSA  17   44.997647  -30.63339  116.62057             17
+3         CRO 110   39.887778  -44.40364  118.33020            109
+4         WET  94   34.118009  -47.70547  148.93121             93
+5         SAV  13   15.851027  -43.49904   90.46152             12
+6         BSV   7   -8.687187  -17.85204   12.41178              7
+7         GRA 129  -15.295144  -85.47944   77.24851            123
+8         ENF 102  -23.857590  -78.81526   51.93964            100
+9         OSH  34  -31.108613  -76.93378   19.17258             33
+10        EBF  39  -39.370193 -135.06775   65.68138             38
+11        DBF  64  -42.727162 -120.68467   32.28556             60
+12         MF  22  -64.202713 -179.52470   16.99018             22
+13        DNF   6  -99.539720 -164.40924   22.50760              6
+14        CVM   7 -113.095035 -153.18147  -78.16413              7
+15        SNO   1 -150.664067 -150.66407 -150.66407              1
+   n_flagged_managed    unit
+1                  4 mm yr-1
+2                  5 mm yr-1
+3                 70 mm yr-1
+4                 30 mm yr-1
+5                  3 mm yr-1
+6                  0 mm yr-1
+7                 55 mm yr-1
+8                 55 mm yr-1
+9                 16 mm yr-1
+10                 6 mm yr-1
+11                20 mm yr-1
+12                 8 mm yr-1
+13                 0 mm yr-1
+14                 5 mm yr-1
+15                 0 mm yr-1
+
+-- NEE: managed (CRO+GRA+BADM-flagged-managed WET) vs unmanaged forest --
+            group2   n median_diff
+1          managed 234    117.8382
+2 unmanaged forest 226    229.7091
+Wilcoxon W = 20089  p = 8.32e-06 
+NOTE: direction check -- is managed > unmanaged forest (the hypothesis), or the reverse?
+
+-- ET: same grouping (control) --
+            group2   n median_diff
+1          managed 239    9.178264
+2 unmanaged forest 233  -35.060966
+Wilcoxon W = 33891  p = 4.47e-05 
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_t5_by_igbp_class.csv, review/diagnostics/nee_et_site_vs_trendy/table_t5_managed_vs_forest_test.csv
+
+================ T6: sub-grid siting bias ================
+Biomass raster res: 0.01 x 0.01 | TRENDY grid res: 0.5 x 0.5
+Computing sub-grid biomass percentile for 636 NEE + 656 ET sites (each site = one small 50x50-pixel crop; may take a few minutes)...
+Warning message:
+In cor.test.default(t6$biomass_percentile[t6$axis == "nee"], t6$diff[t6$axis ==  :
+  cannot compute exact p-value with ties
+Warning message:
+In cor.test.default(t6$biomass_percentile[t6$axis == "et"], t6$diff[t6$axis ==  :
+  cannot compute exact p-value with ties
+
+-- Sub-grid biomass percentile distribution --
+# A tibble: 2 × 5
+  axis      n median_pct   p25   p75
+  <chr> <int>      <dbl> <dbl> <dbl>
+1 et      656       62.8  36.2  84.2
+2 nee     636       62.7  36.1  84.4
+
+Spearman(biomass_percentile, measured-TRENDY diff): NEE rho= 0.164  p= 3.17e-05  | ET rho= 0.047  p= 0.226 
+Saved: review/diagnostics/nee_et_site_vs_trendy/table_t6_siting_bias.csv
+
+================ T7: paired figure ================
+Saved: review/diagnostics/nee_et_site_vs_trendy/fig_t7_measured_vs_trendy_paired.png
+
+=== nee_et_site_vs_trendy_core.R complete ===

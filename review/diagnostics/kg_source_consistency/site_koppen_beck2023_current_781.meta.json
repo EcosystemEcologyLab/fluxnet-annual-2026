@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-09-17T16:25:42Z",
+  "pipeline_version": "5dc7b71",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_koppen_beck2023.csv",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "Diagnostic-only reconstruction for scripts/diagnostics/kg_source_consistency.R. 767 rows reused verbatim from data/snapshots/site_koppen_beck2023.csv; 14 new rows (781-site network minus 767-site network) extracted here with the same raster and method as scripts/step4_extract_koppen_beck2023.R. Not used by any pipeline script; not a replacement for the pinned 767-site data/snapshots/site_koppen_beck2023.csv."
+}

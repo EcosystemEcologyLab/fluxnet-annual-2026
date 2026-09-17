@@ -1,0 +1,38 @@
+lulc_native,lulc_native_name,igbp_class,rationale
+10,"Cropland, rainfed",CRO,Direct: all CCI cropland subtypes -> CRO
+11,Herbaceous cover,CRO,Direct: all CCI cropland subtypes -> CRO
+12,Tree or shrub cover,CRO,Direct: all CCI cropland subtypes -> CRO
+20,"Cropland, irrigated or post-flooding",CRO,Direct: all CCI cropland subtypes -> CRO
+30,"Mosaic cropland (>50%) / natural vegetation (tree, shrub, herbaceous cover) (<50%)",CVM,Mosaic cropland/natural-vegetation classes (neither component >60%) -> CVM per IGBP's own mosaic definition
+40,"Mosaic natural vegetation (tree, shrub, herbaceous cover) (>50%) / cropland (<50%)",CVM,Mosaic cropland/natural-vegetation classes (neither component >60%) -> CVM per IGBP's own mosaic definition
+50,"Tree cover, broadleaved, evergreen, closed to open (>15%)",EBF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+60,"Tree cover, broadleaved, deciduous, closed to open (>15%)",DBF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+61,"Tree cover, broadleaved, deciduous, closed (>40%)",DBF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+62,"Tree cover, broadleaved, deciduous, open (15-40%)",DBF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+70,"Tree cover, needleleaved, evergreen, closed to open (>15%)",ENF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+71,"Tree cover, needleleaved, evergreen, closed (>40%)",ENF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+72,"Tree cover, needleleaved, evergreen, open (15-40%)",ENF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+80,"Tree cover, needleleaved, deciduous, closed to open (>15%)",DNF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+81,"Tree cover, needleleaved, deciduous, closed (>40%)",DNF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+82,"Tree cover, needleleaved, deciduous, open (15-40%)",DNF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+90,"Tree cover, mixed leaf type (broadleaved and needleleaved)",MF,Direct: closed/open tree-cover classes map 1:1 on leaf type + phenology
+100,Mosaic tree and shrub (>50%) / herbaceous cover (<50%),WSA,"Mosaic tree-and-shrub(>50%)/herbaceous(<50%): woody-dominated with herbaceous understory -> closest IGBP match is Woody Savanna (30-60% tree cover, herbaceous understory)"
+110,Mosaic herbaceous cover (>50%) / tree and shrub (<50%),SAV,Mosaic herbaceous(>50%)/tree-and-shrub(<50%): herbaceous-dominated with woody component -> closest IGBP match is Savanna (10-30% tree cover)
+120,Shrubland,OSH,CCI shrubland classes carry no canopy-density split (IGBP splits Closed >60% vs Open 10-60%); defaulted to Open Shrublands as the globally more common case -- CSH is never assigned by this crosswalk
+121,Shrubland evergreen,OSH,CCI shrubland classes carry no canopy-density split (IGBP splits Closed >60% vs Open 10-60%); defaulted to Open Shrublands as the globally more common case -- CSH is never assigned by this crosswalk
+122,Shrubland deciduous,OSH,CCI shrubland classes carry no canopy-density split (IGBP splits Closed >60% vs Open 10-60%); defaulted to Open Shrublands as the globally more common case -- CSH is never assigned by this crosswalk
+130,Grassland,GRA,Direct: Grassland -> GRA
+140,Lichens and mosses,GRA,"Lichens and mosses: non-vascular but vegetated ground cover, not bare -- closest IGBP match is Grasslands (no explicit tundra/moss class in IGBP)"
+150,"Sparse vegetation (tree, shrub, herbaceous cover) (<15%)",BSV,"CCI 'sparse vegetation, <15% cover' aligns with IGBP Barren's own threshold ('never >10% vegetated cover') -> BSV"
+151,Sparse tree (<15%),BSV,"CCI 'sparse vegetation, <15% cover' aligns with IGBP Barren's own threshold ('never >10% vegetated cover') -> BSV"
+152,Sparse shrub (<15%),BSV,"CCI 'sparse vegetation, <15% cover' aligns with IGBP Barren's own threshold ('never >10% vegetated cover') -> BSV"
+153,Sparse herbaceous cover (<15%),BSV,"CCI 'sparse vegetation, <15% cover' aligns with IGBP Barren's own threshold ('never >10% vegetated cover') -> BSV"
+160,"Tree cover, flooded, fresh or brakish water",WET,Direct: all CCI flooded/inundated classes -> WET
+170,"Tree cover, flooded, saline water",WET,Direct: all CCI flooded/inundated classes -> WET
+180,"Shrub or herbaceous cover, flooded, fresh/saline/brakish water",WET,Direct: all CCI flooded/inundated classes -> WET
+190,Urban areas,URB,Direct: Urban areas -> URB
+200,Bare areas,BSV,Direct: Bare areas -> BSV
+201,Consolidated bare areas,BSV,Direct: Bare areas -> BSV
+202,Unconsolidated bare areas,BSV,Direct: Bare areas -> BSV
+210,Water bodies,WAT,Direct: Water bodies -> WAT
+220,Permanent snow and ice,SNO,Direct: Permanent snow/ice -> SNO

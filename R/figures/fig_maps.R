@@ -1254,3 +1254,188 @@ fig_map_point_snapshots <- function(snap_meta,
     patchwork::plot_layout(guides = "collect") &
     ggplot2::theme(legend.position = "bottom")
 }
+
+# ---- fig_map_dryland_towers ---------------------------------------------------
+#
+# Dryland flux-tower map (Map10 in the review/figures/maps/ series). Reuses
+# .aridity_raster_df() / .land_sf() from the aridity-backdrop point maps
+# above, and the MAP_STYLE bottom-horizontal-legend convention from
+# fig_map_historical(). Per-site aridity values come from
+# extract_site_aridity() in R/external_data.R (not computed here).
+
+# Colour palette for this figure only. Reuses the .AI_COLORS hex values
+# above (hyper-arid/arid/semi-arid/dry sub-humid) but overrides Humid to grey
+# rather than white — this figure's water/ice is white (unrendered NA cells
+# on a white ggsave() background), so Humid needs its own visible colour.
+.DRYLAND_AI_COLORS <- {
+  cols <- .AI_COLORS
+  cols[["Humid"]] <- "grey70"
+  cols
+}
+
+#' Global map of flux towers in dryland ecosystems, on an aridity backdrop
+#'
+#' Categorical CGIAR Global Aridity Index v3.1 raster (resampled for
+#' plotting, not native resolution — see [.aridity_raster_df()]) as a
+#' five-class backdrop beneath thin country coastlines, with flux towers in
+#' the four non-humid (dryland) classes overlaid as filled blue circles.
+#' Humid-class towers are omitted by default; set `show_humid = TRUE` to add
+#' them as open grey circles for context.
+#'
+#' @param site_aridity Data frame. Per-site aridity table from
+#'   [extract_site_aridity()] (or `data/snapshots/site_aridity.csv`):
+#'   `site_id`, `location_lat`, `location_long`, `ai_value`, `unep_class_5`.
+#' @param aridity_df Optional pre-loaded backdrop data frame from
+#'   `.aridity_raster_df()`. Computed internally (target_res = 0.2) when
+#'   `NULL` — pass a pre-loaded one to avoid re-reading the raster when
+#'   generating multiple figures in the same session.
+#' @param show_humid Logical. If `TRUE`, also plot humid-class towers as open
+#'   grey circles (default `FALSE` — dryland towers only, matching the
+#'   figure's standard caption).
+#' @param pt_size Numeric. Tower point size (default `3.2` — roughly double
+#'   the size used elsewhere in this file, to match the published figure;
+#'   paired with a `stroke = 0.8` grey20 edge on the filled dryland points
+#'   for a crisp border at this larger size. Local to this function — other
+#'   `fig_map_*()` point sizes are unchanged).
+#' @param style Named list. Visual parameters (base size etc.); defaults to
+#'   [MAP_STYLE]. Note the legend *position* is NOT taken from
+#'   `style$legend_pos` / `style$legend_just` — see `legend_position` below.
+#' @param legend_position Numeric `c(x, y)` in panel-relative (0-1)
+#'   coordinates for the legend anchor. Defaults to an inset sited in the
+#'   empty South Atlantic / southwest Indian Ocean gap (roughly 15S-55S,
+#'   60W-90E, bounded by southern South America, southern Africa and
+#'   Australia), deliberately different from [MAP_STYLE]'s bottom-left
+#'   position — that position sits under this figure's South America,
+#'   southern Africa and Australia tower points. This override is local to
+#'   this figure only; Map01-09 (which use `fig_map_historical()`) are
+#'   unaffected. Chosen empirically (pixel-diffed against a render with the
+#'   legend removed) to clear every tower point and the mainland coastlines
+#'   of South America, Africa and Australia; a handful of single-digit-pixel
+#'   sub-Antarctic islet specks (e.g. South Georgia, Kerguelen) remain
+#'   unavoidably within the box footprint at this legend width — see
+#'   SESSION_LOG.md.
+#' @param legend_justification Numeric `c(x, y)`; anchor point within the
+#'   legend box that `legend_position` places (default `c(0.5, 0.5)` —
+#'   legend centred on `legend_position`).
+#' @param legend_text_size,legend_title_size,legend_key_size Legend text,
+#'   title font size (pt) and key size (lines). Deliberately smaller than
+#'   [MAP_STYLE]'s derived sizes — the inset placement only has room for a
+#'   compact legend between South America and the sub-Antarctic islands to
+#'   its east; the five-class horizontal layout, colours and labels are
+#'   unchanged, only the rendered size is reduced to fit.
+#' @param title Character or `NULL`. Map title.
+#'
+#' @return A ggplot object. `attr(p, "n_dryland")` carries the number of
+#'   non-humid towers plotted, for use in figure captions.
+#'
+#' @examples
+#' \dontrun{
+#' site_aridity <- readr::read_csv("data/snapshots/site_aridity.csv")
+#' p <- fig_map_dryland_towers(site_aridity)
+#' print(p)
+#' p_ctx <- fig_map_dryland_towers(site_aridity, show_humid = TRUE)
+#' }
+#'
+#' @export
+fig_map_dryland_towers <- function(site_aridity,
+                                    aridity_df           = NULL,
+                                    show_humid           = FALSE,
+                                    pt_size               = 3.2,
+                                    style                 = MAP_STYLE,
+                                    legend_position       = c(0.514, 0.08),
+                                    legend_justification  = c(0.5, 0.5),
+                                    legend_text_size      = 10,
+                                    legend_title_size     = 11,
+                                    legend_key_size       = 0.9,
+                                    title                 = NULL) {
+  .disable_s2()
+  .check_meta_cols(site_aridity,
+                    c("site_id", "location_lat", "location_long",
+                      "ai_value", "unep_class_5"))
+
+  if (is.null(aridity_df)) aridity_df <- .aridity_raster_df()
+  land <- .land_sf()
+
+  towers <- site_aridity |>
+    dplyr::filter(
+      !is.na(.data$location_lat), !is.na(.data$location_long),
+      dplyr::between(.data$location_lat,   -90,  90),
+      dplyr::between(.data$location_long, -180, 180)
+    ) |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE)
+
+  dryland_towers <- dplyr::filter(towers, .data$unep_class_5 != "Humid")
+  humid_towers   <- dplyr::filter(towers, .data$unep_class_5 == "Humid")
+  n_dryland      <- nrow(dryland_towers)
+
+  p <- ggplot2::ggplot() +
+    ggplot2::theme_void(base_size = style$base_size) +
+    ggplot2::theme(
+      plot.title           = ggplot2::element_text(hjust = 0.5, face = "bold",
+                                                    size  = style$base_size * 0.9),
+      # Inset legend (ocean gap) — intentionally NOT style$legend_pos /
+      # style$legend_just. See legend_position/legend_justification args.
+      legend.position       = legend_position,
+      legend.justification  = legend_justification,
+      legend.direction      = "horizontal",
+      legend.title          = ggplot2::element_text(size  = legend_title_size,
+                                                     hjust = 0.5),
+      legend.text           = ggplot2::element_text(size = legend_text_size),
+      # Compact key/spacing — the inset only has room between South America
+      # and the sub-Antarctic islands to its east; see legend_position docs.
+      legend.key.size       = grid::unit(legend_key_size, "lines"),
+      legend.key.spacing.x  = grid::unit(2, "pt"),
+      legend.margin         = ggplot2::margin(4, 4, 4, 4),
+      # Semi-transparent white box so the legend reads over the coastline /
+      # ocean backdrop it now sits on top of, instead of the page margin.
+      legend.background     = ggplot2::element_rect(
+        fill = ggplot2::alpha("white", 0.85), colour = "grey50", linewidth = 0.3
+      ),
+      legend.box.background = ggplot2::element_blank()
+    ) +
+    # Categorical AI backdrop (bottom layer)
+    ggplot2::geom_tile(
+      data = aridity_df,
+      ggplot2::aes(x = .data$x, y = .data$y, fill = .data$aridity_class)
+    ) +
+    ggplot2::scale_fill_manual(
+      values   = .DRYLAND_AI_COLORS,
+      name     = "Aridity class (CGIAR AI v3.1)",
+      drop     = FALSE,
+      guide    = ggplot2::guide_legend(
+        nrow           = 1,
+        title.position = "top",
+        title.hjust    = 0.5,
+        override.aes   = list(colour = "grey40", linewidth = 0.2)
+      )
+    ) +
+    # Thin coastlines on top of the backdrop
+    ggplot2::geom_sf(data = land, fill = NA, colour = "black", linewidth = 0.15) +
+    # Dryland towers: filled blue circles, dark edge for a crisp border at
+    # this larger size (grey20, not black — softer against the backdrop)
+    ggplot2::geom_point(
+      data  = dryland_towers,
+      ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+      shape  = 21, fill = "#0072B2", colour = "grey20",
+      size   = pt_size, stroke = 0.8, alpha = 0.9
+    )
+
+  if (isTRUE(show_humid)) {
+    # Humid towers: open grey circles, for context only. Same size/stroke as
+    # the dryland points above so the two layers stay proportional.
+    p <- p +
+      ggplot2::geom_point(
+        data  = humid_towers,
+        ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+        shape  = 1, colour = "grey40",
+        size   = pt_size, stroke = 0.8, alpha = 0.9
+      )
+  }
+
+  p <- p +
+    ggplot2::labs(title = title) +
+    ggplot2::coord_sf(ylim = c(-56, 85), expand = FALSE, datum = NA)
+
+  attr(p, "n_dryland") <- n_dryland
+  p
+}

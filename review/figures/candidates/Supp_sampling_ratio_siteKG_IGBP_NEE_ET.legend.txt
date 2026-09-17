@@ -1,0 +1,87 @@
+FIGURE LEGEND — Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png
+============================================================
+
+TITLE: Supplementary sampling-ratio grid — site-level KG, site-metadata
+IGBP, and site-measured NEE/ET (current FLUXNET network, n = 781)
+
+STATUS: Candidate supplementary figure, addressing a co-author comment on
+draft Figs 4/5. Not yet promoted to draft_manuscript_v1/. Companion to
+Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png. Full methods in
+Supp_methods_siteKG_IGBP_NEE_ET.txt (this directory).
+
+DESCRIPTION:
+Six-panel grid, current FLUXNET network only (n = 781 sites), directly
+analogous to draft Fig 4 (review/figures/representativeness/fig_rep001_current.png)
+but with three axes swapped to site-level/measured sources instead of
+model- or classification-scheme mismatches the co-author flagged:
+  - Land cover -> IGBP (site metadata field, not ESA CCI's own scheme)
+  - NEE/ET -> site-measured values (not TRENDY model output sampled at
+    site coordinates)
+  - KG left unchanged from Figs 4/5 (already the subject of a separate
+    2026-09-17 investigation, review/diagnostics/kg_source_consistency/)
+Each bar shows the log2 sampling ratio for one class: network fraction /
+global fraction. 1x (log2 = 0) = proportional representation.
+
+PANEL LAYOUT (2 rows x 3 columns, A-F):
+  A — Koppen-Geiger (13-class, two-letter) — UNCHANGED from Fig 4/5
+  B — IGBP (17-class) — site: tower metadata `igbp` field;
+                         global: ESA-CCI-native -> IGBP crosswalk (NEW,
+                         constructed for this figure; see methods doc)
+  C — CGIAR Aridity Index v3.1 (7-class) — UNCHANGED from Fig 4/5
+  D — ESA CCI Biomass v7 (7-bin) — UNCHANGED from Fig 4/5
+  E — NEE, site-measured (7-bin) — site: |NEP| (NEP = -NEE) per-site
+                         median from site_flux_medians_shuttle.csv;
+                         global: UNCHANGED TRENDY nee_median 7-bin
+                         distribution (same file/bins as before, reused)
+  F — ET, site-measured (7-bin) — site: per-site median ET from the same
+                         file; global: UNCHANGED TRENDY et_median 7-bin
+                         distribution
+
+X AXIS: Sampling ratio = network fraction / global fraction, log2 scale,
+±5x range, reference line at 1x. Same convention as draft Fig 4.
+
+Y AXIS: Panels A/C use each axis's established semantic order (KG:
+Af,Am,Aw,BS,BW,Cf,Cs,Cw,Df,Ds,Dw,EF,ET; Aridity: Hyper-Arid -> Hyper-Humid).
+Panel B (IGBP) uses IGBP numeric-code order (ENF..WAT). Panels D-F (bin
+axes) use ascending bin index (1 = lowest value bin).
+
+CLASS COUNTS AND JACCARD (current_781, n = 781):
+  A. KG:      755/781 classified (26 NA — ERA5 P-screen fails, see
+              review/diagnostics/kg_source_consistency/report.md), J = 0.420
+  B. IGBP:    781/781 classified (site metadata has no missing igbp field
+              for this network), J = 0.394
+  C. Aridity: 781/781 classified, J = 0.666
+  D. Biomass: 781/781 classified, J = 0.636
+  E. NEE:     636/781 classified (145 NA — QC=0.80 threshold not met, or
+              insufficient NEE_VUT/CUT years; same file used for Fig 3),
+              J = 0.233
+  F. ET:      656/781 classified (125 NA — same QC gate on LE_F_MDS),
+              J = 0.489
+
+DATA SOURCES:
+  - Site list: FLUXNET Shuttle snapshot, fluxnet_shuttle_snapshot_20260901T094522.csv
+  - KG: data/snapshots/site_koppen_era5.csv (site) vs
+        koppen_beck2023_global_distribution.csv (global) — unchanged
+  - IGBP: site list's own `igbp` field (site) vs
+          table_igbp_global_distribution_crosswalk.csv, built here from
+          table_igbp_esacci_crosswalk.csv applied to the existing
+          landcover_cci_native_global_distribution.csv (global)
+  - Aridity: data/snapshots/site_aridity.csv vs aridity_unep7_global_distribution.csv
+  - Biomass: data/snapshots/site_biomass_cci_v7.csv vs biomass_cci_v7_global_distribution.csv
+  - NEE/ET: data/snapshots/site_flux_medians_shuttle.csv (QC=0.80,
+            VUT/CUT + NT/DT fallback — identical to Fig 3's pipeline) vs
+            trendy_nee_median_global_distribution.csv /
+            trendy_et_median_global_distribution.csv (unchanged)
+
+EXCLUSIONS: See per-panel classified counts above. All exclusions follow
+the established pipeline convention: dropped from the numerator, network
+size (781) kept as the denominator (network fractions therefore sum to
+<1.0 for panels A/E/F) — same convention documented and audited in
+review/diagnostics/kg_source_consistency/report.md (Task 3).
+
+REPRODUCIBILITY:
+  Script: scripts/figure_representativeness_supp_sitelevel.R
+  Run log: logs/figure_representativeness_supp_sitelevel_20260917.log
+  Companion data: table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv (this directory)
+
+DIMENSIONS: 10 x 7 inches, 300 dpi

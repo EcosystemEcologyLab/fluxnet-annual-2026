@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T16:25:42Z",
+  "pipeline_version": "5dc7b71",
+  "input_sources": [
+    "review/diagnostics/kg_source_consistency/kg_sampling_ratios.csv",
+    "review/diagnostics/kg_source_consistency/kg_confusion_twoletter.csv"
+  ],
+  "notes": "Two-letter classes ranked by |network_frac(b) - network_frac(a)|, with the specific sites whose ERA5 vs Beck classification disagreement drives each class's shift."
+}

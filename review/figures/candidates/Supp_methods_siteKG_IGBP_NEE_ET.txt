@@ -1,0 +1,195 @@
+SUPPLEMENTARY METHODS — site-level KG, site-metadata IGBP, and
+site-measured NEE/ET representativeness figures
+================================================================
+
+Covers both companion figures:
+  Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png
+  Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png
+Script: scripts/figure_representativeness_supp_sitelevel.R
+Run log: logs/figure_representativeness_supp_sitelevel_20260917.log
+Status: candidate supplementary material, addressing a co-author comment
+on draft Figs 4/5. Not promoted to draft_manuscript_v1/. Retained here for
+re-use as the co-author conversation continues.
+
+
+WHY THIS EXISTS
+---------------
+A co-author reviewing draft Figs 4/5 (the representativeness/Jaccard
+analysis) raised two points: (1) the NEE and ET axes compare TRENDY model
+output *sampled at* each tower's coordinates against a TRENDY global
+distribution — a model-vs-model comparison, not a check of whether the
+network's actual measurements are representative; and (2) the land-cover
+axis uses ESA CCI's own 10-class scheme, not the IGBP scheme flux-tower
+metadata natively carries. This supplement rebuilds the two Fig 4/5-style
+figures with those two axes swapped to site-level/measured sources, and
+leaves KG untouched (KG's own site-vs-global source question was already
+the subject of a separate, independent investigation the same day — see
+review/diagnostics/kg_source_consistency/report.md — and is out of scope
+here by design, not oversight).
+
+
+WHAT CHANGED, AXIS BY AXIS
+---------------------------
+
+KG — UNCHANGED.
+No modification. Site classes: data/snapshots/site_koppen_era5.csv
+(current_781) / site_koppen_beck2023_{marconi,la_thuile,fluxnet2015}.csv
+(historical networks). Global: koppen_beck2023_global_distribution.csv.
+Identical to draft Figs 4/5 and to
+review/diagnostics/kg_source_consistency/ — included here purely so this
+figure pair is a complete, standalone 6-axis comparison; its numbers are
+reused, not recomputed independently, and will move in lockstep with any
+future change to the KG axis elsewhere.
+
+LAND COVER -> IGBP.
+Site side: the `igbp` field already present in every network's own site
+list (fluxnet_shuttle_snapshot_20260901T094522.csv for current_781;
+sites_la_thuile_clean.csv; sites_marconi_clean.csv;
+sites_fluxnet2015_clean.csv) — this is tower-metadata self-classification
+(PI-assigned at network registration), not a raster extraction. Full
+17-class IGBP scheme used (not the 12-class STANDARD_IGBP subset
+scripts/assess_flux_data_by_igbp_shuttle.R uses for draft Fig 3), per
+explicit instruction for this supplement. current_781 has 0 missing igbp
+values (781/781); all four networks' site lists carry the field natively.
+15 of 17 classes are represented among current-network towers (Water and
+Urban absent, as expected — flux towers are not sited in open water or
+dense urban core; both are still carried as zero-count classes in the
+site-side factor levels and the global reference for completeness).
+
+Global side: no global IGBP-scheme land-fraction dataset exists anywhere
+in this repository before this figure (data/external/ has no MODIS-named
+directory; the existing cci_landcover_aggregation_lookup.csv has no IGBP
+column; figure_representativeness_landcover.R:997-1002 has a prior,
+explicit note explaining why IGBP was avoided as a *global* axis before
+this task — "MODIS IGBP is the network's self-classification and has known
+site-level accuracy issues... using an independent product avoids
+circularity"). Two approaches were considered for this supplement:
+
+  (a) A constructed ESA-CCI-native (37-class LCCS) -> IGBP (17-class)
+      crosswalk, applied to the existing, already-vetted global CCI
+      land-cover distribution (landcover_cci_native_global_distribution.csv)
+      -- USED, see table_igbp_esacci_crosswalk.csv for the full
+      class-by-class mapping and rationale. No official published
+      ESA-CCI<->IGBP correspondence table was found (a live search across
+      ESA's own CCI Land Cover documentation and project pages found
+      crosswalks to PFTs and to legacy legends like GLC2000, but none to
+      IGBP specifically). The crosswalk here is therefore a constructed,
+      transparent mapping built from each scheme's own published class
+      definitions, not a copied official table — flagged explicitly as
+      such, not presented as authoritative. Judgment calls (documented
+      per-row in the crosswalk CSV): CCI mosaic classes 30/40 (majority
+      cropland / majority natural, neither >50%... actually >50% one way
+      or the other, neither component reaching IGBP's 60% single-component
+      threshold) -> CVM; CCI's "mosaic tree-and-shrub(>50%)/herbaceous"
+      (100) -> Woody Savanna and "mosaic herbaceous(>50%)/tree-and-shrub"
+      (110) -> Savanna, by matching each to IGBP's own tree-cover-percent
+      definitions for those two classes; CCI's undifferentiated Shrubland
+      classes (120/121/122, no canopy-density split) all defaulted to Open
+      Shrublands (IGBP's Closed Shrublands, requiring >60% canopy cover, is
+      never assigned by this crosswalk — a real limitation, noted here
+      rather than hidden); CCI's <15%-cover Sparse Vegetation classes
+      (150-153) and Bare Areas (200-202) both -> Barren, matching IGBP
+      Barren's own "never >10% vegetated cover" threshold; Lichens/mosses
+      (140) -> Grasslands (nearest available IGBP class for non-vascular
+      but vegetated ground cover; IGBP has no explicit tundra/moss class).
+      Resulting global distribution sums to exactly 1.0 (land-only, no
+      ocean) -- table_igbp_global_distribution_crosswalk.csv.
+
+  (b) A published, independently-citable global land-fraction-by-IGBP-class
+      table (e.g. from official MODIS MCD12Q1/MCD12C1 product
+      documentation, or a peer-reviewed characterization paper) --
+      ATTEMPTED, NOT USED. A genuine search was carried out: the LP DAAC
+      MCD12Q1 Collection 6 and 6.1 User Guides (both PDFs, read in full via
+      pdftotext), the original Friedl et al. (2010) Collection 5
+      characterization paper (blocked by publisher access), a NASA JPL
+      SMAP Ancillary Data Report on land-cover classification (read in
+      full), and the ORNL DAAC ISLSCP II MODIS IGBP Land Cover
+      documentation (read in full) were all checked directly for a global
+      area-by-class table. None contain one -- they document class
+      *definitions*, spatial/temporal resolution, and per-pixel
+      sub-pixel-fraction *format*, not global aggregate area statistics.
+      One automated web-fetch tool initially reported finding such a table
+      with specific percentages "totaling 100%" in the SMAP document; this
+      was independently verified by (i) checking the arithmetic (the
+      reported figures actually summed to 81.1%, not 100%) and (ii)
+      re-extracting the source PDF's text directly with pdftotext, which
+      confirmed no such table exists anywhere in that document. That
+      citation was discarded as fabricated rather than used. Given this,
+      approach (b) was abandoned for this supplement rather than risk an
+      unverifiable number in a co-author-facing figure -- explicit decision
+      to skip a "MODIS-sourced" comparison panel rather than approximate
+      one. This can be revisited if a genuine source is identified, or if
+      actually downloading and processing raw MCD12Q1/MCD12C1 raster data
+      becomes worth the added infrastructure (a new R package -- geodata
+      does not cover this product; MODIStsp/MODIS do -- and a new NASA
+      EarthData credential, neither present in this repository today).
+
+NEE-IAV / ET-median (TRENDY, site-extracted) -> NEE / ET (site-measured).
+Site side: nep_median and et_median columns from
+data/snapshots/site_flux_medians_shuttle.csv (current_781) and
+site_flux_medians_fluxnet2015.csv (FLUXNET2015) -- already computed and
+vetted for draft Fig 3 by scripts/assess_flux_data_by_igbp_shuttle.R /
+assess_flux_data_by_igbp_fluxnet2015.R: per-site annual medians at QC=0.80
+(stricter than the pipeline default QC_THRESHOLD_YY=0.50), with VUT/CUT
+fallback (VUT preferred, CUT fallback when VUT unavailable/fails QC) and
+NT/DT partition fallback for GPP/TER (not used by this NEE/ET supplement,
+but the same site-year gating applies), decided per-site not per-year.
+Reused verbatim here, not recomputed at a different threshold, to keep
+this supplement's numbers directly comparable to Fig 3's already-reviewed
+ones. La Thuile and Marconi have no downloaded flux time series anywhere
+in this repository -- only historical site/coordinate lists -- so NEE/ET
+are NA for those two networks; the trajectory figure shows this as an
+explicit gap in the line (na.rm=TRUE), not an interpolation or a
+zero-fill. NEP is sign-flipped NEE (NEP = -NEE); this supplement takes
+abs(nep_median) before binning, to match the *existing* TRENDY nee_median
+axis's own "mean |flux|" binning convention
+(figure_representativeness_trendy_compute.R:381,543,
+compute_mean_abs()) -- this is what makes reusing that axis's stored bin
+edges valid; ET has no equivalent sign issue (already non-negative).
+
+Global side: UNCHANGED. Reuses
+trendy_nee_median_global_distribution.csv / _18bin.csv and
+trendy_et_median_global_distribution.csv / _18bin.csv verbatim, including
+their stored min_value/max_value bin edges (measured site values are
+classified into those exact bins via findInterval(), not rebinned). The
+global reference for NEE/ET is therefore still TRENDY-model-derived in
+this supplement -- there is no "globally measured flux" product to compare
+against by construction, so this mismatch is inherent to the analysis, not
+an artefact introduced here. What changed is only which values represent
+the *network* side: real tower measurements instead of model output
+sampled at tower coordinates. This mirrors the KG axis's own established
+pattern (site source changed, global reference held fixed) documented and
+sized in review/diagnostics/kg_source_consistency/report.md.
+
+
+DENOMINATOR CONVENTION
+-----------------------
+Every axis uses the same convention already established across the
+pipeline (figure_representativeness_summary.R's count_sites(),
+figure_representativeness_kg.R's site_fracs()): sites lacking a
+classification are dropped from the class numerator but the full network
+size is retained as the denominator. Network fractions therefore sum to
+<1.0 wherever classification is incomplete: KG 755/781 (dilution factor
+~0.967, same as review/diagnostics/kg_source_consistency/report.md), IGBP
+781/781 (no dilution -- site metadata is complete for every network here),
+NEE 636/781 (dilution ~0.814), ET 656/781 (dilution ~0.840). This is stated
+explicitly rather than silently absorbed, per the same standard this
+session's KG investigation established.
+
+
+KNOWN LIMITATIONS
+-------------------
+- The IGBP global reference is a constructed crosswalk, not an official
+  product; treat panel/line B in both figures as illustrative of the
+  *pattern* (site metadata vs. an independent global land-cover reference),
+  not as precision-matched to the rigor of the KG/Aridity/Biomass axes.
+- The "MODIS published reference" comparison requested alongside the
+  crosswalk was not built -- no verifiable source found; see above.
+- NEE/ET coverage is 2 of 4 network generations in the trajectory figure;
+  La Thuile/Marconi cannot be added without downloading and QC-processing
+  their raw flux archives, which is out of scope for this supplement.
+- The Open/Closed Shrubland distinction is entirely collapsed to Open in
+  the IGBP crosswalk (CCI's Shrubland classes carry no canopy-density
+  split) -- Closed Shrublands (CSH) is structurally zero in the global
+  reference built here, which will suppress that class's Jaccard
+  contribution regardless of how many CSH-labelled towers exist.

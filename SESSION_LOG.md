@@ -4,6 +4,583 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — Supplementary Jaccard figures: site-measured NEE/ET, site-metadata IGBP, KG unchanged
+
+Built two supplementary representativeness figures addressing a co-author
+comment on draft Figs 4/5, plus a consolidated methods writeup. New script:
+`scripts/figure_representativeness_supp_sitelevel.R`. Outputs in
+`review/figures/candidates/`: `Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png`
+(single-network, current_781, 2x3 grid, analogous to draft Fig 4),
+`Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png` (4-network trajectory,
+analogous to draft Fig 5), each with a `.legend.txt`, plus
+`Supp_methods_siteKG_IGBP_NEE_ET.txt` (detailed methods covering both),
+four companion data CSVs with `.meta.json`, and a run log
+(`logs/figure_representativeness_supp_sitelevel_20260917.log`). No existing
+script, figure, legend, snapshot CSV, or `representativeness_metrics.csv`
+was modified — candidate-only, not promoted to `draft_manuscript_v1/`.
+
+**Co-author comment addressed:** the NEE and ET axes in Figs 4/5 compare
+TRENDY model output sampled at each site's coordinates against a TRENDY
+global distribution (model-vs-model), not what the towers actually
+measured; the land-cover axis uses ESA CCI's own scheme rather than IGBP,
+which flux-tower metadata natively carries.
+
+**Three axis substitutions, KG unchanged:**
+- **KG** — no change. Reused verbatim from the current ERA5-local-vs-Beck-
+  global setup (same as Figs 4/5 and this session's earlier
+  `review/diagnostics/kg_source_consistency/` investigation).
+- **Land cover → IGBP.** Site side: the `igbp` field already present in
+  every network's own site list (current_781's pinned Shuttle snapshot;
+  `sites_la_thuile_clean.csv`; `sites_marconi_clean.csv`;
+  `sites_fluxnet2015_clean.csv`) — tower metadata, not a raster extraction.
+  Full 17-class IGBP scheme (not the 12-class `STANDARD_IGBP` subset Fig 3
+  uses), per explicit instruction. current_781: 781/781 sites have a
+  non-missing `igbp` value. Global side: no global IGBP-scheme land-fraction
+  dataset existed anywhere in the repo before this session. Built a
+  documented, constructed ESA-CCI-native(37-class)→IGBP(17-class) crosswalk
+  (`table_igbp_esacci_crosswalk.csv`, one row per native class with a
+  `rationale` column for every non-trivial mapping — no official published
+  ESA-CCI↔IGBP correspondence table was found despite checking ESA's own
+  CCI Land Cover documentation) and applied it to the existing, unchanged
+  `landcover_cci_native_global_distribution.csv`
+  (`table_igbp_global_distribution_crosswalk.csv`, sums to 1.0). A second,
+  published-reference ("MODIS") variant of the global IGBP distribution was
+  attempted and explicitly abandoned: checked the LP DAAC MCD12Q1 Collection
+  6/6.1 User Guides, a NASA JPL SMAP Ancillary Data Report, and ORNL DAAC's
+  ISLSCP II MODIS IGBP Land Cover documentation directly (via `pdftotext`
+  after installing `poppler` locally) — none contain a global area-by-class
+  table, only class definitions and per-pixel format specs. One automated
+  web-fetch tool's claimed citation (a table "totaling 100%") was checked
+  and rejected: the reported percentages actually summed to 81.1%, and
+  re-extracting the source PDF directly confirmed no such table exists in
+  it. No fabricated or unverifiable number was used; the comparison panel
+  was dropped rather than approximated, per user decision.
+- **NEE-IAV/ET-median (TRENDY, site-extracted) → NEE/ET (site-measured).**
+  Site side: `nep_median`/`et_median` from
+  `data/snapshots/site_flux_medians_shuttle.csv` (current_781) and
+  `site_flux_medians_fluxnet2015.csv` (FLUXNET2015) — the same QC=0.80,
+  VUT/CUT + NT/DT-fallback medians already vetted for draft Fig 3, reused
+  verbatim. La Thuile/Marconi have no downloaded flux time series anywhere
+  in this repo (site/coordinate lists only), so NEE/ET are NA for those two
+  networks — the trajectory figure shows an explicit gap (`na.rm=TRUE`), not
+  an interpolation. `nep_median` is `abs()`-transformed before binning to
+  match the existing TRENDY `nee_median` axis's own "mean |flux|" convention
+  (`figure_representativeness_trendy_compute.R:381,543`), which is what
+  makes reusing that axis's stored bin edges valid. Global side: unchanged —
+  reused `trendy_{nee,et}_median_global_distribution{,_18bin}.csv` verbatim
+  (7-bin for the sampling-ratio figure, 18-bin for the trajectory, matching
+  Figs 4/5's own resolution convention), classifying measured values into
+  the existing stored bin edges via `findInterval()`.
+
+**Denominator convention**: identical to the rest of the pipeline
+(`count_sites()`/`site_fracs()` pattern) — unclassified sites dropped from
+the numerator, full network size (781) kept as denominator. current_781
+classified counts: KG 755/781, IGBP 781/781, Aridity 781/781, Biomass
+781/781, NEE 636/781, ET 656/781.
+
+**Headline Jaccard values** (current_781; two-letter/7-bin for the grid
+figure, matches the trajectory figure's own-axis values at the "Current"
+point):
+KG 0.420 | IGBP 0.394 | Aridity 0.666 | Biomass 0.636 | NEE 0.233 | ET 0.489.
+Trajectory (Marconi → La Thuile → FLUXNET2015 → Current): KG
+0.223→0.292→0.365→0.420 (unchanged from Fig 5); IGBP 0.182→0.364→0.361→0.394
+(new); NEE only computable at FLUXNET2015/Current: 0.173→0.207; ET
+0.448→0.450.
+
+**Known limitations, disclosed in the methods doc, not hidden**: the IGBP
+global reference is a constructed crosswalk, not an official product; the
+crosswalk collapses all CCI shrubland classes to Open Shrublands (Closed
+Shrublands is structurally zero in the built global reference, since CCI
+carries no canopy-density split); NEE/ET trajectory coverage is 2 of 4
+network generations.
+
+Verified via `git status` that only new files were touched (plus the
+expected `outputs/session_info.txt` append from `write_output_metadata()`).
+
+---
+
+## 2026-09-17 — Representativeness (Jaccard) datasets and the geospatial-vs-site-level logic
+
+Follow-up summary to this session's KG source-consistency investigation
+(below), answering: which datasets feed the six representativeness/Jaccard
+axes in `scripts/figure_representativeness_summary.R` (draft Figs 4 & 5),
+and what rule governs when each is used as a geospatial (global, area-
+weighted) product versus point-extracted at site coordinates. No files
+other than this log entry were touched.
+
+### Dataset summary (all six axes)
+
+| Axis | Dataset | Version / epoch | Resolution |
+|---|---|---|---|
+| Köppen-Geiger (13-class) | Beck et al. (2023) *Sci. Data* 10:724, climatological raster | 1991-2020 | 1 km (`koppen_geiger_0p00833333.tif`) |
+| Köppen-Geiger, site side (current_781 only) | Locally computed from each site's bundled ERA5 monthly reanalysis, via the Beck rule cascade | 1991-2020 normal | site point data, not gridded |
+| Land cover (10-class HL) | ESA CCI Land Cover v2.1.1 | 2020 epoch | native (`cci_lc_2022_kg_aligned_native.tif`) |
+| Aridity (7-class UNEP) | CGIAR Global Aridity Index v3.1 (Trabucco & Zomer 2019) | — | native (`ai_v31_yr.tif`) |
+| Biomass (7-/18-bin hybrid) | ESA CCI Biomass v7.0, band 18 (Santoro et al.) | 2024 estimate | ~1 km |
+| TRENDY NEE-IAV | TRENDY v14 multi-model ensemble (19 DGVMs, GCB2025 protocol), median absolute IAV | multi-year | regridded 0.5° |
+| TRENDY ET-median | Same TRENDY v14 ensemble, median annual ET | multi-year | regridded 0.5° |
+| Site list (all axes) | FLUXNET Shuttle (`flux_listall()`/`flux_download()`) snapshots | per-network pinned snapshot | 781/212/252/35 sites |
+
+### The logic: same raster, two aggregation methods — except KG
+
+For five of the six axes (land cover, aridity, biomass, TRENDY NEE-IAV,
+TRENDY ET-median), **one raster/derived-product is the single source of
+truth**, and the geospatial-vs-site-level choice is purely a question of
+*aggregation method applied to that same raster*, not a choice of dataset:
+
+- **Site-level (q):** `terra::extract()` (point extraction) at each tower's
+  exact lat/lon — the value of the pixel the tower physically sits in.
+- **Geospatial/global (p):** the same raster, area-weighted across the full
+  land mask (`terra::cellSize(mask=TRUE)` + `terra::zonal(sum)`, or the
+  equivalent per-axis zonal/classify call) to get the global land-fraction
+  per class or bin.
+
+Because both sides read the identical file (in landcover/biomass, via a
+shared cache path one script writes and the other reads; in aridity/TRENDY,
+within a single script run on one in-memory raster object — see this
+session's earlier `review/diagnostics/kg_source_consistency/report.md`
+provenance table for exact file:line citations), *p* and *q* are guaranteed
+to describe the same physical quantity, version, and (for biomass) near-
+identical resolution. The weighted Jaccard then measures a genuine
+site-vs-global sampling question, not a data-source artifact.
+
+**KG breaks this pattern for the current network only, by design, not by
+oversight.** Before 2026-08-20, KG followed the same rule as the other five
+axes: Beck 2023 raster, point-extracted at sites for *q*, area-weighted
+globally for *p* — one dataset, two aggregations. On 2026-08-20 (entry
+below), the site-level KG classification was replaced with a computation
+from **non-gridded, per-site tabular data** — each site's own bundled ERA5
+monthly reanalysis time series, run through the Beck classification rule
+cascade in `R/climate_classification.R` — to unify KG across figure
+families (it had separately used BADM metadata for `Anomalies_KG` figures
+and the Beck raster for representativeness figures) onto one source,
+following the method ICOS's own classification script uses. There is no
+gridded, pre-classified ERA5-KG product to match it against globally — that
+would require building an entirely new global raster (the Beck rule cascade
+applied to gridded ERA5 monthly normals; scoped, not built, in this
+session's Task 5) — so the global side (*p*) stayed on the Beck raster by
+explicit scope decision. The result: for `current_781`'s KG axis only, *q*
+and *p* are no longer the same dataset aggregated two ways; they are two
+different classification methods. This session's counterfactual
+(`review/diagnostics/kg_source_consistency/report.md`) sizes that effect at
++0.045-0.053 J (two-letter/5-class) from the method difference alone,
+versus ±0.001-0.002 J from the site-coverage difference or the finer
+30-class aggregation.
+
+Historical networks (Marconi/La Thuile/FLUXNET2015) were left out of the
+2026-08-20 change — they are not Shuttle sites and have no bundled ERA5
+monthly data — so their KG axis still follows the original one-dataset,
+two-aggregations rule (Beck raster, point-extracted). Only `current_781`'s
+KG point in the Fig 5 trajectory uses the ERA5 method, which is why that
+one segment mixes classification methods (see this session's earlier
+entry, Task 2).
+
+---
+
+## 2026-09-17 — KG source-consistency investigation + counterfactual (read-and-report)
+
+Read-and-report investigation into whether the 2026-08-20 switch of the
+current network's Köppen-Geiger (KG) site classification from Beck et al.
+(2023) raster extraction to a locally computed ERA5-based classification
+created a p/q source mismatch feeding into draft Fig 4/5, plus a
+counterfactual to size the effect. No existing script, figure, legend,
+snapshot CSV, or `representativeness_metrics.csv` was modified. New code:
+`scripts/diagnostics/kg_source_consistency.R`. Full report, provenance
+table, and outputs: `review/diagnostics/kg_source_consistency/` (`report.md`
++ 4 CSVs + `.meta.json` companions). Run log:
+`logs/kg_source_consistency_20260917.log`.
+
+**Verdict: confirmed.** KG is the only representativeness axis where the
+site classification (q) and global reference distribution (p) come from
+different sources — current_781's q is ERA5-local
+(`data/snapshots/site_koppen_era5.csv`), p is still Beck-raster
+(`data/snapshots/koppen_beck2023_global_distribution.csv`). Traced all six
+`AXES6` axes in `scripts/figure_representativeness_summary.R` (LULC,
+Aridity, Biomass, TRENDY NEE-IAV/ET-median all use the identical
+raster/derived-product file for both sides); KG is the sole exception,
+documented as a deliberate, scoped decision in `figure_representativeness_kg.R:6-14`
+and `SESSION_LOG.md:1009-1017` (2026-08-20 entry) — not an oversight, but a
+real mismatch. Confirmed the FLUXNET2015→Current step in Fig 5's KG line
+mixes two classification methods in one trajectory (historical networks
+stay Beck-raster; only `current_781` is ERA5).
+
+**Counterfactual (script re-extracted Beck 2023 KG for the 14 sites added
+between the 767- and 781-site snapshots — `site_koppen_beck2023.csv` on disk
+still only has 767 rows, hardcoded to the old snapshot in
+`step4_extract_koppen_beck2023.R:88` — merged into a diagnostic-only
+`site_koppen_beck2023_current_781.csv`, not written to `data/snapshots/`):
+at two-letter/5-class, switching source raises J by +0.048/+0.058, of which
+~92% is the classification-method effect alone (isolated via a same-755-site
+comparison) and only ~8% is from the 26 sites ERA5 leaves unclassified. At
+30-class the same switch changes J by only +0.001 — an order of magnitude
+smaller; disagreements (69.0% full-code, 77.5% two-letter, 84.5% main-group
+agreement on the 755 comparable sites) net out once spread across 30
+classes. Site-level confusion table shows ERA5 classifies far more sites
+arid (BW+BS: 131 sites) than Beck does for the same 755 sites (87 sites),
+with most of the difference reallocating to Df/Cf (cold/temperate,
+no-dry-season) under Beck.
+
+**Denominator accounting:** of 781 current-network sites, 755 get an ERA5
+KG class; the 26 that don't all have `n_years_used = 0` (every candidate
+1991-2020 year failed the 5000 mm/yr P-screen — 0 sites now lack ERA5 rows
+entirely, unlike the 767-network's 8+25 split). Both `figure_representativeness_summary.R`'s
+`count_sites()` and `figure_representativeness_kg.R`'s `site_fracs()` drop
+unclassified sites from the numerator but keep the full 781 in the
+denominator — network fractions sum to 755/781 ≈ 0.967, not 1.0.
+`representativeness_metrics.csv`'s `n_sites` (781) and the Fig 4/5 legend
+counts (both "n=781") are internally consistent with each other but do not
+disclose that only 755 of those sites actually contributed a KG
+classification.
+
+Flagged, not resolved: the pre-existing unexplained KG two-letter J=0.373
+in the old (pre-2026-09-01) Fig 4/5 legends, already noted in
+`docs/figure_rebuild_781_20260901.md` as matching neither `current_767`
+(0.423) nor `current_781` (0.420) as recorded — a separate, older
+discrepancy from the 0.373→0.423 (767-network) source-switch effect this
+task investigated, which SESSION_LOG.md's own 2026-08-20 entry documents
+and this task's counterfactual independently reproduces at `current_781`.
+
+Report closes with three undecided manuscript options (revert current_781
+to Beck-raster classification; build an ERA5-based global distribution,
+scoped in Task 5 as requiring a new gridded-ERA5 download with no CDS
+credentials currently configured in this repo; or keep ERA5-vs-Beck and
+disclose it in Methods), each with the figures/legend values it would
+change — no option selected, per the task's read-and-report scope.
+
+---
+
+## 2026-09-13 — Dryland flux tower map (Map10) built
+
+Filled the aridity map placeholder identified in `R/figures/fig_maps.R`.
+Extended the existing Map0X pipeline (`scripts/generate_maps.R`) rather than
+adding a parallel script — `Map10` is generated alongside `Map01`-`09` in
+the same run and follows the same `save_map()` / `MAP_STYLE` conventions.
+
+**Site table and filter:** canonical pinned snapshot
+(`data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv`, the same one
+`Map01` and the point-network maps use), filtered to valid lat/long and
+distinct `site_id` — the same filter used by every other `fig_map_*`
+function. **781 sites.**
+
+**Per-site aridity extraction:** consolidated the point-extraction logic
+previously duplicated between `scripts/step2_extract_aridity.R` and
+`scripts/figure_representativeness_aridity.R` into a single reusable
+function, `extract_site_aridity()` (new, in `R/external_data.R`), with
+`classify_aridity_index()` / `classify_aridity_index_7()` for the UNEP
+5-class and extended 7-class schemes. Point-extracts CGIAR Global Aridity
+Index v3.1 (`data/external/aridity/Global-AI_ET0__annual_v3_1/ai_v31_yr.tif`,
+raw integer × 0.0001 = AI) at each tower's exact coordinates, with a
+buffer-then-nearest-land fallback for coastal sites landing on ocean pixels.
+Regenerated `data/snapshots/site_aridity.csv` (+ `.meta.json`) — output was
+byte-identical to the prior file (git shows no diff), confirming the
+consolidated function reproduces the existing extraction exactly. Schema
+kept compatible with the pre-existing file (`site_id`, `location_lat`,
+`location_long`, `ai_value`, `unep_class_5`, `unep_class_7`,
+`aridity_method`) so it remains a drop-in regeneration, not a fork. Function
+is written to be extended with future per-site covariates (e.g. a human
+influence index) via `left_join()` on `site_id`.
+
+**Aridity class counts (n = 781 towers):** Hyper-Arid 4 (0.5%), Arid 46
+(5.9%), Semi-Arid 149 (19.1%), Dry Sub-Humid 71 (9.1%), Humid 511 (65.4%).
+Non-humid (dryland) towers: **270**.
+
+**Figure:** new `fig_map_dryland_towers()` in `R/figures/fig_maps.R` —
+categorical AI raster backdrop (resampled to 0.2° via the existing
+`.aridity_raster_df()`, reused from the point-network aridity-backdrop
+maps), thin coastlines, non-humid towers as filled Okabe-Ito-blue circles,
+`show_humid` argument to additionally plot humid towers as open grey
+circles (off by default, matching the standard caption). Colour palette is
+`.AI_COLORS` with `Humid` overridden to grey (`.DRYLAND_AI_COLORS`) since
+this figure's water/ice is white, unlike the existing point-network aridity
+backdrop where Humid is white. Legend is the horizontal 5-class bottom
+legend from `MAP_STYLE`, matching `fig_map_historical()`'s convention.
+Saved: `review/figures/maps/fig_map10_DrylandTowers.png` (standard
+resolution, 150 dpi, `MAP_STYLE` 14×7 in) and its caption text
+(`fig_map10_DrylandTowers_caption.txt`):
+
+> Map of flux tower locations in dryland ecosystems, which include
+> hyper-arid (aridity index, AI, < 0.05), arid (0.05 < AI < 0.20), semi-arid
+> (0.20 < AI < 0.50) and dry sub-humid (0.50 < AI < 0.65) regions. AI is the
+> ratio of mean annual precipitation to potential evapotranspiration (CGIAR
+> Global Aridity Index v3.1). n = 270 towers.
+
+Full `generate_maps.R` run regenerated `Map01`-`09` too (deterministic
+re-render — PNG byte sizes within a few hundred bytes of the prior commit,
+no content change) alongside the new `Map10`; all ten committed together.
+
+**Known pre-existing issue, not touched:** `scripts/generate_env_response_era5.R`
+reads `data/snapshots/site_aridity.csv` expecting an `aridity_index` column
+(via `R/figures/fig_environmental_response.R`'s `aridity_data` contract),
+but the file (as written by `figure_representativeness_aridity.R`, and now
+also by `extract_site_aridity()`) has always used `ai_value` — that script
+would currently fail if run. Predates this session; flagged for a future
+task, not fixed here since it's outside this figure's scope.
+
+---
+
+## 2026-09-08 — WAFNET energy partitioning: Figure 2 built (side analysis, not the Annual Paper)
+
+First figure of the figure-pack plan below carried out. **Not part of the
+FLUXNET Annual Paper 2026** — see the plan entry immediately below for
+full scope.
+
+**Figure 2 — ground heat flux (G) diagnostic, priority: SN-Nkr**
+(`code/04_figure2_g_diagnostic.R` → `figures/figure2_g_diagnostic_snnkr.pdf`/
+`.png`). Mean diurnal composite of `G` vs `NETRAD` at SN-Nkr, one line pair
+per year (2018–2024); the same composite pooled across all years for the
+other four sites with usable `G` data (BJ-Nhu excluded — no `G` data at
+all); a distribution-of-`G`-by-site panel; a date × hour-of-day heatmap of
+raw `G` at SN-Nkr (color capped at ±300 W m⁻², values to ±860 W m⁻²
+noted). No QC filtering or completeness threshold applied — a raw visual
+diagnostic, not a filtered analysis figure.
+
+**Finding (descriptive, not yet interpreted for the manuscript):** SN-Nkr
+is the only one of the six sites where `G`'s diurnal amplitude (peak ≈
++450 to +480 W m⁻², night ≈ −150 W m⁻²) is comparable in magnitude to its
+own `NETRAD` amplitude — the other four sites' `G` swing is a small
+fraction of their `Rn` swing. The heatmap shows this pattern present
+continuously across all 7 years, not confined to particular dates —
+consistent with a persistent instrumentation/labelling issue or a genuine
+sparse-canopy signal, and not with a transient sensor fault. Logged in
+`docs/methods_memo.md` for the site team; not resolved here.
+
+**Environment bug found and fixed:** `grDevices::cairo_pdf` (originally
+used for the vector PDF output in `code/fig_helpers.R::save_figure()`)
+silently writes **no file at all** on this machine — missing system
+cairo/X11 libraries cause it to emit only a warning while the script
+continues as if it had succeeded. Every figure's PDF output would have
+silently gone missing had this not been caught by checking `figures/`
+after the first run. Fixed by switching to the base `pdf()` device;
+follow-on constraint (plot title/label text must be ASCII, or use
+`expression()` for superscripts) recorded in `methods_memo.md` since it
+applies to every remaining figure in this pack.
+
+**Status:** committed and pushed (`12c6fc9`). Four figures, the
+`site_year_summary.csv` table, and the combined `figure_pack_20260908.pdf`
+assembly remain — see the plan below.
+
+---
+
+## 2026-09-08 — WAFNET energy partitioning: figure-pack plan (side analysis, not the Annual Paper)
+
+Standalone West Africa energy-partitioning side analysis for David Moore.
+**Not part of the FLUXNET Annual Paper 2026** — all outputs live under
+`WAFNET/energy_partitioning/`, which reads (never writes) the repo-root
+`data/extracted/` BIF metadata and otherwise never touches the Annual
+Paper's `R/`, `scripts/`, `data/`, `outputs/`, or `review/` directories.
+Six sites, humid-to-Sahelian gradient: `GH-Ank`, `BJ-Db1`, `BJ-Bfg`,
+`BJ-Nhu`, `SN-Nkr`, `SN-Dhr`.
+
+This entry is a **plan**, written up before building anything, covering the
+next deliverable: a figure pack to circulate to the WAFNET team (figures
+and captions only — no interpretation written into a manuscript yet). It
+follows on from the pre-analysis report below, which the PI has reviewed.
+
+#### Two decisions carried forward from the pre-analysis review, applied throughout
+
+1. **EF is defined as `LE/(LE+H)`, not `LE/(Rn−G)`.** This is the only
+   option usable at BJ-Nhu, where `G` is entirely missing (see below), and
+   it sidesteps the SN-Nkr `G` problem — a ratio of the two turbulent
+   fluxes is far less sensitive to the energy-balance closure gap than a
+   definition that depends on `G`. Wherever `LE/(Rn−G)` is also computed,
+   it will be labelled explicitly as the alternative definition and kept in
+   a supplementary panel, not the headline figure.
+2. **Every result is reported both for the full record and for a
+   common-year subset**, with the common-year window stated explicitly.
+   Site-years are unbalanced (3–11 per site, see table below) and barely
+   overlap in time, so a full-record-only comparison would confound
+   site-to-site differences with record length and climate epoch.
+
+#### What the pre-analysis already tells us that will shape these figures
+
+- **Site-year imbalance is real and large:** GH-Ank 3 yr (2011–2014),
+  BJ-Db1 3 yr (2022–2024), BJ-Bfg 10 yr (2008–2017), BJ-Nhu 10 yr
+  (2008–2017), SN-Nkr 7 yr (2018–2024), SN-Dhr 11 yr (2010–2022). Records
+  barely overlap — this is exactly what Figure 4 (availability/overlap)
+  and the common-year framing in Figure 5 exist to make visible.
+- **BJ-Nhu has no soil heat flux data at all** — `G_F_MDS` is present in
+  the header but 100% NA across all 175,344 half-hours (not a QC/thinness
+  issue). Any `Rn−G`-based output must exclude BJ-Nhu or substitute an
+  `Rn`-only available-energy term for it specifically. The EF definition
+  above (turbulent-flux ratio) already avoids this for Figure 5; Figure 3's
+  `Rn−G` closure panel will exclude BJ-Nhu and say why in the caption, per
+  the brief.
+- **SN-Nkr's `G_F_MDS` is flagged, not resolved:** closure regression is
+  unusable as a fit (R² = 0.001, slope = 0.05, n = 69,224 measured
+  half-hours); 26% of qualifying half-hours have `|G_F_MDS| > 200 W/m²`
+  (up to ~860 W/m² at the extreme), consistent across all 7 years — not a
+  transient fault, and not fixed by additionally gating on
+  `G_F_MDS_QC == 0`. No `GRP_HEATFLUX`/`GRP_SOILHEATFLUX` BADM group exists
+  for any of the six sites, so plate depth / storage-above-plate treatment
+  cannot be checked from Shuttle metadata for this or any site. Figure 2 is
+  built specifically to let the site team judge, from the diurnal
+  amplitude and the time series/heatmap of raw values, whether this looks
+  like a unit/sign/mislabelling error or a genuine sparse-canopy signal.
+
+#### Planned figure pack
+
+1. **Figure 1 — Wilson et al. (2002) replicate.** Daily cumulative H vs LE
+   (MJ m⁻² d⁻¹), one point per site-year, daytime-only (PAR>0), 48-bin
+   mean diurnal composite, no gap-filling, no closure correction,
+   site-years with >35% missing daytime half-hours dropped. Constant-β rays
+   (0.25/0.5/1/2/3) and constant-(H+LE) diagonals; no vegetation envelopes
+   (six sites can't support them — the beta rays carry the interpretive
+   weight, and the caption will say so). Produced as **three window
+   variants**, per the brief's instruction not to pick one: (a) fixed DOY
+   165–235 (Wilson's window — the Sahel monsoon core, but Ankasa's little
+   dry season), (b) a per-site wet-season window from rainfall climatology
+   (candidate source: in-hand `P_F` half-hourly precipitation, not an
+   external download), (c) a phenology window from EVI/LAI. **(c) is
+   likely to be dropped:** the only ancillary vegetation fields found so
+   far are static single-value BIF entries (canopy height, IGBP class),
+   not an EVI/LAI time series — there is nothing in hand to build a
+   phenology window from without a new external dataset, which would need
+   sign-off first since it's outside the Shuttle-only data this side
+   analysis has used so far. Will confirm once (a) and (b) are built and
+   report survival counts under each window.
+2. **Figure 2 — SN-Nkr ground heat flux diagnostic.** Mean diurnal
+   composite of `G` vs `Rn` per year at SN-Nkr, other five sites shown
+   for comparison where `G` exists; a distribution-by-site panel; a time
+   series/heatmap showing whether the implausible values are continuous or
+   episodic. Built to be self-explanatory for the site team, since this is
+   the figure most likely to prompt a direct question back to them.
+3. **Figure 3 — energy balance closure by site.** `LE+H` vs `Rn−G` scatter
+   with per-site OLS (slope, intercept, R², n) plus the sum-based energy
+   balance ratio alongside the fit, since SN-Nkr will otherwise distort the
+   regression panel. **BJ-Nhu excluded from this figure** (no `G`), per the
+   brief — the closure numbers already in hand for the other four sites
+   (slopes 0.72–0.93, R² 0.73–0.89) look physically reasonable and are not
+   flagged.
+4. **Figure 4 — data availability and overlap.** Timeline of site-years,
+   marking which pass the completeness rule, shading the common-year
+   window; a percent-non-NA-by-variable-and-site panel for the variables
+   the three planned analyses need. Exists so the imbalance above (three
+   site-years at two sites vs. eleven at SN-Dhr) is immediately visible
+   rather than discovered later.
+5. **Figure 5 — EF distributions, revised.** Boxplots of `LE/(LE+H)` by
+   site, three ways: full record, common years only, and equal-years-per-
+   site by repeated subsampling of the longer records (range shown). Tests
+   whether SN-Dhr's wide spread survives once record length is controlled.
+   No separate Bowen-ratio panel (monotone transform of the same quantity,
+   per the brief); a β secondary axis will be added if it reads cleanly.
+
+Also: `tables/site_year_summary.csv` (one row per site-year: daily
+cumulative H, LE, EF, β, total turbulent flux, closure slope/intercept,
+completeness), and assembly of all figures plus numbered captions into
+`figure_pack_20260908.pdf`.
+
+#### Status
+
+Nothing has been built yet beyond a shared plotting-helpers scaffold
+(`code/fig_helpers.R` — theme, site color/order, and a `save_figure()`
+helper that writes PDF+PNG and registers each caption for the combined
+PDF). No figure scripts, no rendered figures, no combined PDF, and no
+`site_year_summary.csv` yet. Estimated remaining effort is roughly 3.5–5
+hours of active development — dominated by writing and iterating the
+filtering/composite logic (Figure 1's three window variants in particular),
+not by compute time on data of this size.
+
+**Next step:** build and commit one figure at a time (script + PDF + PNG
+together), pushing as each lands, rather than in one long unattended batch.
+Data-quality anomalies on the scale of the SN-Nkr `G` finding will be
+logged and flagged in the relevant caption rather than pausing the whole
+run. Awaiting the PI's go-ahead to start.
+
+---
+
+## 2026-09-08 — WAFNET energy partitioning: pre-analysis report (side analysis, not the Annual Paper)
+
+Standalone West Africa energy-partitioning side analysis requested by David
+Moore. **Not part of the FLUXNET Annual Paper 2026** — all outputs live
+under `WAFNET/energy_partitioning/`, which reads (never writes) the
+repo-root `data/extracted/` BIF metadata and otherwise never touches the
+Annual Paper's `R/`, `scripts/`, `data/`, `outputs/`, or `review/`
+directories. Six sites, humid-to-Sahelian gradient: `GH-Ank`, `BJ-Db1`,
+`BJ-Bfg`, `BJ-Nhu`, `SN-Nkr`, `SN-Dhr`.
+
+This entry covers only the pre-analysis report requested before any of the
+three planned analyses (aridity framing, variance decomposition, surface
+conductance) may begin — see `WAFNET/energy_partitioning/docs/methods_memo.md`
+and `docs/report_back_20260908.md` for full detail.
+
+**Data acquisition:** half-hourly (HH) FLUXNET Shuttle data did not exist
+anywhere in the repo for these sites (the Annual Paper pipeline only ever
+extracts `y m d`; the raw ZIPs from that earlier download had already been
+deleted). Downloaded and extracted fresh via `flux_listall()` +
+`flux_download()` + `flux_extract(resolutions = "h")`, into an isolated
+`FLUXNET_DATA_ROOT` under `WAFNET/energy_partitioning/data/` (gitignored).
+GH-Ank's first download attempt produced a truncated/corrupt ZIP
+(`unzip`: "End-of-central-directory signature not found"); a retry
+succeeded — logged as a transient download issue, not a site-level data gap.
+
+**Pre-analysis report (`code/03_report_variables_and_closure.R`):**
+- Variable availability (percent non-NA, not bare presence) per site —
+  `tables/variable_availability.csv`.
+- Site-years (HH records with non-NA LE_F_MDS or NETRAD): GH-Ank 3
+  (2011–2014), BJ-Db1 3 (2022–2024), BJ-Bfg 10 (2008–2017), BJ-Nhu 10
+  (2008–2017), SN-Nkr 7 (2018–2024), SN-Dhr 11 (2010–2022).
+- Energy balance closure (OLS, `LE_F_MDS + H_F_MDS` ~ `NETRAD - G_F_MDS`,
+  measured half-hours only, `LE_F_MDS_QC == H_F_MDS_QC == 0`): GH-Ank
+  slope 0.72/R² 0.73, BJ-Db1 0.73/0.80, BJ-Bfg 0.81/0.79, SN-Dhr 0.93/0.89 —
+  all physically reasonable. **BJ-Nhu: `G_F_MDS` column present but 100% NA
+  — no soil heat flux data at all for this site, not a QC/thinness issue.**
+  **SN-Nkr: closure unusable as fit (R² = 0.001, n = 69,224) — `G_F_MDS`
+  swings to physically implausible magnitudes (25% of qualifying
+  half-hours |G| > 200 W/m², up to ~860 W/m²) consistently across all 7
+  years, not fixed by also gating on `G_F_MDS_QC == 0`. Flagged as a
+  data-quality question for the PI/site team, not resolved here.**
+- G instrumentation: no `GRP_HEATFLUX`/`GRP_SOILHEATFLUX` BADM group found
+  for any of the six sites — soil heat flux plate depth and whether storage
+  above the plates is included in `G_F_MDS` are **not determinable from
+  Shuttle metadata** for this site set; would need site PI documentation or
+  the AmeriFlux/ICOS site page.
+
+**Status:** stopped here per instruction, pending PI review, before
+starting any of the three analysis tasks.
+
+---
+
+## 2026-09-08 — West Africa site lookup: Bénin, Burkina Faso, Cameroon, Ghana, Mali, Niger, Sénégal
+
+Ad hoc lookup requested by David Moore against the current committed Shuttle
+snapshot (`data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv`),
+cross-referenced with the derived `data/snapshots/site_year_data_presence.csv`
+and `data/snapshots/site_record_length.csv`. Read-only — no pipeline scripts
+run, no new outputs written.
+
+**Correction to the requested site list:** two of the six codes given
+(`BJ-Nkr`, `BJ-Dhr`) do not exist in the snapshot. The actual sites are
+`SN-Nkr` (Niakhar) and `SN-Dhr` (Dahra) — both **Sénégal**, not Bénin.
+Site ID prefixes were used to determine country (permitted per CLAUDE.md
+Hard Rule #2, which only bars inferring *hub* from prefix); the `network`
+field for these sites holds hub/consortium values (CarboAfrica, European
+Fluxes Database, GHG-Europe, Unaffiliated), not geography.
+
+### Requested sites
+
+| Site ID | Name | Country | IGBP | Years (range) | Gap years (0 months present) |
+|---|---|---|---|---|---|
+| `GH-Ank` | Ankasa | Ghana | EBF | 2011–2014 | 2013 |
+| `BJ-Db1` | Dangbo | Bénin | CRO | 2022–2024 | — |
+| `BJ-Nhu` | Nalohou | Bénin | SAV | 2008–2017 | — |
+| `BJ-Bfg` | Bellefoungou | Bénin | DBF | 2008–2017 | — |
+| `SN-Nkr` | Niakhar | Sénégal | CRO | 2018–2024 | — |
+| `SN-Dhr` | Dahra | Sénégal | GRA | 2010–2022 | 2014, 2018 |
+
+### Other West Africa sites in the current snapshot
+
+| Site ID | Name | Country | IGBP | Years (range) |
+|---|---|---|---|---|
+| `ML-Kem` | Kelma | Mali | WSA | 2007–2009 |
+
+No sites currently in the Shuttle network for Burkina Faso, Cameroon, or
+Niger.
+
+**Record length:** only `SN-Dhr` clears 10 record-years (`ge_10yr = TRUE`
+in `site_record_length.csv`); none of the seven sites clear 20.
+
+---
+
 ## 2026-09-01 — Shuttle gap download: 22 new sites since the 20260624 frozen snapshot
 
 ### Authorship official run: re-pinned to 781 sites, tagged, handoff package for Trevor Keenan

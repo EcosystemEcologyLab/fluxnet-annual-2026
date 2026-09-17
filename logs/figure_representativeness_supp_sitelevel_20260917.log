@@ -1,0 +1,36 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== figure_representativeness_supp_sitelevel.R ===
+Warning message:
+There was 1 warning in `dplyr::mutate()`.
+ℹ In argument: `igbp_class = dplyr::case_match(...)`.
+Caused by warning:
+! `case_match()` was deprecated in dplyr 1.2.0.
+ℹ Please use `recode_values()` instead. 
+Saved: review/figures/candidates/table_igbp_esacci_crosswalk.csv
+Saved: review/figures/candidates/table_igbp_global_distribution_crosswalk.csv (sums to 1)
+Saved: review/figures/candidates/Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png
+Saved: review/figures/candidates/table_supp_sampling_ratio_siteKG_IGBP_NEE_ET.csv
+Saved: review/figures/candidates/Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png
+Saved: review/figures/candidates/table_supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.csv
+
+================ Site-level classification coverage (current_781) ================
+  kg       classified: 755 / 781
+  igbp     classified: 781 / 781
+  aridity  classified: 781 / 781
+  biomass  classified: 781 / 781
+  nee      classified: 636 / 781
+  et       classified: 656 / 781
+
+=== figure_representativeness_supp_sitelevel.R complete ===

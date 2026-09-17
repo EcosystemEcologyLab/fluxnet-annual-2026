@@ -4,6 +4,98 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — ERA5 precipitation-units diagnostic: geography, not a units bug (one isolated anomaly)
+
+Read-and-report diagnostic + scoped counterfactual for a co-author
+decision, investigating why the KG classification's ERA5 MAP screen
+(`KG_ERA5_MAP_MAX_MM=5000`, `R/pipeline_config.R:62`) excludes 26
+current-network sites (IT-MBo, NO-And, JP-Tak, US-HB4, BR-Ji3, PE-QFR,
+and 20 others) whose true climate doesn't plausibly receive 5000mm/yr.
+New code: `scripts/diagnostics/era5_precip_units.R` (D1-D3),
+`era5_precip_units_recovery.R` (D4, reuses the real, unmodified
+`compute_site_koppen_era5()`/`compute_era5_monthly_climatology()`
+functions rather than reimplementing them). `R/climate_classification.R`
+and `scripts/step5_compute_koppen_era5.R` were read and sourced, never
+edited; no figure, legend, or snapshot CSV was modified. Full report, all
+tables, and the counterfactual outputs: `review/diagnostics/era5_precip_units/`.
+
+**Task's "25 excluded" vs. current reality**: the 2026-08-20 log entry's
+25 was for the then-767-site network; re-derived directly from
+`site_koppen_era5.csv` (not assumed), the current 781-site network
+excludes **26**. Both figures reported; 26 used throughout as
+authoritative.
+
+**Verdict: neither a units bug nor the originally-diagnosed
+spatial-averaging artifact — this is geography, and ERA5 is largely
+correct.** D2 tested whether P_ERA carries inconsistent units: removing
+the day-in-month multiplier (variant b) undershoots WorldClim BIO12 by
+~20-30x network-wide (mathematically expected — P_ERA genuinely is a
+mm/day rate); mean×365.25 (variant c) is functionally identical to the
+pipeline's existing formula (a). **The pipeline's existing formula is
+itself the one that matches BIO12 for the non-JPF majority of the network
+(387/781 sites within ±25%)** — there is no alternative formula to switch
+to; no evidence of a mixed unit convention (the raw P_ERA distribution at
+excluded vs. unaffected sites is shifted, not bimodal). Instead: of the
+26 excluded sites, 25 have tower-observed `P_F` in DuckDB, and 24 of those
+25 show the pipeline's existing ERA5-derived MAP agreeing closely with
+tower-observed P_F (ratio 0.88-1.31) while disagreeing substantially
+(2.6-59.3x) with WorldClim BIO12 — **BIO12 is the outlier reference here,
+not ERA5**, independently corroborated by real rain gauges. This
+concentrates heavily by hub: `product_source_network == "JPF"` sites are
+excluded at 29.6% vs. 1.2-1.9% for every other hub, and the elevated-ratio
+pattern extends across 74.1% of all 54 JPF sites (median ratio 3.72), not
+just the 16 that cross the absolute threshold — including non-excluded
+JPF sites in Mongolia/Russia with low BIO12 baselines, ruling out
+"Japan's complex terrain" as a sufficient explanation on its own and
+pointing to JPF's site portfolio (dense-monsoon-forest and steep-terrain
+locations globally) sitting exactly where WorldClim's coarse,
+sparse-station interpolation is documented to underestimate true rainfall.
+
+**One genuine, isolated anomaly found and reported separately**:
+`US-HB4` (AmeriFlux, not JPF) — every one of its 539 raw monthly P_ERA
+values across 1981-2025 sits in the 74-7683 mm/day range (mean 1798,
+physically impossible as a monthly-mean daily rate — exceeds the
+world-record 24-hour total), while its tower P_F (2016 mm/yr) is entirely
+ordinary (ratio to ERA5: 326x). Order-of-magnitude consistent with a
+~1000x site-specific scaling error, unrelated to the geography-driven
+pattern affecting the other 25 sites.
+
+**D4 counterfactual**: extending the candidate-year window from the fixed
+1991-2020 to each site's full record (the only free parameter left once
+D2 ruled out an alternative formula) recovers just 1 of 26 sites (JP-Yms,
+Cf) — confirming the inflation is a persistent site characteristic, not a
+period-specific glitch. That one recovery makes weighted Jaccard very
+slightly *worse* (two-letter and 5-class both -0.0004), not better — a
+small, counter-intuitive but real result, reported as computed. A literal
+factor-of-2 relative screen against BIO12 (also tested, per instruction)
+would be far more aggressive than the current absolute rule: agrees with
+all 26 existing exclusions but pushes 212 *additional* sites (238 total)
+below the 20-year classification floor, including flagship long-running
+towers (DE-Hzd, US-Ne1/2/3, US-Syv, GL-Dsk, FI-Ruk) — not usable as
+specified without a looser factor or a persistence-across-years rule.
+
+**Recommendation section** (report only, no option chosen): per-site unit
+correction is not supported by the evidence for 25 of 26 sites (no
+formula reconciles them) but may still apply narrowly to US-HB4; a
+relative screen needs retuning before use; a per-site P_F fallback is the
+option this investigation's own findings most directly support (P_F
+agrees with ERA5 at 24/25 sites and would sidestep US-HB4's anomaly
+automatically) but has sparse-years coverage gaps; raising the constant
+is simplest but would blindly admit any future US-HB4-like error
+alongside the real wet sites. Each option's downstream reach noted,
+including the planned aridity panel (P numerator, PET from ERA5
+radiation) which would inherit whatever threshold/logic is chosen here
+if it reuses this screen rather than deriving its own.
+
+**Standing notes carried forward, not new findings**: the absolute
+5000mm screen excludes real locations regardless of what drove these 26
+(this investigation's own P_F data confirms PE-QFR ~10,150mm/yr and
+IT-MBo ~27,400mm/yr are real); `docs/known_issues.md` §9a already
+documents this same rule reimplemented in `fig_environmental_response_era5()`
+with a silent drop and no exclusion log (quoted directly from the doc).
+
+---
+
 ## 2026-09-17 — NEE/ET site-vs-TRENDY diagnostic: artifact ruled out, scale/definition effect confirmed
 
 Read-and-report diagnostic for a co-author decision, investigating why Row

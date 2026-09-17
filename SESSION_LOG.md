@@ -4,6 +4,74 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — ERA5 precipitation units v3: QC-polarity error found; network-wide correction test
+
+Follow-up to `review/diagnostics/era5_precip_units_v2/`. New code:
+`scripts/diagnostics/era5_precip_units_v3_partA.R`,
+`era5_precip_units_v3_partB.R`. No edits to the pipeline, figures,
+legends, snapshot CSVs, or the v1/v2 reports/outputs (confirmed via `git
+status` — both directories show zero changes). `R/climate_classification.R`
+read and sourced only, never edited. Full report and 11 output tables:
+`review/diagnostics/era5_precip_units_v3/`.
+
+**Part A verdict: the P_F≈P_ERA identity v2 reported is real, but v2's
+interpretation was backwards — a QC-flag polarity error, not ingestion or
+query contamination.** Read raw `*_FLUXNET_FLUXMET_MM_*.csv` files
+directly, bypassing DuckDB, for 5 flagged + 3 control sites: the identity
+exists in the distributed product itself (not an artifact of this repo's
+code) and, critically, appears at ordinary control sites (`FI-Hyy`,
+`JP-Khw`) too, at the same `P_F_QC` value — immediately signaling a
+QC-convention issue rather than a site-specific problem. Traced
+`scripts/03_read.R`/`duckdb_setup.R`/`duckdb_update.R`: zero cross-dataset
+column contamination in the ingested `monthly` table at any of the 8 test
+sites — ingestion is clean. Re-read v2's own query: correctly constrained
+`WHERE dataset='FLUXMET'`/`'ERA5'` — not a query bug. **Root cause,
+verified at network scale (74,916 site-months): `P_F_QC=0` is identical
+to `P_ERA` 100% of the time (entirely gap-filled); `P_F_QC=1` only 0.8%
+of the time (genuinely measured) — the opposite polarity from the raw
+HH-resolution convention CLAUDE.md documents, which v2 applied
+uncritically to this MM-resolution fraction field.** Redone correctly
+(`P_F_QC>=0.9`): only 4 of the 26 excluded sites (`CA-CF2`, `IT-MBo`,
+`NO-And`, `US-HB4`) have any genuinely-measured tower month at all in
+1991-2020 — the other 22 (essentially the whole JPF cluster) have zero
+independent ground truth from tower data, at any QC level. `IT-MBo`'s own
+188 genuinely-measured months show ~16,865 mm/yr, still far above the
+~1200 mm/yr independently cited as its true climate — implicating the
+tower's own rain gauge there, not only ERA5.
+
+**Part B verdict: letting BADM and BIO12 jointly set an empirical factor
+(not assumed) finds two real, cross-hub clusters — 113 sites near 4x and
+10 near 8x — far beyond the 26 excluded sites and beyond JPF.** 112 of
+123 clustered sites have both independent references individually
+disagreeing with ERA5 by a comparable margin (not a single-reference
+artifact). Applying the nearest canonical factor brings 98/123 (80%)
+within normal scatter of BOTH references simultaneously (data-driven band
+[0.83, 1.15] from the near-1 population). Running the real, unmodified
+`compute_site_koppen_era5()` on the corrected values recovers 15 of the
+26 previously-excluded sites and changes the class of 12 already-
+classified sites (all into BS/BW), moving weighted Jaccard by +0.0044
+(two-letter) and +0.0142 (5-class) -- both improvements. `TA_ERA` shows
+no comparable discrepancy against BADM MAT or WorldClim BIO1 at the same
+sites (mean |diff| <1C) -- the error is precipitation-specific. Reading
+`classify_koppen_geiger()` directly: the arid (B) boundary and tropical
+Af/Am/Aw split use absolute MAP thresholds and are mechanically sensitive
+to a uniform precipitation scaling; the Cw/Dw (dry-winter) split and all
+temperature-driven subtype suffixes are ratio- or temperature-only-based
+and are not -- and every one of the 12 class flips lands in BS/BW,
+exactly the mechanically-predicted signature of a uniform precipitation
+overestimate, not a surprise.
+
+**This remains a magnitude/extraction question, not a units question** --
+v2's T1 result (pipeline's day-weighting formula matches ONEFlux's own
+official annual product to <0.7% everywhere) is untouched by anything in
+this report. A curated 134-row evidence table (site, hub,
+product_source_network, oneflux_code_version, estimated factor,
+corrected/uncorrected MAP, both reference values) is saved for possible
+future Coordination Project correspondence, not drafted into a note, per
+instruction.
+
+---
+
 ## 2026-09-18 — ERA5 precipitation units v2: closes a circularity gap in the prior verdict
 
 Follow-up diagnostic, superseding the 2026-09-17

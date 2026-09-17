@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v2/table_t2_ratios.csv"
+  ],
+  "notes": "BADM MAP vs. WorldClim BIO12 ratio, roundness flags, all sites with both present (independence check for the v3 correction's two references)."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+  ],
+  "notes": "Contingency table of data_hub, clustered (4x/8x, n=123) vs. near-1x control (n=323) sites."
+}

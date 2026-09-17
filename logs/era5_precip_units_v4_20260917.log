@@ -1,0 +1,136 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== era5_precip_units_v4.R ===
+Clustered (4x/8x): 123 | Near-1x control: 323
+PRODUCT_TIME_RESOLUTION found for 759/781 sites (source: data/processed/badm.rds)
+Sites with >=1 genuinely-measured (P_F_QC>=0.9) month, 1991-2020: 499/656
+
+================ 1. GROUPING ================
+
+-- Separation score (max |row-proportion difference|) by variable --
+   has_measured_precip product_source_network               data_hub 
+            0.84054469             0.16919630             0.09308062 
+   temporal_resolution 
+            0.01819829 
+
+Most cleanly separating variable: has_measured_precip (score = 0.841 )
+
+-- Cross-tab: data_hub (counts) --
+                 
+                  AmeriFlux ICOS TERN
+  clustered_4x_8x        58   64    1
+  near_1x_control       160  138   25
+-- Cross-tab: data_hub (row proportions) --
+                 
+                  AmeriFlux  ICOS  TERN
+  clustered_4x_8x     0.472 0.520 0.008
+  near_1x_control     0.495 0.427 0.077
+
+-- Cross-tab: product_source_network (counts) --
+                 
+                  AMF CNF EUF FLX ICOS JPF KOF SAEON TERN
+  clustered_4x_8x  58   8  23   1    2  25   5     0    1
+  near_1x_control 160  13  47   6   51  11   8     2   25
+-- Cross-tab: product_source_network (row proportions) --
+                 
+                    AMF   CNF   EUF   FLX  ICOS   JPF   KOF SAEON  TERN
+  clustered_4x_8x 0.472 0.065 0.187 0.008 0.016 0.203 0.041 0.000 0.008
+  near_1x_control 0.495 0.040 0.146 0.019 0.158 0.034 0.025 0.006 0.077
+
+-- Cross-tab: temporal_resolution (counts) --
+                 
+                   HH  HR <NA>
+  clustered_4x_8x 117   3    3
+  near_1x_control 312   2    9
+-- Cross-tab: temporal_resolution (row proportions) --
+                 
+                     HH    HR  <NA>
+  clustered_4x_8x 0.951 0.024 0.024
+  near_1x_control 0.966 0.006 0.028
+
+-- Cross-tab: has_measured_precip (counts) --
+                 
+                  FALSE TRUE
+  clustered_4x_8x   119    4
+  near_1x_control    41  282
+-- Cross-tab: has_measured_precip (row proportions) --
+                 
+                  FALSE  TRUE
+  clustered_4x_8x 0.967 0.033
+  near_1x_control 0.127 0.873
+
+-- Bounding box of clustered sites, by product_source_network --
+  product_source_network  n   lat_min   lat_max    long_min  long_max
+1                    AMF 58 -54.82690  71.32420 -156.614900 -53.14790
+2                    JPF 25  12.74458  62.32594  105.478570 142.31862
+3                    EUF 23  36.99234  69.14220   -7.011306  26.69405
+4                    CNF  8  37.83869  42.11350   98.940600 110.33147
+5                    KOF  5  34.55380  37.30493  126.569920 127.31743
+6                   ICOS  2  50.96381  53.32308   -7.641770  13.48978
+7                    FLX  1  42.39117  42.39117  117.370170 117.37017
+8                   TERN  1 -12.54520 -12.54520  131.307200 131.30720
+
+================ 2. GAUGE CHECK ================
+
+Clustered sites with ANY genuinely-measured (P_F_QC>=0.9) tower precipitation: 4 / 123 
+
+*** LOW POWER: fewer than 10 of the 123 clustered sites have independent gauge data at all. This test cannot
+ confirm or refute the correction for the cluster as a whole -- reporting
+ the available cases below, but they are not representative of the group. ***
+  site_id product_source_network factor_applied map_era5 map_era5_corrected
+1  CA-CF1                    AMF              8 3649.188           456.1485
+2  NO-And                    EUF              8 9318.331          1164.7913
+3  US-DS1                    AMF              4 1578.231           394.5578
+4  US-DS2                    AMF              4 1542.801           385.7003
+  map_gauge ratio_corrected_to_gauge n_genuine_months
+1  178.6040                 2.553966                3
+2  287.2839                 4.054496               28
+3   59.6016                 6.619920               15
+4   20.4375                18.872188                8
+Saved: review/diagnostics/era5_precip_units_v4/table_2_gauge_check.csv
+
+================ 3. BADM INDEPENDENCE ================
+
+Sites with both BADM MAP and WorldClim BIO12 present: 637 /781
+
+-- Distribution of ratio_badm_bio12 --
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.9451  1.0059  1.0340  1.0996  4.7165 
+
+Within 2% of BIO12 (ratio in [0.98, 1.02]): 122 / 637  (19.2%)
+BADM value is a round multiple of 100 mm: 44 / 637 
+BADM value is a round multiple of 50 mm:  72 / 637 
+
+Sites with a gauge AND both BADM+BIO12 (independent 3-way comparison): 399 
+Closer to gauge:
+
+ badm bio12   tie 
+  180   218     1 
+
+================ 4. THE COUNT ================
+
+-- THE COUNT --
+                                                                                  metric
+1           Sites in doubt for ERA5 precipitation (cluster near 4x or 8x vs. BADM+BIO12)
+2                   ...of those, in the original 26 sites excluded by KG_ERA5_MAP_MAX_MM
+3 ...of those, NOT in the original 26 (i.e. currently pass the >5000mm screen unflagged)
+4             ...of those, currently carry a successful (non-NA) KG classification today
+  count
+1   123
+2    15
+3   108
+4   108
+Saved: review/diagnostics/era5_precip_units_v4/table_4_final_count.csv
+
+=== era5_precip_units_v4.R complete ===

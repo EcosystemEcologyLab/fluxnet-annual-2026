@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T22:12:39Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "R/climate_classification.R (unmodified, sourced)",
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "D4a: per-excluded-site classification attempt using the REAL, unmodified compute_site_koppen_era5()/compute_era5_monthly_climatology() functions, with period extended from the fixed 1991-2020 to 1991-through-each-site's-own-last-available-ERA5-year. Formula (variant a, sum(P_ERA*days_in_month)) is unchanged -- D2 found no alternative formula reconciles these sites, so only the candidate-year window is varied here."
+}

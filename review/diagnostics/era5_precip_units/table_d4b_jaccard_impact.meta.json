@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T22:12:39Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units/table_d4a_recovery_extended_window.csv",
+    "data/snapshots/site_koppen_era5.csv",
+    "data/snapshots/koppen_beck2023_global_distribution.csv"
+  ],
+  "notes": "Counterfactual two-letter/5-class weighted Jaccard for current_781 KG axis if the D4a-recoverable sites were added, network_frac denominator fixed at 781 (matching the pipeline's own dilution convention), against the UNCHANGED Beck 2023 global distribution."
+}

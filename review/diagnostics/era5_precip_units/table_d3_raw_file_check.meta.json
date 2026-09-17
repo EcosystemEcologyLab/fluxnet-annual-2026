@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:09:59Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "data/extracted/ (raw *_FLUXNET_ERA5_MM_*.csv files)"
+  ],
+  "notes": "Per-excluded-site raw ERA5 MM CSV header check. No units-metadata row was found in any file (plain column-name header only, confirmed by direct inspection) -- 'not found' logged explicitly per task instruction, not assumed."
+}

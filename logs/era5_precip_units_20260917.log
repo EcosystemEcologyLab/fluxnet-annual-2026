@@ -1,0 +1,109 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== era5_precip_units.R ===
+Current excluded-by-MAP-screen sites (re-derived from site_koppen_era5.csv): 26 (task's own framing cites 25, from the 2026-08-20 767-site-network log entry -- see script header note)
+
+================ D1: reference comparison ================
+Querying DuckDB monthly table (dataset='ERA5', read-only)...
+Monthly ERA5 rows: 419328 (781 sites) | Annual tower P_F rows (non-NA): 6243 (781 sites)
+Saved: review/diagnostics/era5_precip_units/table_d1_site_year_variants.csv (23430 site-years, 781 sites)
+Extracting WorldClim BIO12...
+Saved: review/diagnostics/era5_precip_units/table_d1_per_site.csv (781 sites)
+
+-- D1 summary: excluded (n= 26 ) vs. unaffected (n= 755 ) --
+# A tibble: 2 × 5
+  excluded median_ratio_a_bio12 median_ratio_b_bio12 median_ratio_c_bio12
+  <lgl>                   <dbl>                <dbl>                <dbl>
+1 FALSE                   0.995               0.0327                0.996
+2 TRUE                    3.94                0.129                 3.93 
+# ℹ 1 more variable: n_with_pf <int>
+
+================ D2: unit hypothesis ================
+
+-- Variant (a) [pipeline method] ratio-to-BIO12 clustering, ALL sites --
+
+elsewhere    near_1   near_12 
+      393       387         1 
+
+-- Variant (b) [no day-weighting] ratio-to-BIO12 clustering, ALL sites --
+
+elsewhere 
+      781 
+
+-- Variant (c) [mean*365.25] ratio-to-BIO12 clustering, ALL sites --
+
+elsewhere    near_1   near_12 
+      393       387         1 
+
+-- Same, restricted to the 26 EXCLUDED sites only --
+Variant (a):
+
+elsewhere   near_12 
+       25         1 
+Variant (b):
+
+elsewhere 
+       26 
+Variant (c):
+
+elsewhere   near_12 
+       25         1 
+
+-- Does (b) or (c) bring excluded sites' map_* below 5000 and near BIO12 (ratio 0.8-1.25)? --
+# A tibble: 1 × 6
+      n n_a_over_5000 n_b_over_5000 n_c_over_5000 n_b_near_bio12 n_c_near_bio12
+  <int>         <int>         <int>         <int>          <int>          <int>
+1    26            24             1            24              0              0
+Saved: review/diagnostics/era5_precip_units/table_d2_clustering.csv
+
+================ D3: provenance of the offset ================
+
+-- Exclusion rate by product_source_network (all current-network sites with ERA5 rows) --
+  product_source_network n_total n_excluded pct_excluded
+1                    JPF      54         16         29.6
+2                   TERN      52          1          1.9
+3                    AMF     381          6          1.6
+4                    EUF     138          2          1.4
+5                   ICOS      80          1          1.2
+6                    CNF      32          0          0.0
+7                    FLX      18          0          0.0
+8                    KOF      21          0          0.0
+9                  SAEON       5          0          0.0
+
+-- Exclusion rate by data_hub --
+   data_hub n_total n_excluded pct_excluded
+1      ICOS     348         19          5.5
+2      TERN      52          1          1.9
+3 AmeriFlux     381          6          1.6
+
+-- Exclusion rate by oneflux_code_version --
+  oneflux_code_version n_total n_excluded pct_excluded
+1                 v1.3     781         26          3.3
+Saved: review/diagnostics/era5_precip_units/table_d3_provenance_crosstab.csv
+
+Reading raw ERA5 MM CSV headers for the 26 excluded sites...
+
+-- Raw MM file check: all headers identical (no per-file units metadata found)? --
+Unique header strings across the 26 files:  1 
+[1] "TIMESTAMP,TA_ERA,TA_ERA_NIGHT,TA_ERA_NIGHT_SD,TA_ERA_DAY,TA_ERA_DAY_SD,SW_IN_ERA,LW_IN_ERA,VPD_ERA,PA_ERA,P_ERA,WS_ERA"
+Files found:  26  /  26 
+Saved: review/diagnostics/era5_precip_units/table_d3_raw_file_check.csv
+
+-- Raw monthly P_ERA (mm/day as treated by the pipeline) distribution, affected vs. unaffected --
+  excluded      n      p5    p25     p50     p75      p95      max
+1    FALSE 271800 0.05400 0.7910  1.9195  3.9650 11.35500   78.218
+2     TRUE   9360 3.20885 9.7965 15.7535 25.3015 82.90265 7682.789
+Saved: review/diagnostics/era5_precip_units/table_d3_raw_p_era_distribution.csv
+
+=== era5_precip_units.R (D1-D3) complete ===

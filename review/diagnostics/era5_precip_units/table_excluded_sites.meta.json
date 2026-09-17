@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:09:58Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "data/snapshots/site_koppen_era5.csv"
+  ],
+  "notes": "Current (781-site network) list of sites excluded by the KG_ERA5_MAP_MAX_MM=5000 screen, re-derived directly from site_koppen_era5.csv (koppen_class is NA). 26 sites, vs. the 25 cited in the 2026-08-20 log entry for the then-current 767-site network."
+}

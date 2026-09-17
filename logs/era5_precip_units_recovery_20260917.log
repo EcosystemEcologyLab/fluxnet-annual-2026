@@ -1,0 +1,129 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== era5_precip_units_recovery.R (D4) ===
+Excluded sites (from era5_precip_units.R output): 26
+
+================ D4a: recovery under extended year window ================
+Per-site last available ERA5 year (range): 2024-2025
+
+-- D4a: recoverable under extended 1991-to-end-of-record window (variant a formula, unchanged) --
+Recovered: 1 / 26 
+
+   site_id period_end_used n_years_used   map_mm kg_class koppen_twoletter
+1   AU-Fog            2025           NA       NA     <NA>             <NA>
+2   BR-Ji3            2025           NA       NA     <NA>             <NA>
+3   BR-SM1            2025           NA       NA     <NA>             <NA>
+4   CA-CF2            2025           NA       NA     <NA>             <NA>
+5   DE-SfS            2025           NA       NA     <NA>             <NA>
+6   JP-Fmt            2024           NA       NA     <NA>             <NA>
+7   JP-KaP            2025           NA       NA     <NA>             <NA>
+8   JP-Kzw            2025           NA       NA     <NA>             <NA>
+9   JP-MBF            2025           NA       NA     <NA>             <NA>
+10  JP-Mse            2025           NA       NA     <NA>             <NA>
+11  JP-Nuf            2025           NA       NA     <NA>             <NA>
+12  JP-SMF            2025           NA       NA     <NA>             <NA>
+13  JP-Shn            2025           NA       NA     <NA>             <NA>
+14  JP-Tak            2025           NA       NA     <NA>             <NA>
+15  JP-Tkb            2025           NA       NA     <NA>             <NA>
+16  JP-Yms            2025           20 4355.714      Cfa               Cf
+17  JP-Ynf            2025           NA       NA     <NA>             <NA>
+18  KH-Kmp            2025           NA       NA     <NA>             <NA>
+19  NO-And            2025           NA       NA     <NA>             <NA>
+20  PE-QFR            2025           NA       NA     <NA>             <NA>
+21  US-Cwt            2025           NA       NA     <NA>             <NA>
+22  US-HB4            2025           NA       NA     <NA>             <NA>
+23  IT-MBo            2024           NA       NA     <NA>             <NA>
+24  JP-Api            2024           NA       NA     <NA>             <NA>
+25  JP-Om2            2025           NA       NA     <NA>             <NA>
+26  JP-Nkm            2025           NA       NA     <NA>             <NA>
+   koppen_main
+1         <NA>
+2         <NA>
+3         <NA>
+4         <NA>
+5         <NA>
+6         <NA>
+7         <NA>
+8         <NA>
+9         <NA>
+10        <NA>
+11        <NA>
+12        <NA>
+13        <NA>
+14        <NA>
+15        <NA>
+16           C
+17        <NA>
+18        <NA>
+19        <NA>
+20        <NA>
+21        <NA>
+22        <NA>
+23        <NA>
+24        <NA>
+25        <NA>
+26        <NA>
+Saved: review/diagnostics/era5_precip_units/table_d4a_recovery_extended_window.csv
+
+================ D4b: network fraction / Jaccard impact ================
+
+-- Jaccard before/after recovery ( 1  sites recovered, of 26) --
+two-letter: J_before=0.4198  J_after=0.4195  delta=-0.0004
+5-class:    J_before=0.4560  J_after=0.4555  delta=-0.0004
+Saved: review/diagnostics/era5_precip_units/table_d4b_jaccard_impact.csv
+
+================ D4c: relative screen vs. absolute rule ================
+
+-- Site-year and site counts flagged: current absolute (>5000mm) vs. relative (>2x or <0.5x BIO12) --
+  n_site_years n_site_years_absolute n_site_years_relative n_sites_absolute
+1        23430                   794                  7253               64
+  n_sites_relative
+1              384
+
+Sites with < 20 valid years remaining (i.e. would fail to classify), absolute rule: 26 
+Sites with < 20 valid years remaining, relative rule: 238 
+Overlap: 26 
+Sites the relative rule would newly exclude (not in current absolute-rule 26):
+  [1] "AR-Bal" "AR-CCa" "AR-CCg" "AR-TF1" "AR-TF2" "AU-APL" "AU-Col" "AU-Lon"
+  [9] "AU-Lox" "AU-Wac" "AU-Whr" "BW-Gum" "BW-Nxr" "CA-CF1" "CA-Cbo" "CA-HPC"
+ [17] "CA-SMC" "CA-TP2" "CA-TVC" "CN-Aro" "CN-Dda" "CN-Dmn" "CN-Dsh" "CN-GuT"
+ [25] "CN-HaM" "CN-HeD" "CN-HeM" "CN-Huz" "CN-Jng" "CN-Qng" "CN-Sb1" "CN-Sb2"
+ [33] "CN-Sdq" "CN-You" "CN-Zha" "DE-Akm" "DE-Etn" "DE-Hdn" "DE-Hzd" "DE-Lkb"
+ [41] "DE-SbM" "DE-Spw" "DE-Zrk" "DK-Eng" "EE-Stg" "ES-Cnd" "ES-Dnn" "ES-FtD"
+ [49] "ES-Gdn" "ES-Ln2" "ES-MtB" "ES-MtN" "ES-Mzn" "ES-Pdu" "ES-Srn" "ES-TzM"
+ [57] "FI-Jok" "FI-Nsv" "FI-Ruk" "FI-Si2" "GL-Dsk" "GL-ZaF" "GL-ZaH" "IE-Cra"
+ [65] "IE-Gwr" "IT-Arz" "IT-CA1" "IT-CA2" "IT-CA3" "IT-Ro1" "IT-Ro2" "JP-BBY"
+ [73] "JP-Hc2" "JP-Hc3" "JP-NsC" "JP-NsM" "JP-Sb1" "JP-Sb2" "JP-Tmd" "JP-Tmk"
+ [81] "JP-Toc" "KE-Aq1" "KE-Aq2" "KE-Kpt" "KE-Mkt" "KR-Hnm" "KR-Nj1" "KR-Nj2"
+ [89] "KR-TwB" "KR-TwC" "ML-Kem" "MN-Hst" "MN-Kbu" "MN-Nkh" "MN-Udg" "MX-PMm"
+ [97] "NO-Fns" "NO-Ikr" "RU-Ege" "RU-NeB" "RU-NeC" "RU-NeF" "RU-Sk2" "RU-SkP"
+[105] "RU-Tur" "SE-Trb" "SJ-Adv" "US-A03" "US-A10" "US-A37" "US-A39" "US-A74"
+[113] "US-ABe" "US-ASH" "US-ASM" "US-Akn" "US-BRG" "US-BZo" "US-CF1" "US-CF2"
+[121] "US-CF3" "US-CF4" "US-CS2" "US-CS8" "US-DFK" "US-DPW" "US-DS1" "US-DS2"
+[129] "US-EKH" "US-EKN" "US-EKP" "US-EML" "US-Fo1" "US-Fo2" "US-GLE" "US-HB1"
+[137] "US-HBK" "US-HRA" "US-HRC" "US-HVs" "US-Hn2" "US-Hn3" "US-IAB" "US-IAC"
+[145] "US-IAM" "US-KLS" "US-KPL" "US-KS3" "US-LA3" "US-MBP" "US-Me1" "US-Me7"
+[153] "US-NGB" "US-NGC" "US-NR3" "US-NSa" "US-NSb" "US-Ne1" "US-Ne2" "US-Ne3"
+[161] "US-PAS" "US-PFL" "US-PFb" "US-PFc" "US-PFd" "US-PFf" "US-PFg" "US-PFh"
+[169] "US-PFi" "US-PFj" "US-PFk" "US-PFm" "US-PFn" "US-PFp" "US-PFq" "US-PFr"
+[177] "US-PFt" "US-PLo" "US-PSH" "US-PSL" "US-Rls" "US-Rms" "US-Rwe" "US-Rwf"
+[185] "US-Rws" "US-SD2" "US-Sag" "US-Srr" "US-StJ" "US-Sta" "US-Syv" "US-TLR"
+[193] "US-TaS" "US-Tw1" "US-Tw2" "US-Tw5" "US-UMd" "US-UTB" "US-UTD" "US-UTJ"
+[201] "US-UTL" "US-UTM" "US-UTW" "US-UiA" "US-UiB" "US-UiC" "US-UiD" "US-WT1"
+[209] "US-ZF1" "US-ZF2" "US-xNW" "ZA-Jks"
+Sites the relative rule would newly RECOVER (in current 26, not in relative-rule failure list):
+character(0)
+Saved: review/diagnostics/era5_precip_units/table_d4c_relative_vs_absolute_screen.csv
+
+=== era5_precip_units_recovery.R (D4) complete ===

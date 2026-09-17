@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:12:39Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units/table_d1_site_year_variants.csv"
+  ],
+  "notes": "Per-site-year comparison of the current absolute (map_a>5000mm) screen vs. a relative screen (ratio to BIO12 >2x or <0.5x). Site-year counts: absolute=794, relative=7253 (of 23430 total). Sites failing to reach 20 valid years: absolute=26, relative=238."
+}

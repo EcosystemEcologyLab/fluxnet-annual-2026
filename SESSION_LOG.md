@@ -4,6 +4,101 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-17 — Supplementary Jaccard figures: site-measured NEE/ET, site-metadata IGBP, KG unchanged
+
+Built two supplementary representativeness figures addressing a co-author
+comment on draft Figs 4/5, plus a consolidated methods writeup. New script:
+`scripts/figure_representativeness_supp_sitelevel.R`. Outputs in
+`review/figures/candidates/`: `Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png`
+(single-network, current_781, 2x3 grid, analogous to draft Fig 4),
+`Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png` (4-network trajectory,
+analogous to draft Fig 5), each with a `.legend.txt`, plus
+`Supp_methods_siteKG_IGBP_NEE_ET.txt` (detailed methods covering both),
+four companion data CSVs with `.meta.json`, and a run log
+(`logs/figure_representativeness_supp_sitelevel_20260917.log`). No existing
+script, figure, legend, snapshot CSV, or `representativeness_metrics.csv`
+was modified — candidate-only, not promoted to `draft_manuscript_v1/`.
+
+**Co-author comment addressed:** the NEE and ET axes in Figs 4/5 compare
+TRENDY model output sampled at each site's coordinates against a TRENDY
+global distribution (model-vs-model), not what the towers actually
+measured; the land-cover axis uses ESA CCI's own scheme rather than IGBP,
+which flux-tower metadata natively carries.
+
+**Three axis substitutions, KG unchanged:**
+- **KG** — no change. Reused verbatim from the current ERA5-local-vs-Beck-
+  global setup (same as Figs 4/5 and this session's earlier
+  `review/diagnostics/kg_source_consistency/` investigation).
+- **Land cover → IGBP.** Site side: the `igbp` field already present in
+  every network's own site list (current_781's pinned Shuttle snapshot;
+  `sites_la_thuile_clean.csv`; `sites_marconi_clean.csv`;
+  `sites_fluxnet2015_clean.csv`) — tower metadata, not a raster extraction.
+  Full 17-class IGBP scheme (not the 12-class `STANDARD_IGBP` subset Fig 3
+  uses), per explicit instruction. current_781: 781/781 sites have a
+  non-missing `igbp` value. Global side: no global IGBP-scheme land-fraction
+  dataset existed anywhere in the repo before this session. Built a
+  documented, constructed ESA-CCI-native(37-class)→IGBP(17-class) crosswalk
+  (`table_igbp_esacci_crosswalk.csv`, one row per native class with a
+  `rationale` column for every non-trivial mapping — no official published
+  ESA-CCI↔IGBP correspondence table was found despite checking ESA's own
+  CCI Land Cover documentation) and applied it to the existing, unchanged
+  `landcover_cci_native_global_distribution.csv`
+  (`table_igbp_global_distribution_crosswalk.csv`, sums to 1.0). A second,
+  published-reference ("MODIS") variant of the global IGBP distribution was
+  attempted and explicitly abandoned: checked the LP DAAC MCD12Q1 Collection
+  6/6.1 User Guides, a NASA JPL SMAP Ancillary Data Report, and ORNL DAAC's
+  ISLSCP II MODIS IGBP Land Cover documentation directly (via `pdftotext`
+  after installing `poppler` locally) — none contain a global area-by-class
+  table, only class definitions and per-pixel format specs. One automated
+  web-fetch tool's claimed citation (a table "totaling 100%") was checked
+  and rejected: the reported percentages actually summed to 81.1%, and
+  re-extracting the source PDF directly confirmed no such table exists in
+  it. No fabricated or unverifiable number was used; the comparison panel
+  was dropped rather than approximated, per user decision.
+- **NEE-IAV/ET-median (TRENDY, site-extracted) → NEE/ET (site-measured).**
+  Site side: `nep_median`/`et_median` from
+  `data/snapshots/site_flux_medians_shuttle.csv` (current_781) and
+  `site_flux_medians_fluxnet2015.csv` (FLUXNET2015) — the same QC=0.80,
+  VUT/CUT + NT/DT-fallback medians already vetted for draft Fig 3, reused
+  verbatim. La Thuile/Marconi have no downloaded flux time series anywhere
+  in this repo (site/coordinate lists only), so NEE/ET are NA for those two
+  networks — the trajectory figure shows an explicit gap (`na.rm=TRUE`), not
+  an interpolation. `nep_median` is `abs()`-transformed before binning to
+  match the existing TRENDY `nee_median` axis's own "mean |flux|" convention
+  (`figure_representativeness_trendy_compute.R:381,543`), which is what
+  makes reusing that axis's stored bin edges valid. Global side: unchanged —
+  reused `trendy_{nee,et}_median_global_distribution{,_18bin}.csv` verbatim
+  (7-bin for the sampling-ratio figure, 18-bin for the trajectory, matching
+  Figs 4/5's own resolution convention), classifying measured values into
+  the existing stored bin edges via `findInterval()`.
+
+**Denominator convention**: identical to the rest of the pipeline
+(`count_sites()`/`site_fracs()` pattern) — unclassified sites dropped from
+the numerator, full network size (781) kept as denominator. current_781
+classified counts: KG 755/781, IGBP 781/781, Aridity 781/781, Biomass
+781/781, NEE 636/781, ET 656/781.
+
+**Headline Jaccard values** (current_781; two-letter/7-bin for the grid
+figure, matches the trajectory figure's own-axis values at the "Current"
+point):
+KG 0.420 | IGBP 0.394 | Aridity 0.666 | Biomass 0.636 | NEE 0.233 | ET 0.489.
+Trajectory (Marconi → La Thuile → FLUXNET2015 → Current): KG
+0.223→0.292→0.365→0.420 (unchanged from Fig 5); IGBP 0.182→0.364→0.361→0.394
+(new); NEE only computable at FLUXNET2015/Current: 0.173→0.207; ET
+0.448→0.450.
+
+**Known limitations, disclosed in the methods doc, not hidden**: the IGBP
+global reference is a constructed crosswalk, not an official product; the
+crosswalk collapses all CCI shrubland classes to Open Shrublands (Closed
+Shrublands is structurally zero in the built global reference, since CCI
+carries no canopy-density split); NEE/ET trajectory coverage is 2 of 4
+network generations.
+
+Verified via `git status` that only new files were touched (plus the
+expected `outputs/session_info.txt` append from `write_output_metadata()`).
+
+---
+
 ## 2026-09-17 — Representativeness (Jaccard) datasets and the geospatial-vs-site-level logic
 
 Follow-up summary to this session's KG source-consistency investigation

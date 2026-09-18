@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:28Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_MM_*.csv (raw, read directly)"
+  ],
+  "notes": "Same statistics as step 2 (Dec/Jan ratio, Spearman rho(value, month)) computed on TA_ERA instead of P_ERA, for the same 9 named sites (6 affected + 3 control), to check whether the effect is precipitation-specific."
+}

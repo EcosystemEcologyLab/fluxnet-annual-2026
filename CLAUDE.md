@@ -55,6 +55,10 @@ environment variables. Never write credential values into R scripts,
 .Rmd/.qmd files, or any committed file. See `.env.example` for the
 full list of required environment variables.
 
+**Exception:** NASA Earthdata (LP DAAC, MODIS, and similar products)
+authenticates via a `~/.netrc` file, not an environment variable — this is
+a deliberate, documented exception. See "NASA Earthdata Downloads" below.
+
 ### 4. Never commit data files
 The `data/raw/`, `data/extracted/`, and `data/processed/` directories are
 gitignored and must never be committed. The `data/snapshots/` directory
@@ -107,7 +111,9 @@ generated or regenerated (see Hard Rule #4). Force-pushing remains in the
   (Renames within the repository are autonomous; renames that move files out of
   the repository follow the "outside the repository directory" rule.)
 - Force pushing to git
-- Any action outside the repository directory
+- Any action outside the repository directory, **except** reading `~/.netrc`
+  (via `curl -n`) for NASA Earthdata downloads — see "NASA Earthdata
+  Downloads" below for the exact, narrow scope of that exception
 - Making changes to `.devcontainer/devcontainer.json`
 - Deleting or moving files in `data/snapshots/` (these are authoritative
   manifests and the only committable part of `data/`)
@@ -536,7 +542,123 @@ do not need to be regenerated unless a new version of an external product is rel
 new sites are added, only the per-site extraction needs to re-run, not the raster downloads.
 
 Current contents: `aridity/` (CGIAR Aridity Index v3.1), `gez/` (FAO GEZ 2010 shapefile),
-`worldclim/` (WorldClim v2.1 19 BIO TIFs at 2.5 arc-min).
+`worldclim/` (WorldClim v2.1 19 BIO TIFs at 2.5 arc-min), `trendy/` (TRENDY v14-gcb2025
+DGVM ensemble outputs), `cci_landcover/` (ESA CCI / C3S Land Cover, v2.1.1 current +
+v2.0.7 historical), `cci_biomass/` (ESA CCI Biomass v7.0), `koppen_beck2023/` (Beck et
+al. 2023 Köppen-Geiger maps, 1901–2099).
+
+### Provenance
+
+One row per dataset currently on disk. Filled from each dataset's own `README.md` (where
+one exists), the citation strings in `R/external_data.R` and the `scripts/step*`/
+`scripts/figure_representativeness_*` scripts that reference these sources, and
+`scripts/download_trendy_v14.sh`. Anything not determinable from those sources is marked
+**unknown** rather than guessed. `scripts/download_fluxnet2015.sh` was also checked; it
+downloads the separate FLUXNET2015 release into `data/raw/fluxnet2015/`, not
+`data/external/`, and uses `FLUXNET_USERNAME`/`FLUXNET_PASSWORD` (already documented in
+the Environment Variables table) — it does not touch anything in this table.
+
+| Directory | Product | Version / epoch | Source (URL or DOI) | Credentials needed? | How it was acquired |
+|---|---|---|---|---|---|
+| `aridity/` | CGIAR Global Aridity Index & PET | v3.1; baseline 1970–2000 | Zomer et al. (2022), *Scientific Data*, doi:`10.1038/s41597-022-01493-1`; dataset (figshare) doi:`10.6084/m9.figshare.7504448`; direct file `https://ndownloader.figshare.com/files/56300327` | No (anonymous) | Documented in a `R/external_data.R` comment header. No committed download script — acquired manually. |
+| `gez/` | FAO Global Ecological Zones 2010 | 2010 edition (single release, no version number) | FAO (2012); catalog page `https://data.apps.fao.org/catalog/dataset/2fb209d0-fd34-4e5e-a3d8-a13c241eb61b`; resolved direct file `https://storage.googleapis.com/fao-maps-catalog-data/uuid/2fb209d0-fd34-4e5e-a3d8-a13c241eb61b/resources/gez2010.zip` | No (anonymous) | Direct URL documented in a `scripts/step3_extract_gez.R` comment. No committed download script — acquired manually. |
+| `worldclim/` | WorldClim v2.1 bioclimatic variables (BIO1–BIO19) | v2.1; baseline 1970–2000 | Fick & Hijmans (2017), *Int. J. Climatology* 37:4302; distributed via worldclim.org / the `geodata` R package | No (anonymous) | `geodata::worldclim_global(var="bio", res=2.5, path="data/external/worldclim/")`, documented in `R/external_data.R`. No committed wrapper script. |
+| `trendy/v14-gcb2025/` | TRENDY DGVM ensemble outputs (nbp, gpp, evapotrans, ra, rh; 20 models) | v14-gcb2025 (Global Carbon Budget 2025 submission) | Project citation: Sitch et al. (2024), doi:`10.1029/2024GB008102`. Files served from an anonymous Wasabi S3 bucket, `https://s3.eu-west-1.wasabisys.com/gcb-2025-upload/`. No dataset-specific DOI for this v14-gcb2025 upload itself was found — **unknown**, not guessed. | No (anonymous S3) | `scripts/download_trendy_v14.sh`, manifest-driven from `data/external/trendy/download_manifest.csv`. |
+| `cci_landcover/v2.1.1/` | ESA CCI / C3S Land Cover, year 2022 (current, authoritative for the paper) | v2.1.1 | Copernicus Climate Data Store, dataset `satellite-land-cover`; citation doi:`10.24381/cds.006f2c9a` | **Yes** — CDS account + API key (`~/.cdsapirc`) | Python `cdsapi` client, documented in `data/external/cci_landcover/README.md`. No committed script in `scripts/`. |
+| `cci_landcover/` (top level) | ESA CCI Land Cover, year 2015 (historical reference, superseded) | v2.0.7 | CEDA, anonymous HTTP: `https://dap.ceda.ac.uk/neodc/esacci/land_cover/data/land_cover_maps/v2.0.7/...` | No (anonymous) | `curl`, documented in `data/external/cci_landcover/README.md`. No committed script. |
+| `cci_biomass/` | ESA CCI Biomass, above-ground biomass, MERGED 1 km aggregate | v7.0; years 2005–2012 and 2015–2024 | Santoro & Cartus (2024); doi:`10.5285/6429d1aafe1e43b9b414e4a5a7f8b903`; CEDA: `http://data.ceda.ac.uk/neodc/esacci/biomass/data/agb/maps/v7.0/geotiff/aggregated/` | No (anonymous) | `curl`, documented in `data/external/cci_biomass/README.md`. No committed script. |
+| `koppen_beck2023/` | Beck et al. Köppen-Geiger maps, 1901–2099 (historical periods + SSP futures) | figshare v2 (published 2026-01-14; corrects a v1 calculation error) | Beck et al. (2023), *Scientific Data* 10:724, doi:`10.1038/s41597-023-02549-6`; figshare dataset doi:`10.6084/m9.figshare.21789074.v2`; direct file `https://ndownloader.figshare.com/files/61012822` | No (anonymous) | `curl`, documented in `data/external/koppen_beck2023/README.md`. No committed download script. |
+
+None of the datasets currently on disk require NASA Earthdata authentication. The
+section below documents that mechanism in advance, for the first product (e.g. a
+MODIS or other LP DAAC-hosted product) that does.
+
+---
+
+## NASA Earthdata Downloads (LP DAAC, MODIS, and similar products)
+
+Some external products — for example NASA LP DAAC-hosted MODIS products — require a
+NASA Earthdata Login and cannot be fetched with a plain anonymous `curl`/`wget`, unlike
+every source in the provenance table above. An earlier session concluded a MODIS
+land-cover product was unreachable and fell back to a constructed crosswalk instead,
+in part because this repository had no documented access path for Earthdata. This
+section is that access path.
+
+### Authentication: `~/.netrc`, not an environment variable
+
+Earthdata authenticates via a `~/.netrc` file on the machine doing the download, in the
+multi-line form, one directive per line:
+
+```
+machine urs.earthdata.nasa.gov
+login <username>
+password <password>
+```
+
+Mode 600 (`chmod 600 ~/.netrc`). This is an **explicit exception to Hard Rule 3**
+("Never hard-code credentials" → environment variables) — `~/.netrc` is the mechanism
+Earthdata and `curl -n` expect, and there is no environment-variable equivalent to fall
+back to.
+
+**The file is per-machine and per-user.** It may exist on one machine this repository is
+worked on (e.g. the local mini) and not another (e.g. a Codespace, or a collaborator's
+machine), and its home directory (`~`) is not the same path on every machine. Any
+download script that relies on it must, before attempting a download:
+1. Check that `~/.netrc` (the current machine's resolved `$HOME/.netrc`) exists.
+2. Check that it contains a `machine urs.earthdata.nasa.gov` entry.
+
+If either check fails, the script must **stop with a clear error message that names the
+current machine** (e.g. from `hostname`) rather than proceeding. A silent or generic
+failure here is exactly how the earlier MODIS-unreachable conclusion happened.
+
+### What Claude may do without asking
+
+- Read `~/.netrc` **implicitly**, by passing `-n` to `curl` (which tells curl to consult
+  `~/.netrc` itself) — never by opening or printing the file directly.
+- Run Earthdata downloads into `data/external/` without asking first, the same as any
+  other external-data download.
+- This is a **narrow, explicit exception** to "Always ask regardless of environment: ...
+  Any action outside the repository directory" in "Autonomy and Permissions" above. The
+  exception covers only reading `~/.netrc` via `curl -n`; it does not extend to any other
+  file or action outside the repository.
+
+### What Claude must never do
+
+- Never print, `cat`, or otherwise display the contents of `~/.netrc`.
+- Never pass the Earthdata username or password as a command-line argument or as an
+  environment variable value (both can leak via process listings or shell history).
+- Never copy the username, password, or the `~/.netrc` file itself into any file inside
+  this repository.
+
+### Cookie jar: inside the repository, gitignored
+
+Earthdata's redirect chain requires a session cookie to persist across requests. That
+cookie jar lives **inside the repository**, at `data/external/.urs_cookies`, and must be
+gitignored — so that, together with `-n` above, nothing is ever written or read outside
+the repository except `~/.netrc` itself. Pattern:
+
+```bash
+curl -n -c data/external/.urs_cookies -b data/external/.urs_cookies -L \
+  -o <output-file> "<Earthdata or LP DAAC URL>"
+```
+
+(The exact Earthdata/LP DAAC hostnames for a given product are not written here — check
+the specific product's documentation rather than assuming one.)
+
+### LP DAAC Data Pool authorisation
+
+Downloading from the LP DAAC Data Pool requires that application to be **authorised in
+the user's Earthdata profile** — a separate step from simply having an Earthdata
+account. An account without that authorisation cannot download LP DAAC-hosted products,
+even with a correct `~/.netrc`.
+
+### Detecting a silent authentication failure
+
+An unauthenticated request, or one with an expired session, does not return an HTTP
+error: it returns **HTTP 200 with a small HTML page** (a login or redirect page) instead
+of the expected data file. Any download step must check the response's content type and
+file size — not just its HTTP status — and fail loudly (stop, do not save) if the
+"downloaded" file looks like an HTML page rather than the expected binary/data format.
 
 ---
 

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:28Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "review/diagnostics/era5_cumulative_test/table_step1_raw_monthly.csv"
+  ],
+  "notes": "Raw monthly P_ERA (as stored in the raw ERA5 MM file, mm/day) vs. month, one panel per site, 3 lines (one per consecutive complete year), 6 affected + 3 control sites."
+}

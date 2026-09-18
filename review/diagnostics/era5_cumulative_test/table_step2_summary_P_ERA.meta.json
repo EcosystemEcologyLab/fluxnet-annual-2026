@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:28Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "review/diagnostics/era5_cumulative_test/table_step2_siteyear_stats_P_ERA.csv"
+  ],
+  "notes": "Step 2 summary: median/IQR of Dec/Jan ratio and Spearman rho, grouped by 4x/8x cluster membership."
+}

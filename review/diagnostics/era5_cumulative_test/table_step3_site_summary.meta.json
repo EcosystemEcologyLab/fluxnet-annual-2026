@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:28Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "review/diagnostics/era5_cumulative_test/table_step3_siteyear.csv",
+    "review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv"
+  ],
+  "notes": "Per-site mean of predicted_factor across that site's complete years, compared against the pipeline's own observed ratio_to_bio12 (era5_map_mm/bio12_mm, table_site_reference_comparison.csv). Quantitative test of the cumulative-total hypothesis."
+}

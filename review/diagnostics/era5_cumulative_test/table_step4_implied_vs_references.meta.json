@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:28Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "review/diagnostics/era5_cumulative_test/table_step3_site_summary.csv",
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+  ],
+  "notes": "Implied true annual total (step 3) divided by BIO12 and BADM MAP, checked against the near-1x group's (nearest_cluster=='1', n=323) 5th-95th percentile band of ratio_to_bio12 [0.831, 1.149] and ratio_to_badm_map [0.856, 1.133]."
+}

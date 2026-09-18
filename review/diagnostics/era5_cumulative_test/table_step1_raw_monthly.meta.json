@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:22Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_MM_*.csv (raw, read directly)"
+  ],
+  "notes": "Raw monthly P_ERA (mm/day as stored in the raw file) for the 6 affected + 3 control sites, most recent run of 3 consecutive complete calendar years per site. Read-only test; no DuckDB, no pipeline edits."
+}

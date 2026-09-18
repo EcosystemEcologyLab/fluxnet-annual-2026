@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T16:08:01Z",
+  "pipeline_version": "3cee85a",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+  ],
+  "notes": "One row per current-network site (n=781). era5_map_mm/bio12_mm/badm_map_mm/ratio_to_bio12/ratio_to_badm_map are unchanged values from table_b1_factor_estimates.csv (v3), which carried them through unmodified from table_t2_ratios.csv (v2). cluster_membership is a rename of that file's nearest_cluster column ('4' -> '4x_cluster', '8' -> '8x_cluster', else -> 'not_in_4x_or_8x_cluster'; rule: factor_estimate = median(ratio_to_bio12, ratio_to_badm_map), nearest of {1,4,8,24,1000} within 15%). Missing BADM (144 sites) and BADM==0 (5 sites) are carried as NA and 0 respectively, not dropped. Plotting-only diagnostic; no new verdict, correction, or reclassification of any site."
+}

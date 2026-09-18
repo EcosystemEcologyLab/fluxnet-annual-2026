@@ -4,6 +4,44 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — ERA5/BIO12/BADM reference plots (plotting only, no verdict)
+
+Plotting task only, per instruction: no new verdict, no correction, no
+reclassification, no pipeline edit. New code:
+`scripts/diagnostics/era5_reference_plots.R`. Confirmed via `git status`:
+zero changes to the pipeline, any pipeline script, any figure, legend, or
+snapshot CSV, or any `era5_precip_units`/`_v2`/`_v3`/`_v4` output. All new
+files are under `review/diagnostics/era5_reference_plots/`.
+
+Reuses per-site ERA5-derived MAP, WorldClim BIO12, and BADM PI-reported MAP
+already computed in `era5_precip_units_v2/table_t2_ratios.csv`, carried
+through unmodified into `era5_precip_units_v3/table_b1_factor_estimates.csv`
+(the single file read here, after confirming it is row-for-row identical to
+the v2 file on every shared column). Nothing from either file is
+recalculated; this script computes only per-panel Spearman rho/n (not
+previously computed) and the per-panel exclusion sets needed because a
+value of exactly zero or missing is undefined on a log axis.
+
+Produced, for all 781 current-network sites: Figure 1 (two histogram
+panels, log10(ratio) space, bin width 0.1 log10 units, reference lines at
+1x/4x/8x, ratio-to-BIO12 n=780, ratio-to-BADM n=631) and Figure 2 (three
+log-log scatter panels — ERA5 vs BADM n=631 rho=0.578, ERA5 vs BIO12 n=780
+rho=0.592, BADM vs BIO12 n=632 rho=0.933 — 1:1 line plus 4x/8x offset
+lines), each in two versions: version A with no grouping, version B with
+the 123 sites from `table_b1_factor_estimates.csv`'s 4x/8x clusters shown
+in a second colour and a legend stating the membership rule verbatim
+(nearest of candidate factors {1,4,8,24,1000} within 15%). Also wrote a
+companion CSV (`table_site_reference_comparison.csv`, one row per site,
+missing BADM carried as NA at 144 sites) and an exclusion table
+(`table_panel_exclusions.csv`) covering the 6 sites (1 with
+`era5_map_mm == 0`, 5 with `badm_map_mm == 0`) dropped from specific panels
+because a log axis cannot represent zero. Full detail, axis ranges, and
+the exact exclusion reasons per panel: `review/diagnostics/era5_reference_plots/report.md`.
+No site or group is characterised as an error, artifact, or genuine
+anywhere in this output.
+
+---
+
 ## 2026-09-17 — ERA5 precipitation units v4: scoping the 4x/8x cluster (read-only)
 
 Follow-up to `review/diagnostics/era5_precip_units_v3/`. Read-and-report

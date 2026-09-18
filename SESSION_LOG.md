@@ -4,6 +4,42 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — Documented NASA Earthdata access and external-data provenance (docs only)
+
+Documentation only: no code, no download, no other files touched besides
+`CLAUDE.md`, `.env.example`, and `.gitignore`.
+
+Added a "NASA Earthdata Downloads" section to `CLAUDE.md` (placed after
+External Data): `~/.netrc` authentication (multi-line form, mode 600) as an
+explicit, cross-referenced exception to Hard Rule 3; the per-machine/
+per-user caveat requiring a download script to check for the file and for a
+`urs.earthdata.nasa.gov` entry and stop naming the machine if either is
+missing; the `curl -n` / no-ask exception to "always ask outside the repo",
+narrowly scoped and cross-referenced from that rule; never printing,
+arg-passing, or copying the credentials; the gitignored
+`data/external/.urs_cookies` cookie-jar curl pattern; the separate LP DAAC
+Data Pool authorisation requirement; and the HTTP-200-HTML-page failure
+mode. No Earthdata/LP DAAC hostnames were invented anywhere in the new text.
+
+Added a provenance table to the External Data section covering every
+dataset currently in `data/external/` (aridity, gez, worldclim, trendy,
+cci_landcover v2.1.1 + v2.0.7, cci_biomass, koppen_beck2023): version/epoch,
+source URL or DOI, whether credentials are needed, and how each was
+acquired — filled from each dataset's own README, `R/external_data.R`, the
+`step*`/`figure_representativeness_*` scripts, and
+`scripts/download_trendy_v14.sh`. One field (a dataset-specific DOI for the
+TRENDY v14-gcb2025 S3 upload) is marked unknown rather than guessed.
+`scripts/download_fluxnet2015.sh` was checked and found not applicable — it
+writes to `data/raw/fluxnet2015/`, not `data/external/`.
+
+Added a `.gitignore` entry for `data/external/.urs_cookies` and a
+credential-free comment block in `.env.example` pointing to CLAUDE.md, so
+nobody looks for a missing `EARTHDATA_*` environment variable.
+
+Full diff shown to and confirmed by the user before committing.
+
+---
+
 ## 2026-09-18 — ERA5 reference plots: legibility reformat (no data or value change)
 
 The three `era5_reference_plots.R` figures (histogram, scatter, month-matched

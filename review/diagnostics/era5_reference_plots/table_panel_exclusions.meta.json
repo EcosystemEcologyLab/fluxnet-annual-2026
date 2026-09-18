@@ -1,8 +1,9 @@
 {
-  "run_datetime_utc": "2026-09-18T16:08:01Z",
-  "pipeline_version": "3cee85a",
+  "run_datetime_utc": "2026-09-18T16:28:00Z",
+  "pipeline_version": "fb0c8e7",
   "input_sources": [
-    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv",
+    "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
   ],
-  "notes": "Sites excluded from one or more panels of Figure 1 or Figure 2 because a value used on a log axis is exactly zero or missing, and the specific reason. Not an exclusion from the companion CSV, which carries all 781 sites."
+  "notes": "Sites excluded from one or more panels of Figure 1, Figure 2, or Figure 3 because a value used on a log axis is exactly zero or missing, or (Figure 3 only) because no valid matched month exists, and the specific reason. Overwrites the prior (3-reference) version of this file. Not an exclusion from the companion CSV, which carries all 781 sites."
 }

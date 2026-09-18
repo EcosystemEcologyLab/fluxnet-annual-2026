@@ -4,6 +4,22 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — ERA5 reference plots: legibility reformat (no data or value change)
+
+The three `era5_reference_plots.R` figures (histogram, scatter, month-matched
+ratio) were reformatted for legibility, in place at the same file names, both
+versions A and B: membership-rule text moved off the panels into a
+`.legend.txt` file per version-B figure plus one shared collected legend and
+a one-line footnote; histogram core x-range fixed at 0.1x-20x with a marked
+overflow bin at each end; the six scatter panels given one shared 10-10,000
+mm/yr axis range with off-scale points clamped and marked; smaller/more
+transparent scatter points with cluster points drawn on top in version B;
+larger fonts, wider margins, and resized figures to fill panels without
+clipping. No data, value, or membership rule changed. Detail:
+`review/diagnostics/era5_reference_plots/report.md`.
+
+---
+
 ## 2026-09-18 — ERA5/BIO12/BADM/tower-measured reference plots, revised (plotting only, no verdict)
 
 Plotting task only, per instruction: no new verdict, no correction, no

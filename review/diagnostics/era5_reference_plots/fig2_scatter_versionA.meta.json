@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-09-18T16:28:00Z",
-  "pipeline_version": "fb0c8e7",
+  "run_datetime_utc": "2026-09-18T17:12:44Z",
+  "pipeline_version": "386f754",
   "input_sources": [
     "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv",
     "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
   ],
-  "notes": "Version A (no grouping) of Figure 2, overwritten to go from 3 to 6 panels. Figure 2. Pairwise comparison of the four MAP estimates (mm/yr), log-log axes, identical x/y range within each panel (not clipped). Solid line = 1:1; dashed = 4x/0.25x offset; dotted = 8x/0.125x offset. (a) ERA5 vs BADM: n=631, rho=0.578, range [1, 658044.6]. (b) ERA5 vs BIO12: n=780, rho=0.592, range [1, 658044.6]. (c) ERA5 vs tower-measured (new): n=469, rho=0.975, range [12.9, 658044.6]. (d) BADM vs BIO12: n=632, rho=0.933, range [18, 4500]. (e) BADM vs tower-measured (new): n=375, rho=0.900, range [12.9, 9581.3]. (f) BIO12 vs tower-measured (new): n=469, rho=0.869, range [12.9, 9581.3]. Exclusions per panel listed in report.md / table_panel_exclusions.csv. Version A: all sites, one colour, no grouping."
+  "notes": "Version A (no grouping) of Figure 2, reformatted for legibility (one shared 10-10000 mm/yr axis range across all 6 panels, off-scale points marked, smaller/more transparent points; no other value changed). Figure 2. Pairwise comparison of the four MAP estimates (mm/yr), log-log axes, one common x/y range shared across all six panels (10 to 10000 mm/yr, chosen from the bulk of the pooled data, not the extremes). Solid line = 1:1; dashed = 4x/0.25x offset; dotted = 8x/0.125x offset. Points with either coordinate outside this range are shown clamped to the edge as a triangle (not dropped) and named here as (x, y) in their true, unclamped mm/yr values. (a) ERA5 vs BADM: n=631, rho=0.578; off-scale: IT-MBo (1365.0, 24150.4); US-CF1 (550.0, 9.0); US-HB4 (1429.0, 658044.6); US-TLR (469.4, 1.0). (b) ERA5 vs BIO12: n=780, rho=0.592; off-scale: IT-MBo (407.0, 24150.4); PE-QFR (2705.0, 10291.8); US-CF1 (611.0, 9.0); US-HB4 (1350.0, 658044.6); US-TLR (1276.0, 1.0). (c) ERA5 vs tower-measured: n=469, rho=0.975; off-scale: IT-MBo (1341.8, 24150.4); US-HB4 (9581.3, 658044.6). (d) BADM vs BIO12: n=632, rho=0.933; off-scale: none. (e) BADM vs tower-measured: n=375, rho=0.900; off-scale: none. (f) BIO12 vs tower-measured: n=469, rho=0.869; off-scale: none. Version A: all sites, one colour, no grouping."
 }

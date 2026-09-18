@@ -1,0 +1,6 @@
+Membership rule (verbatim, table_b1_factor_estimates.csv):
+factor_estimate = median(ratio_to_bio12, ratio_to_badm_map);
+assigned to nearest of candidate factors {1, 4, 8, 24, 1000}
+if within 15% of it (tol = 0.15), else 'elsewhere'.
+Shown = sites with nearest_cluster %in% c('4','8')
+(n = 123: 113 near 4x + 10 near 8x)

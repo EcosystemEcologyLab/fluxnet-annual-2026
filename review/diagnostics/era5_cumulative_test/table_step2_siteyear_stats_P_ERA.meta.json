@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:28Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_MM_*.csv (raw, read directly)",
+    "review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv"
+  ],
+  "notes": "Per site-year: P_ERA December/January ratio and Spearman rho(P_ERA, month index), all complete calendar years, all sites with a readable raw ERA5 MM file, tagged with 4x/8x cluster membership."
+}

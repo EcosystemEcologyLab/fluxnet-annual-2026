@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T17:45:28Z",
+  "pipeline_version": "46c2964",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_MM_*.csv (raw, read directly)"
+  ],
+  "notes": "Per site-year, affected sites only: raw_mm = P_ERA*days_in_month (pipeline's own day-weighting); diff_mm = raw_mm - previous month's raw_mm (Jan uses its own raw_mm, no prior month); implied_mm = diff_mm clamped to >=0 (per instruction, 'treat the positive differences as the implied true monthly values'); implied_annual_mm = sum(implied_mm); predicted_factor = sum(raw_mm)/implied_annual_mm."
+}

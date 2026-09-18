@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-18T18:09:38Z",
+  "pipeline_version": "2628dbe",
+  "input_sources": [
+    "data/extracted/AMF_US-HB4_*/*.csv",
+    "data/extracted/ICOS_IT-MBo_*/*.csv"
+  ],
+  "notes": "Monthly ERA5 and tower-measured precipitation, mm/month, log y-axis, for the full record where the tower has at least one genuinely-measured month, at US-HB4 and IT-MBo."
+}

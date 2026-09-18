@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T18:09:38Z",
+  "pipeline_version": "2628dbe",
+  "input_sources": [
+    "review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv"
+  ],
+  "notes": "Ratio histograms, log10 x-axis, bin width 0.1 log10 units, all current-network sites. Panel 1 (ERA5/BIO12): n=780. Panel 2 (ERA5/BADM): n=631. Dashed lines at ratio=1x,4x. Display range [0.2x, 10x]; 17 and 17 sites respectively fall outside it and are not shown."
+}

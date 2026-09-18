@@ -4,6 +4,32 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — Assembled external-facing package for the FLUXNET Coordination Project
+
+Read-only with respect to every existing output: reused
+`review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv` and
+`review/diagnostics/era5_precip_units_v3/table_coordination_project_evidence.csv`
+unmodified; confirmed via `git status` that no other diagnostics folder, figure, or
+pipeline file changed. New code: `scripts/diagnostics/era5_share_for_coordination.R`.
+All new files: `review/diagnostics/era5_share_for_coordination/`.
+
+Built a self-contained, jargon-free package for an audience outside the repository
+(the FLUXNET Coordination Project and hub data managers): 3 figures (monthly ERA5 vs.
+tower-measured precipitation at `US-HB4`/`IT-MBo`; a two-panel ratio histogram,
+ERA5/BIO12 and ERA5/BADM, across all 781 sites, with the two-population/gap structure
+reported by bin — 0.5-1.5x, 1.5-3x, 3-6x — for each panel; a 7-panel small-multiples
+figure, one shared y-axis, showing 5 flagged sites' and 2 control sites' monthly ERA5
+seasonal cycle is correctly shaped but differs in scale), a 125-row site list (the 123
+sites flagged by the 15%-tolerance empirical-factor rule, plus `US-HB4`/`IT-MBo` as
+individually-flagged outliers) with a data dictionary, and a README with one
+email-quotable paragraph per figure, methods in brief, and a "what we ruled out"
+section quoting the already-established day-weighting check (0.7%, 2,955 site-years,
+66 sites) and the within-year-cumulative-total check (Dec/Jan ratio and rank
+correlation, flagged group vs. rest of network). Describes what was measured; asserts
+no cause. Final file list and sizes reported to the user.
+
+---
+
 ## 2026-09-18 — ERA5 within-year cumulative-total hypothesis: tested and not supported
 
 Read-only test, run on the mini (`data/extracted/` complete, 781 sites), reading the

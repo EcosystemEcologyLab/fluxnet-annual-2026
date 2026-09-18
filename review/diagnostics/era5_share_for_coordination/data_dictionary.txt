@@ -1,0 +1,30 @@
+DATA DICTIONARY -- site_list.csv
+
+site_id                    FLUXNET site ID.
+data_hub                   The data-distributing hub (e.g. AmeriFlux, ICOS, TERN).
+product_source_network     The contributing regional network that produced this
+                           site's data product (e.g. AMF, ICOS, JPF, CNF, EUF,
+                           FLX, KOF, SAEON, TERN). Not derivable from the site ID.
+era5_annual_precip_mm      Mean annual precipitation from ERA5 reanalysis at the
+                           site's coordinates, mm/year. Computed as the mean, over
+                           all complete calendar years 1991-2020, of the sum of
+                           (that month's ERA5 rate x days in that month).
+worldclim_bio12_mm         WorldClim v2.1 BIO12 (annual precipitation), mm/year, a
+                           gridded, station-interpolated climatology, ~5 km pixel.
+badm_map_mm                Mean annual precipitation as reported by the site PI in
+                           the site's own BADM metadata, mm/year.
+measured_annual_precip_mm  Mean annual precipitation from the tower's own gauge,
+                           mm/year, present only where the site has at least one
+                           complete calendar year (all 12 months) meeting the
+                           measured-data-quality threshold described in README.md.
+                           Blank where no such year exists.
+n_complete_measured_years  Number of calendar years contributing to
+                           measured_annual_precip_mm. 0 where that column is blank.
+ratio_era5_to_bio12        era5_annual_precip_mm / worldclim_bio12_mm.
+ratio_era5_to_badm         era5_annual_precip_mm / badm_map_mm.
+ratio_era5_to_measured     era5_annual_precip_mm / measured_annual_precip_mm.
+                           Blank where measured_annual_precip_mm is blank.
+flag_basis                 Why the site is in this list: 'empirical factor near
+                           4x' or 'near 8x' (see README.md for the exact rule), or
+                           'extreme outlier' for the 2 sites added individually
+                           (US-HB4, IT-MBo), which do not fall into either group.

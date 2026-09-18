@@ -4,6 +4,57 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — Downloaded MODIS MCD12C1.061 (2022) land cover; download only, no distribution computed
+
+Run on the mini (hostname `setanta.local`). Downloaded, verified, and documented one
+file; no distribution was computed and nothing in the pipeline or any figure was
+touched.
+
+**Credentials:** confirmed `~/.netrc` exists (mode 600) with a `machine
+urs.earthdata.nasa.gov` entry before doing anything else, without printing the file.
+Authenticated via `curl -n` (never `-v`, never credentials on the command line); the
+LP DAAC Cloud OAuth redirect chain (URS -> `data.lpdaac.earthdatacloud.nasa.gov/login`
+-> presigned CloudFront/S3 URL) required the session cookie jar at
+`data/external/.urs_cookies` (inside the repo, gitignored) to carry state across the
+hops — a plain `curl -n -L` without the cookie jar landed on the login page instead of
+the file, confirmed directly before launching the real download.
+
+**Locating the file:** the legacy Data Pool host `e4ftl01.cr.usgs.gov` returned 404 for
+this product/collection — not assumed reachable, checked and rejected. The exact
+granule and download URL were resolved via NASA's CMR granule search
+(`short_name=MCD12C1&version=061`, temporal 2022), which is how "the product's own
+download listing" was confirmed rather than guessed: `MCD12C1.A2022001.061.2023244164746.hdf`
+at `data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MCD12C1.061/...`.
+
+**Verification before downloading:** a range request (bytes 0-2047) with the cookie jar
+returned HTTP 206, content-type `binary/octet-stream`, an HDF4 signature in the first
+bytes, and `content-range` reporting a total size of 1,244,259,897 bytes — confirmed
+this was the real file, not a small HTML login page, before committing to the full
+download.
+
+**Download:** launched via the established `nohup ... & disown` pattern, PID reported
+immediately, logged to `logs/modis_mcd12c1_download_20260918.log` (not committed, per
+the existing convention for most files under `logs/`). Completed at HTTP 200, size
+1,244,259,897 bytes, matching the pre-download check exactly. File:
+`data/external/modis_landcover/MCD12C1.A2022001.061.2023244164746.hdf` (not committed —
+added to `.gitignore` alongside the existing external-raster patterns).
+
+**Inspection:** GDAL info (via `sf::gdal_utils("info", ...)`, since no standalone
+`gdalinfo` CLI is installed on this machine and installing one was out of scope) lists
+9 subdatasets: `Majority_Land_Cover_Type_{1,2,3}` (the three classification schemes'
+majority-class layers), each with a paired `..._Assessment` layer, and
+`Land_Cover_Type_{1,2,3}_Percent` (per-class percent-cover, 17/14/11 classes
+respectively). `terra::rast()` opened both a majority-class subdataset and the
+17-band percent-cover subdataset directly on this machine — **no GeoTIFF conversion
+was needed**, only the original `.hdf` is present.
+
+**Provenance note:** `data/external/modis_landcover/README.md` (committed) records
+product/collection/year, the resolved source URL, download date, that an Earthdata
+login was required, the full subdataset list, and that the catalog lists years
+2001-2022 available (2022 only downloaded here; further years would be cheap to add).
+
+---
+
 ## 2026-09-18 — Assembled external-facing package for the FLUXNET Coordination Project
 
 Read-only with respect to every existing output: reused

@@ -24,6 +24,8 @@ data/external/cci_landcover/*.tif
 data/external/cci_landcover/v2.1.1/*.nc
 data/external/cci_landcover/v2.1.1/*.nc4
 data/external/cci_landcover/v2.1.1/*.zip
+data/external/modis_landcover/*.hdf
+data/external/modis_landcover/*.tif
 
 # NASA Earthdata session cookie jar — see CLAUDE.md, "NASA Earthdata Downloads"
 data/external/.urs_cookies

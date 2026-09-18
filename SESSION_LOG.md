@@ -4,6 +4,42 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — ERA5/BIO12/BADM/tower-measured reference plots, revised (plotting only, no verdict)
+
+Plotting task only, per instruction: no new verdict, no correction, no
+reclassification, no pipeline edit. Replaces the same-day
+`era5_reference_plots.R` diagnostic in place, adding a fourth estimate
+(tower-measured MAP) and a month-matched ratio. Confirmed via `git
+status`: zero changes to the pipeline, any pipeline script, any figure,
+legend, or snapshot CSV, any `era5_precip_units`/`_v2`/`_v3`/`_v4` output,
+or `data/duckdb/fluxnet.duckdb` (opened read-only).
+
+Added `measured_map_mm`: tower P_F, from the DuckDB monthly FLUXMET table,
+restricted to calendar years where all 12 months have `P_F_QC >= 0.9`
+(469/781 sites have >=1 such year; 312 do not); no partial year is
+annualised and no calendar-year-window restriction is applied. Also added
+`ratio_to_measured_month_matched`: per-site median of (month's P_ERA)/
+(month's P_F) over every site-month with `P_F_QC >= 0.9` and `P_F != 0`
+(606/781 sites have >=1 valid matched month, median 52 matched months per
+site; 2,604 of 47,069 qualifying site-months were excluded from this ratio
+for `P_F == 0`).
+
+**Figure 1** (overwritten): histogram of `log10(ratio)`, 2 panels ->
+3 panels (added ERA5/tower-measured, n=469). **Figure 2** (overwritten):
+log-log scatter, 3 panels -> 6 panels (added ERA5-vs-measured n=469
+rho=0.975, BADM-vs-measured n=375 rho=0.900, BIO12-vs-measured n=469
+rho=0.869). **Figure 3** (new): single-panel histogram of the
+month-matched ratio, n=606. Each figure again in version A (no grouping)
+and version B (123 4x/8x-cluster sites highlighted, membership rule stated
+verbatim in the legend). Companion CSV and the panel-exclusion table were
+both overwritten to carry the new columns/exclusions. Full accounting of
+which files were replaced vs. newly created, exact axis ranges, and every
+exclusion reason: `review/diagnostics/era5_reference_plots/report.md`. No
+site or group is characterised as an error, artifact, or genuine anywhere
+in this output.
+
+---
+
 ## 2026-09-18 — ERA5/BIO12/BADM reference plots (plotting only, no verdict)
 
 Plotting task only, per instruction: no new verdict, no correction, no

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T16:28:00Z",
+  "pipeline_version": "fb0c8e7",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
+  ],
+  "notes": "Version B (4x/8x cluster highlighted) of Figure 3 -- NEW figure, did not exist in the prior version. Figure 3 (new). Per-site median of the month-matched ratio (ERA5 P_ERA / tower P_F) across every site-month with P_F_QC >= 0.9, excluding site-months where P_F == 0 (undefined ratio; 2604 such site-months excluded network-wide, at sites otherwise retained via their remaining qualifying months). No annualisation: uses individual matched months directly, not complete years. n sites = 606; excludes 175 sites with zero valid matched months. Median matched months per site among those plotted = 52. Bin width 0.1 log10 units; range not clipped. Reference lines at ratio = 1x, 4x, 8x shown for comparability with Figure 1. Version B: the 123 sites in the 4x/8x cluster are shown in a second colour; see legend for the membership rule."
+}

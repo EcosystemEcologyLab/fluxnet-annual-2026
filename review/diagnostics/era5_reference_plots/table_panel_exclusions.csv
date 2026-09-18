@@ -1,151 +1,638 @@
 site_id,panel,reason
-CA-TP2,"hist:ratio_to_bio12, scatter:ERA5-vs-BIO12, scatter:ERA5-vs-BADM",era5_map_mm == 0
-AR-TF1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-APL,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-ASM,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Ade,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Boy,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Col,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Cow,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Cpr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Ctr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Cum,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-DaP,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-DaS,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Dry,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Emr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Fle,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Fog,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-GWW,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Gin,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-How,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Lit,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Lon,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Lox,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-MvA,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-MvB,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Otw,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-RDF,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Rgf,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Rig,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Rob,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Sam,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Sil,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Sno,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Stp,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-TTE,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Tum,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Wac,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Wel,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Wgt,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Whr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Wom,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Wrr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Ya1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Ya2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-AU-Ync,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-BR-Ji3,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-BW-Gum,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-BW-Nxr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CA-CF3,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CA-DB2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CA-Qc2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Ash,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-BeO,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-DaW,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Dan,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Dda,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Din,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Du2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Dzo,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Erg,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-GuT,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Ha2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-HaW,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Jzh,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Lch,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Mxn,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Nmn,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Qng,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Wnb,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Xi2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-YaS,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Yan,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CN-Yuc,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CR-Fsc,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-DE-Gri,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-DE-Hdn,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-DK-Eng,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-DK-Fou,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-ES-Abr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-ES-LgS,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-ES-Ln2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-ES-Pdu,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-FI-Si2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-GL-Dsk,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-HK-MPM,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-ID-PaD,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-BsB,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-Bsn,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-Cpz,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-MtM,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-MtP,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-NiG,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-PT1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-Ro1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-IT-Ro2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-JP-MBF,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-JP-MMF,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-JP-Nkm,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-JP-Tgf,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NO-Fns,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-ADd,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-ADw,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-BFm,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-BFu,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-Cla,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-Kop,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-Lau,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-Oxf,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-NZ-ScF,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-PE-QFR,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-RU-Ha1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-RU-Sk2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-RU-SkP,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-SE-Ros,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-SJ-Adv,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-A37,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-ALQ,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-AR1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-AR2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-ARb,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-ARc,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Akn,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-CAK,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Cop,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-EDN,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Elm,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Esm,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Fcr,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Fo1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Fo2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-KLS,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-LS2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Lin,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-NGC,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-NSa,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-NSb,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-SD2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Snf,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-Sta,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-YK1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-YK2,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-ZF1,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-xHA,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-xKA,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-US-xTA,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm missing (NA)
-CZ-LnG,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm == 0
-DE-Lnf,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm == 0
-ES-Agu,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm == 0
-ES-Amo,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm == 0
-KE-Kpt,"hist:ratio_to_badm, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12",badm_map_mm == 0
+CA-TP2,"hist:ERA5/BIO12, hist:ERA5/measured, scatter:ERA5-vs-BIO12, scatter:ERA5-vs-BADM, scatter:ERA5-vs-measured",era5_map_mm == 0
+AR-TF1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-APL,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-ASM,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Ade,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Boy,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Col,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Cow,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Cpr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Ctr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Cum,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-DaP,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-DaS,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Dry,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Emr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Fle,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Fog,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-GWW,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Gin,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-How,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Lit,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Lon,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Lox,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-MvA,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-MvB,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Otw,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-RDF,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Rgf,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Rig,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Rob,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Sam,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Sil,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Sno,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Stp,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-TTE,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Tum,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Wac,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Wel,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Wgt,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Whr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Wom,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Wrr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Ya1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Ya2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+AU-Ync,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+BR-Ji3,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+BW-Gum,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+BW-Nxr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CA-CF3,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CA-DB2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CA-Qc2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Ash,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-BeO,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-DaW,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Dan,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Dda,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Din,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Du2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Dzo,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Erg,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-GuT,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Ha2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-HaW,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Jzh,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Lch,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Mxn,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Nmn,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Qng,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Wnb,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Xi2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-YaS,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Yan,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CN-Yuc,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CR-Fsc,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+DE-Gri,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+DE-Hdn,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+DK-Eng,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+DK-Fou,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+ES-Abr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+ES-LgS,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+ES-Ln2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+ES-Pdu,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+FI-Si2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+GL-Dsk,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+HK-MPM,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+ID-PaD,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-BsB,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-Bsn,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-Cpz,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-MtM,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-MtP,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-NiG,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-PT1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-Ro1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+IT-Ro2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+JP-MBF,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+JP-MMF,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+JP-Nkm,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+JP-Tgf,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NO-Fns,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-ADd,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-ADw,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-BFm,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-BFu,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-Cla,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-Kop,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-Lau,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-Oxf,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+NZ-ScF,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+PE-QFR,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+RU-Ha1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+RU-Sk2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+RU-SkP,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+SE-Ros,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+SJ-Adv,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-A37,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-ALQ,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-AR1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-AR2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-ARb,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-ARc,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Akn,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-CAK,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Cop,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-EDN,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Elm,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Esm,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Fcr,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Fo1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Fo2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-KLS,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-LS2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Lin,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-NGC,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-NSa,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-NSb,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-SD2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Snf,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-Sta,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-YK1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-YK2,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-ZF1,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-xHA,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-xKA,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+US-xTA,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm missing (NA)
+CZ-LnG,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm == 0
+DE-Lnf,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm == 0
+ES-Agu,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm == 0
+ES-Amo,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm == 0
+KE-Kpt,"hist:ERA5/BADM, scatter:ERA5-vs-BADM, scatter:BADM-vs-BIO12, scatter:BADM-vs-measured",badm_map_mm == 0
+AR-Bal,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AR-CCa,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AR-CCg,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AR-TF1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AR-TF2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-APL,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Col,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Fog,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Lox,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-MvB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Otw,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-RDF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Sno,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Wac,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Wgt,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AU-Whr,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+BR-CST,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+BR-ITA,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+BR-Ji3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+BR-SM1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+BR-Sa1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+BW-Gum,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+BW-Nxr,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-ARB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-ARF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-BOU,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-CF1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-CF2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-CF3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-Cbo,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-HPC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-KLP,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-LU1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-LU2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-MA2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-MA3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-Man,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-Mer,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-Mtk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-PB1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-PB2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-SCB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-SJ2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-SMC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CA-TP2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CD-Ygb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CH-For,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CH-Tnk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CL-SDF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Aro,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Dda,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Dmn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Dsh,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-GuT,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Ha2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-HaM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-HaW,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-HeD,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-HeM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Huz,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Jng,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Nmn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Qng,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Sb1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Sb2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Sdq,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-SnB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Yan,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-You,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+CN-Zha,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Akm,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Amv,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Etn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Geb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Hdn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Hzd,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Lkb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-SbM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Seh,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-SfS,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Spw,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DE-Zrk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DK-Eng,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DK-Fou,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+DK-Skj,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+EE-Pts,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+EE-Rng,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+EE-Stg,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Cnd,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Crg,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Dnn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-FtD,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Gdn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-HdD,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Ln2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-MtB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-MtN,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Mzn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Pdu,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Srn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-TzM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ES-Yst,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+FI-Jok,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+FI-Nsv,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+FI-Ruk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+FI-Si2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+FI-Sod,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+FR-Lqu,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+FR-Lus,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+GH-Ank,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+GL-Dsk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+GL-ZaF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+GL-ZaH,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+HK-MPM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IE-Cra,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IE-Gwr,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IT-Arz,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IT-CA1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IT-CA2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IT-CA3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IT-NiG,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IT-Niv,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+IT-Noe,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Api,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-BBY,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Fmt,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Hc2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Hc3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-KaP,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Kzw,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-MBF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Mse,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Nkm,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Nuf,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Om2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-SMF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Sb1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Sb2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Shn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Tak,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Tkb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Tmd,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Tmk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Toc,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Yms,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+JP-Ynf,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KE-Aq1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KE-Aq2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KE-Kpt,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KH-Kmp,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KR-GmP,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KR-Hnm,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KR-Kw1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KR-Nj1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KR-Nj2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KR-TwB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+KR-TwC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ML-Kem,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+MN-Hst,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+MN-Kbu,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+MN-Nkh,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+MN-Udg,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+MX-PMm,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+NO-Ikr,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+PE-QFR,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-Ege,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-Fy3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-Fy4,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-Ha1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-NeB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-NeC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-NeF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-Sk2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-SkP,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+RU-Tur,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+SE-Trb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+SJ-Adv,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+UK-HgF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+UK-HpF,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-A03,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-A10,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-A32,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-A74,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ABe,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ALQ,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ARb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ARc,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ASH,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ASM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-BRG,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-BZo,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CAK,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CF1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CF2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CF3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CF4,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CRK,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CS1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CS2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CS3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CS4,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CS5,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CS6,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-CS8,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Cwt,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-DFC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-DFK,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-DPW,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-DS1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-EA6,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-EKH,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-EML,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Fcr,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Fo1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Fo2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Fuf,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-HBK,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-HRA,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-HRC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-HVs,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Hn2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Hn3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-IAB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-IAC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-IAM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-KPL,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-KS1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-KS3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-LA2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-LA3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Lin,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-MBP,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-MZA,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Me1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Me7,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-NC5,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-NGB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-NGC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-NR3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-NSa,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-NSb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Ne1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Ne2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Ne3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PAS,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFL,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFb,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFc,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFd,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFf,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFg,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFh,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFi,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFj,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFm,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFn,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFp,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFq,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFr,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PFt,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PLo,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PSH,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-PSL,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-RGA,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-RGW,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-RRC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Rls,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Rms,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Rwe,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Rwf,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Rws,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Sag,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Srr,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Sta,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Syv,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-TLR,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-TaS,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Tw1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Tw2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Tw3,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-Tw5,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UMd,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTD,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTE,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTJ,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTL,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTM,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTP,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTV,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UTW,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UiA,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UiB,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UiC,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-UiD,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-VT1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-VT2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-WT1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-YK1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-YK2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ZF1,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-ZF2,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-xBN,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-xCL,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-xCP,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-xNW,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-xPU,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+US-xTL,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ZA-BfK,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ZA-BfS,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+ZA-Spk,"hist:ERA5/measured, scatter:ERA5-vs-measured, scatter:BADM-vs-measured, scatter:BIO12-vs-measured",measured_map_mm missing (no calendar year with all 12 months at P_F_QC >= 0.9)
+AR-CCa,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+AR-CCg,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+AR-TF1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+AR-TF2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+AU-APL,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+AU-Col,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+AU-Fog,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+AU-Wac,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+BR-Ji3,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+BR-SM1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+BW-Gum,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+BW-Nxr,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CA-Cbo,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CA-HPC,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CA-SMC,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CA-TP2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Aro,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Dda,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Dmn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Dsh,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-HaM,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-HeD,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-HeM,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Huz,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Jng,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Qng,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Sb1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Sb2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Sdq,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-You,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+CN-Zha,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-Akm,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-Etn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-Hdn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-Hzd,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-Lkb,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-SbM,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-SfS,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-Spw,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DE-Zrk,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+DK-Eng,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+EE-Stg,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-Cnd,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-Dnn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-FtD,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-Gdn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-Ln2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-MtB,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-MtN,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-Mzn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-Pdu,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-Srn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ES-TzM,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+FI-Jok,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+FI-Nsv,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+FI-Ruk,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+FI-Si2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+GL-Dsk,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+IE-Cra,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+IE-Gwr,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+IT-Arz,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Api,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-BBY,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Fmt,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Hc2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Hc3,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-KaP,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Kzw,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-MBF,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Mse,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Nkm,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Nuf,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Om2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-SMF,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Sb1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Sb2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Shn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Tak,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Tkb,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Tmd,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Tmk,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Toc,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Yms,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+JP-Ynf,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KE-Aq1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KE-Aq2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KE-Kpt,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KH-Kmp,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KR-Hnm,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KR-Nj1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KR-Nj2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KR-TwB,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+KR-TwC,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+ML-Kem,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+MN-Hst,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+MN-Kbu,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+MN-Nkh,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+MN-Udg,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+MX-PMm,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+NO-Ikr,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+PE-QFR,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+RU-Ege,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+RU-NeB,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+RU-NeC,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+RU-NeF,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+RU-Sk2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+RU-SkP,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+RU-Tur,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+SE-Trb,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-A03,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-A10,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-ABe,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-ASH,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-ASM,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-BRG,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-CS2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Cwt,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-DFK,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-DPW,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-EML,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-HBK,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-HVs,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-IAB,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-IAC,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-IAM,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-MBP,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Me7,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-NGB,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-NGC,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-NR3,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-NSa,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-NSb,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Ne1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Ne2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Ne3,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PAS,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFL,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFb,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFc,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFd,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFf,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFg,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFh,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFi,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFj,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFk,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFm,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFn,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFp,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFq,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFr,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PFt,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PLo,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PSH,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-PSL,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Rls,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Rms,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Rwe,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Rwf,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Rws,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Srr,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Sta,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Syv,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-TaS,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Tw1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Tw2,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-Tw5,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-UMd,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-UTJ,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-UTW,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-UiA,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-UiB,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-UiC,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-UiD,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0
+US-WT1,fig3_month_matched_ratio,no site-month with P_F_QC >= 0.9 and P_F != 0

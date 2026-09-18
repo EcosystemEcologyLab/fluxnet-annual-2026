@@ -1,8 +1,9 @@
 {
-  "run_datetime_utc": "2026-09-18T16:08:01Z",
-  "pipeline_version": "3cee85a",
+  "run_datetime_utc": "2026-09-18T16:28:00Z",
+  "pipeline_version": "fb0c8e7",
   "input_sources": [
-    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv",
+    "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
   ],
-  "notes": "Version A (no grouping) of Figure 1. Figure 1. Histograms of the per-site ratio of ERA5-derived mean annual precipitation (MAP) to two independent references, 781 current-network sites. Left panel: ERA5/BIO12 (n=780; excludes 1 site with era5_map_mm == 0, undefined on a log axis: CA-TP2). Right panel: ERA5/BADM (n=631; excludes 150 sites: 144 with no BADM value, 5 with BADM MAP == 0, and the same 1 site with era5_map_mm == 0). X-axis is log10(ratio); bin width 0.1 log10 units (~26% per bin); axis range is not clipped and extends to the full observed range in each panel, so the single most extreme site in each panel appears in its own bin. Dashed reference lines at ratio = 1x, 4x, 8x. Version A: all sites, one colour, no grouping."
+  "notes": "Version A (no grouping) of Figure 1, overwritten to add a 3rd panel (ERA5/tower-measured). Figure 1. Histograms of the per-site ratio of ERA5-derived mean annual precipitation (MAP) to three independent references, 781 current-network sites. Panel 1 (ERA5/BIO12): n=780; excludes 1 site with era5_map_mm == 0 (CA-TP2). Panel 2 (ERA5/BADM): n=631; excludes 150 sites (144 no BADM value, 5 BADM MAP == 0, 1 era5_map_mm == 0). Panel 3 (ERA5/tower-measured, NEW): n=469; excludes 312 sites (312 with no calendar year where all 12 months have P_F_QC >= 0.9, 1 era5_map_mm == 0; measured_map_mm was never exactly 0 in this network). X-axis is log10(ratio); bin width 0.1 log10 units (~26% per bin); range not clipped, extends to the full observed range in each panel. Dashed reference lines at ratio = 1x, 4x, 8x. Version A: all sites, one colour, no grouping."
 }

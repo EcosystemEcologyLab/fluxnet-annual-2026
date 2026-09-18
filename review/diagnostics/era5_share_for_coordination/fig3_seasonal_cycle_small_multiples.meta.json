@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T18:09:39Z",
+  "pipeline_version": "2628dbe",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_MM_*.csv"
+  ],
+  "notes": "Monthly ERA5 precipitation, mm/month, 3 consecutive complete years, 5 flagged + 2 unaffected sites, one shared y-axis across all 7 panels. Each panel's own annual total per plotted year is given as an in-panel-header annotation (not inside the data region)."
+}

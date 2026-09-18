@@ -4,6 +4,36 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — ERA5 within-year cumulative-total hypothesis: tested and not supported
+
+Read-only test, run on the mini (`data/extracted/` complete, 781 sites), reading the
+raw `*_FLUXNET_ERA5_MM_*.csv` files directly, not DuckDB, so ingestion played no part.
+New code: `scripts/diagnostics/era5_cumulative_test.R`. No edits to anything else —
+confirmed via `git status`. Full report and all output tables:
+`review/diagnostics/era5_cumulative_test/`.
+
+**Verdict: the within-year cumulative-total hypothesis is not supported, at any of the
+6 named affected sites (`JP-Tak`, `JP-Mse`, `JP-Yms`, `KH-Kmp`, `PE-QFR`, `BR-Ji3`) or
+in the 4x/8x cluster network-wide.** Raw monthly `P_ERA` at every affected site rises
+and falls within the year (an ordinary seasonal hump/trough), which a true cumulative
+total cannot do. Network-wide, the December/January ratio and Spearman rho(value,
+month) — the two statistics a genuine cumulative reset would inflate — are both close
+to their null values and statistically indistinguishable between the 4x/8x cluster
+(n=5,507 site-years, median ratio 1.128, median rho 0.119) and the rest of the network
+(n=29,203 site-years, median ratio 1.096, median rho 0.077). The one calculation that
+superficially lands near the observed `ratio_to_bio12` (differencing the series and
+summing only positive steps) does not agree closely site-by-site (differences from
+-1.09 to +1.26 across the 6 sites) and, more importantly, its own diagnostic shows its
+core assumption — at most a handful of negative month-to-month steps per year — is
+violated 3-8 times out of 11 *every year at every affected site*, which is exactly what
+an ordinary seasonal cycle (not a cumulative series) produces; the numerical overlap is
+attributed to that generic bias, not to genuine cumulation. TA_ERA (an averaged
+variable) shows no ramp signature either, so it adds no independent contrast. Nothing
+here explains why the 4x/8x factor exists — only that within-year cumulation in the raw
+ERA5 monthly file is not the explanation.
+
+---
+
 ## 2026-09-18 — Documented NASA Earthdata access and external-data provenance (docs only)
 
 Documentation only: no code, no download, no other files touched besides

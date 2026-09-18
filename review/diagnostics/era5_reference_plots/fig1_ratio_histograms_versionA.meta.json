@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-09-18T16:28:00Z",
-  "pipeline_version": "fb0c8e7",
+  "run_datetime_utc": "2026-09-18T17:12:44Z",
+  "pipeline_version": "386f754",
   "input_sources": [
     "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv",
     "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
   ],
-  "notes": "Version A (no grouping) of Figure 1, overwritten to add a 3rd panel (ERA5/tower-measured). Figure 1. Histograms of the per-site ratio of ERA5-derived mean annual precipitation (MAP) to three independent references, 781 current-network sites. Panel 1 (ERA5/BIO12): n=780; excludes 1 site with era5_map_mm == 0 (CA-TP2). Panel 2 (ERA5/BADM): n=631; excludes 150 sites (144 no BADM value, 5 BADM MAP == 0, 1 era5_map_mm == 0). Panel 3 (ERA5/tower-measured, NEW): n=469; excludes 312 sites (312 with no calendar year where all 12 months have P_F_QC >= 0.9, 1 era5_map_mm == 0; measured_map_mm was never exactly 0 in this network). X-axis is log10(ratio); bin width 0.1 log10 units (~26% per bin); range not clipped, extends to the full observed range in each panel. Dashed reference lines at ratio = 1x, 4x, 8x. Version A: all sites, one colour, no grouping."
+  "notes": "Version A (no grouping) of Figure 1, reformatted for legibility (fixed 0.1x-20x core range with marked overflow bins; no other value changed). Figure 1. Histograms of the per-site ratio of ERA5-derived MAP to three independent references, 781 current-network sites, core x-range fixed at 0.1x-20x (log10(ratio), bin width 0.1 log10 units); points outside the core range are placed in a single black-outlined bin at that end (<0.1x on the left, >20x on the right), not dropped, with the on-plot count shown above each such bin. Panel 1 (ERA5/BIO12): n=780; <0.1x (n=13): CN-GuT, US-A37, US-A39, US-Akn, US-CF1, US-CF2, US-CF3, US-CF4, US-EKH, US-EKN, US-EKP, US-Hn3, US-TLR; >20x (n=2): IT-MBo, US-HB4. Panel 2 (ERA5/BADM): n=631; <0.1x (n=10): US-A39, US-CF1, US-CF2, US-CF3, US-CF4, US-EKH, US-EKN, US-EKP, US-Hn3, US-TLR; >20x (n=2): JP-KaP, US-HB4. Panel 3 (ERA5/tower-measured): n=469; <0.1x (n=0); >20x (n=1): US-HB4. Dashed reference lines at ratio = 1x, 4x, 8x. Version A: all sites, one colour, no grouping."
 }

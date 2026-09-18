@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-09-18T16:28:00Z",
-  "pipeline_version": "fb0c8e7",
+  "run_datetime_utc": "2026-09-18T17:12:44Z",
+  "pipeline_version": "386f754",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
   ],
-  "notes": "Version A (no grouping) of Figure 3 -- NEW figure, did not exist in the prior version. Figure 3 (new). Per-site median of the month-matched ratio (ERA5 P_ERA / tower P_F) across every site-month with P_F_QC >= 0.9, excluding site-months where P_F == 0 (undefined ratio; 2604 such site-months excluded network-wide, at sites otherwise retained via their remaining qualifying months). No annualisation: uses individual matched months directly, not complete years. n sites = 606; excludes 175 sites with zero valid matched months. Median matched months per site among those plotted = 52. Bin width 0.1 log10 units; range not clipped. Reference lines at ratio = 1x, 4x, 8x shown for comparability with Figure 1. Version A: all sites, one colour, no grouping."
+  "notes": "Version A (no grouping) of Figure 3, reformatted for legibility (fixed 0.1x-20x core range with marked overflow bins; no value changed). Figure 3. Per-site median of the month-matched ratio (ERA5 P_ERA / tower P_F) across every site-month with P_F_QC >= 0.9 and P_F != 0 (2604 site-months with P_F == 0 excluded network-wide; no annualisation, no complete-year requirement). n sites = 606; excludes 175 sites with zero valid matched months. Median matched months per site among those plotted = 52. Core x-range fixed at 0.1x-20x, bin width 0.1 log10 units; points outside it are in a single black-outlined bin at that end: <0.1x (n=0); >20x (n=3): IT-MBo, US-HB4, US-KS3. Reference lines at ratio = 1x, 4x, 8x. Version A: all sites, one colour, no grouping."
 }

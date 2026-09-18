@@ -1,50 +1,44 @@
 ## era5_reference_plots.R
 ##
 ## Plotting task only: no new verdict, no correction, no reclassification.
-## Replaces the first version of this script/figures (era5-vs-BIO12-vs-BADM
-## only) with a four-estimate version that adds tower-measured MAP. This
-## revision overwrites fig1_ratio_histograms_version{A,B}.png (2 panels ->
-## 3 panels), overwrites fig2_scatter_version{A,B}.png (3 panels -> 6
-## panels), overwrites table_site_reference_comparison.csv and
-## table_panel_exclusions.csv, and adds one new figure,
-## fig3_month_matched_ratio_version{A,B}.png, that did not exist before.
+## This version is a LEGIBILITY REFORMAT of the four-estimate figures --
+## same data, same values, same membership rule as the prior version.
+## Nothing in sections 1-5 or 10 below (data assembly, exclusion sets,
+## Spearman rho, companion CSV) changed from the prior version. What
+## changed is purely presentation:
+##  - The membership-rule text is no longer drawn inside every panel (it
+##    consumed roughly half the panel width). It now lives in a companion
+##    <basename>.legend.txt file per version-B figure, with only a single
+##    short footnote line beneath the whole figure and one shared colour
+##    legend (collected via patchwork, not duplicated per panel).
+##  - Figure 1 and Figure 3's histograms use a fixed core x-range (0.1x to
+##    20x ratio) with a single marked (black-outlined) overflow bin at each
+##    end for points outside it, instead of letting a handful of extreme
+##    ratios stretch the axis across 6 decades.
+##  - Figure 2's six scatter panels share one common x/y range (10 to
+##    10,000 mm/yr, chosen from the bulk of the pooled data) instead of a
+##    different per-panel range; points outside it are shown clamped to the
+##    edge as a distinct (triangle) shape rather than silently dropped.
+##  - Scatter points are smaller and more transparent; in version B the
+##    4x/8x-cluster points are drawn on top of the rest.
+##  - Larger base font sizes and wider margins for legibility at ~1000px
+##    display width; the 4x/8x histogram reference-tick labels no longer
+##    collide.
 ##
-## FOUR ESTIMATES PER SITE (all 781 current-network sites):
+## FOUR ESTIMATES PER SITE (all 781 current-network sites) -- unchanged
+## from the prior version:
 ##  1. era5_map_mm      -- pipeline's existing sum(P_ERA*days_in_month) over
 ##                         complete calendar years, 1991-2020 (KG_ERA5_PERIOD).
 ##                         Unchanged value, reused from table_b1_factor_estimates.csv.
 ##  2. bio12_mm          -- WorldClim BIO12. Unchanged value, reused as above.
 ##  3. badm_map_mm       -- BADM PI-reported MAP. Unchanged value, reused as above.
-##  4. measured_map_mm   -- NEW. Tower P_F, from the DuckDB monthly FLUXMET
-##                         table, restricted to calendar years where all 12
-##                         months have P_F_QC >= 0.9 (the "genuinely measured"
-##                         cutoff established empirically in
-##                         era5_precip_units_v3 Part A; P_F_QC is a fraction
-##                         at this resolution, not the HH-resolution integer
-##                         flag -- see CLAUDE.md QC Flag Reference). No
-##                         calendar-year window restriction is applied (unlike
-##                         estimate 1): all of a site's available years are
-##                         eligible, since restricting to 1991-2020 would only
-##                         shrink an already-thin tower record. Partial years
-##                         are never annualised -- a year contributes only if
-##                         all 12 of its months qualify.
-##
-## A fifth per-site value, ratio_to_measured_month_matched, is also computed:
-## for every site-month with P_F_QC >= 0.9 (not requiring a complete year),
-## the ratio of that month's P_ERA to that month's P_F, aggregated to the
-## per-site median. Because it is a ratio of two same-month rates, no
-## day-weighting is needed and no annualisation of partial years occurs.
-##
-## Provenance: era5_map_mm / bio12_mm / badm_map_mm / ratio_to_bio12 /
-## ratio_to_badm_map / data_hub / product_source_network / nearest_cluster
-## are unchanged values from table_b1_factor_estimates.csv (v3), itself
-## unmodified from table_t2_ratios.csv (v2) on every shared column (checked
-## before writing the first version of this script). measured_map_mm,
-## n_complete_measured_years, n_matched_months, ratio_to_measured, and
-## ratio_to_measured_month_matched are computed by this script directly from
-## data/duckdb/fluxnet.duckdb (read-only) -- nothing here is present in any
-## prior diagnostic output. Spearman rho/n per scatter panel and all
-## per-panel exclusion sets are likewise computed here, as before.
+##  4. measured_map_mm   -- Tower P_F, from the DuckDB monthly FLUXMET table,
+##                         restricted to calendar years where all 12 months
+##                         have P_F_QC >= 0.9. No calendar-year window
+##                         restriction; no partial year annualised.
+## A fifth per-site value, ratio_to_measured_month_matched, is the per-site
+## median of the month-matched ERA5/measured ratio (see prior version's
+## header for full detail, unchanged here).
 ##
 ## Read-only w.r.t. the pipeline and all prior diagnostics: does not modify
 ## R/climate_classification.R, any numbered pipeline script, any figure,
@@ -59,8 +53,7 @@ suppressPackageStartupMessages({
   library(dplyr)
   library(readr)
   library(ggplot2)
-  library(gridExtra)
-  library(grid)
+  library(patchwork)
   library(fs)
   library(duckdb)
   library(DBI)
@@ -100,7 +93,7 @@ base <- b1 |>
   )
 
 # ============================================================================
-# 2. NEW: TOWER-MEASURED MAP, FROM DUCKDB MONTHLY (complete years only)
+# 2. TOWER-MEASURED MAP, FROM DUCKDB MONTHLY (complete years only)
 # ============================================================================
 
 message("\n================ Tower-measured MAP from DuckDB (read-only) ================")
@@ -192,13 +185,7 @@ message(sprintf(
 ))
 
 # ============================================================================
-# 4. PER-PANEL EXCLUSION SETS
-#    A log axis is undefined at zero/negative/missing values. era5_map_mm is
-#    exactly 0 at one site (CA-TP2); badm_map_mm is exactly 0 at five sites
-#    (CZ-LnG, DE-Lnf, ES-Agu, ES-Amo, KE-Kpt) in addition to being missing at
-#    144 sites; measured_map_mm is missing (no complete measured year) at
-#    312 sites and was never found to be exactly 0 in this network. bio12_mm
-#    has no zero, negative, or missing values in this network.
+# 4. PER-PANEL EXCLUSION SETS (unchanged from prior version)
 # ============================================================================
 
 excl_hist_bio12 <- d |> dplyr::filter(!era5_positive) |> dplyr::pull(site_id)
@@ -241,7 +228,7 @@ message(sprintf("scatter ERA5-BADM: n=%d | ERA5-BIO12: n=%d | ERA5-measured: n=%
 message(sprintf("fig3_month_matched_ratio: n=%d", n_total - length(excl_month_matched)))
 
 # ============================================================================
-# 5. SPEARMAN RHO PER SCATTER PANEL
+# 5. SPEARMAN RHO PER SCATTER PANEL (unchanged from prior version)
 # ============================================================================
 
 spearman <- function(x, y) {
@@ -271,28 +258,39 @@ for (nm in c("era5_badm", "era5_bio12", "era5_meas", "badm_bio12", "badm_meas", 
 }
 
 # ============================================================================
-# 6. SHARED STYLE
+# 6. SHARED STYLE (rewritten for legibility)
 # ============================================================================
 
 COL_ALL   <- "#4C72B0"
 COL_OTHER <- "#4C72B0"
 COL_CLUST <- "#D55E00"
-CLUSTER_LEGEND_TITLE <-
-  paste0(
-    "Membership rule (verbatim, table_b1_factor_estimates.csv):\n",
-    "factor_estimate = median(ratio_to_bio12, ratio_to_badm_map);\n",
-    "assigned to nearest of candidate factors {1, 4, 8, 24, 1000}\n",
-    "if within 15% of it (tol = 0.15), else 'elsewhere'.\n",
-    "Shown = sites with nearest_cluster %in% c('4','8')\n",
-    sprintf("(n = %d: 113 near 4x + 10 near 8x)", n_cluster)
-  )
 
-theme_diag <- function() {
-  theme_minimal(base_size = 9) +
-    theme(plot.background = element_rect(fill = "white", colour = NA),
-          legend.key.size = unit(0.3, "cm"),
-          legend.text = element_text(size = 6.5),
-          legend.title = element_text(size = 6.5))
+MEMBERSHIP_RULE_TEXT <- paste0(
+  "Membership rule (verbatim, table_b1_factor_estimates.csv):\n",
+  "factor_estimate = median(ratio_to_bio12, ratio_to_badm_map);\n",
+  "assigned to nearest of candidate factors {1, 4, 8, 24, 1000}\n",
+  "if within 15% of it (tol = 0.15), else 'elsewhere'.\n",
+  "Shown = sites with nearest_cluster %in% c('4','8')\n",
+  sprintf("(n = %d: 113 near 4x + 10 near 8x)", n_cluster)
+)
+FOOTNOTE <- function(basename) {
+  sprintf("4x/8x cluster: factor_estimate within 15%% of 4 or 8 (n=%d). Full rule: %s.legend.txt",
+          n_cluster, basename)
+}
+write_legend_txt <- function(basename) {
+  writeLines(MEMBERSHIP_RULE_TEXT, file.path(OUTD, paste0(basename, ".legend.txt")))
+}
+TITLE_TXT <- "Bins: 0.1 log10 units | dashed lines = 1x, 4x, 8x | black outline = overflow bin (see caption)"
+
+theme_diag <- function(base_size = 13) {
+  theme_minimal(base_size = base_size) +
+    theme(plot.background  = element_rect(fill = "white", colour = NA),
+          plot.margin      = margin(t = 8, r = 14, b = 6, l = 6),
+          plot.subtitle    = element_text(size = base_size * 0.7, colour = "grey30"),
+          axis.title       = element_text(size = base_size * 0.95),
+          legend.key.size  = unit(0.45, "cm"),
+          legend.text      = element_text(size = base_size * 0.8),
+          legend.title     = element_text(size = base_size * 0.8))
 }
 
 add_cluster_col <- function(df) {
@@ -301,57 +299,116 @@ add_cluster_col <- function(df) {
                                         labels = c("not in 4x/8x cluster", "in 4x/8x cluster")))
 }
 
+## A single shared ggplot theme applied to every combined figure via `&`,
+## so the collected legend (patchwork guides = "collect") renders once,
+## below all panels, at a legible size.
+SHARED_LEGEND_THEME <- theme(legend.position = "bottom",
+                              legend.title = element_blank(),
+                              legend.text = element_text(size = 11))
+
 # ============================================================================
-# 7. FIGURE 1 (OVERWRITTEN: 2 panels -> 3 panels) -- HISTOGRAMS OF log10(ratio)
+# 7. FIGURE 1 (reformatted) -- HISTOGRAMS OF log10(ratio), fixed core range
+#    with one marked overflow bin at each end.
 # ============================================================================
 
-BINWIDTH <- 0.1  # log10 units; 10^0.1 ~= 1.259, i.e. ~26% per bin
+BINWIDTH <- 0.1        # log10 units; 10^0.1 ~= 1.259, i.e. ~26% per bin
 REF_LINES <- log10(c(1, 4, 8))
-HIST_BRKS <- log10(c(0.001, 0.01, 0.1, 1, 4, 8, 100, 1000))
-HIST_LBLS <- c("0.001x", "0.01x", "0.1x", "1x", "4x", "8x", "100x", "1000x")
+BIN_LO <- -1           # log10(0.1) -- core range lower edge
+BIN_HI <- 1.3          # log10(20)  -- core range upper edge (10^1.3 = 19.95, "20x")
+UNDER_POS <- BIN_LO - BINWIDTH / 2
+OVER_POS  <- BIN_HI + BINWIDTH / 2
+HIST_BRKS <- c(UNDER_POS, log10(0.2), 0, log10(4), log10(8), OVER_POS)
+HIST_LBLS <- c("<0.1x", "0.2x", "1x", "4x", "8x", ">20x")
 
-make_hist <- function(df_sub, ratio_col, panel_label, n_panel, highlight) {
-  df_sub <- df_sub |> dplyr::mutate(log10_ratio = log10(.data[[ratio_col]]))
-  subtitle <- sprintf("n = %d | bin width = %.2g log10 units (ratio x %.3f per bin)", n_panel, BINWIDTH, 10^BINWIDTH)
+clamp_ratio <- function(x) dplyr::case_when(x < BIN_LO ~ UNDER_POS, x > BIN_HI ~ OVER_POS, TRUE ~ x)
+
+## Returns the plot, plus the under/over site lists (for the caption/report).
+make_hist <- function(df_sub, ratio_col, panel_label, highlight, base_size = 13) {
+  df_sub <- df_sub |>
+    dplyr::mutate(log10_ratio_raw = log10(.data[[ratio_col]]),
+                  log10_ratio = clamp_ratio(log10_ratio_raw))
+  n_panel <- nrow(df_sub)
+  under_sites <- df_sub$site_id[df_sub$log10_ratio_raw < BIN_LO]
+  over_sites  <- df_sub$site_id[df_sub$log10_ratio_raw > BIN_HI]
+  n_flag_lab <- data.frame(x = c(UNDER_POS, OVER_POS), y = c(length(under_sites), length(over_sites))) |>
+    dplyr::filter(y > 0)
+
+  subtitle <- sprintf("n=%d  |  %d<0.1x, %d>20x", n_panel, length(under_sites), length(over_sites))
+
   if (!highlight) {
     p <- ggplot(df_sub, aes(x = log10_ratio)) +
-      geom_histogram(binwidth = BINWIDTH, boundary = 0, fill = COL_ALL, colour = "white", linewidth = 0.15)
+      geom_histogram(binwidth = BINWIDTH, boundary = BIN_LO, fill = COL_ALL, colour = "white", linewidth = 0.15, na.rm = TRUE)
   } else {
     df_sub <- add_cluster_col(df_sub)
     p <- ggplot(df_sub, aes(x = log10_ratio, fill = cluster)) +
-      geom_histogram(binwidth = BINWIDTH, boundary = 0, colour = "white", linewidth = 0.15, position = "stack") +
-      scale_fill_manual(values = c("not in 4x/8x cluster" = COL_OTHER, "in 4x/8x cluster" = COL_CLUST),
-                         name = CLUSTER_LEGEND_TITLE)
+      geom_histogram(binwidth = BINWIDTH, boundary = BIN_LO, colour = "white", linewidth = 0.15, position = "stack", na.rm = TRUE) +
+      scale_fill_manual(values = c("not in 4x/8x cluster" = COL_OTHER, "in 4x/8x cluster" = COL_CLUST), name = NULL)
   }
-  p +
-    geom_vline(xintercept = REF_LINES, linetype = "dashed", colour = "grey30", linewidth = 0.35) +
-    scale_x_continuous(name = paste0(panel_label, "  [log10(ratio) scale]"), breaks = HIST_BRKS, labels = HIST_LBLS) +
+  ## Outline the under/over bins in black, drawn as explicit bars at exactly
+  ## the two flagged x-positions -- NOT via geom_histogram() on the sparse
+  ## flagged subset, which would re-run stat_bin over the whole core range
+  ## and draw a zero-height (but still bordered) rectangle for every empty
+  ## bin in between, producing a spurious horizontal line along y = 0.
+  if (nrow(n_flag_lab) > 0) {
+    p <- p + geom_col(data = n_flag_lab, aes(x = x, y = y), inherit.aes = FALSE,
+                       width = BINWIDTH, fill = NA, colour = "black", linewidth = 0.9)
+  }
+  p <- p +
+    geom_vline(xintercept = REF_LINES, linetype = "dashed", colour = "grey40", linewidth = 0.35)
+  if (nrow(n_flag_lab) > 0) {
+    p <- p + geom_text(data = n_flag_lab, aes(x = x, y = y, label = y), inherit.aes = FALSE,
+                        vjust = -0.4, size = base_size * 0.22)
+  }
+  p <- p +
+    scale_x_continuous(name = panel_label, breaks = HIST_BRKS, labels = HIST_LBLS,
+                        limits = c(UNDER_POS - BINWIDTH, OVER_POS + BINWIDTH), expand = c(0.02, 0)) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
     labs(y = "number of sites", subtitle = subtitle) +
-    theme_diag()
+    theme_diag(base_size = base_size)
+  list(plot = p, under_sites = under_sites, over_sites = over_sites)
 }
 
 build_fig1 <- function(highlight) {
-  p1 <- make_hist(d |> dplyr::filter(!(site_id %in% excl_hist_bio12)),
-                   "ratio_to_bio12", "ERA5 MAP / WorldClim BIO12", n_total - length(excl_hist_bio12), highlight)
-  p2 <- make_hist(d |> dplyr::filter(!(site_id %in% excl_hist_badm)),
-                   "ratio_to_badm_map", "ERA5 MAP / BADM PI-reported MAP", n_total - length(excl_hist_badm), highlight)
-  p3 <- make_hist(d |> dplyr::filter(!(site_id %in% excl_hist_meas)),
-                   "ratio_to_measured", "ERA5 MAP / tower-measured MAP", n_total - length(excl_hist_meas), highlight)
+  h1 <- make_hist(d |> dplyr::filter(!(site_id %in% excl_hist_bio12)), "ratio_to_bio12",
+                   "ERA5 MAP / WorldClim BIO12", highlight)
+  h2 <- make_hist(d |> dplyr::filter(!(site_id %in% excl_hist_badm)), "ratio_to_badm_map",
+                   "ERA5 MAP / BADM PI-reported MAP", highlight)
+  h3 <- make_hist(d |> dplyr::filter(!(site_id %in% excl_hist_meas)), "ratio_to_measured",
+                   "ERA5 MAP / tower-measured MAP", highlight)
+
   cap <- paste0(
-    "Figure 1. Histograms of the per-site ratio of ERA5-derived mean annual precipitation (MAP) to three ",
-    "independent references, ", n_total, " current-network sites. Panel 1 (ERA5/BIO12): n=",
-    n_total - length(excl_hist_bio12), "; excludes 1 site with era5_map_mm == 0 (CA-TP2). ",
-    "Panel 2 (ERA5/BADM): n=", n_total - length(excl_hist_badm), "; excludes ", length(excl_hist_badm),
-    " sites (144 no BADM value, 5 BADM MAP == 0, 1 era5_map_mm == 0). ",
-    "Panel 3 (ERA5/tower-measured, NEW): n=", n_total - length(excl_hist_meas), "; excludes ", length(excl_hist_meas),
-    " sites (312 with no calendar year where all 12 months have P_F_QC >= 0.9, 1 era5_map_mm == 0; measured_map_mm ",
-    "was never exactly 0 in this network). X-axis is log10(ratio); bin width 0.1 log10 units (~26% per bin); ",
-    "range not clipped, extends to the full observed range in each panel. Dashed reference lines at ratio = 1x, 4x, 8x.",
-    if (highlight) paste0(" Version B: the ", n_cluster, " sites in the 4x/8x cluster are shown in a second ",
-                           "colour; see legend for the membership rule.") else " Version A: all sites, one colour, no grouping."
+    "Figure 1. Histograms of the per-site ratio of ERA5-derived MAP to three independent references, ", n_total,
+    " current-network sites, core x-range fixed at 0.1x-20x (log10(ratio), bin width 0.1 log10 units); points ",
+    "outside the core range are placed in a single black-outlined bin at that end (<0.1x on the left, >20x on the ",
+    "right), not dropped, with the on-plot count shown above each such bin. ",
+    "Panel 1 (ERA5/BIO12): n=", nrow(h1$plot$data), "; <0.1x (n=", length(h1$under_sites), "): ",
+    paste(h1$under_sites, collapse = ", "), "; >20x (n=", length(h1$over_sites), "): ",
+    paste(h1$over_sites, collapse = ", "), ". ",
+    "Panel 2 (ERA5/BADM): n=", nrow(h2$plot$data), "; <0.1x (n=", length(h2$under_sites), "): ",
+    paste(h2$under_sites, collapse = ", "), "; >20x (n=", length(h2$over_sites), "): ",
+    paste(h2$over_sites, collapse = ", "), ". ",
+    "Panel 3 (ERA5/tower-measured): n=", nrow(h3$plot$data), "; <0.1x (n=", length(h3$under_sites), "); >20x (n=",
+    length(h3$over_sites), "): ", paste(h3$over_sites, collapse = ", "), ". ",
+    "Dashed reference lines at ratio = 1x, 4x, 8x.",
+    if (highlight) " Version B: 4x/8x-cluster sites in a second colour; membership rule in the shared legend and .legend.txt."
+    else " Version A: all sites, one colour, no grouping."
   )
-  fig <- gridExtra::arrangeGrob(p1, p2, p3, ncol = 3)
-  list(fig = fig, caption = cap)
+
+  title_txt <- TITLE_TXT
+  if (!highlight) {
+    fig <- (h1$plot | h2$plot | h3$plot) +
+      patchwork::plot_annotation(title = title_txt,
+                                  theme = theme(plot.title = element_text(size = 10, colour = "grey30", hjust = 0)))
+  } else {
+    fig <- (h1$plot | h2$plot | h3$plot) +
+      patchwork::plot_layout(guides = "collect") &
+      SHARED_LEGEND_THEME
+    fig <- fig + patchwork::plot_annotation(title = title_txt, caption = FOOTNOTE("fig1_ratio_histograms_versionB"),
+                                             theme = theme(plot.title = element_text(size = 10, colour = "grey30", hjust = 0),
+                                                            plot.caption = element_text(size = 9, colour = "grey30", hjust = 0)))
+  }
+  list(fig = fig, caption = cap,
+       under_over = list(h1 = h1[c("under_sites","over_sites")], h2 = h2[c("under_sites","over_sites")], h3 = h3[c("under_sites","over_sites")]))
 }
 
 fig1A <- build_fig1(highlight = FALSE)
@@ -359,50 +416,46 @@ fig1B <- build_fig1(highlight = TRUE)
 
 out_fig1A <- file.path(OUTD, "fig1_ratio_histograms_versionA.png")
 out_fig1B <- file.path(OUTD, "fig1_ratio_histograms_versionB.png")
-ggsave(out_fig1A, fig1A$fig, width = 16, height = 5, dpi = 300, bg = "white")
-ggsave(out_fig1B, fig1B$fig, width = 16, height = 5, dpi = 300, bg = "white")
-message("Saved (overwritten): ", out_fig1A)
-message("Saved (overwritten): ", out_fig1B)
+ggsave(out_fig1A, fig1A$fig, width = 10, height = 4, dpi = 300, bg = "white")
+ggsave(out_fig1B, fig1B$fig, width = 10, height = 4.7, dpi = 300, bg = "white")
+write_legend_txt("fig1_ratio_histograms_versionB")
+message("Saved (reformatted): ", out_fig1A)
+message("Saved (reformatted): ", out_fig1B)
 
 # ============================================================================
-# 8. FIGURE 3 (NEW) -- MONTH-MATCHED RATIO HISTOGRAM (single panel)
+# 8. FIGURE 3 (reformatted) -- MONTH-MATCHED RATIO HISTOGRAM (single panel)
 # ============================================================================
 
 build_fig_mm <- function(highlight) {
-  df_sub <- d |> dplyr::filter(!(site_id %in% excl_month_matched)) |>
-    dplyr::mutate(log10_ratio = log10(ratio_to_measured_month_matched))
-  n_panel <- nrow(df_sub)
-  med_months <- median(df_sub$n_matched_months)
-  subtitle <- sprintf("n sites = %d | median matched months per site = %g | bin width = %.2g log10 units (ratio x %.3f per bin)",
-                       n_panel, med_months, BINWIDTH, 10^BINWIDTH)
-  if (!highlight) {
-    p <- ggplot(df_sub, aes(x = log10_ratio)) +
-      geom_histogram(binwidth = BINWIDTH, boundary = 0, fill = COL_ALL, colour = "white", linewidth = 0.15)
-  } else {
-    df_sub <- add_cluster_col(df_sub)
-    p <- ggplot(df_sub, aes(x = log10_ratio, fill = cluster)) +
-      geom_histogram(binwidth = BINWIDTH, boundary = 0, colour = "white", linewidth = 0.15, position = "stack") +
-      scale_fill_manual(values = c("not in 4x/8x cluster" = COL_OTHER, "in 4x/8x cluster" = COL_CLUST),
-                         name = CLUSTER_LEGEND_TITLE)
-  }
-  p <- p +
-    geom_vline(xintercept = REF_LINES, linetype = "dashed", colour = "grey30", linewidth = 0.35) +
-    scale_x_continuous(name = "per-site median of (month's ERA5 P) / (month's measured P), qualifying months only  [log10(ratio) scale]",
-                        breaks = HIST_BRKS, labels = HIST_LBLS) +
-    labs(y = "number of sites", subtitle = subtitle) +
-    theme_diag()
+  df_full <- d |> dplyr::filter(!(site_id %in% excl_month_matched)) |>
+    dplyr::mutate(ratio_to_measured_month_matched = ratio_to_measured_month_matched)
+  med_months <- median(df_full$n_matched_months)
+
+  h <- make_hist(df_full, "ratio_to_measured_month_matched",
+                  "per-site median month-matched ratio (ERA5/measured)", highlight)
+  h$plot <- h$plot +
+    labs(subtitle = paste0(h$plot$labels$subtitle, "  |  median matched months/site = ", med_months),
+         title = TITLE_TXT) +
+    theme(plot.title = element_text(size = 10, colour = "grey30"))
+
   cap <- paste0(
-    "Figure 3 (new). Per-site median of the month-matched ratio (ERA5 P_ERA / tower P_F) across every site-month ",
-    "with P_F_QC >= ", MEASURED_QC_CUTOFF, ", excluding site-months where P_F == 0 (undefined ratio; ", n_zero_pf,
-    " such site-months excluded network-wide, at sites otherwise retained via their remaining qualifying months). ",
-    "No annualisation: uses individual matched months directly, not complete years. n sites = ", n_panel,
-    "; excludes ", length(excl_month_matched), " sites with zero valid matched months. Median matched months per ",
-    "site among those plotted = ", med_months, ". Bin width 0.1 log10 units; range not clipped. Reference lines at ",
-    "ratio = 1x, 4x, 8x shown for comparability with Figure 1.",
-    if (highlight) paste0(" Version B: the ", n_cluster, " sites in the 4x/8x cluster are shown in a second ",
-                           "colour; see legend for the membership rule.") else " Version A: all sites, one colour, no grouping."
+    "Figure 3. Per-site median of the month-matched ratio (ERA5 P_ERA / tower P_F) across every site-month with ",
+    "P_F_QC >= ", MEASURED_QC_CUTOFF, " and P_F != 0 (", n_zero_pf, " site-months with P_F == 0 excluded ",
+    "network-wide; no annualisation, no complete-year requirement). n sites = ", nrow(h$plot$data), "; excludes ",
+    length(excl_month_matched), " sites with zero valid matched months. Median matched months per site among ",
+    "those plotted = ", med_months, ". Core x-range fixed at 0.1x-20x, bin width 0.1 log10 units; points outside ",
+    "it are in a single black-outlined bin at that end: <0.1x (n=", length(h$under_sites), "); >20x (n=",
+    length(h$over_sites), "): ", paste(h$over_sites, collapse = ", "), ". Reference lines at ratio = 1x, 4x, 8x.",
+    if (highlight) " Version B: 4x/8x-cluster sites in a second colour; membership rule in the legend and .legend.txt."
+    else " Version A: all sites, one colour, no grouping."
   )
-  list(fig = p, caption = cap, n_panel = n_panel, med_months = med_months)
+
+  if (highlight) {
+    h$plot <- h$plot + SHARED_LEGEND_THEME +
+      labs(caption = FOOTNOTE("fig3_month_matched_ratio_versionB")) +
+      theme(plot.caption = element_text(size = 9, colour = "grey30", hjust = 0))
+  }
+  list(fig = h$plot, caption = cap, under_sites = h$under_sites, over_sites = h$over_sites, med_months = med_months)
 }
 
 figMM_A <- build_fig_mm(highlight = FALSE)
@@ -411,73 +464,91 @@ figMM_B <- build_fig_mm(highlight = TRUE)
 out_figMM_A <- file.path(OUTD, "fig3_month_matched_ratio_versionA.png")
 out_figMM_B <- file.path(OUTD, "fig3_month_matched_ratio_versionB.png")
 ggsave(out_figMM_A, figMM_A$fig, width = 7, height = 5, dpi = 300, bg = "white")
-ggsave(out_figMM_B, figMM_B$fig, width = 8.5, height = 5, dpi = 300, bg = "white")
-message("Saved (new): ", out_figMM_A)
-message("Saved (new): ", out_figMM_B)
+ggsave(out_figMM_B, figMM_B$fig, width = 8, height = 5.8, dpi = 300, bg = "white")
+write_legend_txt("fig3_month_matched_ratio_versionB")
+message("Saved (reformatted): ", out_figMM_A)
+message("Saved (reformatted): ", out_figMM_B)
 
 # ============================================================================
-# 9. FIGURE 2 (OVERWRITTEN: 3 panels -> 6 panels) -- SCATTER PLOTS
+# 9. FIGURE 2 (reformatted) -- SCATTER PLOTS, one shared axis range
 #    y = the first-named variable, x = the second-named variable, matching
 #    Figure 1's ratio direction (ERA5/reference) where ERA5 is involved.
 # ============================================================================
 
-make_scatter <- function(df_sub, xcol, ycol, xlab, ylab, rho_info, highlight, panel_letter) {
-  rng <- range(c(df_sub[[xcol]], df_sub[[ycol]]), na.rm = TRUE)
-  ann <- sprintf("(%s) n = %d\nSpearman rho = %.3f\np %s", panel_letter, rho_info$n, rho_info$rho, fmt_p(rho_info$p))
+SCATTER_LO <- 10
+SCATTER_HI <- 10000
+clamp_val <- function(x) pmin(pmax(x, SCATTER_LO * 1.08), SCATTER_HI * 0.92)
+
+make_scatter <- function(df_sub, xcol, ycol, xlab, ylab, rho_info, highlight, panel_letter, base_size = 12) {
+  df_sub <- df_sub |>
+    dplyr::mutate(x_raw = .data[[xcol]], y_raw = .data[[ycol]],
+                  x_plot = clamp_val(x_raw), y_plot = clamp_val(y_raw),
+                  offscale = x_raw < SCATTER_LO | x_raw > SCATTER_HI | y_raw < SCATTER_LO | y_raw > SCATTER_HI)
+  off_sites <- df_sub$site_id[df_sub$offscale]
+  ann <- sprintf("(%s) n=%d, rho=%.3f, p%s%s", panel_letter, rho_info$n, rho_info$rho, fmt_p(rho_info$p),
+                 if (length(off_sites) > 0) sprintf("\n%d off-scale (see caption)", length(off_sites)) else "")
+
   if (!highlight) {
-    p <- ggplot(df_sub, aes(x = .data[[xcol]], y = .data[[ycol]])) +
-      geom_point(alpha = 0.55, size = 1.2, colour = COL_ALL)
+    p <- ggplot(df_sub, aes(x = x_plot, y = y_plot, shape = offscale)) +
+      geom_point(alpha = 0.4, size = 1.1, colour = COL_ALL)
   } else {
-    df_sub <- add_cluster_col(df_sub)
-    p <- ggplot(df_sub, aes(x = .data[[xcol]], y = .data[[ycol]], colour = cluster)) +
-      geom_point(alpha = 0.6, size = 1.2) +
-      scale_colour_manual(values = c("not in 4x/8x cluster" = COL_OTHER, "in 4x/8x cluster" = COL_CLUST),
-                           name = CLUSTER_LEGEND_TITLE)
+    df_sub <- add_cluster_col(df_sub) |> dplyr::arrange(cluster)  # non-cluster first, cluster drawn last (on top)
+    p <- ggplot(df_sub, aes(x = x_plot, y = y_plot, shape = offscale, colour = cluster)) +
+      geom_point(alpha = 0.45, size = 1.1) +
+      scale_colour_manual(values = c("not in 4x/8x cluster" = COL_OTHER, "in 4x/8x cluster" = COL_CLUST), name = NULL)
   }
-  p +
+  p <- p +
+    scale_shape_manual(values = c(`FALSE` = 16, `TRUE` = 17), guide = "none") +
     geom_abline(slope = 1, intercept = 0, linetype = "solid", colour = "grey35", linewidth = 0.4) +
     geom_abline(slope = 1, intercept = log10(4),  linetype = "dashed", colour = "grey50", linewidth = 0.3) +
     geom_abline(slope = 1, intercept = -log10(4), linetype = "dashed", colour = "grey50", linewidth = 0.3) +
     geom_abline(slope = 1, intercept = log10(8),  linetype = "dotted", colour = "grey50", linewidth = 0.3) +
     geom_abline(slope = 1, intercept = -log10(8), linetype = "dotted", colour = "grey50", linewidth = 0.3) +
-    scale_x_log10(limits = rng, name = xlab) +
-    scale_y_log10(limits = rng, name = ylab) +
-    annotate("text", x = rng[1] * 1.3, y = rng[2] / 1.15, label = ann, hjust = 0, vjust = 1, size = 2.3, lineheight = 1.05) +
-    theme_diag()
+    scale_x_log10(limits = c(SCATTER_LO, SCATTER_HI), name = xlab, expand = c(0.02, 0)) +
+    scale_y_log10(limits = c(SCATTER_LO, SCATTER_HI), name = ylab, expand = c(0.02, 0)) +
+    annotate("text", x = SCATTER_LO * 1.3, y = SCATTER_HI / 1.4, label = ann, hjust = 0, vjust = 1,
+             size = base_size * 0.28, lineheight = 1.05) +
+    theme_diag(base_size = base_size)
+  list(plot = p, off_sites = off_sites, off_x = df_sub$x_raw[df_sub$offscale], off_y = df_sub$y_raw[df_sub$offscale])
 }
 
 build_fig2 <- function(highlight) {
-  rng <- function(df, c1, c2) round(range(c(df[[c1]], df[[c2]]), na.rm = TRUE), 1)
-  rng_eb <- rng(dat_era5_badm,  "badm_map_mm",     "era5_map_mm")
-  rng_ei <- rng(dat_era5_bio12, "bio12_mm",        "era5_map_mm")
-  rng_em <- rng(dat_era5_meas,  "measured_map_mm", "era5_map_mm")
-  rng_bi <- rng(dat_badm_bio12, "bio12_mm",        "badm_map_mm")
-  rng_bm <- rng(dat_badm_meas,  "measured_map_mm", "badm_map_mm")
-  rng_im <- rng(dat_bio12_meas, "measured_map_mm", "bio12_mm")
+  s1 <- make_scatter(dat_era5_badm,  "badm_map_mm",     "era5_map_mm",     "BADM MAP (mm/yr)",           "ERA5 MAP (mm/yr)",     rho_era5_badm,  highlight, "a")
+  s2 <- make_scatter(dat_era5_bio12, "bio12_mm",        "era5_map_mm",     "WorldClim BIO12 (mm/yr)",    "ERA5 MAP (mm/yr)",     rho_era5_bio12, highlight, "b")
+  s3 <- make_scatter(dat_era5_meas,  "measured_map_mm", "era5_map_mm",     "Tower-measured MAP (mm/yr)", "ERA5 MAP (mm/yr)",     rho_era5_meas,  highlight, "c")
+  s4 <- make_scatter(dat_badm_bio12, "bio12_mm",        "badm_map_mm",     "WorldClim BIO12 (mm/yr)",    "BADM MAP (mm/yr)",     rho_badm_bio12, highlight, "d")
+  s5 <- make_scatter(dat_badm_meas,  "measured_map_mm", "badm_map_mm",     "Tower-measured MAP (mm/yr)", "BADM MAP (mm/yr)",     rho_badm_meas,  highlight, "e")
+  s6 <- make_scatter(dat_bio12_meas, "measured_map_mm", "bio12_mm",        "Tower-measured MAP (mm/yr)", "WorldClim BIO12 (mm/yr)", rho_bio12_meas, highlight, "f")
 
-  p1 <- make_scatter(dat_era5_badm,  "badm_map_mm",     "era5_map_mm",     "BADM MAP (mm/yr)",     "ERA5 MAP (mm/yr)",     rho_era5_badm,  highlight, "a")
-  p2 <- make_scatter(dat_era5_bio12, "bio12_mm",        "era5_map_mm",     "WorldClim BIO12 (mm/yr)", "ERA5 MAP (mm/yr)", rho_era5_bio12, highlight, "b")
-  p3 <- make_scatter(dat_era5_meas,  "measured_map_mm", "era5_map_mm",     "Tower-measured MAP (mm/yr)", "ERA5 MAP (mm/yr)", rho_era5_meas, highlight, "c")
-  p4 <- make_scatter(dat_badm_bio12, "bio12_mm",        "badm_map_mm",     "WorldClim BIO12 (mm/yr)", "BADM MAP (mm/yr)", rho_badm_bio12, highlight, "d")
-  p5 <- make_scatter(dat_badm_meas,  "measured_map_mm", "badm_map_mm",     "Tower-measured MAP (mm/yr)", "BADM MAP (mm/yr)", rho_badm_meas, highlight, "e")
-  p6 <- make_scatter(dat_bio12_meas, "measured_map_mm", "bio12_mm",        "Tower-measured MAP (mm/yr)", "WorldClim BIO12 (mm/yr)", rho_bio12_meas, highlight, "f")
+  fmt_off <- function(s) if (length(s$off_sites) == 0) "none" else
+    paste(sprintf("%s (%.1f, %.1f)", s$off_sites, s$off_x, s$off_y), collapse = "; ")
 
   cap <- paste0(
-    "Figure 2. Pairwise comparison of the four MAP estimates (mm/yr), log-log axes, identical x/y range within ",
-    "each panel (not clipped). Solid line = 1:1; dashed = 4x/0.25x offset; dotted = 8x/0.125x offset. ",
-    "(a) ERA5 vs BADM: n=", rho_era5_badm$n, ", rho=", sprintf("%.3f", rho_era5_badm$rho), ", range [", rng_eb[1], ", ", rng_eb[2], "]. ",
-    "(b) ERA5 vs BIO12: n=", rho_era5_bio12$n, ", rho=", sprintf("%.3f", rho_era5_bio12$rho), ", range [", rng_ei[1], ", ", rng_ei[2], "]. ",
-    "(c) ERA5 vs tower-measured (new): n=", rho_era5_meas$n, ", rho=", sprintf("%.3f", rho_era5_meas$rho), ", range [", rng_em[1], ", ", rng_em[2], "]. ",
-    "(d) BADM vs BIO12: n=", rho_badm_bio12$n, ", rho=", sprintf("%.3f", rho_badm_bio12$rho), ", range [", rng_bi[1], ", ", rng_bi[2], "]. ",
-    "(e) BADM vs tower-measured (new): n=", rho_badm_meas$n, ", rho=", sprintf("%.3f", rho_badm_meas$rho), ", range [", rng_bm[1], ", ", rng_bm[2], "]. ",
-    "(f) BIO12 vs tower-measured (new): n=", rho_bio12_meas$n, ", rho=", sprintf("%.3f", rho_bio12_meas$rho), ", range [", rng_im[1], ", ", rng_im[2], "]. ",
-    "Exclusions per panel listed in report.md / table_panel_exclusions.csv.",
-    if (highlight) paste0(" Version B: the ", n_cluster, " sites in the 4x/8x cluster are shown in a second ",
-                           "colour; see legend for the membership rule.") else " Version A: all sites, one colour, no grouping."
+    "Figure 2. Pairwise comparison of the four MAP estimates (mm/yr), log-log axes, one common x/y range shared ",
+    "across all six panels (", SCATTER_LO, " to ", SCATTER_HI, " mm/yr, chosen from the bulk of the pooled data, ",
+    "not the extremes). Solid line = 1:1; dashed = 4x/0.25x offset; dotted = 8x/0.125x offset. Points with either ",
+    "coordinate outside this range are shown clamped to the edge as a triangle (not dropped) and named here as ",
+    "(x, y) in their true, unclamped mm/yr values. ",
+    "(a) ERA5 vs BADM: n=", rho_era5_badm$n, ", rho=", sprintf("%.3f", rho_era5_badm$rho), "; off-scale: ", fmt_off(s1), ". ",
+    "(b) ERA5 vs BIO12: n=", rho_era5_bio12$n, ", rho=", sprintf("%.3f", rho_era5_bio12$rho), "; off-scale: ", fmt_off(s2), ". ",
+    "(c) ERA5 vs tower-measured: n=", rho_era5_meas$n, ", rho=", sprintf("%.3f", rho_era5_meas$rho), "; off-scale: ", fmt_off(s3), ". ",
+    "(d) BADM vs BIO12: n=", rho_badm_bio12$n, ", rho=", sprintf("%.3f", rho_badm_bio12$rho), "; off-scale: ", fmt_off(s4), ". ",
+    "(e) BADM vs tower-measured: n=", rho_badm_meas$n, ", rho=", sprintf("%.3f", rho_badm_meas$rho), "; off-scale: ", fmt_off(s5), ". ",
+    "(f) BIO12 vs tower-measured: n=", rho_bio12_meas$n, ", rho=", sprintf("%.3f", rho_bio12_meas$rho), "; off-scale: ", fmt_off(s6), ".",
+    if (highlight) " Version B: 4x/8x-cluster sites in a second colour, drawn on top; membership rule in the shared legend and .legend.txt."
+    else " Version A: all sites, one colour, no grouping."
   )
-  fig <- gridExtra::arrangeGrob(p1, p2, p3, p4, p5, p6, ncol = 3, nrow = 2)
-  list(fig = fig, caption = cap,
-       rng_eb = rng_eb, rng_ei = rng_ei, rng_em = rng_em, rng_bi = rng_bi, rng_bm = rng_bm, rng_im = rng_im)
+
+  if (!highlight) {
+    fig <- (s1$plot | s2$plot | s3$plot) / (s4$plot | s5$plot | s6$plot)
+  } else {
+    fig <- ((s1$plot | s2$plot | s3$plot) / (s4$plot | s5$plot | s6$plot)) +
+      patchwork::plot_layout(guides = "collect") &
+      SHARED_LEGEND_THEME
+    fig <- fig + patchwork::plot_annotation(caption = FOOTNOTE("fig2_scatter_versionB"),
+                                             theme = theme(plot.caption = element_text(size = 9, colour = "grey30", hjust = 0)))
+  }
+  list(fig = fig, caption = cap)
 }
 
 fig2A <- build_fig2(highlight = FALSE)
@@ -485,13 +556,16 @@ fig2B <- build_fig2(highlight = TRUE)
 
 out_fig2A <- file.path(OUTD, "fig2_scatter_versionA.png")
 out_fig2B <- file.path(OUTD, "fig2_scatter_versionB.png")
-ggsave(out_fig2A, fig2A$fig, width = 15, height = 10.5, dpi = 300, bg = "white")
-ggsave(out_fig2B, fig2B$fig, width = 15, height = 10.5, dpi = 300, bg = "white")
-message("Saved (overwritten): ", out_fig2A)
-message("Saved (overwritten): ", out_fig2B)
+ggsave(out_fig2A, fig2A$fig, width = 10, height = 9, dpi = 300, bg = "white")
+ggsave(out_fig2B, fig2B$fig, width = 10, height = 9.8, dpi = 300, bg = "white")
+write_legend_txt("fig2_scatter_versionB")
+message("Saved (reformatted): ", out_fig2A)
+message("Saved (reformatted): ", out_fig2B)
 
 # ============================================================================
-# 10. COMPANION CSV (OVERWRITTEN)
+# 10. COMPANION CSV (unchanged from prior version -- not touched by this
+#     reformat; re-written verbatim so the file's mtime/git diff make clear
+#     no values changed)
 # ============================================================================
 
 companion <- d |>
@@ -507,44 +581,41 @@ write_output_metadata(
   out_csv,
   input_sources = c(b1_path, "data/duckdb/fluxnet.duckdb (monthly table, read-only)"),
   notes = paste0(
-    "One row per current-network site (n=781), replaces the 3-reference version of this file. era5_map_mm/",
-    "bio12_mm/badm_map_mm/ratio_to_bio12/ratio_to_badm_map/cluster_membership are unchanged from the prior ",
-    "version (ultimately from table_b1_factor_estimates.csv, v3). measured_map_mm/n_complete_measured_years/",
-    "ratio_to_measured are NEW: mean of sum(P_F*days_in_month) over calendar years where all 12 months have ",
-    "P_F_QC >= 0.9 (DuckDB monthly FLUXMET table), no annualisation of partial years, no calendar-year-window ",
-    "restriction. n_matched_months/ratio_to_measured_month_matched are NEW: per-site median of P_ERA/P_F over ",
-    "every site-month with P_F_QC >= 0.9 and P_F != 0 (no annualisation, no complete-year requirement). Missing ",
-    "BADM (144 sites) and no-complete-measured-year (312 sites) are carried as NA, not dropped. Plotting-only ",
-    "diagnostic; no new verdict, correction, or reclassification of any site."
+    "One row per current-network site (n=781). Values unchanged by the legibility reformat of the figures in ",
+    "this script (era5_map_mm/bio12_mm/badm_map_mm/ratio_to_bio12/ratio_to_badm_map/cluster_membership from ",
+    "table_b1_factor_estimates.csv, v3; measured_map_mm/n_complete_measured_years/ratio_to_measured/",
+    "n_matched_months/ratio_to_measured_month_matched computed from data/duckdb/fluxnet.duckdb as described in ",
+    "the script header). Missing BADM (144 sites) and no-complete-measured-year (312 sites) are carried as NA, ",
+    "not dropped. Plotting-only diagnostic; no new verdict, correction, or reclassification of any site."
   )
 )
-message("Saved (overwritten): ", out_csv)
+message("Saved: ", out_csv)
 
 # ============================================================================
 # 11. METADATA FOR FIGURES
 # ============================================================================
 
 write_output_metadata(out_fig1A, input_sources = c(b1_path, "data/duckdb/fluxnet.duckdb (monthly table, read-only)"),
-  notes = paste0("Version A (no grouping) of Figure 1, overwritten to add a 3rd panel (ERA5/tower-measured). ", fig1A$caption))
+  notes = paste0("Version A (no grouping) of Figure 1, reformatted for legibility (fixed 0.1x-20x core range with marked overflow bins; no other value changed). ", fig1A$caption))
 write_output_metadata(out_fig1B, input_sources = c(b1_path, "data/duckdb/fluxnet.duckdb (monthly table, read-only)"),
-  notes = paste0("Version B (4x/8x cluster highlighted) of Figure 1, overwritten to add a 3rd panel. ", fig1B$caption))
+  notes = paste0("Version B (4x/8x cluster highlighted) of Figure 1, reformatted for legibility: membership-rule text moved off the panels into fig1_ratio_histograms_versionB.legend.txt and a one-line footnote, one shared collected legend below all panels. ", fig1B$caption))
 write_output_metadata(out_fig2A, input_sources = c(b1_path, "data/duckdb/fluxnet.duckdb (monthly table, read-only)"),
-  notes = paste0("Version A (no grouping) of Figure 2, overwritten to go from 3 to 6 panels. ", fig2A$caption))
+  notes = paste0("Version A (no grouping) of Figure 2, reformatted for legibility (one shared 10-10000 mm/yr axis range across all 6 panels, off-scale points marked, smaller/more transparent points; no other value changed). ", fig2A$caption))
 write_output_metadata(out_fig2B, input_sources = c(b1_path, "data/duckdb/fluxnet.duckdb (monthly table, read-only)"),
-  notes = paste0("Version B (4x/8x cluster highlighted) of Figure 2, overwritten to go from 3 to 6 panels. ", fig2B$caption))
+  notes = paste0("Version B (4x/8x cluster highlighted, drawn on top) of Figure 2, reformatted for legibility: membership-rule text moved off the panels into fig2_scatter_versionB.legend.txt and a one-line footnote, one shared collected legend below all panels. ", fig2B$caption))
 write_output_metadata(out_figMM_A, input_sources = "data/duckdb/fluxnet.duckdb (monthly table, read-only)",
-  notes = paste0("Version A (no grouping) of Figure 3 -- NEW figure, did not exist in the prior version. ", figMM_A$caption))
+  notes = paste0("Version A (no grouping) of Figure 3, reformatted for legibility (fixed 0.1x-20x core range with marked overflow bins; no value changed). ", figMM_A$caption))
 write_output_metadata(out_figMM_B, input_sources = "data/duckdb/fluxnet.duckdb (monthly table, read-only)",
-  notes = paste0("Version B (4x/8x cluster highlighted) of Figure 3 -- NEW figure, did not exist in the prior version. ", figMM_B$caption))
+  notes = paste0("Version B (4x/8x cluster highlighted) of Figure 3, reformatted for legibility: membership-rule text moved into fig3_month_matched_ratio_versionB.legend.txt and a one-line footnote. ", figMM_B$caption))
 
 # ============================================================================
-# 12. EXCLUSION SUMMARY (OVERWRITTEN)
+# 12. EXCLUSION SUMMARY (unchanged from prior version)
 # ============================================================================
 
 out_excl <- file.path(OUTD, "table_panel_exclusions.csv")
 readr::write_csv(reasons, out_excl)
 write_output_metadata(out_excl, input_sources = c(b1_path, "data/duckdb/fluxnet.duckdb (monthly table, read-only)"),
-  notes = "Sites excluded from one or more panels of Figure 1, Figure 2, or Figure 3 because a value used on a log axis is exactly zero or missing, or (Figure 3 only) because no valid matched month exists, and the specific reason. Overwrites the prior (3-reference) version of this file. Not an exclusion from the companion CSV, which carries all 781 sites.")
-message("Saved (overwritten): ", out_excl)
+  notes = "Sites excluded from one or more panels of Figure 1, Figure 2, or Figure 3 because a value used on a log axis is exactly zero or missing, or (Figure 3 only) because no valid matched month exists, and the specific reason. Unchanged by the legibility reformat of the figures. Not an exclusion from the companion CSV, which carries all 781 sites. Overflow/off-scale sites for the reformatted axis ranges are separate from this table and are listed instead in each figure's own .meta.json caption and in report.md.")
+message("Saved: ", out_excl)
 
 message("\n=== era5_reference_plots.R complete ===")

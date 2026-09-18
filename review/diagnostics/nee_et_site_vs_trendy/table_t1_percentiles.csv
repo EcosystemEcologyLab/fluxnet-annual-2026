@@ -1,0 +1,21 @@
+axis,quantity,pct,value,unit
+nee,measured_abs_NEP,0.05,13.540825,gC m-2 yr-1
+nee,measured_abs_NEP,0.25,63.428675,gC m-2 yr-1
+nee,measured_abs_NEP,0.5,174.54649999999998,gC m-2 yr-1
+nee,measured_abs_NEP,0.75,366.65375,gC m-2 yr-1
+nee,measured_abs_NEP,0.95,753.608375,gC m-2 yr-1
+nee,trendy_abs_NBP,0.05,19.590971469879147,gC m-2 yr-1
+nee,trendy_abs_NBP,0.25,36.011253356933594,gC m-2 yr-1
+nee,trendy_abs_NBP,0.5,46.45514678955078,gC m-2 yr-1
+nee,trendy_abs_NBP,0.75,58.46554183959961,gC m-2 yr-1
+nee,trendy_abs_NBP,0.95,81.9787712097168,gC m-2 yr-1
+et,measured_ET,0.05,189.96966764081634,mm yr-1
+et,measured_ET,0.25,373.18117863673467,mm yr-1
+et,measured_ET,0.5,509.87485513469386,mm yr-1
+et,measured_ET,0.75,670.2380196979592,mm yr-1
+et,measured_ET,0.95,1028.0693240816327,mm yr-1
+et,trendy_ET,0.05,216.98092651367185,mm yr-1
+et,trendy_ET,0.25,370.6555633544922,mm yr-1
+et,trendy_ET,0.5,480.21014404296875,mm yr-1
+et,trendy_ET,0.75,656.2736511230469,mm yr-1
+et,trendy_ET,0.95,987.5606689453124,mm yr-1

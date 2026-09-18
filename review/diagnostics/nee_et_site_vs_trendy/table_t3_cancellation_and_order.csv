@@ -1,0 +1,8 @@
+axis,test,value
+nee,cancellation_global_areaweighted_mean,23990125010.381073
+nee,cancellation_global_unweighted_median,4.002705102763544
+nee,order_modelfirst,35.36250184148096
+nee,order_ensfirst,19.572988628713567
+et,cancellation_global,0.9971389061615852
+et,order_modelfirst,457.1518834395744
+et,order_ensfirst,457.1891461270805

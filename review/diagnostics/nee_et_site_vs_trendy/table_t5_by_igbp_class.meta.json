@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T20:26:44Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "review/diagnostics/nee_et_site_vs_trendy/table_paired_measured_vs_trendy.csv",
+    "data/snapshots/badm_management_coverage.csv"
+  ],
+  "notes": "Per-IGBP-class median(measured-TRENDY) difference, NEE and ET, with BADM management-flag match counts. This is a proxy per the task instruction -- separating harvest/fire/land-use terms would require TRENDY variables (fFire, fHarvest, fLUC) not downloaded in this repo; only nbp and evapotrans were downloaded (confirmed against scripts/figure_representativeness_trendy_compute.R and data/external/trendy/ contents)."
+}

@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-09-17T22:38:25Z",
+  "pipeline_version": "248fc3a",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v2/table_t1_mm_yy_consistency.csv",
+    "review/diagnostics/era5_precip_units/table_d1_per_site.csv",
+    "data/processed/badm.rds",
+    "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif"
+  ],
+  "notes": "Per-site ERA5-derived MAP vs. WorldClim BIO12, tower P_F (all months), tower P_F restricted to P_F_QC=0 fully-measured months only (annualized as mean(P_F over qualifying months)*12), and BADM PI-reported MAP where present. n_months_qc0 / frac_filled quantify data support and gap-fill reliance per site."
+}

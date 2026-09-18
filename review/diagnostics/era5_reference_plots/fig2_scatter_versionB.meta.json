@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T16:08:01Z",
+  "pipeline_version": "3cee85a",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+  ],
+  "notes": "Version B (4x/8x cluster highlighted) of Figure 2. Figure 2. Pairwise comparison of the three mean annual precipitation (MAP) estimates, log-log axes, identical x/y range within each panel (not clipped). Solid line = 1:1; dashed lines = 4x and 0.25x offset; dotted lines = 8x and 0.125x offset. (a) ERA5 vs BADM: n=631, Spearman rho=0.578, axis range [1, 658044.6] mm/yr; excludes 150 sites (BADM missing or ==0, or era5_map_mm==0). (b) ERA5 vs BIO12: n=780, Spearman rho=0.592, axis range [1, 658044.6] mm/yr; excludes 1 site (era5_map_mm==0: CA-TP2). (c) BADM vs BIO12: n=632, Spearman rho=0.933, axis range [18, 4500] mm/yr; excludes 149 sites (BADM missing or ==0). Version B: the 123 sites in the 4x/8x cluster are shown in a second colour; see legend for the membership rule."
+}

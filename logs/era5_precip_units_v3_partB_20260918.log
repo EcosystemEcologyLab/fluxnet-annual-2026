@@ -1,0 +1,934 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== era5_precip_units_v3_partB.R ===
+
+================ B1: empirical factor estimate, all sites ================
+
+-- Clustering of factor_estimate (median of ratio-to-BADM, ratio-to-BIO12), all 781 sites --
+
+        1         4         8 elsewhere 
+      323       113        10       335 
+
+-- Same, restricted to sites with BOTH references available (n_refs==2, most reliable estimate) --
+
+        1         4         8 elsewhere 
+      262       103        10       262 
+Saved: review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv
+
+================ B2: corrected MAP vs. both references ================
+
+Data-driven 'normal scatter' band (5th-95th pctile of ratio_to_bio12 among near-1 sites): [ 0.83 , 1.15 ]
+
+-- B2: sites flagged for correction (n= 123 ) --
+    site_id product_source_network factor_estimate factor_applied   map_era5
+1    CN-Huz                    CNF        8.855448              8  1534.9444
+2    CA-CF1                    AMF        8.412238              8  3649.1881
+3    NO-And                    EUF        8.271617              8  9318.3308
+4    US-A10                    AMF        8.249287              8   914.8649
+5    US-HVs                    AMF        7.356372              8  1515.1632
+6    US-A03                    AMF        7.025233              8   904.2990
+7    CN-Dsh                    CNF        6.910262              8  2499.1318
+8    US-NGB                    AMF        6.871671              8   914.8649
+9    AR-TF2                    AMF        6.860981              8  3849.4613
+10   CN-Jng                    CNF        6.831316              8  2983.7576
+11   ES-Mzn                    EUF        4.589437              4  2128.8713
+12   CN-Sb2                    FLX        4.563933              4  2080.9931
+13   CA-SMC                    AMF        4.508239              4  1656.6342
+14   DE-Zrk                    EUF        4.508065              4  2655.0587
+15   ES-Srn                    EUF        4.497837              4  2009.6957
+16   CN-Dda                    CNF        4.439749              4  1158.7746
+17   DE-Hdn                    EUF        4.408906              4  2464.5783
+18   JP-MBF                    JPF        4.408127              4  5175.1409
+19   RU-NeB                    JPF        4.388006              4  1069.2169
+20   RU-NeF                    JPF        4.388006              4  1069.2169
+21   JP-Tak                    JPF        4.375023              4  8803.8885
+22   US-Rws                    AMF        4.364827              4  1305.9505
+23   RU-NeC                    JPF        4.363244              4  1069.2169
+24   US-Tw1                    AMF        4.361447              4  1717.7817
+25   US-Tw2                    AMF        4.361447              4  1717.7817
+26   US-Tw5                    AMF        4.361447              4  1717.7817
+27   DE-Spw                    EUF        4.346908              4  2414.6586
+28   IT-Arz                    EUF        4.282384              4  3927.6580
+29   DK-Eng                    EUF        4.280491              4  2593.9774
+30   DE-Akm                    EUF        4.272718              4  2403.4021
+31   CN-HeD                    CNF        4.267299              4   151.2187
+32   RU-Ege                    JPF        4.246261              4  1349.8304
+33   RU-SkP                    JPF        4.242907              4  1069.2127
+34   JP-Nkm                    JPF        4.200680              4  8195.5261
+35   JP-Tmk                    JPF        4.163111              4  4656.8277
+36   JP-Om2                    JPF        4.156507              4  5337.6410
+37   FI-Nsv                    EUF        4.148689              4  2571.0565
+38   KH-Kmp                    JPF        4.148526              4  6637.1252
+39   JP-Mse                    JPF        4.146184              4  5187.7739
+40   RU-Sk2                    JPF        4.141026              4  1018.6925
+41   US-DFK                    AMF        4.133299              4  3277.5184
+42   EE-Stg                    EUF        4.123977              4  2750.2968
+43   JP-Shn                    JPF        4.120918              4  6020.6254
+44   CN-Zha                    CNF        4.106221              4   631.1701
+45   FI-Jok                    EUF        4.088424              4  2532.4077
+46   JP-Kzw                    JPF        4.087523              4  5583.8523
+47   FI-Ruk                    EUF        4.084216              4  2184.7618
+48   US-IAB                    AMF        4.082294              4  3589.8597
+49   US-IAC                    AMF        4.077326              4  3589.8597
+50   US-IAM                    AMF        4.077326              4  3589.8597
+51   SE-Trb                    EUF        4.056798              4  2565.8849
+52   US-UMd                    AMF        4.046774              4  3229.1988
+53   US-UTJ                    AMF        4.039846              4   824.7116
+54   DE-Hzd                   ICOS        4.036969              4  3285.0615
+55   JP-Toc                    JPF        4.018843              4  4656.8318
+56   US-Me7                    AMF        3.996390              4  2553.5445
+57   AU-Fog                   TERN        3.991278              4  5851.2130
+58   US-Ne3                    AMF        3.947953              4  3120.0040
+59   US-CS2                    AMF        3.943362              4  3231.0547
+60   US-Ne2                    AMF        3.929908              4  3120.0040
+61   CN-HeM                    CNF        3.927109              4   152.7545
+62   CN-Sdq                    CNF        3.927109              4   152.7545
+63   US-Ne1                    AMF        3.926205              4  3120.0040
+64   US-MBP                    AMF        3.905344              4  2870.6262
+65   JP-Hc3                    JPF        3.903512              4  4683.1069
+66   JP-Hc2                    JPF        3.898900              4  4683.1069
+67   JP-Sb1                    JPF        3.892828              4  4275.8231
+68   JP-Sb2                    JPF        3.892828              4  4275.8231
+69   FI-Si2                    EUF        3.884195              4  2563.5688
+70   JP-Yms                    JPF        3.879171              4  4913.3870
+71   US-PFk                    AMF        3.857054              4  3162.7421
+72   ES-TzM                    EUF        3.850617              4  1359.1764
+73   US-PFn                    AMF        3.840611              4  3162.7421
+74   US-PFp                    AMF        3.840611              4  3162.7421
+75   US-DS1                    AMF        3.839707              4  1578.2313
+76   US-PFL                    AMF        3.838285              4  3162.7421
+77   US-PFf                    AMF        3.838285              4  3162.7421
+78   US-PFm                    AMF        3.838285              4  3162.7421
+79   US-PFh                    AMF        3.833649              4  3162.7421
+80   US-PFq                    AMF        3.833649              4  3162.7421
+81   US-PFr                    AMF        3.833649              4  3162.7421
+82   US-PFt                    AMF        3.833649              4  3162.7421
+83   US-PFg                    AMF        3.831340              4  3162.7421
+84   US-PFb                    AMF        3.829036              4  3162.7421
+85   US-PFc                    AMF        3.829036              4  3162.7421
+86   US-PFd                    AMF        3.829036              4  3162.7421
+87   US-PFi                    AMF        3.817600              4  3162.7421
+88   US-PFj                    AMF        3.817600              4  3162.7421
+89   CA-Cbo                    AMF        3.808156              4  3332.7780
+90   DE-Etn                    EUF        3.804831              4  4270.3989
+91   PE-QFR                    AMF        3.804747              4 10291.8400
+92   US-Syv                    AMF        3.800691              4  3158.2600
+93   EE-Rng                    EUF        3.796176              4   697.6557
+94   JP-Tkb                    JPF        3.795526              4  5411.8658
+95   JP-Fmt                    JPF        3.766591              4  5939.7142
+96   JP-Tmd                    JPF        3.755467              4  4656.8277
+97   US-DS2                    AMF        3.753509              4  1542.8014
+98   US-UiA                    AMF        3.716246              4  3837.7169
+99   US-UiB                    AMF        3.716246              4  3837.7169
+100  US-UiC                    AMF        3.716246              4  3837.7169
+101  US-UiD                    AMF        3.716246              4  3837.7169
+102  US-Rls                    AMF        3.702154              4  1305.9505
+103  US-NR3                    AMF        3.694371              4  2853.9561
+104  US-BRG                    AMF        3.672022              4  4220.8321
+105  IE-Cra                   ICOS        3.660628              4  3474.4631
+106  ES-MtB                    EUF        3.652136              4  1910.7018
+107  ES-Dnn                    EUF        3.633218              4  1910.7018
+108  US-UTW                    AMF        3.630885              4   822.7638
+109  US-WT1                    AMF        3.625833              4  1763.8166
+110  ES-MtN                    EUF        3.625756              4  1910.7018
+111  ES-FtD                    EUF        3.611006              4  1910.7018
+112  IE-Gwr                    EUF        3.598657              4  3274.0240
+113  BR-SM1                    AMF        3.571914              4  5637.8381
+114  US-HBK                    AMF        3.545988              4  4481.9504
+115  KR-Hnm                    KOF        3.504754              4  4536.4814
+116  US-PAS                    AMF        3.480871              4  4443.1348
+117  JP-BBY                    JPF        3.449560              4  4008.1987
+118  KR-TwB                    KOF        3.443407              4  4529.7860
+119  KR-TwC                    KOF        3.443407              4  4529.7860
+120  KR-Nj1                    KOF        3.442518              4  4503.4888
+121  KR-Nj2                    KOF        3.442518              4  4503.4888
+122  AR-CCa                    AMF        3.422768              4  3554.8036
+123  US-PLo                    AMF        3.407664              4  4001.6261
+    map_era5_corrected bio12_mm corrected_ratio_bio12 badm_map_mm
+1            191.86805      260             0.7379540      130.00
+2            456.14851      417             1.0938813      452.00
+3           1164.79135     1202             0.9690444     1060.00
+4            114.35811      107             1.0687674      115.10
+5            189.39540      196             0.9663030      217.00
+6            113.03737      146             0.7742286      115.10
+7            312.39148      345             0.9054825      380.00
+8            114.35811      109             1.0491570      171.00
+9            481.18266      596             0.8073535      530.00
+10           372.96970      481             0.7754048      400.00
+11           532.21782      424             1.2552307      512.00
+12           520.24828      460             1.1309745      452.00
+13           414.15856      349             1.1867007      388.00
+14           663.76468      594             1.1174490      584.00
+15           502.42392      421             1.1934060      476.00
+16           289.69364      261             1.1099373          NA
+17           616.14458      559             1.1022264          NA
+18          1293.78523     1174             1.1020317          NA
+19           267.30422      253             1.0565384      235.00
+20           267.30422      253             1.0565384      235.00
+21          2200.97212     1804             1.2200511     2275.00
+22           326.48762      309             1.0565942      290.00
+23           267.30422      256             1.0441571      235.00
+24           429.44542      370             1.1606633      421.00
+25           429.44542      370             1.1606633      421.00
+26           429.44542      370             1.1606633      421.00
+27           603.66464      553             1.0916178      558.00
+28           981.91451      935             1.0501759      900.00
+29           648.49434      606             1.0701227          NA
+30           600.85052      563             1.0672300      562.00
+31            37.80467       34             1.1119020       37.00
+32           337.45759      324             1.0415358      312.00
+33           267.30317      252             1.0607269          NA
+34          2048.88153     1951             1.0501699          NA
+35          1164.20692     1206             0.9653457     1043.00
+36          1334.41025     1372             0.9726022     1206.90
+37           642.76412      607             1.0589195      633.00
+38          1659.28131     1714             0.9680754     1500.00
+39          1296.94348     1307             0.9923056     1200.00
+40           254.67312      246             1.0352566          NA
+41           819.37959      799             1.0255064      787.00
+42           687.57421      659             1.0433600      675.00
+43          1505.15634     1340             1.1232510     1606.00
+44           157.79252      188             0.8393219      130.00
+45           633.10193      612             1.0344803      627.00
+46          1395.96307     1589             0.8785167     1198.00
+47           546.19045      518             1.0544217      553.00
+48           897.46493      849             1.0570847      912.00
+49           897.46493      851             1.0546004      912.00
+50           897.46493      851             1.0546004      912.00
+51           641.47123      630             1.0182083      635.00
+52           807.29971      793             1.0180324      803.00
+53           206.17790      212             0.9725373      196.85
+54           821.26537      759             1.0820361      877.00
+55          1164.20796     1189             0.9791488     1130.00
+56           638.38612      821             0.7775714      523.00
+57          1462.80324     1466             0.9978194          NA
+58           780.00100      797             0.9786713      783.68
+59           807.76367      809             0.9984718      830.00
+60           780.00100      799             0.9762215      788.89
+61            38.18862       41             0.9314297       37.00
+62            38.18862       41             0.9314297       37.00
+63           780.00100      799             0.9762215      790.37
+64           717.65654      695             1.0325993      780.00
+65          1170.77672     1423             0.8227524     1037.00
+66          1170.77672     1427             0.8204462     1037.00
+67          1068.95577     1125             0.9501829     1073.00
+68          1068.95577     1125             0.9501829     1073.00
+69           640.89220      660             0.9710488          NA
+70          1228.34675     1502             0.8178074     1095.00
+71           790.68552      817             0.9677913      823.00
+72           339.79409      403             0.8431615      314.00
+73           790.68552      824             0.9595698      823.00
+74           790.68552      824             0.9595698      823.00
+75           394.55783      392             1.0065251      432.00
+76           790.68552      825             0.9584067      823.00
+77           790.68552      825             0.9584067      823.00
+78           790.68552      825             0.9584067      823.00
+79           790.68552      827             0.9560889      823.00
+80           790.68552      827             0.9560889      823.00
+81           790.68552      827             0.9560889      823.00
+82           790.68552      827             0.9560889      823.00
+83           790.68552      828             0.9549342      823.00
+84           790.68552      829             0.9537823      823.00
+85           790.68552      829             0.9537823      823.00
+86           790.68552      829             0.9537823      823.00
+87           790.68552      834             0.9480642      823.00
+88           790.68552      834             0.9480642      823.00
+89           833.19449      874             0.9533118      876.34
+90          1067.59972     1062             1.0052728     1190.00
+91          2572.96001     2705             0.9511867          NA
+92           789.56499      836             0.9444557      826.00
+93           174.41392      647             0.2695733      107.10
+94          1352.96646     1353             0.9999752     1507.00
+95          1484.92855     1516             0.9795043     1643.00
+96          1164.20692     1206             0.9653457     1276.00
+97           385.70034      392             0.9839294      432.00
+98           959.42922     1015             0.9452505     1051.00
+99           959.42922     1015             0.9452505     1051.00
+100          959.42922     1015             0.9452505     1051.00
+101          959.42922     1015             0.9452505     1051.00
+102          326.48762      375             0.8706336      333.00
+103          713.48902      686             1.0400715      884.00
+104         1055.20802     1103             0.9566709     1200.00
+105          868.61578     1026             0.8466041      883.00
+106          477.67546      500             0.9553509      548.60
+107          477.67546      505             0.9458920      548.60
+108          205.69096      228             0.9021533      225.22
+109          440.95416      491             0.8980736      482.00
+110          477.67546      507             0.9421607      548.60
+111          477.67546      511             0.9347856      548.60
+112          818.50600      969             0.8446914      857.40
+113         1409.45952     1473             0.9568632     1700.00
+114         1120.48760     1152             0.9726455     1400.00
+115         1134.12034     1307             0.8677279     1282.00
+116         1110.78371     1285             0.8644231     1268.00
+117         1002.04967     1154             0.8683273     1170.00
+118         1132.44651     1318             0.8592159     1313.00
+119         1132.44651     1318             0.8592159     1313.00
+120         1125.87219     1306             0.8620767     1310.40
+121         1125.87219     1306             0.8620767     1310.40
+122          888.70090     1018             0.8729871     1060.00
+123         1000.40653     1098             0.9111171     1262.00
+    corrected_ratio_badm within_normal_both
+1              1.4759081              FALSE
+2              1.0091781               TRUE
+3              1.0988598               TRUE
+4              0.9935544               TRUE
+5              0.8727898               TRUE
+6              0.9820797              FALSE
+7              0.8220828              FALSE
+8              0.6687609              FALSE
+9              0.9078918              FALSE
+10             0.9324242              FALSE
+11             1.0394879              FALSE
+12             1.1509918              FALSE
+13             1.0674190              FALSE
+14             1.1365834               TRUE
+15             1.0555124              FALSE
+16                    NA               TRUE
+17                    NA               TRUE
+18                    NA               TRUE
+19             1.1374648               TRUE
+20             1.1374648               TRUE
+21             0.9674603              FALSE
+22             1.1258194               TRUE
+23             1.1374648               TRUE
+24             1.0200604              FALSE
+25             1.0200604              FALSE
+26             1.0200604              FALSE
+27             1.0818363               TRUE
+28             1.0910161               TRUE
+29                    NA               TRUE
+30             1.0691290               TRUE
+31             1.0217477               TRUE
+32             1.0815948               TRUE
+33                    NA               TRUE
+34                    NA               TRUE
+35             1.1162099               TRUE
+36             1.1056510               TRUE
+37             1.0154251               TRUE
+38             1.1061875               TRUE
+39             1.0807862               TRUE
+40                    NA               TRUE
+41             1.0411431               TRUE
+42             1.0186285               TRUE
+43             0.9372082               TRUE
+44             1.2137886              FALSE
+45             1.0097320               TRUE
+46             1.1652446              FALSE
+47             0.9876862               TRUE
+48             0.9840624               TRUE
+49             0.9840624               TRUE
+50             0.9840624               TRUE
+51             1.0101909               TRUE
+52             1.0053546               TRUE
+53             1.0473858               TRUE
+54             0.9364485               TRUE
+55             1.0302725               TRUE
+56             1.2206236              FALSE
+57                    NA               TRUE
+58             0.9953055               TRUE
+59             0.9732092               TRUE
+60             0.9887323               TRUE
+61             1.0321248               TRUE
+62             1.0321248               TRUE
+63             0.9868808               TRUE
+64             0.9200725               TRUE
+65             1.1290036              FALSE
+66             1.1290036              FALSE
+67             0.9962309               TRUE
+68             0.9962309               TRUE
+69                    NA               TRUE
+70             1.1217779              FALSE
+71             0.9607357               TRUE
+72             1.0821468               TRUE
+73             0.9607357               TRUE
+74             0.9607357               TRUE
+75             0.9133283               TRUE
+76             0.9607357               TRUE
+77             0.9607357               TRUE
+78             0.9607357               TRUE
+79             0.9607357               TRUE
+80             0.9607357               TRUE
+81             0.9607357               TRUE
+82             0.9607357               TRUE
+83             0.9607357               TRUE
+84             0.9607357               TRUE
+85             0.9607357               TRUE
+86             0.9607357               TRUE
+87             0.9607357               TRUE
+88             0.9607357               TRUE
+89             0.9507662               TRUE
+90             0.8971426               TRUE
+91                    NA               TRUE
+92             0.9558898               TRUE
+93             1.6285146              FALSE
+94             0.8977880               TRUE
+95             0.9037910               TRUE
+96             0.9123879               TRUE
+97             0.8928249               TRUE
+98             0.9128727               TRUE
+99             0.9128727               TRUE
+100            0.9128727               TRUE
+101            0.9128727               TRUE
+102            0.9804433               TRUE
+103            0.8071143              FALSE
+104            0.8793400               TRUE
+105            0.9837098               TRUE
+106            0.8707172               TRUE
+107            0.8707172               TRUE
+108            0.9132890               TRUE
+109            0.9148427               TRUE
+110            0.8707172               TRUE
+111            0.8707172               TRUE
+112            0.9546373               TRUE
+113            0.8290938              FALSE
+114            0.8003483              FALSE
+115            0.8846493               TRUE
+116            0.8760124               TRUE
+117            0.8564527               TRUE
+118            0.8624878               TRUE
+119            0.8624878               TRUE
+120            0.8591821               TRUE
+121            0.8591821               TRUE
+122            0.8383971               TRUE
+123            0.7927152              FALSE
+
+Sites where correction brings the value within normal scatter of BOTH references: 98 / 123 
+Sites where correction does NOT achieve this (closer to one reference only, or neither): 25 / 123 
+Saved: review/diagnostics/era5_precip_units_v3/table_b2_corrected_vs_both_refs.csv
+
+================ B3: KG reclassification counterfactual ================
+Sites to reclassify under the mock correction: 123
+
+-- B3: before/after classification for all 123 corrected sites --
+    site_id koppen_class_before koppen_twoletter_before koppen_main_before
+1    AR-CCa                 Cfa                      Cf                  C
+2    AR-TF2                  ET                      ET                  E
+3    AU-Fog                <NA>                    <NA>               <NA>
+4    BR-SM1                <NA>                    <NA>               <NA>
+5    CA-CF1                 Dfc                      Df                  D
+6    CA-Cbo                 Dfb                      Df                  D
+7    CA-SMC                 Dfc                      Df                  D
+8    CN-Dda                 Dwb                      Dw                  D
+9    CN-Dsh                  ET                      ET                  E
+10   CN-HeD                 BWk                      BW                  B
+11   CN-HeM                 BWk                      BW                  B
+12   CN-Huz                 Dwb                      Dw                  D
+13   CN-Jng                  ET                      ET                  E
+14   CN-Sb2                 Dwc                      Dw                  D
+15   CN-Sdq                 BWk                      BW                  B
+16   CN-Zha                 Dwb                      Dw                  D
+17   DE-Akm                 Cfb                      Cf                  C
+18   DE-Etn                 Cfb                      Cf                  C
+19   DE-Hdn                 Cfb                      Cf                  C
+20   DE-Spw                 Cfb                      Cf                  C
+21   DE-Zrk                 Cfb                      Cf                  C
+22   EE-Rng                 Dfb                      Df                  D
+23   EE-Stg                 Dfb                      Df                  D
+24   ES-Dnn                 Csa                      Cs                  C
+25   ES-FtD                 Csa                      Cs                  C
+26   ES-MtB                 Csa                      Cs                  C
+27   ES-MtN                 Csa                      Cs                  C
+28   ES-Mzn                 Cfb                      Cf                  C
+29   ES-Srn                 Cfa                      Cf                  C
+30   ES-TzM                 Csa                      Cs                  C
+31   FI-Jok                 Dfc                      Df                  D
+32   FI-Nsv                 Dfc                      Df                  D
+33   FI-Ruk                 Dfc                      Df                  D
+34   IE-Cra                 Cfb                      Cf                  C
+35   IE-Gwr                 Cfb                      Cf                  C
+36   IT-Arz                 Cfa                      Cf                  C
+37   JP-BBY                 Dfb                      Df                  D
+38   JP-Fmt                <NA>                    <NA>               <NA>
+39   JP-Hc2                 Cfa                      Cf                  C
+40   JP-Hc3                 Cfa                      Cf                  C
+41   JP-Kzw                <NA>                    <NA>               <NA>
+42   JP-MBF                <NA>                    <NA>               <NA>
+43   JP-Mse                <NA>                    <NA>               <NA>
+44   JP-Sb1                 Dfb                      Df                  D
+45   JP-Sb2                 Dfb                      Df                  D
+46   JP-Shn                <NA>                    <NA>               <NA>
+47   JP-Tak                <NA>                    <NA>               <NA>
+48   JP-Tkb                <NA>                    <NA>               <NA>
+49   JP-Tmd                 Dfb                      Df                  D
+50   JP-Tmk                 Dfb                      Df                  D
+51   JP-Toc                 Dfb                      Df                  D
+52   JP-Yms                <NA>                    <NA>               <NA>
+53   KH-Kmp                <NA>                    <NA>               <NA>
+54   KR-Hnm                 Cfa                      Cf                  C
+55   KR-Nj1                 Cfa                      Cf                  C
+56   KR-Nj2                 Cfa                      Cf                  C
+57   KR-TwB                 Dwa                      Dw                  D
+58   KR-TwC                 Dwa                      Dw                  D
+59   NO-And                <NA>                    <NA>               <NA>
+60   PE-QFR                <NA>                    <NA>               <NA>
+61   RU-Ege                 Dfc                      Df                  D
+62   RU-NeB                 Dfd                      Df                  D
+63   RU-NeC                 Dfc                      Df                  D
+64   RU-NeF                 Dfc                      Df                  D
+65   RU-Sk2                 Dfc                      Df                  D
+66   RU-SkP                 Dfc                      Df                  D
+67   SE-Trb                 Dfc                      Df                  D
+68   US-A03                  ET                      ET                  E
+69   US-A10                  ET                      ET                  E
+70   US-BRG                 Dfa                      Df                  D
+71   US-CS2                 Dfb                      Df                  D
+72   US-DFK                 Dfb                      Df                  D
+73   US-DS1                 Csb                      Cs                  C
+74   US-DS2                 Csb                      Cs                  C
+75   US-HBK                 Dfb                      Df                  D
+76   US-HVs                 Dfc                      Df                  D
+77   US-IAB                 Dfa                      Df                  D
+78   US-IAC                 Dfb                      Df                  D
+79   US-IAM                 Dfa                      Df                  D
+80   US-MBP                 Dfb                      Df                  D
+81   US-Me7                 Dsb                      Ds                  D
+82   US-NGB                  ET                      ET                  E
+83   US-NR3                  ET                      ET                  E
+84   US-Ne1                 Dfa                      Df                  D
+85   US-Ne2                 Dfa                      Df                  D
+86   US-Ne3                 Dfa                      Df                  D
+87   US-PAS                 Cfa                      Cf                  C
+88   US-PFL                 Dfb                      Df                  D
+89   US-PFb                 Dfb                      Df                  D
+90   US-PFc                 Dfb                      Df                  D
+91   US-PFd                 Dfb                      Df                  D
+92   US-PFf                 Dfb                      Df                  D
+93   US-PFg                 Dfb                      Df                  D
+94   US-PFh                 Dfb                      Df                  D
+95   US-PFi                 Dfb                      Df                  D
+96   US-PFj                 Dfb                      Df                  D
+97   US-PFk                 Dfb                      Df                  D
+98   US-PFm                 Dfb                      Df                  D
+99   US-PFn                 Dfb                      Df                  D
+100  US-PFp                 Dfb                      Df                  D
+101  US-PFq                 Dfb                      Df                  D
+102  US-PFr                 Dfb                      Df                  D
+103  US-PFt                 Dfb                      Df                  D
+104  US-PLo                 Dfb                      Df                  D
+105  US-Rls                 Dsb                      Ds                  D
+106  US-Rws                 Dsb                      Ds                  D
+107  US-Syv                 Dfb                      Df                  D
+108  US-Tw1                 Csb                      Cs                  C
+109  US-Tw2                 Csb                      Cs                  C
+110  US-Tw5                 Csb                      Cs                  C
+111  US-UMd                 Dfb                      Df                  D
+112  US-UTJ                 Dsa                      Ds                  D
+113  US-UTW                 Dsa                      Ds                  D
+114  US-UiA                 Dfa                      Df                  D
+115  US-UiB                 Dfa                      Df                  D
+116  US-UiC                 Dfa                      Df                  D
+117  US-UiD                 Dfa                      Df                  D
+118  US-WT1                 Cfa                      Cf                  C
+119  DE-Hzd                 Cfb                      Cf                  C
+120  JP-Om2                <NA>                    <NA>               <NA>
+121  JP-Nkm                <NA>                    <NA>               <NA>
+122  FI-Si2                 Dfb                      Df                  D
+123  DK-Eng                 Cfb                      Cf                  C
+    koppen_class_after koppen_twoletter_after koppen_main_after
+1                  Cfa                     Cf                 C
+2                   ET                     ET                 E
+3                   Aw                     Aw                 A
+4                  Cfa                     Cf                 C
+5                  Dfc                     Df                 D
+6                  Dfb                     Df                 D
+7                  Dfc                     Df                 D
+8                  BSk                     BS                 B
+9                   ET                     ET                 E
+10                 BWk                     BW                 B
+11                 BWk                     BW                 B
+12                 BWk                     BW                 B
+13                  ET                     ET                 E
+14                 Dwc                     Dw                 D
+15                 BWk                     BW                 B
+16                 BWk                     BW                 B
+17                 Cfb                     Cf                 C
+18                 Cfb                     Cf                 C
+19                 Cfb                     Cf                 C
+20                 Cfb                     Cf                 C
+21                 Cfb                     Cf                 C
+22                 BWk                     BW                 B
+23                 Dfb                     Df                 D
+24                 Csa                     Cs                 C
+25                 Csa                     Cs                 C
+26                 Csa                     Cs                 C
+27                 Csa                     Cs                 C
+28                 BSk                     BS                 B
+29                 BSk                     BS                 B
+30                 BSk                     BS                 B
+31                 Dfc                     Df                 D
+32                 Dfc                     Df                 D
+33                 Dfc                     Df                 D
+34                 Cfb                     Cf                 C
+35                 Cfb                     Cf                 C
+36                 Cfa                     Cf                 C
+37                 Dfb                     Df                 D
+38                 Cfa                     Cf                 C
+39                 Cfa                     Cf                 C
+40                 Cfa                     Cf                 C
+41                 Dfb                     Df                 D
+42                 Dfb                     Df                 D
+43                 Cfa                     Cf                 C
+44                 Dfb                     Df                 D
+45                 Dfb                     Df                 D
+46                 Dfa                     Df                 D
+47                 Dfb                     Df                 D
+48                 Cfa                     Cf                 C
+49                 Dfb                     Df                 D
+50                 Dfb                     Df                 D
+51                 Dfb                     Df                 D
+52                 Cfa                     Cf                 C
+53                  Aw                     Aw                 A
+54                 Cfa                     Cf                 C
+55                 Cfa                     Cf                 C
+56                 Cfa                     Cf                 C
+57                 Dwa                     Dw                 D
+58                 Dwa                     Dw                 D
+59                 Dfc                     Df                 D
+60                  Af                     Af                 A
+61                 Dfc                     Df                 D
+62                 Dfd                     Df                 D
+63                 Dfc                     Df                 D
+64                 Dfc                     Df                 D
+65                 Dfc                     Df                 D
+66                 Dfc                     Df                 D
+67                 Dfc                     Df                 D
+68                  ET                     ET                 E
+69                  ET                     ET                 E
+70                 Dfa                     Df                 D
+71                 Dfb                     Df                 D
+72                 Dfb                     Df                 D
+73                 Csb                     Cs                 C
+74                 Csb                     Cs                 C
+75                 Dfb                     Df                 D
+76                 Dfc                     Df                 D
+77                 Dfa                     Df                 D
+78                 Dfb                     Df                 D
+79                 Dfa                     Df                 D
+80                 Dfb                     Df                 D
+81                 Dsb                     Ds                 D
+82                  ET                     ET                 E
+83                  ET                     ET                 E
+84                 Dfa                     Df                 D
+85                 Dfa                     Df                 D
+86                 Dfa                     Df                 D
+87                 Cfa                     Cf                 C
+88                 Dfb                     Df                 D
+89                 Dfb                     Df                 D
+90                 Dfb                     Df                 D
+91                 Dfb                     Df                 D
+92                 Dfb                     Df                 D
+93                 Dfb                     Df                 D
+94                 Dfb                     Df                 D
+95                 Dfb                     Df                 D
+96                 Dfb                     Df                 D
+97                 Dfb                     Df                 D
+98                 Dfb                     Df                 D
+99                 Dfb                     Df                 D
+100                Dfb                     Df                 D
+101                Dfb                     Df                 D
+102                Dfb                     Df                 D
+103                Dfb                     Df                 D
+104                Dfb                     Df                 D
+105                BSk                     BS                 B
+106                BSk                     BS                 B
+107                Dfb                     Df                 D
+108                Csb                     Cs                 C
+109                Csb                     Cs                 C
+110                Csb                     Cs                 C
+111                Dfb                     Df                 D
+112                BWk                     BW                 B
+113                BWk                     BW                 B
+114                Dfa                     Df                 D
+115                Dfa                     Df                 D
+116                Dfa                     Df                 D
+117                Dfa                     Df                 D
+118                BSk                     BS                 B
+119                Cfb                     Cf                 C
+120                Cfa                     Cf                 C
+121                Dfc                     Df                 D
+122                Dfb                     Df                 D
+123                Cfb                     Cf                 C
+    was_excluded_before recovered class_changed
+1                 FALSE     FALSE         FALSE
+2                 FALSE     FALSE         FALSE
+3                  TRUE      TRUE         FALSE
+4                  TRUE      TRUE         FALSE
+5                 FALSE     FALSE         FALSE
+6                 FALSE     FALSE         FALSE
+7                 FALSE     FALSE         FALSE
+8                 FALSE     FALSE          TRUE
+9                 FALSE     FALSE         FALSE
+10                FALSE     FALSE         FALSE
+11                FALSE     FALSE         FALSE
+12                FALSE     FALSE          TRUE
+13                FALSE     FALSE         FALSE
+14                FALSE     FALSE         FALSE
+15                FALSE     FALSE         FALSE
+16                FALSE     FALSE          TRUE
+17                FALSE     FALSE         FALSE
+18                FALSE     FALSE         FALSE
+19                FALSE     FALSE         FALSE
+20                FALSE     FALSE         FALSE
+21                FALSE     FALSE         FALSE
+22                FALSE     FALSE          TRUE
+23                FALSE     FALSE         FALSE
+24                FALSE     FALSE         FALSE
+25                FALSE     FALSE         FALSE
+26                FALSE     FALSE         FALSE
+27                FALSE     FALSE         FALSE
+28                FALSE     FALSE          TRUE
+29                FALSE     FALSE          TRUE
+30                FALSE     FALSE          TRUE
+31                FALSE     FALSE         FALSE
+32                FALSE     FALSE         FALSE
+33                FALSE     FALSE         FALSE
+34                FALSE     FALSE         FALSE
+35                FALSE     FALSE         FALSE
+36                FALSE     FALSE         FALSE
+37                FALSE     FALSE         FALSE
+38                 TRUE      TRUE         FALSE
+39                FALSE     FALSE         FALSE
+40                FALSE     FALSE         FALSE
+41                 TRUE      TRUE         FALSE
+42                 TRUE      TRUE         FALSE
+43                 TRUE      TRUE         FALSE
+44                FALSE     FALSE         FALSE
+45                FALSE     FALSE         FALSE
+46                 TRUE      TRUE         FALSE
+47                 TRUE      TRUE         FALSE
+48                 TRUE      TRUE         FALSE
+49                FALSE     FALSE         FALSE
+50                FALSE     FALSE         FALSE
+51                FALSE     FALSE         FALSE
+52                 TRUE      TRUE         FALSE
+53                 TRUE      TRUE         FALSE
+54                FALSE     FALSE         FALSE
+55                FALSE     FALSE         FALSE
+56                FALSE     FALSE         FALSE
+57                FALSE     FALSE         FALSE
+58                FALSE     FALSE         FALSE
+59                 TRUE      TRUE         FALSE
+60                 TRUE      TRUE         FALSE
+61                FALSE     FALSE         FALSE
+62                FALSE     FALSE         FALSE
+63                FALSE     FALSE         FALSE
+64                FALSE     FALSE         FALSE
+65                FALSE     FALSE         FALSE
+66                FALSE     FALSE         FALSE
+67                FALSE     FALSE         FALSE
+68                FALSE     FALSE         FALSE
+69                FALSE     FALSE         FALSE
+70                FALSE     FALSE         FALSE
+71                FALSE     FALSE         FALSE
+72                FALSE     FALSE         FALSE
+73                FALSE     FALSE         FALSE
+74                FALSE     FALSE         FALSE
+75                FALSE     FALSE         FALSE
+76                FALSE     FALSE         FALSE
+77                FALSE     FALSE         FALSE
+78                FALSE     FALSE         FALSE
+79                FALSE     FALSE         FALSE
+80                FALSE     FALSE         FALSE
+81                FALSE     FALSE         FALSE
+82                FALSE     FALSE         FALSE
+83                FALSE     FALSE         FALSE
+84                FALSE     FALSE         FALSE
+85                FALSE     FALSE         FALSE
+86                FALSE     FALSE         FALSE
+87                FALSE     FALSE         FALSE
+88                FALSE     FALSE         FALSE
+89                FALSE     FALSE         FALSE
+90                FALSE     FALSE         FALSE
+91                FALSE     FALSE         FALSE
+92                FALSE     FALSE         FALSE
+93                FALSE     FALSE         FALSE
+94                FALSE     FALSE         FALSE
+95                FALSE     FALSE         FALSE
+96                FALSE     FALSE         FALSE
+97                FALSE     FALSE         FALSE
+98                FALSE     FALSE         FALSE
+99                FALSE     FALSE         FALSE
+100               FALSE     FALSE         FALSE
+101               FALSE     FALSE         FALSE
+102               FALSE     FALSE         FALSE
+103               FALSE     FALSE         FALSE
+104               FALSE     FALSE         FALSE
+105               FALSE     FALSE          TRUE
+106               FALSE     FALSE          TRUE
+107               FALSE     FALSE         FALSE
+108               FALSE     FALSE         FALSE
+109               FALSE     FALSE         FALSE
+110               FALSE     FALSE         FALSE
+111               FALSE     FALSE         FALSE
+112               FALSE     FALSE          TRUE
+113               FALSE     FALSE          TRUE
+114               FALSE     FALSE         FALSE
+115               FALSE     FALSE         FALSE
+116               FALSE     FALSE         FALSE
+117               FALSE     FALSE         FALSE
+118               FALSE     FALSE          TRUE
+119               FALSE     FALSE         FALSE
+120                TRUE      TRUE         FALSE
+121                TRUE      TRUE         FALSE
+122               FALSE     FALSE         FALSE
+123               FALSE     FALSE         FALSE
+
+Recovered (were unclassified, now classified): 15 
+Class changed (were already classified, class flips under correction): 12 
+Still unclassified after correction: 0 
+Saved: review/diagnostics/era5_precip_units_v3/table_b3_reclassification.csv
+
+-- Network fraction / Jaccard, before vs. after mock correction --
+two-letter: J_before=0.4198  J_after=0.4243  delta=+0.0044
+5-class:    J_before=0.4560  J_after=0.4702  delta=+0.0142
+Saved: review/diagnostics/era5_precip_units_v3/table_b3_jaccard_impact.csv
+
+================ B4: precipitation-only check (TA_ERA vs MAT/BIO1) ================
+
+-- B4: TA_ERA (as MAT) vs. BIO1 and BADM MAT, corrected + confirmed-anomaly sites --
+    site_id    mat_era5      bio1_c badm_mat_c    diff_bio1    diff_badm
+1    AR-CCa  16.5337528  15.9108334      16.10  0.622919419  0.433752778
+2    AR-TF2   5.1612472   3.1710000       5.50  1.990247218 -0.338752778
+3    AU-Fog  26.0285944  27.0359993         NA -1.007404854           NA
+4    BR-SM1  19.1112083  19.7883339      17.60 -0.677125559  1.511208333
+5    CA-CF1  -7.9891194  -6.6770000      -6.50 -1.312119399 -1.489119444
+6    CA-Cbo   7.6991000   6.4555001       6.66  1.243599874  1.039100000
+7    CA-SMC  -3.7418667  -4.7321668      -2.80  0.990300100 -0.941866667
+8    CN-Dda   4.2183333   4.5349998         NA -0.316666514           NA
+9    CN-Dsh  -3.8148278  -3.5808334      -2.80 -0.233994343 -1.014827778
+10   CN-HeD   9.6567917   8.9526663       8.30  0.704125384  1.356791667
+11   CN-HeM  10.1639944   8.8230000       8.30  1.340994490  1.863994444
+12   CN-Huz   8.8525861   5.6054997       7.30  3.247086367  1.552586111
+13   CN-Jng  -3.4540306  -3.2333333      -2.80 -0.220697206 -0.654030556
+14   CN-Sb2  -0.5146167   0.3476665      -1.20 -0.862283198  0.685383333
+15   CN-Sdq  10.4453361   8.8128338       8.30  1.632502325  2.145336111
+16   CN-Zha   8.9353028   7.1123333       7.30  1.822969480  1.635302778
+17   DE-Akm   9.2961778   8.4306669       9.70  0.865510854 -0.403822222
+18   DE-Etn  10.0069833   9.5415001       8.30  0.465483242  1.706983333
+19   DE-Hdn   9.2726583   8.3785000         NA  0.894158349           NA
+20   DE-Hzd   9.6178806   8.2410002       7.60  1.376880380  2.017880556
+21   DE-Spw  10.6092833   9.0823336       8.70  1.526949769  1.909283333
+22   DE-Zrk   9.0095278   8.3310003       8.70  0.678527450  0.309527778
+23   DK-Eng   8.1952444   8.1794996         NA  0.015744818           NA
+24   EE-Rng   5.7262167   5.2385001       6.80  0.487716548 -1.073783333
+25   EE-Stg   7.1861583   5.4491668       6.30  1.736991559  0.886158333
+26   ES-Dnn  17.5288444  17.8208332      18.40 -0.291988762 -0.871155556
+27   ES-FtD  23.2147306  17.9629993      18.40  5.251731212  4.814730556
+28   ES-MtB  19.0441278  17.8594704      18.40  1.184657410  0.644127778
+29   ES-MtN  21.3074583  17.8583336      18.40  3.449124746  2.907458333
+30   ES-Mzn  13.0303333  11.3213329      11.40  1.709000402  1.630333333
+31   ES-Srn  13.2658028  11.2121668      11.80  2.053635992  1.465802778
+32   ES-TzM  14.8343528  14.2718334      13.70  0.562519358  1.134352778
+33   FI-Jok   4.6692778   4.1528335       4.60  0.516444316  0.069277778
+34   FI-Nsv   3.1810111   2.5061665       3.60  0.674844653 -0.418988889
+35   FI-Ruk   2.9193056   1.9723334       3.40  0.946972124 -0.480694444
+36   FI-Si2   4.6888639   3.1916666         NA  1.497197286           NA
+37   IE-Cra   9.5873639   9.5348330       9.60  0.052530934 -0.012636111
+38   IE-Gwr  11.1007444  10.3501663       9.90  0.750578124  1.200744444
+39   IT-Arz  13.8009972  12.3253336      12.30  1.475663627  1.500997222
+40   JP-BBY   6.7230083   7.1840000       7.20 -0.460991682 -0.476991667
+41   JP-Fmt  14.4096333  14.6494999      14.70 -0.239866560 -0.290366667
+42   JP-Hc2  13.9294111  15.0083332      16.20 -1.078922095 -2.270588889
+43   JP-Hc3  15.6989694  15.0232639      16.20  0.675705513 -0.501030556
+44   JP-Kzw   6.9500861   7.2571669       7.90 -0.307080751 -0.949913889
+45   JP-MBF   3.9011861   4.0209999         NA -0.119813797           NA
+46   JP-Mse  13.7977944  14.1783333      13.70 -0.380538838  0.097794444
+47   JP-Nkm  -0.4741833   4.6538334         NA -5.128016723           NA
+48   JP-Om2  16.0493417  16.3783321      15.60 -0.328990471  0.449341667
+49   JP-Sb1   6.5544139   6.0820003       6.10  0.472413633  0.454413889
+50   JP-Sb2   5.3347083   6.0820003       6.10 -0.747291922 -0.765291667
+51   JP-Shn  11.1266778  11.0209999      10.70  0.105677869  0.426677778
+52   JP-Tak   6.6052056   7.1308331       6.70 -0.525627593 -0.094794444
+53   JP-Tkb  12.8910667  13.0378332      12.90 -0.146766547 -0.008933333
+54   JP-Tmd   6.4500861   6.3874998       8.10  0.062586302 -1.649913889
+55   JP-Tmk   7.1682806   6.3874998       6.20  0.780780746  0.968280556
+56   JP-Toc   7.2981306   6.4670000       7.00  0.831130548  0.298130556
+57   JP-Yms  14.8950583  14.4848337      14.70  0.410224616  0.195058333
+58   KH-Kmp  26.7126806  26.5284996      26.80  0.184180952 -0.087319444
+59   KR-Hnm  13.9421000  13.8316669      13.50  0.110433054  0.442100000
+60   KR-Nj1  13.9306472  13.3824997      13.60  0.548147527  0.330647222
+61   KR-Nj2  13.9000278  13.3824997      13.60  0.517528083  0.300027778
+62   KR-TwB  11.8003194  10.4473333      11.40  1.352986109  0.400319444
+63   KR-TwC  11.1855639  10.4473333      11.40  0.738230553 -0.214436111
+64   NO-And   4.1866944   3.7373106       3.60  0.449383796  0.586694444
+65   PE-QFR  25.5461194  26.1676674         NA -0.621547944           NA
+66   RU-Ege  -6.7928056  -9.1128330      -8.30  2.320027468  1.507194444
+67   RU-NeB -10.5500667 -10.4063339      -8.00 -0.143732743 -2.550066667
+68   RU-NeC  -9.0780417 -10.4145002      -8.00  1.336458570 -1.078041667
+69   RU-NeF  -7.6001222 -10.4063339      -8.00  2.806211701  0.399877778
+70   RU-Sk2  -8.4281139 -10.1366673         NA  1.708553363           NA
+71   RU-SkP  -5.6611333 -10.2073336         NA  4.546200231           NA
+72   SE-Trb   2.7544583   1.9298333       3.00  0.824625040 -0.245541667
+73   US-A03  -9.6062556 -11.6391306     -11.20  2.032875037  1.593744444
+74   US-A10  -9.9036583 -11.9722223     -11.20  2.068563995  1.296341667
+75   US-BRG  11.8748361  11.5168333      11.80  0.358002806  0.074836111
+76   US-CS2   7.1420806   6.7234998       7.00  0.418580781  0.142080556
+77   US-DFK   7.6870028   7.3208332       7.65  0.366169572  0.037002778
+78   US-DS1  15.0020972  15.4759998      16.00 -0.473902610 -0.997902778
+79   US-DS2  15.0671000  15.4759998      16.00 -0.408899832 -0.932900000
+80   US-HBK   6.3309556   5.3246665       6.00  1.006289055  0.330955556
+81   US-HVs  -8.8393556 -10.0593338     -10.29  1.219978246  1.450644444
+82   US-IAB   8.5862528   8.9423332      10.60 -0.356080444 -2.013747222
+83   US-IAC   7.2163417   8.9728336      10.60 -1.756491967 -3.383658333
+84   US-IAM   8.7859167   8.9728336      10.60 -0.186916967 -1.814083333
+85   US-MBP   3.7945139   3.5939999       3.40  0.200514026  0.394513889
+86   US-Me7   7.2056500   6.4988337       6.28  0.706816344  0.925650000
+87   US-NGB -10.8147889 -11.9903336     -11.27  1.175544668  0.455211111
+88   US-NR3  -1.1204306  -0.3843333      -2.20 -0.736097273  1.079569444
+89   US-Ne1  10.2716556  10.2748337      10.07 -0.003178124  0.201655556
+90   US-Ne2  10.2244278  10.2748337      10.08 -0.050405901  0.144427778
+91   US-Ne3  10.4304222  10.1888332      10.11  0.241588986  0.320422222
+92   US-PAS  21.3657028  22.4165001      22.30 -1.050797314 -0.934297222
+93   US-PFL   5.4557833   4.4379997       4.33  1.017783608  1.125783333
+94   US-PFb   5.9588083   4.3813334       4.33  1.577474982  1.628808333
+95   US-PFc   5.0382444   4.3813334       4.33  0.656911093  0.708244444
+96   US-PFd   4.1477861   4.3813334       4.33 -0.233547240 -0.182213889
+97   US-PFf   4.5818417   4.4379997       4.33  0.143841941  0.251841667
+98   US-PFg   5.5038861   4.3369999       4.33  1.166886218  1.173886111
+99   US-PFh   5.6572778   4.3639998       4.33  1.293277934  1.327277778
+100  US-PFi   5.5457722   4.3063331       4.33  1.239439157  1.215772222
+101  US-PFj   5.4715222   4.3063331       4.33  1.165189157  1.141522222
+102  US-PFk   5.4893028   4.5113335       4.33  0.977969312  1.159302778
+103  US-PFm   5.6579500   4.4379997       4.33  1.219950275  1.327950000
+104  US-PFn   5.3567361   4.3936667       4.33  0.963069367  1.026736111
+105  US-PFp   5.0065556   4.3936667       4.33  0.612888811  0.676555556
+106  US-PFq   5.6080056   4.3639998       4.33  1.244005712  1.278005556
+107  US-PFr   3.7365889   4.3639998       4.33 -0.627410955 -0.593411111
+108  US-PFt   5.4648750   4.3639998       4.33  1.100875156  1.134875000
+109  US-PLo   9.1460167   9.1616669       8.70 -0.015650203  0.446016667
+110  US-Rls   8.1660944   7.1531668       8.40  1.012927674 -0.233905556
+111  US-Rws   9.3402722   8.4563332       8.90  0.883939062  0.440272222
+112  US-Syv   4.4334806   3.7579999       3.81  0.675480659  0.623480556
+113  US-Tw1  14.6403389  15.3471670      15.50 -0.706828126 -0.859661111
+114  US-Tw2  15.3798444  15.3471670      15.50  0.032677429 -0.120155556
+115  US-Tw5  14.5196528  15.3471670      15.50 -0.827514237 -0.980347222
+116  US-UMd   6.9697722   6.2028332       5.83  0.766939047  1.139772222
+117  US-UTJ  12.3220722  12.3793335      12.60 -0.057261274 -0.277927778
+118  US-UTW   8.2894250   9.1969995       9.60 -0.907574550 -1.310575000
+119  US-UiA  11.2921556  11.0155001      10.90  0.276655487  0.392155556
+120  US-UiB  11.3850917  11.0155001      10.90  0.369591598  0.485091667
+121  US-UiC  11.6804444  11.0155001      10.90  0.664944376  0.780444444
+122  US-UiD  10.9354861  11.0155001      10.90 -0.080013958  0.035486111
+123  US-WT1  14.1809889  14.1936665      14.40 -0.012677569 -0.219011111
+124  IT-MBo   5.0056639   6.3053336       5.50 -1.299669725 -0.494336111
+125  US-HB4  19.7342944  18.1283340      18.30  1.605960399  1.434294444
+
+Mean |diff_bio1| = 0.9436406 C | Mean |diff_badm| = 0.9122552 C
+(For comparison, the precipitation ratios at these same sites are 2.6x-460x -- a multi-hundred-percent
+ discrepancy. A temperature discrepancy of a few tenths to ~2C, typical of any reanalysis-vs-station comparison,
+ is not remotely comparable in relative terms -- consistent with the error being precipitation-specific.)
+Saved: review/diagnostics/era5_precip_units_v3/table_b4_temperature_check.csv
+
+=== era5_precip_units_v3_partB.R complete ===

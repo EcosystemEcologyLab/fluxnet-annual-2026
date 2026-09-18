@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:59:34Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly table, read-only)"
+  ],
+  "notes": "Per-site, per-dataset non-null column counts for P_F/P_ERA/TA_F/TA_ERA in the ingested monthly DuckDB table, for the 5 flagged + 3 control sites, to check for cross-dataset column collision at ingestion."
+}

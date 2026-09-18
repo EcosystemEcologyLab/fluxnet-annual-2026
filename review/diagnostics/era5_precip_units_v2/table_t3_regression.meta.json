@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:38:25Z",
+  "pipeline_version": "248fc3a",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v2/table_t2_ratios.csv"
+  ],
+  "notes": "OLS regression of log(ratio_to_bio12) on tower-P_F gap-fill fraction (frac_filled), fit network-wide and separately within/outside product_source_network==JPF, to distinguish a fill-driven batch effect from a geographic/hub mixture effect."
+}

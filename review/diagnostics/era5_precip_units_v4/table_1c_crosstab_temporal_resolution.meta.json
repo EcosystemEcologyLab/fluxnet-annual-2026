@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "data/processed/badm.rds (PRODUCT_TIME_RESOLUTION)"
+  ],
+  "notes": "Contingency table of native temporal resolution (HH/HR, from BADM PRODUCT_TIME_RESOLUTION; NA where no BADM record exists -- 22/781 sites network-wide), clustered vs. near-1x control sites. Not derivable from file_inventory.rds or the snapshot CSV -- see script header comment."
+}

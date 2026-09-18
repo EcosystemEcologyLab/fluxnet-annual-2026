@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v4/table_3a_badm_bio12_ratio.csv",
+    "data/duckdb/fluxnet.duckdb (monthly, dataset='FLUXMET')"
+  ],
+  "notes": "Sites with genuinely-measured tower precipitation (the gauge) AND both BADM MAP and WorldClim BIO12: which reference sits closer to the gauge. Tests whether BADM behaves like an independent measurement or a WorldClim lookup."
+}

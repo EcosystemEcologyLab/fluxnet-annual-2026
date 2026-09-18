@@ -1,0 +1,164 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== era5_precip_units_v2.R ===
+Excluded sites (from v1): 26
+
+================ T1: MM-vs-YY internal consistency ================
+
+-- MM-vs-YY consistency: site-years tested = 2955 --
+Ratio (official YY / computed-from-MM) summary:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.9947  1.0000  1.0000  1.0000  1.0000  1.0068 
+
+Sites where ratio deviates from 1.0 by more than 1%:
+[1] site_id    mean_ratio
+<0 rows> (or 0-length row.names)
+
+Status summary (files not found / no overlap / etc.):
+
+ok 
+66 
+Saved: review/diagnostics/era5_precip_units_v2/table_t1_mm_yy_consistency.csv
+
+================ T2: ratios (P_F_QC=0 only), BIO12, BADM MAP ================
+BADM MAP field: 637 sites with a PI-reported value
+Saved: review/diagnostics/era5_precip_units_v2/table_t2_ratios.csv
+
+-- T2: excluded sites, qualifying (P_F_QC=0) month counts --
+   site_id n_months_qc0 too_few_qc0_months ratio_to_bio12 ratio_to_pf_allmonths
+1   US-HB4           NA               TRUE     487.440426           326.3931904
+2   IT-MBo            8               TRUE      59.337545             0.8816729
+3   CA-CF2           28              FALSE      11.903797             0.9650171
+4   NO-And           55              FALSE       7.752355             1.0843086
+5   JP-Tak          276              FALSE       4.880204             0.9967002
+6   DE-SfS          132              FALSE       4.710183             1.0263177
+7   JP-Shn           84              FALSE       4.493004             0.9764068
+8   JP-MBF           96              FALSE       4.408127             1.0229982
+9   JP-Nkm           36              FALSE       4.200680             0.8823887
+10  JP-Tkb           24              FALSE       3.999901             1.0007592
+11  AU-Fog           36              FALSE       3.991278             0.9176606
+12  JP-Mse           96              FALSE       3.969223             0.9731077
+13  JP-KaP           12              FALSE       3.954718             1.3097321
+14  JP-Fmt           84              FALSE       3.918017             0.9924645
+15  JP-Om2           NA               TRUE       3.890409                    NA
+16  KH-Kmp           48              FALSE       3.872302             0.9754127
+17  BR-SM1           24              FALSE       3.827453             0.9751265
+18  PE-QFR           36              FALSE       3.804747             1.0141853
+19  JP-Api          252              FALSE       3.634461             0.9966188
+20  JP-Kzw           96              FALSE       3.514067             1.0221161
+21  BR-Ji3           84              FALSE       3.302843             1.0495639
+22  JP-Yms          252              FALSE       3.271230             0.9862321
+23  JP-Ynf           96              FALSE       3.094346             0.9276617
+24  US-Cwt          120              FALSE       3.093712             0.9625069
+25  JP-Nuf           24              FALSE       2.758539             1.0235778
+26  JP-SMF          156              FALSE       2.630297             1.0129140
+   ratio_to_pf_qc0 ratio_to_badm_map implausible_raw
+1               NA        460.493055            TRUE
+2        0.9448709         17.692587            TRUE
+3        1.4739644         10.982043           FALSE
+4        1.0834815          8.790878           FALSE
+5        0.9967002          3.869841           FALSE
+6        1.0263177          4.660030           FALSE
+7        0.9764068          3.748833           FALSE
+8        1.0229982                NA           FALSE
+9        0.8823887                NA           FALSE
+10       1.0007592          3.591152           FALSE
+11       0.9176606                NA           FALSE
+12       0.9731077          4.323145           FALSE
+13       1.3097321        293.747654           FALSE
+14       0.9924645          3.615164           FALSE
+15              NA          4.422604           FALSE
+16       0.9754127          4.424750           FALSE
+17       0.9751265          3.316375           FALSE
+18       1.0141853                NA           FALSE
+19       0.9966188          2.874122           FALSE
+20       1.0221161          4.660979           FALSE
+21       1.0495639                NA           FALSE
+22       0.9862321          4.487111           FALSE
+23       0.9276617          2.659542           FALSE
+24       0.9625069          3.107462           FALSE
+25       1.0235778          3.405369           FALSE
+26       1.0129140          3.363197           FALSE
+
+-- Sites with too few QC0 months to test (<12 fully-measured months in 1991-2020) --
+[1] "IT-MBo" "JP-Om2" "US-HB4"
+
+================ T3: clustering and grouping ================
+
+-- Sites within 15% of each candidate factor (ratio to BIO12 / to P_F[QC0]) --
+  factor n_within_15pct_bio12 n_within_15pct_pf_qc0
+1    1.0                  307                   287
+2    4.0                  105                     2
+3    8.0                    7                     1
+4   12.0                    1                     1
+5   24.0                    0                     0
+6   30.4                    0                     0
+7 1000.0                    0                     0
+
+-- By product_source_network --
+  product_source_network   n n_excluded median_ratio_bio12
+1                    JPF  54         16          3.7175965
+2                    FLX  18          0          1.1837800
+3                  SAEON   5          0          1.0902813
+4                    CNF  32          0          1.0548352
+5                    EUF 138          2          1.0390451
+6                   TERN  52          1          1.0170143
+7                    KOF  21          0          0.9695623
+8                    AMF 381          6          0.9680320
+9                   ICOS  80          1          0.9627636
+
+-- By data_hub --
+   data_hub   n n_excluded median_ratio_bio12
+1      ICOS 348         19           1.058769
+2      TERN  52          1           1.017014
+3 AmeriFlux 381          6           0.968032
+
+-- By oneflux_code_version --
+  oneflux_code_version   n n_excluded median_ratio_bio12
+1                 v1.3 781         26           1.006049
+
+-- By fluxnet_product_name (top 10 by n) -- too granular to be a real grouping variable (near-unique per site), shown for completeness --
+                        fluxnet_product_name n n_excluded median_ratio_bio12
+1   AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1.zip 1          1         487.440426
+2  ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip 1          1          59.337545
+3   AMF_CA-CF2_FLUXNET_2008-2011_v1.3_r1.zip 1          1          11.903797
+4   AMF_CA-CF1_FLUXNET_2007-2008_v1.3_r1.zip 1          0           8.751051
+5   AMF_US-A10_FLUXNET_2011-2022_v1.3_r1.zip 1          0           8.550139
+6   AMF_US-NGB_FLUXNET_2012-2023_v1.3_r1.zip 1          0           8.393256
+7   EUF_NO-And_FLUXNET_2008-2014_v1.3_r1.zip 1          1           7.752355
+8   AMF_US-HVs_FLUXNET_1995-1995_v1.3_r1.zip 1          0           7.730424
+9   CNF_CN-Dsh_FLUXNET_2013-2024_v1.3_r1.zip 1          0           7.243860
+10  CNF_CN-Dmn_FLUXNET_2012-2024_v1.3_r1.zip 1          0           6.914164
+Saved: review/diagnostics/era5_precip_units_v2/table_t3_provenance_crosstab.csv
+
+-- Regression: log(ratio_to_bio12) ~ frac_filled (tower P_F gap-fill fraction) --
+All sites:              Estimate Std. Error   t value     Pr(>|t|)
+(Intercept)  1.161209 0.04821341  24.08476 3.298433e-92
+frac_filled -1.409764 0.06423454 -21.94713 2.152317e-80
+JPF only:              Estimate Std. Error   t value     Pr(>|t|)
+(Intercept)  1.364925 0.03528424  38.68369 1.823882e-39
+frac_filled -1.449762 0.07098699 -20.42292 3.308142e-26
+Non-JPF only:              Estimate Std. Error   t value     Pr(>|t|)
+(Intercept)  1.109084 0.05587652  19.84884 8.812426e-68
+frac_filled -1.357487 0.07266966 -18.68024 1.001987e-61
+
+JPF median ratio_to_bio12: 3.634461  | Non-JPF median: 0.9971798 
+Interpretation: a significant, substantial frac_filled slope shared across the whole
+ network would indicate a gap-fill-driven (batch) effect; JPF's elevated median
+ holding even among LOW-frac_filled (mostly-measured) sites, with no comparable
+ slope explaining it, would indicate a genuine mixture (JPF sites are drawn from a
+ wetter/more-error-prone population), not a fill-driven artifact.
+Saved: review/diagnostics/era5_precip_units_v2/table_t3_regression.csv
+
+=== era5_precip_units_v2.R (T1-T3) complete ===

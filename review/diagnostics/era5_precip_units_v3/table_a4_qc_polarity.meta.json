@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:59:34Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly, read-only)"
+  ],
+  "notes": "Network-wide (74,916 site-months) fraction of tower P_F values identical to P_ERA, binned by P_F_QC. Confirms P_F_QC=0 (not 1) is the fully-gap-filled end of the scale for this consolidated MM-resolution field -- opposite of the raw HH-resolution System-2 QC convention."
+}

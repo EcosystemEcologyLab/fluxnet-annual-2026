@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T20:55:54Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "data/external/trendy/derived/intermediate"
+  ],
+  "notes": "Global area-weighted mean |NBP| (nee) and mean ET, recomputed with annual fields spatially aggregated to 0.5/1/2/4 degree BEFORE the per-model temporal statistic and ensemble-median-across-models steps, using the 16 final-ensemble models' intermediate annual stacks."
+}

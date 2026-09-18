@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly, dataset='FLUXMET')"
+  ],
+  "notes": "Contingency table of has_measured_precip (>=1 month with P_F_QC>=0.9, 1991-2020, using v3 A4's corrected QC polarity), clustered vs. near-1x control sites."
+}

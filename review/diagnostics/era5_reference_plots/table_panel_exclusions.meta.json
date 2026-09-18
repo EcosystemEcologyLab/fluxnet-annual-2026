@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-18T16:08:01Z",
+  "pipeline_version": "3cee85a",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+  ],
+  "notes": "Sites excluded from one or more panels of Figure 1 or Figure 2 because a value used on a log axis is exactly zero or missing, and the specific reason. Not an exclusion from the companion CSV, which carries all 781 sites."
+}

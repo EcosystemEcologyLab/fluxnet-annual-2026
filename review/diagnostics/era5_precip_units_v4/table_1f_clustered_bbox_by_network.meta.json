@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v4/table_1e_clustered_site_coordinates.csv"
+  ],
+  "notes": "Lat/long bounding box of clustered sites, grouped by product_source_network, to assess regional concentration compactly."
+}

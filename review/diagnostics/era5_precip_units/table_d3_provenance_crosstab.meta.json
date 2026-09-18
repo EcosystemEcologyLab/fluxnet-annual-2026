@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T22:09:58Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "review/diagnostics/era5_precip_units/table_excluded_sites.csv"
+  ],
+  "notes": "Cross-tabulation of MAP-screen exclusion rate by data_hub / product_source_network / oneflux_code_version, network-wide denominators (not just the 26 excluded sites) so disproportionate concentration is visible."
+}

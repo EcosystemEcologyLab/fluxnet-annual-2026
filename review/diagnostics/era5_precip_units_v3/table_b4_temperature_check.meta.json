@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T23:02:22Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "data/processed/badm.rds",
+    "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_1.tif"
+  ],
+  "notes": "TA_ERA-derived MAT vs. WorldClim BIO1 and BADM PI-reported MAT, for every site flagged for precipitation correction in B1-B3, plus the two confirmed precipitation anomalies. Tests whether the ERA5 error is precipitation-specific or reflects a broader site-coordinate/extraction problem."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:09:58Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly, read-only)"
+  ],
+  "notes": "Per-site-year MAP under 3 variants: (a) pipeline method sum(P_ERA*days_in_month), (b) sum(P_ERA) no day weighting, (c) mean(P_ERA)*365.25. Complete 12-month years only, 1991-2020 (KG_ERA5_PERIOD)."
+}

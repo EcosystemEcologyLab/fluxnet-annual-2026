@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:38:25Z",
+  "pipeline_version": "248fc3a",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v2/table_t2_ratios.csv"
+  ],
+  "notes": "Exclusion rate and median ratio-to-BIO12 by provenance field."
+}

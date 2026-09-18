@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:42:15Z",
+  "pipeline_version": "248fc3a",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units/table_d4b_jaccard_impact.csv"
+  ],
+  "notes": "Carried forward unchanged from era5_precip_units v1 (not re-run): this specific test (extended candidate-year-window KG reclassification / Jaccard impact / relative-vs-absolute screen comparison) is a mechanical test of the real, unmodified compute_site_koppen_era5() functions and does not depend on tower P_F or BADM MAP -- it is unaffected by v2's correction of the circularity issue in v1's verdict. See review/diagnostics/era5_precip_units_v2/report.md for why this remains valid."
+}

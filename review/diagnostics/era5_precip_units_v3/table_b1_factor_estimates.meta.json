@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T23:02:18Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v2/table_t2_ratios.csv"
+  ],
+  "notes": "Per-site empirical scale-factor estimate = median(ratio_to_bio12, ratio_to_badm_map), all 781 current-network sites, clustered against candidate factors 1/4/8/24/1000 (within 15%). Does not assume a factor -- set entirely by the two independent references."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T20:26:44Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "review/diagnostics/nee_et_site_vs_trendy/table_paired_measured_vs_trendy.csv"
+  ],
+  "notes": "T1 per-site ratio distribution and nearest screened unit-conversion-factor candidate. Raw-monthly-stack re-derivation for 20 sample pixels is in table_t1_raw_stack_check.csv (nee_et_site_vs_trendy_raster.R)."
+}

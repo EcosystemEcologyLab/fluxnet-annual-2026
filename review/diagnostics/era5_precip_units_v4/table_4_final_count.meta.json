@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv",
+    "review/diagnostics/era5_precip_units/table_excluded_sites.csv",
+    "data/snapshots/site_koppen_era5.csv"
+  ],
+  "notes": "Scoping count: sites in doubt for ERA5 precipitation, overlap with the original 26-site KG_ERA5_MAP_MAX_MM exclusion, and how many currently carry a successful KG classification that would be affected by any future correction."
+}

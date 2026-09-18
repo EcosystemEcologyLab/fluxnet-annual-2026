@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T23:36:23Z",
+  "pipeline_version": "d599f41",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv",
+    "data/duckdb/fluxnet.duckdb (monthly, dataset='FLUXMET')"
+  ],
+  "notes": "Corrected ERA5 MAP vs. genuinely-measured tower P_F (P_F_QC>=0.9, the reference not used to fit factor_estimate), all 123 clustered sites. Only 4/123 have any gauge data at all -- see has_gauge / power warning in report."
+}

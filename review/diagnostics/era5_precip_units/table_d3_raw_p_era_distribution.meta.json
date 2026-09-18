@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:09:59Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly, read-only)"
+  ],
+  "notes": "Raw monthly P_ERA values (dataset='ERA5'), tagged by whether the site is in the 26-site excluded set, for bimodality inspection."
+}

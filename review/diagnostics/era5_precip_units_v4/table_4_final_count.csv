@@ -1,0 +1,5 @@
+metric,count
+Sites in doubt for ERA5 precipitation (cluster near 4x or 8x vs. BADM+BIO12),123
+"...of those, in the original 26 sites excluded by KG_ERA5_MAP_MAX_MM",15
+"...of those, NOT in the original 26 (i.e. currently pass the >5000mm screen unflagged)",108
+"...of those, currently carry a successful (non-NA) KG classification today",108

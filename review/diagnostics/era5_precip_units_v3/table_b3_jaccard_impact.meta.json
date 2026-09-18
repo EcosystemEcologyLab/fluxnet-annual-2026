@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-17T23:02:20Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b3_reclassification.csv",
+    "data/snapshots/koppen_beck2023_global_distribution.csv"
+  ],
+  "notes": "Two-letter/5-class weighted Jaccard for current_781 before vs. after the B3 mock-correction reclassification, against the unchanged Beck 2023 global distribution."
+}

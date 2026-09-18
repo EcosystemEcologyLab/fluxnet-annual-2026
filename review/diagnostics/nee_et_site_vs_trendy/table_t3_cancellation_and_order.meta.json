@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T20:55:54Z",
+  "pipeline_version": "9d3c4cd",
+  "input_sources": [
+    "data/external/trendy/derived/intermediate"
+  ],
+  "notes": "Temporal cancellation ratio (mean|annual| / |mean(annual)|) and ensemble-order-of-operations comparison, nbp and evapotrans, at native 0.5deg."
+}

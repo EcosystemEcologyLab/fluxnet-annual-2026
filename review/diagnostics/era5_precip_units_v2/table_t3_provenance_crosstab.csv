@@ -1,0 +1,14 @@
+factor,level,n,n_excluded,median_ratio_bio12
+product_source_network,JPF,54,16,3.7175965245927935
+product_source_network,FLX,18,0,1.1837799857485778
+product_source_network,SAEON,5,0,1.090281287878788
+product_source_network,CNF,32,0,1.054835187738681
+product_source_network,EUF,138,2,1.0390451187829421
+product_source_network,TERN,52,1,1.017014304507474
+product_source_network,KOF,21,0,0.9695622641509435
+product_source_network,AMF,381,6,0.9680320261437908
+product_source_network,ICOS,80,1,0.9627636265879258
+data_hub,ICOS,348,19,1.0587694684902713
+data_hub,TERN,52,1,1.017014304507474
+data_hub,AmeriFlux,381,6,0.9680320261437908
+oneflux_code_version,v1.3,781,26,1.006048720760234

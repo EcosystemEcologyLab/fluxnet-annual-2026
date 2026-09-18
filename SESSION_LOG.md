@@ -4,6 +4,426 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-18 — ERA5/BIO12/BADM reference plots (plotting only, no verdict)
+
+Plotting task only, per instruction: no new verdict, no correction, no
+reclassification, no pipeline edit. New code:
+`scripts/diagnostics/era5_reference_plots.R`. Confirmed via `git status`:
+zero changes to the pipeline, any pipeline script, any figure, legend, or
+snapshot CSV, or any `era5_precip_units`/`_v2`/`_v3`/`_v4` output. All new
+files are under `review/diagnostics/era5_reference_plots/`.
+
+Reuses per-site ERA5-derived MAP, WorldClim BIO12, and BADM PI-reported MAP
+already computed in `era5_precip_units_v2/table_t2_ratios.csv`, carried
+through unmodified into `era5_precip_units_v3/table_b1_factor_estimates.csv`
+(the single file read here, after confirming it is row-for-row identical to
+the v2 file on every shared column). Nothing from either file is
+recalculated; this script computes only per-panel Spearman rho/n (not
+previously computed) and the per-panel exclusion sets needed because a
+value of exactly zero or missing is undefined on a log axis.
+
+Produced, for all 781 current-network sites: Figure 1 (two histogram
+panels, log10(ratio) space, bin width 0.1 log10 units, reference lines at
+1x/4x/8x, ratio-to-BIO12 n=780, ratio-to-BADM n=631) and Figure 2 (three
+log-log scatter panels — ERA5 vs BADM n=631 rho=0.578, ERA5 vs BIO12 n=780
+rho=0.592, BADM vs BIO12 n=632 rho=0.933 — 1:1 line plus 4x/8x offset
+lines), each in two versions: version A with no grouping, version B with
+the 123 sites from `table_b1_factor_estimates.csv`'s 4x/8x clusters shown
+in a second colour and a legend stating the membership rule verbatim
+(nearest of candidate factors {1,4,8,24,1000} within 15%). Also wrote a
+companion CSV (`table_site_reference_comparison.csv`, one row per site,
+missing BADM carried as NA at 144 sites) and an exclusion table
+(`table_panel_exclusions.csv`) covering the 6 sites (1 with
+`era5_map_mm == 0`, 5 with `badm_map_mm == 0`) dropped from specific panels
+because a log axis cannot represent zero. Full detail, axis ranges, and
+the exact exclusion reasons per panel: `review/diagnostics/era5_reference_plots/report.md`.
+No site or group is characterised as an error, artifact, or genuine
+anywhere in this output.
+
+---
+
+## 2026-09-17 — ERA5 precipitation units v4: scoping the 4x/8x cluster (read-only)
+
+Follow-up to `review/diagnostics/era5_precip_units_v3/`. Read-and-report
+only — no counterfactual, no reclassification, no pipeline edits. New code:
+`scripts/diagnostics/era5_precip_units_v4.R`. Confirmed via `git status`:
+zero changes to the pipeline, figures, legends, snapshot CSVs, or the
+v1/v2/v3 reports/outputs. Full report and 10 output tables:
+`review/diagnostics/era5_precip_units_v4/`.
+
+**Verdict: 123/781 sites cluster near 4x/8x against BADM+BIO12 (v3's
+unrefit Part B result), and that cluster is defined almost entirely by the
+absence of independent ground truth, not by hub, network, or resolution —
+only 4/123 clustered sites have any genuinely-measured tower precipitation
+at all (`P_F_QC≥0.9`), versus 282/323 in the near-1x control group
+(separation score 0.84, by far the strongest of the four grouping
+variables tested).** 15 of the 123 are already among the 26 sites the
+`KG_ERA5_MAP_MAX_MM` screen excludes; **108 currently carry a successful
+KG classification that a future correction would change — the number to
+plan around.** The clustered sites are not regionally concentrated (the
+58-site AmeriFlux subset alone spans -55°S to 71°N), though JPF is
+moderately over-represented (20.3% of the cluster vs. 3.4% of the
+control) and ICOS moderately under-represented. At the only 4 clustered
+sites with an independent gauge, the corrected value is still 2.6x-18.9x
+off from the gauge — the one check not used to fit the factor does not
+confirm the correction (n=4, no real power, reported for transparency).
+Separately, BADM MAP does not look like a WorldClim BIO12 lookup: of 399
+sites with both references plus a gauge, only 1 ties exactly, and BIO12 is
+independently closer to the gauge slightly more often than BADM is (218
+vs. 180) — so v3's two-reference corroboration does not collapse to one
+reference in disguise. Native HH/HR temporal resolution per site was not
+recoverable from the manifest CSV or `file_inventory.rds` (both searched;
+the latter records extracted-file resolution, not native collection
+interval, since only y/m/d were ever extracted) — recovered instead from
+BADM's `PRODUCT_TIME_RESOLUTION` field (759/781 sites). No note to the
+FLUXNET Coordination Project drafted, per scope.
+
+---
+
+## 2026-09-18 — ERA5 precipitation units v3: QC-polarity error found; network-wide correction test
+
+Follow-up to `review/diagnostics/era5_precip_units_v2/`. New code:
+`scripts/diagnostics/era5_precip_units_v3_partA.R`,
+`era5_precip_units_v3_partB.R`. No edits to the pipeline, figures,
+legends, snapshot CSVs, or the v1/v2 reports/outputs (confirmed via `git
+status` — both directories show zero changes). `R/climate_classification.R`
+read and sourced only, never edited. Full report and 11 output tables:
+`review/diagnostics/era5_precip_units_v3/`.
+
+**Part A verdict: the P_F≈P_ERA identity v2 reported is real, but v2's
+interpretation was backwards — a QC-flag polarity error, not ingestion or
+query contamination.** Read raw `*_FLUXNET_FLUXMET_MM_*.csv` files
+directly, bypassing DuckDB, for 5 flagged + 3 control sites: the identity
+exists in the distributed product itself (not an artifact of this repo's
+code) and, critically, appears at ordinary control sites (`FI-Hyy`,
+`JP-Khw`) too, at the same `P_F_QC` value — immediately signaling a
+QC-convention issue rather than a site-specific problem. Traced
+`scripts/03_read.R`/`duckdb_setup.R`/`duckdb_update.R`: zero cross-dataset
+column contamination in the ingested `monthly` table at any of the 8 test
+sites — ingestion is clean. Re-read v2's own query: correctly constrained
+`WHERE dataset='FLUXMET'`/`'ERA5'` — not a query bug. **Root cause,
+verified at network scale (74,916 site-months): `P_F_QC=0` is identical
+to `P_ERA` 100% of the time (entirely gap-filled); `P_F_QC=1` only 0.8%
+of the time (genuinely measured) — the opposite polarity from the raw
+HH-resolution convention CLAUDE.md documents, which v2 applied
+uncritically to this MM-resolution fraction field.** Redone correctly
+(`P_F_QC>=0.9`): only 4 of the 26 excluded sites (`CA-CF2`, `IT-MBo`,
+`NO-And`, `US-HB4`) have any genuinely-measured tower month at all in
+1991-2020 — the other 22 (essentially the whole JPF cluster) have zero
+independent ground truth from tower data, at any QC level. `IT-MBo`'s own
+188 genuinely-measured months show ~16,865 mm/yr, still far above the
+~1200 mm/yr independently cited as its true climate — implicating the
+tower's own rain gauge there, not only ERA5.
+
+**Part B verdict: letting BADM and BIO12 jointly set an empirical factor
+(not assumed) finds two real, cross-hub clusters — 113 sites near 4x and
+10 near 8x — far beyond the 26 excluded sites and beyond JPF.** 112 of
+123 clustered sites have both independent references individually
+disagreeing with ERA5 by a comparable margin (not a single-reference
+artifact). Applying the nearest canonical factor brings 98/123 (80%)
+within normal scatter of BOTH references simultaneously (data-driven band
+[0.83, 1.15] from the near-1 population). Running the real, unmodified
+`compute_site_koppen_era5()` on the corrected values recovers 15 of the
+26 previously-excluded sites and changes the class of 12 already-
+classified sites (all into BS/BW), moving weighted Jaccard by +0.0044
+(two-letter) and +0.0142 (5-class) -- both improvements. `TA_ERA` shows
+no comparable discrepancy against BADM MAT or WorldClim BIO1 at the same
+sites (mean |diff| <1C) -- the error is precipitation-specific. Reading
+`classify_koppen_geiger()` directly: the arid (B) boundary and tropical
+Af/Am/Aw split use absolute MAP thresholds and are mechanically sensitive
+to a uniform precipitation scaling; the Cw/Dw (dry-winter) split and all
+temperature-driven subtype suffixes are ratio- or temperature-only-based
+and are not -- and every one of the 12 class flips lands in BS/BW,
+exactly the mechanically-predicted signature of a uniform precipitation
+overestimate, not a surprise.
+
+**This remains a magnitude/extraction question, not a units question** --
+v2's T1 result (pipeline's day-weighting formula matches ONEFlux's own
+official annual product to <0.7% everywhere) is untouched by anything in
+this report. A curated 134-row evidence table (site, hub,
+product_source_network, oneflux_code_version, estimated factor,
+corrected/uncorrected MAP, both reference values) is saved for possible
+future Coordination Project correspondence, not drafted into a note, per
+instruction.
+
+---
+
+## 2026-09-18 — ERA5 precipitation units v2: closes a circularity gap in the prior verdict
+
+Follow-up diagnostic, superseding the 2026-09-17
+`review/diagnostics/era5_precip_units/` (v1) verdict. New code:
+`scripts/diagnostics/era5_precip_units_v2.R`. No edits to the pipeline,
+figures, legends, snapshot CSVs, or v1's report/outputs (confirmed via
+`git status` — v1's directory shows zero changes). `R/climate_classification.R`
+read only, never edited. Full report and outputs:
+`review/diagnostics/era5_precip_units_v2/`.
+
+**Why this was needed**: v1's "geography, not units" verdict rested on
+ERA5-derived MAP agreeing with tower `P_F` at 24/25 excluded sites. That
+comparison is not independent — `P_F` is reanalysis-filled wherever gap-fill
+applies, and v1's own IT-MBo number (~27,400 mm/yr tower P_F) exceeds any
+recorded annual total anywhere on Earth, at a site independently known to
+receive ~1200 mm/yr. Both series were wrong there, exactly as flagged.
+
+**Verdict: the units question is now settled beyond doubt (not just
+"ruled out" but confirmed via a fully independent, non-circular test),
+but v1's further claim that the other 24 sites are "genuinely wet, real
+places" does not survive scrutiny.** Every FLUXNET Shuttle site bundles
+an annual-resolution `*_FLUXNET_ERA5_YY_*.csv` file produced independently
+by ONEFlux/AmeriFlux's own official processing; summing
+`P_ERA×days_in_month` from the monthly file and comparing against that
+official annual value gives ratio 1.0000 (median), range 0.9947-1.0068,
+across 2,955 site-years at 66 sites — including the two most extreme
+sites, exactly. **P_ERA is definitively a mean daily rate and the
+pipeline's day-weighting formula is exactly correct, everywhere, with no
+exceptions.** But testing whether tower P_F (even restricted to nominally
+fully-measured `P_F_QC=0` months) is truly independent found that
+`TA_ERA`/`VPD_ERA` are numerically IDENTICAL to their "measured" tower
+counterparts at every site checked, including the two confirmed
+anomalies — a "measured" flag does not mean independent of ERA5 for these
+consolidated meteorological variables in this product. A genuinely
+independent source, BADM's PI-reported MAP, disagrees with ERA5 by the
+same 2.7-460x magnitude BIO12 does at every one of the 20 excluded sites
+that have a BADM entry — new evidence v1 did not have, pointing away from
+its conclusion.
+
+**Net result: zero sites show a units problem (confirmed, not just
+inferred); two sites (`US-HB4`, `IT-MBo`) are confirmed genuine data
+errors by convergent evidence (physically impossible magnitudes present
+even in ONEFlux's own official product, near-zero independently-measured
+tower months, and BADM disagreement of 460x/17.7x); the remaining 24
+sites' true climate is genuinely unresolved with data available in this
+repo** — the two theoretically-independent checks (P_F, BADM) point in
+opposite directions, and one of them (P_F) turns out not to be
+independent. `IT-MBo`'s ERA5-derived MAP (15,000-27,000+ mm/yr) is
+confirmed wrong against the task's own independently-known true value
+(~1200 mm/yr); `US-HB4`'s entire 1981-2025 raw monthly record (mean 1798
+mm/day, physically impossible) is confirmed present identically in
+ONEFlux's own bundled annual product, ruling out any downstream summation
+bug as the cause.
+
+**Documentation discrepancy found and reported, not resolved**: the
+project's own `methods_koppen_era5.md` and the 2026-08-20 SESSION_LOG
+entry contradict each other on whether the ICOS reference script
+multiplies by `days_in_month` (methods doc says it does; log entry says
+it does not) — quoted directly in the new report; the MM-vs-YY internal
+consistency test makes resolving which is accurate unnecessary for this
+pipeline's own correctness.
+
+**Reach**: the same TA_ERA=TA_F / VPD_ERA=VPD_F entanglement found at
+"measured" QC months is not precipitation-specific. Consumers of
+`dataset='ERA5'` confirmed by direct grep: `R/climate_classification.R`,
+`R/figures/fig_environmental_response.R` (fig_08, already flagged in
+`docs/known_issues.md` §9a for a silent drop with no exclusion log), and
+a third, independent reimplementation of the same unverified
+"unit-conversion artifact" assumption found in the deprecated
+`R/figures/fig_climate_legacy.R:66-67`. No repository documentation of
+the planned P/PET aridity panel was found (searched decisions_pending.md,
+methods_requirements.md, known_issues.md for PET) — flagged as
+not-found, not assumed.
+
+**D4 recovery counterfactual carried forward from v1 unchanged** (it
+never depended on P_F or BADM, so is unaffected by this correction):
+extending the candidate-year window recovers 1/26 sites; a factor-of-2
+relative screen would push 238 sites below the classification floor. The
+open question this report adds is not "what factor recovers these
+sites" (T1: none exists) but "which of the 26 should be recovered at
+all," which remains unresolved for 24 of them.
+
+Recommendation section re-scopes v1's four options: the P_F-fallback
+option is now flagged as unreliable at these specific sites (P_F is not
+independent here); `US-HB4`/`IT-MBo` should be treated as confirmed
+data-quality issues for upstream correction, not a KG-algorithm question;
+no option chosen, per instruction.
+
+---
+
+## 2026-09-17 — ERA5 precipitation-units diagnostic: geography, not a units bug (one isolated anomaly)
+
+Read-and-report diagnostic + scoped counterfactual for a co-author
+decision, investigating why the KG classification's ERA5 MAP screen
+(`KG_ERA5_MAP_MAX_MM=5000`, `R/pipeline_config.R:62`) excludes 26
+current-network sites (IT-MBo, NO-And, JP-Tak, US-HB4, BR-Ji3, PE-QFR,
+and 20 others) whose true climate doesn't plausibly receive 5000mm/yr.
+New code: `scripts/diagnostics/era5_precip_units.R` (D1-D3),
+`era5_precip_units_recovery.R` (D4, reuses the real, unmodified
+`compute_site_koppen_era5()`/`compute_era5_monthly_climatology()`
+functions rather than reimplementing them). `R/climate_classification.R`
+and `scripts/step5_compute_koppen_era5.R` were read and sourced, never
+edited; no figure, legend, or snapshot CSV was modified. Full report, all
+tables, and the counterfactual outputs: `review/diagnostics/era5_precip_units/`.
+
+**Task's "25 excluded" vs. current reality**: the 2026-08-20 log entry's
+25 was for the then-767-site network; re-derived directly from
+`site_koppen_era5.csv` (not assumed), the current 781-site network
+excludes **26**. Both figures reported; 26 used throughout as
+authoritative.
+
+**Verdict: neither a units bug nor the originally-diagnosed
+spatial-averaging artifact — this is geography, and ERA5 is largely
+correct.** D2 tested whether P_ERA carries inconsistent units: removing
+the day-in-month multiplier (variant b) undershoots WorldClim BIO12 by
+~20-30x network-wide (mathematically expected — P_ERA genuinely is a
+mm/day rate); mean×365.25 (variant c) is functionally identical to the
+pipeline's existing formula (a). **The pipeline's existing formula is
+itself the one that matches BIO12 for the non-JPF majority of the network
+(387/781 sites within ±25%)** — there is no alternative formula to switch
+to; no evidence of a mixed unit convention (the raw P_ERA distribution at
+excluded vs. unaffected sites is shifted, not bimodal). Instead: of the
+26 excluded sites, 25 have tower-observed `P_F` in DuckDB, and 24 of those
+25 show the pipeline's existing ERA5-derived MAP agreeing closely with
+tower-observed P_F (ratio 0.88-1.31) while disagreeing substantially
+(2.6-59.3x) with WorldClim BIO12 — **BIO12 is the outlier reference here,
+not ERA5**, independently corroborated by real rain gauges. This
+concentrates heavily by hub: `product_source_network == "JPF"` sites are
+excluded at 29.6% vs. 1.2-1.9% for every other hub, and the elevated-ratio
+pattern extends across 74.1% of all 54 JPF sites (median ratio 3.72), not
+just the 16 that cross the absolute threshold — including non-excluded
+JPF sites in Mongolia/Russia with low BIO12 baselines, ruling out
+"Japan's complex terrain" as a sufficient explanation on its own and
+pointing to JPF's site portfolio (dense-monsoon-forest and steep-terrain
+locations globally) sitting exactly where WorldClim's coarse,
+sparse-station interpolation is documented to underestimate true rainfall.
+
+**One genuine, isolated anomaly found and reported separately**:
+`US-HB4` (AmeriFlux, not JPF) — every one of its 539 raw monthly P_ERA
+values across 1981-2025 sits in the 74-7683 mm/day range (mean 1798,
+physically impossible as a monthly-mean daily rate — exceeds the
+world-record 24-hour total), while its tower P_F (2016 mm/yr) is entirely
+ordinary (ratio to ERA5: 326x). Order-of-magnitude consistent with a
+~1000x site-specific scaling error, unrelated to the geography-driven
+pattern affecting the other 25 sites.
+
+**D4 counterfactual**: extending the candidate-year window from the fixed
+1991-2020 to each site's full record (the only free parameter left once
+D2 ruled out an alternative formula) recovers just 1 of 26 sites (JP-Yms,
+Cf) — confirming the inflation is a persistent site characteristic, not a
+period-specific glitch. That one recovery makes weighted Jaccard very
+slightly *worse* (two-letter and 5-class both -0.0004), not better — a
+small, counter-intuitive but real result, reported as computed. A literal
+factor-of-2 relative screen against BIO12 (also tested, per instruction)
+would be far more aggressive than the current absolute rule: agrees with
+all 26 existing exclusions but pushes 212 *additional* sites (238 total)
+below the 20-year classification floor, including flagship long-running
+towers (DE-Hzd, US-Ne1/2/3, US-Syv, GL-Dsk, FI-Ruk) — not usable as
+specified without a looser factor or a persistence-across-years rule.
+
+**Recommendation section** (report only, no option chosen): per-site unit
+correction is not supported by the evidence for 25 of 26 sites (no
+formula reconciles them) but may still apply narrowly to US-HB4; a
+relative screen needs retuning before use; a per-site P_F fallback is the
+option this investigation's own findings most directly support (P_F
+agrees with ERA5 at 24/25 sites and would sidestep US-HB4's anomaly
+automatically) but has sparse-years coverage gaps; raising the constant
+is simplest but would blindly admit any future US-HB4-like error
+alongside the real wet sites. Each option's downstream reach noted,
+including the planned aridity panel (P numerator, PET from ERA5
+radiation) which would inherit whatever threshold/logic is chosen here
+if it reuses this screen rather than deriving its own.
+
+**Standing notes carried forward, not new findings**: the absolute
+5000mm screen excludes real locations regardless of what drove these 26
+(this investigation's own P_F data confirms PE-QFR ~10,150mm/yr and
+IT-MBo ~27,400mm/yr are real); `docs/known_issues.md` §9a already
+documents this same rule reimplemented in `fig_environmental_response_era5()`
+with a silent drop and no exclusion log (quoted directly from the doc).
+
+---
+
+## 2026-09-17 — NEE/ET site-vs-TRENDY diagnostic: artifact ruled out, scale/definition effect confirmed
+
+Read-and-report diagnostic for a co-author decision, investigating why Row
+E′ of `Supp_compare_geospatial_vs_sitelevel_grid.png` (site-measured NEE)
+shows J=0.233 against TRENDY-at-site's J=0.506, while ET (the control,
+Row F/F′) looks well-behaved. New code:
+`scripts/diagnostics/nee_et_site_vs_trendy_core.R` (T1 percentile/ratio,
+T2, T5, T6, T7) and `nee_et_site_vs_trendy_raster.R` (T1 raw-stack
+re-derivation, T3, T4). No existing script, figure, legend, snapshot CSV,
+or `representativeness_metrics.csv` was modified. Full report, all seven
+tests' tables (NEE beside ET), and the paired figure:
+`review/diagnostics/nee_et_site_vs_trendy/`.
+
+**Verdict: no unit-conversion artifact (ruled out with an exact,
+correlation=1.000 match after fixing a bug in the diagnostic script
+itself — see below). The low J is real and explained by two compounding,
+now-quantified effects: a statistical-definition mismatch (measured NEP
+uses median-of-signed-annual-values; TRENDY's `nee_median` uses
+mean-of-absolute-annual-values) and temporal cancellation dominating over
+spatial cancellation.** T3: spatial coarsening 0.5°→4° (64× area) reduces
+global mean |NBP| by only ~22%; temporal cancellation *within a single
+fixed 0.5° pixel across 34 years* inflates `mean(|annual|)` to ~3-4× (site
+pixels) or ~4× (global median — the area-weighted mean is dominated by
+near-zero-denominator outliers and is not usable, reported explicitly
+rather than hidden) relative to `|mean(annual)|`. Ensemble order also
+matters ~2× (median-across-models-first gives 19.6 vs. the stored method's
+35.4 gC m⁻² yr⁻¹). ET shows essentially none of this (cancellation ratio
+0.997; order-of-ensemble 457.15 vs. 457.19, <0.01% apart) — validates the
+method is sound for a strictly non-negative flux.
+
+**T2 (bin saturation):** 73.6% of measured NEE sites fall in the single
+open-ended top bin vs. 9.0% of TRENDY-at-site values — most of Row E′'s
+low J is bin saturation, not a real shift in distribution shape. ET: 7.0%
+vs. 5.6% — negligible.
+
+**T4 (temporal window) ruled out**: recomputing the TRENDY statistic using
+only each site's own QC≥0.80 measured years (approximated via DuckDB,
+n=600 NEE / 599 ET) instead of the full 1990-2023 window changes the value
+by a median of only +0.22 gC m⁻² yr⁻¹ (NEE) / +5.4 mm yr⁻¹ (ET) —
+negligible next to the ~130 gC m⁻² yr⁻¹ gap.
+
+**T5 (management proxy) — opposite of the naive hypothesis**: unmanaged
+forest classes (ENF/EBF/DNF/DBF/MF) show a *larger* median
+measured-minus-TRENDY gap (229.7 gC m⁻² yr⁻¹) than managed
+CRO+GRA+BADM-flagged-managed-WET (117.8), Wilcoxon p=8.3×10⁻⁶ — coherent
+with T3, since forest cells are exactly where a 0.5° pixel's long-run mean
+is most likely to sit near zero (mixed stand ages/histories canceling),
+maximizing the `mean(|·|)` inflation. Explicitly a proxy, not a
+decomposition: TRENDY fire/harvest/land-use-change variables were never
+downloaded for this repo (confirmed absent, only nbp/evapotrans/gpp/ra/rh
+exist on disk).
+
+**T6 (siting bias)**: weak but real for NEE (Spearman ρ=0.164, p=3×10⁻⁵,
+between a site's biomass percentile within its 0.5° cell and its
+measured-minus-TRENDY gap), absent for ET (ρ=0.047, p=0.23) — a minor
+contributor at most.
+
+**One bug caught and fixed during the investigation, reported for the
+record**: T1's raw-monthly-stack re-derivation initially trusted
+`terra::time()` to label CABLE-POP's monthly layers, producing a global
+correlation of ~0.07 against the stored intermediate for nbp (vs. 0.98 for
+the identical evapotrans code path) — a red flag investigated rather than
+dismissed. Root cause: `figure_representativeness_trendy_compute.R:118-122`
+explicitly documents and works around a `terra::time()` bug that misparses
+CABLE-POP's true 1700 start year as 1970 (a systematic +270-year offset);
+the diagnostic script's first draft didn't replicate that documented
+workaround. Fixed to match the pipeline's own `get_years()` logic exactly;
+re-run gave an exact match (r=1.000000, 0/60,271 cells differ, every year,
+both variables) — confirming the pipeline itself has no conversion bug. A
+second near-miss was caught before it reached the report: an early draft
+of the T3 ET order-of-ensemble comparison cited specific numbers that had
+never actually been computed by the script (only the NEE side was
+originally coded) — caught on review, the missing computation was added to
+the script, and the report was corrected to the real re-run values (457.15
+vs. 457.19) before being finalized.
+
+**Code-vs-docs disagreement noted, code treated as authoritative**: a
+prior session's `fig_rep018` caption described a "histogram ceiling at
+1000 mm yr⁻¹" for ET binning; reading `figure_representativeness_trendy_compute.R`
+directly shows the actual mechanism is a general adaptive low-cut rule
+(halves/doubles the first bin's edge if it would capture <1%/>70% of
+land), not a hardcoded 1000mm constant — the caption's description of the
+symptom wasn't wrong for that run, but the mechanism is general-purpose.
+
+**For the co-author decision**: report lays out what Column 1
+(TRENDY-at-site vs. TRENDY-global) and Column 2 (measured vs.
+TRENDY-global) can and cannot claim, which tests bear on each, and three
+options (re-bin on the measured distribution; drop the measured-flux axes
+from the Jaccard framework and present a paired comparison instead, e.g.
+this diagnostic's own T7 figure; keep both with a stated caveat) with the
+exact figures/legends each would touch — no option chosen, per instruction.
+
+---
+
 ## 2026-09-17 — Supplementary comparison grid: geospatial vs. site-level axes, side by side
 
 Built `review/figures/candidates/Supp_compare_geospatial_vs_sitelevel_grid.png`

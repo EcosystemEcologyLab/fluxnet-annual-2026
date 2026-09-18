@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-17T22:09:58Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units/table_d1_site_year_variants.csv",
+    "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif",
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Per-site D1 summary: mean MAP (variants a/b/c) over available complete 1991-2020 years, WorldClim BIO12, tower-observed P_F where available, and ratios of each variant to BIO12 and to P_F."
+}

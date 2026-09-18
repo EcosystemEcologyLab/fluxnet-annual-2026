@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T23:02:18Z",
+  "pipeline_version": "bc55012",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units_v3/table_b1_factor_estimates.csv"
+  ],
+  "notes": "Sites whose factor_estimate clusters away from 1 (n=123), with the nearest canonical factor applied and the corrected value tested against BOTH BIO12 and BADM MAP using a data-driven normal-scatter band [0.83, 1.15] (5th-95th percentile of ratio_to_bio12 among near-1 sites). within_normal_both is the decisive test, not proximity to one reference alone."
+}

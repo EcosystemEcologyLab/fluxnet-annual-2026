@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-17T22:09:58Z",
+  "pipeline_version": "cacd76f",
+  "input_sources": [
+    "review/diagnostics/era5_precip_units/table_d1_per_site.csv"
+  ],
+  "notes": "Per-site cluster assignment (near_1/near_12/near_30.4/elsewhere) of the ratio of each MAP variant to WorldClim BIO12, for all sites and for the 26 excluded sites specifically."
+}

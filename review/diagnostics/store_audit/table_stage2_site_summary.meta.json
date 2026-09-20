@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T16:49:55Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "table_stage2_variable_comparison.csv (aggregated to one row per site)"
+  ],
+  "notes": "Per-site status (IDENTICAL/DIFFERS_MINOR/DIFFERS_SCATTERED/DIFFERS_UNIFORM/MISSING_DIR), byte size, sha256, and year range for old vs. fresh MM files. 25/50 sites in the Stage 2 scope checked at report time; download of the remainder (restart-safe) may still be in progress -- see report.md's Download status section for the live count."
+}

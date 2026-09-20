@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T16:21:31Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "table_stage1_extraction_inventory.csv"
+  ],
+  "notes": "Extraction mtime grouped by calendar date -- shows 93% of the store dates from the original June 1-2 2026 bulk download."
+}

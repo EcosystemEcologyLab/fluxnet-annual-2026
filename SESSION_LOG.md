@@ -4,6 +4,75 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-20 — Extracted-data store audit: IT-MBo is not isolated, decision rule fires (61-site ICOS reprocessing gap)
+
+Full audit of `data/extracted/`, prompted by `it_mbo_file_check`'s finding that IT-MBo's
+on-disk extraction was stale relative to the currently-distributed archive. New code:
+`scripts/diagnostics/store_audit_stage2_download.R`, `_stage2_compare.R`,
+`_stage3_rederivation.R`. No edits to the pipeline, the DuckDB database, or any committed
+figure. Full report and 10 output tables: `review/diagnostics/store_audit/`.
+
+**Decision rule, fixed before evidence**: if any site other than IT-MBo differs from the
+archive in a variable this project uses, the whole store is refreshed. **The rule fires.**
+
+**Stage 1 (no downloads)**: 93% of `data/extracted/`'s 786 directories date from the original
+June 1-2 2026 bulk download. A live `flux_listall()` compared against the June snapshot,
+zero downloads required, found **61 of 759 on-disk sites (8.0%) with a stale `product_id`
+and/or year range — all `data_hub == "ICOS"`.** The pipeline's reprocessing-detection logic
+(`R/sync.R`'s `compare_snapshots()`/`sites_to_download()`, confirmed hub-agnostic by Dario
+Papale on 2026-03-30) is correctly implemented and would have caught this, but the
+compare-and-download cycle was never re-run end to end since June — the two subsequent
+snapshot-related runs (`pull_snapshot_20260827.log`, a bare snapshot write with no comparison;
+`gap_download_delta_20260901.log`, a fixed-list fetch of 22 *new* sites) never exercised it.
+`scripts/01_download.R:56-61`'s console message claiming "ICOS/TERN reprocessing pending" is
+itself stale (superseded by a March fix) and was flagged as misleading but not the cause.
+Also corrects `it_mbo_bug_hunt/report.md:150-155`'s claim that IT-MBo's product_id was
+"confirmed unchanged": that check compared today's fresh download against itself, not against
+the actual old directory, which was built under a different, since-superseded product_id
+(`E0wSFc1mB8oN23pHXtN2iH3Z` vs current `enS2fTzGG_9PS5-51hqet8iH`) — IT-MBo genuinely was
+reprocessed between 2026-06-24 and 2026-08-27.
+
+**Stage 2 (one background download pass, restart-safe, PID `27927`, log
+`logs/store_audit_stage2_download_20260920.log`)**: content-compared 28 of a planned 50-site
+sample (23/45 queued downloads landed before this report was finalized per CLAUDE.md's
+"monitor periodically rather than blocking" guidance for long-running scripts; the download
+remains running and can be resumed) against met + flux variables (P_ERA, P_F, TA_ERA, TA_F,
+NEE_VUT_REF, GPP_NT_VUT_REF, LE_F_MDS, H_F_MDS), using a severity classification that took two
+iterations to get right: an absolute-difference floor per variable, not a ratio, since
+NEE/TA cross zero and a ratio is undefined or misleading there. **Of 19 of the 61
+changed-metadata sites checked: 1 severe (IT-MBo, its own ~21x uniform P_ERA defect plus a
+separate sparse P_F corruption, both already reported in `it_mbo_file_check`), 3 modestly
+scattered (DE-HoH on P_F, GF-Guy on P_ERA, and `IT-BCi` on `LE_F_MDS` — a flux variable, not
+precipitation), 15 minor-only (ordinary reprocessing-scale drift).** All 9 previously-failed/
+retried sites (US-ARM, US-Aud, US-Bar, US-Bi1, US-Bi2, US-BZB, RU-Ege, MY-LHP, AU-Ya1) matched
+a third independent download exactly. **IT-MBo is the severity outlier, not a preview of a
+network-wide repeat, but 3 more real (smaller) defects are enough to keep the rule firing.**
+
+**Stage 3 (independent re-derivation, no repository helpers)**: mean annual P_ERA/P_F/NEE for
+5 metadata-unchanged sites, computed from raw YY files with a from-scratch base-R CSV reader
+(no `readr`, `R/units.R`, or pipeline script), matched the pipeline's DuckDB `annual_converted`
+values exactly (differences ~1e-12) — **the pipeline's own arithmetic is independently
+verified correct; every problem found today traces to file staleness, not pipeline logic.**
+Found and documented, in the script itself, that `annual_converted` stores two rows per
+year-slot (`dataset='ERA5'` vs `'FLUXMET'`) and an unfiltered query blends them into a
+spurious ~2-10% "divergence" — a real trap for future queries, independently confirming what
+`era5_precip_units_v2` had already found.
+
+**Stage 4 (manifest proposal, not implemented)**: DuckDB already has a `manifest` table with
+`product_id`/`download_time`/year-range per file, and `duckdb_update.R` already implements the
+correct incremental upsert keyed on `(site_id, dataset, TIMESTAMP)` — no full 14 GB rebuild
+needed for a refresh. What's missing is a sha256 column (to catch local damage a `product_id`
+check can't) and a forced comparison against the live manifest at the start of `01_download.R`
+that warns loudly on mismatch, per Hard Rule 5's existing pattern.
+
+**Close**: refresh scope is order-of-magnitude tens of minutes for download+DuckDB-incremental-
+update for the 61 sites, not hours — with one flagged operational risk: 5 sites (IT-MBo,
+FI-Hyy, DE-Hzd, GF-Guy, IE-Cra) currently carry two `data/extracted/` directories each and
+`flux_discover_files()`'s behavior on that ambiguity was not verified before recommending a
+`03b_create_database.R` re-run.
+
+---
+
 ## 2026-09-20 — IT-MBo file check: the monthly read was wrong (stale local extraction, not a product or code defect)
 
 Urgent, narrow follow-up to `it_mbo_bug_hunt`/`it_mbo_parsimony` (same day). Dario Papale

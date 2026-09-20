@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-20T16:49:55Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "data/extracted/ (old MM files)",
+    "data/raw/store_audit_scratch/extracted/ (freshly-downloaded MM files, flat)",
+    "data/raw/store_audit_scratch/extract/ + data/raw/it_mbo_file_check_scratch/ (free-checked sites)"
+  ],
+  "notes": "Per-site per-variable old-vs-fresh comparison for P_ERA, P_F, TA_ERA, TA_F, NEE_VUT_REF, GPP_NT_VUT_REF, LE_F_MDS, H_F_MDS. Severity classification uses a fixed absolute-difference floor per variable (2 units for met vars, 10 for flux vars), not a ratio, since NEE/TA cross zero and a ratio is unreliable there. Superseded an earlier version of this script with two classification bugs (both documented in-line): conflating any uniform tiny drift with a severe uniform factor, then a ratio-only threshold that mislabeled zero-crossing variables."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T16:21:31Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "data/extracted/*/*_FLUXMET_YY_*.csv (read from scratch, no repo helpers) vs. data/duckdb/fluxnet.duckdb annual_converted table (dataset='FLUXMET')"
+  ],
+  "notes": "Independent re-derivation of mean annual P_ERA/P_F/NEE_VUT_REF for 5 metadata-unchanged sites, using a from-scratch base-R CSV reader with no pipeline helper functions. Exact agreement (diffs ~1e-12) once compared against the correct dataset='FLUXMET' subset of annual_converted -- documents a real dataset-column filtering pitfall in that table, found independently of era5_precip_units_v2's prior documentation of the same issue."
+}

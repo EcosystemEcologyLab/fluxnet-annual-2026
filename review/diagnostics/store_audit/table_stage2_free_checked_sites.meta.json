@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T16:21:31Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "data/raw/*_hh_check/, data/raw/ICOS_*.zip (already-downloaded zips from earlier same-day diagnostics)"
+  ],
+  "notes": "5 sites (IT-MBo, FI-Hyy, GF-Guy, IE-Cra, DE-Hzd) content-checked at zero additional download cost, reusing zips already on disk from it_mbo_bug_hunt/cluster_resolution_sample."
+}

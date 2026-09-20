@@ -1,5 +1,7 @@
 # Cluster resolution sample: does IT-MBo's resolution mismatch generalise?
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 ## Verdict
 
 **Zero of 19 sampled flagged sites, across all 8 networks the 4x/8x cluster spans, show the

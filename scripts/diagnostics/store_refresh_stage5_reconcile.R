@@ -121,32 +121,32 @@ kg_global_ref_path <- file.path("data/snapshots", "koppen_beck2023_global_distri
 jaccard_kg <- tibble::tibble(axis = character(0), letters = character(0), J_before = numeric(0), J_after = numeric(0))
 if (file.exists(kg_global_ref_path)) {
   ref <- readr::read_csv(kg_global_ref_path, show_col_types = FALSE)
-  compute_j <- function(site_classes, ref_df, class_col_ref, prop_col_ref, twoletter = TRUE) {
-    cls <- if (twoletter) substr(site_classes, 1, 2) else site_classes
+  # NOTE: an earlier version of this function used a generic regex to find
+  # the reference's class/proportion columns and picked the wrong ones
+  # (koppen_class_code instead of koppen_class; global_land_area_km2
+  # instead of global_land_fraction), silently returning J=0 for both
+  # axes. Fixed to use the known column names directly, and to reduce
+  # site classes to their main-group letter (not the full code) for the
+  # five_class axis, matching ref$koppen_main's granularity.
+  compute_j <- function(site_classes, main_group = FALSE) {
+    cls <- if (main_group) substr(site_classes, 1, 1) else substr(site_classes, 1, 2)
     cls <- cls[!is.na(cls)]
     p <- table(cls) / length(cls)
-    q_all <- ref_df[[prop_col_ref]]; names(q_all) <- if (twoletter) substr(ref_df[[class_col_ref]], 1, 2) else ref_df[[class_col_ref]]
-    q <- tapply(q_all, names(q_all), sum)
+    ref_key <- if (main_group) ref$koppen_main else substr(ref$koppen_class, 1, 2)
+    q <- tapply(ref$global_land_fraction, ref_key, sum)
     all_cls <- union(names(p), names(q))
     p2 <- setNames(rep(0, length(all_cls)), all_cls); p2[names(p)] <- p
     q2 <- setNames(rep(0, length(all_cls)), all_cls); q2[names(q)] <- q
     sum(pmin(p2, q2)) / sum(pmax(p2, q2))
   }
-  ref_cols <- names(ref)
-  class_col <- ref_cols[grepl("class|koppen|kg", ref_cols, ignore.case = TRUE)][1]
-  prop_col  <- ref_cols[grepl("prop|frac|pct|area", ref_cols, ignore.case = TRUE)][1]
-  if (!is.na(class_col) && !is.na(prop_col)) {
-    j_tl_before <- compute_j(baseline_kg$koppen_class, ref, class_col, prop_col, TRUE)
-    j_tl_after  <- compute_j(after_kg$koppen_class,    ref, class_col, prop_col, TRUE)
-    j_5_before  <- compute_j(baseline_kg$koppen_class, ref, class_col, prop_col, FALSE)
-    j_5_after   <- compute_j(after_kg$koppen_class,    ref, class_col, prop_col, FALSE)
-    jaccard_kg <- tibble::tibble(
-      axis = c("KG", "KG"), letters = c("two_letter", "five_class"),
-      J_before = c(j_tl_before, j_5_before), J_after = c(j_tl_after, j_5_after)
-    ) |> dplyr::mutate(delta = J_after - J_before)
-  } else {
-    message("Could not identify class/proportion columns in ", kg_global_ref_path, " -- Jaccard not recomputed.")
-  }
+  j_tl_before <- compute_j(baseline_kg$koppen_class, FALSE)
+  j_tl_after  <- compute_j(after_kg$koppen_class,    FALSE)
+  j_5_before  <- compute_j(baseline_kg$koppen_class, TRUE)
+  j_5_after   <- compute_j(after_kg$koppen_class,    TRUE)
+  jaccard_kg <- tibble::tibble(
+    axis = c("KG", "KG"), letters = c("two_letter", "five_class"),
+    J_before = c(j_tl_before, j_5_before), J_after = c(j_tl_after, j_5_after)
+  ) |> dplyr::mutate(delta = J_after - J_before)
 } else {
   message("Reference distribution file not found: ", kg_global_ref_path, " -- KG Jaccard not recomputed.")
 }
@@ -177,6 +177,8 @@ readr::write_csv(recon_wide, file.path(OUTD, "table_reconciliation_master.csv"))
 dbDisconnect(con, shutdown = TRUE)
 
 message("Stage 5 complete: ", n_sites_before, " -> ", n_sites_after, " sites; ",
-        n_classified_before, " -> ", n_classified_after, " KG classified; ",
-        n_kg_changed, " KG class changes.")
+        n_classified_before, " -> ", n_classified_after, " KG classified (net); ",
+        n_kg_changed, " sites changed FROM one class TO another; ",
+        n_kg_newly, " newly classified; ", n_kg_lost, " lost classification ",
+        "(net count can mask newly+lost cancelling out -- check both).")
 writeLines("STAGE5_COMPLETE", file.path(OUTD, "STAGE5_STATUS.txt"))

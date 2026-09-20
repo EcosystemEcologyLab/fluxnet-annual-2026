@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T14:47:45Z",
+  "pipeline_version": "368e8f7",
+  "input_sources": [
+    "review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv (read-only)"
+  ],
+  "notes": "Stratified sample from the 123-site 4x/8x cluster (era5_precip_units_v4): up to 3 flagged sites per product_source_network (all of them if a network has fewer than 3), plus 1 unflagged control site per network from the same file. Fixed random seed 20260920, drawn before any download started. 27 sites total across 8 networks."
+}

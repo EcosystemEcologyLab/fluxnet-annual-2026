@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T15:10:19Z",
+  "pipeline_version": "368e8f7",
+  "input_sources": [
+    "review/diagnostics/cluster_resolution_sample/table_1_mean_annual_by_resolution.csv"
+  ],
+  "notes": "Mean annual P_ERA from the monthly branch (x) against the half-hourly branch (y), one point per sampled site, log-log axes, 1:1 reference line (not fitted). Flagged (4x/8x cluster) vs. control sites distinguished by color and shape. White background."
+}

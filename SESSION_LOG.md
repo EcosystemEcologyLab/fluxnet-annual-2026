@@ -4,6 +4,61 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-20 — IT-MBo/US-HB4/FI-Hyy precipitation parsimony check: resolution defects confirmed and localised
+
+Follow-up to the same day's `it_mbo_bug_hunt` diagnostic. Read-only, three sites only
+(IT-MBo, US-HB4, FI-Hyy) — no ratios in the headline numbers, no factor fitting, no
+tolerance windows, no extension to the wider network. HH data for all three was already
+extracted by `it_mbo_bug_hunt.R`; no new download. New code:
+`scripts/diagnostics/it_mbo_parsimony.R`. Full report and 4 output tables + 1 figure:
+`review/diagnostics/it_mbo_parsimony/`.
+
+**Mean annual precipitation by resolution, all in mm/yr (no ratios): at IT-MBo, HH
+`P_ERA`/`P_F` (1,126/1,153) sit close to BADM (1,365) while DD/MM/YY agree with each other
+but sit ~21x above HH for both variables — confirming `it_mbo_bug_hunt`'s network-wide
+~21.25x DD-vs-HH inflation is present at the site level, at full precision, for both
+variables. At US-HB4, `P_ERA` is ~657,077 mm/yr at every resolution (HH through YY) — no
+resolution break, a genuine, uniform defect in the site's ERA5 field. At FI-Hyy (control),
+all four resolutions agree with each other and with BIO12/BADM (700-712 vs. 663/711).**
+
+**US-HB4's own tower gauge is ordinary, not extreme.** Measured-only (`P_F_QC==0`) HH
+annual totals by year: 2020=1,243, 2021=959, 2022=987, 2023=1,302, 2024=3,327 mm — all
+physically plausible, 96-100% of each year's HH records genuinely measured (empirically
+confirmed: `P_F_QC==0` records are 0% identical to `P_ERA` at nonzero precipitation,
+`P_F_QC==2` records are 100% identical, at all three sites — the documented System 2
+convention holds correctly at HH; the v3 QC-polarity flip was MM-resolution-specific and is
+not present here). The site's full HH `P_F` mean (24,572 mm/yr) balloons ~16-25x above its
+own measured-only years because a 1-4%-per-year ERA-filled minority inherits `P_ERA`'s
+catastrophic magnitude — the same mechanism moderately inflates the previously-reported
+MM-resolution `measured_map_mm` (9,581 mm/yr, 3 years at `P_F_QC>=0.9`) above the site's
+truly-measured HH values. IT-MBo's own gauge is likewise ordinary (963 mm/yr measured-only,
+partial-year).
+
+**The two-point spike in `era5_share_for_coordination/fig1`'s IT-MBo panel is the
+tower-measured (P_F) line, not ERA5** — confirmed by cropping and re-examining the figure
+directly (an initial uncropped read misattributed it to ERA5, corrected here). The spike is
+January and June 2013: `P_F_mm_monthly` = 4,017 and 4,058 mm/month, both flagged
+`P_F_QC_mm = 1.0` ("fully measured"). The flat plateau between them is a plotting artifact —
+February-May 2013 fall below the package's 0.9 measured-quality cutoff and are dropped, so
+`geom_line()` connects straight across. **Both months' HH-summed `P_F` for the same month is
+ordinary (57.5 mm and 94.0 mm respectively — ratios 69.8x and 43.2x, both well above the
+general ~21.25x site-wide inflation)** — a second, independent, more severe defect
+localised to these two specific months, on top of the general resolution inconsistency, with
+the QC flag giving no warning.
+
+**Verdict, one sentence per site plus whether the number sent to support@fluxnet.org was
+right, wrong, or right for the wrong reason**: **IT-MBo** — HH agrees with itself and BADM,
+DD/MM/YY agree with each other but not with HH; the number sent (`era5_map_mm` ≈24,150-24,472,
+`ratio_to_measured` ≈18-24x) was **wrong** — a resolution artifact, not the site's true
+climate. **US-HB4** — `P_ERA` agrees with itself at every resolution and is genuinely,
+uniformly wrong; the number sent about ERA5 being catastrophically high was **right**, though
+the accompanying `measured_map_mm` figure was itself moderately inflated by the same
+contamination mechanism — **right for the wrong reason** if quoted as a clean baseline.
+**FI-Hyy** — all four resolutions agree with each other and both references; no number was
+sent for this control site.
+
+---
+
 ## 2026-09-20 — IT-MBo ERA5 bug hunt: anomaly does not stand, artifact is resolution-specific, not ours
 
 Prompted by Dario Papale (external collaborator) reporting he could not reproduce the

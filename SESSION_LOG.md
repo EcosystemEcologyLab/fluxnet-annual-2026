@@ -32,21 +32,22 @@ the actual old directory, which was built under a different, since-superseded pr
 (`E0wSFc1mB8oN23pHXtN2iH3Z` vs current `enS2fTzGG_9PS5-51hqet8iH`) — IT-MBo genuinely was
 reprocessed between 2026-06-24 and 2026-08-27.
 
-**Stage 2 (one background download pass, restart-safe, PID `27927`, log
-`logs/store_audit_stage2_download_20260920.log`)**: content-compared 28 of a planned 50-site
-sample (23/45 queued downloads landed before this report was finalized per CLAUDE.md's
-"monitor periodically rather than blocking" guidance for long-running scripts; the download
-remains running and can be resumed) against met + flux variables (P_ERA, P_F, TA_ERA, TA_F,
-NEE_VUT_REF, GPP_NT_VUT_REF, LE_F_MDS, H_F_MDS), using a severity classification that took two
+**Stage 2 (one background download pass, PID `27927`, log
+`logs/store_audit_stage2_download_20260920.log`, ~54 min total runtime)**: completed in full —
+**45/45 sites downloaded, verified, extracted, 0 failures** — content-compared against met +
+flux variables (P_ERA, P_F, TA_ERA, TA_F, NEE_VUT_REF, GPP_NT_VUT_REF, LE_F_MDS, H_F_MDS)
+across the full planned 50-site sample, using a severity classification that took two
 iterations to get right: an absolute-difference floor per variable, not a ratio, since
-NEE/TA cross zero and a ratio is undefined or misleading there. **Of 19 of the 61
-changed-metadata sites checked: 1 severe (IT-MBo, its own ~21x uniform P_ERA defect plus a
-separate sparse P_F corruption, both already reported in `it_mbo_file_check`), 3 modestly
-scattered (DE-HoH on P_F, GF-Guy on P_ERA, and `IT-BCi` on `LE_F_MDS` — a flux variable, not
-precipitation), 15 minor-only (ordinary reprocessing-scale drift).** All 9 previously-failed/
-retried sites (US-ARM, US-Aud, US-Bar, US-Bi1, US-Bi2, US-BZB, RU-Ege, MY-LHP, AU-Ya1) matched
-a third independent download exactly. **IT-MBo is the severity outlier, not a preview of a
-network-wide repeat, but 3 more real (smaller) defects are enough to keep the rule firing.**
+NEE/TA cross zero and a ratio is undefined or misleading there. **Of the 61 changed-metadata
+sites, 25 (41%) were checked: 1 severe (IT-MBo, its own ~21x uniform P_ERA defect plus a
+separate sparse P_F corruption, both already reported in `it_mbo_file_check`), 4 modestly
+scattered (DE-HoH on P_F, GF-Guy on P_ERA, `IT-BCi` on `LE_F_MDS`, `SE-Svb` on `H_F_MDS` — the
+latter two flux variables, not precipitation), 20 minor-only (ordinary reprocessing-scale
+drift).** All 9 previously-failed/retried sites (US-ARM, US-Aud, US-Bar, US-Bi1, US-Bi2,
+US-BZB, RU-Ege, MY-LHP, AU-Ya1) and `US-HB4` (a known, already-confirmed, staleness-unrelated
+defect) matched a third independent download exactly. **IT-MBo is the severity outlier, not a
+preview of a network-wide repeat, but 4 more real (smaller) defects — 2 of them in flux
+variables — are enough to keep the rule firing.**
 
 **Stage 3 (independent re-derivation, no repository helpers)**: mean annual P_ERA/P_F/NEE for
 5 metadata-unchanged sites, computed from raw YY files with a from-scratch base-R CSV reader

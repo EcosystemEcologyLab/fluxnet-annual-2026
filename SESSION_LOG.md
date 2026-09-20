@@ -4,6 +4,78 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-20 — Unattended full store refresh and reconciliation
+
+Six-stage unattended run resolving `store_audit`'s 61-site staleness finding. Full record:
+`review/diagnostics/store_refresh_20260920/report.md`. New code:
+`scripts/diagnostics/store_refresh_stage*.R`/`*.sh` (11 files). Explicit permissions granted
+for this run: delete the 5 duplicate extraction directories, write a new snapshot CSV,
+commit/push at each stage.
+
+**Result: the specific defect that started today's IT-MBo investigation is now fixed at the
+source.** Stages 2-3b removed 5 duplicate extraction directories (IT-MBo, FI-Hyy, DE-Hzd,
+GF-Guy, IE-Cra) and downloaded 61 stale sites (17 via the pipeline's own normal
+compare-and-download cycle, 44 more via an explicit top-up against `store_audit`'s
+independently-derived list — the normal cycle's sequential snapshot-diff only catches a
+change once, at the snapshot where it first appears, and silently misses sites that changed
+earlier and were never re-downloaded). 43/44 top-up sites verified; `DE-RuW` failed twice and
+was skipped (its audit-table row matches a live product name belonging to a different site
+ID, `DE-Kli` — possible rename/consolidation, not an ordinary failure).
+
+**Stage 4 (DuckDB rebuild → 04_qc.R → 05_units.R → 07_figures.R) hit three failures, all
+resolved and recorded, none silently patched over**: (1) a schema mismatch — new HH-site
+files had columns (`PPFD_OUT`, deep soil-sensor profiles) the `hourly` table lacked, fixed
+via `ALTER TABLE ... ADD COLUMN` (64 columns total, in two passes — the first pass sampled
+only one site and missed columns another site needed); (2) after that fix, a genuine
+temp-disk exhaustion on this 16 GB RAM machine upserting the now-272-column `hourly` table
+— resolved by recognizing `hourly` is out of this refresh's scope (`FLUXNET_EXTRACT_
+RESOLUTIONS=y m d`; the HH/HR files present are incidental leftovers from unrelated same-day
+diagnostics) and not consumed by `04_qc.R`/`05_units.R`/`07_figures.R` at all; new code
+reproduces `duckdb_update.R`'s annual/monthly/weekly/daily logic verbatim, skips only
+`hourly`, and writes the manifest excluding HH/HR rows so a future real run still sees them
+as pending; (3) a bug in this task's own stage-5 Jaccard comparison script (wrong reference
+columns via a loose regex), caught and fixed directly. `annual`/`monthly`/`weekly`/`daily`
+succeeded on every attempt; only `hourly` ever failed. `07_figures.R` wrote to the default
+gitignored `figures/` directory, not `review/figures/` — the committed production figures
+were not touched by this run.
+
+**Stage 5 reconciliation: network site count and net KG-classified count both unchanged
+(781, 755) — but the net figure hides two real, opposite changes**: `IT-MBo` went from
+completely unclassified (0 years) to classified as Dfc (30 complete 1991-2020 years, MAP
+1,136.9 mm/yr, MAT 5.0°C) — closing the loop this whole day's investigation started from;
+`IT-Niv` lost its classification (was ET/Polar-tundra, 30 years; now 0) for a reason not
+diagnosed here. Zero sites changed from one class to a different class. Weighted Jaccard (KG
+axis, vs. Beck 2023 global land-area distribution): two-letter 0.420→0.419, five-class
+0.454→0.453 — both negligible. Aridity/biomass/landcover/IGBP axes reported unchanged by
+construction (site list and coordinates unchanged; those classes depend only on static
+external data this refresh doesn't touch) rather than re-derived via the heavy raster
+scripts.
+
+**Stage 6 network-wide ERA5-vs-BIO12/BADM recount, refreshed store, same formula and
+clustering rule as `era5_precip_units_v3_partB`/`v4`**: near-1x 323, near-4x/8x 123,
+elsewhere 330, insufficient data 5 — essentially unchanged from `v4`'s original 123-site
+cluster, confirming today's earlier `cluster_resolution_sample` result (0/19 sampled flagged
+sites showed an internal resolution defect) generalizes network-wide: the 4x/8x cluster is
+real, not a stale-file artifact. `IT-MBo` individually moved from ratio-to-BIO12 17.7x to
+2.79x and now lands in `nearest_cluster = "elsewhere"`; `US-HB4` is numerically identical
+before and after (~487x) — confirms its defect is not staleness-related.
+
+**Confirmed contradiction with already-circulated material**: `era5_share_for_coordination/
+README.md` and `site_list.csv` cite IT-MBo's ERA5 MAP as ~24,150 mm/yr / ~18-24x — now
+confirmed wrong (true value 1,136.9 mm/yr / 2.79x to BIO12); that file was already marked
+provisional (`b519779`), and this refresh converts the caveat into a confirmed-needed
+correction for IT-MBo specifically. `US-HB4`'s entry and the other 121 clustered sites are
+not contradicted.
+
+**Unresolved, flagged for a decision**: `DE-RuW`'s possible site rename/merge; `hourly`
+DuckDB table intentionally left stale for ~30 sites (out of scope, manifest correctly marks
+it pending); `IT-Niv`'s lost classification, cause not diagnosed; a new development-mode
+snapshot was written (`fluxnet_shuttle_snapshot_20260920T102211.csv`) but not promoted to
+locked mode.
+
+---
+
+
 ## 2026-09-20 — Extracted-data store audit: IT-MBo is not isolated, decision rule fires (61-site ICOS reprocessing gap)
 
 Full audit of `data/extracted/`, prompted by `it_mbo_file_check`'s finding that IT-MBo's

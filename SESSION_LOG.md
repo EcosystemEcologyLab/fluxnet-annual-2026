@@ -4,6 +4,50 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-20 — Cluster resolution sample: IT-MBo's resolution defect does not generalise
+
+Follow-up to the same day's `it_mbo_bug_hunt`/`it_mbo_parsimony` diagnostics, which found
+IT-MBo's reported ERA5 anomaly is a DD/MM/YY-vs-HH resolution-branch artifact specific to
+that site (median ratio 21.2451), absent at a same-hub control (FI-Hyy). This left open
+whether IT-MBo is typical of the wider 123-site 4x/8x cluster (`era5_precip_units_v4`) or
+unusual — answered here with a stratified sample, not the full 123 sites. Read-only with
+respect to every existing diagnostic output and the pipeline; no figure or classification
+anywhere in the repo was changed. All values mm/yr; no ratio statistics as headline numbers,
+no factor fitting (one fixed, stated 2x threshold used only to classify agreement in the
+verdict, not derived from the sample). New code: `scripts/diagnostics/
+cluster_resolution_sample_download.R` (sample selection + background HH download/extract,
+`nohup`/`disown`, PID 25339, `logs/cluster_resolution_sample_download_20260920T074741.log`),
+`cluster_resolution_sample_retry.R` (one-off retry for 3 sites whose first-attempt ZIP
+downloads were truncated — confirmed via Python `zipfile`, not a disk-space issue — PID
+25874, `logs/cluster_resolution_sample_retry_20260920T080336.log`), and
+`cluster_resolution_sample_check.R` (the check). Full report, 2 tables, 1 figure:
+`review/diagnostics/cluster_resolution_sample/`.
+
+**Verdict: 0 of 19 sampled flagged sites, across all 8 networks the cluster spans (AMF, CNF,
+EUF, FLX, ICOS, JPF, KOF, TERN), show the monthly branch disagreeing with the half-hourly
+branch — every flagged site's MM-vs-HH ratio falls in [0.9998, 1.0058], nowhere close to the
+fixed 2x disagreement threshold, and the pattern is not confined to any network (0/n
+disagreement in every network sampled).** All 8 control sites agree likewise (largest
+deviation `GF-Guy` at ratio 0.8893, still far inside 2x). **The sample supports situation
+(b): the branches agree, and the 4x/8x flag reflects disagreement with the external
+references (BIO12/BADM), not an internal resolution-consistency defect in the distributed
+product — IT-MBo's defect does not generalise to this sample and looks like an isolated,
+site-specific case.** Implication for the Jaccard analysis: 0/19 sampled flagged sites show
+evidence their coarse-resolution ERA5 is internally unreliable, so nothing in this sample
+supports excluding the 123-site cluster's classifications on IT-MBo's grounds — the original
+BIO12/BADM disagreement itself remains untouched and unresolved by this diagnostic.
+
+Sample: stratified from `era5_reference_plots/table_site_reference_comparison.csv`'s own
+`cluster_membership` column, grouped by `product_source_network` (network field, never
+inferred from site ID prefix per Hard Rule 2) — up to 3 flagged sites per network (all
+available where a network has fewer than 3) plus 1 unflagged control per network, fixed
+seed 20260920, site list written to disk before any download started. 27 sites total across
+8 networks. 3 of 27 first-attempt downloads (`RU-Ege`, `MY-LHP`, `AU-Ya1`) were corrupted
+in transit and re-downloaded individually; all succeeded on retry, and all 27 sites'
+HH/DD/MM/YY data confirmed present before the check ran.
+
+---
+
 ## 2026-09-20 — IT-MBo/US-HB4/FI-Hyy precipitation parsimony check: resolution defects confirmed and localised
 
 Follow-up to the same day's `it_mbo_bug_hunt` diagnostic. Read-only, three sites only

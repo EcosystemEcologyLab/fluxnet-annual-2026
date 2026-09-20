@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T13:41:03Z",
+  "pipeline_version": "6896469",
+  "input_sources": [
+    "data/extracted/*/*_FLUXMET_HH_*.csv (raw, read directly)"
+  ],
+  "notes": "Per site, per year: fraction of HH P_F records with P_F_QC==0 (genuinely measured, confirmed empirically at all three sites in this diagnostic -- QC==0 records are ~0% identical to P_ERA at nonzero precipitation, QC==2 records are 100% identical, matching CLAUDE.md's documented System 2 consolidated-meteorological-variable convention exactly at HH resolution; the v3 polarity flip was specific to the MM-resolution fraction field, not present here), and the annual total built from measured (QC==0) records alone (NOT scaled up for missing months -- a partial-year sum, reported as such)."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T13:41:06Z",
+  "pipeline_version": "6896469",
+  "input_sources": [
+    "every raw file read by this script (see file_name column)"
+  ],
+  "notes": "File name, byte size, sha256 for every raw file read in this diagnostic. Files already hashed in review/diagnostics/it_mbo_bug_hunt/table_d4_file_provenance.csv (IT-MBo MM/DD/YY/HH, US-HB4 HH) are reused there by reference in report.md rather than re-listed if identical; this table covers every file this script itself read, including newly-hashed FI-Hyy and DD/MM/YY files not previously hashed."
+}

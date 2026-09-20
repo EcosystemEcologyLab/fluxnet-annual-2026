@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T13:41:03Z",
+  "pipeline_version": "6896469",
+  "input_sources": [
+    "review/diagnostics/it_mbo_parsimony/table_1_mean_annual_by_resolution.csv"
+  ],
+  "notes": "Mean annual precipitation by resolution (HH/DD/MM/YY), both P_ERA and P_F, one panel per site, log y-axis, BIO12/BADM marked as horizontal reference lines. White background."
+}

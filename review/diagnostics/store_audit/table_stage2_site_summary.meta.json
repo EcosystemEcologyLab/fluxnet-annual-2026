@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-09-20T16:49:55Z",
-  "pipeline_version": "a3c2ebe",
+  "run_datetime_utc": "2026-09-20T17:06:42Z",
+  "pipeline_version": "cd98d39",
   "input_sources": [
     "table_stage2_variable_comparison.csv (aggregated to one row per site)"
   ],
-  "notes": "Per-site status (IDENTICAL/DIFFERS_MINOR/DIFFERS_SCATTERED/DIFFERS_UNIFORM/MISSING_DIR), byte size, sha256, and year range for old vs. fresh MM files. 25/50 sites in the Stage 2 scope checked at report time; download of the remainder (restart-safe) may still be in progress -- see report.md's Download status section for the live count."
+  "notes": "FINAL: full 50-site sample. Per-site status (IDENTICAL/DIFFERS_MINOR/DIFFERS_SCATTERED/DIFFERS_UNIFORM), byte size, sha256, and year range for old vs. fresh MM files. 25 IDENTICAL, 20 DIFFERS_MINOR, 4 DIFFERS_SCATTERED, 1 DIFFERS_UNIFORM (IT-MBo)."
 }

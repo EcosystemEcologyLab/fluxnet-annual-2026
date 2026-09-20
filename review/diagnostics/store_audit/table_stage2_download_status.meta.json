@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T17:07:08Z",
+  "pipeline_version": "cd98d39",
+  "input_sources": [
+    "scripts/diagnostics/store_audit_stage2_download.R's own run log"
+  ],
+  "notes": "Per-site OK/FAILED status written by the download script itself at completion. Final: 45/45 OK, 0 failed."
+}

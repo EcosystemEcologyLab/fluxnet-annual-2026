@@ -1,0 +1,17 @@
+table,row_count_before,row_count_after,difference
+annual,41187,41329,142
+annual_converted,41161,41303,142
+annual_qc,41161,41303,142
+daily,15043537,15095379,51842
+daily_converted,14836316,14884819,48503
+daily_qc,14836316,14884819,48503
+hourly,613608,613608,0
+hourly_converted,527439,527439,0
+hourly_qc,527439,527439,0
+manifest,4690,4688,-2
+monthly,494244,495948,1704
+monthly_converted,489939,491578,1639
+monthly_qc,489939,491578,1639
+weekly,3640,3640,0
+weekly_converted,3603,3603,0
+weekly_qc,3603,3603,0

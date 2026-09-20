@@ -1,0 +1,5 @@
+axis,reason
+aridity,"Site list unchanged (0 new sites, stage 3) and site coordinates unchanged; class depends only on lat/long joined to static external rasters/manifest fields not touched by this refresh -- not re-derived."
+biomass,"Site list unchanged (0 new sites, stage 3) and site coordinates unchanged; class depends only on lat/long joined to static external rasters/manifest fields not touched by this refresh -- not re-derived."
+landcover,"Site list unchanged (0 new sites, stage 3) and site coordinates unchanged; class depends only on lat/long joined to static external rasters/manifest fields not touched by this refresh -- not re-derived."
+IGBP,"Site list unchanged (0 new sites, stage 3) and site coordinates unchanged; class depends only on lat/long joined to static external rasters/manifest fields not touched by this refresh -- not re-derived."

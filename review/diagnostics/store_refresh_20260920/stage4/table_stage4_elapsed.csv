@@ -1,0 +1,8 @@
+name,exit_code,elapsed_seconds
+duckdb_incremental,1,823
+duckdb_incremental_retry,1,3168
+duckdb_incremental_retry,1,3130
+duckdb_no_hourly_retry3,0,3020
+04_qc_retry3,0,73
+05_units_retry3,0,72
+07_figures_retry3,0,25

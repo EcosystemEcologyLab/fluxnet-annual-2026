@@ -1,0 +1,18 @@
+site_id,status,attempts,zip_path,timestamp
+IT-TrF,downloaded_verified,1,data/raw/ICOS_IT-TrF_FLUXNET_2012-2025_v1.3_r1.zip,2026-09-20 10:26:32.09223
+IT-Tor,downloaded_verified,1,data/raw/ICOS_IT-Tor_FLUXNET_2008-2025_v1.3_r1.zip,2026-09-20 10:28:30.356086
+IT-Noe,downloaded_verified,1,data/raw/ICOS_IT-Noe_FLUXNET_2022-2025_v1.3_r1.zip,2026-09-20 10:28:53.317058
+IT-Niv,downloaded_verified,1,data/raw/ICOS_IT-Niv_FLUXNET_2019-2025_v1.3_r1.zip,2026-09-20 10:30:27.994624
+IT-Lsn,downloaded_verified,1,data/raw/ICOS_IT-Lsn_FLUXNET_2016-2025_v1.3_r1.zip,2026-09-20 10:31:06.283444
+IT-BFt,downloaded_verified,1,data/raw/ICOS_IT-BFt_FLUXNET_2019-2025_v1.3_r1.zip,2026-09-20 10:32:43.776119
+IE-Cra,downloaded_verified,1,data/raw/ICOS_IE-Cra_FLUXNET_2020-2025_v1.3_r1.zip,2026-09-20 10:33:21.318379
+GL-ZaH,downloaded_verified,1,data/raw/ICOS_GL-ZaH_FLUXNET_2020-2025_v1.3_r1.zip,2026-09-20 10:33:32.321163
+GL-NuF,downloaded_verified,1,data/raw/ICOS_GL-NuF_FLUXNET_2019-2025_v1.3_r1.zip,2026-09-20 10:34:59.390128
+GL-Dsk,downloaded_verified,1,data/raw/ICOS_GL-Dsk_FLUXNET_2020-2025_v1.3_r1.zip,2026-09-20 10:37:41.039727
+GF-Guy,downloaded_verified,1,data/raw/ICOS_GF-Guy_FLUXNET_2004-2025_v1.3_r1.zip,2026-09-20 10:41:19.49328
+FR-Tou,downloaded_verified,1,data/raw/ICOS_FR-Tou_FLUXNET_2018-2025_v1.3_r1.zip,2026-09-20 10:42:19.310756
+FR-Mej,downloaded_verified,1,data/raw/ICOS_FR-Mej_FLUXNET_2019-2025_v1.3_r1.zip,2026-09-20 10:43:07.49966
+FR-Aur,downloaded_verified,1,data/raw/ICOS_FR-Aur_FLUXNET_2005-2025_v1.3_r1.zip,2026-09-20 10:50:00.801759
+DE-RuS,downloaded_verified,1,data/raw/ICOS_DE-RuS_FLUXNET_2011-2025_v1.3_r1.zip,2026-09-20 10:52:55.761857
+ZM-Mon,downloaded_verified,1,data/raw/EUF_ZM-Mon_FLUXNET_2007-2009_v1.3_r2.zip,2026-09-20 10:53:47.822526
+NL-Vkp,downloaded_verified,1,data/raw/EUF_NL-Vkp_FLUXNET_2014-2025_v1.3_r1.zip,2026-09-20 10:54:57.44195

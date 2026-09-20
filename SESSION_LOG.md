@@ -4,6 +4,85 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-20 — IT-MBo ERA5 bug hunt: anomaly does not stand, artifact is resolution-specific, not ours
+
+Prompted by Dario Papale (external collaborator) reporting he could not reproduce the
+IT-MBo ERA5-precipitation anomaly from `era5_share_for_coordination/` — checking HH and MM
+himself, he found numbers an order of magnitude different from ours and ERA5 *below*
+measured, the opposite direction. Investigated on the assumption the error was ours until
+the data said otherwise. Read-only with respect to every prior ERA5 diagnostics folder
+(`era5_precip_units/`, `_v2/`, `_v3/`, `_v4/`, `era5_reference_plots/`,
+`era5_cumulative_test/`, `era5_share_for_coordination/`) and the pipeline — confirmed via
+`git status`, none touched. New code: `scripts/diagnostics/it_mbo_bug_hunt.R`. Full report,
+9 output tables: `review/diagnostics/it_mbo_bug_hunt/`.
+
+**Verdict: our reported IT-MBo anomaly does not stand.** The ~18-24x ERA5-over-measured
+ratio we published comes entirely from the DD/MM/YY-resolution branch of the distributed
+FLUXNET product, which this investigation found is internally inflated by a consistent
+~21.25x factor relative to the same product's own HH-resolution data (median ratio 21.2451,
+n=12,027 site-days spanning the full 1981-2025 record, range 15-37x). HH-resolution data is
+not part of this pipeline's default extraction (`FLUXNET_EXTRACT_RESOLUTIONS="y m d"`) and
+had never been downloaded for any site before this investigation; fresh single-site
+`flux_download()`/`flux_extract()` calls (not a full reprocessing run) pulled it for
+IT-MBo, US-HB4, and a control (FI-Hyy). At HH resolution, IT-MBo's ERA5-derived and
+tower-measured annual precipitation are close and essentially unbiased (2003-2025 means:
+1,152.3 mm/yr ERA5 vs. 1,152.8 mm/yr measured, ratio 0.9995) — ordinary for the site and
+consistent with BADM's independent 1,365 mm/yr. Year-by-year, ERA5 sits below measured in 9
+of 23 years, concentrated in 2019-2025, which plausibly explains what Dario found if he
+checked a recent year or short window; it is ordinary scatter around 1:1, not a systematic
+bias, so a fully faithful reproduction of his exact claim (a sustained below-measured
+direction across the whole record) was not obtained.
+
+**Not a units, day-weighting, or source-choice error anywhere in this repository.** The two
+P_ERA sources (standalone `*_ERA5_MM_*.csv` vs. the column embedded in `*_FLUXMET_MM_*.csv`)
+are byte-for-byte identical at IT-MBo and 3 controls (1,008/1,008 site-months, 0 differences).
+MM-vs-YY day-weighting reproduces the product's own bundled annual file exactly (ratio
+1.0000, all 44 complete years at IT-MBo) and DD-summed matches MM-day-weighted just as
+exactly (ratio 1.0000, 528 months) — it is specifically DD/MM/YY vs. HH that disagrees, not
+this pipeline's arithmetic. Every script that has ever produced a P_ERA-derived number
+(`era5_precip_units.R` through `_v4.R`, `era5_reference_plots.R`, `era5_cumulative_test.R`,
+`era5_share_for_coordination.R`, `R/climate_classification.R`,
+`scripts/step5_compute_koppen_era5.R`) reads the same standalone-file source and applies the
+same day-weighting formula — traced script-by-script, no incorrect assumption found at any
+point (`table_d3_assumption_trace.csv`). BIFVARINFO's own unit statements, quoted verbatim,
+confirm `mm d-1` at MM/DD (day-weighting is correct) and reveal P_ERA is documented as
+"downscaled from ERA, linearly regressed using measured only site data" — a per-site
+statistical reconstruction, not raw ECMWF ERA5 output, which is a specific, mechanistically
+plausible trigger for a site-specific regression-driven bias (consistent with the observed
+15-37x range, not a hard-coded constant).
+
+**US-HB4 is a separate case, unaffected by this finding.** Its DD-vs-HH ratio is ~1.00
+(n=12,147 site-days) — DD and HH agree with each other, and both are equally,
+catastrophically implausible (~700 m/yr) — a uniform-resolution error present at every level
+of the product, not a resolution artifact, consistent with the original v1 characterisation
+of a genuine, isolated site-specific data error. **FI-Hyy (control, same hub/processing
+chain as IT-MBo, not in the 4x/8x cluster) shows ratio ~1.00 (n=13,549 site-days)** — the
+IT-MBo defect is site-specific, not an ICOS-wide or ONEFlux-wide characteristic, meaning the
+existing 123-site 4x/8x cluster likely contains at least two distinct failure modes
+(IT-MBo-like resolution artifacts, US-HB4-like uniform-resolution errors), not one
+homogeneous group. The other 121 clustered sites are untested — extending this exact
+HH-vs-DD/MM/YY check network-wide is flagged as urgent follow-up, not attempted here (each
+site needs its own HH download; three were run this session).
+
+**Provenance, checked before assuming a stale file:** a live `flux_listall()` call (not the
+cached snapshot) confirmed IT-MBo's `product_id` (`enS2fTzGG_9PS5-51hqet8iH`) and
+`oneflux_code_version` (`v1.3`) are unchanged from what this repo already had on disk — the
+only difference is one additional year (2025) added upstream since our last `y m d`
+download. There is no newer/corrected version explaining Dario's numbers. Full PID and
+file-level (name/size/sha256) provenance for every raw file read, including the four freshly
+downloaded HH files: `table_d4_pid_provenance.csv`, `table_d4_file_provenance.csv`.
+
+**No fix applied anywhere** (data/extracted/ is never hand-edited, per Hard Rule 4; the
+defect is upstream in ONEFlux/FLUXNET Shuttle processing, outside this repository). One
+mitigation identified, not yet built: an HH-vs-MM/YY cross-check before
+`compute_site_koppen_era5()` trusts a site's P_ERA, using the reusable
+`dd_vs_hh_ratio()` function written for this diagnostic. Sentences in
+`era5_share_for_coordination/README.md` this finding contradicts for IT-MBo specifically are
+quoted in the report; that package's other content (US-HB4, the 123-site list generally) is
+not shown to be wrong by this investigation.
+
+---
+
 ## 2026-09-18 — Downloaded MODIS MCD12C1.061 (2022) land cover; download only, no distribution computed
 
 Run on the mini (hostname `setanta.local`). Downloaded, verified, and documented one

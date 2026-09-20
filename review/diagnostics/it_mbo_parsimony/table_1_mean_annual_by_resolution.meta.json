@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T13:41:03Z",
+  "pipeline_version": "6896469",
+  "input_sources": [
+    "data/extracted/*/*_{ERA5,FLUXMET}_{HH,DD,MM,YY}_*.csv (raw, read directly) and review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv (BIO12/BADM columns, read-only)"
+  ],
+  "notes": "Mean annual precipitation (mm/yr) by resolution (HH/DD/MM/YY) and variable (P_ERA/P_F), IT-MBo/US-HB4/FI-Hyy, complete-coverage years only (n_years_* gives the year count per cell). No ratios, no factor fitting. 6 data rows (3 sites x 2 variables); the brief's 'eight rows' could not be reached without inventing rows -- reported as a discrepancy, not forced."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T13:41:03Z",
+  "pipeline_version": "6896469",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_*/ICOS_IT-MBo_FLUXNET_FLUXMET_{MM,HH}_*.csv (raw, read directly)"
+  ],
+  "notes": "IT-MBo, 2012-2014: monthly P_F and P_F_QC from the MM-resolution file, beside that same month's HH-resolution P_F summed directly, for a side-by-side look at whether the two implausible months visible in era5_share_for_coordination's fig1 appear in one branch or both."
+}

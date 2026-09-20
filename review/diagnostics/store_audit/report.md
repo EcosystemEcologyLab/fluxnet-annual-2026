@@ -207,46 +207,39 @@ precipitation/temperature-scale variables, 10 units for flux variables) before a
 as "severe" — chosen as round numbers well above ordinary reprocessing noise (FI-Hyy's largest
 drift across all 8 variables was ~1 unit) and well below IT-MBo's actual defect (>37 mm/day).
 
-**Site-level result, all sites checked so far (28 of 50 in scope — see download status
-below)**:
+**Site-level result — the full planned 50-site sample, download complete (45/45 OK, 0
+failed; PID `27927` exited cleanly, see download status below)**:
 
 | status | n sites | sites |
 |---|---|---|
-| IDENTICAL | 9 | all 9 of the exhaustive failed/retried sites (US-ARM, US-Aud, US-Bar, US-Bi1, US-Bi2, US-BZB, RU-Ege, MY-LHP, AU-Ya1) — confirms their Jun 2/Sep 20 re-verification was durable: a **third**, independent download today matches exactly |
+| IDENTICAL | 25 | all 9 exhaustive failed/retried sites, all 15 `control_unchanged` sites, and `US-HB4` — **US-HB4's own known defect is present identically in both the old and a fresh download, confirming it is a genuine, still-current archive defect, not a staleness artifact** (consistent with `it_mbo_file_check`'s earlier finding) |
 | DIFFERS_UNIFORM (severe, IT-MBo-like) | 1 | IT-MBo only |
-| DIFFERS_SCATTERED (a handful of severe months) | 3 | DE-HoH (`P_F`, 1/27 differing months severe, max abs diff 3.85 mm/day), GF-Guy (`P_ERA`, 13/96 months severe, median ratio 0.894, max abs diff 3.14 mm/day), **IT-BCi (`LE_F_MDS`, a flux variable — 4/13 differing months severe, max abs diff 34.8 W/m2)** — all three real but an order of magnitude smaller than IT-MBo's pattern, not a repeat of it |
-| DIFFERS_MINOR (ordinary reprocessing drift, no severe months) | 15 | remaining changed-metadata sites checked so far |
+| DIFFERS_SCATTERED (a handful of severe months) | 4 | DE-HoH (`P_F`, 1/27 differing months severe, max abs diff 3.85 mm/day), GF-Guy (`P_ERA`, 13/96 months severe, median ratio 0.894, max abs diff 3.14 mm/day), **IT-BCi (`LE_F_MDS`, a flux variable — 4/13 differing months severe, max abs diff 34.8 W/m2)**, **SE-Svb (`H_F_MDS`, another flux variable — 1/41 months severe, max abs diff 10.1 W/m2)** — all four real but an order of magnitude smaller than IT-MBo's pattern, not a repeat of it |
+| DIFFERS_MINOR (ordinary reprocessing drift, no severe months) | 20 | remaining changed-metadata sites |
 
 Full per-variable table: `table_stage2_variable_comparison.csv`; per-site summary (incl.
 sha256/byte-size/year-range for every compared file): `table_stage2_site_summary.csv`.
 
 **Restricting to sites that were actually flagged as metadata-changed** (the population the
-decision rule is about): **19 of the 61 changed-metadata sites have been checked so far — 1
-severe (IT-MBo, 5%), 3 modestly scattered (DE-HoH, GF-Guy, IT-BCi, 16%), 15 minor-only (79%).**
-This is not yet the full 61, but it is a real, bug-fixed, absolute-magnitude-calibrated
-sample, and it points the same direction as the free-checked 5-site sample did before the
-classification bugs were found: **IT-MBo looks like the severity outlier, not a preview of a
-network-wide repeat — but 3 of 19 (16%) do show a real, if smaller, defect (one of them,
-IT-BCi, in a flux variable rather than precipitation), which is enough on its own to keep the
-decision rule's "any site other than IT-MBo" trigger firing.**
+decision rule is about): **25 of the 61 changed-metadata sites (41%) have now been checked —
+1 severe (IT-MBo, 4%), 4 modestly scattered (DE-HoH, GF-Guy, IT-BCi, SE-Svb, 16%), 20
+minor-only (80%).** This is a real, bug-fixed, absolute-magnitude-calibrated sample covering
+over 40% of the flagged population: **IT-MBo is the clear severity outlier, not a preview of a
+network-wide repeat — but 4 of 25 (16%) show a real, if smaller, defect, two of them
+(IT-BCi, SE-Svb) in flux variables rather than precipitation, which is enough on its own to
+keep the decision rule's "any site other than IT-MBo" trigger firing.**
 
-### Download status — partial, ongoing, restart-safe
+### Download status — complete
 
 Per CLAUDE.md's guidance for long-running scripts ("report the PID and log path... then
-monitor periodically rather than blocking"), this report is being finalized with **23 of the
-45 queued sites downloaded** (plus the 5 free-checked, for 28/50 total in scope) rather than
-blocking indefinitely — several of the remaining ICOS sites are large, long-record towers
-(FR-Pue alone took ~8.5 minutes) and the full 45-site pass has been running for approximately
-40 minutes and remains active in the background as this report is written. **The download
-(PID `27927`, log `logs/store_audit_stage2_download_20260920.log`) is restart-safe**
-(`already_done()` — itself fixed during this audit, see the note in
-`store_audit_stage2_download.R` — skips any site already extracted) and can be left to finish
-on its own, or resumed later with `Rscript scripts/diagnostics/store_audit_stage2_download.R`
-if it's stopped, to complete the remaining 22 sites (9 `control_unchanged`
-AmeriFlux/TERN/ICOS controls, `US-HB4`, and 12 more `changed_metadata_verify` sites), followed
-by re-running `store_audit_stage2_compare.R` to extend
-`table_stage2_variable_comparison.csv`/`table_stage2_site_summary.csv` to the full 50-site
-sample.
+monitor periodically rather than blocking"), this report was drafted against a partial sample
+while the download continued in the background; it has since **completed: 45/45 sites
+downloaded, verified, and extracted, 0 failures** (PID `27927`, log
+`logs/store_audit_stage2_download_20260920.log`, total runtime ~54 minutes — several ICOS
+sites are large, long-record towers, e.g. FR-Pue alone took ~8.5 minutes). The comparison
+above reflects the full, completed 50-site sample. `already_done()` (fixed during this audit
+— see the note in `store_audit_stage2_download.R`) was never actually exercised on a restart
+in this run, since the single continuous pass completed on its own.
 
 
 ---
@@ -336,15 +329,18 @@ Not implemented here, per scope.
 ## Close
 
 **Does the fixed decision rule call for a full store refresh? Yes.** 61/759 on-disk sites
-(all ICOS) have a stale `product_id`/year-range relative to the live archive. Of the 19 of
-those 61 sites content-checked so far, 15 (79%) show only ordinary reprocessing-scale drift,
-but **3 (DE-HoH, GF-Guy, IT-BCi — 16%) show a real, if smaller-than-IT-MBo's, defect** (a
-handful of months off by several units, not the whole record), which on its own satisfies "any
-site other than IT-MBo differs... in a variable this project uses." IT-MBo remains the clear
-severity outlier (the only `DIFFERS_UNIFORM` site of 28 checked), not the typical case, but
-the rule as fixed in advance does not require typicality — only detection — and it detects
-real problems at 4 of 19 checked changed-metadata sites (IT-MBo + DE-HoH + GF-Guy + IT-BCi),
-not just 1.
+(all ICOS) have a stale `product_id`/year-range relative to the live archive. Of those 61,
+**25 (41%) were content-checked**, the full planned sample: 20 (80%) show only ordinary
+reprocessing-scale drift, but **4 (DE-HoH, GF-Guy, IT-BCi, SE-Svb — 16%) show a real, if
+smaller-than-IT-MBo's, defect** (a handful of months off by several units, not the whole
+record), which on its own satisfies "any site other than IT-MBo differs... in a variable this
+project uses." IT-MBo remains the clear severity outlier (the only `DIFFERS_UNIFORM` site of
+50 checked), not the typical case, but the rule as fixed in advance does not require
+typicality — only detection — and it detects real problems at 5 of 25 checked changed-metadata
+sites (IT-MBo + DE-HoH + GF-Guy + IT-BCi + SE-Svb), not just 1. `US-HB4` (a known,
+already-confirmed defect, unaffected by staleness) came back `IDENTICAL` between old and
+fresh, as expected — a useful negative control confirming the classification script isn't
+simply flagging every site.
 
 **Scope and cost.** Re-downloading and re-extracting 61 ICOS sites (MM/DD/YY only, per this
 project's `FLUXNET_EXTRACT_RESOLUTIONS=y m d` default) is small relative to the full 781-site
@@ -370,14 +366,15 @@ and `05_units.R` are SQL-only per their own header comments and should be compar
 refresh to reflect corrected values — not costed here.
 
 **Is any flux variable involved? Yes, and not only at the ordinary-reprocessing scale.**
-**`IT-BCi` is `DIFFERS_SCATTERED` on `LE_F_MDS`** (a flux variable, not precipitation): 4 of
-13 differing months exceed the severity floor, max absolute difference 34.8 W/m2 — smaller
-than IT-MBo's pattern but a real, scattered defect in a flux variable, confirming the store
-issue is not scoped to precipitation alone, as the brief for this audit anticipated. Beyond
-that, ordinary `DIFFERS_MINOR`-level (non-zero but sub-severity) differences also appear in
-`NEE_VUT_REF` and `GPP_NT_VUT_REF` at several sites (GF-Guy, DE-Hzd — see
-`table_stage2_variable_comparison.csv`), and IE-Cra's `NEE_VUT_REF` column is absent entirely
-from the old file (added by the reprocessing, not merely changed).
+**`IT-BCi` (`LE_F_MDS`) and `SE-Svb` (`H_F_MDS`) are both `DIFFERS_SCATTERED` on flux
+variables**, not precipitation: IT-BCi has 4/13 differing months over the severity floor (max
+abs diff 34.8 W/m2), SE-Svb 1/41 (max abs diff 10.1 W/m2) — smaller than IT-MBo's pattern but
+real, scattered defects in flux variables, confirming the store issue is not scoped to
+precipitation alone, as the brief for this audit anticipated. Beyond that, ordinary
+`DIFFERS_MINOR`-level (non-zero but sub-severity) differences also appear in `NEE_VUT_REF` and
+`GPP_NT_VUT_REF` at several sites (GF-Guy, DE-Hzd — see `table_stage2_variable_comparison.csv`),
+and IE-Cra's `NEE_VUT_REF` column is absent entirely from the old file (added by the
+reprocessing, not merely changed).
 
 **Did Stage 3 find any divergence between the pipeline and an independent derivation? No** —
 exact agreement once compared against the correct `dataset='FLUXMET'` subset. The pipeline's

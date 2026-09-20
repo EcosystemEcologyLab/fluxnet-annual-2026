@@ -1,5 +1,7 @@
 # ERA5 precipitation units, v2: closing the circularity gap in the v1 verdict
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 **Type:** Read-and-report diagnostic + counterfactual, confined to the
 diagnostics folder, for a co-author decision. Supersedes the verdict in
 `review/diagnostics/era5_precip_units/report.md` (v1). No edits to the

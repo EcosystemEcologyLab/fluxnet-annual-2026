@@ -1,5 +1,7 @@
 # ERA5 within-year cumulative-total hypothesis: read-only test
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 Read-only test, run on the mini (`data/extracted/` complete, 781 sites; hostname
 `setanta.local`). Reads the raw `*_FLUXNET_ERA5_MM_*.csv` files directly — **not
 DuckDB** — so ingestion (`03_read.R`/`duckdb_setup.R`/`duckdb_update.R`) plays no part.

@@ -1,5 +1,7 @@
 # ERA5-derived annual precipitation vs. independent references: a network-wide check
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this package rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This package's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 This package summarises a check of ERA5-derived mean annual precipitation (MAP) against
 independent references, across the current FLUXNET network. It describes what was
 measured. It does not assert a cause.

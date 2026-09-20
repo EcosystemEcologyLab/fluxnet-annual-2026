@@ -1,5 +1,7 @@
 # ERA5 precipitation units, v3: ruling out ingestion/query, then a network-wide correction test
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 **Type:** Read-and-report diagnostic + counterfactual, confined to the
 diagnostics folder. New code: `scripts/diagnostics/era5_precip_units_v3_partA.R`,
 `scripts/diagnostics/era5_precip_units_v3_partB.R`. No edits to the

@@ -1,5 +1,7 @@
 # ERA5 precipitation units investigation: are the 26 MAP-screen exclusions a units bug?
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 **Type:** Read-and-report diagnostic + scoped counterfactual, for a
 co-author decision. No existing script, figure, legend, or snapshot CSV
 was modified — `R/climate_classification.R` and

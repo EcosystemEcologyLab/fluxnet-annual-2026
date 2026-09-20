@@ -1,5 +1,7 @@
 # IT-MBo ERA5-precipitation anomaly: bug hunt, prompted by Dario Papale's non-reproduction
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 ## Verdict
 
 **Our reported IT-MBo anomaly does not stand: the ~18-24x ERA5-over-measured ratio we

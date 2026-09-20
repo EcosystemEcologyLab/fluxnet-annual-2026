@@ -1,5 +1,7 @@
 # ERA5 vs. BIO12 vs. BADM vs. tower-measured reference plots
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 Plotting task only, per instruction: no new verdict, no correction, no
 reclassification, no pipeline edit. This report states what is plotted, the
 sample size, and the axis/binning choices for each figure. It does not

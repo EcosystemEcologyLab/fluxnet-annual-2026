@@ -1,5 +1,7 @@
 # ERA5 precipitation units, v4 — scoping follow-up to v3
 
+> **Provisional — pending store audit (2026-09-20).** The numbers in this report rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This report's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
+
 Read-and-report only. No counterfactual, no reclassification, no pipeline edits.
 Confined to `review/diagnostics/era5_precip_units_v4/`. Reuses v3's Part B
 empirical clustering (`table_b1_factor_estimates.csv`, 123 sites near 4x/8x

@@ -1,0 +1,6 @@
+site_id,role,data_hub,product_source_network,fluxnet_product_name,product_id,product_id_type,oneflux_code_version,first_year,last_year,download_link
+IT-MBo,test site,ICOS,ICOS,ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip,enS2fTzGG_9PS5-51hqet8iH,ICOS handle (hdl.handle.net/11676/...),v1.3,2003,2025,https://data.icos-cp.eu/licence_accept?ids=%5B%22enS2fTzGG_9PS5-51hqet8iH%22%5D
+US-HB4,named outlier,AmeriFlux,AMF,AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1.zip,10.17190/AMF/2571130,DOI,v1.3,2020,2024,(AmeriFlux data portal)
+FI-Hyy,control,ICOS,ICOS,ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1.zip,oIJ9cFYf8Q0e9nfMRRS-90vM,ICOS handle,v1.3,1997,2025,(ICOS data portal)
+JP-Khw,control,ICOS,JPF,JPF_JP-Khw_FLUXNET_2000-2021_v1.3_r1.zip,ws7GV5BLwsKMaGOsosxNThpD,ICOS handle,v1.3,2000,2021,(JPF/ICOS data portal)
+US-Akn,control,AmeriFlux,AMF,AMF_US-Akn_FLUXNET_2011-2022_v1.3_r1.zip,10.17190/AMF/2469442,DOI,v1.3,2011,2022,(AmeriFlux data portal)

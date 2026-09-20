@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-20T12:15:39Z",
+  "pipeline_version": "f4fe855",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_BIFVARINFO_MM_2003-2024_v1.3_r1.csv",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_BIFVARINFO_DD_2003-2024_v1.3_r1.csv",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_BIFVARINFO_HH_2003-2025_v1.3_r1.csv"
+  ],
+  "notes": "Verbatim VAR_INFO_DEFINITION and VAR_INFO_UNIT for P_ERA and P_F at MM/DD/HH resolution, read from the site's own BIFVARINFO files (the product's own authoritative variable documentation, also what fluxnet::flux_varinfo() wraps -- no separate unit statement exists in the fluxnet R package's own help pages, confirmed by help.search() and vignette() returning nothing)."
+}

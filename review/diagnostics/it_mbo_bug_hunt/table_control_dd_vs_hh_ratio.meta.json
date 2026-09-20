@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T12:15:44Z",
+  "pipeline_version": "f4fe855",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_DD_*.csv and *_ERA5_HH_*.csv (raw, read directly; HH freshly downloaded for this diagnostic)"
+  ],
+  "notes": "Same DD-vs-HH-summed ratio test as table_d2_dd_vs_hh_ratio.csv (IT-MBo), run at FI-Hyy (control, same hub/network as IT-MBo, not in the v3/v4 4x/8x cluster) and US-HB4 (the other individually-named outlier). FI-Hyy: ratio ~1.00 (no inconsistency) -- confirms the IT-MBo finding is site-specific, not a general ICOS/ONEFlux product or pipeline characteristic. US-HB4: DD and HH agree with each other (both resolutions equally, catastrophically implausible) -- a different failure mode from IT-MBo's resolution-specific artifact; US-HB4's anomaly is present at every resolution in the raw product, consistent with v1's original 'genuine, isolated site-specific error' characterisation."
+}

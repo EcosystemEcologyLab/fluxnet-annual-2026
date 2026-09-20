@@ -1,0 +1,7 @@
+resolution,VAR_INFO_VARNAME,VAR_INFO_DEFINITION,VAR_INFO_UNIT
+MM,P_ERA,"Precipitation, downscaled from ERA, linearly regressed using measured only site data. Average from daily data",mm d-1
+MM,P_F,Precipitation consolidated from P_F_MDS and P_ERA. Average from daily data,mm d-1
+DD,P_ERA,"Precipitation, downscaled from ERA, linearly regressed using measured only site data. Average from half-hourly data",mm d-1
+DD,P_F,Precipitation consolidated from P_F_MDS and P_ERA. Average from half-hourly data,mm d-1
+HH,P_ERA,"Precipitation, downscaled from ERA, linearly regressed using measured only site data (mm per dataset resolution: either hour or half-hour)",mm
+HH,P_F,Precipitation consolidated from P and P_ERA. P used if measured (mm per dataset resolution: either hour or half-hour),mm

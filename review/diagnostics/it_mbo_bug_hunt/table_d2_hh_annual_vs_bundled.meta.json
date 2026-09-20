@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-09-20T12:15:39Z",
+  "pipeline_version": "f4fe855",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_HH_1981-2025_v1.3_r1.csv",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_HH_2003-2025_v1.3_r1.csv",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_YY_1981-2024_v1.3_r1.csv",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_YY_2003-2024_v1.3_r1.csv"
+  ],
+  "notes": "Annual totals built by directly summing the HH-resolution P_ERA and P_F series (the physically correct way to get an annual total from per-timestep depths), alongside the same years' DD/MM-derived YY-bundled values, for direct comparison."
+}

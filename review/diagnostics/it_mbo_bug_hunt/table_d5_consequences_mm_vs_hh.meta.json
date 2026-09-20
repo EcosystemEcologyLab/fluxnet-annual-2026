@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-20T12:15:40Z",
+  "pipeline_version": "f4fe855",
+  "input_sources": [
+    "review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv (read-only)",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_HH_1981-2025_v1.3_r1.csv",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_HH_2003-2025_v1.3_r1.csv"
+  ],
+  "notes": "Side-by-side of the already-published MM/YY-resolution IT-MBo numbers (unchanged by this diagnostic -- D1/D2 found no error in source choice or day-weighting) against this diagnostic's new HH-resolution annual totals. This is the explicit, clearly-labelled counterfactual requested: HH-resolution ERA5 and tower precipitation at IT-MBo are both physically ordinary and close to each other, in contrast to the MM/YY-resolution numbers, which are ~18-21x higher for ERA5 specifically."
+}

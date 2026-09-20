@@ -1,0 +1,7 @@
+metric,value
+"era5_map_mm (as reported, MM/YY day-weighted)",24150.380833333333
+"measured_map_mm (as reported, QC>=0.9 tower years)",1341.8354444444444
+ratio_to_measured (as reported),17.998019752215022
+"P_ERA_hh_mean_mm (this diagnostic, HH-summed annual, all years with complete HH coverage)",1152.2788695651932
+"P_F_hh_mean_mm (this diagnostic, HH-summed annual, all years with complete HH coverage)",1152.8071304347798
+ratio HH P_ERA / HH P_F (this diagnostic),0.9995417612750301

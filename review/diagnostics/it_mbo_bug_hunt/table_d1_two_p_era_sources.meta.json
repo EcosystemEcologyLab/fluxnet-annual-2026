@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T12:15:31Z",
+  "pipeline_version": "f4fe855",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_MM_*.csv and *_FLUXMET_MM_*.csv (raw, read directly)"
+  ],
+  "notes": "Month-by-month comparison of P_ERA read from the standalone ERA5_MM file vs. the P_ERA column embedded in the FLUXMET_MM file, at IT-MBo and controls FI-Hyy, JP-Khw, US-Akn. Result: identical at every site tested (1008/1008 months exactly equal across all sites) -- rules out source choice as a cause of the discrepancy Dario reports."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-20T12:15:39Z",
+  "pipeline_version": "f4fe855",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_DD_1981-2024_v1.3_r1.csv",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_HH_1981-2025_v1.3_r1.csv"
+  ],
+  "notes": "Per-day comparison of DD-resolution P_ERA against that same day's HH-resolution P_ERA summed to a true daily total. Median ratio 21.25, essentially constant across the year -- DD (and, transitively, MM and YY, which agree with DD to <0.7%) is not a day-weighted rate consistent with the distributed HH data; it is a near-constant ~21.2x multiple of it."
+}

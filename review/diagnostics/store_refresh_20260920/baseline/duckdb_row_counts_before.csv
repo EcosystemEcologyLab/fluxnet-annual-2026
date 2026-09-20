@@ -1,0 +1,17 @@
+table,row_count
+annual,41187
+annual_converted,41161
+annual_qc,41161
+daily,15043537
+daily_converted,14836316
+daily_qc,14836316
+hourly,613608
+hourly_converted,527439
+hourly_qc,527439
+manifest,4690
+monthly,494244
+monthly_converted,489939
+monthly_qc,489939
+weekly,3640
+weekly_converted,3603
+weekly_qc,3603

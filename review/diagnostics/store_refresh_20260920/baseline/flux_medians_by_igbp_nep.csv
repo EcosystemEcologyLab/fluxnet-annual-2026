@@ -1,0 +1,13 @@
+igbp_class,igbp_name,median,n_sites,total_site_years,std_dev,normalized_height
+EBF,Evergreen broadleaf forest,382.1568,38,204,426.3983,1
+MF,Mixed forest,282.648,22,133,339.7877,0.739613
+DBF,Deciduous broadleaf forest,299.8248,60,501,291.0437,0.78456
+ENF,Evergreen needleleaf forest,148.1705,95,802,367.5302,0.387722
+CSH,Closed shrubland,40.123,11,50,121.6345,0.104991
+OSH,Open shrubland,14.6182,32,188,137.9625,0.038252
+WSA,Woody savanna,282.266,15,138,264.2805,0.738613
+SAV,Savanna,27.9834,10,73,110.3057,0.073225
+GRA,Grassland,94.2106,120,649,189.9765,0.246523
+WET,Wetland,60.0572,90,389,214.8042,0.157153
+CRO,Cropland,184.4875,107,539,354.5707,0.482753
+CVM,Cropland/natural vegetation mosaic,24.6967,7,24,279.733,0.064625

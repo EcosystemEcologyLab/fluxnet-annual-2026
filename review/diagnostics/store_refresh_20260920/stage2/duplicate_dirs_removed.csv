@@ -1,0 +1,11 @@
+site_id,action,directory,mtime,size,note
+IT-MBo,removed,data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1,2026-06-01 17:06,45928 bytes shown by ls (dir entry; contents ~45MB),stale June extraction; known corrupted (it_mbo_file_check)
+IT-MBo,kept,data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1,2026-09-20 05:04,dir entry only; HH-only so far,fresh Sept extraction; will be completed by stage 3 download
+FI-Hyy,removed,data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2024_v1.3_r1,2026-06-01 16:59,dir entry,stale June extraction
+FI-Hyy,kept,data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1,2026-09-20 05:13,dir entry only; HH-only so far,fresh Sept extraction (used as control site earlier today; content was clean)
+DE-Hzd,removed,data/extracted/ICOS_DE-Hzd_FLUXNET_2022-2024_v1.3_r1,2026-06-01 16:53,dir entry,stale June extraction; year range 2022-2024 only
+DE-Hzd,kept,data/extracted/ICOS_DE-Hzd_FLUXNET_2010-2025_v1.3_r1,2026-09-20 08:02,dir entry only; HH-only so far,fresh Sept extraction has MUCH wider year range (2010-2025 vs 2022-2024) -- not just a re-download, a genuinely extended record; flagged for stage 5 reconciliation
+GF-Guy,removed,data/extracted/ICOS_GF-Guy_FLUXNET_2017-2024_v1.3_r1,2026-06-01 17:06,dir entry,stale June extraction; one of store_audit's 4 confirmed-modest-defect sites
+GF-Guy,kept,data/extracted/ICOS_GF-Guy_FLUXNET_2004-2025_v1.3_r1,2026-09-20 08:02,dir entry only; HH-only so far,fresh Sept extraction also has wider year range (2004-2025 vs 2017-2024)
+IE-Cra,removed,data/extracted/ICOS_IE-Cra_FLUXNET_2020-2024_v1.3_r1,2026-06-01 17:06,dir entry,stale June extraction
+IE-Cra,kept,data/extracted/ICOS_IE-Cra_FLUXNET_2020-2025_v1.3_r1,2026-09-20 08:02,dir entry only; HH-only so far,fresh Sept extraction

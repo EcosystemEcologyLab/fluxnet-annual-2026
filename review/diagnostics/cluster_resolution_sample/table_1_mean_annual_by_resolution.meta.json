@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T15:09:56Z",
+  "pipeline_version": "368e8f7",
+  "input_sources": [
+    "data/extracted/*/*_{ERA5,FLUXMET}_{HH,DD,MM,YY}_*.csv (raw, read directly) and table_0_sample_selection.csv (BIO12/BADM columns, read-only)"
+  ],
+  "notes": "Mean annual precipitation (mm/yr) by resolution (HH/DD/MM/YY) and variable (P_ERA/P_F), for the 27-site stratified sample from the 123-site 4x/8x cluster (seed 20260920). Complete-coverage years only; n_years_* gives the year count per cell. 0 site(s) skipped for missing extracted data: none."
+}

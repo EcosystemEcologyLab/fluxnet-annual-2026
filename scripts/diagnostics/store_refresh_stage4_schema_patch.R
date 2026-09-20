@@ -27,16 +27,26 @@ if (file.exists(".env")) { library(dotenv); dotenv::load_dot_env() }
 source("R/pipeline_config.R")
 check_pipeline_config()
 
-suppressPackageStartupMessages({ library(duckdb); library(DBI); library(readr) })
+suppressPackageStartupMessages({ library(duckdb); library(DBI); library(readr); library(fluxnet) })
 
 con <- dbConnect(duckdb(), dbdir = "data/duckdb/fluxnet.duckdb", read_only = FALSE)
 
 db_cols <- dbGetQuery(con, "PRAGMA table_info(hourly)")$name
 daily_types <- dbGetQuery(con, "PRAGMA table_info(daily)")
 
-f <- "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_HH_2003-2025_v1.3_r1.csv"
-csv_cols <- names(readr::read_csv(f, n_max = 0, show_col_types = FALSE))
-missing <- setdiff(csv_cols, db_cols)
+# Scan EVERY currently-extracted HH/HR file, not a single sample site --
+# a first attempt sampling only IT-MBo's file missed columns (deeper
+# soil-sensor profiles, SW_DIF) that only appear in OTHER sites' files.
+inv <- flux_discover_files("data/extracted")
+hh_files <- inv$path[inv$time_resolution %in% c("HH", "HR") &
+                        inv$dataset %in% c("ERA5", "FLUXMET") & file.exists(inv$path)]
+message("Scanning ", length(hh_files), " HH/HR files for columns not in `hourly` table...")
+missing <- character(0)
+for (f in hh_files) {
+  cols <- tryCatch(names(readr::read_csv(f, n_max = 0, show_col_types = FALSE)), error = function(e) character(0))
+  missing <- union(missing, setdiff(cols, db_cols))
+}
+missing <- setdiff(missing, c("data_hub", "site_id", "dataset"))
 
 message("Missing columns in `hourly` table: ", length(missing))
 for (col in missing) {

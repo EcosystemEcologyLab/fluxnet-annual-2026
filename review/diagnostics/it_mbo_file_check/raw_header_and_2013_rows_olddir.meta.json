@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T15:32:58Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2024_v1.3_r1.csv"
+  ],
+  "notes": "Verbatim, unparsed header line and the 2013-01/2013-06 data rows from the FLUXMET_MM file in old_dir -- the file every earlier script (and, for MM/DD/YY, today's it_mbo_bug_hunt.R/it_mbo_parsimony.R) actually reads. Column positions for P_ERA/P_F/P_F_QC confirmed by direct header split, not assumed."
+}

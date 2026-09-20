@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-20T15:37:05Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2024_v1.3_r1.csv",
+    "data/raw/it_mbo_file_check_scratch/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2025_v1.3_r1.csv"
+  ],
+  "notes": "One-sentence answer to 'where does the 69.8-fold difference enter' -- computed like-for-like (old raw mm/month vs. new mm/day x days-in-month) from the brand-new independent download in deliverable 3."
+}

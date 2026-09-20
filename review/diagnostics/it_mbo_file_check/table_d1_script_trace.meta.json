@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T15:32:58Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "scripts/diagnostics/*.R (grepped directly, not re-executed)"
+  ],
+  "notes": "For each script that has produced a circulated P_ERA/P_F number, the exact directory/file-resolution logic it uses for the MM file, traced by reading the script. Every script that ran before 2026-09-20 (v1 through era5_share_for_coordination) only ever had one IT-MBo directory on disk (old_dir) -- there was no directory-selection ambiguity when they ran; they were simply reading the only copy that existed, and that copy does not match the currently-distributed product (deliverable 3). it_mbo_bug_hunt.R and it_mbo_parsimony.R, run today after fresh_dir already existed, both search both directories but still land on old_dir for MM/DD/YY (fresh_dir has no MM/DD/YY files extracted) -- this is the direct cause of their own DD/MM/YY-vs-HH '~21.25x product defect' finding (see the note at the end of this report)."
+}

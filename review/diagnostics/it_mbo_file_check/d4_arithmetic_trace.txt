@@ -1,0 +1,10 @@
+Deliverable 4 -- arithmetic trace for the circulated '4,017' figure
+
+Raw value read from data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2024_v1.3_r1.csv, TIMESTAMP=201301, column 'P_F' (position 48 of 340): 4017.367
+No multiplier of any kind was applied to this value before it was circulated -- P_F in the FLUXMET_MM file is already a monthly total (mm/month; see it_mbo_bug_hunt.R's D2 BIFVARINFO unit quotes for the confirmed unit statement at MM resolution), unlike P_ERA which the day-weighting formula in read_era5_mm()/read_fluxmet_mm() multiplies by days-in-month. So 4,017.367 raw = 4,017 quoted: this is the raw, unmultiplied value from the file, and the file's own value is wrong -- not an arithmetic or unit-conversion error downstream of it.
+
+Locations where this number (and its 2013-06 companion, 4,058) were quoted, per grep (fixed: initial run used grep's default BRE, where "?" is literal not optional -- re-run with -E):
+review/diagnostics/it_mbo_parsimony/report.md:98: "June 2013**: `P_F_mm_monthly` = 4,017 and 4,058 mm/month respectively, both carrying"
+review/diagnostics/it_mbo_parsimony/report.md:110: "| 2013-01 | 4,017.4 | 1.0 | 57.5 | 69.8x |"
+review/diagnostics/it_mbo_parsimony/report.md:111: "| 2013-06 | 4,058.4 | 1.0 | 94.0 | 43.2x |"
+it_mbo_parsimony/report.md itself already correctly identified these two months as a "second, independent piece of" localized defect on top of the general ~21.25x DD-vs-HH inflation (report.md:113-117) -- it did not attribute the values to a units or arithmetic bug in our own code, and that framing holds. What it_mbo_parsimony/report.md could not yet know is *why* the MM-resolution old_dir file disagrees with the currently-distributed product: this task's deliverable 3 supplies that -- old_dir is a stale 2026-06-01 local extraction, not the live product.

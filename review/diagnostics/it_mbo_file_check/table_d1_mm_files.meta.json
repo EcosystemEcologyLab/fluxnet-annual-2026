@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-20T15:32:58Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1",
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1"
+  ],
+  "notes": "Every file with MM in its name in both of IT-MBo's extracted directories, with byte size and sha256. old_dir (2003-2024_v1.3_r1, mtime 2026-06-01) is the pipeline's original extraction; fresh_dir (2003-2025_v1.3_r1, mtime 2026-09-20) is it_mbo_bug_hunt.R's single-site HH-only re-download -- only its BIFVARINFO_MM metadata file was ever extracted to disk from that fresh download; the fresh FLUXMET_MM/ERA5_MM data files exist inside the fresh raw zip but were not extracted (deliverable 3 extracts them for comparison)."
+}

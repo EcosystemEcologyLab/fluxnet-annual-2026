@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-20T15:37:05Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2024_v1.3_r1.csv",
+    "review/diagnostics/it_mbo_parsimony/report.md"
+  ],
+  "notes": "Step-by-step arithmetic trace for the circulated '4,017' figure, plus grep-confirmed provenance of where it (and its 4,058 companion) were quoted (it_mbo_parsimony/report.md lines 98, 110-111). grep uses -E (ERE) deliberately -- BRE (grep's default) treats '?' as literal, not optional, and silently returns no matches for this pattern."
+}

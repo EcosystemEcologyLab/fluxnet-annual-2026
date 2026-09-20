@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-20T16:21:31Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "live_manifest_20260920.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260601T224043.csv",
+    "data/extracted/ (directory listing)"
+  ],
+  "notes": "Per-site comparison of product_id/fluxnet_product_name/year-range between the June 2026 snapshot and a live flux_listall() call today, for every site with an extracted directory on disk. Zero downloads required."
+}

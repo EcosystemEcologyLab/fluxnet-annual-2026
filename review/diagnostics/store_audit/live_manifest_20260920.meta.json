@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T16:21:31Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "live fluxnet::flux_listall() call, 2026-09-20"
+  ],
+  "notes": "Full live Shuttle catalog snapshot, 781 sites, used for Stage 1's zero-download comparison against the June 2026 snapshot."
+}

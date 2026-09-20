@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-20T16:21:31Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "data/extracted/ (directory listing + file mtimes)"
+  ],
+  "notes": "Per-directory inventory: site_id, hub prefix, version, year range, extraction mtime, file count, resolutions present. 786 dirs / 781 unique sites."
+}

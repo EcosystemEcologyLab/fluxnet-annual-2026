@@ -1,0 +1,46 @@
+site_id,category,reason
+US-ARM,failed_or_retried_exhaustive,"Jun1 truncated download, redownloaded+verified Jun2 (dl_redownload_failed_20260602.R)"
+US-Aud,failed_or_retried_exhaustive,"Jun1 truncated download, redownloaded+verified Jun2 (dl_redownload_failed_20260602.R)"
+US-Bar,failed_or_retried_exhaustive,"Jun1 truncated download, redownloaded+verified Jun2 (dl_redownload_failed_20260602.R)"
+US-Bi1,failed_or_retried_exhaustive,"Jun1 truncated download, redownloaded+verified Jun2 (dl_redownload_failed_20260602.R)"
+US-Bi2,failed_or_retried_exhaustive,"Jun1 truncated download, redownloaded+verified Jun2 (dl_redownload_failed_20260602.R)"
+US-BZB,failed_or_retried_exhaustive,"Jun1 truncated download, redownloaded+verified Jun2 (dl_redownload_failed_20260602.R)"
+RU-Ege,failed_or_retried_exhaustive,"Truncated on first attempt, retried+verified same day (cluster_resolution_sample_retry, 2026-09-20)"
+MY-LHP,failed_or_retried_exhaustive,"Truncated on first attempt, retried+verified same day (cluster_resolution_sample_retry, 2026-09-20)"
+AU-Ya1,failed_or_retried_exhaustive,"Truncated on first attempt, retried+verified same day (cluster_resolution_sample_retry, 2026-09-20)"
+JP-Om2,changed_metadata_verify,product_id/name changed vs June snapshot (network=JPF)
+JP-Api,changed_metadata_verify,product_id/name changed vs June snapshot (network=JPF)
+IT-SR2,changed_metadata_verify,product_id/name changed vs June snapshot (network=FLX)
+ZM-Mon,changed_metadata_verify,product_id/name changed vs June snapshot (network=EUF)
+NL-Vkp,changed_metadata_verify,product_id/name changed vs June snapshot (network=EUF)
+DE-Hte,changed_metadata_verify,product_id/name changed vs June snapshot (network=EUF)
+DE-HoH,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+GL-ZaH,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+IT-Ren,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+FR-Pue,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+FI-Let,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+IT-BCi,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+DE-Fen,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+IT-Noe,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+SE-Svb,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+CD-Ygb,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+ES-LMa,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+DE-Brs,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+DE-Har,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+IT-Lsn,changed_metadata_verify,product_id/name changed vs June snapshot (network=ICOS)
+US-HB4,control_known_defect,confirmed genuine uniform-resolution ERA5 defect (it_mbo_file_check); not metadata-flagged -- tests whether metadata-only screening would miss a real problem
+US-PFL,control_unchanged,"unchanged metadata, AmeriFlux"
+US-PFb,control_unchanged,"unchanged metadata, AmeriFlux"
+US-KS2,control_unchanged,"unchanged metadata, AmeriFlux"
+CA-MA3,control_unchanged,"unchanged metadata, AmeriFlux"
+US-UTJ,control_unchanged,"unchanged metadata, AmeriFlux"
+AU-TTE,control_unchanged,"unchanged metadata, TERN"
+NZ-Cla,control_unchanged,"unchanged metadata, TERN"
+AU-Wac,control_unchanged,"unchanged metadata, TERN"
+AU-DaP,control_unchanged,"unchanged metadata, TERN"
+AU-Ctr,control_unchanged,"unchanged metadata, TERN"
+JP-Tkb,control_unchanged,"unchanged metadata, ICOS"
+IT-Lav,control_unchanged,"unchanged metadata, ICOS"
+KR-AdC,control_unchanged,"unchanged metadata, ICOS"
+ES-Mzn,control_unchanged,"unchanged metadata, ICOS"
+BE-Lcr,control_unchanged,"unchanged metadata, ICOS"

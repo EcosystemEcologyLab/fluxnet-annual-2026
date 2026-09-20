@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-20T16:21:31Z",
+  "pipeline_version": "a3c2ebe",
+  "input_sources": [
+    "table_stage1_changed_sites.csv",
+    "table_stage1_live_vs_june_all_sites.csv"
+  ],
+  "notes": "Stage 2's 45-site download list: 9 exhaustive failed/retried sites (from logs/), 20 stratified from the 61 changed-metadata sites, 16 metadata-unchanged controls incl. US-HB4. Fixed seed 20260920, written before any download."
+}

@@ -1,0 +1,4 @@
+copy,path,bytes,sha256
+old_dir on-disk (read by our scripts),data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2024_v1.3_r1.csv,712507,6d2a4318a40d54902ce7e80bbfe6d3c707ea9c033e4619f2c23bb9ffcf7533d2
+"earlier-fresh (today's it_mbo_bug_hunt.R zip, MM extracted now)",data/raw/it_mbo_file_check_scratch/earlier_fresh/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2025_v1.3_r1.csv (gitignored -- not committed; sha256 below is the committed record),747140,b44a360e9dc9ce404512193e39f712bab0a702e5af17af8131a2469ae52d44f8
+"new-fresh (brand-new download, triggered by this task)",data/raw/it_mbo_file_check_scratch/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2025_v1.3_r1.csv (gitignored -- not committed; sha256 below is the committed record),747140,b44a360e9dc9ce404512193e39f712bab0a702e5af17af8131a2469ae52d44f8

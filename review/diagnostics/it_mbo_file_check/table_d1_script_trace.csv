@@ -1,0 +1,10 @@
+script,mm_lookup_logic
+era5_precip_units.R,"list.files(""data/extracted"", pattern=paste0(""_"", site_id, ""_FLUXNET_ERA5_MM_.*\\.csv$"")) -- single glob across all of data/extracted/, first (only, at the time it ran) match"
+era5_precip_units_v2.R,"list.files(""data/extracted"", pattern=paste0(""_"", site_id, ""_FLUXNET_ERA5_"", res, ""_.*\\.csv$"")) -- same pattern, parameterised by resolution"
+era5_precip_units_v3_partA.R,"find_dir(site_id) <- list.files(""data/extracted"", pattern=paste0(""_"", site_id, ""_FLUXNET_"")); find_file() takes the first dir match; at the time this ran, IT-MBo had exactly one directory"
+era5_precip_units_v4.R,does not read raw MM files -- reuses era5_precip_units_v2's table_t2_ratios.csv / v3's table_b1_factor_estimates.csv
+era5_reference_plots.R,does not read raw MM files -- reuses v3's table_b1_factor_estimates.csv
+era5_cumulative_test.R,"extracted_dirs <- list.dirs(""data/extracted""); site_dir_lookup <- setNames(extracted_dirs, dir_site_ids); site_dir_lookup[[site_id]] -- first name match; at the time this ran, IT-MBo had exactly one directory"
+era5_share_for_coordination.R,"identical site_dir_lookup[[site_id]] pattern as era5_cumulative_test.R (lines 46-56); at the time this ran (2026-09-18), IT-MBo had exactly one directory"
+it_mbo_bug_hunt.R,"find_dirs(site_id) matches ALL directories for a site; find_file() iterates dirs in list.files() order and returns the first dir containing the pattern -- for MM/DD/YY, old_dir is checked first and has the file, so old_dir wins; for HH, old_dir has no HH file, so it falls through to fresh_dir"
+it_mbo_parsimony.R,"identical find_dirs()/find_file() pattern as it_mbo_bug_hunt.R -- same old_dir-for-MM/DD/YY, fresh_dir-for-HH resolution"

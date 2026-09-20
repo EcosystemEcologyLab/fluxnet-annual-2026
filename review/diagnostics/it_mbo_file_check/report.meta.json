@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-09-20T15:39:35Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/",
+    "data/raw/it_mbo_hh_check/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip",
+    "data/raw/it_mbo_file_check_scratch/",
+    "review/diagnostics/it_mbo_parsimony/report.md",
+    "review/diagnostics/it_mbo_bug_hunt/table_d4_pid_provenance.csv"
+  ],
+  "notes": "Full report answering Dario Papale's non-reproduction of the IT-MBo monthly precipitation numbers. Verdict: our monthly read was wrong -- it read a stale (2026-06-01) local extraction that does not match the currently-distributed product under the same PID, confirmed via two independent fresh downloads today. Flags (without editing) a revision candidate for it_mbo_bug_hunt.R's separate DD-vs-HH 'product defect' conclusion, which used the same stale file."
+}

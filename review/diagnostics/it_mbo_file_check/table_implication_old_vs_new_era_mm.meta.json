@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-20T15:35:17Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_MM_1981-2024_v1.3_r1.csv",
+    "review/diagnostics/it_mbo_file_check/scratch_new_download/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2025_v1.3_r1.csv"
+  ],
+  "notes": "Old-dir P_ERA_MM vs a brand-new independent download's P_ERA_MM, every common month. Median ratio 21.2431 -- the same ~21.25x factor it_mbo_bug_hunt.R (2026-09-20, earlier today) reported as a 'DD/MM/YY-vs-HH, product-level defect' after comparing old_dir's DD/MM/YY files against fresh_dir's HH files. This is a revision candidate for that report's conclusion, NOT applied here: it_mbo_bug_hunt.R's D2 step compared a stale local MM extraction against a freshly-downloaded HH extraction, not two genuine resolution branches of the same distributed product -- see review/diagnostics/it_mbo_file_check/report.md for the full argument. it_mbo_bug_hunt/report.md itself is not edited by this script."
+}

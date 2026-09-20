@@ -4,6 +4,55 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-20 — IT-MBo file check: the monthly read was wrong (stale local extraction, not a product or code defect)
+
+Urgent, narrow follow-up to `it_mbo_bug_hunt`/`it_mbo_parsimony` (same day). Dario Papale
+downloaded PID `enS2fTzGG_9PS5-51hqet8iH` (IT-MBo), read the FLUXNET_MM file himself, and
+found P_F for 2013-01/2013-06 an order of magnitude different from ours, with ERA5 *below*
+measured precipitation — the opposite direction from our claim. Worked on the assumption the
+error was ours. Read-only with respect to every existing diagnostic output and the pipeline.
+New code: `scripts/diagnostics/it_mbo_file_check.R`. Full report and outputs:
+`review/diagnostics/it_mbo_file_check/`.
+
+**Verdict: our monthly read was wrong.** `data/extracted/` holds two IT-MBo directories — an
+"old" 2026-06-01 extraction (the pipeline's ordinary run; the only copy that existed until
+today) and a "fresh" 2026-09-20 extraction (today's `it_mbo_bug_hunt.R` HH-only re-download).
+Every script that has ever circulated an IT-MBo monthly number — `era5_precip_units`
+through `_v4`, `era5_reference_plots`, `era5_cumulative_test`, `era5_share_for_coordination`
+— read the old directory, because it was the only one on disk when each of them ran; there
+was no directory-selection ambiguity at the time. Two independent fresh downloads of the
+same PID, both done today (one reusing today's earlier zip, one a brand-new download
+triggered by this task), are byte-identical to each other (sha256
+`b44a360e9d...d44f8`) and differ from the on-disk copy (sha256 `6d2a4318a4...533d2`,
+`ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2024_v1.3_r1.csv`, 712,507 bytes) — and reproduce
+Dario's numbers exactly (P_ERA=P_F=1.856 mm/day for 2013-01, 3.134 for 2013-06). The old
+file's raw, unmultiplied `P_F` value for 2013-01 (4017.367, column 48 of 340, field count
+matches the header — not a column-shift corruption) is where "4,017" came from; no
+arithmetic or unit-conversion bug exists downstream of reading it. The 69.8-fold difference
+(4017.367 mm/month old vs. 57.536 mm/month from the fresh download, like-for-like) is
+confirmed to enter entirely at the stale-file read.
+
+**Two distinct corruption patterns in the old file, not one**: `P_ERA` is uniformly
+~21.24-21.27x the fresh value across all 264 overlapping months checked (2003-01 through
+2024-12, not just 2013) — systematic, not sparse. `P_F` matches the fresh value almost
+everywhere (ratio 1.000) but spikes at scattered specific months (200301: 3.35x; 200307:
+8.72x; 200308: 12.10x; 201301: 69.8x; 201306: 43.2x) — sparse, distinct from `P_ERA`'s
+pattern.
+
+**Revises, without editing, today's earlier `it_mbo_bug_hunt` DD-vs-HH conclusion**: that
+diagnostic's D2 step read DD/MM/YY from the old directory (the only one with those files)
+and HH from the fresh directory (the only one with HH) and reported the resulting ~21.25x
+ratio as a distributed-product resolution-branch defect. This task shows the same ~21.25x
+factor directly, old-file `P_ERA_MM` vs. brand-new-download `P_ERA_MM` (median 21.2431,
+range [20.8947, 21.4583], 264 months) — the same stale-file artifact, not confirmed evidence
+of a product-level defect. `it_mbo_bug_hunt/report.md` and `it_mbo_parsimony/report.md` are
+unedited; this is flagged as a revision candidate in the new report only, per read-only
+scope. Cause of the old file's own corruption (stale reprocessing between download dates,
+local corruption during the original extraction, or something else) is not established and
+not asserted.
+
+---
+
 ## 2026-09-20 — Cluster resolution sample: IT-MBo's resolution defect does not generalise
 
 Follow-up to the same day's `it_mbo_bug_hunt`/`it_mbo_parsimony` diagnostics, which found

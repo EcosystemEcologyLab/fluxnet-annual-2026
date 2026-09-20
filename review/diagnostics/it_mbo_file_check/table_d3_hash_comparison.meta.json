@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-20T15:35:17Z",
+  "pipeline_version": "4a5b8d4",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2024_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2024_v1.3_r1.csv",
+    "data/raw/it_mbo_hh_check/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip",
+    "data/raw/it_mbo_file_check_scratch/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip"
+  ],
+  "notes": "sha256/byte-size comparison of the FLUXMET_MM file across three copies: the stale on-disk copy our scripts actually read, today's earlier fresh download (zip already on disk, MM member extracted for this comparison), and a brand-new independent download triggered by this script. Two fresh downloads identical: TRUE. Fresh differs from old_dir: TRUE. product_id confirmed enS2fTzGG_9PS5-51hqet8iH via live flux_listall() immediately before the new download."
+}

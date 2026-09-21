@@ -4,6 +4,49 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-21 — IT-MBo/US-HB4/FI-Hyy precipitation parsimony check, re-run against the refreshed store
+
+Re-run of `review/diagnostics/it_mbo_parsimony/report.md` (provisional, pending store audit)
+against the store refreshed on 2026-09-20, for a direct before-and-after on the same three
+sites and the same Table 1 shape. Full record: `review/diagnostics/it_mbo_parsimony_refresh/
+report.md`. New code: `scripts/diagnostics/it_mbo_parsimony_refresh.R`. Read-only with respect
+to both prior reports and any committed figure; no download performed.
+
+**Falsifiability, stated before computing anything**: the stale-vintage explanation for
+IT-MBo's previously-reported ~21.25x DD/MM/YY-vs-HH inconsistency would be falsified if the
+ratio was still ~21x once every file was confirmed current against a live `flux_listall()`
+product_id. It was not. Every file was verified current (BIF `PRODUCT_NAME` matching the live
+manifest, cross-checked against `store_audit`'s independent live-vs-June comparison and the
+stage 3b download-verification log) before being read.
+
+**Result: the ~21.25x number is withdrawn.** It was a stale-vintage artifact — the previous
+report compared a June-extracted DD/MM/YY file against an HH file downloaded fresh the same
+September morning, not a same-vintage discrepancy in the distributed product. With all four
+resolutions now drawn from the current product, IT-MBo's HH/DD/MM/YY agree with each other
+(~1,126–1,153 mm/yr for both P_ERA and P_F) and with BADM (1,365 mm/yr). The isolated 2013-01
+MM-resolution spike (previously 4,017 mm/month) is also gone: the refreshed record now reads
+`P_ERA = P_F = 1.856` mm/d, deriving to 57.536 mm/month — matching the previous report's own
+HH-summed figure for that month (57.5 mm) and exactly matching Dario's independently-reported
+1.856 mm d⁻¹ to the file's full precision.
+
+US-HB4 is numerically unchanged at every resolution (its June-vintage file was never behind
+the live product — confirmed via `store_audit`'s `any_change = FALSE`, not merely via the
+site's absence from the refresh's download queues) — its ERA5 defect is confirmed real, not a
+staleness artifact, matching `store_refresh_20260920`'s own stage-6 finding. FI-Hyy shows only
+a small (~0.4%), uniform reprocessing-driven shift, consistent with ordinary product revision.
+
+Identifier finding, reported as instructed: none of the three sites' product_id changed
+relative to what the *previous report* quoted (that report's own PID was already obtained live
+at the time) — but IT-MBo's and FI-Hyy's *on-disk* June files were confirmed, independently via
+`store_audit`, to have been under different, older product_ids. Unchanged-identifier-vs-previous-
+report + changed values is the expected signature of "the on-disk file, not the quoted
+identifier, was stale" — not a contradiction.
+
+Scope: three sites only, per the brief; not extended to the wider network or the ~123-site
+cluster question.
+
+---
+
 ## 2026-09-20 — Unattended full store refresh and reconciliation
 
 Six-stage unattended run resolving `store_audit`'s 61-site staleness finding. Full record:

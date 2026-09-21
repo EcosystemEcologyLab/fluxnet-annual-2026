@@ -1,0 +1,2 @@
+site_id,TIMESTAMP,P_ERA_raw_mm_d,P_F_raw_mm_d,P_F_QC,days_in_month,derived_mm_month_P_ERA,derived_mm_month_P_F,dario_reported_mm_d,agrees_with_P_ERA,agrees_with_P_F
+IT-MBo,201301,1.856,1.856,0,31,57.536,57.536,1.856,TRUE,TRUE

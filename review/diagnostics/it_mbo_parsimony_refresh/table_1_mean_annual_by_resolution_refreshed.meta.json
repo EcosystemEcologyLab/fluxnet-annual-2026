@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T19:12:35Z",
+  "pipeline_version": "a3f4e8f",
+  "input_sources": [
+    "data/extracted/*/*_{ERA5,FLUXMET}_{HH,DD,MM,YY}_*.csv (refreshed, confirmed current against live flux_listall(), read directly) and review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv (BIO12/BADM columns, read-only)"
+  ],
+  "notes": "Re-run of review/diagnostics/it_mbo_parsimony/table_1_mean_annual_by_resolution.csv against the store refreshed 2026-09-20. Identical methodology (complete-coverage years only, no ratios, no factor fitting). 6 data rows (3 sites x {P_ERA, P_F})."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T19:12:35Z",
+  "pipeline_version": "a3f4e8f",
+  "input_sources": [
+    "review/diagnostics/it_mbo_parsimony/table_1_mean_annual_by_resolution.csv (reproduced verbatim, not re-derived)"
+  ],
+  "notes": "The previous report's Table 1, copied unmodified so it can sit beside table_1_mean_annual_by_resolution_refreshed.csv for a direct before-and-after. review/diagnostics/it_mbo_parsimony/report.md itself was not edited."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T19:12:16Z",
+  "pipeline_version": "a3f4e8f",
+  "input_sources": [
+    "every raw file read by this script (see path column)"
+  ],
+  "notes": "Path, product_id, sha256, byte size, mtime, and which of this report's tables each file feeds. Only files from sites confirmed CURRENT against a live flux_listall() call (verified via BIF PRODUCT_NAME + store_audit's independent live-vs-June comparison + stage3b download log) are read past the verification step."
+}

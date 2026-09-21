@@ -1,0 +1,4 @@
+site_id,role,product_id_previous,data_hub,product_id,fluxnet_product_name,first_year,last_year,oneflux_code_version,product_id_changed
+IT-MBo,test,enS2fTzGG_9PS5-51hqet8iH,ICOS,enS2fTzGG_9PS5-51hqet8iH,ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip,2003,2025,v1.3,FALSE
+US-HB4,named outlier,10.17190/AMF/2571130,AmeriFlux,10.17190/AMF/2571130,AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1.zip,2020,2024,v1.3,FALSE
+FI-Hyy,clean control,oIJ9cFYf8Q0e9nfMRRS-90vM,ICOS,oIJ9cFYf8Q0e9nfMRRS-90vM,ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1.zip,1997,2025,v1.3,FALSE

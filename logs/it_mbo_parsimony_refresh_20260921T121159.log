@@ -1,0 +1,266 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== it_mbo_parsimony_refresh.R : 2026-09-21 12:12:02.593791 ===
+
+================ 1: live product identifiers vs. previous report ================
+virtualenv: fluxnet
+File list is expired, downloading the latest version
+Live manifest: 781 site-products.
+  site_id          role      product_id_previous  data_hub
+1  IT-MBo          test enS2fTzGG_9PS5-51hqet8iH      ICOS
+2  US-HB4 named outlier     10.17190/AMF/2571130 AmeriFlux
+3  FI-Hyy clean control oIJ9cFYf8Q0e9nfMRRS-90vM      ICOS
+                product_id                      fluxnet_product_name first_year
+1 enS2fTzGG_9PS5-51hqet8iH ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip       2003
+2     10.17190/AMF/2571130  AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1.zip       2020
+3 oIJ9cFYf8Q0e9nfMRRS-90vM ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1.zip       1997
+  last_year oneflux_code_version product_id_changed
+1      2025                 v1.3              FALSE
+2      2024                 v1.3              FALSE
+3      2025                 v1.3              FALSE
+
+================ 2: per-file product verification and provenance ================
+
+IT-MBo: BIF PRODUCT_NAME='ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip' | live fluxnet_product_name='ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1.zip' | matches=TRUE | store_audit any_change=TRUE | stage3b downloaded_verified=TRUE | VERDICT=CURRENT
+
+US-HB4: BIF PRODUCT_NAME='AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1.zip' | live fluxnet_product_name='AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1.zip' | matches=TRUE | store_audit any_change=FALSE | stage3b downloaded_verified=FALSE | VERDICT=CURRENT
+
+FI-Hyy: BIF PRODUCT_NAME='ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1.zip' | live fluxnet_product_name='ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1.zip' | matches=TRUE | store_audit any_change=TRUE | stage3b downloaded_verified=TRUE | VERDICT=CURRENT
+   site_id            file_role
+1      ALL bio12_badm_reference
+2   FI-Hyy                  bif
+3   FI-Hyy               era_dd
+4   FI-Hyy               era_hh
+5   FI-Hyy               era_mm
+6   FI-Hyy               era_yy
+7   FI-Hyy                fm_dd
+8   FI-Hyy                fm_hh
+9   FI-Hyy                fm_mm
+10  FI-Hyy                fm_yy
+11  IT-MBo                  bif
+12  IT-MBo               era_dd
+13  IT-MBo               era_hh
+14  IT-MBo               era_mm
+15  IT-MBo               era_yy
+16  IT-MBo                fm_dd
+17  IT-MBo                fm_hh
+18  IT-MBo                fm_mm
+19  IT-MBo                fm_yy
+20  US-HB4                  bif
+21  US-HB4               era_dd
+22  US-HB4               era_hh
+23  US-HB4               era_mm
+24  US-HB4               era_yy
+25  US-HB4                fm_dd
+26  US-HB4                fm_hh
+27  US-HB4                fm_mm
+28  US-HB4                fm_yy
+                                                                                                        path
+1                                review/diagnostics/era5_reference_plots/table_site_reference_comparison.csv
+2         data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_BIF_1997-2025_v1.3_r1.csv
+3     data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_ERA5_DD_1981-2025_v1.3_r1.csv
+4     data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_ERA5_HH_1981-2025_v1.3_r1.csv
+5     data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_ERA5_MM_1981-2025_v1.3_r1.csv
+6     data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_ERA5_YY_1981-2025_v1.3_r1.csv
+7  data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_FLUXMET_DD_1997-2025_v1.3_r1.csv
+8  data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_FLUXMET_HH_1997-2025_v1.3_r1.csv
+9  data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_FLUXMET_MM_1997-2025_v1.3_r1.csv
+10 data/extracted/ICOS_FI-Hyy_FLUXNET_1997-2025_v1.3_r1/ICOS_FI-Hyy_FLUXNET_FLUXMET_YY_1997-2025_v1.3_r1.csv
+11        data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_BIF_2003-2025_v1.3_r1.csv
+12    data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_DD_1981-2025_v1.3_r1.csv
+13    data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_HH_1981-2025_v1.3_r1.csv
+14    data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_MM_1981-2025_v1.3_r1.csv
+15    data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_ERA5_YY_1981-2025_v1.3_r1.csv
+16 data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_DD_2003-2025_v1.3_r1.csv
+17 data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_HH_2003-2025_v1.3_r1.csv
+18 data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2025_v1.3_r1.csv
+19 data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_YY_2003-2025_v1.3_r1.csv
+20          data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_BIF_2020-2024_v1.3_r1.csv
+21      data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_ERA5_DD_1981-2025_v1.3_r1.csv
+22      data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_ERA5_HH_1981-2025_v1.3_r1.csv
+23      data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_ERA5_MM_1981-2025_v1.3_r1.csv
+24      data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_ERA5_YY_1981-2025_v1.3_r1.csv
+25   data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_FLUXMET_DD_2020-2024_v1.3_r1.csv
+26   data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_FLUXMET_HH_2020-2024_v1.3_r1.csv
+27   data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_FLUXMET_MM_2020-2024_v1.3_r1.csv
+28   data/extracted/AMF_US-HB4_FLUXNET_2020-2024_v1.3_r1/AMF_US-HB4_FLUXNET_FLUXMET_YY_2020-2024_v1.3_r1.csv
+                 product_id
+1                      <NA>
+2  oIJ9cFYf8Q0e9nfMRRS-90vM
+3  oIJ9cFYf8Q0e9nfMRRS-90vM
+4  oIJ9cFYf8Q0e9nfMRRS-90vM
+5  oIJ9cFYf8Q0e9nfMRRS-90vM
+6  oIJ9cFYf8Q0e9nfMRRS-90vM
+7  oIJ9cFYf8Q0e9nfMRRS-90vM
+8  oIJ9cFYf8Q0e9nfMRRS-90vM
+9  oIJ9cFYf8Q0e9nfMRRS-90vM
+10 oIJ9cFYf8Q0e9nfMRRS-90vM
+11 enS2fTzGG_9PS5-51hqet8iH
+12 enS2fTzGG_9PS5-51hqet8iH
+13 enS2fTzGG_9PS5-51hqet8iH
+14 enS2fTzGG_9PS5-51hqet8iH
+15 enS2fTzGG_9PS5-51hqet8iH
+16 enS2fTzGG_9PS5-51hqet8iH
+17 enS2fTzGG_9PS5-51hqet8iH
+18 enS2fTzGG_9PS5-51hqet8iH
+19 enS2fTzGG_9PS5-51hqet8iH
+20     10.17190/AMF/2571130
+21     10.17190/AMF/2571130
+22     10.17190/AMF/2571130
+23     10.17190/AMF/2571130
+24     10.17190/AMF/2571130
+25     10.17190/AMF/2571130
+26     10.17190/AMF/2571130
+27     10.17190/AMF/2571130
+28     10.17190/AMF/2571130
+                                                             sha256 byte_size
+1  96659c13153bdd0ecb454b14b5823a03381182af9d46637cae4774deda2ebb32    110678
+2  dd15a25f1a1e0fc24aade3bdd54dd946f9c75df5744008d336031e58323ba756   3600511
+3  4bec2cc5b81ef5f0f337b40d7c34f5a215af0445edee242a3076e70bb88f969c   1316282
+4  858316e1c41ce59561e379ee3e84d70240c27dfb5d6945a847c17c96cddf3922  55268074
+5  69bf8f60a1eb0452a8f43e6d114f11d6b3c68a33d83f36c37846bbbafa4867b2     42247
+6  9262ac2cd4ae19675383c9abf86c03f860036291511fae23d17a9c5e03df94a7      3541
+7  7e2a946a1a120d3663e2dd2c5c97649a3310076aee68bb25eded19756cb69ccc  26669834
+8  287bd0db2f33e6b00518a8533af6804e5f67b483115eae5e9d9e4733e1a5737c 788128832
+9  a32db985185e4a4fb3b7de8d1afeeda231561e8dbaa5d9ce0c37e0a8d7da9619    971835
+10 488eb2ec0f366b7217568ad6506c0825cf65d19ce3d621ff21d6bcd3a14ca91d     86362
+11 8a3071969fffc7471e06d0ed969735f2067b912f6151c17f353707c2ab56ee8a    721387
+12 3ff717114d35c9f0e6f09dc37e2683361093b1580ffa4a7ae18b8e8ddda02f78   1313470
+13 4542c24290459697d77df8098309815b97a993cabe70fa1f0654998e58f7821f  54948641
+14 ad22c27a48e4ed0a3582864e6fe9a5471ce870a9752e4c853499050c1df3ed52     42339
+15 7c3e651d2bdedda89c9475fa6a19bea1fe564f4c0432659315bfd6b0adb9c3e7      3611
+16 ccac2740edfd0c0f49acde7057e1ee931d7fce9b111d65b837c24da6cabe9f85  20770297
+17 2f63fd0eeaf4b370937255dbafe212d571ba8df415095b06f6ac7f7b77513290 619267437
+18 b44a360e9dc9ce404512193e39f712bab0a702e5af17af8131a2469ae52d44f8    747140
+19 d12b6fc52cef4e33786d63e3387f35c551c2fa73f0ed3658651af459eef6c2d3     67914
+20 aae0f09448ed7cb87bf28f966e19bef0a86de41de4a470cec9c4886d7576fbee     93428
+21 bb41d59bfc703eb152fd17400612fd4dfa8a4ecbac0a20d33892d7bf479c07c0   1370370
+22 71191e1cfa2355ddc796cf8fcbaea37b95ebaa54bcc68bf3177b68726b8fb96f  56194592
+23 e82cb3392c0dc7bb4ad958e81f602cfba5d3b82541aa48edd1bce09ddd323f9d     45105
+24 6ec5e9f8a55d909387176377be09f45d458e471eb100f2dd48748c9059530bea      3889
+25 a10e584c3a79fc86d35798d60060103bf348278b6244892e14176ac559cdfbd8   4325332
+26 2c5a0ee1b1fb062af0514a7df9848eb3c1b4ac4809163878b722a35a84bbca7f 129240549
+27 289df593cbd9cd2c72f251864ec9322d055af503641e3b2f5614b04ea511dc79    159205
+28 d2cea19aeb366a2a595d3ffb1c27dd3c0963489ed45af5509b8c7f0271a96140     17788
+                      mtime
+1  2026-09-18T10:12:43-0700
+2  2026-09-20T05:13:53-0700
+3  2026-09-20T13:04:01-0700
+4  2026-09-20T05:13:55-0700
+5  2026-09-20T13:04:01-0700
+6  2026-09-20T13:04:01-0700
+7  2026-09-20T13:04:01-0700
+8  2026-09-20T05:13:55-0700
+9  2026-09-20T13:04:01-0700
+10 2026-09-20T13:04:01-0700
+11 2026-09-20T05:04:19-0700
+12 2026-09-20T13:04:01-0700
+13 2026-09-20T05:04:20-0700
+14 2026-09-20T13:04:01-0700
+15 2026-09-20T13:04:01-0700
+16 2026-09-20T13:04:01-0700
+17 2026-09-20T05:04:20-0700
+18 2026-09-20T13:04:01-0700
+19 2026-09-20T13:04:01-0700
+20 2026-06-01T17:27:20-0700
+21 2026-06-01T17:27:20-0700
+22 2026-09-20T05:11:36-0700
+23 2026-06-01T17:27:20-0700
+24 2026-06-01T17:27:20-0700
+25 2026-06-01T17:27:20-0700
+26 2026-09-20T05:11:36-0700
+27 2026-06-01T17:27:20-0700
+28 2026-06-01T17:27:20-0700
+                                                                                                       feeds
+1                                                 table_1_mean_annual_by_resolution.csv (BIO12/BADM columns)
+2  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+3  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+4  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+5  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+6  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+7  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+8  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+9  table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+10 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+11 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+12 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+13 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+14 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+15 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+16 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+17 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+18 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+19 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+20 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+21 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+22 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+23 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+24 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+25 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+26 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+27 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+28 table_1_mean_annual_by_resolution.csv (all files); table_2_ts201301_worked_value.csv (fm_mm only, IT-MBo)
+
+================ 3: Table 1 (refreshed), exact previous shape ================
+IT-MBo: loaded refreshed HH/DD/MM/YY for ERA5 and FLUXMET
+US-HB4: loaded refreshed HH/DD/MM/YY for ERA5 and FLUXMET
+FI-Hyy: loaded refreshed HH/DD/MM/YY for ERA5 and FLUXMET
+
+-- Refreshed Table 1 --
+  site_id variable  mean_hh_mm n_years_hh  mean_dd_mm n_years_dd  mean_mm_mm
+1  IT-MBo    P_ERA   1126.0971         45   1126.1912         45   1126.1943
+2  IT-MBo      P_F   1152.8071         23   1152.8224         23   1152.8181
+3  US-HB4    P_ERA 657076.7248         45 657076.6963         45 657076.7024
+4  US-HB4      P_F  24571.8366          5  24571.8372          5  24571.8308
+5  FI-Hyy    P_ERA    709.1842         45    709.4914         45    709.4894
+6  FI-Hyy      P_F    700.3327         29    700.4250         29    700.4167
+  n_years_mm  mean_yy_mm n_years_yy bio12_mm badm_map_mm
+1         45   1126.1917         45      407        1365
+2         23   1152.8223         23      407        1365
+3         45 657076.6954         45     1350        1429
+4          5  24571.8372          5     1350        1429
+5         45    709.4923         45      663         711
+6         29    700.4255         29      663         711
+
+-- Previous Table 1 (reproduced, not re-derived) --
+  site_id variable  mean_hh_mm n_years_hh  mean_dd_mm n_years_dd  mean_mm_mm
+1  IT-MBo    P_ERA   1126.0971         45  23905.1530         44  23905.1490
+2  IT-MBo      P_F   1152.8071         23  24472.3420         22  24472.3389
+3  US-HB4    P_ERA 657076.7248         45 657076.6963         45 657076.7024
+4  US-HB4      P_F  24571.8366          5  24571.8372          5  24571.8308
+5  FI-Hyy    P_ERA    709.1842         45    712.2287         45    712.2231
+6  FI-Hyy      P_F    700.3327         29    701.5704         28    701.5606
+  n_years_mm  mean_yy_mm n_years_yy bio12_mm badm_map_mm
+1         44  23905.1537         44      407        1365
+2         22  24472.3418         22      407        1365
+3         45 657076.6954         45     1350        1429
+4          5  24571.8372          5     1350        1429
+5         45    712.2291         45      663         711
+6         28    701.5700         28      663         711
+
+================ 4: IT-MBo TIMESTAMP 201301, worked in full ================
+
+IT-MBo, FLUXMET_MM, TIMESTAMP=201301:
+  P_ERA (raw, mm/d)   = 1.856
+  P_F   (raw, mm/d)   = 1.856
+  P_F_QC (0-1 scale)  = 0
+  days in month (Jan 2013) = 31
+  derived P_ERA mm/month = 1.856 x 31 = 57.536
+  derived P_F   mm/month = 1.856 x 31 = 57.536
+  Dario reports 1.856 mm d-1 for this record.
+  Agreement with P_ERA: TRUE
+  Agreement with P_F:   TRUE
+
+=== it_mbo_parsimony_refresh.R complete ===
+See report.md for the falsifiability verdict, PID table, and provenance.

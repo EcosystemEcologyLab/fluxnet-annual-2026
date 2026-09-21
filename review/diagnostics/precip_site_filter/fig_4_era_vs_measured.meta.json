@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:09Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "P_ERA (full-record mean) against measured P_F (mean over P_F_QC > QC_THRESHOLD_YY years), log-log, 1:1 line. 'Measured' is annual-resolution QC-selected, not month-level (see script header comment on this interpretive choice -- YY-only scope, no MM read). From table_1_site_level_precip_estimates.csv."
+}

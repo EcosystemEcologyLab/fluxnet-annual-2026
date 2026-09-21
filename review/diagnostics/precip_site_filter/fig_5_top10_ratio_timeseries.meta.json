@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:09Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "Full annual P_ERA and P_F record (all years, not just QC-measured) for the 10 sites with the largest P_ERA/measured ratio: US-HB4, CA-PB1, US-ADR, CN-Wnb, BR-CST, US-xJR, US-ARc, US-ARb, JP-NsC, JP-NsM. From the same DuckDB annual_converted query as table_1; no value recomputed."
+}

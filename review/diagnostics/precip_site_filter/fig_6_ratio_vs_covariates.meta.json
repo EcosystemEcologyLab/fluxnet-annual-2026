@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:10Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "log10(P_ERA/BIO12) against BIO12, record length, fraction measured, data hub, and ONEFlux processing version (BIF PRODUCT_ONEFLUX_VERSION). From table_1_site_level_precip_estimates.csv."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:09Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "abs(log10(P_ERA/measured)) against CV(P_ERA, full record)/sqrt(n_years_measured), the expected relative sampling error of a short-record mean. Reference lines at slope 1 (envelope itself) and 1.96 (~95% band), not fitted to this dataset. From table_1_site_level_precip_estimates.csv."
+}

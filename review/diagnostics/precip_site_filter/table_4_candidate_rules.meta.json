@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:12Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv",
+    "data/snapshots/site_koppen_era5.csv",
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Three candidate site-inclusion rules replacing the flat KG_ERA5_MAP_MAX_MM=5000 year-level screen with a once-per-site decision (excluded sites contribute no years; included sites' full ERA5 record is used with no year-level MAP screen). Rule A: |log10(P_ERA/measured)| > 3x the CV(P_ERA)/sqrt(n_measured) sampling-error envelope (not evaluable for sites lacking a qualifying measured year -- see report.md). Rule B: |log10(P_ERA/BIO12)| beyond the 99th percentile of the natural BADM-vs-BIO12 disagreement (0.87). Rule C: union of A and B. n_kg_class_changed counts sites classified under both the current (map_max_mm=5000) snapshot (data/snapshots/site_koppen_era5.csv) and the no-year-screen recomputation, among sites the rule keeps, whose kg_class differs between the two."
+}

@@ -4,6 +4,44 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-21 — Precipitation site-inclusion filter: network-wide evidence review
+
+Read-only, network-wide (781 sites) evidence-building for a defensible site-inclusion rule for
+the precipitation input to the site-side Köppen classification, to replace the flat
+`KG_ERA5_MAP_MAX_MM = 5000` cutoff in `R/pipeline_config.R`. New code:
+`scripts/diagnostics/precip_site_filter.R`, outputs in
+`review/diagnostics/precip_site_filter/`. `R/pipeline_config.R`, every pipeline script, and
+every committed figure were verified untouched (`git status` before/after differs only by new
+files). Annual (YY) resolution only for the core table and six plots — DD/MM/HH not read for
+that purpose; the one exception is Köppen reclassification testing, which reuses
+`R/climate_classification.R`'s existing MM-resolution climate-normal machinery unmodified.
+
+Built a site-level table (four MAP estimates — P_ERA, QC-selected measured P_F, WorldClim
+BIO12, BADM — plus coverage/QC columns) from the current post-store-refresh DuckDB
+(`annual_converted`, dated 2026-09-20) and freshly-extracted BADM MAP/elevation/ONEFlux
+processing version from each site's currently-canonical BIF file (not the stale, pre-refresh
+`data/processed/badm.rds`). Confirmed empirically, network-wide, that the coarse-resolution
+`P_F_QC` fraction field's documented polarity (higher = more measured) holds at YY resolution
+(99.0% vs. 0.3% bit-identity to `P_ERA` at the bottom/top deciles).
+
+Quantified the current filter as baseline: removes 954 site-years network-wide; zeroes out 26
+sites entirely (all 30 candidate years exceed 5000 mm/yr), including `IT-Niv` — which directly
+explains an item `store_refresh_20260920/report.md` left unresolved ("lost KG classification,
+cause not diagnosed"). Proposed three candidate site-inclusion rules (a CV-sampling-envelope
+rule, a BIO12-disagreement rule anchored on the BADM-vs-BIO12 natural-disagreement reference,
+and their union); none changes a single site's Köppen class relative to the current
+classification among sites classifiable both ways (0/752, 0/736, 0/735) — the current filter's
+only real effect on the network is the binary classifiability of the 26-site set, not a
+graded, classification-changing correction elsewhere. Found that no statistical threshold
+(ratio- or magnitude-based) cleanly separates that 26-site set from ordinary geographic
+disagreement: the natural-disagreement threshold catches only 3/26, and a threshold loose
+enough to catch all 26 would flag 26% of the network; the absolute-magnitude tail is a smooth
+continuum with no natural gap. Recommended against adopting any of the three candidate rules as
+an automatic replacement, and recommended a direct per-site look at the 26-site set instead —
+outside this read-only analysis's scope.
+
+---
+
 ## 2026-09-21 — Parsimony-check figure recreated from refreshed values
 
 Follow-up to the same day's store-refresh parsimony re-run (below): recreated

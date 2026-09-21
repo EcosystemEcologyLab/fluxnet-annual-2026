@@ -4,6 +4,28 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-21 — Parsimony-check figure recreated from refreshed values
+
+Follow-up to the same day's store-refresh parsimony re-run (below): recreated
+`review/diagnostics/it_mbo_parsimony/fig_mean_annual_by_resolution.png` from the already-computed
+refreshed table only — plotting code only, no raw file or store read, no value recomputed. New
+code: `scripts/diagnostics/fig_parsimony_refresh.R`. Original figure and its `.meta.json` left
+untouched.
+
+Two outputs in `review/diagnostics/it_mbo_parsimony_refresh/`:
+`fig_mean_annual_by_resolution_refreshed.png` (same spec as the original — 3 facets, log10 y,
+BIO12/BADM reference lines, P_ERA/P_F — with two readability fixes: P_ERA and P_F dodged apart
+horizontally so neither occludes the other where they nearly coincide, and explicit y-axis
+headroom so US-HB4's P_ERA is no longer clipped against the panel's top border) and
+`fig_mean_annual_by_resolution_before_after.png` (the same figure with the previous report's
+values added as faint grey open points/dashed lines behind the refreshed series, "Previous" vs.
+"Refreshed" distinguished via a merged shape legend, both figures sharing an identical y-axis
+range for direct panel-for-panel comparison). Both fixes and both series' source tables are
+documented in the figures' own `.meta.json` files and in a new §5 appended to
+`review/diagnostics/it_mbo_parsimony_refresh/report.md`.
+
+---
+
 ## 2026-09-21 — IT-MBo/US-HB4/FI-Hyy precipitation parsimony check, re-run against the refreshed store
 
 Re-run of `review/diagnostics/it_mbo_parsimony/report.md` (provisional, pending store audit)

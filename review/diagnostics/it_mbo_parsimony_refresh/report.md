@@ -169,6 +169,32 @@ BIO12/BADM reference file). Snapshot state: this script called `fluxnet::flux_li
 rather than reading a snapshot CSV, per the task's "fresh flux_listall() call" instruction; a
 new snapshot was not written to `data/snapshots/`.
 
+## 5. Figures
+
+`scripts/diagnostics/fig_parsimony_refresh.R` recreates the original
+`review/diagnostics/it_mbo_parsimony/fig_mean_annual_by_resolution.png` from values already
+computed above — plotting code only, no raw file or store read, no value recomputed.
+
+- `fig_mean_annual_by_resolution_refreshed.png`: every point drawn from
+  `table_1_mean_annual_by_resolution_refreshed.csv` (§2 above). Same spec as the original (3
+  facets FI-Hyy/IT-MBo/US-HB4, log10 y-axis, BIO12 dashed/BADM dotted grey reference lines,
+  P_ERA orange/P_F blue, two bottom legends). Two readability fixes applied, noted in the
+  figure's own `.meta.json`: P_ERA and P_F are now drawn with a small horizontal dodge so
+  neither occludes the other where they nearly coincide (previously P_ERA was invisible behind
+  P_F in the FI-Hyy and IT-MBo panels); and the y-axis carries explicit ~15% headroom above the
+  maximum plotted value (previously US-HB4's P_ERA was clipped against the panel's top border).
+  Values are unchanged by either fix.
+- `fig_mean_annual_by_resolution_before_after.png`: identical to the figure above, with
+  `table_1_mean_annual_by_resolution_previous_reproduced.csv`'s values (§2's side-by-side table)
+  added as faint grey open points and dashed lines behind the refreshed series. "Previous" vs.
+  "Refreshed" is distinguished by a merged shape legend ("Period": open circle = previous,
+  filled circle = refreshed); the pre-existing "Variable" and "Reference" legends are otherwise
+  unchanged. Both figures share the identical y-axis range (computed from the union of both
+  tables' values, once, and applied to each) so they can be compared panel-for-panel directly —
+  the IT-MBo panel is where that comparison does the work: previous DD/MM/YY sit ~21x above the
+  refreshed series at the same x positions; FI-Hyy and US-HB4 previous/refreshed points nearly
+  or exactly coincide, consistent with §2's numbers.
+
 ## Verdict
 
 The store refresh converts the previous report's provisional caveat into a confirmed result for
@@ -200,3 +226,5 @@ question (`store_refresh_20260920/report.md` stage 6) is not touched here.
 | `table_1_mean_annual_by_resolution_previous_reproduced.csv` | Previous report's Table 1, copied verbatim for side-by-side |
 | `table_2_ts201301_worked_value.csv` | IT-MBo TIMESTAMP 201301 worked in full |
 | `table_4_provenance.csv` | Path, product_id, sha256, mtime, feeds — every file read here |
+| `fig_mean_annual_by_resolution_refreshed.png` | Recreation of the original figure from refreshed values only, with two readability fixes (§5) |
+| `fig_mean_annual_by_resolution_before_after.png` | Same figure with previous-report values added behind it, same y range, for direct comparison (§5) |

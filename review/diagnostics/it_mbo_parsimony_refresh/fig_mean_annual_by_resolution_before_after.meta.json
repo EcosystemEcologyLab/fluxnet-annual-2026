@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-21T19:52:39Z",
+  "pipeline_version": "2a8a3ab",
+  "input_sources": [
+    "review/diagnostics/it_mbo_parsimony_refresh/table_1_mean_annual_by_resolution_refreshed.csv",
+    "review/diagnostics/it_mbo_parsimony_refresh/table_1_mean_annual_by_resolution_previous_reproduced.csv"
+  ],
+  "notes": "Before/after version of fig_mean_annual_by_resolution_refreshed.png. Refreshed series (colored, filled points, solid lines) from table_1_mean_annual_by_resolution_refreshed.csv; previous-report series (grey, open points, dashed lines, alpha 0.65) from table_1_mean_annual_by_resolution_previous_reproduced.csv -- both read as already-computed tables, no value recomputed here. 'Previous' vs. 'Refreshed' distinguished by a merged shape/linetype 'Period' legend (open circle + dashed = previous, filled circle + solid = refreshed); the pre-existing 'Variable' (color) and 'Reference' (BIO12/BADM linetype) legends are unchanged from the single-series figure. Same explicit y-axis limits as fig_mean_annual_by_resolution_refreshed.png (computed from the union of both tables' values) so the two figures are directly comparable panel-for-panel."
+}

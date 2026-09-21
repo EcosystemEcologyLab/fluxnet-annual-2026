@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T19:12:35Z",
+  "pipeline_version": "a3f4e8f",
+  "input_sources": [
+    "data/extracted/ICOS_IT-MBo_FLUXNET_2003-2025_v1.3_r1/ICOS_IT-MBo_FLUXNET_FLUXMET_MM_2003-2025_v1.3_r1.csv"
+  ],
+  "notes": "IT-MBo FLUXMET_MM, TIMESTAMP 201301: raw P_ERA and P_F as they appear in the refreshed file, P_F_QC, days in the month, and both variables' derived mm/month, for a hand-checkable comparison against Dario's reported 1.856 mm d-1."
+}

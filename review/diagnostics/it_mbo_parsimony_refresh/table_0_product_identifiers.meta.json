@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T19:12:12Z",
+  "pipeline_version": "a3f4e8f",
+  "input_sources": [
+    "live fluxnet::flux_listall() call (this run) and the product_id values quoted in review/diagnostics/it_mbo_parsimony/report.md"
+  ],
+  "notes": "Per-site live product_id/fluxnet_product_name/year-range from a fresh flux_listall() call, beside the product_id quoted in the previous parsimony report, with a changed/unchanged flag. IT-MBo and FI-Hyy's live product_id matches the value already quoted previously (that value was itself obtained from a live flux_listall() check per the earlier report's own PID section) -- both sites were independently confirmed reprocessed relative to the STALE ON-DISK JUNE EXTRACTION by review/diagnostics/store_audit/table_stage1_live_vs_june_all_sites.csv (product_id_june != product_id_live for both), not relative to the previously-reported identifier. US-HB4's product_id is unchanged in all three sources (June extraction, previous report, live today)."
+}

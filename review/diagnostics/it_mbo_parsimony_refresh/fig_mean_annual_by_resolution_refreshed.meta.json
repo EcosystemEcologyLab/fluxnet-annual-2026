@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T19:52:39Z",
+  "pipeline_version": "2a8a3ab",
+  "input_sources": [
+    "review/diagnostics/it_mbo_parsimony_refresh/table_1_mean_annual_by_resolution_refreshed.csv"
+  ],
+  "notes": "Recreation of review/diagnostics/it_mbo_parsimony/fig_mean_annual_by_resolution.png from the refreshed values (table_1_mean_annual_by_resolution_refreshed.csv) only -- no value recomputed, no raw file or store read. Same spec as the original (3 facets FI-Hyy/IT-MBo/US-HB4, log10 y, BIO12 dashed/BADM dotted grey reference lines, P_ERA orange/P_F blue, two bottom legends). Two readability fixes vs. the original, applied here for the first time: (1) P_ERA and P_F are drawn with a small horizontal dodge (position_dodge, width 0.28) applied identically to points and lines, so neither series occludes the other where they nearly coincide (this was previously invisible for P_ERA in the FI-Hyy and IT-MBo panels); values themselves are unchanged, only their horizontal plotting position. (2) The y-axis uses explicit log10 limits with ~15% headroom above the maximum plotted value (previously default expansion clipped US-HB4's P_ERA against the panel's top border)."
+}

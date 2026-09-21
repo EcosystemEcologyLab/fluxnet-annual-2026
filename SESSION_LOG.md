@@ -4,6 +4,40 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-21 — Beck 2023 Köppen-Geiger product: underlying climate inputs documented
+
+Documentation-only: our provenance for the Beck et al. (2023) Köppen-Geiger product
+(`data/external/koppen_beck2023/`) recorded only its own source and download URL, not the
+climate datasets its maps are built from. Added an "Underlying climate inputs" section to
+`data/external/koppen_beck2023/README.md`, quoting Beck et al.'s Methods verbatim on the
+WorldClim V2 / CHELSA V1.2 / CHELSA V2.1 / CHPclim V1 temperature-and-precipitation inputs,
+the historical target periods (1901-1930, 1931-1960, 1961-1990, 1991-2020), the CMIP6
+delta-change future projections, and the CRU TS V4.07 / GPCC FDR V2022 datasets used to
+compute the paper's temperature offsets and precipitation factors.
+
+Confirmed from code, not assumed: this repository's own site-side Köppen classification uses
+the same 1991-2020 window as the Beck map we extract — `R/pipeline_config.R:56`
+(`KG_ERA5_PERIOD <- c(1991L, 2020L)`), consumed by
+`compute_site_koppen_era5()`/`classify_koppen_geiger()` in `R/climate_classification.R`.
+
+Added a per-input-dataset citation table (WorldClim, both CHELSA versions, CHPclim, CRU TS,
+GPCC FDR), verified via WebSearch/WebFetch against each project's own documentation rather
+than assumed. One additional finding surfaced: Karger et al. (2017), CHELSA's own methodology
+paper, states plainly that CHELSA's temperature/precipitation downscaling is based on
+ERA-Interim reanalysis — included with citation. Where a dataset's own basis was not stated
+in a source actually read (CHELSA V2.1's forcing dataset; CHPclim's/CRU's/GPCC's own further
+upstream lineage), it was left out rather than inferred, per instruction.
+
+`CLAUDE.md`'s External Data provenance table was not widened; the Köppen row instead got a
+one-sentence pointer to the new README section. Surveyed the rest of that table for the same
+gap (source/DOI recorded, underlying inputs undocumented): all seven other entries
+(`aridity/`, `gez/`, `worldclim/`, `trendy/`, both `cci_landcover/` rows, `cci_biomass/`) have
+it too — none document what their own upstream station/model/satellite inputs are, beyond
+what's already in this session's new Köppen section. Reported only; none of those seven rows
+were touched.
+
+---
+
 ## 2026-09-21 — Precipitation site-inclusion filter: network-wide evidence review
 
 Read-only, network-wide (781 sites) evidence-building for a defensible site-inclusion rule for

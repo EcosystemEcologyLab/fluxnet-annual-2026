@@ -1,0 +1,4 @@
+rule,n_sites_excluded,n_sites_remaining,n_comparable_both_classified,n_kg_class_changed
+rule_a_cv_envelope,4,777,752,0
+rule_b_bio12_disagreement,22,759,736,0
+rule_c_union_a_or_b,23,758,735,0

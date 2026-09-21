@@ -1,0 +1,180 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+Warning message:
+In check_pipeline_config() :
+  Installed fluxnet-shuttle version (0.3.8) does not match FLUXNET_SHUTTLE_VERSION (0.3.7.post0+dirty). Results may differ from the expected pipeline run.
+=== precip_site_filter.R ===
+
+================ Section 1: file manifest ================
+DD / ERA5 → 781 sites, 34993 site-years across 781 files
+DD / FLUXMET → 781 sites, 6336 site-years across 781 files
+HH / ERA5 → 30 sites, 1346 site-years across 30 files
+HH / FLUXMET → 30 sites, 281 site-years across 30 files
+HR / ERA5 → 1 site, 45 site-years across 1 file
+HR / FLUXMET → 1 site, 25 site-years across 1 file
+MM / ERA5 → 781 sites, 34993 site-years across 781 files
+MM / FLUXMET → 781 sites, 6336 site-years across 781 files
+WW / ERA5 → 1 site, 45 site-years across 1 file
+WW / FLUXMET → 1 site, 25 site-years across 1 file
+YY / ERA5 → 781 sites, 34993 site-years across 781 files
+YY / FLUXMET → 781 sites, 6336 site-years across 781 files
+560 duplicate/stale extraction-directory files were present on disk and excluded by flux_discover_files() (which keeps the most recent release per site).
+Canonical BIF files (one per site): 781
+Sites in current network (from canonical BIF manifest): 781
+
+================ Section 2: BADM MAP / elevation / ONEFlux version (fresh from BIF) ================
+BADM rows matched across 781 canonical BIF files: 2132
+13 site(s) had more than one BIF row for at least one of MAP/LOCATION_ELEV/PRODUCT_ONEFLUX_VERSION -- first occurrence kept.
+BADM MAP present for 653 / 781 sites.
+LOCATION_ELEV present for 682 / 781 sites.
+PRODUCT_ONEFLUX_VERSION present for 781 / 781 sites; distinct values: 6
+Spot check (expect IT-MBo 1365, US-HB4 1429, FI-Hyy 711):
+  site_id badm_map_mm elevation_m oneflux_code_version
+1  FI-Hyy         711         181             1.3.5-rc
+2  IT-MBo        1365        1550             1.3.5-rc
+3  US-HB4        1429           1             1.3.5-rc
+
+================ Section 3: WorldClim BIO12 (reused extraction) ================
+WorldClim BIO12 present for 781 sites in data/snapshots/site_worldclim.csv (dated 2026-09-01).
+
+================ Section 4: YY-resolution P_ERA / P_F from DuckDB ================
+DuckDB: data/duckdb/fluxnet.duckdb (dated 2026-09-20 16:01)
+ERA5 YY rows: 34993 (781 sites); FLUXMET YY rows: 6310 (781 sites).
+
+---- Empirical P_F_QC polarity check at YY ----
+Bottom decile of P_F_QC (<= 0.000, n=1464): P_F == P_ERA exactly in 99.0% of site-years.
+Top decile of P_F_QC (>= 1.000, n=1297): P_F == P_ERA exactly in 0.3% of site-years.
+YY P_F_QC polarity (higher = more measured) CONFIRMED by this empirical check.
+Saved: review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv
+
+Column coverage:
+                          column n_non_na pct_non_na
+1                        site_id      781      100.0
+2                       data_hub      781      100.0
+3                        network      771       98.7
+4  oneflux_code_version_manifest      781      100.0
+5                release_version      781      100.0
+6                     product_id      781      100.0
+7                   location_lat      781      100.0
+8                  location_long      781      100.0
+9                           igbp      781      100.0
+10                 p_era_mean_mm      781      100.0
+11                   p_era_sd_mm      781      100.0
+12       n_years_era_full_record      781      100.0
+13                      p_era_cv      780       99.9
+14            p_measured_mean_mm      587       75.2
+15              n_years_measured      587       75.2
+16              n_years_fm_total      781      100.0
+17                      bio12_mm      781      100.0
+18                   badm_map_mm      653       83.6
+19                   elevation_m      682       87.3
+20          oneflux_code_version      780       99.9
+21                 frac_measured      587       75.2
+22           record_length_years      781      100.0
+23           log_ratio_era_bio12      781      100.0
+24      log_ratio_measured_bio12      587       75.2
+25        log_ratio_era_measured      587       75.2
+26          log_ratio_badm_bio12      653       83.6
+
+================ Section 5: Plot 1 (pairwise comparison) ================
+Saved: review/diagnostics/precip_site_filter/fig_1_pairwise_comparison.png
+
+================ Section 6: Plot 2 (log-ratio histograms) ================
+Freedman-Diaconis histogram sample sizes: 
+                             panel   n
+1             log10(P_ERA / BIO12) 780
+2          log10(measured / BIO12) 587
+3          log10(P_ERA / measured) 587
+4 log10(BADM / BIO12) -- reference 648
+Saved: review/diagnostics/precip_site_filter/fig_2_log_ratio_histograms.png
+
+================ Section 7: Plot 3 (sampling-error envelope) ================
+Saved: review/diagnostics/precip_site_filter/fig_3_sampling_envelope.png
+Sites with |log ratio| exceeding the 1x sampling envelope: 41 / 587
+Sites with |log ratio| exceeding the ~95% (1.96x) band: 7 / 587
+
+================ Section 8: Plot 4 (P_ERA vs. QC-measured precip) ================
+Saved: review/diagnostics/precip_site_filter/fig_4_era_vs_measured.png
+
+================ Section 9: Plot 5 (top-10 P_ERA/measured ratio, time series) ================
+Top 10 sites by P_ERA/measured ratio: US-HB4, CA-PB1, US-ADR, CN-Wnb, BR-CST, US-xJR, US-ARc, US-ARb, JP-NsC, JP-NsM
+Saved: review/diagnostics/precip_site_filter/fig_5_top10_ratio_timeseries.png
+
+================ Section 10: Plot 6 (log ratio vs. covariates) ================
+Saved: review/diagnostics/precip_site_filter/fig_6_ratio_vs_covariates.png
+Warning messages:
+1: Removed 194 rows containing missing values or values outside the scale range
+(`geom_point()`). 
+2: Removed 1 row containing non-finite outside the scale range (`stat_boxplot()`). 
+3: Removed 1 row containing non-finite outside the scale range (`stat_boxplot()`). 
+
+=== Sections 5-10 (plots 1-6) complete ===
+
+================ Section 11: baseline filter quantification ================
+ERA5 MM rows (current network, for classification only): 419916
+Current filter (KG_ERA5_MAP_MAX_MM=5000) removes 954 site-years across the network (30/30-candidate-year basis).
+Sites the current filter alone pushes below KG_ERA5_MIN_YEARS (20): 26
+   site_id n_years_used_5000 n_years_used_noscreen
+1   AU-Fog                 0                    30
+2   BR-Ji3                 0                    30
+3   BR-SM1                 0                    30
+4   CA-CF2                 0                    30
+5   DE-SfS                 0                    30
+6   JP-Fmt                 0                    30
+7   JP-KaP                 0                    30
+8   JP-Kzw                 0                    30
+9   JP-MBF                 0                    30
+10  JP-Mse                 0                    30
+11  JP-Nuf                 0                    30
+12  JP-SMF                 0                    30
+13  JP-Shn                 0                    30
+14  JP-Tak                 0                    30
+15  JP-Tkb                 0                    30
+16  JP-Yms                 0                    30
+17  JP-Ynf                 0                    30
+18  KH-Kmp                 0                    30
+19  NO-And                 0                    30
+20  PE-QFR                 0                    30
+21  US-Cwt                 0                    30
+22  US-HB4                 0                    30
+23  JP-Om2                 0                    30
+24  JP-Nkm                 0                    30
+25  IT-Niv                 0                    30
+26  JP-Api                 0                    30
+Reference: 99th percentile of |log10(BADM/BIO12)| across 653 sites with BADM = 0.870 (factor 7.41x)
+Sites never touched by the current year-level filter, but with |log10(P_ERA/BIO12)| beyond the natural-disagreement reference: 19 / 717 unflagged sites
+Saved: review/diagnostics/precip_site_filter/table_3_baseline_filter_quantification.csv
+
+================ Section 12: candidate rules ================
+Rule A (CV envelope, 3x): evaluable for 587/781 sites; excludes 4 of those.
+Rule B (BIO12 disagreement, natural-threshold): evaluable for 781/781 sites; excludes 22.
+Rule C (union): excludes 23.
+
+---- Koppen reclassification effect of each candidate rule ----
+Current classification file: data/snapshots/site_koppen_era5.csv (dated 2026-09-20 16:02)
+                       rule n_sites_excluded n_sites_remaining
+1        rule_a_cv_envelope                4               777
+2 rule_b_bio12_disagreement               22               759
+3       rule_c_union_a_or_b               23               758
+  n_comparable_both_classified n_kg_class_changed
+1                          752                  0
+2                          736                  0
+3                          735                  0
+Saved: review/diagnostics/precip_site_filter/table_4_candidate_rules.csv
+
+=== Section 11-12 (baseline + candidate rules) complete ===
+
+================ Section 13: provenance ================
+Computing sha256 for 4 top-level inputs (not the 781 BIF files -- byte size + mtime only, for volume).
+Saved: review/diagnostics/precip_site_filter/table_5_provenance.csv and review/diagnostics/precip_site_filter/table_5b_provenance_bif_files.csv
+
+=== precip_site_filter.R complete ===
+See report.md for the full write-up, what this analysis cannot decide, and the recommendation.

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:09Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "Six pairwise log-log scatterplots (P_ERA, measured P_F, BIO12, BADM), 1:1 reference line, 781 sites. From table_1_site_level_precip_estimates.csv; no value recomputed for the plot."
+}

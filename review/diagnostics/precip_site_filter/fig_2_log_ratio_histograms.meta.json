@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:09Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "Histograms of four log10 ratios, Freedman-Diaconis bin width chosen per panel from that panel's own data (graphics::hist(breaks='FD')) -- no integer-factor bin edges, no fitted factors, no tolerance windows. From table_1_site_level_precip_estimates.csv."
+}

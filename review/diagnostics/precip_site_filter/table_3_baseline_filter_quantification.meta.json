@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:12Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "Per site: n_years_used with the current KG_ERA5_MAP_MAX_MM=5000 year-level screen vs. with no screen (map_max_mm=Inf), both from R/climate_classification.R's compute_era5_monthly_climatology() applied to the current (post-2026-09-20-refresh) DuckDB monthly ERA5 table -- the network total difference is the site-years the current filter removes (954). log_ratio_era_bio12 carried over from table_1 for the 'implausible but let through' check (19 sites, natural-disagreement threshold 0.87 from the BADM/BIO12 reference distribution's 99th percentile)."
+}

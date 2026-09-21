@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:08Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "Non-NA coverage of every column in table_1_site_level_precip_estimates.csv, out of 781 sites -- a candidate rule that depends on a field missing at many sites cannot be applied network-wide."
+}

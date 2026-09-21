@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:55Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "every top-level input this script read"
+  ],
+  "notes": "Path, mtime, byte size, sha256, and which output table/section each of this script's top-level inputs feeds."
+}

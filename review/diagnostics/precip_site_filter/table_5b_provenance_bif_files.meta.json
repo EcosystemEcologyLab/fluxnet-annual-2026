@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-21T20:39:55Z",
+  "pipeline_version": "27082a4",
+  "input_sources": [
+    "the 781 canonical BIF files identified by flux_discover_files()"
+  ],
+  "notes": "Path, mtime, byte size (no sha256 -- 781 files) for every canonical BIF file this script grepped for BADM MAP/LOCATION_ELEV/PRODUCT_ONEFLUX_VERSION."
+}

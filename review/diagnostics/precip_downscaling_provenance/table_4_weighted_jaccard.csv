@@ -1,0 +1,3 @@
+variant,weighted_jaccard,n_sites_total,n_sites_flagged,n_sites_substituted,n_sites_unresolved_no_beck
+current_era5_derived,0.35112046448602136,781,781,0,0
+substituted_beck2023_for_flagged,0.34518476399376774,781,781,767,14

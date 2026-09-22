@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:57Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"
+  ],
+  "notes": "precip_site_filter's fig_1_pairwise_comparison.png redrawn unchanged except points coloured by p_group, for direct visual comparison. From table_2_site_groups.csv."
+}

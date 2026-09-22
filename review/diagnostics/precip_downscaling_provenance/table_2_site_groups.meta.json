@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:57Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_1_auxmeteo_structure.csv",
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
+  ],
+  "notes": "table_1_site_level_precip_estimates.csv (precip_site_filter, 2026-09-22 window-labelled version) left-joined to this script's site-level P downscaling-provenance group (p_group) and raw ERA_SLOPE/ERA_INTERCEPT/ERA_RMSE/ERA_CORRELATION for variable P. p_group categories: not_fitted_slope1 (n=609), not_fitted_slope_9999 (n=172), fitted (n=0), no_auxmeteo_record (n=0)."
+}

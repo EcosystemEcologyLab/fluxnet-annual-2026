@@ -4,6 +4,42 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-22 — Precipitation downscaling provenance: GRP_ERA_DOWN characterisation and Beck2023 substitution test
+
+Provenance-based basis for deciding how to treat sites whose P_ERA is unusable for the
+site-side Köppen classification, read-only w.r.t. `R/pipeline_config.R`, every pipeline script,
+and every committed figure (verified via `git status`); `KG_ERA5_MAP_MAX_MM` is never read or
+reused in any form. New code: `scripts/diagnostics/precip_downscaling_provenance.R`, outputs in
+`review/diagnostics/precip_downscaling_provenance/`.
+
+Characterised each site's BIF `GRP_ERA_DOWN` block (the FLUXNET meteorological-downscaling
+regression diagnostics; the task's "AUXMETEO metadata" is not the literal BIF group name) before
+using it, per instruction. Confirmed one row per site per variable (8 variables x 781 sites,
+never per year), and that the task's stated "not fitted" signature (`ERA_SLOPE=1`, other three
+fields `-9999`) covers 609/781 sites for `P` but not the remaining 172, which carry a second,
+undocumented sentinel pattern (`ERA_SLOPE` also `-9999`). The central finding: **zero of 781
+sites have a genuinely fitted P regression anywhere in the network** (`TA`, by contrast, is
+fitted at all 781) — so the task's "fitted" and "no AUXMETEO record" categories are both
+structurally empty for P, reported rather than forced into non-empty groups. The 172-site
+`ERA_SLOPE=-9999` group corresponds exactly (172/172) to sites with zero QC-measured
+precipitation years and shows a tight, ~3.9x-inflated `log10(P_ERA/BIO12)` distribution versus
+the other group's near-parity median — this directly identifies (without previously attributing)
+the systematically-offset upper-band streak `precip_site_filter/report.md`'s fig_1 had flagged
+as a visual feature.
+
+Ran the requested substitution test: for the (all-flagged, since "fitted" is empty) network,
+swapped each site's ERA5-normals-derived KG class for the Beck2023 tower-cell class from
+`data/snapshots/site_koppen_beck2023.csv` where available. Flagged that file as stale relative
+to the current 781-site network (dated 2026-06-24, covers 767 sites, 14 current sites missing —
+named explicitly, left unsubstituted) rather than working around it. 228/767 substituted sites
+change KG class; the network's weighted Jaccard against Beck's own global land-area distribution
+moves from 0.3511 to 0.3452 (very slightly *worse*), reported as an unexplained observation, not
+diagnosed further. No numeric threshold is proposed and no inclusion/exclusion decision is made;
+ERA_SLOPE's meaning and direction are undocumented in this repository and every reading of it
+(including the measured-years correlation) is stated as provisional throughout.
+
+---
+
 ## 2026-09-22 — Precipitation site-inclusion filter: P_ERA averaging window made explicit
 
 Follow-up to the 2026-09-21 precipitation site-inclusion filter evidence review

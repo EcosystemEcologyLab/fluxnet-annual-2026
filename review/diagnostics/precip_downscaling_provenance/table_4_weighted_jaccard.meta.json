@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:58Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_3_substitution_test.csv",
+    "data/snapshots/koppen_beck2023_global_distribution.csv",
+    "data/external/koppen_beck2023/legend.txt"
+  ],
+  "notes": "Weighted Jaccard = sum(pmin(p,q))/sum(pmax(p,q)) on the 30-class KG axis, p = Beck2023 global land-area fraction per class (koppen_beck2023_global_distribution.csv), q = network site-fraction per class (same formula/inputs as scripts/figure_representativeness_kg.R's compute_repr_metrics(), reused not modified). 'current' uses koppen_class from site_koppen_era5.csv unmodified; 'substituted' replaces it with the Beck2023 tower-cell class for every site this script's p_group flags as having no fitted P regression, where a Beck2023 class is available (767/781 flagged sites; 14 flagged sites left at their current class because site_koppen_beck2023.csv has no row for them). KG_ERA5_MAP_MAX_MM is not read or reused anywhere in this computation."
+}

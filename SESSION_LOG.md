@@ -4,6 +4,33 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-22 — Precipitation site-inclusion filter: P_ERA averaging window made explicit
+
+Follow-up to the 2026-09-21 precipitation site-inclusion filter evidence review
+(`review/diagnostics/precip_site_filter/`). That review's site-level table reported
+`p_era_mean_mm` as the mean of each site's full ERA5 record (1981-2025) but did not label it as
+such. Every site's extraction carries two annual files — `ERA5_YY`, named 1981-2025 at every
+site, and `FLUXMET_YY`, named for the tower's own operating years — so a hand check that
+averages a downloaded `FLUXMET_YY` file's own `P_ERA` column disagreed with the reported value
+by an amount that grows as the tower record shortens, with no way to tell from the column name
+alone which window was being compared.
+
+Read-only with respect to `R/pipeline_config.R`, every pipeline script, and every already-
+committed figure (verified via `git status`); did not re-derive figures 1-6 or the table_4
+candidate-rule analysis, which continue to use the 1981-2025 window. New code:
+`scripts/diagnostics/precip_site_filter_tower_years.R`. Renamed `p_era_mean_mm` to
+`p_era_mean_mm_1981_2025` in `table_1_site_level_precip_estimates.csv` and added
+`p_era_mean_mm_tower_years`/`n_years_era_tower_years` (mean/count of P_ERA restricted to years
+present in the site's own FLUXMET_YY file) alongside it — every other column and value verified
+byte-identical to the original in-script before writing. Added `table_5c_provenance_yy_files.csv`
+(per-site ERA5_YY/FLUXMET_YY file names, one row each) and `spot_check_nine_sites.csv` (both
+means, both year counts, BIO12, BADM, measured mean/years, both file names) for JP-Tak, JP-Nkm,
+JP-Mse, JP-Ta2, JP-Fjy, CA-CF2, PE-QFR, AU-Fog, NO-And. `report.md` gained a new section 2b
+stating which window every existing number in the report uses and why a FLUXMET_YY hand check
+diverges from it.
+
+---
+
 ## 2026-09-21 — Beck 2023 Köppen-Geiger product: underlying climate inputs documented
 
 Documentation-only: our provenance for the Beck et al. (2023) Köppen-Geiger product

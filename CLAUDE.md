@@ -569,6 +569,11 @@ the Environment Variables table) — it does not touch anything in this table.
 | `cci_biomass/` | ESA CCI Biomass, above-ground biomass, MERGED 1 km aggregate | v7.0; years 2005–2012 and 2015–2024 | Santoro & Cartus (2024); doi:`10.5285/6429d1aafe1e43b9b414e4a5a7f8b903`; CEDA: `http://data.ceda.ac.uk/neodc/esacci/biomass/data/agb/maps/v7.0/geotiff/aggregated/` | No (anonymous) | `curl`, documented in `data/external/cci_biomass/README.md`. No committed script. |
 | `koppen_beck2023/` | Beck et al. Köppen-Geiger maps, 1901–2099 (historical periods + SSP futures) | figshare v2 (published 2026-01-14; corrects a v1 calculation error) | Beck et al. (2023), *Scientific Data* 10:724, doi:`10.1038/s41597-023-02549-6`; figshare dataset doi:`10.6084/m9.figshare.21789074.v2`; direct file `https://ndownloader.figshare.com/files/61012822` | No (anonymous) | `curl`, documented in `data/external/koppen_beck2023/README.md`. No committed download script. |
 
+Köppen row: the climate datasets underlying Beck et al.'s own maps (WorldClim V2, CHELSA
+V1.2/V2.1, CHPclim V1, CRU TS V4.07, GPCC FDR V2022) are documented in
+`data/external/koppen_beck2023/README.md`'s "Underlying climate inputs" section, not repeated
+in this table.
+
 None of the datasets currently on disk require NASA Earthdata authentication. The
 section below documents that mechanism in advance, for the first product (e.g. a
 MODIS or other LP DAAC-hosted product) that does.

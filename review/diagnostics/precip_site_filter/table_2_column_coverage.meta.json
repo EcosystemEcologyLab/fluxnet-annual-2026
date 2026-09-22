@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-09-21T20:39:08Z",
-  "pipeline_version": "27082a4",
+  "run_datetime_utc": "2026-09-22T16:04:02Z",
+  "pipeline_version": "4f616c0",
   "input_sources": [
     "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv"
   ],
-  "notes": "Non-NA coverage of every column in table_1_site_level_precip_estimates.csv, out of 781 sites -- a candidate rule that depends on a field missing at many sites cannot be applied network-wide."
+  "notes": "Non-NA coverage of every column in table_1_site_level_precip_estimates.csv, out of 781 sites -- regenerated 2026-09-22 to reflect the p_era_mean_mm rename to p_era_mean_mm_1981_2025 and the two added tower-years columns; all other rows unchanged from the original coverage table."
 }

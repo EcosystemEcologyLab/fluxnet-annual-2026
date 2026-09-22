@@ -1,10 +1,11 @@
 {
-  "run_datetime_utc": "2026-09-21T20:39:08Z",
-  "pipeline_version": "27082a4",
+  "run_datetime_utc": "2026-09-22T16:04:02Z",
+  "pipeline_version": "4f616c0",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb",
     "data/snapshots/site_worldclim.csv",
-    "canonical BIF files via flux_discover_files() (see file_name list in table_5_provenance.csv)"
+    "canonical BIF files via flux_discover_files() (see table_5b_provenance_bif_files.csv)",
+    "ERA5_YY/FLUXMET_YY file names via flux_discover_files() (see table_5c_provenance_yy_files.csv)"
   ],
-  "notes": "One row per current-network site (n=781). p_era_mean_mm: mean of YY-resolution P_ERA over its full ERA5 record (all non-NA years, typically ~1981-2025). p_measured_mean_mm: mean of YY-resolution P_F over years where P_F_QC > QC_THRESHOLD_YY (0.5, the existing pipeline-wide coarse-resolution QC threshold from R/pipeline_config.R), NOT the NEE-based row exclusion in annual_qc/04_qc.R (that targets flux variables, not precipitation). bio12_mm: WorldClim v2.1 BIO12 at the tower cell (data/snapshots/site_worldclim.csv, 2026-09-01, static raster). badm_map_mm/elevation_m/oneflux_code_version: freshly extracted from each site's currently-canonical BIF file (flux_discover_files()-deduplicated, i.e. post-2026-09-20-refresh where applicable), NOT from data/processed/badm.rds (built 2026-06-02, predates the refresh for several re-extracted sites). Annual resolution only throughout; DD/MM/HH FLUXMET/ERA5 files were not read for this table."
+  "notes": "Same table as originally built by precip_site_filter.R (2026-09-21, commit 27082a4), with the averaging window made explicit per 2026-09-22 follow-up request. p_era_mean_mm_1981_2025: mean of YY-resolution P_ERA over the site's full ERA5 record (all non-NA years; this IS the original, unlabelled p_era_mean_mm column, renamed only -- values unchanged, verified byte-identical). p_era_mean_mm_tower_years / n_years_era_tower_years: mean of P_ERA (and count of years) restricted to the years present in the site's own FLUXMET_YY file (n_years_era_tower_years <= record_length_years; can be < record_length_years where a tower year falls outside the ERA5 1981-2025 record). A hand check against a downloaded FLUXMET_YY file's own P_ERA column should be compared against p_era_mean_mm_tower_years, not p_era_mean_mm_1981_2025 -- see report.md. Every other column and every other value in this table is unchanged from the original (verified byte-identical in-script)."
 }

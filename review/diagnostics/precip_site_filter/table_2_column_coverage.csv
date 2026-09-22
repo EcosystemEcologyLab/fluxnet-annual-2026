@@ -8,7 +8,9 @@ product_id,781,100
 location_lat,781,100
 location_long,781,100
 igbp,781,100
-p_era_mean_mm,781,100
+p_era_mean_mm_1981_2025,781,100
+p_era_mean_mm_tower_years,781,100
+n_years_era_tower_years,781,100
 p_era_sd_mm,781,100
 n_years_era_full_record,781,100
 p_era_cv,780,99.9

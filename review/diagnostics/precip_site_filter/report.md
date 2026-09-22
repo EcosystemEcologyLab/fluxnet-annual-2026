@@ -66,7 +66,7 @@ One row per site (`table_1_site_level_precip_estimates.csv`), n=781. Coverage
 
 | Column | Coverage |
 |---|---|
-| `p_era_mean_mm`, `p_era_cv`, `bio12_mm`, `record_length_years`, `data_hub`, `oneflux_code_version_manifest` | 100% (99.9% for `p_era_cv`, one site with a single ERA5 year) |
+| `p_era_mean_mm_1981_2025`, `p_era_cv`, `bio12_mm`, `record_length_years`, `data_hub`, `oneflux_code_version_manifest` | 100% (99.9% for `p_era_cv`, one site with a single ERA5 year) |
 | `network` | 98.7% (771/781) |
 | `oneflux_code_version` (BIF `PRODUCT_ONEFLUX_VERSION`) | 99.9% (780/781) |
 | `badm_map_mm` | 83.6% (653/781) |
@@ -75,7 +75,7 @@ One row per site (`table_1_site_level_precip_estimates.csv`), n=781. Coverage
 
 **A rule that depends on `p_measured_mean_mm` cannot be applied to the other 24.8% of the
 network (194 sites) with no qualifying QC-measured year** -- this is the single biggest coverage
-constraint on any candidate rule below. `bio12_mm` and `p_era_mean_mm` are the only two
+constraint on any candidate rule below. `bio12_mm` and `p_era_mean_mm_1981_2025` are the only two
 quantities available for every site.
 
 The manifest's `oneflux_code_version` field is uniform (`v1.3` for all 781 sites) and carries no
@@ -90,6 +90,32 @@ common source of errors; a prior polarity flip was found at MM resolution but YY
 previously been checked in this repo): among site-years with `P_F_QC` in the bottom decile
 (<=0), `P_F` is bit-identical to `P_ERA` 99.0% of the time; in the top decile (>=1), only 0.3% of
 the time. **Higher `P_F_QC` = more measured is confirmed at YY**, network-wide.
+
+## 2b. Averaging window, made explicit (2026-09-22 follow-up)
+
+table_1's original `p_era_mean_mm` column has been renamed `p_era_mean_mm_1981_2025`, and a
+second column, `p_era_mean_mm_tower_years` (with its own `n_years_era_tower_years`), has been
+added alongside it -- see `scripts/diagnostics/precip_site_filter_tower_years.R`. Every other
+column and every existing value in table_1 is unchanged from the original (verified
+byte-identical in-script before writing).
+
+**Every P_ERA number quoted anywhere in this report -- sections 2-6 above, every one of plots
+1-6, `log_ratio_era_bio12`/`log_ratio_era_measured`, and the candidate-rule analysis in sections
+4-6 -- uses the 1981-2025 window (`p_era_mean_mm_1981_2025`)**, i.e. the mean of a site's full
+ERA5 record, not the tower-year subset. Figures 1-6 and tables 3-4 were **not** regenerated for
+this follow-up and continue to reflect that window only.
+
+Why this matters for a hand check: each site's extraction carries two annual files --
+`ERA5_YY`, named for a fixed ~45-year range (1981-2025, or 1981-2024 depending on release
+vintage) at *every* site, and `FLUXMET_YY`, named for the tower's own operating years. For
+example `JP-Tak`'s FLUXMET_YY file is `..._FLUXMET_YY_1998-2021_...` (24 years) against its
+ERA5_YY file's `..._ERA5_YY_1981-2025_...` (45 years). A hand check that opens the FLUXMET_YY
+file and averages its own `P_ERA` column is therefore comparing against
+`p_era_mean_mm_tower_years`, not `p_era_mean_mm_1981_2025` -- and the two will disagree by an
+amount that grows as the tower record shortens relative to the 45-year ERA5 record, not because
+either value is wrong. `spot_check_nine_sites.csv` and `table_5c_provenance_yy_files.csv` (both
+new) give both means, both year counts, and both source file names side by side for exactly this
+kind of check.
 
 ## 3. Plots
 
@@ -147,7 +173,7 @@ any prior report.
   JP-Mse, JP-Nkm, JP-Nuf, JP-Om2, JP-SMF, JP-Shn, JP-Tak, JP-Tkb, JP-Yms, JP-Ynf, KH-Kmp, NO-And,
   PE-QFR, US-Cwt, US-HB4`. **This directly explains an item store_refresh_20260920/report.md
   left unresolved**: "`IT-Niv`'s lost KG classification: mechanically confirmed real, cause not
-  diagnosed" -- IT-Niv's refreshed ERA5 record now has `p_era_mean_mm` = 5,963 mm/yr against a
+  diagnosed" -- IT-Niv's refreshed ERA5 record now has `p_era_mean_mm_1981_2025` = 5,963 mm/yr against a
   BIO12 of 1,469 mm/yr (log ratio 0.61, ~4.1x), i.e. all 30 of its candidate years now exceed the
   5000 mm/yr screen where its stale pre-refresh copy evidently did not.
 - **Sites the current filter lets through despite implausible P_ERA**: using the 99th percentile
@@ -201,7 +227,7 @@ zeroes out, without collaterally excluding ordinary sites." It fails on both cou
   the 26, `JP-SMF`, sits at only 0.42). A threshold that low would flag **206 of 781 sites
   (26.4%)** network-wide -- far too broad to be a defensible "implausible" cutoff.
 - **An absolute-magnitude alternative (site-mean P_ERA, available for 100% of sites) fares no
-  better**: the top of the `p_era_mean_mm` distribution (after the single extreme, US-HB4, at
+  better**: the top of the `p_era_mean_mm_1981_2025` distribution (after the single extreme, US-HB4, at
   657,077) declines smoothly from 10,395 down through the 4,000s with no natural gap -- sites at
   4,489-4,830 mm/yr that are *not* among the 26 known-corrupted sites sit immediately next to
   sites at 4,932-5,102 mm/yr that *are*. Any single absolute threshold, including the current
@@ -227,11 +253,13 @@ scope and is not attempted here.
 
 | File | Contents |
 |---|---|
-| `table_1_site_level_precip_estimates.csv` | One row per site (n=781): four MAP estimates, coverage/QC columns, log ratios |
+| `table_1_site_level_precip_estimates.csv` | One row per site (n=781): five MAP estimates (P_ERA now split into `p_era_mean_mm_1981_2025` and `p_era_mean_mm_tower_years`, see section 2b), coverage/QC columns, log ratios |
 | `table_2_column_coverage.csv` | Non-NA coverage of every column in table_1 |
 | `table_3_baseline_filter_quantification.csv` | Per-site `n_years_used` with/without the current 5000 mm/yr screen |
 | `table_4_candidate_rules.csv` | Exclusion counts and Koppen-reclassification effect for rules A/B/C |
 | `table_5_provenance.csv` / `table_5b_provenance_bif_files.csv` | Path, mtime, size, sha256 (top-level inputs) / path, mtime, size (781 BIF files) |
+| `table_5c_provenance_yy_files.csv` | Path, file name, mtime, size for every site's ERA5_YY and FLUXMET_YY file (added 2026-09-22, section 2b) |
+| `spot_check_nine_sites.csv` | Both P_ERA means, both year counts, BIO12, BADM, measured mean/years, both source file names, for 9 named sites (added 2026-09-22, section 2b) |
 | `fig_1_pairwise_comparison.png` | Four estimates against each other, log-log, 1:1 line |
 | `fig_2_log_ratio_histograms.png` | Log-ratio histograms, Freedman-Diaconis bins |
 | `fig_3_sampling_envelope.png` | Disagreement vs. expected sampling-error envelope |

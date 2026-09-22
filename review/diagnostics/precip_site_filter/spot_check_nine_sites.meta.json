@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-22T16:04:02Z",
+  "pipeline_version": "4f616c0",
+  "input_sources": [
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv",
+    "review/diagnostics/precip_site_filter/table_5c_provenance_yy_files.csv"
+  ],
+  "notes": "Both P_ERA means (1981-2025 full record and tower-years), both year counts, BIO12, BADM, QC-measured mean and year count, and both source file names, for the nine sites named in the 2026-09-22 averaging-window follow-up request (JP-Tak, JP-Nkm, JP-Mse, JP-Ta2, JP-Fjy, CA-CF2, PE-QFR, AU-Fog, NO-And). p_measured_mean_mm/n_years_measured are NA where a site has no year with P_F_QC > QC_THRESHOLD_YY -- unchanged from table_1, not recomputed here."
+}

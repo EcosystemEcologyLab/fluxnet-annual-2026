@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-22T16:04:02Z",
+  "pipeline_version": "4f616c0",
+  "input_sources": [
+    "the 781 x 2 canonical ERA5_YY/FLUXMET_YY files identified by flux_discover_files()"
+  ],
+  "notes": "Path, file name, mtime, byte size for every site's canonical ERA5_YY and FLUXMET_YY file (2 rows per site, 'dataset' column distinguishes them). ERA5_YY file names carry the 1981-2025 (or similar 45-year) range at every site; FLUXMET_YY file names carry the tower's own year range -- compare the two file_name values for any site to see this directly (e.g. a hand check against a downloaded FLUXMET_YY file's P_ERA column reflects only its own file_name's year range, not ERA5_YY's)."
+}

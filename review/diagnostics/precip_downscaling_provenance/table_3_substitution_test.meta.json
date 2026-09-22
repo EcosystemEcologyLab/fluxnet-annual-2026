@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:58Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
+    "data/snapshots/site_koppen_era5.csv",
+    "data/snapshots/site_koppen_beck2023.csv"
+  ],
+  "notes": "Per-site substitution test: for sites flagged by p_group (not_fitted_slope1, not_fitted_slope_9999, no_auxmeteo_record -- i.e. every site with no genuinely fitted P regression; 'fitted' is empty, see Step 1), koppen_class_current (data/snapshots/site_koppen_era5.csv, ERA5-normals-derived) is replaced with koppen_class_beck (data/snapshots/site_koppen_beck2023.csv, tower-cell Beck 2023 raster class) where available. site_koppen_beck2023.csv is dated 2026-06-24 and covers 767 sites vs. the current 781-site network -- 14 current sites (ES-LgS, ES-Ln2, FI-Si2, HK-MPM, IT-Cpz, IT-MtP, IT-Ro1, IT-Ro2, US-KLS, US-LS2, US-ZF1, US-xHA, US-xKA, US-xTA) have no Beck2023 row and are left at koppen_class_current (unresolved_no_beck=TRUE), not silently dropped or assumed unchanged. n_kg_class_changed=228 among the 767 sites actually substituted."
+}

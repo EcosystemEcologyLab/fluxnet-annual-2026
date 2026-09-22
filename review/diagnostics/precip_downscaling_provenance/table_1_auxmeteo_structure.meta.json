@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:57Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "canonical BIF files via flux_discover_files() (GRP_ERA_DOWN rows)"
+  ],
+  "notes": "One row per site x ERA_VARIABLE (8 variables x 781 sites = 6248 rows), from each site's currently-canonical BIF file's GRP_ERA_DOWN group (the task's 'AUXMETEO metadata'; GRP_ERA_DOWN is the literal BIF group name, not literally 'AUXMETEO'). Raw ERA_SLOPE/ERA_INTERCEPT/ERA_RMSE/ERA_CORRELATION values as extracted, -9999 sentinel not recoded to NA (kept literal so a reader can see the sentinel directly)."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:57Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"
+  ],
+  "notes": "Descriptive cross-tab only: p_group against whether table_1's n_years_measured (QC-measured P years, P_F_QC > QC_THRESHOLD_YY) is non-NA. Not an asserted mechanism -- ERA_SLOPE's meaning/direction is undocumented in this repository (see report.md)."
+}

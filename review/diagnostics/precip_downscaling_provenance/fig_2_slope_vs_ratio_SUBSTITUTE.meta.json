@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:58Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"
+  ],
+  "notes": "SUBSTITUTE for the requested 'ERA_SLOPE vs log10(P_ERA/BIO12), fitted sites only' figure: that group is empty (0/781 sites), so this plots all sites by their raw (sentinel) ERA_SLOPE value instead, explicitly labelled as a substitute. No unit-gradient slope=inflation-factor relationship can be assessed because there is no fitted subset. From table_2_site_groups.csv."
+}

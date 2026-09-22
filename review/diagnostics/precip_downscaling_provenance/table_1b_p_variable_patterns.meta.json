@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:57Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_1_auxmeteo_structure.csv"
+  ],
+  "notes": "Every distinct (slope_is_1, slope_is_9999, other3_all_9999) value-pattern combination observed for ERA_VARIABLE=P across all 781 sites, with site counts. Confirms exactly two patterns exist and both indicate no real regression fit."
+}

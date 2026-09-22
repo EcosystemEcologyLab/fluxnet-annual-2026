@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-22T18:07:58Z",
+  "pipeline_version": "8be019f",
+  "input_sources": [
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"
+  ],
+  "notes": "Violin+boxplot of log10(P_ERA/BIO12) by p_group, shared y-axis, with n and median annotated per group. From table_2_site_groups.csv."
+}

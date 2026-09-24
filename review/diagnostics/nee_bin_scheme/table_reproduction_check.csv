@@ -1,0 +1,3 @@
+version,network,scheme,computed_jaccard,target_jaccard,target_source,reproduced
+geo_vs_geo,current_781,1_absolute_existing,0.4931868270307604,0.4931868270307604,data/snapshots/representativeness_metrics.csv:189 (also logs/trendy_analysis_complete.marker),TRUE
+geo_vs_data,current_781,1_absolute_existing,0.23266944516389662,0.233,SESSION_LOG.md:1337,TRUE

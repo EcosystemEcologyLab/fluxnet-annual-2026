@@ -1,0 +1,7 @@
+version,scheme,network,n_sites,weighted_jaccard,outer_two_bin_share
+geo_vs_geo,3_signed_septiles,marconi,35,0.45742702148043674,0.3142857142857143
+geo_vs_geo,3_signed_septiles,la_thuile,252,0.4515505520426816,0.3611111111111111
+geo_vs_geo,3_signed_septiles,fluxnet2015,212,0.5288994939430919,0.339622641509434
+geo_vs_geo,3_signed_septiles,current_781,781,0.5645972432106182,0.36235595390524966
+geo_vs_data,3_signed_septiles,current_781,781,0.22177042712715403,0.7720870678617158
+geo_vs_data,3_signed_septiles,fluxnet2015,212,0.2146535120452872,0.7783018867924528

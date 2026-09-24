@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-09-24T22:08:38Z",
+  "pipeline_version": "7bd5371",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics.csv",
+    "SESSION_LOG.md",
+    "data/snapshots/site_trendy_nee_median.csv",
+    "data/snapshots/trendy_nee_median_global_distribution.csv",
+    "data/snapshots/site_flux_medians_shuttle.csv"
+  ],
+  "notes": "Scheme-1 (existing absolute convention) reproduction check, required before proceeding to signed Schemes 2/3."
+}

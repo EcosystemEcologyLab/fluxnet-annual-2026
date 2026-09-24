@@ -1,0 +1,23 @@
+{
+  "run_datetime_utc": "2026-09-24T22:05:30Z",
+  "pipeline_version": "7bd5371",
+  "input_sources": [
+    "data/external/trendy/derived/intermediate/CABLE-POP_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/CLASSIC_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/CLM_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/DLEM_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/ED_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/ELM-FATES_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/IBIS_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/ISAM_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/JULES-ES_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/LPJ-GUESS_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/LPJml_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/LPJwsl_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/LPX-Bern_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/ORCHIDEE_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/TEM_nbp_regridded.tif",
+    "data/external/trendy/derived/intermediate/VISIT-UT_nbp_regridded.tif"
+  ],
+  "notes": "Signed ensemble-median-across-16-models of mean-annual nbp (gC m-2 yr-1), 1990-2023, sign-flipped (NEE = -NBP) to standard eddy-covariance convention (positive = source/release, negative = sink/uptake). Same 16-model ensemble and same per-model regridded intermediates as trendy_nee_median.tif; only the per-model temporal aggregator differs (rowMeans() here vs. rowMeans(abs()) there)."
+}

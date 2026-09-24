@@ -4,6 +4,44 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-24 — NEE seven-bin scheme diagnostic for Figs 4/5: signed alternatives rejected, keep Scheme 1
+
+Diagnosed whether a single seven-bin NEE scheme could serve both Geo vs Data (site-measured NEE
+vs. the global TRENDY area distribution) and Geo vs Geo (TRENDY sampled at tower cells vs. the
+same global distribution) identically across both versions of Figs 4/5. Read-only w.r.t. the
+pipeline, `R/pipeline_config.R`, and every committed figure. New code:
+`scripts/diagnostics/nee_bin_scheme.R`, outputs in `review/diagnostics/nee_bin_scheme/`.
+
+Reproduced the two required baselines exactly under the existing absolute-magnitude convention
+(Scheme 1) before trusting any new computation: Geo vs Geo current_781 J=0.4931868270307604
+(`data/snapshots/representativeness_metrics.csv:189`) and Geo vs Data J=0.2327 against the
+0.233 reported at `SESSION_LOG.md:1337` (2026-09-17 diagnostic). Confirmed from
+`figure_representativeness_trendy_compute.R` that the stored `nee_median` axis uses TRENDY's
+`nbp` (positive = sink, per the code's own comment) reduced to `mean(|nbp_annual|)` across years
+then ensemble-medianed across models — magnitude only, no sign preserved. Defined, for this
+diagnostic, `NEE_signed = -nbp` (global) and `NEE_signed = -nep_median` (site; confirmed same
+units, gC m-2 yr-1, via `site_flux_medians_shuttle.csv.meta.json`) to reach the standard
+eddy-covariance sign convention (positive = source). Built a new signed ensemble-median raster
+by reusing the already-cached per-model regridded `nbp` intermediates with an unabsed mean —
+no re-download or re-regridding of TRENDY was needed.
+
+Tested two signed alternatives against Scheme 1: a zero-anchored scheme (near-zero bin of
+half-width 10/25/50 gC m-2 yr-1, three quantile bins per side) and unanchored signed septiles.
+**Neither is satisfactory; recommendation is to keep Scheme 1 for both figure versions.** Signing
+makes Geo vs Data strictly worse at every half-width (J: 0.233 -> 0.11-0.15) because measured
+towers are predominantly net sinks while the signed TRENDY grid-cell mean collapses toward
+carbon balance almost everywhere from interannual/cross-model cancellation — the same effect the
+2026-09-17 diagnostic quantified (~3-4x) for the unsigned statistic, now shown to produce a
+genuine shape mismatch rather than just a scale one. Geo vs Geo's Jaccard appears to rise with
+signing (up to 0.95 at half-width 50) but this is a saturation artifact: at that half-width the
+two outermost bins hold 0% of TRENDY-at-site values for every network, meaning six of seven bins
+carry no discriminating information. Signed septiles avoid the half-width sensitivity but
+collapse 22.5% of global land area into a single 0.2 gC m-2 yr-1-wide bin at the distribution's
+zero crossing, and are still worse than Scheme 1 for Geo vs Data. Root cause identified as
+physical (the signed field's near-zero concentration), not a binning-construction artifact.
+
+---
+
 ## 2026-09-22 — Precipitation downscaling provenance: GRP_ERA_DOWN characterisation and Beck2023 substitution test
 
 Provenance-based basis for deciding how to treat sites whose P_ERA is unusable for the

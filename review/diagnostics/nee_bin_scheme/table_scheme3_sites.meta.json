@@ -1,0 +1,14 @@
+{
+  "run_datetime_utc": "2026-09-24T22:08:39Z",
+  "pipeline_version": "7bd5371",
+  "input_sources": {
+    "1": "review/diagnostics/nee_bin_scheme/table_scheme3_global.csv",
+    "marconi": "site_trendy_nee_median_marconi.csv",
+    "la_thuile": "site_trendy_nee_median_la_thuile.csv",
+    "fluxnet2015": "site_trendy_nee_median_fluxnet2015.csv",
+    "current_781": "site_trendy_nee_median.csv",
+    "current_781.1": "site_flux_medians_shuttle.csv",
+    "fluxnet2015.1": "site_flux_medians_fluxnet2015.csv"
+  },
+  "notes": "Scheme 3 per-bin site counts/fractions, all networks, both versions (geo_vs_geo/geo_vs_data)."
+}

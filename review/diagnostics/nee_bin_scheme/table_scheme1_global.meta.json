@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-24T22:08:39Z",
+  "pipeline_version": "7bd5371",
+  "input_sources": [
+    "review/diagnostics/nee_bin_scheme/trendy_nee_signed_mean.tif"
+  ],
+  "notes": "Scheme 1 global area fraction per bin."
+}

@@ -4,6 +4,83 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-25 — NEE corrected-axis diagnostic (Figs 4/5): interim status, run in progress
+
+**Interim status entry — the diagnostic below has not finished; this records the task, approach, and
+progress-to-date so the run's timeline is on record if the session is interrupted before completion.**
+
+**Task.** Build a corrected NEE axis for Figs 4/5 (Geo vs Data and Geo vs Geo, both versions
+identically), replacing the NBP-proxy axis diagnosed in `review/diagnostics/nee_bin_scheme/`
+(2026-09-24 entry above), which compared different quantities and different statistics on its two
+sides. Read-only w.r.t. the pipeline, `R/pipeline_config.R`, and every committed figure. New code:
+`scripts/diagnostics/nee_corrected_axis.R`, outputs to `review/diagnostics/nee_corrected_axis/`. No
+downloads — any missing input is to be reported, not fetched. Model NEE is defined as
+`ra + rh - gpp`, positive to the atmosphere, checked against `-NBP` and (where available) against
+`fFire + fLuc`; the global TRENDY area distribution and tower-measured monthly NEE (QC≥0.80, VUT,
+current network) then get a shared seven-bin scheme (near-zero bin sized from each site's own
+VUT_25/75 uncertainty, three equal-area quantile bins per side, open outer bins), evaluated for
+occupancy/Jaccard across three variants (fixed-period Geo vs Geo, tower-years Geo vs Geo, Geo vs
+Data) plus a paired tower-vs-model diagnostic scatter.
+
+**Approach.** Established the Step 0 inventory directly (not delegated) before any heavy
+computation, since these facts determine how the whole diagnostic must be framed:
+- `data/external/trendy/download_manifest.csv` and the on-disk tree contain **only the S3
+  simulation** for every model/variable — no S2 anywhere, so no land-use-sensitivity comparison is
+  possible (stronger than "S3 primary, S2 secondary").
+- **`fFire` and `fLuc` are absent for every model** — not in the manifest, not on disk. The
+  Step 1 residual-vs-fire/land-use-change comparison the task asks for cannot be performed for any
+  model; carried into the diagnostic's "what this cannot decide" section.
+- **LPJ-GUESS has no `rh` file**; it instead ships `LPJ-GUESS_S3_arh.nc`, confirmed via
+  `terra::rast()` metadata (`varnames="arh"`, `longnames="annual heterotrophic respiration"`, 325
+  annual layers, 1700–2024) to be `rh` under an annual-only naming convention, not a missing
+  variable.
+
+The remaining build (per-model flux regridding, ensemble statistics, tower-side monthly
+reconstruction, binning, occupancy/Jaccard, the paired diagnostic, and the figures/report) was
+delegated to a background agent with these Step 0 findings and the reusable machinery from the
+prior diagnostic (weighted-Jaccard function, `findInterval()` site classification, denominator
+convention, the equal-cumulative-area quantile construction, the cached per-model regridded `nbp`
+intermediates) supplied directly rather than re-derived.
+
+**Resilience.** The user asked, mid-run, for an explicit time estimate and whether the analysis
+was protected against a lost terminal/connectivity. Verified directly (`ps -o pid,ppid,tty`) that
+the compute process (`Rscript scripts/diagnostics/nee_corrected_axis.R`) is parented to `launchd`
+(PPID 1) with no controlling terminal — i.e. already fully detached, equivalent to the
+`nohup`+`disown` pattern CLAUDE.md prescribes for long-running reprocessing, and will survive this
+session or terminal ending.
+
+**Timeline (all times MST, 2026-09-24 unless noted).**
+
+| Time | Event |
+|---|---|
+| ~15:47 | Step 0 inventory written (`step0_inventory_raw.csv`) |
+| 16:07:35 | Main run started (`logs/nee_corrected_axis_20260924_160735.log`); target ensemble fixed at 17 models (CABLE-POP, CLASSIC, CLM, DLEM, ED, ELM, ELM-FATES, IBIS, ISAM, JULES-ES, LPJ-GUESS, LPJml, LPJwsl, LPX-Bern, ORCHIDEE, TEM, VISIT-UT) |
+| 16:07:35–16:11:00 | CABLE-POP (~3.5 min) |
+| 16:11:00–16:14:27 | CLASSIC (~3.5 min) |
+| 16:14:27–16:38:11 | CLM (~24 min) |
+| 16:38:11–16:38:54 | DLEM (~1 min) |
+| 16:38:54–16:49:05 | ED (~10 min) |
+| 16:49:05–16:52:39 | ELM (~3.5 min) |
+| 16:52:39–17:06:24 | ELM-FATES (~14 min) |
+| 17:06:24–20:15:49 | IBIS (~3h 9min) |
+| 20:15:49– (ongoing) | ISAM — `gpp` checkpoint (`ISAM_gpp_annual_native_1991_2020.tif`) not written until 2026-09-25 02:38 (~6h 22min for `gpp` alone); `ra`/`rh` still in progress as of this entry |
+| 2026-09-25 05:42 (this entry) | Process still running, 99% CPU, ~13h 35min elapsed total, 9 of 17 models started, 8 remaining |
+
+**Observation, not yet acted on.** Per-model timing is wildly uneven relative to file size — DLEM
+(~8 GB per variable) finished in ~1 minute; ISAM (~1.3–1.6 GB per variable, already on the 0.5°
+target grid, so no resampling needed) has taken more than 9 hours and counting. This points to the
+year-subsetting (1991–2020 out of ISAM's native 1700–2024, 3900 monthly layers) likely happening
+after an expensive full-stack read/operation rather than before, for models with long native
+monthly series — the opposite of the early-subset instruction this run was given. Flagged to the
+user; the run has not been interrupted to investigate or fix this, pending a decision on whether to
+let it finish or restart with the subsetting order corrected.
+
+No output files from this run (script, cached intermediates, or `review/diagnostics/nee_corrected_axis/`
+contents) have been committed yet — that will follow once the run completes and its outputs have
+been checked, per the same pattern used for the 2026-09-24 `nee_bin_scheme` diagnostic.
+
+---
+
 ## 2026-09-24 — NEE seven-bin scheme diagnostic for Figs 4/5: signed alternatives rejected, keep Scheme 1
 
 Diagnosed whether a single seven-bin NEE scheme could serve both Geo vs Data (site-measured NEE

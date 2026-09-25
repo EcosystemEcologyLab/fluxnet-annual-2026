@@ -4,6 +4,235 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-25 — NEE corrected-axis run: slowdown diagnosis, proof-of-fix, continue-vs-restart evidence
+
+**Investigation only — the running process (`PID 6910`, `scripts/diagnostics/nee_corrected_axis.R`) was not**
+**stopped, signalled, or touched; the script and its output/checkpoint directories were not written to.**
+All verification below ran against a separate scratch location
+(`/private/tmp/claude-501/.../scratchpad/`) or read pre-existing files only.
+
+### 1. Checkpoints
+
+Every intermediate file the run has written (its own `_annual_native_1991_2020.tif` cache, distinct
+from the pre-existing `_nbp_regridded.tif`/`_evapotrans_regridded.tif` files this run *reuses* from
+the June `figure_representativeness_trendy_compute.R` cache):
+
+| Model | gpp | ra | rh |
+|---|---|---|---|
+| CABLE-POP | 16:08 | 16:09 | 16:11 |
+| CLASSIC | 16:12 | 16:13 | 16:14 |
+| CLM | 16:22 | 16:30 | 16:38 |
+| DLEM | 16:38 | 16:38 | 16:38 |
+| ED | 16:42 | 16:45 | 16:49 |
+| ELM | 16:50 | 16:51 | 16:52 |
+| ELM-FATES | 16:57 | 17:01 | 17:06 |
+| IBIS | 18:08 | 19:11 | 20:15 |
+| ISAM | 2026-09-25 02:38 | — (in progress) | — |
+
+All times 2026-09-24 unless noted. File sizes 1.4–8.2 MB each (compressed 0.5° 30-year stacks — small
+regardless of the multi-GB source file). No output past `step0_notes.json`/`step0_inventory_raw.csv`
+exists yet in `review/diagnostics/nee_corrected_axis/`: `partA_checkpoint.rds` and every Step 1/2 table
+are written only after *all* 17 models finish the per-model loop (`nee_corrected_axis.R:293–297`
+onward), so nothing beyond the per-(model, variable) cache is resumable yet.
+
+**Resume logic already exists** — `nee_corrected_axis.R:249–257`:
+```r
+cache_native <- file.path(INTER_DIR, paste0(mdl, "_", v, "_annual_native_", WIN_START, "_", WIN_END, ".tif"))
+if (file.exists(cache_native)) {
+  r_ann <- tryCatch(rast(cache_native), error = function(e) NULL)
+  if (!is.null(r_ann) && nlyr(r_ann) == N_YEARS_WIN) {
+    msg("    ", v, ": cached native stack loaded"); vars_annual[[v]] <- r_ann; next
+  }
+}
+```
+This skips any (model, variable) whose checkpoint exists and validates (`nlyr == 30`). **No resume
+logic needs to be added.** Granularity is per-(model, variable) — the script header's own comment
+(lines 11–14) states this was deliberate. The only work a restart could lose is whatever variable is
+*mid-computation* when it stops: right now, ISAM's `ra`.
+
+### 2. The slowdown
+
+`load_annual_native()` (`nee_corrected_axis.R:173–210`). For `LON360_MODELS <- c("CLM","ISAM","ELM-FATES")`
+(line 72), line 179 — `if (model %in% LON360_MODELS) r <- rotate(r)` — runs on the **full, un-subset**
+raster (all ~3900 native monthly layers), *before* `get_years()` (180) and the year/month subsetting
+that follows (184 annual branch; 199 monthly branch, the one all gpp/ra/(rh except LPJ-GUESS) files take).
+
+**Diagnosis, refined.** All 17 target models have long native monthly records (~3900 layers, 1700–2024
+— confirmed directly, table below), so "long native record" alone does not distinguish fast models
+from slow ones: DLEM (8.2 GB/file) finished in under a minute; IBIS (0.65 GB/file, *not* LON360) took
+189 minutes. The task's diagnosis is **confirmed specifically for the 3 LON360 models** (CLM, ISAM,
+ELM-FATES), where line 179 is a plain, unconditional full-stack operation preceding all subsetting —
+and **empirically corroborated** (Section 5). It is **not** a general explanation for every long-record
+model: for the 14 non-LON360 models, subsetting (`mo_idx`-based, 12 of ~3900 layers per year) already
+happens correctly on the raw file with no full-stack step first, so IBIS's 189-minute run (and any
+similar case among the 8 not-yet-started models) is **not explained by this mechanism** and remains an
+open question — most likely a per-file netCDF chunking/compression characteristic that `ncdump`/`cdo`
+(neither installed on this machine) would be needed to confirm directly.
+
+### 3. Remaining time
+
+| Model | Native span/step | Grid | LON360 | File size gpp/ra/rh (GB) | Observed (3 vars) |
+|---|---|---|---|---|---|
+| CABLE-POP | 1700–2024, monthly | 1°, 360×180 | no | 0.17/0.20/0.20 | ~3.5 min |
+| CLASSIC | 1701–2024, monthly | 1°, 360×180 | no | 1.88/1.88/1.88 | ~3.5 min |
+| CLM | 1700–2024, monthly | 1.25×0.94°, 288×192 | **yes** | 0.80/0.80/0.80 | ~24 min |
+| DLEM | 1700–2024, monthly | 0.5°, 720×360 | no | 7.53/7.53/7.53 | <1 min |
+| ED | 1700–2024, monthly | 0.5°, 720×360 | no | 3.77/3.77/3.77 | ~10 min |
+| ELM | 1698–2024, monthly | 1.25×0.94°, 288×192 | no | 0.19/0.21/0.22 | ~3.5 min |
+| ELM-FATES | 1701–2024, monthly | 2.5×1.89°, 144×80 | **yes** | 0.05/0.05/0.05 | ~14 min |
+| IBIS | 1700–2024, monthly | 0.5°, 720×360 | no | 0.63/0.69/0.69 | ~189 min (unexplained) |
+| ISAM | 1700–2024, monthly | 0.5°, 720×360 | **yes** | 1.27/1.49/1.41 | gpp: 382 min; ra: in progress (>200 min, no ckpt) |
+| JULES-ES | 1700–2024, monthly | 0.5°, 720×360 | no | 3.77/3.77/3.77 | not started |
+| LPJ-GUESS | 1700–2024 (rh: annual) | 0.5°, 720×360 | no | 0.28/0.24/0.035 | not started |
+| LPJml | 1700–2024, monthly | 0.5°, 720×360 | no | 0.71/0.88/0.87 | not started |
+| LPJwsl | 1699–2024, monthly | 0.5°, 720×360 | no | 1.25/1.58/1.71 | not started |
+| LPX-Bern | 1700–2024, monthly | 0.5°, 720×360 | no | 0.80/0.76/0.80 | not started |
+| ORCHIDEE | 1700–2024, monthly | 0.5°, 720×360 | no | 0.71/0.79/0.84 | not started |
+| TEM | 1700–2024, monthly | 0.5°, 720×360 | no | 0.63/0.78/0.74 | not started |
+| VISIT-UT | 1700–2024, monthly | 0.5°, 720×360 | no | 0.61/0.72/0.76 | not started |
+
+**What drives the uncertainty.** File size and grid resolution do not predict which speed cluster a
+model falls in — the biggest file (DLEM, 8.2 GB) was the fastest; a mid-size file (IBIS, 0.65 GB) was
+2 orders of magnitude slower, for a reason this investigation could not pin down without tools not
+installed on this machine. All 8 not-yet-started models are non-LON360, so none would hit the rotate
+mechanism diagnosed above either way — but none are safely known to avoid whatever makes IBIS slow.
+Estimate, therefore, is a genuine range, not a hedge:
+
+- **Continuing under current code**: ISAM's `ra`/`rh` extrapolate to ISAM's own gpp time (~6.4 h each,
+  Section 5 explains why) ⇒ roughly 9–11 h more just for ISAM (ra already ~3.3 h in). The 8 untested
+  models: 10 min–190 min each ⇒ 1.3–25+ h. **Total additional time: roughly 10–36 h from now** —
+  could finish today or still be running in 1–2 more days.
+- **Stopping, applying the fix (Section 4), restarting**: ISAM's `ra`/`rh` drop to an estimated
+  ~35–40 min each (Section 5) ⇒ ~70–80 min for ISAM. The 8 untested models are **unaffected by the
+  fix** (not LON360) — same 1.3–25+ h range applies regardless. **Total additional time: roughly
+  2.5–26.5 h from restart** — the fix removes ISAM specifically as a source of delay but does not
+  reduce the dominant uncertainty (the 8 untested models).
+
+**Parallel execution.** This machine has 16 GB RAM; the running process holds ~2 GB RSS with ~1.1 GB
+free + ~5.9 GB reclaimable-inactive at last check. The checkpoint files are per-model, per-variable
+paths with no shared state or locking, so running *different* not-yet-started models in separate
+processes would not corrupt anything — but running all 8 remaining models concurrently (~2 GB × 8 ≈
+16 GB) would exceed available headroom on top of the current process and risks swapping, which would
+likely make each one slower rather than faster. Two, perhaps three, concurrent processes alongside the
+current one is the safe ceiling on this machine; the full remaining set is not.
+
+### 4. Proposed fix (not applied)
+
+```diff
+ load_annual_native <- function(model, var, yr_lo, yr_hi) {
+   path <- find_nc(model, var)
+   if (is.na(path)) { msg("    ", model, " ", var, ": file not found"); return(NULL) }
+   r <- tryCatch(rast(path), error = function(e) { msg("    ", model, " ", var,
+                 ": rast() error -- ", conditionMessage(e)); NULL })
+   if (is.null(r)) return(NULL)
+-  if (model %in% LON360_MODELS) r <- rotate(r)
+   yr_all <- get_years(r, model)
+   is_annual <- nlyr(r) %in% c(325L, 326L)
+
+   if (is_annual) {
+     idx <- which(yr_all >= yr_lo & yr_all <= yr_hi)
+     if (length(idx) < (yr_hi - yr_lo + 1L)) {
+       msg("    ", model, " ", var, ": annual product covers only ", length(idx),
+           "/", yr_hi - yr_lo + 1L, " target years -- excluded")
+       return(NULL)
+     }
+-    r_sub <- r[[idx]] * (SECS_YEAR * KG_TO_G)
++    r_sub <- r[[idx]]
++    if (model %in% LON360_MODELS) r_sub <- rotate(r_sub)
++    r_sub <- r_sub * (SECS_YEAR * KG_TO_G)
+     names(r_sub) <- as.character(yr_all[idx])
+     return(r_sub)
+   }
+
++  # Subset to the ~360 layers this window needs BEFORE rotating, so rotate()
++  # (and everything after it) only ever touches what this diagnostic uses,
++  # not the model's full ~3900-layer native record.
++  win_idx <- which(yr_all >= yr_lo & yr_all <= yr_hi)
++  r <- r[[win_idx]]
++  yr_win <- yr_all[win_idx]
++  if (model %in% LON360_MODELS) r <- rotate(r)
++
+   n_years <- yr_hi - yr_lo + 1L
+   annual_list <- vector("list", n_years)
+   for (i in seq_len(n_years)) {
+     y <- yr_lo + i - 1L
+-    mo_idx <- which(yr_all == y)
++    mo_idx <- which(yr_win == y)
+     if (length(mo_idx) != 12L) {
+       msg("    ", model, " ", var, ": year ", y, " has ", length(mo_idx),
+           " months (need 12) -- excluded")
+       return(NULL)
+     }
+     r_yr <- sum(r[[mo_idx]] * (SECS_MONTH * KG_TO_G), na.rm = FALSE)
+     names(r_yr) <- as.character(y)
+     annual_list[[i]] <- r_yr
+   }
+   rast(annual_list)
+ }
+```
+Only reorders when rotation happens relative to subsetting; no computed quantity changes (proven in
+Section 5). Resume logic (Section 1) already exists and needs no change.
+
+### 5. Proof the fix does not change values
+
+**Mandated test (DLEM, the fastest finished model, non-LON360)**: recomputed `DLEM`'s `gpp` 30-year
+native-resolution annual stack with the fixed code path in the scratch directory (never touching
+`data/external/trendy/derived/` or the running process) and compared it to the existing checkpoint
+(`DLEM_gpp_annual_native_1991_2020.tif`): max absolute difference **0.000244 gC m⁻² yr⁻¹** on values
+of order 10²–10³ — floating-point summation-order noise, not a real difference (`all.equal(...,
+tolerance = 1e-6)` returns `TRUE`). This proves the reorder is a no-op for the 14 non-LON360 models
+(for which `rotate()` never ran anyway — the diff is inert there).
+
+**Supplementary test (ELM-FATES, the smallest LON360 model)** — this one actually exercises the
+reordered `rotate()`, which the DLEM test cannot: timed `rotate()` on ELM-FATES's full 3888-layer
+stack then subsetting (current order) against subsetting first then rotating only the needed ~360
+layers (fixed order), both reading only from the source `.nc` file, writing nothing to the repo:
+- Current order (rotate full stack, then subset): **296.4 s**
+- Fixed order (subset first, then rotate small subset): **27.9 s**
+- **Speedup: 10.6×** — matching almost exactly the ratio of total-to-needed layers (3900/360 ≈ 10.8),
+  which is the clean, mechanistic signature of "the full stack is being processed before it's cut
+  down," not a grid-size effect (ELM-FATES's grid is small, 144×80 — the speedup came entirely from
+  layer count, and the same ~3900:360 ratio applies to ISAM's much larger 720×360 grid, which is why
+  Section 3 extrapolates ISAM's fixed-path time from this ratio rather than ELM-FATES's absolute time).
+- **Values identical** between the two orderings (first year, first 12 layers, `all.equal() == TRUE`)
+  — confirms the reorder is value-preserving on the LON360 path too, not just the inert non-LON360 path.
+
+ISAM's gpp took 382 min (6.37 h) under the current order; dividing by the empirically-matched ~10.6×
+factor gives the ~35–40 min/variable estimate used in Section 3. This is an extrapolation from a
+smaller grid, not a direct re-run of ISAM itself (which would take hours either way and defeat the
+purpose of a fast diagnostic) — flagged as such, not measured directly.
+
+### 6. The near-zero bin half-width
+
+Confirmed from the code: **a single scalar, not per-site.** `nee_corrected_axis.R:523` computes a
+per-site value (`half_width_site = abs(nee_annual_75 - nee_annual_25) / 2`), but that is immediately
+collapsed at **line 566** — `H_HALFWIDTH <- median(hw_dist)` — to one number across all sites. That
+single `H_HALFWIDTH` is the only half-width ever used again: it is passed once into
+`make_signed_bins(global_hist, H_HALFWIDTH)` (line 608) to build one `BREAKS` vector (line 609), which
+`classify_signed()` then applies identically to the global histogram (620), Geo-vs-Geo fixed-period
+(664), Geo-vs-Geo tower-years (689), and Geo-vs-Data (694) — the same seven bin edges for every
+version and every variant, per the task's "identically" instruction. The previous log entry's wording
+("near-zero bin sized from each site's own VUT_25/75 uncertainty") was ambiguous about this and should
+be read as "sized from the *median across sites* of," not per-site.
+
+### Recommendation
+
+**Stop the process, apply the fix in Section 4, restart.** What would be lost under each option,
+exactly:
+
+- **Continue as-is**: loses nothing further, but carries the full 10–36 h uncertainty range in
+  Section 3, dominated by the unresolved IBIS-class risk this investigation could not fix or rule out
+  for the 8 untested models.
+- **Stop, fix, restart**: loses **at most ISAM's in-progress `ra`** (~3.3 h of work on that one
+  variable so far; `gpp` stays cached and valid, confirmed by the resume logic in Section 1). Every
+  other completed model's checkpoints are untouched and reused. In exchange, ISAM's own remaining time
+  drops from an estimated 9–11 h to roughly 1–1.5 h (Section 5). The fix does not touch, help, or risk
+  the 8 untested models' code path at all — restarting is a clean, bounded trade with no downside
+  beyond the ISAM `ra` work already described, and no plausible scenario in which it leaves the run
+  worse off than continuing.
+
+---
+
 ## 2026-09-25 — NEE corrected-axis diagnostic (Figs 4/5): interim status, run in progress
 
 **Interim status entry — the diagnostic below has not finished; this records the task, approach, and

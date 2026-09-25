@@ -4,6 +4,64 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-25 — NEE corrected-axis run: stopped, fixed, restarted
+
+Followed the recommendation in the same day's earlier "slowdown diagnosis" entry: stop, apply the
+Section 4 diff, restart. Steps below match that plan's numbering.
+
+**1. Checkpoints recorded before stopping anything.** All 25 pre-existing `*_annual_native_1991_2020.tif`
+files (path, size, mtime, sha256) written to
+`review/diagnostics/nee_corrected_axis/checkpoints_before_restart.csv` before the process was signalled.
+
+**2. Stop.** Sent `SIGTERM` to `PID 6910` at approximately **06:10:54** (derived from the process's own
+elapsed-time counter at the moment of signalling — `SIGTERM` is not caught by R by default, so no clean
+shutdown line was written to its log; the log simply ends mid-`ISAM` with no closing message, consistent
+with an unhandled termination). Confirmed exited (`ps -p 6910` returned nothing) before proceeding.
+Checked for a partial/unreadable file from the in-flight `ISAM` `ra` computation: **none exists** —
+`find data/external/trendy/derived/intermediate -newer <ISAM_gpp checkpoint>` and an explicit
+`ISAM_ra*`/`ISAM_rh*` glob both returned empty, confirming the process was killed before reaching
+`writeRaster()` for `ra` (line 260), not mid-write. **Nothing was removed** — there was nothing to
+remove, and no file from the step-1 list was touched.
+
+**Work lost: exactly ISAM's `ra`, and nothing else.** ISAM's `ra` had been running under the
+*unfixed* code since 2026-09-24 20:15:49+382min ≈ 02:38 (right after `gpp` checkpointed), so roughly
+**3h33min of compute discarded** — no output file existed, so no wasted disk, just wall-clock time.
+`gpp` (ISAM's only completed variable) is untouched and was reused on restart (confirmed below). `rh`
+had not started. Every other model's checkpoints (CABLE-POP through IBIS, 24 files) were never
+in-flight and are all preserved.
+
+**3. Fix applied.** The Section 4 diff applied to `scripts/diagnostics/nee_corrected_axis.R` exactly as
+written, nothing else changed (confirmed: `Rscript -e 'parse(...)'` parses cleanly; the edited region
+matches the diff line-for-line). Committed on its own —
+**`a0d0d17` "Fix rotate-before-subset ordering in nee_corrected_axis.R load_annual_native()"** —
+and pushed (`51ef721..a0d0d17`).
+
+**4. Restart.** Launched as a single detached process, no parallelism:
+```
+nohup Rscript scripts/diagnostics/nee_corrected_axis.R > logs/nee_corrected_axis_restart_wrapper_20260925_061159.log 2>&1 &
+disown
+```
+**PID 14877**, started **2026-09-25 06:12:04** (new log: `logs/nee_corrected_axis_20260925_061204.log`).
+Confirmed detached the same way as the original run: `ps -o pid,ppid,tty` shows `PPID 1` (`launchd`),
+`TTY ??` — survives this session or terminal ending.
+
+**5. Checkpoint-reuse confirmation.** The new log reports `"<var>: cached native stack loaded"` for
+every one of the 25 (model, variable) pairs from the step-1 list — CABLE-POP, CLASSIC, CLM, DLEM, ED,
+ELM, ELM-FATES, and IBIS (all 3 variables each), plus ISAM's `gpp` — before the run reached ISAM's `ra`
+(the first genuinely new computation, and the first real test of the fix). Re-hashed all 25 files
+after the restart and diffed against the step-1 CSV: **byte-for-byte and sha256-identical, zero
+files changed.** None of the completed models were recomputed; nothing here would have required
+stopping the run to report, per the task's instruction.
+
+**6. ISAM `ra`/`rh` run times — pending.** ISAM's `ra` began under the *fixed* code path at 06:12:08 and
+was still running as of this entry. Section 5 of the earlier diagnosis entry estimated **35–40 minutes
+per variable** under the fix (extrapolated from the 10.6× speedup measured on ELM-FATES, not measured
+directly on ISAM). That comparison — this run's actual `ra` and `rh` times against that 35–40 min
+estimate — is the direct test of the fix's real-world benefit and will be reported in the next interim
+entry once both finish, per the "leave it running, add interim entries as before" instruction.
+
+---
+
 ## 2026-09-25 — NEE corrected-axis run: slowdown diagnosis, proof-of-fix, continue-vs-restart evidence
 
 **Investigation only — the running process (`PID 6910`, `scripts/diagnostics/nee_corrected_axis.R`) was not**

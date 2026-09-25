@@ -4,6 +4,28 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-25 — NEE corrected-axis run: second unexplained-slow model confirms residual risk
+
+Progress since the last entry (PID 14877, still running, still detached — `PPID 1`, no TTY):
+`JULES-ES` (~14 min), `LPJ-GUESS` (~10 min), `LPJml` (~14 min) all finished quickly — three more data
+points for the "fast cluster." `LPJwsl` then started at 08:06:04 and, as of this entry (10:15:51,
+**over 129 minutes in**), still has not written even its first checkpoint (`gpp`). The process is
+still actively computing — 99% CPU, ~2.3 GB RSS, no memory or disk pressure (326 GiB used / 97 GiB
+free) — not hung, just slow.
+
+This is now a second, worse instance of the unexplained-slow behavior first seen in `IBIS`
+(62–64 min/variable there; `LPJwsl` has already exceeded that more than 2× for a single variable).
+`LPJwsl` is not a LON360 model, so the restart's fix (Section 4 of the earlier diagnosis entry) does
+not apply to it and would not have helped — this is exactly the residual, un-diagnosed risk that
+entry's Section 3 flagged for the untested models ("none are safely known to avoid whatever makes
+IBIS slow"). No action is being taken on it; recorded here because it materially updates that
+uncertainty from hypothetical to observed a second time, in the same conversation.
+
+No SESSION_LOG action needed beyond recording this — the run is not paused, and no fix is proposed for
+this case since its cause (unlike the LON360/rotate() issue) has not been identified.
+
+---
+
 ## 2026-09-25 — NEE corrected-axis run: fix confirmed on ISAM (the direct test)
 
 Closes the pending item from the same day's "stopped, fixed, restarted" entry: ISAM's `ra` and `rh`

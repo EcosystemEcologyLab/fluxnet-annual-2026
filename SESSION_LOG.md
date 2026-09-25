@@ -4,6 +4,58 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-25 — NEE corrected-axis run: second unexplained-slow model confirms residual risk
+
+Progress since the last entry (PID 14877, still running, still detached — `PPID 1`, no TTY):
+`JULES-ES` (~14 min), `LPJ-GUESS` (~10 min), `LPJml` (~14 min) all finished quickly — three more data
+points for the "fast cluster." `LPJwsl` then started at 08:06:04 and, as of this entry (10:15:51,
+**over 129 minutes in**), still has not written even its first checkpoint (`gpp`). The process is
+still actively computing — 99% CPU, ~2.3 GB RSS, no memory or disk pressure (326 GiB used / 97 GiB
+free) — not hung, just slow.
+
+This is now a second, worse instance of the unexplained-slow behavior first seen in `IBIS`
+(62–64 min/variable there; `LPJwsl` has already exceeded that more than 2× for a single variable).
+`LPJwsl` is not a LON360 model, so the restart's fix (Section 4 of the earlier diagnosis entry) does
+not apply to it and would not have helped — this is exactly the residual, un-diagnosed risk that
+entry's Section 3 flagged for the untested models ("none are safely known to avoid whatever makes
+IBIS slow"). No action is being taken on it; recorded here because it materially updates that
+uncertainty from hypothetical to observed a second time, in the same conversation.
+
+No SESSION_LOG action needed beyond recording this — the run is not paused, and no fix is proposed for
+this case since its cause (unlike the LON360/rotate() issue) has not been identified.
+
+---
+
+## 2026-09-25 — NEE corrected-axis run: fix confirmed on ISAM (the direct test)
+
+Closes the pending item from the same day's "stopped, fixed, restarted" entry: ISAM's `ra` and `rh`
+have now finished under the fixed code, giving the direct before/after comparison the restart was for.
+
+| Variable | Old code (unfixed, pre-restart) | New code (fixed, this run) | Estimate (Section 5, prior entry) |
+|---|---|---|---|
+| `gpp` | 382 min (6h22m) | reused from cache, not recomputed | — |
+| `ra` | (never finished — killed in-flight) | **~38 min** (06:12:08 → ~06:50) | 35–40 min |
+| `rh` | not started | **~38 min** (~06:50 → 07:28) | 35–40 min |
+| ISAM total (`ra`+`rh`) | — | **1h16m39s** (06:12:08 → 07:28:47, from the log) | 70–80 min |
+
+Both variables land inside the estimated range, and the ISAM-total estimate (70–80 min, built by
+dividing `gpp`'s old 382 min by the 10.6× speedup factor measured on ELM-FATES) came in almost exactly
+on the money at 76m39s. The fix's predicted benefit is confirmed directly, not just extrapolated.
+
+**Bonus data point, not asked for but relevant to the open uncertainty in Section 3 of the diagnosis
+entry**: `JULES-ES` — the first of the 8 previously-untested models, and one of the largest by file
+size (3.77 GB/variable, matching `ED`'s size class) — started immediately after ISAM (07:28:48) and
+finished all 3 variables in **~14 minutes** (07:42:38), landing in the "fast cluster" rather than the
+unexplained "IBIS-slow" cluster. One data point does not resolve the uncertainty about the remaining 6
+untested models (`LPJ-GUESS`, now in progress, `LPJml`, `LPJwsl`, `LPX-Bern`, `ORCHIDEE`, `TEM`,
+`VISIT-UT`), but it is the first evidence since the restart that at least some of them will be fast.
+
+Run continues unattended (PID 14877, still detached: `PPID 1`, no TTY). Further interim entries will
+follow at meaningful milestones (Part A completion, any failure, or the full run finishing through
+Steps 3–7 and the figures/report) rather than per-model, to keep this log legible.
+
+---
+
 ## 2026-09-25 — NEE corrected-axis run: stopped, fixed, restarted
 
 Followed the recommendation in the same day's earlier "slowdown diagnosis" entry: stop, apply the

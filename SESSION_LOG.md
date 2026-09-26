@@ -4,6 +4,71 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-26 — NEE corrected-axis run: Step 2 fixed, LPJ-GUESS rh confirmed correct, restart succeeded through Step 7
+
+Resumed the run that stopped at Step 2 on 2026-09-26 (prior entry). All four items below, then the
+run itself, completed successfully — **the diagnostic finished, through Steps 3–7 and figures,
+with no further errors.**
+
+**1. Step 2 fix.** `existing_dist$area_km2` (line 396) summed to 0 because
+`data/snapshots/trendy_nee_median_global_distribution.csv` has no `area_km2` column — its per-bin
+area column is `global_land_area_km2`. Confirmed by inspecting the file's header and cross-checking
+`review/diagnostics/nee_bin_scheme/report.md` (lines 118–120), which independently states this same
+file's total as 163,331,648.67 km². Fixed the one column reference; verified the fix against the
+already-written `data/external/trendy/derived/trendy_nee_fluxbased_median.tif` from the halted run
+(no recomputation needed) — corrected existing total (163,331,648.67 km²) now matches this
+diagnostic's own masked total exactly. Committed alone and pushed: **`fcf48bf`**.
+
+**2. LPJ-GUESS heterotrophic respiration — conversion confirmed correct, nothing changed.**
+`LPJ-GUESS_S3_arh.nc`'s `units` attribute is `"kg m-2 s-1"` — the same convention as the monthly
+`gpp`/`ra` files (also `"kg m-2 s-1"`) and as `IBIS_S3_rh.nc`'s `rh` (`"kg m-2 s-1"`), despite the
+`long_name` reading "annual heterotrophic respiration" (an annual-mean *rate*, not an accumulated
+total, so line 191's `SECS_YEAR * KG_TO_G` factor is the right one). Checked three ways:
+- **Raw magnitude**: `arh`'s raw values (median 7.67e-9 kg m⁻² s⁻¹) are the same order as monthly
+  `gpp`/`ra` raw values (2.89e-8 / 1.24e-8), not ~3.15e7× larger — ruling out the "already an annual
+  total, mistakenly treated as a rate" failure mode.
+- **After conversion, vs. its own gpp/ra**: LPJ-GUESS's converted rh (mean 284.7 gC m⁻² yr⁻¹) sits
+  inside the same range as 7 other models (175.9–439.7), and its per-cell rh/gpp (median 0.42) and
+  rh/ra (median 0.93) ratios are unremarkable.
+- **Against another model at the same cells**: LPJ-GUESS rh vs. `IBIS` rh at the same 0.5° cells
+  (both natively on the 720×360 grid, 57,602 complete-case cells) correlate at **r=0.76**, with
+  comparable summary stats (LPJ-GUESS median 254.5, IBIS median 307.4 gC m⁻² yr⁻¹).
+
+Conclusion: **the conversion is correct.** LPJ-GUESS's outsized median NEE-vs-(-NBP) residual
+(-65.8 gC m⁻² yr⁻¹, largest of the 17) is plausibly real model behaviour — its `gpp` is on the high
+side of the ensemble while `ra`+`rh` doesn't fully compensate — not a unit-conversion artefact.
+Per the task's instruction, nothing was changed and `LPJ-GUESS_rh_annual_native_1991_2020.tif` was
+**not** removed.
+
+**3. Restart.** Detached, single process, new log:
+```
+nohup Rscript scripts/diagnostics/nee_corrected_axis.R > logs/nee_corrected_axis_restart2_wrapper_20260926_035542.log 2>&1 &
+disown
+```
+**PID 26470**, started **2026-09-26 03:55:42** (`logs/nee_corrected_axis_20260926_035546.log`),
+confirmed detached (`PPID 1`, no TTY). All **51/51** cache-load lines (17 models × gpp/ra/rh)
+reported `"cached native stack loaded"` — nothing recomputed, consistent with item 2 (nothing
+removed). Step 2 then reported `Area totals match exactly: TRUE` (163,331,649 km² both sides), and
+the run proceeded cleanly through Step 3 (559/781 current-network sites with a valid tower annual
+NEE), Step 4 (h=21.9 gC m⁻² yr⁻¹), Step 5 (7-bin scheme), Step 6 (weighted Jaccard by
+variant × network), Step 7 (paired check, n=486), and the three figures, finishing at
+**03:57:43** with `=== nee_corrected_axis.R complete ===` and no errors (one harmless `ggplot2 4.0.0`
+deprecation warning for `geom_errorbarh()`). Outputs land in
+`review/diagnostics/nee_corrected_axis/` (untracked, not gitignored — not committed here; only
+`SESSION_LOG.md` is committed per this task's instruction) and
+`data/external/trendy/derived/` (gitignored, as with all of `data/`).
+
+**4. Tower-year restriction (1991–2020), reported without changing behaviour.** Of the **559**
+current-network sites with at least one QC-qualifying, all-12-month year (independent of the
+window), restricting to 1991–2020 at lines 681/762:
+- **73 sites dropped entirely** — every one of their qualifying years falls after 2020 (site data
+  starting anywhere from 2008 to 2024, e.g. `AT-Mmg` 2021–2024, `AU-Ya1` 2023–2025).
+- **297 sites truncated** — some years kept, some dropped (nearly all lose their post-2020 years,
+  e.g. `AU-How`: 24 years on record, 19 kept, 5 dropped).
+- **189 sites unaffected** — all qualifying years already fall inside 1991–2020.
+
+---
+
 ## 2026-09-26 — NEE corrected-axis run: PID 14877 finished Step 1, halted at Step 2 (grid/mask mismatch)
 
 **Process is dead, not still running.** `ps -p 14877` returns nothing; the script's own exit

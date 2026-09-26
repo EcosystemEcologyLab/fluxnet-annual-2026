@@ -1,0 +1,101 @@
+model,variable,present,nlyr,varname,longname,units,cadence,file
+CABLE-POP,gpp,TRUE,3900,gpp,Gross Primary Production,kg m-2 s-1,monthly,CABLE-POP_S3_gpp.nc
+CABLE-POP,ra,TRUE,3900,ra,Autotrophic (Plant) Respiration,kg m-2 s-1,monthly,CABLE-POP_S3_ra.nc
+CABLE-POP,rh,TRUE,3900,rh,Heterotrophic Respiration,kg m-2 s-1,monthly,CABLE-POP_S3_rh.nc
+CABLE-POP,nbp,TRUE,3900,nbp,Net Biospheric Production,kg m-2 s-1,monthly,CABLE-POP_S3_nbp.nc
+CABLE-POP,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration,kg m-2 s-1,monthly,CABLE-POP_S3_evapotrans.nc
+CARDAMOM,gpp,TRUE,1850,gpp,Gross Primary Productivity - Median estimate,kg.m-2.s-1,unknown,CARDAMOM_S3_gpp.nc
+CARDAMOM,ra,TRUE,1850,ra,Autotrophic (Plant) Respiration - Median estimate,kg.m-2.s-1,unknown,CARDAMOM_S3_ra.nc
+CARDAMOM,rh,TRUE,1850,rh,Heterotrophic Respiration - Median estimate,kg.m-2.s-1,unknown,CARDAMOM_S3_rh.nc
+CARDAMOM,nbp,TRUE,1850,nbp,Net Biome Productivity (-NEE - Fire - fLuc) - Median estimate,kg.m-2.s-1,unknown,CARDAMOM_S3_nbp.nc
+CARDAMOM,evapotrans,TRUE,1850,evapotrans,Evapotranspiration - Median estimate,kg.m-2.s-1,unknown,CARDAMOM_S3_evapotrans.nc
+CLASSIC,gpp,TRUE,3888,gpp,Carbon Mass Flux out of Atmosphere due to Gross Primary Production on Land,kg m$^{-2}$ s$^{-1}$,monthly,CLASSIC_S3_gpp.nc
+CLASSIC,ra,TRUE,3888,ra,Autotrophic Respiration from All Vegetation Pools,kg m$^{-2}$ s$^{-1}$,monthly,CLASSIC_S3_ra.nc
+CLASSIC,rh,TRUE,3888,rh,Carbon mass flux per unit area into atmosphere due to heterotrophic respiration on land (respiration by consumers),kg m$^{-2}$ s$^{-1}$,monthly,CLASSIC_S3_rh.nc
+CLASSIC,nbp,TRUE,3888,nbp,"This is the net mass flux of carbon from atmosphere into land, calculated as photosynthesis MINUS the sum of plant and soil    respiration, carbon fluxes from fire, harvest, grazing and land use    change. Positive flux is into the land.",kg m$^{-2}$ s$^{-1}$,monthly,CLASSIC_S3_nbp.nc
+CLASSIC,evapotrans,TRUE,3888,evapotrans,Evaporation at surface (also known as evapotranspiration): flux of water into the atmosphere due to conversion of both liquid and solid phases to vapor (from underlying surface and vegetation),kg m$^{-2}$ s$^{-1}$,monthly,CLASSIC_S3_evapotrans.nc
+CLM,gpp,TRUE,3900,gpp,Gross Primary Production,kg m-2 s-1,monthly,CLM6.0_S3_gpp.nc
+CLM,ra,TRUE,3900,ra,Autotrophic (Plant) Respiration,kg m-2 s-1,monthly,CLM6.0_S3_ra.nc
+CLM,rh,TRUE,3900,rh,Heterotrophic Respiration,kg m-2 s-1,monthly,CLM6.0_S3_rh.nc
+CLM,nbp,TRUE,3900,nbp,Net Biospheric Production,kg m-2 s-1,monthly,CLM6.0_S3_nbp.nc
+CLM,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration,kg m-2 s-1,monthly,CLM6.0_S3_evapotrans.nc
+CLM-FATES,gpp,TRUE,NA,NA,NA,NA,ERROR_READING,CLM-FATES_S3_gpp.nc
+CLM-FATES,ra,TRUE,NA,NA,NA,NA,ERROR_READING,CLM-FATES_S3_ra.nc
+CLM-FATES,rh,TRUE,NA,NA,NA,NA,ERROR_READING,CLM-FATES_S3_rh.nc
+CLM-FATES,nbp,TRUE,NA,NA,NA,NA,ERROR_READING,CLM-FATES_S3_nbp.nc
+CLM-FATES,evapotrans,TRUE,NA,NA,NA,NA,ERROR_READING,CLM-FATES_S3_evapotrans.nc
+DLEM,gpp,TRUE,3900,gpp,Gross Primary Production,kg m-2 s-1,monthly,DLEM_S3_gpp.nc
+DLEM,ra,TRUE,3900,ra,Autotrophic Respiration,kg m-2 s-1,monthly,DLEM_S3_ra.nc
+DLEM,rh,TRUE,3900,rh,Heterotrophic Respiration,kg m-2 s-1,monthly,DLEM_S3_rh.nc
+DLEM,nbp,TRUE,325,nbp,Net Biospheric Production,kg m-2 s-1,annual,DLEM_S3_nbp.nc
+DLEM,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration,kg m-2 s-1,monthly,DLEM_S3_evapotrans.nc
+ED,gpp,TRUE,3900,gpp,Gross Primary Production,kg m-2 s-1,monthly,EDv3_S3_gpp.nc
+ED,ra,TRUE,3900,ra,Autotrophic (Plant) Respiration,kg m-2 s-1,monthly,EDv3_S3_ra.nc
+ED,rh,TRUE,3900,rh,Heterotrophic Respiration,kg m-2 s-1,monthly,EDv3_S3_rh.nc
+ED,nbp,TRUE,3900,nbp,Net Biospheric Production,kg m-2 s-1,monthly,EDv3_S3_nbp.nc
+ED,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration,kg m-2 s-1,monthly,EDv3_S3_evapotrans.nc
+ELM,gpp,TRUE,3900,gpp,Carbon Mass Flux out of Atmosphere Due to Gross Primary Production on Land [kgC m-2 s-1],kg m-2 s-1,monthly,E3SM_S3_gpp.nc
+ELM,ra,TRUE,3900,ra,Carbon Mass Flux into Atmosphere Due to Autotrophic (Plant) Respiration on Land [kgC m-2 s-1],kg m-2 s-1,monthly,E3SM_S3_ra.nc
+ELM,rh,TRUE,3900,rh,Total Heterotrophic Respiration on Land as Carbon Mass Flux [kgC m-2 s-1],kg m-2 s-1,monthly,E3SM_S3_rh.nc
+ELM,nbp,TRUE,3900,nbp,Carbon Mass Flux out of Atmosphere Due to Net Biospheric Production on Land [kgC m-2 s-1],kg m-2 s-1,monthly,E3SM_S3_nbp.nc
+ELM,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration,kg m-2 s-1,monthly,E3SM_S3_evapotrans.nc
+ELM-FATES,gpp,TRUE,3888,gpp,gross primary production in kg carbon per m2 per second,kg m-2 s-1,monthly,ELM-FATES_S3_gpp.nc
+ELM-FATES,ra,TRUE,3888,ra,autotrophic respiration in kg carbon per m2 per second,kg m-2 s-1,monthly,ELM-FATES_S3_ra.nc
+ELM-FATES,rh,TRUE,3888,rh,total heterotrophic respiration,kg m-2 s-1,monthly,ELM-FATES_S3_rh.nc
+ELM-FATES,nbp,TRUE,3888,nbp,nbp,kg m-2 s-1,monthly,ELM-FATES_S3_nbp.nc
+ELM-FATES,evapotrans,TRUE,3888,evapotrans,evapotrans,kg m-2 s-1,monthly,ELM-FATES_S3_evapotrans.nc
+IBIS,gpp,TRUE,3900,gpp,,kg m-2 s-1,monthly,IBIS_S3_gpp.nc
+IBIS,ra,TRUE,3900,ra,,kg m-2 s-1,monthly,IBIS_S3_ra.nc
+IBIS,rh,TRUE,3900,rh,,kg m-2 s-1,monthly,IBIS_S3_rh.nc
+IBIS,nbp,TRUE,3900,nbp,,kg m-2 s-1,monthly,IBIS_S3_nbp.nc
+IBIS,evapotrans,TRUE,3900,evapotrans,,kg m-2 s-1,monthly,IBIS_S3_evapotrans.nc
+ISAM,gpp,TRUE,3900,gpp,Gross Primary Productivity,kg  m-2 s-1,monthly,ISAM_S3_gpp.nc
+ISAM,ra,TRUE,3900,ra,Autotrophic Respiration,kg  m-2 s-1,monthly,ISAM_S3_ra.nc
+ISAM,rh,TRUE,3900,rh,Hetrotrophic respiration,kg  m-2 s-1,monthly,ISAM_S3_rh.nc
+ISAM,nbp,TRUE,3900,nbp,Net biospheric production,kg m-2 s-1,monthly,ISAM_S3_nbp.nc
+ISAM,evapotrans,TRUE,3900,evapotrans,evapotranspiration,kg/m2/s,monthly,ISAM_S3_evapotrans.nc
+JSBACH,gpp,TRUE,NA,NA,NA,NA,ERROR_READING,JSBACH_S3_gpp.nc
+JSBACH,ra,TRUE,NA,NA,NA,NA,ERROR_READING,JSBACH_S3_ra.nc
+JSBACH,rh,TRUE,NA,NA,NA,NA,ERROR_READING,JSBACH_S3_rh.nc
+JSBACH,nbp,TRUE,NA,NA,NA,NA,ERROR_READING,JSBACH_S3_nbp.nc
+JSBACH,evapotrans,TRUE,NA,NA,NA,NA,ERROR_READING,JSBACH_S3_evapotrans.nc
+JULES-ES,gpp,TRUE,3900,gpp,,kg m-2 s-1,monthly,JULES_S3_gpp.nc
+JULES-ES,ra,TRUE,3900,ra,,kg m-2 s-1,monthly,JULES_S3_ra.nc
+JULES-ES,rh,TRUE,3900,rh,,kg m-2 s-1,monthly,JULES_S3_rh.nc
+JULES-ES,nbp,TRUE,3900,nbp,,kg m-2 s-1,monthly,JULES_S3_nbp.nc
+JULES-ES,evapotrans,TRUE,3900,evapotrans,,kg m-2 s-1,monthly,JULES_S3_evapotrans.nc
+LPJ-GUESS,gpp,TRUE,3900,gpp,gross primary production,kg m-2 s-1,monthly,LPJ-GUESS_S3_gpp.nc
+LPJ-GUESS,ra,TRUE,3900,ra,autotrophic respiration,kg m-2 s-1,monthly,LPJ-GUESS_S3_ra.nc
+LPJ-GUESS,rh,TRUE,325,arh,annual heterotrophic respiration,kg m-2 s-1,annual,LPJ-GUESS_S3_arh.nc
+LPJ-GUESS,nbp,TRUE,325,nbp,Net Biospheric Production,kg m-2 s-1,annual,LPJ-GUESS_S3_nbp.nc
+LPJ-GUESS,evapotrans,TRUE,3900,evapotrans,total latent heat flux,kg m-2 s-1,monthly,LPJ-GUESS_S3_evapotrans.nc
+LPJml,gpp,TRUE,3900,gpp,,kg m-2 s-1,monthly,LPJmL_S3_gpp.nc
+LPJml,ra,TRUE,3900,ra,,kg m-2 s-1,monthly,LPJmL_S3_ra.nc
+LPJml,rh,TRUE,3900,rh,,kg m-2 s-1,monthly,LPJmL_S3_rh.nc
+LPJml,nbp,TRUE,325,nbp,,kg m-2 s-1,annual,LPJmL_S3_nbp.nc
+LPJml,evapotrans,TRUE,3900,evapotrans,,kg m-2 s-1,monthly,LPJmL_S3_evapotrans.nc
+LPJwsl,gpp,TRUE,3900,gpp,,kg m-2 s-1,monthly,LPJ-EOSIM_S3_gpp.nc
+LPJwsl,ra,TRUE,3900,ra,,kg m-2 s-1,monthly,LPJ-EOSIM_S3_ra.nc
+LPJwsl,rh,TRUE,3900,rh,,kg m-2 s-1,monthly,LPJ-EOSIM_S3_rh.nc
+LPJwsl,nbp,TRUE,3900,nbp,Net Biospheric Production,kg m-2 s-1,monthly,LPJ-EOSIM_S3_nbp.nc
+LPJwsl,evapotrans,TRUE,3900,evapotrans,,,monthly,LPJ-EOSIM_S3_evapotrans.nc
+LPX-Bern,gpp,TRUE,3900,gpp,Gross primary productivity,kg m-2 s-1,monthly,LPX-Bern_S3_gpp.nc
+LPX-Bern,ra,TRUE,3900,ra,Autotrophic respiration,kg m-2 s-1,monthly,LPX-Bern_S3_ra.nc
+LPX-Bern,rh,TRUE,3900,rh,Heterotrophic respiration,kg m-2 s-1,monthly,LPX-Bern_S3_rh.nc
+LPX-Bern,nbp,TRUE,3900,nbp,Net Biome Production,kg m-2 s-1,monthly,LPX-Bern_S3_nbp.nc
+LPX-Bern,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration (including Interception),kg m-2 s-1,monthly,LPX-Bern_S3_evapotrans.nc
+ORCHIDEE,gpp,TRUE,3900,gpp,Gross Primary Production,kg m-2 s-1,monthly,ORCHIDEE_S3_gpp.nc
+ORCHIDEE,ra,TRUE,3900,ra,Autotrophic (Plant) Respiration,kg m-2 s-1,monthly,ORCHIDEE_S3_ra.nc
+ORCHIDEE,rh,TRUE,3900,rh,Heterotrophic Respiration,kg m-2 s-1,monthly,ORCHIDEE_S3_rh.nc
+ORCHIDEE,nbp,TRUE,3900,nbp,Net Biospheric Production,kg m-2 s-1,monthly,ORCHIDEE_S3_nbp.nc
+ORCHIDEE,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration,kg m-2 s-1,monthly,ORCHIDEE_S3_evapotrans.nc
+TEM,gpp,TRUE,3900,gpp,Gross Primary Production,kg m-2 s-1,monthly,GDSTEM_S3_gpp.nc
+TEM,ra,TRUE,3900,ra,Autotrophic (Plant) Respiration,kg m-2 s-1,monthly,GDSTEM_S3_ra.nc
+TEM,rh,TRUE,3900,rh,Heterotrophic Respiration,kg m-2 s-1,monthly,GDSTEM_S3_rh.nc
+TEM,nbp,TRUE,3900,nbp,Net Biospheric Production,kg m-2 s-1,monthly,GDSTEM_S3_nbp.nc
+TEM,evapotrans,TRUE,3900,evapotrans,Total Evapo-Transpiration,kg m-2 s-1,monthly,GDSTEM_S3_evapotrans.nc
+VISIT-UT,gpp,TRUE,3900,gpp,,kg m-2 s-1,monthly,VISIT-UT_S3_gpp.nc
+VISIT-UT,ra,TRUE,3900,ra,,kg m-2 s-1,monthly,VISIT-UT_S3_ra.nc
+VISIT-UT,rh,TRUE,3900,rh,,kg m-2 s-1,monthly,VISIT-UT_S3_rh.nc
+VISIT-UT,nbp,TRUE,3900,nbp,,kg m-2 s-1,monthly,VISIT-UT_S3_nbp.nc
+VISIT-UT,evapotrans,TRUE,3900,evapotrans,,kg m-2 s-1,monthly,VISIT-UT_S3_evapotrans.nc

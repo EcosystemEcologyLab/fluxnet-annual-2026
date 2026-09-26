@@ -4,6 +4,56 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-26 — NEE corrected-axis run: PID 14877 finished Step 1, halted at Step 2 (grid/mask mismatch)
+
+**Process is dead, not still running.** `ps -p 14877` returns nothing; the script's own exit
+status was 1. All 17 models completed Step 1 successfully — the run did not hang or get killed,
+it ran to the Step 2 check and then stopped itself on a data-consistency error.
+
+**`LPJwsl` finished all 3 variables**, confirming the ~4x-`IBIS` pattern held for `rh` too:
+
+| Variable | IBIS | LPJwsl | Ratio |
+|---|---|---|---|
+| `gpp` | 1h01m50s | 4h10m08s | 4.05x |
+| `ra` | 1h02m57s | 4h18m09s | 4.10x |
+| `rh` | 1h04m37s | 4h22m35s (16:34:21→20:56:56) | 4.06x |
+| **Total** | 3h09m24s | 12h50m52s | **4.06x** |
+
+**Remaining 4 models all finished fast**, closing out Step 1 (no further unexplained-slow cases):
+
+| Model | Duration |
+|---|---|
+| `LPX-Bern` | ~10m07s |
+| `ORCHIDEE` | ~13m45s |
+| `TEM` | ~13m48s |
+| `VISIT-UT` | ~5s |
+
+All 17 models reported `ok` at 21:34:41. Residual check (`NEE_flux_based` vs `-NBP`) ran
+immediately after and completed at 21:34:43 with no errors — global land mean/median residuals
+tabulated for all 17 models, largest-magnitude median residual `LPJ-GUESS` (-65.8 gC m⁻² yr⁻¹),
+smallest `ED` (-0.20 gC m⁻² yr⁻¹).
+
+**Step 2 (global ensemble distribution) then failed and halted execution** at 21:35:02:
+```
+Warning message:
+Unknown or uninitialised column: `area_km2`.
+[2026-09-25 21:35:02] Existing trendy_nee_median_global_distribution.csv total land area: 0 km2
+[2026-09-25 21:35:02] This diagnostic's masked total land area: 163,331,649 km2
+[2026-09-25 21:35:02] Area totals match exactly: FALSE
+[2026-09-25 21:35:02] STOPPING: land area totals do not match -- grid/mask mismatch must be resolved before proceeding.
+Error: Step 2 area-total check failed: 163331648.668433 vs 0
+Execution halted
+```
+The existing `trendy_nee_median_global_distribution.csv` reads as having 0 km² total land area —
+consistent with the `area_km2` column being absent/uninitialised in that file (per the warning),
+not with an actual empty land mask. This looks like a stale or malformed output file rather than
+a genuine 163M km² grid/mask discrepancy, but that has not been verified — no fix has been applied
+and nothing further was run, per the read-only nature of this check. All 17 per-model
+`*_annual_native_1991_2020.tif` checkpoints and the residual table are intact and were not
+touched by the Step 2 failure.
+
+---
+
 ## 2026-09-25 — NEE corrected-axis run: progress check + gpp chunking/compression comparison (IBIS/LPJwsl/DLEM)
 
 **Part A — run progress (read-only check, PID 14877 untouched).** Still alive as of 18:11:49:

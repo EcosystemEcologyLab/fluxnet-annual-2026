@@ -393,7 +393,7 @@ write_meta(file.path(DERIVED_DIR, "trendy_nee_fluxbased_median.tif"),
 ## Area-total cross-check against the existing nbp-based distribution
 existing_dist_path <- file.path(SNAP_DIR, "trendy_nee_median_global_distribution.csv")
 existing_dist <- read_csv(existing_dist_path, show_col_types = FALSE)
-existing_total_km2 <- sum(existing_dist$area_km2, na.rm = TRUE)
+existing_total_km2 <- sum(existing_dist$global_land_area_km2, na.rm = TRUE)
 my_total_km2 <- sum(values(cell_areas_05)[!is.na(values(mask(ens_median, kg_05)))])
 msg("Existing trendy_nee_median_global_distribution.csv total land area: ",
     format(round(existing_total_km2), big.mark = ","), " km2")

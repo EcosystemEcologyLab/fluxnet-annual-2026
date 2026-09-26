@@ -4,6 +4,70 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-26 — New diagnostic: tower-vs-model NEE/GPP/TER/ET distributions (VUT/CUT + NT/DT fallback)
+
+Added `scripts/diagnostics/flux_tower_model_distributions.R`, alongside `nee_corrected_axis.R`,
+outputting to the same `review/diagnostics/nee_corrected_axis/`. Reuses that script's cached
+per-model 1991-2020 native `gpp`/`ra`/`rh` annual stacks and its Step 3 tower-annual method — no
+TRENDY source `.nc` or DuckDB-heavy recomputation. Ran clean in ~10s, no errors.
+
+**Tower side, per-site fallbacks (all qualifying years, no 1991-2020 restriction):**
+- **NEE**: per-site VUT→CUT fallback per CLAUDE.md's QC Flag Reference — a site uses
+  `NEE_VUT_REF`/`_QC` throughout if it has *any* non-NA `NEE_VUT_REF_QC`; `NEE_CUT_REF`/`_QC`
+  only if VUT QC is entirely NA. Result: **731 VUT, 49 CUT, 1 neither** (of 781 current-network
+  sites) — the single exception, `JP-KaP`, has 546 monthly rows but zero non-NA QC in either
+  column. Of the 49 CUT-selected sites, **38 clear the 12-month/QC≥0.80 bar for a valid annual
+  value — all 38 new relative to Step 3** (which was VUT-only): 559 (Step 3) + 38 = **597**,
+  matching this script's own NEE count exactly.
+- **GPP/TER**: same per-site VUT/CUT choice as NEE (not decided independently), plus an
+  independent per-site NT→DT fallback (pattern from `assess_flux_data_by_igbp_shuttle.R`,
+  generalized from YY to MM resolution — GPP/RECO have no dedicated QC column at MM, so the
+  NEE QC gate is reused, exactly as that script reuses it for DT at YY). **NT=712, DT
+  (fallback)=61** for both GPP and TER (coincidentally identical counts — same underlying
+  partitioning-method availability per site, not a bug).
+- **ET**: `LE_F_MDS`, gated on its own `LE_F_MDS_QC`, independent of the carbon VUT/CUT choice.
+  **Verified `LE_F_MDS` in `monthly_converted` is already correctly unit-converted** (mm/month),
+  unlike `NEE_VUT_REF`'s documented bug — `05_units.R`'s DuckDB LE conversion has no
+  `is_coarse` guard (unlike carbon), confirmed directly: BE-Vie's `LE_F_MDS`/`LE_F_MDS_native`
+  ratio is ~1.0734 for several sample months, exactly `spp_month(2,629,800s)/2.45e6`. Used
+  as-is, no reconversion.
+- **Carbon at MM resolution confirmed to share NEE_VUT_REF's bug**: `GPP_NT_VUT_REF` raw
+  monthly values at BE-Vie 2010 are µmol-scale rates, not pre-integrated gC — cross-checked
+  against `annual_converted`'s independently-computed total (1978.79 gC m⁻² yr⁻¹ for that
+  site-year) after applying the same explicit `to_gC_per_period()` conversion
+  `nee_corrected_axis.R` already uses for NEE. Applied identically here to every raw GPP/RECO
+  VUT/CUT/NT/DT column.
+- Annual construction matches Step 3 exactly: mean monthly cycle (QC≥0.80) across all
+  qualifying years, all 12 calendar months required, then summed — independent qualifying-months
+  set per flux.
+
+**Model side** (fixed 1991-2020 mean, ensemble median at each tower cell, same 17 models as
+Step 1): NEE=ra+rh−gpp, TER=ra+rh, GPP=gpp, all bilinear-extracted from each model's cached
+**native**-resolution mean raster (no common-grid regridding needed for point extraction, same
+method as Step 1's Variant 1). ET reuses the existing `<model>_evapotrans_regridded.tif` cache
+from `figure_representativeness_trendy_compute.R` (1990-2023, 0.5° common grid), subset to
+1991-2020 — the one flux extracted from a regridded rather than native grid, a documented
+methodological difference forced by what's already cached, not an inconsistency. **All 17
+models had usable data for all 4 fluxes — none missing.**
+
+**Sites with both tower and model values (plotted)**: NEE=597, GPP=588, TER=588, ET=634.
+
+**Outputs**:
+- `table_dist_tower_vs_model.csv` + `.meta.json` — long table, one row per site×flux.
+- `fig_dist_histograms.png` — 4-panel (NEE/GPP/TER/ET), tower vs. model histograms, flux on y,
+  count on x.
+- `fig_dist_latitude.png` — 4-panel, flux vs. latitude, tower/model overlaid.
+- `fig_dist_scatter_1to1.png` — 4-panel, tower (y) vs. model (x), 1:1 line, equal axis limits.
+
+Each panel is annotated with n and how many pooled points fall outside its clip bounds (pooled
+tower+model 1st/99th percentile per flux; GPP and TER share one bounds pair since both are
+gC m⁻² yr⁻¹ at comparable magnitude — confirmed identical axis ranges in both figures). Notable
+pattern visible in the histograms: model NEE clusters tightly near zero across sites while tower
+NEE is far more spread (more negative, more variable) — consistent with towers sampling a much
+smaller footprint than a model grid cell's spatial mean.
+
+---
+
 ## 2026-09-26 — NEE corrected-axis run: Step 2 fixed, LPJ-GUESS rh confirmed correct, restart succeeded through Step 7
 
 Resumed the run that stopped at Step 2 on 2026-09-26 (prior entry). All four items below, then the

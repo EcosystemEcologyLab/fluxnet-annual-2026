@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-09-26T11:46:18Z",
+  "pipeline_version": "7454c82",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly_converted)",
+    "data/snapshots/site_biomass_cci_v7.csv",
+    "data/external/trendy/derived/intermediate/<model>_{gpp,ra,rh}_annual_native_1991_2020.tif",
+    "data/external/trendy/derived/intermediate/<model>_evapotrans_regridded.tif"
+  ],
+  "notes": "Long table, one row per site x flux (NEE/GPP/TER/ET), restricted to sites with both a tower and a model value. Tower: per-site VUT->CUT fallback for carbon (never mixed within a site); GPP/TER share that VUT/CUT choice plus an independent per-site NT->DT partitioning fallback; ET from LE_F_MDS (own QC). Annual value = mean monthly cycle (QC >= 0.8 , all 12 calendar months required) summed, over all qualifying tower years (no 1991-2020 restriction). Model: ensemble median across the same 17 models as nee_corrected_axis.R Step 1, each model's 1991-2020 mean bilinear-extracted at the tower coordinate (native grid for NEE/GPP/TER; the existing regridded 0.5deg common grid, subset to 1991-2020, for ET). Units: gC m-2 yr-1 (NEE/GPP/TER), mm yr-1 (ET). NEE positive to atmosphere on both sides."
+}

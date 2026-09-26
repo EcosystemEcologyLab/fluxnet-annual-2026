@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-26T10:57:08Z",
+  "pipeline_version": "fcf48bf",
+  "input_sources": [
+    "table_step5_global_bin_fractions.csv",
+    "table_step3_tower_annual_nee.csv",
+    "trendy_nee_fluxbased_per_model_mean.tif"
+  ],
+  "notes": "Denominator convention: unclassified sites dropped from the numerator, full network N kept as the denominator (site_fracs()/count_sites() precedent, figure_representativeness_trendy_compute.R and review/diagnostics/nee_bin_scheme/). Variant 2 (tower years) and Variant 3 (Geo vs Data) are current_781-only: la_thuile/marconi/fluxnet2015 have no per-site measurement-year records in this repo (coordinates only), and FLUXNET2015 has no monthly flux data on disk (Step 3)."
+}

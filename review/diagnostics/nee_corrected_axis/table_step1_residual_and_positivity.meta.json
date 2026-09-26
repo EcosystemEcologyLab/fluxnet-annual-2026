@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-26T10:56:02Z",
+  "pipeline_version": "fcf48bf",
+  "input_sources": [
+    "data/external/trendy/v14-gcb2025",
+    "data/external/trendy/derived/intermediate"
+  ],
+  "notes": "residual = NEE_flux_based(ra+rh-gpp) - (-NBP) = NEE_flux_based + NBP. Interpreted as the model's implied fire+land-use-change flux (NBP = -NEE - fFire - fLuc identity => residual = -(fFire+fLuc)), since fFire/fLuc are not on disk and cannot be checked directly (Step 0). pos_frac_* = fraction of complete-case land pixels with mean-annual value >= 0."
+}

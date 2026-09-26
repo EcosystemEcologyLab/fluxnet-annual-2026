@@ -4,6 +4,69 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-25 — NEE corrected-axis run: progress check + gpp chunking/compression comparison (IBIS/LPJwsl/DLEM)
+
+**Part A — run progress (read-only check, PID 14877 untouched).** Still alive as of 18:11:49:
+99.1% CPU, 1.31 GB RSS, elapsed 11h59m50s (started 06:12:04). Checkpoints written since the
+previous entry (10:15:51):
+
+| Model | Variable | Checkpoint written | Duration |
+|---|---|---|---|
+| `LPJwsl` | `gpp` | 12:16:12 | 4h10m08s (from `-- LPJwsl --` at 08:06:04) |
+| `LPJwsl` | `ra` | 16:34:21 | 4h18m09s (from `gpp` checkpoint) |
+
+`LPJwsl`'s `rh` is in progress now — `lsof` confirms `PID 14877` has
+`LPJ-EOSIM_S3_rh.nc` open for read — running **1h37m28s** so far as of this entry (since
+16:34:21), not yet checkpointed. Nothing after `-- LPJwsl --` was written to the log itself
+(`logs/nee_corrected_axis_20260925_061204.log` last modified 08:06:04); all timings above come
+from checkpoint file mtimes (`data/external/trendy/derived/intermediate/LPJwsl_*_annual_native_1991_2020.tif`),
+not the log.
+
+**LPJwsl vs IBIS, per variable** (IBIS timings from checkpoint mtimes against its `-- IBIS --`
+start at 2026-09-24 17:06:24, for the same comparison basis):
+
+| Variable | IBIS | LPJwsl | Ratio |
+|---|---|---|---|
+| `gpp` | 1h01m50s (18:08:14) | 4h10m08s (12:16:12) | 4.05x |
+| `ra` | 1h02m57s (19:11:11) | 4h18m09s (16:34:21) | 4.10x |
+| `rh` | 1h04m37s (20:15:48) | in progress, already 1h37m28s+ | ≥1.51x and rising |
+
+`LPJwsl` is running roughly **4x slower per variable than `IBIS`**, not merely "worse" as the
+prior entry characterized it before `gpp` had even checkpointed — the eventual `gpp`/`ra` times
+came in well above what the 129-minute mid-run observation would have suggested by simple
+extrapolation.
+
+**Remaining models**, per the Step 0 target ensemble (17 total) and checkpoints/log so far —
+done: `CABLE-POP, CLASSIC, CLM, DLEM, ED, ELM, ELM-FATES, IBIS, ISAM, JULES-ES, LPJ-GUESS, LPJml`
+(12); in progress: `LPJwsl` (`rh`); still to come: `LPX-Bern, ORCHIDEE, TEM, VISIT-UT` (4).
+
+**Part B — `gpp` chunk layout, compression, dimension order (read-only `ncdf4::nc_open`, header
+only, distinct files from the one the running process has open).** `ncdf4` was not installed in
+the macos renv profile library; installed it there (`install.packages("ncdf4")` only — no
+`renv::snapshot()`, lockfile untouched, confirmed by the user before installing).
+
+| Model | Dim order | Dim lengths (lon×lat×time) | Chunk sizes (lon×lat×time) | Storage | Deflate level |
+|---|---|---|---|---|---|
+| `IBIS` (slow) | lon, lat, time | 720×360×3900 | 72×33×390 | chunked | 9 |
+| `LPJwsl` (slow) | lon, lat, time | 720×360×3900 | 90×45×488 | chunked | 4 |
+| `DLEM` (fast) | lon, lat, time | 720×360×3900 | NA (contiguous) | contiguous | none |
+
+**Does the slow pair force a full 3900-month read to get the 360-month 1991–2020 window?
+No.** Both slow files' time-axis chunk size (390 for `IBIS`, 488 for `LPJwsl`) is itself larger
+than the 360-month target window, so extracting 1991–2020 touches at most 1–2 time chunks out of
+10 (`IBIS`) or 8 (`LPJwsl`) — never the full record. Chunking-forced-full-read is not the
+mechanism. The more likely differentiator is **decompression, not data volume touched**: both
+slow files use zlib/deflate compression (`IBIS` at the maximum level 9, `LPJwsl` at level 4)
+requiring per-chunk CPU decompression on every read, while `DLEM` is stored contiguous and
+**uncompressed** — direct byte-offset reads with no decompression step at all. This is consistent
+with `DLEM` being fast (cached already at the previous checkpoint sweep) and does not, by itself,
+explain why `IBIS` (deflate 9) and `LPJwsl` (deflate 4, i.e. lighter compression than `IBIS`) are
+both slow despite differing compression levels and chunk shapes — deflate level alone doesn't
+rank-order the two slow models correctly against each other, so it is a plausible contributing
+factor, not a confirmed sole cause.
+
+---
+
 ## 2026-09-25 — NEE corrected-axis run: second unexplained-slow model confirms residual risk
 
 Progress since the last entry (PID 14877, still running, still detached — `PPID 1`, no TTY):

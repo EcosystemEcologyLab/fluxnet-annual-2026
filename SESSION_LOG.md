@@ -4,6 +4,111 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-28 — Coarse-resolution carbon unit fix (DD/MM/WW): closure test, 05_units.R fix, DuckDB rebuild
+
+### Finding: NEE/GPP/RECO at MM and WW are a mean daily rate, not a pre-integrated period total
+
+`flux_tower_model_distributions.R` (2026-09-26 entry above) flagged that monthly carbon in
+`monthly_converted` was not unit-converted. This session established the correct conversion with
+an exact closure test rather than assuming the previously-used workaround was right.
+
+**Method**: for site-years with complete, high-QC coarse-resolution periods (QC ≥ 0.50, per-site
+VUT→CUT fallback per the QC Flag Reference), summed the raw period values under two candidate
+interpretations and compared to the independently pre-integrated `annual_converted` (YY) total for
+the same site-year:
+- **Candidate A** (previously assumed): raw value is µmol CO₂ m⁻² s⁻¹ → `× 12e-6 × seconds-in-period`.
+- **Candidate B**: raw value is a mean daily rate, gC m⁻² d⁻¹ → `× days-in-period`.
+
+Note candidate A = candidate B × 1.0368 always (86,400 s/d × 12e-6 = 1.0368) — the two candidates
+are a constant scalar apart regardless of the data, which is why a per-site sanity check alone
+(as in the earlier `nee_corrected_axis.R` comment) could not distinguish them; only a closure
+test against an independent reference (YY) can.
+
+| Resolution | n site-years | median abs. error, candidate A (µmol) | median abs. error, candidate B (daily rate) |
+|---|---|---|---|
+| MM (NEE) | 20 | 3.68% | **0.87%** |
+| MM (GPP) | 20 | 3.79% | **0.66%** |
+| MM (RECO) | 20 | 4.07% | **0.43%** |
+| DD (NEE) | 15 | 3.68% | **1.60%** (raw sum, no multiplier — see below) |
+| WW (NEE) | 16 | 4.79% | **3.42%** |
+
+Candidate B wins decisively at every resolution tested. **Conclusion**: ONEFlux delivers NEE/GPP/RECO
+at DD/MM/WW as a mean daily rate (gC m⁻² d⁻¹) reported at that period's cadence, not a pre-integrated
+period total — contrary to the assumption baked into `05_units.R`'s `is_coarse` pass-through guard
+and `R/units.R`'s hardcoded unit table. **YY is unaffected** — it is a genuine pre-integrated annual
+total, confirmed by its role as the closure-test reference throughout. DD needs no numeric
+conversion (a daily rate over a 1-day period is trivially that day's total, so the "no conversion"
+candidate for DD is the raw sum, which closes to 1.6% — residual error is sample noise from the
+≥98%-of-days-present threshold, not a wrong conversion). MM and WW need `× days-in-period`, using
+the *actual* days in that specific period (`last_day(TIMESTAMP)` for MM, `TIMESTAMP_END -
+TIMESTAMP_START + 1` for WW — not a fixed 30.4375-day or 7-day constant).
+
+Also discovered in passing, not a bug: `annual`/`monthly`/`daily`/`weekly` (and their `_qc`/`_converted`
+descendants) hold rows from **both** `dataset='FLUXMET'` and `dataset='ERA5'` unioned together
+(`duckdb_setup.R`'s primary key includes `dataset`) — ERA5 rows are all-NA for flux/carbon columns.
+Any query against these tables for tower flux variables should filter `WHERE dataset = 'FLUXMET'`
+(existing scripts that filter on `NOT NULL` flux columns are unaffected by omitting it).
+
+### Fix
+
+- **`scripts/05_units.R`**: replaced the `is_coarse` all-carbon-passthrough guard with a
+  per-resolution `carbon_conversion_type` (`"umol"` for HH/HR, `"daily_rate"` for MM/WW, `"none"`
+  for DD/YY). Added a `days_in_period` helper column (DuckDB `last_day()`/date-subtraction SQL,
+  translated through dbplyr — verified against both `collect()` and lazy `mutate()`) used only for
+  MM/WW.
+- **`R/units.R`** (`fluxnet_convert_units()`, `.infer_source_unit()`, `.bifvarinfo_hardcoded_lookup()`):
+  same fix applied to the RDS-path canonical function, which is not currently called by any live
+  script (`legacy/05_units_rds.R` only) but is the function CLAUDE.md's Unit Conversion Reference
+  names as the one place conversions should live — left with the same bug it would have
+  propagated it to any future revival of the RDS pipeline.
+- **`scripts/diagnostics/nee_corrected_axis.R`** and **`scripts/diagnostics/flux_tower_model_distributions.R`**:
+  removed their own `to_gC_per_period()` (µmol-assumption) workaround entirely — `monthly_converted`'s
+  carbon columns are now correctly converted at the source, so these scripts consume them directly.
+
+### Rebuild
+
+Rebuilt `monthly_converted` and `weekly_converted` only (a scoped copy of `05_units.R` restricted
+to those two resolutions) — `annual_converted`/`daily_converted`/`hourly_converted` are numerically
+unchanged by this fix (YY and HH untouched; DD is a no-op), and `daily_qc` alone is 14.8M rows, so
+rebuilding it would cost significant time for a byte-identical result. Verified post-rebuild:
+`monthly_converted`'s `NEE_VUT_REF` summed over 12 months (no manual conversion) now closes to the
+same 0.87% median error against `annual_converted` directly — confirming the production table
+itself is fixed, not just the standalone test.
+
+### Rerun and updated results
+
+Reran `nee_corrected_axis.R` and `flux_tower_model_distributions.R` (only these — no TRENDY
+recomputation needed, cached rasters reused). Both completed with no errors, identical site
+counts to the 2026-09-26 runs (QC gating is unaffected by the unit fix, only magnitude changed).
+
+- **Near-zero half-width h**: **21.12 gC m⁻² yr⁻¹** (was 21.9 gC m⁻² yr⁻¹) — the ratio (21.9/21.12 =
+  1.037) matches the candidate-A/candidate-B scalar (1.0368) exactly, as expected since h is a
+  median of a set of values that were uniformly rescaled by the fix.
+- **Tower medians** (`table_dist_tower_vs_model.csv`, current-network sites with both tower and
+  model values):
+
+| Flux | n | median tower (gC m⁻² yr⁻¹, or mm yr⁻¹ for ET) | median model |
+|---|---|---|---|
+| NEE | 597 | -157 | -59.3 |
+| GPP | 588 | 1325 | 1055 |
+| TER | 588 | 1084 | 952 |
+| ET  | 634 | 519 (unaffected — LE was already correctly converted) | 493 |
+
+- Step 3 tower annual NEE (`table_step3_tower_annual_nee.csv`, VUT-only, n=559): median = -148.98 gC m⁻² yr⁻¹.
+- Step 7 paired tower-vs-model difference: n=486, median=-96.98, IQR=[-287.17, 29.95].
+
+### Scripts confirmed unaffected (read only YY, or DD with no numeric change)
+
+`generate_whittaker.R`, `generate_whittaker_alt_fig02.R`, `generate_whittaker_alt_fig02_update.R`,
+`generate_whittaker_overlays.R`, `figure_nee_histogram.R`, `build_draft_manuscript_v1.R`,
+`scripts/diagnostics/store_refresh_stage5_reconcile.R`, `scripts/diagnostics/store_audit_stage3_rederivation.R`
+— all read carbon only from `annual_converted` (YY, untouched by this fix). `07_figures.R`'s DD
+seasonal-cycle section reads `daily_converted`'s NEE/GPP directly — DD needs no numeric conversion,
+so those figures are unaffected and `daily_converted` did not need rebuilding. No script currently
+reads carbon from `weekly_converted`.
+
+---
+
 ## 2026-09-26 — New diagnostic: tower-vs-model NEE/GPP/TER/ET distributions (VUT/CUT + NT/DT fallback)
 
 Added `scripts/diagnostics/flux_tower_model_distributions.R`, alongside `nee_corrected_axis.R`,

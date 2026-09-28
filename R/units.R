@@ -102,17 +102,22 @@ read_bifvarinfo_units <- function(extracted_dir = NULL) {
 #' Hardcoded unit fallback for known FLUXNET YY-resolution variables
 #'
 #' Used by [read_bifvarinfo_units()] when no BIFVARINFO file is available.
-#' Units reflect the ONEFlux output convention: carbon fluxes at DD/MM/WW/YY
-#' are pre-integrated totals (gC m-2 period-1), NOT instantaneous rates.
-#' Energy fluxes are mean rates (W m-2) at all resolutions.
+#' Units reflect the ONEFlux output convention at YY resolution: carbon
+#' fluxes are a pre-integrated total (gC m-2 y-1). At DD/MM/WW, carbon fluxes
+#' are instead a MEAN DAILY RATE (gC m-2 d-1) reported at that period's
+#' cadence, not a pre-integrated period total — established empirically via a
+#' closure test against independently pre-integrated YY values (see
+#' SESSION_LOG.md 2026-09-28); [.infer_source_unit()] applies the
+#' resolution-specific label, not this table. Energy fluxes are mean rates
+#' (W m-2) at all resolutions.
 #'
 #' @return Named character vector: variable name → unit string.
 #' @keywords internal
 .bifvarinfo_hardcoded_lookup <- function() {
   c(
-    # ── Carbon fluxes ── pre-integrated at YY resolution (gC m-2 y-1)
-    # The same convention applies at MM (gC m-2 m-1) and DD (gC m-2 d-1).
-    # All of these pass through without conversion at coarse resolutions.
+    # ── Carbon fluxes ── pre-integrated total at YY resolution (gC m-2 y-1)
+    # only. At DD/MM/WW these are a mean daily rate, not a period total — see
+    # .infer_source_unit() for the resolution-aware label used at conversion time.
     NEE_VUT_REF          = "gC m-2 y-1",
     NEE_VUT_REF_NIGHT    = "gC m-2 y-1",
     NEE_VUT_REF_DAY      = "gC m-2 y-1",
@@ -175,12 +180,17 @@ read_bifvarinfo_units <- function(extracted_dir = NULL) {
 #' Infer source unit for one column
 #'
 #' For carbon flux variables (NEE, GPP, RECO) the resolution controls unit
-#' selection entirely: HH/HR data is in µmol CO₂ m⁻² s⁻¹; coarse-resolution
-#' data (DD/MM/WW/YY) is pre-integrated by ONEFlux and delivered in
-#' gC m⁻² period⁻¹. The BIFVARINFO_YY lookup is consulted for YY carbon
-#' variables as a validation check (expected: "gC m-2 y-1"). For all other
-#' variable types, the BIFVARINFO named vector is queried first, then
-#' prefix-based pattern matching.
+#' selection entirely: HH/HR data is in µmol CO₂ m⁻² s⁻¹; YY data is a
+#' pre-integrated total delivered in gC m⁻² y⁻¹. At DD/MM/WW, ONEFlux instead
+#' delivers a MEAN DAILY RATE (gC m⁻² d⁻¹) reported at that period's cadence
+#' — established empirically (closure test, SESSION_LOG.md 2026-09-28): the
+#' 12 raw monthly (or all raw weekly/daily) values, each multiplied by the
+#' number of days in that specific period and summed, close to the
+#' independently pre-integrated YY total to <1-3.5% median error, vs.
+#' 3.7-4.8% for treating the raw value as µmol CO₂ m⁻² s⁻¹. The BIFVARINFO_YY
+#' lookup is consulted for YY carbon variables as a validation check
+#' (expected: "gC m-2 y-1"). For all other variable types, the BIFVARINFO
+#' named vector is queried first, then prefix-based pattern matching.
 #'
 #' @param col_name Column name.
 #' @param var_units Named character vector from [read_bifvarinfo_units()].
@@ -202,17 +212,17 @@ read_bifvarinfo_units <- function(extracted_dir = NULL) {
       return("umol m-2 s-1")
     }
     # For YY: consult BIFVARINFO as a validation check.
-    # For DD/MM/WW: always use the resolution-derived unit (BIFVARINFO_YY does
-    # not reflect sub-annual integration periods).
+    # For DD/MM/WW: the source is always a mean daily rate (gC m-2 d-1),
+    # regardless of period length — BIFVARINFO_YY does not reflect this.
     if (res == "YY" && col_name %in% names(var_units)) {
       return(var_units[[col_name]])
     }
     return(switch(res,
       "YY" = "gC m-2 y-1",
-      "MM" = "gC m-2 m-1",
-      "WW" = "gC m-2 w-1",
+      "MM" = ,
+      "WW" = ,
       "DD" = "gC m-2 d-1",
-      "gC m-2 period-1"   # unknown coarse resolution
+      "gC m-2 d-1"   # unknown coarse resolution: assume the DD/MM/WW convention
     ))
   }
 
@@ -234,12 +244,16 @@ read_bifvarinfo_units <- function(extracted_dir = NULL) {
 #' where the source unit differs from the target. Variables already in the
 #' target unit are passed through unchanged.
 #'
-#' **Critical:** At DD/MM/WW/YY resolutions the FLUXNET Shuttle (ONEFlux
-#' pipeline) delivers carbon fluxes (NEE, GPP, RECO) as pre-integrated totals
-#' in gC m⁻² period⁻¹. These must NOT be multiplied by the µmol→gC conversion
-#' factor. The conversion is only needed for HH/HR data, where values are still
-#' in µmol CO₂ m⁻² s⁻¹. This function checks the source unit before applying
-#' any carbon conversion.
+#' **Critical:** At YY resolution the FLUXNET Shuttle (ONEFlux pipeline)
+#' delivers carbon fluxes (NEE, GPP, RECO) as a pre-integrated total in
+#' gC m⁻² y⁻¹ — this must NOT be multiplied by the µmol→gC conversion factor,
+#' and passes through unchanged. At DD/MM/WW, carbon fluxes are instead a mean
+#' daily rate (gC m⁻² d⁻¹): DD needs no numeric change (a daily rate over a
+#' 1-day period is already that day's total), but MM and WW must be
+#' multiplied by the number of days in that specific period to get the
+#' period total. The µmol→gC factor is only needed for HH/HR data, where
+#' values are still in µmol CO₂ m⁻² s⁻¹. This function checks the source unit
+#' before applying any carbon conversion.
 #'
 #' Accepts the `temporal_resolution` column (CLAUDE.md standard) or the
 #' `time_resolution` column returned by the fluxnet package inventory.
@@ -248,7 +262,8 @@ read_bifvarinfo_units <- function(extracted_dir = NULL) {
 #' | Variable       | Source unit          | Analysis unit            | Condition   |
 #' |----------------|----------------------|--------------------------|-------------|
 #' | NEE, GPP, RECO | µmol CO₂ m⁻² s⁻¹    | gC m⁻² per period        | HH/HR only  |
-#' | NEE, GPP, RECO | gC m⁻² period⁻¹     | (passed through)         | DD/MM/WW/YY |
+#' | NEE, GPP, RECO | gC m⁻² d⁻¹ (daily rate) | gC m⁻² period⁻¹ (× days-in-period) | MM/WW |
+#' | NEE, GPP, RECO | gC m⁻² d⁻¹ / gC m⁻² y⁻¹ | (passed through)     | DD / YY     |
 #' | LE             | W m⁻²                | mm H₂O per period        | all         |
 #' | H, SW_IN       | W m⁻²                | MJ m⁻² per period        | all         |
 #' | TA             | °C                   | K                        | all         |
@@ -364,7 +379,13 @@ fluxnet_convert_units <- function(data, manifest) {
 
   # ── Carbon fluxes ─────────────────────────────────────────────────────────
   # At HH/HR: source is µmol CO₂ m⁻² s⁻¹ → convert to gC m⁻² per period.
-  # At DD/MM/WW/YY: ONEFlux delivers pre-integrated gC m⁻² totals → pass through.
+  # At YY: ONEFlux delivers a pre-integrated gC m⁻² total → pass through.
+  # At DD/MM/WW: ONEFlux delivers a MEAN DAILY RATE (gC m⁻² d⁻¹), not a
+  # pre-integrated period total — DD needs no numeric change (a daily rate
+  # over a 1-day period is already that day's total); MM/WW are multiplied by
+  # the number of days in that specific period. Established empirically via a
+  # closure test against independently pre-integrated YY totals — see
+  # SESSION_LOG.md 2026-09-28.
   # Per-variable source unit from BIFVARINFO overrides the resolution default.
   carbon_cols <- flux_cols(c(
     "NEE", "GPP", "RECO",
@@ -379,16 +400,42 @@ fluxnet_convert_units <- function(data, manifest) {
     "gC m-2 per period"   # HH, HR (post-conversion)
   )
 
+  # Days in the specific period covered by each row, for the MM/WW daily-rate
+  # -> period-total conversion. Only computed when needed.
+  days_in_period_for_carbon <- function() {
+    if (toupper(resolution) == "MM") {
+      ts_col <- intersect(c("TIMESTAMP", "TIMESTAMP_START"), names(data))
+      if (length(ts_col) == 0) {
+        stop("MM carbon conversion requires a TIMESTAMP column to compute days-in-month.")
+      }
+      lubridate::days_in_month(as.Date(data[[ts_col[[1]]]]))
+    } else if (toupper(resolution) == "WW") {
+      if (all(c("TIMESTAMP_START", "TIMESTAMP_END") %in% names(data))) {
+        as.integer(as.Date(data[["TIMESTAMP_END"]]) - as.Date(data[["TIMESTAMP_START"]])) + 1L
+      } else {
+        warning(
+          "WW carbon conversion: TIMESTAMP_START/TIMESTAMP_END not found; ",
+          "assuming 7-day weeks."
+        )
+        7L
+      }
+    } else {
+      stop("days_in_period_for_carbon() called at unexpected resolution: ", resolution)
+    }
+  }
+
   for (col in carbon_cols) {
     src_unit <- .infer_source_unit(col, var_units, resolution)
 
-    # Determine if the source is in µmol (needs conversion) or gC (pass through)
     src_is_umol <- if (is.na(src_unit)) {
       # Unit unknown: convert for HH/HR, pass through for coarser resolutions
       resolution %in% c("HH", "HR")
     } else {
       grepl("umol|µmol", src_unit, ignore.case = TRUE)
     }
+    src_is_daily_rate <- !is.na(src_unit) &&
+      identical(src_unit, "gC m-2 d-1") &&
+      toupper(resolution) %in% c("MM", "WW")
 
     if (is.na(src_unit) && !src_is_umol) {
       warning(
@@ -402,8 +449,13 @@ fluxnet_convert_units <- function(data, manifest) {
       data[[paste0(col, "_native")]] <- data[[col]]
       data[[col]] <- data[[col]] * 12e-6 * seconds_per_period
       log_decision(col, src_unit, carbon_target_unit, converted = TRUE)
+    } else if (src_is_daily_rate) {
+      # gC m⁻² d⁻¹ (mean daily rate) → gC m⁻² period⁻¹ (× days in period)
+      data[[paste0(col, "_native")]] <- data[[col]]
+      data[[col]] <- data[[col]] * days_in_period_for_carbon()
+      log_decision(col, src_unit, carbon_target_unit, converted = TRUE)
     } else {
-      # Already in gC m⁻² per period — no transformation needed
+      # DD (period = 1 day, numerically a no-op) or YY — no transformation
       log_decision(col, src_unit, src_unit, converted = FALSE)
     }
   }

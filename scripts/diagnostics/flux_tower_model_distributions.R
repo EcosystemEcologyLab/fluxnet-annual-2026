@@ -31,17 +31,18 @@
 ##        LE_F_MDS / LE_F_MDS_native ratio is ~1.0734 for several months,
 ##        exactly spp_month(2,629,800s) / 2.45e6 -- so LE_F_MDS here is
 ##        already mm H2O per month and is used as-is, no explicit reconversion.
-##   Carbon (NEE/GPP/RECO) at MM resolution IS subject to the same bug as
-##        NEE_VUT_REF (raw values are umol CO2 m-2 s-1-scale, not
-##        pre-integrated gC, despite 05_units.R's is_coarse guard assuming
-##        otherwise) -- confirmed directly for GPP_NT_VUT_REF at BE-Vie 2010
-##        (monthly raw values sum to the right order of magnitude only after
-##        applying the umol->gC conversion; annual_converted's independently-
-##        computed GPP_NT_VUT_REF for the same site-year is pre-integrated
-##        and gives the same total). This script applies the same explicit
-##        to_gC_per_period() conversion nee_corrected_axis.R uses for NEE, to
-##        every raw GPP/RECO VUT/CUT/NT/DT column, for the same reason
-##        (fluxnet_convert_units() is not called here either).
+##   Carbon (NEE/GPP/RECO) at MM resolution: FIXED 2026-09-28 (see
+##        SESSION_LOG.md). A 20-site-year closure test established that
+##        monthly_converted's raw carbon columns are a MEAN DAILY RATE
+##        (gC m-2 d-1), not the umol CO2 m-2 s-1 rate this script (and
+##        nee_corrected_axis.R) previously assumed via an explicit
+##        to_gC_per_period() workaround -- that umol-rate interpretation
+##        closed to only ~3.7-4.1% median error against the independently
+##        pre-integrated YY total, worse than the <1% median error of the
+##        daily-rate (x days-in-month) interpretation. 05_units.R now applies
+##        the correct conversion when building monthly_converted, so this
+##        script consumes NEE/GPP/RECO VUT/CUT/NT/DT columns directly --
+##        no conversion applied here.
 ##   Annual value construction: identical to nee_corrected_axis.R Step 3 --
 ##        mean monthly cycle across all qualifying years (QC >= QC_THRESH_MM),
 ##        all 12 calendar months required, then summed. Independent per flux
@@ -254,10 +255,7 @@ monthly_raw <- dbGetQuery(con, sprintf("
 dbDisconnect(con, shutdown = TRUE)
 
 monthly_raw <- monthly_raw |>
-  mutate(TIMESTAMP = as.Date(TIMESTAMP), year = year(TIMESTAMP), month = month(TIMESTAMP),
-         sec_in_month = lubridate::days_in_month(TIMESTAMP) * 86400)
-
-to_gC_per_period <- function(umol_co2_m2_s, secs) umol_co2_m2_s * 1e-6 * 12 * secs
+  mutate(TIMESTAMP = as.Date(TIMESTAMP), year = year(TIMESTAMP), month = month(TIMESTAMP))
 
 ## ---- Per-site VUT/CUT decision (NEE_*_QC presence only) --------------------
 site_carbon_src <- monthly_raw |>
@@ -284,11 +282,13 @@ monthly_raw <- monthly_raw |>
     ter_nt   = if_else(carbon_src == "VUT", RECO_NT_VUT_REF, RECO_NT_CUT_REF),
     ter_dt   = if_else(carbon_src == "VUT", RECO_DT_VUT_REF, RECO_DT_CUT_REF),
     carbon_qualifies = !is.na(carbon_src) & !is.na(nee_qc) & nee_qc >= QC_THRESH_MM & !is.na(nee_val),
-    nee_gC   = if_else(carbon_qualifies, to_gC_per_period(nee_val, sec_in_month), NA_real_),
-    gpp_nt_gC = if_else(carbon_qualifies, to_gC_per_period(gpp_nt, sec_in_month), NA_real_),
-    gpp_dt_gC = if_else(carbon_qualifies, to_gC_per_period(gpp_dt, sec_in_month), NA_real_),
-    ter_nt_gC = if_else(carbon_qualifies, to_gC_per_period(ter_nt, sec_in_month), NA_real_),
-    ter_dt_gC = if_else(carbon_qualifies, to_gC_per_period(ter_dt, sec_in_month), NA_real_),
+    # monthly_converted's carbon columns are already gC m-2 month-1 totals
+    # (05_units.R's daily-rate x days-in-month conversion) -- use directly.
+    nee_gC    = if_else(carbon_qualifies, nee_val, NA_real_),
+    gpp_nt_gC = if_else(carbon_qualifies, gpp_nt,  NA_real_),
+    gpp_dt_gC = if_else(carbon_qualifies, gpp_dt,  NA_real_),
+    ter_nt_gC = if_else(carbon_qualifies, ter_nt,  NA_real_),
+    ter_dt_gC = if_else(carbon_qualifies, ter_dt,  NA_real_),
     et_qualifies = !is.na(LE_F_MDS) & !is.na(LE_F_MDS_QC) & LE_F_MDS_QC >= QC_THRESH_MM,
     et_mm    = if_else(et_qualifies, LE_F_MDS, NA_real_)  # already mm/month -- see header note
   )

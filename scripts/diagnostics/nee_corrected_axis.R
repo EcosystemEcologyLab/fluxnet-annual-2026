@@ -457,26 +457,20 @@ msg("Checkpoint saved: ", file.path(OUT_DIR, "partA_checkpoint.rds"))
 ## =====================================================================
 msg("\n=== STEP 3: Tower annual NEE from monthly VUT_REF/25/75 ===")
 
-## IMPORTANT DATA-QUALITY FINDING (documented in full in report.md):
-## data/duckdb/fluxnet.duckdb's monthly_qc / monthly_converted NEE_VUT_REF,
-## NEE_VUT_25, NEE_VUT_75 are NOT unit-converted despite the table name.
-## Verified directly: `monthly` (raw) and `monthly_converted` are
-## byte-identical for these columns at a sample site (BE-Vie), and the
-## values (-3.25, -4.97, ... ) are µmol CO2 m-2 s-1-scale rates, not
-## gC m-2 month-1 sums -- confirmed by cross-checking against that same
-## site's annual_converted NEE_VUT_REF (-277..-752 gC m-2 yr-1, correctly
-## pre-integrated), and by the arithmetic: -3.25 umol m-2 s-1 * 12 gC/mol *
-## 2,629,800 s/month * 1e-6 = -102.6 gC m-2 month-1, consistent with the
-## annual magnitude. R/units.R's fluxnet_convert_units() checks the SOURCE
-## unit via read_bifvarinfo_units() before deciding whether to convert; with
-## no BIFVARINFO_YY file present in data/extracted/ on this machine (it is
-## gitignored and not currently populated), it falls back to
-## .bifvarinfo_hardcoded_lookup(), which declares NEE_VUT_REF = "gC m-2 y-1"
-## unconditionally (not resolution-aware) -- so calling that function here
-## would silently skip the conversion this data actually needs at MM (and DD)
-## resolution. This script does NOT call fluxnet_convert_units() for this
-## reason and instead applies the umol->gC conversion explicitly below,
-## using the exact number of seconds in each calendar month.
+## FIXED 2026-09-28 (see SESSION_LOG.md): monthly_converted's NEE_VUT_REF,
+## NEE_VUT_25, NEE_VUT_75 were previously NOT unit-converted -- raw ONEFlux
+## values, byte-identical to the unconverted `monthly` table -- because
+## 05_units.R's old is_coarse guard passed all DD/MM/WW/YY carbon through
+## unchanged, on the (wrong) assumption that ONEFlux delivers a pre-integrated
+## period total at every coarse resolution. A 20-site-year closure test
+## (raw MM value x days-in-month, summed over 12 months, vs. the independently
+## pre-integrated YY total) established that the raw MM value is in fact a
+## MEAN DAILY RATE (gC m-2 d-1), not the umol CO2 m-2 s-1 rate this script
+## previously assumed via its own to_gC_per_period() workaround: the
+## umol-rate interpretation closed to ~3.7% median error against YY, the
+## daily-rate interpretation to <1%. 05_units.R now applies the correct
+## (x days-in-month) conversion when building monthly_converted, so this
+## script consumes NEE_VUT_REF/_25/_75 directly -- no conversion needed here.
 
 QC_THRESH_MM <- 0.80  # same threshold used for site_flux_medians (assess_flux_data_by_igbp_shuttle.R:43),
                        # applied here at monthly rather than annual granularity, per task instruction.
@@ -491,19 +485,18 @@ dbDisconnect(con, shutdown = TRUE)
 
 monthly_raw <- monthly_raw |>
   mutate(
-    TIMESTAMP    = as.Date(TIMESTAMP),
-    year         = year(TIMESTAMP),
-    month        = month(TIMESTAMP),
-    sec_in_month = lubridate::days_in_month(TIMESTAMP) * 86400
+    TIMESTAMP = as.Date(TIMESTAMP),
+    year      = year(TIMESTAMP),
+    month     = month(TIMESTAMP)
   )
 
-to_gC_per_period <- function(umol_co2_m2_s, secs) umol_co2_m2_s * 1e-6 * 12 * secs
-
+# monthly_converted's carbon columns are already gC m-2 month-1 totals
+# (05_units.R's daily-rate x days-in-month conversion) -- use directly.
 monthly_raw <- monthly_raw |>
   mutate(
-    NEE_VUT_REF_gC = to_gC_per_period(NEE_VUT_REF, sec_in_month),
-    NEE_VUT_25_gC  = to_gC_per_period(NEE_VUT_25,  sec_in_month),
-    NEE_VUT_75_gC  = to_gC_per_period(NEE_VUT_75,  sec_in_month)
+    NEE_VUT_REF_gC = NEE_VUT_REF,
+    NEE_VUT_25_gC  = NEE_VUT_25,
+    NEE_VUT_75_gC  = NEE_VUT_75
   )
 
 qualifying <- monthly_raw |> filter(NEE_VUT_REF_QC >= QC_THRESH_MM)
@@ -549,9 +542,10 @@ write_csv(site_annual_nee_current, file.path(OUT_DIR, "table_step3_tower_annual_
 write_meta(file.path(OUT_DIR, "table_step3_tower_annual_nee.csv"),
            input_sources = "data/duckdb/fluxnet.duckdb (monthly_converted), data/snapshots/site_biomass_cci_v7.csv",
            notes = paste0("QC threshold NEE_VUT_REF_QC >= ", QC_THRESH_MM, " per month. ",
-             "Unit conversion (umol CO2 m-2 s-1 -> gC m-2 month-1) applied explicitly by this ",
-             "script, NOT via fluxnet_convert_units() -- see report.md Section 3 for the ",
-             "monthly-carbon-unit discrepancy this diagnostic found in the DuckDB tables. ",
+             "monthly_converted's NEE_VUT_REF/_25/_75 are gC m-2 month-1 totals as of the ",
+             "2026-09-28 05_units.R fix (daily-rate x days-in-month) -- used directly, no ",
+             "conversion applied in this script. See SESSION_LOG.md 2026-09-28 for the closure ",
+             "test that established the fix. ",
              "VUT_25/VUT_75 use the SAME QC-qualifying months as VUT_REF (not filtered by their ",
              "own _25_QC/_75_QC columns) so REF and the uncertainty band are directly comparable ",
              "on one measured record. VUT only, no CUT fallback, per task instruction. ",

@@ -7,11 +7,23 @@
 ##
 ## Conversion rules (identical to fluxnet_convert_units() in R/units.R):
 ##   Carbon (NEE/GPP/RECO):
-##     HH/HR only: µmol CO₂ m⁻² s⁻¹ → gC m⁻² per period (* 12e-6 * spp)
-##     DD/MM/WW/YY: already gC m⁻² period⁻¹ from ONEFlux — PASS THROUGH
-##     (The pass-through guard prevents the ~800× over-correction from
-##     commit 31e653b when the µmol→gC factor was wrongly applied to
-##     pre-integrated coarse-resolution data.)
+##     HH/HR: µmol CO₂ m⁻² s⁻¹ → gC m⁻² per period (* 12e-6 * spp)
+##     YY:    already a pre-integrated gC m⁻² y⁻¹ total from ONEFlux — PASS THROUGH
+##     DD:    already a MEAN DAILY RATE (gC m⁻² d⁻¹) — numerically a no-op,
+##            since a daily rate over a 1-day period equals that day's total.
+##     MM/WW: also a MEAN DAILY RATE (gC m⁻² d⁻¹), NOT a pre-integrated period
+##            total as previously assumed — multiply by days-in-period
+##            (days_in_month() for MM; TIMESTAMP_END - TIMESTAMP_START + 1 for
+##            WW) to get the gC m⁻² period⁻¹ total.
+##     Established empirically: for 20 (MM) / 15 (DD) / 15 (WW) site-years with
+##     complete, high-QC periods, summing the daily-rate-converted values and
+##     comparing to the independently pre-integrated YY total closes to a
+##     median absolute error of <1% (MM), ~1.6% (DD, sample noise from partial
+##     years), ~3.4% (WW, n=16 only) — vs 3.7-4.8% for the previously-assumed
+##     µmol CO₂ m⁻² s⁻¹ interpretation. See SESSION_LOG.md 2026-09-28 for the
+##     full closure test. (The pass-through guard for YY still prevents the
+##     ~800× over-correction from commit 31e653b when the µmol→gC factor was
+##     wrongly applied to a pre-integrated annual total.)
 ##   LE:            W m⁻² → mm H₂O per period  (* spp / 2.45e6)
 ##   H, SW_IN:      W m⁻² → MJ m⁻² per period  (* spp * 1e-6)
 ##   TA:            °C → K                      (+ 273.15)
@@ -64,7 +76,16 @@ for (tbl_name in names(res_map)) {
   }
 
   suffix    <- info$suffix
-  is_coarse <- suffix %in% c("YY", "MM", "WW", "DD")
+  # Carbon conversion type by resolution:
+  #   "umol"       HH/HR — raw is umol CO2 m-2 s-1, needs the 12e-6*spp factor
+  #   "daily_rate" MM/WW — raw is a mean daily rate (gC m-2 d-1), needs x days-in-period
+  #   "none"       DD (rate over a 1-day period is already the period value)
+  #                YY (already a pre-integrated period total from ONEFlux)
+  carbon_conversion_type <- switch(suffix,
+    "HH" = "umol", "HR" = "umol",
+    "MM" = "daily_rate", "WW" = "daily_rate",
+    "none"
+  )
 
   cat("\n--- 05_units_duckdb.R:", suffix, "---\n")
 
@@ -81,9 +102,9 @@ for (tbl_name in names(res_map)) {
   ta_cols     <- no_qc(grep("^TA_",              cols, value = TRUE))
   vpd_cols    <- no_qc(grep("^VPD_",             cols, value = TRUE))
 
-  # Carbon is only converted at HH/HR.  At coarse resolutions the values are
-  # pre-integrated gC m⁻² period⁻¹ and must not receive the µmol→gC factor.
-  converted_carbon <- if (!is_coarse) carbon_cols else character(0L)
+  # Carbon is converted at HH/HR (umol->gC) and at MM/WW (daily-rate -> period
+  # total). DD and YY are left as pass-through (see carbon_conversion_type above).
+  converted_carbon <- if (carbon_conversion_type != "none") carbon_cols else character(0L)
 
   # Full list of columns that will be numerically changed
   converted_cols <- c(converted_carbon, le_cols, h_sw_cols, ta_cols, vpd_cols)
@@ -123,14 +144,36 @@ for (tbl_name in names(res_map)) {
     cat("  spp:", spp_val, "s per period (", suffix, ")\n")
   }
 
+  # ── Step 2b: days_in_period helper for MM/WW carbon conversion ───────────
+  # Only computed when needed: MM/WW carbon is a mean daily rate (gC m-2 d-1)
+  # and must be multiplied by the actual number of days in that specific
+  # period, not a fixed constant. DuckDB's last_day() gives an exact,
+  # leap-year-aware month length; TIMESTAMP_END - TIMESTAMP_START + 1 gives
+  # the exact week length (ONEFlux's final WW period of a year is often not
+  # exactly 7 days).
+  if (carbon_conversion_type == "daily_rate") {
+    if (suffix == "MM") {
+      result <- result |>
+        dplyr::mutate(days_in_period = as.integer(dplyr::sql("EXTRACT(day FROM last_day(TIMESTAMP))")))
+    } else if (suffix == "WW") {
+      result <- result |>
+        dplyr::mutate(days_in_period = as.integer(TIMESTAMP_END - TIMESTAMP_START) + 1L)
+    }
+  }
+
   # ── Step 3: Apply conversions in DuckDB (no R materialisation) ───────────
   # Each across() block generates SQL operating on the current lazy query.
-  # The `spp` column is available in the query context at this point.
+  # The `spp` / `days_in_period` columns are available in the query context.
 
-  # Carbon: HH/HR only (is_coarse guard prevents 31e653b-style bug)
+  # Carbon: HH/HR umol->gC; MM/WW daily-rate -> period total; DD/YY untouched.
   if (length(converted_carbon) > 0L) {
-    result <- result |>
-      dplyr::mutate(across(all_of(converted_carbon), ~ .x * 12e-6 * spp))
+    if (carbon_conversion_type == "umol") {
+      result <- result |>
+        dplyr::mutate(across(all_of(converted_carbon), ~ .x * 12e-6 * spp))
+    } else if (carbon_conversion_type == "daily_rate") {
+      result <- result |>
+        dplyr::mutate(across(all_of(converted_carbon), ~ .x * days_in_period))
+    }
   }
 
   # LE: W m⁻² → mm H₂O per period  (λ ≈ 2.45×10⁶ J kg⁻¹, ρ_w = 1000 kg m⁻³)
@@ -157,8 +200,8 @@ for (tbl_name in names(res_map)) {
       dplyr::mutate(across(all_of(vpd_cols), ~ .x / 10))
   }
 
-  # ── Step 4: Drop the spp helper column, compute to DuckDB ────────────────
-  result <- result |> dplyr::select(-spp)
+  # ── Step 4: Drop helper columns, compute to DuckDB ────────────────────────
+  result <- result |> dplyr::select(-spp, -dplyr::any_of("days_in_period"))
 
   if (dst %in% dbListTables(con)) {
     dbExecute(con, glue("DROP TABLE {dst}"))

@@ -412,13 +412,23 @@ existing_metrics <- if (file.exists(METRICS_CSV)) {
              n_sites = integer())
 }
 
+## geo_vs_data: one row per network (current_781 + the 3 historical networks),
+## so a Jaccard-trajectory plot (e.g. Fig 007/008 style) can draw a full line
+## across all 4 networks, not just a single current_781 point.
+data_rows <- occupancy_df |>
+  dplyr::filter(variant == "geo_vs_data") |>
+  dplyr::distinct(network, n_total, weighted_jaccard) |>
+  dplyr::transmute(axis = "nee_signed5_data", aggregation_level = "5bin_signed", n_classes = 5L,
+                    weighted_jaccard,
+                    hellinger_distance = NA_real_,  # only computed in R for current_781 below
+                    network, n_sites = n_total)
+data_rows$hellinger_distance[data_rows$network == "current_781"] <- hellinger(global_frac_vec, fr_data_current)
+
 new_rows <- bind_rows(
   data.frame(axis = "nee_signed5_geo", aggregation_level = "5bin_signed", n_classes = 5L,
              weighted_jaccard = j_geo, hellinger_distance = hellinger(global_frac_vec, fr_geo),
              network = "current_781", n_sites = n_sites),
-  data.frame(axis = "nee_signed5_data", aggregation_level = "5bin_signed", n_classes = 5L,
-             weighted_jaccard = j_data_current, hellinger_distance = hellinger(global_frac_vec, fr_data_current),
-             network = "current_781", n_sites = n_sites)
+  data_rows
 )
 metrics_final <- bind_rows(existing_metrics, new_rows)
 write_csv(metrics_final, METRICS_CSV)

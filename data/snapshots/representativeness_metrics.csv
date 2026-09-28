@@ -190,3 +190,6 @@ trendy_nee_median,7bin_hybrid,7,0.4931868270307604,0.3208924440085051,current_78
 trendy_et_median,7bin_hybrid,7,0.45560370965096225,0.347017727809834,current_781,781
 nee_signed5_geo,5bin_signed,5,0.5487311795604757,0.2338674156492548,current_781,781
 nee_signed5_data,5bin_signed,5,0.22950470654076244,0.4801540176221302,current_781,781
+nee_signed5_data,5bin_signed,5,0.22558484362321304,NA,fluxnet2015,212
+nee_signed5_data,5bin_signed,5,0.21840515664792634,NA,la_thuile,252
+nee_signed5_data,5bin_signed,5,0.17298342451105722,NA,marconi,35

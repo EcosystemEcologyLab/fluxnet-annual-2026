@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-28T22:54:08Z",
+  "pipeline_version": "2d9623f",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly_converted)",
+    "data/snapshots/sites_marconi_clean.csv",
+    "data/snapshots/site_biomass_cci_v7.csv"
+  ],
+  "notes": "marconi historical site list (35 sites) intersected with the current network; tower (Data) values are current-release Shuttle data, not the marconi product's own values, per Hard Rule 1."
+}

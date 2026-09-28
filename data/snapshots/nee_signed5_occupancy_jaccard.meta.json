@@ -1,0 +1,13 @@
+{
+  "run_datetime_utc": "2026-09-28T22:54:08Z",
+  "pipeline_version": "2d9623f",
+  "input_sources": {
+    "1": "data/snapshots/trendy_nee_signed5_global_distribution.csv",
+    "2": "data/duckdb/fluxnet.duckdb (monthly_converted)",
+    "current_781": "data/snapshots/site_biomass_cci_v7.csv",
+    "fluxnet2015": "data/snapshots/sites_fluxnet2015_clean.csv",
+    "la_thuile": "data/snapshots/sites_la_thuile_clean.csv",
+    "marconi": "data/snapshots/sites_marconi_clean.csv"
+  },
+  "notes": "variant x network occupancy and weighted Jaccard for the 5-bin signed NEE scheme. geo_vs_geo (current_781 only): model NEE at site coords vs global model distribution. geo_vs_data: tower-measured annual NEE (VUT->CUT fallback) vs the same global model distribution. Historical networks restricted to sites still active in the current release; denominator is each network's full historical site count."
+}

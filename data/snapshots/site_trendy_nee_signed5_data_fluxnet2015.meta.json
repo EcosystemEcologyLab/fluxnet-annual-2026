@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-09-28T22:54:08Z",
+  "pipeline_version": "2d9623f",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly_converted)",
+    "data/snapshots/sites_fluxnet2015_clean.csv",
+    "data/snapshots/site_biomass_cci_v7.csv"
+  ],
+  "notes": "fluxnet2015 historical site list (212 sites) intersected with the current network; tower (Data) values are current-release Shuttle data, not the fluxnet2015 product's own values, per Hard Rule 1."
+}

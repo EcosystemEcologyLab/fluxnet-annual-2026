@@ -4,6 +4,206 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-28 — Corrected NEE axis moved into production representativeness code
+
+### New script: `scripts/figure_representativeness_nee_signed.R`
+
+Moves the signed NEE representativeness axis (previously only in `scripts/diagnostics/nee_corrected_axis.R`)
+into production, as its own script — kept separate from `figure_representativeness_trendy_compute.R`
+(whose 17-model netCDF pipeline runs for hours) rather than appended to it, matching the repo's
+existing one-script-per-axis convention (`_kg.R`, `_biomass.R`, `_aridity.R`, `_landcover.R`). The
+model raster this axis needs (`data/external/trendy/derived/trendy_nee_fluxbased_median.tif`) is
+already cached from `nee_corrected_axis.R` Steps 1–2, so this script does no netCDF processing and
+runs in under a second of compute (plus a few seconds for the 0.5° global histogram).
+
+**"Fig 4" / "Fig 5" mapping** (resolved by reading `figure_representativeness_summary.R`'s own
+`NET_ORDER`/`Fig 00N` comments, not asked of the user): the script's own Rep001–004 numbering is
+`Fig 001=current_781, 002=marconi, 003=la_thuile, 004=fluxnet2015` — the *opposite* of what the
+task's plain-English "Fig 4 (current network)" implies. Concluded the task means the **paper's**
+Figure 4/5 numbers, not this script's internal `fig_rep00N` filenames: paper Fig 4 = current
+network, paper Fig 5 = the three historical networks. Used that mapping throughout.
+
+**Model (Geo)**: S3 ensemble-median flux-based NEE (ra+rh−gpp), 1991–2020 mean — bilinear-extracted
+from the cached raster at all 781 current-network site coordinates (781/781 succeed; it's a smooth
+raster field, no missing-cell issue).
+
+**Tower (Data)**: Step 3 annual method (mean monthly cycle across all QC≥0.80-qualifying years, all
+12 calendar months required, then summed), with the **per-site VUT→CUT fallback** (731 VUT, 49 CUT,
+1 neither) — broader than `nee_corrected_axis.R`'s own VUT-only Step 3, per this task's instruction.
+597/781 sites have a qualifying annual value.
+
+**h (near-zero half-width)**: recomputed here with the *same VUT-only* method as
+`nee_corrected_axis.R` Step 3/4 (not the broader VUT→CUT set used for classification) — self-contained,
+doesn't depend on that diagnostic's gitignored output surviving. Reproduces h = 21.121 gC m⁻² yr⁻¹
+exactly, confirming determinism post-fix.
+
+**5-bin scheme**: near-zero ±h, 3 equal-area quantile bins on the sink side beyond −h (reusing
+`nee_corrected_axis.R`'s sink-side quantile construction verbatim), one open source bin above +h (no
+source-side quantile split, unlike the diagnostic's 7-bin scheme). Bin edges (gC m⁻² yr⁻¹): −Inf |
+−72.1 | −45.3 | −21.12 | 21.12 | Inf. Global land-area fractions: 18.2% / 18.2% / 18.3% / 45.4%
+(near-zero) / 0.03% (source — TRENDY's ensemble-median rarely classifies a 1991–2020 mean cell as a
+net source).
+
+**Fig 4 (current_781)** — both variants computed:
+- Geo vs Geo (model at site coords vs global model distribution): J = 0.549, all 781 sites classified.
+- Geo vs Data (tower vs global model distribution): J = 0.230, 597/781 classified (184 sites lack a
+  qualifying annual value — contribute 0 to the numerator, full 781 kept as the denominator, matching
+  `nee_corrected_axis.R` Step 6's established convention).
+- The much higher Geo-vs-Geo J is expected and consistent with earlier findings (the 2026-09-26
+  tower-vs-model distribution entry below, and this session's own tower/model medians): tower NEE is
+  far more concentrated in strong-sink bins than the model's grid-cell-mean field, which is smoother
+  and closer to zero.
+
+**Fig 5 (fluxnet2015 / la_thuile / marconi)** — Data variant only, current-release tower values for
+each network's sites still active in the current release (Hard Rule 1: historical products' own flux
+values are never used as primary data, only their site-ID lists for membership):
+
+| Network | Historical sites | Still in current network w/ qualifying NEE | J (geo_vs_data) |
+|---|---|---|---|
+| fluxnet2015 | 212 | 139 | 0.226 |
+| la_thuile | 252 | 110 | 0.218 |
+| marconi | 35 | 15 | 0.173 |
+
+Denominator is each network's **full historical site count** (not the current-intersected count),
+matching the diagnostic's established convention — a network's representativeness score correctly
+reflects that most of its original sites are no longer active/qualifying.
+
+### Outputs (all `data/snapshots/`, committed)
+
+`trendy_nee_signed5_global_distribution.csv`, `site_trendy_nee_signed5_geo_current_781.csv`,
+`site_trendy_nee_signed5_data_{current_781,fluxnet2015,la_thuile,marconi}.csv`,
+`nee_signed5_occupancy_jaccard.csv`, plus 2 new rows (`nee_signed5_geo`, `nee_signed5_data`,
+`aggregation_level=5bin_signed`) appended to `representativeness_metrics.csv`. All site CSVs use the
+same `site_id`/bin-column shape as the existing AXES6 axes (`nee_signed5_bin`), so
+`figure_representativeness_summary.R`'s `count_sites()`/`merge_sr()` helpers work on them unmodified.
+
+### Scope decision: did not add this axis into the committed `AXES6` grid
+
+`figure_representativeness_summary.R` was deliberately **not edited** in this pass. Adding a 7th axis
+into `AXES6`/`AXES6_KEYS` would regenerate and alter the *committed* `fig_rep001–006` PNGs the next
+time that script runs — the task asks for new candidate panels (Task 3, `review/figures/candidates/`,
+explicitly not overwriting committed figures), not for the existing 6-panel grids to change. The
+outputs above are deliberately shaped to be consumable by `figure_representativeness_summary.R`'s
+existing helper functions from a future candidate-rendering script, without requiring any change to
+that file. Flag for the user: if the intent was instead to actually extend the committed grids, that
+is a different, larger follow-up (would also mean re-running and re-committing 001–006 for both
+networks currently in them).
+
+### Aside, not fixed: `data/external/trendy/derived/` is committable but untracked (490 MB)
+
+Not gitignored (only `data/external/trendy/v14-gcb2025/` raw NetCDFs are), yet none of its contents
+(`trendy_nee_fluxbased_median.tif` and 5 sibling ensemble rasters, plus 483 MB of per-model
+intermediates) were tracked in git before or after this session — pre-existing gap, not introduced
+here, and not fixed (adding a 490 MB directory to git, or deciding it should be gitignored instead,
+is a repo-policy call for the user, not something to do unprompted).
+
+---
+
+## 2026-09-28 — Coarse-resolution carbon unit fix (DD/MM/WW): closure test, 05_units.R fix, DuckDB rebuild
+
+### Finding: NEE/GPP/RECO at MM and WW are a mean daily rate, not a pre-integrated period total
+
+`flux_tower_model_distributions.R` (2026-09-26 entry above) flagged that monthly carbon in
+`monthly_converted` was not unit-converted. This session established the correct conversion with
+an exact closure test rather than assuming the previously-used workaround was right.
+
+**Method**: for site-years with complete, high-QC coarse-resolution periods (QC ≥ 0.50, per-site
+VUT→CUT fallback per the QC Flag Reference), summed the raw period values under two candidate
+interpretations and compared to the independently pre-integrated `annual_converted` (YY) total for
+the same site-year:
+- **Candidate A** (previously assumed): raw value is µmol CO₂ m⁻² s⁻¹ → `× 12e-6 × seconds-in-period`.
+- **Candidate B**: raw value is a mean daily rate, gC m⁻² d⁻¹ → `× days-in-period`.
+
+Note candidate A = candidate B × 1.0368 always (86,400 s/d × 12e-6 = 1.0368) — the two candidates
+are a constant scalar apart regardless of the data, which is why a per-site sanity check alone
+(as in the earlier `nee_corrected_axis.R` comment) could not distinguish them; only a closure
+test against an independent reference (YY) can.
+
+| Resolution | n site-years | median abs. error, candidate A (µmol) | median abs. error, candidate B (daily rate) |
+|---|---|---|---|
+| MM (NEE) | 20 | 3.68% | **0.87%** |
+| MM (GPP) | 20 | 3.79% | **0.66%** |
+| MM (RECO) | 20 | 4.07% | **0.43%** |
+| DD (NEE) | 15 | 3.68% | **1.60%** (raw sum, no multiplier — see below) |
+| WW (NEE) | 16 | 4.79% | **3.42%** |
+
+Candidate B wins decisively at every resolution tested. **Conclusion**: ONEFlux delivers NEE/GPP/RECO
+at DD/MM/WW as a mean daily rate (gC m⁻² d⁻¹) reported at that period's cadence, not a pre-integrated
+period total — contrary to the assumption baked into `05_units.R`'s `is_coarse` pass-through guard
+and `R/units.R`'s hardcoded unit table. **YY is unaffected** — it is a genuine pre-integrated annual
+total, confirmed by its role as the closure-test reference throughout. DD needs no numeric
+conversion (a daily rate over a 1-day period is trivially that day's total, so the "no conversion"
+candidate for DD is the raw sum, which closes to 1.6% — residual error is sample noise from the
+≥98%-of-days-present threshold, not a wrong conversion). MM and WW need `× days-in-period`, using
+the *actual* days in that specific period (`last_day(TIMESTAMP)` for MM, `TIMESTAMP_END -
+TIMESTAMP_START + 1` for WW — not a fixed 30.4375-day or 7-day constant).
+
+Also discovered in passing, not a bug: `annual`/`monthly`/`daily`/`weekly` (and their `_qc`/`_converted`
+descendants) hold rows from **both** `dataset='FLUXMET'` and `dataset='ERA5'` unioned together
+(`duckdb_setup.R`'s primary key includes `dataset`) — ERA5 rows are all-NA for flux/carbon columns.
+Any query against these tables for tower flux variables should filter `WHERE dataset = 'FLUXMET'`
+(existing scripts that filter on `NOT NULL` flux columns are unaffected by omitting it).
+
+### Fix
+
+- **`scripts/05_units.R`**: replaced the `is_coarse` all-carbon-passthrough guard with a
+  per-resolution `carbon_conversion_type` (`"umol"` for HH/HR, `"daily_rate"` for MM/WW, `"none"`
+  for DD/YY). Added a `days_in_period` helper column (DuckDB `last_day()`/date-subtraction SQL,
+  translated through dbplyr — verified against both `collect()` and lazy `mutate()`) used only for
+  MM/WW.
+- **`R/units.R`** (`fluxnet_convert_units()`, `.infer_source_unit()`, `.bifvarinfo_hardcoded_lookup()`):
+  same fix applied to the RDS-path canonical function, which is not currently called by any live
+  script (`legacy/05_units_rds.R` only) but is the function CLAUDE.md's Unit Conversion Reference
+  names as the one place conversions should live — left with the same bug it would have
+  propagated it to any future revival of the RDS pipeline.
+- **`scripts/diagnostics/nee_corrected_axis.R`** and **`scripts/diagnostics/flux_tower_model_distributions.R`**:
+  removed their own `to_gC_per_period()` (µmol-assumption) workaround entirely — `monthly_converted`'s
+  carbon columns are now correctly converted at the source, so these scripts consume them directly.
+
+### Rebuild
+
+Rebuilt `monthly_converted` and `weekly_converted` only (a scoped copy of `05_units.R` restricted
+to those two resolutions) — `annual_converted`/`daily_converted`/`hourly_converted` are numerically
+unchanged by this fix (YY and HH untouched; DD is a no-op), and `daily_qc` alone is 14.8M rows, so
+rebuilding it would cost significant time for a byte-identical result. Verified post-rebuild:
+`monthly_converted`'s `NEE_VUT_REF` summed over 12 months (no manual conversion) now closes to the
+same 0.87% median error against `annual_converted` directly — confirming the production table
+itself is fixed, not just the standalone test.
+
+### Rerun and updated results
+
+Reran `nee_corrected_axis.R` and `flux_tower_model_distributions.R` (only these — no TRENDY
+recomputation needed, cached rasters reused). Both completed with no errors, identical site
+counts to the 2026-09-26 runs (QC gating is unaffected by the unit fix, only magnitude changed).
+
+- **Near-zero half-width h**: **21.12 gC m⁻² yr⁻¹** (was 21.9 gC m⁻² yr⁻¹) — the ratio (21.9/21.12 =
+  1.037) matches the candidate-A/candidate-B scalar (1.0368) exactly, as expected since h is a
+  median of a set of values that were uniformly rescaled by the fix.
+- **Tower medians** (`table_dist_tower_vs_model.csv`, current-network sites with both tower and
+  model values):
+
+| Flux | n | median tower (gC m⁻² yr⁻¹, or mm yr⁻¹ for ET) | median model |
+|---|---|---|---|
+| NEE | 597 | -157 | -59.3 |
+| GPP | 588 | 1325 | 1055 |
+| TER | 588 | 1084 | 952 |
+| ET  | 634 | 519 (unaffected — LE was already correctly converted) | 493 |
+
+- Step 3 tower annual NEE (`table_step3_tower_annual_nee.csv`, VUT-only, n=559): median = -148.98 gC m⁻² yr⁻¹.
+- Step 7 paired tower-vs-model difference: n=486, median=-96.98, IQR=[-287.17, 29.95].
+
+### Scripts confirmed unaffected (read only YY, or DD with no numeric change)
+
+`generate_whittaker.R`, `generate_whittaker_alt_fig02.R`, `generate_whittaker_alt_fig02_update.R`,
+`generate_whittaker_overlays.R`, `figure_nee_histogram.R`, `build_draft_manuscript_v1.R`,
+`scripts/diagnostics/store_refresh_stage5_reconcile.R`, `scripts/diagnostics/store_audit_stage3_rederivation.R`
+— all read carbon only from `annual_converted` (YY, untouched by this fix). `07_figures.R`'s DD
+seasonal-cycle section reads `daily_converted`'s NEE/GPP directly — DD needs no numeric conversion,
+so those figures are unaffected and `daily_converted` did not need rebuilding. No script currently
+reads carbon from `weekly_converted`.
+
+---
+
 ## 2026-09-26 — New diagnostic: tower-vs-model NEE/GPP/TER/ET distributions (VUT/CUT + NT/DT fallback)
 
 Added `scripts/diagnostics/flux_tower_model_distributions.R`, alongside `nee_corrected_axis.R`,

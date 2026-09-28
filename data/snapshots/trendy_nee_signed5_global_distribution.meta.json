@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-28T22:54:08Z",
+  "pipeline_version": "2d9623f",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_nee_signed_global_histogram_0.1step.csv"
+  ],
+  "notes": "5-bin signed NEE scheme. h=21.121 gC m-2 yr-1 (VUT-only Step 3/4 median half-width). Bin edges: -Inf, -72.1, -45.3, -21.121, 21.121, Inf."
+}

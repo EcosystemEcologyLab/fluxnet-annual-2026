@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-28T22:54:08Z",
+  "pipeline_version": "2d9623f",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (monthly_converted)",
+    "data/snapshots/site_biomass_cci_v7.csv"
+  ],
+  "notes": "Tower (Data) annual NEE, Step 3 method (mean monthly cycle, all 12 months, QC>=0.8), per-site VUT->CUT fallback. Classified into the 5-bin signed scheme (h=21.121 gC m-2 yr-1)."
+}

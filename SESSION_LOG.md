@@ -4,6 +4,67 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-28 — NEE/GPP/TER candidate representativeness panels (`review/figures/candidates/`)
+
+### New script: `scripts/candidate_nee_gpp_ter_panels.R`
+
+Renders 9 standalone candidate panels — reusing the production NEE axis outputs from the entry below
+without recomputation, and computing new (mock-up only, not written to `data/snapshots/`) GPP/TER
+axes. Panel and trajectory styling reproduced from `figure_representativeness_summary.R`'s
+`make_panel_single()`/`make_traj_no_bars()` rather than sourcing that file, since sourcing it would
+regenerate the committed Figs 001–010 as a side effect.
+
+**NEE (Fig 4, both variants + Fig 5 line)** — `fig4_nee_geo_vs_geo.png` (J=0.549), `fig4_nee_geo_vs_data.png`
+(J=0.230), `fig5_jaccard_trajectory_with_nee.png` (adds a 7th line, black, to the existing 6-default-axis
+trajectory plot). All three read directly from the previous entry's committed snapshot CSVs.
+
+**GPP/TER (new computation)** — model side is the S3 ensemble-median TRENDY v14 `gpp` and `ra+rh`,
+1991–2020 mean, computed from the *same* cached per-model native annual stacks the NEE axis uses
+(`data/external/trendy/derived/intermediate/`, no netCDF re-processing; regridded to the common 0.5°
+grid and ensemble-medianed here, written to `data/external/trendy/derived/candidate_{gpp,ter}_median.tif`
+for reuse). Tower side is `GPP_{NT,DT}_{VUT,CUT}_REF` / `RECO_{NT,DT}_{VUT,CUT}_REF`, Step 3 annual
+method, the *same* per-site VUT/CUT choice as the NEE axis plus an independent per-site NT→DT fallback
+(NT=712, DT=61 — matches the 2026-09-26 diagnostic exactly, confirming the fallback logic ported
+correctly). 5 equal-area quantile bins of the global field, no near-zero bin (GPP/TER are always
+positive at this scale, unlike signed NEE):
+
+| Flux | Quantile breaks (gC m⁻² yr⁻¹) | J (Geo) | J (Data) |
+|---|---|---|---|
+| GPP | 12, 356, 878, 1641 | 0.520 | 0.545 |
+| TER | 11, 331, 814, 1548 | 0.522 | 0.549 |
+
+Both notably higher than NEE's J (~0.23–0.55) — GPP/TER magnitude classes track vegetation/biome type,
+which towers are already somewhat deliberately distributed across; NEE's sink/source balance is a much
+finer, harder-to-proportionally-sample signal.
+
+### Bug found and fixed while building this: `figure_representativeness_nee_signed.R` Step 5 was current_781-only
+
+The Fig 5 trajectory initially rendered with only a single NEE point (Current) — `representativeness_
+metrics.csv`'s `nee_signed5_data` rows only covered `current_781`, even though the *occupancy* table
+(`nee_signed5_occupancy_jaccard.csv`) already had all 4 networks' J values computed. Fixed
+`scripts/figure_representativeness_nee_signed.R` Step 5 to derive all 4 networks' metrics rows from
+`occupancy_df` directly instead of hand-writing a single current_781 row; reran both that script and
+this one. J values unchanged (deterministic), now all 4 networks present in `representativeness_
+metrics.csv` for `nee_signed5_data`.
+
+Also caught and fixed, before the above rerun, a scoping bug in this script's own first draft: the
+GPP/RECO tower computation initially derived each site's VUT/CUT choice by reading it off
+`site_trendy_nee_signed5_data_current_781.csv` (only the 597 sites that already passed *NEE's own*
+12-month qualification), rather than recomputing the VUT/CUT decision independently from
+`NEE_VUT_REF_QC`/`NEE_CUT_REF_QC` presence for all 780 sites with a decision. This silently undercounted
+GPP/TER tower sites (591 instead of 654) — GPP/RECO must qualify independently of whether NEE happened
+to qualify at the same site. Fixed by re-deriving `site_carbon_src` in this script from the same rule,
+not by reading the NEE-qualified subset.
+
+### Outputs
+
+`review/figures/candidates/fig4_{nee_geo_vs_geo,nee_geo_vs_data,gpp_geo,gpp_data,ter_geo,ter_data}.png`,
+`fig5_jaccard_trajectory_with_nee.png`, each with a companion `.txt` note (bin edges, site counts, J) —
+matching the existing `review/figures/candidates/*.txt` convention. No committed figure in
+`review/figures/representativeness/` was touched.
+
+---
+
 ## 2026-09-28 — Corrected NEE axis moved into production representativeness code
 
 ### New script: `scripts/figure_representativeness_nee_signed.R`

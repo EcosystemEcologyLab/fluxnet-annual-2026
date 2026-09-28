@@ -1,0 +1,7 @@
+NEE (signed, 5-bin) representativeness panel -- Fig 4 (current network), Geo vs Geo variant.
+Bin edges (gC m-2 yr-1): see data/snapshots/trendy_nee_signed5_global_distribution.meta.json
+  sink, outer third (< -72.1) | sink, middle third (-72.1 to -45.3) | sink, inner third (-45.3 to -21.1) | near-zero (+/-21.1) | source (> 21.1)
+Site count: n_total=781  n_classified=781
+Weighted Jaccard J = 0.5487
+Source: data/snapshots/site_trendy_nee_signed5_{geo,data}_current_781.csv, nee_signed5_occupancy_jaccard.csv
+(scripts/figure_representativeness_nee_signed.R, production, committed 2026-09-28).

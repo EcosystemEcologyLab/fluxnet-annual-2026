@@ -1,0 +1,7 @@
+GPP (5 equal-area quantile bins, no near-zero bin) -- Geo -- current network.
+Bin edges (gC m-2 yr-1): 12, 356, 878, 1641
+  0–12 | 12–356 | 356–878 | 878–1641 | >1641
+Site count: n_total=781  n_classified=781
+Weighted Jaccard J = 0.5203
+Model: S3 ensemble-median TRENDY v14, 1991-2020 mean, bilinear-extracted at site coordinates.
+Candidate mock-up -- not written to data/snapshots/ (unlike the production NEE axis).

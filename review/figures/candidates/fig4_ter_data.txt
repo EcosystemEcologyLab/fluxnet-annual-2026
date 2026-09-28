@@ -1,0 +1,7 @@
+TER (5 equal-area quantile bins, no near-zero bin) -- Data -- current network.
+Bin edges (gC m-2 yr-1): 11, 331, 814, 1548
+  0–11 | 11–331 | 331–814 | 814–1548 | >1548
+Site count: n_total=781  n_classified=654
+Weighted Jaccard J = 0.5488
+Tower: Step 3 annual method, same per-site VUT/CUT choice as the NEE axis, plus an independent per-site NT->DT fallback.
+Candidate mock-up -- not written to data/snapshots/ (unlike the production NEE axis).

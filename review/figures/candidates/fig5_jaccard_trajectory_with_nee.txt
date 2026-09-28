@@ -1,0 +1,5 @@
+Jaccard trajectory (Fig 5 style) -- the existing 6 default axes plus a new NEE (signed, 5-bin, Data variant) line.
+NEE line J by network: marconi=0.173  la_thuile=0.218  fluxnet2015=0.226  current_781=0.230
+Historical-network NEE values are current-release tower data for each network's sites still active
+in the current release (Hard Rule 1) -- see data/snapshots/nee_signed5_occupancy_jaccard.csv.
+Source: data/snapshots/representativeness_metrics.csv.

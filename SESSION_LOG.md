@@ -4,6 +4,71 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-29 — New diagnostic: 7-bin septile break schemes for NEE, GPP, TER, ET
+
+### New script: `scripts/diagnostics/flux_bin_breaks.R`
+
+Does not touch any production script or `review/figures/candidates/` output — everything lands in
+`review/diagnostics/flux_bin_breaks/`. Reuses, without recomputation, the cached model rasters and the
+VUT→CUT / NT→DT tower logic already established this session
+(`data/external/trendy/derived/{trendy_nee_fluxbased_median,candidate_gpp_median,candidate_ter_median}.tif`;
+tower query pattern from `scripts/candidate_nee_gpp_ter_panels.R`; ET from `LE_F_MDS` as in
+`scripts/diagnostics/flux_tower_model_distributions.R`).
+
+**New raster built (not previously cached)**: a 1991–2020, 17-model ET ensemble-median raster,
+`data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif`, from the existing per-model
+`<model>_evapotrans_regridded.tif` caches (1990–2023, already on the common 0.5° grid — no netCDF
+re-processing). The committed `trendy_et_median.tif` could not be reused: it's a 1990–2023-window,
+16-model product, a different window and ensemble than this diagnostic's other three fluxes.
+
+**Unvegetated mask**: cells with model GPP < 50 gC m⁻² yr⁻¹ dropped from the Geo side for all four
+fluxes. Land fraction removed at 12/50/100 gC m⁻² yr⁻¹: 19.6% / 24.0% / 27.2%. 13 current-network
+towers fall in a masked cell at the 50 threshold (listed in `table_towers_in_masked_cells.csv`) —
+Alaska North Slope tundra (US-A10/Cms/NGB/xBA), Greenland (GL-ZaH/ZaF/Dsk), Svalbard (SJ-Adv), a
+Nunavut site (CA-Mtk), Mojave desert (US-ADR), and Gobi/desert-steppe sites in China (CN-Sdq/HeM/HeD).
+Not excluded from any tower-side computation — reporting only, per the task's instruction.
+
+**Break rule**: 6 edges (7 bins) at the septiles of `F = 0.5·F_geo + 0.5·F_tower` (area-weighted CDF
+over vegetated land, averaged with the empirical CDF over towers with a qualifying value), evaluated on
+each flux's own fine histogram grid — the same discrete-grid convention as every other bin-break
+function already in this repo (`make_signed_bins()`/`make_bins()`), generalized to a two-source mixture
+via `stats::ecdf()` for the tower side. Two edge versions (exact, and rounded to the nearest 25/100/100/50
+gC or mm m⁻² yr⁻¹ for NEE/GPP/TER/ET), each used for both comparisons:
+
+| Flux | Exact septile edges | Rounded |
+|---|---|---|
+| NEE | −283, −126, −75, −47, −23, −4 | −275, −125, −75, −50, −25, 0 |
+| GPP | 350, 660, 990, 1310, 1625, 2095 | 400, 700, 1000, 1300, 1600, 2100 |
+| TER | 330, 590, 865, 1110, 1450, 1895 | 300, 600, 900, 1100, 1400, 1900 |
+| ET | 258, 362, 452, 562, 708, 958 | 250, 350, 450, 550, 700, 950 |
+
+**J by flux and comparison** (exact edges; site fractions use classified sites as the denominator, per
+task instruction — different from the production NEE axis's full-network-denominator convention):
+
+| Flux | n (Data) | J Geo-vs-Data | n (Geo-at-tower) | J Geo-vs-Geo-at-tower |
+|---|---|---|---|---|
+| NEE | 597 | 0.176 | 781 | 0.763 |
+| GPP | 654 | 0.619 | 781 | 0.630 |
+| TER | 654 | 0.642 | 781 | 0.625 |
+| ET  | 634 | 0.564 | 781 | 0.549 |
+
+NEE stands out: Geo-vs-Geo agrees far better (0.763) than Geo-vs-Data (0.176), even under a break
+scheme explicitly constructed to split the difference between the two distributions. GPP/TER/ET show no
+such asymmetry (~0.55–0.65 both ways). Consistent with the whole session's pattern (tower medians vs
+model medians, the production NEE axis's own Geo-vs-Geo=0.549/Geo-vs-Data=0.230): NEE's sink/source
+sign and magnitude are a much harder, more site-specific signal for a grid-cell-mean model field to
+reproduce than GPP/TER/ET magnitude, and towers are sited at systematically stronger sinks than the
+land surface average.
+
+### Outputs (`review/diagnostics/flux_bin_breaks/`)
+
+16 PNGs (`fig_<flux>_<exact|rounded>_<data|geo_at_tower>.png`, paired vegetated-land/site bars per bin,
+flux on the y-axis, annotated with n / land fraction masked / weighted Jaccard) plus
+`table_septile_edges.csv`, `table_flux_bin_breaks_occupancy.csv`, `table_unvegetated_mask_sensitivity.csv`,
+`table_towers_in_masked_cells.csv`, each with a `.meta.json`.
+
+---
+
 ## 2026-09-28 — NEE/GPP/TER candidate representativeness panels (`review/figures/candidates/`)
 
 ### New script: `scripts/candidate_nee_gpp_ter_panels.R`

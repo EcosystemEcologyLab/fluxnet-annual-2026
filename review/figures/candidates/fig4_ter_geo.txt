@@ -1,0 +1,7 @@
+TER (5 equal-area quantile bins, no near-zero bin) -- Geo -- current network.
+Bin edges (gC m-2 yr-1): 11, 331, 814, 1548
+  0–11 | 11–331 | 331–814 | 814–1548 | >1548
+Site count: n_total=781  n_classified=781
+Weighted Jaccard J = 0.5216
+Model: S3 ensemble-median TRENDY v14, 1991-2020 mean, bilinear-extracted at site coordinates.
+Candidate mock-up -- not written to data/snapshots/ (unlike the production NEE axis).

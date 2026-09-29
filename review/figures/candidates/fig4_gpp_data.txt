@@ -1,0 +1,7 @@
+GPP (5 equal-area quantile bins, no near-zero bin) -- Data -- current network.
+Bin edges (gC m-2 yr-1): 12, 356, 878, 1641
+  0–12 | 12–356 | 356–878 | 878–1641 | >1641
+Site count: n_total=781  n_classified=654
+Weighted Jaccard J = 0.5454
+Tower: Step 3 annual method, same per-site VUT/CUT choice as the NEE axis, plus an independent per-site NT->DT fallback.
+Candidate mock-up -- not written to data/snapshots/ (unlike the production NEE axis).

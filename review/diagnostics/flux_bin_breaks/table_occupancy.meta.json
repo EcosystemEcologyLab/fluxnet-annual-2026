@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-29T18:35:39Z",
+  "pipeline_version": "1b6cbe2",
+  "input_sources": [
+    "table_edges.csv",
+    "data/duckdb/fluxnet.duckdb (monthly_converted)"
+  ],
+  "notes": "One row per flux x bin (1-7) x comparison. land_fraction is the fraction of total KG-masked/TRENDY-footprint land (163,331,649 km2) in that bin -- shared by both comparisons within a flux. site_fraction, n_classified and weighted_jaccard differ by comparison: 'data' = tower-measured value; 'geo_at_tower' = the same Geo raster extracted at tower coordinates. Bar-1 membership (bin==1) is identical between comparisons for a given site (decided by the model value at that site, not by which comparison). Site fractions use the classified sites as the denominator (sum to 1 per flux x comparison)."
+}

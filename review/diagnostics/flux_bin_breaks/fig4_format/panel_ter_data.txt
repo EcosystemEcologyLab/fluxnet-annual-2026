@@ -1,0 +1,7 @@
+TER vs land -- towers -- Fig 4 format panel.
+Bar 1: model TER < 5 gC m-2 yr-1. Bars 2-7 edges (rounded, own units): 300, 600, 1000, 1300, 1800.
+n classified = 659 / 781 current-network sites.
+Land fraction per bin: 0.180, 0.205, 0.129, 0.160, 0.082, 0.088, 0.157
+Site fraction per bin: 0.011, 0.073, 0.155, 0.215, 0.197, 0.222, 0.127
+Weighted Jaccard J = 0.503
+1 / 7 bars truncated at the +-5x clip.

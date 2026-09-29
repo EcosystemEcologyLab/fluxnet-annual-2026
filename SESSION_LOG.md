@@ -4,6 +4,61 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-09-29 — flux_bin_breaks.R revision 2: Fig 4 conventions, Fig 4 format
+
+Revises the same-day diagnostic below to match the Fig 4 conventions already in production and to
+render in Fig 4 format. `figure_representativeness_summary.R` was read but not edited or sourced —
+`make_panel_single()` and its dependencies (`prep_ordered()`, `prep_clip()`, `base_theme`, the LOG2
+constants, and the KG/LULC/Aridity/Biomass axis definitions) are reproduced verbatim in the diagnostic
+script instead. Outputs replaced `review/diagnostics/flux_bin_breaks/` (revision 1's 16 paired-bar
+plots and veg-mask-sensitivity tables removed) and added `review/diagnostics/flux_bin_breaks/fig4_format/`.
+
+**Land and bar 1**: land is now just the Beck 2023 Köppen mask at 0.5°, matching
+`figure_representativeness_trendy_compute.R` exactly — revision 1's `model GPP < 50` vegetated-land
+exclusion is gone. Named constants (rationale: matches `NBP_LOW_CUT`/`ET_LOW_CUT` = 5 in that script and
+biomass's 0–5 Mg/ha first bin): `GPP_LOW_CUT = TER_LOW_CUT = ET_LOW_CUT = 5` in each axis's own units;
+`NEE_BAR1_GPP_CUT = GPP_LOW_CUT` since NEE is signed and can't be cut on its own magnitude. A site's bar-1
+membership is decided by the **model** value at its cell (never its measured value) — identical between
+both comparisons for a given site. Bar 1 land share: NEE/GPP 18.0%, TER 18.0%, ET 1.5% (ET's is much
+smaller — almost nowhere has near-zero evapotranspiration, unlike near-zero carbon uptake).
+
+**Bars 2–7**: sextiles (`GEO_MIXTURE_WEIGHT = 0.5`) of the land/tower mixture CDF *outside* bar 1,
+rounded (`FLUX_ROUND`: NEE 25, GPP/TER 100, ET 50). Only one edge version is now rendered (rounded);
+both exact and rounded remain in `table_edges.csv`. Rounded edges: NEE −250,−100,−50,−25,0; GPP
+300,700,1100,1500,2000; TER 300,600,1000,1300,1800; ET 200,350,450,600,850.
+
+**Bug caught mid-build**: the initial land-fraction denominator (`cellSize(kg_05, mask=TRUE)`'s raw
+total, 165,495,091 km²) didn't match the actual classified area (163,331,649 km², identical across all
+four fluxes) — the TRENDY ensemble rasters have a small number of KG-classified land cells (islands,
+ice-sheet margins) with no model data. Fixed to use the ensemble's own footprint as the denominator
+everywhere, matching the established total from the first 2026-09-28 entry's Step 2 area-total check.
+
+**Colours**: `NEE7_COLORS`/`ET7_COLORS` reproduced verbatim from `figure_representativeness_summary.R`
+(reused exactly as instructed, despite NEE being signed here, unlike that axis's original NEE-IAV
+magnitude semantics). GPP: the green ramp from `review/figures/candidates/fig4_gpp_*`, interpolated
+5→7 steps. Bar 1: biomass axis's bare/ice colour (`#f7f4f9`) on all four new axes, for a shared
+near-zero visual identity. TER's ramp was left to this script (task: "a ramp that fits the palette") —
+chose an Oranges-family sequential ramp, flagged as a judgement call rather than silently decided.
+
+**±5× clip**: kept unchanged, per instruction, and checked rather than adjusted. One panel flagged:
+NEE vs towers has 3/7 bars truncated, with an observed sampling ratio up to ~2379× in the most extreme
+sink bin (towers are enormously over-represented there relative to land area) — an alternative ±11.2
+(≈2379×) clip would show it uncapped, logged as a proposed alternative, not applied.
+
+**Outputs** (`review/diagnostics/flux_bin_breaks/`): `table_edges.csv`, `table_occupancy.csv`, both with
+`.meta.json`; `fig4_format/panel_<flux>_<data|geo_at_tower>.png` (8, each with a `.txt` note: edges, n,
+land/site fractions per bin, J) and `fig4_format/composite_<data|geo_at_tower>.png` (2, each an 8-panel
+grid: the existing KG/LULC/Aridity/Biomass panels reproduced unchanged, beside the 4 new flux panels).
+
+### Judgement calls flagged (not resolved), per SCIENCE_PRINCIPLES
+
+1. Fine-histogram grid step/range per flux (not task-specified).
+2. TER's colour ramp (task specified NEE/ET/GPP exactly; TER was left open).
+3. Composite grid layout (2 cols × 4 rows, extending the committed Fig 4 grid's 2×3 by one row).
+4. The ±5× clip's NEE-vs-towers truncation (see above) — flagged with a proposed alternative, not changed.
+
+---
+
 ## 2026-09-29 — New diagnostic: 7-bin septile break schemes for NEE, GPP, TER, ET
 
 ### New script: `scripts/diagnostics/flux_bin_breaks.R`

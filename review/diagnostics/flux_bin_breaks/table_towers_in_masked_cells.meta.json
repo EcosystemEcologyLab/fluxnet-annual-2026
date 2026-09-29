@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-29T16:05:08Z",
+  "pipeline_version": "4d207ad",
+  "input_sources": [
+    "data/external/trendy/derived/candidate_gpp_median.tif"
+  ],
+  "notes": "Current-network sites whose model GPP (bilinear-extracted at site coordinates) is below the 50 gC m-2 yr-1 vegetated-land threshold. Listed for reporting only -- NOT excluded from any tower-side computation below."
+}

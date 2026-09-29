@@ -314,9 +314,12 @@ Scripts in `scripts/` are numbered and must be run in order:
                          not per-row). See commit ad7464f.
 05_units.R             → reads *_qc tables from DuckDB, applies unit conversions
                          in DuckDB SQL (no R materialisation), writes *_converted
-                         tables. Same rules as R/units.R: carbon at DD/MM/WW/YY
-                         passes through unchanged (pre-integrated); HH/HR carbon
-                         converted. LE → mm H₂O; H/SW_IN → MJ m⁻²; TA → K;
+                         tables. Same rules as R/units.R: HH/HR carbon is
+                         µmol CO₂ m⁻² s⁻¹ × 12e-6 × seconds per timestep; MM and
+                         WW carbon is a mean daily rate (gC m⁻² d⁻¹), multiplied
+                         by the actual days in that period; DD carbon needs no
+                         conversion; YY carbon is already an annual total and
+                         passes through. LE → mm H₂O; H/SW_IN → MJ m⁻²; TA → K;
                          VPD → kPa. Leap-year-aware spp for YY.
 06_analysis.R          → paper-specific analyses
 07_figures.R           → reads from DuckDB *_converted tables (annual_converted,
@@ -460,15 +463,15 @@ to `0.75` in `R/pipeline_config.R`.
 Use `fluxnet_convert_units()` in `R/units.R` for all unit conversions.
 Never implement ad-hoc unit conversions inline in analysis scripts.
 
-| Variable       | Native FLUXNET unit      | Analysis unit         | Notes                              |
-|----------------|--------------------------|-----------------------|------------------------------------|
-| NEE, GPP, RECO | µmol CO₂ m⁻² s⁻¹        | gC m⁻² per period     | Molar mass of C = 12 g/mol, NOT CO₂|
-| LE             | W m⁻²                   | mm H₂O per period     |                                    |
-| H              | W m⁻²                   | MJ m⁻² per period     |                                    |
-| TA             | °C                       | K                     | Add 273.15                         |
-| P              | mm per timestep          | mm per period         | Sum, not average                   |
-| VPD            | hPa                      | kPa                   | Divide by 10                       |
-| SW_IN          | W m⁻²                   | MJ m⁻² per period     |                                    |
+| Variable       | Native FLUXNET unit                                              | Analysis unit         | Notes                              |
+|----------------|-------------------------------------------------------------------|-----------------------|------------------------------------|
+| NEE, GPP, RECO | HH/HR: µmol CO₂ m⁻² s⁻¹; DD/WW/MM: gC m⁻² d⁻¹; YY: gC m⁻² yr⁻¹ | gC m⁻² per period     | Molar mass of C = 12 g/mol, NOT CO₂|
+| LE             | W m⁻²                                                            | mm H₂O per period     |                                    |
+| H              | W m⁻²                                                            | MJ m⁻² per period     |                                    |
+| TA             | °C                                                                | K                     | Add 273.15                         |
+| P              | mm per timestep                                                  | mm per period         | Sum, not average                   |
+| VPD            | hPa                                                               | kPa                   | Divide by 10                       |
+| SW_IN          | W m⁻²                                                            | MJ m⁻² per period     |                                    |
 
 All conversions are timestep-aware — `fluxnet_convert_units()` reads
 `temporal_resolution` from the manifest and applies the correct factor

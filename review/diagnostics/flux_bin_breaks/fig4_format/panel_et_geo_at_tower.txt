@@ -1,0 +1,7 @@
+ET vs land -- model at tower cells -- Fig 4 format panel.
+Bar 1: model ET < 5 mm yr-1. Bars 2-7 edges (rounded, own units): 200, 350, 450, 600, 850.
+n classified = 781 / 781 current-network sites.
+Land fraction per bin: 0.015, 0.257, 0.211, 0.112, 0.087, 0.115, 0.203
+Site fraction per bin: 0.000, 0.050, 0.175, 0.216, 0.264, 0.207, 0.087
+Weighted Jaccard J = 0.4563
+1 / 7 bars truncated at the +-5x clip.

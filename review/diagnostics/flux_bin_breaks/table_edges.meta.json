@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-09-29T18:35:39Z",
+  "pipeline_version": "1b6cbe2",
+  "input_sources": [
+    "trendy_nee_fluxbased_median.tif",
+    "candidate_gpp_median.tif",
+    "candidate_ter_median.tif",
+    "flux_bin_breaks_et_median_1991_2020.tif",
+    "data/duckdb/fluxnet.duckdb (monthly_converted)"
+  ],
+  "notes": "5 sextile edges (bars 2-7) per flux, exact and rounded (GEO_MIXTURE_WEIGHT=0.5; FLUX_ROUND: NEE=25, GPP=100, TER=100, ET=50). Only the rounded edges are used for the Fig 4 format panels. Bar 1 (not an edge) is BAR1_CUT per flux, applied to model GPP for NEE and to the flux's own model value for GPP/TER/ET."
+}

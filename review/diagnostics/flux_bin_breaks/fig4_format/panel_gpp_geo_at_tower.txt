@@ -1,0 +1,7 @@
+GPP vs land -- model at tower cells -- Fig 4 format panel.
+Bar 1: model GPP < 5 gC m-2 yr-1. Bars 2-7 edges (rounded, own units): 300, 700, 1100, 1500, 2000.
+n classified = 781 / 781 current-network sites.
+Land fraction per bin: 0.180, 0.196, 0.158, 0.148, 0.092, 0.087, 0.138
+Site fraction per bin: 0.009, 0.093, 0.175, 0.270, 0.255, 0.129, 0.068
+Weighted Jaccard J = 0.4878
+1 / 7 bars truncated at the +-5x clip.

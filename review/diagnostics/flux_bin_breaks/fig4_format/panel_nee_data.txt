@@ -1,0 +1,7 @@
+NEE vs land -- towers -- Fig 4 format panel.
+Bar 1: model GPP < 5 gC m-2 yr-1. Bars 2-7 edges (rounded, own units): -250, -100, -50, -25, 0.
+n classified = 601 / 781 current-network sites.
+Land fraction per bin: 0.180, 0.000, 0.056, 0.274, 0.187, 0.292, 0.011
+Site fraction per bin: 0.012, 0.343, 0.233, 0.088, 0.052, 0.062, 0.211
+Weighted Jaccard J = 0.1625
+3 / 7 bars truncated at the +-5x clip.

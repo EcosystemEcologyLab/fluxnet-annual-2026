@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-09-29T16:05:10Z",
+  "pipeline_version": "4d207ad",
+  "input_sources": [
+    "table_septile_edges.csv",
+    "data/duckdb/fluxnet.duckdb (monthly_converted)"
+  ],
+  "notes": "One row per flux x edge_version x bin x comparison. land_fraction is the fraction of VEGETATED land (model GPP >= 50) in that bin, shared by both comparisons within a flux x edge_version. site_fraction and n_classified/weighted_jaccard differ by comparison: 'data' = tower-measured value; 'geo_at_tower' = the same Geo raster extracted at tower coordinates. Site fractions use the classified sites as the denominator (sum to 1 per flux x edge_version x comparison)."
+}

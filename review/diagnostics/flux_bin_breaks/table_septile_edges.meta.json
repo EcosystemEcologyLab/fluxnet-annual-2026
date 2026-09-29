@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-09-29T16:05:10Z",
+  "pipeline_version": "4d207ad",
+  "input_sources": [
+    "trendy_nee_fluxbased_median.tif",
+    "candidate_gpp_median.tif",
+    "candidate_ter_median.tif",
+    "flux_bin_breaks_et_median_1991_2020.tif",
+    "data/duckdb/fluxnet.duckdb (monthly_converted)"
+  ],
+  "notes": "6 septile edges (7 bins) per flux x edge version. Edges are where F=0.5*F_geo+0.5*F_tower crosses k/7, k=1..6."
+}

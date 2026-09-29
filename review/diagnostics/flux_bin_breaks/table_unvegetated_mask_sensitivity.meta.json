@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-09-29T16:05:08Z",
+  "pipeline_version": "4d207ad",
+  "input_sources": [
+    "data/external/trendy/derived/candidate_gpp_median.tif"
+  ],
+  "notes": "Land fraction removed from the KG land mask total at each candidate GPP threshold. 50 is the threshold actually used for masking below."
+}

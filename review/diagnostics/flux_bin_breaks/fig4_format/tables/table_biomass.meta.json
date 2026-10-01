@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-01T19:23:47Z",
+  "pipeline_version": "ee0f6fe",
+  "input_sources": [
+    "site_biomass_cci_v7.csv"
+  ],
+  "notes": "Land grid: ESA CCI Biomass v7, snapshot global distribution (total 147,322,862 km2). Tower fraction denominator: all 781 current-network sites (count_sites() convention; classes with zero towers show n_towers=0)."
+}

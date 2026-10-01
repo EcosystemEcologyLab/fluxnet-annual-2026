@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-01T17:53:12Z",
-  "pipeline_version": "0080c80",
+  "run_datetime_utc": "2026-10-01T19:23:47Z",
+  "pipeline_version": "ee0f6fe",
   "input_sources": [
     "trendy_nee_fluxbased_median.tif",
     "candidate_gpp_median.tif",

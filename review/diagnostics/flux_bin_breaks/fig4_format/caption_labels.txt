@@ -1,0 +1,7 @@
+Draft caption text (per-bin land-share / tower-count labels, Fig 4 format panels):
+
+For each class (bin), the number printed immediately to the left of the 1x line is that class's share of global land area (land area in that class, divided by the total land area of the grid underlying that panel); the number immediately to the right of the 1x line is the count of current-network FLUXNET towers (of 781) classified into that class. Where a class's bar extends far enough to run under one of these numbers, the number is set in a colour that contrasts with the bar's fill; otherwise it is set in near-black beside the axis. Bar length is the sampling ratio (tower share of class / land share of class) on a log2 axis, clipped at +-5x (exact values for any bar truncated at the clip are annotated at the bar's outer end).
+
+Land grids and totals: the Koppen-Geiger, land cover and biomass panels use the Beck et al. (2023) Koppen-Geiger-derived 1 km snapshot grid (147,322,862 km2 total land); the aridity panel uses the CGIAR Aridity Index v3.1 product's own native-coverage grid (134,761,545 km2 total land, smaller than the other three axes' shared grid); the NEE/GPP/TER/ET flux panels use the TRENDY v14 ensemble-median 0.5 degree grid under the same Koppen land mask (163,331,649 km2 total land).
+
+Per-bin values backing these labels are in review/diagnostics/flux_bin_breaks/fig4_format/tables/.

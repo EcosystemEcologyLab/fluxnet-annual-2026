@@ -4,6 +4,80 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 — New Fig 4 (current network), Phase 1: Köppen-Geiger (panel A)
+
+First phase of building the new Figure 4 (two full versions, Geo-vs-Geo and Geo-vs-Data, six panels
+each) in a new production script, `scripts/figure4_representativeness.R`. Does not source, modify, or
+regenerate any output of `figure_representativeness_summary.R` (Figs 001–008) — axis constants, colour
+palettes, and the weighted-Jaccard convention are reproduced here, not imported, matching
+`scripts/diagnostics/flux_bin_breaks.R`'s established pattern this session.
+
+### Decisions implemented
+
+**Geo vs Geo**: refreshed `data/snapshots/site_koppen_beck2023.csv` from 767 → 781 sites (bumped
+`scripts/step4_extract_koppen_beck2023.R`'s pinned snapshot from the 2026-06-24/767 one to the
+2026-09-01/781 one already used by `step5_compute_koppen_era5.R`, and reran it). All 781 sites classify
+(4 needed the existing nearest-land-pixel fallback: `US-KS3`, `US-TaS`, `HK-MPM`, `CN-SnB`). **J = 0.372**
+against the Beck 2023 global land distribution (147,322,862 km² total).
+
+**Geo vs Data**: site classes from each site's own ERA5 monthly reanalysis (1991–2020), via
+`R/climate_classification.R::compute_site_koppen_era5()` — the same method `step5_compute_koppen_era5.R`
+already uses — called with `map_max_mm = Inf` (the `KG_ERA5_MAP_MAX_MM=5000` mm/yr per-site-year screen
+is **not** applied as an exclusion for this panel). Instead, the **172** sites in the
+`precip_downscaling_provenance` diagnostic's `not_fitted_slope_9999` group
+(`table_2_site_groups.csv`) are excluded from the panel entirely — removed from both numerator and
+denominator (n_eligible = 781 − 172 = 609), logged via `log_exclusion()` (172 rows,
+`outputs/exclusion_log.csv`, gitignored). **All 609 eligible sites classify** (0 unclassified within the
+pool — a much cleaner panel than the old rule's 755/781). **J = 0.411**.
+
+### Bug found and fixed: `compute_era5_monthly_climatology()` lost true year-counts below `min_years`
+
+While investigating why IT-Niv (see below) reported `n_years_used=0`, found that
+`R/climate_classification.R::compute_era5_monthly_climatology()`'s final output step built `out` by
+left-joining `n_years`/`diagnostics` *onto* the valid-sites-only climatology table (`wide`), then
+left-joining that onto the full site list and coalescing missing `n_years_used` to 0. Any site with
+**some** valid years but fewer than `min_years` (20) was absent from `wide` entirely, so its *true*
+year-count was lost and silently replaced with 0 — not just genuinely-zero-year sites. Fixed by joining
+`wide`/`n_years`/`diagnostics` onto the full site list directly, so `n_years_used` always reflects the
+real count. **No `kg_class` outcome changes for any site** — this only corrected the `n_years_used`
+diagnostic column. Reran `step5_compute_koppen_era5.R` afterward so the production
+`site_koppen_era5.csv` carries the fix too (still 755/781 classified, unchanged); several of the 26
+unclassified sites' `n_years_used` values changed from the old (wrong) 0 to their true sub-threshold
+counts (e.g. `JP-Yms`: 0→17, `JP-SMF`: 0→10, `IT-Niv`: 0→3).
+
+### Required reporting
+
+**26 (old MAP-screen-unclassified) vs. 172 (`not_fitted_slope_9999`) overlap**: **22 of the 26** are in
+both groups — `AU-Fog, BR-Ji3, BR-SM1, DE-SfS, JP-Api, JP-Fmt, JP-KaP, JP-Kzw, JP-MBF, JP-Mse, JP-Nkm,
+JP-Nuf, JP-Om2, JP-Shn, JP-SMF, JP-Tak, JP-Tkb, JP-Yms, JP-Ynf, KH-Kmp, PE-QFR, US-Cwt`. **4 are outside
+the 172** and are now reclassified under the new rule (all 30/30 years used):
+
+| site_id | class | mean annual P_ERA (mm/yr) | flag |
+|---|---|---|---|
+| CA-CF2 | Df | 4,964 | not flagged — plausible for Df |
+| IT-Niv | ET | 5,982 | not flagged — plausible for ET (alpine) |
+| NO-And | Df | 9,318 | **flagged implausible** — no terrestrial site is this wet; not a previously-documented known case |
+| US-HB4 | Cf | 658,045 | **flagged implausible** — known ERA5 spatial-averaging artifact (task-named case) |
+
+**Why IT-Niv lost 3 further years beyond the screen**: it didn't, really — this was the bug above. IT-Niv
+has complete ERA5 data for all 30 years (12/12 months, no NAs); 27 of the 30 exceed the old 5000mm/yr
+screen, leaving 3 (1997, 1998, 2005) that should survive it. The old pipeline reported `n_years_used=0`
+instead of 3 purely due to the join bug — now fixed and correctly reporting 3 (IT-Niv remains
+unclassifiable under the *old* MAP-screened rule, since 3 < 20, but for the true reason). Under the new
+no-screen rule it classifies cleanly at ET with all 30 years.
+
+### Outputs
+
+`data/snapshots/site_koppen_era5_fig4.csv` (781 rows, `excluded_fig4_geo_vs_data` flag for the 172,
+`.meta.json`); `data/snapshots/representativeness_metrics_fig4.csv` (new, separate from the shared
+`representativeness_metrics.csv` — panel A rows only so far, `.meta.json`); refreshed
+`data/snapshots/site_koppen_beck2023.csv` (781 rows, `.meta.json` updated); refreshed
+`data/snapshots/site_koppen_era5.csv` (bug-fix rerun, `.meta.json` updated, unchanged
+`kg_class`/classified-count). Code: new `scripts/figure4_representativeness.R`; edited
+`scripts/step4_extract_koppen_beck2023.R` (snapshot pin) and `R/climate_classification.R` (bug fix).
+
+---
+
 ## 2026-10-01 (3) — Status report: draft Fig 4 provenance, content, and known issues
 
 Read-only audit, no files changed other than this entry. Scope: the current draft manuscript's Figure 4

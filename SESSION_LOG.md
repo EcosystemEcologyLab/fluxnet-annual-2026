@@ -4,6 +4,73 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (2) — New Fig 4: second precip-dependent exclusion rule (P_ERA_MAX_RATIO), panel A recomputed
+
+Added a second exclusion rule for the precipitation-dependent Geo-vs-Data panels (Köppen now; aridity in
+Phase 3), additive to the 172 GRP_ERA_DOWN sites, not a replacement. `scripts/figure4_representativeness.R`
+restructured so the precip-reference build and the shared ERA5 climatology pull now happen once, before
+Phase 1, so both Köppen and the future aridity panel reuse the same objects.
+
+### Rule
+
+`P_ERA_MAX_RATIO <- 3`, declared in `R/pipeline_config.R` with its rationale inline: above the up-to-~2×
+differences topography alone can produce between a point and a gridded climatology, below the ~4×
+inflation seen at the already-flagged sites. A site is excluded from a precip-dependent Geo-vs-Data panel
+if its 1991–2020 mean annual P_ERA exceeds `P_ERA_MAX_RATIO` × its reference MAP — PI-reported BADM `MAP`
+where present and non-zero (632/781 sites), else WorldClim v2.1 BIO12 at the tower coordinate (the
+remaining 149/781; extracted directly from `data/external/worldclim/.../wc2.1_2.5m_bio_12.tif`, not
+reused from any diagnostic's cache). Saved as a new reusable snapshot, `data/snapshots/site_precip_reference.csv`.
+
+### Sensitivity and required reporting
+
+| ratio threshold | total caught | caught beyond the 172 |
+|---|---|---|
+| > 2 | 188 | 18 |
+| > 3 | 172 | **12** |
+| > 4 | 94 | 8 |
+
+**CA-CF2, IT-Niv, NO-And, and US-HB4 are all caught** at ratio > 3 (10.98×, 5.25×, 8.79×, 460.49×
+respectively — US-HB4's is the known ERA5 spatial-averaging artifact case). The 12 sites caught beyond
+the 172, ranked by ratio:
+
+| site_id | P_ERA (mm/yr) | reference (mm/yr) | ref. source | ratio |
+|---|---|---|---|---|
+| US-HB4 | 658,045 | 1,429.0 | BADM MAP | 460.49× |
+| CA-CF2 | 4,964 | 452.0 | BADM MAP | 10.98× |
+| US-RGF | 277 | 31.0 | BADM MAP | 8.93× |
+| NO-And | 9,318 | 1,060.0 | BADM MAP | 8.79× |
+| CA-CF1 | 3,649 | 452.0 | BADM MAP | 8.07× |
+| EE-Rng | 698 | 107.1 | BADM MAP | 6.51× |
+| IT-Niv | 5,982 | 1,138.7 | BADM MAP | 5.25× |
+| CA-HPC | 1,114 | 240.6 | BADM MAP | 4.63× |
+| US-DS1 | 1,578 | 432.0 | BADM MAP | 3.65× |
+| US-DS2 | 1,543 | 432.0 | BADM MAP | 3.57× |
+| US-BRG | 4,221 | 1,200.0 | BADM MAP | 3.52× |
+| GL-ZaF | 781 | 253.0 | BADM MAP | 3.09× |
+
+All 12 used BADM MAP as the reference (none fell to the WorldClim fallback). **12 is above the task's
+"~ten" threshold** — per instruction, **Phase 5 (figure assembly) is held** pending review of this list;
+Phases 2–4 proceeded regardless. Every exclusion (172 + 12) was logged via `log_exclusion()`, naming
+which rule triggered it (`p_group == 'not_fitted_slope_9999'` vs `P_ERA_MAX_RATIO=3` with the ratio/P_ERA/
+reference/source spelled out in the reason text) — `outputs/exclusion_log.csv`, gitignored.
+
+### Panel A (Köppen) recomputed with both rules
+
+- Geo vs Geo: unchanged (not precipitation-dependent) — n=781, J=0.372.
+- Geo vs Data: n_eligible = 781 − 172 − 12 = **597** (down from 609), all 597 still classify. **J = 0.412**
+  (barely moved from the 172-only value of 0.411 — the 12 additional exclusions were too few, and too
+  evenly spread across classes, to shift the distribution much).
+
+### Outputs
+
+Updated in place: `scripts/figure4_representativeness.R` (restructured — shared precip-reference/ratio
+section now precedes Phase 1), `R/pipeline_config.R` (+`P_ERA_MAX_RATIO`), `data/snapshots/site_koppen_era5_fig4.csv`
+(+`ratio`/`ref_source`/`excluded_grp_era_down`/`excluded_p_era_ratio` columns, `excluded_fig4_geo_vs_data`
+now reflects both rules), `data/snapshots/representativeness_metrics_fig4.csv` (panel A Geo-vs-Data row
+updated). New: `data/snapshots/site_precip_reference.csv` (+`.meta.json`).
+
+---
+
 ## 2026-10-02 — New Fig 4 (current network), Phase 1: Köppen-Geiger (panel A)
 
 First phase of building the new Figure 4 (two full versions, Geo-vs-Geo and Geo-vs-Data, six panels

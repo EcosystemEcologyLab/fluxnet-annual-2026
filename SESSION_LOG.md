@@ -4,6 +4,61 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-01 — flux_bin_breaks.R: three fixes (NEE bar-1 mask bug, diverging NEE colours, labels/J placement)
+
+Three targeted fixes to `scripts/diagnostics/flux_bin_breaks.R` (revision 2, logged 2026-09-29), then a
+full rerun regenerating `review/diagnostics/flux_bin_breaks/`. No other script touched.
+
+**1. NEE bar-1 bug (correctness).** The `geo_at_tower` comparison's bar-1 test was comparing **model NEE**
+against `NEE_BAR1_GPP_CUT` instead of **model GPP**, because `geo_df` was built from
+`geo_at_tower[["NEE"]]$model_value` (NEE's own model value) rather than `site_mask_value[["NEE"]]`
+(model GPP at the tower cell, already computed correctly in Step 3 and already used correctly by the
+`data` comparison). Since most of the ensemble-median NEE field is negative and therefore below the GPP
+cut of 5, nearly every tower cell satisfied `model_NEE < 5` and fell into bar 1 — the reported symptom
+was bar 1 showing a 5.6× sampling ratio, exactly `1 ÷ 0.180` (bar 1's land share), because effectively all
+781 sites classified into that one bin. Fixed by setting `geo_df$mask_value <- site_mask_value[["NEE"]]`
+(same mask vector the `data` comparison already used) and `geo_df$own_value <- model_value` (the model's
+own-flux value, unchanged). Confirmed fixed: NEE bar-1 site count for `geo_at_tower` is now 7/781 (matches
+GPP's own bar-1 count exactly, as expected since both use the same model-GPP mask and the same 781-site
+coordinate set); J(model-at-tower vs land) went from 0.099 (bar-1-only artifact) to 0.530. The `data`
+comparison (towers vs land) was never affected — it already used `site_mask_value` — and its J (0.162,
+7/781 in bar 1) is numerically unchanged by this fix, confirmed via `git diff` on `table_occupancy.csv`.
+GPP/TER/ET were never affected (their bar-1 mask is already their own model value in both comparisons).
+
+**2. NEE colour ramp.** `NEE7_COLORS` was the sequential green ramp reused verbatim from the NEE-IAV axis
+(light→dark with increasing bin index), so the source bin (bin 7, `> 0`) rendered in the ramp's darkest
+green — indistinguishable from "strongest sink" at a glance, despite NEE being signed in this diagnostic.
+Replaced with a diverging scheme: bins 2–6 (the sink side, `< -250` down to `-25 to 0`) use a 5-step ramp
+from dark green (`#0b3e09`, strongest sink) to a near-neutral off-white-green (`#eaf5e4`, the `-25 to 0`
+bin); bin 7 (source, `> 0`) is a single contrasting warm colour (`#c2703a`). Bar 1 (bare/ice, `#f7f4f9`)
+is unaffected — it's overridden after the ramp is built, same as the other three fluxes.
+
+**3. Labels and J placement.** Bar-1 label changed from the generic `"bar 1 (model < 5)"` to `"0–5"` for
+GPP/TER/ET (matching the biomass axis's own `"0–5 Mg/ha"` bin-1 label format exactly, en dash and all) and
+to `"unvegetated (GPP < 5)"` for NEE, since NEE's bar 1 is a GPP-based vegetation mask rather than its own
+0–5 range. The J annotation (shared `draw_panel()` helper, used by all 12 panels this script renders —
+the 8 new flux panels plus the 4 reproduced KG/LULC/Aridity/Biomass panels in each composite) moved from
+an in-panel `annotate()` at `x=Inf, y=Inf` — which sat in the same row as the top bin's bar and could
+overlap that bar or its own `±5×` clip label when the top bin's sampling ratio was large — to a
+`plot.subtitle`, which renders in the margin above the panel, outside data space, so it cannot overlap
+any bar or clip label on any of the 8 panels regardless of that panel's data.
+
+### Verification
+Reran the full script (`Rscript scripts/diagnostics/flux_bin_breaks.R`); exit 0, one pre-existing
+unrelated warning (`fluxnet-shuttle` 0.3.8 installed vs. `FLUXNET_SHUTTLE_VERSION` pin 0.3.7.post0+dirty —
+not touched, out of scope). Confirmed via the run log and `git diff` on `table_occupancy.csv`/`table_edges.csv`
+that: edges are unchanged (bar-1 bug didn't affect edge computation, which already used the correct Step 3
+mask); GPP/TER/ET occupancy numbers are unchanged (only their bin-1 label text changed); NEE's `data`
+comparison numbers are unchanged; NEE's `geo_at_tower` comparison numbers changed as described in (1).
+Visually confirmed the three fixes by reading the regenerated `panel_nee_data.png`, `panel_nee_geo_at_tower.png`,
+and `panel_gpp_data.png`.
+
+### Outputs
+Regenerated in place (same paths, no new files): all 8 `fig4_format/panel_*.png` + `.txt` notes, both
+`fig4_format/composite_*.png`, `table_edges.csv`/`.meta.json`, `table_occupancy.csv`/`.meta.json`.
+
+---
+
 ## 2026-09-29 — flux_bin_breaks.R revision 2: Fig 4 conventions, Fig 4 format
 
 Revises the same-day diagnostic below to match the Fig 4 conventions already in production and to

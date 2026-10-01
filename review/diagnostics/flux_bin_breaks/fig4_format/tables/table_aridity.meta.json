@@ -1,0 +1,6 @@
+{
+  "run_datetime_utc": "2026-10-01T19:23:47Z",
+  "pipeline_version": "ee0f6fe",
+  "input_sources": "site_aridity.csv",
+  "notes": "Land grid: CGIAR Aridity Index v3.1, snapshot global distribution (total 134,761,545 km2). Tower fraction denominator: all 781 current-network sites (count_sites() convention; classes with zero towers show n_towers=0). NOTE: the task described this axis as sharing the ~147.3M km2 1 km Beck-mask total used by KG/LULC/Biomass; this axis's own snapshot's area sum is 134,761,545 km2 instead (the CGIAR Aridity Index v3.1 product's own coverage is smaller) -- flagged, not silently reconciled to the task's figure."
+}

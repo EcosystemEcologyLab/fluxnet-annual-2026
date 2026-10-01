@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-01T19:23:47Z",
+  "pipeline_version": "ee0f6fe",
+  "input_sources": [
+    "table_occupancy.csv"
+  ],
+  "notes": "Land grid: TRENDY v14 ensemble-median 1991-2020, 0.5 deg grid, under the Beck 2023 Koppen land mask (total 163,331,649 km2). Tower fraction denominator: 601 current-network sites classified for this comparison (of 781; tower-measured value)."
+}

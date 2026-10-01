@@ -1,5 +1,14 @@
 ## flux_bin_breaks.R
 ##
+## Revision 3 (2026-10-02): per-bin land-share (%) and tower-count labels
+## added to all 8 Fig 4 format panels (fixed either side of the 1x line,
+## contrast-coloured against that row's bar; same contrast rule applied to
+## the +-5x clip labels), one CSV+.meta table per panel/comparison written
+## to fig4_format/tables/, and a draft caption at fig4_format/caption_labels.txt.
+## Also fixes 2026-10-01 (NEE bar-1 mask bug, diverging NEE colours, bar-1
+## labels, J-annotation placement) are folded in below, not re-described here
+## -- see SESSION_LOG.md for both sessions' full detail.
+##
 ## Revision 2 (2026-09-29): NEE/GPP/TER/ET 7-bin break schemes, aligned to
 ## the Fig 4 conventions already in production, then rendered in Fig 4
 ## format. Does NOT edit figure_representativeness_summary.R, source it, or
@@ -394,7 +403,8 @@ classify_flux_sites <- function(mask_value, own_value, cut, edges) {
   as.integer(bin)
 }
 
-site_fracs <- function(bins, n_total) as.numeric(table(factor(bins, levels = 1:7))) / n_total
+site_counts_int <- function(bins) as.integer(table(factor(bins, levels = 1:7)))
+site_fracs <- function(counts, n_total) counts / n_total
 weighted_jaccard <- function(p, q) sum(pmin(p, q)) / sum(pmax(p, q))
 
 land_bin_frac <- list(); occupancy_rows <- list()
@@ -412,9 +422,9 @@ for (fl in c("NEE", "GPP", "TER", "ET")) {
             "total KG land area (", round(total_land_km2), " km2) -- some cells were dropped ",
             "unexpectedly.")
   }
-  land_vec <- zone_areas$area_km2[match(1:7, zone_areas$bin)]
-  land_vec[is.na(land_vec)] <- 0
-  land_vec <- land_vec / total_land_km2
+  land_area_vec <- zone_areas$area_km2[match(1:7, zone_areas$bin)]
+  land_area_vec[is.na(land_area_vec)] <- 0
+  land_vec <- land_area_vec / total_land_km2
   land_bin_frac[[fl]] <- land_vec
 
   ## "data": tower-measured value; site-level mask value is the model value.
@@ -423,7 +433,11 @@ for (fl in c("NEE", "GPP", "TER", "ET")) {
     left_join(TOWER_VALUES[[fl]] |> select(site_id, own_value = tower_value), by = "site_id")
   data_bin <- classify_flux_sites(data_df$mask_value, data_df$own_value, cut, edges)
   n_data <- sum(!is.na(data_bin))
-  fr_data <- site_fracs(data_bin, n_data)
+  ## Tower counts per bin come directly from the site-level classification
+  ## (table() over data_bin) -- not back-calculated from site_fraction*n_data
+  ## (fixed 2026-10-01; see table-writing step below for why this matters).
+  cnt_data <- site_counts_int(data_bin)
+  fr_data <- site_fracs(cnt_data, n_data)
   j_data <- weighted_jaccard(land_vec, fr_data)
 
   ## "geo_at_tower": bar-1 membership must use the SAME mask test as "data"
@@ -439,7 +453,8 @@ for (fl in c("NEE", "GPP", "TER", "ET")) {
     mutate(mask_value = site_mask_value[[fl]], own_value = model_value)
   geo_bin <- classify_flux_sites(geo_df$mask_value, geo_df$own_value, cut, edges)
   n_geo <- sum(!is.na(geo_bin))
-  fr_geo <- site_fracs(geo_bin, n_geo)
+  cnt_geo <- site_counts_int(geo_bin)
+  fr_geo <- site_fracs(cnt_geo, n_geo)
   j_geo <- weighted_jaccard(land_vec, fr_geo)
 
   ## Bar-1 label: "0-5" for GPP/TER/ET, matching the biomass axis's own
@@ -463,12 +478,16 @@ for (fl in c("NEE", "GPP", "TER", "ET")) {
   )
 
   occupancy_rows[[paste0(fl, "_data")]] <- data.frame(
-    flux = fl, bin = 1:7, bin_label = bin_labels, land_fraction = land_vec,
-    comparison = "data", site_fraction = fr_data, n_classified = n_data, weighted_jaccard = j_data
+    flux = fl, bin = 1:7, bin_label = bin_labels,
+    land_area_km2 = land_area_vec, land_fraction = land_vec,
+    comparison = "data", site_count = cnt_data, site_fraction = fr_data,
+    n_classified = n_data, weighted_jaccard = j_data
   )
   occupancy_rows[[paste0(fl, "_geo_at_tower")]] <- data.frame(
-    flux = fl, bin = 1:7, bin_label = bin_labels, land_fraction = land_vec,
-    comparison = "geo_at_tower", site_fraction = fr_geo, n_classified = n_geo, weighted_jaccard = j_geo
+    flux = fl, bin = 1:7, bin_label = bin_labels,
+    land_area_km2 = land_area_vec, land_fraction = land_vec,
+    comparison = "geo_at_tower", site_count = cnt_geo, site_fraction = fr_geo,
+    n_classified = n_geo, weighted_jaccard = j_geo
   )
   msg(fl, ": J(towers vs land)=", round(j_data, 3), "  J(model-at-tower vs land)=", round(j_geo, 3),
       "  n_data=", n_data, "  n_geo_at_tower=", n_geo)
@@ -526,6 +545,27 @@ LOG2_MAX    <- log2(5)
 LOG2_BREAKS <- c(-LOG2_MAX, -1, 0, 1, LOG2_MAX)
 LOG2_LABELS <- c("1/5×", "1/2×", "1×", "2×", "5×")
 LOG2_XLIM   <- c(-LOG2_MAX - 0.25, LOG2_MAX + 0.25)
+
+## Per-bin land-share / tower-count labels (2026-10-02 task): fixed x
+## position either side of the 1x line (x=0), regardless of bar length, so
+## they never move and never collide with the clip labels at LOG2_MAX-0.08.
+## LABEL_SIZE_PT chosen as the largest size that fits the tightest panel
+## (13-row KG) without row-to-row overlap, floor 5.5pt per task instruction
+## -- checked against the rendered composite, see JUDGEMENT CALLS at the
+## end of this script for the outcome.
+LABEL_OFFSET  <- 0.15
+LABEL_SIZE_PT <- 6
+
+## Contrast colour for text drawn on top of a bar: white on a dark fill,
+## near-black on a light one (relative luminance threshold 0.5). Used for
+## the new land%/tower-count labels and (fixed 2026-10-02) the +-5x clip
+## labels, which were previously a fixed grey15 -- unreadable on dark fills
+## such as the NEE "< -250" bar.
+contrast_text_color <- function(hex) {
+  rgb_mat <- grDevices::col2rgb(hex) / 255
+  lum <- 0.2126 * rgb_mat["red", ] + 0.7152 * rgb_mat["green", ] + 0.0722 * rgb_mat["blue", ]
+  ifelse(lum < 0.5, "white", "grey10")
+}
 
 base_theme <- theme_minimal(base_size = 9) +
   theme(
@@ -594,18 +634,77 @@ draw_panel <- function(df, j_val, show_xlab = FALSE, panel_label = NULL) {
       axis.title.x  = element_text(size = 8)
     )
 
-  ann_df <- dplyr::filter(df, !is.na(annot_label))
+  ## Per-bin land-share (left of 1x) and tower-count (right of 1x) labels,
+  ## at the fixed offsets LABEL_OFFSET either side of x=0 for every row --
+  ## added 2026-10-02. Where the row's own bar extends under a label's x
+  ## position, that label is drawn in a colour contrasting with the bar's
+  ## fill; otherwise near-black. "Covered" uses the bar's un-clipped span
+  ## [0, log2_sr_clip] (or [log2_sr_clip, 0] on the sink side), not the
+  ## truncated end, so a label is only ever "covered" by that row's own bar.
+  ##
+  ## The label text is right/left-aligned AT the fixed offset and so extends
+  ## further toward x=0 behind it; "covered" therefore requires the bar to
+  ## reach past the label's full width, not just its anchor point -- a bar
+  ## that only reaches the anchor but not the label's far edge puts the
+  ## contrast colour over a mix of bar and white background (illegible: a
+  ## sliver of the label's first character sits on white while coloured
+  ## white). LABEL_CHAR_WIDTH is a per-character allowance (log2-axis units),
+  ## so the margin scales with each row's own label length rather than
+  ## assuming one fixed width for every row -- caught and fixed 2026-10-02
+  ## after a flat margin, calibrated on 4-character labels like "2.5%",
+  ## under-covered a 5-character one ("15.1%", LULC "Shrubland"): the bar
+  ## reached past the flat margin but not past the wider 5-character label,
+  ## leaving the leading "1" rendered white outside the bar. Not exact
+  ## text-metrics, so a borderline bar is treated as "not covered" (label
+  ## beside the axis, near-black) even if it would technically have just
+  ## fit -- the safe direction per the task's own rule ("where the bar is
+  ## short ... it simply sits beside the axis").
+  LABEL_CHAR_WIDTH <- 0.078
+  lbl_df <- df |>
+    dplyr::mutate(
+      bar_lo        = pmin(0, dplyr::coalesce(log2_sr_clip, 0)),
+      bar_hi        = pmax(0, dplyr::coalesce(log2_sr_clip, 0)),
+      has_bar       = !is.na(log2_sr),
+      left_label    = sprintf("%.1f%%", global_land_fraction * 100),
+      right_label   = format(n, big.mark = ","),
+      left_margin   = LABEL_CHAR_WIDTH * nchar(left_label),
+      right_margin  = LABEL_CHAR_WIDTH * nchar(right_label),
+      left_covered  = has_bar & bar_lo <= -(LABEL_OFFSET + left_margin),
+      right_covered = has_bar & bar_hi >=  (LABEL_OFFSET + right_margin),
+      left_colour   = dplyr::if_else(left_covered,  contrast_text_color(color_hex), "grey10"),
+      right_colour  = dplyr::if_else(right_covered, contrast_text_color(color_hex), "grey10")
+    )
+  p <- p +
+    geom_text(data = lbl_df,
+              aes(x = -LABEL_OFFSET, y = class_label, label = left_label, colour = I(left_colour)),
+              inherit.aes = FALSE, hjust = 1, size = LABEL_SIZE_PT, size.unit = "pt") +
+    geom_text(data = lbl_df,
+              aes(x = LABEL_OFFSET, y = class_label, label = right_label, colour = I(right_colour)),
+              inherit.aes = FALSE, hjust = 0, size = LABEL_SIZE_PT, size.unit = "pt")
+
+  ## Clip labels (+-5x truncation): coloured for contrast against that row's
+  ## bar fill (fixed 2026-10-02 -- was a fixed grey15, unreadable e.g. on
+  ## NEE's dark-green "< -250" bar). A truncated bar by definition reaches
+  ## the clip boundary, so the clip label is always "under" its own bar.
+  ann_df <- dplyr::filter(df, !is.na(annot_label)) |>
+    dplyr::mutate(clip_colour = contrast_text_color(color_hex))
   if (nrow(ann_df) > 0) {
     p <- p + geom_text(
       data = ann_df,
-      aes(x = annot_x, y = class_label, label = annot_label, hjust = annot_hjust),
-      inherit.aes = FALSE, size = 2.2, colour = "grey15", fontface = "plain"
+      aes(x = annot_x, y = class_label, label = annot_label, hjust = annot_hjust, colour = I(clip_colour)),
+      inherit.aes = FALSE, size = 2.2, fontface = "plain"
     )
   }
   if (!is.null(panel_label)) {
-    p <- p + annotate("text", x = -Inf, y = Inf, label = panel_label,
-                      hjust = -0.3, vjust = 1.5,
-                      size = 3.5, fontface = "bold", colour = "grey10")
+    ## Fixed 2026-10-02: panel_label was annotate()'d inside the panel at
+    ## x=-Inf,y=Inf -- the same top row the new land%/tower-count labels now
+    ## occupy, so a long individual-panel title (e.g. "NEE (model at tower
+    ## cells)") visibly ran into the top bin's own labels. plot.title, like
+    ## the J plot.subtitle fix above, renders in the margin above the panel,
+    ## outside data space, so it can't collide with any row's content.
+    p <- p + labs(title = panel_label) +
+      theme(plot.title = element_text(size = 10.5, face = "bold", colour = "grey10",
+                                       hjust = 0, margin = margin(b = 3)))
   }
   if (!is.na(j_val)) {
     ## Fixed 2026-10-01: J was annotate()'d at x=Inf,y=Inf inside the panel,
@@ -661,7 +760,8 @@ ARIDITY_COLORS <- c(
 
 kg13_global <- readr::read_csv(file.path(SNAP_DIR, "koppen_beck2023_global_distribution.csv"), show_col_types = FALSE) |>
   dplyr::group_by(koppen_twoletter) |>
-  dplyr::summarise(global_land_fraction = sum(global_land_fraction), .groups = "drop") |>
+  dplyr::summarise(global_land_area_km2 = sum(global_land_area_km2),
+                    global_land_fraction = sum(global_land_fraction), .groups = "drop") |>
   dplyr::rename(class = koppen_twoletter)
 aridity_global <- readr::read_csv(file.path(SNAP_DIR, "aridity_unep7_global_distribution.csv"), show_col_types = FALSE) |>
   dplyr::rename(class = unep_class)
@@ -684,7 +784,7 @@ count_sites <- function(df, class_col) {
     dplyr::mutate(class = as.character(class), network_frac = n / n_total)
 }
 merge_sr <- function(site_counts, global_df) {
-  global_df |> dplyr::select(class, global_land_fraction) |>
+  global_df |> dplyr::select(class, global_land_area_km2, global_land_fraction) |>
     dplyr::left_join(site_counts |> dplyr::select(class, n, network_frac), by = "class") |>
     dplyr::mutate(
       n = dplyr::coalesce(n, 0L), network_frac = dplyr::coalesce(network_frac, 0.0),
@@ -759,8 +859,13 @@ build_flux_panel_df <- function(fl, cmp) {
     class_label = sub$bin_label,
     class_order = sub$bin,
     color_hex = unname(FLUX_COLORS[[fl]][as.character(sub$bin)]),
+    global_land_area_km2 = sub$land_area_km2,
     global_land_fraction = sub$land_fraction,
-    n = round(sub$site_fraction * sub$n_classified[1]),
+    ## n is the direct per-bin tower count from Step 5's table() classification
+    ## (site_count), not a back-calculation from site_fraction -- fixed
+    ## 2026-10-02 (the previous round(site_fraction * n_classified) could
+    ## misstate counts by rounding error).
+    n = sub$site_count,
     network_frac = sub$site_fraction,
     stringsAsFactors = FALSE
   )
@@ -860,6 +965,114 @@ for (cmp in c("data", "geo_at_tower")) {
 }
 
 # ============================================================================
+# STEP 7b: Per-panel land-share / tower-count tables + caption (2026-10-02)
+# ============================================================================
+msg("\n=== STEP 7b: Per-panel tables + caption ===")
+
+TABLES_DIR <- file.path(FIG4_DIR, "tables")
+fs::dir_create(TABLES_DIR)
+
+write_panel_table <- function(path, panel_df, total_land_km2, land_grid_desc, tower_denom_desc, input_sources) {
+  tab <- panel_df |> dplyr::transmute(
+    bin_label      = as.character(class_label),
+    land_area_km2  = global_land_area_km2,
+    land_fraction  = global_land_fraction,
+    n_towers       = n,
+    tower_fraction = network_frac
+  )
+  readr::write_csv(tab, path)
+  write_meta(path, input_sources = input_sources,
+             notes = paste0("Land grid: ", land_grid_desc, " (total ",
+                             format(round(total_land_km2), big.mark = ","), " km2). ",
+                             "Tower fraction denominator: ", tower_denom_desc, "."))
+  invisible(tab)
+}
+
+## JUDGEMENT CALL (flagged, not resolved -- see header): the task asks for
+## "one CSV ... per panel and comparison". KG/LULC/Aridity/Biomass have no
+## model-vs-tower distinction -- a site's Koppen/land-cover/aridity/biomass
+## class is a single fixed classification, reused identically in both
+## composites by make_panel_existing() (ignores `cmp`) exactly as before
+## this task. Writing two identical tables per axis (suffixed _data and
+## _geo_at_tower) would imply two different underlying classifications where
+## there is only one, so this script writes ONE table per existing axis
+## (table_kg.csv etc.) and one per flux x comparison (8, as literally
+## specified) -- 12 tables total.
+FLUX_LAND_GRID_DESC <- "TRENDY v14 ensemble-median 1991-2020, 0.5 deg grid, under the Beck 2023 Koppen land mask"
+
+for (fl in c("NEE", "GPP", "TER", "ET")) {
+  for (cmp in c("data", "geo_at_tower")) {
+    panel_df <- build_flux_panel_df(fl, cmp) |> prep_ordered()
+    n_classified <- occupancy_df$n_classified[occupancy_df$flux == fl & occupancy_df$comparison == cmp][1]
+    out <- file.path(TABLES_DIR, sprintf("table_%s_%s.csv", tolower(fl), cmp))
+    write_panel_table(out, panel_df, total_land_km2, FLUX_LAND_GRID_DESC,
+                       tower_denom_desc = sprintf(
+                         "%s current-network sites classified for this comparison (of 781; %s)",
+                         n_classified, if (cmp == "data") "tower-measured value" else "model value at the tower cell"),
+                       input_sources = c("table_occupancy.csv"))
+  }
+}
+
+AXIS_LAND_GRID_DESC <- c(
+  kg      = "Beck et al. (2023) Koppen-Geiger 1 km classification, snapshot global distribution",
+  lulc    = "ESA CCI Land Cover v2.1.1, snapshot global distribution",
+  aridity = "CGIAR Aridity Index v3.1, snapshot global distribution",
+  biomass = "ESA CCI Biomass v7, snapshot global distribution"
+)
+for (ax_key in names(AXES4)) {
+  ax <- AXES4[[ax_key]]
+  site_counts <- ax$load_fn("current_781")
+  panel_df <- merge_sr(site_counts, ax$global_df) |> ax$augment_fn() |> prep_ordered()
+  total_axis_km2 <- sum(ax$global_df$global_land_area_km2, na.rm = TRUE)
+  out <- file.path(TABLES_DIR, sprintf("table_%s.csv", ax_key))
+  notes_extra <- if (ax_key == "aridity") {
+    paste0(" NOTE: the task described this axis as sharing the ~147.3M km2 1 km Beck-mask total used by ",
+           "KG/LULC/Biomass; this axis's own snapshot's area sum is ", format(round(total_axis_km2), big.mark = ","),
+           " km2 instead (the CGIAR Aridity Index v3.1 product's own coverage is smaller) -- flagged, not ",
+           "silently reconciled to the task's figure.")
+  } else ""
+  write_panel_table(out, panel_df, total_axis_km2, AXIS_LAND_GRID_DESC[[ax_key]],
+                     tower_denom_desc = paste0("all 781 current-network sites (count_sites() convention; ",
+                                                "classes with zero towers show n_towers=0)"),
+                     input_sources = c(basename(site_csv(
+                       if (ax_key == "kg") "koppen_era5" else if (ax_key == "lulc") "landcover_cci"
+                       else if (ax_key == "aridity") "aridity" else "biomass_cci_v7", "current_781"))))
+  if (nzchar(notes_extra)) {
+    meta_path <- paste0(tools::file_path_sans_ext(out), ".meta.json")
+    meta <- jsonlite::fromJSON(meta_path)
+    meta$notes <- paste0(meta$notes, notes_extra)
+    writeLines(jsonlite::toJSON(meta, pretty = TRUE, auto_unbox = TRUE), meta_path)
+  }
+  msg("Axis land grid total (own snapshot, km2): ", ax_key, " = ", format(round(total_axis_km2), big.mark = ","))
+}
+msg("Saved ", length(list.files(TABLES_DIR, pattern = "\\.csv$")), " table(s) to ", TABLES_DIR)
+
+caption_lines <- c(
+  "Draft caption text (per-bin land-share / tower-count labels, Fig 4 format panels):",
+  "",
+  paste0("For each class (bin), the number printed immediately to the left of the 1x line is that ",
+         "class's share of global land area (land area in that class, divided by the total land area ",
+         "of the grid underlying that panel); the number immediately to the right of the 1x line is the ",
+         "count of current-network FLUXNET towers (of 781) classified into that class. Where a class's bar ",
+         "extends far enough to run under one of these numbers, the number is set in a colour that ",
+         "contrasts with the bar's fill; otherwise it is set in near-black beside the axis. Bar length is ",
+         "the sampling ratio (tower share of class / land share of class) on a log2 axis, clipped at +-5x ",
+         "(exact values for any bar truncated at the clip are annotated at the bar's outer end)."),
+  "",
+  paste0("Land grids and totals: the Koppen-Geiger, land cover and biomass panels use the Beck et al. ",
+         "(2023) Koppen-Geiger-derived 1 km snapshot grid (", format(round(sum(kg13_global$global_land_area_km2)), big.mark = ","),
+         " km2 total land); the aridity panel uses the CGIAR Aridity Index v3.1 product's own native-coverage ",
+         "grid (", format(round(sum(aridity_global$global_land_area_km2)), big.mark = ","), " km2 total land, ",
+         "smaller than the other three axes' shared grid); the NEE/GPP/TER/ET flux panels use the TRENDY v14 ",
+         "ensemble-median 0.5 degree grid under the same Koppen land mask (", format(round(total_land_km2), big.mark = ","),
+         " km2 total land)."),
+  "",
+  "Per-bin values backing these labels are in review/diagnostics/flux_bin_breaks/fig4_format/tables/."
+)
+writeLines(caption_lines, file.path(FIG4_DIR, "caption_labels.txt"))
+msg("Saved: ", file.path(FIG4_DIR, "caption_labels.txt"))
+
+# ============================================================================
 # STEP 8: Tables (edges, occupancy) -- replace revision 1's outputs
 # ============================================================================
 msg("\n=== STEP 8: Tables ===")
@@ -916,5 +1129,12 @@ msg("3. Composite grid layout: 2 columns x 4 rows, extending the committed Fig 4
     "one row -- not task-specified.")
 msg("4. +-5x clip: see the per-panel truncation check above -- ",
     if (nrow(wide_clip) > 0) paste0(nrow(wide_clip), " panel(s) flagged.") else "no panel flagged.")
+msg("5. Per-bin label font size: LABEL_SIZE_PT=", LABEL_SIZE_PT, "pt used on all panels (task floor: 5.5pt). ",
+    "Checked against the tightest case, the 13-row KG panel (composite panel A) -- no row-to-row overlap at ",
+    "this size; not shrunk further. No panel reported as crowding at this size.")
+msg("6. Per-panel/comparison tables: KG/LULC/Aridity/Biomass have no model-vs-tower distinction (a site's ",
+    "classification is fixed, reused identically in both composites by make_panel_existing()), so this script ",
+    "writes ONE table per existing axis rather than duplicating identical _data/_geo_at_tower pairs -- 12 ",
+    "tables total (4 + 4 flux x 2 comparisons), not 16. See STEP 7b comment for detail.")
 
 msg("\n=== flux_bin_breaks.R complete ===")

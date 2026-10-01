@@ -1,3 +1,5 @@
 panel,axis,comparison,land_grid,land_total_km2,n_eligible,n_classified,weighted_jaccard
 A,koppen,geo_vs_geo,Beck 2023 1 km mask,147322862.19253048,781,781,0.3716110898203183
 A,koppen,geo_vs_data,Beck 2023 1 km mask,147322862.19253048,597,597,0.41181722116111624
+B,igbp,geo_vs_geo,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,781,781,0.49526083794526043
+B,igbp,geo_vs_data,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,781,781,0.3464428975930112

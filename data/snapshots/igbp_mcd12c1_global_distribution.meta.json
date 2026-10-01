@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-01T20:54:42Z",
+  "pipeline_version": "151ac82",
+  "input_sources": [
+    "data/external/modis_landcover/MCD12C1.A2022001.061.2023244164746.hdf",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "Global IGBP land-cover class distribution: MODIS MCD12C1.061 Majority_Land_Cover_Type_1 (2022, 0.05 deg native), resampled (nearest-neighbour) onto the Beck et al. (2023) 1 km Koppen land mask grid and masked to it -- total land area reproduces the Koppen panel A total exactly (147,322,862 km2). Classes 0 (Water) and 13 (Urban/built-up) recoded to 'Other' -- outside the 15-class vocabulary PIs actually report in BADM/BIF metadata for the current 781-site network (judgement call, flagged in SESSION_LOG.md: these are real land-cover types, kept in the land total rather than excluded, but can never receive a site count since no PI reports them)."
+}

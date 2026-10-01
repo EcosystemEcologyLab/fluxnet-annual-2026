@@ -418,9 +418,9 @@ msg("IT-Niv has complete ERA5 data for all 30/1991-2020 years (12/12 months, no 
     "already-unclassified sites, never a classification outcome.")
 
 # ============================================================================
-# Save Phase 1 outputs
+# Save panel A (Koppen) outputs
 # ============================================================================
-msg("\n=== Saving Phase 1 outputs ===")
+msg("\n=== Saving panel A (Koppen) outputs ===")
 
 fig4_kg_era5_path <- file.path(SNAP_DIR, "site_koppen_era5_fig4.csv")
 kg_era5_nomap |>
@@ -452,20 +452,219 @@ write_output_metadata(
 )
 msg("Saved: ", fig4_kg_era5_path)
 
+# ==============================================================================
+# PHASE 2: Land cover as IGBP (panel B)
+# ==============================================================================
+## Global side: MODIS MCD12C1.061 "Majority_Land_Cover_Type_1" (IGBP scheme,
+## 0.05 deg native, 2022001 = day 1 of 2022), the file already in
+## data/external/modis_landcover/. Area on the 1 km Beck 2023 land mask (same
+## mask/total as panel A): the MODIS raster is resampled onto the Beck grid
+## (nearest-neighbour, categorical) and masked to it, which reproduces the
+## exact 147,322,862 km2 total (checked below) -- not computed on MODIS's own
+## native 0.05 deg footprint, per the task's explicit "area on the 1 km Beck
+## land mask" instruction (flux_bin_breaks.R's TRENDY axes use their own
+## footprint instead; this panel deliberately does not, since it was asked
+## for by name here).
+##
+## MODIS's HDF4 CRS metadata mislabels the datum ("Clarke 1866 ellipsoid");
+## both rasters share the identical -180/180/-90/90 lon/lat extent (a known
+## MCD12C1 CMG quirk, not a real projection mismatch), so MODIS's CRS is set
+## to EPSG:4326 (matching Beck's) before resampling rather than left to warn
+## or silently assumed.
+##
+## Allowable classes = the IGBP classes PIs actually report in BADM/BIF
+## metadata (the `igbp` column already in the pinned snapshot CSV, sourced
+## from each site's BIF, not a free-text BADM field -- no direct "IGBP"
+## BADM VARIABLE exists, confirmed by grep). All 781 current-network sites
+## report one of 15 classes: ENF, EBF, DNF, DBF, MF, CSH, OSH, WSA, SAV,
+## GRA, WET, CRO, CVM, BSV, SNO -- i.e. every standard IGBP class EXCEPT
+## Water (code 0) and Urban-and-built-up (code 13; no flux tower is sited on
+## open water or in a city). MODIS classes 0 and 13 are therefore outside
+## the PI vocabulary; JUDGEMENT CALL (flagged, not resolved): folded into a
+## 16th "Other" bin on the global/Geo side (land area counted, like the
+## existing LULC high-level axis's own "Other" category), which can never
+## receive a site count since no PI reports Water or Urban -- not excluded
+## from the land total, since the task's land total (147.3M km2) must match
+## the Koppen/biomass panels' own total exactly.
+msg("\n=== PHASE 2: Land cover as IGBP (panel B) ===")
+
+IGBP_ORDER <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA", "SAV",
+                 "GRA", "WET", "CRO", "CVM", "BSV", "SNO", "Other")
+IGBP_CODE_TO_CLASS <- c(
+  "0" = "Other", "1" = "ENF", "2" = "EBF", "3" = "DNF", "4" = "DBF", "5" = "MF",
+  "6" = "CSH", "7" = "OSH", "8" = "WSA", "9" = "SAV", "10" = "GRA", "11" = "WET",
+  "12" = "CRO", "13" = "Other", "14" = "CVM", "15" = "SNO", "16" = "BSV"
+)
+## Colours: a new axis, not reused from any existing palette in this repo --
+## judgement call, flagged. Forest types in greens (darker = denser canopy),
+## shrub/savanna/grassland in tans/golds, wetland teal, cropland bright
+## yellow-green, cropland mosaic mustard, snow/ice near-white, barren beige,
+## Other grey.
+IGBP_COLORS <- c(
+  ENF = "#1b4332", EBF = "#2d6a4f", DNF = "#52b788", DBF = "#74c69d", MF = "#95d5b2",
+  CSH = "#9c6644", OSH = "#bc9a6b", WSA = "#ddb892", SAV = "#e9c46a",
+  GRA = "#d4e157", WET = "#4a9bb8", CRO = "#ffd60a", CVM = "#e0a106",
+  BSV = "#d8c3a5", SNO = "#f1faee", Other = "#adb5bd"
+)
+
+## ---- Global side: MODIS at Beck 1 km resolution ---------------------------
+beck_rast_path <- file.path(EXT, "koppen_beck2023", "1991_2020", "koppen_geiger_0p00833333.tif")
+beck_rast <- terra::rast(beck_rast_path)
+modis_path <- file.path(EXT, "modis_landcover", "MCD12C1.A2022001.061.2023244164746.hdf")
+modis_igbp <- terra::sds(modis_path)[1]
+terra::crs(modis_igbp) <- "EPSG:4326"
+
+modis_1km <- terra::resample(modis_igbp, beck_rast, method = "near")
+modis_1km_land <- terra::mask(modis_1km, beck_rast)
+igbp_class_r <- terra::classify(
+  modis_1km_land,
+  cbind(as.integer(names(IGBP_CODE_TO_CLASS)), seq_along(IGBP_ORDER)[match(IGBP_CODE_TO_CLASS, IGBP_ORDER)])
+)
+cell_area_1km <- terra::cellSize(igbp_class_r, mask = TRUE, unit = "km")
+igbp_zonal <- terra::zonal(cell_area_1km, igbp_class_r, fun = "sum", na.rm = TRUE)
+names(igbp_zonal) <- c("bin", "area_km2")
+igbp_global <- data.frame(class = IGBP_ORDER, bin = seq_along(IGBP_ORDER)) |>
+  dplyr::left_join(igbp_zonal, by = "bin") |>
+  dplyr::mutate(area_km2 = dplyr::coalesce(area_km2, 0))
+IGBP_LAND_TOTAL_KM2 <- sum(igbp_global$area_km2)
+igbp_global$global_land_fraction <- igbp_global$area_km2 / IGBP_LAND_TOTAL_KM2
+msg("IGBP global land total (MODIS resampled onto Beck 1km mask): ",
+    format(round(IGBP_LAND_TOTAL_KM2), big.mark = ","), " km2",
+    if (abs(IGBP_LAND_TOTAL_KM2 - KG_LAND_TOTAL_KM2) < 1) " (matches Koppen panel A exactly)" else
+      paste0(" *** MISMATCH vs Koppen panel A's ", format(round(KG_LAND_TOTAL_KM2), big.mark = ","), " km2 ***"))
+print(igbp_global)
+
+## ---- Geo vs Geo: MODIS class at each tower (native 0.05 deg resolution,
+## not degraded through the 1km resample used for the area accounting above)
+pts_igbp <- terra::vect(data.frame(x = current_sites$location_long, y = current_sites$location_lat),
+                         geom = c("x", "y"), crs = "EPSG:4326")
+igbp_at_tower_code <- terra::extract(modis_igbp, pts_igbp, ID = FALSE)[[1]]
+igbp_geo_geo <- current_sites |>
+  dplyr::mutate(igbp_modis_code = igbp_at_tower_code,
+                igbp_modis_class = IGBP_CODE_TO_CLASS[as.character(igbp_modis_code)])
+msg("Geo vs Geo (MODIS at tower): ", sum(!is.na(igbp_geo_geo$igbp_modis_class)), " / ",
+    nrow(igbp_geo_geo), " sites classified; class distribution:")
+print(table(igbp_geo_geo$igbp_modis_class, useNA = "ifany"))
+
+cnt_igbp_geo_geo <- igbp_geo_geo |>
+  dplyr::filter(!is.na(igbp_modis_class)) |>
+  dplyr::count(igbp_modis_class, name = "n") |>
+  dplyr::rename(class = igbp_modis_class) |>
+  dplyr::mutate(network_frac = n / nrow(igbp_geo_geo))
+merged_igbp_geo_geo <- igbp_global |>
+  dplyr::select(class, global_land_fraction) |>
+  dplyr::full_join(cnt_igbp_geo_geo, by = "class") |>
+  dplyr::mutate(n = dplyr::coalesce(n, 0L), network_frac = dplyr::coalesce(network_frac, 0),
+                global_land_fraction = dplyr::coalesce(global_land_fraction, 0))
+j_igbp_geo_geo <- weighted_jaccard(merged_igbp_geo_geo$global_land_fraction, merged_igbp_geo_geo$network_frac)
+msg("IGBP J (Geo vs Geo) = ", round(j_igbp_geo_geo, 3))
+add_metric("B", "igbp", "geo_vs_geo", "MODIS MCD12C1 on Beck 2023 1 km mask", IGBP_LAND_TOTAL_KM2,
+           nrow(igbp_geo_geo), sum(!is.na(igbp_geo_geo$igbp_modis_class)), j_igbp_geo_geo)
+
+## ---- Geo vs Data: each site's PI-reported IGBP class (snapshot `igbp`) ---
+igbp_geo_data <- current_sites |>
+  dplyr::left_join(readr::read_csv(CURRENT_SNAPSHOT, show_col_types = FALSE) |>
+                      dplyr::distinct(site_id, igbp), by = "site_id")
+n_pi_classified <- sum(!is.na(igbp_geo_data$igbp))
+msg("Geo vs Data (PI-reported IGBP): ", n_pi_classified, " / ", nrow(igbp_geo_data), " sites classified")
+if (n_pi_classified != 781L) {
+  warning("Expected all 781 sites to have a PI-reported IGBP class, found ", n_pi_classified)
+}
+
+cnt_igbp_geo_data <- igbp_geo_data |>
+  dplyr::filter(!is.na(igbp)) |>
+  dplyr::count(igbp, name = "n") |>
+  dplyr::rename(class = igbp) |>
+  dplyr::mutate(network_frac = n / nrow(igbp_geo_data))
+merged_igbp_geo_data <- igbp_global |>
+  dplyr::select(class, global_land_fraction) |>
+  dplyr::full_join(cnt_igbp_geo_data, by = "class") |>
+  dplyr::mutate(n = dplyr::coalesce(n, 0L), network_frac = dplyr::coalesce(network_frac, 0),
+                global_land_fraction = dplyr::coalesce(global_land_fraction, 0))
+j_igbp_geo_data <- weighted_jaccard(merged_igbp_geo_data$global_land_fraction, merged_igbp_geo_data$network_frac)
+msg("IGBP J (Geo vs Data) = ", round(j_igbp_geo_data, 3))
+add_metric("B", "igbp", "geo_vs_data", "MODIS MCD12C1 on Beck 2023 1 km mask", IGBP_LAND_TOTAL_KM2,
+           nrow(igbp_geo_data), n_pi_classified, j_igbp_geo_data)
+
+## ---- Required report: PI vs MODIS disagreement, by class -----------------
+pi_vs_modis <- igbp_geo_data |>
+  dplyr::rename(igbp_pi = igbp) |>
+  dplyr::left_join(dplyr::select(igbp_geo_geo, site_id, igbp_modis_code, igbp_modis_class), by = "site_id") |>
+  dplyr::mutate(agree = igbp_pi == igbp_modis_class)
+n_comparable <- sum(!is.na(pi_vs_modis$igbp_pi) & !is.na(pi_vs_modis$igbp_modis_class))
+n_disagree <- sum(!pi_vs_modis$agree, na.rm = TRUE)
+msg("\n--- PI-reported vs MODIS-at-tower IGBP disagreement ---")
+msg("Comparable sites (both classified): ", n_comparable, "; disagree: ", n_disagree,
+    " (", round(100 * n_disagree / n_comparable, 1), "%)")
+disagree_by_class <- pi_vs_modis |>
+  dplyr::filter(!agree, !is.na(igbp_pi), !is.na(igbp_modis_class)) |>
+  dplyr::count(igbp_pi, igbp_modis_class, name = "n", sort = TRUE)
+msg("Disagreement by PI class (top pairs, PI class -> MODIS class, count):")
+print(as.data.frame(disagree_by_class), row.names = FALSE)
+disagree_summary_by_pi <- pi_vs_modis |>
+  dplyr::filter(!is.na(igbp_pi), !is.na(igbp_modis_class)) |>
+  dplyr::group_by(igbp_pi) |>
+  dplyr::summarise(n_sites = dplyr::n(), n_disagree = sum(!agree), .groups = "drop") |>
+  dplyr::mutate(pct_disagree = round(100 * n_disagree / n_sites, 1)) |>
+  dplyr::arrange(dplyr::desc(n_disagree))
+msg("Disagreement rate by PI-reported class:")
+print(as.data.frame(disagree_summary_by_pi), row.names = FALSE)
+
+## ---- Save panel B outputs --------------------------------------------------
+fig4_igbp_path <- file.path(SNAP_DIR, "site_igbp_fig4.csv")
+pi_vs_modis |>
+  dplyr::select(site_id, location_lat, location_long, igbp_pi, igbp_modis_class, igbp_modis_code, agree) |>
+  readr::write_csv(fig4_igbp_path)
+write_output_metadata(
+  fig4_igbp_path,
+  input_sources = c(CURRENT_SNAPSHOT, modis_path, beck_rast_path),
+  notes = paste0(
+    "Panel B (land cover as IGBP) site-level data for figure4_representativeness.R. igbp_pi = PI-",
+    "reported IGBP class from the pinned snapshot's `igbp` column (used for the Geo-vs-Data panel). ",
+    "igbp_modis_class/igbp_modis_code = MODIS MCD12C1.061 Majority_Land_Cover_Type_1 class at the ",
+    "exact tower coordinate, native 0.05 deg resolution (used for the Geo-vs-Geo panel). Codes 0 ",
+    "(Water) and 13 (Urban/built-up) are recoded to 'Other' -- no PI reports either class among the ",
+    "781 current-network sites. agree = igbp_pi == igbp_modis_class."
+  )
+)
+msg("Saved: ", fig4_igbp_path)
+
+igbp_global_path <- file.path(SNAP_DIR, "igbp_mcd12c1_global_distribution.csv")
+readr::write_csv(igbp_global, igbp_global_path)
+write_output_metadata(
+  igbp_global_path,
+  input_sources = c(modis_path, beck_rast_path),
+  notes = paste0(
+    "Global IGBP land-cover class distribution: MODIS MCD12C1.061 Majority_Land_Cover_Type_1 ",
+    "(2022, 0.05 deg native), resampled (nearest-neighbour) onto the Beck et al. (2023) 1 km Koppen ",
+    "land mask grid and masked to it -- total land area reproduces the Koppen panel A total exactly ",
+    "(", format(round(IGBP_LAND_TOTAL_KM2), big.mark = ","), " km2). Classes 0 (Water) and 13 (Urban/",
+    "built-up) recoded to 'Other' -- outside the 15-class vocabulary PIs actually report in BADM/BIF ",
+    "metadata for the current 781-site network (judgement call, flagged in SESSION_LOG.md: these are ",
+    "real land-cover types, kept in the land total rather than excluded, but can never receive a site ",
+    "count since no PI reports them)."
+  )
+)
+msg("Saved: ", igbp_global_path)
+
+# ==============================================================================
+# Save accumulated metrics (all phases implemented so far)
+# ==============================================================================
 metrics_fig4_path <- file.path(SNAP_DIR, "representativeness_metrics_fig4.csv")
 metrics_df <- dplyr::bind_rows(metrics_rows)
 readr::write_csv(metrics_df, metrics_fig4_path)
 write_output_metadata(
   metrics_fig4_path,
-  input_sources = c("site_koppen_beck2023.csv", fig4_kg_era5_path, "koppen_beck2023_global_distribution.csv"),
+  input_sources = c("site_koppen_beck2023.csv", "site_koppen_era5_fig4.csv", "site_igbp_fig4.csv",
+                     "koppen_beck2023_global_distribution.csv", "igbp_mcd12c1_global_distribution.csv"),
   notes = paste0(
     "Weighted-Jaccard metrics for the new (2026-10) Figure 4, built incrementally across phases -- ",
     "see SESSION_LOG.md for each phase. Separate from the shared data/snapshots/representativeness_metrics.csv ",
     "(which backs Figs 001-008 and is not touched by this script). One row per panel x comparison. ",
-    "This run includes phases implemented so far: panel A (Koppen) only."
+    "This run includes phases implemented so far: panel A (Koppen), panel B (IGBP land cover)."
   )
 )
 msg("Saved: ", metrics_fig4_path)
 print(as.data.frame(metrics_df))
 
-msg("\n=== figure4_representativeness.R: Phase 1 complete ===")
+msg("\n=== figure4_representativeness.R complete (phases implemented so far) ===")

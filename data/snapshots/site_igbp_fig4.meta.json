@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-01T20:54:42Z",
+  "pipeline_version": "151ac82",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/external/modis_landcover/MCD12C1.A2022001.061.2023244164746.hdf",
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"
+  ],
+  "notes": "Panel B (land cover as IGBP) site-level data for figure4_representativeness.R. igbp_pi = PI-reported IGBP class from the pinned snapshot's `igbp` column (used for the Geo-vs-Data panel). igbp_modis_class/igbp_modis_code = MODIS MCD12C1.061 Majority_Land_Cover_Type_1 class at the exact tower coordinate, native 0.05 deg resolution (used for the Geo-vs-Geo panel). Codes 0 (Water) and 13 (Urban/built-up) are recoded to 'Other' -- no PI reports either class among the 781 current-network sites. agree = igbp_pi == igbp_modis_class."
+}

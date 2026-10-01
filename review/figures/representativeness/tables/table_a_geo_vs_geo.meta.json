@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-01T22:43:29Z",
+  "pipeline_version": "cd91ce9",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics_fig4.csv"
+  ],
+  "notes": "Panel A (koppen), geo_vs_geo version. Land grid: Beck 2023 1 km mask (147,322,862 km2 total)."
+}

@@ -4,6 +4,106 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (7) — New Fig 4: ratio-rule revision, decisions, Phase 5 render (DONE)
+
+Final session on the new Figure 4. Revises the `P_ERA_MAX_RATIO` rule, applies the previously-flagged
+decisions, then completes Phase 5 (render and assembly). `scripts/figure4_representativeness.R` is now a
+complete, 5-phase production script; `figure_representativeness_summary.R` and all Fig 5 output were not
+touched.
+
+### 1. Ratio rule revised to dual-reference AND logic
+
+A site is now excluded by the ratio rule only if its 1991–2020 mean annual P_ERA exceeds
+`P_ERA_MAX_RATIO=3` times **every** reference available for it — BADM MAP (present/non-zero) **and**
+WorldClim BIO12 at the tower (extracted for all 781 sites, `site_precip_reference.csv`) — not just
+whichever one was preferred before. Where only one reference exists, that one decides alone.
+
+Sites caught beyond the 172 dropped from 12 to **10**:
+
+| site_id | P_ERA (mm/yr) | BADM MAP | ratio (BADM) | BIO12 | ratio (BIO12) |
+|---|---|---|---|---|---|
+| US-HB4 | 658,045 | 1,429.0 | 460.49× | 1,350 | 487.44× |
+| CA-CF2 | 4,964 | 452.0 | 10.98× | 417 | 11.90× |
+| NO-And | 9,318 | 1,060.0 | 8.79× | 1,202 | 7.75× |
+| CA-CF1 | 3,649 | 452.0 | 8.07× | 417 | 8.75× |
+| IT-Niv | 5,982 | 1,138.7 | 5.25× | 1,469 | 4.07× |
+| CA-HPC | 1,114 | 240.6 | 4.63× | 238 | 4.68× |
+| US-DS1 | 1,578 | 432.0 | 3.65× | 392 | 4.03× |
+| US-DS2 | 1,543 | 432.0 | 3.57× | 392 | 3.94× |
+| US-BRG | 4,221 | 1,200.0 | 3.52× | 1,103 | 3.83× |
+| GL-ZaF | 781 | 253.0 | 3.09× | 248 | 3.15× |
+
+**No longer excluded**: `US-RGF`, `EE-Rng` — BIO12 did not confirm P_ERA as implausible for either. All
+four previously-named sites (`CA-CF2`, `IT-Niv`, `NO-And`, `US-HB4`) remain caught. Not held for Phase 5,
+per instruction, regardless of count.
+
+**Panels A/C recomputed**: Köppen Geo vs Data n=599 (was 597), J=0.411. Aridity Geo vs Data n=596 (was
+594), J=0.718.
+
+### 2. Decisions applied
+
+- IGBP "Other" bin: confirmed — MODIS water/urban cells stay in the land total.
+- **IGBP colours replaced**: the invented palette is gone; panels now use the standard MCD12Q1 `LC_Type1`
+  legend palette, sourced from Google Earth Engine's documented
+  `MODIS/061/MCD12Q1` catalog page (fetched 2026-10-02, cited in the script). "Other" (merged Water+Urban,
+  no official single colour) uses Urban's grey, not Water's blue, to avoid reading as open water.
+- The 4 invalid-ERA5-input sites (`US-Sne, CD-Ygb, DE-Zrk, FR-LBr`) stay excluded from aridity.
+- PET approximations accepted as implemented.
+- **Exclusion tracing added** for panels A/C: GRP_ERA_DOWN-only, ratio-only, and both counted separately,
+  so every n traces to named rules. **The one overlap the Phase 3 entry left unnamed is `DE-Zrk`** — it's
+  in both the 172 GRP_ERA_DOWN group and panel C's own invalid-ERA5-input screen (not a ratio-rule
+  overlap, as that entry's wording loosely implied). This is why aridity's GRP-only count is 171, not
+  172: `DE-Zrk` is counted once, under the invalid-input screen.
+
+### 3. Phase 5: rendered and assembled
+
+Ported `flux_bin_breaks.R`'s fully-validated panel renderer (log2 sampling ratio, ±5× clip with exact
+ratio on truncated bars; fixed-position land%/tower-count labels, contrast-coloured only when the bar
+fully contains them; J in subtitle; panel letter+title via `plot.title`, outside data space) to all 6
+panels of both new figures. **New stress case**: panel B (IGBP) has up to 16 rows, more than the 13-row
+Köppen panel this scheme was tuned against — row heights were scaled per figure-row (16 for the A/B row,
+7 for C/D and E/F) rather than left equal, and the 16-row panel was checked directly at full resolution:
+**no crowding**, same LABEL_SIZE_PT=6pt as before (above the 5.5pt floor). No panel reported as crowding.
+
+Outputs, both in `review/figures/representativeness/` and copied to `review/figures/draft_manuscript_v1/`
+(old `fig_04_current_network_sampling_ratios.png` left in place, confirmed untouched via `git status`):
+`fig_04_geo_vs_geo.png`/`fig_04_geo_vs_data.png`, each with `.meta.json` and `.legend.txt`. Legends state
+every panel's n/J, the three land-grid totals (with the aridity-ends-at-60°S and TRENDY-coastal-cells
+notes), bar-label meaning, the Geo-vs-Data exclusions, and panel C's CGIAR/ERA5 period mismatch — no
+stale "~132.6M km²" text, no µmol units for NEE (both struck from this session's earlier draft audit).
+12 per-panel tables (bin, land area km², land fraction, towers, tower fraction) in
+`review/figures/representativeness/tables/`. Four new methods notes, matching the existing
+`methods_*.md` convention: `methods_igbp.md`, `methods_aridity_era5.md`, `methods_flux_bin_scheme.md`,
+`methods_precip_exclusions.md`.
+
+### Final report: J and n, both versions
+
+| Panel | Geo vs Geo J | Geo vs Geo n | Geo vs Data J | Geo vs Data n |
+|---|---|---|---|---|
+| A Köppen | 0.372 | 781/781 | 0.411 | 599/781 |
+| B IGBP | 0.495 | 781/781 | 0.346 | 781/781 |
+| C Aridity | 0.666 | 781/781 | 0.718 | 596/781 |
+| D Biomass | 0.636 | 781/781 | 0.636 | 781/781 |
+| E NEE | 0.530 | 781/781 | 0.162 | 601/781 |
+| F ET | 0.456 | 781/781 | 0.456 | 634/781 |
+
+### Things decided that weren't explicitly specified
+
+1. **Panel titles**: each panel carries a short "LETTER — axis name" title (e.g. "A — Köppen-Geiger") via
+   `plot.title`, not specified in the task but needed to tell six panels apart in a grid; reuses the
+   existing composite-grid letter convention from `flux_bin_breaks.R`.
+2. **Row heights**: scaled per figure-row to each row's tallest panel (16 for A/B, 7 for C/D and E/F)
+   rather than equal rows, to avoid risking the untested 16-row IGBP panel crowding — confirmed necessary
+   and sufficient by direct visual check, not assumed.
+3. **Table/legend file locations**: tables under `review/figures/representativeness/tables/`, one CSV+
+   `.meta.json` per panel×version (12 total) — not specified exactly where or how granular; matches the
+   convention already used for `flux_bin_breaks.R`'s own per-panel tables.
+4. **IGBP class display order**: forest types, then shrub/savanna/grassland, wetland, cropland, cropland
+   mosaic, snow/ice, barren, Other — not specified; a readable ecological grouping, not derived from any
+   external standard ordering.
+
+---
+
 ## 2026-10-02 (6) — New Fig 4: final report after Phases 1–4 (Phase 5 held)
 
 Computational phases 1–4 are complete (entries above). Phase 5 (rendering the two assembled figures) is

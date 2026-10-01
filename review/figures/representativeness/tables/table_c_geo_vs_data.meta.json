@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-01T22:43:30Z",
+  "pipeline_version": "cd91ce9",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics_fig4.csv"
+  ],
+  "notes": "Panel C (aridity), geo_vs_data version. Land grid: CGIAR Aridity Index v3.1 (134,761,545 km2 total)."
+}

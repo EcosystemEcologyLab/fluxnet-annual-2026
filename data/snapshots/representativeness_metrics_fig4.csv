@@ -5,3 +5,9 @@ B,igbp,geo_vs_geo,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,781,781
 B,igbp,geo_vs_data,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,781,781,0.3464428975930112
 C,aridity,geo_vs_geo,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,781,781,0.665920460867173
 C,aridity,geo_vs_data,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,594,594,0.7181263478427634
+D,biomass,geo_vs_geo,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,781,781,0.636231164957332
+D,biomass,geo_vs_data,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,781,781,0.636231164957332
+E,nee,geo_vs_data,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,601,601,0.16245632971800827
+E,nee,geo_vs_geo,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.5298754549363103
+F,et,geo_vs_data,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,634,634,0.45614219796344113
+F,et,geo_vs_geo,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.45626639245125744

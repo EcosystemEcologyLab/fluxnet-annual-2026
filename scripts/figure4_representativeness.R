@@ -918,6 +918,281 @@ write_output_metadata(
 msg("Saved: ", fig4_aridity_path)
 
 # ==============================================================================
+# PHASE 4: Biomass (panel D), NEE and ET (panels E-F)
+# ==============================================================================
+## Biomass: unchanged -- same site-level lookup (ESA CCI Biomass v7, 7-bin
+## hybrid) used for BOTH Geo vs Geo and Geo vs Data, since biomass has no
+## independent "data" observation distinct from the raster-at-tower value
+## (same convention the 4 reproduced axes in flux_bin_breaks.R already use).
+##
+## NEE and ET: the flux_bin_breaks.R scheme and edges, PORTED here (not
+## sourced -- sourcing would re-run that diagnostic script's own rendering
+## as a side effect) into production: Koppen land mask, bar 1 = model GPP <
+## 5 gC/m2/yr (NEE is signed, cannot be cut on its own magnitude), rounded
+## sextiles of the 50/50 geo/tower mixture CDF outside bar 1. ET uses the
+## dedicated 1991-2020, 17-model ensemble-median raster
+## (flux_bin_breaks_et_median_1991_2020.tif), not the older committed
+## trendy_et_median.tif (mismatched 1990-2023/16-model window -- see the
+## 2026-10-01 draft-Fig-4-audit entry on why that distinction matters).
+## "Geo vs Data" = tower-measured annual value (VUT->CUT per-site fallback,
+## Step-3 annual method); "Geo vs Geo" = the model's own value at the tower
+## cell. GPP/TER are NOT part of this 6-panel figure (flux_bin_breaks.R
+## computed them too, for its own broader diagnostic, but panels E-F here
+## are NEE and ET only, per this figure's explicit 6-axis list).
+msg("\n=== PHASE 4: Biomass (panel D), NEE and ET (panels E-F) ===")
+
+## ---- Panel D: biomass (unchanged, same lookup both versions) -------------
+bio7_global <- readr::read_csv(file.path(SNAP_DIR, "biomass_cci_v7_global_distribution.csv"),
+                                show_col_types = FALSE) |>
+  dplyr::mutate(class = as.character(biomass_bin))
+BIOMASS_LAND_TOTAL_KM2 <- sum(bio7_global$global_land_area_km2)
+biomass_sites <- readr::read_csv(file.path(SNAP_DIR, "site_biomass_cci_v7.csv"), show_col_types = FALSE)
+n_bio_classified <- sum(!is.na(biomass_sites$biomass_bin))
+cnt_bio <- biomass_sites |>
+  dplyr::filter(!is.na(biomass_bin)) |>
+  dplyr::count(biomass_bin, name = "n") |>
+  dplyr::rename(class = biomass_bin) |>
+  dplyr::mutate(class = as.character(class), network_frac = n / nrow(biomass_sites))
+merged_bio <- bio7_global |>
+  dplyr::select(class, global_land_fraction) |>
+  dplyr::full_join(cnt_bio, by = "class") |>
+  dplyr::mutate(n = dplyr::coalesce(n, 0L), network_frac = dplyr::coalesce(network_frac, 0),
+                global_land_fraction = dplyr::coalesce(global_land_fraction, 0))
+j_bio <- weighted_jaccard(merged_bio$global_land_fraction, merged_bio$network_frac)
+msg("Biomass J (same both versions) = ", round(j_bio, 3), "; n=", n_bio_classified, "/", nrow(biomass_sites))
+add_metric("D", "biomass", "geo_vs_geo", "Beck 2023 1 km mask (fine, 0.00833 deg)", BIOMASS_LAND_TOTAL_KM2,
+           nrow(biomass_sites), n_bio_classified, j_bio)
+add_metric("D", "biomass", "geo_vs_data", "Beck 2023 1 km mask (fine, 0.00833 deg)", BIOMASS_LAND_TOTAL_KM2,
+           nrow(biomass_sites), n_bio_classified, j_bio)
+
+## ---- Panels E-F: NEE and ET (ported from flux_bin_breaks.R) --------------
+DERIVED_DIR <- file.path(EXT, "trendy", "derived")
+KG_PATH_05  <- file.path(EXT, "koppen_beck2023", "1991_2020", "koppen_geiger_0p5.tif")
+kg_05 <- terra::rast(KG_PATH_05)
+cell_areas_05 <- terra::cellSize(kg_05, mask = TRUE, unit = "km")
+
+r_nee <- terra::rast(file.path(DERIVED_DIR, "trendy_nee_fluxbased_median.tif"))
+r_gpp <- terra::rast(file.path(DERIVED_DIR, "candidate_gpp_median.tif"))
+r_et  <- terra::rast(file.path(DERIVED_DIR, "flux_bin_breaks_et_median_1991_2020.tif"))
+GEO_LAND_NEE <- terra::mask(r_nee, kg_05)
+GEO_LAND_GPP <- terra::mask(r_gpp, kg_05)
+GEO_LAND_ET  <- terra::mask(r_et, kg_05)
+FLUX_LAND_TOTAL_KM2 <- sum(terra::values(cell_areas_05)[!is.na(terra::values(GEO_LAND_GPP))], na.rm = TRUE)
+msg("Flux (NEE/ET) land total (TRENDY ensemble footprint under Koppen mask): ",
+    format(round(FLUX_LAND_TOTAL_KM2), big.mark = ","), " km2")
+
+NEE_BAR1_GPP_CUT <- 5   # gC m-2 yr-1 -- same named constant as flux_bin_breaks.R
+ET_LOW_CUT       <- 5   # mm yr-1
+GEO_MIXTURE_WEIGHT <- 0.5
+FLUX_ROUND <- c(NEE = 25, ET = 50)
+
+## Tower annual values: same Step-3 method as flux_bin_breaks.R (VUT->CUT
+## per-site fallback; mean monthly cycle across all QC>=0.80-qualifying
+## years, all 12 calendar months required, then summed).
+con <- dbConnect(duckdb(), duckdb_path, read_only = TRUE)
+site_ids_sql <- paste(sprintf("'%s'", current_sites$site_id), collapse = ", ")
+monthly_flux <- dbGetQuery(con, sprintf("
+  SELECT site_id, TIMESTAMP, NEE_VUT_REF, NEE_VUT_REF_QC, NEE_CUT_REF, NEE_CUT_REF_QC, LE_F_MDS, LE_F_MDS_QC
+  FROM monthly_converted WHERE dataset = 'FLUXMET' AND site_id IN (%s)
+", site_ids_sql))
+dbDisconnect(con, shutdown = TRUE)
+monthly_flux <- monthly_flux |>
+  dplyr::mutate(TIMESTAMP = as.Date(TIMESTAMP), year = lubridate::year(TIMESTAMP), month = lubridate::month(TIMESTAMP))
+
+site_carbon_src <- monthly_flux |>
+  dplyr::group_by(site_id) |>
+  dplyr::summarise(any_vut_qc = any(!is.na(NEE_VUT_REF_QC)), any_cut_qc = any(!is.na(NEE_CUT_REF_QC)), .groups = "drop") |>
+  dplyr::mutate(carbon_src = dplyr::case_when(any_vut_qc ~ "VUT", any_cut_qc ~ "CUT", TRUE ~ NA_character_))
+msg("Per-site VUT/CUT choice: VUT=", sum(site_carbon_src$carbon_src == "VUT", na.rm = TRUE),
+    "  CUT (fallback)=", sum(site_carbon_src$carbon_src == "CUT", na.rm = TRUE),
+    "  neither=", sum(is.na(site_carbon_src$carbon_src)))
+
+monthly_flux <- monthly_flux |>
+  dplyr::left_join(dplyr::select(site_carbon_src, site_id, carbon_src), by = "site_id") |>
+  dplyr::mutate(
+    nee_val = dplyr::if_else(carbon_src == "VUT", NEE_VUT_REF, NEE_CUT_REF),
+    nee_qc  = dplyr::if_else(carbon_src == "VUT", NEE_VUT_REF_QC, NEE_CUT_REF_QC),
+    nee_qualifies = !is.na(carbon_src) & !is.na(nee_qc) & nee_qc >= 0.80 & !is.na(nee_val),
+    nee_gC = dplyr::if_else(nee_qualifies, nee_val, NA_real_),
+    et_qualifies = !is.na(LE_F_MDS) & !is.na(LE_F_MDS_QC) & LE_F_MDS_QC >= 0.80,
+    et_mm = dplyr::if_else(et_qualifies, LE_F_MDS, NA_real_)
+  )
+
+build_annual <- function(df, value_col) {
+  cyc <- df |> dplyr::filter(!is.na(.data[[value_col]])) |> dplyr::group_by(site_id, month) |>
+    dplyr::summarise(mean_month = mean(.data[[value_col]], na.rm = TRUE), .groups = "drop")
+  all12 <- cyc |> dplyr::group_by(site_id) |> dplyr::summarise(n_months = dplyr::n(), .groups = "drop") |>
+    dplyr::filter(n_months == 12L) |> dplyr::pull(site_id)
+  cyc |> dplyr::filter(site_id %in% all12) |> dplyr::group_by(site_id) |>
+    dplyr::summarise(tower_value = sum(mean_month), .groups = "drop")
+}
+tower_nee <- build_annual(monthly_flux, "nee_gC") |> dplyr::left_join(current_sites, by = "site_id")
+tower_et  <- build_annual(monthly_flux, "et_mm")  |> dplyr::left_join(current_sites, by = "site_id")
+msg("Tower annual values -- NEE: ", nrow(tower_nee), "  ET: ", nrow(tower_et))
+
+geo_coords <- as.matrix(current_sites[, c("location_long", "location_lat")])
+model_nee_at_site <- terra::extract(r_nee, geo_coords, method = "bilinear")[, 1]
+model_gpp_at_site <- terra::extract(r_gpp, geo_coords, method = "bilinear")[, 1]
+model_et_at_site  <- terra::extract(r_et,  geo_coords, method = "bilinear")[, 1]
+
+classify_flux_sites <- function(mask_value, own_value, cut, edges) {
+  bin <- rep(NA_integer_, length(mask_value))
+  valid_mask <- !is.na(mask_value)
+  is_bar1 <- valid_mask & mask_value < cut
+  bin[is_bar1] <- 1L
+  breaks <- c(-Inf, edges, Inf)
+  b <- findInterval(own_value, breaks[-length(breaks)], left.open = FALSE) + 1L
+  b[b < 2L] <- 2L; b[b > 7L] <- 7L
+  need_own <- valid_mask & !is_bar1 & !is.na(own_value)
+  bin[need_own] <- b[need_own]
+  as.integer(bin)
+}
+build_hist_outside_bar1 <- function(own_val_r, mask_val_r, bar1_cut, cell_areas, step, lo, hi) {
+  r_land <- terra::mask(own_val_r, terra::ifel(mask_val_r >= bar1_cut, 1, NA))
+  bins_lo <- seq(lo, hi - step, by = step); bins_hi <- bins_lo + step
+  ids <- seq_along(bins_lo); catch_lo_id <- 0L; catch_hi_id <- max(ids) + 1L
+  rcl <- rbind(cbind(bins_lo, bins_hi, as.numeric(ids)),
+               c(-1e9, lo, catch_lo_id), c(hi, 1e9, catch_hi_id))
+  r_hist <- terra::classify(r_land, rcl, right = FALSE, include.lowest = TRUE)
+  areas <- terra::zonal(cell_areas, r_hist, fun = "sum", na.rm = TRUE)
+  names(areas) <- c("bin_id", "area_km2"); areas <- areas[!is.na(areas$bin_id), ]
+  bin_lo_vec <- c(catch_lo_id = lo, bins_lo, catch_hi_id = hi)
+  names(bin_lo_vec) <- as.character(c(catch_lo_id, ids, catch_hi_id))
+  areas$value <- bin_lo_vec[as.character(areas$bin_id)]
+  areas[order(areas$value), c("value", "area_km2")]
+}
+compute_sextile_edges <- function(hist_df, tower_vals, w = GEO_MIXTURE_WEIGHT) {
+  hist_df <- hist_df[order(hist_df$value), ]
+  F_geo <- cumsum(hist_df$area_km2) / sum(hist_df$area_km2)
+  F_tower <- ecdf(tower_vals)(hist_df$value)
+  F_mix <- w * F_geo + (1 - w) * F_tower
+  vapply(c(1, 2, 3, 4, 5) / 6, function(f) { idx <- which(F_mix >= f)[1L]; hist_df$value[idx] }, numeric(1))
+}
+round_edges <- function(edges, to) round(edges / to) * to
+
+run_flux_panel <- function(panel_letter, flux_name, own_land_r, mask_land_r, mask_value_at_site,
+                            own_value_at_site_model, tower_df, bar1_cut, hist_params, round_to) {
+  site_mask_value <- mask_value_at_site
+  site_is_bar1 <- !is.na(site_mask_value) & site_mask_value < bar1_cut
+
+  h <- build_hist_outside_bar1(own_land_r, mask_land_r, bar1_cut, cell_areas_05,
+                                hist_params$step, hist_params$lo, hist_params$hi)
+  tower_remaining <- tower_df |>
+    dplyr::left_join(current_sites |> dplyr::mutate(is_bar1 = site_is_bar1) |> dplyr::select(site_id, is_bar1), by = "site_id") |>
+    dplyr::filter(!is.na(is_bar1), !is_bar1)
+  edges_exact <- compute_sextile_edges(h, tower_remaining$tower_value)
+  edges <- round_edges(edges_exact, round_to)
+  msg(flux_name, " rounded sextile edges: ", paste(edges, collapse = ", "))
+
+  breaks <- c(-1e9, edges, 1e9)
+  rcl <- cbind(breaks[-length(breaks)], breaks[-1], 2:7)
+  own_bin_r <- terra::classify(own_land_r, rcl, right = FALSE, include.lowest = TRUE)
+  bar1_r <- terra::ifel(mask_land_r < bar1_cut, 1, NA)
+  r_bin <- terra::ifel(!is.na(bar1_r), 1, own_bin_r)
+  zone_areas <- terra::zonal(cell_areas_05, r_bin, fun = "sum", na.rm = TRUE)
+  names(zone_areas) <- c("bin", "area_km2")
+  zone_areas <- zone_areas[!is.na(zone_areas$bin) & zone_areas$bin %in% 1:7, ]
+  land_vec <- zone_areas$area_km2[match(1:7, zone_areas$bin)]; land_vec[is.na(land_vec)] <- 0
+  land_vec <- land_vec / FLUX_LAND_TOTAL_KM2
+
+  data_df <- current_sites |>
+    dplyr::left_join(data.frame(site_id = current_sites$site_id, mask_value = site_mask_value), by = "site_id") |>
+    dplyr::left_join(tower_df |> dplyr::select(site_id, own_value = tower_value), by = "site_id")
+  data_bin <- classify_flux_sites(data_df$mask_value, data_df$own_value, bar1_cut, edges)
+  n_data <- sum(!is.na(data_bin))
+  fr_data <- as.numeric(table(factor(data_bin, levels = 1:7))) / n_data
+  j_data <- weighted_jaccard(land_vec, fr_data)
+
+  geo_df <- current_sites |> dplyr::mutate(mask_value = site_mask_value, own_value = own_value_at_site_model)
+  geo_bin <- classify_flux_sites(geo_df$mask_value, geo_df$own_value, bar1_cut, edges)
+  n_geo <- sum(!is.na(geo_bin))
+  fr_geo <- as.numeric(table(factor(geo_bin, levels = 1:7))) / n_geo
+  j_geo <- weighted_jaccard(land_vec, fr_geo)
+
+  msg(flux_name, ": J(Geo vs Data)=", round(j_data, 3), " J(Geo vs Geo)=", round(j_geo, 3),
+      " n_data=", n_data, " n_geo=", n_geo)
+  add_metric(panel_letter, tolower(flux_name), "geo_vs_data",
+             "TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask", FLUX_LAND_TOTAL_KM2, n_data, n_data, j_data)
+  add_metric(panel_letter, tolower(flux_name), "geo_vs_geo",
+             "TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask", FLUX_LAND_TOTAL_KM2, n_geo, n_geo, j_geo)
+
+  list(edges = edges, land_vec = land_vec, data_bin = data_bin, geo_bin = geo_bin,
+       data_df = data_df, geo_df = geo_df, mask_value = site_mask_value)
+}
+
+nee_result <- run_flux_panel("E", "NEE", GEO_LAND_NEE, GEO_LAND_GPP, model_gpp_at_site, model_nee_at_site,
+                              tower_nee, NEE_BAR1_GPP_CUT,
+                              list(step = 1, lo = -500, hi = 500), FLUX_ROUND[["NEE"]])
+et_result  <- run_flux_panel("F", "ET", GEO_LAND_ET, GEO_LAND_ET, model_et_at_site, model_et_at_site,
+                              tower_et, ET_LOW_CUT,
+                              list(step = 2, lo = 0, hi = 2000), FLUX_ROUND[["ET"]])
+
+## ---- Save panel E-F outputs -------------------------------------------------
+save_flux_site_csv <- function(result, path, flux_name) {
+  current_sites |>
+    dplyr::mutate(
+      mask_value = result$mask_value,
+      tower_value = result$data_df$own_value,
+      model_value_at_tower = result$geo_df$own_value,
+      bin_data = result$data_bin,
+      bin_geo = result$geo_bin
+    ) |>
+    readr::write_csv(path)
+}
+fig4_nee_path <- file.path(SNAP_DIR, "site_nee_fig4.csv")
+save_flux_site_csv(nee_result, fig4_nee_path, "NEE")
+write_output_metadata(
+  fig4_nee_path,
+  input_sources = c(duckdb_path, CURRENT_SNAPSHOT,
+                     "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
+                     "data/external/trendy/derived/candidate_gpp_median.tif"),
+  notes = paste0(
+    "Panel E (NEE) site-level data for figure4_representativeness.R, ported from scripts/diagnostics/",
+    "flux_bin_breaks.R's scheme (not sourced). mask_value = model GPP at tower (bar-1 vegetation mask, ",
+    "cut=", NEE_BAR1_GPP_CUT, " gC/m2/yr). tower_value = Step-3 annual tower NEE (VUT->CUT fallback). ",
+    "model_value_at_tower = model NEE at tower (bilinear). bin_data/bin_geo = 1-7 classification (1 = ",
+    "bar-1 mask; 2-7 = rounded sextile edges of the 50/50 geo/tower mixture CDF, edges: ",
+    paste(nee_result$edges, collapse = ", "), " gC/m2/yr)."
+  )
+)
+msg("Saved: ", fig4_nee_path)
+
+fig4_et_path <- file.path(SNAP_DIR, "site_et_fig4.csv")
+save_flux_site_csv(et_result, fig4_et_path, "ET")
+write_output_metadata(
+  fig4_et_path,
+  input_sources = c(duckdb_path, CURRENT_SNAPSHOT,
+                     "data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif"),
+  notes = paste0(
+    "Panel F (ET) site-level data for figure4_representativeness.R, ported from scripts/diagnostics/",
+    "flux_bin_breaks.R's scheme (not sourced). Uses the dedicated 1991-2020, 17-model TRENDY ensemble-",
+    "median raster (flux_bin_breaks_et_median_1991_2020.tif), not the older committed trendy_et_median.tif ",
+    "(1990-2023, 16-model -- see the 2026-10-01 draft-Fig-4-audit entry). mask_value/tower_value/",
+    "model_value_at_tower/bin_data/bin_geo as for panel E, but ET's own value is both the mask and the ",
+    "own-value (bar-1 cut=", ET_LOW_CUT, " mm/yr). Edges (mm/yr): ", paste(et_result$edges, collapse = ", "), "."
+  )
+)
+msg("Saved: ", fig4_et_path)
+
+flux_global_dist <- function(result, flux_label) {
+  data.frame(flux = flux_label, bin = 1:7, land_fraction = result$land_vec)
+}
+flux_global_path <- file.path(SNAP_DIR, "nee_et_fig4_global_distribution.csv")
+dplyr::bind_rows(flux_global_dist(nee_result, "NEE"), flux_global_dist(et_result, "ET")) |>
+  readr::write_csv(flux_global_path)
+write_output_metadata(
+  flux_global_path,
+  input_sources = c("data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
+                     "data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif"),
+  notes = paste0(
+    "Global land-fraction distribution (bins 1-7, TRENDY ensemble footprint under the Koppen 0.5 deg ",
+    "land mask, ", format(round(FLUX_LAND_TOTAL_KM2), big.mark = ","), " km2 total) for Fig 4 panels E ",
+    "(NEE) and F (ET). Bin edges recorded in site_nee_fig4.csv/site_et_fig4.csv's own .meta.json."
+  )
+)
+msg("Saved: ", flux_global_path)
+
+# ==============================================================================
 # Save accumulated metrics (all phases implemented so far)
 # ==============================================================================
 metrics_fig4_path <- file.path(SNAP_DIR, "representativeness_metrics_fig4.csv")
@@ -926,15 +1201,16 @@ readr::write_csv(metrics_df, metrics_fig4_path)
 write_output_metadata(
   metrics_fig4_path,
   input_sources = c("site_koppen_beck2023.csv", "site_koppen_era5_fig4.csv", "site_igbp_fig4.csv",
-                     "site_aridity.csv", "site_aridity_era5_fig4.csv",
+                     "site_aridity.csv", "site_aridity_era5_fig4.csv", "site_biomass_cci_v7.csv",
+                     "site_nee_fig4.csv", "site_et_fig4.csv",
                      "koppen_beck2023_global_distribution.csv", "igbp_mcd12c1_global_distribution.csv",
-                     "aridity_unep7_global_distribution.csv"),
+                     "aridity_unep7_global_distribution.csv", "biomass_cci_v7_global_distribution.csv",
+                     "nee_et_fig4_global_distribution.csv"),
   notes = paste0(
     "Weighted-Jaccard metrics for the new (2026-10) Figure 4, built incrementally across phases -- ",
     "see SESSION_LOG.md for each phase. Separate from the shared data/snapshots/representativeness_metrics.csv ",
     "(which backs Figs 001-008 and is not touched by this script). One row per panel x comparison. ",
-    "This run includes phases implemented so far: panel A (Koppen), panel B (IGBP land cover), ",
-    "panel C (aridity)."
+    "This run includes all 6 panels: A Koppen, B IGBP land cover, C aridity, D biomass, E NEE, F ET."
   )
 )
 msg("Saved: ", metrics_fig4_path)

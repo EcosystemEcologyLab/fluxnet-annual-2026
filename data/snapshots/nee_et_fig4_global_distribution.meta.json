@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-01T21:10:14Z",
+  "pipeline_version": "2e05bfa",
+  "input_sources": [
+    "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
+    "data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif"
+  ],
+  "notes": "Global land-fraction distribution (bins 1-7, TRENDY ensemble footprint under the Koppen 0.5 deg land mask, 163,331,649 km2 total) for Fig 4 panels E (NEE) and F (ET). Bin edges recorded in site_nee_fig4.csv/site_et_fig4.csv's own .meta.json."
+}

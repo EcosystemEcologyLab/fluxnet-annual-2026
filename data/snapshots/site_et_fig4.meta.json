@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-01T21:10:14Z",
+  "pipeline_version": "2e05bfa",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif"
+  ],
+  "notes": "Panel F (ET) site-level data for figure4_representativeness.R, ported from scripts/diagnostics/flux_bin_breaks.R's scheme (not sourced). Uses the dedicated 1991-2020, 17-model TRENDY ensemble-median raster (flux_bin_breaks_et_median_1991_2020.tif), not the older committed trendy_et_median.tif (1990-2023, 16-model -- see the 2026-10-01 draft-Fig-4-audit entry). mask_value/tower_value/model_value_at_tower/bin_data/bin_geo as for panel E, but ET's own value is both the mask and the own-value (bar-1 cut=5 mm/yr). Edges (mm/yr): 200, 350, 450, 600, 850."
+}

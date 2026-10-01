@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-10-01T21:10:14Z",
+  "pipeline_version": "2e05bfa",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
+    "data/external/trendy/derived/candidate_gpp_median.tif"
+  ],
+  "notes": "Panel E (NEE) site-level data for figure4_representativeness.R, ported from scripts/diagnostics/flux_bin_breaks.R's scheme (not sourced). mask_value = model GPP at tower (bar-1 vegetation mask, cut=5 gC/m2/yr). tower_value = Step-3 annual tower NEE (VUT->CUT fallback). model_value_at_tower = model NEE at tower (bilinear). bin_data/bin_geo = 1-7 classification (1 = bar-1 mask; 2-7 = rounded sextile edges of the 50/50 geo/tower mixture CDF, edges: -250, -100, -50, -25, 0 gC/m2/yr)."
+}

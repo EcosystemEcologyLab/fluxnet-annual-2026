@@ -4,6 +4,48 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (5) — New Fig 4, Phase 4: biomass (panel D), NEE and ET (panels E-F)
+
+### Biomass (panel D)
+
+Unchanged, as instructed: the existing ESA CCI Biomass v7 (7-bin hybrid) site-level lookup
+(`site_biomass_cci_v7.csv`) and global distribution are used identically for **both** Geo vs Geo and Geo
+vs Data — biomass has no independent tower-measured counterpart, same convention the four reproduced
+axes already used in `flux_bin_breaks.R`. **J = 0.636** (both versions), 781/781 classified.
+
+### NEE and ET (panels E–F)
+
+Ported — not sourced — the exact scheme and code from `scripts/diagnostics/flux_bin_breaks.R` (this
+session's earlier work) into production: Köppen 0.5° land mask, bar 1 = model GPP < 5 gC m⁻² yr⁻¹ (NEE's
+vegetation mask, since NEE is signed and can't be cut on its own magnitude), rounded sextiles of the
+50/50 geo/tower mixture CDF outside bar 1. ET uses the dedicated 1991–2020, 17-model ensemble-median
+raster (`flux_bin_breaks_et_median_1991_2020.tif`), not the older, window-mismatched committed
+`trendy_et_median.tif`. "Geo vs Data" = tower-measured annual value (VUT→CUT per-site fallback: 731
+VUT, 49 CUT, 1 neither); "Geo vs Geo" = the model's own value at the tower cell. Land total: TRENDY
+ensemble footprint under the Köppen mask, 163,331,649 km² (same for both panels).
+
+| Panel | Comparison | n | J |
+|---|---|---|---|
+| E NEE | Geo vs Data (towers) | 601/781 | 0.162 |
+| E NEE | Geo vs Geo (model at tower) | 781/781 | 0.530 |
+| F ET | Geo vs Data (towers) | 634/781 | 0.456 |
+| F ET | Geo vs Geo (model at tower) | 781/781 | 0.456 |
+
+These numbers match this session's earlier `flux_bin_breaks.R` validation run exactly (same edges:
+NEE −250/−100/−50/−25/0 gC m⁻² yr⁻¹; ET 200/350/450/600/850 mm/yr) — a useful cross-check that the port
+is faithful.
+
+### Outputs
+
+New: `data/snapshots/site_nee_fig4.csv`, `site_et_fig4.csv` (781 sites each: `mask_value`,
+`tower_value`, `model_value_at_tower`, `bin_data`, `bin_geo`, each with `.meta.json` recording the
+rounded edges), `nee_et_fig4_global_distribution.csv` (land fractions per bin). All 6 panels (A–F) now
+present in `representativeness_metrics_fig4.csv`. This completes the computational phases (1–4); **Phase
+5 (figure assembly) remains held** pending review of the 12-site P_ERA_MAX_RATIO list (2026-10-02(2)
+entry above) — see the final comparison report below.
+
+---
+
 ## 2026-10-02 (4) — New Fig 4, Phase 3: aridity (panel C)
 
 ### Data sources

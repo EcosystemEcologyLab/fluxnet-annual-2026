@@ -4,6 +4,332 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (6) — New Fig 4: final report after Phases 1–4 (Phase 5 held)
+
+Computational phases 1–4 are complete (entries above). Phase 5 (rendering the two assembled figures) is
+**held**, per the explicit instruction that catching more than ~10 sites beyond the 172 with
+`P_ERA_MAX_RATIO` should pause assembly for review — it caught 12. This entry is the requested summary:
+J and n per panel for both new versions, next to the old draft's values, plus every open item flagged
+across all four phases for a decision.
+
+### J and n, new Fig 4 vs. old draft (`fig_04_current_network_sampling_ratios.png`, audited 2026-10-01)
+
+| Panel | Old draft J | Old draft n | New Geo vs Geo J | Geo vs Geo n | New Geo vs Data J | Geo vs Data n |
+|---|---|---|---|---|---|---|
+| A Köppen | 0.420 | 755/781 | **0.372** | 781/781 | **0.412** | 597/781 |
+| B Land cover | 0.567 (CCI 10-class) | 781/781 | **0.495** (IGBP) | 781/781 | **0.346** (IGBP) | 781/781 |
+| C Aridity | 0.666 | 781/781 | 0.666 (unchanged) | 781/781 | **0.718** | 594/781 |
+| D Biomass | 0.636 | 781/781 | 0.636 (unchanged) | 781/781 | 0.636 (unchanged) | 781/781 |
+| E NEE | 0.506 (unsigned IAV) | 781/781 | **0.530** (signed, model@tower) | 781/781 | **0.162** (signed, towers) | 601/781 |
+| F ET | 0.456 (16-model/1990-2023) | 781/781 | **0.456** (17-model/1991-2020) | 781/781 | **0.456** (17-model/1991-2020) | 634/781 |
+
+The old draft had one column per panel (a single comparison, methodology varied by panel — e.g. Köppen
+was ERA5-local only, no raster-vs-raster comparison existed at all). The new figure's two explicit
+comparisons aren't directly the "same number done better" in every case: panel B swaps vocabulary (CCI
+10-class → IGBP 15-class) entirely, so its J isn't comparable in kind to the old value; panel E swaps
+axis semantics (unsigned magnitude → signed sink/source) so 0.530/0.162 aren't "corrections" of 0.506,
+they're a different question. C and D are the only two panels where a true like-for-like old-vs-new
+number exists (Geo vs Geo, since both sides are unchanged), and D is identical by construction.
+
+### Everything flagged for your decision, gathered from all four phases
+
+**Phase 1 (Köppen)**
+1. 134,761,545 km² (aridity's own CGIAR coverage) vs. the 147.3M km² Köppen/IGBP/biomass share — a
+   genuine difference in underlying product coverage, not an error; already correctly reflected per-panel.
+2. `IT-Niv`'s old `n_years_used=0` was a real bug (fixed) — confirm no objection to the fix having also
+   silently corrected `site_koppen_era5.csv`'s diagnostic column for other sites (no `kg_class` changed).
+
+**Phase 1 addendum (P_ERA_MAX_RATIO)**
+3. **The 12-site list itself** (`US-HB4, CA-CF2, US-RGF, NO-And, CA-CF1, EE-Rng, IT-Niv, CA-HPC, US-DS1,
+   US-DS2, US-BRG, GL-ZaF`) — this is the explicit hold point. `US-RGF, CA-CF1, EE-Rng, CA-HPC, US-DS1,
+   US-DS2, US-BRG, GL-ZaF` were not previously flagged by any prior session; only `US-HB4`, `CA-CF2`,
+   `NO-And`, `IT-Niv` had prior context. Decide whether all 12 should be excluded, whether the ratio
+   threshold should move, or whether any specific site should be reinstated on inspection.
+
+**Phase 2 (IGBP)**
+4. The "Other" bin judgement call (MODIS Water/Urban pixels kept in the land total, never site-populated)
+   — confirm or ask for pixels to be excluded from the total instead.
+5. The 64.7% PI-vs-MODIS disagreement rate is real and large — worth a sentence in the manuscript text
+   explaining the known flux-footprint-vs-5.6km-pixel mismatch, not just a caption number.
+6. IGBP colour palette (`IGBP_COLORS` in the script) is newly invented for this axis — not reused from
+   any existing repo palette; replace if you have a preferred scheme.
+
+**Phase 3 (aridity)**
+7. **PET methodology approximations** (wind height, net-radiation-from-SW+LW-in with an air-temperature
+   longwave proxy, es/Δ from mean T, G=0, ET0 floored at 0) — all standard FAO-56 simplifications for
+   the available ERA5 variables, but confirm the net-radiation approximation in particular is acceptable
+   for the manuscript's methods section.
+8. **4 sites excluded for physically invalid ERA5 inputs** (`US-Sne, CD-Ygb, DE-Zrk, FR-LBr`) — distinct
+   from the two precip-dependent rules; confirm this additional, narrower exclusion is acceptable, or ask
+   for the underlying ERA5 extraction to be re-pulled for these 4 sites instead of excluding them.
+9. `DE-SbM` (PET=0) and `KE-Aq2` (PET=122 mm/yr) are flagged, not excluded — both already drop out via
+   the other two rules regardless, so this is informational only, not an open decision.
+10. **Caption must state the 1970–2000 (CGIAR) vs. 1991–2020 (ERA5) period mismatch** for this one
+    panel's two sides — noted here as a hard requirement for Phase 5, not yet written since Phase 5 is
+    held.
+
+**Phase 4 (biomass, NEE, ET)**
+11. No new judgement calls — straight port of already-reviewed `flux_bin_breaks.R` logic, numbers match
+    that session's validation run exactly.
+
+### What Phase 5 will need once you've reviewed the above
+
+Per the original Phase 5 spec (label rules, legend content incl. the three land-grid totals and the
+172-exclusion note, per-panel tables, `fig_04_geo_vs_data.png`/`fig_04_geo_vs_geo.png` to both
+`review/figures/representativeness/` and `review/figures/draft_manuscript_v1/`, each with `.meta.json`
+and a legend file, old draft left in place) — nothing further is blocked except your decision on item 3
+(the 12-site list) and, ideally, items 4, 6, and 8 above. Say the word on the 12-site list (and anything
+else above you want changed) and Phase 5 can proceed in a follow-up session.
+
+---
+
+## 2026-10-02 (5) — New Fig 4, Phase 4: biomass (panel D), NEE and ET (panels E-F)
+
+### Biomass (panel D)
+
+Unchanged, as instructed: the existing ESA CCI Biomass v7 (7-bin hybrid) site-level lookup
+(`site_biomass_cci_v7.csv`) and global distribution are used identically for **both** Geo vs Geo and Geo
+vs Data — biomass has no independent tower-measured counterpart, same convention the four reproduced
+axes already used in `flux_bin_breaks.R`. **J = 0.636** (both versions), 781/781 classified.
+
+### NEE and ET (panels E–F)
+
+Ported — not sourced — the exact scheme and code from `scripts/diagnostics/flux_bin_breaks.R` (this
+session's earlier work) into production: Köppen 0.5° land mask, bar 1 = model GPP < 5 gC m⁻² yr⁻¹ (NEE's
+vegetation mask, since NEE is signed and can't be cut on its own magnitude), rounded sextiles of the
+50/50 geo/tower mixture CDF outside bar 1. ET uses the dedicated 1991–2020, 17-model ensemble-median
+raster (`flux_bin_breaks_et_median_1991_2020.tif`), not the older, window-mismatched committed
+`trendy_et_median.tif`. "Geo vs Data" = tower-measured annual value (VUT→CUT per-site fallback: 731
+VUT, 49 CUT, 1 neither); "Geo vs Geo" = the model's own value at the tower cell. Land total: TRENDY
+ensemble footprint under the Köppen mask, 163,331,649 km² (same for both panels).
+
+| Panel | Comparison | n | J |
+|---|---|---|---|
+| E NEE | Geo vs Data (towers) | 601/781 | 0.162 |
+| E NEE | Geo vs Geo (model at tower) | 781/781 | 0.530 |
+| F ET | Geo vs Data (towers) | 634/781 | 0.456 |
+| F ET | Geo vs Geo (model at tower) | 781/781 | 0.456 |
+
+These numbers match this session's earlier `flux_bin_breaks.R` validation run exactly (same edges:
+NEE −250/−100/−50/−25/0 gC m⁻² yr⁻¹; ET 200/350/450/600/850 mm/yr) — a useful cross-check that the port
+is faithful.
+
+### Outputs
+
+New: `data/snapshots/site_nee_fig4.csv`, `site_et_fig4.csv` (781 sites each: `mask_value`,
+`tower_value`, `model_value_at_tower`, `bin_data`, `bin_geo`, each with `.meta.json` recording the
+rounded edges), `nee_et_fig4_global_distribution.csv` (land fractions per bin). All 6 panels (A–F) now
+present in `representativeness_metrics_fig4.csv`. This completes the computational phases (1–4); **Phase
+5 (figure assembly) remains held** pending review of the 12-site P_ERA_MAX_RATIO list (2026-10-02(2)
+entry above) — see the final comparison report below.
+
+---
+
+## 2026-10-02 (4) — New Fig 4, Phase 3: aridity (panel C)
+
+### Data sources
+
+**Global side + Geo vs Geo**: unchanged, as instructed — CGIAR Aridity Index v3.1 (7-class UNEP scheme),
+reusing `data/snapshots/site_aridity.csv` (already 781 sites, already current) and
+`aridity_unep7_global_distribution.csv` (134,761,545 km² — this axis's own native CGIAR coverage,
+smaller than the 147.3M km² Köppen/IGBP/biomass share; see the 2026-10-01 draft-Fig-4-audit entry).
+**J (Geo vs Geo) = 0.666**.
+
+**Geo vs Data**: AI = P/PET from each site's own 1991–2020 ERA5 meteorology. P reuses panel A's
+climatological mean annual P_ERA. PET = FAO-56 Penman–Monteith reference evapotranspiration (grass
+reference surface), computed monthly from the 1991–2020 ERA5 climatological monthly means and summed to
+an annual total, using every ERA5 variable available in this DuckDB's `monthly` table for `dataset='ERA5'`:
+`TA_ERA` (°C), `SW_IN_ERA`/`LW_IN_ERA` (W/m², confirmed empirically against a known site before use),
+`VPD_ERA` (hPa), `PA_ERA` (kPa), `WS_ERA` (m/s). Validated against three known climate types before the
+full run: AU-ASM (Alice Springs desert) → AI=0.159 (Arid, correct); US-Ha1 (Harvard Forest) → AI=1.85
+(Humid, correct); US-SRM (Santa Rita semi-arid savanna) → AI=0.228 (Semi-Arid, correct).
+
+### Approximations (required reporting)
+
+1. **Wind**: `WS_ERA` assumed to be ERA5's native 10 m wind (not explicitly documented in this repo),
+   converted to the FAO-56 reference height of 2 m via the standard log-wind-profile formula.
+2. **Net radiation**: this ERA5 bundle has both incoming shortwave *and* incoming longwave directly, so
+   net radiation is computed from them rather than FAO-56's own simplified clear-sky parametrization
+   (built for when only Rs is available): Rns = (1−0.23)×Rs (FAO-56 grass reference albedo); outgoing
+   longwave estimated via Stefan–Boltzmann applied to `TA_ERA` as a proxy for surface skin temperature
+   (not available in this bundle), assumed emissivity 0.96; Rnl = LW_in − LW_out.
+3. **es/Δ** computed from monthly mean `TA_ERA`, not averaged from daily Tmax/Tmin as FAO-56 recommends
+   (true Tmax/Tmin aren't in this ERA5 bundle — only `TA_ERA_DAY`/`TA_ERA_NIGHT`, an approximate day/night
+   split, deliberately not used to avoid compounding approximations). Recognised FAO-56 simplification,
+   slightly underestimates ET0.
+4. **Soil heat flux G = 0** — standard FAO-56 simplification at monthly-to-annual timescales.
+5. **ET0 floored at 0 per month** — found necessary: at high latitude in winter, Rn can be strongly
+   negative, driving the raw formula negative for that month; unclipped, this could make annual PET
+   itself negative or near-zero at cold sites (caught in a pre-release sanity check, see below).
+6. **Caption note (required)**: CGIAR's own baseline period is 1970–2000; this Geo-vs-Data calculation
+   uses 1991–2020 ERA5 — a period mismatch between this one panel's two sides not present elsewhere. Must
+   appear in the Phase 5 figure caption.
+
+### Bugs/data-quality issues found while sanity-checking PET
+
+An initial full-network run produced impossible AI values (range −10.5 to 605, before the floor-at-0
+fix; 0 to ∞ after it) — traced to two distinct causes, not the formula:
+
+- **ET0 unclipped** (fixed): see approximation 5 above.
+- **Invalid raw ERA5 inputs at 4 sites**: `US-Sne`'s `LW_IN_ERA` reaches ~30,000–32,000 W/m² in winter
+  months (true downwelling longwave never exceeds ~700 W/m²); `CD-Ygb`'s `VPD_ERA` reaches ~1,620–1,660
+  hPa (true VPD never exceeds ~12 hPa). `DE-Zrk` and `FR-LBr` show the same pattern. These are ERA5
+  data-quality issues in the bundled extraction, not a PET-formula bug — added a physical-plausibility
+  screen (LW/SW <0 or >1000 W/m²; VPD <0 or >100 hPa; WS ≤0 or >50 m/s; PA outside [50,110] kPa; TA
+  outside [−90,60]°C) that excludes these 4 sites from the panel, logged via `log_exclusion()` with a
+  distinct reason from the two precip-dependent exclusion rules.
+- **Two further sites with implausible-but-not-invalid PET**: `DE-SbM` (PET=0 mm/yr; its `LW_IN_ERA` is
+  suspiciously low — 105–179 W/m² — but not outside the physical screen) and `KE-Aq2` (PET=122 mm/yr; all
+  raw inputs look plausible for a cool highland tropical site). Flagged, not screened out — a known
+  limitation of approximation 2 (estimating surface emission from air temperature can bias Rn low at
+  sites where true incoming longwave is naturally on the low side for reasons other than cold
+  temperature, e.g. altitude). Both happen to already be excluded from the final panel by the
+  GRP_ERA_DOWN/P_ERA_MAX_RATIO rules regardless, so neither affects the panel's result either way.
+
+### Panel result
+
+Dual exclusion (172 GRP_ERA_DOWN + ratio, per the 2026-10-02(2) entry above) applied, on top of the 4
+invalid-input exclusions: n_eligible = 781 − 4 − 172 − 11 = **594** (11, not 12, of the ratio-only
+catches survive within this panel's pool, since one of the 12 — not identified individually here — was
+already among the 4 invalid-input sites). All 594 classify. **J (Geo vs Data) = 0.718**.
+
+### Outputs
+
+New: `data/snapshots/site_aridity_era5_fig4.csv` (all 781 sites; `PET_mm`/`ai_value`/`unep_class_7` NA
+for the 4 `invalid_era5_input=TRUE` sites; `.meta.json`). `representativeness_metrics_fig4.csv` updated
+with panel C's two rows. Code appended to `scripts/figure4_representativeness.R` (Phase 3 section).
+
+---
+
+## 2026-10-02 (3) — New Fig 4, Phase 2: land cover as IGBP (panel B)
+
+### Data sources
+
+**Global side**: MODIS MCD12C1.061 `Majority_Land_Cover_Type_1` (IGBP scheme, 0.05° native, the file
+already in `data/external/modis_landcover/`), resampled (nearest-neighbour) onto the Beck et al. (2023)
+1 km Köppen land-mask grid and masked to it — reproduces the **exact same 147,322,862 km² total** as
+panel A, per instruction ("area on the 1 km Beck land mask"). MODIS's HDF4 CRS metadata mislabels the
+datum ("Clarke 1866 ellipsoid"); both rasters share the identical −180/180/−90/90 lon/lat extent (a known
+MCD12C1 CMG quirk, not a real projection mismatch), so MODIS's CRS was explicitly set to EPSG:4326
+(matching Beck's) before resampling.
+
+**Allowable classes**: the `igbp` column already in the pinned snapshot CSV (sourced from each site's
+BIF metadata — there is no free-text "IGBP" BADM `VARIABLE`, confirmed by grep). All 781 current-network
+sites report one of **15 classes**: ENF, EBF, DNF, DBF, MF, CSH, OSH, WSA, SAV, GRA, WET, CRO, CVM, BSV,
+SNO — every standard IGBP class *except* Water (code 0) and Urban-and-built-up (code 13); no flux tower
+sits on open water or in a city. **Judgement call, flagged**: MODIS pixels classified 0 or 13 are folded
+into a 16th "Other" bin on the global side (land area counted, matching the task's required 147.3M km²
+total) that can never receive a site count, since no PI reports either class.
+
+### Panels
+
+- **Geo vs Geo**: MODIS class at each tower, native 0.05° resolution (not degraded through the 1 km
+  resample used for area accounting). All 781 classified. **J = 0.495**.
+- **Geo vs Data**: PI-reported IGBP class per site. All 781 classified. **J = 0.346**.
+
+### Required report: PI vs. MODIS disagreement
+
+**505 / 781 sites (64.7%) disagree** between their PI-reported class and the MODIS class at the tower
+coordinate — a genuinely large rate, consistent with the well-known flux-footprint-vs.-5.6km-pixel
+mismatch (PIs site towers in locally homogeneous patches that are often too small to dominate a coarse
+MODIS pixel). Disagreement rate by PI-reported class:
+
+| PI class | n sites | n disagree | % disagree |
+|---|---|---|---|
+| DNF, CSH, CVM, SNO | 13, 12, 9, 2 | all | 100% |
+| WSA | 18 | 17 | 94.4% |
+| WET | 117 | 113 | **96.6%** |
+| ENF | 114 | 95 | 83.3% |
+| OSH | 41 | 28 | 68.3% |
+| MF | 24 | 15 | 62.5% |
+| DBF | 81 | 48 | 59.3% |
+| BSV | 7 | 4 | 57.1% |
+| GRA | 146 | 78 | 53.4% |
+| EBF | 44 | 23 | 52.3% |
+| SAV | 14 | 10 | 71.4% |
+| CRO | 139 | 38 | **27.3%** (lowest — croplands are large, homogeneous, and MODIS-detectable) |
+
+Wetland (WET) and needleleaf forest (ENF/DNF) PI classes disagree most — both are small-patch cover
+types MODIS systematically under-detects at 5.6 km; cropland (CRO) disagrees least, as expected for a
+large-patch, spectrally distinct cover type.
+
+### Outputs
+
+New: `data/snapshots/site_igbp_fig4.csv` (781 rows: `igbp_pi`, `igbp_modis_class`/`_code`, `agree`,
+`.meta.json`); `data/snapshots/igbp_mcd12c1_global_distribution.csv` (16-bin global distribution,
+`.meta.json`). `data/snapshots/representativeness_metrics_fig4.csv` updated with panel B's two rows.
+Code in `scripts/figure4_representativeness.R` (Phase 2 section appended; the Phase-1-only metrics-write
+block at the end was generalized to run after all phases implemented so far).
+
+---
+
+## 2026-10-02 (2) — New Fig 4: second precip-dependent exclusion rule (P_ERA_MAX_RATIO), panel A recomputed
+
+Added a second exclusion rule for the precipitation-dependent Geo-vs-Data panels (Köppen now; aridity in
+Phase 3), additive to the 172 GRP_ERA_DOWN sites, not a replacement. `scripts/figure4_representativeness.R`
+restructured so the precip-reference build and the shared ERA5 climatology pull now happen once, before
+Phase 1, so both Köppen and the future aridity panel reuse the same objects.
+
+### Rule
+
+`P_ERA_MAX_RATIO <- 3`, declared in `R/pipeline_config.R` with its rationale inline: above the up-to-~2×
+differences topography alone can produce between a point and a gridded climatology, below the ~4×
+inflation seen at the already-flagged sites. A site is excluded from a precip-dependent Geo-vs-Data panel
+if its 1991–2020 mean annual P_ERA exceeds `P_ERA_MAX_RATIO` × its reference MAP — PI-reported BADM `MAP`
+where present and non-zero (632/781 sites), else WorldClim v2.1 BIO12 at the tower coordinate (the
+remaining 149/781; extracted directly from `data/external/worldclim/.../wc2.1_2.5m_bio_12.tif`, not
+reused from any diagnostic's cache). Saved as a new reusable snapshot, `data/snapshots/site_precip_reference.csv`.
+
+### Sensitivity and required reporting
+
+| ratio threshold | total caught | caught beyond the 172 |
+|---|---|---|
+| > 2 | 188 | 18 |
+| > 3 | 172 | **12** |
+| > 4 | 94 | 8 |
+
+**CA-CF2, IT-Niv, NO-And, and US-HB4 are all caught** at ratio > 3 (10.98×, 5.25×, 8.79×, 460.49×
+respectively — US-HB4's is the known ERA5 spatial-averaging artifact case). The 12 sites caught beyond
+the 172, ranked by ratio:
+
+| site_id | P_ERA (mm/yr) | reference (mm/yr) | ref. source | ratio |
+|---|---|---|---|---|
+| US-HB4 | 658,045 | 1,429.0 | BADM MAP | 460.49× |
+| CA-CF2 | 4,964 | 452.0 | BADM MAP | 10.98× |
+| US-RGF | 277 | 31.0 | BADM MAP | 8.93× |
+| NO-And | 9,318 | 1,060.0 | BADM MAP | 8.79× |
+| CA-CF1 | 3,649 | 452.0 | BADM MAP | 8.07× |
+| EE-Rng | 698 | 107.1 | BADM MAP | 6.51× |
+| IT-Niv | 5,982 | 1,138.7 | BADM MAP | 5.25× |
+| CA-HPC | 1,114 | 240.6 | BADM MAP | 4.63× |
+| US-DS1 | 1,578 | 432.0 | BADM MAP | 3.65× |
+| US-DS2 | 1,543 | 432.0 | BADM MAP | 3.57× |
+| US-BRG | 4,221 | 1,200.0 | BADM MAP | 3.52× |
+| GL-ZaF | 781 | 253.0 | BADM MAP | 3.09× |
+
+All 12 used BADM MAP as the reference (none fell to the WorldClim fallback). **12 is above the task's
+"~ten" threshold** — per instruction, **Phase 5 (figure assembly) is held** pending review of this list;
+Phases 2–4 proceeded regardless. Every exclusion (172 + 12) was logged via `log_exclusion()`, naming
+which rule triggered it (`p_group == 'not_fitted_slope_9999'` vs `P_ERA_MAX_RATIO=3` with the ratio/P_ERA/
+reference/source spelled out in the reason text) — `outputs/exclusion_log.csv`, gitignored.
+
+### Panel A (Köppen) recomputed with both rules
+
+- Geo vs Geo: unchanged (not precipitation-dependent) — n=781, J=0.372.
+- Geo vs Data: n_eligible = 781 − 172 − 12 = **597** (down from 609), all 597 still classify. **J = 0.412**
+  (barely moved from the 172-only value of 0.411 — the 12 additional exclusions were too few, and too
+  evenly spread across classes, to shift the distribution much).
+
+### Outputs
+
+Updated in place: `scripts/figure4_representativeness.R` (restructured — shared precip-reference/ratio
+section now precedes Phase 1), `R/pipeline_config.R` (+`P_ERA_MAX_RATIO`), `data/snapshots/site_koppen_era5_fig4.csv`
+(+`ratio`/`ref_source`/`excluded_grp_era_down`/`excluded_p_era_ratio` columns, `excluded_fig4_geo_vs_data`
+now reflects both rules), `data/snapshots/representativeness_metrics_fig4.csv` (panel A Geo-vs-Data row
+updated). New: `data/snapshots/site_precip_reference.csv` (+`.meta.json`).
+
+---
+
 ## 2026-10-02 — New Fig 4 (current network), Phase 1: Köppen-Geiger (panel A)
 
 First phase of building the new Figure 4 (two full versions, Geo-vs-Geo and Geo-vs-Data, six panels

@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-01T20:54:42Z",
-  "pipeline_version": "151ac82",
+  "run_datetime_utc": "2026-10-01T22:36:27Z",
+  "pipeline_version": "52e9e56",
   "input_sources": [
     "data/external/modis_landcover/MCD12C1.A2022001.061.2023244164746.hdf",
     "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif"

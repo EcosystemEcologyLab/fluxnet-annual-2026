@@ -39,15 +39,23 @@
 ##
 ## ---- ADDENDUM (2026-10-02): second precip-dependent exclusion rule --------
 ## Added a second exclusion rule for precipitation-dependent Geo-vs-Data
-## panels (Koppen here; aridity in Phase 3): exclude a site if its 1991-2020
-## mean annual P_ERA exceeds P_ERA_MAX_RATIO=3 (R/pipeline_config.R) times a
-## reference mean annual precipitation (BADM MAP where present/non-zero,
-## else WorldClim BIO12 at the tower). Additive to the 172 GRP_ERA_DOWN
-## sites, not a replacement. Catches 12 sites beyond the 172 at ratio>3 --
-## above the task's "~10" threshold, so per instruction Phase 5 (figure
-## assembly) is held pending review of that list; Phases 2-4 proceed. See
-## SESSION_LOG.md for the full report (ratio=2/3/4 sensitivity, the 12-site
-## list, and confirmation all 4 previously-named sites are caught).
+## panels (Koppen, aridity): exclude a site if its 1991-2020 mean annual
+## P_ERA exceeds P_ERA_MAX_RATIO=3 (R/pipeline_config.R) times a reference
+## mean annual precipitation. Additive to the 172 GRP_ERA_DOWN sites, not a
+## replacement. First version (single preferred reference) caught 12 sites
+## beyond the 172, above the task's "~10" threshold -- Phase 5 was held.
+##
+## ---- REVISION (2026-10-02, same day): dual-reference AND logic -----------
+## Revised per instruction: a site is now excluded by the ratio rule only if
+## P_ERA exceeds P_ERA_MAX_RATIO times EVERY reference available for it --
+## both BADM MAP (where present/non-zero) AND WorldClim BIO12 at the tower
+## (extracted for all 781 sites), not just whichever one was preferred.
+## Where only one reference exists, that one decides alone. This stops a
+## single wrong/stale BADM value from excluding a site BIO12 would confirm
+## is sound. Phase 5 now proceeds regardless of the revised count (per this
+## revision's explicit instruction). See SESSION_LOG.md for the full report:
+## the revised list, which of the original 12 are no longer excluded, and
+## panels A/C recomputed.
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -202,9 +210,10 @@ write_output_metadata(
 )
 msg("Saved: ", precip_ref_path)
 
-## Returns a data frame (site_id, p_era_map_mm, ref_map_mm, ref_source, ratio,
-## excluded_grp_era_down, excluded_p_era_ratio, excluded_any) for every site
-## in `p_era_df` (must have site_id + a P_ERA 1991-2020 mean annual column).
+## Returns a data frame (site_id, p_era_map_mm, badm_map_mm, ratio_badm,
+## bio12_mm, ratio_bio12, excluded_grp_era_down, excluded_p_era_ratio,
+## excluded_any) for every site in `p_era_df` (must have site_id + a P_ERA
+## 1991-2020 mean annual column).
 ## `excluded_by` is passed to log_exclusion() for the ratio rule only (the
 ## GRP_ERA_DOWN rule was already logged once, by Phase 1, with its own
 ## wording -- not re-logged here to avoid duplicate log rows on reruns of
@@ -213,16 +222,32 @@ msg("Saved: ", precip_ref_path)
 ## since log_exclusion() appends and this script does not deduplicate its
 ## own log output across phases/panels by design (every exclusion row names
 ## which panel excluded it via `variable`).
-compute_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites, excluded_by, panel_name) {
-  d <- p_era_df |>
+## Revised 2026-10-02: a site is now excluded by the ratio rule only if its
+## P_ERA exceeds P_ERA_MAX_RATIO times EVERY reference available for it --
+## both BADM MAP (where present/non-zero) and WorldClim BIO12 at the tower,
+## not just whichever one `precip_reference` happened to prefer. Where only
+## one reference exists (BADM MAP absent or zero), that one reference alone
+## decides, same as before. This stops a single wrong/stale BADM metadata
+## value from excluding a site whose precipitation is otherwise sound --
+## the original single-reference rule would exclude on BADM MAP alone even
+## if BIO12 agreed with P_ERA.
+flag_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites) {
+  p_era_df |>
     dplyr::rename(p_era_map_mm = dplyr::all_of(p_era_col)) |>
-    dplyr::left_join(dplyr::select(precip_reference, site_id, ref_map_mm, ref_source), by = "site_id") |>
+    dplyr::left_join(dplyr::select(precip_reference, site_id, badm_map_mm, bio12_mm), by = "site_id") |>
     dplyr::mutate(
-      ratio = p_era_map_mm / ref_map_mm,
+      ratio_badm  = dplyr::if_else(!is.na(badm_map_mm) & badm_map_mm > 0, p_era_map_mm / badm_map_mm, NA_real_),
+      ratio_bio12 = p_era_map_mm / bio12_mm,
+      exceeds_badm  = is.na(ratio_badm) | ratio_badm > P_ERA_MAX_RATIO,   # NA (no BADM) treated as "not a blocker"
+      exceeds_bio12 = !is.na(ratio_bio12) & ratio_bio12 > P_ERA_MAX_RATIO,
       excluded_grp_era_down = site_id %in% slope9999_sites,
-      excluded_p_era_ratio  = !is.na(ratio) & ratio > P_ERA_MAX_RATIO & !excluded_grp_era_down,
+      excluded_p_era_ratio  = exceeds_badm & exceeds_bio12 & !excluded_grp_era_down,
       excluded_any = excluded_grp_era_down | excluded_p_era_ratio
     )
+}
+
+compute_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites, excluded_by, panel_name) {
+  d <- flag_precip_exclusions(p_era_df, p_era_col, slope9999_sites)
 
   for (sid in slope9999_sites) {
     log_exclusion(
@@ -233,48 +258,63 @@ compute_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites, excl
   }
   ratio_caught <- d |> dplyr::filter(excluded_p_era_ratio)
   for (i in seq_len(nrow(ratio_caught))) {
+    refs_txt <- if (!is.na(ratio_caught$ratio_badm[i])) {
+      sprintf("BADM MAP=%.1f mm/yr (ratio %.2f), WorldClim BIO12=%.1f mm/yr (ratio %.2f)",
+              ratio_caught$badm_map_mm[i], ratio_caught$ratio_badm[i],
+              ratio_caught$bio12_mm[i], ratio_caught$ratio_bio12[i])
+    } else {
+      sprintf("WorldClim BIO12=%.1f mm/yr (ratio %.2f) -- only reference available (no BADM MAP)",
+              ratio_caught$bio12_mm[i], ratio_caught$ratio_bio12[i])
+    }
     log_exclusion(
       site_id = ratio_caught$site_id[i], variable = paste0(panel_name, " (Geo vs Data panel)"),
       timestamp = "ALL",
-      reason = sprintf("P_ERA/reference ratio %.2f exceeds P_ERA_MAX_RATIO (P_ERA=%.1f mm/yr, ref=%.1f mm/yr, ref_source=%s)",
-                        ratio_caught$ratio[i], ratio_caught$p_era_map_mm[i],
-                        ratio_caught$ref_map_mm[i], ratio_caught$ref_source[i]),
-      threshold = paste0("P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO), excluded_by = excluded_by
+      reason = sprintf("P_ERA (%.1f mm/yr) exceeds P_ERA_MAX_RATIO times EVERY available reference: %s",
+                        ratio_caught$p_era_map_mm[i], refs_txt),
+      threshold = paste0("P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO, " (all available references)"),
+      excluded_by = excluded_by
     )
   }
   d
 }
 
-## ---- Required reporting (ratio sensitivity, 4 named sites, >10 check) ----
+## ---- Required reporting: revised dual-reference ratio rule ---------------
 ## Uses Koppen's kg_era5_nomap$map_mm as "1991-2020 mean annual P_ERA" -- this
 ## is a general ERA5 climatology byproduct, not Koppen-specific (same number
-## aridity's Geo-vs-Data panel will use in Phase 3).
-ratio_check <- kg_era5_nomap |> dplyr::select(site_id, map_mm) |>
-  dplyr::left_join(dplyr::select(precip_reference, site_id, ref_map_mm, ref_source), by = "site_id") |>
-  dplyr::mutate(ratio = map_mm / ref_map_mm, in_172 = site_id %in% slope9999_172)
+## aridity's Geo-vs-Data panel uses in Phase 3). The OLD (single-reference)
+## 12-site list is recomputed here too, purely for the "which of the
+## previous 12 are no longer excluded" comparison -- not logged, informational.
+ratio_check <- flag_precip_exclusions(
+  kg_era5_nomap |> dplyr::select(site_id, map_mm), p_era_col = "map_mm", slope9999_sites = slope9999_172
+)
+
+old_12 <- c("US-HB4", "CA-CF2", "US-RGF", "NO-And", "CA-CF1", "EE-Rng", "IT-Niv",
+            "CA-HPC", "US-DS1", "US-DS2", "US-BRG", "GL-ZaF")
+new_caught_beyond_172 <- ratio_check |> dplyr::filter(excluded_p_era_ratio) |>
+  dplyr::arrange(dplyr::desc(dplyr::coalesce(ratio_badm, ratio_bio12)))
+msg("\n--- Revised (dual-reference, AND logic) P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO, " rule ---")
+msg("Sites caught beyond the 172 (n=", nrow(new_caught_beyond_172), "), with both references and both ratios:")
+print(as.data.frame(new_caught_beyond_172[, c("site_id", "p_era_map_mm", "badm_map_mm", "ratio_badm",
+                                               "bio12_mm", "ratio_bio12")]))
+no_longer_excluded <- setdiff(old_12, new_caught_beyond_172$site_id)
+still_excluded <- intersect(old_12, new_caught_beyond_172$site_id)
+msg("Of the previous 12: still excluded (", length(still_excluded), ") = ",
+    paste(still_excluded, collapse = ", "))
+msg("Of the previous 12: NO LONGER excluded (", length(no_longer_excluded), ") = ",
+    paste(no_longer_excluded, collapse = ", "), " -- BIO12 did not confirm P_ERA as implausible for these.")
+msg("Not holding Phase 5 for this (per task instruction) regardless of count.")
 
 for (r in c(2, 3, 4)) {
-  n_tot <- sum(ratio_check$ratio > r, na.rm = TRUE)
-  n_beyond <- sum(ratio_check$ratio > r & !ratio_check$in_172, na.rm = TRUE)
-  msg("P_ERA/reference ratio > ", r, ": ", n_tot, " sites caught in total, ", n_beyond,
-      " beyond the 172 GRP_ERA_DOWN sites")
-}
-
-caught_beyond_172 <- ratio_check |> dplyr::filter(ratio > P_ERA_MAX_RATIO, !in_172) |>
-  dplyr::arrange(dplyr::desc(ratio))
-msg("\nSites caught by P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO, " beyond the 172 (n=",
-    nrow(caught_beyond_172), "):")
-print(as.data.frame(caught_beyond_172[, c("site_id", "map_mm", "ref_map_mm", "ref_source", "ratio")]))
-if (nrow(caught_beyond_172) > 10L) {
-  msg("*** HOLD: ", nrow(caught_beyond_172), " sites caught beyond the 172 (> ~10) -- ",
-      "per task instruction, Phase 5 (figure assembly) is NOT run in this script execution. ",
-      "Phases 2-4 proceed. Awaiting review of the list above before Phase 5.")
+  n_beyond_r <- sum((dplyr::coalesce(ratio_check$ratio_badm, Inf) > r &
+                       dplyr::coalesce(ratio_check$ratio_bio12, Inf) > r) & !ratio_check$excluded_grp_era_down,
+                    na.rm = TRUE)
+  msg("Dual-reference ratio > ", r, " (both refs, beyond the 172): ", n_beyond_r, " sites")
 }
 
 four_named <- ratio_check |> dplyr::filter(site_id %in% c("CA-CF2", "IT-Niv", "NO-And", "US-HB4"))
-msg("\nCA-CF2 / IT-Niv / NO-And / US-HB4 all caught by ratio>", P_ERA_MAX_RATIO, "? ",
-    all(four_named$ratio > P_ERA_MAX_RATIO, na.rm = TRUE))
-print(as.data.frame(four_named[, c("site_id", "map_mm", "ref_map_mm", "ref_source", "ratio")]))
+msg("\nCA-CF2 / IT-Niv / NO-And / US-HB4 all caught by the revised rule? ",
+    all(four_named$excluded_p_era_ratio))
+print(as.data.frame(four_named[, c("site_id", "p_era_map_mm", "badm_map_mm", "ratio_badm", "bio12_mm", "ratio_bio12")]))
 
 # ==============================================================================
 # PHASE 1: Koppen-Geiger (panel A)
@@ -425,7 +465,7 @@ msg("\n=== Saving panel A (Koppen) outputs ===")
 fig4_kg_era5_path <- file.path(SNAP_DIR, "site_koppen_era5_fig4.csv")
 kg_era5_nomap |>
   dplyr::left_join(
-    dplyr::select(kg_precip_excl, site_id, ratio, ref_source,
+    dplyr::select(kg_precip_excl, site_id, badm_map_mm, ratio_badm, bio12_mm, ratio_bio12,
                    excluded_grp_era_down, excluded_p_era_ratio, excluded_any),
     by = "site_id"
   ) |>
@@ -443,11 +483,12 @@ write_output_metadata(
     "flagged in `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio): (1) the ",
     "172 sites in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group; (2) ",
     "sites whose 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO,
-    " times their reference MAP (site_precip_reference.csv: BADM MAP where present/non-zero, else ",
-    "WorldClim BIO12 at the tower) -- 12 sites beyond the 172 at this threshold (added 2026-10-02, ",
-    "see SESSION_LOG.md for the full list and the ratio=2/3/4 sensitivity check). All sites are still ",
-    "classified in this file for reference; the panel's numerator AND denominator must exclude both ",
-    "groups (n_eligible = 781 - 172 - 12 = 597)."
+    " times EVERY reference available for it (ratio_badm, ratio_bio12 columns here; BADM MAP where ",
+    "present/non-zero AND WorldClim BIO12 at the tower, both from site_precip_reference.csv -- revised ",
+    "2026-10-02 to require both, not just one, so a single wrong/stale BADM value can't alone exclude a ",
+    "site whose precipitation is otherwise sound; see SESSION_LOG.md for the revised list and the old ",
+    "vs. new 12-site comparison). All sites are still classified in this file for reference; the ",
+    "panel's numerator AND denominator must exclude both groups."
   )
 )
 msg("Saved: ", fig4_kg_era5_path)
@@ -480,11 +521,12 @@ msg("Saved: ", fig4_kg_era5_path)
 ## GRA, WET, CRO, CVM, BSV, SNO -- i.e. every standard IGBP class EXCEPT
 ## Water (code 0) and Urban-and-built-up (code 13; no flux tower is sited on
 ## open water or in a city). MODIS classes 0 and 13 are therefore outside
-## the PI vocabulary; JUDGEMENT CALL (flagged, not resolved): folded into a
-## 16th "Other" bin on the global/Geo side (land area counted, like the
-## existing LULC high-level axis's own "Other" category), which can never
-## receive a site count since no PI reports Water or Urban -- not excluded
-## from the land total, since the task's land total (147.3M km2) must match
+## the PI vocabulary; folded into a 16th "Other" bin on the global/Geo side
+## (land area counted, like the existing LULC high-level axis's own "Other"
+## category), which can never receive a site count since no PI reports
+## Water or Urban -- CONFIRMED 2026-10-02 (task instruction: "keep MODIS
+## water and urban cells in the land total"), not excluded from the land
+## total, since the task's land total (147.3M km2) must match
 ## the Koppen/biomass panels' own total exactly.
 msg("\n=== PHASE 2: Land cover as IGBP (panel B) ===")
 
@@ -495,16 +537,25 @@ IGBP_CODE_TO_CLASS <- c(
   "6" = "CSH", "7" = "OSH", "8" = "WSA", "9" = "SAV", "10" = "GRA", "11" = "WET",
   "12" = "CRO", "13" = "Other", "14" = "CVM", "15" = "SNO", "16" = "BSV"
 )
-## Colours: a new axis, not reused from any existing palette in this repo --
-## judgement call, flagged. Forest types in greens (darker = denser canopy),
-## shrub/savanna/grassland in tans/golds, wetland teal, cropland bright
-## yellow-green, cropland mosaic mustard, snow/ice near-white, barren beige,
-## Other grey.
+## Colours: the standard MCD12 IGBP legend palette (2026-10-02, revised from
+## this script's first, invented palette per task instruction). Source:
+## Google Earth Engine's documented default visualization palette for
+## MODIS/061/MCD12Q1 band LC_Type1 (IGBP classification) -- the same IGBP
+## class codes 1-16 this script already uses, confirmed via
+## https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MCD12Q1
+## (fetched 2026-10-02; GEE's table lists Water as value 17, but the hex
+## #1c0dff is unambiguous and matches this script's code 0 = Water in the
+## actual MCD12C1 raster, confirmed against this file's own terra::freq()
+## output). "Other" (this script's merged Water+Urban bin) has no official
+## single colour in the source legend -- ADAPTATION, flagged: uses Urban's
+## own official grey (#a5a5a5), the larger and more land-relevant of the two
+## merged classes, rather than Water's blue (#1c0dff), which would read as
+## open water and mislead.
 IGBP_COLORS <- c(
-  ENF = "#1b4332", EBF = "#2d6a4f", DNF = "#52b788", DBF = "#74c69d", MF = "#95d5b2",
-  CSH = "#9c6644", OSH = "#bc9a6b", WSA = "#ddb892", SAV = "#e9c46a",
-  GRA = "#d4e157", WET = "#4a9bb8", CRO = "#ffd60a", CVM = "#e0a106",
-  BSV = "#d8c3a5", SNO = "#f1faee", Other = "#adb5bd"
+  ENF = "#05450a", EBF = "#086a10", DNF = "#54a708", DBF = "#78d203", MF = "#009900",
+  CSH = "#c6b044", OSH = "#dcd159", WSA = "#dade48", SAV = "#fbff13",
+  GRA = "#b6ff05", WET = "#27ff87", CRO = "#c24f44", CVM = "#ff6d4c",
+  BSV = "#f9ffa4", SNO = "#69fff8", Other = "#a5a5a5"
 )
 
 ## ---- Global side: MODIS at Beck 1 km resolution ---------------------------
@@ -881,7 +932,7 @@ current_sites |>
   dplyr::select(site_id) |>
   dplyr::left_join(aridity_annual, by = "site_id") |>
   dplyr::left_join(
-    dplyr::select(aridity_precip_excl, site_id, ratio, ref_source,
+    dplyr::select(aridity_precip_excl, site_id, badm_map_mm, ratio_badm, bio12_mm, ratio_bio12,
                    excluded_grp_era_down, excluded_p_era_ratio, excluded_any),
     by = "site_id"
   ) |>
@@ -907,15 +958,57 @@ write_output_metadata(
     "sites (DE-SbM, KE-Aq2) have implausible PET (0 and 122 mm/yr) from valid-looking raw inputs -- a ",
     "known limitation of the net-radiation approximation, not a data-validity violation -- kept, not ",
     "screened, but both happen to already be excluded by the other two rules (GRP_ERA_DOWN/ratio) so ",
-    "neither affects the panel's final 594-site pool either way. unep_class_7 via the same CGIAR ",
+    "neither affects the panel's final eligible pool either way. unep_class_7 via the same CGIAR ",
     "UNEP-7 breakpoints as aridity_unep7_global_distribution.csv. Dual exclusion as panel A ",
     "(excluded_fig4_geo_vs_data = excluded_grp_era_down | excluded_p_era_ratio): the 172 ",
-    "GRP_ERA_DOWN sites plus any site whose P_ERA exceeds P_ERA_MAX_RATIO times its reference MAP. ",
+    "GRP_ERA_DOWN sites plus any site whose P_ERA exceeds P_ERA_MAX_RATIO times EVERY reference ",
+    "available for it (revised 2026-10-02 to require both BADM MAP and WorldClim BIO12, not just one). ",
     "CAPTION NOTE (required): CGIAR's own baseline period is 1970-2000; this Geo-vs-Data calculation ",
     "uses 1991-2020 ERA5 -- a period mismatch between this panel's two sides not present elsewhere."
   )
 )
 msg("Saved: ", fig4_aridity_path)
+
+## ---- Required reporting: exclusion trace for panels A and C --------------
+## Every site excluded from each precip-dependent Geo-vs-Data panel, listed
+## by WHICH rule caught it, so every panel's n is traceable. Also names the
+## one overlap between the 172 GRP_ERA_DOWN group and the aridity-only
+## invalid-ERA5-input screen that the Phase 3 SESSION_LOG entry left
+## unnamed: DE-Zrk is in both (it's one of the 172, and separately its raw
+## ERA5 LW_IN_ERA/VPD_ERA also fail the physical-plausibility screen) -- it
+## is excluded from aridity's Geo-vs-Data panel either way, but counted only
+## once, which is why that panel's "172 GRP_ERA_DOWN" tally among its 777
+## valid-input sites is effectively 171 distinct sites, not a double-count.
+msg("\n=== Exclusion trace: panels A (Koppen) and C (aridity) ===")
+trace_panel <- function(df, panel_label, has_invalid_col) {
+  ## NA in excluded_grp_era_down/excluded_p_era_ratio means "rule not
+  ## evaluated for this site" (aridity: the 4 invalid-input sites never
+  ## reached compute_precip_exclusions()) -- treated as FALSE for this
+  ## trace, not a third state, so logical indexing below doesn't pick up
+  ## spurious NA entries (R's x[NA] inserts an NA element, silently
+  ## inflating counts and corrupting the printed site lists).
+  grp  <- dplyr::coalesce(df$excluded_grp_era_down, FALSE)
+  rat  <- dplyr::coalesce(df$excluded_p_era_ratio, FALSE)
+  inv  <- if (has_invalid_col) dplyr::coalesce(df$invalid_era5_input, FALSE) else rep(FALSE, nrow(df))
+  grp_only   <- df$site_id[grp & !rat]
+  ratio_only <- df$site_id[rat & !grp]
+  both       <- df$site_id[grp & rat]
+  msg(panel_label, ": GRP_ERA_DOWN only = ", length(grp_only),
+      "; P_ERA_MAX_RATIO only = ", length(ratio_only),
+      "; both rules = ", length(both),
+      if (has_invalid_col) paste0("; invalid ERA5 input (separate screen) = ", sum(inv)) else "")
+  if (length(both) > 0) msg("  Sites caught by BOTH GRP_ERA_DOWN and ratio: ", paste(sort(both), collapse = ", "))
+  n_elig <- sum(!grp & !rat & !inv)
+  msg("  n_eligible = ", n_elig, " (", nrow(df), " total - ", length(grp_only), " GRP-only - ",
+      length(ratio_only), " ratio-only - ", length(both), " both",
+      if (has_invalid_col) paste0(" - ", sum(inv), " invalid-input") else "", ")")
+}
+kg_trace <- readr::read_csv(fig4_kg_era5_path, show_col_types = FALSE)
+trace_panel(kg_trace, "Panel A (Koppen)", has_invalid_col = FALSE)
+arid_trace <- readr::read_csv(fig4_aridity_path, show_col_types = FALSE)
+trace_panel(arid_trace, "Panel C (aridity)", has_invalid_col = TRUE)
+msg("DE-Zrk is in BOTH the 172 GRP_ERA_DOWN group AND panel C's invalid-ERA5-input screen -- ",
+    "named here per task instruction.")
 
 # ==============================================================================
 # PHASE 4: Biomass (panel D), NEE and ET (panels E-F)

@@ -1,11 +1,11 @@
 {
-  "run_datetime_utc": "2026-10-01T20:53:50Z",
-  "pipeline_version": "151ac82",
+  "run_datetime_utc": "2026-10-01T22:35:36Z",
+  "pipeline_version": "52e9e56",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb",
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
     "data/snapshots/site_precip_reference.csv",
     "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"
   ],
-  "notes": "Koppen classification for figure4_representativeness.R's Geo-vs-Data panel A. Same method as site_koppen_era5.csv (R/climate_classification.R::compute_site_koppen_era5(), 1991-2020 ERA5 monthly T/P normal, >= 20 of 30 years required) EXCEPT the KG_ERA5_MAP_MAX_MM=5000mm/yr per-site-year screen is NOT applied here (map_max_mm=Inf). Two exclusion rules instead, both flagged in `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio): (1) the 172 sites in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group; (2) sites whose 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO=3 times their reference MAP (site_precip_reference.csv: BADM MAP where present/non-zero, else WorldClim BIO12 at the tower) -- 12 sites beyond the 172 at this threshold (added 2026-10-02, see SESSION_LOG.md for the full list and the ratio=2/3/4 sensitivity check). All sites are still classified in this file for reference; the panel's numerator AND denominator must exclude both groups (n_eligible = 781 - 172 - 12 = 597)."
+  "notes": "Koppen classification for figure4_representativeness.R's Geo-vs-Data panel A. Same method as site_koppen_era5.csv (R/climate_classification.R::compute_site_koppen_era5(), 1991-2020 ERA5 monthly T/P normal, >= 20 of 30 years required) EXCEPT the KG_ERA5_MAP_MAX_MM=5000mm/yr per-site-year screen is NOT applied here (map_max_mm=Inf). Two exclusion rules instead, both flagged in `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio): (1) the 172 sites in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group; (2) sites whose 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO=3 times EVERY reference available for it (ratio_badm, ratio_bio12 columns here; BADM MAP where present/non-zero AND WorldClim BIO12 at the tower, both from site_precip_reference.csv -- revised 2026-10-02 to require both, not just one, so a single wrong/stale BADM value can't alone exclude a site whose precipitation is otherwise sound; see SESSION_LOG.md for the revised list and the old vs. new 12-site comparison). All sites are still classified in this file for reference; the panel's numerator AND denominator must exclude both groups."
 }

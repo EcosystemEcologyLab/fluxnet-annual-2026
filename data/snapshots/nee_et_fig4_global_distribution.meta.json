@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-01T21:10:14Z",
-  "pipeline_version": "2e05bfa",
+  "run_datetime_utc": "2026-10-01T22:36:29Z",
+  "pipeline_version": "52e9e56",
   "input_sources": [
     "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
     "data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif"

@@ -1,0 +1,16 @@
+{
+  "run_datetime_utc": "2026-10-01T22:43:31Z",
+  "pipeline_version": "cd91ce9",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics_fig4.csv",
+    "site_koppen_beck2023.csv",
+    "site_koppen_era5_fig4.csv",
+    "site_igbp_fig4.csv",
+    "site_aridity.csv",
+    "site_aridity_era5_fig4.csv",
+    "site_biomass_cci_v7.csv",
+    "site_nee_fig4.csv",
+    "site_et_fig4.csv"
+  ],
+  "notes": "New Figure 4 (Geo vs Geo version), 6 panels (A-F: Koppen, IGBP land cover, aridity, biomass, NEE, ET). Built by scripts/figure4_representativeness.R across 5 phases, see SESSION_LOG.md. Does not replace or modify the old draft (fig_04_current_network_sampling_ratios.png) or any Fig 5 output."
+}

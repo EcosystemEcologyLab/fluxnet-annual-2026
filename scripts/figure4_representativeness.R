@@ -1309,4 +1309,412 @@ write_output_metadata(
 msg("Saved: ", metrics_fig4_path)
 print(as.data.frame(metrics_df))
 
-msg("\n=== figure4_representativeness.R complete (phases implemented so far) ===")
+# ==============================================================================
+# PHASE 5: Render and assemble
+# ==============================================================================
+## Two figures (Geo vs Geo, Geo vs Data), six panels each (A Koppen, B IGBP
+## land cover, C aridity, D biomass, E NEE, F ET), in the Fig 4 panel format
+## already built and validated in scripts/diagnostics/flux_bin_breaks.R this
+## session -- ported verbatim (LOG2_*/LABEL_*/contrast_text_color()/
+## base_theme/prep_ordered()/prep_clip()/draw_panel()), not sourced.
+msg("\n=== PHASE 5: Render and assemble ===")
+
+LOG2_MAX    <- log2(5)
+LOG2_BREAKS <- c(-LOG2_MAX, -1, 0, 1, LOG2_MAX)
+LOG2_LABELS <- c("1/5×", "1/2×", "1×", "2×", "5×")
+LOG2_XLIM   <- c(-LOG2_MAX - 0.25, LOG2_MAX + 0.25)
+LABEL_OFFSET  <- 0.15
+LABEL_SIZE_PT <- 6
+LABEL_CHAR_WIDTH <- 0.078
+
+contrast_text_color <- function(hex) {
+  rgb_mat <- grDevices::col2rgb(hex) / 255
+  lum <- 0.2126 * rgb_mat["red", ] + 0.7152 * rgb_mat["green", ] + 0.0722 * rgb_mat["blue", ]
+  ifelse(lum < 0.5, "white", "grey10")
+}
+
+base_theme <- ggplot2::theme_minimal(base_size = 9) +
+  ggplot2::theme(
+    plot.background   = ggplot2::element_rect(fill = "white", colour = NA),
+    panel.background  = ggplot2::element_rect(fill = "white", colour = NA),
+    panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = 0.4),
+    panel.grid.major  = ggplot2::element_blank(),
+    panel.grid.minor  = ggplot2::element_blank(),
+    axis.ticks        = ggplot2::element_line(colour = "black"),
+    axis.ticks.length = ggplot2::unit(-0.15, "cm"),
+    legend.background = ggplot2::element_rect(fill = "white", colour = NA)
+  )
+
+prep_ordered <- function(df) {
+  df |> dplyr::arrange(class_order) |>
+    dplyr::mutate(class_label = factor(class_label, levels = unique(class_label)))
+}
+prep_clip <- function(df) {
+  df |>
+    dplyr::mutate(
+      log2_sr_clip = pmax(pmin(dplyr::coalesce(log2_sr, 0), LOG2_MAX), -LOG2_MAX),
+      truncated    = !is.na(log2_sr) & abs(log2_sr) > LOG2_MAX,
+      annot_label  = dplyr::case_when(
+        truncated & log2_sr > 0 ~ paste0(sprintf("%.1f", sampling_ratio), "×"),
+        truncated & log2_sr < 0 ~ paste0("1/", sprintf("%.1f", 1 / sampling_ratio), "×"),
+        TRUE ~ NA_character_
+      ),
+      annot_x = dplyr::case_when(
+        truncated & log2_sr > 0 ~  LOG2_MAX - 0.08,
+        truncated & log2_sr < 0 ~ -LOG2_MAX + 0.08,
+        TRUE ~ NA_real_
+      ),
+      annot_hjust = dplyr::case_when(
+        truncated & log2_sr > 0 ~ 1, truncated & log2_sr < 0 ~ 0, TRUE ~ 0.5
+      )
+    )
+}
+
+draw_panel <- function(df, j_val, show_xlab = FALSE, panel_label = NULL) {
+  col_vals <- setNames(df$color_hex, as.character(df$class_label))
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = log2_sr_clip, y = class_label, fill = class_label)) +
+    ggplot2::geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
+    ggplot2::geom_col(width = 0.72, na.rm = TRUE, show.legend = FALSE, colour = "black", linewidth = 0.25) +
+    ggplot2::scale_fill_manual(values = col_vals) +
+    ggplot2::scale_x_continuous(limits = LOG2_XLIM, breaks = LOG2_BREAKS, labels = LOG2_LABELS,
+                                 expand = ggplot2::expansion(mult = 0),
+                                 name = if (show_xlab) "Sampling ratio" else NULL,
+                                 sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_discrete(name = NULL) +
+    base_theme +
+    ggplot2::theme(
+      axis.text.y  = ggplot2::element_text(size = 6.5, margin = ggplot2::margin(r = 5)),
+      axis.text.x  = if (show_xlab) ggplot2::element_text(size = 7, margin = ggplot2::margin(t = 5)) else ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_line(),
+      axis.title.x = ggplot2::element_text(size = 8)
+    )
+
+  lbl_df <- df |>
+    dplyr::mutate(
+      bar_lo = pmin(0, dplyr::coalesce(log2_sr_clip, 0)), bar_hi = pmax(0, dplyr::coalesce(log2_sr_clip, 0)),
+      has_bar = !is.na(log2_sr),
+      left_label = sprintf("%.1f%%", global_land_fraction * 100), right_label = format(n, big.mark = ","),
+      left_margin = LABEL_CHAR_WIDTH * nchar(left_label), right_margin = LABEL_CHAR_WIDTH * nchar(right_label),
+      left_covered  = has_bar & bar_lo <= -(LABEL_OFFSET + left_margin),
+      right_covered = has_bar & bar_hi >=  (LABEL_OFFSET + right_margin),
+      left_colour  = dplyr::if_else(left_covered,  contrast_text_color(color_hex), "grey10"),
+      right_colour = dplyr::if_else(right_covered, contrast_text_color(color_hex), "grey10")
+    )
+  p <- p +
+    ggplot2::geom_text(data = lbl_df, ggplot2::aes(x = -LABEL_OFFSET, y = class_label, label = left_label, colour = I(left_colour)),
+                        inherit.aes = FALSE, hjust = 1, size = LABEL_SIZE_PT, size.unit = "pt") +
+    ggplot2::geom_text(data = lbl_df, ggplot2::aes(x = LABEL_OFFSET, y = class_label, label = right_label, colour = I(right_colour)),
+                        inherit.aes = FALSE, hjust = 0, size = LABEL_SIZE_PT, size.unit = "pt")
+
+  ann_df <- dplyr::filter(df, !is.na(annot_label)) |> dplyr::mutate(clip_colour = contrast_text_color(color_hex))
+  if (nrow(ann_df) > 0) {
+    p <- p + ggplot2::geom_text(
+      data = ann_df, ggplot2::aes(x = annot_x, y = class_label, label = annot_label, hjust = annot_hjust, colour = I(clip_colour)),
+      inherit.aes = FALSE, size = 2.2, fontface = "plain"
+    )
+  }
+  if (!is.null(panel_label)) {
+    p <- p + ggplot2::labs(title = panel_label) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = 10.5, face = "bold", colour = "grey10", hjust = 0, margin = ggplot2::margin(b = 3)))
+  }
+  if (!is.na(j_val)) {
+    p <- p + ggplot2::labs(subtitle = sprintf("J = %.3f", j_val)) +
+      ggplot2::theme(plot.subtitle = ggplot2::element_text(size = 7.5, colour = "grey20", hjust = 1, margin = ggplot2::margin(b = 2)))
+  }
+  p
+}
+
+## ---- Axis metadata: class order / label / colour per panel, and a single
+## builder that turns each phase's already-computed merged_* df (class,
+## global_land_fraction, n, network_frac) into draw_panel()-ready shape. ----
+get_j_fig4 <- function(panel, cmp) {
+  v <- metrics_df$weighted_jaccard[metrics_df$panel == panel & metrics_df$comparison == cmp]
+  if (length(v) == 0) NA_real_ else v[[1]]
+}
+
+build_panel_df <- function(merged_df, order_map, label_map, color_map, total_km2) {
+  merged_df |>
+    dplyr::mutate(
+      class_order = unname(order_map[class]),
+      class_label = unname(label_map[class]),
+      color_hex   = unname(color_map[class]),
+      global_land_area_km2 = global_land_fraction * total_km2,
+      sampling_ratio = dplyr::if_else(global_land_fraction > 0 & network_frac > 0,
+                                       network_frac / global_land_fraction, NA_real_),
+      log2_sr = dplyr::if_else(!is.na(sampling_ratio), log2(sampling_ratio), NA_real_)
+    ) |>
+    prep_ordered() |> prep_clip()
+}
+
+## NEE/ET bin labels: identical construction to flux_bin_breaks.R.
+flux_bin_labels <- function(flux_name, cut, edges) {
+  bar1_label <- if (flux_name == "NEE") sprintf("unvegetated (GPP < %s)", cut) else sprintf("0–%s", cut)
+  c(bar1_label, sprintf("< %s", edges[1]), sprintf("%s to %s", edges[1], edges[2]),
+    sprintf("%s to %s", edges[2], edges[3]), sprintf("%s to %s", edges[3], edges[4]),
+    sprintf("%s to %s", edges[4], edges[5]), sprintf("> %s", edges[5]))
+}
+flux_merged_df <- function(result, flux_name, cut, comparison) {
+  bin_vec <- if (comparison == "geo_vs_data") result$data_bin else result$geo_bin
+  n_classified <- sum(!is.na(bin_vec))
+  cnt <- as.numeric(table(factor(bin_vec, levels = 1:7)))
+  data.frame(
+    class = as.character(1:7), global_land_fraction = result$land_vec,
+    n = cnt, network_frac = cnt / n_classified, stringsAsFactors = FALSE
+  )
+}
+
+NEE_BIN_LABELS <- flux_bin_labels("NEE", NEE_BAR1_GPP_CUT, nee_result$edges)
+ET_BIN_LABELS  <- flux_bin_labels("ET", ET_LOW_CUT, et_result$edges)
+NEE_LABEL_MAP <- setNames(NEE_BIN_LABELS, as.character(1:7))
+ET_LABEL_MAP  <- setNames(ET_BIN_LABELS, as.character(1:7))
+FLUX_ORDER_MAP <- setNames(1:7, as.character(1:7))
+
+BIOMASS_LABEL_MAP <- setNames(bio7_global$biomass_bin_label, bio7_global$class)
+BIOMASS_ORDER_MAP <- setNames(as.integer(bio7_global$class), bio7_global$class)
+BIO7_COLORS <- c("1" = "#f7f4f9", "2" = "#f0e1c4", "3" = "#d4d491",
+                  "4" = "#a3c585", "5" = "#6cb375", "6" = "#2e8b57", "7" = "#14532d")
+
+KG_LABEL_MAP <- setNames(TL_ORDER, TL_ORDER)
+KG_ORDER_MAP <- setNames(seq_along(TL_ORDER), TL_ORDER)
+
+IGBP_LABEL_MAP <- setNames(IGBP_ORDER, IGBP_ORDER)
+IGBP_ORDER_MAP <- setNames(seq_along(IGBP_ORDER), IGBP_ORDER)
+
+ARIDITY_LABEL_MAP <- setNames(ARIDITY_ORDER, ARIDITY_ORDER)
+ARIDITY_ORDER_MAP <- setNames(seq_along(ARIDITY_ORDER), ARIDITY_ORDER)
+
+## NEE/ET colour ramps (diverging NEE, blue ET): identical to flux_bin_breaks.R.
+NEE_SINK_RAMP <- grDevices::colorRampPalette(c("#0b3e09", "#eaf5e4"))(5)
+NEE7_COLORS <- c("1" = unname(BIO7_COLORS[["1"]]),
+                  "2" = NEE_SINK_RAMP[1], "3" = NEE_SINK_RAMP[2], "4" = NEE_SINK_RAMP[3],
+                  "5" = NEE_SINK_RAMP[4], "6" = NEE_SINK_RAMP[5], "7" = "#c2703a")
+ET7_COLORS  <- c("1" = unname(BIO7_COLORS[["1"]]), "2" = "#bcd8f4", "3" = "#82bce8",
+                  "4" = "#4498d5", "5" = "#1d74b3", "6" = "#0c4f84", "7" = "#06305a")
+
+## Panel specs: one row per panel letter, with everything needed to build
+## its df for a given comparison and to write its table/legend content.
+PANEL_SPECS <- list(
+  A = list(title = "A — Köppen-Geiger", axis = "koppen",
+           order_map = KG_ORDER_MAP, label_map = KG_LABEL_MAP, color_map = KG13_COLORS,
+           total_km2 = KG_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask"),
+  B = list(title = "B — Land cover (IGBP)", axis = "igbp",
+           order_map = IGBP_ORDER_MAP, label_map = IGBP_LABEL_MAP, color_map = IGBP_COLORS,
+           total_km2 = IGBP_LAND_TOTAL_KM2, land_grid = "MODIS MCD12C1 on Beck 2023 1 km mask"),
+  C = list(title = "C — Aridity", axis = "aridity",
+           order_map = ARIDITY_ORDER_MAP, label_map = ARIDITY_LABEL_MAP, color_map = ARIDITY_COLORS,
+           total_km2 = ARIDITY_LAND_TOTAL_KM2, land_grid = "CGIAR Aridity Index v3.1"),
+  D = list(title = "D — Biomass", axis = "biomass",
+           order_map = BIOMASS_ORDER_MAP, label_map = BIOMASS_LABEL_MAP, color_map = BIO7_COLORS,
+           total_km2 = BIOMASS_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask (fine)"),
+  E = list(title = "E — NEE", axis = "nee",
+           order_map = FLUX_ORDER_MAP, label_map = NEE_LABEL_MAP, color_map = NEE7_COLORS,
+           total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg"),
+  F = list(title = "F — ET", axis = "et",
+           order_map = FLUX_ORDER_MAP, label_map = ET_LABEL_MAP, color_map = ET7_COLORS,
+           total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg")
+)
+
+build_fig4_panel <- function(panel_letter, comparison, show_xlab) {
+  spec <- PANEL_SPECS[[panel_letter]]
+  merged <- switch(panel_letter,
+    A = if (comparison == "geo_vs_geo") merged_geo_geo else merged_geo_data,
+    B = if (comparison == "geo_vs_geo") merged_igbp_geo_geo else merged_igbp_geo_data,
+    C = if (comparison == "geo_vs_geo") merged_arid_geo_geo else merged_arid_geo_data,
+    D = merged_bio,
+    E = flux_merged_df(nee_result, "NEE", NEE_BAR1_GPP_CUT, comparison),
+    F = flux_merged_df(et_result, "ET", ET_LOW_CUT, comparison)
+  )
+  df <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
+  j_val <- get_j_fig4(panel_letter, comparison)
+  list(df = df, plot = draw_panel(df, j_val, show_xlab = show_xlab, panel_label = spec$title))
+}
+
+## ---- Per-panel tables: bin, land_area_km2, land_fraction, towers, tower_fraction
+FIG4_TABLES_DIR <- file.path(FIG_DIR, "tables")
+fs::dir_create(FIG4_TABLES_DIR)
+write_panel_table <- function(panel_letter, comparison, df) {
+  tab <- df |> dplyr::transmute(
+    bin_label = as.character(class_label), land_area_km2 = global_land_area_km2,
+    land_fraction = global_land_fraction, towers = n, tower_fraction = network_frac
+  )
+  out <- file.path(FIG4_TABLES_DIR, sprintf("table_%s_%s.csv", tolower(panel_letter), comparison))
+  readr::write_csv(tab, out)
+  write_output_metadata(
+    out, input_sources = c(metrics_fig4_path),
+    notes = sprintf("Panel %s (%s), %s version. Land grid: %s (%s km2 total).",
+                     panel_letter, PANEL_SPECS[[panel_letter]]$axis, comparison,
+                     PANEL_SPECS[[panel_letter]]$land_grid,
+                     format(round(PANEL_SPECS[[panel_letter]]$total_km2), big.mark = ","))
+  )
+  out
+}
+
+## ---- Crowding check: largest panel is B (IGBP, up to 16 rows) ------------
+## Row heights scaled to each row's tallest panel's class count, so IGBP
+## (16 classes) gets more vertical space than the 7-row panels sharing its
+## figure, rather than patchwork's default equal-height rows (which is what
+## the 13-row Koppen panel got away with in flux_bin_breaks.R, but 16 rows
+## needs checking fresh, not assumed).
+PANEL_ROWS <- vapply(names(PANEL_SPECS), function(k) length(PANEL_SPECS[[k]]$order_map), integer(1))
+ROW_HEIGHTS <- c(max(PANEL_ROWS[c("A", "B")]), max(PANEL_ROWS[c("C", "D")]), max(PANEL_ROWS[c("E", "F")]))
+msg("Panel row counts: ", paste(names(PANEL_ROWS), PANEL_ROWS, sep = "=", collapse = ", "),
+    "; figure row heights (relative): ", paste(ROW_HEIGHTS, collapse = ", "))
+
+crowd_flags <- character(0)
+for (comparison in c("geo_vs_geo", "geo_vs_data")) {
+  msg("\n--- Assembling fig_04_", comparison, ".png ---")
+  panels <- list()
+  tables_written <- character(0)
+  for (letter in c("A", "B", "C", "D", "E", "F")) {
+    show_xlab <- letter %in% c("E", "F")
+    built <- build_fig4_panel(letter, comparison, show_xlab)
+    panels[[letter]] <- built$plot
+    tables_written <- c(tables_written, write_panel_table(letter, comparison, built$df))
+    n_rows <- nrow(built$df)
+    if (n_rows >= 14L) crowd_flags <- c(crowd_flags, sprintf("%s (%s): %d rows", letter, comparison, n_rows))
+  }
+  composite <- patchwork::wrap_plots(panels[c("A", "B", "C", "D", "E", "F")], ncol = 2, heights = ROW_HEIGHTS) +
+    patchwork::plot_annotation(
+      title = sprintf("Figure 4 (current network, n=781) — %s",
+                       if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"),
+      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"))
+    )
+  fig_path <- file.path(FIG_DIR, sprintf("fig_04_%s.png", comparison))
+  ggplot2::ggsave(fig_path, composite, width = 9, height = 13, dpi = 300, bg = "white")
+  msg("Saved: ", fig_path, " (", length(tables_written), " per-panel tables written to ", FIG4_TABLES_DIR, ")")
+}
+if (length(crowd_flags) > 0) {
+  msg("Panels with >=14 rows (checked visually for crowding at LABEL_SIZE_PT=", LABEL_SIZE_PT, "pt, see SESSION_LOG.md): ",
+      paste(crowd_flags, collapse = "; "))
+}
+
+# ==============================================================================
+# PHASE 5: legends, figure .meta.json, copy to draft_manuscript_v1/
+# ==============================================================================
+msg("\n=== PHASE 5: Legends, metadata, draft copy ===")
+
+panel_n_line <- function(letter, cmp) {
+  n <- metrics_df$n_classified[metrics_df$panel == letter & metrics_df$comparison == cmp]
+  j <- metrics_df$weighted_jaccard[metrics_df$panel == letter & metrics_df$comparison == cmp]
+  sprintf("  %s (%s): n = %d / 781, J = %.3f", PANEL_SPECS[[letter]]$title, PANEL_SPECS[[letter]]$axis,
+          n[1], j[1])
+}
+
+write_fig4_legend <- function(comparison, fig_path) {
+  cmp_label <- if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"
+  cmp_desc  <- if (comparison == "geo_vs_geo") {
+    "the gridded product's own value at each tower's coordinate"
+  } else {
+    "each site's own measured or site-derived value"
+  }
+  n_lines <- vapply(c("A", "B", "C", "D", "E", "F"), panel_n_line, character(1), cmp = comparison)
+
+  lines <- c(
+    sprintf("FIGURE LEGEND — %s", basename(fig_path)),
+    strrep("=", 60),
+    "",
+    sprintf("TITLE: Figure 4 (current network, n=781) — %s", cmp_label),
+    "",
+    "DESCRIPTION:",
+    "Six-panel sampling-ratio figure comparing the global land distribution of six",
+    "environmental/biogeochemical axes against the current 781-site FLUXNET network, each",
+    sprintf("panel showing global land vs. %s.", cmp_desc),
+    "Panels: A Koppen-Geiger (13-class), B land cover as IGBP (15 PI-reported classes + an",
+    "Other bin), C aridity (CGIAR UNEP 7-class), D biomass (ESA CCI v7, 7-bin), E NEE",
+    "(signed sink/source, 7-bin), F ET (7-bin).",
+    "",
+    "BAR LABELS:",
+    "Each bar's length is the log2 sampling ratio (that class's share of current-network",
+    "towers, divided by its share of global land area), clipped at +-5x; a bar truncated at",
+    "the clip is annotated with its exact (unclipped) ratio at the bar's outer end. The",
+    "number printed immediately left of the 1x line is that class's share of global land",
+    "area (as a percentage); the number immediately right of the 1x line is the count of",
+    "current-network towers (of 781) classified into that class. A number is set inside its",
+    "bar, in a colour contrasting with the bar's fill, only when the bar is long enough to",
+    "fully contain it; otherwise it is set in near-black beside the 1x line (or just beyond",
+    "a too-short bar's outer end). J (weighted Jaccard overlap between the land and tower",
+    "distributions) is in each panel's subtitle. Per-panel tower n is NOT shown on the",
+    "panel -- see below.",
+    "",
+    "LAND GRIDS AND TOTALS:",
+    "  Koppen, land cover and biomass: Beck et al. (2023) 1 km Koppen-Geiger land mask,",
+    "    147,322,862 km2 (land cover resampled onto this same grid; biomass uses its own",
+    "    finer 0.00833 deg version of the same mask).",
+    "  Aridity: CGIAR Aridity Index v3.1's own native raster coverage, 134,761,545 km2 --",
+    "    smaller than the shared 147.3M km2 total because the CGIAR product's own coverage",
+    "    ends at 60 deg S (no Antarctic grid cells), unlike the Beck Koppen mask.",
+    "  NEE and ET: TRENDY v14 ensemble-median 0.5 deg grid under the Koppen land mask,",
+    "    163,331,649 km2 -- larger per-cell footprint than the two above because at 0.5 deg",
+    "    resolution, a coastal cell straddling land and ocean counts as whole land (no",
+    "    fractional-coverage weighting at this coarse resolution).",
+    "",
+    sprintf("PER-PANEL n AND J (%s):", cmp_label),
+    n_lines,
+    ""
+  )
+
+  if (comparison == "geo_vs_data") {
+    lines <- c(lines,
+      "EXCLUSIONS (Geo vs Data, precipitation-dependent panels A and C only):",
+      "Two exclusion rules apply to the Koppen (panel A) and aridity (panel C) Geo vs Data",
+      "panels, both site-level, in addition to each panel's own classification:",
+      "  1. GRP_ERA_DOWN: 172 sites in the precip_downscaling_provenance diagnostic's",
+      "     not_fitted_slope_9999 group (no usable P_ERA-vs-measured-P regression slope).",
+      sprintf("  2. P_ERA_MAX_RATIO=%d: a site's 1991-2020 mean annual P_ERA exceeds %d times EVERY",
+              P_ERA_MAX_RATIO, P_ERA_MAX_RATIO),
+      "     reference available for it (BADM MAP where present/non-zero, AND WorldClim BIO12",
+      "     at the tower) -- 10 further sites beyond the 172.",
+      "  Panel C (aridity) additionally excludes 4 sites (CD-Ygb, DE-Zrk, FR-LBr, US-Sne)",
+      "  whose raw ERA5 meteorological inputs to the FAO-56 PET calculation are physically",
+      "  impossible in at least one month (e.g. LW_IN_ERA up to ~32,000 W/m2) -- an ERA5",
+      "  data-quality issue distinct from the two rules above.",
+      "",
+      "PERIOD MISMATCH (panel C only):",
+      "CGIAR's Aridity Index v3.1 baseline period is 1970-2000. Panel C's Geo vs Data side",
+      "(AI = P_ERA / FAO-56 PET) uses 1991-2020 ERA5 reanalysis instead, to match the other",
+      "ERA5-derived panels -- a ~20-30 year period mismatch between this one panel's two",
+      "sides that does not apply to any other panel in this figure.",
+      ""
+    )
+  }
+
+  lines <- c(lines,
+    "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
+    "land fraction, towers, tower fraction) in review/figures/representativeness/tables/.",
+    "Methods notes: review/figures/representativeness/methods_igbp.md, methods_aridity_era5.md,",
+    "methods_flux_bin_scheme.md, methods_precip_exclusions.md."
+  )
+  writeLines(unlist(lines), paste0(tools::file_path_sans_ext(fig_path), ".legend.txt"))
+}
+
+for (comparison in c("geo_vs_geo", "geo_vs_data")) {
+  fig_path <- file.path(FIG_DIR, sprintf("fig_04_%s.png", comparison))
+  write_fig4_legend(comparison, fig_path)
+  write_output_metadata(
+    fig_path,
+    input_sources = c(metrics_fig4_path, "site_koppen_beck2023.csv", "site_koppen_era5_fig4.csv",
+                       "site_igbp_fig4.csv", "site_aridity.csv", "site_aridity_era5_fig4.csv",
+                       "site_biomass_cci_v7.csv", "site_nee_fig4.csv", "site_et_fig4.csv"),
+    notes = sprintf(
+      paste0("New Figure 4 (%s version), 6 panels (A-F: Koppen, IGBP land cover, aridity, biomass, ",
+             "NEE, ET). Built by scripts/figure4_representativeness.R across 5 phases, see ",
+             "SESSION_LOG.md. Does not replace or modify the old draft (fig_04_current_network_",
+             "sampling_ratios.png) or any Fig 5 output."),
+      if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"
+    )
+  )
+  msg("Saved: ", fig_path, ".meta.json and .legend.txt")
+}
+
+## ---- Copy both figures (+ .meta.json + .legend.txt) into draft_manuscript_v1/,
+## leaving the old draft fig_04 file in place untouched.
+for (comparison in c("geo_vs_geo", "geo_vs_data")) {
+  base <- sprintf("fig_04_%s", comparison)
+  for (ext in c(".png", ".meta.json", ".legend.txt")) {
+    fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(DRAFT_DIR, paste0(base, ext)),
+                  overwrite = TRUE)
+  }
+  msg("Copied ", base, " (.png/.meta.json/.legend.txt) to ", DRAFT_DIR)
+}
+
+msg("\n=== figure4_representativeness.R: ALL PHASES (1-5) COMPLETE ===")

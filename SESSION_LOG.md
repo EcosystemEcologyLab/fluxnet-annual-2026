@@ -4,6 +4,85 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-01 (2) — flux_bin_breaks.R revision 3: per-bin land-share/tower-count labels on all 8 Fig 4 format panels
+
+Added fixed-position per-bin land-share (%) and tower-count labels to all 8 Fig 4 format panels (the 4
+reproduced KG/land cover/aridity/biomass panels plus the 4 flux panels), in both composites and all 8
+standalone panel PNGs; wrote one CSV+`.meta` table per panel/comparison; wrote a draft caption. Work was
+confined to `scripts/diagnostics/flux_bin_breaks.R`'s shared `draw_panel()` helper and its supporting data
+prep, per instruction — `figure_representativeness_summary.R` and all committed figures untouched.
+
+### Label placement and colour
+Land share (left of the 1× line) and tower count (right of it) are drawn at fixed offsets (`LABEL_OFFSET
+= 0.15` log2-units either side of x=0) for every row, regardless of bar length — matching the user's own
+description of the intended layout. Colour contrasts with that row's bar fill (white on dark, near-black
+on light; relative-luminance threshold 0.5) only when the bar extends far enough past the label's own
+rendered width to fully contain it; otherwise near-black. The "far enough" test scales with each label's
+character count (`LABEL_CHAR_WIDTH = 0.078` log2-units/char) rather than one flat margin — a flat margin
+calibrated on 4-character labels ("2.5%") was caught under-covering 5-character ones ("15.1%", LULC
+Shrubland), which would have left a sliver of the leading digit coloured white outside the bar. Verified
+by direct pixel sampling of the rendered PNG (not just visual inspection — an early visual read of a
+heavily-upscaled crop of this same row gave a false positive for a leftover white-text artifact; sampling
+the actual RGB values at those pixels confirmed the text was correctly near-black (26,26,26) throughout).
+Same contrast rule applied to the existing ±5× clip labels, fixing the unreadable grey-on-dark-green
+"< −250" label on the NEE "towers" panel flagged as a known issue going into this session.
+
+### Font size
+`LABEL_SIZE_PT = 6` (point units via ggplot2's `size.unit = "pt"`) used on every panel — above the
+task's 5.5pt floor — verified against the tightest case (the 13-row Köppen-Geiger panel, composite panel
+A) at full resolution: no row-to-row overlap. No panel reported as crowding at this size.
+
+### Panel-title / J-annotation collision (found while building this)
+Adding the land%/tower-count labels to the top row exposed a pre-existing layout flaw: `panel_label` (the
+bold in-panel title, e.g. "NEE (model at tower cells)") was `annotate()`'d at `x=-Inf,y=Inf`, in-panel, in
+the same row the new labels now occupy — on the standalone individual panel PNGs (which use a long
+descriptive title) this visibly collided with the new top-row labels. Moved `panel_label` to `plot.title`
+(same fix pattern as the 2026-10-01(1) session's J→`plot.subtitle` fix), which renders in the margin
+above the panel, outside data space, so it cannot collide with any row's content on any panel.
+
+### Direct tower counts (not back-calculated)
+Per-bin tower counts for the 4 flux panels now come directly from `table(factor(bin, levels=1:7))` in
+Step 5 (new `site_count` column, threaded through `occupancy_df` and `build_flux_panel_df()`), replacing
+`round(site_fraction * n_classified)` — a back-calculation that could misstate a count by rounding error.
+Land area in km² is carried the same way (`land_area_km2`, from the same `zonal()` sums Step 5 already
+computed, not re-derived from the fraction). The 4 reproduced axes already counted directly via
+`count_sites()`; only `merge_sr()`/`kg13_global` needed widening to carry `global_land_area_km2` through
+(previously dropped during the Köppen 3-letter→2-letter aggregation).
+
+### Tables (`review/diagnostics/flux_bin_breaks/fig4_format/tables/`, 12 CSV + `.meta` pairs)
+One table per flux × comparison (8: NEE/GPP/TER/ET × data/geo_at_tower) plus one per existing axis (4:
+KG/LULC/aridity/biomass) — **not** 16. Judgement call, flagged in both the script header and the run log:
+the task asked for "one CSV ... per panel and comparison," but KG/LULC/aridity/biomass have no
+model-vs-tower distinction (a site's classification is fixed and `make_panel_existing()` already reused
+it identically in both composites before this session) — writing two identical `_data`/`_geo_at_tower`
+tables per axis would imply two different classifications where there is only one. Each table's `.meta.json`
+states its land grid and total area. Land-grid totals, taken directly from each panel's own snapshot (not
+hardcoded): KG/LULC/biomass share 147,322,862 km² (the Beck 2023 1 km mask); **aridity's own snapshot
+totals 134,761,545 km² instead** — smaller, because the CGIAR Aridity Index v3.1 product's own coverage
+differs from the shared Köppen-mask footprint. The task's prompt described aridity as sharing the 147.3M
+km² figure; flagged as a discrepancy (in the script's judgement calls, the run log, the table's own
+`.meta.json`, and the caption) rather than silently reconciled to the stated number. Flux panels: TRENDY
+v14 ensemble-median 0.5° grid, 163,331,649 km² (unchanged from the 2026-09-29 session).
+
+### Caption
+Draft caption written to `fig4_format/caption_labels.txt`, generated from the same runtime land-grid
+totals as the tables (not hand-typed), explaining the left/right label meaning and each panel's land grid.
+
+### Verification
+Reran the full script 5 times while iterating (final: exit 0, same pre-existing shuttle-version warning
+as the prior session, unrelated). Confirmed via `table_occupancy.csv`/the run log that edges and J values
+are unchanged from the 2026-10-01(1) session (this revision only added labels/tables/caption, touched no
+classification logic). Visually inspected both composites and 4 of the 8 standalone panels at full
+resolution; pixel-sampled the one row that looked suspicious under heavy crop magnification and confirmed
+it was a false alarm from the crop/zoom process, not a rendering defect.
+
+### Outputs
+Regenerated in place: all 8 `fig4_format/panel_*.png`/`.txt`, both `fig4_format/composite_*.png`,
+`table_edges.csv`/`.meta.json`, `table_occupancy.csv`/`.meta.json` (now carrying the new `land_area_km2`/
+`site_count` columns). New: `fig4_format/tables/` (12 CSV + `.meta.json` pairs), `fig4_format/caption_labels.txt`.
+
+---
+
 ## 2026-10-01 — flux_bin_breaks.R: three fixes (NEE bar-1 mask bug, diverging NEE colours, labels/J placement)
 
 Three targeted fixes to `scripts/diagnostics/flux_bin_breaks.R` (revision 2, logged 2026-09-29), then a

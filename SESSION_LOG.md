@@ -4,6 +4,146 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-01 (3) — Status report: draft Fig 4 provenance, content, and known issues
+
+Read-only audit, no files changed other than this entry. Scope: the current draft manuscript's Figure 4
+only — provenance, panel-by-panel content, known issues, and how it differs from this session's
+`flux_bin_breaks.R` candidate panels (entries above).
+
+### 1. Provenance
+
+Only one active draft Fig 4 exists: `review/figures/draft_manuscript_v1/fig_04_current_network_sampling_ratios.png`
+(+ `.legend.txt` companion — **no `.meta.json`**, a deviation from the Output Metadata convention, which
+requires one for every output file). A superseded copy sits under `deprecated/draft_manuscript_v1_20260624/`,
+out of scope. No other `review/figures/*` drafts folder holds an assembled Fig 4 (`review/figures/candidates/`
+and `review/figures/maps_point/` hold individual mock-up pieces, not a drafted figure).
+
+- **Script**: the legend's own footer states it — `scripts/figure_representativeness_summary.R`, output
+  path `review/figures/representativeness/fig_rep001_current.png`. `git log --follow` confirms the draft
+  PNG and `fig_rep001_current.png` were last touched by the same commit, i.e. the draft file is a copy.
+- **Commit / date**: `90cea100e1ff13e4b4907f076533c2a02efef7d4`, "Rebuild draft_manuscript_v1 figures
+  against 781-site snapshot," 2026-09-01 11:16:00 -0700 (verified directly via `git log`).
+- **Snapshot**: current network, n=781. Per-site inputs: `site_koppen_era5.csv` (panel A, current_781
+  only — historical networks there use `koppen_beck2023.csv`), `site_landcover_cci.csv`, `site_aridity.csv`,
+  `site_biomass_cci_v7.csv`, `site_trendy_nee_iav.csv`, `site_trendy_et_median.csv`, plus
+  `representativeness_metrics.csv` for J.
+- **Relative to the two named fixes** (commit dates verified directly): `732c9a3` (coarse-resolution
+  carbon unit fix, 2026-09-28 15:44:12) is *after* 90cea10 (2026-09-01) → **the draft predates the
+  coarse-resolution carbon fix.** `ad7464f` (VUT→CUT per-site fallback in `04_qc.R`, 2026-06-02 15:21:21)
+  is *before* 90cea10 → **the draft already incorporates the VUT→CUT fallback.** (732c9a3's MM/WW carbon
+  fix affects tower-derived carbon values; it doesn't touch panel E's TRENDY-only NEE-IAV directly, but
+  would affect any tower-based NEE/GPP/TER panel added later.)
+
+### 2. Content (6 panels, 2×3 grid, A–F)
+
+| Panel | Axis | Bin scheme | Land grid / total area | Towers classified (of 781) | J |
+|---|---|---|---|---|---|
+| A | Köppen-Geiger (Beck 2023, 13-class) | 13 fixed classes | Beck 2023 KG raster, 0.5°, ~132.6M km² (legend text) | **755 / 781** (26 unclassified — see 4b) | 0.420 |
+| B | ESA CCI Land Cover v2.1.1 (10-class high-level) | 10 fixed classes | same 0.5° KG-mask family | 781 / 781 | 0.567 |
+| C | CGIAR Aridity Index v3.1 (7-class UNEP) | 7 fixed classes | same 0.5° KG-mask family | 781 / 781 | 0.666 |
+| D | ESA CCI Biomass v7 (7-bin hybrid) | near-zero <5 Mg/ha + 6 equal-area bins | Beck 2023 KG raster, fine (0.00833°), ~147.3M km² | 781 / 781 | 0.636 |
+| E | TRENDY v14 **NEE-IAV** (unsigned magnitude, 7-bin hybrid) | near-zero 0–5 + 6 equal-area bins; rendered-panel units gC m⁻² yr⁻¹ (legend text says µmol CO₂ m⁻² s⁻¹ — mismatch, see 4d) | TRENDY v14 ensemble mask, 0.5°, 163,331,649 km² | 781 / 781 | 0.506 |
+| F | TRENDY v14 **ET-median** (7-bin hybrid) | near-zero 0–5 + 6 equal-area bins, mm yr⁻¹, ceiling ~968.6 mm yr⁻¹ | TRENDY v14 ensemble mask, 0.5°, 163,331,649 km² | 781 / 781 | 0.456 |
+
+J values cross-checked exactly against `representativeness_metrics.csv` (`network=="current_781"` rows).
+That file's `n_sites` column is uniformly 781 for every axis — it's the network-size denominator, not a
+classified-count; the 755 figure for panel A had to be derived separately, directly from
+`site_koppen_era5.csv` (confirmed again in this session: 781 rows, 26 with `koppen_class` NA).
+
+### 3. Known issues
+
+**a. Köppen classes built from ERA5 precipitation ("P_ERA not regressed").** The cached
+`review/diagnostics/precip_downscaling_provenance/table_2_site_groups.meta.json` finds **0 of 781**
+current-network sites have a genuinely fitted P-downscaling regression — every site's `P_ERA` is
+unregressed, not 172. The 172 figure is real but narrower: it's `not_fitted_slope_9999`, one of two
+sentinel patterns for unfitted `ERA_SLOPE`/`ERA_INTERCEPT`/`ERA_RMSE`/`ERA_CORRELATION` (groups:
+`not_fitted_slope1`, n=609; `not_fitted_slope_9999`, n=172; `fitted`, n=0; `no_auxmeteo_record`, n=0;
+609+172=781). **Flagged, not resolved**: describing this issue as "172 sites whose P_ERA is not
+regressed" understates it — all 781 are affected, 172 via a more severe sentinel (`ERA_SLOPE` itself
+−9999, no slope recorded at all) distinct from the majority 609-site pattern (slope=1, other three −9999).
+
+**b. Towers missing from the Köppen panel.** `data/snapshots/site_koppen_era5.csv` has **26** rows with
+`koppen_class` NA (confirmed directly this session: 781 rows, 26 NA). The 26: `AU-Fog, BR-Ji3, BR-SM1,
+CA-CF2, DE-SfS, IT-Niv, JP-Api, JP-Fmt, JP-KaP, JP-Kzw, JP-MBF, JP-Mse, JP-Nkm, JP-Nuf, JP-Om2, JP-SMF,
+JP-Shn, JP-Tak, JP-Tkb, JP-Yms, JP-Ynf, KH-Kmp, NO-And, PE-QFR, US-Cwt, US-HB4`. All 26 show `map_mm=NA`,
+`n_years_used=0` — zero of the 30 candidate years (1991–2020) survived the `KG_ERA5_MAP_MAX_MM=5000`
+mm/yr screen (`R/pipeline_config.R:62`; `KG_ERA5_MIN_YEARS=20` of 30 required). Spot-checked directly via
+DuckDB on 6 sites: `BR-Ji3` (30/30 years >5000mm), `JP-Tak` (30/30), `NO-And` (30/30), `US-HB4` (30/30,
+values in the hundreds of thousands of mm/yr — an ERA5 spatial-averaging artifact, `docs/known_issues.md`
+§9a) — confirms `KG_ERA5_MAP_MAX_MM` is the mechanism. **`IT-Niv` is a partial exception**: direct MAP
+recomputation found only 27/30 years over 5000mm, yet its row still shows `n_years_used=0` — some
+additional filter (incomplete months, missing `TA_ERA`) must exclude its other 3 years too; not resolved,
+flagged. **Also found, not asked for but material**: a stale cached diagnostic
+(`review/diagnostics/era5_precip_units/table_excluded_sites.csv`) lists `IT-MBo` among the 26 instead of
+`IT-Niv` — in the *current* snapshot `IT-MBo` **is** classified (MAP 783–1477 mm/yr, 0/30 years over
+threshold) while `IT-Niv` is not. The 26-site membership has drifted by one site since that diagnostic
+last ran, even though the total held at 26 — that cached table should not be trusted as current.
+
+**c. NEE-IAV and ET-median panels.** Confirmed from both the image and `figure_representativeness_summary.R`
+(axis keys `nee_iav`/`et_median`): the draft still uses the **old unsigned NEE inter-annual-variability**
+axis, not the signed sink/source axis from `figure_representativeness_nee_signed.R` /
+`flux_bin_breaks.R`. Panel F reads `trendy_et_median.tif`, confirmed via
+`flux_bin_breaks_et_median_1991_2020.meta.json`'s own notes to be a **1990–2023, 16-model** product,
+distinct from the dedicated **1991–2020, 17-model** raster this session's `flux_bin_breaks.R` work built.
+`trendy_et_median.tif` has no `.meta.json` of its own; its producing script wasn't narrowed further
+(out of scope for a read-only pass) — candidates are `figure_representativeness_trendy_compute.R`,
+`recompute_continuous_axes_30bin.R`, `recompute_continuous_axes_multibin.R`, or
+`diagnostics/nee_et_site_vs_trendy_core.R`.
+
+**d. Site-count / legend mismatches.** No literal "767" is baked into the rendered PNG — the legend
+confirms the 2026-09-01 rebuild moved 767→781 deliberately (commit message says so explicitly). Two
+other, more specific mismatches were found instead: the legend's own "JACCARD VALUES" section flags an
+**internal inconsistency already known but unresolved**: panel A's prior recorded value (0.373) didn't
+match either current_767 or current_781 as actually computed, not investigated further there. And a
+**unit mismatch on panel E**: the legend's classification-scheme text states NEE-IAV bins are in
+µmol CO₂ m⁻² s⁻¹, but the rendered panel's own axis labels read gC m⁻² yr⁻¹ (e.g. "0–5 gC m-2 yr-1",
+">70.9 gC m-2 yr-1") — the legend text doesn't match the figure it describes.
+
+### 4. Differences from the flux_bin_breaks candidate panels (this session, above)
+
+**NEE**: draft panel E is unsigned magnitude, 7-bin hybrid (0–5 → >70.9 gC m⁻² yr⁻¹), J=0.506, 781/781
+classified, sequential green ramp, 163,331,649 km² TRENDY land total. The `flux_bin_breaks` candidate is
+**signed** (sink/source), bar 1 is a GPP<5 vegetation mask (7/781 sites), 6 sextile bins −250→>0 gC m⁻²
+yr⁻¹, J=0.162 (towers) / 0.530 (model-at-tower) — two comparisons the draft doesn't have — same land
+total, diverging green-to-orange ramp. A swap would change axis semantics entirely (magnitude→signed),
+bin count/edges, J (much lower towers-vs-land, much higher model-at-tower), colour scheme, and add a
+second sub-panel for the two-comparison structure. Land grid/total would not change (same TRENDY mask).
+
+**ET**: draft panel F uses the older 1990–2023/16-model raster, 0–5→>968.6 mm yr⁻¹ bins, J=0.456. The
+candidate uses the dedicated 1991–2020/17-model raster, 0–5→>850 mm yr⁻¹ sextile bins, J=0.456 (data) /
+0.456 (geo_at_tower — coincidentally equal this run). A swap changes the underlying ensemble
+window/model-count and bin edges; J happens to land close to the current value, but the field is
+methodologically different (window/model-count now aligned with the other three TRENDY axes, vs. the
+older mismatched window).
+
+**Panels unaffected by an NEE/ET swap**: A/B/C/D (KG/LULC/Aridity/Biomass) are structurally identical
+between the draft and the `flux_bin_breaks` reproductions — same classes, same land-area source, same J
+(0.420/0.567/0.666/0.636 match exactly both places). **Flagged**: panel A nonetheless carries its own
+unresolved completeness gap (26/781 unclassified, §3b) and the flagged J-provenance note (§3d) in *both*
+the draft and the reproduction equally — an NEE/ET swap wouldn't touch either pre-existing KG issue.
+
+### What it would take to bring draft Fig 4 up to date (dependency order)
+
+1. Resolve or explicitly accept the 26-site Köppen gap (§3b) and the `IT-Niv` partial-year anomaly —
+   decide whether `KG_ERA5_MAP_MAX_MM=5000` stays, changes, or those sites get a Beck2023-substitute
+   fallback (the already-built `precip_downscaling_provenance.R` Step-3 substitution test is a candidate
+   mechanism, not yet adopted anywhere).
+2. Decide the P_ERA/"172" caveat's wording for the manuscript text — correct framing (0/781 fitted, 172
+   is a subgroup) regardless of (1).
+3. Re-run `04_qc.R`-downstream carbon values post-732c9a3 if/when panel E becomes tower-based (not needed
+   for the current unsigned IAV panel, but required before any signed-NEE swap, since that axis is
+   tower-dependent).
+4. Decide which NEE axis panel E should show (keep NEE-IAV, or replace with the signed axis — and if
+   replaced, which comparison: towers-vs-land, model-at-tower, or both as two panels).
+5. Decide which ET raster/window panel F should use (keep the 1990–2023/16-model product, or adopt the
+   1991–2020/17-model raster to match the other TRENDY-derived axes' window).
+6. Regenerate `fig_rep001_current.png` (and the draft copy) from `figure_representativeness_summary.R`
+   once (4)/(5) are decided, with a `.meta.json` companion this time (currently missing).
+7. Fix the legend text's panel-E unit label (µmol CO₂ m⁻² s⁻¹ → gC m⁻² yr⁻¹) and resolve or re-flag the
+   panel-A J-provenance note (0.373 vs 0.420) rather than carrying it forward unresolved.
+
+---
+
 ## 2026-10-01 (2) — flux_bin_breaks.R revision 3: per-bin land-share/tower-count labels on all 8 Fig 4 format panels
 
 Added fixed-position per-bin land-share (%) and tower-count labels to all 8 Fig 4 format panels (the 4

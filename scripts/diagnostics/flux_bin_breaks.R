@@ -426,15 +426,34 @@ for (fl in c("NEE", "GPP", "TER", "ET")) {
   fr_data <- site_fracs(data_bin, n_data)
   j_data <- weighted_jaccard(land_vec, fr_data)
 
-  ## "geo_at_tower": own_value is ALSO the model value at that site.
-  geo_df <- geo_at_tower[[fl]] |> rename(mask_value = model_value) |> mutate(own_value = mask_value)
+  ## "geo_at_tower": bar-1 membership must use the SAME mask test as "data"
+  ## (site_mask_value[[fl]] -- model GPP at the tower cell for NEE, the
+  ## flux's own model value for GPP/TER/ET; see Step 3). own_value is the
+  ## model's own-flux value at that site (NEE at tower for fl="NEE", etc.).
+  ## Bug fixed here (2026-10-01): this previously set mask_value to
+  ## geo_at_tower[[fl]]$model_value directly, so NEE's bar-1 test compared
+  ## model NEE (not model GPP) against NEE_BAR1_GPP_CUT -- since most model
+  ## NEE values are negative and below the GPP cut of 5, nearly every tower
+  ## fell into bar 1 for the geo_at_tower comparison.
+  geo_df <- geo_at_tower[[fl]] |>
+    mutate(mask_value = site_mask_value[[fl]], own_value = model_value)
   geo_bin <- classify_flux_sites(geo_df$mask_value, geo_df$own_value, cut, edges)
   n_geo <- sum(!is.na(geo_bin))
   fr_geo <- site_fracs(geo_bin, n_geo)
   j_geo <- weighted_jaccard(land_vec, fr_geo)
 
+  ## Bar-1 label: "0-5" for GPP/TER/ET, matching the biomass axis's own
+  ## "0-5 Mg/ha" bin-1 label format (en dash, bare numeric range); NEE's bar
+  ## 1 is a GPP-based vegetation mask, not its own 0-5 range, so it reads
+  ## "unvegetated (GPP < 5)" instead. Fixed 2026-10-01 (was "bar 1 (model <
+  ## 5)" for all four fluxes).
+  bar1_label <- if (fl == "NEE") {
+    sprintf("unvegetated (GPP < %s)", cut)
+  } else {
+    sprintf("0–%s", cut)
+  }
   bin_labels <- c(
-    sprintf("bar 1 (model < %s)", cut),
+    bar1_label,
     sprintf("< %s", edges[1]),
     sprintf("%s to %s", edges[1], edges[2]),
     sprintf("%s to %s", edges[2], edges[3]),
@@ -465,8 +484,18 @@ msg("\n=== STEP 6: Colour ramps ===")
 ## figure_representativeness_summary.R (not sourced -- see header).
 BIO7_COLORS <- c("1" = "#f7f4f9", "2" = "#f0e1c4", "3" = "#d4d491",
                   "4" = "#a3c585", "5" = "#6cb375", "6" = "#2e8b57", "7" = "#14532d")
-NEE7_COLORS <- c("1" = "#f4faf0", "2" = "#c8e8a4", "3" = "#9acb72",
-                  "4" = "#67ae42", "5" = "#3d8c27", "6" = "#1f6415", "7" = "#0b3e09")
+## NEE is signed here (unlike the NEE-IAV axis this ramp was originally
+## built for), so a sequential green ramp made the source bar (bin 7, >0)
+## read as the strongest sink. Diverging instead (fixed 2026-10-01): bins
+## 2-6 are the sink side, darkening with sink strength (bin 2 = strongest
+## sink, bin 6 = the -25-to-0 bin, near-neutral); bin 7 (source, >0) takes a
+## contrasting warm hue so it reads as the opposite sign, not "very dark
+## sink". Bar 1 (bare/ice) is overridden below as for every other axis.
+NEE_SINK_RAMP <- grDevices::colorRampPalette(c("#0b3e09", "#eaf5e4"))(5)
+NEE7_COLORS <- c("1" = "#f4faf0",
+                  "2" = NEE_SINK_RAMP[1], "3" = NEE_SINK_RAMP[2], "4" = NEE_SINK_RAMP[3],
+                  "5" = NEE_SINK_RAMP[4], "6" = NEE_SINK_RAMP[5],
+                  "7" = "#c2703a")
 ET7_COLORS  <- c("1" = "#f0f8ff", "2" = "#bcd8f4", "3" = "#82bce8",
                   "4" = "#4498d5", "5" = "#1d74b3", "6" = "#0c4f84", "7" = "#06305a")
 BAR1_COLOR <- unname(BIO7_COLORS[["1"]])  # biomass axis's bare/ice colour, per task instruction
@@ -579,10 +608,15 @@ draw_panel <- function(df, j_val, show_xlab = FALSE, panel_label = NULL) {
                       size = 3.5, fontface = "bold", colour = "grey10")
   }
   if (!is.na(j_val)) {
-    p <- p + annotate("text", x = Inf, y = Inf,
-                      label = sprintf("J = %.3f", j_val),
-                      hjust = 1.3, vjust = 1.5,
-                      size = 2.5, colour = "grey20")
+    ## Fixed 2026-10-01: J was annotate()'d at x=Inf,y=Inf inside the panel,
+    ## in the same row as the top bar -- for any panel where the top bin's
+    ## bar (or its own +-5x clip label, also anchored near x=Inf) extends
+    ## far enough right, it overlapped. plot.subtitle renders in the margin
+    ## above the panel, outside data space entirely, so it can never overlap
+    ## any bar or clip label, and sits in the same place on all 8 panels.
+    p <- p + labs(subtitle = sprintf("J = %.3f", j_val)) +
+      theme(plot.subtitle = element_text(size = 7.5, colour = "grey20", hjust = 1,
+                                          margin = margin(b = 2)))
   }
   p
 }

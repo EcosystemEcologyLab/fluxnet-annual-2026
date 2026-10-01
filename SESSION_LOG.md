@@ -4,6 +4,85 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (6) — New Fig 4: final report after Phases 1–4 (Phase 5 held)
+
+Computational phases 1–4 are complete (entries above). Phase 5 (rendering the two assembled figures) is
+**held**, per the explicit instruction that catching more than ~10 sites beyond the 172 with
+`P_ERA_MAX_RATIO` should pause assembly for review — it caught 12. This entry is the requested summary:
+J and n per panel for both new versions, next to the old draft's values, plus every open item flagged
+across all four phases for a decision.
+
+### J and n, new Fig 4 vs. old draft (`fig_04_current_network_sampling_ratios.png`, audited 2026-10-01)
+
+| Panel | Old draft J | Old draft n | New Geo vs Geo J | Geo vs Geo n | New Geo vs Data J | Geo vs Data n |
+|---|---|---|---|---|---|---|
+| A Köppen | 0.420 | 755/781 | **0.372** | 781/781 | **0.412** | 597/781 |
+| B Land cover | 0.567 (CCI 10-class) | 781/781 | **0.495** (IGBP) | 781/781 | **0.346** (IGBP) | 781/781 |
+| C Aridity | 0.666 | 781/781 | 0.666 (unchanged) | 781/781 | **0.718** | 594/781 |
+| D Biomass | 0.636 | 781/781 | 0.636 (unchanged) | 781/781 | 0.636 (unchanged) | 781/781 |
+| E NEE | 0.506 (unsigned IAV) | 781/781 | **0.530** (signed, model@tower) | 781/781 | **0.162** (signed, towers) | 601/781 |
+| F ET | 0.456 (16-model/1990-2023) | 781/781 | **0.456** (17-model/1991-2020) | 781/781 | **0.456** (17-model/1991-2020) | 634/781 |
+
+The old draft had one column per panel (a single comparison, methodology varied by panel — e.g. Köppen
+was ERA5-local only, no raster-vs-raster comparison existed at all). The new figure's two explicit
+comparisons aren't directly the "same number done better" in every case: panel B swaps vocabulary (CCI
+10-class → IGBP 15-class) entirely, so its J isn't comparable in kind to the old value; panel E swaps
+axis semantics (unsigned magnitude → signed sink/source) so 0.530/0.162 aren't "corrections" of 0.506,
+they're a different question. C and D are the only two panels where a true like-for-like old-vs-new
+number exists (Geo vs Geo, since both sides are unchanged), and D is identical by construction.
+
+### Everything flagged for your decision, gathered from all four phases
+
+**Phase 1 (Köppen)**
+1. 134,761,545 km² (aridity's own CGIAR coverage) vs. the 147.3M km² Köppen/IGBP/biomass share — a
+   genuine difference in underlying product coverage, not an error; already correctly reflected per-panel.
+2. `IT-Niv`'s old `n_years_used=0` was a real bug (fixed) — confirm no objection to the fix having also
+   silently corrected `site_koppen_era5.csv`'s diagnostic column for other sites (no `kg_class` changed).
+
+**Phase 1 addendum (P_ERA_MAX_RATIO)**
+3. **The 12-site list itself** (`US-HB4, CA-CF2, US-RGF, NO-And, CA-CF1, EE-Rng, IT-Niv, CA-HPC, US-DS1,
+   US-DS2, US-BRG, GL-ZaF`) — this is the explicit hold point. `US-RGF, CA-CF1, EE-Rng, CA-HPC, US-DS1,
+   US-DS2, US-BRG, GL-ZaF` were not previously flagged by any prior session; only `US-HB4`, `CA-CF2`,
+   `NO-And`, `IT-Niv` had prior context. Decide whether all 12 should be excluded, whether the ratio
+   threshold should move, or whether any specific site should be reinstated on inspection.
+
+**Phase 2 (IGBP)**
+4. The "Other" bin judgement call (MODIS Water/Urban pixels kept in the land total, never site-populated)
+   — confirm or ask for pixels to be excluded from the total instead.
+5. The 64.7% PI-vs-MODIS disagreement rate is real and large — worth a sentence in the manuscript text
+   explaining the known flux-footprint-vs-5.6km-pixel mismatch, not just a caption number.
+6. IGBP colour palette (`IGBP_COLORS` in the script) is newly invented for this axis — not reused from
+   any existing repo palette; replace if you have a preferred scheme.
+
+**Phase 3 (aridity)**
+7. **PET methodology approximations** (wind height, net-radiation-from-SW+LW-in with an air-temperature
+   longwave proxy, es/Δ from mean T, G=0, ET0 floored at 0) — all standard FAO-56 simplifications for
+   the available ERA5 variables, but confirm the net-radiation approximation in particular is acceptable
+   for the manuscript's methods section.
+8. **4 sites excluded for physically invalid ERA5 inputs** (`US-Sne, CD-Ygb, DE-Zrk, FR-LBr`) — distinct
+   from the two precip-dependent rules; confirm this additional, narrower exclusion is acceptable, or ask
+   for the underlying ERA5 extraction to be re-pulled for these 4 sites instead of excluding them.
+9. `DE-SbM` (PET=0) and `KE-Aq2` (PET=122 mm/yr) are flagged, not excluded — both already drop out via
+   the other two rules regardless, so this is informational only, not an open decision.
+10. **Caption must state the 1970–2000 (CGIAR) vs. 1991–2020 (ERA5) period mismatch** for this one
+    panel's two sides — noted here as a hard requirement for Phase 5, not yet written since Phase 5 is
+    held.
+
+**Phase 4 (biomass, NEE, ET)**
+11. No new judgement calls — straight port of already-reviewed `flux_bin_breaks.R` logic, numbers match
+    that session's validation run exactly.
+
+### What Phase 5 will need once you've reviewed the above
+
+Per the original Phase 5 spec (label rules, legend content incl. the three land-grid totals and the
+172-exclusion note, per-panel tables, `fig_04_geo_vs_data.png`/`fig_04_geo_vs_geo.png` to both
+`review/figures/representativeness/` and `review/figures/draft_manuscript_v1/`, each with `.meta.json`
+and a legend file, old draft left in place) — nothing further is blocked except your decision on item 3
+(the 12-site list) and, ideally, items 4, 6, and 8 above. Say the word on the 12-site list (and anything
+else above you want changed) and Phase 5 can proceed in a follow-up session.
+
+---
+
 ## 2026-10-02 (5) — New Fig 4, Phase 4: biomass (panel D), NEE and ET (panels E-F)
 
 ### Biomass (panel D)

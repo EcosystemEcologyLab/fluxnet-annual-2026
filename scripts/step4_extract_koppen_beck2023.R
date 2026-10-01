@@ -85,7 +85,10 @@ message("  Resolution: ", paste(round(terra::res(kg_rast), 8), collapse = " x ")
 message("  Dimensions: ", nrow(kg_rast), " rows x ", ncol(kg_rast), " cols")
 
 # ---- Load snapshot ----------------------------------------------------------
-snap_file <- "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv"
+# Pin refreshed 2026-10 (767->781 sites) for the figure4_representativeness.R
+# Geo-vs-Geo Koppen panel, which needs this extraction at the full current
+# network -- see SESSION_LOG.md Phase 1 entry.
+snap_file <- "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"
 if (!file.exists(snap_file)) {
   stop("Snapshot not found: ", snap_file, call. = FALSE)
 }
@@ -250,6 +253,8 @@ write_output_metadata(
     "KG class extracted at exact site coordinates via terra::extract(); ",
     "buffer modal fallback (up to 0.5°) for NA returns. ",
     "koppen_method column records extraction method per site. ",
-    "Snapshot: ", basename(snap_file), " (767 sites, 2026-06-24)."
+    "Snapshot: ", basename(snap_file), " (", N, " sites). Refreshed 2026-10 from the ",
+    "prior 767-site pin (2026-06-24) for figure4_representativeness.R's Geo-vs-Geo ",
+    "Koppen panel -- see SESSION_LOG.md."
   )
 )

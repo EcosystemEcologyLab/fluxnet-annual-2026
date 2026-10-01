@@ -346,14 +346,29 @@ compute_era5_monthly_climatology <- function(
       .groups  = "drop"
     )
 
-  out <- wide |>
-    dplyr::left_join(n_years, by = "site_id") |>
-    dplyr::left_join(diagnostics, by = "site_id")
-
-  # ensure every site in the input appears, even if unclassifiable
+  # Bug fixed 2026-10-02 (found while investigating IT-Niv for
+  # figure4_representativeness.R Phase 1): this used to build `out` by
+  # left-joining n_years/diagnostics ONTO `wide` first -- but `wide` only
+  # has rows for valid_sites (n_years_used >= min_years), so any site with
+  # SOME good years but fewer than min_years (e.g. IT-Niv: 3 of 30, after
+  # the MAP screen drops 27) was absent from `wide` and therefore absent
+  # from `out` at that point too. The final all_sites join then re-added it
+  # with every column NA, and `coalesce(n_years_used, 0L)` silently turned
+  # its true count (3) into 0 -- losing real information (3 valid years,
+  # not 0) for every insufficient-but-nonzero site, not just genuinely
+  # zero-year ones. Fixed by joining wide/n_years/diagnostics onto the full
+  # all_sites list directly, so n_years_used always reflects n_years's true
+  # count and only genuinely-absent sites (no good year at all) get
+  # coalesced to 0. Climatology columns (t_*/p_*/mat_degc/map_mm) are
+  # unaffected -- they come from `wide`/`diagnostics`, already NA for any
+  # site below min_years, which is correct (no climate normal is computed
+  # for them) and unchanged by this fix. No site's kg_class outcome
+  # changes: this only corrects the n_years_used diagnostic column.
   all_sites <- dplyr::distinct(df, .data$site_id)
   out <- all_sites |>
-    dplyr::left_join(out, by = "site_id") |>
+    dplyr::left_join(wide, by = "site_id") |>
+    dplyr::left_join(n_years, by = "site_id") |>
+    dplyr::left_join(diagnostics, by = "site_id") |>
     dplyr::mutate(n_years_used = dplyr::coalesce(.data$n_years_used, 0L))
 
   out

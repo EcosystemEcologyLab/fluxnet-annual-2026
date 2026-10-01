@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-01T20:32:03Z",
+  "pipeline_version": "1f84804",
+  "input_sources": [
+    "site_koppen_beck2023.csv",
+    "data/snapshots/site_koppen_era5_fig4.csv",
+    "koppen_beck2023_global_distribution.csv"
+  ],
+  "notes": "Weighted-Jaccard metrics for the new (2026-10) Figure 4, built incrementally across phases -- see SESSION_LOG.md for each phase. Separate from the shared data/snapshots/representativeness_metrics.csv (which backs Figs 001-008 and is not touched by this script). One row per panel x comparison. This run includes phases implemented so far: panel A (Koppen) only."
+}

@@ -4,6 +4,68 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (3) — New Fig 4, Phase 2: land cover as IGBP (panel B)
+
+### Data sources
+
+**Global side**: MODIS MCD12C1.061 `Majority_Land_Cover_Type_1` (IGBP scheme, 0.05° native, the file
+already in `data/external/modis_landcover/`), resampled (nearest-neighbour) onto the Beck et al. (2023)
+1 km Köppen land-mask grid and masked to it — reproduces the **exact same 147,322,862 km² total** as
+panel A, per instruction ("area on the 1 km Beck land mask"). MODIS's HDF4 CRS metadata mislabels the
+datum ("Clarke 1866 ellipsoid"); both rasters share the identical −180/180/−90/90 lon/lat extent (a known
+MCD12C1 CMG quirk, not a real projection mismatch), so MODIS's CRS was explicitly set to EPSG:4326
+(matching Beck's) before resampling.
+
+**Allowable classes**: the `igbp` column already in the pinned snapshot CSV (sourced from each site's
+BIF metadata — there is no free-text "IGBP" BADM `VARIABLE`, confirmed by grep). All 781 current-network
+sites report one of **15 classes**: ENF, EBF, DNF, DBF, MF, CSH, OSH, WSA, SAV, GRA, WET, CRO, CVM, BSV,
+SNO — every standard IGBP class *except* Water (code 0) and Urban-and-built-up (code 13); no flux tower
+sits on open water or in a city. **Judgement call, flagged**: MODIS pixels classified 0 or 13 are folded
+into a 16th "Other" bin on the global side (land area counted, matching the task's required 147.3M km²
+total) that can never receive a site count, since no PI reports either class.
+
+### Panels
+
+- **Geo vs Geo**: MODIS class at each tower, native 0.05° resolution (not degraded through the 1 km
+  resample used for area accounting). All 781 classified. **J = 0.495**.
+- **Geo vs Data**: PI-reported IGBP class per site. All 781 classified. **J = 0.346**.
+
+### Required report: PI vs. MODIS disagreement
+
+**505 / 781 sites (64.7%) disagree** between their PI-reported class and the MODIS class at the tower
+coordinate — a genuinely large rate, consistent with the well-known flux-footprint-vs.-5.6km-pixel
+mismatch (PIs site towers in locally homogeneous patches that are often too small to dominate a coarse
+MODIS pixel). Disagreement rate by PI-reported class:
+
+| PI class | n sites | n disagree | % disagree |
+|---|---|---|---|
+| DNF, CSH, CVM, SNO | 13, 12, 9, 2 | all | 100% |
+| WSA | 18 | 17 | 94.4% |
+| WET | 117 | 113 | **96.6%** |
+| ENF | 114 | 95 | 83.3% |
+| OSH | 41 | 28 | 68.3% |
+| MF | 24 | 15 | 62.5% |
+| DBF | 81 | 48 | 59.3% |
+| BSV | 7 | 4 | 57.1% |
+| GRA | 146 | 78 | 53.4% |
+| EBF | 44 | 23 | 52.3% |
+| SAV | 14 | 10 | 71.4% |
+| CRO | 139 | 38 | **27.3%** (lowest — croplands are large, homogeneous, and MODIS-detectable) |
+
+Wetland (WET) and needleleaf forest (ENF/DNF) PI classes disagree most — both are small-patch cover
+types MODIS systematically under-detects at 5.6 km; cropland (CRO) disagrees least, as expected for a
+large-patch, spectrally distinct cover type.
+
+### Outputs
+
+New: `data/snapshots/site_igbp_fig4.csv` (781 rows: `igbp_pi`, `igbp_modis_class`/`_code`, `agree`,
+`.meta.json`); `data/snapshots/igbp_mcd12c1_global_distribution.csv` (16-bin global distribution,
+`.meta.json`). `data/snapshots/representativeness_metrics_fig4.csv` updated with panel B's two rows.
+Code in `scripts/figure4_representativeness.R` (Phase 2 section appended; the Phase-1-only metrics-write
+block at the end was generalized to run after all phases implemented so far).
+
+---
+
 ## 2026-10-02 (2) — New Fig 4: second precip-dependent exclusion rule (P_ERA_MAX_RATIO), panel A recomputed
 
 Added a second exclusion rule for the precipitation-dependent Geo-vs-Data panels (Köppen now; aridity in

@@ -4,6 +4,82 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (4) — New Fig 4, Phase 3: aridity (panel C)
+
+### Data sources
+
+**Global side + Geo vs Geo**: unchanged, as instructed — CGIAR Aridity Index v3.1 (7-class UNEP scheme),
+reusing `data/snapshots/site_aridity.csv` (already 781 sites, already current) and
+`aridity_unep7_global_distribution.csv` (134,761,545 km² — this axis's own native CGIAR coverage,
+smaller than the 147.3M km² Köppen/IGBP/biomass share; see the 2026-10-01 draft-Fig-4-audit entry).
+**J (Geo vs Geo) = 0.666**.
+
+**Geo vs Data**: AI = P/PET from each site's own 1991–2020 ERA5 meteorology. P reuses panel A's
+climatological mean annual P_ERA. PET = FAO-56 Penman–Monteith reference evapotranspiration (grass
+reference surface), computed monthly from the 1991–2020 ERA5 climatological monthly means and summed to
+an annual total, using every ERA5 variable available in this DuckDB's `monthly` table for `dataset='ERA5'`:
+`TA_ERA` (°C), `SW_IN_ERA`/`LW_IN_ERA` (W/m², confirmed empirically against a known site before use),
+`VPD_ERA` (hPa), `PA_ERA` (kPa), `WS_ERA` (m/s). Validated against three known climate types before the
+full run: AU-ASM (Alice Springs desert) → AI=0.159 (Arid, correct); US-Ha1 (Harvard Forest) → AI=1.85
+(Humid, correct); US-SRM (Santa Rita semi-arid savanna) → AI=0.228 (Semi-Arid, correct).
+
+### Approximations (required reporting)
+
+1. **Wind**: `WS_ERA` assumed to be ERA5's native 10 m wind (not explicitly documented in this repo),
+   converted to the FAO-56 reference height of 2 m via the standard log-wind-profile formula.
+2. **Net radiation**: this ERA5 bundle has both incoming shortwave *and* incoming longwave directly, so
+   net radiation is computed from them rather than FAO-56's own simplified clear-sky parametrization
+   (built for when only Rs is available): Rns = (1−0.23)×Rs (FAO-56 grass reference albedo); outgoing
+   longwave estimated via Stefan–Boltzmann applied to `TA_ERA` as a proxy for surface skin temperature
+   (not available in this bundle), assumed emissivity 0.96; Rnl = LW_in − LW_out.
+3. **es/Δ** computed from monthly mean `TA_ERA`, not averaged from daily Tmax/Tmin as FAO-56 recommends
+   (true Tmax/Tmin aren't in this ERA5 bundle — only `TA_ERA_DAY`/`TA_ERA_NIGHT`, an approximate day/night
+   split, deliberately not used to avoid compounding approximations). Recognised FAO-56 simplification,
+   slightly underestimates ET0.
+4. **Soil heat flux G = 0** — standard FAO-56 simplification at monthly-to-annual timescales.
+5. **ET0 floored at 0 per month** — found necessary: at high latitude in winter, Rn can be strongly
+   negative, driving the raw formula negative for that month; unclipped, this could make annual PET
+   itself negative or near-zero at cold sites (caught in a pre-release sanity check, see below).
+6. **Caption note (required)**: CGIAR's own baseline period is 1970–2000; this Geo-vs-Data calculation
+   uses 1991–2020 ERA5 — a period mismatch between this one panel's two sides not present elsewhere. Must
+   appear in the Phase 5 figure caption.
+
+### Bugs/data-quality issues found while sanity-checking PET
+
+An initial full-network run produced impossible AI values (range −10.5 to 605, before the floor-at-0
+fix; 0 to ∞ after it) — traced to two distinct causes, not the formula:
+
+- **ET0 unclipped** (fixed): see approximation 5 above.
+- **Invalid raw ERA5 inputs at 4 sites**: `US-Sne`'s `LW_IN_ERA` reaches ~30,000–32,000 W/m² in winter
+  months (true downwelling longwave never exceeds ~700 W/m²); `CD-Ygb`'s `VPD_ERA` reaches ~1,620–1,660
+  hPa (true VPD never exceeds ~12 hPa). `DE-Zrk` and `FR-LBr` show the same pattern. These are ERA5
+  data-quality issues in the bundled extraction, not a PET-formula bug — added a physical-plausibility
+  screen (LW/SW <0 or >1000 W/m²; VPD <0 or >100 hPa; WS ≤0 or >50 m/s; PA outside [50,110] kPa; TA
+  outside [−90,60]°C) that excludes these 4 sites from the panel, logged via `log_exclusion()` with a
+  distinct reason from the two precip-dependent exclusion rules.
+- **Two further sites with implausible-but-not-invalid PET**: `DE-SbM` (PET=0 mm/yr; its `LW_IN_ERA` is
+  suspiciously low — 105–179 W/m² — but not outside the physical screen) and `KE-Aq2` (PET=122 mm/yr; all
+  raw inputs look plausible for a cool highland tropical site). Flagged, not screened out — a known
+  limitation of approximation 2 (estimating surface emission from air temperature can bias Rn low at
+  sites where true incoming longwave is naturally on the low side for reasons other than cold
+  temperature, e.g. altitude). Both happen to already be excluded from the final panel by the
+  GRP_ERA_DOWN/P_ERA_MAX_RATIO rules regardless, so neither affects the panel's result either way.
+
+### Panel result
+
+Dual exclusion (172 GRP_ERA_DOWN + ratio, per the 2026-10-02(2) entry above) applied, on top of the 4
+invalid-input exclusions: n_eligible = 781 − 4 − 172 − 11 = **594** (11, not 12, of the ratio-only
+catches survive within this panel's pool, since one of the 12 — not identified individually here — was
+already among the 4 invalid-input sites). All 594 classify. **J (Geo vs Data) = 0.718**.
+
+### Outputs
+
+New: `data/snapshots/site_aridity_era5_fig4.csv` (all 781 sites; `PET_mm`/`ai_value`/`unep_class_7` NA
+for the 4 `invalid_era5_input=TRUE` sites; `.meta.json`). `representativeness_metrics_fig4.csv` updated
+with panel C's two rows. Code appended to `scripts/figure4_representativeness.R` (Phase 3 section).
+
+---
+
 ## 2026-10-02 (3) — New Fig 4, Phase 2: land cover as IGBP (panel B)
 
 ### Data sources

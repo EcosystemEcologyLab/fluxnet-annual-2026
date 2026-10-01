@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-01T20:47:00Z",
+  "pipeline_version": "5dda1d9",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/processed/badm.rds",
+    "data/external/worldclim/climate/wc2.1_2.5m/wc2.1_2.5m_bio_12.tif"
+  ],
+  "notes": "Reference mean annual precipitation per current-network site, for the P_ERA_MAX_RATIO exclusion rule (figure4_representativeness.R, applied to the Koppen and aridity Geo-vs-Data panels). ref_map_mm = BADM MAP (PI-reported) where present and non-zero, else WorldClim v2.1 BIO12 (1970-2000 baseline, 2.5 arc-min) extracted at the exact tower coordinate (no buffer fallback for NA returns). ref_source records which was used per site."
+}

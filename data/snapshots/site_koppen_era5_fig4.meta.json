@@ -1,10 +1,11 @@
 {
-  "run_datetime_utc": "2026-10-01T20:32:03Z",
-  "pipeline_version": "1f84804",
+  "run_datetime_utc": "2026-10-01T20:47:00Z",
+  "pipeline_version": "5dda1d9",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb",
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_precip_reference.csv",
     "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"
   ],
-  "notes": "Koppen classification for figure4_representativeness.R's Geo-vs-Data panel A. Same method as site_koppen_era5.csv (R/climate_classification.R::compute_site_koppen_era5(), 1991-2020 ERA5 monthly T/P normal, >= 20 of 30 years required) EXCEPT the KG_ERA5_MAP_MAX_MM=5000mm/yr per-site-year screen is NOT applied here (map_max_mm=Inf). `excluded_fig4_geo_vs_data` flags the 172 sites in the precip_downscaling_provenance not_fitted_slope_9999 group; these are classified in this file (for reference) but must be excluded from the Geo-vs-Data panel's numerator AND denominator (n_eligible = 781-172 = 609), not merely treated as unclassified. All 609 eligible sites classify under this rule (0 unclassified within the pool); flagged implausible precipitation values among the 4 sites newly reclassifiable vs. the old MAP-screened rule: US-HB4 (known ERA5 spatial-averaging artifact) and NO-And -- see SESSION_LOG.md."
+  "notes": "Koppen classification for figure4_representativeness.R's Geo-vs-Data panel A. Same method as site_koppen_era5.csv (R/climate_classification.R::compute_site_koppen_era5(), 1991-2020 ERA5 monthly T/P normal, >= 20 of 30 years required) EXCEPT the KG_ERA5_MAP_MAX_MM=5000mm/yr per-site-year screen is NOT applied here (map_max_mm=Inf). Two exclusion rules instead, both flagged in `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio): (1) the 172 sites in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group; (2) sites whose 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO=3 times their reference MAP (site_precip_reference.csv: BADM MAP where present/non-zero, else WorldClim BIO12 at the tower) -- 12 sites beyond the 172 at this threshold (added 2026-10-02, see SESSION_LOG.md for the full list and the ratio=2/3/4 sensitivity check). All sites are still classified in this file for reference; the panel's numerator AND denominator must exclude both groups (n_eligible = 781 - 172 - 12 = 597)."
 }

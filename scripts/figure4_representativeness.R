@@ -36,6 +36,18 @@
 ##   step5_compute_koppen_era5.R was rerun afterward so the production
 ##   site_koppen_era5.csv's n_years_used column is also corrected (no
 ##   kg_class outcome changed).
+##
+## ---- ADDENDUM (2026-10-02): second precip-dependent exclusion rule --------
+## Added a second exclusion rule for precipitation-dependent Geo-vs-Data
+## panels (Koppen here; aridity in Phase 3): exclude a site if its 1991-2020
+## mean annual P_ERA exceeds P_ERA_MAX_RATIO=3 (R/pipeline_config.R) times a
+## reference mean annual precipitation (BADM MAP where present/non-zero,
+## else WorldClim BIO12 at the tower). Additive to the 172 GRP_ERA_DOWN
+## sites, not a replacement. Catches 12 sites beyond the 172 at ratio>3 --
+## above the task's "~10" threshold, so per instruction Phase 5 (figure
+## assembly) is held pending review of that list; Phases 2-4 proceed. See
+## SESSION_LOG.md for the full report (ratio=2/3/4 sensitivity, the 12-site
+## list, and confirmation all 4 previously-named sites are caught).
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -106,6 +118,165 @@ add_metric <- function(panel, axis, comparison, land_grid, land_total_km2,
 }
 
 # ==============================================================================
+# SHARED: precipitation-dependent Geo-vs-Data exclusion (Koppen + aridity)
+# ==============================================================================
+## Added 2026-10-02, after Phase 1 was first committed (see SESSION_LOG.md):
+## a second exclusion rule for the precipitation-dependent Geo-vs-Data panels
+## (Koppen here; aridity in Phase 3), IN ADDITION TO the 172-site
+## not_fitted_slope_9999 (GRP_ERA_DOWN) exclusion already applied. A site is
+## excluded if its 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO (see
+## R/pipeline_config.R) times a reference mean annual precipitation: PI-
+## reported BADM MAP where present and non-zero, else WorldClim BIO12 at the
+## tower coordinate. Built once here as a reusable site-level table + helper,
+## not duplicated per panel.
+msg("\n=== SHARED: precipitation reference + P_ERA_MAX_RATIO exclusion ===")
+
+## ---- GRP_ERA_DOWN (172-site) group, shared by every precip-dependent panel
+precip_groups <- readr::read_csv(
+  "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
+  show_col_types = FALSE)
+slope9999_172 <- precip_groups$site_id[precip_groups$p_group == "not_fitted_slope_9999"]
+msg("Sites in not_fitted_slope_9999 (GRP_ERA_DOWN) group: ", length(slope9999_172))
+if (length(slope9999_172) != 172L) {
+  warning("Expected 172 sites in not_fitted_slope_9999, found ", length(slope9999_172))
+}
+
+## ---- ERA5-derived 1991-2020 mean annual P_ERA per site, no MAP screen ----
+## (compute_site_koppen_era5() conveniently returns both the Koppen class AND
+## map_mm -- the 1991-2020 mean annual P_ERA used by P_ERA_MAX_RATIO below --
+## from one call; Phase 1 reuses this same object for its classification.)
+duckdb_path <- "data/duckdb/fluxnet.duckdb"
+con <- dbConnect(duckdb(), dbdir = duckdb_path, read_only = TRUE)
+monthly_era5 <- dbGetQuery(con, "SELECT site_id, TIMESTAMP, TA_ERA, P_ERA FROM monthly WHERE dataset = 'ERA5'")
+dbDisconnect(con, shutdown = TRUE)
+monthly_era5 <- monthly_era5 |> dplyr::filter(site_id %in% current_sites$site_id)
+msg("ERA5 monthly rows for current network: ", nrow(monthly_era5),
+    " (", length(unique(monthly_era5$site_id)), " sites)")
+## legend = NULL: compute_site_koppen_era5() only uses `legend` to attach
+## koppen_class_code/koppen_class_name/koppen_main_name (requires those exact
+## column names); not needed here (Phase 1 gets class codes/colours from its
+## own TL_ORDER/KG13_COLORS).
+kg_era5_nomap <- compute_site_koppen_era5(monthly_era5, map_max_mm = Inf, legend = NULL)
+
+badm_path <- file.path(FLUXNET_DATA_ROOT, "processed", "badm.rds")
+badm <- readRDS(badm_path)
+badm_map <- badm |>
+  dplyr::filter(VARIABLE == "MAP") |>
+  dplyr::distinct(SITE_ID, .keep_all = TRUE) |>
+  dplyr::transmute(site_id = SITE_ID, badm_map_mm = suppressWarnings(as.numeric(DATAVALUE)))
+
+bio12_path <- file.path(EXT, "worldclim", "climate", "wc2.1_2.5m", "wc2.1_2.5m_bio_12.tif")
+bio12_rast <- terra::rast(bio12_path)
+pts_all <- terra::vect(data.frame(x = current_sites$location_long, y = current_sites$location_lat),
+                        geom = c("x", "y"), crs = "EPSG:4326")
+bio12_vals <- terra::extract(bio12_rast, pts_all, ID = FALSE)[[1]]
+if (anyNA(bio12_vals)) {
+  warning(sum(is.na(bio12_vals)), " site(s) got NA WorldClim BIO12 at exact coordinates ",
+          "(coastal/ocean-edge pixels?) -- not handled with a buffer fallback here; ",
+          "these sites can only use BADM MAP as their reference.")
+}
+
+precip_reference <- current_sites |>
+  dplyr::mutate(bio12_mm = bio12_vals) |>
+  dplyr::left_join(badm_map, by = "site_id") |>
+  dplyr::mutate(
+    ref_source = dplyr::if_else(!is.na(badm_map_mm) & badm_map_mm > 0, "badm_map", "worldclim_bio12"),
+    ref_map_mm = dplyr::if_else(!is.na(badm_map_mm) & badm_map_mm > 0, badm_map_mm, bio12_mm)
+  )
+msg("Precip reference source: badm_map=", sum(precip_reference$ref_source == "badm_map"),
+    "  worldclim_bio12=", sum(precip_reference$ref_source == "worldclim_bio12"),
+    "  (of ", nrow(precip_reference), ")")
+
+precip_ref_path <- file.path(SNAP_DIR, "site_precip_reference.csv")
+readr::write_csv(precip_reference, precip_ref_path)
+write_output_metadata(
+  precip_ref_path,
+  input_sources = c(CURRENT_SNAPSHOT, badm_path, bio12_path),
+  notes = paste0(
+    "Reference mean annual precipitation per current-network site, for the P_ERA_MAX_RATIO ",
+    "exclusion rule (figure4_representativeness.R, applied to the Koppen and aridity Geo-vs-Data ",
+    "panels). ref_map_mm = BADM MAP (PI-reported) where present and non-zero, else WorldClim v2.1 ",
+    "BIO12 (1970-2000 baseline, 2.5 arc-min) extracted at the exact tower coordinate (no buffer ",
+    "fallback for NA returns). ref_source records which was used per site."
+  )
+)
+msg("Saved: ", precip_ref_path)
+
+## Returns a data frame (site_id, p_era_map_mm, ref_map_mm, ref_source, ratio,
+## excluded_grp_era_down, excluded_p_era_ratio, excluded_any) for every site
+## in `p_era_df` (must have site_id + a P_ERA 1991-2020 mean annual column).
+## `excluded_by` is passed to log_exclusion() for the ratio rule only (the
+## GRP_ERA_DOWN rule was already logged once, by Phase 1, with its own
+## wording -- not re-logged here to avoid duplicate log rows on reruns of
+## later phases within the same script execution... but see note at call
+## sites: each phase that calls this still logs its OWN GRP_ERA_DOWN rows,
+## since log_exclusion() appends and this script does not deduplicate its
+## own log output across phases/panels by design (every exclusion row names
+## which panel excluded it via `variable`).
+compute_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites, excluded_by, panel_name) {
+  d <- p_era_df |>
+    dplyr::rename(p_era_map_mm = dplyr::all_of(p_era_col)) |>
+    dplyr::left_join(dplyr::select(precip_reference, site_id, ref_map_mm, ref_source), by = "site_id") |>
+    dplyr::mutate(
+      ratio = p_era_map_mm / ref_map_mm,
+      excluded_grp_era_down = site_id %in% slope9999_sites,
+      excluded_p_era_ratio  = !is.na(ratio) & ratio > P_ERA_MAX_RATIO & !excluded_grp_era_down,
+      excluded_any = excluded_grp_era_down | excluded_p_era_ratio
+    )
+
+  for (sid in slope9999_sites) {
+    log_exclusion(
+      site_id = sid, variable = paste0(panel_name, " (Geo vs Data panel)"), timestamp = "ALL",
+      reason = "Site is in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group",
+      threshold = "p_group == 'not_fitted_slope_9999'", excluded_by = excluded_by
+    )
+  }
+  ratio_caught <- d |> dplyr::filter(excluded_p_era_ratio)
+  for (i in seq_len(nrow(ratio_caught))) {
+    log_exclusion(
+      site_id = ratio_caught$site_id[i], variable = paste0(panel_name, " (Geo vs Data panel)"),
+      timestamp = "ALL",
+      reason = sprintf("P_ERA/reference ratio %.2f exceeds P_ERA_MAX_RATIO (P_ERA=%.1f mm/yr, ref=%.1f mm/yr, ref_source=%s)",
+                        ratio_caught$ratio[i], ratio_caught$p_era_map_mm[i],
+                        ratio_caught$ref_map_mm[i], ratio_caught$ref_source[i]),
+      threshold = paste0("P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO), excluded_by = excluded_by
+    )
+  }
+  d
+}
+
+## ---- Required reporting (ratio sensitivity, 4 named sites, >10 check) ----
+## Uses Koppen's kg_era5_nomap$map_mm as "1991-2020 mean annual P_ERA" -- this
+## is a general ERA5 climatology byproduct, not Koppen-specific (same number
+## aridity's Geo-vs-Data panel will use in Phase 3).
+ratio_check <- kg_era5_nomap |> dplyr::select(site_id, map_mm) |>
+  dplyr::left_join(dplyr::select(precip_reference, site_id, ref_map_mm, ref_source), by = "site_id") |>
+  dplyr::mutate(ratio = map_mm / ref_map_mm, in_172 = site_id %in% slope9999_172)
+
+for (r in c(2, 3, 4)) {
+  n_tot <- sum(ratio_check$ratio > r, na.rm = TRUE)
+  n_beyond <- sum(ratio_check$ratio > r & !ratio_check$in_172, na.rm = TRUE)
+  msg("P_ERA/reference ratio > ", r, ": ", n_tot, " sites caught in total, ", n_beyond,
+      " beyond the 172 GRP_ERA_DOWN sites")
+}
+
+caught_beyond_172 <- ratio_check |> dplyr::filter(ratio > P_ERA_MAX_RATIO, !in_172) |>
+  dplyr::arrange(dplyr::desc(ratio))
+msg("\nSites caught by P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO, " beyond the 172 (n=",
+    nrow(caught_beyond_172), "):")
+print(as.data.frame(caught_beyond_172[, c("site_id", "map_mm", "ref_map_mm", "ref_source", "ratio")]))
+if (nrow(caught_beyond_172) > 10L) {
+  msg("*** HOLD: ", nrow(caught_beyond_172), " sites caught beyond the 172 (> ~10) -- ",
+      "per task instruction, Phase 5 (figure assembly) is NOT run in this script execution. ",
+      "Phases 2-4 proceed. Awaiting review of the list above before Phase 5.")
+}
+
+four_named <- ratio_check |> dplyr::filter(site_id %in% c("CA-CF2", "IT-Niv", "NO-And", "US-HB4"))
+msg("\nCA-CF2 / IT-Niv / NO-And / US-HB4 all caught by ratio>", P_ERA_MAX_RATIO, "? ",
+    all(four_named$ratio > P_ERA_MAX_RATIO, na.rm = TRUE))
+print(as.data.frame(four_named[, c("site_id", "map_mm", "ref_map_mm", "ref_source", "ratio")]))
+
+# ==============================================================================
 # PHASE 1: Koppen-Geiger (panel A)
 # ==============================================================================
 msg("\n=== PHASE 1: Koppen-Geiger (panel A) ===")
@@ -171,43 +342,21 @@ msg("Koppen J (Geo vs Geo) = ", round(j_kg_geo_geo, 3))
 add_metric("A", "koppen", "geo_vs_geo", "Beck 2023 1 km mask", KG_LAND_TOTAL_KM2,
            nrow(kg_geo_geo), n_geo_geo_classified, j_kg_geo_geo)
 
-## ---- Geo vs Data: ERA5-local classification, no MAP screen, 172 excluded --
-duckdb_path <- "data/duckdb/fluxnet.duckdb"
-con <- dbConnect(duckdb(), dbdir = duckdb_path, read_only = TRUE)
-monthly_era5 <- dbGetQuery(con, "SELECT site_id, TIMESTAMP, TA_ERA, P_ERA FROM monthly WHERE dataset = 'ERA5'")
-dbDisconnect(con, shutdown = TRUE)
-monthly_era5 <- monthly_era5 |> dplyr::filter(site_id %in% current_sites$site_id)
-msg("ERA5 monthly rows for current network: ", nrow(monthly_era5),
-    " (", length(unique(monthly_era5$site_id)), " sites)")
-
-## legend = NULL: compute_site_koppen_era5() only uses `legend` to attach
-## koppen_class_code/koppen_class_name/koppen_main_name (it requires those
-## exact column names); kg_leg_df above only has koppen_class/r/g/b/
-## koppen_twoletter (built for KG13_COLORS, a different shape), and this
-## panel doesn't need the name columns anyway (class codes/colours come
-## from TL_ORDER/KG13_COLORS).
-kg_era5_nomap <- compute_site_koppen_era5(monthly_era5, map_max_mm = Inf, legend = NULL)
-
-precip_groups <- readr::read_csv(
-  "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
-  show_col_types = FALSE)
-slope9999_172 <- precip_groups$site_id[precip_groups$p_group == "not_fitted_slope_9999"]
-msg("Sites in not_fitted_slope_9999 group (excluded from this panel): ", length(slope9999_172))
-if (length(slope9999_172) != 172L) {
-  warning("Expected 172 sites in not_fitted_slope_9999, found ", length(slope9999_172))
-}
-
-for (sid in slope9999_172) {
-  log_exclusion(
-    site_id = sid, variable = "koppen_era5 (Geo vs Data panel)", timestamp = "ALL",
-    reason = "Site is in the precip_downscaling_provenance not_fitted_slope_9999 group (P_ERA regression against measured P has no usable slope) -- excluded from the Koppen Geo-vs-Data panel entirely, not just left unclassified",
-    threshold = "p_group == 'not_fitted_slope_9999'", excluded_by = "figure4_representativeness.R"
-  )
-}
-
-kg_geo_data_pool <- kg_era5_nomap |> dplyr::filter(!site_id %in% slope9999_172)
+## ---- Geo vs Data: ERA5-local classification, no MAP screen, dual exclusion
+## (172 GRP_ERA_DOWN + P_ERA_MAX_RATIO -- added 2026-10-02, see SHARED section
+## above and SESSION_LOG.md). kg_era5_nomap/slope9999_172 computed there.
+kg_precip_excl <- compute_precip_exclusions(
+  kg_era5_nomap, p_era_col = "map_mm", slope9999_sites = slope9999_172,
+  excluded_by = "figure4_representativeness.R", panel_name = "koppen_era5"
+)
+kg_geo_data_pool <- kg_era5_nomap |>
+  dplyr::filter(site_id %in% kg_precip_excl$site_id[!kg_precip_excl$excluded_any])
+n_excl_ratio_only <- sum(kg_precip_excl$excluded_p_era_ratio)
+msg("Geo vs Data exclusions: ", length(slope9999_172), " GRP_ERA_DOWN + ",
+    n_excl_ratio_only, " P_ERA_MAX_RATIO-only = ", sum(kg_precip_excl$excluded_any),
+    " total excluded; n_eligible = ", nrow(kg_geo_data_pool))
 n_geo_data_classified <- sum(!is.na(kg_geo_data_pool$koppen_twoletter))
-msg("Geo vs Data (ERA5 local, no MAP screen, 172 excluded): ",
+msg("Geo vs Data (ERA5 local, no MAP screen, dual exclusion): ",
     n_geo_data_classified, " / ", nrow(kg_geo_data_pool), " eligible sites classified")
 
 cnt_geo_data <- kg_geo_data_pool |>
@@ -275,23 +424,30 @@ msg("\n=== Saving Phase 1 outputs ===")
 
 fig4_kg_era5_path <- file.path(SNAP_DIR, "site_koppen_era5_fig4.csv")
 kg_era5_nomap |>
-  dplyr::mutate(excluded_fig4_geo_vs_data = site_id %in% slope9999_172) |>
+  dplyr::left_join(
+    dplyr::select(kg_precip_excl, site_id, ratio, ref_source,
+                   excluded_grp_era_down, excluded_p_era_ratio, excluded_any),
+    by = "site_id"
+  ) |>
+  dplyr::rename(excluded_fig4_geo_vs_data = excluded_any) |>
   readr::write_csv(fig4_kg_era5_path)
 write_output_metadata(
   fig4_kg_era5_path,
-  input_sources = c(duckdb_path, CURRENT_SNAPSHOT,
+  input_sources = c(duckdb_path, CURRENT_SNAPSHOT, precip_ref_path,
                      "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"),
   notes = paste0(
     "Koppen classification for figure4_representativeness.R's Geo-vs-Data panel A. Same method as ",
     "site_koppen_era5.csv (R/climate_classification.R::compute_site_koppen_era5(), 1991-2020 ERA5 ",
     "monthly T/P normal, >= 20 of 30 years required) EXCEPT the KG_ERA5_MAP_MAX_MM=5000mm/yr ",
-    "per-site-year screen is NOT applied here (map_max_mm=Inf). `excluded_fig4_geo_vs_data` flags ",
-    "the 172 sites in the precip_downscaling_provenance not_fitted_slope_9999 group; these are ",
-    "classified in this file (for reference) but must be excluded from the Geo-vs-Data panel's ",
-    "numerator AND denominator (n_eligible = 781-172 = 609), not merely treated as unclassified. ",
-    "All 609 eligible sites classify under this rule (0 unclassified within the pool); flagged ",
-    "implausible precipitation values among the 4 sites newly reclassifiable vs. the old MAP-",
-    "screened rule: US-HB4 (known ERA5 spatial-averaging artifact) and NO-And -- see SESSION_LOG.md."
+    "per-site-year screen is NOT applied here (map_max_mm=Inf). Two exclusion rules instead, both ",
+    "flagged in `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio): (1) the ",
+    "172 sites in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group; (2) ",
+    "sites whose 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO,
+    " times their reference MAP (site_precip_reference.csv: BADM MAP where present/non-zero, else ",
+    "WorldClim BIO12 at the tower) -- 12 sites beyond the 172 at this threshold (added 2026-10-02, ",
+    "see SESSION_LOG.md for the full list and the ratio=2/3/4 sensitivity check). All sites are still ",
+    "classified in this file for reference; the panel's numerator AND denominator must exclude both ",
+    "groups (n_eligible = 781 - 172 - 12 = 597)."
   )
 )
 msg("Saved: ", fig4_kg_era5_path)

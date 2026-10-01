@@ -62,6 +62,21 @@ KG_ERA5_MIN_YEARS <- 20L # of 30 candidate years required per site to classify
 KG_ERA5_MAP_MAX_MM <- 5000 # mm/yr; site-years above this are reanalysis
 # spatial-averaging artifacts, not real climate — see docs/known_issues.md §9a
 
+# Site-level precipitation-dependent exclusion for the figure4_representativeness.R
+# Geo-vs-Data panels (Köppen, aridity) — see scripts/figure4_representativeness.R
+# and SESSION_LOG.md. Applied IN ADDITION TO excluding the precip_downscaling_
+# provenance GRP_ERA_DOWN (not_fitted_slope_9999) sites, not a replacement.
+
+#' @export
+P_ERA_MAX_RATIO <- 3 # a site is excluded from precipitation-dependent Geo-vs-
+# Data panels if its 1991-2020 mean annual P_ERA exceeds this many times its
+# reference mean annual precipitation (PI-reported BADM MAP where present and
+# non-zero, else WorldClim BIO12 at the tower). Set above the up-to-~2x
+# differences topography alone can produce between a point and a gridded
+# climatology, and below the ~4x inflation seen at the sites already flagged
+# as ERA5 spatial-averaging artifacts (e.g. US-HB4) — see SESSION_LOG.md for
+# the sensitivity check at ratios 2/3/4.
+
 #' Check pipeline configuration
 #'
 #' Validates that all required environment variables are set, that the

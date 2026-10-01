@@ -1309,129 +1309,424 @@ write_output_metadata(
 msg("Saved: ", metrics_fig4_path)
 print(as.data.frame(metrics_df))
 
+
 # ==============================================================================
-# PHASE 5: Render and assemble
+# PHASE 5 (re-rendered 2026-10-02 for print): Nature final-artwork specs
 # ==============================================================================
-## Two figures (Geo vs Geo, Geo vs Data), six panels each (A Koppen, B IGBP
-## land cover, C aridity, D biomass, E NEE, F ET), in the Fig 4 panel format
-## already built and validated in scripts/diagnostics/flux_bin_breaks.R this
-## session -- ported verbatim (LOG2_*/LABEL_*/contrast_text_color()/
-## base_theme/prep_ordered()/prep_clip()/draw_panel()), not sourced.
-msg("\n=== PHASE 5: Render and assemble ===")
+## Changes rendering ONLY -- no data/bins/exclusions computed above this point
+## are touched. n and J are read from metrics_df (already written to
+## representativeness_metrics_fig4.csv earlier in this run) and compared
+## against that file after saving, to confirm nothing moved.
+msg("\n=== PHASE 5 (print re-render): Nature final-artwork specs ===")
 
 LOG2_MAX    <- log2(5)
 LOG2_BREAKS <- c(-LOG2_MAX, -1, 0, 1, LOG2_MAX)
 LOG2_LABELS <- c("1/5×", "1/2×", "1×", "2×", "5×")
 LOG2_XLIM   <- c(-LOG2_MAX - 0.25, LOG2_MAX + 0.25)
-LABEL_OFFSET  <- 0.15
-LABEL_SIZE_PT <- 6
-LABEL_CHAR_WIDTH <- 0.078
 
+## Font: task allows "Helvetica or Arial". Two different, independently-
+## confirmed problems ruled out using ONE name for everything:
+## - RENDERING (actual glyphs drawn, both ragg/PNG and base pdf()/PDF):
+##   Helvetica resolves to /System/Library/Fonts/Helvetica.ttc and renders
+##   correctly in both devices (confirmed directly); "Arial" is not a valid
+##   `family` for base grDevices::pdf() (only the 14 PostScript standard
+##   names are), so the PDF export needs "Helvetica".
+## - MEASUREMENT (systemfonts::string_width(), used for the "measure the
+##   rendered text width, don't estimate" placement rule): Helvetica.ttc is
+##   a TrueType COLLECTION file that systemfonts::string_width() cannot read
+##   (freetype error 133, confirmed directly); Arial resolves to a plain
+##   .ttf and measures correctly.
+## Resolution: FIG_FONT ("Helvetica") is used for all actual text rendering
+## (PNG via ragg, PDF via base pdf(), and ggplot/grid text elements);
+## MEASURE_FONT ("Arial") is used ONLY inside text_width_mm(), as the
+## metrics source for the placement decisions. Helvetica and Arial are
+## metrically near-identical by design (Arial was drawn to be substitutable
+## for Helvetica), so this is not a meaningful approximation in practice --
+## but it is one, and is flagged as such rather than assumed exact.
+FIG_FONT       <- "Helvetica"
+MEASURE_FONT   <- "Arial"
+BASE_PT        <- 7
+LETTER_PT      <- 8
+FIG_WIDTH_MM   <- 183
+NCOL_FIG       <- 2
+COL_WIDTH_MM   <- FIG_WIDTH_MM / NCOL_FIG
+ROW_PITCH_MM   <- 4.2
+MM_PER_PT      <- 25.4 / 72     # systemfonts::string_width() uses 72 pt/inch (res=72 default)
+PANEL_MARGIN_MM <- 2            # each panel's own plot.margin, all sides
+
+if (!requireNamespace("systemfonts", quietly = TRUE)) {
+  stop("systemfonts is required for measured text widths (already an installed dependency of the ",
+       "ggplot2/ragg stack on this machine -- not a new dependency added for this task).")
+}
+font_check <- systemfonts::match_fonts(FIG_FONT)
+msg("Render font resolved: ", FIG_FONT, " -> ", font_check$path[1])
+measure_font_check <- systemfonts::match_fonts(MEASURE_FONT)
+msg("Measurement font resolved: ", MEASURE_FONT, " -> ", measure_font_check$path[1])
+
+## ---- Measured text width (mm) at a given point size/weight, NOT a per-
+## character constant -- systemfonts::string_width() queries the actual font
+## file's glyph metrics directly (no open device required). Uses MEASURE_FONT
+## (Arial), not FIG_FONT -- see the header comment above.
+text_width_mm <- function(label, size_pt, weight = "normal") {
+  w_pt <- systemfonts::string_width(label, family = MEASURE_FONT, size = size_pt, weight = weight)
+  w_pt * MM_PER_PT
+}
+
+## ---- Per-panel data-width calibration: how many mm correspond to 1 log2-
+## sampling-ratio unit, for THIS panel's own y-axis label gutter (which
+## varies by panel -- "unvegetated" vs "Af" vs "Humid (moderate)"). Found by
+## building the panel's axis/theme (no bars) as a gtable, summing every
+## column EXCEPT the "panel" (data) column (all fixed/text-metric widths,
+## resolvable without a live interactive device -- a throwaway pdf() device
+## is opened only so grid can resolve font metrics), and subtracting that
+## from the panel's known total outer width (COL_WIDTH_MM, 1 of 2 equal
+## figure columns). This replaces guessing a fixed label-gutter width.
+measure_panel_mm_per_unit <- function(class_labels, show_xlab) {
+  dummy_df <- data.frame(y = factor(class_labels, levels = class_labels), x = NA_real_)
+  p <- ggplot2::ggplot(dummy_df, ggplot2::aes(x = x, y = y)) +
+    ggplot2::scale_x_continuous(limits = LOG2_XLIM, breaks = LOG2_BREAKS, labels = LOG2_LABELS,
+                                 expand = ggplot2::expansion(mult = 0)) +
+    ggplot2::scale_y_discrete(name = NULL) +
+    ggplot2::theme_minimal(base_size = BASE_PT) +
+    ggplot2::theme(
+      text = ggplot2::element_text(family = FIG_FONT, size = BASE_PT),
+      axis.text.y = ggplot2::element_text(size = BASE_PT, family = FIG_FONT),
+      axis.text.x = if (show_xlab) ggplot2::element_text(size = BASE_PT, family = FIG_FONT) else ggplot2::element_blank(),
+      axis.title.x = if (show_xlab) ggplot2::element_text(size = BASE_PT, family = FIG_FONT) else ggplot2::element_blank(),
+      plot.margin = ggplot2::margin(PANEL_MARGIN_MM, PANEL_MARGIN_MM, PANEL_MARGIN_MM, PANEL_MARGIN_MM, "mm")
+    )
+  tmp_pdf <- tempfile(fileext = ".pdf")
+  grDevices::pdf(tmp_pdf, width = 10, height = 10, family = "Helvetica")  # base14 name just to open a working device; grobs still request FIG_FONT via gpar
+  on.exit({ grDevices::dev.off(); unlink(tmp_pdf) }, add = TRUE)
+  g <- ggplot2::ggplotGrob(p)
+  panel_col <- g$layout$l[g$layout$name == "panel"][1]
+  other_cols <- setdiff(seq_along(g$widths), panel_col)
+  other_mm <- sum(vapply(other_cols, function(i) grid::convertWidth(g$widths[i], "mm", valueOnly = TRUE), numeric(1)))
+  panel_mm <- COL_WIDTH_MM - other_mm
+  if (panel_mm <= 10) {
+    warning("Panel data-area width came out implausibly small (", round(panel_mm, 1),
+            " mm) for labels: ", paste(utils::head(class_labels, 3), collapse = ", "), "...")
+  }
+  panel_mm / (LOG2_XLIM[2] - LOG2_XLIM[1])
+}
+
+## ---- Clip-label formatting: no decimals at ratio>=10, cap display at
+## ">1000x". Vectorized (called with whole dplyr columns, not scalars).
+format_ratio_label_one <- function(ratio) {
+  if (is.na(ratio)) return(NA_character_)
+  if (ratio > 1000) return(">1000×")
+  if (ratio >= 10) return(paste0(round(ratio), "×"))
+  sprintf("%.1f×", ratio)
+}
+format_ratio_label <- function(ratio) vapply(ratio, format_ratio_label_one, character(1))
+format_clip_annot_one <- function(sampling_ratio, log2_sr) {
+  if (is.na(sampling_ratio) || is.na(log2_sr)) return(NA_character_)
+  if (log2_sr > 0) return(format_ratio_label_one(sampling_ratio))
+  inv <- 1 / sampling_ratio
+  if (inv > 1000) return("1/>1000×")
+  if (inv >= 10) return(paste0("1/", round(inv), "×"))
+  sprintf("1/%.1f×", inv)
+}
+format_clip_annot <- function(sampling_ratio, log2_sr) {
+  mapply(format_clip_annot_one, sampling_ratio, log2_sr)
+}
+
+## ---- Land-share value formatting: 1 decimal, "<0.1" below that -----------
+format_land_pct <- function(frac) {
+  pct <- frac * 100
+  dplyr::if_else(pct < 0.1 & pct > 0, "<0.1", sprintf("%.1f", pct))
+}
+
+## ---- Contrast colour for text drawn on a bar fill (white on dark, near-
+## black on light; relative-luminance threshold 0.5) -- same rule used in
+## flux_bin_breaks.R and the first (non-print) render of this figure.
 contrast_text_color <- function(hex) {
   rgb_mat <- grDevices::col2rgb(hex) / 255
   lum <- 0.2126 * rgb_mat["red", ] + 0.7152 * rgb_mat["green", ] + 0.0722 * rgb_mat["blue", ]
   ifelse(lum < 0.5, "white", "grey10")
 }
 
-base_theme <- ggplot2::theme_minimal(base_size = 9) +
-  ggplot2::theme(
-    plot.background   = ggplot2::element_rect(fill = "white", colour = NA),
-    panel.background  = ggplot2::element_rect(fill = "white", colour = NA),
-    panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = 0.4),
-    panel.grid.major  = ggplot2::element_blank(),
-    panel.grid.minor  = ggplot2::element_blank(),
-    axis.ticks        = ggplot2::element_line(colour = "black"),
-    axis.ticks.length = ggplot2::unit(-0.15, "cm"),
-    legend.background = ggplot2::element_rect(fill = "white", colour = NA)
-  )
-
 prep_ordered <- function(df) {
   df |> dplyr::arrange(class_order) |>
     dplyr::mutate(class_label = factor(class_label, levels = unique(class_label)))
 }
-prep_clip <- function(df) {
+
+## ---- prep_clip2(): like prep_clip() but with the new clip-label format and
+## explicit handling for "none" bins (land present, zero towers) and
+## "neither" bins (no land, no towers -- no bar at all).
+prep_clip2 <- function(df) {
   df |>
     dplyr::mutate(
-      log2_sr_clip = pmax(pmin(dplyr::coalesce(log2_sr, 0), LOG2_MAX), -LOG2_MAX),
-      truncated    = !is.na(log2_sr) & abs(log2_sr) > LOG2_MAX,
-      annot_label  = dplyr::case_when(
-        truncated & log2_sr > 0 ~ paste0(sprintf("%.1f", sampling_ratio), "×"),
-        truncated & log2_sr < 0 ~ paste0("1/", sprintf("%.1f", 1 / sampling_ratio), "×"),
-        TRUE ~ NA_character_
+      is_none    = global_land_fraction > 0 & (is.na(n) | n == 0L) & is.na(log2_sr),
+      is_neither = global_land_fraction == 0 & (is.na(n) | n == 0L),
+      log2_sr_clip = dplyr::case_when(
+        is_none ~ -LOG2_MAX,
+        TRUE ~ pmax(pmin(dplyr::coalesce(log2_sr, 0), LOG2_MAX), -LOG2_MAX)
       ),
+      truncated = !is_none & !is.na(log2_sr) & abs(log2_sr) > LOG2_MAX,
+      annot_label = dplyr::if_else(truncated, format_clip_annot(sampling_ratio, log2_sr), NA_character_),
       annot_x = dplyr::case_when(
         truncated & log2_sr > 0 ~  LOG2_MAX - 0.08,
         truncated & log2_sr < 0 ~ -LOG2_MAX + 0.08,
         TRUE ~ NA_real_
       ),
-      annot_hjust = dplyr::case_when(
-        truncated & log2_sr > 0 ~ 1, truncated & log2_sr < 0 ~ 0, TRUE ~ 0.5
-      )
+      annot_hjust = dplyr::case_when(truncated & log2_sr > 0 ~ 1, truncated & log2_sr < 0 ~ 0, TRUE ~ 0.5)
     )
 }
 
-draw_panel <- function(df, j_val, show_xlab = FALSE, panel_label = NULL) {
-  col_vals <- setNames(df$color_hex, as.character(df$class_label))
-  p <- ggplot2::ggplot(df, ggplot2::aes(x = log2_sr_clip, y = class_label, fill = class_label)) +
-    ggplot2::geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5) +
-    ggplot2::geom_col(width = 0.72, na.rm = TRUE, show.legend = FALSE, colour = "black", linewidth = 0.25) +
-    ggplot2::scale_fill_manual(values = col_vals) +
-    ggplot2::scale_x_continuous(limits = LOG2_XLIM, breaks = LOG2_BREAKS, labels = LOG2_LABELS,
-                                 expand = ggplot2::expansion(mult = 0),
-                                 name = if (show_xlab) "Sampling ratio" else NULL,
-                                 sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
-    ggplot2::scale_y_discrete(name = NULL) +
-    base_theme +
-    ggplot2::theme(
-      axis.text.y  = ggplot2::element_text(size = 6.5, margin = ggplot2::margin(r = 5)),
-      axis.text.x  = if (show_xlab) ggplot2::element_text(size = 7, margin = ggplot2::margin(t = 5)) else ggplot2::element_blank(),
-      axis.ticks.x = ggplot2::element_line(),
-      axis.title.x = ggplot2::element_text(size = 8)
-    )
+## ---- Header-row replacement helper: bold lowercase letter + 7pt title (left)
+## + J (7pt, right), all one line, via grid grob replacement -- ggplot2 title/
+## subtitle elements can't mix font sizes/weights within one string, so the
+## "title" gtable cell's content is swapped out after ggplotGrob(). Reused
+## for the bottom-row under-sampled/over-sampled caption via the "xlab-b"
+## cell (same technique, different cell).
+replace_gtable_cell <- function(g, cell_name, new_grob) {
+  idx <- which(g$layout$name == cell_name)
+  if (length(idx) == 0) {
+    warning("gtable cell '", cell_name, "' not found -- ggplot2 internals may have changed; ",
+            "header/caption not drawn for this panel.")
+    return(g)
+  }
+  g$grobs[[idx[1]]] <- new_grob
+  g
+}
+header_grob <- function(letter, title_text, j_val) {
+  letter_grob <- grid::textGrob(tolower(letter), x = 0, hjust = 0, vjust = 0.5,
+                                 gp = grid::gpar(fontsize = LETTER_PT, fontface = "bold", fontfamily = FIG_FONT, col = "grey10"))
+  title_grob <- grid::textGrob(paste0("  ", title_text), x = grid::grobWidth(letter_grob), hjust = 0, vjust = 0.5,
+                                gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey10"))
+  j_text <- if (!is.na(j_val)) sprintf("J = %.3f", j_val) else ""
+  j_grob <- grid::textGrob(j_text, x = 1, hjust = 1, vjust = 0.5,
+                            gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey20"))
+  grid::gTree(children = grid::gList(letter_grob, title_grob, j_grob))
+}
+caption_grob <- function() {
+  left  <- grid::textGrob("under-sampled", x = 0.25, hjust = 0.5, vjust = 1,
+                           gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey30"))
+  right <- grid::textGrob("over-sampled", x = 0.75, hjust = 0.5, vjust = 1,
+                           gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey30"))
+  grid::gTree(children = grid::gList(left, right))
+}
 
+## ---- draw_panel2(): the Nature-print panel renderer -----------------------
+## `show_header` adds a blank pseudo-row at the top of the DATA (a real row,
+## included in the row-pitch height math, not an overflow annotation) and
+## overlays "% land"/"towers" column headers on it. `show_xlab` replaces the
+## x-axis title row with the under-sampled/over-sampled caption.
+LABEL_OFFSET <- 0.15
+draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
+                         show_xlab = FALSE, show_header = FALSE, label_pt = BASE_PT) {
+  if (show_header) {
+    header_row <- df[1, ]
+    header_row[] <- NA
+    header_row$class_label <- ""
+    header_row$class_order <- max(df$class_order, na.rm = TRUE) + 1
+    header_row$color_hex <- NA_character_
+    header_row$global_land_fraction <- 0
+    header_row$n <- NA_integer_
+    header_row$is_none <- FALSE
+    header_row$is_neither <- TRUE
+    header_row$log2_sr_clip <- NA_real_
+    header_row$truncated <- FALSE
+    df <- dplyr::bind_rows(df, header_row) |> prep_ordered()
+  }
+
+  bar_df  <- dplyr::filter(df, !is_neither, !is_none)
+  none_df <- dplyr::filter(df, is_none)
+  col_vals <- setNames(df$color_hex, as.character(df$class_label))
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = log2_sr_clip, y = class_label)) +
+    ggplot2::geom_vline(xintercept = c(-LOG2_MAX, -1, 1, LOG2_MAX), colour = "grey88", linewidth = 0.3) +
+    ggplot2::geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5)
+  if (nrow(bar_df) > 0) {
+    p <- p + ggplot2::geom_col(data = bar_df, ggplot2::aes(fill = class_label), width = 0.72,
+                                na.rm = TRUE, show.legend = FALSE, colour = "black", linewidth = 0.25)
+  }
+  if (nrow(none_df) > 0) {
+    p <- p + ggplot2::geom_col(data = none_df, width = 0.72, na.rm = TRUE, show.legend = FALSE,
+                                fill = "white", colour = "black", linewidth = 0.25, linetype = "dashed")
+  }
+  p <- p +
+    ggplot2::scale_fill_manual(values = col_vals, na.value = NA) +
+    ggplot2::scale_x_continuous(limits = LOG2_XLIM, breaks = LOG2_BREAKS, labels = LOG2_LABELS,
+                                 expand = ggplot2::expansion(mult = 0), name = NULL) +
+    ggplot2::scale_y_discrete(name = NULL) +
+    ggplot2::theme_minimal(base_size = BASE_PT) +
+    ggplot2::theme(
+      text              = ggplot2::element_text(family = FIG_FONT, size = BASE_PT, colour = "grey10"),
+      plot.background   = ggplot2::element_rect(fill = "white", colour = NA),
+      panel.background  = ggplot2::element_rect(fill = "white", colour = NA),
+      panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = 0.4),
+      panel.grid.major  = ggplot2::element_blank(),
+      panel.grid.minor  = ggplot2::element_blank(),
+      axis.ticks        = ggplot2::element_line(colour = "black"),
+      axis.ticks.length = ggplot2::unit(-0.15, "cm"),
+      axis.text.y   = ggplot2::element_text(size = BASE_PT, family = FIG_FONT, colour = "grey10", margin = ggplot2::margin(r = 5)),
+      axis.text.x   = if (show_xlab) ggplot2::element_text(size = BASE_PT, family = FIG_FONT, colour = "grey10", margin = ggplot2::margin(t = 5)) else ggplot2::element_blank(),
+      axis.ticks.x  = if (show_xlab) ggplot2::element_line() else ggplot2::element_blank(),
+      axis.title.x  = ggplot2::element_text(size = BASE_PT),
+      plot.margin   = ggplot2::margin(PANEL_MARGIN_MM, PANEL_MARGIN_MM, PANEL_MARGIN_MM, PANEL_MARGIN_MM, "mm"),
+      plot.title    = ggplot2::element_text(size = max(LETTER_PT, BASE_PT))
+    ) +
+    ggplot2::labs(title = " ", x = if (show_xlab) " " else NULL)
+
+  ## ---- Bar numbers: measured-width-based placement, incl. header row -----
+  ## Three-way placement (task spec, revised from the first render's two-way
+  ## rule): (1) bar fully contains the label -> fixed at LABEL_OFFSET next
+  ## to the 1x line, contrast colour; (2) a bar exists on that side but is
+  ## too short to contain the label -> position MOVES to just beyond that
+  ## bar's own outer end (not the fixed offset), near-black; (3) no bar at
+  ## all on that side -> fixed at LABEL_OFFSET, near-black. Case (2) is new:
+  ## the first render always used the fixed offset for both (2) and (3),
+  ## which let a near-black number straddle a short bar's edge (e.g. the
+  ## Köppen "BS" row) since the fixed anchor sat ON the bar's edge instead
+  ## of beside it -- caught by checking exactly this row.
+  BEYOND_GAP <- 0.06
   lbl_df <- df |>
+    dplyr::filter(!is_neither | class_label == "") |>
     dplyr::mutate(
-      bar_lo = pmin(0, dplyr::coalesce(log2_sr_clip, 0)), bar_hi = pmax(0, dplyr::coalesce(log2_sr_clip, 0)),
-      has_bar = !is.na(log2_sr),
-      left_label = sprintf("%.1f%%", global_land_fraction * 100), right_label = format(n, big.mark = ","),
-      left_margin = LABEL_CHAR_WIDTH * nchar(left_label), right_margin = LABEL_CHAR_WIDTH * nchar(right_label),
-      left_covered  = has_bar & bar_lo <= -(LABEL_OFFSET + left_margin),
-      right_covered = has_bar & bar_hi >=  (LABEL_OFFSET + right_margin),
-      left_colour  = dplyr::if_else(left_covered,  contrast_text_color(color_hex), "grey10"),
-      right_colour = dplyr::if_else(right_covered, contrast_text_color(color_hex), "grey10")
+      bar_lo = dplyr::if_else(is_none, -LOG2_MAX, pmin(0, dplyr::coalesce(log2_sr_clip, 0))),
+      bar_hi = pmax(0, dplyr::coalesce(log2_sr_clip, 0)),
+      has_bar_left  = is_none | (!is.na(log2_sr) & bar_lo < 0),
+      has_bar_right = !is_none & !is.na(log2_sr) & bar_hi > 0,
+      is_header_row = class_label == "",
+      left_label  = dplyr::if_else(is_header_row, "% land", format_land_pct(global_land_fraction)),
+      right_label = dplyr::if_else(is_header_row, "towers", dplyr::if_else(is_none, "none", format(n, big.mark = ","))),
+      left_w_units  = vapply(left_label, text_width_mm, numeric(1), size_pt = label_pt) / panel_mm_per_unit,
+      right_w_units = vapply(right_label, text_width_mm, numeric(1), size_pt = label_pt) / panel_mm_per_unit,
+      left_covered  = !is_header_row & has_bar_left  & bar_lo <= -(LABEL_OFFSET + left_w_units),
+      right_covered = !is_header_row & has_bar_right & bar_hi >=  (LABEL_OFFSET + right_w_units),
+      left_x = dplyr::case_when(
+        is_header_row ~ -LABEL_OFFSET, left_covered ~ -LABEL_OFFSET,
+        has_bar_left ~ bar_lo - BEYOND_GAP, TRUE ~ -LABEL_OFFSET
+      ),
+      right_x = dplyr::case_when(
+        is_header_row ~ LABEL_OFFSET, right_covered ~ LABEL_OFFSET,
+        has_bar_right ~ bar_hi + BEYOND_GAP, TRUE ~ LABEL_OFFSET
+      ),
+      left_colour  = dplyr::case_when(is_header_row ~ "grey30", left_covered ~ contrast_text_color(dplyr::if_else(is_none, "#FFFFFF", color_hex)), TRUE ~ "grey10"),
+      right_colour = dplyr::case_when(is_header_row ~ "grey30", right_covered ~ contrast_text_color(color_hex), TRUE ~ "grey10")
     )
   p <- p +
-    ggplot2::geom_text(data = lbl_df, ggplot2::aes(x = -LABEL_OFFSET, y = class_label, label = left_label, colour = I(left_colour)),
-                        inherit.aes = FALSE, hjust = 1, size = LABEL_SIZE_PT, size.unit = "pt") +
-    ggplot2::geom_text(data = lbl_df, ggplot2::aes(x = LABEL_OFFSET, y = class_label, label = right_label, colour = I(right_colour)),
-                        inherit.aes = FALSE, hjust = 0, size = LABEL_SIZE_PT, size.unit = "pt")
+    ggplot2::geom_text(data = lbl_df, ggplot2::aes(x = left_x, y = class_label, label = left_label, colour = I(left_colour)),
+                        inherit.aes = FALSE, hjust = 1, size = label_pt, size.unit = "pt", family = FIG_FONT) +
+    ggplot2::geom_text(data = lbl_df, ggplot2::aes(x = right_x, y = class_label, label = right_label, colour = I(right_colour)),
+                        inherit.aes = FALSE, hjust = 0, size = label_pt, size.unit = "pt", family = FIG_FONT)
 
   ann_df <- dplyr::filter(df, !is.na(annot_label)) |> dplyr::mutate(clip_colour = contrast_text_color(color_hex))
   if (nrow(ann_df) > 0) {
     p <- p + ggplot2::geom_text(
       data = ann_df, ggplot2::aes(x = annot_x, y = class_label, label = annot_label, hjust = annot_hjust, colour = I(clip_colour)),
-      inherit.aes = FALSE, size = 2.2, fontface = "plain"
+      inherit.aes = FALSE, size = label_pt - 1, size.unit = "pt", family = FIG_FONT
     )
   }
-  if (!is.null(panel_label)) {
-    p <- p + ggplot2::labs(title = panel_label) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = 10.5, face = "bold", colour = "grey10", hjust = 0, margin = ggplot2::margin(b = 3)))
-  }
-  if (!is.na(j_val)) {
-    p <- p + ggplot2::labs(subtitle = sprintf("J = %.3f", j_val)) +
-      ggplot2::theme(plot.subtitle = ggplot2::element_text(size = 7.5, colour = "grey20", hjust = 1, margin = ggplot2::margin(b = 2)))
-  }
-  p
+
+  g <- ggplot2::ggplotGrob(p)
+  g <- replace_gtable_cell(g, "title", header_grob(letter, title_text, j_val))
+  if (show_xlab) g <- replace_gtable_cell(g, "xlab-b", caption_grob())
+  g
 }
 
-## ---- Axis metadata: class order / label / colour per panel, and a single
-## builder that turns each phase's already-computed merged_* df (class,
-## global_land_fraction, n, network_frac) into draw_panel()-ready shape. ----
+## ---- Overhead measurement: every gtable row EXCEPT "panel", in mm, for a
+## given panel's own configuration (show_xlab/show_header change which rows
+## exist). Combined with ROW_PITCH_MM * effective_n_rows (effective_n_rows
+## includes the +1 header pseudo-row where applicable), gives the exact
+## total panel height -- same technique as the width calibration above.
+measure_panel_overhead_mm <- function(show_xlab, show_header) {
+  dummy <- data.frame(
+    class_label = factor(c("X", if (show_header) "" else NULL), levels = c("X", if (show_header) "" else NULL)),
+    class_order = seq_len(1 + show_header), color_hex = "#888888", global_land_fraction = 0.5,
+    n = 1L, network_frac = 0.5, sampling_ratio = 1, log2_sr = 0,
+    is_none = FALSE, is_neither = FALSE, log2_sr_clip = 0, truncated = FALSE,
+    annot_label = NA_character_, annot_x = NA_real_, annot_hjust = NA_real_,
+    stringsAsFactors = FALSE
+  )
+  g <- draw_panel2(dummy, panel_mm_per_unit = 10, letter = "x", title_text = "Title",
+                    j_val = 0.5, show_xlab = show_xlab, show_header = FALSE, label_pt = BASE_PT)
+  tmp_pdf <- tempfile(fileext = ".pdf")
+  grDevices::pdf(tmp_pdf, width = 10, height = 10, family = "Helvetica")  # base14 name just to open a working device; grobs still request FIG_FONT via gpar
+  on.exit({ grDevices::dev.off(); unlink(tmp_pdf) }, add = TRUE)
+  panel_row <- g$layout$t[g$layout$name == "panel"][1]
+  other_rows <- setdiff(seq_along(g$heights), panel_row)
+  sum(vapply(other_rows, function(i) grid::convertHeight(g$heights[i], "mm", valueOnly = TRUE), numeric(1)))
+}
+
+## ---- Shortened class labels (print re-render) -----------------------------
+## NEE: drop the "(GPP < 5)" qualifier from bar 1, true Unicode minus signs
+## (U+2212) in place of ASCII hyphens throughout.
+flux_bin_labels_print <- function(flux_name, cut, edges) {
+  if (flux_name == "NEE") {
+    labs <- c("unvegetated",
+              sprintf("< %s", edges[1]),
+              sprintf("%s to %s", edges[1], edges[2]), sprintf("%s to %s", edges[2], edges[3]),
+              sprintf("%s to %s", edges[3], edges[4]), sprintf("%s to %s", edges[4], edges[5]),
+              sprintf("> %s", edges[5]))
+    labs <- gsub("-", "\u2212", labs, fixed = TRUE)
+  } else {
+    labs <- c(sprintf("0\u2013%s", cut), sprintf("%s\u2013%s", cut, edges[1]),
+              sprintf("%s\u2013%s", edges[1], edges[2]), sprintf("%s\u2013%s", edges[2], edges[3]),
+              sprintf("%s\u2013%s", edges[3], edges[4]), sprintf("%s\u2013%s", edges[4], edges[5]),
+              sprintf("> %s", edges[5]))
+  }
+  labs
+}
+NEE_BIN_LABELS <- flux_bin_labels_print("NEE", NEE_BAR1_GPP_CUT, nee_result$edges)
+ET_BIN_LABELS  <- flux_bin_labels_print("ET", ET_LOW_CUT, et_result$edges)
+NEE_LABEL_MAP <- setNames(NEE_BIN_LABELS, as.character(1:7))
+ET_LABEL_MAP  <- setNames(ET_BIN_LABELS, as.character(1:7))
+FLUX_ORDER_MAP <- setNames(1:7, as.character(1:7))
+
+## Biomass: strip " Mg/ha" (unit now in the panel title) and trailing ".0".
+clean_biomass_label <- function(x) {
+  x <- sub(" Mg/ha$", "", x)
+  gsub("\\.0(?=[\u20130-9>]|$)", "", x, perl = TRUE)
+}
+BIOMASS_LABEL_MAP <- setNames(clean_biomass_label(bio7_global$biomass_bin_label), bio7_global$class)
+BIOMASS_ORDER_MAP <- setNames(as.integer(bio7_global$class), bio7_global$class)
+BIO7_COLORS <- c("1" = "#f7f4f9", "2" = "#f0e1c4", "3" = "#d4d491",
+                  "4" = "#a3c585", "5" = "#6cb375", "6" = "#2e8b57", "7" = "#14532d")
+
+KG_LABEL_MAP <- setNames(TL_ORDER, TL_ORDER)
+KG_ORDER_MAP <- setNames(seq_along(TL_ORDER), TL_ORDER)
+IGBP_LABEL_MAP <- setNames(IGBP_ORDER, IGBP_ORDER)
+IGBP_ORDER_MAP <- setNames(seq_along(IGBP_ORDER), IGBP_ORDER)
+ARIDITY_LABEL_MAP <- setNames(ARIDITY_ORDER, ARIDITY_ORDER)
+ARIDITY_ORDER_MAP <- setNames(seq_along(ARIDITY_ORDER), ARIDITY_ORDER)
+
+NEE_SINK_RAMP <- grDevices::colorRampPalette(c("#0b3e09", "#eaf5e4"))(5)
+NEE7_COLORS <- c("1" = unname(BIO7_COLORS[["1"]]),
+                  "2" = NEE_SINK_RAMP[1], "3" = NEE_SINK_RAMP[2], "4" = NEE_SINK_RAMP[3],
+                  "5" = NEE_SINK_RAMP[4], "6" = NEE_SINK_RAMP[5], "7" = "#c2703a")
+ET7_COLORS  <- c("1" = unname(BIO7_COLORS[["1"]]), "2" = "#bcd8f4", "3" = "#82bce8",
+                  "4" = "#4498d5", "5" = "#1d74b3", "6" = "#0c4f84", "7" = "#06305a")
+
+## Panel specs: letter + title kept separate (unit suffix on d/e/f titles, no
+## dash -- the dash was absorbed into the two-grob header mechanism).
+PANEL_SPECS <- list(
+  A = list(letter = "a", title = "K\u00f6ppen-Geiger", axis = "koppen",
+           order_map = KG_ORDER_MAP, label_map = KG_LABEL_MAP, color_map = KG13_COLORS,
+           total_km2 = KG_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask"),
+  B = list(letter = "b", title = "Land cover (IGBP)", axis = "igbp",
+           order_map = IGBP_ORDER_MAP, label_map = IGBP_LABEL_MAP, color_map = IGBP_COLORS,
+           total_km2 = IGBP_LAND_TOTAL_KM2, land_grid = "MODIS MCD12C1 on Beck 2023 1 km mask"),
+  C = list(letter = "c", title = "Aridity", axis = "aridity",
+           order_map = ARIDITY_ORDER_MAP, label_map = ARIDITY_LABEL_MAP, color_map = ARIDITY_COLORS,
+           total_km2 = ARIDITY_LAND_TOTAL_KM2, land_grid = "CGIAR Aridity Index v3.1"),
+  D = list(letter = "d", title = "Biomass (Mg ha\u207b\u00b9)", axis = "biomass",
+           order_map = BIOMASS_ORDER_MAP, label_map = BIOMASS_LABEL_MAP, color_map = BIO7_COLORS,
+           total_km2 = BIOMASS_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask (fine)"),
+  E = list(letter = "e", title = "NEE (gC m\u207b\u00b2 yr\u207b\u00b9)", axis = "nee",
+           order_map = FLUX_ORDER_MAP, label_map = NEE_LABEL_MAP, color_map = NEE7_COLORS,
+           total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg"),
+  F = list(letter = "f", title = "ET (mm yr\u207b\u00b9)", axis = "et",
+           order_map = FLUX_ORDER_MAP, label_map = ET_LABEL_MAP, color_map = ET7_COLORS,
+           total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg")
+)
+
 get_j_fig4 <- function(panel, cmp) {
   v <- metrics_df$weighted_jaccard[metrics_df$panel == panel & metrics_df$comparison == cmp]
   if (length(v) == 0) NA_real_ else v[[1]]
 }
-
 build_panel_df <- function(merged_df, order_map, label_map, color_map, total_km2) {
   merged_df |>
     dplyr::mutate(
@@ -1443,99 +1738,67 @@ build_panel_df <- function(merged_df, order_map, label_map, color_map, total_km2
                                        network_frac / global_land_fraction, NA_real_),
       log2_sr = dplyr::if_else(!is.na(sampling_ratio), log2(sampling_ratio), NA_real_)
     ) |>
-    prep_ordered() |> prep_clip()
+    prep_ordered() |> prep_clip2()
 }
-
-## NEE/ET bin labels: identical construction to flux_bin_breaks.R.
-flux_bin_labels <- function(flux_name, cut, edges) {
-  bar1_label <- if (flux_name == "NEE") sprintf("unvegetated (GPP < %s)", cut) else sprintf("0–%s", cut)
-  c(bar1_label, sprintf("< %s", edges[1]), sprintf("%s to %s", edges[1], edges[2]),
-    sprintf("%s to %s", edges[2], edges[3]), sprintf("%s to %s", edges[3], edges[4]),
-    sprintf("%s to %s", edges[4], edges[5]), sprintf("> %s", edges[5]))
-}
-flux_merged_df <- function(result, flux_name, cut, comparison) {
+flux_merged_df <- function(result, comparison) {
   bin_vec <- if (comparison == "geo_vs_data") result$data_bin else result$geo_bin
   n_classified <- sum(!is.na(bin_vec))
   cnt <- as.numeric(table(factor(bin_vec, levels = 1:7)))
-  data.frame(
-    class = as.character(1:7), global_land_fraction = result$land_vec,
-    n = cnt, network_frac = cnt / n_classified, stringsAsFactors = FALSE
-  )
+  data.frame(class = as.character(1:7), global_land_fraction = result$land_vec,
+             n = cnt, network_frac = cnt / n_classified, stringsAsFactors = FALSE)
 }
-
-NEE_BIN_LABELS <- flux_bin_labels("NEE", NEE_BAR1_GPP_CUT, nee_result$edges)
-ET_BIN_LABELS  <- flux_bin_labels("ET", ET_LOW_CUT, et_result$edges)
-NEE_LABEL_MAP <- setNames(NEE_BIN_LABELS, as.character(1:7))
-ET_LABEL_MAP  <- setNames(ET_BIN_LABELS, as.character(1:7))
-FLUX_ORDER_MAP <- setNames(1:7, as.character(1:7))
-
-BIOMASS_LABEL_MAP <- setNames(bio7_global$biomass_bin_label, bio7_global$class)
-BIOMASS_ORDER_MAP <- setNames(as.integer(bio7_global$class), bio7_global$class)
-BIO7_COLORS <- c("1" = "#f7f4f9", "2" = "#f0e1c4", "3" = "#d4d491",
-                  "4" = "#a3c585", "5" = "#6cb375", "6" = "#2e8b57", "7" = "#14532d")
-
-KG_LABEL_MAP <- setNames(TL_ORDER, TL_ORDER)
-KG_ORDER_MAP <- setNames(seq_along(TL_ORDER), TL_ORDER)
-
-IGBP_LABEL_MAP <- setNames(IGBP_ORDER, IGBP_ORDER)
-IGBP_ORDER_MAP <- setNames(seq_along(IGBP_ORDER), IGBP_ORDER)
-
-ARIDITY_LABEL_MAP <- setNames(ARIDITY_ORDER, ARIDITY_ORDER)
-ARIDITY_ORDER_MAP <- setNames(seq_along(ARIDITY_ORDER), ARIDITY_ORDER)
-
-## NEE/ET colour ramps (diverging NEE, blue ET): identical to flux_bin_breaks.R.
-NEE_SINK_RAMP <- grDevices::colorRampPalette(c("#0b3e09", "#eaf5e4"))(5)
-NEE7_COLORS <- c("1" = unname(BIO7_COLORS[["1"]]),
-                  "2" = NEE_SINK_RAMP[1], "3" = NEE_SINK_RAMP[2], "4" = NEE_SINK_RAMP[3],
-                  "5" = NEE_SINK_RAMP[4], "6" = NEE_SINK_RAMP[5], "7" = "#c2703a")
-ET7_COLORS  <- c("1" = unname(BIO7_COLORS[["1"]]), "2" = "#bcd8f4", "3" = "#82bce8",
-                  "4" = "#4498d5", "5" = "#1d74b3", "6" = "#0c4f84", "7" = "#06305a")
-
-## Panel specs: one row per panel letter, with everything needed to build
-## its df for a given comparison and to write its table/legend content.
-PANEL_SPECS <- list(
-  A = list(title = "A — Köppen-Geiger", axis = "koppen",
-           order_map = KG_ORDER_MAP, label_map = KG_LABEL_MAP, color_map = KG13_COLORS,
-           total_km2 = KG_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask"),
-  B = list(title = "B — Land cover (IGBP)", axis = "igbp",
-           order_map = IGBP_ORDER_MAP, label_map = IGBP_LABEL_MAP, color_map = IGBP_COLORS,
-           total_km2 = IGBP_LAND_TOTAL_KM2, land_grid = "MODIS MCD12C1 on Beck 2023 1 km mask"),
-  C = list(title = "C — Aridity", axis = "aridity",
-           order_map = ARIDITY_ORDER_MAP, label_map = ARIDITY_LABEL_MAP, color_map = ARIDITY_COLORS,
-           total_km2 = ARIDITY_LAND_TOTAL_KM2, land_grid = "CGIAR Aridity Index v3.1"),
-  D = list(title = "D — Biomass", axis = "biomass",
-           order_map = BIOMASS_ORDER_MAP, label_map = BIOMASS_LABEL_MAP, color_map = BIO7_COLORS,
-           total_km2 = BIOMASS_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask (fine)"),
-  E = list(title = "E — NEE", axis = "nee",
-           order_map = FLUX_ORDER_MAP, label_map = NEE_LABEL_MAP, color_map = NEE7_COLORS,
-           total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg"),
-  F = list(title = "F — ET", axis = "et",
-           order_map = FLUX_ORDER_MAP, label_map = ET_LABEL_MAP, color_map = ET7_COLORS,
-           total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg")
-)
-
-build_fig4_panel <- function(panel_letter, comparison, show_xlab) {
-  spec <- PANEL_SPECS[[panel_letter]]
-  merged <- switch(panel_letter,
+build_merged_for_panel <- function(panel_letter, comparison) {
+  switch(panel_letter,
     A = if (comparison == "geo_vs_geo") merged_geo_geo else merged_geo_data,
     B = if (comparison == "geo_vs_geo") merged_igbp_geo_geo else merged_igbp_geo_data,
     C = if (comparison == "geo_vs_geo") merged_arid_geo_geo else merged_arid_geo_data,
     D = merged_bio,
-    E = flux_merged_df(nee_result, "NEE", NEE_BAR1_GPP_CUT, comparison),
-    F = flux_merged_df(et_result, "ET", ET_LOW_CUT, comparison)
+    E = flux_merged_df(nee_result, comparison),
+    F = flux_merged_df(et_result, comparison)
   )
-  df <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
-  j_val <- get_j_fig4(panel_letter, comparison)
-  list(df = df, plot = draw_panel(df, j_val, show_xlab = show_xlab, panel_label = spec$title))
 }
 
-## ---- Per-panel tables: bin, land_area_km2, land_fraction, towers, tower_fraction
+## ---- Per-panel font-size override (7pt default; filled in below only if a
+## panel is found, after visual inspection, to still crowd at 7pt -- see
+## SESSION_LOG.md for the outcome of that check).
+PANEL_LABEL_PT <- setNames(rep(BASE_PT, 6), c("A", "B", "C", "D", "E", "F"))
+
+PANEL_LAYOUT <- list(
+  row1 = c("A", "B"), row2 = c("C", "D"), row3 = c("E", "F")
+)
+show_header_for <- function(letter) letter %in% PANEL_LAYOUT$row1
+show_xlab_for   <- function(letter) letter %in% PANEL_LAYOUT$row3
+
+build_fig4_panel2 <- function(panel_letter, comparison) {
+  spec <- PANEL_SPECS[[panel_letter]]
+  merged <- build_merged_for_panel(panel_letter, comparison)
+  df <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
+  show_xlab   <- show_xlab_for(panel_letter)
+  show_header <- show_header_for(panel_letter)
+  panel_mm_per_unit <- measure_panel_mm_per_unit(levels(df$class_label), show_xlab)
+  j_val <- get_j_fig4(panel_letter, comparison)
+  g <- draw_panel2(df, panel_mm_per_unit, spec$letter, spec$title, j_val,
+                    show_xlab = show_xlab, show_header = show_header,
+                    label_pt = PANEL_LABEL_PT[[panel_letter]])
+  list(df = df, grob = g, n_rows = nlevels(df$class_label) + if (show_header) 1L else 0L,
+       show_xlab = show_xlab, show_header = show_header)
+}
+
+## ---- Row heights: overhead (everything but the "panel" row) + n_rows*pitch
+overhead_row1 <- measure_panel_overhead_mm(show_xlab = FALSE, show_header = TRUE)
+overhead_row2 <- measure_panel_overhead_mm(show_xlab = FALSE, show_header = FALSE)
+overhead_row3 <- measure_panel_overhead_mm(show_xlab = TRUE,  show_header = FALSE)
+msg("Row overhead (mm, excl. bar area): row1(header)=", round(overhead_row1, 2),
+    " row2=", round(overhead_row2, 2), " row3(xlab+caption)=", round(overhead_row3, 2))
+
+## ---- Build, save, confirm (both comparisons) ------------------------------
 FIG4_TABLES_DIR <- file.path(FIG_DIR, "tables")
 fs::dir_create(FIG4_TABLES_DIR)
 write_panel_table <- function(panel_letter, comparison, df) {
-  tab <- df |> dplyr::transmute(
+  tab <- df |> dplyr::filter(!is_neither) |> dplyr::transmute(
     bin_label = as.character(class_label), land_area_km2 = global_land_area_km2,
-    land_fraction = global_land_fraction, towers = n, tower_fraction = network_frac
+    land_fraction = global_land_fraction, towers = dplyr::coalesce(n, 0L),
+    tower_fraction = dplyr::coalesce(network_frac, 0)
   )
   out <- file.path(FIG4_TABLES_DIR, sprintf("table_%s_%s.csv", tolower(panel_letter), comparison))
   readr::write_csv(tab, out)
@@ -1546,175 +1809,197 @@ write_panel_table <- function(panel_letter, comparison, df) {
                      PANEL_SPECS[[panel_letter]]$land_grid,
                      format(round(PANEL_SPECS[[panel_letter]]$total_km2), big.mark = ","))
   )
-  out
 }
 
-## ---- Crowding check: largest panel is B (IGBP, up to 16 rows) ------------
-## Row heights scaled to each row's tallest panel's class count, so IGBP
-## (16 classes) gets more vertical space than the 7-row panels sharing its
-## figure, rather than patchwork's default equal-height rows (which is what
-## the 13-row Koppen panel got away with in flux_bin_breaks.R, but 16 rows
-## needs checking fresh, not assumed).
-PANEL_ROWS <- vapply(names(PANEL_SPECS), function(k) length(PANEL_SPECS[[k]]$order_map), integer(1))
-ROW_HEIGHTS <- c(max(PANEL_ROWS[c("A", "B")]), max(PANEL_ROWS[c("C", "D")]), max(PANEL_ROWS[c("E", "F")]))
-msg("Panel row counts: ", paste(names(PANEL_ROWS), PANEL_ROWS, sep = "=", collapse = ", "),
-    "; figure row heights (relative): ", paste(ROW_HEIGHTS, collapse = ", "))
-
-crowd_flags <- character(0)
+fig_heights_mm <- list()
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
-  msg("\n--- Assembling fig_04_", comparison, ".png ---")
-  panels <- list()
-  tables_written <- character(0)
-  for (letter in c("A", "B", "C", "D", "E", "F")) {
-    show_xlab <- letter %in% c("E", "F")
-    built <- build_fig4_panel(letter, comparison, show_xlab)
-    panels[[letter]] <- built$plot
-    tables_written <- c(tables_written, write_panel_table(letter, comparison, built$df))
-    n_rows <- nrow(built$df)
-    if (n_rows >= 14L) crowd_flags <- c(crowd_flags, sprintf("%s (%s): %d rows", letter, comparison, n_rows))
-  }
-  composite <- patchwork::wrap_plots(panels[c("A", "B", "C", "D", "E", "F")], ncol = 2, heights = ROW_HEIGHTS) +
-    patchwork::plot_annotation(
-      title = sprintf("Figure 4 (current network, n=781) — %s",
-                       if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"),
-      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 12, face = "bold"))
-    )
-  fig_path <- file.path(FIG_DIR, sprintf("fig_04_%s.png", comparison))
-  ggplot2::ggsave(fig_path, composite, width = 9, height = 13, dpi = 300, bg = "white")
-  msg("Saved: ", fig_path, " (", length(tables_written), " per-panel tables written to ", FIG4_TABLES_DIR, ")")
-}
-if (length(crowd_flags) > 0) {
-  msg("Panels with >=14 rows (checked visually for crowding at LABEL_SIZE_PT=", LABEL_SIZE_PT, "pt, see SESSION_LOG.md): ",
-      paste(crowd_flags, collapse = "; "))
+  msg("\n--- Building fig_04_", comparison, " (print) ---")
+  built <- lapply(c("A", "B", "C", "D", "E", "F"), build_fig4_panel2, comparison = comparison)
+  names(built) <- c("A", "B", "C", "D", "E", "F")
+  for (letter in names(built)) write_panel_table(letter, comparison, built[[letter]]$df)
+
+  n_row1 <- max(built$A$n_rows, built$B$n_rows)
+  n_row2 <- max(built$C$n_rows, built$D$n_rows)
+  n_row3 <- max(built$E$n_rows, built$F$n_rows)
+  h_row1 <- overhead_row1 + n_row1 * ROW_PITCH_MM
+  h_row2 <- overhead_row2 + n_row2 * ROW_PITCH_MM
+  h_row3 <- overhead_row3 + n_row3 * ROW_PITCH_MM
+  ## TOP_PAD_MM: when patchwork's fixed-height rows (via heights=unit(...))
+  ## sum to EXACTLY the device height, patchwork vertically centres that
+  ## content block in the device -- with zero slack, the top row's title
+  ## (whose "1grobheight" row estimate is a hair short of its true rendered
+  ## extent) sits flush against the device's top edge and clips. Confirmed
+  ## empirically (not guessed): clipped at +0/+0.5/.../+5mm of extra device
+  ## height with the SAME row heights, resolved by +7mm (just visible) and
+  ## reliably clear by +10mm -- a rendering-engine margin of error in
+  ## patchwork/grid's row-height resolution, not a sizing mistake in this
+  ## script's own row-pitch math (h_row1/h_row2/h_row3, i.e. the content
+  ## heights actually reported, are unaffected by this padding).
+  ## Explicit top/bottom spacer rows, NOT reliance on patchwork auto-centring
+  ## a shorter-than-device content block (found unreliable: even generous
+  ## uniform extra device height left the bottom caption clipped while
+  ## fixing the top title -- the two edges needed independently-sized
+  ## slack). 6mm each: empirically sufficient for both the title row's and
+  ## the caption row's "1grobheight" rendering margin of error.
+  EDGE_PAD_MM <- 6
+  total_height_mm <- h_row1 + h_row2 + h_row3 + 2 * EDGE_PAD_MM
+  fig_heights_mm[[comparison]] <- total_height_mm
+  msg("Row heights (mm): row1=", round(h_row1, 1), " row2=", round(h_row2, 1),
+      " row3=", round(h_row3, 1), "; +", EDGE_PAD_MM, "mm explicit top + ", EDGE_PAD_MM,
+      "mm explicit bottom spacer; TOTAL=", round(total_height_mm, 1),
+      " mm (target <=190mm, hard limit 247mm)")
+  if (total_height_mm > 247) stop("Figure height ", round(total_height_mm, 1), " mm exceeds the 247mm hard limit.")
+
+  grobs <- list(patchwork::plot_spacer(), patchwork::plot_spacer(),
+                built$A$grob, built$B$grob, built$C$grob, built$D$grob, built$E$grob, built$F$grob,
+                patchwork::plot_spacer(), patchwork::plot_spacer())
+  composite <- patchwork::wrap_plots(grobs, ncol = 2,
+                                      heights = grid::unit(c(EDGE_PAD_MM, h_row1, h_row2, h_row3, EDGE_PAD_MM), "mm"))
+
+  png_path <- file.path(FIG_DIR, sprintf("fig_04_%s.png", comparison))
+  ggplot2::ggsave(png_path, composite, width = FIG_WIDTH_MM, height = total_height_mm, units = "mm",
+                   dpi = 600, device = ragg::agg_png)
+  pdf_path <- file.path(FIG_DIR, sprintf("fig_04_%s.pdf", comparison))
+  ## base grDevices::pdf() only accepts PostScript base14 family NAMES
+  ## ("Helvetica", not "Arial") -- the glyphs/metrics are the same base14
+  ## Helvetica either way; the PNG (ragg) render is the one actually using
+  ## the Arial font file via systemfonts.
+  ggplot2::ggsave(pdf_path, composite, width = FIG_WIDTH_MM, height = total_height_mm, units = "mm",
+                   device = grDevices::pdf, family = "Helvetica")
+  msg("Saved: ", png_path, " and ", pdf_path)
 }
 
+## ---- Confirm no data/n/J moved: reload the saved metrics CSV and diff
+## against the in-memory metrics_df (computed before any Phase 5 rendering
+## code ran) -- required by the task before finishing.
+msg("\n=== Confirming n/J unchanged vs representativeness_metrics_fig4.csv ===")
+reloaded_metrics <- readr::read_csv(metrics_fig4_path, show_col_types = FALSE)
+compare_metrics <- dplyr::inner_join(
+  metrics_df |> dplyr::select(panel, comparison, n_classified, weighted_jaccard),
+  reloaded_metrics |> dplyr::select(panel, comparison, n_classified, weighted_jaccard),
+  by = c("panel", "comparison"), suffix = c("_inmem", "_onfile")
+) |> dplyr::mutate(
+  n_match = n_classified_inmem == n_classified_onfile,
+  j_match = abs(weighted_jaccard_inmem - weighted_jaccard_onfile) < 1e-9
+)
+if (all(compare_metrics$n_match) && all(compare_metrics$j_match)) {
+  msg("CONFIRMED: all 12 rows' n and J match representativeness_metrics_fig4.csv exactly -- ",
+      "no data, bins, exclusions, n, or J changed by this re-render.")
+} else {
+  bad <- compare_metrics |> dplyr::filter(!n_match | !j_match)
+  stop("MISMATCH vs representativeness_metrics_fig4.csv for: ",
+       paste(bad$panel, bad$comparison, sep = "/", collapse = ", "),
+       " -- Phase 5 re-render must not change data. Investigate before proceeding.")
+}
+print(as.data.frame(compare_metrics[, c("panel", "comparison", "n_classified_onfile", "weighted_jaccard_onfile")]))
+
 # ==============================================================================
-# PHASE 5: legends, figure .meta.json, copy to draft_manuscript_v1/
+# PHASE 5 (print): legends, figure .meta.json, copy to draft_manuscript_v1/
 # ==============================================================================
-msg("\n=== PHASE 5: Legends, metadata, draft copy ===")
+msg("\n=== PHASE 5 (print): Legends, metadata, draft copy ===")
 
 panel_n_line <- function(letter, cmp) {
   n <- metrics_df$n_classified[metrics_df$panel == letter & metrics_df$comparison == cmp]
   j <- metrics_df$weighted_jaccard[metrics_df$panel == letter & metrics_df$comparison == cmp]
-  sprintf("  %s (%s): n = %d / 781, J = %.3f", PANEL_SPECS[[letter]]$title, PANEL_SPECS[[letter]]$axis,
-          n[1], j[1])
+  sprintf("  %s %s (%s): n = %d / 781, J = %.3f", PANEL_SPECS[[letter]]$letter, PANEL_SPECS[[letter]]$title,
+          PANEL_SPECS[[letter]]$axis, n[1], j[1])
 }
 
-write_fig4_legend <- function(comparison, fig_path) {
+write_fig4_legend <- function(comparison, fig_path, height_mm) {
   cmp_label <- if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"
-  cmp_desc  <- if (comparison == "geo_vs_geo") {
-    "the gridded product's own value at each tower's coordinate"
-  } else {
-    "each site's own measured or site-derived value"
-  }
+  cmp_desc  <- if (comparison == "geo_vs_geo") "the gridded product's own value at each tower's coordinate" else "each site's own measured or site-derived value"
   n_lines <- vapply(c("A", "B", "C", "D", "E", "F"), panel_n_line, character(1), cmp = comparison)
 
   lines <- c(
     sprintf("FIGURE LEGEND — %s", basename(fig_path)),
-    strrep("=", 60),
-    "",
-    sprintf("TITLE: Figure 4 (current network, n=781) — %s", cmp_label),
-    "",
+    strrep("=", 60), "",
+    sprintf("TITLE: Figure 4 (current network, n=781) — %s", cmp_label), "",
     "DESCRIPTION:",
     "Six-panel sampling-ratio figure comparing the global land distribution of six",
     "environmental/biogeochemical axes against the current 781-site FLUXNET network, each",
     sprintf("panel showing global land vs. %s.", cmp_desc),
-    "Panels: A Koppen-Geiger (13-class), B land cover as IGBP (15 PI-reported classes + an",
-    "Other bin), C aridity (CGIAR UNEP 7-class), D biomass (ESA CCI v7, 7-bin), E NEE",
-    "(signed sink/source, 7-bin), F ET (7-bin).",
-    "",
+    "Panels: a Koppen-Geiger (13-class), b land cover as IGBP (15 PI-reported classes + an",
+    "Other bin), c aridity (CGIAR UNEP 7-class), d biomass (ESA CCI v7, 7-bin), e NEE",
+    "(signed sink/source, 7-bin), f ET (7-bin). Final artwork size: 183 mm wide x",
+    sprintf("%.1f mm tall, Helvetica throughout.", height_mm), "",
     "BAR LABELS:",
     "Each bar's length is the log2 sampling ratio (that class's share of current-network",
     "towers, divided by its share of global land area), clipped at +-5x; a bar truncated at",
-    "the clip is annotated with its exact (unclipped) ratio at the bar's outer end. The",
-    "number printed immediately left of the 1x line is that class's share of global land",
-    "area (as a percentage); the number immediately right of the 1x line is the count of",
-    "current-network towers (of 781) classified into that class. A number is set inside its",
-    "bar, in a colour contrasting with the bar's fill, only when the bar is long enough to",
-    "fully contain it; otherwise it is set in near-black beside the 1x line (or just beyond",
-    "a too-short bar's outer end). J (weighted Jaccard overlap between the land and tower",
-    "distributions) is in each panel's subtitle. Per-panel tower n is NOT shown on the",
-    "panel -- see below.",
-    "",
+    "the clip is annotated with its exact (unclipped) ratio at the bar's outer end (no",
+    "decimals at 10x or above; capped at \">1000x\"). Faint vertical gridlines mark 1/5x,",
+    "1/2x, 2x and 5x. Column headers \"% land\" and \"towers\", shown once above panels a and",
+    "b, label the two number columns either side of the 1x line: the left number is that",
+    "class's share of global land area (%, one decimal, \"<0.1\" below that); the right",
+    "number is the current-network tower count (of 781) in that class. A number is set",
+    "inside its bar, in a colour contrasting with the fill, only when the bar is long enough",
+    "to fully contain it (measured at the figure's final rendered size, not estimated); if",
+    "the bar is too short the number sits in near-black just beyond its outer end; with no",
+    "bar on that side, the number sits beside the 1x line. A class with land but no current-",
+    "network towers is drawn as a bar to the left clip limit with a white fill and dashed",
+    "outline, labelled \"none\" instead of a tower count. J (weighted Jaccard overlap between",
+    "the land and tower distributions) is right-aligned above each panel. Per-panel tower n",
+    "is NOT shown on the panel -- see the per-panel n/J list below. The bottom row's x axis",
+    "is labelled \"under-sampled\" (left of 1x) / \"over-sampled\" (right of 1x).", "",
     "LAND GRIDS AND TOTALS:",
     "  Koppen, land cover and biomass: Beck et al. (2023) 1 km Koppen-Geiger land mask,",
     "    147,322,862 km2 (land cover resampled onto this same grid; biomass uses its own",
     "    finer 0.00833 deg version of the same mask).",
     "  Aridity: CGIAR Aridity Index v3.1's own native raster coverage, 134,761,545 km2 --",
-    "    smaller than the shared 147.3M km2 total because the CGIAR product's own coverage",
-    "    ends at 60 deg S (no Antarctic grid cells), unlike the Beck Koppen mask.",
+    "    smaller than the shared 147.3M km2 total because the CGIAR raster ends at 60 deg S",
+    "    (no Antarctic grid cells), unlike the Beck Koppen mask.",
     "  NEE and ET: TRENDY v14 ensemble-median 0.5 deg grid under the Koppen land mask,",
-    "    163,331,649 km2 -- larger per-cell footprint than the two above because at 0.5 deg",
-    "    resolution, a coastal cell straddling land and ocean counts as whole land (no",
-    "    fractional-coverage weighting at this coarse resolution).",
-    "",
-    sprintf("PER-PANEL n AND J (%s):", cmp_label),
-    n_lines,
-    ""
+    "    163,331,649 km2 -- at this coarse resolution a coastal cell straddling land and",
+    "    ocean counts as whole land (no fractional-coverage weighting).", "",
+    sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, ""
   )
-
   if (comparison == "geo_vs_data") {
     lines <- c(lines,
-      "EXCLUSIONS (Geo vs Data, precipitation-dependent panels A and C only):",
-      "Two exclusion rules apply to the Koppen (panel A) and aridity (panel C) Geo vs Data",
-      "panels, both site-level, in addition to each panel's own classification:",
-      "  1. GRP_ERA_DOWN: 172 sites in the precip_downscaling_provenance diagnostic's",
-      "     not_fitted_slope_9999 group (no usable P_ERA-vs-measured-P regression slope).",
-      sprintf("  2. P_ERA_MAX_RATIO=%d: a site's 1991-2020 mean annual P_ERA exceeds %d times EVERY",
-              P_ERA_MAX_RATIO, P_ERA_MAX_RATIO),
-      "     reference available for it (BADM MAP where present/non-zero, AND WorldClim BIO12",
-      "     at the tower) -- 10 further sites beyond the 172.",
-      "  Panel C (aridity) additionally excludes 4 sites (CD-Ygb, DE-Zrk, FR-LBr, US-Sne)",
-      "  whose raw ERA5 meteorological inputs to the FAO-56 PET calculation are physically",
-      "  impossible in at least one month (e.g. LW_IN_ERA up to ~32,000 W/m2) -- an ERA5",
-      "  data-quality issue distinct from the two rules above.",
-      "",
-      "PERIOD MISMATCH (panel C only):",
-      "CGIAR's Aridity Index v3.1 baseline period is 1970-2000. Panel C's Geo vs Data side",
-      "(AI = P_ERA / FAO-56 PET) uses 1991-2020 ERA5 reanalysis instead, to match the other",
-      "ERA5-derived panels -- a ~20-30 year period mismatch between this one panel's two",
-      "sides that does not apply to any other panel in this figure.",
-      ""
+      "EXCLUSIONS (Geo vs Data, precipitation-dependent panels a and c only):",
+      "  1. GRP_ERA_DOWN: 172 sites with no usable P_ERA-vs-measured-P regression slope.",
+      sprintf("  2. P_ERA_MAX_RATIO=%d: P_ERA exceeds %d times EVERY reference available (BADM MAP AND", P_ERA_MAX_RATIO, P_ERA_MAX_RATIO),
+      "     WorldClim BIO12) -- 10 further sites beyond the 172.",
+      "  Panel c additionally excludes 4 sites with physically impossible raw ERA5 inputs",
+      "  to the FAO-56 PET calculation (CD-Ygb, DE-Zrk, FR-LBr, US-Sne).", "",
+      "PERIOD MISMATCH (panel c only): CGIAR's Aridity Index v3.1 baseline is 1970-2000;",
+      "panel c's Geo vs Data side (AI = P_ERA / FAO-56 PET) uses 1991-2020 ERA5 instead, to",
+      "match the other ERA5-derived panels.", ""
     )
   }
-
   lines <- c(lines,
     "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
     "land fraction, towers, tower fraction) in review/figures/representativeness/tables/.",
-    "Methods notes: review/figures/representativeness/methods_igbp.md, methods_aridity_era5.md,",
-    "methods_flux_bin_scheme.md, methods_precip_exclusions.md."
+    "Vector PDF alongside this PNG. Methods notes: methods_igbp.md, methods_aridity_era5.md,",
+    "methods_flux_bin_scheme.md, methods_precip_exclusions.md (same directory)."
   )
   writeLines(unlist(lines), paste0(tools::file_path_sans_ext(fig_path), ".legend.txt"))
 }
 
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   fig_path <- file.path(FIG_DIR, sprintf("fig_04_%s.png", comparison))
-  write_fig4_legend(comparison, fig_path)
+  write_fig4_legend(comparison, fig_path, fig_heights_mm[[comparison]])
   write_output_metadata(
     fig_path,
     input_sources = c(metrics_fig4_path, "site_koppen_beck2023.csv", "site_koppen_era5_fig4.csv",
                        "site_igbp_fig4.csv", "site_aridity.csv", "site_aridity_era5_fig4.csv",
                        "site_biomass_cci_v7.csv", "site_nee_fig4.csv", "site_et_fig4.csv"),
     notes = sprintf(
-      paste0("New Figure 4 (%s version), 6 panels (A-F: Koppen, IGBP land cover, aridity, biomass, ",
-             "NEE, ET). Built by scripts/figure4_representativeness.R across 5 phases, see ",
-             "SESSION_LOG.md. Does not replace or modify the old draft (fig_04_current_network_",
-             "sampling_ratios.png) or any Fig 5 output."),
-      if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"
+      paste0("New Figure 4 (%s version), Nature final-artwork re-render: 183 mm wide x %.1f mm tall, ",
+             "Helvetica, %dpt text (row pitch %.1fmm). Rendering only -- confirmed against ",
+             "representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) ",
+             "render. Vector PDF saved alongside. See SESSION_LOG.md."),
+      if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data", fig_heights_mm[[comparison]],
+      BASE_PT, ROW_PITCH_MM
     )
   )
   msg("Saved: ", fig_path, ".meta.json and .legend.txt")
 }
 
-## ---- Copy both figures (+ .meta.json + .legend.txt) into draft_manuscript_v1/,
-## leaving the old draft fig_04 file in place untouched.
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   base <- sprintf("fig_04_%s", comparison)
-  for (ext in c(".png", ".meta.json", ".legend.txt")) {
-    fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(DRAFT_DIR, paste0(base, ext)),
-                  overwrite = TRUE)
+  for (ext in c(".png", ".pdf", ".meta.json", ".legend.txt")) {
+    fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(DRAFT_DIR, paste0(base, ext)), overwrite = TRUE)
   }
-  msg("Copied ", base, " (.png/.meta.json/.legend.txt) to ", DRAFT_DIR)
+  msg("Copied ", base, " (.png/.pdf/.meta.json/.legend.txt) to ", DRAFT_DIR)
 }
 
-msg("\n=== figure4_representativeness.R: ALL PHASES (1-5) COMPLETE ===")
+msg("\n=== figure4_representativeness.R: PRINT RE-RENDER COMPLETE ===")

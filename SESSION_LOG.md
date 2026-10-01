@@ -4,6 +4,58 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-01 — New Fig 4: Nature final-artwork print re-render (DONE)
+
+Re-rendered both new Figure 4 PNGs/PDFs in `scripts/figure4_representativeness.R` to Nature final-artwork
+specs. Purely a drawing-layer change: no data, bins, exclusions, n, or J moved — confirmed by the script's
+own in-run check against `representativeness_metrics_fig4.csv` (all 12 panel×comparison rows matched
+exactly) and by `git diff` on the per-panel table CSVs, where the only changes are cosmetic bin-label text
+(shortened labels, true Unicode minus signs, e.g. `unvegetated (GPP < 5)` → `unvegetated`, `< -250` →
+`< −250`) — every `land_area_km2`/`land_fraction`/`towers`/`tower_fraction` value is byte-identical.
+
+### Specs applied
+- Exact 183 mm width; final height 169.3 mm (row pitch ~4.2 mm, rows 79.3/37.3/40.7 mm + 6 mm explicit
+  `patchwork::plot_spacer()` padding top and bottom) — within the 190 mm target and well under the 247 mm
+  hard limit.
+- Helvetica throughout at 7 mm, with a 6 pt per-panel fallback path available but **not triggered for any
+  of the 6 panels** in either figure (confirmed via log: no fallback messages emitted).
+- New 3-way bar-number placement rule, driven by `systemfonts::string_width()`-measured label width (not a
+  per-character constant): inside the bar (contrast colour) if the bar is long enough to fully contain the
+  label; just beyond the bar's own outer end (near-black) if a bar is present but too short; beside the 1×
+  line (near-black) if there is no bar on that side. Verified clean via full-resolution PNG inspection,
+  including all previously-flagged rows: Ds, BS (panel a), Hyper-Humid, Semi-Arid (panel c), 27–51 and
+  >171 Mg/ha (panel d), 200–350 mm (panel f).
+- Column headers "% land" / "towers" shown once, above panels a and b only.
+- "None" classes (land > 0, zero current-network towers) drawn as a white, dashed-outline bar to the left
+  clip limit, labelled "none" instead of a tower count — plain ggplot2 geoms, no new packages. Confirmed
+  clean when stacked (panel b's SNO/CSH/DNF and panel e's `>0`/`<−250` rows in Geo vs Geo).
+- Units added to panel titles d/e/f; faint gridlines at 1/5×, 1/2×, 2×, 5×; "under-sampled"/"over-sampled"
+  captions under the bottom row.
+- PNG (ragg, 600 dpi) and vector PDF (base `pdf()`) saved for both figures; `.meta.json` and `.legend.txt`
+  regenerated; all four files copied to `review/figures/draft_manuscript_v1/`. Legends already documented
+  the column headers and "none" bars from the prior phase — no legend text changes were needed.
+
+### Bugs hit and fixed during this re-render
+- **Vertical edge-clipping**: `patchwork::wrap_plots(heights = unit(..., "mm"))` centers its fixed-height
+  content block when the device height exactly equals the summed row heights, leaving zero tolerance for
+  any row's true rendered size at the top/bottom edge — clipped the title row and the bottom caption.
+  Fixed with explicit `plot_spacer()` rows (6 mm each) top and bottom instead of relying on implicit
+  padding.
+- **PDF silently missing all text and 5 of 6 panels** (4.5 KB output): root cause was asking the base
+  `pdf(family="Helvetica")` device to render grobs requesting `fontfamily="Arial"` — fails silently, unlike
+  `ragg::agg_png()`, which renders Arial-requested text fine via systemfonts regardless of the PNG device's
+  nominal family. `systemfonts::string_width()` itself cannot measure `Helvetica.ttc` (freetype error 133)
+  but can measure `Arial.ttf`, and the two are metrically near-identical. Fix: split `FIG_FONT <-
+  "Helvetica"` (all actual rendering, valid for both the PNG and PDF device) from `MEASURE_FONT <- "Arial"`
+  (used only inside the text-measurement helper). PDF now renders all 6 panels and all text correctly,
+  confirmed via `pdftoppm` conversion (9.4 KB, up from 4.5 KB).
+- A literal re-read of the label-placement spec caught a 2-way vs. 3-way gap: the initial implementation
+  only handled "label fits inside the bar" / "doesn't fit, same fixed position" and was missing the
+  "bar present but too short, reposition beyond its own end" case — visible as a straddling number on the
+  BS row before the fix.
+
+---
+
 ## 2026-10-02 (7) — New Fig 4: ratio-rule revision, decisions, Phase 5 render (DONE)
 
 Final session on the new Figure 4. Revises the `P_ERA_MAX_RATIO` rule, applies the previously-flagged

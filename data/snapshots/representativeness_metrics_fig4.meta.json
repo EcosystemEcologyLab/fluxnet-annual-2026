@@ -1,12 +1,15 @@
 {
-  "run_datetime_utc": "2026-10-01T20:54:42Z",
-  "pipeline_version": "151ac82",
+  "run_datetime_utc": "2026-10-01T21:06:41Z",
+  "pipeline_version": "d105e09",
   "input_sources": [
     "site_koppen_beck2023.csv",
     "site_koppen_era5_fig4.csv",
     "site_igbp_fig4.csv",
+    "site_aridity.csv",
+    "site_aridity_era5_fig4.csv",
     "koppen_beck2023_global_distribution.csv",
-    "igbp_mcd12c1_global_distribution.csv"
+    "igbp_mcd12c1_global_distribution.csv",
+    "aridity_unep7_global_distribution.csv"
   ],
-  "notes": "Weighted-Jaccard metrics for the new (2026-10) Figure 4, built incrementally across phases -- see SESSION_LOG.md for each phase. Separate from the shared data/snapshots/representativeness_metrics.csv (which backs Figs 001-008 and is not touched by this script). One row per panel x comparison. This run includes phases implemented so far: panel A (Koppen), panel B (IGBP land cover)."
+  "notes": "Weighted-Jaccard metrics for the new (2026-10) Figure 4, built incrementally across phases -- see SESSION_LOG.md for each phase. Separate from the shared data/snapshots/representativeness_metrics.csv (which backs Figs 001-008 and is not touched by this script). One row per panel x comparison. This run includes phases implemented so far: panel A (Koppen), panel B (IGBP land cover), panel C (aridity)."
 }

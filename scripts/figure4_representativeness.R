@@ -648,6 +648,276 @@ write_output_metadata(
 msg("Saved: ", igbp_global_path)
 
 # ==============================================================================
+# PHASE 3: Aridity (panel C)
+# ==============================================================================
+## Global side + Geo vs Geo: unchanged -- CGIAR Aridity Index v3.1 (7-class
+## UNEP scheme), data/snapshots/site_aridity.csv (already 781 sites, already
+## current) and aridity_unep7_global_distribution.csv (already current,
+## 134,761,545 km2 -- this axis's OWN native coverage, smaller than the
+## 147.3M km2 Koppen/IGBP/biomass share; see the 2026-10-01 draft-Fig-4-audit
+## entry above for why).
+##
+## Geo vs Data: AI = P/PET from each site's OWN 1991-2020 ERA5 meteorology.
+## P = the same climatological mean annual P_ERA already computed for panel
+## A (kg_era5_nomap$map_mm). PET = FAO-56 Penman-Monteith reference
+## evapotranspiration (grass reference surface), computed monthly from the
+## 1991-2020 ERA5 climatological monthly means and summed to an annual
+## total, using exactly the ERA5 variables available in this DuckDB's
+## `monthly` table for dataset='ERA5': TA_ERA (deg C), SW_IN_ERA and
+## LW_IN_ERA (W/m2, incoming short/longwave), VPD_ERA (hPa), PA_ERA (kPa),
+## WS_ERA (m/s). Units confirmed empirically against a known site (US-Ha1)
+## before use, not assumed from variable names alone -- see SESSION_LOG.md.
+##
+## Approximations (reported per task instruction):
+## 1. Wind: WS_ERA assumed to be ERA5's native 10 m wind (not explicitly
+##    documented in this repo), converted to the FAO-56 reference height of
+##    2 m via the standard log-wind-profile formula (u2 = u10 * 4.87 /
+##    ln(67.8*10-5.42)).
+## 2. Net radiation: FAO-56's own Rn procedure is built for the case where
+##    only Rs (shortwave) is measured, estimating net longwave from a
+##    cloudiness/clear-sky-radiation parametrization. This ERA5 bundle has
+##    BOTH incoming shortwave AND incoming longwave directly, so net
+##    radiation is computed more directly instead: Rns = (1-albedo)*Rs with
+##    albedo=0.23 (FAO-56's grass reference value); outgoing longwave is
+##    estimated via Stefan-Boltzmann (sigma=4.903e-9 MJ K^-4 m^-2 day^-1)
+##    applied to TA_ERA as a proxy for surface skin temperature (not
+##    available in this bundle) with an assumed surface emissivity of 0.96;
+##    Rnl = LW_in - LW_out; Rn = Rns + Rnl.
+## 3. Saturation vapour pressure (es) and its slope (Delta) are computed
+##    from the monthly MEAN temperature (TA_ERA), not averaged from daily
+##    Tmax/Tmin as FAO-56 recommends -- true daily/monthly Tmax/Tmin are not
+##    in this ERA5 bundle (only TA_ERA_DAY/TA_ERA_NIGHT, an approximate day/
+##    night split, not a true diurnal max/min; not used, to avoid compounding
+##    approximations). This is a recognised FAO-56 simplification when only
+##    mean T is available and slightly underestimates ET0 (Delta is convex).
+## 4. Soil heat flux G is set to 0 -- FAO-56's standard simplification at
+##    monthly-to-annual timescales, where G approximately cancels over a
+##    full annual cycle.
+## 5. Caption note (required): CGIAR's own baseline period is 1970-2000;
+##    this Geo-vs-Data PET/AI calculation uses 1991-2020 ERA5 (matching the
+##    Koppen/IGBP panels' period) -- a ~20-30 year period mismatch between
+##    the Geo and Data sides of this one panel, not present in the other
+##    panels. Must be stated in the figure caption (Phase 5).
+msg("\n=== PHASE 3: Aridity (panel C) ===")
+
+ARIDITY_ORDER <- c("Hyper-Arid", "Arid", "Semi-Arid", "Dry Sub-Humid",
+                    "Humid (low)", "Humid (moderate)", "Hyper-Humid")
+ARIDITY_COLORS <- c(
+  "Hyper-Arid" = "#d73027", "Arid" = "#fc8d59", "Semi-Arid" = "#ffff33",
+  "Dry Sub-Humid" = "#66bd63", "Humid (low)" = "#74add1",
+  "Humid (moderate)" = "#4575b4", "Hyper-Humid" = "#313695"
+)
+
+aridity_global <- readr::read_csv(file.path(SNAP_DIR, "aridity_unep7_global_distribution.csv"),
+                                   show_col_types = FALSE) |>
+  dplyr::rename(class = unep_class)
+ARIDITY_LAND_TOTAL_KM2 <- sum(aridity_global$global_land_area_km2)
+msg("Aridity global land total (CGIAR Aridity Index v3.1, own native coverage): ",
+    format(round(ARIDITY_LAND_TOTAL_KM2), big.mark = ","), " km2")
+
+classify_unep7 <- function(ai) {
+  edges <- aridity_global[order(aridity_global$ai_min), ]
+  out <- rep(NA_character_, length(ai))
+  for (i in seq_len(nrow(edges))) {
+    hi <- if (is.na(edges$ai_max[i])) Inf else edges$ai_max[i]
+    sel <- !is.na(ai) & ai >= edges$ai_min[i] & ai < hi
+    out[sel] <- edges$class[i]
+  }
+  out
+}
+
+## ---- Geo vs Geo: unchanged, existing site_aridity.csv ---------------------
+aridity_geo_geo <- readr::read_csv(file.path(SNAP_DIR, "site_aridity.csv"), show_col_types = FALSE)
+n_arid_geo_geo_classified <- sum(!is.na(aridity_geo_geo$unep_class_7))
+msg("Geo vs Geo (CGIAR raster at tower, existing snapshot): ", n_arid_geo_geo_classified, " / ",
+    nrow(aridity_geo_geo), " sites classified")
+
+cnt_arid_geo_geo <- aridity_geo_geo |>
+  dplyr::filter(!is.na(unep_class_7)) |>
+  dplyr::count(unep_class_7, name = "n") |>
+  dplyr::rename(class = unep_class_7) |>
+  dplyr::mutate(network_frac = n / nrow(aridity_geo_geo))
+merged_arid_geo_geo <- aridity_global |>
+  dplyr::select(class, global_land_fraction) |>
+  dplyr::full_join(cnt_arid_geo_geo, by = "class") |>
+  dplyr::mutate(n = dplyr::coalesce(n, 0L), network_frac = dplyr::coalesce(network_frac, 0),
+                global_land_fraction = dplyr::coalesce(global_land_fraction, 0))
+j_arid_geo_geo <- weighted_jaccard(merged_arid_geo_geo$global_land_fraction, merged_arid_geo_geo$network_frac)
+msg("Aridity J (Geo vs Geo) = ", round(j_arid_geo_geo, 3))
+add_metric("C", "aridity", "geo_vs_geo", "CGIAR Aridity Index v3.1 (own coverage)", ARIDITY_LAND_TOTAL_KM2,
+           nrow(aridity_geo_geo), n_arid_geo_geo_classified, j_arid_geo_geo)
+
+## ---- Geo vs Data: AI = P_ERA / FAO-56 PET, 1991-2020 ----------------------
+monthly_era5_aridity <- dbConnect(duckdb(), dbdir = duckdb_path, read_only = TRUE)
+monthly_met <- dbGetQuery(
+  monthly_era5_aridity,
+  "SELECT site_id, TIMESTAMP, TA_ERA, P_ERA, SW_IN_ERA, LW_IN_ERA, VPD_ERA, PA_ERA, WS_ERA
+   FROM monthly WHERE dataset = 'ERA5'"
+)
+dbDisconnect(monthly_era5_aridity, shutdown = TRUE)
+monthly_met <- monthly_met |>
+  dplyr::filter(site_id %in% current_sites$site_id) |>
+  dplyr::mutate(TIMESTAMP = as.Date(TIMESTAMP), year = lubridate::year(TIMESTAMP),
+                month = lubridate::month(TIMESTAMP), ndays_row = lubridate::days_in_month(TIMESTAMP),
+                p_tot = P_ERA * ndays_row) |>
+  dplyr::filter(year >= KG_ERA5_PERIOD[1], year <= KG_ERA5_PERIOD[2])
+
+met_clim <- monthly_met |>
+  dplyr::group_by(site_id, month) |>
+  dplyr::summarise(
+    TA = mean(TA_ERA, na.rm = TRUE), SW = mean(SW_IN_ERA, na.rm = TRUE),
+    LW = mean(LW_IN_ERA, na.rm = TRUE), VPD = mean(VPD_ERA, na.rm = TRUE),
+    PA = mean(PA_ERA, na.rm = TRUE), WS = mean(WS_ERA, na.rm = TRUE),
+    P = mean(p_tot, na.rm = TRUE), ndays = mean(ndays_row), n_years = dplyr::n(),
+    .groups = "drop"
+  )
+
+fao56_et0_mm <- function(TA, SW, LW, VPD_hpa, PA_kpa, WS, ndays) {
+  es <- 0.6108 * exp(17.27 * TA / (TA + 237.3))
+  Delta <- 4098 * es / (TA + 237.3)^2
+  ea <- es - VPD_hpa / 10
+  gamma <- 0.000665 * PA_kpa
+  u2 <- WS * 4.87 / log(67.8 * 10 - 5.42)
+  Rns <- (1 - 0.23) * (SW * 0.0864)
+  LWout_mj <- 0.96 * 4.903e-9 * (TA + 273.16)^4
+  Rnl <- (LW * 0.0864) - LWout_mj
+  Rn <- Rns + Rnl
+  et0_day <- (0.408 * Delta * Rn + gamma * (900 / (TA + 273)) * u2 * (es - ea)) /
+    (Delta + gamma * (1 + 0.34 * u2))
+  ## Floored at 0: at high latitude in winter, Rn can be strongly negative
+  ## (near-zero insolation, net longwave loss dominates), which can drive the
+  ## raw FAO-56 formula negative for that month -- not physically meaningful
+  ## (evapotranspiration cannot be negative) and standard FAO-56 practice is
+  ## to floor ET0 at 0 per period before summing, rather than let a
+  ## spuriously negative winter month distort the annual total (found via a
+  ## sanity check: unclipped, annual PET could itself be negative or
+  ## near-zero at cold sites, producing impossible/absurd AI values).
+  pmax(et0_day, 0) * ndays
+}
+met_clim <- met_clim |> dplyr::mutate(et0_month = fao56_et0_mm(TA, SW, LW, VPD, PA, WS, ndays))
+
+## Input-validity screen, found necessary by a post-hoc plausibility check
+## (below): a handful of sites have individual ERA5 variables corrupted far
+## beyond any physically possible value for that variable (e.g. US-Sne's
+## LW_IN_ERA reaches ~32,000 W/m^2 in a winter month -- true downwelling
+## longwave never exceeds roughly 700 W/m^2 even at the hottest real surface
+## temperatures; CD-Ygb's VPD_ERA reaches ~1,660 hPa -- true VPD never
+## exceeds roughly 12 hPa even in the driest deserts). Feeding these into
+## fao56_et0_mm() produces a nonsensical annual PET (110,884 mm/yr and
+## 44,002 mm/yr respectively, against a physically plausible terrestrial
+## range of roughly 200-3,000 mm/yr) and hence a nonsensical AI. Screened
+## PER SITE (any one invalid calendar month invalidates that site's PET for
+## this panel) against generous physical ceilings, not tuned to these two
+## cases specifically: LW_IN/SW_IN <0 or >1000 W/m^2, VPD <0 or >100 hPa,
+## WS <=0 or >50 m/s, PA outside [50,110] kPa, TA outside [-90,60] deg C.
+met_clim <- met_clim |>
+  dplyr::mutate(invalid_month = LW < 0 | LW > 1000 | SW < 0 | SW > 1000 |
+                  VPD < 0 | VPD > 100 | WS <= 0 | WS > 50 |
+                  PA < 50 | PA > 110 | TA < -90 | TA > 60)
+invalid_sites <- met_clim |> dplyr::filter(invalid_month) |> dplyr::distinct(site_id) |> dplyr::pull(site_id)
+if (length(invalid_sites) > 0L) {
+  msg("Sites with a physically invalid ERA5 input variable for PET (excluded, data-quality issue): ",
+      paste(sort(invalid_sites), collapse = ", "))
+  for (sid in invalid_sites) {
+    log_exclusion(
+      site_id = sid, variable = "aridity_era5 (Geo vs Data panel)", timestamp = "ALL",
+      reason = "At least one ERA5 meteorological variable used by the FAO-56 PET calculation has a physically impossible value in at least one calendar month (e.g. LW_IN_ERA or VPD_ERA far outside any real-world range) -- ERA5 data-quality issue, not an aridity exclusion rule",
+      threshold = "LW/SW<0 or >1000 W/m2; VPD<0 or >100 hPa; WS<=0 or >50 m/s; PA outside [50,110] kPa; TA outside [-90,60] C",
+      excluded_by = "figure4_representativeness.R"
+    )
+  }
+}
+
+aridity_annual <- met_clim |>
+  dplyr::filter(!site_id %in% invalid_sites) |>
+  dplyr::group_by(site_id) |>
+  dplyr::summarise(PET_mm = sum(et0_month), P_mm = sum(P), n_months = dplyr::n(),
+                    n_years_min = min(n_years), .groups = "drop") |>
+  dplyr::mutate(ai_value = P_mm / PET_mm, unep_class_7 = classify_unep7(ai_value))
+msg("FAO-56 PET computed for ", nrow(aridity_annual), " / ", length(unique(met_clim$site_id)),
+    " sites with valid inputs (", length(invalid_sites), " excluded for invalid ERA5 inputs; expect 781 total; ",
+    sum(aridity_annual$n_months < 12L), " with <12 calendar months of ERA5 data)")
+msg("AI summary: ", paste(capture.output(print(summary(aridity_annual$ai_value))), collapse = " | "))
+implausible_pet <- aridity_annual |> dplyr::filter(PET_mm < 200 | PET_mm > 3000)
+if (nrow(implausible_pet) > 0L) {
+  msg("Sites with PET outside a generously plausible 200-3000 mm/yr range (kept, flagged not excluded -- ",
+      "a known limitation of the net-radiation approximation at some sites, see PHASE 3 header comment, ",
+      "not a data-validity violation like the sites excluded above):")
+  print(as.data.frame(implausible_pet[, c("site_id", "PET_mm", "P_mm", "ai_value")]))
+}
+
+aridity_precip_excl <- compute_precip_exclusions(
+  aridity_annual, p_era_col = "P_mm", slope9999_sites = slope9999_172,
+  excluded_by = "figure4_representativeness.R", panel_name = "aridity_era5"
+)
+aridity_geo_data_pool <- aridity_annual |>
+  dplyr::filter(site_id %in% aridity_precip_excl$site_id[!aridity_precip_excl$excluded_any])
+n_arid_excl_ratio_only <- sum(aridity_precip_excl$excluded_p_era_ratio)
+msg("Aridity Geo vs Data exclusions: ", length(slope9999_172), " GRP_ERA_DOWN + ",
+    n_arid_excl_ratio_only, " P_ERA_MAX_RATIO-only = ", sum(aridity_precip_excl$excluded_any),
+    " total excluded; n_eligible = ", nrow(aridity_geo_data_pool))
+n_arid_geo_data_classified <- sum(!is.na(aridity_geo_data_pool$unep_class_7))
+msg("Geo vs Data (AI=P_ERA/PET, dual exclusion): ", n_arid_geo_data_classified, " / ",
+    nrow(aridity_geo_data_pool), " eligible sites classified")
+
+cnt_arid_geo_data <- aridity_geo_data_pool |>
+  dplyr::filter(!is.na(unep_class_7)) |>
+  dplyr::count(unep_class_7, name = "n") |>
+  dplyr::rename(class = unep_class_7) |>
+  dplyr::mutate(network_frac = n / nrow(aridity_geo_data_pool))
+merged_arid_geo_data <- aridity_global |>
+  dplyr::select(class, global_land_fraction) |>
+  dplyr::full_join(cnt_arid_geo_data, by = "class") |>
+  dplyr::mutate(n = dplyr::coalesce(n, 0L), network_frac = dplyr::coalesce(network_frac, 0),
+                global_land_fraction = dplyr::coalesce(global_land_fraction, 0))
+j_arid_geo_data <- weighted_jaccard(merged_arid_geo_data$global_land_fraction, merged_arid_geo_data$network_frac)
+msg("Aridity J (Geo vs Data) = ", round(j_arid_geo_data, 3))
+add_metric("C", "aridity", "geo_vs_data", "CGIAR Aridity Index v3.1 (own coverage)", ARIDITY_LAND_TOTAL_KM2,
+           nrow(aridity_geo_data_pool), n_arid_geo_data_classified, j_arid_geo_data)
+
+## ---- Save panel C outputs --------------------------------------------------
+fig4_aridity_path <- file.path(SNAP_DIR, "site_aridity_era5_fig4.csv")
+current_sites |>
+  dplyr::select(site_id) |>
+  dplyr::left_join(aridity_annual, by = "site_id") |>
+  dplyr::left_join(
+    dplyr::select(aridity_precip_excl, site_id, ratio, ref_source,
+                   excluded_grp_era_down, excluded_p_era_ratio, excluded_any),
+    by = "site_id"
+  ) |>
+  dplyr::rename(excluded_fig4_geo_vs_data = excluded_any) |>
+  dplyr::mutate(invalid_era5_input = site_id %in% invalid_sites) |>
+  readr::write_csv(fig4_aridity_path)
+write_output_metadata(
+  fig4_aridity_path,
+  input_sources = c(duckdb_path, CURRENT_SNAPSHOT, precip_ref_path, "site_koppen_era5_fig4.csv",
+                     "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"),
+  notes = paste0(
+    "Panel C (aridity) Geo-vs-Data site-level data for figure4_representativeness.R, all 781 current-",
+    "network sites (PET_mm/ai_value/unep_class_7 are NA for the 4 with invalid_era5_input=TRUE). ",
+    "ai_value = P_mm (1991-2020 mean annual P_ERA) / PET_mm (FAO-56 Penman-Monteith reference ET, ",
+    "computed monthly from 1991-2020 ERA5 climatological means and summed to an annual total -- see ",
+    "script comments above PHASE 3 for the exact variables used and every approximation: wind height, ",
+    "net-radiation estimation from SW_IN_ERA+LW_IN_ERA, es/Delta from mean T not Tmax/Tmin, G=0, ET0 ",
+    "floored at 0 per month (standard FAO-56 practice for strongly-negative-Rn winter months)). ",
+    "invalid_era5_input=TRUE (4 sites: CD-Ygb, DE-Zrk, FR-LBr, US-Sne) flags a physically impossible ",
+    "raw ERA5 value (e.g. LW_IN_ERA ~30,000 W/m2 or VPD_ERA ~1,660 hPa) in >=1 calendar month -- an ",
+    "ERA5 data-quality issue, excluded from this panel entirely (both as its own screen and inherently ",
+    "via excluded_fig4_geo_vs_data, since these sites have no PET_mm to exclude by ratio). Two further ",
+    "sites (DE-SbM, KE-Aq2) have implausible PET (0 and 122 mm/yr) from valid-looking raw inputs -- a ",
+    "known limitation of the net-radiation approximation, not a data-validity violation -- kept, not ",
+    "screened, but both happen to already be excluded by the other two rules (GRP_ERA_DOWN/ratio) so ",
+    "neither affects the panel's final 594-site pool either way. unep_class_7 via the same CGIAR ",
+    "UNEP-7 breakpoints as aridity_unep7_global_distribution.csv. Dual exclusion as panel A ",
+    "(excluded_fig4_geo_vs_data = excluded_grp_era_down | excluded_p_era_ratio): the 172 ",
+    "GRP_ERA_DOWN sites plus any site whose P_ERA exceeds P_ERA_MAX_RATIO times its reference MAP. ",
+    "CAPTION NOTE (required): CGIAR's own baseline period is 1970-2000; this Geo-vs-Data calculation ",
+    "uses 1991-2020 ERA5 -- a period mismatch between this panel's two sides not present elsewhere."
+  )
+)
+msg("Saved: ", fig4_aridity_path)
+
+# ==============================================================================
 # Save accumulated metrics (all phases implemented so far)
 # ==============================================================================
 metrics_fig4_path <- file.path(SNAP_DIR, "representativeness_metrics_fig4.csv")
@@ -656,12 +926,15 @@ readr::write_csv(metrics_df, metrics_fig4_path)
 write_output_metadata(
   metrics_fig4_path,
   input_sources = c("site_koppen_beck2023.csv", "site_koppen_era5_fig4.csv", "site_igbp_fig4.csv",
-                     "koppen_beck2023_global_distribution.csv", "igbp_mcd12c1_global_distribution.csv"),
+                     "site_aridity.csv", "site_aridity_era5_fig4.csv",
+                     "koppen_beck2023_global_distribution.csv", "igbp_mcd12c1_global_distribution.csv",
+                     "aridity_unep7_global_distribution.csv"),
   notes = paste0(
     "Weighted-Jaccard metrics for the new (2026-10) Figure 4, built incrementally across phases -- ",
     "see SESSION_LOG.md for each phase. Separate from the shared data/snapshots/representativeness_metrics.csv ",
     "(which backs Figs 001-008 and is not touched by this script). One row per panel x comparison. ",
-    "This run includes phases implemented so far: panel A (Koppen), panel B (IGBP land cover)."
+    "This run includes phases implemented so far: panel A (Koppen), panel B (IGBP land cover), ",
+    "panel C (aridity)."
   )
 )
 msg("Saved: ", metrics_fig4_path)

@@ -13,7 +13,7 @@ the gridded product's own value at that tower's coordinate, rather than the site
 measured or site-derived value. Because every tower has a value in the gridded product by
 construction, no panel here has the precipitation-dependent exclusions that apply to
 Figure 4's panels a and c -- n = 781/781 for all six panels.
-Final artwork size: 183 mm wide x 169.3 mm tall, Helvetica throughout.
+Final artwork size: 183 mm wide x 173.3 mm tall, Helvetica throughout.
 
 PER-PANEL n AND J (Geo vs Geo):
   a Köppen-Geiger (koppen): n = 781 / 781, J = 0.372

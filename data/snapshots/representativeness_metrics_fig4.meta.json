@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-02T19:34:17Z",
-  "pipeline_version": "afc2532",
+  "run_datetime_utc": "2026-10-02T20:50:40Z",
+  "pipeline_version": "6e11d07",
   "input_sources": [
     "site_koppen_beck2023.csv",
     "site_koppen_era5_fig4.csv",

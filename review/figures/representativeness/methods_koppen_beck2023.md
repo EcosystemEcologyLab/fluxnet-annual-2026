@@ -98,4 +98,5 @@ zero FLUXNET sites. This reflects a physical constraint: eddy covariance towers 
 be instrumented on ice sheets or permanent ice caps. The structural zero in the EF
 network fraction is therefore not a community sampling choice but an instrument
 deployment limitation. EF is flagged as structurally unsampled in the sampling-ratio
-panel and is excluded from interpretation of the other under-sampled classes.
+panel and is excluded from interpretation of the other classes with a smaller
+proportion of towers than of land.

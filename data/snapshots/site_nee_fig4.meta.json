@@ -1,11 +1,11 @@
 {
-  "run_datetime_utc": "2026-10-02T20:50:40Z",
-  "pipeline_version": "6e11d07",
+  "run_datetime_utc": "2026-10-02T22:03:29Z",
+  "pipeline_version": "1afa6e3",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb",
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
     "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
     "data/external/trendy/derived/candidate_gpp_median.tif"
   ],
-  "notes": "Panel E (NEE) site-level data for figure4_representativeness.R, ported from scripts/diagnostics/flux_bin_breaks.R's scheme (not sourced). mask_value = model GPP at tower (bar-1 vegetation mask, cut=5 gC/m2/yr). tower_value = Step-3 annual tower NEE (VUT->CUT fallback). model_value_at_tower = model NEE at tower (bilinear). bin_data/bin_geo = 1-7 classification (1 = bar-1 mask; 2-7 = rounded sextile edges of the 50/50 geo/tower mixture CDF, edges: -250, -100, -50, -25, 0 gC/m2/yr)."
+  "notes": "Panel E (NEE) site-level data for figure4_representativeness.R, binning scheme ported from scripts/diagnostics/flux_bin_breaks.R (not sourced). mask_value = model GPP at tower (bar-1 vegetation mask, cut=5 gC/m2/yr). tower_value = the median of the site's QC_THRESHOLD_YY=0.5-qualifying annual NEE values (R/site_annual_fluxes.R::compute_site_annual_fluxes(); NEE QC column chosen by the per-site VUT/CUT rule in scripts/04_qc.R; at least one qualifying year required) -- revised 2026-10-02 from a QC>=0.80, mean-monthly-cycle method. In this (Geo vs Data) version, bin_data is NA for a site with no qualifying tower value, even if its mask_value alone would put it in bar 1 (classify_flux_sites(require_own=TRUE); fixes four such towers, CA-Mtk/GL-ZaH/GL-ZaF/SJ-Adv, previously counted as unvegetated with no actual NEE value). model_value_at_tower = model NEE at tower (bilinear). bin_data/bin_geo = 1-7 classification (1 = bar-1 mask; 2-7 = rounded sextile edges of the 50/50 geo/tower mixture CDF, edges: -250, -100, -50, -25, 0 gC/m2/yr)."
 }

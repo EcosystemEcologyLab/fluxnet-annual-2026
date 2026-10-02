@@ -146,8 +146,9 @@ q_k = fraction of current-network network in class k.
 J decreases and H increases with finer aggregation, consistent with the
 KG pattern: the coarser 10-class scheme masks within-group heterogeneity.
 Notable patterns visible at Level 2 but hidden at Level 1:
-  - Within Forest: needleleaved evergreen (boreal conifer) is over-sampled;
-    broadleaved evergreen (tropical) is under-sampled relative to global area.
+  - Within Forest: needleleaved evergreen (boreal conifer) holds a greater
+    proportion of towers than of global area; broadleaved evergreen
+    (tropical) holds a smaller proportion, relative to global area.
   - Within Cropland: rainfed vs. irrigated vs. mosaic breakdown reveals
     whether the network captures irrigated agricultural ecosystems.
   - Within Wetland: the three flooded-tree and flooded-shrub classes can be

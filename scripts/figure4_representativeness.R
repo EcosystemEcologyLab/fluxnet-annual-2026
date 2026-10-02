@@ -75,6 +75,8 @@ if (file.exists(".env")) {
 source("R/pipeline_config.R")
 source("R/utils.R")
 source("R/climate_classification.R")
+source("R/units.R")
+source("R/site_annual_fluxes.R")
 check_pipeline_config()
 
 suppressPackageStartupMessages({
@@ -1246,56 +1248,55 @@ ET_LOW_CUT       <- 5   # mm yr-1
 GEO_MIXTURE_WEIGHT <- 0.5
 FLUX_ROUND <- c(NEE = 25, ET = 50)
 
-## Tower annual values: same Step-3 method as flux_bin_breaks.R (VUT->CUT
-## per-site fallback; mean monthly cycle across all QC>=0.80-qualifying
-## years, all 12 calendar months required, then summed).
+## Tower annual values (revised 2026-10-02): the paper's actual QC gate
+## (QC_THRESHOLD_YY, R/pipeline_config.R -- a config constant, never a
+## literal; the 0.80 this block used until now was copied from
+## assess_flux_data_by_igbp_shuttle.R and was wrong for this paper), via the
+## shared compute_site_annual_fluxes() (R/site_annual_fluxes.R). That
+## function reads the pre-QC `annual` table directly (not annual_qc/
+## annual_converted, which drop a whole row on NEE QC and would wrongly
+## discard ET years with good LE_F_MDS_QC) and gates each variable on its own
+## QC column: NEE on the per-site VUT/CUT-chosen NEE QC column (same rule as
+## scripts/04_qc.R); ET on LE_F_MDS_QC, independent of the NEE gate. A tower's
+## value is the median of its QC-qualifying annual values (at least one
+## year) -- the mean-monthly-cycle method this block used until now is
+## retired. Figures 2/3 will take their own tower NEE/GPP/RECO/ET/H from this
+## same function in a separate revision.
 con <- dbConnect(duckdb(), duckdb_path, read_only = TRUE)
-site_ids_sql <- paste(sprintf("'%s'", current_sites$site_id), collapse = ", ")
-monthly_flux <- dbGetQuery(con, sprintf("
-  SELECT site_id, TIMESTAMP, NEE_VUT_REF, NEE_VUT_REF_QC, NEE_CUT_REF, NEE_CUT_REF_QC, LE_F_MDS, LE_F_MDS_QC
-  FROM monthly_converted WHERE dataset = 'FLUXMET' AND site_id IN (%s)
-", site_ids_sql))
+site_fluxes <- compute_site_annual_fluxes(con, site_ids = current_sites$site_id)
 dbDisconnect(con, shutdown = TRUE)
-monthly_flux <- monthly_flux |>
-  dplyr::mutate(TIMESTAMP = as.Date(TIMESTAMP), year = lubridate::year(TIMESTAMP), month = lubridate::month(TIMESTAMP))
 
-site_carbon_src <- monthly_flux |>
-  dplyr::group_by(site_id) |>
-  dplyr::summarise(any_vut_qc = any(!is.na(NEE_VUT_REF_QC)), any_cut_qc = any(!is.na(NEE_CUT_REF_QC)), .groups = "drop") |>
-  dplyr::mutate(carbon_src = dplyr::case_when(any_vut_qc ~ "VUT", any_cut_qc ~ "CUT", TRUE ~ NA_character_))
-msg("Per-site VUT/CUT choice: VUT=", sum(site_carbon_src$carbon_src == "VUT", na.rm = TRUE),
-    "  CUT (fallback)=", sum(site_carbon_src$carbon_src == "CUT", na.rm = TRUE),
-    "  neither=", sum(is.na(site_carbon_src$carbon_src)))
+site_src <- site_fluxes$site_summary
+msg("Per-site VUT/CUT choice (NEE/GPP/RECO): VUT=", sum(site_src$nee_source == "VUT", na.rm = TRUE),
+    "  CUT (fallback)=", sum(site_src$nee_source == "CUT", na.rm = TRUE),
+    "  neither=", sum(is.na(site_src$nee_source)))
 
-monthly_flux <- monthly_flux |>
-  dplyr::left_join(dplyr::select(site_carbon_src, site_id, carbon_src), by = "site_id") |>
-  dplyr::mutate(
-    nee_val = dplyr::if_else(carbon_src == "VUT", NEE_VUT_REF, NEE_CUT_REF),
-    nee_qc  = dplyr::if_else(carbon_src == "VUT", NEE_VUT_REF_QC, NEE_CUT_REF_QC),
-    nee_qualifies = !is.na(carbon_src) & !is.na(nee_qc) & nee_qc >= 0.80 & !is.na(nee_val),
-    nee_gC = dplyr::if_else(nee_qualifies, nee_val, NA_real_),
-    et_qualifies = !is.na(LE_F_MDS) & !is.na(LE_F_MDS_QC) & LE_F_MDS_QC >= 0.80,
-    et_mm = dplyr::if_else(et_qualifies, LE_F_MDS, NA_real_)
-  )
-
-build_annual <- function(df, value_col) {
-  cyc <- df |> dplyr::filter(!is.na(.data[[value_col]])) |> dplyr::group_by(site_id, month) |>
-    dplyr::summarise(mean_month = mean(.data[[value_col]], na.rm = TRUE), .groups = "drop")
-  all12 <- cyc |> dplyr::group_by(site_id) |> dplyr::summarise(n_months = dplyr::n(), .groups = "drop") |>
-    dplyr::filter(n_months == 12L) |> dplyr::pull(site_id)
-  cyc |> dplyr::filter(site_id %in% all12) |> dplyr::group_by(site_id) |>
-    dplyr::summarise(tower_value = sum(mean_month), .groups = "drop")
-}
-tower_nee <- build_annual(monthly_flux, "nee_gC") |> dplyr::left_join(current_sites, by = "site_id")
-tower_et  <- build_annual(monthly_flux, "et_mm")  |> dplyr::left_join(current_sites, by = "site_id")
-msg("Tower annual values -- NEE: ", nrow(tower_nee), "  ET: ", nrow(tower_et))
+tower_nee <- site_src |>
+  dplyr::filter(!is.na(nee_median)) |>
+  dplyr::transmute(site_id, tower_value = nee_median) |>
+  dplyr::left_join(current_sites, by = "site_id")
+tower_et <- site_src |>
+  dplyr::filter(!is.na(et_median)) |>
+  dplyr::transmute(site_id, tower_value = et_median) |>
+  dplyr::left_join(current_sites, by = "site_id")
+msg("Tower annual values (QC_THRESHOLD_YY=", QC_THRESHOLD_YY, ", median of qualifying years) -- NEE: ",
+    nrow(tower_nee), "  ET: ", nrow(tower_et))
 
 geo_coords <- as.matrix(current_sites[, c("location_long", "location_lat")])
 model_nee_at_site <- terra::extract(r_nee, geo_coords, method = "bilinear")[, 1]
 model_gpp_at_site <- terra::extract(r_gpp, geo_coords, method = "bilinear")[, 1]
 model_et_at_site  <- terra::extract(r_et,  geo_coords, method = "bilinear")[, 1]
 
-classify_flux_sites <- function(mask_value, own_value, cut, edges) {
+## require_own = TRUE (Geo vs Data only): a site only gets a bin -- including
+## bar 1 -- when it has its own (tower) value for this flux. Without this, a
+## site whose MASK value (e.g. model GPP, for NEE) falls below the bar-1 cut
+## was counted in bar 1 regardless of whether the site has any tower value at
+## all for the flux being binned -- four towers with no qualifying NEE
+## (CA-Mtk, GL-ZaH, GL-ZaF, SJ-Adv) were being counted as "unvegetated" in
+## panel E's Geo vs Data side this way. Geo vs Geo (require_own = FALSE,
+## default) is unaffected: its own_value is the model's own value at the same
+## tower coordinate as mask_value, so it is never selectively missing.
+classify_flux_sites <- function(mask_value, own_value, cut, edges, require_own = FALSE) {
   bin <- rep(NA_integer_, length(mask_value))
   valid_mask <- !is.na(mask_value)
   is_bar1 <- valid_mask & mask_value < cut
@@ -1305,6 +1306,7 @@ classify_flux_sites <- function(mask_value, own_value, cut, edges) {
   b[b < 2L] <- 2L; b[b > 7L] <- 7L
   need_own <- valid_mask & !is_bar1 & !is.na(own_value)
   bin[need_own] <- b[need_own]
+  if (require_own) bin[is.na(own_value)] <- NA_integer_
   as.integer(bin)
 }
 build_hist_outside_bar1 <- function(own_val_r, mask_val_r, bar1_cut, cell_areas, step, lo, hi) {
@@ -1358,7 +1360,7 @@ run_flux_panel <- function(panel_letter, flux_name, own_land_r, mask_land_r, mas
   data_df <- current_sites |>
     dplyr::left_join(data.frame(site_id = current_sites$site_id, mask_value = site_mask_value), by = "site_id") |>
     dplyr::left_join(tower_df |> dplyr::select(site_id, own_value = tower_value), by = "site_id")
-  data_bin <- classify_flux_sites(data_df$mask_value, data_df$own_value, bar1_cut, edges)
+  data_bin <- classify_flux_sites(data_df$mask_value, data_df$own_value, bar1_cut, edges, require_own = TRUE)
   n_data <- sum(!is.na(data_bin))
   fr_data <- as.numeric(table(factor(data_bin, levels = 1:7))) / n_data
   j_data <- weighted_jaccard(land_vec, fr_data)
@@ -1407,12 +1409,17 @@ write_output_metadata(
                      "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
                      "data/external/trendy/derived/candidate_gpp_median.tif"),
   notes = paste0(
-    "Panel E (NEE) site-level data for figure4_representativeness.R, ported from scripts/diagnostics/",
-    "flux_bin_breaks.R's scheme (not sourced). mask_value = model GPP at tower (bar-1 vegetation mask, ",
-    "cut=", NEE_BAR1_GPP_CUT, " gC/m2/yr). tower_value = Step-3 annual tower NEE (VUT->CUT fallback). ",
-    "model_value_at_tower = model NEE at tower (bilinear). bin_data/bin_geo = 1-7 classification (1 = ",
-    "bar-1 mask; 2-7 = rounded sextile edges of the 50/50 geo/tower mixture CDF, edges: ",
-    paste(nee_result$edges, collapse = ", "), " gC/m2/yr)."
+    "Panel E (NEE) site-level data for figure4_representativeness.R, binning scheme ported from scripts/",
+    "diagnostics/flux_bin_breaks.R (not sourced). mask_value = model GPP at tower (bar-1 vegetation mask, ",
+    "cut=", NEE_BAR1_GPP_CUT, " gC/m2/yr). tower_value = the median of the site's QC_THRESHOLD_YY=",
+    QC_THRESHOLD_YY, "-qualifying annual NEE values (R/site_annual_fluxes.R::compute_site_annual_fluxes(); ",
+    "NEE QC column chosen by the per-site VUT/CUT rule in scripts/04_qc.R; at least one qualifying year ",
+    "required) -- revised 2026-10-02 from a QC>=0.80, mean-monthly-cycle method. In this (Geo vs Data) ",
+    "version, bin_data is NA for a site with no qualifying tower value, even if its mask_value alone would ",
+    "put it in bar 1 (classify_flux_sites(require_own=TRUE); fixes four such towers, CA-Mtk/GL-ZaH/GL-ZaF/",
+    "SJ-Adv, previously counted as unvegetated with no actual NEE value). model_value_at_tower = model NEE ",
+    "at tower (bilinear). bin_data/bin_geo = 1-7 classification (1 = bar-1 mask; 2-7 = rounded sextile edges ",
+    "of the 50/50 geo/tower mixture CDF, edges: ", paste(nee_result$edges, collapse = ", "), " gC/m2/yr)."
   )
 )
 msg("Saved: ", fig4_nee_path)
@@ -1424,12 +1431,17 @@ write_output_metadata(
   input_sources = c(duckdb_path, CURRENT_SNAPSHOT,
                      "data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif"),
   notes = paste0(
-    "Panel F (ET) site-level data for figure4_representativeness.R, ported from scripts/diagnostics/",
-    "flux_bin_breaks.R's scheme (not sourced). Uses the dedicated 1991-2020, 17-model TRENDY ensemble-",
+    "Panel F (ET) site-level data for figure4_representativeness.R, binning scheme ported from scripts/",
+    "diagnostics/flux_bin_breaks.R (not sourced). Uses the dedicated 1991-2020, 17-model TRENDY ensemble-",
     "median raster (flux_bin_breaks_et_median_1991_2020.tif), not the older committed trendy_et_median.tif ",
-    "(1990-2023, 16-model -- see the 2026-10-01 draft-Fig-4-audit entry). mask_value/tower_value/",
-    "model_value_at_tower/bin_data/bin_geo as for panel E, but ET's own value is both the mask and the ",
-    "own-value (bar-1 cut=", ET_LOW_CUT, " mm/yr). Edges (mm/yr): ", paste(et_result$edges, collapse = ", "), "."
+    "(1990-2023, 16-model -- see the 2026-10-01 draft-Fig-4-audit entry). tower_value = the median of the ",
+    "site's QC_THRESHOLD_YY=", QC_THRESHOLD_YY, "-qualifying annual ET values (R/site_annual_fluxes.R::",
+    "compute_site_annual_fluxes(); gated on LE_F_MDS_QC, independent of the NEE QC gate; LE_F_MDS converted ",
+    "to mm H2O yr-1 via fluxnet_convert_units(); at least one qualifying year required) -- revised 2026-10-02 ",
+    "from a QC>=0.80, mean-monthly-cycle method. Geo vs Data's bin_data requires a qualifying tower value, ",
+    "same as panel E (classify_flux_sites(require_own=TRUE)). mask_value/model_value_at_tower/bin_data/",
+    "bin_geo otherwise as for panel E, but ET's own value is both the mask and the own-value (bar-1 cut=",
+    ET_LOW_CUT, " mm/yr). Edges (mm/yr): ", paste(et_result$edges, collapse = ", "), "."
   )
 )
 msg("Saved: ", fig4_et_path)

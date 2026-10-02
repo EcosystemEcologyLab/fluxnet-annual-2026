@@ -15,8 +15,14 @@
 ##      is ~100-270 MB per site), none of which this annual-resolution
 ##      assessment needs. Re-extracting other resolutions later is possible
 ##      from the retained ZIPs in data/raw/fluxnet2015/ without re-downloading.
-##   1. Per-site annual medians: identical VUT/CUT, NT/DT, QC>=0.80 logic to
-##      assess_flux_data_by_igbp_shuttle.R, for direct comparability.
+##   1. Per-site annual medians: R/site_annual_fluxes.R::
+##      compute_site_annual_fluxes_from_df() -- same shared function, rules,
+##      and QC_THRESHOLD_YY gate (R/pipeline_config.R) as
+##      assess_flux_data_by_igbp_shuttle.R (which calls the DuckDB-backed
+##      compute_site_annual_fluxes()), applied here to this script's own
+##      extracted FLUXNET2015 YY CSVs rather than the Shuttle DuckDB store --
+##      for direct comparability. Revised 2026-10-02 from a hardcoded
+##      QC_THRESH=0.80, per-row VUT/CUT loop; see docs/known_issues.md Sec 10.
 ##   2. IGBP-class site count table per flux variable.
 ##   3. IGBP-class distribution shape (median, IQR, CV across sites).
 ##   4. Comparison vs the current shuttle medians
@@ -50,10 +56,16 @@ suppressPackageStartupMessages({
   library(jsonlite)
 })
 
+if (file.exists(".env")) {
+  library(dotenv)
+  dotenv::load_dot_env()
+}
+source("R/pipeline_config.R")
+source("R/units.R")
+source("R/site_annual_fluxes.R")
+check_pipeline_config()
+
 # ---- Constants ---------------------------------------------------------------
-QC_THRESH   <- 0.80
-LAMBDA      <- 2.45e6
-SECS_YR     <- 365.25 * 86400
 NA_FLAG     <- -9999
 RAW_DIR     <- "data/raw/fluxnet2015"
 EXTRACT_DIR <- "data/fluxnet2015_comparison"  # relocated out of data/extracted 2026-09-01 (fluxnet2015's non-Shuttle filenames broke flux_discover_files() scans of data/extracted; see SESSION_LOG.md)
@@ -92,22 +104,21 @@ write_meta <- function(output_path, notes = "") {
       ". These appear here as all-NA rows (no ZIP directory found), not as ",
       "extraction failures."),
     yy_product    = "FLUXNET2015 FULLSET YY (annual resolution)",
-    qc_threshold  = QC_THRESH,
+    qc_threshold  = QC_THRESHOLD_YY,
     partitioning_policy = paste0(
       "NT preferred (GPP_NT_VUT/CUT_REF, RECO_NT_VUT/CUT_REF). ",
       "DT fallback (GPP_DT_VUT/CUT_REF, RECO_DT_VUT/CUT_REF) used only ",
       "when NT yields 0 qualifying years for a site. Decision is per-site, ",
-      "not per-year. Identical policy to site_flux_medians_shuttle.csv for ",
-      "direct comparability."),
+      "not per-year. Computed by R/site_annual_fluxes.R::",
+      "compute_site_annual_fluxes_from_df() -- identical policy to ",
+      "site_flux_medians_shuttle.csv for direct comparability."),
     vut_cut_policy = paste0(
-      "VUT used when NEE_VUT_REF_QC >= ", QC_THRESH,
-      "; CUT fallback when VUT QC fails or value is -9999"),
+      "Per-site (not per-row) VUT/CUT choice: VUT if the site has any non-NA ",
+      "NEE_VUT_REF_QC, else CUT. A year qualifies when (1 - QC) <= QC_THRESHOLD_YY=",
+      QC_THRESHOLD_YY, " on the chosen column (scripts/04_qc.R's rule)."),
     unit_nep_gpp_ter = "gC m-2 yr-1 (pre-integrated YY product; NEP = -NEE)",
-    unit_et = paste0("mm yr-1 via LE_F_MDS [W m-2] * ", SECS_YR,
-                      " [s yr-1] / lambda [J kg-1]; lambda = ", LAMBDA,
-                      " J/kg. Derivation: 1 kg m-2 = 1 mm depth, so ",
-                      "ET [mm yr-1] = LE * secs / lambda."),
-    unit_h = "W m-2 (annual mean LE_F_MDS equivalent; not converted)",
+    unit_et = "mm yr-1, via compute_site_annual_fluxes_from_df()'s fluxnet_convert_units() (R/units.R)",
+    unit_h = "W m-2 (annual mean LE_F_MDS equivalent; h_unit='W_m2', not converted)",
     le_column = "LE_F_MDS with LE_F_MDS_QC",
     h_column  = "H_F_MDS with H_F_MDS_QC",
     network   = "fluxnet2015",
@@ -226,7 +237,11 @@ msg("\n=== STEP 1: Per-site flux medians ===")
 
 na_to_na <- function(x) ifelse(is.na(x) | x == NA_FLAG, NA_real_, as.numeric(x))
 
-process_site <- function(path, site_id) {
+## Reads one site's own extracted FLUXNET2015 YY CSV into the wide,
+## one-row-per-site-year shape compute_site_annual_fluxes_from_df() expects
+## (-9999 -> NA, missing columns added as NA) -- no QC/VUT-CUT/partitioning
+## logic here; that all now lives in the shared function.
+read_one_yy <- function(path, site_id) {
   yy <- tryCatch(
     read_csv(path, show_col_types = FALSE, na = as.character(NA_FLAG)),
     error = function(e) NULL
@@ -234,122 +249,58 @@ process_site <- function(path, site_id) {
   if (is.null(yy) || nrow(yy) == 0L) return(NULL)
   if (!"TIMESTAMP" %in% names(yy)) return(NULL)
 
-  needed <- needed_cols
-  missing_cols <- setdiff(needed, names(yy))
+  missing_cols <- setdiff(needed_cols, names(yy))
   if (length(missing_cols) > 0L) {
     for (col in missing_cols) yy[[col]] <- NA_real_
   }
-  for (col in needed) yy[[col]] <- na_to_na(yy[[col]])
+  for (col in needed_cols) yy[[col]] <- na_to_na(yy[[col]])
 
-  rows <- list()
-  for (i in seq_len(nrow(yy))) {
-    r <- yy[i, ]
-    yr <- r$TIMESTAMP
-
-    vut_ok <- !is.na(r$NEE_VUT_REF) & !is.na(r$NEE_VUT_REF_QC) &
-              r$NEE_VUT_REF_QC >= QC_THRESH
-    cut_ok <- !is.na(r$NEE_CUT_REF) & !is.na(r$NEE_CUT_REF_QC) &
-              r$NEE_CUT_REF_QC >= QC_THRESH
-
-    if (vut_ok) {
-      nee_val    <- r$NEE_VUT_REF
-      gpp_nt_val <- r$GPP_NT_VUT_REF; ter_nt_val <- r$RECO_NT_VUT_REF
-      gpp_dt_val <- r$GPP_DT_VUT_REF; ter_dt_val <- r$RECO_DT_VUT_REF
-      carbon_src <- "VUT"
-    } else if (cut_ok) {
-      nee_val    <- r$NEE_CUT_REF
-      gpp_nt_val <- r$GPP_NT_CUT_REF; ter_nt_val <- r$RECO_NT_CUT_REF
-      gpp_dt_val <- r$GPP_DT_CUT_REF; ter_dt_val <- r$RECO_DT_CUT_REF
-      carbon_src <- "CUT"
-    } else {
-      nee_val    <- NA_real_
-      gpp_nt_val <- NA_real_; ter_nt_val <- NA_real_
-      gpp_dt_val <- NA_real_; ter_dt_val <- NA_real_
-      carbon_src <- NA_character_
-    }
-
-    nep_val <- if (is.na(nee_val)) NA_real_ else -nee_val
-
-    le_ok  <- !is.na(r$LE_F_MDS) & !is.na(r$LE_F_MDS_QC) &
-               r$LE_F_MDS_QC >= QC_THRESH
-    le_val <- if (le_ok) r$LE_F_MDS else NA_real_
-    et_val <- if (!is.na(le_val)) le_val * SECS_YR / LAMBDA else NA_real_
-
-    h_ok  <- !is.na(r$H_F_MDS) & !is.na(r$H_F_MDS_QC) &
-              r$H_F_MDS_QC >= QC_THRESH
-    h_val <- if (h_ok) r$H_F_MDS else NA_real_
-
-    rows[[i]] <- data.frame(
-      year = yr, nep = nep_val,
-      gpp_nt = gpp_nt_val, ter_nt = ter_nt_val,
-      gpp_dt = gpp_dt_val, ter_dt = ter_dt_val,
-      et = et_val, h = h_val, carbon_src = carbon_src,
-      stringsAsFactors = FALSE
-    )
-  }
-
-  site_yy <- bind_rows(rows)
-
-  n_gpp_nt <- sum(!is.na(site_yy$gpp_nt))
-  n_ter_nt <- sum(!is.na(site_yy$ter_nt))
-
-  if (n_gpp_nt > 0L) {
-    gpp_vals <- site_yy$gpp_nt; gpp_partition <- "NT"
-  } else if (sum(!is.na(site_yy$gpp_dt)) > 0L) {
-    gpp_vals <- site_yy$gpp_dt; gpp_partition <- "DT"
-  } else {
-    gpp_vals <- rep(NA_real_, nrow(site_yy)); gpp_partition <- NA_character_
-  }
-
-  if (n_ter_nt > 0L) {
-    ter_vals <- site_yy$ter_nt; ter_partition <- "NT"
-  } else if (sum(!is.na(site_yy$ter_dt)) > 0L) {
-    ter_vals <- site_yy$ter_dt; ter_partition <- "DT"
-  } else {
-    ter_vals <- rep(NA_real_, nrow(site_yy)); ter_partition <- NA_character_
-  }
-
-  src_of <- function(vals, srcs) {
-    s <- srcs[!is.na(vals)]
-    if (length(s) == 0L) NA_character_
-    else { u <- unique(s); if (length(u) == 1L) u else "BOTH" }
-  }
-
-  data.frame(
-    site_id       = site_id,
-    n_years_nee   = sum(!is.na(site_yy$nep)),
-    n_years_gpp   = sum(!is.na(gpp_vals)),
-    n_years_ter   = sum(!is.na(ter_vals)),
-    n_years_le    = sum(!is.na(site_yy$et)),
-    n_years_h     = sum(!is.na(site_yy$h)),
-    nep_median    = median(site_yy$nep, na.rm = TRUE),
-    gpp_median    = median(gpp_vals,    na.rm = TRUE),
-    ter_median    = median(ter_vals,    na.rm = TRUE),
-    et_median     = median(site_yy$et,  na.rm = TRUE),
-    h_median      = median(site_yy$h,   na.rm = TRUE),
-    nep_source    = src_of(site_yy$nep, site_yy$carbon_src),
-    gpp_source    = src_of(gpp_vals,    site_yy$carbon_src),
-    ter_source    = src_of(ter_vals,    site_yy$carbon_src),
-    gpp_partition = gpp_partition,
-    ter_partition = ter_partition,
-    vut_frac_nee  = mean(site_yy$carbon_src[!is.na(site_yy$nep)] == "VUT",
-                         na.rm = TRUE),
-    stringsAsFactors = FALSE
-  )
+  yy |>
+    transmute(site_id = site_id, year = as.integer(TIMESTAMP),
+              !!!setNames(lapply(needed_cols, as.name), needed_cols))
 }
 
 ok_sites <- extraction_log |> filter(status == "OK")
-site_results <- vector("list", nrow(ok_sites))
+site_yy_list <- vector("list", nrow(ok_sites))
 for (i in seq_len(nrow(ok_sites))) {
-  if (i %% 50 == 0L) msg("  Processing site ", i, " / ", nrow(ok_sites))
-  site_results[[i]] <- process_site(ok_sites$yy_path[i], ok_sites$site_id[i])
+  if (i %% 50 == 0L) msg("  Reading site ", i, " / ", nrow(ok_sites))
+  site_yy_list[[i]] <- read_one_yy(ok_sites$yy_path[i], ok_sites$site_id[i])
 }
-site_results <- bind_rows(Filter(Negate(is.null), site_results))
+annual_f15 <- bind_rows(Filter(Negate(is.null), site_yy_list))
+msg("  Loaded ", nrow(annual_f15), " site-year rows from ", length(site_yy_list), " extracted YY files")
+
+site_fluxes <- compute_site_annual_fluxes_from_df(annual_f15, h_unit = "W_m2")
+msg("  compute_site_annual_fluxes_from_df(): ", nrow(site_fluxes$site_year), " site-year rows, ",
+    sum(!is.na(site_fluxes$site_year$NEE)), " with a qualifying NEE value")
+
+site_results <- site_fluxes$site_summary |>
+  transmute(
+    site_id,
+    n_years_nee  = n_years_nee,
+    n_years_gpp  = n_years_gpp,
+    n_years_ter  = n_years_reco,
+    n_years_le   = n_years_et,
+    n_years_h    = n_years_h,
+    nep_median   = dplyr::if_else(is.na(nee_median), NA_real_, -nee_median),
+    gpp_median   = gpp_median,
+    ter_median   = reco_median,
+    et_median    = et_median,
+    h_median     = h_median,
+    ## NEE/GPP/RECO always share one per-site VUT/CUT source and one set of
+    ## qualifying years by construction -- see
+    ## assess_flux_data_by_igbp_shuttle.R for the identical rationale.
+    nep_source   = nee_source,
+    gpp_source   = nee_source,
+    ter_source   = nee_source,
+    gpp_partition = gpp_partition,
+    ter_partition = reco_partition,
+    vut_frac_nee = dplyr::case_when(
+      nee_source == "VUT" ~ 1, nee_source == "CUT" ~ 0, TRUE ~ NA_real_
+    )
+  )
 
 medians_out <- site_list |>
-  left_join(site_results, by = "site_id") |>
-  mutate(across(c(nep_median, gpp_median, ter_median, et_median, h_median),
-                ~ ifelse(is.nan(.x), NA_real_, .x)))
+  left_join(site_results, by = "site_id")
 
 msg("  Sites processed: ", nrow(site_results))
 msg("  Sites in list with usable YY data: ",
@@ -377,11 +328,13 @@ msg(sprintf("  TER: NT=%d  DT=%d  NA=%d", n_nt_ter, n_dt_ter, n_na_ter))
 write_csv(medians_final, OUT_MEDIANS)
 msg("Saved: ", OUT_MEDIANS)
 write_meta(OUT_MEDIANS, notes = paste0(
-  "QC threshold ", QC_THRESH,
-  ". NT-preferred partitioning with DT fallback when NT has 0 qualifying years. ",
+  "QC_THRESHOLD_YY=", QC_THRESHOLD_YY, " (R/pipeline_config.R), via ",
+  "R/site_annual_fluxes.R::compute_site_annual_fluxes_from_df(). ",
+  "NT-preferred partitioning with DT fallback when NT has 0 qualifying years. ",
   "gpp_partition/ter_partition: 'NT' or 'DT' or NA. ",
-  "LE_F_MDS used for ET; H_F_MDS used for H. ",
-  "vut_frac_nee = fraction of qualifying site-years using VUT (vs CUT) for NEE. ",
+  "LE_F_MDS used for ET; H_F_MDS used for H (h_unit='W_m2', native annual mean, not ",
+  "pre-integrated). vut_frac_nee = 1/0/NA (VUT/CUT/neither) -- a per-site decision, ",
+  "never mixed within a site across years. ",
   "network = 'fluxnet2015' for all rows (added for comparability when combined ",
   "with site_flux_medians_shuttle.csv, which has no such column)."))
 

@@ -23,14 +23,18 @@
 #' partitioning rule -- DT is used only when NT yields zero qualifying years
 #' for that site, decided independently for GPP and RECO so one flux's
 #' fallback never forces the other's. Ported from the same rule in
-#' `scripts/assess_flux_data_by_igbp_shuttle.R`, except that script's
-#' `QC_THRESH <- 0.80` is left as-is there (wrong for this paper, see
-#' `docs/known_issues.md`) while this function uses `QC_THRESHOLD_YY`.
+#' `scripts/assess_flux_data_by_igbp_shuttle.R`/
+#' `scripts/assess_flux_data_by_igbp_fluxnet2015.R`, which now call this
+#' function (directly or via [compute_site_annual_fluxes_from_df()]) instead
+#' of maintaining their own copy of the rule.
 #'
 #' Units: NEE/GPP/RECO pass through unchanged (YY is already a pre-integrated
-#' gC m-2 yr-1 total). ET (from `LE_F_MDS`) and H (from `H_F_MDS`) are
-#' converted via [fluxnet_convert_units()] (`R/units.R`, which must already be
-#' sourced) to mm H2O yr-1 and MJ m-2 yr-1 respectively.
+#' gC m-2 yr-1 total). ET (from `LE_F_MDS`) is converted via
+#' [fluxnet_convert_units()] (`R/units.R`, which must already be sourced) to
+#' mm H2O yr-1. H (from `H_F_MDS`) is converted to MJ m-2 yr-1 by default, or
+#' left as its native annual-mean W m-2 rate (no conversion -- `H_F_MDS` is
+#' already a mean rate at every resolution, not a pre-integrated total) when
+#' `h_unit = "W_m2"`.
 #'
 #' A site's summary value for each variable is the median of its qualifying
 #' annual values (minimum one qualifying year; zero qualifying years gives
@@ -40,6 +44,9 @@
 #'   (`data/duckdb/fluxnet.duckdb`), already containing an `annual` table.
 #' @param site_ids Character vector of site IDs to restrict to, or `NULL`
 #'   (default) for every FLUXMET site in the `annual` table.
+#' @param h_unit `"MJ_m2_yr"` (default) for H as a pre-integrated annual total
+#'   via [fluxnet_convert_units()], or `"W_m2"` for H as the native annual
+#'   mean rate (no conversion applied).
 #'
 #' @return A list with two data frames:
 #'   - `site_year`: one row per site x year, columns `site_id`, `year`,
@@ -50,7 +57,8 @@
 #'     `reco_partition`, `n_years_<var>` and `<var>_median` for each of
 #'     nee/gpp/reco/et/h.
 #' @export
-compute_site_annual_fluxes <- function(con, site_ids = NULL) {
+compute_site_annual_fluxes <- function(con, site_ids = NULL, h_unit = c("MJ_m2_yr", "W_m2")) {
+  h_unit <- match.arg(h_unit)
   where_sites <- if (!is.null(site_ids)) {
     sprintf(" AND site_id IN (%s)", paste(sprintf("'%s'", site_ids), collapse = ", "))
   } else ""
@@ -65,6 +73,38 @@ compute_site_annual_fluxes <- function(con, site_ids = NULL) {
   ", where_sites))
   annual$year <- as.integer(annual$year)
 
+  .compute_site_annual_fluxes_core(annual, h_unit = h_unit)
+}
+
+#' Per-site-year NEE, GPP, RECO, ET and H from a pre-loaded annual data frame
+#'
+#' Same rules and QC gate as [compute_site_annual_fluxes()] (its full
+#' documentation applies here), for callers whose annual YY data does not
+#' live in the Shuttle DuckDB store -- e.g.
+#' `scripts/assess_flux_data_by_igbp_fluxnet2015.R`, which reads the separate
+#' FLUXNET2015 release's own per-site CSV files (comparison-only data under
+#' CLAUDE.md Hard Rule 1, never primary data).
+#'
+#' @param annual_df A data frame with one row per site-year and exactly the
+#'   columns [compute_site_annual_fluxes()] would have queried: `site_id`,
+#'   `year` (integer), `NEE_VUT_REF`, `NEE_VUT_REF_QC`, `NEE_CUT_REF`,
+#'   `NEE_CUT_REF_QC`, `GPP_NT_VUT_REF`, `GPP_NT_CUT_REF`, `GPP_DT_VUT_REF`,
+#'   `GPP_DT_CUT_REF`, `RECO_NT_VUT_REF`, `RECO_NT_CUT_REF`,
+#'   `RECO_DT_VUT_REF`, `RECO_DT_CUT_REF`, `LE_F_MDS`, `LE_F_MDS_QC`,
+#'   `H_F_MDS`, `H_F_MDS_QC`. Values already native FLUXNET units (gC m-2
+#'   yr-1 for carbon, W m-2 for LE/H); `-9999` sentinels must already be
+#'   converted to `NA` by the caller.
+#' @param h_unit As in [compute_site_annual_fluxes()].
+#'
+#' @return As in [compute_site_annual_fluxes()].
+#' @export
+compute_site_annual_fluxes_from_df <- function(annual_df, h_unit = c("MJ_m2_yr", "W_m2")) {
+  h_unit <- match.arg(h_unit)
+  .compute_site_annual_fluxes_core(annual_df, h_unit = h_unit)
+}
+
+#' @keywords internal
+.compute_site_annual_fluxes_core <- function(annual, h_unit = "MJ_m2_yr") {
   ## ---- Per-site VUT/CUT source for NEE/GPP/RECO (same rule as 04_qc.R):
   ## VUT if the site has ANY non-NA NEE_VUT_REF_QC, else CUT if it has ANY
   ## non-NA NEE_CUT_REF_QC, else ungated -- a per-site decision, not per-row,
@@ -150,18 +190,21 @@ compute_site_annual_fluxes <- function(con, site_ids = NULL) {
       )
     )
 
-  ## ---- Units: LE -> ET (mm H2O yr-1), H -> MJ m-2 yr-1. NEE/GPP/RECO pass
-  ## through at YY resolution (fluxnet_convert_units() is a no-op for them).
+  ## ---- Units: LE -> ET (mm H2O yr-1) always via fluxnet_convert_units().
+  ## H -> MJ m-2 yr-1 via the same route by default; h_unit="W_m2" instead
+  ## keeps H as its native annual-mean W m-2 rate (H_F_MDS is already a mean
+  ## rate, never a pre-integrated total, at any resolution -- see R/units.R),
+  ## so no conversion is a legitimate unit, not a skipped step.
   manifest <- data.frame(temporal_resolution = "YY")
   conv_input <- d |> dplyr::transmute(site_id, TIMESTAMP = year, LE_F_MDS = le_Wm2, H_F_MDS = h_Wm2)
   conv <- fluxnet_convert_units(conv_input, manifest)
   d$et_mm <- conv$LE_F_MDS
-  d$h_MJ  <- conv$H_F_MDS
+  d$h_out <- if (h_unit == "W_m2") d$h_Wm2 else conv$H_F_MDS
 
   site_year <- d |>
     dplyr::transmute(
       site_id, year, carbon_src, gpp_partition, reco_partition,
-      NEE = nee_gC, GPP = gpp_gC, RECO = reco_gC, ET = et_mm, H = h_MJ
+      NEE = nee_gC, GPP = gpp_gC, RECO = reco_gC, ET = et_mm, H = h_out
     )
 
   site_summary <- site_year |>

@@ -78,7 +78,7 @@ NEE values (median-of-medians).
 NETWORK AND SITE COUNT:
 FLUXNET Shuttle network, current pinned snapshot: N = 781
 sites (656 with a qualifying annual NEE value); inset text on the figure
-reports "781 sites total", "656 with annual NEE", "4303 site-years".
+reports "781 sites total", "656 with annual NEE", "4375 site-years".
 
 DATA SOURCES:
   - Site list: data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv
@@ -89,13 +89,15 @@ DATA SOURCES:
     terra::extract()); overlay uses the full global BIO1/BIO12 GeoTIFFs
   - Land mask (overlay only): ESA CCI land cover 2015
     (ESACCI-LC-L4-LCCS-Map-300m-P1Y-2015-v2.0.7.tif)
-  - Flux data (base layer only): annual_converted table in the project's
-    DuckDB database (data/duckdb/fluxnet.duckdb), FLUXMET dataset, after
-    QC filtering (04_qc.R) and unit conversion (05_units.R)
+  - Flux data (base layer only): R/site_annual_fluxes.R::
+    compute_site_annual_fluxes() (revised 2026-10-02), DuckDB `annual`
+    table (data/duckdb/fluxnet.duckdb), FLUXMET dataset, gated per-site on
+    QC_THRESHOLD_YY via the scripts/04_qc.R VUT/CUT rule -- a site's
+    plotted value is the median of its qualifying annual NEE values
 
 EXCLUSIONS (base layer):
-Sites lacking a WorldClim climate match, or with no finite annual NEE
-value after the VUT/CUT coalesce, are dropped from the hexbin summary
+Sites lacking a WorldClim climate match, or with no QC_THRESHOLD_YY-
+qualifying annual NEE value, are dropped from the hexbin summary
 (but not from the overlaid points — see BASE LAYER, above). No IGBP or
 other classification filter is applied.
 

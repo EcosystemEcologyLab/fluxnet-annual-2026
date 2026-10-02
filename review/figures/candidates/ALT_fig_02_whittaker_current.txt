@@ -36,11 +36,16 @@ unchanged.
    NEE filtering, while <n> site-years came from a separately NEE-filtered subset (see this
    session's earlier "775 vs 638 sites" finding, SESSION_LOG.md 2026-08-31). Relabelled to
    three lines, computed programmatically at run time from the same data used to build the
-   figure (see RUN_LOG_alt_fig02_update.txt for the exact values this run computed):
+   figure (see RUN_LOG_alt_fig02_update.txt for the exact values this run computed). NEE now
+   comes from R/site_annual_fluxes.R::compute_site_annual_fluxes() (revised 2026-10-02, same
+   shared function and QC_THRESHOLD_YY gate as Figure 4): a site qualifies if it has >=1
+   annual NEE value passing QC_THRESHOLD_YY on the per-site VUT/CUT-chosen NEE QC column
+   (scripts/04_qc.R's rule, never mixed within a site); its plotted value is
+   fig_whittaker_worldclim()'s own per-site median over those qualifying years:
      "781 sites total"  -- full current Shuttle snapshot site count
-     "656 with annual NEE"  -- sites with >=1 qualifying NEE_VUT_REF or NEE_CUT_REF
-     "4303 site-years"  -- sum of qualifying years across those sites
-   (125 sites lack qualifying NEE: some have no annual_converted row at all, others have NEE = NA on both VUT and CUT.) Per-site points
+     "656 with annual NEE"  -- sites with >=1 QC_THRESHOLD_YY-qualifying annual NEE value
+     "4375 site-years"  -- sum of qualifying years across those sites
+   (125 sites lack qualifying NEE: some have no annual-table row at all, others have no year passing the per-site VUT/CUT NEE QC gate.) Per-site points
    remain shown for ALL network sites regardless of NEE availability (points are
    deliberately not gated on NEE) -- only the hexbin colouring is NEE-only. Implemented via
    the new detail_lines parameter (character vector, one line each, appended after
@@ -57,14 +62,15 @@ unchanged.
    unaffected. The block stays anchored in the upper-left (unchanged x=-Inf/y=Inf anchor);
    only its own internal and surrounding spacing changed.
 
-Data sources: identical to fig_02_whittaker_current.png and the prior ALT -- see
-review/figures/whittaker/fig_whit_fig2_with_both_contours.legend.txt for the full method
-(WorldClim v2.1, ESA CCI land cover 2015, DuckDB annual_converted FLUXMET, Shuttle
-snapshot, Mahalanobis coverage stat).
+Data sources: climate/contour inputs identical to fig_02_whittaker_current.png and the prior
+ALT -- see review/figures/whittaker/fig_whit_fig2_with_both_contours.legend.txt for the full
+method (WorldClim v2.1, ESA CCI land cover 2015, Shuttle snapshot, Mahalanobis coverage
+stat). NEE (revised 2026-10-02): R/site_annual_fluxes.R::compute_site_annual_fluxes(), DuckDB
+`annual` table (FLUXMET), QC_THRESHOLD_YY gate -- see item 3 above.
 Shuttle snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv (781 sites).
 
 Source script: scripts/generate_whittaker_alt_fig02_update.R (successor to
 scripts/generate_whittaker_alt_fig02.R)
 Function changes: fig_whittaker_worldclim(), .whittaker_theme() in R/figures/fig_climate.R
 Run log: review/figures/candidates/RUN_LOG_alt_fig02_update.txt
-Generated: 2026-09-01T18:03:06Z
+Generated: 2026-10-02T22:22:59Z

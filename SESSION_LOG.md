@@ -4,6 +4,161 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (8) — Figures 1b, 2, 3 rebuilt on the current store; Figure 5 retired; Figure 4 legend note (DONE)
+
+Figures 1b, 2 and 3 were last built 2026-09-01, before the 20 September DuckDB store refresh.
+Rebuilt all three on the current store under the same tower-flux rules as the 2026-10-02 (7)
+Figure 4 fix: `compute_site_annual_fluxes()` (`R/site_annual_fluxes.R`), `QC_THRESHOLD_YY`
+(`R/pipeline_config.R`), each variable gated on its own QC column, site value = median of
+qualifying annual values.
+
+### 1. Figure 1b: `site_year_data_presence.csv` rebuilt, legend rewritten
+
+Reran `scripts/refresh_site_year_presence.R` (raw monthly presence, no QC threshold -- unrelated
+to `compute_site_annual_fluxes()`) against the current DuckDB `monthly` table, then
+`scripts/generate_duration_histograms.R` (all 11 Dur01-11 figures; 5 of 11 PNGs actually changed
+content: Dur01, 07, 09, 10, 11 -- the rest are deterministic from the unchanged pinned snapshot/
+historical lists and rendered byte-identical).
+
+**Site-years with data, before -> after:** 6,106 / 6,243 -> **6,200 / 6,336** (has_data=TRUE out of
+the full site x year grid, 781 sites).
+
+`review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.legend.txt` (no script writes this file
+directly; hand-maintained) rewritten: the y axis is now described explicitly as "site-years in
+which ANY flux variable has data," with a new PRESENCE RULE section quoting
+`R/utils.R::compute_site_year_presence()` exactly -- a site-month is present if at least one of 12
+flux variables (`NEE_VUT_REF`, `NEE_CUT_REF`, `GPP_NT_VUT_REF`, `GPP_DT_VUT_REF`,
+`GPP_NT_CUT_REF`, `GPP_DT_CUT_REF`, `RECO_NT_VUT_REF`, `RECO_DT_VUT_REF`, `RECO_NT_CUT_REF`,
+`RECO_DT_CUT_REF`, `LE_F_MDS`, `H_F_MDS`) is non-NA; `n_months_present` counts qualifying months;
+`has_data` is `n_months_present > 0`. Also fixed the stale network count (767 -> 781 sites,
+30 June build predating the 2026-09-01 snapshot).
+
+### 2. Figure 2: tower NEE from the shared function
+
+`scripts/generate_whittaker_alt_fig02_update.R` previously read `annual_converted` and coalesced
+`NEE_VUT_REF`/`NEE_CUT_REF` **per row** (not per site -- could mix VUT and CUT within one site
+across different years). Replaced with `compute_site_annual_fluxes(con, site_ids = NULL)`: each
+qualifying site-year's NEE is placed into a synthetic `data_yy` (`NEE_VUT_REF` = the value,
+`NEE_CUT_REF` = NA always) before handing it to the unchanged `fig_whittaker_worldclim()`, so that
+function's own per-site median over this already-QC-gated, already-VUT/CUT-resolved set of years
+reproduces the shared function's own median exactly -- `fig_whittaker_worldclim()` itself needed no
+code change. Inset-count computation rewritten to read `site_fluxes_fig2$site_summary` directly
+instead of recomputing its own per-row coalesce.
+
+**Sites and site-years, before -> after:** 656 sites with annual NEE (**matches Figure 4's NEE panel
+exactly**, as expected -- both now use the identical shared function and full network), **4,375**
+site-years (was 4,303). 781 sites total unchanged.
+
+### 3. Figure 3: shared function for both the Shuttle and FLUXNET2015 sides
+
+**`scripts/assess_flux_data_by_igbp_shuttle.R`:** Step 1 (per-site medians) no longer loops over
+loose `data/extracted/*FLUXMET_YY*.csv` files with `QC_THRESH <- 0.80`. Now connects to the DuckDB
+`annual` table and calls `compute_site_annual_fluxes(con, site_ids = snap$site_id, h_unit =
+"W_m2")` directly. `nep_source`/`gpp_source`/`ter_source` now always agree (NEE/GPP/RECO share one
+per-site VUT/CUT source and QC gate by construction, unlike the retired per-row version, where they
+could in principle diverge). `vut_frac_nee` is now 1/0/NA (a per-site decision) rather than a true
+fraction, since a site's years are never a VUT/CUT mixture.
+
+**`scripts/assess_flux_data_by_igbp_fluxnet2015.R`:** same rules, applied to this script's own
+extracted FLUXNET2015 YY CSVs (`data/fluxnet2015_comparison/`) via the new
+`compute_site_annual_fluxes_from_df()` (`R/site_annual_fluxes.R`) -- a thin wrapper around the same
+internal core `compute_site_annual_fluxes()` uses, taking a pre-loaded data frame instead of a
+DuckDB connection so Shuttle and FLUXNET2015 share one rules implementation with two different data
+sources. Extraction (Step 0, unzipping the FULLSET YY file per site) is unchanged.
+
+**New `h_unit` parameter** (`compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()`):
+default `"MJ_m2_yr"` (pre-integrated total, via `fluxnet_convert_units()`, as Figure 4 panel F
+implicitly needs for ET's own conversion path); `"W_m2"` instead keeps H's native annual-mean rate
+unconverted (`H_F_MDS` is already a mean rate at every resolution, never a pre-integrated total).
+Figure 3 panel C plots H in W m⁻² (unchanged axis unit), so both median scripts call with
+`h_unit = "W_m2"`. Verified: `h_median / MJ-default h_median` ratio = 0.0316 for a test site,
+matching `1 / (seconds_per_year * 1e-6)` exactly.
+
+Regenerated, in order: `site_flux_medians_shuttle.csv`, `site_flux_medians_fluxnet2015.csv` (+ both
+`igbp_class_flux_distributions_*.csv`), `flux_comparison_fluxnet2015_vs_shuttle.csv` (+ the 5
+standalone `fig_flux_comparison_{nep,gpp,ter,et,h}.png`), and the actual draft Figure 3
+(`review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png`, via
+`scripts/figure_flux_comparison_combo.R`, which reads only the comparison CSV and needed no code
+change). Visually confirmed panel C's (H) plotted range is a sensible 11-58 W m⁻² on both axes.
+
+**Sites per flux, Shuttle, before -> after:** NEP 636->656, GPP 632->651, TER 632->651, ET
+656->665, H 663->669 (of 781).
+
+**Sites per flux, FLUXNET2015, before -> after** (not previously reported as a baseline; both read
+from `git show HEAD:...` for the "before" values): NEP 172->194, GPP 172->194, TER 172->194, ET
+179->196, H 180->197 (of 212; 206 downloaded, 6 Tier-2-only sites excluded per CLAUDE.md §1).
+
+**Sites with a non-NA NEE QC value but zero years passing `QC_THRESHOLD_YY` (Shuttle):** checked
+directly -- 656 sites have a non-NA `nee_source` (VUT or CUT), and 656 have >=1 qualifying year;
+**0 sites have QC data present but every year failing the gate** -- confirms the arithmetic identity
+the task noted (656 = 616 VUT + 40 CUT exactly leaves no room for a "has QC but never passes"
+group).
+
+**Per-class medians (FLUXNET2015 | Shuttle, new), all 10 plotted classes (CVM/CSH excluded, as
+before):**
+
+| Class | NEP (gC/m2/yr) | GPP (gC/m2/yr) | TER (gC/m2/yr) | ET (mm/yr) | H (W/m2) |
+|---|---|---|---|---|---|
+| CRO | 193.3 \| 185.1 | 1296.2 \| 1360.9 | 1081.3 \| 1127.6 | 573.9 \| 594.5 | 11.2 \| 15.8 |
+| DBF | 421.1 \| 289.1 | 1475.6 \| 1556.0 | 1075.2 \| 1275.2 | 480.4 \| 511.4 | 25.0 \| 23.7 |
+| EBF | 559.9 \| 398.9 | 2277.7 \| 2308.1 | 1494.0 \| 1754.8 | 735.5 \| 820.7 | 25.5 \| 28.1 |
+| ENF | 302.5 \| 152.7 | 1377.5 \| 1503.1 | 797.6 \| 1128.3 | 404.9 \| 455.4 | 32.5 \| 29.6 |
+| GRA | 32.5 \| 89.2 | 729.2 \| 1324.0 | 711.9 \| 1184.6 | 460.1 \| 536.1 | 32.4 \| 21.4 |
+| MF | 117.2 \| 246.0 | 1533.6 \| 1627.5 | 1179.3 \| 1271.4 | 376.8 \| 512.2 | 21.5 \| 24.9 |
+| OSH | -2.2 \| -0.5 | 321.7 \| 382.8 | 134.6 \| 314.7 | 287.5 \| 261.4 | 36.8 \| 39.8 |
+| SAV | 126.9 \| 41.5 | 718.8 \| 845.9 | 603.3 \| 937.1 | 458.8 \| 420.3 | 55.2 \| 49.7 |
+| WET | 61.2 \| 63.9 | 826.0 \| 751.7 | 684.2 \| 628.2 | 508.6 \| 487.7 | 13.7 \| 14.8 |
+| WSA | 206.0 \| 246.1 | 1007.3 \| 1148.9 | 776.2 \| 950.7 | 486.0 \| 597.5 | 57.8 \| 57.8 |
+
+Updated `docs/known_issues.md` Sec 10: moved `assess_flux_data_by_igbp_shuttle.R` and
+`assess_flux_data_by_igbp_fluxnet2015.R` out of the "still hardcodes 0.80" table into a new "also
+fixed" note; `figure_flux_comparison_fluxnet2015_vs_shuttle.R` moved out of the "consumes a
+0.80-threshold file" table (its own inputs are now current).
+
+### 4. Figure 5 retired from the drafts
+
+Moved `fig_05_jaccard_trajectory_with_counts.png`/`.legend.txt` from
+`review/figures/draft_manuscript_v1/` to `.../deprecated/` (`git mv`, same convention as the prior
+Figure 4 retirement). Removed its entries from `scripts/build_draft_manuscript_v1.R`'s `figs`/
+`legends` copy maps, added a "Fig 5 note" matching the file's existing "Fig 4 note" style, and
+updated two stale `annual_converted`/QC mentions in the Figure 2 legend-generation block (now
+describes `compute_site_annual_fluxes()`/`QC_THRESHOLD_YY`). Reran the build script:
+`draft_manuscript_v1/` now contains 4 figures copied by this script (1a/1b/2/3) + 2 copied directly
+by `figure4_representativeness.R` (4, supp) = 6 total PNGs, down from 7.
+
+### 5. Figure 4 legend: tower-value sentence for panels e/f (no re-render)
+
+Added one sentence to both `write_fig4_legend()` branches in `scripts/figure4_representativeness.R`
+(main Geo vs Data legend: defines the tower value; supplemental Geo vs Geo legend: clarifies its
+own panels e/f use the model's value instead, pointing to Figure 4's legend for the Geo vs Data
+definition) defining the tower value in panels e/f as "the median of each site's annual values
+passing `QC_THRESHOLD_YY=0.5`, each flux gated on its own QC column, per-site VUT/CUT." Per
+instruction, the panel PNGs/PDFs were **not** re-rendered -- instead, all four already-committed
+`.legend.txt` files (`review/figures/representativeness/` and `draft_manuscript_v1/`, both
+`fig_04_representativeness` and `supp_representativeness_geo_vs_geo`) were hand-edited to contain
+exactly the text the edited script would now produce, verified line-for-line against the script's
+new `lines <- c(...)` elements so the script and the committed artifacts cannot drift apart.
+
+### 6. Other committed outputs now stale against the regenerated tables (not regenerated)
+
+| Reads | Script | Committed outputs now stale |
+|---|---|---|
+| `site_year_data_presence.csv` | `scripts/generate_historical_comparison_figures.R` | `review/figures/historical/*.png` (choropleth + duration/Whittaker comparison panels) |
+| `site_flux_medians_shuttle.csv` | `scripts/figure_flux_medians_by_igbp.R` | `data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv`(+`.meta.json`), `review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png` |
+| `site_flux_medians_shuttle.csv` + `_fluxnet2015.csv` | `scripts/figure_representativeness_supp_sitelevel.R` | `review/figures/candidates/Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png`, `Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png` (+ legends/tables) |
+| `site_flux_medians_shuttle.csv` | `scripts/diagnostics/nee_bin_scheme.R` | `review/diagnostics/nee_bin_scheme/*` (tables, 3 PNGs, `report.md`) |
+| `site_flux_medians_shuttle.csv` | `scripts/diagnostics/nee_et_site_vs_trendy_raster.R` / `_core.R` | `review/diagnostics/nee_et_site_vs_trendy/*` (already independently hardcodes its own `QC>=0.80` SQL filter for its primary computation -- see `known_issues.md` Sec 10 -- `site_flux_medians_shuttle.csv` is a secondary input there) |
+
+`scripts/figure_flux_comparison_combo_alt_common_siteyears.R` also reads `site_flux_medians_shuttle.csv`,
+but only for IGBP class labels, not flux values (it computes its own flux values independently under
+its own hardcoded `QC_THRESH <- 0.80`, already listed in `known_issues.md` Sec 10) -- not meaningfully
+stale from this change.
+
+`outputs/authorship/*` (from `scripts/authorship_models.R`/`authorship_diagnostics.R`, both read
+`site_year_data_presence.csv`) and `outputs/candidate_figures.html` (`scripts/00_candidate_figures.R`,
+reads it via the legacy RDS fallback path) are excluded from this list: `outputs/` is gitignored
+and regenerated by the pipeline (CLAUDE.md Hard Rule 4), not a committed artifact.
+
 ## 2026-10-02 (7) — Figure 4 panels E/F: paper's actual QC gate, shared flux function, unvegetated-bin fix (DONE)
 
 Figure 4's tower NEE/ET were gated on `QC>=0.80` (copied from `scripts/assess_flux_data_by_igbp_shuttle.R`)

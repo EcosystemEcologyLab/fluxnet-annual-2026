@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-02T16:36:36Z",
+  "pipeline_version": "bc8e6dd",
+  "input_sources": [
+    "data/processed/badm.rds",
+    "data/snapshots/site_koppen_era5_fig4.csv"
+  ],
+  "notes": "13-class (two-letter) confusion matrix, PI-reported class (rows) against the ERA5-derived class Figure 4 panel a's Geo vs Data side uses (columns). Population: 603 sites with both a valid PI class and a classified ERA5-derived class (not restricted to the 599-site panel a eligible pool)."
+}

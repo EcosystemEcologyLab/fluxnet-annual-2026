@@ -4,6 +4,49 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (3) — Diagnostic: PI-reported vs. ERA5-derived vs. Beck 2023 Köppen class (DONE)
+
+Read-only diagnostic (`scripts/diagnostics/koppen_pi_vs_era5.R`, outputs in
+`review/diagnostics/koppen_pi_vs_era5/`) comparing the PI-reported Köppen-Geiger class (BADM
+`CLIMATE_KOEPPEN`, freshly read from `data/processed/badm.rds`) against the two classes Figure 4 panel A
+actually uses: the ERA5-derived Geo vs Data class (`site_koppen_era5_fig4.csv`) and the Beck 2023 Geo vs
+Geo class (`site_koppen_beck2023.csv`). No production script, snapshot, or figure touched.
+
+**Setup checks.** One site (`DE-Rns`) has two identical `CLIMATE_KOEPPEN` BIF rows (same value, harmless).
+Every non-NA raw value matched one of the 30 canonical Köppen codes after case-insensitive normalisation
+(mixed case does occur in the raw BADM data, e.g. both `"Bsk"` and `"BSk"`) — none invalid. The fresh BADM
+read matches `site_koppen_era5.csv`'s existing `badm_kg_class` column exactly (781/781, case-insensitive).
+`site_koppen_era5_fig4.csv`'s `badm_kg_class` is confirmed all-NA (781/781) — Figure 4 Phase 1's
+`compute_site_koppen_era5(monthly_era5, map_max_mm = Inf, legend = NULL)` call never passes a `badm`
+argument.
+
+**1. Coverage.** 603/781 sites (77.2%) have a valid PI class. By hub: AmeriFlux 358/381 (94.0%), ICOS
+245/348 (70.4%), **TERN 0/52 (0%)** — confirmed as a genuine BIF metadata gap, not a join bug (all 52 TERN
+sites have BADM rows for other variable groups, none for `CLIMATE_KOEPPEN`). Of the 182 sites excluded
+from panel a's Geo vs Data side, 154 (84.6%) have a valid PI class.
+
+**2. Agreement.** All sites with both classes (n=603): PI vs ERA5-derived 59.5% full-class / 70.1%
+two-letter / 77.6% main-class; PI vs Beck 2023 69.2% / 76.6% / 84.1%. Restricted to the panel a eligible
+pool (449 of its 599 sites have a PI class): 59.0% / 69.7% / 78.4% vs ERA5-derived; 69.0% / 77.7% / 86.0%
+vs Beck — materially the same pattern as the full-network figures. PI agrees noticeably better with Beck
+(raster-based, like the PI's own likely basis) than with the ERA5-derived class at every level.
+
+**3. Confusion (13-class, PI vs ERA5-derived, n=603).** Full table and top-10 disagreements written to
+`table_3_confusion_13class.csv`/`table_3b_top10_disagreements.csv`. Largest: Cf→Df (18), BS→BW (17),
+Df→BS (11), Dw→Df (10), Df→Cf (9), ET→Df (9), Cf→BS (8), Cs→BS (8), Ds→BW (7), BS→Ds (6) — mostly
+adjacent-class confusions (temperate/continental boundary, arid/semi-arid boundary), not random noise.
+
+**4. Alternate J.** Using the PI class for every site that has one (n=603, not restricted to panel a's own
+exclusion rules): J = 0.359 — *worse* than the current ERA5-derived panel a value (J = 0.411, n=599).
+Different n and different site population, so not a strict apples-to-apples substitution test, but the
+direction is clear: swapping in the PI-reported class would not improve panel a's Jaccard score.
+
+**5. Per-site table.** `table_5_per_site.csv`, 781 rows: site_id, network (`data_hub`), pi_class, era5_class,
+beck_class, three full-class agreement flags (PI-vs-ERA5, PI-vs-Beck, ERA5-vs-Beck), and panel a's own
+exclusion flag.
+
+---
+
 ## 2026-10-02 (2) — New Fig 4: four documentation corrections, checked against code (DONE)
 
 Corrected four errors in the Figure 4 documentation, each checked against `scripts/

@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-02T16:36:36Z",
+  "pipeline_version": "bc8e6dd",
+  "input_sources": [
+    "data/processed/badm.rds",
+    "data/snapshots/site_koppen_era5_fig4.csv",
+    "data/snapshots/site_koppen_beck2023.csv"
+  ],
+  "notes": "Agreement between the PI-reported class and (a) the ERA5-derived class actually used by Figure 4 panel a's Geo vs Data side, (b) the Beck 2023 class used by panel a's Geo vs Geo side. Full-class = the 3-letter code (e.g. BSk); two-letter = the 13-class aggregation Figure 4 itself uses; main-class = the 5-class A/B/C/D/E level. 'panel a eligible pool' is the 599 sites not excluded from Figure 4 panel a's Geo vs Data side (excluded_fig4_geo_vs_data == FALSE)."
+}

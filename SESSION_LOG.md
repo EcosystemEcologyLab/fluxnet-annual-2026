@@ -4,6 +4,172 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (5) — Figure 4 revision: P_ERA_MIN_RATIO, panel A PI-first, layout/wording fixes (DONE)
+
+Continued from an interrupted earlier run of this same task (only `P_ERA_MIN_RATIO` had been added to
+`R/pipeline_config.R`; `scripts/figure4_representativeness.R` itself was untouched). Ran unattended;
+no action taken on anything from CLAUDE.md's "always ask" list.
+
+### 1. Low-side precipitation rule (`P_ERA_MIN_RATIO = 1/3`)
+
+Added to `R/pipeline_config.R`, mirroring `P_ERA_MAX_RATIO = 3`: a site fails if its 1991–2020 mean
+annual P_ERA is below 1/3 of **every** reference available for it (BADM MAP where present/non-zero,
+AND WorldClim BIO12), same dual-reference AND logic as the high side. `flag_precip_exclusions()` /
+`compute_precip_exclusions()` in `scripts/figure4_representativeness.R` now produce
+`excluded_p_era_ratio_high` and `excluded_p_era_ratio_low` (the pre-existing `excluded_p_era_ratio` is
+their OR, kept for callers that don't need the distinction).
+
+**Sites caught beyond the 172 GRP_ERA_DOWN group (n=22 at the adopted 1/3 threshold), both ratios:**
+
+| site_id | P_ERA (mm/yr) | BADM MAP (ratio) | BIO12 (ratio) |
+|---|---|---|---|
+| CA-TP2 | 0.0 | 1036 (0.000) | 970 (0.000) |
+| US-TLR | 1.0 | 469 (0.002) | 1276 (0.001) |
+| US-EKP | 13.2 | 894 (0.015) | 539 (0.024) |
+| US-CF1 | 9.0 | 550 (0.016) | 611 (0.015) |
+| US-EKH | 16.6 | 894 (0.019) | 553 (0.030) |
+| US-EKN | 17.5 | 894 (0.020) | 539 (0.033) |
+| US-CF2 | 14.6 | 550 (0.026) | 583 (0.025) |
+| US-CF3 | 15.8 | 550 (0.029) | 559 (0.028) |
+| US-A39 | 28.2 | 965 (0.029) | 999 (0.028) |
+| US-A37 | 28.2 | — | 822 (0.034) |
+| US-Akn | 45.7 | — | 1195 (0.038) |
+| US-CF4 | 23.6 | 550 (0.043) | 559 (0.042) |
+| US-Hn3 | 13.2 | 197 (0.067) | 167 (0.079) |
+| CN-GuT | 52.5 | — | 568 (0.092) |
+| US-Sag | 22.8 | 121 (0.189) | 179 (0.128) |
+| US-KS3 | 274.1 | 1340 (0.205) | 1290 (0.212) |
+| US-Hn2 | 42.8 | 197 (0.217) | 167 (0.257) |
+| US-Me1 | 166.1 | 705 (0.236) | 608 (0.273) |
+| US-UTB | 42.3 | 139 (0.305) | 165 (0.257) |
+| US-UTM | 73.8 | 240 (0.307) | 236 (0.313) |
+| US-UTD | 67.8 | 216 (0.314) | 271 (0.250) |
+| US-ZF1 | 318.6 | — | 963 (0.331) |
+
+Sensitivity (context, not adopted): 33 sites at ratio < 1/2, 22 at < 1/3 (adopted), 16 at < 1/4. Several
+of the most extreme cases (e.g. `CA-TP2`, P_ERA≈0) are the same class of ERA5 spatial-averaging/
+extraction artifact as the known high-side cases, in the opposite direction. Logged in
+`docs/known_issues.md` §9c (item 4) and `methods_precip_exclusions.md` (Rule 3).
+
+### 2. Panel A (Köppen), main figure only: PI-reported class first, ERA5 fallback second
+
+Motivated by the 2026-10-02 (3) diagnostic above (`review/diagnostics/koppen_pi_vs_era5/`): the
+ERA5-derived class disagreed with the PI-reported class more often than it agreed (59.5%, n=603), while
+PI agreed better with the independent Beck 2023 raster (69.2%). Panel A's Geo vs Data side now uses the
+PI-reported class (BADM `CLIMATE_KOEPPEN`, case-normalised against the 30 canonical Köppen codes) for
+every site that has one, falling back to the ERA5-local class only for the rest. The three
+precipitation-dependent exclusion rules apply **only to fallback sites** — a PI-reported site is never
+excluded. Supplemental panel a (Beck class at the tower) is unchanged.
+
+**n by source:** 603 PI-reported + 147 ERA5 fallback = 750/781 eligible. Of the 178 sites without a PI
+class, 28 are excluded by GRP_ERA_DOWN, 0 by `P_ERA_MAX_RATIO`, 3 by `P_ERA_MIN_RATIO` (31 total).
+**J = 0.399** (previous ERA5-only design: n=599/781, J=0.411 — n rose substantially as PI coverage
+rescued most of the old ERA5-fallback exclusions; J moved slightly down, consistent with the direction
+the earlier diagnostic's naive network-wide comparison found, though that test used a different,
+non-panel-specific population so the two numbers aren't directly comparable).
+Recorded per-site in `site_koppen_era5_fig4.csv`'s new `pi_raw`/`pi_canonical`/`pi_twoletter`/
+`panel_a_source`/`panel_a_class_used`/`panel_a_eligible` columns.
+
+### 3. Panel C (aridity), main figure only: low rule applied alongside existing exclusions
+
+No panel-specific code change needed — Rule 3 is implemented once, in the function both panels already
+share. GRP_ERA_DOWN (171 distinct) + `P_ERA_MAX_RATIO` (10) + `P_ERA_MIN_RATIO` (22) + 4
+invalid-ERA5-input (`CD-Ygb`, `DE-Zrk`, `FR-LBr`, `US-Sne`; `DE-Zrk` double-counted with GRP_ERA_DOWN,
+counted once) = 207 excluded. **n = 574/781, J = 0.675** (previous two-rule design: n=596/781, J=0.718).
+
+### 4. Layout (both figures) — two genuine rendering bugs found and fixed, plus the explicit asks
+
+**Row order (confirmed via direct `ggplot2` reproduction, not just inspection).** Splitting a panel's
+bars across two `geom_col()` layers (the normal bars vs. the dashed "none" bars) and relying on
+`scale_y_discrete()`'s implicit factor-level training reordered whichever class's only occurrence was in
+the second ("none") layer to the *end* of the trained range instead of its correct position — unless
+that class already happened to be the terminal one. This produced two real errors in the prior print
+render: Köppen's `EF` (always "none") rendered *above* `ET`, and ET panel f's bar-1 `0–5` class (always
+"none") rendered at the very *top* instead of the bottom. Fixed with an explicit `limits=`/`breaks=` on
+every panel's y scale (`draw_panel2()`), derived once per axis letter from the already-correct
+`class_order` sequence (`panel_y_limits()`) — identical between the Geo vs Geo and Geo vs Data
+comparisons for a given panel, satisfying "one fixed order per axis, identical in both figures". Also
+removes the header row's tick mark for free (`breaks` excludes the blank header label).
+
+**Column alignment (confirmed by pixel-measuring the 1× gridline in the prior render: ~7.7mm apart
+between panels a and c).** ggplot auto-sizes each panel's y-axis label gutter to its own labels, so
+panels sharing an output column but with very different label lengths (e.g. Köppen's 2-letter codes vs.
+Aridity's "Humid (moderate)") had their bar areas start at different x positions. Fixed by measuring each
+panel's natural gutter once (`measure_panel_layout_mm()`), taking the widest in each column (a/c/e;
+b/d/f: 22.98mm and 12.79mm respectively), and forcing every panel in that column to that shared gutter
+via direct gtable surgery on the `axis-l` column width (`align_panel_left_mm()`) — the "panel" (bar)
+column is a flexible `null` unit and absorbs the difference automatically, taking space from the bar
+area as instructed, not from font size. Pixel-verified post-fix: the 1× line sits at x=1347 in every one
+of a/c/e and x=2466 in every one of b/d/f, in **both** figures.
+
+**Fonts.** All panel/axis text confirmed 7pt Helvetica (8pt for the bold panel letter) — found and fixed
+one violation: the clip-annotation text next to a truncated bar (e.g. "5.4×") was `label_pt - 1` = 6pt;
+now `label_pt` = 7pt like every other on-panel label.
+
+**Edges / header tick.** Bottom margin was already adequate (no clipping found); the header row's
+unlabelled tick (panels a/b) is removed by the same `breaks=` fix above.
+
+**PDF superscript minus (confirmed by rendering the PDF at 600dpi and reading `mbcsToSbcs` warnings).**
+The base `grDevices::pdf()` PostScript "Helvetica" font has no usable glyph for U+207B (superscript
+minus) — panel d/e/f's unit titles rendered it as a barely-visible baseline dot, not a minus sign (the
+PNG, a TrueType Helvetica, rendered it correctly either way). Fixed by rendering those three titles from
+a plotmath expression (`PANEL_SPECS[[letter]]$title_expr`, e.g. `Biomass~(Mg~ha^{-1})`) instead of a
+literal Unicode string — grid typesets the superscript from ordinary ASCII glyphs scaled by its own
+metrics, which both devices handle correctly. Plain-text contexts (legend, `panel_n_line()`) still use
+the original string field.
+
+Final artwork height: **169.3 mm** (unchanged — row-pitch math untouched; the column-alignment fix takes
+space from the bar area, not the row height).
+
+### 5. Wording
+
+"under-sampled"/"over-sampled" (bottom-axis caption, both figures) → "smaller proportion"/"greater
+proportion". The main figure's legend states once what this means: left of 1×, a class holds a smaller
+proportion of current-network towers than of global land; right of 1×, a greater proportion. Scope
+confirmed by repo-wide grep: the only other occurrences of this wording are in the *old*, superseded
+Figure 4 pipeline (`scripts/figure_representativeness_summary.R` and its own methods notes), explicitly
+out of scope ("Don't touch Fig 5 or figure_representativeness_summary.R").
+
+### 6. Caption
+
+Added a `land_pct_line()` helper computing what 1/5/10/20/30% of each land grid's total actually is, in
+million km², from the script's own `*_LAND_TOTAL_KM2` constants — e.g. the shared Köppen/land-cover/
+biomass grid: 1%=1.47, 5%=7.37, 10%=14.73, 20%=29.46, 30%=44.20 million km². Panel a's PI/fallback/
+exclusion breakdown and both panels' n/J are in the legend text (§2–3 above have the same numbers).
+
+### 7. Documentation
+
+`methods_koppen_era5.md` (new "PI-reported class used first" section), `methods_precip_exclusions.md`
+(Rule 3 + per-panel n tracing), `methods_aridity_era5.md` (two → three rules, aridity unaffected by the
+PI-first revision), `docs/methods_requirements.md` §5.8 (table rows A/C, key facts, plotmath note), and
+`docs/known_issues.md` §9c (new item 4 + a paragraph naming `review/diagnostics/koppen_pi_vs_era5/` as
+the finding that prompted panel A's redesign) all updated and checked against the final run's actual
+numbers, not estimated.
+
+### Report
+
+- **Panel a:** before n=599/781, J=0.411 → after n=750/781, J=0.399.
+- **Panel c:** before n=596/781, J=0.718 → after n=574/781, J=0.675.
+- **Other ten panel values confirmed unchanged** (B/D/E/F both comparisons, A/C geo_vs_geo) — byte-identical
+  `n_classified`/`weighted_jaccard` in `representativeness_metrics_fig4.csv`, and the script's own
+  built-in post-render check (`CONFIRMED: all 12 rows' n and J match...`) passed on every run.
+- **Final figure height:** 169.3 mm, both figures.
+- **Visual confirmation** (both PNGs read at 100%, plus the PDF at 600dpi for the superscript check):
+  row order identical between the two figures for every one of the six axes; the 1× gridline aligns at
+  the same pixel column in a/c/e and in b/d/f, in both figures; no on-panel text below 7pt; PDF
+  superscript minus signs legible after the plotmath fix.
+
+**Flagged, not actioned — unrelated uncommitted state found at session start, left for the user to
+triage, not touched:** `outputs/session_info.txt` (very large diff, mixed provenance — partly this
+session's own `sessionInfo()` write, partly pre-existing); `review/diagnostics/nee_corrected_axis/*`
+outputs; `renv/activate.R`; several `data/snapshots/*trendy_nee_signed5*` and
+`nee_signed5_occupancy_jaccard.meta.json` files (content unchanged, only `run_datetime_utc`/
+`pipeline_version` from a 2026-09-28 run, unrelated to this task); a large number of untracked
+`logs/*` files and a few untracked `data/snapshots/*.csv`/`data/external/*` paths. None of these were
+committed as part of this task.
+
+---
+
 ## 2026-10-02 (4) — Session recap: status report on prior Köppen diagnostic session (DONE)
 
 Read-only status report, no code or data touched. User asked for a report on the last task engaged in;

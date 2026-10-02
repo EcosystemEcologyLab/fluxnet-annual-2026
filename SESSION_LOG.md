@@ -4,6 +4,102 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (7) — Figure 4 panels E/F: paper's actual QC gate, shared flux function, unvegetated-bin fix (DONE)
+
+Figure 4's tower NEE/ET were gated on `QC>=0.80` (copied from `scripts/assess_flux_data_by_igbp_shuttle.R`)
+and aggregated via a mean-monthly-cycle method, neither of which is the paper's actual, documented QC
+convention. Per explicit instruction: switched to the config constant `QC_THRESHOLD_YY` (`R/
+pipeline_config.R`, currently 0.50), built a shared per-site-annual-flux function for reuse by Figures
+2/3, and fixed a Geo-vs-Data counting bug. Panels A–D untouched by design — confirmed below.
+
+### 1. Shared function: `R/site_annual_fluxes.R::compute_site_annual_fluxes()`
+
+Reads the pre-QC `annual` DuckDB table directly (not `annual_qc`/`annual_converted`, which drop a whole
+row on NEE QC failure and would wrongly discard ET/H years with good `LE_F_MDS_QC`/`H_F_MDS_QC`). Gates
+each variable on its own QC column: NEE/GPP/RECO on the NEE QC column chosen by the per-site VUT/CUT rule
+in `scripts/04_qc.R` (VUT if the site has any non-NA `NEE_VUT_REF_QC`, else CUT, else ungated — GPP/RECO
+have no annual QC of their own, so they qualify exactly when NEE does for that row); ET on `LE_F_MDS_QC`;
+H on `H_F_MDS_QC` — both independent of the NEE gate. GPP and RECO additionally use a per-site,
+per-flux NT-preferred/DT-fallback partitioning rule (DT only when NT has zero qualifying years for that
+site), ported from `scripts/assess_flux_data_by_igbp_shuttle.R`'s rule but decided per-site rather than
+per-row, per instruction. ET/H are converted from `LE_F_MDS`/`H_F_MDS` via `fluxnet_convert_units()`
+(`R/units.R`) to mm H2O yr-1 / MJ m-2 yr-1; NEE/GPP/RECO pass through (YY is already pre-integrated). A
+site's value for each variable is the median of its qualifying annual values (minimum one year). Smoke-
+tested directly against the DuckDB store on 6 sites (including the four flagged in item 3 below) before
+integration — confirmed those four have zero qualifying years for every variable, and a known site
+(US-Ha1) returns 33 qualifying NEE/GPP/RECO years, 30 ET, 33 H with physically reasonable medians.
+
+Figure 4 (this entry) consumes NEE and ET. Figures 2/3 will take GPP/RECO/H from the same function in a
+separate revision, per instruction.
+
+### 2. Figure 4 panels E/F: switched to the shared function
+
+`scripts/figure4_representativeness.R` now sources `R/units.R` and `R/site_annual_fluxes.R`, and its
+former ad hoc "Tower annual values" block (duckdb query + VUT/CUT per-row selection + mean-monthly-cycle
+`build_annual()`) is replaced by one call to `compute_site_annual_fluxes()`, filtered to sites with a
+non-NA median. Bin edges (fixed first bar + rounded sextiles of the 50/50 land/tower mixture) are
+recomputed automatically from the new tower values via the existing, unchanged `compute_sextile_edges()`.
+
+**Bin edges, before (QC≥0.80, mean monthly cycle) vs after (QC_THRESHOLD_YY=0.50, median of qualifying
+years) — unchanged after rounding:** NEE −250/−100/−50/−25/0 gC m⁻² yr⁻¹ (both); ET 200/350/450/600/850
+mm yr⁻¹ (both).
+
+**n and J, Geo vs Data, before → after:** NEE n=601→656/781, J=0.162→0.165; ET n=634→665/781,
+J=0.456→0.479. **Geo vs Geo (model's own value, never tower-QC-gated): unchanged**, confirmed
+byte-identical — NEE n=781/781, J=0.530; ET n=781/781, J=0.456.
+
+**Towers gained/lost (Geo vs Data), vs the prior committed `site_nee_fig4.csv`/`site_et_fig4.csv`:**
+- NEE: 69 gained (`AU-APL, AU-MvB, AU-Sno, BW-Gum, CA-KLP, CA-LU1, CA-Na1, CA-PB2, CA-Qc2, CA-SCB, CL-ACF,
+  CN-GuT, CN-Mxn, CN-Wnb, DE-Gwg, DE-Lkb, DE-SbM, DK-Gds, DK-Skj, EE-Rng, ES-Cnd, ES-Gdn, FI-Ant, FI-Pap,
+  GH-Ank, JP-BBY, JP-Hc3, JP-MBF, JP-Nkm, JP-Om2, JP-Tgf, KR-GmP, KR-ScC, KR-TwC, NO-Ikr, SE-Trb, UK-Cvn,
+  US-A32, US-A37, US-Cms, US-CS2, US-DFK, US-DS1, US-EA5, US-EKN, US-Fcr, US-Ho3, US-HRA, US-HRC, US-MtB,
+  US-OPE, US-PAS, US-RC3, US-Snf, US-Srr, US-Sta, US-TKs, US-Tw1, US-Tw5, US-Twt, US-UTB, US-xLE, US-xNW,
+  US-xRN, US-xTA, US-xYE, US-YK2, US-ZF1, ZA-Jks`), 14 lost (`AU-Col, AU-Wac, BR-Ma3, CA-Mtk, CG-Tch,
+  GL-ZaF, GL-ZaH, HK-MPM, KE-Chk, SJ-Adv, US-ARb, US-ARc, US-CLF, US-RC5` — the last 4 of these lost for
+  the mean-monthly-cycle method no longer applying, not the unvegetated-bin fix in item 3).
+- ET: 39 gained (`AU-MvB, AU-Sno, CA-KLP, CA-LU1, CA-PB2, CA-SCB, CN-Mxn, CN-Wnb, DE-SbM, DK-Gds, EE-Rng,
+  FI-Ant, GH-Ank, JP-MBF, JP-Nkm, KR-GmP, KR-HcM, KR-TwC, MN-Udg, NO-Ikr, SE-Trb, UK-Cvn, US-A37, US-Cms,
+  US-CS2, US-DFK, US-DS1, US-EKN, US-Fcr, US-HRA, US-HRC, US-NGC, US-Sta, US-TKs, US-Tw5, US-UTB, US-YK1,
+  US-ZF1, ZA-Jks`), 8 lost (`AU-Col, AU-Wac, BR-Ma3, CH-Frk, HK-MPM, US-ARb, US-ARc, US-CLF`).
+
+Note: the task instruction named the prior n as 597 (NEE); the actual prior committed value (confirmed
+via `git diff`/`git show HEAD:...`) was 601, not 597 — used 601 throughout this report and the docs
+below.
+
+**VUT/CUT tower counts (NEE/GPP/RECO), from the `annual` table directly (matching `scripts/04_qc.R`'s
+own per-site decision for that resolution, unlike the previous monthly-table-based proxy):** 616 VUT, 40
+CUT (fallback), 125 neither (no NEE QC data in the `annual` table at all).
+
+**Tower vs. model medians:** NEE tower median −145.8 gC m⁻² yr⁻¹ (n=656) vs. model-at-tower median −55.3
+gC m⁻² yr⁻¹ (n=781) — towers skew toward stronger sinks than the TRENDY ensemble at the same
+coordinates. ET tower median 511.1 mm yr⁻¹ (n=665) vs. model-at-tower median 483.4 mm yr⁻¹ (n=781).
+
+### 3. Unvegetated-bin fix (Geo vs Data only)
+
+`classify_flux_sites()` gained a `require_own` argument: when `TRUE` (now used for the `data_bin` call
+only, never `geo_bin`), a site with no tower value for that flux gets no bin at all — including bar 1 —
+instead of being counted as bar 1 whenever its *model* mask value alone was below the cut. Confirmed
+directly: `CA-Mtk`, `GL-ZaH`, `GL-ZaF`, `SJ-Adv` (model GPP < 5 gC m⁻² yr⁻¹ but no qualifying NEE) now
+have `bin_data = NA` (was 1) while `bin_geo` is unchanged at 1. Panel E's "unvegetated" bar count dropped
+from 7 to 3 towers as a direct result (visually confirmed in the re-rendered PNG).
+
+### 4. Re-rendered, verified, docs updated
+
+Both figures (`fig_04_representativeness.*`, `supp_representativeness_geo_vs_geo.*`) and their
+`draft_manuscript_v1/` copies, legends, and per-panel tables re-rendered. **Panels A–D confirmed
+unchanged**: `git diff data/snapshots/representativeness_metrics_fig4.csv` shows only the four E/F
+`geo_vs_data` numbers changed — every A/B/C/D row and both E/F `geo_vs_geo` rows are byte-identical to
+the prior commit. `supp_representativeness_geo_vs_geo.png` rendered pixel-identical (only its `.pdf`/
+`.meta.json` differ — timestamp/git-hash only). Figure height unchanged (173.3mm). Updated
+`methods_flux_bin_scheme.md` and `docs/methods_requirements.md` §5.8 (rows E/F) to describe the new
+method and numbers; `docs/known_issues.md` gained a new §10 listing the other scripts (candidates and
+diagnostics) that still hardcode `QC_THRESH`/`QC_THRESH_MM <- 0.80` independent of this fix, and the
+outputs already on disk under that threshold — none rerun, per instruction. Also replaced the last
+"over-sampled"/"under-sampled" wording in `methods_landcover.md` lines 149–150 with "greater
+proportion"/"smaller proportion" (unrelated cleanup bundled into the same instruction).
+
+---
+
 ## 2026-10-02 (6) — Figure 4: bottom-label clipping fix, remaining wording cleanup (DONE)
 
 Small follow-up to 2026-10-02 (5). Two items from a direct pixel-level review of the committed

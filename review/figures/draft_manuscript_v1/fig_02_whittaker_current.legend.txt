@@ -11,12 +11,13 @@ Two layers on one panel.
 BASE LAYER: hexagonal-binned scatter plot placing every current FLUXNET
 Shuttle site (N = 781 sites) in Whittaker climate space — mean annual
 temperature (MAT, WorldClim v2.1 BIO1) by mean annual precipitation (MAP,
-BIO12). Each hexagonal bin is coloured by the median annual net ecosystem
-exchange (NEE_VUT_REF, with a coalesce fallback to NEE_CUT_REF for
-CUT-only sites) observed across all site-years falling within that
-climate-space bin, on a diverging blue-tan-red scale centred on
-NEE = 0 (pale tan); bins with no observed flux data are left uncoloured
-(NA, not drawn). Hexagons are regular (equilateral) by construction
+BIO12). Each hexagonal bin is coloured by the median, across the towers
+falling in that climate-space bin, of each tower's own median annual net
+ecosystem exchange (median of site medians -- see BINNING, below) --
+values from R/site_annual_fluxes.R::compute_site_annual_fluxes() (see DATA
+SOURCES). A hexagon with no towers is white (not drawn -- there is no
+neutral/background fill colour on this panel, so white and "no data" are
+the same thing). Hexagons are regular (equilateral) by construction
 (fig_whittaker_worldclim(..., hex_regular = TRUE) -- binwidth computed
 explicitly from the axis limits and coord_fixed() pins the MAT:MAP
 physical-length ratio; the previous no-hex_regular figure used in earlier
@@ -61,19 +62,34 @@ Four-sided black tick marks (inward) are drawn on all axes via a
 duplicated secondary axis with no labels. Panel has a solid black border
 and no gridlines.
 
-COLOUR SCALE (base layer only — the overlay has no fill/colour):
-Diverging blue–tan–red scale, centred on NEE = 0 (pale tan, #F0E2C4),
-blue = net carbon uptake (negative NEE), red = net carbon release
-(positive NEE). Blue/red endpoints (#002F70/#5F1415) are unchanged from
-the colorspace "Blue-Red 3" palette used in earlier drafts (which centred
-on near-white instead of pale tan); colour limits (computed from the
-5th–95th percentile of the full, unfiltered annual Shuttle NEE
-distribution) and zero-centring are also unchanged.
+COLOUR SCALE (base layer only — the overlay has no fill/colour; revised
+2026-10-02, task 3):
+Stepped ColorBrewer RdBu scale, 8 classes, no middle/neutral class -- the
+bin edge at NEE = 0 is a hard sink/source boundary, not a neutral bin.
+5 sink (blue) steps covering NEE <= 0, each 100 gC m⁻² yr⁻¹ wide
+except the open-ended lowest: below -400, -400 to -300, -300 to -200,
+-200 to -100, -100 to 0. 3 source (red/orange) steps covering NEE > 0,
+same 100 gC m⁻² yr⁻¹ step width, open-ended at the top: 0 to 100,
+100 to 200, above 200. Colours, most negative to most positive: #053061,
+#2166AC, #4393C3, #92C5DE, #D1E5F0 (sink), #FDDBC7, #F4A582, #D6604D
+(source). A hexagon whose median falls beyond -400 or beyond 200 takes
+the corresponding open-ended step's colour ("below -400"/"above 200") --
+there is no separate out-of-range/clip colour. Step width (100) and the
+two end points (-400, 200) are named constants (NEE_STEP_WIDTH,
+NEE_SINK_END, NEE_SOURCE_END) in scripts/generate_whittaker_alt_fig02_
+update.R. Implemented via new fig_whittaker_worldclim() parameters
+fill_mode = "stepped", step_breaks, step_colours (default fill_mode =
+"continuous", unchanged, for every other caller).
 
 BINNING (base layer):
 Hexagonal binning via ggplot2::stat_summary_hex(), 15 bins along each
 axis; summary statistic per bin is the median of per-site median annual
-NEE values (median-of-medians).
+NEE values (median-of-medians), then discretised into the 8 steps above.
+90 hexagons are drawn in total: below -400 (16), -400 to -300 (8), -300 to
+-200 (14), -200 to -100 (16), -100 to 0 (26), 0 to 100 (7), 100 to 200
+(0 -- no hexagon's median fell in this step), above 200 (3). The lowest
+and highest hexagon medians (before discretising) are -1361.1 and 234.6
+gC m⁻² yr⁻¹.
 
 NETWORK AND SITE COUNT:
 FLUXNET Shuttle network, current pinned snapshot: N = 781
@@ -96,25 +112,38 @@ DATA SOURCES:
     plotted value is the median of its qualifying annual NEE values
 
 EXCLUSIONS (base layer):
-Sites lacking a WorldClim climate match, or with no QC_THRESHOLD_YY-
-qualifying annual NEE value, are dropped from the hexbin summary
-(but not from the overlaid points — see BASE LAYER, above). No IGBP or
-other classification filter is applied.
+Two independent reasons a tower can be missing from the hexbin summary
+(but never from the overlaid points -- see BASE LAYER, above):
+  - No WorldClim climate match: the tower's coordinates returned no MAT/MAP
+    value from site_worldclim.csv (the primary source) or, for sites not in
+    that table, from an on-the-fly terra::extract() against the WorldClim
+    GeoTIFFs -- i.e. the tower cannot be placed in MAT/MAP space at all, so
+    it is absent from the whole panel, not merely unfilled on the colour
+    scale. 0 of 781 current-network towers are affected (checked directly
+    against site_worldclim.csv at figure-build time).
+  - No qualifying annual NEE value: the tower has a climate-space position
+    but no QC_THRESHOLD_YY-qualifying annual NEE value, so its own median
+    cannot contribute to any hexagon's colour; it still appears as a point.
+No IGBP or other classification filter is applied.
 
 REPRODUCIBILITY:
 Base layer function: fig_whittaker_worldclim() in R/figures/fig_climate.R
   (hex_regular = TRUE, points_in_front = TRUE, point_colour = "#2B2B2B",
-  point_size = 0.35, point_alpha = 0.35, nee_mid_colour = "#F0E2C4",
-  detail_lines = <the three counts above>, detail_hjust = 0,
+  point_size = 0.35, point_alpha = 0.35, fill_mode = "stepped",
+  step_breaks = seq(-400, 200, by = 100), step_colours = <see COLOUR SCALE
+  above>, detail_lines = <the three counts above>, detail_hjust = 0,
   detail_x_offset = 0.6)
 Overlay functions:   fig_whittaker_global_contour(),
                      build_global_landclimate(), .weighted_density_grid(),
                      .hdr_levels() in R/figures/fig_climate.R
 Source script:       scripts/generate_whittaker_alt_fig02_update.R
-Output:              review/figures/candidates/ALT_fig_02_whittaker_current.png,
+Output:              review/figures/candidates/ALT_fig_02_whittaker_current.png/.pdf,
                      copied to
-                     review/figures/draft_manuscript_v1/fig_02_whittaker_current.png
+                     review/figures/draft_manuscript_v1/fig_02_whittaker_current.png/.pdf
                      by scripts/build_draft_manuscript_v1.R
+DIMENSIONS:          89 x 89 mm, 600 dpi PNG + vector PDF, Helvetica, white
+                     background. All text 5-7pt (axis titles/text 7pt;
+                     step-legend labels 5pt; inset text ~5pt).
 Prior version:       review/figures/draft_manuscript_v1/deprecated/
                      (moved 2026-08-31, not overwritten -- see
                      SESSION_LOG.md and review/figures/RUN_LOG_fig02_promote.txt)

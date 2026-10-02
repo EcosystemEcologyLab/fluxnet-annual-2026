@@ -470,14 +470,28 @@ added to `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()` f
 `scripts/figure_flux_comparison_combo.R`) regenerated. See SESSION_LOG.md 2026-10-02 for before/
 after counts and per-class medians.
 
-**Not fixed by either change — still hardcode a literal 0.80, independent of
-`compute_site_annual_fluxes()`/`QC_THRESHOLD_YY`.** Left as-is; not rerun as part of either fix
-(none of their outputs feed the current Figure 2, 3 or 4). A future cleanup should point these at
-the shared function instead of maintaining a second, divergent QC threshold.
+**Also fixed, 2026-10-02 (task 5, Extended Data matched-site-years figure):**
+`scripts/figure_flux_comparison_combo_alt_common_siteyears.R` no longer hardcodes
+`QC_THRESH <- 0.80` or reads loose FLUXNET2015/Shuttle YY files itself. Rebuilt on the same shared
+functions as the primary Figure 3 fix: Shuttle via `compute_site_annual_fluxes()` (DuckDB `annual`
+table), FLUXNET2015 via `compute_site_annual_fluxes_from_df()` (this project's own already-
+extracted FLUXNET2015 YY CSVs, `data/fluxnet2015_comparison/`), both against `QC_THRESHOLD_YY` and
+both with `h_unit = "W_m2"` for panel c (H). The matched-site-years rule itself is unchanged: per
+flux, a site-year counts only if both datasets have a qualifying value for that site and calendar
+year; site median computed only over the matched years, on both axes. Promoted from a plain
+candidate PNG to a proper Extended Data figure: `review/figures/draft_manuscript_v1/SupFigs/
+supp_flux_comparison_matched_siteyears.png/.pdf/.jpg` (+ `.legend.txt`), replacing
+`review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.png`. See SESSION_LOG.md
+2026-10-02 for before/after matched-site and per-class-median counts.
+
+**Not fixed by any of these changes — still hardcode a literal 0.80, independent of
+`compute_site_annual_fluxes()`/`QC_THRESHOLD_YY`.** Left as-is; not rerun as part of any of these
+fixes (none of their outputs feed the current Figure 2, 3, 4, or the new Extended Data figures). A
+future cleanup should point these at the shared function instead of maintaining a second,
+divergent QC threshold.
 
 | Script | QC constant | Outputs already on disk under QC>=0.80 |
 |---|---|---|
-| `scripts/figure_flux_comparison_combo_alt_common_siteyears.R` | `QC_THRESH <- 0.80` | `data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv`, `review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.png` |
 | `scripts/figure_representativeness_nee_signed.R` | `QC_THRESH_MM <- 0.80` | `data/snapshots/site_trendy_nee_signed5_geo_current_781.csv`, `site_trendy_nee_signed5_data_{current_781,marconi,la_thuile,fluxnet2015}.csv`, `nee_signed5_occupancy_jaccard.csv`, `trendy_nee_signed5_global_distribution.csv` |
 | `scripts/candidate_nee_gpp_ter_panels.R` | `QC_THRESH_MM <- 0.80` | `review/figures/candidates/` (per-panel PNGs, `fig5_jaccard_trajectory_with_nee.png`) |
 | `scripts/diagnostics/flux_tower_model_distributions.R` | `QC_THRESH_MM <- 0.80` | `review/diagnostics/nee_corrected_axis/` (`table_step3_tower_annual_nee.csv`, `table_dist_tower_vs_model.csv`, `fig_dist_histograms.png`, `fig_dist_latitude.png`, `fig_dist_scatter_1to1.png`) |
@@ -485,9 +499,9 @@ the shared function instead of maintaining a second, divergent QC threshold.
 | `scripts/diagnostics/flux_bin_breaks.R` | `QC_THRESH_MM <- 0.80` | `review/diagnostics/flux_bin_breaks/` (`table_edges.csv`, per-panel and composite PNGs) — the diagnostic Figure 4 panels E/F's *binning scheme* (not its tower values) was ported from; Figure 4 itself no longer uses this script's threshold |
 | `scripts/diagnostics/nee_et_site_vs_trendy_raster.R` | literal `0.80` in SQL (no named constant) | `review/diagnostics/nee_et_site_vs_trendy/table_paired_measured_vs_trendy.csv` |
 
-**Consume `scripts/figure_flux_comparison_combo_alt_common_siteyears.R`'s own 0.80-threshold
-output rather than defining their own threshold** (so a fix only needs to happen upstream, at
-that script):
+**Consumes `site_flux_medians_shuttle.csv`/`site_flux_medians_fluxnet2015.csv` (now
+`QC_THRESHOLD_YY`-gated, per above) rather than defining its own threshold, but was not rerun as
+part of this fix** -- see the "stale downstream outputs" note in SESSION_LOG.md 2026-10-02:
 
 | Script | Outputs |
 |---|---|

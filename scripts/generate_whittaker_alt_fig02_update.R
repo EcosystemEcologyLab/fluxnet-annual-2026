@@ -103,7 +103,7 @@ run_pipeline <- function() {
     rl("not found (not required): .env at .env -- proceeding without it (Codespace Secrets path)")
   }
   for (req_path in c("R/pipeline_config.R", "R/plot_constants.R", "R/figures/fig_climate.R",
-                      "R/units.R", "R/site_annual_fluxes.R")) {
+                      "R/units.R", "R/site_annual_fluxes.R", "R/nature_format.R")) {
     if (!file.exists(req_path)) {
       rl("MISSING REQUIRED INPUT: ", req_path, " -- checked exact path '", req_path,
          "', not found. Not substituting -- stopping.")
@@ -116,6 +116,7 @@ run_pipeline <- function() {
   source("R/figures/fig_climate.R")
   source("R/units.R")
   source("R/site_annual_fluxes.R")
+  source("R/nature_format.R")
   suppressMessages({
     library(dplyr); library(ggplot2); library(colorspace); library(duckdb); library(readr)
   })
@@ -248,13 +249,48 @@ run_pipeline <- function() {
   point_size_new   <- 0.35
   point_alpha_new  <- 0.35        # reduced from 0.50 so dense clusters build tone without
                                    # individual temperate-cloud points blobbing together
-  nee_mid_new      <- "#F0E2C4"   # pale tan (HCL ~ H90/C26/L67); blue/red ends unchanged --
-                                   # see fig_whittaker_worldclim()'s nee_mid_colour docs
   rl("computed: point_colour = '", point_colour_new, "' (was 'grey30'), point_size = ",
      point_size_new, " (was 0.7 in the base ALT / 1.4 in the original), point_alpha = ",
      point_alpha_new, " (was 0.50)")
-  rl("computed: nee_mid_colour = '", nee_mid_new, "' (was near-white '#F6F6F6'); ",
-     "blue/red endpoints pinned to diverging_hcl(2,'Blue-Red 3') = '#002F70'/'#5F1415', unchanged")
+
+  # ---- Step: stepped NEE colour scale (task 3, 2026-10-02) -----------------------
+  # Replaces the continuous navy-tan-red diverging scale with a stepped
+  # ColorBrewer RdBu scale, no middle/neutral class: 5 sink steps (ending in
+  # an open "below NEE_SINK_END" bin) and 3 source steps (ending in an open
+  # "above NEE_SOURCE_END" bin), each finite step NEE_STEP_WIDTH wide on
+  # both sides of zero -- so the bin edge at zero is a hard sink/source
+  # boundary, not a neutral bin. Step width and the two end points are named
+  # constants, per instruction.
+  NEE_STEP_WIDTH  <- 100   # gC m-2 yr-1
+  NEE_SINK_END    <- -400  # gC m-2 yr-1 -- most negative finite break; "below" this is one open bin
+  NEE_SOURCE_END  <- 200   # gC m-2 yr-1 -- most positive finite break; "above" this is one open bin
+  nee_step_breaks <- seq(NEE_SINK_END, NEE_SOURCE_END, by = NEE_STEP_WIDTH)  # 7 interior edges -> 8 bins
+  ## ColorBrewer RdBu-11, outer 8 of 11 classes (the 3 central near-white
+  ## classes dropped, per instruction: "no middle class") -- most negative
+  ## (deepest sink) to most positive (deepest source).
+  nee_step_colours <- c(
+    "#053061", "#2166AC", "#4393C3", "#92C5DE", "#D1E5F0",   # 5 sink steps
+    "#FDDBC7", "#F4A582", "#D6604D"                          # 3 source steps
+  )
+  stopifnot(length(nee_step_breaks) + 1L == length(nee_step_colours))
+  rl("computed: NEE_STEP_WIDTH=", NEE_STEP_WIDTH, " NEE_SINK_END=", NEE_SINK_END,
+     " NEE_SOURCE_END=", NEE_SOURCE_END, "; ", length(nee_step_colours), " bins, breaks = ",
+     paste(nee_step_breaks, collapse = ", "))
+
+  # ---- Step: towers without a WorldClim climate match (legend requirement) -------
+  # Replicates fig_whittaker_worldclim()'s own site_worldclim.csv join (the
+  # primary climate source; on-the-fly terra::extract() is only a fallback
+  # for sites absent from that CSV) purely to report the count -- the
+  # function itself does not expose it.
+  wc_check <- readr::read_csv("data/snapshots/site_worldclim.csv", show_col_types = FALSE)
+  no_climate_match <- shuttle_meta |>
+    dplyr::distinct(site_id, .keep_all = TRUE) |>
+    dplyr::left_join(wc_check, by = "site_id") |>
+    dplyr::filter(is.na(mat_worldclim) | is.na(map_worldclim))
+  n_no_climate_match <- nrow(no_climate_match)
+  rl("computed: towers with no WorldClim climate match (dropped from the hexbin/point layers) = ",
+     n_no_climate_match,
+     if (n_no_climate_match > 0L) paste0(" (", paste(no_climate_match$site_id, collapse = ", "), ")") else "")
 
   # Plain numeric margin components (t,r,b,l in pt), defined once and reused for both the
   # ggplot2::margin() objects below AND the run-log line -- avoids the run log going stale
@@ -295,15 +331,13 @@ run_pipeline <- function() {
                                                 # block with a small, non-overlapping gap.
 
   style_3x3 <- utils::modifyList(WHITTAKER_STYLE, list(
-    width_in            = 3.5,
-    height_in           = 3.5,
-    axis_text_size      = 7,
-    axis_title_size     = 8,
-    legend_text_size    = 6,
-    legend_title_size   = 7,
-    detail_text_size    = 2.3,
-    colorbar_width      = grid::unit(1.3, "in"),
-    colorbar_height     = grid::unit(0.10, "in"),
+    width_in            = NATURE_WIDTH_SINGLE_MM / 25.4,   # 89mm, Nature main-text single-column
+    height_in           = NATURE_WIDTH_SINGLE_MM / 25.4,
+    axis_text_size      = NATURE_BASE_PT,                  # 7pt -- Nature format, 2026-10-02
+    axis_title_size     = NATURE_BASE_PT,                  # was 8pt, over the 7pt max
+    legend_text_size    = NATURE_SMALL_PT,                 # 5pt (discrete step-legend labels)
+    legend_title_size   = NATURE_BASE_PT,
+    detail_text_size    = NATURE_SMALL_PT / ggplot2::.pt,  # geom_text mm units, not pt directly
     # --- new in this update, all no-ops for every other style list/caller ---
     detail_lineheight   = 0.92,                  # was unset -> ggplot2 default 1.2
     legend_pos          = legend_pos_new,
@@ -325,8 +359,9 @@ run_pipeline <- function() {
   # ---- Step: base layer -----------------------------------------------------------
   rl("attempting: build base plot via fig_whittaker_worldclim(hex_regular=TRUE, ",
      "points_in_front=TRUE, point_size=", point_size_new, ", point_colour='", point_colour_new,
-     "', point_alpha=", point_alpha_new, ", nee_mid_colour='", nee_mid_new,
-     "', detail_lines=inset_lines, detail_hjust=0, detail_x_offset=", detail_x_offset_new, ")")
+     "', point_alpha=", point_alpha_new, ", fill_mode='stepped', step_breaks=c(",
+     paste(nee_step_breaks, collapse = ","), "), detail_lines=inset_lines, detail_hjust=0, ",
+     "detail_x_offset=", detail_x_offset_new, ")")
   fig2_update_base <- fig_whittaker_worldclim(
     data_yy         = data_yy,
     site_meta       = shuttle_meta,
@@ -337,11 +372,15 @@ run_pipeline <- function() {
     point_size      = point_size_new,
     point_colour    = point_colour_new,
     point_alpha     = point_alpha_new,
-    nee_mid_colour  = nee_mid_new,
+    fill_mode       = "stepped",
+    step_breaks     = nee_step_breaks,
+    step_colours    = nee_step_colours,
     detail_lines    = inset_lines,
     detail_hjust    = 0,
     detail_x_offset = detail_x_offset_new
-  )
+  ) +
+    ggplot2::theme(legend.key.size = grid::unit(6, "pt"),
+                   legend.spacing.y = grid::unit(0.5, "pt"))
   rl("completed: fig2_update_base built")
 
   # ---- Step: contour overlay -- identical geometry/method to the base ALT / production overlay ----
@@ -372,27 +411,29 @@ run_pipeline <- function() {
      "density_grid, as the base ALT and production fig_02 -- registration unaffected by the ",
      "point/colour/inset changes above since they share this plot object's coordinate system)")
 
-  # ---- Step: write the PNG ---------------------------------------------------------
-  out_fig <- file.path(out_dir, "ALT_fig_02_whittaker_current.png")
-  rl("attempting: ggsave(", out_fig, ", width=", style_3x3$width_in, ", height=",
-     style_3x3$height_in, ", dpi=300, bg='white')")
-  ggplot2::ggsave(out_fig, fig2_update, width = style_3x3$width_in, height = style_3x3$height_in,
-                  units = "in", dpi = 300, bg = "white")
-  rl("completed: wrote ", out_fig)
+  # ---- Step: write the PNG + PDF (Nature format, 2026-10-02) -----------------------
+  out_stem <- file.path(out_dir, "ALT_fig_02_whittaker_current")
+  rl("attempting: save_nature_figure(", out_stem, ", width_mm=", NATURE_WIDTH_SINGLE_MM,
+     ", height_mm=", NATURE_WIDTH_SINGLE_MM, ")")
+  saved_fig2 <- save_nature_figure(fig2_update, out_stem, width_mm = NATURE_WIDTH_SINGLE_MM,
+                                    height_mm = NATURE_WIDTH_SINGLE_MM)
+  out_fig <- saved_fig2$png
+  rl("completed: wrote ", saved_fig2$png, " and ", saved_fig2$pdf)
 
   # ---- Step: write the legend/caption .txt ------------------------------------------
   out_txt <- file.path(out_dir, "ALT_fig_02_whittaker_current.txt")
   rl("attempting: writeLines(...) to ", out_txt)
   writeLines(c(
-    "ALT Figure 2 (updated) -- charcoal points, pale-tan NEE centre, tightened inset",
+    "ALT Figure 2 (revised 2026-10-02) -- stepped RdBu NEE scale, Nature format (89mm, PDF)",
     "",
-    "Candidate only -- NOT promoted to review/figures/draft_manuscript_v1/. Revision of the",
-    "ALT_fig_02_whittaker_current.png built earlier this session (commit 505d130), which fixed",
-    "hexagon regularity and points-in-front/half-size; those two changes are unchanged here",
-    "(hex_regular = TRUE, points_in_front = TRUE). This revision changes point styling, the NEE",
-    "colour-scale centre, and the inset text/spacing. Same 95% solid / 99% dashed global",
-    "ice-free-land HDR contour overlay as fig_02 and the prior ALT -- geometry and registration",
-    "unchanged.",
+    "Candidate only -- NOT promoted to review/figures/draft_manuscript_v1/ by this script;",
+    "scripts/build_draft_manuscript_v1.R copies the PNG/PDF separately. Revision of the",
+    "ALT_fig_02_whittaker_current.png built earlier this session, which fixed hexagon regularity",
+    "and points-in-front/half-size; those two changes are unchanged here (hex_regular = TRUE,",
+    "points_in_front = TRUE). This revision replaces the continuous NEE colour scale with a",
+    "stepped one (task 3, 2026-10-02) and brings the figure to Nature format (89mm wide, PDF",
+    "alongside the PNG, 7pt Helvetica text). Same 95% solid / 99% dashed global ice-free-land HDR",
+    "contour overlay as fig_02 and the prior ALT -- geometry and registration unchanged.",
     "",
     "1. POINT STYLING: per-site points recoloured from grey30 to a quiet dark charcoal",
     paste0("   (", point_colour_new, "), resized from the prior ALT's 0.7 to ", point_size_new,
@@ -405,19 +446,21 @@ run_pipeline <- function() {
     "   fig_climate.R), defaulting to the unchanged prior values (grey30 / 0.50) for every",
     "   other caller.",
     "",
-    "2. NEE COLOUR SCALE: centre recoloured from near-white (#F6F6F6) to a pale tan",
-    paste0("   (", nee_mid_new, ") so near-zero hexes hold their edges against the white panel."),
-    "   Blue and red endpoints, zero-centring, colour limits, and squish out-of-bounds handling",
-    "   are unchanged -- pinned to diverging_hcl(2, \"Blue-Red 3\")'s exact endpoint hex codes",
-    "   (#002F70 / #5F1415). Implemented via the new nee_mid_colour parameter, which rebuilds",
-    "   the fill scale as ggplot2::scale_fill_gradient2() (Lab-space interpolation) instead of",
-    "   the stock colorspace::scale_fill_continuous_diverging() HCL interpolation -- a",
-    "   same-endpoints custom HCL two-half reconstruction (matching diverging_hcl's own",
-    "   interpolation exactly) was tried first and rejected: sweeping hue from blue (H=255) to",
-    "   an off-hue tan centre (H~90) passes through green/teal partway, visible here because the",
-    "   centre keeps colour (chroma ~26) rather than dropping to achromatic white the way the",
-    "   stock palette's centre does. nee_mid_colour defaults to NULL (unchanged stock scale) for",
-    "   every other caller.",
+    "2. NEE COLOUR SCALE (revised 2026-10-02, task 3): the continuous navy-tan-red diverging",
+    "   scale is replaced with a stepped ColorBrewer RdBu scale, no middle/neutral class -- 5 sink",
+    paste0("   steps (ending in an open \"below ", NEE_SINK_END, "\" bin) and 3 source steps (ending",
+           " in an open"),
+    paste0("   \"above ", NEE_SOURCE_END, "\" bin), each finite step ", NEE_STEP_WIDTH,
+           " gC/m2/yr wide on both sides of"),
+    "   zero, so the bin edge at zero is a hard sink/source boundary, not a neutral bin. Colours,",
+    "   most negative to most positive: #053061, #2166AC, #4393C3, #92C5DE, #D1E5F0, #FDDBC7,",
+    "   #F4A582, #D6604D. Implemented via new fig_whittaker_worldclim() parameters fill_mode=",
+    "   'stepped' (default 'continuous', every other caller unaffected), step_breaks, step_colours,",
+    "   step_labels -- discretises stat_summary_hex()'s per-hexagon median via",
+    "   after_stat(cut(value, ...)) and maps with scale_fill_manual()/guide_legend() instead of a",
+    "   continuous scale/colorbar. A hexagon with no qualifying sites gets an NA bin",
+    "   (na.translate = FALSE), rendering unfilled -- same convention as the continuous mode's",
+    "   na.value = NA.",
     "",
     "3. INSET WORDING (fixed): the previous \"N = <n> sites | <n> site-years\" line conflated two",
     "   different counts -- <n> sites was the full network snapshot count, computed before any",

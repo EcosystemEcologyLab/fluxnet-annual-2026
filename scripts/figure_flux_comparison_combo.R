@@ -31,25 +31,41 @@ suppressPackageStartupMessages({
 })
 
 source("R/plot_constants.R")
+source("R/nature_format.R")
+
+## Plotmath axis labels (bquote(), below) embed R string literals; with
+## fancy quotes on (R's interactive-session default), grid's plotmath
+## renderer deparses those literals using curly Unicode quotes (U+201C/
+## U+201D), which the base PDF device's PostScript Helvetica can't render
+## either -- same class of mbcsToSbcs conversion-failure warning as the
+## superscript-minus issue the plotmath switch was meant to fix. Off for
+## this whole script, not just the labels, since it's a global option.
+options(useFancyQuotes = FALSE)
 
 msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...)
 
 # ---- Constants ----------------------------------------------------------------
 CMP_CSV    <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv"
-OUT_FIG    <- "review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png"
-FIG_WIDTH  <- 3.5    # in, single-column (88 mm)
-FIG_HEIGHT <- 9.5    # in, tuned for three roughly-square panels + caption
+OUT_STEM   <- "review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h"
+FIG_WIDTH_MM  <- NATURE_WIDTH_SINGLE_MM   # 89mm, single-column
+FIG_HEIGHT_MM <- 228                      # 3 roughly-square panels, no in-figure caption (moved to legend, 2026-10-02)
 
+## Units as plotmath (not Unicode superscript-minus, e.g. "m⁻²"): base
+## grDevices::pdf()'s PostScript Helvetica has no usable glyph for U+207B,
+## confirmed by mbcsToSbcs conversion-failure warnings on the first Nature-
+## format render (2026-10-02) -- same issue and fix as
+## scripts/figure4_representativeness.R's own panel titles.
 PANELS <- list(
-  list(flux = "NEP", unit = "gC m⁻² yr⁻¹", tag = "A"),
-  list(flux = "ET",  unit = "mm yr⁻¹",     tag = "B"),
-  list(flux = "H",   unit = "W m⁻²",       tag = "C")
+  list(flux = "NEP", unit = quote(gC~m^{-2}~yr^{-1}), tag = "a"),
+  list(flux = "ET",  unit = quote(mm~yr^{-1}),        tag = "b"),
+  list(flux = "H",   unit = quote(W~m^{-2}),          tag = "c")
 )
 
-CAPTION <- paste0(
-  "CVM excluded: absent from FLUXNET2015 release. CSH excluded: n=2 sites ",
-  "in FLUXNET2015, below n≥5 threshold."
-)
+## Exclusion note (task 2, 2026-10-02): moved out of the figure (no caption
+## or explanatory text is drawn inside the figure itself) into
+## fig_flux_comparison_combo_nep_et_h.legend.txt instead -- see that file's
+## "CLASSIFICATION SCHEME AND EXCLUSIONS" section for the full statement
+## this used to render as plot_annotation(caption = ...).
 
 msg("=== FLUXNET2015 vs Shuttle: NEP/ET/H combo figure ===")
 
@@ -58,15 +74,26 @@ msg("Loading: ", CMP_CSV)
 cmp <- read_csv(CMP_CSV, show_col_types = FALSE)
 
 # ---- Per-panel plot builder -----------------------------------------------------
+## Builds the base theme directly from theme_classic() (2026-10-02) instead
+## of R/plot_constants.R::fluxnet_theme() -- that function sets axis.title.x/
+## .y to ggtext::element_markdown(), which ggplot2 cannot merge with a later
+## plain element_text() override (`+` on two different element classes
+## errors: "Only elements of the same class can be merged"), and which
+## itself does not parse plotmath expression()/bquote() axis titles (treats
+## them as literal deparsed text instead) -- both needed for this figure's
+## superscript units. Reproduces fluxnet_theme()'s panel border/background/
+## tick styling directly, without the ggtext dependency.
 combo_theme <- function() {
-  fluxnet_theme(base_size = 8) +
-    theme(
-      legend.position    = "none",
-      plot.background    = element_rect(fill = "white", colour = NA),
-      panel.background   = element_rect(fill = "white", colour = NA),
-      axis.title         = element_text(size = 7.5),
-      axis.text          = element_text(size = 6.5)
-    )
+  ggplot2::theme_classic(base_size = 8) +
+    ggplot2::theme(
+      panel.border        = ggplot2::element_rect(colour = "black", fill = NA, linewidth = 0.8),
+      panel.background    = ggplot2::element_blank(),
+      axis.text           = ggplot2::element_text(colour = "black"),
+      axis.ticks          = ggplot2::element_line(colour = "black"),
+      axis.ticks.length   = grid::unit(-4, "pt"),
+      legend.position     = "none"
+    ) +
+    nature_theme()   # Nature format, 2026-10-02: all text 7pt, Helvetica
 }
 
 make_panel <- function(flux_code, unit_str, tag) {
@@ -104,11 +131,17 @@ make_panel <- function(flux_code, unit_str, tag) {
     # Panel tag anchored to this panel's own plot area (-Inf/Inf + hjust/vjust),
     # not patchwork's plot-level tag (which is positioned relative to the full
     # subplot including axis text, and collided with the y-axis tick labels).
-    annotate("text", x = -Inf, y = Inf, label = tag, hjust = -0.5, vjust = 1.6,
-             fontface = "bold", size = 3.2, colour = "black") +
+    # Lower-case, 8pt bold (Nature format, 2026-10-02 -- was uppercase 3.2mm
+    # i.e. ~9.1pt, both non-compliant).
+    panel_letter(tag, x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6) +
     labs(
-      x = paste0("FLUXNET2015 median ", flux_code, " ± SD (", unit_str, ")"),
-      y = paste0("FLUXNET Shuttle median ", flux_code, " ± SD (", unit_str, ")")
+      ## as.expression() is required -- labs() silently deparses a bare
+      ## bquote() call object to a literal text string instead of rendering
+      ## it as plotmath (confirmed by direct reproduction: without this, the
+      ## axis showed the raw unparsed call text, e.g. literal quote marks
+      ## and "^{-2}", not a superscript).
+      x = as.expression(bquote("FLUXNET2015 median" ~ .(flux_code) ~ "± SD (" * .(unit_str) * ")")),
+      y = as.expression(bquote("FLUXNET Shuttle median" ~ .(flux_code) ~ "± SD (" * .(unit_str) * ")"))
     ) +
     combo_theme()
 }
@@ -123,17 +156,12 @@ panel_plots <- lapply(PANELS, function(p) {
 })
 
 combo <- (panel_plots[[1]] / panel_plots[[2]] / panel_plots[[3]]) +
-  plot_layout(heights = c(1, 1, 1)) +
-  plot_annotation(
-    caption = paste(strwrap(CAPTION, width = 60), collapse = "\n")
-  ) &
-  theme(
-    plot.caption = element_text(size = 6, colour = "grey30", hjust = 0,
-                                 face = "italic", margin = margin(t = 8))
-  )
+  plot_layout(heights = c(1, 1, 1))
+# No plot_annotation(caption=...) (2026-10-02): the exclusion note moved out
+# of the figure into fig_flux_comparison_combo_nep_et_h.legend.txt -- no
+# caption or explanatory text is drawn inside the figure itself.
 
-dir.create(dirname(OUT_FIG), showWarnings = FALSE, recursive = TRUE)
-ggsave(OUT_FIG, combo, width = FIG_WIDTH, height = FIG_HEIGHT, dpi = 300, bg = "white")
-msg("Saved: ", OUT_FIG, " (", FIG_WIDTH, " x ", FIG_HEIGHT, " in, 300 dpi)")
+saved <- save_nature_figure(combo, OUT_STEM, width_mm = FIG_WIDTH_MM, height_mm = FIG_HEIGHT_MM)
+msg("Saved: ", saved$png, " and ", saved$pdf, " (", FIG_WIDTH_MM, " x ", FIG_HEIGHT_MM, " mm, 600 dpi)")
 
 msg("\n=== Combo figure complete ===")

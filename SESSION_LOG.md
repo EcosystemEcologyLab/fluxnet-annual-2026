@@ -4,6 +4,193 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (9) — Draft figures to Nature format; Figure 2 stepped scale; three new Extended Data figures (DONE)
+
+Brought the draft figures to Nature format (Helvetica; all text 5–7 pt; 8 pt bold lower-case panel
+letters; plotmath superscripts, never Unicode superscript-minus; line weights 0.25–1; PDF beside
+every PNG; main-text 89/183 mm wide, ≤247 mm tall; Extended Data ≤180×240 mm + a 300 p.p.i. JPEG),
+added a shared `R/nature_format.R` (`nature_theme()`, `panel_letter()`, `save_nature_figure()`)
+used by every figure script touched this session, revised Figure 2's colour scale, and built three
+new Extended Data figures. Nature takes no Supplementary Information figures, so everything
+previously staged as "supplemental" is Extended Data.
+
+### 1. SupFigs/ folder
+
+Created `review/figures/draft_manuscript_v1/SupFigs/`; `git mv`'d `supp_representativeness_geo_vs_geo.*`
+into it. `scripts/figure4_representativeness.R`'s per-comparison loop now sets `FIG_WIDTH_MM`/
+`COL_WIDTH_MM` per comparison (180 mm for `geo_vs_geo`, unchanged 183 mm for `geo_vs_data`) and
+recomputes the column-gutter/bar-area calibration (`TARGET_GUTTER_MM`/`PANEL_MM_PER_UNIT`) inside
+the loop instead of once above it, so each comparison's bar area is calibrated for its own actual
+column width; the draft-copy step now sends `geo_vs_geo` to `SupFigs/` and `geo_vs_data` to
+`draft_manuscript_v1/` as before. Re-rendered: 180×173.3 mm, text unchanged (all pt sizes are
+absolute, never derived from figure width) — confirmed via the script's own n/J check (all 12
+panels byte-identical to `representativeness_metrics_fig4.csv`). `scripts/build_draft_manuscript_v1.R`
+and `docs/figure_inventory.md` updated to describe the new location.
+
+### 2. Figures 1a, 1b, 3 reformatted (content unchanged except as noted)
+
+**Figure 1a** (`generate_point_maps.R`): added panel letter "a", switched to `save_nature_figure()`
+(89×89 mm, PNG+PDF). Already drew no text other than the (now-added) letter.
+
+**Figure 1b** (`generate_duration_histograms.R` / `fig_cumulative_siteyears_igbp()` in
+`R/figures/fig_network_growth.R`): **IGBP bug found and fixed.** The shared `R/plot_constants.R::
+IGBP_order`/`IGBP_colours` list 15 classes, but the wrong 15 for this network — `SHR`, `URB`, `NV`
+(zero current-network towers report any of these) instead of `CVM`, `BSV`, `SNO` (7+9+2 = **18**
+towers that do). Filtering on `IGBP_order` silently dropped those 18 towers from the stack and
+offered 3 legend keys no tower could ever occupy. **Scoped the fix to this one figure** (a local
+`fig1b_igbp_order`/`fig1b_igbp_colours`, reusing `figure4_representativeness.R`'s own validated
+15-class MCD12/GEE palette) rather than changing the shared constants, since `IGBP_order` has 7
+other callers not audited here: `R/figures/fig_igbp.R`, `fig_environmental_response.R`,
+`fig_latitudinal.R`, `fig_growing_season.R`, `fig_climate.R`, `fig_timeseries.R`, plus
+`scripts/00_diagnostics.R` and `scripts/investigate_badm_management.R` (`scripts/00_candidate_figures.R`
+also references it but does not filter on it). Site-years plotted (1991–2024), by class: ENF 1171,
+EBF 406, DNF 102, DBF 756, MF 218, CSH 75, OSH 344, WSA 186, SAV 114, GRA 1014, WET 743, CRO 815,
+CVM 52, BSV 46, SNO 19 — **total 6,061**, exactly matching the independent count from the committed
+tables. Added panel letter "b", `nature_theme()`, `save_nature_figure()` (89×89 mm). Legend rewritten
+with this table and the fixed network count (767→781).
+
+**Figure 3** (`figure_flux_comparison_combo.R`): panel tags A/B/C → lower-case a/b/c (8 pt, was
+~9.1 pt); the shared caption below panel c (the CVM/CSH exclusion note) removed from the figure
+entirely and now stated only in the legend. **Two rendering bugs found and fixed while doing this:**
+(1) a bare `bquote()` call object passed to `labs()` renders as literal deparsed text, not plotmath
+— needs `as.expression(bquote(...))`; (2) `R/plot_constants.R::fluxnet_theme()` sets
+`axis.title.x`/`.y` to `ggtext::element_markdown()`, which neither parses plotmath expressions nor
+can be overridden by a later plain `element_text()` (ggplot2 refuses to merge two different element
+classes) — `combo_theme()` now rebuilds `theme_classic()` directly instead of calling
+`fluxnet_theme()`, avoiding the ggtext dependency for this figure. Re-rendered 89×228 mm, PNG+PDF.
+
+### 3. Figure 2: stepped colour scale, inset fix, legend
+
+Replaced the continuous navy-tan-red diverging scale with a stepped ColorBrewer RdBu scale, no
+middle class: named constants `NEE_STEP_WIDTH=100`, `NEE_SINK_END=-400`, `NEE_SOURCE_END=200`
+(`scripts/generate_whittaker_alt_fig02_update.R`), 5 sink steps (ending "below −400") + 3 source
+steps (ending "above 200"), colours `#053061,#2166AC,#4393C3,#92C5DE,#D1E5F0,#FDDBC7,#F4A582,#D6604D`.
+Implemented as new, additive `fig_whittaker_worldclim()` parameters (`R/figures/fig_climate.R`):
+`fill_mode = "stepped"` (default `"continuous"`, every other caller unaffected), `step_breaks`,
+`step_colours`, `step_labels` — discretises `stat_summary_hex()`'s per-hexagon median via
+`after_stat(cut(value, ...))`, mapped with `scale_fill_manual()`/`guide_legend()` instead of a
+continuous scale/colorbar; a hexagon with no towers gets no geometry at all (white, i.e. absent,
+not a special NA case). Values beyond the end points take the nearest end colour (open-ended outer
+bins, not a separate clip colour).
+
+**Hexagons per step, min/max hexagon median:**
+
+| Step | n hexagons |
+|---|---|
+| below −400 | 16 |
+| −400 to −300 | 8 |
+| −300 to −200 | 14 |
+| −200 to −100 | 16 |
+| −100 to 0 | 26 |
+| 0 to 100 | 7 |
+| 100 to 200 | 0 |
+| above 200 | 3 |
+| **total** | **90** |
+
+Lowest/highest hexagon median (pre-discretising): **−1361.1 / 234.6 gC m⁻² yr⁻¹**.
+
+**Towers without a WorldClim climate match:** **0 of 781** (checked directly against
+`site_worldclim.csv` — all 781 current-network sites already have a complete MAT/MAP match).
+
+Inset fix: the "...site-years" descender-clipping issue was not reproduced after switching to the
+discrete legend layout (confirmed by direct pixel crop — a clear gap now separates the inset text
+block from the legend title). Legend (`build_draft_manuscript_v1.R`'s hardcoded `fig02_legend`)
+rewritten: white = no towers; a hexagon's colour is the median, across its towers, of each tower's
+own median annual value; values beyond the end points take the end colours; the "no WorldClim
+climate match" exclusion explained with its count (0). Re-rendered 89×89 mm, PNG+PDF.
+
+### 4. Extended Data: Whittaker NEE/GPP/TER (`scripts/generate_whittaker_ed_three_flux.R`)
+
+Three panels in a row (a NEE, b GPP, c TER) — same hexagons, points, and global ice-free-land
+contour overlay as Figure 2 (shares its cached density grid). Panel a reuses
+`fig_whittaker_worldclim(fill_mode = "stepped", ...)` directly (Figure 2's own call). Panels b/c are
+not NEE-specific, so built directly from `compute_site_annual_fluxes()`'s site-level medians rather
+than routed through that NEE-specific function; one shared continuous viridis scale spans both
+panels' own hexagon medians (51.1 to 4285.2 gC m⁻² yr⁻¹), computed by building both panels once
+without a fill scale, extracting `ggplot_build()`'s hexagon values, then applying the shared
+`limits` to both. n per panel: NEE 656, GPP 651, TER 651 (same `compute_site_annual_fluxes()` counts
+as Figure 4/Figure 2 and the primary Figure 3 fix). 180×76 mm, PNG+PDF+JPEG.
+
+### 5. Extended Data: matched site-years (`scripts/figure_flux_comparison_combo_alt_common_siteyears.R`)
+
+Rebuilt on the shared functions, replacing its own loose-file read and hardcoded `QC_THRESH=0.80`:
+Shuttle via `compute_site_annual_fluxes()` (DuckDB `annual` table), FLUXNET2015 via the new
+`compute_site_annual_fluxes_from_df()` (this project's own already-extracted FLUXNET2015 YY CSVs),
+both against `QC_THRESHOLD_YY` and both `h_unit = "W_m2"`. Matching rule unchanged: per flux, a
+site-year counts only if both datasets have a qualifying value for that site and calendar year;
+site median over matched years; same n≥5 reliability threshold. Promoted from a candidate PNG to
+`SupFigs/supp_flux_comparison_matched_siteyears.png/.pdf/.jpg` (89×228 mm). `docs/known_issues.md`
+§10 updated.
+
+**Matched sites/site-years per flux, within the 12 standard IGBP classes, before (QC≥0.80) → after
+(QC_THRESHOLD_YY=0.50):**
+
+| Flux | n sites before → after | 9 classes plotted both times |
+|---|---|---|
+| NEP | 120 → 131 | yes (same set) |
+| ET | 124 → 135 | yes |
+| H | 125 → 135 | yes |
+
+(Broader, unrestricted-to-standard-IGBP totals from this run: NEP 131 sites/821 site-years, ET 135/839,
+H 135/861 — these already equal the "within standard IGBP" count above, since every matched site in
+this build carries a standard-IGBP label.)
+
+**Per-class medians, both axes, before → after** (FLUXNET2015 | Shuttle; gC m⁻² yr⁻¹ for NEP, mm yr⁻¹
+for ET, W m⁻² for H):
+
+| Class | NEP before | NEP after | ET before | ET after | H before | H after |
+|---|---|---|---|---|---|---|
+| CRO | 214.0\|218.8 | 236.8\|221.1 | 613.3\|613.1 | 599.8\|610.7 | 11.18\|11.31 | 10.60\|10.66 |
+| DBF | 379.3\|373.8 | 398.8\|384.0 | 440.2\|441.5 | 450.7\|454.0 | 24.82\|24.77 | 24.95\|25.10 |
+| EBF | 283.2\|277.6 | 316.8\|299.6 | 735.0\|753.1 | 776.0\|820.8 | 32.34\|32.73 | 32.34\|32.73 |
+| ENF | 179.8\|208.2 | 214.1\|237.9 | 385.5\|426.9 | 393.4\|429.2 | 31.17\|31.19 | 30.69\|30.53 |
+| GRA | 45.4\|42.0 | 41.4\|44.1 | 466.6\|465.8 | 458.5\|458.5 | 35.24\|35.15 | 33.14\|33.01 |
+| MF | 286.8\|259.8 | 286.8\|259.8 | 392.4\|393.4 | 392.4\|393.4 | 25.23\|26.00 | 25.23\|26.00 |
+| OSH | −2.4\|−14.5 | 31.2\|24.8 | 255.2\|253.8 | 258.7\|257.1 | 58.27\|58.12 | 57.55\|57.43 |
+| WET | 53.4\|51.8 | 53.4\|51.7 | 522.0\|516.3 | 521.7\|516.0 | 13.59\|13.53 | 13.59\|13.53 |
+| WSA | 241.0\|233.1 | 241.0\|233.1 | 707.8\|715.2 | 710.6\|721.7 | 54.99\|56.54 | 54.90\|56.42 |
+
+### 6. Extended Data: six-panel re-plot (`scripts/figure_flux_comparison_six_panel.R`)
+
+Reads both already-computed comparison tables (Figure 3's and the matched-site-years figure's) and
+re-plots them — no new computation. 3 rows (NEP/ET/H) × 2 columns (left = Figure 3's all-qualifying-
+years data, right = matched-site-years data), letters a–f across rows, identical axis limits within
+each row (unlike the two source figures, which pad each panel independently), a column title above
+row 1 only. Classes plotted differ between columns (right column loses SAV everywhere, since
+matching removes it below the n≥5 threshold); stated explicitly in the legend, per class, per flux.
+180×220 mm, PNG+PDF+JPEG.
+
+### 7. Final figure sizes and text-size confirmation
+
+All PNG pixel dimensions verified directly (600 dpi) against the intended mm size — exact match in
+every case:
+
+| Figure | File | Size |
+|---|---|---|
+| 1a | `fig_01a_map_current_network.png` | 89 × 89 mm |
+| 1b | `fig_01b_cumulative_siteyears_igbp.png` | 89 × 89 mm |
+| 2 | `fig_02_whittaker_current.png` | 89 × 89 mm |
+| 3 | `fig_03_flux_comparison_combo_nep_et_h.png` | 89 × 228 mm |
+| 4 | `fig_04_representativeness.png` | 183 × 173.3 mm |
+| 4 (ED) | `SupFigs/supp_representativeness_geo_vs_geo.png` | 180 × 173.3 mm |
+| ED Whittaker 3-flux | `SupFigs/supp_whittaker_nee_gpp_ter.png` | 180 × 76 mm |
+| ED matched site-years | `SupFigs/supp_flux_comparison_matched_siteyears.png` | 89 × 228 mm |
+| ED six-panel | `SupFigs/supp_flux_comparison_six_panel.png` | 180 × 220 mm |
+
+Text size: `nature_theme()` pins `text`/`axis.text`/`axis.title`/`legend.text`/`legend.title`/
+`strip.text` to a single caller-chosen size in `[5, 7]` pt (enforced by a `stop()` in the function
+itself); confirmed programmatically via `ggplot2:::calc_element()` on built plot objects for
+Figure 1b and Figure 3 (both exactly 7 pt, `element_text` not `element_markdown`) and visually for
+every other figure. The one documented exception by design is the 8 pt bold lower-case panel letter
+(`panel_letter()`), per the task's own format rule. No other text (IGBP point labels at 6.3 pt,
+dataset labels in Figure 1b at 6.3 pt, Figure 2/ED-Whittaker step/colorbar legend text at 5 pt) falls
+outside 5–7 pt.
+
+`scripts/build_draft_manuscript_v1.R` re-run as the final step; also now copies a PDF alongside
+every PNG it stages (previously PNG-only).
+
+---
+
 ## 2026-10-02 (8) — Figures 1b, 2, 3 rebuilt on the current store; Figure 5 retired; Figure 4 legend note (DONE)
 
 Figures 1b, 2 and 3 were last built 2026-09-01, before the 20 September DuckDB store refresh.

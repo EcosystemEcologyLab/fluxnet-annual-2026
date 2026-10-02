@@ -1,0 +1,48 @@
+FIGURE LEGEND — supp_flux_comparison_six_panel.png
+============================================================
+
+TITLE: Extended Data Figure — FLUXNET2015 vs. Shuttle per-IGBP-class median flux
+comparison, all qualifying site-years vs. matched site-years, side by side
+
+DESCRIPTION:
+Six panels, 3 rows (NEP, ET, H) x 2 columns, re-plotting the two comparison tables already
+built by scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R (left column, "all
+qualifying site-years": each dataset's per-class median computed independently, over
+whatever site-years qualify in that dataset alone -- the data behind Figure 3) and
+scripts/figure_flux_comparison_combo_alt_common_siteyears.R (right column, "matched
+site-years": each site's median on both axes computed only over the calendar years where
+BOTH datasets have a qualifying value -- the data behind the matched-site-years Extended
+Data figure). This figure recomputes nothing; it reads both already-computed comparison
+tables and re-plots them with shared axis limits for direct visual comparison. No plot
+title is drawn except the two column headers (above row 1 only, identifying which column
+is which method); no other caption or explanatory text is drawn inside the figure.
+
+PANELS AND AXES:
+  Rows: a/b = NEP, c/d = ET, e/f = H (bold lower-case letters, 8pt, top-left of each panel)
+  Columns: left (a, c, e) = all qualifying site-years; right (b, d, f) = matched site-years
+  Within each row, both panels share IDENTICAL x and y axis limits (equal x/y, 10% padding
+  on the combined range of both columns' values for that flux) -- unlike the standalone
+  Figure 3 and matched-site-years figures, where each panel's limits are computed
+  independently. Axis titles use plotmath, not a Unicode superscript-minus character.
+
+CLASSES PLOTTED MAY DIFFER BETWEEN COLUMNS (the n>=5 reliability threshold is applied
+independently to each table, and matching further removes some sites/classes):
+  NEP: left (all) n=10 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, SAV, WET, WSA}; right (matched) n=9 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, WET, WSA}
+  ET: left (all) n=10 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, SAV, WET, WSA}; right (matched) n=9 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, WET, WSA}
+  H: left (all) n=10 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, SAV, WET, WSA}; right (matched) n=9 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, WET, WSA}
+
+COLOUR CODING: scale_fill_igbp() (R/plot_constants.R), one point per IGBP class per panel.
+
+DATA SOURCES (recomputes nothing; both tables built elsewhere):
+  - Left column:  data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv
+  - Right column: data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv
+  See scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R and
+  scripts/figure_flux_comparison_combo_alt_common_siteyears.R (and their own legends/
+  methods notes) for how each table's QC gate, VUT/CUT source, and site medians are
+  computed -- both now QC_THRESHOLD_YY via R/site_annual_fluxes.R::
+  compute_site_annual_fluxes()/compute_site_annual_fluxes_from_df() (2026-10-02).
+
+REPRODUCIBILITY:
+Script: scripts/figure_flux_comparison_six_panel.R
+DIMENSIONS: 180 x 220 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
+Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt).

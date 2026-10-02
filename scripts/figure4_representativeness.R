@@ -95,8 +95,15 @@ SNAP_DIR   <- "data/snapshots"
 EXT        <- "data/external"
 FIG_DIR    <- "review/figures/representativeness"
 DRAFT_DIR  <- "review/figures/draft_manuscript_v1"
+## SupFigs/ (revised 2026-10-02): Nature takes no Supplementary Information
+## figures, so the geo_vs_geo supplemental figure is an Extended Data figure
+## -- draft_manuscript_v1/ itself keeps only main-text figures. Only the
+## DRAFT_DIR *copy destination* for geo_vs_geo moves here; its primary
+## output (FIG_DIR, review/figures/representativeness/) is unchanged.
+SUPFIGS_DIR <- file.path(DRAFT_DIR, "SupFigs")
 fs::dir_create(FIG_DIR)
 fs::dir_create(DRAFT_DIR)
+fs::dir_create(SUPFIGS_DIR)
 
 LOG_START <- format(Sys.time(), "%Y%m%d_%H%M%S")
 LOG_FILE  <- file.path("logs", paste0("figure4_representativeness_", LOG_START, ".log"))
@@ -2080,35 +2087,7 @@ panel_y_limits <- function(panel_letter) {
   labs
 }
 
-## ---- Column alignment (task item 4): measure each panel's own natural
-## left (y-axis label) gutter once -- identical between the two output
-## figures for a given letter, since panel_y_limits() doesn't depend on
-## comparison -- then align every panel in a column to the WIDER of its
-## column-mates' gutters. msg()-logged so the before/after values are in
-## the run log.
 ALL_LETTERS <- c("A", "B", "C", "D", "E", "F")
-panel_layout_mm <- setNames(
-  lapply(ALL_LETTERS, function(l) measure_panel_layout_mm(panel_y_limits(l), show_xlab_for(l))),
-  ALL_LETTERS
-)
-gutter_mm <- vapply(panel_layout_mm, `[[`, numeric(1), "left_mm")
-TARGET_GUTTER_MM <- setNames(rep(NA_real_, 6), ALL_LETTERS)
-for (col in COLUMN_LAYOUT) {
-  TARGET_GUTTER_MM[col] <- max(gutter_mm[col])
-}
-msg("Column gutter widths (mm), own -> aligned: col1 (a/c/e) ",
-    paste(sprintf("%s=%.2f", names(gutter_mm[COLUMN_LAYOUT$col1]), gutter_mm[COLUMN_LAYOUT$col1]), collapse = ", "),
-    " -> ", round(TARGET_GUTTER_MM[["A"]], 2),
-    "mm; col2 (b/d/f) ",
-    paste(sprintf("%s=%.2f", names(gutter_mm[COLUMN_LAYOUT$col2]), gutter_mm[COLUMN_LAYOUT$col2]), collapse = ", "),
-    " -> ", round(TARGET_GUTTER_MM[["B"]], 2), "mm")
-
-PANEL_MM_PER_UNIT <- setNames(
-  vapply(ALL_LETTERS, function(l) {
-    panel_mm_per_unit_for(panel_y_limits(l), show_xlab_for(l), TARGET_GUTTER_MM[[l]])
-  }, numeric(1)),
-  ALL_LETTERS
-)
 
 build_fig4_panel2 <- function(panel_letter, comparison) {
   spec <- PANEL_SPECS[[panel_letter]]
@@ -2160,9 +2139,55 @@ write_panel_table <- function(panel_letter, comparison, df) {
   )
 }
 
+## ---- Per-comparison figure width (revised 2026-10-02): geo_vs_data stays
+## the main-text 183mm double-column width; geo_vs_geo is the supplemental
+## figure, moved into SupFigs/ as an Extended Data figure (<=180mm wide),
+## re-rendered at 180mm without any text-size change (all pt sizes are
+## absolute, never derived from FIG_WIDTH_MM) -- see SESSION_LOG.md. Reassigns
+## the globals FIG_WIDTH_MM/COL_WIDTH_MM read by panel_mm_per_unit_for() and
+## the ggsave() calls below; everything that depends on them (gutter/
+## PANEL_MM_PER_UNIT calibration) is therefore recomputed inside this loop,
+## not hoisted above it, even though it only actually changes for geo_vs_geo.
 fig_heights_mm <- list()
+fig_widths_mm  <- list()
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   msg("\n--- Building ", fig4_output_name(comparison), " (print) ---")
+  FIG_WIDTH_MM <- if (comparison == "geo_vs_geo") 180 else 183
+  COL_WIDTH_MM <- FIG_WIDTH_MM / NCOL_FIG
+  msg("Figure width for this comparison: ", FIG_WIDTH_MM, "mm (column width ", COL_WIDTH_MM, "mm)")
+
+  ## ---- Column alignment (task item 4): measure each panel's own natural
+  ## left (y-axis label) gutter -- identical between the two output figures
+  ## for a given letter, since panel_y_limits() doesn't depend on comparison
+  ## or COL_WIDTH_MM -- then align every panel in a column to the WIDER of
+  ## its column-mates' gutters. Recomputed every iteration (cheap; only the
+  ## resulting PANEL_MM_PER_UNIT bar-area calibration actually changes
+  ## between the two comparisons' now-different COL_WIDTH_MM).
+  panel_layout_mm <- setNames(
+    lapply(ALL_LETTERS, function(l) measure_panel_layout_mm(panel_y_limits(l), show_xlab_for(l))),
+    ALL_LETTERS
+  )
+  gutter_mm <- vapply(panel_layout_mm, `[[`, numeric(1), "left_mm")
+  TARGET_GUTTER_MM <- setNames(rep(NA_real_, 6), ALL_LETTERS)
+  for (col in COLUMN_LAYOUT) {
+    TARGET_GUTTER_MM[col] <- max(gutter_mm[col])
+  }
+  msg("Column gutter widths (mm), own -> aligned: col1 (a/c/e) ",
+      paste(sprintf("%s=%.2f", names(gutter_mm[COLUMN_LAYOUT$col1]), gutter_mm[COLUMN_LAYOUT$col1]), collapse = ", "),
+      " -> ", round(TARGET_GUTTER_MM[["A"]], 2),
+      "mm; col2 (b/d/f) ",
+      paste(sprintf("%s=%.2f", names(gutter_mm[COLUMN_LAYOUT$col2]), gutter_mm[COLUMN_LAYOUT$col2]), collapse = ", "),
+      " -> ", round(TARGET_GUTTER_MM[["B"]], 2), "mm")
+
+  PANEL_MM_PER_UNIT <- setNames(
+    vapply(ALL_LETTERS, function(l) {
+      panel_mm_per_unit_for(panel_y_limits(l), show_xlab_for(l), TARGET_GUTTER_MM[[l]])
+    }, numeric(1)),
+    ALL_LETTERS
+  )
+
+  fig_widths_mm[[comparison]] <- FIG_WIDTH_MM
+
   built <- lapply(c("A", "B", "C", "D", "E", "F"), build_fig4_panel2, comparison = comparison)
   names(built) <- c("A", "B", "C", "D", "E", "F")
   for (letter in names(built)) write_panel_table(letter, comparison, built[[letter]]$df)
@@ -2199,11 +2224,17 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   BOTTOM_PAD_MM <- 10
   total_height_mm <- h_row1 + h_row2 + h_row3 + TOP_PAD_MM + BOTTOM_PAD_MM
   fig_heights_mm[[comparison]] <- total_height_mm
+  ## geo_vs_geo is now an Extended Data figure (<=180mm wide, <=240mm tall);
+  ## geo_vs_data is the main-text figure (<=247mm tall, no narrower limit
+  ## beyond the fixed 183mm width already enforced above).
+  height_limit_mm <- if (comparison == "geo_vs_geo") 240 else 247
   msg("Row heights (mm): row1=", round(h_row1, 1), " row2=", round(h_row2, 1),
       " row3=", round(h_row3, 1), "; +", TOP_PAD_MM, "mm explicit top + ", BOTTOM_PAD_MM,
       "mm explicit bottom spacer; TOTAL=", round(total_height_mm, 1),
-      " mm (target <=190mm, hard limit 247mm)")
-  if (total_height_mm > 247) stop("Figure height ", round(total_height_mm, 1), " mm exceeds the 247mm hard limit.")
+      " mm (hard limit ", height_limit_mm, "mm)")
+  if (total_height_mm > height_limit_mm) {
+    stop("Figure height ", round(total_height_mm, 1), " mm exceeds the ", height_limit_mm, "mm hard limit.")
+  }
 
   grobs <- list(patchwork::plot_spacer(), patchwork::plot_spacer(),
                 built$A$grob, built$B$grob, built$C$grob, built$D$grob, built$E$grob, built$F$grob,
@@ -2271,7 +2302,7 @@ land_pct_line <- function(total_km2) {
   paste(sprintf("%d%%=%.2f", pcts, vals), collapse = ", ")
 }
 
-write_fig4_legend <- function(comparison, fig_path, height_mm) {
+write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
   cmp_label <- if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"
   n_lines <- vapply(c("A", "B", "C", "D", "E", "F"), panel_n_line, character(1), cmp = comparison)
 
@@ -2296,8 +2327,8 @@ write_fig4_legend <- function(comparison, fig_path, height_mm) {
       "DEFINITIONS above).",
       "Panels: a Koppen-Geiger (13-class), b land cover as IGBP (15 PI-reported classes + an",
       "Other bin), c aridity (CGIAR UNEP 7-class), d biomass (ESA CCI v7, 7-bin), e NEE",
-      "(signed sink/source, 7-bin), f ET (7-bin). Final artwork size: 183 mm wide x",
-      sprintf("%.1f mm tall, Helvetica throughout.", height_mm), "",
+      "(signed sink/source, 7-bin), f ET (7-bin).",
+      sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout.", width_mm, height_mm), "",
       "Panels e and f's tower value (this Geo vs Data figure only) is the median of each site's annual",
       sprintf("values passing QC_THRESHOLD_YY=%s, each flux gated on its own QC column, per-site VUT/CUT", QC_THRESHOLD_YY),
       "(R/site_annual_fluxes.R::compute_site_annual_fluxes()).", "",
@@ -2392,7 +2423,9 @@ write_fig4_legend <- function(comparison, fig_path, height_mm) {
       "model's own value at the tower, not a tower measurement -- Figure 4's own panels e and f",
       sprintf("(Geo vs Data) instead use each site's median annual value passing QC_THRESHOLD_YY=%s,", QC_THRESHOLD_YY),
       "each flux gated on its own QC column, per-site VUT/CUT (see Figure 4's legend).",
-      sprintf("Final artwork size: 183 mm wide x %.1f mm tall, Helvetica throughout.", height_mm), "",
+      sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout. Extended Data", width_mm, height_mm),
+      "figure (no Supplementary Information figures in Nature) -- see SupFigs/ note in",
+      "docs/figure_inventory.md.", "",
       sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, "",
       "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
       "land fraction, towers, tower fraction) in review/figures/representativeness/tables/.",
@@ -2405,30 +2438,37 @@ write_fig4_legend <- function(comparison, fig_path, height_mm) {
 
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   fig_path <- file.path(FIG_DIR, paste0(fig4_output_name(comparison), ".png"))
-  write_fig4_legend(comparison, fig_path, fig_heights_mm[[comparison]])
+  write_fig4_legend(comparison, fig_path, fig_heights_mm[[comparison]], fig_widths_mm[[comparison]])
   write_output_metadata(
     fig_path,
     input_sources = c(metrics_fig4_path, "site_koppen_beck2023.csv", "site_koppen_era5_fig4.csv",
                        "site_igbp_fig4.csv", "site_aridity.csv", "site_aridity_era5_fig4.csv",
                        "site_biomass_cci_v7.csv", "site_nee_fig4.csv", "site_et_fig4.csv"),
     notes = sprintf(
-      paste0("New Figure 4 (%s version), Nature final-artwork re-render: 183 mm wide x %.1f mm tall, ",
+      paste0("New Figure 4 (%s version), Nature final-artwork re-render: %g mm wide x %.1f mm tall, ",
              "Helvetica, %dpt text (row pitch %.1fmm). Rendering only -- confirmed against ",
              "representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) ",
              "render. Vector PDF saved alongside. See SESSION_LOG.md."),
-      if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data", fig_heights_mm[[comparison]],
+      if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data",
+      fig_widths_mm[[comparison]], fig_heights_mm[[comparison]],
       BASE_PT, ROW_PITCH_MM
     )
   )
   msg("Saved: ", fig_path, ".meta.json and .legend.txt")
 }
 
+## geo_vs_data (main-text Figure 4) copies into DRAFT_DIR as before.
+## geo_vs_geo (now an Extended Data figure) copies into SUPFIGS_DIR instead
+## -- draft_manuscript_v1/ itself keeps only main-text figures (task 1,
+## 2026-10-02; Nature takes no Supplementary Information figures, so
+## everything previously staged as a supplemental figure is Extended Data).
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   base <- fig4_output_name(comparison)
+  dest_dir <- if (comparison == "geo_vs_geo") SUPFIGS_DIR else DRAFT_DIR
   for (ext in c(".png", ".pdf", ".meta.json", ".legend.txt")) {
-    fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(DRAFT_DIR, paste0(base, ext)), overwrite = TRUE)
+    fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(dest_dir, paste0(base, ext)), overwrite = TRUE)
   }
-  msg("Copied ", base, " (.png/.pdf/.meta.json/.legend.txt) to ", DRAFT_DIR)
+  msg("Copied ", base, " (.png/.pdf/.meta.json/.legend.txt) to ", dest_dir)
 }
 
 msg("\n=== figure4_representativeness.R: PRINT RE-RENDER COMPLETE ===")

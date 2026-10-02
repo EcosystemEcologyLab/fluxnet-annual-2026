@@ -848,10 +848,39 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
   yr_max <- max(year_range)
 
   # ---- Shuttle: cumulative site-years per IGBP class -----------------------
+  # Scoped fix (2026-10-02, task 2): the shared IGBP_order/IGBP_colours
+  # constants in R/plot_constants.R list 15 classes, but the wrong 15 for
+  # this network -- SHR, URB, NV (zero current-network towers report any of
+  # these) instead of CVM, BSV, SNO (7 + 9 + 2 = 18 towers that DO occur).
+  # Filtering on IGBP_order therefore silently dropped those 18 towers from
+  # the stack entirely, and the legend key offered three classes no tower
+  # could ever occupy. Fixed here, scoped to this one figure, not by
+  # changing the shared IGBP_order/IGBP_colours constants -- IGBP_order has
+  # 7 other callers across R/figures/ (fig_igbp.R, fig_environmental_
+  # response.R, fig_latitudinal.R, fig_growing_season.R, fig_climate.R,
+  # fig_timeseries.R) plus 2 scripts (00_diagnostics.R,
+  # investigate_badm_management.R, besides 00_candidate_figures.R which
+  # doesn't filter on it) not audited or touched by this fix; see
+  # SESSION_LOG.md 2026-10-02 for that full list, reported for a future,
+  # separately-scoped decision on whether to fix the shared constant itself.
+  # Order/colours below are reused verbatim from scripts/
+  # figure4_representativeness.R's own IGBP_ORDER/IGBP_COLORS, sourced there
+  # from Google Earth Engine's documented MODIS/061/MCD12Q1 LC_Type1
+  # (IGBP) palette -- the authoritative source for these exact 15 classes
+  # elsewhere in this paper.
+  fig1b_igbp_order <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA",
+                         "SAV", "GRA", "WET", "CRO", "CVM", "BSV", "SNO")
+  fig1b_igbp_colours <- c(
+    ENF = "#05450a", EBF = "#086a10", DNF = "#54a708", DBF = "#78d203", MF = "#009900",
+    CSH = "#c6b044", OSH = "#dcd159", WSA = "#dade48", SAV = "#fbff13",
+    GRA = "#b6ff05", WET = "#27ff87", CRO = "#c24f44", CVM = "#ff6d4c",
+    BSV = "#f9ffa4", SNO = "#69fff8"
+  )
+
   igbp_lookup <- shuttle_meta |>
     dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
     dplyr::select("site_id", "igbp") |>
-    dplyr::filter(!is.na(.data$igbp), .data$igbp %in% IGBP_order)
+    dplyr::filter(!is.na(.data$igbp), .data$igbp %in% fig1b_igbp_order)
 
   shuttle_igbp_cumul <- presence_df |>
     dplyr::filter(.data$has_data,
@@ -859,7 +888,7 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                   .data$year <= yr_max) |>
     dplyr::left_join(igbp_lookup, by = "site_id") |>
     dplyr::filter(!is.na(.data$igbp)) |>
-    dplyr::mutate(igbp = factor(.data$igbp, levels = IGBP_order)) |>
+    dplyr::mutate(igbp = factor(.data$igbp, levels = fig1b_igbp_order)) |>
     dplyr::count(.data$year, .data$igbp, name = "n") |>
     # Fill all year × IGBP combinations so cumsum is continuous
     tidyr::complete(year = yr_min:yr_max, igbp, fill = list(n = 0L)) |>
@@ -925,7 +954,11 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
       alpha     = 0.8,
       colour    = NA
     ) +
-    scale_fill_igbp(name = "IGBP") +
+    # fig1b_igbp_colours (not the shared scale_fill_igbp()/IGBP_colours --
+    # see the scoped-fix note above): keys exactly the 15 classes plotted,
+    # no more and no fewer.
+    ggplot2::scale_fill_manual(values = fig1b_igbp_colours, name = "IGBP",
+                                breaks = fig1b_igbp_order) +
     # Historical dataset lines
     ggplot2::geom_line(
       data = hist_all,

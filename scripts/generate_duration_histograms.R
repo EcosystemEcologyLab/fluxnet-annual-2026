@@ -33,6 +33,7 @@ source("R/pipeline_config.R")
 source("R/utils.R")
 source("R/plot_constants.R")
 source("R/figures/fig_network_growth.R")
+source("R/nature_format.R")
 
 library(dplyr)
 library(readr)
@@ -332,14 +333,31 @@ dur11 <- fig_cumulative_siteyears_igbp(
   sites_fluxnet2015 = sites_fluxnet2015,
   base_size         = 9L
 ) +
-  ggplot2::theme(
-    legend.text      = ggplot2::element_text(size = 5.5),
-    legend.title     = ggplot2::element_text(size = 6.5),
-    legend.key.size  = grid::unit(7, "pt")
-  )
-path11 <- file.path(out_dir, "fig_dur11_CumulativeSiteYears_IGBP.png")
-ggplot2::ggsave(path11, plot = dur11,
-                width = 3.5, height = 3.5, units = "in", dpi = 300, bg = "white")
-message("Saved: ", path11)
+  ggplot2::theme(legend.key.size = grid::unit(7, "pt")) +
+  nature_theme() +           # Nature format, 2026-10-02: all text 5-7pt, Helvetica
+  panel_letter("b")          # Figure 1b
+path11_stem <- file.path(out_dir, "fig_dur11_CumulativeSiteYears_IGBP")
+save_nature_figure(dur11, path11_stem, width_mm = NATURE_WIDTH_SINGLE_MM,
+                    height_mm = NATURE_WIDTH_SINGLE_MM)
+path11 <- paste0(path11_stem, ".png")
+message("Saved: ", path11, " (+ .pdf)")
+
+# ---- Report site-years actually plotted (task 2 reporting requirement) -------
+fig1b_igbp_order_report <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA",
+                              "SAV", "GRA", "WET", "CRO", "CVM", "BSV", "SNO")
+siteyears_plotted <- presence_df |>
+  dplyr::filter(has_data, year >= 1991L, year <= 2024L) |>
+  dplyr::left_join(
+    shuttle_meta |> dplyr::distinct(site_id, .keep_all = TRUE) |> dplyr::select(site_id, igbp),
+    by = "site_id"
+  ) |>
+  dplyr::filter(!is.na(igbp), igbp %in% fig1b_igbp_order_report)
+by_class <- siteyears_plotted |> dplyr::count(igbp, name = "site_years") |>
+  dplyr::arrange(match(igbp, fig1b_igbp_order_report))
+message("Dur11 site-years plotted (1991-2024), by class:")
+for (i in seq_len(nrow(by_class))) {
+  message("  ", by_class$igbp[i], ": ", by_class$site_years[i])
+}
+message("  TOTAL: ", sum(by_class$site_years))
 
 message("\nDone. All 11 figures generated: Dur01-11.")

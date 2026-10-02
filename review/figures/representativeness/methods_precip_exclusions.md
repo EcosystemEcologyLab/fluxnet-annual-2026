@@ -9,8 +9,13 @@ site-level: an excluded site is removed from that panel's numerator *and* denomi
 unclassified.
 
 **Rule 1 — GRP_ERA_DOWN (172 sites).** Sites in the `precip_downscaling_provenance` diagnostic's
-`not_fitted_slope_9999` group: their P_ERA-vs-measured-precipitation regression has no usable slope
-(`ERA_SLOPE` itself recorded as a sentinel −9999, not merely an unfitted default). Source:
+`not_fitted_slope_9999` group: their BIF-recorded `ERA_SLOPE` for precipitation is the sentinel value
+−9999 — a second, distinct sentinel pattern from the other 609 current-network sites' `ERA_SLOPE = 1.0`.
+Precipitation is not regressed at any of the 781 current-network sites: `ERA_INTERCEPT`/`ERA_RMSE`/
+`ERA_CORRELATION` are also −9999 for every site, and zero sites show a genuinely fitted combination of
+these four fields (`precip_downscaling_provenance/report.md` §2). "No usable regression slope" therefore
+does not distinguish this group from the other 609 — the −9999 `ERA_SLOPE` sentinel itself is the only
+distinguishing signal used, with no claim that the 609 sites' P_ERA is regression-validated. Source:
 `review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv`.
 
 **Rule 2 — P_ERA_MAX_RATIO (`R/pipeline_config.R`, = 3).** A site's 1991–2020 mean annual P_ERA exceeds

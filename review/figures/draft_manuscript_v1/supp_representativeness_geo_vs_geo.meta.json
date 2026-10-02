@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-02T00:15:21Z",
-  "pipeline_version": "6dc153b",
+  "run_datetime_utc": "2026-10-02T16:24:25Z",
+  "pipeline_version": "5324cb4",
   "input_sources": [
     "data/snapshots/representativeness_metrics_fig4.csv",
     "site_koppen_beck2023.csv",

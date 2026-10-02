@@ -1,10 +1,10 @@
 panel,axis,comparison,land_grid,land_total_km2,n_eligible,n_classified,weighted_jaccard
 A,koppen,geo_vs_geo,Beck 2023 1 km mask,147322862.19253048,781,781,0.3716110898203183
-A,koppen,geo_vs_data,Beck 2023 1 km mask,147322862.19253048,599,599,0.4111375380212437
+A,koppen,geo_vs_data,Beck 2023 1 km mask,147322862.19253048,750,750,0.3988985233065718
 B,igbp,geo_vs_geo,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,781,781,0.49526083794526043
 B,igbp,geo_vs_data,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,781,781,0.3464428975930112
 C,aridity,geo_vs_geo,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,781,781,0.665920460867173
-C,aridity,geo_vs_data,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,596,596,0.7177262026801027
+C,aridity,geo_vs_data,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,574,574,0.6745591744133592
 D,biomass,geo_vs_geo,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,781,781,0.636231164957332
 D,biomass,geo_vs_data,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,781,781,0.636231164957332
 E,nee,geo_vs_data,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,601,601,0.16245632971800827

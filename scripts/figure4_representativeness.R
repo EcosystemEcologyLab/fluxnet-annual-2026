@@ -251,8 +251,16 @@ flag_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites) {
       ratio_bio12 = p_era_map_mm / bio12_mm,
       exceeds_badm  = is.na(ratio_badm) | ratio_badm > P_ERA_MAX_RATIO,   # NA (no BADM) treated as "not a blocker"
       exceeds_bio12 = !is.na(ratio_bio12) & ratio_bio12 > P_ERA_MAX_RATIO,
-      excluded_grp_era_down = site_id %in% slope9999_sites,
-      excluded_p_era_ratio  = exceeds_badm & exceeds_bio12 & !excluded_grp_era_down,
+      ## Low-side mirror of the above (P_ERA_MIN_RATIO, added 2026-10-02): a
+      ## site fails the low side only if it is below P_ERA_MIN_RATIO times
+      ## EVERY reference available -- same dual-reference AND logic, same
+      ## "NA badm = not a blocker" treatment.
+      below_badm  = is.na(ratio_badm) | ratio_badm < P_ERA_MIN_RATIO,
+      below_bio12 = !is.na(ratio_bio12) & ratio_bio12 < P_ERA_MIN_RATIO,
+      excluded_grp_era_down     = site_id %in% slope9999_sites,
+      excluded_p_era_ratio_high = exceeds_badm & exceeds_bio12 & !excluded_grp_era_down,
+      excluded_p_era_ratio_low  = below_badm & below_bio12 & !excluded_grp_era_down,
+      excluded_p_era_ratio      = excluded_p_era_ratio_high | excluded_p_era_ratio_low,
       excluded_any = excluded_grp_era_down | excluded_p_era_ratio
     )
 }
@@ -267,7 +275,7 @@ compute_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites, excl
       threshold = "p_group == 'not_fitted_slope_9999'", excluded_by = excluded_by
     )
   }
-  ratio_caught <- d |> dplyr::filter(excluded_p_era_ratio)
+  ratio_caught <- d |> dplyr::filter(excluded_p_era_ratio_high)
   for (i in seq_len(nrow(ratio_caught))) {
     refs_txt <- if (!is.na(ratio_caught$ratio_badm[i])) {
       sprintf("BADM MAP=%.1f mm/yr (ratio %.2f), WorldClim BIO12=%.1f mm/yr (ratio %.2f)",
@@ -283,6 +291,25 @@ compute_precip_exclusions <- function(p_era_df, p_era_col, slope9999_sites, excl
       reason = sprintf("P_ERA (%.1f mm/yr) exceeds P_ERA_MAX_RATIO times EVERY available reference: %s",
                         ratio_caught$p_era_map_mm[i], refs_txt),
       threshold = paste0("P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO, " (all available references)"),
+      excluded_by = excluded_by
+    )
+  }
+  ratio_low_caught <- d |> dplyr::filter(excluded_p_era_ratio_low)
+  for (i in seq_len(nrow(ratio_low_caught))) {
+    refs_txt <- if (!is.na(ratio_low_caught$ratio_badm[i])) {
+      sprintf("BADM MAP=%.1f mm/yr (ratio %.2f), WorldClim BIO12=%.1f mm/yr (ratio %.2f)",
+              ratio_low_caught$badm_map_mm[i], ratio_low_caught$ratio_badm[i],
+              ratio_low_caught$bio12_mm[i], ratio_low_caught$ratio_bio12[i])
+    } else {
+      sprintf("WorldClim BIO12=%.1f mm/yr (ratio %.2f) -- only reference available (no BADM MAP)",
+              ratio_low_caught$bio12_mm[i], ratio_low_caught$ratio_bio12[i])
+    }
+    log_exclusion(
+      site_id = ratio_low_caught$site_id[i], variable = paste0(panel_name, " (Geo vs Data panel)"),
+      timestamp = "ALL",
+      reason = sprintf("P_ERA (%.1f mm/yr) is below P_ERA_MIN_RATIO times EVERY available reference: %s",
+                        ratio_low_caught$p_era_map_mm[i], refs_txt),
+      threshold = paste0("P_ERA_MIN_RATIO=", round(P_ERA_MIN_RATIO, 4), " (all available references)"),
       excluded_by = excluded_by
     )
   }
@@ -326,6 +353,23 @@ four_named <- ratio_check |> dplyr::filter(site_id %in% c("CA-CF2", "IT-Niv", "N
 msg("\nCA-CF2 / IT-Niv / NO-And / US-HB4 all caught by the revised rule? ",
     all(four_named$excluded_p_era_ratio))
 print(as.data.frame(four_named[, c("site_id", "p_era_map_mm", "badm_map_mm", "ratio_badm", "bio12_mm", "ratio_bio12")]))
+
+## ---- Required reporting: new low-side rule (P_ERA_MIN_RATIO, added 2026-
+## 10-02), same dual-reference AND logic and same reporting shape as the
+## high-side block above -- the general (not panel-specific) catch list and
+## 1/2, 1/3, 1/4 sensitivity counts the task asks for.
+low_caught_beyond_172 <- ratio_check |> dplyr::filter(excluded_p_era_ratio_low) |>
+  dplyr::arrange(dplyr::coalesce(ratio_badm, ratio_bio12))
+msg("\n--- New P_ERA_MIN_RATIO=", round(P_ERA_MIN_RATIO, 3), " (1/", round(1 / P_ERA_MIN_RATIO), ") rule, dual-reference AND logic ---")
+msg("Sites caught beyond the 172 (n=", nrow(low_caught_beyond_172), "), with both references and both ratios:")
+print(as.data.frame(low_caught_beyond_172[, c("site_id", "p_era_map_mm", "badm_map_mm", "ratio_badm",
+                                               "bio12_mm", "ratio_bio12")]))
+for (r in c(2, 3, 4)) {
+  n_below_r <- sum((dplyr::coalesce(ratio_check$ratio_badm, -Inf) < 1 / r &
+                       dplyr::coalesce(ratio_check$ratio_bio12, -Inf) < 1 / r) & !ratio_check$excluded_grp_era_down,
+                    na.rm = TRUE)
+  msg("Dual-reference ratio < 1/", r, " (both refs, beyond the 172): ", n_below_r, " sites")
+}
 
 # ==============================================================================
 # PHASE 1: Koppen-Geiger (panel A)
@@ -393,27 +437,95 @@ msg("Koppen J (Geo vs Geo) = ", round(j_kg_geo_geo, 3))
 add_metric("A", "koppen", "geo_vs_geo", "Beck 2023 1 km mask", KG_LAND_TOTAL_KM2,
            nrow(kg_geo_geo), n_geo_geo_classified, j_kg_geo_geo)
 
-## ---- Geo vs Data: ERA5-local classification, no MAP screen, dual exclusion
-## (172 GRP_ERA_DOWN + P_ERA_MAX_RATIO -- added 2026-10-02, see SHARED section
-## above and SESSION_LOG.md). kg_era5_nomap/slope9999_172 computed there.
+## ---- Geo vs Data: PI-reported class first, ERA5 fallback second ----------
+## Revised 2026-10-02 (main-figure panel a only; the Geo vs Geo supplemental
+## panel above is NOT affected by this revision). review/diagnostics/
+## koppen_pi_vs_era5/ (2026-10-02 (3) SESSION_LOG entry) found the ERA5-
+## derived class disagrees with the PI-reported class (BADM CLIMATE_KOEPPEN)
+## more often than it agrees (59.5% full-class agreement, n=603 comparable
+## sites), while the PI class agrees much better with the independent Beck
+## 2023 raster (69.2%) -- i.e. ERA5 is the less reliable of the two
+## available Geo-vs-Data sources for this panel, even though that same
+## diagnostic's naive network-wide Jaccard swap (J=0.359, not restricted to
+## the panel's own eligible pool) looked worse than the ERA5-only figure
+## (J=0.411, n=599) -- not an apples-to-apples comparison, since it compared
+## different populations. This panel now uses the PI-reported class (case-
+## normalised against the 30 canonical Koppen codes, same lookup as
+## scripts/diagnostics/koppen_pi_vs_era5.R) for every site that has one, and
+## falls back to the ERA5-local class (kg_era5_nomap, computed above in the
+## SHARED section) only for sites without a valid PI value. The
+## precipitation-dependent exclusion rules (172 GRP_ERA_DOWN,
+## P_ERA_MAX_RATIO, P_ERA_MIN_RATIO) screen the ERA5 climatology itself,
+## which a PI-reported class never uses -- so they apply ONLY to fallback
+## sites; a site with a PI-reported class is NEVER excluded from this panel.
+VALID_KG30 <- c(
+  "Af", "Am", "Aw",
+  "BWh", "BWk", "BSh", "BSk",
+  "Csa", "Csb", "Csc", "Cwa", "Cwb", "Cwc", "Cfa", "Cfb", "Cfc",
+  "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd", "Dfa", "Dfb", "Dfc", "Dfd",
+  "ET", "EF"
+)
+KG30_CANON_LOOKUP <- setNames(VALID_KG30, toupper(VALID_KG30))
+
+badm_kg_pi_raw <- badm |>
+  dplyr::filter(VARIABLE == "CLIMATE_KOEPPEN", !is.na(DATAVALUE)) |>
+  dplyr::distinct(SITE_ID, .keep_all = TRUE) |>
+  dplyr::transmute(site_id = SITE_ID, pi_raw = DATAVALUE)
+
+pi_class_df <- current_sites |>
+  dplyr::select(site_id) |>
+  dplyr::left_join(badm_kg_pi_raw, by = "site_id") |>
+  dplyr::mutate(
+    pi_canonical = unname(KG30_CANON_LOOKUP[toupper(pi_raw)]),
+    pi_twoletter = substr(pi_canonical, 1, 2)
+  )
+n_pi <- sum(!is.na(pi_class_df$pi_twoletter))
+msg("Panel A PI-reported class (BADM CLIMATE_KOEPPEN, case-normalised): ", n_pi, " / ",
+    nrow(pi_class_df), " sites have a valid class")
+
+## kg_era5_nomap/slope9999_172 computed in the SHARED section above.
 kg_precip_excl <- compute_precip_exclusions(
   kg_era5_nomap, p_era_col = "map_mm", slope9999_sites = slope9999_172,
   excluded_by = "figure4_representativeness.R", panel_name = "koppen_era5"
 )
-kg_geo_data_pool <- kg_era5_nomap |>
-  dplyr::filter(site_id %in% kg_precip_excl$site_id[!kg_precip_excl$excluded_any])
-n_excl_ratio_only <- sum(kg_precip_excl$excluded_p_era_ratio)
-msg("Geo vs Data exclusions: ", length(slope9999_172), " GRP_ERA_DOWN + ",
-    n_excl_ratio_only, " P_ERA_MAX_RATIO-only = ", sum(kg_precip_excl$excluded_any),
-    " total excluded; n_eligible = ", nrow(kg_geo_data_pool))
-n_geo_data_classified <- sum(!is.na(kg_geo_data_pool$koppen_twoletter))
-msg("Geo vs Data (ERA5 local, no MAP screen, dual exclusion): ",
-    n_geo_data_classified, " / ", nrow(kg_geo_data_pool), " eligible sites classified")
+
+panel_a_source_df <- pi_class_df |>
+  dplyr::left_join(dplyr::select(kg_era5_nomap, site_id, era5_twoletter = koppen_twoletter), by = "site_id") |>
+  dplyr::left_join(
+    dplyr::select(kg_precip_excl, site_id, excluded_grp_era_down, excluded_p_era_ratio_high,
+                   excluded_p_era_ratio_low, excluded_any),
+    by = "site_id"
+  ) |>
+  dplyr::mutate(
+    has_pi = !is.na(pi_twoletter),
+    panel_a_source = dplyr::case_when(
+      has_pi                                ~ "PI",
+      !has_pi & excluded_grp_era_down       ~ "excluded_grp_era_down",
+      !has_pi & excluded_p_era_ratio_high   ~ "excluded_p_era_ratio_high",
+      !has_pi & excluded_p_era_ratio_low    ~ "excluded_p_era_ratio_low",
+      TRUE                                  ~ "era5_fallback"
+    ),
+    class_used = dplyr::if_else(has_pi, pi_twoletter, era5_twoletter)
+  )
+msg("Panel A source counts: ", paste(capture.output(print(table(panel_a_source_df$panel_a_source))), collapse = " | "))
+
+kg_geo_data_pool <- panel_a_source_df |> dplyr::filter(panel_a_source %in% c("PI", "era5_fallback"))
+n_excl_grp        <- sum(panel_a_source_df$panel_a_source == "excluded_grp_era_down")
+n_excl_ratio_high <- sum(panel_a_source_df$panel_a_source == "excluded_p_era_ratio_high")
+n_excl_ratio_low  <- sum(panel_a_source_df$panel_a_source == "excluded_p_era_ratio_low")
+msg("Geo vs Data exclusions (fallback sites only -- PI-sourced sites are never excluded): ",
+    n_excl_grp, " GRP_ERA_DOWN + ", n_excl_ratio_high, " P_ERA_MAX_RATIO + ",
+    n_excl_ratio_low, " P_ERA_MIN_RATIO = ", n_excl_grp + n_excl_ratio_high + n_excl_ratio_low,
+    " total excluded; n_eligible = ", nrow(kg_geo_data_pool),
+    " (", n_pi, " PI + ", nrow(kg_geo_data_pool) - n_pi, " ERA5 fallback)")
+n_geo_data_classified <- sum(!is.na(kg_geo_data_pool$class_used))
+msg("Geo vs Data (PI-first, ERA5 fallback): ", n_geo_data_classified, " / ", nrow(kg_geo_data_pool),
+    " eligible sites classified")
 
 cnt_geo_data <- kg_geo_data_pool |>
-  dplyr::filter(!is.na(koppen_twoletter)) |>
-  dplyr::count(koppen_twoletter, name = "n") |>
-  dplyr::rename(class = koppen_twoletter) |>
+  dplyr::filter(!is.na(class_used)) |>
+  dplyr::count(class_used, name = "n") |>
+  dplyr::rename(class = class_used) |>
   dplyr::mutate(network_frac = n / nrow(kg_geo_data_pool))
 merged_geo_data <- kg_global |>
   dplyr::select(class, global_land_fraction) |>
@@ -421,7 +533,8 @@ merged_geo_data <- kg_global |>
   dplyr::mutate(n = dplyr::coalesce(n, 0L), network_frac = dplyr::coalesce(network_frac, 0),
                 global_land_fraction = dplyr::coalesce(global_land_fraction, 0))
 j_kg_geo_data <- weighted_jaccard(merged_geo_data$global_land_fraction, merged_geo_data$network_frac)
-msg("Koppen J (Geo vs Data) = ", round(j_kg_geo_data, 3))
+msg("Koppen J (Geo vs Data, PI-first) = ", round(j_kg_geo_data, 3),
+    " (previous ERA5-only figure: J=0.411, n=599)")
 add_metric("A", "koppen", "geo_vs_data", "Beck 2023 1 km mask", KG_LAND_TOTAL_KM2,
            nrow(kg_geo_data_pool), n_geo_data_classified, j_kg_geo_data)
 
@@ -476,30 +589,44 @@ msg("\n=== Saving panel A (Koppen) outputs ===")
 fig4_kg_era5_path <- file.path(SNAP_DIR, "site_koppen_era5_fig4.csv")
 kg_era5_nomap |>
   dplyr::left_join(
+    dplyr::select(panel_a_source_df, site_id, pi_raw, pi_canonical, pi_twoletter,
+                   panel_a_source, panel_a_class_used = class_used),
+    by = "site_id"
+  ) |>
+  dplyr::left_join(
     dplyr::select(kg_precip_excl, site_id, badm_map_mm, ratio_badm, bio12_mm, ratio_bio12,
-                   excluded_grp_era_down, excluded_p_era_ratio, excluded_any),
+                   excluded_grp_era_down, excluded_p_era_ratio_high, excluded_p_era_ratio_low,
+                   excluded_p_era_ratio, excluded_any),
     by = "site_id"
   ) |>
   dplyr::rename(excluded_fig4_geo_vs_data = excluded_any) |>
+  dplyr::mutate(panel_a_eligible = panel_a_source %in% c("PI", "era5_fallback")) |>
   readr::write_csv(fig4_kg_era5_path)
 write_output_metadata(
   fig4_kg_era5_path,
-  input_sources = c(duckdb_path, CURRENT_SNAPSHOT, precip_ref_path,
-                     "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"),
+  input_sources = c(duckdb_path, CURRENT_SNAPSHOT, precip_ref_path, badm_path,
+                     "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
+                     "review/diagnostics/koppen_pi_vs_era5/"),
   notes = paste0(
-    "Koppen classification for figure4_representativeness.R's Geo-vs-Data panel A. Same method as ",
-    "site_koppen_era5.csv (R/climate_classification.R::compute_site_koppen_era5(), 1991-2020 ERA5 ",
-    "monthly T/P normal, >= 20 of 30 years required) EXCEPT the KG_ERA5_MAP_MAX_MM=5000mm/yr ",
-    "per-site-year screen is NOT applied here (map_max_mm=Inf). Two exclusion rules instead, both ",
-    "flagged in `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio): (1) the ",
-    "172 sites in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group; (2) ",
-    "sites whose 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO,
-    " times EVERY reference available for it (ratio_badm, ratio_bio12 columns here; BADM MAP where ",
-    "present/non-zero AND WorldClim BIO12 at the tower, both from site_precip_reference.csv -- revised ",
-    "2026-10-02 to require both, not just one, so a single wrong/stale BADM value can't alone exclude a ",
-    "site whose precipitation is otherwise sound; see SESSION_LOG.md for the revised list and the old ",
-    "vs. new 12-site comparison). All sites are still classified in this file for reference; the ",
-    "panel's numerator AND denominator must exclude both groups."
+    "Koppen classification for figure4_representativeness.R's panel A. koppen_twoletter/map_mm/etc. ",
+    "(from compute_site_koppen_era5(), 1991-2020 ERA5 monthly T/P normal, >= 20 of 30 years required, ",
+    "KG_ERA5_MAP_MAX_MM NOT applied here i.e. map_max_mm=Inf) are the ERA5-local classification used ",
+    "ONLY as a fallback. `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio, ",
+    "excluded_p_era_ratio = excluded_p_era_ratio_high | excluded_p_era_ratio_low) is a pure precip-rule ",
+    "flag on the ERA5 climatology -- (1) the 172 not_fitted_slope_9999 (GRP_ERA_DOWN) sites, (2) P_ERA ",
+    "exceeding P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO, " times EVERY available reference (ratio_badm AND ",
+    "ratio_bio12), (3) P_ERA below P_ERA_MIN_RATIO=", round(P_ERA_MIN_RATIO, 3), " times EVERY available ",
+    "reference -- same dual-reference AND logic both sides, see methods_precip_exclusions.md. REVISED ",
+    "2026-10-02: panel A's actual Geo-vs-Data side (main figure only) no longer uses this ERA5 class and ",
+    "its exclusion flag directly for every site -- it uses the PI-reported class (BADM CLIMATE_KOEPPEN, ",
+    "case-normalised against the 30 canonical Koppen codes: pi_raw/pi_canonical/pi_twoletter) for every ",
+    "site that has one, falling back to the ERA5 class/exclusion flag above only for sites without a PI ",
+    "class. `panel_a_source` records which: 'PI', 'era5_fallback', or the specific rule that excluded a ",
+    "fallback site ('excluded_grp_era_down'/'excluded_p_era_ratio_high'/'excluded_p_era_ratio_low'); a ",
+    "PI-sourced site is NEVER excluded even if its own ERA5 climatology would have failed one of these ",
+    "rules. panel_a_class_used/panel_a_eligible are the class and inclusion flag actually used by the ",
+    "panel. See review/diagnostics/koppen_pi_vs_era5/ for the agreement/coverage analysis that prompted ",
+    "this change, and SESSION_LOG.md for the before/after n and J."
   )
 )
 msg("Saved: ", fig4_kg_era5_path)
@@ -914,10 +1041,11 @@ aridity_precip_excl <- compute_precip_exclusions(
 )
 aridity_geo_data_pool <- aridity_annual |>
   dplyr::filter(site_id %in% aridity_precip_excl$site_id[!aridity_precip_excl$excluded_any])
-n_arid_excl_ratio_only <- sum(aridity_precip_excl$excluded_p_era_ratio)
+n_arid_excl_ratio_high <- sum(aridity_precip_excl$excluded_p_era_ratio_high)
+n_arid_excl_ratio_low  <- sum(aridity_precip_excl$excluded_p_era_ratio_low)
 msg("Aridity Geo vs Data exclusions: ", length(slope9999_172), " GRP_ERA_DOWN + ",
-    n_arid_excl_ratio_only, " P_ERA_MAX_RATIO-only = ", sum(aridity_precip_excl$excluded_any),
-    " total excluded; n_eligible = ", nrow(aridity_geo_data_pool))
+    n_arid_excl_ratio_high, " P_ERA_MAX_RATIO + ", n_arid_excl_ratio_low, " P_ERA_MIN_RATIO = ",
+    sum(aridity_precip_excl$excluded_any), " total excluded; n_eligible = ", nrow(aridity_geo_data_pool))
 n_arid_geo_data_classified <- sum(!is.na(aridity_geo_data_pool$unep_class_7))
 msg("Geo vs Data (AI=P_ERA/PET, dual exclusion): ", n_arid_geo_data_classified, " / ",
     nrow(aridity_geo_data_pool), " eligible sites classified")
@@ -944,7 +1072,8 @@ current_sites |>
   dplyr::left_join(aridity_annual, by = "site_id") |>
   dplyr::left_join(
     dplyr::select(aridity_precip_excl, site_id, badm_map_mm, ratio_badm, bio12_mm, ratio_bio12,
-                   excluded_grp_era_down, excluded_p_era_ratio, excluded_any),
+                   excluded_grp_era_down, excluded_p_era_ratio_high, excluded_p_era_ratio_low,
+                   excluded_p_era_ratio, excluded_any),
     by = "site_id"
   ) |>
   dplyr::rename(excluded_fig4_geo_vs_data = excluded_any) |>
@@ -970,12 +1099,16 @@ write_output_metadata(
     "known limitation of the net-radiation approximation, not a data-validity violation -- kept, not ",
     "screened, but both happen to already be excluded by the other two rules (GRP_ERA_DOWN/ratio) so ",
     "neither affects the panel's final eligible pool either way. unep_class_7 via the same CGIAR ",
-    "UNEP-7 breakpoints as aridity_unep7_global_distribution.csv. Dual exclusion as panel A ",
-    "(excluded_fig4_geo_vs_data = excluded_grp_era_down | excluded_p_era_ratio): the 172 ",
-    "GRP_ERA_DOWN sites plus any site whose P_ERA exceeds P_ERA_MAX_RATIO times EVERY reference ",
-    "available for it (revised 2026-10-02 to require both BADM MAP and WorldClim BIO12, not just one). ",
-    "CAPTION NOTE (required): CGIAR's own baseline period is 1970-2000; this Geo-vs-Data calculation ",
-    "uses 1991-2020 ERA5 -- a period mismatch between this panel's two sides not present elsewhere."
+    "UNEP-7 breakpoints as aridity_unep7_global_distribution.csv. Three-rule exclusion, same rules as ",
+    "panel A's ERA5 fallback side (excluded_fig4_geo_vs_data = excluded_grp_era_down | ",
+    "excluded_p_era_ratio_high | excluded_p_era_ratio_low): the 172 GRP_ERA_DOWN sites; P_ERA exceeding ",
+    "P_ERA_MAX_RATIO=", P_ERA_MAX_RATIO, " times EVERY reference available (dual-reference AND logic, ",
+    "revised 2026-10-02); and P_ERA below P_ERA_MIN_RATIO=", round(P_ERA_MIN_RATIO, 3),
+    " times EVERY reference available (added 2026-10-02, same AND logic). Aridity has no PI-reported ",
+    "analogue, so (unlike panel A) this panel's exclusion rules are unchanged by the panel A PI-first ",
+    "revision. CAPTION NOTE (required): CGIAR's own baseline period is 1970-2000; this Geo-vs-Data ",
+    "calculation uses 1991-2020 ERA5 -- a period mismatch between this panel's two sides not present ",
+    "elsewhere."
   )
 )
 msg("Saved: ", fig4_aridity_path)
@@ -991,31 +1124,54 @@ msg("Saved: ", fig4_aridity_path)
 ## once, which is why that panel's "172 GRP_ERA_DOWN" tally among its 777
 ## valid-input sites is effectively 171 distinct sites, not a double-count.
 msg("\n=== Exclusion trace: panels A (Koppen) and C (aridity) ===")
+
+## Panel A's own trace (NOT the generic trace_panel() below): since the
+## PI-first revision, excluded_grp_era_down/excluded_p_era_ratio_* on the
+## ERA5 climatology no longer determine panel eligibility by themselves --
+## a PI-sourced site is never excluded even if its own ERA5 climatology
+## would fail one of these rules -- so panel A's trace is read directly off
+## panel_a_source_df (built above), not off the precip-rule flags alone.
+msg("Panel A (Koppen): ", n_pi, " PI-sourced (never excluded) + ",
+    nrow(kg_geo_data_pool) - n_pi, " ERA5 fallback = ", nrow(kg_geo_data_pool), " eligible")
+msg("  Among sites without a PI class: ", n_excl_grp, " GRP_ERA_DOWN, ", n_excl_ratio_high,
+    " P_ERA_MAX_RATIO, ", n_excl_ratio_low, " P_ERA_MIN_RATIO excluded (",
+    n_excl_grp + n_excl_ratio_high + n_excl_ratio_low, " total of ",
+    sum(!panel_a_source_df$has_pi), " fallback-eligible sites)")
+msg("  n_eligible = ", nrow(kg_geo_data_pool), " (781 total - ", n_excl_grp, " GRP-only - ",
+    n_excl_ratio_high, " max-ratio-only - ", n_excl_ratio_low, " min-ratio-only, all three only ",
+    "evaluated among the ", sum(!panel_a_source_df$has_pi), " sites without a PI class)")
+
+## Panel C's trace: unaffected by the PI-first revision (aridity has no PI-
+## reported analogue), same precip-rule flags as before, now 3-way (GRP vs
+## P_ERA_MAX_RATIO vs the new P_ERA_MIN_RATIO) instead of 2-way.
 trace_panel <- function(df, panel_label, has_invalid_col) {
-  ## NA in excluded_grp_era_down/excluded_p_era_ratio means "rule not
+  ## NA in excluded_grp_era_down/excluded_p_era_ratio_* means "rule not
   ## evaluated for this site" (aridity: the 4 invalid-input sites never
   ## reached compute_precip_exclusions()) -- treated as FALSE for this
   ## trace, not a third state, so logical indexing below doesn't pick up
   ## spurious NA entries (R's x[NA] inserts an NA element, silently
   ## inflating counts and corrupting the printed site lists).
-  grp  <- dplyr::coalesce(df$excluded_grp_era_down, FALSE)
-  rat  <- dplyr::coalesce(df$excluded_p_era_ratio, FALSE)
-  inv  <- if (has_invalid_col) dplyr::coalesce(df$invalid_era5_input, FALSE) else rep(FALSE, nrow(df))
-  grp_only   <- df$site_id[grp & !rat]
-  ratio_only <- df$site_id[rat & !grp]
-  both       <- df$site_id[grp & rat]
+  grp    <- dplyr::coalesce(df$excluded_grp_era_down, FALSE)
+  rat_hi <- dplyr::coalesce(df$excluded_p_era_ratio_high, FALSE)
+  rat_lo <- dplyr::coalesce(df$excluded_p_era_ratio_low, FALSE)
+  rat    <- rat_hi | rat_lo
+  inv    <- if (has_invalid_col) dplyr::coalesce(df$invalid_era5_input, FALSE) else rep(FALSE, nrow(df))
+  grp_only     <- df$site_id[grp & !rat]
+  ratio_hi_only <- df$site_id[rat_hi & !grp]
+  ratio_lo_only <- df$site_id[rat_lo & !grp]
+  both         <- df$site_id[grp & rat]
   msg(panel_label, ": GRP_ERA_DOWN only = ", length(grp_only),
-      "; P_ERA_MAX_RATIO only = ", length(ratio_only),
-      "; both rules = ", length(both),
+      "; P_ERA_MAX_RATIO only = ", length(ratio_hi_only),
+      "; P_ERA_MIN_RATIO only = ", length(ratio_lo_only),
+      "; both (GRP + a ratio rule) = ", length(both),
       if (has_invalid_col) paste0("; invalid ERA5 input (separate screen) = ", sum(inv)) else "")
-  if (length(both) > 0) msg("  Sites caught by BOTH GRP_ERA_DOWN and ratio: ", paste(sort(both), collapse = ", "))
+  if (length(both) > 0) msg("  Sites caught by BOTH GRP_ERA_DOWN and a ratio rule: ", paste(sort(both), collapse = ", "))
   n_elig <- sum(!grp & !rat & !inv)
   msg("  n_eligible = ", n_elig, " (", nrow(df), " total - ", length(grp_only), " GRP-only - ",
-      length(ratio_only), " ratio-only - ", length(both), " both",
+      length(ratio_hi_only), " max-ratio-only - ", length(ratio_lo_only), " min-ratio-only - ",
+      length(both), " both",
       if (has_invalid_col) paste0(" - ", sum(inv), " invalid-input") else "", ")")
 }
-kg_trace <- readr::read_csv(fig4_kg_era5_path, show_col_types = FALSE)
-trace_panel(kg_trace, "Panel A (Koppen)", has_invalid_col = FALSE)
 arid_trace <- readr::read_csv(fig4_aridity_path, show_col_types = FALSE)
 trace_panel(arid_trace, "Panel C (aridity)", has_invalid_col = TRUE)
 msg("DE-Zrk is in BOTH the 172 GRP_ERA_DOWN group AND panel C's invalid-ERA5-input screen -- ",
@@ -1392,12 +1548,20 @@ text_width_mm <- function(label, size_pt, weight = "normal") {
 ## is opened only so grid can resolve font metrics), and subtracting that
 ## from the panel's known total outer width (COL_WIDTH_MM, 1 of 2 equal
 ## figure columns). This replaces guessing a fixed label-gutter width.
-measure_panel_mm_per_unit <- function(class_labels, show_xlab) {
+##
+## Revised 2026-10-02 (task item 4, column alignment): returns the LEFT
+## (everything left of "panel", i.e. the y-axis label gutter) and RIGHT
+## (plot margin only -- no content there) overhead separately, in mm,
+## instead of a single combined "other_mm". The two are needed separately
+## because column alignment (below) must equalise only the LEFT gutter
+## across a/c/e and across b/d/f -- the right-hand overhead is already
+## identical (a fixed plot margin) and must stay untouched.
+measure_panel_layout_mm <- function(class_labels, show_xlab) {
   dummy_df <- data.frame(y = factor(class_labels, levels = class_labels), x = NA_real_)
   p <- ggplot2::ggplot(dummy_df, ggplot2::aes(x = x, y = y)) +
     ggplot2::scale_x_continuous(limits = LOG2_XLIM, breaks = LOG2_BREAKS, labels = LOG2_LABELS,
                                  expand = ggplot2::expansion(mult = 0)) +
-    ggplot2::scale_y_discrete(name = NULL) +
+    ggplot2::scale_y_discrete(name = NULL, limits = class_labels) +
     ggplot2::theme_minimal(base_size = BASE_PT) +
     ggplot2::theme(
       text = ggplot2::element_text(family = FIG_FONT, size = BASE_PT),
@@ -1411,9 +1575,21 @@ measure_panel_mm_per_unit <- function(class_labels, show_xlab) {
   on.exit({ grDevices::dev.off(); unlink(tmp_pdf) }, add = TRUE)
   g <- ggplot2::ggplotGrob(p)
   panel_col <- g$layout$l[g$layout$name == "panel"][1]
-  other_cols <- setdiff(seq_along(g$widths), panel_col)
-  other_mm <- sum(vapply(other_cols, function(i) grid::convertWidth(g$widths[i], "mm", valueOnly = TRUE), numeric(1)))
-  panel_mm <- COL_WIDTH_MM - other_mm
+  left_cols  <- which(seq_along(g$widths) < panel_col)
+  right_cols <- which(seq_along(g$widths) > panel_col)
+  left_mm  <- sum(vapply(left_cols,  function(i) grid::convertWidth(g$widths[i], "mm", valueOnly = TRUE), numeric(1)))
+  right_mm <- sum(vapply(right_cols, function(i) grid::convertWidth(g$widths[i], "mm", valueOnly = TRUE), numeric(1)))
+  list(left_mm = left_mm, right_mm = right_mm)
+}
+
+## panel_mm_per_unit for a panel rendered against a (possibly shared/
+## column-aligned) LEFT gutter width target_left_mm, rather than its own
+## natural gutter -- see column-alignment block below, where target_left_mm
+## is the max natural gutter among the panel's column-mates (a/c/e or
+## b/d/f), so panels with shorter labels give up bar-area width to match.
+panel_mm_per_unit_for <- function(class_labels, show_xlab, target_left_mm) {
+  layout_mm <- measure_panel_layout_mm(class_labels, show_xlab)
+  panel_mm <- COL_WIDTH_MM - target_left_mm - layout_mm$right_mm
   if (panel_mm <= 10) {
     warning("Panel data-area width came out implausibly small (", round(panel_mm, 1),
             " mm) for labels: ", paste(utils::head(class_labels, 3), collapse = ", "), "...")
@@ -1489,7 +1665,7 @@ prep_clip2 <- function(df) {
 ## + J (7pt, right), all one line, via grid grob replacement -- ggplot2 title/
 ## subtitle elements can't mix font sizes/weights within one string, so the
 ## "title" gtable cell's content is swapped out after ggplotGrob(). Reused
-## for the bottom-row under-sampled/over-sampled caption via the "xlab-b"
+## for the bottom-row smaller-proportion/greater-proportion caption via the "xlab-b"
 ## cell (same technique, different cell).
 replace_gtable_cell <- function(g, cell_name, new_grob) {
   idx <- which(g$layout$name == cell_name)
@@ -1501,20 +1677,44 @@ replace_gtable_cell <- function(g, cell_name, new_grob) {
   g$grobs[[idx[1]]] <- new_grob
   g
 }
+## `title_text` may be a plain character string (panels a/b/c) OR a plotmath
+## expression (`as.expression(bquote(...))`, panels d/e/f) -- see
+## PANEL_SPECS' `title_expr` field. Confirmed by direct PDF inspection
+## (task item 4, superscript legibility): the base grDevices::pdf()
+## PostScript "Helvetica" font has no usable glyph for the Unicode
+## superscript-minus character (U+207B) used in d/e/f's unit titles (e.g.
+## "Mg ha⁻¹") -- it rendered as a barely-visible baseline dot, not
+## a minus sign, even though the same string renders correctly in the PNG
+## (ragg/Helvetica.ttc has the glyph). A plotmath expression sidesteps this
+## entirely: grid typesets the superscript by scaling/raising an ordinary
+## ASCII hyphen and digit via its own font metrics, which both devices
+## handle correctly, rather than depending on one special Unicode glyph
+## being present in the active font. A fixed `TITLE_GAP_MM` (not a literal
+## "  " prefix baked into the label, as the previous character-only version
+## used) provides the letter-to-title gap so this works identically for
+## both label types.
+TITLE_GAP_MM <- 1.6
 header_grob <- function(letter, title_text, j_val) {
   letter_grob <- grid::textGrob(tolower(letter), x = 0, hjust = 0, vjust = 0.5,
                                  gp = grid::gpar(fontsize = LETTER_PT, fontface = "bold", fontfamily = FIG_FONT, col = "grey10"))
-  title_grob <- grid::textGrob(paste0("  ", title_text), x = grid::grobWidth(letter_grob), hjust = 0, vjust = 0.5,
+  title_x <- grid::grobWidth(letter_grob) + grid::unit(TITLE_GAP_MM, "mm")
+  title_grob <- grid::textGrob(title_text, x = title_x, hjust = 0, vjust = 0.5,
                                 gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey10"))
   j_text <- if (!is.na(j_val)) sprintf("J = %.3f", j_val) else ""
   j_grob <- grid::textGrob(j_text, x = 1, hjust = 1, vjust = 0.5,
                             gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey20"))
   grid::gTree(children = grid::gList(letter_grob, title_grob, j_grob))
 }
+## Wording revised 2026-10-02 (task item 5): "under-sampled"/"over-sampled"
+## implied a value judgement about sampling adequacy this figure doesn't
+## make -- it only reports the ratio of each class's tower share to its
+## land share. Replaced with the neutral "smaller proportion"/"greater
+## proportion"; the legend (write_fig4_legend()) states once, in full, what
+## that means (smaller/greater proportion of towers than of land).
 caption_grob <- function() {
-  left  <- grid::textGrob("under-sampled", x = 0.25, hjust = 0.5, vjust = 1,
+  left  <- grid::textGrob("smaller proportion", x = 0.25, hjust = 0.5, vjust = 1,
                            gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey30"))
-  right <- grid::textGrob("over-sampled", x = 0.75, hjust = 0.5, vjust = 1,
+  right <- grid::textGrob("greater proportion", x = 0.75, hjust = 0.5, vjust = 1,
                            gp = grid::gpar(fontsize = BASE_PT, fontfamily = FIG_FONT, col = "grey30"))
   grid::gTree(children = grid::gList(left, right))
 }
@@ -1523,10 +1723,46 @@ caption_grob <- function() {
 ## `show_header` adds a blank pseudo-row at the top of the DATA (a real row,
 ## included in the row-pitch height math, not an overflow annotation) and
 ## overlays "% land"/"towers" column headers on it. `show_xlab` replaces the
-## x-axis title row with the under-sampled/over-sampled caption.
+## x-axis title row with the smaller-proportion/greater-proportion caption.
 LABEL_OFFSET <- 0.15
+
+## ---- Column alignment (task item 4): force this panel's LEFT (y-axis
+## label) gutter to a shared target width across its output column (a/c/e
+## or b/d/f), so the "panel" (bar/data) column -- a flexible "null" gtable
+## unit that otherwise absorbs whatever's left after the fixed-width
+## columns around it -- starts at the SAME horizontal offset for every
+## panel in that column, and the 1x gridline lines up. Needed because
+## ggplot auto-sizes the axis-l column to each panel's OWN y-axis label
+## text at render time, independent of panel_mm_per_unit_for()'s upstream
+## mm calibration (which only affects in-bar label placement, not the
+## rendered gtable itself) -- confirmed empirically: without this, panel a
+## (short 2-letter Koppen labels) and panel c (long labels like "Humid
+## (moderate)") had their shared 1x line about 7.7mm apart in the first
+## print render. Only the axis-l column is touched (set to an explicit mm
+## width); the panel column is left as "null" and absorbs the
+## corresponding change automatically at final (patchwork) layout time --
+## exactly the task's "take it from the bar area" instruction, not a font
+## change.
+align_panel_left_mm <- function(g, target_left_mm) {
+  panel_col <- g$layout$l[g$layout$name == "panel"][1]
+  axis_l_rows <- which(g$layout$name == "axis-l")
+  if (length(axis_l_rows) == 0) {
+    warning("gtable has no 'axis-l' cell -- column alignment skipped for this panel.")
+    return(g)
+  }
+  axis_l_col <- g$layout$l[axis_l_rows[1]]
+  other_left_cols <- setdiff(which(seq_along(g$widths) < panel_col), axis_l_col)
+  tmp_pdf <- tempfile(fileext = ".pdf")
+  grDevices::pdf(tmp_pdf, width = 10, height = 10, family = "Helvetica")
+  on.exit({ grDevices::dev.off(); unlink(tmp_pdf) }, add = TRUE)
+  other_left_mm <- sum(vapply(other_left_cols, function(i) grid::convertWidth(g$widths[i], "mm", valueOnly = TRUE), numeric(1)))
+  g$widths[axis_l_col] <- grid::unit(max(target_left_mm - other_left_mm, 0), "mm")
+  g
+}
+
 draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
-                         show_xlab = FALSE, show_header = FALSE, label_pt = BASE_PT) {
+                         show_xlab = FALSE, show_header = FALSE, label_pt = BASE_PT,
+                         target_left_mm = NA_real_) {
   if (show_header) {
     header_row <- df[1, ]
     header_row[] <- NA
@@ -1557,11 +1793,31 @@ draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
     p <- p + ggplot2::geom_col(data = none_df, width = 0.72, na.rm = TRUE, show.legend = FALSE,
                                 fill = "white", colour = "black", linewidth = 0.25, linetype = "dashed")
   }
+  ## ---- Row order (task item 4): explicit `limits` on the y scale, NOT
+  ## relied-on factor level order. Confirmed by direct reproduction that
+  ## without this, ggplot2's discrete-scale training over TWO geom_col
+  ## layers with different `data=` subsets (bar_df vs none_df, used below
+  ## for the dashed "none" bars) can silently reorder the row whose only
+  ## occurrence is in the second (none_df) layer to the END of the trained
+  ## range instead of its correct factor position -- e.g. Koppen's EF (a
+  ## permanent "none" class, no PI/ERA5 class ever assigns a tower to pure
+  ## ice) rendered ABOVE ET in the first print render, and ET panel F's
+  ## bar-1 "0-5" class (always "none", since no vegetated tower can fall
+  ## below the GPP-based bar-1 cut) rendered at the very top instead of the
+  ## bottom. `limits = levels(df$class_label)` forces the correct, already-
+  ## computed ascending class_order sequence regardless of this layer-
+  ## training quirk, and is identical between the Geo vs Geo/Geo vs Data
+  ## comparisons for a given panel (same global class universe either way),
+  ## satisfying "identical in both figures". `breaks` drops the header
+  ## pseudo-row's blank class from the set of positions that get a tick
+  ## mark (task item 4, "remove the unlabelled tick on the header row").
+  y_limits <- levels(df$class_label)
+  y_breaks <- setdiff(y_limits, "")
   p <- p +
     ggplot2::scale_fill_manual(values = col_vals, na.value = NA) +
     ggplot2::scale_x_continuous(limits = LOG2_XLIM, breaks = LOG2_BREAKS, labels = LOG2_LABELS,
                                  expand = ggplot2::expansion(mult = 0), name = NULL) +
-    ggplot2::scale_y_discrete(name = NULL) +
+    ggplot2::scale_y_discrete(name = NULL, limits = y_limits, breaks = y_breaks) +
     ggplot2::theme_minimal(base_size = BASE_PT) +
     ggplot2::theme(
       text              = ggplot2::element_text(family = FIG_FONT, size = BASE_PT, colour = "grey10"),
@@ -1624,15 +1880,20 @@ draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
     ggplot2::geom_text(data = lbl_df, ggplot2::aes(x = right_x, y = class_label, label = right_label, colour = I(right_colour)),
                         inherit.aes = FALSE, hjust = 0, size = label_pt, size.unit = "pt", family = FIG_FONT)
 
+  ## Clip-annotation text (e.g. "5.4x" beside a truncated bar): previously
+  ## `label_pt - 1`, i.e. 6pt at the figure's 7pt base size -- below the
+  ## task's "no text smaller than 7pt" floor (task item 4). Fixed at
+  ## `label_pt` like every other on-panel label; never shrunk to fit.
   ann_df <- dplyr::filter(df, !is.na(annot_label)) |> dplyr::mutate(clip_colour = contrast_text_color(color_hex))
   if (nrow(ann_df) > 0) {
     p <- p + ggplot2::geom_text(
       data = ann_df, ggplot2::aes(x = annot_x, y = class_label, label = annot_label, hjust = annot_hjust, colour = I(clip_colour)),
-      inherit.aes = FALSE, size = label_pt - 1, size.unit = "pt", family = FIG_FONT
+      inherit.aes = FALSE, size = label_pt, size.unit = "pt", family = FIG_FONT
     )
   }
 
   g <- ggplot2::ggplotGrob(p)
+  if (!is.na(target_left_mm)) g <- align_panel_left_mm(g, target_left_mm)
   g <- replace_gtable_cell(g, "title", header_grob(letter, title_text, j_val))
   if (show_xlab) g <- replace_gtable_cell(g, "xlab-b", caption_grob())
   g
@@ -1724,15 +1985,27 @@ PANEL_SPECS <- list(
            order_map = ARIDITY_ORDER_MAP, label_map = ARIDITY_LABEL_MAP, color_map = ARIDITY_COLORS,
            total_km2 = ARIDITY_LAND_TOTAL_KM2, land_grid = "CGIAR Aridity Index v3.1"),
   D = list(letter = "d", title = "Biomass (Mg ha\u207b\u00b9)", axis = "biomass",
+           title_expr = as.expression(bquote(Biomass ~ (Mg ~ ha^{-1}))),
            order_map = BIOMASS_ORDER_MAP, label_map = BIOMASS_LABEL_MAP, color_map = BIO7_COLORS,
            total_km2 = BIOMASS_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask (fine)"),
   E = list(letter = "e", title = "NEE (gC m\u207b\u00b2 yr\u207b\u00b9)", axis = "nee",
+           title_expr = as.expression(bquote(NEE ~ (gC ~ m^{-2} ~ yr^{-1}))),
            order_map = FLUX_ORDER_MAP, label_map = NEE_LABEL_MAP, color_map = NEE7_COLORS,
            total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg"),
   F = list(letter = "f", title = "ET (mm yr\u207b\u00b9)", axis = "et",
+           title_expr = as.expression(bquote(ET ~ (mm ~ yr^{-1}))),
            order_map = FLUX_ORDER_MAP, label_map = ET_LABEL_MAP, color_map = ET7_COLORS,
            total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg")
 )
+## `title_expr` is used for the RENDERED panel title (header_grob(), both
+## PNG and PDF) wherever present; `title` (plain string) is still used for
+## all plain-text output (legend DESCRIPTION list, panel_n_line()) -- kept
+## as two separate fields rather than one, since sprintf("%s", <expression>)
+## does not produce the intended text.
+panel_title_for_render <- function(letter) {
+  spec <- PANEL_SPECS[[letter]]
+  if (!is.null(spec$title_expr)) spec$title_expr else spec$title
+}
 
 get_j_fig4 <- function(panel, cmp) {
   v <- metrics_df$weighted_jaccard[metrics_df$panel == panel & metrics_df$comparison == cmp]
@@ -1777,8 +2050,53 @@ PANEL_LABEL_PT <- setNames(rep(BASE_PT, 6), c("A", "B", "C", "D", "E", "F"))
 PANEL_LAYOUT <- list(
   row1 = c("A", "B"), row2 = c("C", "D"), row3 = c("E", "F")
 )
+COLUMN_LAYOUT <- list(col1 = c("A", "C", "E"), col2 = c("B", "D", "F"))
 show_header_for <- function(letter) letter %in% PANEL_LAYOUT$row1
 show_xlab_for   <- function(letter) letter %in% PANEL_LAYOUT$row3
+
+## ---- Fixed per-axis row order (task item 4): the full, ascending (bottom-
+## to-top) class_label sequence for a panel letter, independent of
+## comparison (the global class universe -- and hence this sequence -- is
+## the same for Geo vs Geo and Geo vs Data; build_merged_for_panel() always
+## full_joins every possible class, never a comparison-specific subset).
+## Includes the blank header pseudo-row at the end (top) when that panel is
+## in row1, so this is also the exact `y_limits` draw_panel2() will use.
+panel_y_limits <- function(panel_letter) {
+  spec <- PANEL_SPECS[[panel_letter]]
+  labs <- unname(spec$label_map[order(spec$order_map)])
+  if (show_header_for(panel_letter)) labs <- c(labs, "")
+  labs
+}
+
+## ---- Column alignment (task item 4): measure each panel's own natural
+## left (y-axis label) gutter once -- identical between the two output
+## figures for a given letter, since panel_y_limits() doesn't depend on
+## comparison -- then align every panel in a column to the WIDER of its
+## column-mates' gutters. msg()-logged so the before/after values are in
+## the run log.
+ALL_LETTERS <- c("A", "B", "C", "D", "E", "F")
+panel_layout_mm <- setNames(
+  lapply(ALL_LETTERS, function(l) measure_panel_layout_mm(panel_y_limits(l), show_xlab_for(l))),
+  ALL_LETTERS
+)
+gutter_mm <- vapply(panel_layout_mm, `[[`, numeric(1), "left_mm")
+TARGET_GUTTER_MM <- setNames(rep(NA_real_, 6), ALL_LETTERS)
+for (col in COLUMN_LAYOUT) {
+  TARGET_GUTTER_MM[col] <- max(gutter_mm[col])
+}
+msg("Column gutter widths (mm), own -> aligned: col1 (a/c/e) ",
+    paste(sprintf("%s=%.2f", names(gutter_mm[COLUMN_LAYOUT$col1]), gutter_mm[COLUMN_LAYOUT$col1]), collapse = ", "),
+    " -> ", round(TARGET_GUTTER_MM[["A"]], 2),
+    "mm; col2 (b/d/f) ",
+    paste(sprintf("%s=%.2f", names(gutter_mm[COLUMN_LAYOUT$col2]), gutter_mm[COLUMN_LAYOUT$col2]), collapse = ", "),
+    " -> ", round(TARGET_GUTTER_MM[["B"]], 2), "mm")
+
+PANEL_MM_PER_UNIT <- setNames(
+  vapply(ALL_LETTERS, function(l) {
+    panel_mm_per_unit_for(panel_y_limits(l), show_xlab_for(l), TARGET_GUTTER_MM[[l]])
+  }, numeric(1)),
+  ALL_LETTERS
+)
 
 build_fig4_panel2 <- function(panel_letter, comparison) {
   spec <- PANEL_SPECS[[panel_letter]]
@@ -1786,11 +2104,12 @@ build_fig4_panel2 <- function(panel_letter, comparison) {
   df <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
   show_xlab   <- show_xlab_for(panel_letter)
   show_header <- show_header_for(panel_letter)
-  panel_mm_per_unit <- measure_panel_mm_per_unit(levels(df$class_label), show_xlab)
   j_val <- get_j_fig4(panel_letter, comparison)
-  g <- draw_panel2(df, panel_mm_per_unit, spec$letter, spec$title, j_val,
+  g <- draw_panel2(df, PANEL_MM_PER_UNIT[[panel_letter]], spec$letter,
+                    panel_title_for_render(panel_letter), j_val,
                     show_xlab = show_xlab, show_header = show_header,
-                    label_pt = PANEL_LABEL_PT[[panel_letter]])
+                    label_pt = PANEL_LABEL_PT[[panel_letter]],
+                    target_left_mm = TARGET_GUTTER_MM[[panel_letter]])
   list(df = df, grob = g, n_rows = nlevels(df$class_label) + if (show_header) 1L else 0L,
        show_xlab = show_xlab, show_header = show_header)
 }
@@ -1923,6 +2242,17 @@ panel_n_line <- function(letter, cmp) {
           PANEL_SPECS[[letter]]$axis, n[1], j[1])
 }
 
+## ---- Caption land-area equivalents (task item 6): what 1/5/10/20/30% of
+## each land grid's total actually is, in million km2, computed here from
+## the same *_LAND_TOTAL_KM2 constants the panels themselves use -- so a
+## reader can translate a panel's "% land" bar number into an area without
+## doing the arithmetic themselves.
+land_pct_line <- function(total_km2) {
+  pcts <- c(1, 5, 10, 20, 30)
+  vals <- total_km2 * pcts / 100 / 1e6
+  paste(sprintf("%d%%=%.2f", pcts, vals), collapse = ", ")
+}
+
 write_fig4_legend <- function(comparison, fig_path, height_mm) {
   cmp_label <- if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"
   n_lines <- vapply(c("A", "B", "C", "D", "E", "F"), panel_n_line, character(1), cmp = comparison)
@@ -1966,31 +2296,49 @@ write_fig4_legend <- function(comparison, fig_path, height_mm) {
       "network towers is drawn as a bar to the left clip limit with a white fill and dashed",
       "outline, labelled \"none\" instead of a tower count. J (weighted Jaccard overlap between",
       "the land and tower distributions) is right-aligned above each panel. Per-panel tower n",
-      "is NOT shown on the panel -- see the per-panel n/J list below. The bottom row's x axis",
-      "is labelled \"under-sampled\" (left of 1x) / \"over-sampled\" (right of 1x).", "",
+      "is NOT shown on the panel -- see the per-panel n/J list below. The bottom row's x axis is",
+      "labelled \"smaller proportion\" (left of 1x) / \"greater proportion\" (right of 1x): left of",
+      "1x, that class holds a smaller proportion of current-network towers than of global land;",
+      "right of 1x, a greater proportion.", "",
       "LAND GRIDS AND TOTALS:",
       "  Koppen, land cover and biomass: Beck et al. (2023) 1 km (0.00833 deg) Koppen-Geiger",
       "    land mask, 147,322,862 km2 -- land cover and biomass both reuse this same mask",
       "    directly, not a separately-resolved or finer version of it.",
+      sprintf("    1/5/10/20/30%% of this total = %s million km2.", land_pct_line(KG_LAND_TOTAL_KM2)),
       "  Aridity: CGIAR Aridity Index v3.1's own native raster coverage, 134,761,545 km2 --",
       "    smaller than the shared 147.3M km2 total because the CGIAR raster ends at 60 deg S",
       "    (no Antarctic grid cells), unlike the Beck Koppen mask.",
+      sprintf("    1/5/10/20/30%% of this total = %s million km2.", land_pct_line(ARIDITY_LAND_TOTAL_KM2)),
       "  NEE and ET: TRENDY v14 ensemble-median 0.5 deg grid under the Koppen land mask,",
       "    163,331,649 km2 -- at this coarse resolution a coastal cell straddling land and",
-      "    ocean counts as whole land (no fractional-coverage weighting).", "",
+      "    ocean counts as whole land (no fractional-coverage weighting).",
+      sprintf("    1/5/10/20/30%% of this total = %s million km2.", land_pct_line(FLUX_LAND_TOTAL_KM2)), "",
       sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, "",
-      "EXCLUSIONS (Geo vs Data, precipitation-dependent panels a and c only):",
+      "EXCLUSIONS AND SOURCES (Geo vs Data, panels a and c only):",
+      sprintf("  Panel a (Koppen): the PI-reported class (BADM CLIMATE_KOEPPEN, case-normalised) is used"),
+      sprintf("    for %d of 781 sites; the other %d fall back to the ERA5-local class, of which %d are",
+              n_pi, 781L - n_pi, n_excl_grp + n_excl_ratio_high + n_excl_ratio_low),
+      "    excluded by the rules below -- a PI-reported site is NEVER excluded even if its own ERA5",
+      sprintf("    climatology would fail one of these rules. n = %d PI + %d ERA5 fallback = %d / 781.",
+              n_pi, nrow(kg_geo_data_pool) - n_pi, nrow(kg_geo_data_pool)),
       "  1. GRP_ERA_DOWN: 172 sites whose BIF-recorded ERA_SLOPE for precipitation is the",
       "     sentinel -9999, distinguishing them from the other 609 sites' ERA_SLOPE=1.0 (a",
       "     different, more common sentinel) -- neither pattern is a genuinely fitted",
       "     regression: zero of the 781 current-network sites have one. See",
       "     methods_precip_exclusions.md.",
-      sprintf("  2. P_ERA_MAX_RATIO=%d: P_ERA exceeds %d times EVERY reference available (BADM MAP AND", P_ERA_MAX_RATIO, P_ERA_MAX_RATIO),
-      "     WorldClim BIO12) -- 10 further sites beyond the 172.",
-      "  Panel c additionally excludes 4 sites with physically impossible raw ERA5 inputs to the",
-      "  FAO-56 PET calculation (CD-Ygb, DE-Zrk, FR-LBr, US-Sne); DE-Zrk is also one of the 172",
-      "  GRP_ERA_DOWN sites above, counted once. Panel a: 182 excluded (172+10), n=599/781.",
-      "  Panel c: 185 excluded (172+10+4, less 1 for DE-Zrk counted under both rules), n=596/781.", "",
+      sprintf("  2. P_ERA_MAX_RATIO=%d / P_ERA_MIN_RATIO=1/%d: P_ERA exceeds/falls below that many times",
+              P_ERA_MAX_RATIO, round(1 / P_ERA_MIN_RATIO)),
+      "     EVERY reference available (BADM MAP AND WorldClim BIO12) -- same dual-reference AND logic",
+      "     both sides.",
+      sprintf("  Panel a fallback-only exclusions: %d GRP_ERA_DOWN, %d P_ERA_MAX_RATIO, %d P_ERA_MIN_RATIO.",
+              n_excl_grp, n_excl_ratio_high, n_excl_ratio_low),
+      "  Panel c (aridity) applies all three rules to every site (no PI-reported analogue exists for",
+      "  aridity) plus 4 sites with physically impossible raw ERA5 inputs to the FAO-56 PET calculation",
+      "  (CD-Ygb, DE-Zrk, FR-LBr, US-Sne); DE-Zrk is also one of the 172 GRP_ERA_DOWN sites, counted once.",
+      sprintf("  Panel c: %d GRP_ERA_DOWN, %d P_ERA_MAX_RATIO, %d P_ERA_MIN_RATIO, 4 invalid-input (less 1",
+              length(slope9999_172), n_arid_excl_ratio_high, n_arid_excl_ratio_low),
+      sprintf("  for DE-Zrk counted under both GRP_ERA_DOWN and invalid-input) excluded; n = %d / 781.",
+              nrow(aridity_geo_data_pool)), "",
       "PERIOD MISMATCH (panel c only): CGIAR's Aridity Index v3.1 baseline is 1970-2000;",
       "panel c's Geo vs Data side (AI = P_ERA / FAO-56 PET) uses 1991-2020 ERA5 instead, to",
       "match the other ERA5-derived panels.", "",

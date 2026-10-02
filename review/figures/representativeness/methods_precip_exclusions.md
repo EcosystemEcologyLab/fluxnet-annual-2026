@@ -3,10 +3,16 @@ dependency and no exclusions — every tower has a value in the gridded product 
 
 The new Figure 4's two precipitation-dependent Geo vs Data panels — Köppen (A) and aridity (C) — both
 depend on each site's own 1991–2020 mean annual P_ERA, which is unreliable for some sites (see
-`review/diagnostics/precip_downscaling_provenance/report.md`). Two exclusion rules apply to both panels,
-additive to each other and applied in addition to each panel's own classification logic. Both are
-site-level: an excluded site is removed from that panel's numerator *and* denominator, not merely left
-unclassified.
+`review/diagnostics/precip_downscaling_provenance/report.md`). Three exclusion rules apply, additive to
+each other and applied in addition to each panel's own classification logic. All three are site-level: an
+excluded site is removed from that panel's numerator *and* denominator, not merely left unclassified.
+
+**Revised 2026-10-02: panel A applies these rules only to its ERA5-fallback sites.** Panel A's Geo vs Data
+side now classifies from the PI-reported class (BADM `CLIMATE_KOEPPEN`) for every site that has one, and
+falls back to the ERA5-local class (gated by the three rules below) only for the rest — see
+`methods_koppen_era5.md`, "PI-reported class used first". A PI-sourced site is never excluded by these
+rules, even if its own ERA5 climatology would fail one. Panel C has no PI-reported analogue, so all three
+rules still apply to every site there, unchanged by this revision.
 
 **Rule 1 — GRP_ERA_DOWN (172 sites).** Sites in the `precip_downscaling_provenance` diagnostic's
 `not_fitted_slope_9999` group: their BIF-recorded `ERA_SLOPE` for precipitation is the sentinel value
@@ -35,8 +41,23 @@ otherwise sound — the revised rule catches 10 sites beyond the 172. All four p
 under both versions. Full site lists, ratios, and the old-vs-new comparison are in SESSION_LOG.md
 (2026-10-02 entries).
 
+**Rule 3 — P_ERA_MIN_RATIO (`R/pipeline_config.R`, = 1/3; added 2026-10-02).** The low-side mirror of Rule
+2: a site's 1991–2020 mean annual P_ERA falls *below* `P_ERA_MIN_RATIO` times *every* reference available
+for it, same dual-reference AND logic, same "only reference available decides alone" fallback. Catches 22
+sites beyond the 172 (e.g. `CA-TP2`, P_ERA≈0 mm/yr against BADM MAP 1036 mm/yr and BIO12 970 mm/yr) — the
+same class of ERA5 spatial-averaging/extraction artifact as Rule 2, in the opposite direction. Sensitivity:
+33 sites at ratio < 1/2, 22 at < 1/3 (the adopted threshold), 16 at < 1/4. Full site list, ratios, and
+sensitivity counts are in `SESSION_LOG.md` (2026-10-02 entry for this change).
+
 **Tracing n.** Every exclusion is logged via `log_exclusion()` (`outputs/exclusion_log.csv`, gitignored),
-naming which rule triggered it. Panel A: 172 Rule-1-only + 10 Rule-2-only = 182 excluded, n=599/781.
-Panel C: 171 Rule-1-only + 10 Rule-2-only + 4 invalid-ERA5-input (see `methods_aridity_era5.md`) = 185
-excluded, n=596/781 — one fewer Rule-1-only than panel A because `DE-Zrk` is in both the 172-site group
-*and* the aridity-only invalid-input screen, counted once under the latter.
+naming which rule triggered it.
+- **Panel A** (ERA5-fallback sites only, since the 2026-10-02 PI-first revision — see above): of the 178
+  sites without a PI-reported class, 28 are Rule-1-only (GRP_ERA_DOWN), 0 Rule-2-only
+  (P_ERA_MAX_RATIO — all ten of the general Rule-2 catch have a PI-reported class and so are never
+  evaluated by this rule here), 3 Rule-3-only (P_ERA_MIN_RATIO) = 31 excluded. n = 603 PI + 147 ERA5
+  fallback = 750/781, J=0.399 (previous ERA5-only design: n=599/781, J=0.411).
+- **Panel C** (all 781 sites, unaffected by the PI-first revision): 171 Rule-1-only + 10 Rule-2-only + 22
+  Rule-3-only + 4 invalid-ERA5-input (see `methods_aridity_era5.md`) = 207 excluded, n=574/781, J=0.675
+  (previous two-rule design: n=596/781, J=0.718) — one fewer Rule-1-only than the raw 172 because
+  `DE-Zrk` is in both the 172-site group *and* the aridity-only invalid-input screen, counted once under
+  the latter.

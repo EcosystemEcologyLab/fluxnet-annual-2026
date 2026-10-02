@@ -1,11 +1,13 @@
 {
-  "run_datetime_utc": "2026-10-01T22:42:36Z",
-  "pipeline_version": "cd91ce9",
+  "run_datetime_utc": "2026-10-02T19:33:25Z",
+  "pipeline_version": "afc2532",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb",
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
     "data/snapshots/site_precip_reference.csv",
-    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv"
+    "data/processed/badm.rds",
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
+    "review/diagnostics/koppen_pi_vs_era5/"
   ],
-  "notes": "Koppen classification for figure4_representativeness.R's Geo-vs-Data panel A. Same method as site_koppen_era5.csv (R/climate_classification.R::compute_site_koppen_era5(), 1991-2020 ERA5 monthly T/P normal, >= 20 of 30 years required) EXCEPT the KG_ERA5_MAP_MAX_MM=5000mm/yr per-site-year screen is NOT applied here (map_max_mm=Inf). Two exclusion rules instead, both flagged in `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio): (1) the 172 sites in the precip_downscaling_provenance not_fitted_slope_9999 (GRP_ERA_DOWN) group; (2) sites whose 1991-2020 mean annual P_ERA exceeds P_ERA_MAX_RATIO=3 times EVERY reference available for it (ratio_badm, ratio_bio12 columns here; BADM MAP where present/non-zero AND WorldClim BIO12 at the tower, both from site_precip_reference.csv -- revised 2026-10-02 to require both, not just one, so a single wrong/stale BADM value can't alone exclude a site whose precipitation is otherwise sound; see SESSION_LOG.md for the revised list and the old vs. new 12-site comparison). All sites are still classified in this file for reference; the panel's numerator AND denominator must exclude both groups."
+  "notes": "Koppen classification for figure4_representativeness.R's panel A. koppen_twoletter/map_mm/etc. (from compute_site_koppen_era5(), 1991-2020 ERA5 monthly T/P normal, >= 20 of 30 years required, KG_ERA5_MAP_MAX_MM NOT applied here i.e. map_max_mm=Inf) are the ERA5-local classification used ONLY as a fallback. `excluded_fig4_geo_vs_data` (= excluded_grp_era_down | excluded_p_era_ratio, excluded_p_era_ratio = excluded_p_era_ratio_high | excluded_p_era_ratio_low) is a pure precip-rule flag on the ERA5 climatology -- (1) the 172 not_fitted_slope_9999 (GRP_ERA_DOWN) sites, (2) P_ERA exceeding P_ERA_MAX_RATIO=3 times EVERY available reference (ratio_badm AND ratio_bio12), (3) P_ERA below P_ERA_MIN_RATIO=0.333 times EVERY available reference -- same dual-reference AND logic both sides, see methods_precip_exclusions.md. REVISED 2026-10-02: panel A's actual Geo-vs-Data side (main figure only) no longer uses this ERA5 class and its exclusion flag directly for every site -- it uses the PI-reported class (BADM CLIMATE_KOEPPEN, case-normalised against the 30 canonical Koppen codes: pi_raw/pi_canonical/pi_twoletter) for every site that has one, falling back to the ERA5 class/exclusion flag above only for sites without a PI class. `panel_a_source` records which: 'PI', 'era5_fallback', or the specific rule that excluded a fallback site ('excluded_grp_era_down'/'excluded_p_era_ratio_high'/'excluded_p_era_ratio_low'); a PI-sourced site is NEVER excluded even if its own ERA5 climatology would have failed one of these rules. panel_a_class_used/panel_a_eligible are the class and inclusion flag actually used by the panel. See review/diagnostics/koppen_pi_vs_era5/ for the agreement/coverage analysis that prompted this change, and SESSION_LOG.md for the before/after n and J."
 }

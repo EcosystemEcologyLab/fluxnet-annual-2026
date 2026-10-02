@@ -366,7 +366,7 @@ inconsistent with the site's local climate).
 
 **Flagged:** 2026-10-02, during development of `scripts/figure4_representativeness.R` panels A
 (Köppen) and C (aridity), both of which depend on each site's own 1991–2020 mean annual P_ERA.
-Three distinct defects were found and are handled as site-level exclusions, additive to each
+Four distinct defects were found and are handled as site-level exclusions, additive to each
 other (not alternatives) — see `review/figures/representativeness/methods_precip_exclusions.md`
 and `methods_aridity_era5.md` for the full method and `docs/methods_requirements.md` §5.8 for
 how they affect each panel's n.
@@ -396,12 +396,33 @@ how they affect each panel's n.
    valid-looking raw inputs — a known limitation of the net-radiation approximation documented in
    `methods_aridity_era5.md`, flagged but not screened (both already excluded by rules 1–2 anyway).
 
-**Current pipeline handling:** all three are site-level exclusions removed from both the numerator
+4. **P_ERA_MIN_RATIO — a further 22 sites (added 2026-10-02).** The low-side mirror of rule 2:
+   1991–2020 mean annual P_ERA falls below 1/3 (`R/pipeline_config.R`, `P_ERA_MIN_RATIO = 1/3`)
+   **every** reference available for the site, same dual-reference AND logic. Several of these are
+   extreme — e.g. `CA-TP2`'s P_ERA is ~0 mm/yr against BADM MAP 1036 mm/yr and BIO12 970 mm/yr — the
+   same class of ERA5 spatial-averaging/extraction artifact as the high-side cases, in the opposite
+   direction. Sensitivity: 33 sites at ratio < 1/2, 22 at < 1/3 (the adopted threshold), 16 at < 1/4.
+   Full site list and ratios in `SESSION_LOG.md` (2026-10-02 entry for this change).
+
+**The finding that prompted panel A's 2026-10-02 redesign.** `review/diagnostics/
+koppen_pi_vs_era5/` (`scripts/diagnostics/koppen_pi_vs_era5.R`) compared the ERA5-derived class
+these rules gate against the PI-reported class (BADM `CLIMATE_KOEPPEN`) and found the ERA5-derived
+class disagrees with the PI-reported class *more often than it agrees* (59.5% full-class agreement,
+n=603 comparable sites), while the PI class agrees much better with the independent Beck 2023 raster
+(69.2%) — i.e. on top of the four P_ERA defects above, the ERA5-local classification itself is the
+less reliable of the two Geo-vs-Data sources available for panel A. This is not itself a P_ERA
+numeric defect (it is about classification reliability, not an implausible raw value), but it is the
+direct motivation for panel A's PI-first redesign (`methods_koppen_era5.md`, "PI-reported class used
+first"): the four exclusion rules above now apply only to the minority of sites that fall back to the
+ERA5-local class (no PI-reported `CLIMATE_KOEPPEN` value); a PI-sourced site is never excluded by
+them. Panel C (aridity) has no PI-reported analogue and still applies all four rules to every site.
+
+**Current pipeline handling:** all four are site-level exclusions removed from both the numerator
 and denominator of the affected panel (not merely left unclassified), logged via
 `log_exclusion()`/traced explicitly in `figure4_representativeness.R`'s console output. These are
 in addition to, and distinct from, the existing §9a `KG_ERA5_MAP_MAX_MM` outlier screen used by the
 main pipeline's `site_koppen_era5.csv` — Figure 4's `site_koppen_era5_fig4.csv` does NOT apply that
-screen, relying on rules 1–2 above instead (see `methods_koppen_era5.md`, "Two output files").
+screen, relying on rules 1, 2 and 4 above instead (see `methods_koppen_era5.md`, "Two output files").
 
 **Action required:** none at this time — the exclusion rules are the accepted, documented handling
 for Figure 4. If a future panel or analysis depends on site-level P_ERA or ERA5 meteorology beyond

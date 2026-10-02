@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-01T22:42:36Z",
-  "pipeline_version": "cd91ce9",
+  "run_datetime_utc": "2026-10-02T19:33:25Z",
+  "pipeline_version": "afc2532",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
     "data/processed/badm.rds",

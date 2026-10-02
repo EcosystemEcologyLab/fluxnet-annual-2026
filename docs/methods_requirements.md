@@ -247,9 +247,13 @@ Data / Geo vs Geo) comparison design.
   — stated once, since both the figure and the table below use it throughout
 - The weighted Jaccard (Ruzicka) similarity metric, J = Σmin(p,q)/Σmax(p,q), and
   its interpretation (1 = identical distributions, 0 = no overlap)
-- The two precipitation-dependent exclusion rules (panels A and C, Geo vs Data
+- The three precipitation-dependent exclusion rules (panels A and C, Geo vs Data
   only) and why they exist — ERA5 precipitation data-quality issues, not a
   representativeness finding in themselves (see `docs/known_issues.md` §9c)
+- Panel A's PI-reported-class-first design (added 2026-10-02): the exclusion
+  rules above apply only to the minority of sites without a PI-reported Köppen
+  class (BADM `CLIMATE_KOEPPEN`); a PI-sourced site is never excluded. Panel C
+  has no PI-reported analogue and applies all three rules to every site.
 - The period mismatch in panel C (CGIAR Aridity Index v3.1 baseline 1970–2000 vs.
   this figure's 1991–2020 ERA5-derived Geo vs Data side)
 - That the previous Figure 4 (`fig_rep001_current.png`, 767-site network, ESA CCI
@@ -273,17 +277,21 @@ Data / Geo vs Geo) comparison design.
 
 | Panel | Axis | Global product | Site source — Geo vs Geo | Site source — Geo vs Data | Land grid (total km²) | Bin/class scheme | Exclusions (Geo vs Data only) | n, J — Geo vs Geo | n, J — Geo vs Data | Script section | Snapshot file(s) | Methods note(s) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| A | Köppen-Geiger | Beck et al. (2023) 1 km KG raster | `site_koppen_beck2023.csv` (Beck class at tower) | `site_koppen_era5_fig4.csv` (ERA5-derived, no MAP screen) | Beck 2023 1 km mask, 147,322,862 | 13 two-letter classes | GRP_ERA_DOWN (172) + P_ERA_MAX_RATIO (10) = 182 excluded | 781/781, 0.372 | 599/781, 0.411 | Phase 1 | `site_koppen_beck2023.csv`, `site_koppen_era5_fig4.csv` | `methods_koppen_beck2023.md`, `methods_koppen_era5.md` |
+| A | Köppen-Geiger | Beck et al. (2023) 1 km KG raster | `site_koppen_beck2023.csv` (Beck class at tower) | `site_koppen_era5_fig4.csv` — PI-reported BADM `CLIMATE_KOEPPEN` (603 sites) first, ERA5-derived fallback (147 of the remaining 178) second | Beck 2023 1 km mask, 147,322,862 | 13 two-letter classes | ERA5-fallback sites only: GRP_ERA_DOWN (28) + P_ERA_MAX_RATIO (0) + P_ERA_MIN_RATIO (3) = 31 excluded; PI-sourced sites never excluded | 781/781, 0.372 | 750/781, 0.399 | Phase 1 | `site_koppen_beck2023.csv`, `site_koppen_era5_fig4.csv` | `methods_koppen_beck2023.md`, `methods_koppen_era5.md` |
 | B | Land cover (IGBP) | MODIS MCD12C1.061 on Beck 2023 1 km mask | MODIS class at tower (0.05° native) | PI-reported BADM `igbp` | same mask, 147,322,862 | 15 PI-reported classes + Other | none | 781/781, 0.495 | 781/781, 0.346 | Phase 2 | `site_igbp_fig4.csv`, `igbp_mcd12c1_global_distribution.csv` | `methods_igbp.md` |
-| C | Aridity | CGIAR Aridity Index v3.1 | CGIAR AI at tower | AI = 1991–2020 P_ERA / FAO-56 PET (ERA5) | CGIAR's own coverage, 134,761,545 | 7-class UNEP | GRP_ERA_DOWN (171) + P_ERA_MAX_RATIO (10) + invalid ERA5 input (4) = 185 excluded | 781/781, 0.666 | 596/781, 0.718 | Phase 3 | `site_aridity.csv`, `site_aridity_era5_fig4.csv` | `methods_aridity_unep.md`, `methods_aridity_era5.md` |
+| C | Aridity | CGIAR Aridity Index v3.1 | CGIAR AI at tower | AI = 1991–2020 P_ERA / FAO-56 PET (ERA5) | CGIAR's own coverage, 134,761,545 | 7-class UNEP | GRP_ERA_DOWN (171) + P_ERA_MAX_RATIO (10) + P_ERA_MIN_RATIO (22) + invalid ERA5 input (4) = 207 excluded | 781/781, 0.666 | 574/781, 0.675 | Phase 3 | `site_aridity.csv`, `site_aridity_era5_fig4.csv` | `methods_aridity_unep.md`, `methods_aridity_era5.md` |
 | D | Biomass | ESA CCI Biomass v7.0 (2024) | AGB at tower (1 km) | same (no separate data side) | Beck 2023 1 km (0.00833°) mask, same mask as panels A/B, 147,322,862 | 7-bin hybrid (0–5 fixed + 6 quantile) | none | 781/781, 0.636 | 781/781, 0.636 | Phase 4 | `site_biomass_cci_v7.csv` | `methods_biomass.md` |
 | E | NEE | TRENDY v14 ensemble-median | model NEE at tower | Step-3 annual tower NEE (VUT→CUT per-site fallback; NEE_VUT_REF/NEE_CUT_REF, QC≥0.80) | TRENDY land mask, 163,331,649 | 7-bin (bar1 model GPP<5 + 6 rounded sextiles) | sites without a qualifying annual NEE value | 781/781, 0.530 | 601/781, 0.162 | Phase 4 | `site_nee_fig4.csv`, `nee_et_fig4_global_distribution.csv` | `methods_flux_bin_scheme.md` |
 | F | ET | TRENDY v14 ensemble-median | model ET at tower | Step-3 annual tower ET (`LE_F_MDS`, gated on `LE_F_MDS_QC` ≥ 0.80 — no VUT/CUT fallback; that applies to NEE only) | TRENDY land mask, 163,331,649 | 7-bin (bar1 own value<5 + 6 rounded sextiles) | sites without a qualifying annual ET value | 781/781, 0.456 | 634/781, 0.456 | Phase 4 | `site_et_fig4.csv`, `nee_et_fig4_global_distribution.csv` | `methods_flux_bin_scheme.md` |
 
 **Key facts to include (update when finalised):**
 - Network size: 781 sites (snapshot `fluxnet_shuttle_snapshot_20260901T094522.csv`)
-- `P_ERA_MAX_RATIO = 3` (`R/pipeline_config.R`)
-- Final artwork: 183 mm wide, 169.3 mm tall (both figures), Helvetica 7pt
+- `P_ERA_MAX_RATIO = 3`, `P_ERA_MIN_RATIO = 1/3` (`R/pipeline_config.R`)
+- Final artwork: 183 mm wide, 169.3 mm tall (both figures), Helvetica 7pt. Panel titles with unit
+  exponents (d/e/f) are rendered from a plotmath expression, not a literal Unicode superscript-minus
+  character — the latter has no usable glyph in the PDF export's base PostScript Helvetica font
+  (confirmed via `mbcsToSbcs` conversion-failure warnings; the PNG, a TrueType Helvetica, renders it
+  fine either way).
 
 ---
 

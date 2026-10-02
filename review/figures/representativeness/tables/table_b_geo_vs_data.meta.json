@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-01T23:46:46Z",
-  "pipeline_version": "2c6f55b",
-  "input_sources": [
-    "data/snapshots/representativeness_metrics_fig4.csv"
-  ],
-  "notes": "Panel B (igbp), geo_vs_data version. Land grid: MODIS MCD12C1 on Beck 2023 1 km mask (147,322,862 km2 total)."
-}

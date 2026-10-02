@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-01T23:46:45Z",
-  "pipeline_version": "2c6f55b",
-  "input_sources": [
-    "data/snapshots/representativeness_metrics_fig4.csv"
-  ],
-  "notes": "Panel D (biomass), geo_vs_geo version. Land grid: Beck 2023 1 km mask (fine) (147,322,862 km2 total)."
-}

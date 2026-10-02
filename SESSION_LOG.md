@@ -4,6 +4,92 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 — New Fig 4: naming, methods docs brought into line with code (DONE)
+
+Renamed the new Figure 4 outputs to their manuscript names, moved the superseded prior Figure 4 to
+`deprecated/`, and audited/updated every methods note and manuscript-level doc this work touches, per
+instruction to treat the code as authority and flag (not fix) anything in the code that looks wrong.
+
+### 1. Naming
+
+Geo vs Data is main-text Figure 4; Geo vs Geo is a supplemental figure (no number assigned yet). Renamed
+via a new `fig4_output_name()` helper in `scripts/figure4_representativeness.R` (the internal `comparison`
+value still drives all data-selection logic; only the output basename changed) — figures, PDFs,
+`.meta.json`, `.legend.txt`, and per-panel tables all follow:
+
+- `fig_04_representativeness.{png,pdf,meta.json,legend.txt}` (was `fig_04_geo_vs_data.*`)
+- `supp_representativeness_geo_vs_geo.{png,pdf,meta.json,legend.txt}` (was `fig_04_geo_vs_geo.*`)
+- `table_{a-f}_fig_04_representativeness.csv` / `table_{a-f}_supp_representativeness_geo_vs_geo.csv`
+  (was `table_{a-f}_geo_vs_data.csv` / `table_{a-f}_geo_vs_geo.csv`)
+
+Both legends now define "Geo vs Data"/"Geo vs Geo" once, in Figure 4's legend; the supplemental legend
+refers back to Figure 4 for everything the two share (panel layout, bar-label conventions, land
+grids/totals, definitions) and states only what differs (its own n/J, no precipitation exclusions).
+
+Reran the full script after the rename: all 12 panel×comparison rows' n and J matched
+`representativeness_metrics_fig4.csv` exactly (same values as the 2026-10-01 print re-render); both PNGs
+confirmed pixel-identical to the pre-rename render by direct inspection. Old-named files removed from both
+`review/figures/representativeness/` (figure, table, and PDF files) and `review/figures/draft_manuscript_v1/`.
+
+The superseded prior Figure 4 — `fig_04_current_network_sampling_ratios.png`/`.legend.txt` in
+`draft_manuscript_v1/` (sourced from `fig_rep001_current.png` via `figure_representativeness_summary.R`)
+— was moved to `draft_manuscript_v1/deprecated/`. `scripts/build_draft_manuscript_v1.R`'s `figs`/`legends`
+maps no longer reference it; a comment explains the new Figure 4 is built and copied directly by
+`figure4_representativeness.R` instead. `fig_rep001_current.png` itself (the source file) and Figure 5
+(`fig_rep008_jaccard_trajectory_with_counts.png`, via the same build script) are untouched.
+
+### 2. Methods notes brought into line with code
+
+Audited the four Figure-4-specific notes (`methods_igbp.md`, `methods_aridity_era5.md`,
+`methods_flux_bin_scheme.md`, `methods_precip_exclusions.md`) line by line against the script and
+`SESSION_LOG.md`'s own prior entries. **No disagreements found** — every number, threshold, site name,
+and file name in all four traces to a named constant (`P_ERA_MAX_RATIO`, `NEE_BAR1_GPP_CUT`,
+`ET_LOW_CUT`, land totals), a snapshot file, or the script's own console/trace output recorded in
+`SESSION_LOG.md` (the AU-ASM/US-Ha1/US-SRM aridity-formula validation checks in `methods_aridity_era5.md`
+are not present in the current script body — they were one-off development-time checks — but trace to the
+2026-10-02 Phase 3 `SESSION_LOG.md` entry, an acceptable provenance record). Added a "This note supports:"
+first line to all 11 methods notes in `review/figures/representativeness/`, naming which figure(s) each
+backs.
+
+Updated `methods_koppen_era5.md` and `methods_koppen_beck2023.md`: 767→781 sites throughout,
+`site_koppen_beck2023.csv`'s refreshed 781-site extraction, and Figure 4's treatment of each. Documented
+the two Köppen-ERA5 site files explicitly: `site_koppen_era5.csv` (screened, `KG_ERA5_MAP_MAX_MM` applied)
+remains the classification source for the main pipeline (`docs/methods_requirements.md` §5.2/§5.4) and for
+`fig_rep001–008` — confirmed still depended upon by a repository-wide search (also read by several
+`review/diagnostics/*` reports and `scripts/generate_kg_availability_heatmaps.R`) — while
+`site_koppen_era5_fig4.csv` (unscreened, `map_max_mm=Inf`) is Figure 4 panel A's Geo vs Data source,
+excluded instead via the two precipitation rules in `methods_precip_exclusions.md`.
+
+`methods_landcover.md` and `methods_trendy_iav.md` now state plainly that Figure 4 no longer uses their
+axes (IGBP and the signed NEE/ET hybrid scheme replace them in Figure 4 panels B/E/F respectively), while
+both remain current for `fig_rep001–008`, confirmed by reading `fig_rep001_current.legend.txt`'s own panel
+list (B = ESA CCI Land Cover, E/F = TRENDY NEE-IAV/ET-median).
+
+### 3. Manuscript-level docs
+
+- `docs/methods_requirements.md`: added §5.8, including a 6-row table mapping each panel to its global
+  product, site-side source in each version, land grid/total area, bin scheme, exclusions, n/J, script
+  phase, snapshot file(s), and methods note(s).
+- `docs/figure_inventory.md`: added a new section listing both new figures and `figure4_representativeness.R`,
+  and the superseded prior Figure 4 with its new `deprecated/` location.
+- `docs/decisions_pending.md`: both representativeness-climate-axis entries marked RESOLVED 2026-10-02
+  (struck through in place, per this file's own existing convention, rather than deleted).
+- `docs/known_issues.md`: added §9c documenting the three ERA5 defects Figure 4's precipitation-dependent
+  panels found — the 172 GRP_ERA_DOWN sites, the 10 `P_ERA_MAX_RATIO`-caught sites, and the 4 sites with
+  invalid raw LW/VPD inputs to the FAO-56 PET calculation.
+
+### 4. Flagged in code, left alone (not fixed, per instruction)
+
+- `scripts/step5_compute_koppen_era5.R`'s own header comment still says "current 767-site network" even
+  though its snapshot pin (`fluxnet_shuttle_snapshot_20260901T094522.csv`) already produces the correct
+  781-row `site_koppen_era5.csv` on disk (confirmed via `wc -l`) — a stale comment, not a code bug.
+- `methods_biomass.md` (not one of the four audited notes) has a pre-existing internal inconsistency
+  unrelated to this work: "Site coordinates from `fluxnet_shuttle_snapshot_20260624T095651.csv` (767
+  sites)" alongside "NA sites in this extraction: 0 of 781" in the same file — left as found, outside this
+  task's explicit scope.
+
+---
+
 ## 2026-10-01 — New Fig 4: Nature final-artwork print re-render (DONE)
 
 Re-rendered both new Figure 4 PNGs/PDFs in `scripts/figure4_representativeness.R` to Nature final-artwork

@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-01T23:46:45Z",
-  "pipeline_version": "2c6f55b",
-  "input_sources": [
-    "data/snapshots/representativeness_metrics_fig4.csv"
-  ],
-  "notes": "Panel E (nee), geo_vs_geo version. Land grid: TRENDY v14 ensemble-median, 0.5 deg (163,331,649 km2 total)."
-}

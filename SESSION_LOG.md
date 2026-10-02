@@ -4,6 +4,33 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (6) — Figure 4: bottom-label clipping fix, remaining wording cleanup (DONE)
+
+Small follow-up to 2026-10-02 (5). Two items from a direct pixel-level review of the committed
+PNGs.
+
+### 1. Bottom-margin clipping
+
+Direct pixel inspection of both `review/figures/representativeness/fig_04_representativeness.png`
+and `supp_representativeness_geo_vs_geo.png` found ink in the very last PNG row — the "smaller
+proportion"/"greater proportion" caption's descenders (the `p` in "proportion") were clipped at
+the bottom edge. Cause: `scripts/figure4_representativeness.R` used a single `EDGE_PAD_MM = 6`
+for both the top title-row slack and the bottom caption slack; 6mm was sufficient for the title
+but not for the caption's descenders. Split into independent `TOP_PAD_MM = 6` / `BOTTOM_PAD_MM =
+10`. Figure height grows from 169.3mm to 173.3mm (within the 190mm target, well under the 247mm
+hard limit). Re-ran the script; confirmed by full-width pixel scan that the last row of ink is now
+91 rows above the bottom edge in both PNGs (well past the 20-row requirement), and the script's
+own built-in check confirms all twelve panels' `n_classified`/`weighted_jaccard` are byte-identical
+to `representativeness_metrics_fig4.csv` before this change — this was a pure rendering fix, no
+data or bin logic touched.
+
+### 2. Remaining "under-sampled"/"over-sampled" wording
+
+The 2026-10-02 (5) wording pass updated the in-figure labels, legend, and caption text generated
+by `figure4_representativeness.R` itself, but missed two instances in hand-written prose in
+`methods_aridity_unep.md` and `methods_koppen_beck2023.md`. Both replaced with "smaller
+proportion"/"greater proportion" (of towers than of land), matching the figure's own phrasing.
+
 ## 2026-10-02 (5) — Figure 4 revision: P_ERA_MIN_RATIO, panel A PI-first, layout/wording fixes (DONE)
 
 Continued from an interrupted earlier run of this same task (only `P_ERA_MIN_RATIO` had been added to

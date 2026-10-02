@@ -34,8 +34,11 @@ forest) → AI=1.85 (Humid, correct); US-SRM (Santa Rita semi-arid savanna) → 
    raw formula negative for that month; unclipped, this could make the annual PET total itself negative
    or near-zero at cold sites. Standard FAO-56 practice.
 
-**Exclusions** — see `methods_precip_exclusions.md` for the two precipitation-dependent rules shared with
-panel A. Panel C additionally excludes 4 sites (`CD-Ygb`, `DE-Zrk`, `FR-LBr`, `US-Sne`) whose raw ERA5
+**Exclusions** — see `methods_precip_exclusions.md` for the three precipitation-dependent rules (added
+2026-10-02: a low-side `P_ERA_MIN_RATIO` rule mirrors the original `P_ERA_MAX_RATIO`). Unlike panel A,
+panel C has no PI-reported analogue, so all three rules apply to every site (not just a fallback
+population) — panel C's own exclusion logic is unchanged by panel A's 2026-10-02 PI-first revision.
+Panel C additionally excludes 4 sites (`CD-Ygb`, `DE-Zrk`, `FR-LBr`, `US-Sne`) whose raw ERA5
 inputs are physically impossible in at least one month (e.g. `LW_IN_ERA` up to ~32,000 W/m², `VPD_ERA` up
 to ~1,660 hPa) — an ERA5 data-quality issue in the bundled extraction, screened by a physical-plausibility
 check (LW/SW <0 or >1000 W/m²; VPD <0 or >100 hPa; WS ≤0 or >50 m/s; PA outside [50,110] kPa; TA outside

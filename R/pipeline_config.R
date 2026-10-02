@@ -69,13 +69,25 @@ KG_ERA5_MAP_MAX_MM <- 5000 # mm/yr; site-years above this are reanalysis
 
 #' @export
 P_ERA_MAX_RATIO <- 3 # a site is excluded from precipitation-dependent Geo-vs-
-# Data panels if its 1991-2020 mean annual P_ERA exceeds this many times its
-# reference mean annual precipitation (PI-reported BADM MAP where present and
-# non-zero, else WorldClim BIO12 at the tower). Set above the up-to-~2x
-# differences topography alone can produce between a point and a gridded
-# climatology, and below the ~4x inflation seen at the sites already flagged
-# as ERA5 spatial-averaging artifacts (e.g. US-HB4) — see SESSION_LOG.md for
-# the sensitivity check at ratios 2/3/4.
+# Data panels if its 1991-2020 mean annual P_ERA exceeds this many times EVERY
+# reference available for it (PI-reported BADM MAP where present and
+# non-zero, AND WorldClim BIO12 at the tower — revised 2026-10-02 to
+# dual-reference AND logic; where only one reference exists, that one decides
+# alone). Set above the up-to-~2x differences topography alone can produce
+# between a point and a gridded climatology, and below the ~4x inflation seen
+# at the sites already flagged as ERA5 spatial-averaging artifacts (e.g.
+# US-HB4) — see SESSION_LOG.md for the sensitivity check at ratios 2/3/4.
+
+#' @export
+P_ERA_MIN_RATIO <- 1 / 3 # mirrors P_ERA_MAX_RATIO on the low side: a site is
+# excluded from precipitation-dependent Geo-vs-Data panels if its 1991-2020
+# mean annual P_ERA is below this fraction of EVERY reference available for
+# it (same dual-reference AND logic as P_ERA_MAX_RATIO). Added 2026-10-02
+# after review/diagnostics/koppen_pi_vs_era5/ found panel a's ERA5-derived
+# class disagrees with the PI-reported class more often than it agrees —
+# prompting both this low-side screen and the PI-class-first design in
+# figure4_representativeness.R panel a. See SESSION_LOG.md for the sites
+# caught and the sensitivity check at ratios 1/2, 1/3, 1/4.
 
 #' Check pipeline configuration
 #'

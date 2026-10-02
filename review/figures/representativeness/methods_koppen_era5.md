@@ -94,14 +94,38 @@ is applied:
 - `data/snapshots/site_koppen_era5_fig4.csv` — written by
   `scripts/figure4_representativeness.R` Phase 1, same
   `compute_site_koppen_era5()` call but with `map_max_mm = Inf` (the
-  `KG_ERA5_MAP_MAX_MM` screen NOT applied as an exclusion). Figure 4 panel A's
-  Geo vs Data side instead excludes sites via the two precipitation-dependent
-  rules in `methods_precip_exclusions.md` (GRP_ERA_DOWN and `P_ERA_MAX_RATIO`),
-  which are additive to each other and unrelated to the `KG_ERA5_MAP_MAX_MM`
-  threshold. `figure4_representativeness.R` also reads the screened
-  `site_koppen_era5.csv` once, read-only, purely as a QA comparison (how many of
-  its 26 previously-unclassified sites fall inside vs outside the new 172-site
-  GRP_ERA_DOWN group) — not as a classification input for Figure 4.
+  `KG_ERA5_MAP_MAX_MM` screen NOT applied as an exclusion). This ERA5-local
+  classification now serves ONLY as panel A's **fallback** source (see "PI-
+  reported class used first" below) and, for fallback sites, is still subject to
+  the three precipitation-dependent rules in `methods_precip_exclusions.md`
+  (GRP_ERA_DOWN, `P_ERA_MAX_RATIO`, and `P_ERA_MIN_RATIO`, added 2026-10-02),
+  additive to each other and unrelated to the `KG_ERA5_MAP_MAX_MM` threshold.
+  `figure4_representativeness.R` also reads the screened `site_koppen_era5.csv`
+  once, read-only, purely as a QA comparison (how many of its 26 previously-
+  unclassified sites fall inside vs outside the new 172-site GRP_ERA_DOWN group)
+  — not as a classification input for Figure 4.
+
+**PI-reported class used first (revised 2026-10-02).** Figure 4 panel A's Geo vs
+Data side (main figure only; the Geo vs Geo supplemental panel still uses the
+Beck 2023 raster and is unaffected) no longer classifies every site from this
+ERA5-local source. `review/diagnostics/koppen_pi_vs_era5/` (run before this
+revision; `scripts/diagnostics/koppen_pi_vs_era5.R`) found that the ERA5-derived
+class disagrees with the PI-reported class (BADM `CLIMATE_KOEPPEN`) more often
+than it agrees (59.5% full-class agreement, n=603 comparable sites), while the PI
+class agrees noticeably better with the independent Beck 2023 raster (69.2%) —
+i.e. the ERA5-local classification is the less reliable of the two Geo-vs-Data
+sources available for this panel. Panel A now uses the PI-reported class (case-
+normalised against the 30 canonical Koppen codes, same lookup as
+`scripts/diagnostics/koppen_pi_vs_era5.R`) for every site that has one (603/781
+as of the 2026-09-01 snapshot pin — TERN's 0% `CLIMATE_KOEPPEN` BADM coverage
+accounts for most of the shortfall vs. 781), and falls back to the ERA5-local
+class above only for the remaining sites. Because the three precipitation-
+dependent exclusion rules screen the ERA5 climatology itself, they apply ONLY to
+fallback sites — a site with a PI-reported class is NEVER excluded from this
+panel, even if its own ERA5 climatology would fail one of the rules.
+`site_koppen_era5_fig4.csv`'s `pi_raw`/`pi_canonical`/`pi_twoletter`/
+`panel_a_source`/`panel_a_class_used`/`panel_a_eligible` columns record this.
+See `SESSION_LOG.md` for the before/after n and J.
 
 **Scope.** This method applies only to the current 781-site Shuttle network.
 Historical-network comparisons (FLUXNET2015, La Thuile, MARCONI) and the global

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-02T16:36:36Z",
+  "pipeline_version": "bc8e6dd",
+  "input_sources": [
+    "data/processed/badm.rds",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"
+  ],
+  "notes": "PI-reported (BADM CLIMATE_KOEPPEN) class coverage by data_hub (AmeriFlux/ICOS/TERN), for the current 781-site network. 'data_hub' used rather than the multi-valued 'network' acknowledgment column, per CLAUDE.md Hard Rule 2 (use the manifest's own field, not an ID-prefix inference); data_hub is a clean single-value field already in the snapshot. n_with_valid_pi counts only raw values that canonicalise to one of the 30 standard Koppen classes (case-insensitive)."
+}

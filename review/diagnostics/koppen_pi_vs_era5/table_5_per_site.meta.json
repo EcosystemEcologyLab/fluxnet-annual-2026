@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-10-02T16:36:36Z",
+  "pipeline_version": "bc8e6dd",
+  "input_sources": [
+    "data/processed/badm.rds",
+    "data/snapshots/site_koppen_era5_fig4.csv",
+    "data/snapshots/site_koppen_beck2023.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"
+  ],
+  "notes": "Per-site comparison for all 781 current-network sites. 'network' = data_hub (AmeriFlux/ICOS/TERN). pi_class is the canonicalised (case-normalised) PI-reported CLIMATE_KOEPPEN value; NA where no raw value exists or it did not match a recognised Koppen class (see table_0 for invalid raw values, printed to console). The three agree_* flags are full-class (3-letter) agreement, case-insensitive, for each of the three pairwise comparisons among pi_class/era5_class/beck_class. excluded_fig4_geo_vs_data mirrors Figure 4 panel a's own Geo vs Data exclusion flag (FALSE for sites not evaluated by that rule, e.g. if era5_class itself is NA for an unrelated reason)."
+}

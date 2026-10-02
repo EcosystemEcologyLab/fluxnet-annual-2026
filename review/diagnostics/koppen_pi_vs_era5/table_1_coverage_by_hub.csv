@@ -1,0 +1,5 @@
+data_hub,n_sites,n_with_pi_raw,n_with_valid_pi,pct_with_valid_pi
+AmeriFlux,381,358,358,94
+ICOS,348,245,245,70.4
+TERN,52,0,0,0
+ALL,781,603,603,77.2

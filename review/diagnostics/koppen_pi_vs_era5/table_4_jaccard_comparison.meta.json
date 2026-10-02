@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-02T16:36:36Z",
+  "pipeline_version": "bc8e6dd",
+  "input_sources": [
+    "data/processed/badm.rds",
+    "data/snapshots/koppen_beck2023_global_distribution.csv",
+    "data/snapshots/representativeness_metrics_fig4.csv"
+  ],
+  "notes": "Weighted Jaccard (13-class) using the PI-reported class for every one of the 603 sites with a valid (canonicalisable) CLIMATE_KOEPPEN value -- NOT restricted to the 599-site panel a Geo vs Data eligible pool (i.e. this population is not comparable 1:1 with the current panel a n; it answers 'what if PI class were substituted network-wide', not 'what if PI class were substituted only within the current exclusion rules'). Current panel a figure (0.411, n=599) from representativeness_metrics_fig4.csv, reproduced here as a fixed reference value, not recomputed."
+}

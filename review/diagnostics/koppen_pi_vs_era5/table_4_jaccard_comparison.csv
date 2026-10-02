@@ -1,0 +1,3 @@
+source,n,weighted_jaccard
+"ERA5-derived (current Figure 4 panel a, Geo vs Data)",599,0.411
+PI-reported (every site with a valid class),603,0.359

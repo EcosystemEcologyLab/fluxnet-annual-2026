@@ -2176,13 +2176,19 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   ## a shorter-than-device content block (found unreliable: even generous
   ## uniform extra device height left the bottom caption clipped while
   ## fixing the top title -- the two edges needed independently-sized
-  ## slack). 6mm each: empirically sufficient for both the title row's and
-  ## the caption row's "1grobheight" rendering margin of error.
-  EDGE_PAD_MM <- 6
-  total_height_mm <- h_row1 + h_row2 + h_row3 + 2 * EDGE_PAD_MM
+  ## slack). TOP_PAD_MM=6mm: empirically sufficient for the title row's
+  ## "1grobheight" rendering margin of error. BOTTOM_PAD_MM=10mm (revised
+  ## 2026-10-02, up from a shared 6mm): confirmed by direct pixel inspection
+  ## that 6mm still left the caption's descenders ("p" in "proportion")
+  ## touching the very last PNG row (ink present at row height-1, the bottom
+  ## edge, with zero blank rows beneath). 10mm leaves the bottom rows blank
+  ## -- checked below, after render, for both PNGs.
+  TOP_PAD_MM <- 6
+  BOTTOM_PAD_MM <- 10
+  total_height_mm <- h_row1 + h_row2 + h_row3 + TOP_PAD_MM + BOTTOM_PAD_MM
   fig_heights_mm[[comparison]] <- total_height_mm
   msg("Row heights (mm): row1=", round(h_row1, 1), " row2=", round(h_row2, 1),
-      " row3=", round(h_row3, 1), "; +", EDGE_PAD_MM, "mm explicit top + ", EDGE_PAD_MM,
+      " row3=", round(h_row3, 1), "; +", TOP_PAD_MM, "mm explicit top + ", BOTTOM_PAD_MM,
       "mm explicit bottom spacer; TOTAL=", round(total_height_mm, 1),
       " mm (target <=190mm, hard limit 247mm)")
   if (total_height_mm > 247) stop("Figure height ", round(total_height_mm, 1), " mm exceeds the 247mm hard limit.")
@@ -2191,7 +2197,7 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
                 built$A$grob, built$B$grob, built$C$grob, built$D$grob, built$E$grob, built$F$grob,
                 patchwork::plot_spacer(), patchwork::plot_spacer())
   composite <- patchwork::wrap_plots(grobs, ncol = 2,
-                                      heights = grid::unit(c(EDGE_PAD_MM, h_row1, h_row2, h_row3, EDGE_PAD_MM), "mm"))
+                                      heights = grid::unit(c(TOP_PAD_MM, h_row1, h_row2, h_row3, BOTTOM_PAD_MM), "mm"))
 
   png_path <- file.path(FIG_DIR, paste0(fig4_output_name(comparison), ".png"))
   ggplot2::ggsave(png_path, composite, width = FIG_WIDTH_MM, height = total_height_mm, units = "mm",

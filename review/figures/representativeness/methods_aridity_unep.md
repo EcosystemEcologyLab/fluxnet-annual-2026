@@ -47,7 +47,8 @@ the KG raster total of 147.3 M km2). For the 7-class scheme, the same cell-area
 raster was reused and only the zonal summation was re-run.
 
 The sampling ratio for each class is the network fraction divided by the global
-land fraction (values above 1 = over-sampled, below 1 = under-sampled). Two
+land fraction (values above 1 = a greater proportion of towers than of land,
+below 1 = a smaller proportion). Two
 scalar metrics summarise overall representativeness. The weighted Jaccard
 (Ruzicka) similarity J = sum(min(p,q)) / sum(max(p,q)) and Hellinger distance
 H = (1/sqrt(2)) * sqrt(sum((sqrt(p) - sqrt(q))^2)) are both bounded [0,1].

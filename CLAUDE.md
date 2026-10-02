@@ -94,10 +94,14 @@ confirmation on:
   candidate figures)
 
 **On a local machine or HPC** (`CODESPACE_NAME` is not set):
-Apply standard caution — ask before running bash commands that modify files
-or install packages. This protects production data on HPC and local
-research files on personal machines. Git commit and push are the exception
-to this caution — see below.
+Proceed without asking when running scripts that write only inside the
+repository's output locations (`review/`, `data/snapshots/`, `outputs/`,
+`logs/`, `data/external/*/derived/`), and when reading or editing files in
+the repository. That covers figure scripts, diagnostics, candidate figures
+and documentation. Ask before running pipeline stages 01–05 or batch
+downloads, which rebuild `data/raw`, `data/extracted`, `data/processed` or
+the DuckDB store, and before installing packages. Git commit and push
+remain the exception to this caution, as described in the next paragraph.
 
 **Git commit and push** (not force-push): autonomous in every environment,
 including local — do not ask first. In particular, commit and push

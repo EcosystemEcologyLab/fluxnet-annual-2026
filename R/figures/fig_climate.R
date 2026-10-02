@@ -144,6 +144,25 @@ WHITTAKER_STYLE <- list(
 #'   0 at the achromatic white centre before hue would matter.
 #'   \code{gradient2}'s Lab-space interpolation has no such hue-wraparound
 #'   artifact.)
+#' @param fill_mode \code{"continuous"} (default, unchanged prior behaviour)
+#'   or \code{"stepped"}. \code{"stepped"} discretises each hexagon's median
+#'   NEE into named bins (via \code{after_stat(cut(value, ...))}) and maps
+#'   them with \code{\link[ggplot2]{scale_fill_manual}} instead of a
+#'   continuous/diverging scale -- \code{nee_mid_colour} and
+#'   \code{style$nee_lims} are ignored in this mode. Requires
+#'   \code{step_breaks} and \code{step_colours}.
+#' @param step_breaks Numeric vector of interior bin edges (ascending),
+#'   required when \code{fill_mode = "stepped"} -- e.g.
+#'   \code{seq(-400, 200, by = 100)} for 7 interior edges (8 bins: one
+#'   open below the first edge, one open above the last). Ignored
+#'   otherwise.
+#' @param step_colours Character vector of hex colours, one per bin, length
+#'   \code{length(step_breaks) + 1}, ordered low to high. Required when
+#'   \code{fill_mode = "stepped"}.
+#' @param step_labels Character vector of bin labels, same length as
+#'   \code{step_colours}, or \code{NULL} (default) to auto-generate
+#'   \code{"below <edge>"} / \code{"<lo> to <hi>"} / \code{"above <edge>"}
+#'   labels from \code{step_breaks}.
 #' @param detail_lines Character vector or \code{NULL} (default \code{NULL},
 #'   preserving existing behaviour: a single auto-built
 #'   \code{"N = <n_sites> sites | <n_site_years> site-years"} line). When
@@ -197,8 +216,32 @@ fig_whittaker_worldclim <- function(
   nee_mid_colour  = NULL,
   detail_lines    = NULL,
   detail_hjust    = -0.07,
-  detail_x_offset = 0
+  detail_x_offset = 0,
+  fill_mode       = c("continuous", "stepped"),
+  step_breaks     = NULL,
+  step_colours    = NULL,
+  step_labels     = NULL
 ) {
+  fill_mode <- match.arg(fill_mode)
+  if (fill_mode == "stepped") {
+    if (is.null(step_breaks) || is.null(step_colours)) {
+      stop("fill_mode = 'stepped' requires both step_breaks and step_colours.", call. = FALSE)
+    }
+    if (length(step_colours) != length(step_breaks) + 1L) {
+      stop("step_colours must have length(step_breaks) + 1 = ", length(step_breaks) + 1L,
+           " elements (one per bin). Got ", length(step_colours), ".", call. = FALSE)
+    }
+    if (is.null(step_labels)) {
+      step_labels <- c(
+        paste0("below ", step_breaks[1]),
+        paste0(utils::head(step_breaks, -1), " to ", step_breaks[-1]),
+        paste0("above ", step_breaks[length(step_breaks)])
+      )
+    }
+    if (length(step_labels) != length(step_colours)) {
+      stop("step_labels must be the same length as step_colours.", call. = FALSE)
+    }
+  }
 
   for (pkg in c("hexbin", "colorspace")) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -384,7 +427,19 @@ fig_whittaker_worldclim <- function(
     alpha       = point_alpha,
     inherit.aes = FALSE
   )
+  ## fill_mode = "stepped": discretise the per-hexagon median into named
+  ## bins via after_stat(cut(...)) on stat_summary_hex()'s own `value`
+  ## output aesthetic, mapped below with scale_fill_manual() instead of a
+  ## continuous scale. A hexagon with no qualifying sites (fun returns
+  ## NA_real_ above) gets a NA bin, which scale_fill_manual(na.translate =
+  ## FALSE) below draws unfilled -- same as the continuous mode's
+  ## na.value = NA.
   hex_layer <- ggplot2::stat_summary_hex(
+    mapping  = if (fill_mode == "stepped") {
+      ggplot2::aes(fill = ggplot2::after_stat(
+        cut(value, breaks = c(-Inf, step_breaks, Inf), labels = step_labels)
+      ))
+    } else NULL,
     fun      = function(x) if (all(is.na(x))) NA_real_
                            else median(x, na.rm = TRUE),
     bins     = hex_bins,
@@ -414,7 +469,14 @@ fig_whittaker_worldclim <- function(
   # limits/oob -- and mid recoloured. See @param nee_mid_colour above for why
   # a same-endpoints custom HCL two-half reconstruction (matching
   # diverging_hcl's own interpolation exactly) was tried and rejected.
-  nee_fill_scale <- if (is.null(nee_mid_colour)) {
+  nee_fill_scale <- if (fill_mode == "stepped") {
+    ggplot2::scale_fill_manual(
+      values       = stats::setNames(step_colours, step_labels),
+      breaks       = step_labels,
+      na.translate = FALSE,   # hexagons with no qualifying sites stay unfilled
+      drop         = FALSE    # keep every step in the key even if a bin is empty in this panel
+    )
+  } else if (is.null(nee_mid_colour)) {
     colorspace::scale_fill_continuous_diverging(
       palette  = "Blue-Red 3",
       mid      = 0,
@@ -435,17 +497,26 @@ fig_whittaker_worldclim <- function(
     )
   }
 
+  fill_guide <- if (fill_mode == "stepped") {
+    ggplot2::guide_legend(
+      title    = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
+      ncol     = 1,
+      reverse  = TRUE,   # highest (source) step at top, lowest (sink) at bottom
+      override.aes = list(colour = "black", linewidth = 0.25)
+    )
+  } else {
+    ggplot2::guide_colorbar(
+      title          = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
+      title.position = "top",
+      barwidth       = style$colorbar_width,
+      barheight      = style$colorbar_height,
+      direction      = "horizontal"
+    )
+  }
+
   p <- p +
     nee_fill_scale +
-    ggplot2::guides(
-      fill = ggplot2::guide_colorbar(
-        title          = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
-        title.position = "top",
-        barwidth       = style$colorbar_width,
-        barheight      = style$colorbar_height,
-        direction      = "horizontal"
-      )
-    ) +
+    ggplot2::guides(fill = fill_guide) +
     ggplot2::annotate(
       "text",
       # detail_x_offset == 0 (default): x = -Inf, unchanged from prior

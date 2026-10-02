@@ -1,0 +1,56 @@
+FIGURE LEGEND — supp_flux_comparison_matched_siteyears.png
+============================================================
+
+TITLE: Extended Data Figure — FLUXNET2015 vs. current FLUXNET Shuttle per-IGBP-class median
+flux comparison, restricted to matched site-years
+
+DESCRIPTION:
+Three vertically-stacked panels (a NEP, b ET, c H -- bold lower-case, 8pt) comparing, for
+each IGBP vegetation class, the median flux value computed from the FLUXNET2015 release
+against the median value from the current FLUXNET Shuttle network -- but unlike the
+primary comparison figure (fig_03_flux_comparison_combo_nep_et_h.png), each site's
+median on BOTH axes is computed only over the calendar years where BOTH datasets have a
+QC_THRESHOLD_YY-qualifying value for that flux (matched independently per flux), so any
+shift between axes isolates ONEFlux processing-version differences from network-
+composition/coverage change -- see review/figures/methods_flux_medians.md,
+'Processing-version confound'. fluxnet2015_n_sites == shuttle_n_sites per class by
+construction (the same matched site set contributes to both axes). No plot title,
+subtitle, or caption is drawn inside the figure; the exclusion rule is stated here only.
+
+PANELS AND AXES:
+  a (top)    — Net Ecosystem Production (NEP) — n = 131 matched sites,
+               821 matched site-years
+  b (middle) — Evapotranspiration (ET) — n = 135 matched sites, 839 matched site-years
+  c (bottom) — Sensible heat flux (H) — n = 135 matched sites, 861 matched site-years
+Each panel has an independently-computed axis range (equal x/y limits with 10% padding)
+and four-sided black inward tick marks (duplicated secondary axis, no labels), solid
+black panel border, no gridlines. Axis titles use plotmath, not a Unicode superscript-
+minus character (same reason as the primary combo figure).
+
+COLOUR CODING: scale_fill_igbp() (R/plot_constants.R), one point per IGBP class per panel.
+
+CLASSIFICATION SCHEME AND EXCLUSIONS:
+Class statistics computed only over the 12 STANDARD_IGBP labels; a class is excluded
+(flagged, not dropped from the companion CSV) when fewer than 5 sites have >=1 matched
+site-year for that flux -- recomputed per flux here, so the excluded-class set can differ
+from the primary figure's fixed {CVM, CSH} set. See the companion CSV
+(flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv) for exact per-class/per-flux
+n and exclusion reasons.
+
+DATA SOURCES AND QC (revised 2026-10-02):
+Shuttle: R/site_annual_fluxes.R::compute_site_annual_fluxes(), DuckDB `annual` table (FLUXMET
+dataset). FLUXNET2015: compute_site_annual_fluxes_from_df(), this project's own already-
+extracted FLUXNET2015 YY CSVs (data/fluxnet2015_comparison/, comparison-only data under
+CLAUDE.md Hard Rule 1). Both gated on QC_THRESHOLD_YY=0.5 (R/pipeline_config.R),
+the per-site VUT/CUT rule in scripts/04_qc.R for NEP; H plotted in its native W m⁻² mean
+rate (h_unit = "W_m2"), matching the primary combo figure's panel c -- not the shared
+function's default pre-integrated MJ m⁻² yr⁻¹ total. IGBP class: current Shuttle
+classification only (site_flux_medians_shuttle.csv), one label per site used for both axes.
+
+REPRODUCIBILITY:
+Script: scripts/figure_flux_comparison_combo_alt_common_siteyears.R
+Companion table: data/snapshots/
+  flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv
+DIMENSIONS: 89 x 228 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
+Helvetica, white background. All text 7pt (axis titles/text; IGBP class point labels
+confirmed at 6.3pt) except the bold lower-case panel letters (8pt).

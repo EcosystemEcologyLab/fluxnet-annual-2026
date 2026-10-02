@@ -41,15 +41,29 @@ Four-sided black tick marks (inward) are drawn on all axes via a duplicated
 secondary axis with no labels; only the primary (bottom/left) ticks carry
 text.
 
-COLOUR CODING:
-Shuttle background stack coloured by IGBP class using the fixed
-R/plot_constants.R::IGBP_colours palette (15 classes: ENF, EBF, DNF, DBF, MF,
-WSA, SAV, GRA, SHR, OSH, CRO, WET, URB, NV, CSH — forests stacked at the
-bottom in dark green, barren/other classes at the top in grey); only classes
-actually present in the current network appear in the legend key. The three
-historical dataset lines use a separate qualitative palette (Marconi green
-#2ECC71, La Thuile red #E74C3C, FLUXNET2015 blue #3498DB) and are labelled
-directly on the plot rather than via the IGBP legend key.
+COLOUR CODING (fixed 2026-10-02, task 2): Shuttle background stack coloured
+by IGBP class using a palette scoped to this figure (fig1b_igbp_colours in
+fig_cumulative_siteyears_igbp(), R/figures/fig_network_growth.R), reused
+verbatim from scripts/figure4_representativeness.R's own IGBP_ORDER/
+IGBP_COLORS (Google Earth Engine's documented MODIS/061/MCD12Q1 LC_Type1
+palette) -- NOT the shared R/plot_constants.R::IGBP_order/IGBP_colours,
+which list the wrong 15 classes for this network (SHR, URB, NV -- zero
+current-network towers report any of these -- instead of CVM, BSV, SNO,
+which 7 + 9 + 2 = 18 towers do report) and silently dropped those 18 towers
+from every prior build of this figure. The fix is scoped to this one
+figure, not the shared constants: IGBP_order has 7 other callers across
+R/figures/ (fig_igbp.R, fig_environmental_response.R, fig_latitudinal.R,
+fig_growing_season.R, fig_climate.R, fig_timeseries.R) plus 2 scripts
+(00_diagnostics.R, investigate_badm_management.R) not audited by this fix
+-- see SESSION_LOG.md 2026-10-02 for that full list and the per-class
+site-year counts below. The 15 classes plotted (ENF, EBF, DNF, DBF, MF,
+CSH, OSH, WSA, SAV, GRA, WET, CRO, CVM, BSV, SNO; forests stacked at the
+bottom in dark green) are exactly the 15 the current 781-site network
+reports -- every key in the legend has at least one tower behind it, and no
+tower is excluded by the key not covering its class. The three historical
+dataset lines use a separate qualitative palette (Marconi green #2ECC71, La
+Thuile red #E74C3C, FLUXNET2015 blue #3498DB) and are labelled directly on
+the plot rather than via the IGBP legend key.
 
 REFERENCE LINES:
 Vertical dashed grey lines (linetype "dashed", colour grey55) at x = 2000,
@@ -82,8 +96,18 @@ DATA SOURCES:
 CLASSIFICATION SCHEME:
 IGBP land-cover classification as reported in the Shuttle snapshot's `igbp`
 column. Sites with missing first_year, missing igbp, or an igbp code outside
-the standard 15-class set are dropped from the Shuttle stack (but not from
-the historical comparison lines, which use only first_year/last_year).
+the current network's 15-class set (ENF, EBF, DNF, DBF, MF, CSH, OSH, WSA,
+SAV, GRA, WET, CRO, CVM, BSV, SNO -- see COLOUR CODING above) are dropped
+from the Shuttle stack (but not from the historical comparison lines, which
+use only first_year/last_year). No current-network site is dropped on this
+basis as of the 2026-10-02 fix (0 of 781 sites carry an igbp code outside
+this set).
+
+SITE-YEARS PLOTTED (1991-2024), by class -- the exact stacked-area total,
+reported here per task instruction rather than estimated from the figure:
+  ENF 1171, EBF 406, DNF 102, DBF 756, MF 218, CSH 75, OSH 344, WSA 186,
+  SAV 114, GRA 1014, WET 743, CRO 815, CVM 52, BSV 46, SNO 19.
+  TOTAL: 6,061 site-years.
 
 EXCLUSION NOTES:
 Historical dataset "active year" counts are computed by expanding each
@@ -96,7 +120,18 @@ known caveat carried over from the underlying figure function.
 
 REPRODUCIBILITY:
 Function: fig_cumulative_siteyears_igbp() in R/figures/fig_network_growth.R
+  (panel_letter()/nature_theme()/save_nature_figure() from R/nature_format.R
+  add the panel letter and enforce the Nature text/PDF rules, 2026-10-02)
 Script:   scripts/generate_duration_histograms.R (figure "Dur11" in that
           script's numbered sequence of 11 duration/growth figures)
-Output:   review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png
-DIMENSIONS: 3.5 × 3.5 inches, 300 dpi, white background
+Output:   review/figures/network/fig_dur11_CumulativeSiteYears_IGBP.png/.pdf,
+          copied to fig_01b_cumulative_siteyears_igbp.png/.pdf in
+          review/figures/draft_manuscript_v1/ by
+          scripts/build_draft_manuscript_v1.R
+DIMENSIONS: 89 x 89 mm, 600 dpi PNG + vector PDF, Helvetica, white background.
+All text 7 pt (axis titles/text, legend title/text) except the direct
+dataset labels (Marconi/La Thuile/FLUXNET2015), sized from base_size and
+confirmed at 6.3 pt, and the bold lower-case panel letter "b" (8 pt,
+top-left) -- this is panel b of Figure 1 (panel a is
+fig_01a_map_current_network.png, a separate file). No plot title, subtitle,
+or caption is drawn inside the figure.

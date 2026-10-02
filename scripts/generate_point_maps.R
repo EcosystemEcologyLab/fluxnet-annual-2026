@@ -28,6 +28,7 @@ source("R/pipeline_config.R")
 check_pipeline_config()
 source("R/plot_constants.R")
 source("R/figures/fig_maps.R")
+source("R/nature_format.R")
 
 library(dplyr)
 library(readr)
@@ -81,11 +82,13 @@ p03_white <- fig_map_point_network(
   pt_alpha   = 0.65,    # semi-transparent so overlap density is visible (Europe, N. America)
   title      = NULL
 ) +
-  ggplot2::labs(subtitle = NULL)   # draft-manuscript style: no title/subtitle (n reported in legend)
-path03w <- file.path(out_dir, "fig_03_map_current.png")
-ggplot2::ggsave(path03w, plot = p03_white, width = 3.5, height = 3.5,
-                units = "in", dpi = 300, bg = "white")
-message("  Saved: ", path03w)
+  ggplot2::labs(subtitle = NULL) +  # draft-manuscript style: no title/subtitle (n reported in legend)
+  panel_letter("a")                 # Figure 1a (Nature format, 2026-10-02)
+path03w_stem <- file.path(out_dir, "fig_03_map_current")
+save_nature_figure(p03_white, path03w_stem, width_mm = NATURE_WIDTH_SINGLE_MM,
+                    height_mm = NATURE_WIDTH_SINGLE_MM)
+path03w <- paste0(path03w_stem, ".png")
+message("  Saved: ", path03w, " (+ .pdf)")
 
 message("── fig_03: current network (aridity) ──")
 p03_arid <- fig_map_point_network(
@@ -137,6 +140,7 @@ message("\nCopying to review/figures/candidates/ ...")
 
 # White variants replace the existing choropleth candidates
 file.copy(path03w, file.path(cand_dir, "fig_03_map_current.png"),           overwrite = TRUE)
+file.copy(paste0(path03w_stem, ".pdf"), file.path(cand_dir, "fig_03_map_current.pdf"), overwrite = TRUE)
 file.copy(path03a, file.path(cand_dir, "fig_03_map_current_aridity.png"),   overwrite = TRUE)
 file.copy(path04w, file.path(cand_dir, "fig_04_map_snapshots.png"),         overwrite = TRUE)
 file.copy(path04a, file.path(cand_dir, "fig_04_map_snapshots_aridity.png"), overwrite = TRUE)

@@ -1,12 +1,13 @@
-ALT Figure 2 (updated) -- charcoal points, pale-tan NEE centre, tightened inset
+ALT Figure 2 (revised 2026-10-02) -- stepped RdBu NEE scale, Nature format (89mm, PDF)
 
-Candidate only -- NOT promoted to review/figures/draft_manuscript_v1/. Revision of the
-ALT_fig_02_whittaker_current.png built earlier this session (commit 505d130), which fixed
-hexagon regularity and points-in-front/half-size; those two changes are unchanged here
-(hex_regular = TRUE, points_in_front = TRUE). This revision changes point styling, the NEE
-colour-scale centre, and the inset text/spacing. Same 95% solid / 99% dashed global
-ice-free-land HDR contour overlay as fig_02 and the prior ALT -- geometry and registration
-unchanged.
+Candidate only -- NOT promoted to review/figures/draft_manuscript_v1/ by this script;
+scripts/build_draft_manuscript_v1.R copies the PNG/PDF separately. Revision of the
+ALT_fig_02_whittaker_current.png built earlier this session, which fixed hexagon regularity
+and points-in-front/half-size; those two changes are unchanged here (hex_regular = TRUE,
+points_in_front = TRUE). This revision replaces the continuous NEE colour scale with a
+stepped one (task 3, 2026-10-02) and brings the figure to Nature format (89mm wide, PDF
+alongside the PNG, 7pt Helvetica text). Same 95% solid / 99% dashed global ice-free-land HDR
+contour overlay as fig_02 and the prior ALT -- geometry and registration unchanged.
 
 1. POINT STYLING: per-site points recoloured from grey30 to a quiet dark charcoal
    (#2B2B2B), resized from the prior ALT's 0.7 to 0.35 (~half again), and
@@ -17,19 +18,19 @@ unchanged.
    fig_climate.R), defaulting to the unchanged prior values (grey30 / 0.50) for every
    other caller.
 
-2. NEE COLOUR SCALE: centre recoloured from near-white (#F6F6F6) to a pale tan
-   (#F0E2C4) so near-zero hexes hold their edges against the white panel.
-   Blue and red endpoints, zero-centring, colour limits, and squish out-of-bounds handling
-   are unchanged -- pinned to diverging_hcl(2, "Blue-Red 3")'s exact endpoint hex codes
-   (#002F70 / #5F1415). Implemented via the new nee_mid_colour parameter, which rebuilds
-   the fill scale as ggplot2::scale_fill_gradient2() (Lab-space interpolation) instead of
-   the stock colorspace::scale_fill_continuous_diverging() HCL interpolation -- a
-   same-endpoints custom HCL two-half reconstruction (matching diverging_hcl's own
-   interpolation exactly) was tried first and rejected: sweeping hue from blue (H=255) to
-   an off-hue tan centre (H~90) passes through green/teal partway, visible here because the
-   centre keeps colour (chroma ~26) rather than dropping to achromatic white the way the
-   stock palette's centre does. nee_mid_colour defaults to NULL (unchanged stock scale) for
-   every other caller.
+2. NEE COLOUR SCALE (revised 2026-10-02, task 3): the continuous navy-tan-red diverging
+   scale is replaced with a stepped ColorBrewer RdBu scale, no middle/neutral class -- 5 sink
+   steps (ending in an open "below -400" bin) and 3 source steps (ending in an open
+   "above 200" bin), each finite step 100 gC/m2/yr wide on both sides of
+   zero, so the bin edge at zero is a hard sink/source boundary, not a neutral bin. Colours,
+   most negative to most positive: #053061, #2166AC, #4393C3, #92C5DE, #D1E5F0, #FDDBC7,
+   #F4A582, #D6604D. Implemented via new fig_whittaker_worldclim() parameters fill_mode=
+   'stepped' (default 'continuous', every other caller unaffected), step_breaks, step_colours,
+   step_labels -- discretises stat_summary_hex()'s per-hexagon median via
+   after_stat(cut(value, ...)) and maps with scale_fill_manual()/guide_legend() instead of a
+   continuous scale/colorbar. A hexagon with no qualifying sites gets an NA bin
+   (na.translate = FALSE), rendering unfilled -- same convention as the continuous mode's
+   na.value = NA.
 
 3. INSET WORDING (fixed): the previous "N = <n> sites | <n> site-years" line conflated two
    different counts -- <n> sites was the full network snapshot count, computed before any
@@ -73,4 +74,4 @@ Source script: scripts/generate_whittaker_alt_fig02_update.R (successor to
 scripts/generate_whittaker_alt_fig02.R)
 Function changes: fig_whittaker_worldclim(), .whittaker_theme() in R/figures/fig_climate.R
 Run log: review/figures/candidates/RUN_LOG_alt_fig02_update.txt
-Generated: 2026-10-02T22:22:59Z
+Generated: 2026-10-02T23:38:23Z

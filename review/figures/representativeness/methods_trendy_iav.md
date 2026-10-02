@@ -1,5 +1,11 @@
 # Methods: TRENDY v14 Representativeness Axes (NEE-IAV, ET-IAV, NEE-median, ET-median)
 
+**This note supports:** `fig_rep001–008` panels E/F only. **Figure 4 no longer uses these axes** —
+Figure 4 panels E (NEE) and F (ET) use the signed sink/source NEE and ET hybrid bin scheme described in
+`methods_flux_bin_scheme.md` instead (a different TRENDY v14 ensemble-median product: a dedicated
+ensemble-median raster computed for that scheme, not the IAV/magnitude statistics described below). This
+note remains current and in use for `fig_rep001–008`.
+
 ## Overview
 
 Four representativeness axes are derived from the TRENDY v14-gcb2025 multi-model

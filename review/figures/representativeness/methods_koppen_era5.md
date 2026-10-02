@@ -1,4 +1,11 @@
-Per-site Köppen-Geiger (KG) classes for the current 767-site FLUXNET Shuttle
+**This note supports:** `docs/methods_requirements.md` §5.2/§5.4 (site-level Köppen
+classification used throughout the main pipeline, `site_koppen_era5.csv`) and Figure 4
+panel A's Geo vs Data side (`site_koppen_era5_fig4.csv`; see "Two output files" below
+and `methods_precip_exclusions.md`). Not used by fig_rep001–008 (`figure_representativeness_summary.R`
+reads the same `site_koppen_era5.csv` production file as the main pipeline, not a
+Figure-4-specific one).
+
+Per-site Köppen-Geiger (KG) classes for the current 781-site FLUXNET Shuttle
 network are computed locally from each site's own ERA5 monthly reanalysis data,
 rather than extracted from an external map (contrast `methods_koppen_beck2023.md`,
 which remains the method for the global land-area backdrop, the future-scenario
@@ -9,7 +16,10 @@ a 30-year monthly temperature/precipitation normal, rather than a self-reported
 metadata field or a raster sample. Implemented in `R/climate_classification.R`
 (`classify_koppen_geiger()`, `compute_era5_monthly_climatology()`,
 `compute_site_koppen_era5()`), run by `scripts/step5_compute_koppen_era5.R`,
-output `data/snapshots/site_koppen_era5.csv`.
+output `data/snapshots/site_koppen_era5.csv` (781 rows as of the 2026-09-01
+snapshot pin; `step5_compute_koppen_era5.R`'s own header comment still says
+"current 767-site" — stale text, not a code bug, since the snapshot pin itself
+is current — flagged here rather than edited, per instruction to leave code as-is).
 
 **Why this replaces the previous two sources for the current network.** Before
 this change, the `Anomalies_KG` figures read the `CLIMATE_KOEPPEN` BADM metadata
@@ -68,7 +78,32 @@ current-network figures; the comparison columns are for QA and methods
 reporting, not for classification. Agreement percentages from the most recent
 run are printed in the script's console output and recorded in `SESSION_LOG.md`.
 
-**Scope.** This method applies only to the current 767-site Shuttle network.
+**Two output files (added 2026-10-02 for Figure 4).** This method now produces two
+site-level CSVs that differ only in whether the precipitation outlier screen above
+is applied:
+
+- `data/snapshots/site_koppen_era5.csv` — the original, screened file described
+  throughout this note (`KG_ERA5_MAP_MAX_MM` applied, site-years above 5000 mm/yr
+  dropped before averaging). This remains the classification source for the main
+  pipeline (`docs/methods_requirements.md` §5.2/§5.4) and for `fig_rep001–008`
+  (`scripts/figure_representativeness_summary.R` panel A) — both still depend on
+  it directly, confirmed by a repository-wide search for the filename (also
+  referenced by several `review/diagnostics/*` reports and
+  `scripts/generate_kg_availability_heatmaps.R`). **The screened file is still
+  live and depended upon; it was not superseded by the Figure 4 work.**
+- `data/snapshots/site_koppen_era5_fig4.csv` — written by
+  `scripts/figure4_representativeness.R` Phase 1, same
+  `compute_site_koppen_era5()` call but with `map_max_mm = Inf` (the
+  `KG_ERA5_MAP_MAX_MM` screen NOT applied as an exclusion). Figure 4 panel A's
+  Geo vs Data side instead excludes sites via the two precipitation-dependent
+  rules in `methods_precip_exclusions.md` (GRP_ERA_DOWN and `P_ERA_MAX_RATIO`),
+  which are additive to each other and unrelated to the `KG_ERA5_MAP_MAX_MM`
+  threshold. `figure4_representativeness.R` also reads the screened
+  `site_koppen_era5.csv` once, read-only, purely as a QA comparison (how many of
+  its 26 previously-unclassified sites fall inside vs outside the new 172-site
+  GRP_ERA_DOWN group) — not as a classification input for Figure 4.
+
+**Scope.** This method applies only to the current 781-site Shuttle network.
 Historical-network comparisons (FLUXNET2015, La Thuile, MARCONI) and the global
 land-area backdrop distribution remain on the Beck 2023 raster
 (`methods_koppen_beck2023.md`), since those aren't Shuttle sites with bundled

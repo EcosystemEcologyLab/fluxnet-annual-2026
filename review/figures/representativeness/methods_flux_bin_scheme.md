@@ -1,3 +1,7 @@
+**This note supports:** Figure 4 panels E (NEE) and F (ET), both Geo vs Geo and Geo vs Data sides.
+Figure 4 does not use the TRENDY NEE-IAV/ET-IAV/NEE-median/ET-median axes described in
+`methods_trendy_iav.md` — that note still applies to `fig_rep001–008` panels E/F.
+
 Panels E (NEE) and F (ET) of the new Figure 4 use the bin scheme first built and validated in
 `scripts/diagnostics/flux_bin_breaks.R` (a diagnostic, run earlier the same session), ported — not
 sourced — into `scripts/figure4_representativeness.R` as production panels E and F.

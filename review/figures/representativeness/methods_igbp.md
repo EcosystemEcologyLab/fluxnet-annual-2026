@@ -1,3 +1,5 @@
+**This note supports:** Figure 4 panel B (both Geo vs Geo and Geo vs Data sides).
+
 Panel B of the new Figure 4 (`scripts/figure4_representativeness.R`) classifies land cover as IGBP —
 distinct from the existing ESA CCI Land Cover v2.1.1 ("land cover (high-level)") axis already used by
 `figure_representativeness_summary.R`'s panel B, which this new panel does not touch or replace.

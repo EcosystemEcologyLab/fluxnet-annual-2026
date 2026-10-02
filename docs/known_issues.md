@@ -360,6 +360,56 @@ inconsistent with the site's local climate).
 
 ---
 
+---
+
+### 9c — ERA5 defects found via Figure 4's precipitation-dependent panels (quantified, 2026-10-02)
+
+**Flagged:** 2026-10-02, during development of `scripts/figure4_representativeness.R` panels A
+(Köppen) and C (aridity), both of which depend on each site's own 1991–2020 mean annual P_ERA.
+Three distinct defects were found and are handled as site-level exclusions, additive to each
+other (not alternatives) — see `review/figures/representativeness/methods_precip_exclusions.md`
+and `methods_aridity_era5.md` for the full method and `docs/methods_requirements.md` §5.8 for
+how they affect each panel's n.
+
+1. **GRP_ERA_DOWN — 172 sites.** No usable P_ERA-vs-measured-precipitation regression slope
+   (`ERA_SLOPE` recorded as sentinel −9999, not merely unfitted). Source:
+   `review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv`
+   (`not_fitted_slope_9999` group). Affects panels A and C identically, except `DE-Zrk` (one of
+   the 172) is counted once under the separate invalid-input screen below for panel C, so panel
+   C's distinct GRP_ERA_DOWN-only count is 171, not 172.
+
+2. **P_ERA_MAX_RATIO — 10 further sites.** 1991–2020 mean annual P_ERA exceeds 3× (`R/
+   pipeline_config.R`, `P_ERA_MAX_RATIO`) **every** reference available for the site — PI-reported
+   BADM `MAP` (where present/non-zero) **and** WorldClim v2.1 BIO12 at the tower coordinate. Four
+   of the ten (`CA-CF2`, `IT-Niv`, `NO-And`, `US-HB4`) are large enough to be clear ERA5
+   spatial-averaging artifacts (`US-HB4`: ~460–487× its references); the other six are more
+   moderate (3.1–11×). Full site list and ratios in `SESSION_LOG.md` (2026-10-02 entries).
+
+3. **Invalid raw ERA5 meteorological inputs — 4 sites (panel C / aridity only).** `CD-Ygb`,
+   `DE-Zrk`, `FR-LBr`, `US-Sne` have at least one calendar month with a physically impossible raw
+   ERA5 value feeding the FAO-56 PET calculation — e.g. `LW_IN_ERA` up to ~30,000 W/m² (physical
+   maximum ~1000 W/m²) or `VPD_ERA` up to ~1,660 hPa (physical maximum ~100 hPa). Caught by a
+   physical-plausibility screen (LW/SW <0 or >1000 W/m²; VPD <0 or >100 hPa; WS ≤0 or >50 m/s; PA
+   outside [50,110] kPa; TA outside [−90,60]°C) applied only within panel C's PET calculation —
+   this is a data-quality issue in the bundled ERA5 extraction, not a modelling choice. Two further
+   sites (`DE-SbM`, PET=0 mm/yr; `KE-Aq2`, PET=122 mm/yr) have implausible *outputs* from
+   valid-looking raw inputs — a known limitation of the net-radiation approximation documented in
+   `methods_aridity_era5.md`, flagged but not screened (both already excluded by rules 1–2 anyway).
+
+**Current pipeline handling:** all three are site-level exclusions removed from both the numerator
+and denominator of the affected panel (not merely left unclassified), logged via
+`log_exclusion()`/traced explicitly in `figure4_representativeness.R`'s console output. These are
+in addition to, and distinct from, the existing §9a `KG_ERA5_MAP_MAX_MM` outlier screen used by the
+main pipeline's `site_koppen_era5.csv` — Figure 4's `site_koppen_era5_fig4.csv` does NOT apply that
+screen, relying on rules 1–2 above instead (see `methods_koppen_era5.md`, "Two output files").
+
+**Action required:** none at this time — the exclusion rules are the accepted, documented handling
+for Figure 4. If a future panel or analysis depends on site-level P_ERA or ERA5 meteorology beyond
+Figure 4's scope, revisit whether these same three screens should be applied there too, or whether
+the underlying Shuttle ERA5 extraction itself should be reported upstream.
+
+---
+
 **Current candidate figure exposure:** fig_05 and fig_06 (Whittaker) use WorldClim MAP
 (bio12) — unaffected by either anomaly. fig_08 (environmental response) uses ERA5 `P_ERA`
 with its own outlier filter — affected by 9a, handled in-function. No current candidate

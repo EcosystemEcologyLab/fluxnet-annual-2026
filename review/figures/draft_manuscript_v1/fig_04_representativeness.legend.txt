@@ -1,12 +1,20 @@
-FIGURE LEGEND — fig_04_geo_vs_geo.png
+FIGURE LEGEND — fig_04_representativeness.png
 ============================================================
 
-TITLE: Figure 4 (current network, n=781) — Geo vs Geo
+TITLE: Figure 4 — Representativeness of the current FLUXNET network (n=781), Geo vs Data
+
+DEFINITIONS (shared with the supplemental Geo vs Geo figure,
+supp_representativeness_geo_vs_geo.png):
+"Geo vs Data" (this figure) compares the global land distribution of each axis against
+each site's own measured or site-derived value. "Geo vs Geo" (supplemental figure)
+compares the same global land distribution against the gridded product's own value
+sampled at each tower's coordinate, instead of the site's own measurement.
 
 DESCRIPTION:
 Six-panel sampling-ratio figure comparing the global land distribution of six
 environmental/biogeochemical axes against the current 781-site FLUXNET network, each
-panel showing global land vs. the gridded product's own value at each tower's coordinate.
+panel showing global land vs. each site's own measured or site-derived value (see
+DEFINITIONS above).
 Panels: a Koppen-Geiger (13-class), b land cover as IGBP (15 PI-reported classes + an
 Other bin), c aridity (CGIAR UNEP 7-class), d biomass (ESA CCI v7, 7-bin), e NEE
 (signed sink/source, 7-bin), f ET (7-bin). Final artwork size: 183 mm wide x
@@ -42,13 +50,24 @@ LAND GRIDS AND TOTALS:
     163,331,649 km2 -- at this coarse resolution a coastal cell straddling land and
     ocean counts as whole land (no fractional-coverage weighting).
 
-PER-PANEL n AND J (Geo vs Geo):
-  a Köppen-Geiger (koppen): n = 781 / 781, J = 0.372
-  b Land cover (IGBP) (igbp): n = 781 / 781, J = 0.495
-  c Aridity (aridity): n = 781 / 781, J = 0.666
+PER-PANEL n AND J (Geo vs Data):
+  a Köppen-Geiger (koppen): n = 599 / 781, J = 0.411
+  b Land cover (IGBP) (igbp): n = 781 / 781, J = 0.346
+  c Aridity (aridity): n = 596 / 781, J = 0.718
   d Biomass (Mg ha⁻¹) (biomass): n = 781 / 781, J = 0.636
-  e NEE (gC m⁻² yr⁻¹) (nee): n = 781 / 781, J = 0.530
-  f ET (mm yr⁻¹) (et): n = 781 / 781, J = 0.456
+  e NEE (gC m⁻² yr⁻¹) (nee): n = 601 / 781, J = 0.162
+  f ET (mm yr⁻¹) (et): n = 634 / 781, J = 0.456
+
+EXCLUSIONS (Geo vs Data, precipitation-dependent panels a and c only):
+  1. GRP_ERA_DOWN: 172 sites with no usable P_ERA-vs-measured-P regression slope.
+  2. P_ERA_MAX_RATIO=3: P_ERA exceeds 3 times EVERY reference available (BADM MAP AND
+     WorldClim BIO12) -- 10 further sites beyond the 172.
+  Panel c additionally excludes 4 sites with physically impossible raw ERA5 inputs
+  to the FAO-56 PET calculation (CD-Ygb, DE-Zrk, FR-LBr, US-Sne).
+
+PERIOD MISMATCH (panel c only): CGIAR's Aridity Index v3.1 baseline is 1970-2000;
+panel c's Geo vs Data side (AI = P_ERA / FAO-56 PET) uses 1991-2020 ERA5 instead, to
+match the other ERA5-derived panels.
 
 SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,
 land fraction, towers, tower fraction) in review/figures/representativeness/tables/.

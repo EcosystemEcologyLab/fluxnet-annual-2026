@@ -1,3 +1,6 @@
+**This note supports:** Figure 4 panel C's Geo vs Data side only. See `methods_aridity_unep.md` for the
+Geo vs Geo side and the global land-area backdrop, which this axis shares with `fig_rep001–008` panel C.
+
 Panel C of the new Figure 4 (`scripts/figure4_representativeness.R`) keeps the existing CGIAR Aridity
 Index v3.1 (7-class UNEP scheme) for the global side and Geo vs Geo comparison unchanged — see
 `methods_aridity_unep.md`. This note covers only the new Geo vs Data side: AI computed from each site's

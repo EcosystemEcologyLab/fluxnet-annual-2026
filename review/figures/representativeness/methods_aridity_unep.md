@@ -1,3 +1,8 @@
+**This note supports:** Figure 4 panel C's Geo vs Geo side and the global land-area backdrop shared by
+both sides of panel C (see `methods_aridity_era5.md` for the Geo vs Data side), `fig_rep001–008` panel C,
+and the standalone `fig_representativeness_aridity_unep5.png`/`fig_representativeness_aridity_unep7.png`
+candidate figures.
+
 Per-site aridity values were extracted from the CGIAR Global Aridity Index
 and Potential Evapotranspiration Dataset, Version 3.1 (Zomer et al. 2022;
 doi:10.1038/s41597-022-01493-1; Figshare doi:10.6084/m9.figshare.7504448).

@@ -1,5 +1,9 @@
 # Methods: Above-Ground Biomass Representativeness (ESA CCI Biomass v7.0)
 
+**This note supports:** Figure 4 panel D (both Geo vs Geo and Geo vs Data — biomass has no
+ERA5/data-derived side, so both panels use this same extracted per-site value) and `fig_rep001–008`
+panel D.
+
 ## Axis description
 
 This axis measures network coverage of the global aboveground biomass density

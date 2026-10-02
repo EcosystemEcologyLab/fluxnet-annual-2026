@@ -1,5 +1,10 @@
 # Methods: Land Use / Land Cover Representativeness (ESA CCI LC v2.1.1)
 
+**This note supports:** `fig_rep001–008` panel B only. **Figure 4 no longer uses this axis** — Figure 4
+panel B classifies land cover as IGBP instead (MODIS MCD12C1.061 global side, PI-reported BADM class on
+the Geo vs Data side; see `methods_igbp.md`), not the ESA CCI Land Cover scheme described below. This
+note remains current and in use for `fig_rep001–008`.
+
 ## Axis description
 
 This axis measures how well the FLUXNET tower network samples the major land

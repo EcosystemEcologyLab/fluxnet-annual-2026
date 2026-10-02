@@ -1,3 +1,6 @@
+**This note supports:** Figure 4 panels A and C, Geo vs Data side only (Geo vs Geo has no precipitation
+dependency and no exclusions — every tower has a value in the gridded product by construction).
+
 The new Figure 4's two precipitation-dependent Geo vs Data panels — Köppen (A) and aridity (C) — both
 depend on each site's own 1991–2020 mean annual P_ERA, which is unreliable for some sites (see
 `review/diagnostics/precip_downscaling_provenance/report.md`). Two exclusion rules apply to both panels,

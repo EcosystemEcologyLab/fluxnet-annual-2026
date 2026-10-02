@@ -1,5 +1,9 @@
 # Methods: Future Köppen-Geiger Representativeness (Beck 2023)
 
+**This note supports:** the future-scenario Köppen-Geiger representativeness figures only. Not used by
+Figure 4, which covers only the present-day (1991–2020) network — see `methods_koppen_beck2023.md` and
+`methods_koppen_era5.md` for Figure 4 panel A.
+
 This file covers all future-scenario representativeness analyses.
 Each scenario is documented in its own ## section below.
 All scenarios use: scripts/figure_representativeness_kg_future.R

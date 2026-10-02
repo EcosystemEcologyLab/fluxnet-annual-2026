@@ -1,0 +1,29 @@
+FIGURE LEGEND — supp_representativeness_geo_vs_geo.png
+============================================================
+
+TITLE: Supplemental Figure — Representativeness of the current FLUXNET network (n=781), Geo vs Geo
+
+DESCRIPTION:
+Companion to Figure 4 (fig_04_representativeness.png), same six panels (a Koppen-Geiger,
+b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and the same panel layout, bar-
+label conventions, land grids/totals, and column headers -- see Figure 4's legend for all
+of that, including the "Geo vs Data"/"Geo vs Geo" definitions, which this figure shares
+in full. The only difference is the site-side value: Geo vs Geo classifies every tower by
+the gridded product's own value at that tower's coordinate, rather than the site's own
+measured or site-derived value. Because every tower has a value in the gridded product by
+construction, no panel here has the precipitation-dependent exclusions that apply to
+Figure 4's panels a and c -- n = 781/781 for all six panels.
+Final artwork size: 183 mm wide x 169.3 mm tall, Helvetica throughout.
+
+PER-PANEL n AND J (Geo vs Geo):
+  a Köppen-Geiger (koppen): n = 781 / 781, J = 0.372
+  b Land cover (IGBP) (igbp): n = 781 / 781, J = 0.495
+  c Aridity (aridity): n = 781 / 781, J = 0.666
+  d Biomass (Mg ha⁻¹) (biomass): n = 781 / 781, J = 0.636
+  e NEE (gC m⁻² yr⁻¹) (nee): n = 781 / 781, J = 0.530
+  f ET (mm yr⁻¹) (et): n = 781 / 781, J = 0.456
+
+SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,
+land fraction, towers, tower fraction) in review/figures/representativeness/tables/.
+Vector PDF alongside this PNG. Methods notes: methods_igbp.md, methods_aridity_era5.md,
+methods_flux_bin_scheme.md, methods_precip_exclusions.md (same directory).

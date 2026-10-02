@@ -7,6 +7,17 @@
 ## six panels each, in order: A Koppen-Geiger, B land cover (IGBP), C
 ## aridity, D biomass, E NEE, F ET.
 ##
+## ---- Naming (2026-10-02): Geo vs Data is main-text Figure 4; Geo vs Geo is
+## a supplemental figure. Output basenames are fig_04_representativeness.*
+## (Geo vs Data) and supp_representativeness_geo_vs_geo.* (Geo vs Geo), via
+## fig4_output_name() below -- the internal `comparison` value
+## ("geo_vs_data"/"geo_vs_geo") still drives all data-selection logic
+## throughout this script; only the output basename changed. Per-panel
+## tables use the same basenames. The previous Figure 4
+## (fig_04_current_network_sampling_ratios.png, from fig_rep001_current.png
+## via scripts/figure_representativeness_summary.R) is superseded and its
+## draft_manuscript_v1/ copy moved to draft_manuscript_v1/deprecated/.
+##
 ## Built in phases, committed separately; see SESSION_LOG.md for each
 ## phase's decisions and report. Does NOT source, modify, or regenerate any
 ## output of scripts/figure_representativeness_summary.R (Figs 001-008) --
@@ -1791,6 +1802,13 @@ overhead_row3 <- measure_panel_overhead_mm(show_xlab = TRUE,  show_header = FALS
 msg("Row overhead (mm, excl. bar area): row1(header)=", round(overhead_row1, 2),
     " row2=", round(overhead_row2, 2), " row3(xlab+caption)=", round(overhead_row3, 2))
 
+## ---- Output naming: Geo vs Data is the main-text Figure 4; Geo vs Geo is a
+## supplemental figure (see header note). Figures, PDFs, legends, .meta.json
+## and per-panel tables all use this same basename per comparison.
+fig4_output_name <- function(comparison) {
+  if (comparison == "geo_vs_data") "fig_04_representativeness" else "supp_representativeness_geo_vs_geo"
+}
+
 ## ---- Build, save, confirm (both comparisons) ------------------------------
 FIG4_TABLES_DIR <- file.path(FIG_DIR, "tables")
 fs::dir_create(FIG4_TABLES_DIR)
@@ -1800,7 +1818,7 @@ write_panel_table <- function(panel_letter, comparison, df) {
     land_fraction = global_land_fraction, towers = dplyr::coalesce(n, 0L),
     tower_fraction = dplyr::coalesce(network_frac, 0)
   )
-  out <- file.path(FIG4_TABLES_DIR, sprintf("table_%s_%s.csv", tolower(panel_letter), comparison))
+  out <- file.path(FIG4_TABLES_DIR, sprintf("table_%s_%s.csv", tolower(panel_letter), fig4_output_name(comparison)))
   readr::write_csv(tab, out)
   write_output_metadata(
     out, input_sources = c(metrics_fig4_path),
@@ -1813,7 +1831,7 @@ write_panel_table <- function(panel_letter, comparison, df) {
 
 fig_heights_mm <- list()
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
-  msg("\n--- Building fig_04_", comparison, " (print) ---")
+  msg("\n--- Building ", fig4_output_name(comparison), " (print) ---")
   built <- lapply(c("A", "B", "C", "D", "E", "F"), build_fig4_panel2, comparison = comparison)
   names(built) <- c("A", "B", "C", "D", "E", "F")
   for (letter in names(built)) write_panel_table(letter, comparison, built[[letter]]$df)
@@ -1856,10 +1874,10 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   composite <- patchwork::wrap_plots(grobs, ncol = 2,
                                       heights = grid::unit(c(EDGE_PAD_MM, h_row1, h_row2, h_row3, EDGE_PAD_MM), "mm"))
 
-  png_path <- file.path(FIG_DIR, sprintf("fig_04_%s.png", comparison))
+  png_path <- file.path(FIG_DIR, paste0(fig4_output_name(comparison), ".png"))
   ggplot2::ggsave(png_path, composite, width = FIG_WIDTH_MM, height = total_height_mm, units = "mm",
                    dpi = 600, device = ragg::agg_png)
-  pdf_path <- file.path(FIG_DIR, sprintf("fig_04_%s.pdf", comparison))
+  pdf_path <- file.path(FIG_DIR, paste0(fig4_output_name(comparison), ".pdf"))
   ## base grDevices::pdf() only accepts PostScript base14 family NAMES
   ## ("Helvetica", not "Arial") -- the glyphs/metrics are the same base14
   ## Helvetica either way; the PNG (ragg) render is the one actually using
@@ -1907,53 +1925,60 @@ panel_n_line <- function(letter, cmp) {
 
 write_fig4_legend <- function(comparison, fig_path, height_mm) {
   cmp_label <- if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data"
-  cmp_desc  <- if (comparison == "geo_vs_geo") "the gridded product's own value at each tower's coordinate" else "each site's own measured or site-derived value"
   n_lines <- vapply(c("A", "B", "C", "D", "E", "F"), panel_n_line, character(1), cmp = comparison)
 
-  lines <- c(
-    sprintf("FIGURE LEGEND — %s", basename(fig_path)),
-    strrep("=", 60), "",
-    sprintf("TITLE: Figure 4 (current network, n=781) — %s", cmp_label), "",
-    "DESCRIPTION:",
-    "Six-panel sampling-ratio figure comparing the global land distribution of six",
-    "environmental/biogeochemical axes against the current 781-site FLUXNET network, each",
-    sprintf("panel showing global land vs. %s.", cmp_desc),
-    "Panels: a Koppen-Geiger (13-class), b land cover as IGBP (15 PI-reported classes + an",
-    "Other bin), c aridity (CGIAR UNEP 7-class), d biomass (ESA CCI v7, 7-bin), e NEE",
-    "(signed sink/source, 7-bin), f ET (7-bin). Final artwork size: 183 mm wide x",
-    sprintf("%.1f mm tall, Helvetica throughout.", height_mm), "",
-    "BAR LABELS:",
-    "Each bar's length is the log2 sampling ratio (that class's share of current-network",
-    "towers, divided by its share of global land area), clipped at +-5x; a bar truncated at",
-    "the clip is annotated with its exact (unclipped) ratio at the bar's outer end (no",
-    "decimals at 10x or above; capped at \">1000x\"). Faint vertical gridlines mark 1/5x,",
-    "1/2x, 2x and 5x. Column headers \"% land\" and \"towers\", shown once above panels a and",
-    "b, label the two number columns either side of the 1x line: the left number is that",
-    "class's share of global land area (%, one decimal, \"<0.1\" below that); the right",
-    "number is the current-network tower count (of 781) in that class. A number is set",
-    "inside its bar, in a colour contrasting with the fill, only when the bar is long enough",
-    "to fully contain it (measured at the figure's final rendered size, not estimated); if",
-    "the bar is too short the number sits in near-black just beyond its outer end; with no",
-    "bar on that side, the number sits beside the 1x line. A class with land but no current-",
-    "network towers is drawn as a bar to the left clip limit with a white fill and dashed",
-    "outline, labelled \"none\" instead of a tower count. J (weighted Jaccard overlap between",
-    "the land and tower distributions) is right-aligned above each panel. Per-panel tower n",
-    "is NOT shown on the panel -- see the per-panel n/J list below. The bottom row's x axis",
-    "is labelled \"under-sampled\" (left of 1x) / \"over-sampled\" (right of 1x).", "",
-    "LAND GRIDS AND TOTALS:",
-    "  Koppen, land cover and biomass: Beck et al. (2023) 1 km Koppen-Geiger land mask,",
-    "    147,322,862 km2 (land cover resampled onto this same grid; biomass uses its own",
-    "    finer 0.00833 deg version of the same mask).",
-    "  Aridity: CGIAR Aridity Index v3.1's own native raster coverage, 134,761,545 km2 --",
-    "    smaller than the shared 147.3M km2 total because the CGIAR raster ends at 60 deg S",
-    "    (no Antarctic grid cells), unlike the Beck Koppen mask.",
-    "  NEE and ET: TRENDY v14 ensemble-median 0.5 deg grid under the Koppen land mask,",
-    "    163,331,649 km2 -- at this coarse resolution a coastal cell straddling land and",
-    "    ocean counts as whole land (no fractional-coverage weighting).", "",
-    sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, ""
-  )
   if (comparison == "geo_vs_data") {
-    lines <- c(lines,
+    ## Main-text Figure 4: full description, including the one-time plain-
+    ## language definition of "Geo vs Data"/"Geo vs Geo" that the
+    ## supplemental legend (below) refers back to rather than repeating.
+    lines <- c(
+      sprintf("FIGURE LEGEND — %s", basename(fig_path)),
+      strrep("=", 60), "",
+      "TITLE: Figure 4 — Representativeness of the current FLUXNET network (n=781), Geo vs Data", "",
+      "DEFINITIONS (shared with the supplemental Geo vs Geo figure,",
+      "supp_representativeness_geo_vs_geo.png):",
+      "\"Geo vs Data\" (this figure) compares the global land distribution of each axis against",
+      "each site's own measured or site-derived value. \"Geo vs Geo\" (supplemental figure)",
+      "compares the same global land distribution against the gridded product's own value",
+      "sampled at each tower's coordinate, instead of the site's own measurement.", "",
+      "DESCRIPTION:",
+      "Six-panel sampling-ratio figure comparing the global land distribution of six",
+      "environmental/biogeochemical axes against the current 781-site FLUXNET network, each",
+      "panel showing global land vs. each site's own measured or site-derived value (see",
+      "DEFINITIONS above).",
+      "Panels: a Koppen-Geiger (13-class), b land cover as IGBP (15 PI-reported classes + an",
+      "Other bin), c aridity (CGIAR UNEP 7-class), d biomass (ESA CCI v7, 7-bin), e NEE",
+      "(signed sink/source, 7-bin), f ET (7-bin). Final artwork size: 183 mm wide x",
+      sprintf("%.1f mm tall, Helvetica throughout.", height_mm), "",
+      "BAR LABELS:",
+      "Each bar's length is the log2 sampling ratio (that class's share of current-network",
+      "towers, divided by its share of global land area), clipped at +-5x; a bar truncated at",
+      "the clip is annotated with its exact (unclipped) ratio at the bar's outer end (no",
+      "decimals at 10x or above; capped at \">1000x\"). Faint vertical gridlines mark 1/5x,",
+      "1/2x, 2x and 5x. Column headers \"% land\" and \"towers\", shown once above panels a and",
+      "b, label the two number columns either side of the 1x line: the left number is that",
+      "class's share of global land area (%, one decimal, \"<0.1\" below that); the right",
+      "number is the current-network tower count (of 781) in that class. A number is set",
+      "inside its bar, in a colour contrasting with the fill, only when the bar is long enough",
+      "to fully contain it (measured at the figure's final rendered size, not estimated); if",
+      "the bar is too short the number sits in near-black just beyond its outer end; with no",
+      "bar on that side, the number sits beside the 1x line. A class with land but no current-",
+      "network towers is drawn as a bar to the left clip limit with a white fill and dashed",
+      "outline, labelled \"none\" instead of a tower count. J (weighted Jaccard overlap between",
+      "the land and tower distributions) is right-aligned above each panel. Per-panel tower n",
+      "is NOT shown on the panel -- see the per-panel n/J list below. The bottom row's x axis",
+      "is labelled \"under-sampled\" (left of 1x) / \"over-sampled\" (right of 1x).", "",
+      "LAND GRIDS AND TOTALS:",
+      "  Koppen, land cover and biomass: Beck et al. (2023) 1 km Koppen-Geiger land mask,",
+      "    147,322,862 km2 (land cover resampled onto this same grid; biomass uses its own",
+      "    finer 0.00833 deg version of the same mask).",
+      "  Aridity: CGIAR Aridity Index v3.1's own native raster coverage, 134,761,545 km2 --",
+      "    smaller than the shared 147.3M km2 total because the CGIAR raster ends at 60 deg S",
+      "    (no Antarctic grid cells), unlike the Beck Koppen mask.",
+      "  NEE and ET: TRENDY v14 ensemble-median 0.5 deg grid under the Koppen land mask,",
+      "    163,331,649 km2 -- at this coarse resolution a coastal cell straddling land and",
+      "    ocean counts as whole land (no fractional-coverage weighting).", "",
+      sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, "",
       "EXCLUSIONS (Geo vs Data, precipitation-dependent panels a and c only):",
       "  1. GRP_ERA_DOWN: 172 sites with no usable P_ERA-vs-measured-P regression slope.",
       sprintf("  2. P_ERA_MAX_RATIO=%d: P_ERA exceeds %d times EVERY reference available (BADM MAP AND", P_ERA_MAX_RATIO, P_ERA_MAX_RATIO),
@@ -1962,20 +1987,46 @@ write_fig4_legend <- function(comparison, fig_path, height_mm) {
       "  to the FAO-56 PET calculation (CD-Ygb, DE-Zrk, FR-LBr, US-Sne).", "",
       "PERIOD MISMATCH (panel c only): CGIAR's Aridity Index v3.1 baseline is 1970-2000;",
       "panel c's Geo vs Data side (AI = P_ERA / FAO-56 PET) uses 1991-2020 ERA5 instead, to",
-      "match the other ERA5-derived panels.", ""
+      "match the other ERA5-derived panels.", "",
+      "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
+      "land fraction, towers, tower fraction) in review/figures/representativeness/tables/.",
+      "Vector PDF alongside this PNG. Methods notes: methods_igbp.md, methods_aridity_era5.md,",
+      "methods_flux_bin_scheme.md, methods_precip_exclusions.md (same directory)."
+    )
+  } else {
+    ## Supplemental Geo vs Geo figure: refers to Figure 4 for everything the
+    ## two share (definitions, panel layout, bar-label conventions, land
+    ## grids/totals, methods notes) and states only what differs -- its own
+    ## per-panel n/J (no precipitation exclusions apply to this side: every
+    ## panel is n=781/781 since the gridded product has a value at every
+    ## tower coordinate by construction).
+    lines <- c(
+      sprintf("FIGURE LEGEND — %s", basename(fig_path)),
+      strrep("=", 60), "",
+      "TITLE: Supplemental Figure — Representativeness of the current FLUXNET network (n=781), Geo vs Geo", "",
+      "DESCRIPTION:",
+      "Companion to Figure 4 (fig_04_representativeness.png), same six panels (a Koppen-Geiger,",
+      "b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and the same panel layout, bar-",
+      "label conventions, land grids/totals, and column headers -- see Figure 4's legend for all",
+      "of that, including the \"Geo vs Data\"/\"Geo vs Geo\" definitions, which this figure shares",
+      "in full. The only difference is the site-side value: Geo vs Geo classifies every tower by",
+      "the gridded product's own value at that tower's coordinate, rather than the site's own",
+      "measured or site-derived value. Because every tower has a value in the gridded product by",
+      "construction, no panel here has the precipitation-dependent exclusions that apply to",
+      "Figure 4's panels a and c -- n = 781/781 for all six panels.",
+      sprintf("Final artwork size: 183 mm wide x %.1f mm tall, Helvetica throughout.", height_mm), "",
+      sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, "",
+      "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
+      "land fraction, towers, tower fraction) in review/figures/representativeness/tables/.",
+      "Vector PDF alongside this PNG. Methods notes: methods_igbp.md, methods_aridity_era5.md,",
+      "methods_flux_bin_scheme.md, methods_precip_exclusions.md (same directory)."
     )
   }
-  lines <- c(lines,
-    "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
-    "land fraction, towers, tower fraction) in review/figures/representativeness/tables/.",
-    "Vector PDF alongside this PNG. Methods notes: methods_igbp.md, methods_aridity_era5.md,",
-    "methods_flux_bin_scheme.md, methods_precip_exclusions.md (same directory)."
-  )
   writeLines(unlist(lines), paste0(tools::file_path_sans_ext(fig_path), ".legend.txt"))
 }
 
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
-  fig_path <- file.path(FIG_DIR, sprintf("fig_04_%s.png", comparison))
+  fig_path <- file.path(FIG_DIR, paste0(fig4_output_name(comparison), ".png"))
   write_fig4_legend(comparison, fig_path, fig_heights_mm[[comparison]])
   write_output_metadata(
     fig_path,
@@ -1995,7 +2046,7 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
 }
 
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
-  base <- sprintf("fig_04_%s", comparison)
+  base <- fig4_output_name(comparison)
   for (ext in c(".png", ".pdf", ".meta.json", ".legend.txt")) {
     fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(DRAFT_DIR, paste0(base, ext)), overwrite = TRUE)
   }

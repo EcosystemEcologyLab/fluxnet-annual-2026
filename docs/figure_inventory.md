@@ -34,3 +34,24 @@ External data dependencies:
 | `fig_environmental_response` | — | Binned flux vs environment response curves: bins each env_var into equal-frequency quantile bins, plots median ± IQR ribbon (or IGBP-coloured lines). WorldClim / CGIAR aridity required for WorldClim and aridity env_vars | `R/figures/fig_environmental_response.R:107` | YY | WorldClim / CGIAR |
 | `fig_long_record_timeseries` | — | Annual time series of flux variables for top-`n` longest-record sites per continent (UN Geoscheme); lines coloured by IGBP with `scale_color_igbp()` | `R/figures/fig_timeseries.R:178` | YY | None |
 | `fig_growing_season_nee` | `growing_season_count.png`<br>`growing_season_span.png` | Growing season length (uptake-day count and calendar span) vs annual NEE scatter, coloured by IGBP | `R/figures/fig_growing_season.R:201` | YY + DD | None |
+
+## Manuscript representativeness figures (Figure 4 and supplement)
+
+Not part of `07_figures.R` / `R/figures/` — these are standalone production scripts, each producing a
+PNG + vector PDF pair plus a `.meta.json` and `.legend.txt`, copied into
+`review/figures/draft_manuscript_v1/`.
+
+| Script | Output (main location) | Draft-manuscript copy | Description | External data | Status |
+|---|---|---|---|---|---|
+| `scripts/figure4_representativeness.R` | `review/figures/representativeness/fig_04_representativeness.png`/`.pdf` | `fig_04_representativeness.png`/`.pdf` | **Figure 4.** Six-panel log2 sampling-ratio figure (Köppen-Geiger, IGBP land cover, aridity, biomass, NEE, ET) vs. current 781-site network, Geo vs Data | Beck 2023 KG, MODIS MCD12C1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14, WorldClim BIO12, ERA5 | Current |
+| `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf` | `supp_representativeness_geo_vs_geo.png`/`.pdf` | **Supplemental figure.** Same six panels, Geo vs Geo (gridded product's own value at each tower, not the site's own measurement) | same as above | Current |
+| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/fig_rep001_current.png` | — (superseded, see below) | Prior "Figure 4": six-panel sampling ratio figure (Köppen-Geiger, ESA CCI Land Cover, CGIAR Aridity, ESA CCI Biomass, TRENDY NEE-IAV, TRENDY ET-median) vs. 767-site network | Beck 2023 KG, ESA CCI LC v2.1.1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14 | **Superseded** 2026-10-02 by `fig_04_representativeness.png` above |
+| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/fig_rep002_marconi.png` … `fig_rep008_jaccard_trajectory_with_counts.png` | `fig_05_jaccard_trajectory_with_counts.png` (rep008 only) | Historical-network representativeness comparisons (Marconi, La Thuile, FLUXNET2015) and the Jaccard-overlap trajectory over network history | same as fig_rep001 | Current (not touched by the Figure 4 work) |
+
+**Superseded Figure 4.** `review/figures/draft_manuscript_v1/fig_04_current_network_sampling_ratios.png`
+(and its `.legend.txt`), the `fig_rep001_current.png`-sourced draft-manuscript copy of the prior Figure 4,
+were moved to `review/figures/draft_manuscript_v1/deprecated/` on 2026-10-02 and are no longer produced by
+`scripts/build_draft_manuscript_v1.R`. `fig_rep001_current.png` itself (the source file in
+`review/figures/representativeness/`) is untouched and still produced by
+`scripts/figure_representativeness_summary.R`, which also still underlies Figure 5
+(`fig_rep008_jaccard_trajectory_with_counts.png`).

@@ -1,13 +1,32 @@
-**Scope note (added 2026-08-20):** as of `scripts/step5_compute_koppen_era5.R`,
-per-site classification for the **current 767-site FLUXNET Shuttle network** is
-computed locally from each site's own ERA5 monthly reanalysis data instead of the
-raster method described below — see `methods_koppen_era5.md` for that method. This
-raster-based method described here remains authoritative for: the area-weighted
-global land-area backdrop distribution (there is no per-pixel ERA5 monthly record
-for the whole globe), the future-scenario figures, and the historical-network
-comparisons (FLUXNET2015, La Thuile, MARCONI — not Shuttle sites with bundled ERA5
-monthly data). `site_koppen_beck2023.csv`'s Beck-derived class is retained as a QA
-comparison column (`beck2023_kg_class`) in `site_koppen_era5.csv`.
+**This note supports:** the global land-area backdrop for `fig_rep001–008` panel A
+and for Figure 4 panel A's Geo vs Geo side (`site_koppen_beck2023.csv` itself, at
+each tower's coordinate — see "Figure 4 treatment" below), the future-scenario KG
+figures (`methods_koppen_beck2023_future.md`), and the historical-network
+comparisons (FLUXNET2015, La Thuile, MARCONI). Not the classification source for
+Figure 4 panel A's Geo vs Data side or for the main pipeline's site-level KG field
+— see `methods_koppen_era5.md` for both.
+
+**Scope note (added 2026-08-20; site count updated 2026-10-02):** as of
+`scripts/step5_compute_koppen_era5.R`, per-site classification for the **current
+781-site FLUXNET Shuttle network** is computed locally from each site's own ERA5
+monthly reanalysis data instead of the raster method described below — see
+`methods_koppen_era5.md` for that method. This raster-based method described here
+remains authoritative for: the area-weighted global land-area backdrop distribution
+(there is no per-pixel ERA5 monthly record for the whole globe), the future-scenario
+figures, and the historical-network comparisons (FLUXNET2015, La Thuile, MARCONI —
+not Shuttle sites with bundled ERA5 monthly data). `site_koppen_beck2023.csv`'s
+Beck-derived class is retained as a QA comparison column (`beck2023_kg_class`) in
+`site_koppen_era5.csv`.
+
+**Figure 4 treatment (added 2026-10-02).** `site_koppen_beck2023.csv` was refreshed
+for the current 781-site network (`scripts/step4_extract_koppen_beck2023.R`,
+updated from the 767-site pin to the 2026-09-01, 781-site snapshot — see
+SESSION_LOG.md, Figure 4 Phase 1 entry). Figure 4 panel A uses this refreshed file
+for two purposes: (1) its Geo vs Geo side (the Beck 2023 class at each of the 781
+tower coordinates, unchanged method from this note) and (2) the global land-area
+backdrop shared by both the Geo vs Geo and Geo vs Data sides of panel A (the Beck
+2023 1 km land mask, 147,322,862 km² total — see `methods_precip_exclusions.md`
+and the figure's own legend for how this total is also reused by panels B and D).
 
 Per-site Köppen-Geiger classes were assigned from the Beck et al. (2023) present-day
 (1991–2020) map at 1 km resolution, which provides 30 classes under the standard

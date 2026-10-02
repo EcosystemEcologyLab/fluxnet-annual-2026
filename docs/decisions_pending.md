@@ -141,9 +141,19 @@ version-capture gap remains.
 
 ---
 
-## Representativeness analysis climate axis — DEFERRED
+## Representativeness analysis climate axis — RESOLVED 2026-10-02
 
-The network representativeness analysis is not yet defined in scope (no assigned figure number
+The network representativeness analysis is now scoped and built: Figure 4 and its supplemental
+companion (`scripts/figure4_representativeness.R`, `review/figures/representativeness/`). The
+climate-variability axis is panel A, **Köppen-Geiger** (not CRU) as decided below — confirming
+the original decision. Two site counts are in force depending on which figure/table uses the
+axis: 767 sites for `fig_rep001–008` (`scripts/figure_representativeness_summary.R`, superseded
+by Figure 4 as the manuscript's Figure 4, but unrelated to Figure 5 which it still produces) and
+781 sites for Figure 4 and its supplement. See `docs/methods_requirements.md` §5.8 for the full
+panel-by-panel mapping and `docs/known_issues.md` §9c for the ERA5 data-quality issues the
+Köppen/aridity panels' exclusion rules exist to work around.
+
+~~The network representativeness analysis is not yet defined in scope (no assigned figure number
 or methods specification as of 2026-05-26). When it is eventually defined, **use Köppen-Geiger**
 for the climate-variability axis, not CRU. Köppen-Geiger classifications are already extracted
 at all sites (`data/snapshots/` — see `long_record_site_candidates_gez_kg.csv`) and are on-disk
@@ -151,7 +161,7 @@ and reproducible via the existing pipeline. CRU adds a data dependency without a
 for this comparison axis.
 
 **Decision:** Climate axis = Köppen-Geiger. Recording now so the decision is not lost when the
-analysis is eventually scoped.
+analysis is eventually scoped.~~
 
 ---
 
@@ -251,8 +261,9 @@ Not pinning now; will be applied deliberately at paper-lock time. The env-var fo
 (`0.3.7` install tag vs `0.3.7.post0+dirty` self-report) is part of the same decision.
 See: decisions_pending.md flux_download() entry; docs/known_issues.md §5.
 
-### Representativeness analysis climate axis (scope undefined)
-When eventually scoped, use Köppen-Geiger (already extracted at all sites). CRU is not needed.
+### Representativeness analysis climate axis — RESOLVED 2026-10-02
+No longer deferred — see the resolved entry near the top of this file. Climate axis = Köppen-Geiger,
+now implemented as Figure 4 panel A.
 
 ### fluxnet package DuckDB rewrite (out of our control)
 If/when the package rewrites flux_read/flux_qc/flux_units with DuckDB internals, much of

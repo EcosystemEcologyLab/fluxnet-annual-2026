@@ -1,0 +1,75 @@
+FIGURE LEGEND — fig_04_representativeness.png
+============================================================
+
+TITLE: Figure 4 — Representativeness of the current FLUXNET network (n=781), Geo vs Data
+
+DEFINITIONS (shared with the supplemental Geo vs Geo figure,
+supp_representativeness_geo_vs_geo.png):
+"Geo vs Data" (this figure) compares the global land distribution of each axis against
+each site's own measured or site-derived value. "Geo vs Geo" (supplemental figure)
+compares the same global land distribution against the gridded product's own value
+sampled at each tower's coordinate, instead of the site's own measurement.
+
+DESCRIPTION:
+Six-panel sampling-ratio figure comparing the global land distribution of six
+environmental/biogeochemical axes against the current 781-site FLUXNET network, each
+panel showing global land vs. each site's own measured or site-derived value (see
+DEFINITIONS above).
+Panels: a Koppen-Geiger (13-class), b land cover as IGBP (15 PI-reported classes + an
+Other bin), c aridity (CGIAR UNEP 7-class), d biomass (ESA CCI v7, 7-bin), e NEE
+(signed sink/source, 7-bin), f ET (7-bin). Final artwork size: 183 mm wide x
+169.3 mm tall, Helvetica throughout.
+
+BAR LABELS:
+Each bar's length is the log2 sampling ratio (that class's share of current-network
+towers, divided by its share of global land area), clipped at +-5x; a bar truncated at
+the clip is annotated with its exact (unclipped) ratio at the bar's outer end (no
+decimals at 10x or above; capped at ">1000x"). Faint vertical gridlines mark 1/5x,
+1/2x, 2x and 5x. Column headers "% land" and "towers", shown once above panels a and
+b, label the two number columns either side of the 1x line: the left number is that
+class's share of global land area (%, one decimal, "<0.1" below that); the right
+number is the current-network tower count (of 781) in that class. A number is set
+inside its bar, in a colour contrasting with the fill, only when the bar is long enough
+to fully contain it (measured at the figure's final rendered size, not estimated); if
+the bar is too short the number sits in near-black just beyond its outer end; with no
+bar on that side, the number sits beside the 1x line. A class with land but no current-
+network towers is drawn as a bar to the left clip limit with a white fill and dashed
+outline, labelled "none" instead of a tower count. J (weighted Jaccard overlap between
+the land and tower distributions) is right-aligned above each panel. Per-panel tower n
+is NOT shown on the panel -- see the per-panel n/J list below. The bottom row's x axis
+is labelled "under-sampled" (left of 1x) / "over-sampled" (right of 1x).
+
+LAND GRIDS AND TOTALS:
+  Koppen, land cover and biomass: Beck et al. (2023) 1 km Koppen-Geiger land mask,
+    147,322,862 km2 (land cover resampled onto this same grid; biomass uses its own
+    finer 0.00833 deg version of the same mask).
+  Aridity: CGIAR Aridity Index v3.1's own native raster coverage, 134,761,545 km2 --
+    smaller than the shared 147.3M km2 total because the CGIAR raster ends at 60 deg S
+    (no Antarctic grid cells), unlike the Beck Koppen mask.
+  NEE and ET: TRENDY v14 ensemble-median 0.5 deg grid under the Koppen land mask,
+    163,331,649 km2 -- at this coarse resolution a coastal cell straddling land and
+    ocean counts as whole land (no fractional-coverage weighting).
+
+PER-PANEL n AND J (Geo vs Data):
+  a Köppen-Geiger (koppen): n = 599 / 781, J = 0.411
+  b Land cover (IGBP) (igbp): n = 781 / 781, J = 0.346
+  c Aridity (aridity): n = 596 / 781, J = 0.718
+  d Biomass (Mg ha⁻¹) (biomass): n = 781 / 781, J = 0.636
+  e NEE (gC m⁻² yr⁻¹) (nee): n = 601 / 781, J = 0.162
+  f ET (mm yr⁻¹) (et): n = 634 / 781, J = 0.456
+
+EXCLUSIONS (Geo vs Data, precipitation-dependent panels a and c only):
+  1. GRP_ERA_DOWN: 172 sites with no usable P_ERA-vs-measured-P regression slope.
+  2. P_ERA_MAX_RATIO=3: P_ERA exceeds 3 times EVERY reference available (BADM MAP AND
+     WorldClim BIO12) -- 10 further sites beyond the 172.
+  Panel c additionally excludes 4 sites with physically impossible raw ERA5 inputs
+  to the FAO-56 PET calculation (CD-Ygb, DE-Zrk, FR-LBr, US-Sne).
+
+PERIOD MISMATCH (panel c only): CGIAR's Aridity Index v3.1 baseline is 1970-2000;
+panel c's Geo vs Data side (AI = P_ERA / FAO-56 PET) uses 1991-2020 ERA5 instead, to
+match the other ERA5-derived panels.
+
+SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,
+land fraction, towers, tower fraction) in review/figures/representativeness/tables/.
+Vector PDF alongside this PNG. Methods notes: methods_igbp.md, methods_aridity_era5.md,
+methods_flux_bin_scheme.md, methods_precip_exclusions.md (same directory).

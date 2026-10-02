@@ -19,6 +19,9 @@ Panels: a Koppen-Geiger (13-class), b land cover as IGBP (15 PI-reported classes
 Other bin), c aridity (CGIAR UNEP 7-class), d biomass (ESA CCI v7, 7-bin), e NEE
 (signed sink/source, 7-bin), f ET (7-bin). Final artwork size: 183 mm wide x
 173.3 mm tall, Helvetica throughout.
+Panels e and f's tower value (this Geo vs Data figure only) is the median of each site's annual
+values passing QC_THRESHOLD_YY=0.5, each flux gated on its own QC column, per-site VUT/CUT
+(R/site_annual_fluxes.R::compute_site_annual_fluxes()).
 
 BAR LABELS:
 Each bar's length is the log2 sampling ratio (that class's share of current-network

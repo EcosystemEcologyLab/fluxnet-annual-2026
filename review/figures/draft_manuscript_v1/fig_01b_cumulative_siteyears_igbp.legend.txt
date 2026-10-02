@@ -6,7 +6,7 @@ historical dataset trajectories
 
 DESCRIPTION:
 Stacked-area chart showing the cumulative number of site-years of observed
-data contributed by the FLUXNET Shuttle network over time (1991–2025),
+data contributed by the FLUXNET Shuttle network over time (1991–2024),
 partitioned by IGBP vegetation class. Three additional lines trace the
 cumulative site-years reached by three prior static FLUXNET data releases
 (Marconi 2000, La Thuile 2007, FLUXNET2015) as historical reference
@@ -15,10 +15,27 @@ via a legend. Vertical dashed grey lines mark the three historical release
 years (2000, 2007, 2015). No plot title is rendered.
 
 AXES:
-  X — Year (calendar year, 1991–2025; breaks every 5 years)
-  Y — Cumulative site-years (running total of site-years of observed valid
-      data, summed across all sites and, for the Shuttle stack, all IGBP
-      classes)
+  X — Year (calendar year, 1991–2024; breaks every 5 years)
+  Y — Cumulative site-years: a running total, over calendar year, of
+      site-years in which ANY flux variable has data — not a QC-gated or
+      "usable" count, just data presence. Summed across all sites and, for
+      the Shuttle stack, all IGBP classes. See PRESENCE RULE below for the
+      exact definition.
+
+PRESENCE RULE (exactly as implemented in R/utils.R::compute_site_year_presence(),
+used for every Shuttle site-year in this figure):
+A site-month is "present" if at least one of 12 flux variables is non-NA that
+month: NEE_VUT_REF, NEE_CUT_REF, GPP_NT_VUT_REF, GPP_DT_VUT_REF,
+GPP_NT_CUT_REF, GPP_DT_CUT_REF, RECO_NT_VUT_REF, RECO_DT_VUT_REF,
+RECO_NT_CUT_REF, RECO_DT_CUT_REF, LE_F_MDS, H_F_MDS. `n_months_present`
+counts how many of a site-year's 12 months meet this; `has_data` is
+`n_months_present > 0`. A site-year is included in this figure's cumulative
+count when `has_data` is TRUE. This is a RAW PRESENCE rule, computed from
+the DuckDB `monthly` table (dataset = 'FLUXMET', unfiltered) — no QC
+threshold is applied (unlike, e.g., Figure 4's tower values, which also
+require passing QC_THRESHOLD_YY). Gap years with zero qualifying months are
+still present as explicit rows (`has_data` = FALSE), not omitted, so the
+underlying table shows operational gaps rather than silently skipping them.
 
 Four-sided black tick marks (inward) are drawn on all axes via a duplicated
 secondary axis with no labels; only the primary (bottom/left) ticks carry
@@ -38,22 +55,25 @@ REFERENCE LINES:
 Vertical dashed grey lines (linetype "dashed", colour grey55) at x = 2000,
 2007, 2015 — the release years of the three historical comparison datasets.
 
-NETWORK AND SITE COUNT:
-FLUXNET Shuttle network, current development-mode snapshot: n = 781 sites
-(updated 2026-09-01; was 767), reaching 6,106 cumulative observed site-years
-by the most recent year in the presence table (data/snapshots/
-site_year_data_presence.csv, refreshed 2026-09-01 — was stale since
-2026-05-24 before this update). Marconi (n = 35), La Thuile (n = 252),
-and FLUXNET2015 (n = 212) site-year trajectories are shown strictly as
-non-Shuttle comparison/illustration data (CLAUDE.md §1) — they are not used
-as primary data anywhere in this project.
+NETWORK AND SITE COUNT (refreshed 2026-10-02 after the 20 September DuckDB
+store refresh — previously stale since the 30 June build, which predated
+both the 2026-09-01 781-site snapshot and this store refresh):
+FLUXNET Shuttle network, pinned snapshot: n = 781 sites, 6,200 of 6,336
+site-years have data (has_data = TRUE; see PRESENCE RULE above), reaching
+6,200 cumulative observed site-years by the most recent year in the
+presence table. Marconi (n = 35), La Thuile (n = 252), and FLUXNET2015
+(n = 212) site-year trajectories are shown strictly as non-Shuttle
+comparison/illustration data (CLAUDE.md §1) — they are not used as primary
+data anywhere in this project.
 
 DATA SOURCES:
   - Shuttle site list and IGBP class: pinned snapshot
     data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv (781 sites)
   - Shuttle per-year data presence (observed valid site-years, not merely
     site deployment span): data/snapshots/site_year_data_presence.csv
-    (has_data flag per site × year)
+    (has_data flag per site × year; rebuilt 2026-10-02 via
+    scripts/refresh_site_year_presence.R from the current DuckDB `monthly`
+    table)
   - Historical site lists and first/last year lookups (comparison-only,
     non-Shuttle): data/snapshots/sites_marconi_clean.csv +
     years_marconi.csv; sites_la_thuile_clean.csv + years_la_thuile.csv;

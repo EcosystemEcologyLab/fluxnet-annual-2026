@@ -455,15 +455,28 @@ on the per-site VUT/CUT-chosen NEE QC column and ET/H on their own QC columns, a
 `QC_THRESHOLD_YY`. See `docs/methods_requirements.md` §5.8 (rows E/F) and
 `review/figures/representativeness/methods_flux_bin_scheme.md`.
 
-**Not fixed by this change — still hardcode a literal 0.80, independent of
-`compute_site_annual_fluxes()`/`QC_THRESHOLD_YY`.** Left as-is; not rerun as part of this fix (none
-of their outputs feed the current Figure 4). A future cleanup should point these at the shared
-function instead of maintaining a second, divergent QC threshold.
+**Also fixed, 2026-10-02 (Figure 3 rebuild):** `scripts/assess_flux_data_by_igbp_shuttle.R`
+(the Shuttle side) and `scripts/assess_flux_data_by_igbp_fluxnet2015.R` (the FLUXNET2015
+comparison side) no longer hardcode `QC_THRESH <- 0.80` or loop over loose per-site CSVs/the
+DuckDB `annual_qc` table themselves. Both now call the shared function -- the Shuttle script via
+`compute_site_annual_fluxes()` (DuckDB `annual` table), the FLUXNET2015 script via
+`compute_site_annual_fluxes_from_df()` (its own extracted FLUXNET2015 YY CSVs, read into the same
+shape) -- against `QC_THRESHOLD_YY`. Panel C (H) needed the shared function to return the native
+W m⁻² annual mean rather than its default pre-integrated MJ m⁻² yr⁻¹ total; `h_unit = "W_m2"` was
+added to `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()` for this. Downstream
+`site_flux_medians_shuttle.csv`, `site_flux_medians_fluxnet2015.csv`,
+`flux_comparison_fluxnet2015_vs_shuttle.csv`, and the actual draft Figure 3
+(`review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png`, via
+`scripts/figure_flux_comparison_combo.R`) regenerated. See SESSION_LOG.md 2026-10-02 for before/
+after counts and per-class medians.
+
+**Not fixed by either change — still hardcode a literal 0.80, independent of
+`compute_site_annual_fluxes()`/`QC_THRESHOLD_YY`.** Left as-is; not rerun as part of either fix
+(none of their outputs feed the current Figure 2, 3 or 4). A future cleanup should point these at
+the shared function instead of maintaining a second, divergent QC threshold.
 
 | Script | QC constant | Outputs already on disk under QC>=0.80 |
 |---|---|---|
-| `scripts/assess_flux_data_by_igbp_shuttle.R` | `QC_THRESH <- 0.80` | `data/snapshots/site_flux_medians_shuttle.csv`, `igbp_class_flux_distributions_shuttle.csv` |
-| `scripts/assess_flux_data_by_igbp_fluxnet2015.R` | `QC_THRESH <- 0.80` | `data/snapshots/site_flux_medians_fluxnet2015.csv`, `igbp_class_flux_distributions_fluxnet2015.csv` |
 | `scripts/figure_flux_comparison_combo_alt_common_siteyears.R` | `QC_THRESH <- 0.80` | `data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv`, `review/figures/candidates/ALT_fig_03_flux_comparison_combo_nep_et_h.png` |
 | `scripts/figure_representativeness_nee_signed.R` | `QC_THRESH_MM <- 0.80` | `data/snapshots/site_trendy_nee_signed5_geo_current_781.csv`, `site_trendy_nee_signed5_data_{current_781,marconi,la_thuile,fluxnet2015}.csv`, `nee_signed5_occupancy_jaccard.csv`, `trendy_nee_signed5_global_distribution.csv` |
 | `scripts/candidate_nee_gpp_ter_panels.R` | `QC_THRESH_MM <- 0.80` | `review/figures/candidates/` (per-panel PNGs, `fig5_jaccard_trajectory_with_nee.png`) |
@@ -472,14 +485,20 @@ function instead of maintaining a second, divergent QC threshold.
 | `scripts/diagnostics/flux_bin_breaks.R` | `QC_THRESH_MM <- 0.80` | `review/diagnostics/flux_bin_breaks/` (`table_edges.csv`, per-panel and composite PNGs) — the diagnostic Figure 4 panels E/F's *binning scheme* (not its tower values) was ported from; Figure 4 itself no longer uses this script's threshold |
 | `scripts/diagnostics/nee_et_site_vs_trendy_raster.R` | literal `0.80` in SQL (no named constant) | `review/diagnostics/nee_et_site_vs_trendy/table_paired_measured_vs_trendy.csv` |
 
-**Consume those scripts' 0.80-threshold medians rather than defining their own threshold** (so a
-fix only needs to happen upstream, at the scripts above):
+**Consume `scripts/figure_flux_comparison_combo_alt_common_siteyears.R`'s own 0.80-threshold
+output rather than defining their own threshold** (so a fix only needs to happen upstream, at
+that script):
 
 | Script | Outputs |
 |---|---|
-| `scripts/figure_flux_medians_by_igbp.R` | `review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png`, `data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv` |
-| `scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` | `review/figures/flux_medians/fig_flux_comparison_{nep,gpp,ter,et,h}.png`, `data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv` |
 | `scripts/figure_representativeness_supp_sitelevel.R` | `review/diagnostics/.../Supp_sampling_ratio_siteKG_IGBP_NEE_ET.png`, `Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.png` |
+
+`scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R` reads `site_flux_medians_shuttle.csv`/
+`site_flux_medians_fluxnet2015.csv` and was rerun as part of this fix, so its own outputs
+(`flux_comparison_fluxnet2015_vs_shuttle.csv`, `fig_flux_comparison_{nep,gpp,ter,et,h}.png`) are
+current. `scripts/figure_flux_medians_by_igbp.R` reads the same two medians CSVs but was **not**
+rerun -- its outputs are now stale against the regenerated inputs; see the "stale downstream
+outputs" note in SESSION_LOG.md 2026-10-02 for the full list.
 
 ---
 

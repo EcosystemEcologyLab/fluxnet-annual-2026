@@ -12,7 +12,10 @@ in full. The only difference is the site-side value: Geo vs Geo classifies every
 the gridded product's own value at that tower's coordinate, rather than the site's own
 measured or site-derived value. Because every tower has a value in the gridded product by
 construction, no panel here has the precipitation-dependent exclusions that apply to
-Figure 4's panels a and c -- n = 781/781 for all six panels.
+Figure 4's panels a and c -- n = 781/781 for all six panels. Panels e and f here use the
+model's own value at the tower, not a tower measurement -- Figure 4's own panels e and f
+(Geo vs Data) instead use each site's median annual value passing QC_THRESHOLD_YY=0.5,
+each flux gated on its own QC column, per-site VUT/CUT (see Figure 4's legend).
 Final artwork size: 183 mm wide x 173.3 mm tall, Helvetica throughout.
 
 PER-PANEL n AND J (Geo vs Geo):

@@ -4,6 +4,26 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (4) — Session recap: status report on prior Köppen diagnostic session (DONE)
+
+Read-only status report, no code or data touched. User asked for a report on the last task engaged in;
+answered from `SESSION_LOG.md` and `git log`/`git status` rather than from conversation memory (fresh
+session, no prior turns).
+
+Summarised the 2026-10-02 (3) entry — the read-only PI-reported vs. ERA5-derived vs. Beck 2023 Köppen
+diagnostic (`scripts/diagnostics/koppen_pi_vs_era5.R`): TERN's 0% BADM `CLIMATE_KOEPPEN` coverage, PI
+agreeing better with Beck 2023 than with the ERA5-derived class at every granularity, and the Jaccard
+check showing the PI class would *not* improve panel A (J = 0.359 vs. the current 0.411) — and noted it
+followed the same-day four-item Fig 4 documentation-correction session (commit `bc8e6dd`) and the Fig 4/
+supplement rename (commit `5324cb4`).
+
+Flagged, not actioned: at session start the working tree had unstaged modifications to
+`R/pipeline_config.R`, several `data/snapshots/*.meta.json` files, the `nee_corrected_axis` diagnostic
+outputs, and `renv/activate.R`, plus a large number of untracked `logs/*` files — none evidently related
+to the Köppen diagnostic commit. Left for the user to triage.
+
+---
+
 ## 2026-10-02 (3) — Diagnostic: PI-reported vs. ERA5-derived vs. Beck 2023 Köppen class (DONE)
 
 Read-only diagnostic (`scripts/diagnostics/koppen_pi_vs_era5.R`, outputs in

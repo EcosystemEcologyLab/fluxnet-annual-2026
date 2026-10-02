@@ -4,6 +4,46 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (2) — New Fig 4: four documentation corrections, checked against code (DONE)
+
+Corrected four errors in the Figure 4 documentation, each checked against `scripts/
+figure4_representativeness.R` directly before changing anything.
+
+1. **`docs/methods_requirements.md` §5.8, panel F.** Was wrongly stated as "Step-3 annual tower ET
+   (VUT→CUT fallback)". The script (`scripts/figure4_representativeness.R` lines ~1119–1122) shows the
+   VUT→CUT per-site fallback applies only to the carbon-flux source (`NEE_VUT_REF`/`NEE_CUT_REF`); tower
+   ET always comes from `LE_F_MDS` gated on `LE_F_MDS_QC >= 0.80`, with no VUT/CUT distinction. Fixed the
+   panel F row, and also corrected `methods_flux_bin_scheme.md`'s shared Geo-vs-Data sentence, which had
+   stated the VUT→CUT fallback without qualifying it as NEE-only — the same underlying ambiguity that
+   produced the methods_requirements.md error.
+2. **Figure 4 legend, panel c exclusion count.** `write_fig4_legend()`'s EXCLUSIONS block listed the three
+   exclusion rules without stating that `DE-Zrk` is caught by both GRP_ERA_DOWN (172) and the invalid-
+   ERA5-input screen (4), so a reader summing 172+10+4 would get 186, not panel c's actual 185 (n=596).
+   `methods_precip_exclusions.md`'s own "Tracing n" paragraph already had this right; only the script's
+   legend text was missing it. Added explicit per-panel totals (a: 182 excluded, n=599; c: 185 excluded,
+   n=596) to the legend.
+3. **The 172 GRP_ERA_DOWN sites, legend and `methods_precip_exclusions.md`.** Both described the group as
+   sites with "no usable P_ERA-vs-measured-P regression slope", wording that implies the other 609 sites
+   *do* have a usable regression slope. Re-read `review/diagnostics/precip_downscaling_provenance/
+   report.md` §2: zero of the 781 current-network sites have a genuinely fitted P regression — the 609
+   have `ERA_SLOPE=1.0` (one sentinel) and the 172 have `ERA_SLOPE=-9999` (a second, distinct sentinel);
+   `ERA_INTERCEPT`/`ERA_RMSE`/`ERA_CORRELATION` are `-9999` for all 781 sites regardless of group. Reworded
+   both the legend and the methods note to describe the 172 as the `ERA_SLOPE=-9999` sentinel group,
+   without implying the other 609 are regression-validated.
+4. **Figure 4 legend, biomass land mask.** "biomass uses its own finer 0.00833 deg version of the same
+   mask" was wrong — `BIOMASS_LAND_TOTAL_KM2` and `KG_LAND_TOTAL_KM2` are both exactly 147,322,862 km²
+   (confirmed in the script's own metrics output), the same figure for the same reason: biomass reuses the
+   identical Beck 2023 1 km (0.00833°) mask directly, not a separately-resolved version. Fixed the legend
+   and `docs/methods_requirements.md`'s panel D row. Left unfixed (flagged only): the script's own internal
+   `add_metric()`/`PANEL_SPECS` label strings for panel D still say "Beck 2023 1 km mask (fine, 0.00833
+   deg)" — the same mislabel, but in a string literal inside the script rather than in documentation, so
+   left as-is per instruction to flag rather than fix code.
+
+Reran the full script after all four fixes (text-only changes; no data-selection logic touched): all 12
+panel×comparison rows' n and J still matched `representativeness_metrics_fig4.csv` exactly.
+
+---
+
 ## 2026-10-02 — New Fig 4: naming, methods docs brought into line with code (DONE)
 
 Renamed the new Figure 4 outputs to their manuscript names, moved the superseded prior Figure 4 to

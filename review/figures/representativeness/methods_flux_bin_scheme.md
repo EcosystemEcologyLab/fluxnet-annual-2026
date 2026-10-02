@@ -26,10 +26,14 @@ bars stay open-ended regardless of rounding.
 1990–2023-window, 16-model product — a different window and ensemble than the other TRENDY-derived axes
 in this figure; see the 2026-10-01 draft-Fig-4-audit SESSION_LOG entry for why that mismatch mattered).
 
-**Geo vs Data** = tower-measured annual value: the Step-3 annual method (mean monthly cycle across all
-QC≥0.80-qualifying years, all 12 calendar months required, then summed), with the per-site VUT→CUT
-fallback (731 VUT, 49 CUT, 1 neither, for the current 781-site network). **Geo vs Geo** = the model's own
-value at the tower cell (bilinear extraction).
+**Geo vs Data** = tower-measured annual value via the same Step-3 annual method for both panels (mean
+monthly cycle across all QC≥0.80-qualifying months, all 12 calendar months required, then summed) — but
+the QC-gated source variable differs by panel: **NEE** (panel E) uses the per-site VUT→CUT fallback
+(`NEE_VUT_REF`/`NEE_VUT_REF_QC` where available, else `NEE_CUT_REF`/`NEE_CUT_REF_QC`; 731 VUT, 49 CUT, 1
+neither, for the current 781-site network); **ET** (panel F) always uses `LE_F_MDS` gated on
+`LE_F_MDS_QC` ≥ 0.80, with no VUT/CUT distinction — that fallback is specific to the carbon-flux
+variables and does not apply to ET. **Geo vs Geo** = the model's own value at the tower cell (bilinear
+extraction), for both panels.
 
 **Colours.** NEE uses a diverging ramp (sink bars darken with sink strength, a near-neutral −25-to-0 bin,
 a contrasting warm hue for the source bar >0) — fixed from an earlier sequential-green version that made

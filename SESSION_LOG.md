@@ -4,6 +4,135 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (16) — Figure stage close-out: Stage 3 committed, Figures 1/3/S1 review fixes, supplementary PDF, methods (DONE)
+
+Close-out session per `logs/figstage_prompt.md` rules 2-9: closed out Stage 3 (left uncommitted by
+a prior session), fixed defects found on review of Stages 1/2/4's main- and Supplementary-Figure
+output, rebuilt and committed the supplementary PDF, and finished the methods/decisions items left
+open by Stage 6.
+
+### 1. Stage 3 (trajectory) closed out
+
+Re-ran `scripts/figure_representativeness_trajectory.R` fresh. Its own validation reconfirmed: the
+current-network Geo-vs-Geo values reproduce `representativeness_metrics_fig4.csv`'s six rows
+exactly (n/J match to the script's own 1e-9 tolerance); Panel B's fresh MODIS IGBP extraction
+matches `site_igbp_fig4.csv` exactly (781/781); Panels E/F's fresh TRENDY bilinear extraction +
+`classify_flux_sites()` reproduce the committed `bin_geo` exactly for all 781 NEE / 781 ET sites.
+Renamed the `SupFigs/` copy to `figS6_representativeness_trajectory` (completing the S1-S6
+sequence Stage 6 had stopped at S5 because Stage 3 wasn't DONE yet), corrected its legend text's
+stale "Extended Data"/"Figure 4" wording to "Supplementary Figure"/"Figure 5", and committed the
+script, figure, table, and log together. With Stage 3 DONE, completed Stage 5's own conditional
+item: `git mv`'d all 46 remaining `scripts/figure_representativeness_summary.R` outputs
+(`fig_rep001`-`fig_rep018`, `fig_representativeness_*`, with `.legend.txt` companions where
+present) into `review/figures/representativeness/deprecated/`, and marked that script superseded
+in `docs/figure_inventory.md`. Full J/n table and the two unclassified historical sites (CN-Do2,
+CN-Do3, panel C aridity, La Thuile only — CGIAR Aridity Index `unep_class_7` is `NA` at their
+coordinates in the existing extraction) are in `review/figstage_status.md`'s new Stage 3 entry.
+
+### 2. Figure 1 (`fig_01_map_network`) review fixes
+
+- Point size +25% in all five panels (panel a 0.5→0.625, panels b-e 0.7→0.875).
+- Each regional panel (b-e) previously had no visible separation or frame — added a thin black
+  `panel.border` and a 1.5 mm `plot.margin` white gap around each.
+- Panel letters: the land-avoidance search (`.place_letter()`, Stage 2) defaulted to top-left but
+  moved elsewhere when that spot intersected land — for panel d (East/Southeast Asia), whose
+  landmass covers nearly the whole top edge of the panel, this pushed the letter down to the
+  bottom. Replaced with a fixed top-left position for every panel, using an opaque white label
+  background (`ggplot2::annotate("label", ...)`) for legibility over land or water alike — the
+  scale-bar search (a separate function) is untouched, since its own task was specifically to
+  avoid printing over land/towers, not to stay in a fixed corner. Final size unchanged (the fixes
+  are cosmetic, not extent-changing): 182.7×217.3 mm.
+
+### 3. Figure 3 (`fig_03_whittaker_current`) key-colour fix
+
+The stepped NEE key's 8 colour swatches were drawn fully opaque while the hexagons they represent
+render at `alpha = 0.85` — e.g. the "below −400" swatch was solid `#053061` against hexagons
+reading closer to `#2A4F79` (exactly the mismatch named in the task). Added `HEX_FILL_ALPHA <-
+0.85` as a single named constant in `R/figures/fig_climate.R`, now used by both the hexagon layer
+(`stat_summary_hex(alpha = HEX_FILL_ALPHA)`) and the key swatches
+(`.stepped_fill_key_grob(fill_alpha = HEX_FILL_ALPHA)`, via `scales::alpha()`), so the two can't
+drift apart again. Verified by direct pixel sampling of the rendered PNG: all 8 swatches now match
+their alpha-blended-over-white hexagon colour (e.g. "below −400" measured RGB (42,79,121) vs. a
+computed expected blend of (42.5, 79.05, 120.7) — exact to rounding). `figS1_whittaker_nee_gpp_ter`
+panels b/c's GPP/TER key was checked the same way and found to already match without any code
+change — `ggplot2::guide_legend()` inherits a layer's constant `alpha=` parameter by default; only
+the hand-drawn NEE key (built via `grid::rectGrob()`, not a real guide, for a ggplot2 4.0.x guide
+regression worked around in Stage 1) needed the explicit fix.
+
+### 4. `figS1_whittaker_nee_gpp_ter`: NEE key moved out of panel a
+
+Stage 1 had added panel a's own NEE key back via `annotation_custom(xmin = -Inf, xmax = Inf, ymin
+= -Inf, ymax = Inf, ...)`, which draws across the full panel and overlapped the hexagon/point data
+underneath. Added a `show_stepped_key` parameter to `fig_whittaker_worldclim()`
+(`R/figures/fig_climate.R`, default `TRUE`, so Figure 3's own behaviour is unchanged) that skips
+this attachment; the key grob is always available via `attr(result, "stepped_key_grob")` so a
+caller can draw it elsewhere. `scripts/generate_whittaker_ed_three_flux.R` now builds panel a with
+`show_stepped_key = FALSE` and places the key in its own patchwork cell in the shared legend row,
+beside the GPP/TER key, instead of on top of panel a's data.
+
+Found and worked around a genuine `patchwork` limitation along the way: nesting `guide_area()` two
+levels deep inside `(A|B|C) / (D|E)`-style operator chaining silently broke both guide collection
+(the GPP/TER legend stayed inside its own panel instead of moving to `guide_area()`) and column-
+width allocation (the non-`guide_area()` cell in that row expanded to the full row width, as if
+`guide_area()` had collapsed to zero) — confirmed with a minimal, isolated reproduction outside
+this project's own code before concluding it wasn't something about the NEE key grob itself. Fixed
+with a flat `patchwork::plot_layout(design = "ABC\nDEE", heights = c(1, 0.85))` composition instead
+of nested `/`/`|` operators — design strings need exactly one `heights` value per text row; an
+earlier attempt with a 3-row design string (`"ABC\nABC\nDEE"`) and `heights = c(1, 1, 0.55)` halved
+the intended legend-row proportion and clipped the NEE key's bottom steps, caught by the same
+direct-pixel/visual check. Figure grew from 180×78.0 mm to 180×129.8 mm (the NEE key's 8-step
+vertical stack needs more height than the GPP/TER key's 2-row horizontal layout) — still within
+the 180×240 mm Supplementary Figure limit.
+
+### 5. Supplementary PDF rebuilt and committed
+
+`scripts/build_supplementary_pdf.R`'s `STEMS` list extended with `figS6_representativeness_
+trajectory`. Rebuilt `SupFigs/supplementary_figures.pdf`: 6 pages (one per Supplementary Figure,
+S1's new taller layout included), 0.62 MB — well under the 10 MB limit. The Stage 6 build (S1-S5
+only) was never committed; this one is, per the task's explicit instruction.
+
+### 6. Methods and decisions
+
+- `docs/methods_requirements.md` §5.4 (derived metrics/anomaly figures): section heading now reads
+  "— DEPRECATED (not used by any current figure)" and the status line leads with "Status:
+  DEPRECATED" — Stage 6 had only flagged this in prose. Code (`R/figures/fig_anomaly_context.R`
+  and its two callers) left in place, unchanged, per figure-stage rule 3 (never delete files).
+- `docs/decisions_pending.md`'s "Functionally active site definition — RESOLVED 2026-04-20" entry
+  marked **SUPERSEDED 2026-10-02**, with a new sub-entry recording the correct definition. The
+  April decision record's "≥3 months" text never matched what `R/utils.R::is_functionally_active()`
+  actually implements — the function's own docstring defines it as ≥1 month of any flux variable
+  present, in ≥1 of the last 4 years (`active_threshold = 4L`); the April record was factually
+  wrong about its own code, which was not changed. `docs/methods_requirements.md` §5.2 already had
+  the correct definition (fixed in Stage 6); only the decision record needed the supersession note.
+- Of Stage 6's two open TO CONFIRM facts: the current-network "sites with no usable annual NEE"
+  count is now filled in as **125 of 781**, re-verified directly
+  (`compute_site_annual_fluxes()`'s `site_summary$nee_median` is `NA` for exactly 125 sites), using
+  the QC_THRESHOLD_YY-qualifying-year definition — stated explicitly in the doc, since it differs
+  from the pre-existing text's "ONEFlux 15-day-gap rule" definition, for which no current-network
+  equivalent was found in any committed table or script constant. The snapshot `.meta.json`/
+  download-audit-CSV fact remains **TO CONFIRM** — re-checked directly (`ls data/snapshots/`): no
+  `.meta.json` sidecar exists for the locked 2026-09-01 snapshot, and no committed
+  `download_progress*.csv` is scoped to that date (the three on disk are dated 2026-04-14/
+  2026-05-24/2026-06-01, all older network states) — genuinely absent, not guessed around.
+
+### 7. Checks
+
+`scripts/check_figure_format.R`: 11/11 PASS after every edit in this session (final run: `fig_01_
+map_network` 182.7×217.3 mm, `figS1_whittaker_nee_gpp_ter` 179.9×129.8 mm, `figS6_
+representativeness_trajectory` 119.9×99.8 mm, all PASS). Invariant (rule 5):
+`data/snapshots/representativeness_metrics_fig4.csv` unchanged throughout (MD5
+`85a1c086ad51aa27d40114c9c6d0e5d9`, `git diff` empty). Visual check (rule 7): every changed PNG
+(`fig_01_map_network`, `fig_03_whittaker_current`, `figS1_whittaker_nee_gpp_ter`,
+`figS6_representativeness_trajectory`, and the rebuilt `supplementary_figures.pdf` rendered to PNG
+per page via `pdftoppm`) opened directly — no clipped or overlapping text, no blank bands, every
+key swatch coloured (none blank), panel letters clear of land/data in every panel.
+
+Full numbers (J/n table, final figure sizes, pixel-colour verification) consolidated in
+`review/figstage_status.md`'s Stage 3 entry and `review/figstage_report.md`'s "Close-out session"
+section.
+
+---
+
 ## 2026-10-02 (15) — Figure stage 6: numbering, supplementary PDF, methods, final report (DONE)
 
 Unattended run per `logs/figstage_prompt.md`, stage 6 only.

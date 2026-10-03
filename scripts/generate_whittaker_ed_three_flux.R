@@ -94,21 +94,35 @@ style_ed <- utils::modifyList(WHITTAKER_STYLE, list(
   width_in = NATURE_ED_MAX_WIDTH_MM / 25.4, height_in = 76 / 25.4,
   axis_text_size = NATURE_BASE_PT, axis_title_size = NATURE_BASE_PT,
   legend_text_size = NATURE_SMALL_PT, legend_title_size = NATURE_BASE_PT,
-  detail_text_size = NATURE_SMALL_PT / ggplot2::.pt
+  detail_text_size = NATURE_SMALL_PT / ggplot2::.pt,
+  ## Key starts flush at the top-left of its OWN patchwork cell (the shared
+  ## legend row below the three panels), not inside the square MAT/MAP
+  ## panel WHITTAKER_STYLE's default legend_pos (c(0.02, 0.88)) was tuned
+  ## for -- task, 2026-10-02 (move the NEE key out of panel a).
+  legend_pos = c(0.02, 0.97)
 ))
 
-panel_nee <- fig_whittaker_worldclim(
+## show_stepped_key = FALSE: panel a's NEE key was previously drawn directly
+## onto this panel via annotation_custom() (xmin/xmax/ymin/ymax = -Inf/Inf,
+## i.e. spanning the whole panel), which overlapped the hexagon/point data
+## underneath it -- a defect found on review. The key grob itself is
+## unchanged (still built by .stepped_fill_key_grob(), still alpha-matched
+## to the hexagons via HEX_FILL_ALPHA); only where it is drawn changes: it's
+## retrieved here via the attribute fig_whittaker_worldclim() always sets,
+## BEFORE any further `+` layers (ggplot2's `+.gg`/ggplot_add() machinery
+## does not guarantee a plain attr() survives), and placed in its own
+## patchwork cell in the shared legend row below, beside the GPP/TER key,
+## instead of on top of panel a's data (close-out task, 2026-10-02).
+panel_nee_raw <- fig_whittaker_worldclim(
   data_yy = data_yy_nee, site_meta = shuttle_meta, detail_label = NULL,
   style = style_ed, hex_regular = TRUE, points_in_front = TRUE,
   point_size = POINT_SIZE, point_colour = POINT_COLOUR, point_alpha = POINT_ALPHA,
   fill_mode = "stepped", step_breaks = nee_step_breaks, step_colours = nee_step_colours,
-  detail_lines = character(0), detail_hjust = 0, detail_x_offset = 0.6
-) + contour_layer() + nature_theme() + panel_letter("a")
-## No legend.position theme override needed: fig_whittaker_worldclim()'s
-## fill_mode = "stepped" key is drawn with annotation_custom() (see
-## .stepped_fill_key_grob() in R/figures/fig_climate.R), not guide_legend(),
-## so it is not affected by ggplot2's legend.position/guides() machinery --
-## it simply always draws, giving panel a its own key (task, 2026-10-02).
+  detail_lines = character(0), detail_hjust = 0, detail_x_offset = 0.6,
+  show_stepped_key = FALSE
+)
+nee_key_grob <- attr(panel_nee_raw, "stepped_key_grob")
+panel_nee <- panel_nee_raw + contour_layer() + nature_theme() + panel_letter("a")
 n_nee <- sum(!is.na(data_yy_nee$site_id[!duplicated(data_yy_nee$site_id)]))
 n_nee <- dplyr::n_distinct(data_yy_nee$site_id)
 msg("Panel a (NEE): n = ", n_nee, " sites")
@@ -225,17 +239,62 @@ hex_layer_idx <- function(p) which(vapply(p$layers, function(l) inherits(l$stat,
 ## its own reserved band, sized independently of the panel row's heights.
 panel_ter <- panel_ter + ggplot2::theme(legend.position = "bottom")
 
+## NEE key, wrapped as its own patchwork cell (task, 2026-10-02): the key
+## grob stacks its 8 steps vertically (.stepped_fill_key_grob() always
+## stacks down, not across), so it needs a taller cell than the GPP/TER
+## key's 2-row horizontal layout -- the shared legend row height below is
+## sized for the NEE key's full 8-step stack, with the key starting flush
+## at the top of its own cell (legend_pos y = 0.97, up from WHITTAKER_
+## STYLE's default 0.88 tuned for sitting inside a square MAT/MAP panel).
+## A blank ggplot + annotation_custom(), not patchwork::wrap_elements(full=
+## grob) directly: the key grob's internal unit arithmetic mixes "npc" with
+## absolute "mm" offsets, which needs a REAL ggplot viewport (the same kind
+## it was designed to sit inside originally, panel a itself) to resolve
+## correctly -- wrap_elements(full=) on a raw grob broke the whole
+## composite's layout when tried directly (panels and key scattered across
+## a mostly-blank oversized canvas), confirmed by direct comparison.
+nee_key_cell <- ggplot2::ggplot() + ggplot2::theme_void() +
+  ggplot2::annotation_custom(nee_key_grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
+
 # ---- Assemble 3-panel row + dedicated legend row -------------------------------
 ## Only panel_ter carries a visible ("bottom") legend.position -- panel_nee and
 ## panel_gpp are both "none" -- so guides = "collect" has exactly one guide to
 ## hoist into guide_area(), with no risk of re-enabling the other two panels'
 ## suppressed legends (unlike the `&` patchwork operator applied with theme(),
 ## which would overwrite all three panels' legend.position, undoing the other
-## two).
-combo <- (panel_nee | panel_gpp | panel_ter) / patchwork::guide_area() +
-  patchwork::plot_layout(heights = c(1, 0.38), guides = "collect")
+## two). The NEE key sits beside the collected GPP/TER key, not inside any
+## panel's own data area (close-out task).
+## Legend-row height ratio raised 0.38 -> 0.55 (panels ~69mm -> legend row
+## ~38mm) to fit the NEE key's full 8-step vertical stack (~36-38mm at
+## NATURE_SMALL_PT) without clipping -- tuned empirically against the
+## rendered output, same as this figure's original row-height ratio was.
+##
+## FLAT plot_layout(design=...), not nested `(A|B|C) / (D|E)` operator
+## chaining: confirmed directly (minimal reproduction) that nesting a
+## guide_area() two levels deep inside `/`/`|` breaks BOTH the guide
+## collection (the legend stayed on its own panel instead of moving into
+## guide_area()) and the row's column widths (the non-guide_area() cell in
+## that row expanded to the FULL row width, as if guide_area() had
+## collapsed to zero) -- a patchwork limitation with nested compositions,
+## not something fixable by how the NEE key grob itself is wrapped. A flat
+## `+`-composition of all five elements with an explicit `design=` string
+## does not hit this: confirmed in the same minimal reproduction.
+## design has exactly 2 text rows ("ABC"/"DEE"), so heights needs exactly 2
+## values -- a 3-row design (even with rows 1-2 both "ABC") would halve the
+## effective legend-row proportion against heights=c(1,1,0.55) by splitting
+## the panels' weight across two rows instead of one; confirmed directly
+## (the NEE key's bottom 4 steps were clipped off the figure before this
+## fix).
+combo <- panel_nee + panel_gpp + panel_ter + nee_key_cell + patchwork::guide_area() +
+  patchwork::plot_layout(
+    design = "
+ABC
+DEE
+",
+    heights = c(1, 0.85), guides = "collect"
+  )
 
-saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 78,
+saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 130,
                              extended_data = TRUE)
 msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
@@ -263,8 +322,8 @@ legend_lines <- c(
   "",
   "PANELS:",
   paste0("  a NEE — same stepped ColorBrewer RdBu scale as Figure 3 (8 classes, no middle"),
-  paste0("    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Own key shown (top-left"),
-  "    inset, identical to Figure 3's) --",
+  paste0("    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Key shown below the three"),
+  "    panels, beside the GPP/TER key (not overlaid on this panel's own data) --",
   paste0("    n = ", n_nee, " sites."),
   paste0("  b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --"),
   paste0("    n = ", n_gpp, " sites."),
@@ -292,7 +351,7 @@ legend_lines <- c(
   "built directly in the script from compute_site_annual_fluxes()'s site-level medians --",
   "not NEE-specific, so not routed through fig_whittaker_worldclim(). Contour overlay:",
   "fig_whittaker_global_contour(), shared with Figure 3.",
-  paste0("DIMENSIONS: ", NATURE_ED_MAX_WIDTH_MM, " x 95 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,"),
+  paste0("DIMENSIONS: ", NATURE_ED_MAX_WIDTH_MM, " x 130 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,"),
   "Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt)."
 )
 writeLines(legend_lines, paste0(OUT_STEM, ".legend.txt"))

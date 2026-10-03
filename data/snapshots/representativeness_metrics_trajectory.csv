@@ -1,0 +1,25 @@
+panel,axis,comparison,network,land_grid,land_total_km2,n_eligible,n_classified,weighted_jaccard
+A,koppen,geo_vs_geo,marconi,Beck 2023 1 km mask,147322862.19253048,35,35,0.2229460105350978
+A,koppen,geo_vs_geo,la_thuile,Beck 2023 1 km mask,147322862.19253048,252,252,0.2922554786441764
+A,koppen,geo_vs_geo,fluxnet2015,Beck 2023 1 km mask,147322862.19253048,212,212,0.3650973530962458
+A,koppen,geo_vs_geo,current,Beck 2023 1 km mask,147322862.19253048,781,781,0.3716110898203183
+B,igbp,geo_vs_geo,marconi,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,35,35,0.3538773120815348
+B,igbp,geo_vs_geo,la_thuile,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,252,252,0.39624513199381806
+B,igbp,geo_vs_geo,fluxnet2015,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,212,212,0.49116152733381047
+B,igbp,geo_vs_geo,current,MODIS MCD12C1 on Beck 2023 1 km mask,147322862.1925308,781,781,0.4952608379452605
+C,aridity,geo_vs_geo,marconi,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,35,35,0.47898343232265866
+C,aridity,geo_vs_geo,la_thuile,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,252,250,0.5319605329040273
+C,aridity,geo_vs_geo,fluxnet2015,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,212,212,0.5981357264072649
+C,aridity,geo_vs_geo,current,CGIAR Aridity Index v3.1 (own coverage),134761545.47484297,781,781,0.665920460867173
+D,biomass,geo_vs_geo,marconi,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,35,35,0.40895124911898173
+D,biomass,geo_vs_geo,la_thuile,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,252,252,0.5319829942388983
+D,biomass,geo_vs_geo,fluxnet2015,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,212,212,0.5537168011955627
+D,biomass,geo_vs_geo,current,"Beck 2023 1 km mask (fine, 0.00833 deg)",147322862.1959516,781,781,0.636231164957332
+E,nee,geo_vs_geo,marconi,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,35,35,0.4935960720543667
+E,nee,geo_vs_geo,la_thuile,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,252,252,0.44478583109785413
+E,nee,geo_vs_geo,fluxnet2015,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,212,212,0.4657149288315946
+E,nee,geo_vs_geo,current,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.5298754549363103
+F,et,geo_vs_geo,marconi,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,35,35,0.45824743201744395
+F,et,geo_vs_geo,la_thuile,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,252,252,0.38529905885897214
+F,et,geo_vs_geo,fluxnet2015,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,212,212,0.4096849095285068
+F,et,geo_vs_geo,current,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.45626639245125744

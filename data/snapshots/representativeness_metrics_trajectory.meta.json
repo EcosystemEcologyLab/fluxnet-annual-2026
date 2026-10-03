@@ -1,0 +1,33 @@
+{
+  "run_datetime_utc": "2026-10-03T05:19:02Z",
+  "pipeline_version": "dead406",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics_fig4.csv",
+    "data/snapshots/koppen_beck2023_global_distribution.csv",
+    "data/snapshots/igbp_mcd12c1_global_distribution.csv",
+    "data/snapshots/aridity_unep7_global_distribution.csv",
+    "data/snapshots/biomass_cci_v7_global_distribution.csv",
+    "data/snapshots/nee_et_fig4_global_distribution.csv",
+    "data/snapshots/sites_marconi_clean.csv",
+    "data/snapshots/sites_la_thuile_clean.csv",
+    "data/snapshots/sites_fluxnet2015_clean.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_koppen_beck2023_marconi.csv",
+    "data/snapshots/site_koppen_beck2023_la_thuile.csv",
+    "data/snapshots/site_koppen_beck2023_fluxnet2015.csv",
+    "data/snapshots/site_koppen_beck2023.csv",
+    "data/snapshots/site_aridity_marconi.csv",
+    "data/snapshots/site_aridity_la_thuile.csv",
+    "data/snapshots/site_aridity_fluxnet2015.csv",
+    "data/snapshots/site_aridity.csv",
+    "data/snapshots/site_biomass_cci_v7_marconi.csv",
+    "data/snapshots/site_biomass_cci_v7_la_thuile.csv",
+    "data/snapshots/site_biomass_cci_v7_fluxnet2015.csv",
+    "data/snapshots/site_biomass_cci_v7.csv",
+    "data/external/modis_landcover/MCD12C1.A2022001.061.2023244164746.hdf",
+    "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
+    "data/external/trendy/derived/candidate_gpp_median.tif",
+    "data/external/trendy/derived/flux_bin_breaks_et_median_1991_2020.tif"
+  ],
+  "notes": "Stage 3 of the unattended figure-production run (logs/figstage_prompt.md): Geo vs Geo representativeness through time, Figure 4's six axes, four network generations (Marconi 35, La Thuile 252, FLUXNET2015 212, current 781). Classes/edges/land grids/totals/J-definition taken from scripts/figure4_representativeness.R and its committed tables, not redefined. New raster extractions for the three historical networks: MODIS MCD12C1 IGBP (nearest cell) and TRENDY model NEE/GPP/ET (bilinear), same method/rasters figure4_representativeness.R uses for the current network. Koppen/aridity/biomass for the historical networks reuse existing site_*_<net>.csv tables (confirmed same product/class scheme). Current-network values validated to reproduce representativeness_metrics_fig4.csv's six Geo-vs-Geo rows exactly (see script log). Unclassified historical sites logged to outputs/unknown_log.csv via log_unknown(); see also 2 rows collected in-script (listed in the script's own log file)."
+}

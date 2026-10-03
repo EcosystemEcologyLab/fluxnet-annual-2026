@@ -112,8 +112,10 @@ region_outlines <- do.call(c, lapply(REGIONS, function(r) {
 }))
 region_outlines_sf <- sf::st_sf(region = names(REGIONS), geometry = region_outlines)
 
+## Point size +25% throughout this figure (panel a 0.5->0.625, panels b-e
+## 0.7->0.875), per the close-out task.
 panel_a <- .map_base_eqearth(geo_world$land, geo_world$coast) +
-  ggplot2::geom_sf(data = sites_sf_all, shape = 16, colour = "#0072B2", size = 0.5, alpha = 0.45) +
+  ggplot2::geom_sf(data = sites_sf_all, shape = 16, colour = "#0072B2", size = 0.625, alpha = 0.45) +
   ggplot2::geom_sf(data = region_outlines_sf, fill = NA, colour = "#D55E00",
                     linewidth = nature_lwd(0.6)) +
   ggplot2::coord_sf(crs = EQUAL_EARTH_CRS, expand = FALSE, datum = NA) +
@@ -169,35 +171,25 @@ msg("Panel a height at ", NATURE_WIDTH_DOUBLE_MM, "mm wide: ", round(h_a, 2), "m
        y0 = unname(bb["ymin"]) + default_y * yspan, cand = NULL)
 }
 
-## Panel-letter placement: point-buffer test over the same grid, defaulting
-## to the top-left corner (keeps the letter visually "in the corner" as for
-## every other panel unless land forces it elsewhere).
-.place_letter <- function(letter, land_proj, bb) {
+## Panel-letter placement: ALWAYS the top-left corner, every panel -- close-
+## out task instruction ("panel letters at the top left of every panel; d is
+## at the bottom now"). The land-avoidance search previously used here (same
+## grid/distance logic as the scale-bar search below) pushed panel d's
+## letter away from top-left because East/Southeast Asia's landmass extends
+## across nearly the whole top edge of that panel, finding its "nearest
+## clear of land" spot much further down. Fixed-position + an opaque white
+## label background (ggplot2::annotate("label", ...), not "text") makes the
+## letter legible over land or water alike, so no search is needed and every
+## panel's letter is guaranteed to be in the same corner.
+.place_letter <- function(letter, land_proj = NULL, bb) {
   xspan <- unname(bb["xmax"] - bb["xmin"]); yspan <- unname(bb["ymax"] - bb["ymin"])
-  buf_r <- 0.045 * min(xspan, yspan)
-  candidates <- .grid_candidates(default_x = 0.03, default_y = 0.95)
-  chosen <- NULL
-  for (i in seq_along(candidates)) {
-    cand <- candidates[[i]]
-    x <- unname(bb["xmin"]) + cand$x0_frac * xspan
-    y <- unname(bb["ymin"]) + cand$y0_frac * yspan
-    pt <- sf::st_sfc(sf::st_point(c(x, y)), crs = sf::st_crs(land_proj))
-    circ <- sf::st_buffer(pt, buf_r)
-    hit <- suppressMessages(any(sf::st_intersects(circ, land_proj, sparse = FALSE)))
-    if (!hit) {
-      msg("  letter '", letter, "': candidate (", cand$name, ") is clear of land -- used.")
-      chosen <- list(x = x, y = y)
-      break
-    }
-  }
-  if (is.null(chosen)) {
-    msg("  letter '", letter, "': WARNING -- no grid candidate was clear of land; using default top-left.")
-    chosen <- list(x = unname(bb["xmin"]) + 0.03 * xspan, y = unname(bb["ymin"]) + 0.95 * yspan)
-  }
-  ggplot2::annotate("text", x = chosen$x, y = chosen$y, label = tolower(letter),
+  x <- unname(bb["xmin"]) + 0.03 * xspan
+  y <- unname(bb["ymax"]) - 0.03 * yspan
+  ggplot2::annotate("label", x = x, y = y, label = tolower(letter),
                      hjust = 0, vjust = 1, fontface = "bold",
                      family = NATURE_FONT, size = NATURE_PANEL_LETTER_PT / ggplot2::.pt,
-                     colour = "black")
+                     colour = "black", fill = "white", alpha = 0.85,
+                     linewidth = 0, label.padding = grid::unit(0.12, "lines"))
 }
 
 .nice_round_km <- function(span_km) {
@@ -244,8 +236,14 @@ build_region_panel <- function(nm) {
 
   letter_layer <- .place_letter(REGION_LETTERS[[nm]], land_proj, bb)
 
+  ## Narrow white gap + thin frame around each regional panel (close-out
+  ## task instruction -- panels previously abutted directly with no visible
+  ## separation or border). plot.margin draws the gap (patchwork's `|`/`/`
+  ## composition otherwise packs panels edge-to-edge with zero spacing);
+  ## panel.border draws the frame -- theme_void() (inside .map_base_eqearth())
+  ## has none by default.
   p <- .map_base_eqearth(geo$land, geo$coast) +
-    ggplot2::geom_sf(data = sites_r_sf, shape = 16, colour = "#0072B2", size = 0.7, alpha = 0.55) +
+    ggplot2::geom_sf(data = sites_r_sf, shape = 16, colour = "#0072B2", size = 0.875, alpha = 0.55) +
     ggplot2::annotate("segment", x = bar_x0, xend = bar_x0 + bar_m, y = bar_y0, yend = bar_y0,
                        linewidth = nature_lwd(0.6), colour = "black") +
     ggplot2::annotate("text", x = bar_x0 + bar_m / 2, y = bar_y0, label = paste0(bar_km, " km"),
@@ -253,7 +251,11 @@ build_region_panel <- function(nm) {
                        family = NATURE_FONT) +
     ggplot2::coord_sf(crs = crs_laea, xlim = c(bb["xmin"], bb["xmax"]), ylim = c(bb["ymin"], bb["ymax"]),
                        expand = FALSE, datum = NA) +
-    letter_layer
+    letter_layer +
+    ggplot2::theme(
+      plot.margin  = ggplot2::margin(1.5, 1.5, 1.5, 1.5, unit = "mm"),
+      panel.border = ggplot2::element_rect(colour = "black", fill = NA, linewidth = nature_lwd(0.5))
+    )
 
   list(panel = p, n = nrow(sites_r), span_km = span_km, bar_km = bar_km,
        extent = r, crs = crs_laea, aspect = xspan / yspan)

@@ -84,8 +84,8 @@ copy filenames were renumbered.
 |---|---|---|---|---|---|
 | `scripts/figure4_representativeness.R` | `review/figures/representativeness/fig_04_representativeness.png`/`.pdf` | `fig_05_representativeness.png`/`.pdf` | **Figure 5.** Six-panel log2 sampling-ratio figure (Köppen-Geiger, IGBP land cover, aridity, biomass, NEE, ET) vs. current 781-site network, Geo vs Data | Beck 2023 KG, MODIS MCD12C1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14, WorldClim BIO12, ERA5 | Current |
 | `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf` | `SupFigs/figS4_representativeness_geo_vs_geo.png`/`.pdf` | **Supplementary Figure S4** (target journal Scientific Data has no Extended Data concept; `draft_manuscript_v1/` itself keeps only main-text figures). Same six panels, Geo vs Geo (gridded product's own value at each tower, not the site's own measurement) | same as above | Current |
-| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/fig_rep001_current.png` | — (superseded, see below) | Prior "Figure 4": six-panel sampling ratio figure (Köppen-Geiger, ESA CCI Land Cover, CGIAR Aridity, ESA CCI Biomass, TRENDY NEE-IAV, TRENDY ET-median) vs. 767-site network | Beck 2023 KG, ESA CCI LC v2.1.1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14 | **Superseded** 2026-10-02 by `fig_04_representativeness.png` above |
-| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/fig_rep002_marconi.png` … `fig_rep008_jaccard_trajectory_with_counts.png` | — (see note below) | Historical-network representativeness comparisons (Marconi, La Thuile, FLUXNET2015) and the Jaccard-overlap trajectory over network history | same as fig_rep001 | Current (not touched by the Figure 4/5 work); `fig_rep008`'s draft-manuscript copy retired 2026-10-02 (see note below) |
+| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/deprecated/fig_rep001_current.png` | — (superseded) | Prior "Figure 4": six-panel sampling ratio figure (Köppen-Geiger, ESA CCI Land Cover, CGIAR Aridity, ESA CCI Biomass, TRENDY NEE-IAV, TRENDY ET-median) vs. 767-site network | Beck 2023 KG, ESA CCI LC v2.1.1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14 | **Superseded** 2026-10-02 by `fig_04_representativeness.png`/`fig_05_representativeness.png` above |
+| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/deprecated/fig_rep002_marconi.png` … `fig_rep018_jaccard_et_median_aggregation.png`, `fig_representativeness_*.png` | — (superseded) | Historical-network representativeness comparisons (Marconi, La Thuile, FLUXNET2015), the Jaccard-overlap trajectory over network history, and per-axis diagnostic aggregation figures (Köppen/land-cover/aridity/biomass/TRENDY NEE/TRENDY ET at various class resolutions) | same as fig_rep001 | **Superseded** 2026-10-02 (see note below) |
 
 **Superseded Figure 4.** `review/figures/draft_manuscript_v1/fig_04_current_network_sampling_ratios.png`
 (and its `.legend.txt`), the `fig_rep001_current.png`-sourced draft-manuscript copy of the prior Figure 4,
@@ -102,12 +102,18 @@ is untouched and still produced by `scripts/figure_representativeness_summary.R`
 slot was later reused by figure stage 6, 2026-10-02, for the unrelated, renumbered
 `fig_05_representativeness.png` above — the two are not the same figure.)
 
-**Pending: `scripts/figure_representativeness_summary.R`'s remaining outputs** (`fig_rep001`-
-`fig_rep018` and `fig_representativeness_*` in `review/figures/representativeness/`) are listed as
-"Current" above, but figure stage 5 (`SESSION_LOG.md`, 2026-10-02) flagged their retirement as
-conditional on figure stage 3 (the representativeness trajectory supplement) being marked DONE in
-`review/figstage_status.md` — which it is not (see Supplementary Figures note below). Not retired by
-figure stage 6 either, since that stage's scope is numbering, not stage-3/5 cleanup.
+**Superseded: `scripts/figure_representativeness_summary.R`'s remaining outputs.** Figure stage 5
+(`SESSION_LOG.md`, 2026-10-02) flagged their retirement as conditional on figure stage 3 (the
+representativeness trajectory supplement, now Supplementary Figure S6) being marked DONE in
+`review/figstage_status.md`. Stage 3 was closed out in the close-out session (2026-10-02): its
+current-network Geo-vs-Geo values were reconfirmed to reproduce
+`representativeness_metrics_fig4.csv`'s six rows exactly, and its figure staged as
+`SupFigs/figS6_representativeness_trajectory.*`. With stage 3 DONE, all 46 remaining
+`scripts/figure_representativeness_summary.R` outputs (`fig_rep001`-`fig_rep018` and
+`fig_representativeness_*`, `.png` + `.legend.txt` companions) were `git mv`'d into
+`review/figures/representativeness/deprecated/` in the same close-out session. The script itself is
+unchanged and still runnable — it would simply write its outputs to that same `deprecated/`-sibling
+location again on a fresh run; it is not deleted or renamed, per figure-stage rule 3.
 
 ## Supplementary Figures (`draft_manuscript_v1/SupFigs/`)
 
@@ -122,9 +128,10 @@ panel letters (`scripts/check_figure_format.R` enforces the size rules; its own 
 terminology). None of these scripts are wired into `scripts/build_draft_manuscript_v1.R` — each
 writes directly to `SupFigs/`.
 
-Numbered figS1–figS5 under figure stage 6 (2026-10-02), in the fixed order below, without gaps.
-Scripts, functions and underlying data/table files keep their own names (figure stage 6 rule 3) —
-only the `SupFigs/` copy filenames changed, from `supp_<name>.*` to `figS<N>_<name>.*`.
+Numbered figS1–figS6 (figS6 added in the close-out session, 2026-10-02, once figure stage 3 was
+closed out — see below), in the fixed order below, without gaps. Scripts, functions and underlying
+data/table files keep their own names (figure stage 6 rule 3) — only the `SupFigs/` copy filenames
+changed, from `supp_<name>.*` to `figS<N>_<name>.*`.
 
 | # | Script | FIG_DIR / canonical source name | `SupFigs/` copy (renumbered) | Description |
 |---|---|---|---|---|
@@ -133,26 +140,12 @@ only the `SupFigs/` copy filenames changed, from `supp_<name>.*` to `figS<N>_<na
 | S3 | `scripts/figure_flux_comparison_six_panel.R` | (writes directly to `SupFigs/`) | `figS3_flux_comparison_six_panel.png`/`.pdf`/`.jpg` | Six-panel re-plot (no new computation) of the two tables above side by side: rows NEP/ET/H, left column = Figure 4's "all qualifying site-years" data, right column = the matched-site-years data (Supplementary Figure S2), identical axis limits within each row. |
 | S4 | `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf`/`.jpg` | `figS4_representativeness_geo_vs_geo.png`/`.pdf`/`.jpg` | See the main representativeness table above. Companion to Figure 5, Geo vs Geo. |
 | S5 | `scripts/figure_flux_representativeness_supp.R` | `review/figures/representativeness/supp_flux_representativeness.png`/`.pdf`/`.jpg` | `figS5_flux_representativeness.png`/`.pdf`/`.jpg` | Eight panels: four fluxes (NEE, GPP, TER, ET) x two comparisons (Geo vs Geo, Geo vs Data). NEE/ET panels (a/b/g/h) are Figure 5's own panels e/f, confirmed programmatically identical (n/J) before rendering. GPP/TER (c/d/e/f) are new: TRENDY v14 S3 17-model ensemble-median (1991–2020 mean, TER = ra+rh) vs. tower medians from `compute_site_annual_fluxes()`. Table: `data/snapshots/representativeness_metrics_flux_supp.csv`. Added figure stage 4, 2026-10-02. |
+| S6 | `scripts/figure_representativeness_trajectory.R` | `review/figures/representativeness/supp_representativeness_trajectory.png`/`.pdf`/`.jpg` | `figS6_representativeness_trajectory.png`/`.pdf`/`.jpg` | Geo vs Geo weighted Jaccard similarity (J), Figure 5's own six axes, tracked across four FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, current 781-site). Classes/bin edges/land grids/J-definition taken as-is from `scripts/figure4_representativeness.R`'s own committed tables, not redefined. New raster extractions for the three historical networks: MODIS MCD12C1 IGBP (nearest cell) and TRENDY model NEE/GPP/ET (bilinear). Current-network values confirmed to reproduce `representativeness_metrics_fig4.csv`'s six Geo-vs-Geo rows exactly. Table: `data/snapshots/representativeness_metrics_trajectory.csv`. Figure stage 3 (2026-10-02); closed out (committed, numbered) in the close-out session, 2026-10-02 — see `review/figstage_status.md` Stage 3 entry. |
 
 **Retired.** `scripts/generate_map_regional.R` → `supp_map_regional.png`/`.pdf`/`.jpg`: regional
 network distribution (panel a the Equal Earth world map with the four regional extents outlined;
 panels b–e, one Lambert Azimuthal Equal-Area projection per region). Retired to
 `SupFigs/deprecated/` in figure stage 2 (2026-10-02) when its five panels were promoted to the
-main-text `fig_01_map_network` (see "Main-text figures" above) — not part of the figS1–S5
+main-text `fig_01_map_network` (see "Main-text figures" above) — not part of the figS1–S6
 numbering.
 
-**Not numbered: `supp_representativeness_trajectory` (figure stage 3's deliverable).** Figure
-stage 3 (Geo-vs-Geo representativeness through time, Marconi/La Thuile/FLUXNET2015/current) is
-**not marked DONE** in `review/figstage_status.md` — the file jumps from Stage 2 straight to Stage
-4. On disk, `scripts/figure_representativeness_trajectory.R` and its outputs
-(`review/figures/representativeness/supp_representativeness_trajectory.*`,
-`SupFigs/supp_representativeness_trajectory.*`,
-`data/snapshots/representativeness_metrics_trajectory.*`) exist and that script's own internal
-validation log (`logs/figure_representativeness_trajectory_20261002_185348.log`) reports its
-current-network Geo-vs-Geo rows reproducing `representativeness_metrics_fig4.csv` exactly — but
-none of these files are committed to git, and Stage 3 was never closed out (no
-`review/figstage_status.md` entry, no `SESSION_LOG.md` entry). Figure stage 6 (numbering) treats
-this the same way figure stage 5 (clean-up) already did for its own conditional item: Stage 3
-not-DONE means its figure is excluded from the figS1–S5 numbering, so the sequence has no gap at
-"S6" — it simply stops at S5. See the "Decisions for Dave" note in `review/figstage_status.md`'s
-Stage 6 entry. |

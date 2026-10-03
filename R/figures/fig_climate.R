@@ -41,6 +41,13 @@ source("R/nature_format.R")
 #'   plot-build time in \code{\link{fig_whittaker_worldclim}} — they are not
 #'   stored here, because R expressions cannot be stored in a plain list and
 #'   retrieved as expressions.
+## Hexagon fill alpha for fig_whittaker_worldclim()'s stepped-scale hex
+## layer -- shared with .stepped_fill_key_grob()'s swatches so the key
+## boxes are drawn exactly as the hexagons are drawn (close-out task).
+## A single named constant, not two independent literals, so the two can't
+## drift out of sync again.
+HEX_FILL_ALPHA <- 0.85
+
 #' @export
 WHITTAKER_STYLE <- list(
   xlim        = c(-15, 35),
@@ -165,6 +172,14 @@ WHITTAKER_STYLE <- list(
 #'   \code{step_colours}, or \code{NULL} (default) to auto-generate
 #'   \code{"below <edge>"} / \code{"<lo> to <hi>"} / \code{"above <edge>"}
 #'   labels from \code{step_breaks}.
+#' @param show_stepped_key Logical, default \code{TRUE}. When
+#'   \code{fill_mode = "stepped"}, whether to attach the manually-drawn key
+#'   (\code{.stepped_fill_key_grob()}) onto the panel via
+#'   \code{annotation_custom()}. \code{FALSE} skips that attachment -- for a
+#'   caller that wants to draw the key separately, elsewhere in a composite
+#'   layout, instead of overlaid on this panel's own data. The key grob is
+#'   always available via \code{attr(result, "stepped_key_grob")} regardless
+#'   of this setting.
 #' @param detail_lines Character vector or \code{NULL} (default \code{NULL},
 #'   preserving existing behaviour: a single auto-built
 #'   \code{"N = <n_sites> sites | <n_site_years> site-years"} line). When
@@ -232,7 +247,7 @@ WHITTAKER_STYLE <- list(
 #' @return A \code{grid} grob, to be added to a ggplot via
 #'   \code{ggplot2::annotation_custom()}.
 #' @keywords internal
-.stepped_fill_key_grob <- function(labels, colours, title, style, reverse = TRUE) {
+.stepped_fill_key_grob <- function(labels, colours, title, style, reverse = TRUE, fill_alpha = 1) {
   stopifnot(length(labels) == length(colours))
   if (isTRUE(reverse)) {
     labels  <- rev(labels)
@@ -254,11 +269,19 @@ WHITTAKER_STYLE <- list(
     y0 - grid::unit(title_pt / ggplot2::.pt + gap_mm, "mm") -
       grid::unit((i - 1) * (key_mm + gap_mm), "mm") - grid::unit(key_mm / 2, "mm")
   }
+  ## fill_alpha: the key boxes must be drawn exactly as the hexagons are
+  ## drawn (close-out task) -- hex_layer below renders at HEX_FILL_ALPHA
+  ## (not fully opaque), so a solid-colour key swatch reads visibly
+  ## different from the hexagons it's meant to represent (e.g. #053061
+  ## drawn solid vs. the same colour's hexagons blending with the white
+  ## panel background to ~#2A4F79). scales::alpha() applies the identical
+  ## alpha-over-white compositing grid uses for the hexagon layer itself.
+  swatch_fill <- scales::alpha(colours, fill_alpha)
   swatches <- lapply(seq_len(n), function(i) {
     grid::rectGrob(
       x = x0 + grid::unit(key_mm / 2, "mm"), y = row_y(i),
       width = grid::unit(key_mm, "mm"), height = grid::unit(key_mm, "mm"),
-      gp = grid::gpar(fill = colours[i], col = "black", lwd = border_lwd)
+      gp = grid::gpar(fill = swatch_fill[i], col = "black", lwd = border_lwd)
     )
   })
   texts <- lapply(seq_len(n), function(i) {
@@ -293,7 +316,8 @@ fig_whittaker_worldclim <- function(
   fill_mode       = c("continuous", "stepped"),
   step_breaks     = NULL,
   step_colours    = NULL,
-  step_labels     = NULL
+  step_labels     = NULL,
+  show_stepped_key = TRUE
 ) {
   fill_mode <- match.arg(fill_mode)
   if (fill_mode == "stepped") {
@@ -540,7 +564,7 @@ fig_whittaker_worldclim <- function(
                            else median(x, na.rm = TRUE),
     bins     = hex_bins,
     binwidth = hex_binwidth,
-    alpha    = 0.85
+    alpha    = HEX_FILL_ALPHA
   )
 
   p <- ggplot2::ggplot(
@@ -663,13 +687,17 @@ fig_whittaker_worldclim <- function(
 
   if (fill_mode == "stepped") {
     key_grob <- .stepped_fill_key_grob(
-      labels  = if (!is.null(step_display_labels)) step_display_labels else step_labels,
-      colours = step_colours,
-      title   = nee_title_expr,
-      style   = style,
-      reverse = TRUE
+      labels     = if (!is.null(step_display_labels)) step_display_labels else step_labels,
+      colours    = step_colours,
+      title      = nee_title_expr,
+      style      = style,
+      reverse    = TRUE,
+      fill_alpha = HEX_FILL_ALPHA
     )
-    p <- p + ggplot2::annotation_custom(key_grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
+    if (isTRUE(show_stepped_key)) {
+      p <- p + ggplot2::annotation_custom(key_grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
+    }
+    attr(p, "stepped_key_grob") <- key_grob
   }
 
   p

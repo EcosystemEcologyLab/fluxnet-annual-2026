@@ -1,0 +1,13 @@
+{
+  "run_datetime_utc": "2026-10-03T02:05:40Z",
+  "pipeline_version": "bc4d5bf",
+  "input_sources": [
+    "representativeness_metrics_fig4.csv",
+    "representativeness_metrics_flux_supp.csv",
+    "trendy_nee_fluxbased_median.tif",
+    "candidate_gpp_median.tif",
+    "candidate_ter_median.tif",
+    "flux_bin_breaks_et_median_1991_2020.tif"
+  ],
+  "notes": "Figure stage 4 (logs/figstage_prompt.md): supp_flux_representativeness, 180 mm wide x 172.7 mm tall, Helvetica, 7pt text (row pitch 4.2mm). NEE/ET panels (a/b/g/h) confirmed identical to Figure 4 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/TER (c/d/e/f) new."
+}

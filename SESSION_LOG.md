@@ -4,6 +4,84 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (13) — Figure stage 4: supplementary flux representativeness figure (NEE/GPP/TER/ET, Geo vs Geo and Geo vs Data) (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 4 only. No dependency on Stage 3 (not required
+by stage 4's own task text), so it ran regardless of that stage's status in `review/figstage_status.md`.
+
+### What changed
+
+- New `scripts/figure_flux_representativeness_supp.R` builds `review/figures/representativeness/
+  supp_flux_representativeness.png/.pdf/.jpg/.legend.txt` (copied to `draft_manuscript_v1/SupFigs/`)
+  and `data/snapshots/representativeness_metrics_flux_supp.csv`: four rows (NEE, GPP, TER, ET) x
+  two columns (Geo vs Geo left, Geo vs Data right), panels lettered a-h across rows, 180 x 172.7 mm.
+- Panel rendering (`draw_panel2()` and its layout/measurement helpers) is ported verbatim from
+  `scripts/figure4_representativeness.R`, not sourced — identical panel style, bar-label
+  conventions, header/caption grobs and column-gutter alignment as Figure 4 itself.
+- NEE (a/b) and ET (g/h) reuse Figure 4's own rasters, tower values and binning method
+  (`run_flux_panel()`, ported) unchanged. Checked programmatically before rendering: all four n/J
+  values match `representativeness_metrics_fig4.csv` rows E/F to the 1e-9 tolerance that script's
+  own self-check uses (NEE: n=781/656, J=0.5298754549363103/0.16481578809724606; ET: n=781/665,
+  J=0.45626639245125744/0.47933317597575115) — the task's explicit pass/fail gate.
+- GPP (c/d) and TER (e/f) are new. Model: the 17-model TRENDY v14 S3 ensemble-median, 1991-2020
+  mean (TER = ra+rh), on Figure 4's own Koppen 0.5 deg land mask —
+  `data/external/trendy/derived/candidate_gpp_median.tif`/`candidate_ter_median.tif`, already built
+  by `scripts/candidate_nee_gpp_ter_panels.R` and already loaded by `figure4_representativeness.R`
+  itself as its NEE bar-1 mask — reused as-is. Tower: the site median from `R/site_annual_fluxes.R::
+  compute_site_annual_fluxes()` (`gpp_median`/`reco_median`, `QC_THRESHOLD_YY=0.5`), per the task
+  instruction — deliberately not `scripts/diagnostics/flux_bin_breaks.R`'s own older QC>=0.80
+  mean-monthly-cycle tower values (flagged as wrong for this paper by `figure4_representativeness.R`'s
+  own header note). Bins: bar 1 = own model value <5 gC/m2/yr; bars 2-7 are the rounded (to 100
+  gC/m2/yr) sextiles of the 50/50 land/tower mixture CDF outside bar 1 — same histogram/rounding
+  steps `flux_bin_breaks.R` uses for these two fluxes (edges differ from that script's own GPP/TER
+  run because the tower-side distribution differs, per the QC method above). Geo vs Data requires a
+  qualifying tower value to be classified at all (`require_own = TRUE`), same rule NEE/ET use.
+- Colours: NEE/ET ramps copied verbatim from `figure4_representativeness.R`. GPP (green)/TER
+  (orange) ramps reused from `flux_bin_breaks.R`'s own choices, with bar 1 overridden to the shared
+  bare/ice colour (`#f7f4f9`, Figure 4's biomass bin-1 colour) on every row.
+- Invariant (rule 5) confirmed before and after: `data/snapshots/representativeness_metrics_fig4.csv`
+  untouched (`git diff` empty).
+- `scripts/check_figure_format.R`: 11/11 PASS after the stage (new figure: `supp_flux_representativeness
+  ed 179.9x172.5mm OK* 358w 0.25-1.00 PASS`).
+- Visual check (rule 7): PNG opened directly — no clipped/overlapping text, no inappropriate blank
+  bands (only the same ~4.4mm inter-row panel-margin gaps Figure 4's own rows have), `% land`/
+  `towers` headers present above panels a/b only (by design — the two-number meaning is identical
+  for every row). This figure has no separate legend/key swatch grid (each row's 7 bars are
+  themselves the colour-coded, directly-labelled bins), so rule 7's colour-box check was done
+  instead by pixel-matching each flux's most extreme bin colour (GPP `#00441b`, TER `#7f2704`, ET
+  `#06305a`, NEE `#0b3e09`) against the rendered PNG — tens of thousands of matching pixels each,
+  confirming no bin rendered blank/white even for the visually thinnest bars (GPP/TER's
+  ">2000"/">1800" rows, 13.8%/15.7% land share).
+
+### Numbers asked for
+
+| Panel | Flux | Comparison | Bin edges (bars 2-7 boundaries) | n | J |
+|---|---|---|---|---|---|
+| a | NEE | Geo vs Geo  | -250, -100, -50, -25, 0 | 781 | 0.530 |
+| b | NEE | Geo vs Data | -250, -100, -50, -25, 0 | 656 | 0.165 |
+| c | GPP | Geo vs Geo  | 300, 700, 1100, 1500, 2000 | 781 | 0.488 |
+| d | GPP | Geo vs Data | 300, 700, 1100, 1500, 2000 | 651 | 0.529 |
+| e | TER | Geo vs Geo  | 300, 600, 1000, 1300, 1800 | 781 | 0.482 |
+| f | TER | Geo vs Data | 300, 600, 1000, 1300, 1800 | 651 | 0.511 |
+| g | ET  | Geo vs Geo  | 200, 350, 450, 600, 850 | 781 | 0.456 |
+| h | ET  | Geo vs Data | 200, 350, 450, 600, 850 | 665 | 0.479 |
+
+Final figure size: 180 x 172.7 mm.
+
+### Decisions for Dave
+
+- GPP/TER's bin edges do not match `flux_bin_breaks.R`'s own earlier GPP/TER diagnostic edges, even
+  though both use the same rasters/bar-1 cut/rounding step — deliberate, per this stage's explicit
+  instruction to source tower values from `compute_site_annual_fluxes()`/`QC_THRESHOLD_YY` instead
+  of that script's own older method. Flagging in case the discrepancy is noticed without this context.
+- TER's orange/brown colour ramp was `flux_bin_breaks.R`'s own judgement call, not task-specified —
+  reused here rather than re-decided, so the two diagnostics stay visually consistent if compared.
+- This figure has no separate legend/key swatch (unlike Figure 2/`supp_whittaker_nee_gpp_ter`), so
+  rule 7's "every key label has its colour box" was satisfied by direct pixel-matching of bin fill
+  colours instead, as described above.
+
+---
+
 ## 2026-10-02 (12) — Figure stage 2: the map becomes a main-text figure (DONE)
 
 Unattended run per `logs/figstage_prompt.md`, stage 2 only (promote the regional map to the main

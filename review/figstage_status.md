@@ -127,3 +127,99 @@ Tower count in each regional panel and outside all four (task expected 362, 198,
   (confirmed visually), but a future network update that shifts point density, or a region extent
   change, could in principle need a re-check; the grid search would still run automatically, just
   worth knowing it isn't point-aware.
+
+---
+
+## Stage 4 — supplementary flux figure, both versions side by side: DONE
+
+- New `review/figures/representativeness/supp_flux_representativeness.png/.pdf/.jpg/.legend.txt`
+  (source) + `data/snapshots/representativeness_metrics_flux_supp.csv`, via new
+  `scripts/figure_flux_representativeness_supp.R`; copied to
+  `draft_manuscript_v1/SupFigs/supp_flux_representativeness.*`. No dependency on Stage 3 (that
+  stage's trajectory figure isn't used by this one), so this stage ran regardless of Stage 3's
+  status in this file.
+- Layout: 4 rows (NEE, GPP, TER, ET) x 2 columns (Geo vs Geo left, Geo vs Data right), panels
+  lettered a-h across rows, in Figure 4's own print-rendering style (`draw_panel2()` and its
+  supporting layout/measurement functions, ported verbatim from
+  `scripts/figure4_representativeness.R`, not sourced -- that script has rendering side effects).
+- NEE (a/b) and ET (g/h): Figure 4's own rasters, tower values and binning method
+  (`run_flux_panel()`, ported), reused unchanged. Checked programmatically (not just visually)
+  before the figure was drawn: all four n/J values match
+  `data/snapshots/representativeness_metrics_fig4.csv` rows E/F exactly (see Numbers below) --
+  the task's explicit pass/fail gate.
+- GPP (c/d) and TER (e/f): new. Model side is the 17-model TRENDY v14 S3 ensemble-median,
+  1991-2020 mean (TER = ra+rh), on Figure 4's own Koppen 0.5 deg land mask --
+  `data/external/trendy/derived/candidate_gpp_median.tif`/`candidate_ter_median.tif`, already built
+  by `scripts/candidate_nee_gpp_ter_panels.R` and already loaded by `figure4_representativeness.R`
+  itself as its NEE bar-1 mask -- reused as-is, not recomputed. Tower side is the site median from
+  `R/site_annual_fluxes.R::compute_site_annual_fluxes()` (`gpp_median`/`reco_median`,
+  `QC_THRESHOLD_YY`), per the task instruction -- deliberately NOT
+  `scripts/diagnostics/flux_bin_breaks.R`'s own older QC>=0.80 mean-monthly-cycle tower values,
+  which `figure4_representativeness.R`'s own header note already flags as wrong for this paper.
+  Bar 1 = own model value <5 gC/m2/yr; bars 2-7 are the rounded (to 100 gC/m2/yr) sextiles of the
+  50/50 land/tower mixture CDF outside bar 1 -- same histogram/rounding steps
+  `flux_bin_breaks.R` uses for these two fluxes, but the resulting edges differ from that script's
+  own GPP/TER edges because the tower-side distribution differs (different QC method, as above).
+  Geo vs Data requires a qualifying tower value to be classified at all (`require_own = TRUE`),
+  same rule NEE/ET already use.
+- Colours: NEE/ET ramps copied verbatim from `figure4_representativeness.R` (same rasters, same
+  panel style, must look identical to Figure 4's own e/f panels). GPP (green) and TER (orange)
+  ramps reused from `flux_bin_breaks.R`'s own choices (GPP: task-specified family; TER: that
+  script's own judgement call, kept here rather than re-litigated) with bar 1 overridden to the
+  shared bare/ice colour (`#f7f4f9`, Figure 4's biomass bin-1 colour) on every row, matching
+  Figure 4's convention.
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` untouched by this stage
+  (`git diff` empty) -- confirmed before and after.
+- `scripts/check_figure_format.R`: 11/11 PASS after the stage (the new figure:
+  `supp_flux_representativeness ed 179.9x172.5mm OK* 358w 0.25-1.00 PASS`).
+- Visual check (rule 7): PNG opened directly -- no clipped or overlapping text, no inappropriate
+  blank bands (only the same ~4.4mm inter-row panel-margin gaps Figure 4's own rows have), `%
+  land`/`towers` headers present above panels a/b only (by design, same convention as Figure 4: the
+  two-number meaning is identical for every row). No separate legend/key swatch grid exists in this
+  figure (each row's 7 bars ARE the colour-coded bins, labelled directly on their own axis, unlike
+  Figure 2's/`supp_whittaker`'s external key) -- verified instead, per rule 7's spirit, by pixel-
+  matching each flux's most extreme bin colour (GPP `#00441b`, TER `#7f2704`, ET `#06305a`, NEE
+  `#0b3e09`) against the rendered PNG: tens of thousands of matching pixels each, confirming no bin
+  rendered blank/white even for the visually thinnest bars (e.g. GPP/TER's ">2000"/">1800" rows,
+  13.8%/15.7% land share).
+
+### Numbers asked for
+
+Bin edges, n and J for all eight panels (`data/snapshots/representativeness_metrics_flux_supp.csv`):
+
+| Panel | Flux | Comparison | Bin edges (bars 2-7 boundaries) | n | J |
+|---|---|---|---|---|---|
+| a | NEE | Geo vs Geo  | -250, -100, -50, -25, 0 | 781 | 0.530 |
+| b | NEE | Geo vs Data | -250, -100, -50, -25, 0 | 656 | 0.165 |
+| c | GPP | Geo vs Geo  | 300, 700, 1100, 1500, 2000 | 781 | 0.488 |
+| d | GPP | Geo vs Data | 300, 700, 1100, 1500, 2000 | 651 | 0.529 |
+| e | TER | Geo vs Geo  | 300, 600, 1000, 1300, 1800 | 781 | 0.482 |
+| f | TER | Geo vs Data | 300, 600, 1000, 1300, 1800 | 651 | 0.511 |
+| g | ET  | Geo vs Geo  | 200, 350, 450, 600, 850 | 781 | 0.456 |
+| h | ET  | Geo vs Data | 200, 350, 450, 600, 850 | 665 | 0.479 |
+
+NEE (a/b) and ET (g/h) n/J confirmed identical to `representativeness_metrics_fig4.csv` rows E/F
+(n=781/656 J=0.5298754549363103/0.16481578809724606 for NEE; n=781/665
+J=0.45626639245125744/0.47933317597575115 for ET -- matched to the 1e-9 tolerance
+`figure4_representativeness.R`'s own self-check uses, not just the 3 d.p. shown above).
+
+Final figure size: 180 x 172.7 mm.
+
+### Decisions for Dave
+
+- GPP/TER's bin edges (c/d, e/f above) do NOT match `scripts/diagnostics/flux_bin_breaks.R`'s own
+  GPP/TER edges from its earlier diagnostic run, even though both use the same rasters, bar-1 cut
+  and rounding step. The difference is deliberate, per this stage's explicit task instruction
+  (tower values must come from `compute_site_annual_fluxes()`/`QC_THRESHOLD_YY`, not that script's
+  own older QC>=0.80 mean-monthly-cycle method) -- flagging in case the discrepancy is noticed
+  without this context.
+- TER's colour ramp (orange/brown) was `flux_bin_breaks.R`'s own judgement call, not specified by
+  any task -- reused here rather than choosing independently, so the two diagnostics stay visually
+  consistent if ever compared side by side. Flagging per rule 2 since it wasn't re-decided fresh.
+- This figure's panel style has no separate legend/key swatch (each bin's colour is on its own
+  labelled bar), unlike Figure 2/`supp_whittaker_nee_gpp_ter`'s external key -- rule 7's "every key
+  label has its colour box" was therefore satisfied by direct pixel-matching of bin fill colours
+  instead, as described above, since there is no key grid to check.
+
+Full write-up: `SESSION_LOG.md`, "2026-10-02 (13) — Figure stage 4: supplementary flux
+representativeness figure (NEE/GPP/TER/ET, Geo vs Geo and Geo vs Data)".

@@ -25,7 +25,7 @@ PER-PANEL n AND J (Geo vs Geo):
   b Land cover (IGBP) (igbp): n = 781 / 781, J = 0.495
   c Aridity (aridity): n = 781 / 781, J = 0.666
   d Biomass (Mg ha⁻¹) (biomass): n = 781 / 781, J = 0.636
-  e NEE (gC m⁻² yr⁻¹) (nee): n = 781 / 781, J = 0.530
+  e NEE (g C m⁻² yr⁻¹) (nee): n = 781 / 781, J = 0.530
   f ET (mm yr⁻¹) (et): n = 781 / 781, J = 0.456
 
 SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,

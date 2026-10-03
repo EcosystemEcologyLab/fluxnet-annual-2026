@@ -31,7 +31,7 @@ independently to each table, and matching further removes some sites/classes):
   ET: left (all) n=10 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, SAV, WET, WSA}; right (matched) n=9 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, WET, WSA}
   H: left (all) n=10 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, SAV, WET, WSA}; right (matched) n=9 classes {CRO, DBF, EBF, ENF, GRA, MF, OSH, WET, WSA}
 
-COLOUR CODING: scale_fill_igbp() (R/plot_constants.R), one point per IGBP class per panel.
+COLOUR CODING: scale_fill_paper_igbp() (R/plot_constants.R), one point per IGBP class per panel.
 
 DATA SOURCES (recomputes nothing; both tables built elsewhere):
   - Left column:  data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv

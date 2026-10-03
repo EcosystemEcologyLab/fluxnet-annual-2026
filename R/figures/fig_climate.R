@@ -18,6 +18,8 @@ library(ggplot2)
 library(dplyr)
 library(colorspace)
 
+source("R/nature_format.R")
+
 # ---- Shared Whittaker style constants ----------------------------------------
 
 #' Shared visual parameters for all Whittaker biome figures
@@ -231,12 +233,35 @@ fig_whittaker_worldclim <- function(
       stop("step_colours must have length(step_breaks) + 1 = ", length(step_breaks) + 1L,
            " elements (one per bin). Got ", length(step_colours), ".", call. = FALSE)
     }
+    ## step_labels (ASCII hyphen, not a true minus sign) are the FACTOR
+    ## LEVEL / breaks keys used for data matching (cut() labels, values=
+    ## names, breaks=) -- never drawn directly. step_display_labels (below,
+    ## built only when step_labels was auto-generated here) are the
+    ## legend's actual on-screen text, as plotmath expressions, for true
+    ## minus rendering (task 3, 2026-10-02) -- see nature_minus_labels() in
+    ## R/nature_format.R for why a literal U+2212 character cannot be used
+    ## directly (base grDevices::pdf() has no glyph for it and silently
+    ## substitutes ASCII "-" back in).
+    step_display_labels <- NULL
     if (is.null(step_labels)) {
       step_labels <- c(
-        paste0("below ", step_breaks[1]),
-        paste0(utils::head(step_breaks, -1), " to ", step_breaks[-1]),
-        paste0("above ", step_breaks[length(step_breaks)])
+        paste0("below ", format(step_breaks[1], trim = TRUE)),
+        paste0(format(utils::head(step_breaks, -1), trim = TRUE), " to ",
+               format(step_breaks[-1], trim = TRUE)),
+        paste0("above ", format(step_breaks[length(step_breaks)], trim = TRUE))
       )
+      .mixed_plotmath_label <- function(...) {
+        pieces <- vapply(list(...), function(p) {
+          if (is.character(p)) deparse(p) else format(p, trim = TRUE)
+        }, character(1))
+        parse(text = paste(pieces, collapse = " * "))[[1]]
+      }
+      step_display_labels <- do.call(expression, c(
+        list(.mixed_plotmath_label("below ", step_breaks[1])),
+        Map(function(a, b) .mixed_plotmath_label(a, " to ", b),
+            utils::head(step_breaks, -1), step_breaks[-1]),
+        list(.mixed_plotmath_label("above ", step_breaks[length(step_breaks)]))
+      ))
     }
     if (length(step_labels) != length(step_colours)) {
       stop("step_labels must be the same length as step_colours.", call. = FALSE)
@@ -473,6 +498,21 @@ fig_whittaker_worldclim <- function(
     ggplot2::scale_fill_manual(
       values       = stats::setNames(step_colours, step_labels),
       breaks       = step_labels,
+      ## `limits` (not just `breaks`) forces the scale's domain to the full
+      ## step set regardless of what's observed -- `drop = FALSE` alone does
+      ## not keep a step's colour swatch in the key when that step has zero
+      ## hexagons: the fill value here is computed via after_stat(cut(...))
+      ## inside stat_summary_hex(), and a level entirely absent from the
+      ## rendered data is never registered in the scale's trained domain, so
+      ## guide_legend() drops its swatch even though `breaks` still lists its
+      ## label -- confirmed directly: Figure 2's "100 to 200" step (zero
+      ## hexagons) showed a label with no colour box until `limits` was added
+      ## (task 4, 2026-10-02).
+      limits       = step_labels,
+      ## Plotmath display labels (true minus signs) when available -- see
+      ## step_display_labels above; falls back to the plain breaks text for
+      ## a caller-supplied step_labels (e.g. GPP/TER, all non-negative).
+      labels       = if (!is.null(step_display_labels)) step_display_labels else step_labels,
       na.translate = FALSE,   # hexagons with no qualifying sites stay unfilled
       drop         = FALSE    # keep every step in the key even if a bin is empty in this panel
     )
@@ -536,8 +576,17 @@ fig_whittaker_worldclim <- function(
     } else {
       ggplot2::coord_cartesian(xlim = style$xlim, ylim = style$ylim)
     }) +
-    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
-    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ## expand = c(0, 0): coord_fixed()/coord_cartesian() above already clip
+    ## the view to style$xlim/style$ylim exactly, but the scale's own DEFAULT
+    ## expansion (5% continuous padding, ggplot2's waiver()) still applies on
+    ## top of that clip -- a thin blank band between the data/contour extent
+    ## and the panel border on every side, confirmed by direct comparison of
+    ## the rendered PDF before/after. Zero expansion here, not a change to
+    ## coord_fixed()'s own xlim/ylim, is what removes it (task 4, 2026-10-02).
+    ggplot2::scale_x_continuous(labels = nature_minus_labels(), expand = c(0, 0),
+                                 sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(labels = nature_minus_labels(), expand = c(0, 0),
+                                 sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(
       x = expression("Mean Annual Temperature (" * degree * "C)"),
       y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
@@ -716,8 +765,8 @@ fig_whittaker_global_frequency <- function(
       xlim = style$xlim,
       ylim = style$ylim
     ) +
-    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
-    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_x_continuous(labels = nature_minus_labels(), sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(labels = nature_minus_labels(), sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(
       x = expression("Mean Annual Temperature (" * degree * "C)"),
       y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
@@ -822,8 +871,8 @@ fig_whittaker_global_contour <- function(
       xlim = style$xlim,
       ylim = style$ylim
     ) +
-    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
-    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_x_continuous(labels = nature_minus_labels(), sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(labels = nature_minus_labels(), sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(
       x = expression("Mean Annual Temperature (" * degree * "C)"),
       y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
@@ -945,8 +994,8 @@ fig_whittaker_global_density <- function(
       xlim = style$xlim,
       ylim = style$ylim
     ) +
-    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
-    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_x_continuous(labels = nature_minus_labels(), sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(labels = nature_minus_labels(), sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(
       x = expression("Mean Annual Temperature (" * degree * "C)"),
       y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
@@ -1249,11 +1298,18 @@ whittaker_mahalanobis_coverage <- function(
   th <- ggplot2::theme_classic(base_size = 16) +
     ggplot2::theme(
       panel.border           = ggplot2::element_rect(color = "black", fill = NA,
-                                                     linewidth = 0.8),
+                                                     linewidth = nature_lwd(NATURE_LINEWIDTH_MAX)),
       panel.background       = ggplot2::element_blank(),
       axis.text              = ggplot2::element_text(color = "black",
                                                       size = style$axis_text_size),
-      axis.ticks             = ggplot2::element_line(color = "black"),
+      ## Explicit linewidth (task 4, 2026-10-02): theme_classic(base_size=16)
+      ## above sets a default base_line_size of base_size/22 (~0.73 mm,
+      ## ~1.55 pt rendered) for any line element left unset -- confirmed
+      ## directly via pdftocairo -svg as the source of Figure 2's tick marks
+      ## measuring 1.55 pt, over the 1 pt max, despite panel.border already
+      ## being fixed above.
+      axis.line               = ggplot2::element_line(colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN)),
+      axis.ticks             = ggplot2::element_line(color = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN)),
       axis.ticks.length      = grid::unit(-4, "pt"),
       axis.ticks.length.x    = grid::unit(-4, "pt"),
       axis.ticks.length.y    = grid::unit(-4, "pt"),

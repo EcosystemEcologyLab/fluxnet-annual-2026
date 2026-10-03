@@ -52,7 +52,7 @@ matched_tbl <- read_csv(MATCHED_CSV, show_col_types = FALSE) |> mutate(source = 
 msg("Loaded: ", ALL_CSV, " (", nrow(all_tbl), " rows), ", MATCHED_CSV, " (", nrow(matched_tbl), " rows)")
 
 FLUXES <- c("NEP", "ET", "H")
-UNITS  <- list(NEP = quote(gC~m^{-2}~yr^{-1}), ET = quote(mm~yr^{-1}), H = quote(W~m^{-2}))
+UNITS  <- list(NEP = quote("g C"~m^{-2}~yr^{-1}), ET = quote(mm~yr^{-1}), H = quote(W~m^{-2}))
 LETTERS6 <- matrix(c("a","b","c","d","e","f"), nrow = 3, ncol = 2, byrow = TRUE,
                     dimnames = list(FLUXES, c("all", "matched")))
 
@@ -79,11 +79,14 @@ make_panel <- function(df, flux_code, unit_expr, tag, lims, column_title = NULL)
     geom_point(aes(fill = igbp_class), shape = 21, size = 1.6, colour = "black", stroke = 0.3) +
     ggrepel::geom_text_repel(aes(label = igbp_class), size = 1.9, colour = "black", seed = 42,
                               min.segment.length = 0.3, segment.size = 0.2, segment.colour = "grey50",
-                              box.padding = 0.25, point.padding = 0.15) +
-    scale_fill_igbp() +
+                              box.padding = 0.4, point.padding = 0.2, force = 3, force_pull = 0.5,
+                              max.overlaps = Inf, max.time = 2, max.iter = 20000) +
+    scale_fill_paper_igbp() +
     scale_x_continuous(limits = lims, expand = expansion(mult = 0),
+                        labels = nature_minus_labels(),
                         sec.axis = dup_axis(name = NULL, labels = NULL)) +
     scale_y_continuous(limits = lims, expand = expansion(mult = 0),
+                        labels = nature_minus_labels(),
                         sec.axis = dup_axis(name = NULL, labels = NULL)) +
     panel_letter(tag, x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6) +
     labs(
@@ -93,7 +96,13 @@ make_panel <- function(df, flux_code, unit_expr, tag, lims, column_title = NULL)
     ) +
     combo_theme() +
     (if (!is.null(column_title)) {
-      ggplot2::theme(plot.title = ggplot2::element_text(size = NATURE_BASE_PT, hjust = 0.5, face = "plain"))
+      ## margin(b=...) clears the title from the panel's top frame/secondary
+      ## axis -- task 6, 2026-10-02: the default theme_classic() title margin
+      ## was not enough clearance at base_size = 7.
+      ggplot2::theme(plot.title = ggplot2::element_text(
+        size = NATURE_BASE_PT, hjust = 0.5, face = "plain",
+        margin = ggplot2::margin(b = 6)
+      ))
     } else NULL)
 }
 
@@ -168,7 +177,7 @@ legend_lines <- c(
   "independently to each table, and matching further removes some sites/classes):",
   class_line("NEP"), class_line("ET"), class_line("H"),
   "",
-  "COLOUR CODING: scale_fill_igbp() (R/plot_constants.R), one point per IGBP class per panel.",
+  "COLOUR CODING: scale_fill_paper_igbp() (R/plot_constants.R), one point per IGBP class per panel.",
   "",
   "DATA SOURCES (recomputes nothing; both tables built elsewhere):",
   paste0("  - Left column:  ", ALL_CSV),

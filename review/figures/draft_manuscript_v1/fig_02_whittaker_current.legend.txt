@@ -66,10 +66,10 @@ COLOUR SCALE (base layer only — the overlay has no fill/colour; revised
 2026-10-02, task 3):
 Stepped ColorBrewer RdBu scale, 8 classes, no middle/neutral class -- the
 bin edge at NEE = 0 is a hard sink/source boundary, not a neutral bin.
-5 sink (blue) steps covering NEE <= 0, each 100 gC m⁻² yr⁻¹ wide
+5 sink (blue) steps covering NEE <= 0, each 100 g C m⁻² yr⁻¹ wide
 except the open-ended lowest: below -400, -400 to -300, -300 to -200,
 -200 to -100, -100 to 0. 3 source (red/orange) steps covering NEE > 0,
-same 100 gC m⁻² yr⁻¹ step width, open-ended at the top: 0 to 100,
+same 100 g C m⁻² yr⁻¹ step width, open-ended at the top: 0 to 100,
 100 to 200, above 200. Colours, most negative to most positive: #053061,
 #2166AC, #4393C3, #92C5DE, #D1E5F0 (sink), #FDDBC7, #F4A582, #D6604D
 (source). A hexagon whose median falls beyond -400 or beyond 200 takes
@@ -89,7 +89,7 @@ NEE values (median-of-medians), then discretised into the 8 steps above.
 -200 (14), -200 to -100 (16), -100 to 0 (26), 0 to 100 (7), 100 to 200
 (0 -- no hexagon's median fell in this step), above 200 (3). The lowest
 and highest hexagon medians (before discretising) are -1361.1 and 234.6
-gC m⁻² yr⁻¹.
+g C m⁻² yr⁻¹.
 
 NETWORK AND SITE COUNT:
 FLUXNET Shuttle network, current pinned snapshot: N = 781

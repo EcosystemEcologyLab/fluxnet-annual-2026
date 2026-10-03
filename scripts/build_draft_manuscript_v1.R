@@ -12,6 +12,19 @@
 ## must already exist; run the relevant generate_*.R / figure_*.R script
 ## first if a source is missing or stale.
 ##
+## Fig 1 merged note (task 9, 2026-10-02): the single merged file
+## draft_manuscript_v1/fig_01.png/.pdf (panel a map above panel b cumulative
+## site-years, 89 mm wide) is built and written directly by
+## scripts/generate_fig01_merged.R, NOT by this script -- it is additional
+## to, not a replacement for, the separately-staged fig_01a/fig_01b files
+## this script continues to copy below (both draw on the same underlying
+## panel-building functions and pinned inputs, so their content matches).
+##
+## Regional map note (task 8, 2026-10-02): SupFigs/supp_map_regional.png
+## (Equal Earth world overview + four Lambert Azimuthal Equal-Area regional
+## panels) is built and written directly by scripts/generate_map_regional.R,
+## the same pattern as the other Extended Data figures below.
+##
 ## Fig 1B note: fig_dur11_CumulativeSiteYears_IGBP.png has no script that
 ## writes it directly under a fig_01b_* name — scripts/generate_duration_
 ## histograms.R writes it under its canonical Dur11 name in
@@ -243,10 +256,10 @@ fig02_legend <- c(
   "2026-10-02, task 3):",
   "Stepped ColorBrewer RdBu scale, 8 classes, no middle/neutral class -- the",
   "bin edge at NEE = 0 is a hard sink/source boundary, not a neutral bin.",
-  "5 sink (blue) steps covering NEE <= 0, each 100 gC m⁻² yr⁻¹ wide",
+  "5 sink (blue) steps covering NEE <= 0, each 100 g C m⁻² yr⁻¹ wide",
   "except the open-ended lowest: below -400, -400 to -300, -300 to -200,",
   "-200 to -100, -100 to 0. 3 source (red/orange) steps covering NEE > 0,",
-  "same 100 gC m⁻² yr⁻¹ step width, open-ended at the top: 0 to 100,",
+  "same 100 g C m⁻² yr⁻¹ step width, open-ended at the top: 0 to 100,",
   "100 to 200, above 200. Colours, most negative to most positive: #053061,",
   "#2166AC, #4393C3, #92C5DE, #D1E5F0 (sink), #FDDBC7, #F4A582, #D6604D",
   "(source). A hexagon whose median falls beyond -400 or beyond 200 takes",
@@ -266,7 +279,7 @@ fig02_legend <- c(
   "-200 (14), -200 to -100 (16), -100 to 0 (26), 0 to 100 (7), 100 to 200",
   "(0 -- no hexagon's median fell in this step), above 200 (3). The lowest",
   "and highest hexagon medians (before discretising) are -1361.1 and 234.6",
-  "gC m⁻² yr⁻¹.",
+  "g C m⁻² yr⁻¹.",
   "",
   "NETWORK AND SITE COUNT:",
   paste0("FLUXNET Shuttle network, current pinned snapshot: N = ", fig02_counts$n_sites),

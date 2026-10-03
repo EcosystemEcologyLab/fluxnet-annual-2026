@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-02T23:21:04Z",
-  "pipeline_version": "0c55423",
+  "run_datetime_utc": "2026-10-03T00:46:45Z",
+  "pipeline_version": "6166665",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
     "data/external/modis_landcover/MCD12C1.A2022001.061.2023244164746.hdf",

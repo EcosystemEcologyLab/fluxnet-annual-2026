@@ -71,7 +71,7 @@ STANDARD_IGBP    <- c("EBF","MF","DBF","ENF","CSH","OSH",
 RELIABILITY_MIN  <- 5L   # same n>=5 reliability threshold as the primary figure
 
 FLUXES <- c(nep = "NEP", et = "ET", h = "H")
-UNITS  <- list(nep = quote(gC~m^{-2}~yr^{-1}), et = quote(mm~yr^{-1}), h = quote(W~m^{-2}))
+UNITS  <- list(nep = quote("g C"~m^{-2}~yr^{-1}), et = quote(mm~yr^{-1}), h = quote(W~m^{-2}))
 
 msg("=== Extended Data: FLUXNET2015 vs Shuttle, matched site-years ===")
 
@@ -277,10 +277,12 @@ make_panel <- function(flux_code, unit_expr, tag) {
     ggrepel::geom_text_repel(aes(label = igbp_class), size = 2.2, colour = "black", seed = 42,
                               min.segment.length = 0.3, segment.size = 0.2, segment.colour = "grey50",
                               box.padding = 0.3, point.padding = 0.2) +
-    scale_fill_igbp() +
+    scale_fill_paper_igbp() +
     scale_x_continuous(limits = lims, expand = expansion(mult = 0),
+                        labels = nature_minus_labels(),
                         sec.axis = dup_axis(name = NULL, labels = NULL)) +
     scale_y_continuous(limits = lims, expand = expansion(mult = 0),
+                        labels = nature_minus_labels(),
                         sec.axis = dup_axis(name = NULL, labels = NULL)) +
     panel_letter(tag, x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6) +
     labs(
@@ -334,7 +336,7 @@ legend_lines <- c(
   "black panel border, no gridlines. Axis titles use plotmath, not a Unicode superscript-",
   "minus character (same reason as the primary combo figure).",
   "",
-  "COLOUR CODING: scale_fill_igbp() (R/plot_constants.R), one point per IGBP class per panel.",
+  "COLOUR CODING: scale_fill_paper_igbp() (R/plot_constants.R), one point per IGBP class per panel.",
   "",
   "CLASSIFICATION SCHEME AND EXCLUSIONS:",
   "Class statistics computed only over the 12 STANDARD_IGBP labels; a class is excluded",

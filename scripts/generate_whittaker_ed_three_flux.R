@@ -65,7 +65,7 @@ contour_layer <- function() {
       data = contour_df,
       ggplot2::aes(x = .data$x, y = .data$y, group = interaction(.data$prob, .data$piece),
                    linetype = .data$prob_label),
-      colour = "black", linewidth = 0.4, inherit.aes = FALSE
+      colour = "black", linewidth = nature_lwd(0.4), inherit.aes = FALSE
     ),
     ggplot2::scale_linetype_manual(values = line_map[levels(contour_df$prob_label)], guide = "none")
   )
@@ -128,26 +128,61 @@ hex_bins     <- 15
 hex_binwidth <- c(diff(range(WHITTAKER_STYLE$xlim)) / hex_bins, diff(range(WHITTAKER_STYLE$ylim)) / hex_bins)
 hex_ratio    <- diff(range(WHITTAKER_STYLE$xlim)) / diff(range(WHITTAKER_STYLE$ylim))
 
+## Shared stepped viridis scale for GPP and TER (task 5, 2026-10-02): GPP and
+## TER are non-negative g C m-2 yr-1 totals, so -- unlike Figure 2's NEE scale,
+## which needs a "below" sink bin -- this one starts at zero. Named constants,
+## one shared key for both panels (not a per-panel colourbar).
+GPP_TER_STEP_WIDTH  <- 500
+GPP_TER_MAX         <- 3000
+gpp_ter_step_breaks <- seq(0, GPP_TER_MAX, by = GPP_TER_STEP_WIDTH)
+gpp_ter_step_labels <- c(
+  paste0(utils::head(gpp_ter_step_breaks, -1), " to ", gpp_ter_step_breaks[-1]),
+  paste0("above ", GPP_TER_MAX)
+)
+gpp_ter_step_colours <- setNames(viridisLite::viridis(length(gpp_ter_step_labels)), gpp_ter_step_labels)
+gpp_ter_unit_expr <- expression("GPP & TER (g C m"^{-2}*" yr"^{-1}*")")
+
+flux_step_scale <- function() {
+  ggplot2::scale_fill_manual(
+    name = gpp_ter_unit_expr, values = gpp_ter_step_colours, breaks = gpp_ter_step_labels,
+    na.translate = FALSE, drop = FALSE,
+    guide = ggplot2::guide_legend(
+      title.position = "top", nrow = 2,
+      override.aes = list(colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN))
+    )
+  )
+}
+
 base_flux_panel <- function(df, letter) {
   ggplot2::ggplot(df, ggplot2::aes(x = mat_worldclim, y = map_worldclim, z = value)) +
-    ggplot2::geom_point(ggplot2::aes(x = mat_worldclim, y = map_worldclim), inherit.aes = FALSE,
-                         size = POINT_SIZE, colour = POINT_COLOUR, alpha = POINT_ALPHA) +
     ggplot2::stat_summary_hex(
+      mapping = ggplot2::aes(fill = ggplot2::after_stat(
+        cut(value, breaks = c(gpp_ter_step_breaks, Inf), labels = gpp_ter_step_labels, right = FALSE)
+      )),
       fun = function(x) if (all(is.na(x))) NA_real_ else median(x, na.rm = TRUE),
       bins = hex_bins, binwidth = hex_binwidth, alpha = 0.85
     ) +
+    ## Points drawn in front of the hexagons, same style and order as panel a
+    ## (fig_whittaker_worldclim(points_in_front = TRUE)) -- task 5.
+    ggplot2::geom_point(ggplot2::aes(x = mat_worldclim, y = map_worldclim), inherit.aes = FALSE,
+                         size = POINT_SIZE, colour = POINT_COLOUR, alpha = POINT_ALPHA) +
     contour_layer() +
-    panel_letter(letter) +
+    panel_letter(letter, hjust = -0.6, vjust = 1.8) +
+    flux_step_scale() +
     ggplot2::coord_fixed(ratio = hex_ratio, xlim = WHITTAKER_STYLE$xlim, ylim = WHITTAKER_STYLE$ylim) +
-    ggplot2::scale_x_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
-    ggplot2::scale_y_continuous(sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ## expand = c(0, 0): see R/figures/fig_climate.R's fig_whittaker_worldclim()
+    ## for why coord_fixed(xlim=,ylim=) alone leaves a blank band (task 4).
+    ggplot2::scale_x_continuous(labels = nature_minus_labels(), expand = c(0, 0),
+                                 sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+    ggplot2::scale_y_continuous(labels = nature_minus_labels(), expand = c(0, 0),
+                                 sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
     ggplot2::labs(
       x = expression("Mean Annual Temperature (" * degree * "C)"),
       y = NULL
     ) +
     ggplot2::theme_classic(base_size = NATURE_BASE_PT) +
     ggplot2::theme(
-      panel.border = ggplot2::element_rect(colour = "black", fill = NA, linewidth = 0.8),
+      panel.border = ggplot2::element_rect(colour = "black", fill = NA, linewidth = nature_lwd(NATURE_LINEWIDTH_MAX)),
       panel.background = ggplot2::element_blank(),
       axis.text = ggplot2::element_text(colour = "black"),
       axis.ticks = ggplot2::element_line(colour = "black"),
@@ -157,41 +192,43 @@ base_flux_panel <- function(df, letter) {
     nature_theme()
 }
 
-p_gpp0 <- base_flux_panel(gpp_df, "b")
-p_ter0 <- base_flux_panel(ter_df, "c")
+panel_gpp <- base_flux_panel(gpp_df, "b")
+panel_ter <- base_flux_panel(ter_df, "c")
 
-## Shared continuous viridis scale spanning both sets of HEXAGON medians (not
-## raw site values) -- built first without a fill scale, hexagon values
-## extracted via ggplot_build(), then applied to both panels as one shared
-## `limits`.
+## Hexagons-per-step report (required session report item) -- classify each
+## panel's own drawn hexagon medians with the same breaks/labels used above.
 hex_layer_idx <- function(p) which(vapply(p$layers, function(l) inherits(l$stat, "StatSummaryHex"), logical(1)))[1]
-gpp_hex_vals <- ggplot2::ggplot_build(p_gpp0)$data[[hex_layer_idx(p_gpp0)]]$value
-ter_hex_vals <- ggplot2::ggplot_build(p_ter0)$data[[hex_layer_idx(p_ter0)]]$value
-shared_lims  <- range(c(gpp_hex_vals, ter_hex_vals), na.rm = TRUE)
-msg("GPP/TER shared viridis limits (hexagon medians, gC m-2 yr-1): ",
-    round(shared_lims[1], 1), " to ", round(shared_lims[2], 1))
-
-flux_fill_scale <- function(title) {
-  ggplot2::scale_fill_viridis_c(name = title, limits = shared_lims, oob = scales::squish,
-                                 na.value = NA, guide = ggplot2::guide_colorbar(
-                                   title.position = "top", barwidth = grid::unit(0.9, "in"),
-                                   barheight = grid::unit(0.06, "in"), direction = "horizontal"
-                                 ))
+.report_hex_steps <- function(p, label) {
+  vals <- ggplot2::ggplot_build(p)$data[[hex_layer_idx(p)]]$value
+  classed <- cut(vals, breaks = c(gpp_ter_step_breaks, Inf), labels = gpp_ter_step_labels, right = FALSE)
+  counts <- table(classed)
+  msg(label, " hexagons per step: ", paste(names(counts), "=", as.integer(counts), collapse = "; "))
 }
-gpp_unit_expr <- expression("GPP (g C m"^{-2}*" yr"^{-1}*")")
-ter_unit_expr <- expression("TER (g C m"^{-2}*" yr"^{-1}*")")
+.report_hex_steps(panel_gpp, "GPP")
+.report_hex_steps(panel_ter, "TER")
 
-panel_gpp <- p_gpp0 + flux_fill_scale(gpp_unit_expr) +
-  ggplot2::theme(legend.position = "inside", legend.position.inside = c(0.04, 0.96),
-                 legend.justification = c(0, 1), legend.background = ggplot2::element_blank())
-panel_ter <- p_ter0 + flux_fill_scale(ter_unit_expr) +
-  ggplot2::theme(legend.position = "inside", legend.position.inside = c(0.04, 0.96),
-                 legend.justification = c(0, 1), legend.background = ggplot2::element_blank())
+## One shared legend for panels b/c, in its OWN dedicated row via
+## patchwork::guide_area() -- task 5. The simpler `guides = "collect"` +
+## theme(legend.position = "bottom") (no guide_area()) was tried first and
+## rejected: confirmed directly that patchwork sized the plot panels'
+## shared column width to leave room for the collected legend BESIDE them
+## rather than below them, crushing all three panels into a sliver and
+## leaving the wide multi-swatch legend stretched across most of the
+## canvas. An explicit guide_area() row avoids that: the legend renders in
+## its own reserved band, sized independently of the panel row's heights.
+panel_ter <- panel_ter + ggplot2::theme(legend.position = "bottom")
 
-# ---- Assemble 3-panel row ------------------------------------------------------
-combo <- panel_nee + panel_gpp + panel_ter + patchwork::plot_layout(ncol = 3)
+# ---- Assemble 3-panel row + dedicated legend row -------------------------------
+## Only panel_ter carries a visible ("bottom") legend.position -- panel_nee and
+## panel_gpp are both "none" -- so guides = "collect" has exactly one guide to
+## hoist into guide_area(), with no risk of re-enabling the other two panels'
+## suppressed legends (unlike the `&` patchwork operator applied with theme(),
+## which would overwrite all three panels' legend.position, undoing the other
+## two).
+combo <- (panel_nee | panel_gpp | panel_ter) / patchwork::guide_area() +
+  patchwork::plot_layout(heights = c(1, 0.22), guides = "collect")
 
-saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 76,
+saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 95,
                              extended_data = TRUE)
 msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
@@ -219,21 +256,21 @@ legend_lines <- c(
   "",
   "PANELS:",
   paste0("  a NEE — same stepped ColorBrewer RdBu scale as Figure 2 (8 classes, no middle"),
-  paste0("    class, 100 gC m⁻² yr⁻¹ steps, endpoints -400/200; see Figure 2's legend for"),
+  paste0("    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200; see Figure 2's legend for"),
   "    the full definition). Own legend omitted here (identical to Figure 2's) --",
   paste0("    n = ", n_nee, " sites."),
-  paste0("  b GPP — continuous viridis scale, limits shared with panel c (see COLOUR SCALE,"),
-  paste0("    below) — n = ", n_gpp, " sites."),
-  paste0("  c TER — same shared viridis scale as panel b — n = ", n_ter, " sites."),
+  paste0("  b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --"),
+  paste0("    n = ", n_gpp, " sites."),
+  paste0("  c TER — same shared stepped viridis scale as panel b — n = ", n_ter, " sites."),
   "",
   "COLOUR SCALE (panels b, c):",
-  "Continuous viridis scale, ONE shared scale for both GPP and TER (not independently",
-  "rescaled per panel), with limits set to the full range spanning both panels' own",
-  paste0("hexagon medians: ", round(shared_lims[1], 1), " to ", round(shared_lims[2], 1),
-         " gC m⁻² yr⁻¹."),
-  "A hexagon median beyond these limits (none, in this build) would be squished to the",
-  "nearest end colour. Panel a (NEE) uses its own, unrelated stepped scale -- GPP/TER and",
-  "NEE values are never compared on the same colour scale.",
+  "Stepped viridis scale, ONE shared key for both GPP and TER (not duplicated per panel,",
+  paste0("not independently rescaled): ", GPP_TER_STEP_WIDTH, " g C m⁻² yr⁻¹ steps from 0 to ",
+         GPP_TER_MAX, ", plus a final \"above ", GPP_TER_MAX, "\" bin -- ",
+         length(gpp_ter_step_labels), " classes total (named constants GPP_TER_STEP_WIDTH,",
+         " GPP_TER_MAX in the script)."),
+  "Panel a (NEE) uses its own, unrelated stepped scale -- GPP/TER and NEE values are never",
+  "compared on the same colour scale.",
   "",
   "AXES:",
   "  X (all panels) — Mean Annual Temperature (°C), fixed range -15 to 35",
@@ -248,7 +285,7 @@ legend_lines <- c(
   "built directly in the script from compute_site_annual_fluxes()'s site-level medians --",
   "not NEE-specific, so not routed through fig_whittaker_worldclim(). Contour overlay:",
   "fig_whittaker_global_contour(), shared with Figure 2.",
-  paste0("DIMENSIONS: ", NATURE_ED_MAX_WIDTH_MM, " x 76 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,"),
+  paste0("DIMENSIONS: ", NATURE_ED_MAX_WIDTH_MM, " x 95 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,"),
   "Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt)."
 )
 writeLines(legend_lines, paste0(OUT_STEM, ".legend.txt"))

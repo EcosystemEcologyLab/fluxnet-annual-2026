@@ -27,7 +27,7 @@ and four-sided black inward tick marks (duplicated secondary axis, no labels), s
 black panel border, no gridlines. Axis titles use plotmath, not a Unicode superscript-
 minus character (same reason as the primary combo figure).
 
-COLOUR CODING: scale_fill_igbp() (R/plot_constants.R), one point per IGBP class per panel.
+COLOUR CODING: scale_fill_paper_igbp() (R/plot_constants.R), one point per IGBP class per panel.
 
 CLASSIFICATION SCHEME AND EXCLUSIONS:
 Class statistics computed only over the 12 STANDARD_IGBP labels; a class is excluded

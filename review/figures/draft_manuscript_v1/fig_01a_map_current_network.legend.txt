@@ -8,27 +8,34 @@ Global point map showing the location of every eddy covariance flux tower
 site in the current FLUXNET network. Each site is plotted as a single
 uniformly-coloured point at its registered latitude/longitude; no
 classification, colour-coding, or size-scaling of points is applied — the
-figure is a simple presence map. An outline-only basemap (country borders,
-light grey land fill) provides geographic context. No plot title, subtitle,
-or caption is rendered; site count is reported here rather than on the
-figure itself. The only text drawn on the figure is the bold lower-case
-panel letter "a" (8 pt Helvetica, top-left) -- this is panel a of Figure 1
-(panel b is fig_01b_cumulative_siteyears_igbp.png, a separate file).
+figure is a simple presence map. A basemap with country borders (thin,
+light grey) and coastlines (thicker, black), light grey land fill, provides
+geographic context. No plot title, subtitle, or caption is rendered; site
+count is reported here rather than on the figure itself. The only text
+drawn on the figure is the bold lower-case panel letter "a" (8 pt
+Helvetica, top-left) -- this is panel a of Figure 1 (panel b is
+fig_01b_cumulative_siteyears_igbp.png, a separate file; the two are also
+combined into one file, fig_01.png, by scripts/generate_fig01_merged.R).
+
+PROJECTION (revised 2026-10-02, task 7):
+Equal Earth (EPSG:8857), an equal-area pseudo-cylindrical projection. The
+basemap and all site points are cropped to latitude [-56°, 85°] in
+lon/lat space BEFORE projecting (excludes Antarctica and the high Arctic;
+no real tower falls outside this window). The canvas height is fit to the
+map's true projected aspect ratio at this crop (computed by
+equal_earth_height_mm() in R/figures/fig_maps.R) rather than forced into a
+fixed square — at 89 mm wide this is ~38.5 mm tall, not 89 x 89 mm.
 
 AXES:
 No coordinate axes are drawn (map uses a void theme — no tick marks, tick
-labels, or axis titles). The map is unprojected longitude/latitude
-(equirectangular), cropped to y ∈ [-56°, 85°] to remove empty ocean south of
-the southernmost sites while retaining Australia, New Zealand, southern
-Africa, and southern South America. Because the figure canvas is square
-(89 × 89 mm) while an unclipped global extent is markedly wider than tall
-(~2.55:1), the map itself renders centred with white space above and below
-— an accepted tradeoff of the single-column square format, not missing data.
+labels, or axis titles).
 
-POINT STYLING:
-Shape 21 (filled circle with outline), fill colour #0072B2 (Okabe-Ito blue,
-colour-blind-safe), black outline, size 2.0 pt, stroke 0.4, alpha 0.9.
-Colour is constant — it does not encode IGBP, hub, or any other variable.
+POINT STYLING (revised 2026-10-02, task 7):
+Shape 16 (filled circle, no separate outline), colour #0072B2 (Okabe-Ito
+blue, colour-blind-safe), size 1.0 pt, alpha 0.65 — semi-transparent, so
+overlapping towers (dense clusters in Europe and the eastern/western USA)
+read as visibly darker rather than simply occluding each other. Colour is
+constant — it does not encode IGBP, hub, or any other variable.
 
 NETWORK AND SITE COUNT:
 FLUXNET Shuttle network, pinned snapshot: n = 781 sites.
@@ -37,7 +44,10 @@ against any historical dataset (Marconi, La Thuile, FLUXNET2015). A separate
 companion figure (fig_04_map_snapshots.png, same source script) shows those
 three historical networks alongside the current Shuttle network as an
 explicitly-labelled four-panel comparison; that figure is not part of this
-draft-manuscript set.
+draft-manuscript set. The four-regional-panel companion
+(SupFigs/supp_map_regional.png) outlines North America, Europe, East/
+Southeast Asia, and Australia/New Zealand on this same world map and shows
+each region close up in its own Lambert Azimuthal Equal-Area projection.
 
 DATA SOURCE:
 Site coordinates (location_lat, location_long) and site_id from the FLUXNET
@@ -54,16 +64,22 @@ per site. No sites were excluded on these grounds in the current snapshot;
 all 781 sites are shown.
 
 BASEMAP:
-Country/coastline outlines from rnaturalearth::ne_countries(scale =
-"medium", 1:50m resolution), land fill grey97 (near-white), border colour
-black, s2 spherical geometry disabled for the crop/render step to avoid
-outline rendering artefacts.
+Country polygons and a separate coastline, both from rnaturalearth::
+ne_countries()/ne_coastline() (scale = "medium", 1:50m resolution), land
+fill grey97 (near-white), s2 spherical geometry disabled for the crop/
+render step to avoid outline rendering artefacts. Country-border and
+coastline line weights are drawn in two separate layers so the coastline
+reads as the dominant silhouette and country borders as a secondary,
+lighter reference (task 7).
 
 REPRODUCIBILITY:
 Function: fig_map_point_network() in R/figures/fig_maps.R (panel_letter()
   and save_nature_figure() from R/nature_format.R add the panel letter and
-  write the PNG/PDF pair, revised 2026-10-02)
+  write the PNG/PDF pair; Equal Earth projection and canvas-height-fit-to-
+  map revised 2026-10-02)
 Script:   scripts/generate_point_maps.R
 Output:   review/figures/maps_point/fig_03_map_current.png/.pdf, copied to
           review/figures/candidates/ and then here
-DIMENSIONS: 89 x 89 mm, 600 dpi PNG + vector PDF, Helvetica, white background
+DIMENSIONS: 89 mm wide x ~38.5 mm tall (canvas fit to the Equal Earth map,
+            not a fixed square), 600 dpi PNG + vector PDF, Helvetica,
+            white background.

@@ -137,6 +137,51 @@ scale_color_igbp <- function(...) {
   ggplot2::scale_color_manual(values = IGBP_colours, ...)
 }
 
+# ---- Shared paper-wide IGBP palette (task 2, 2026-10-02) --------------------
+#
+# PAPER_IGBP_ORDER / PAPER_IGBP_COLOURS are Figure 4's own 15-class palette,
+# sourced from Google Earth Engine's documented MODIS/061/MCD12Q1 LC_Type1
+# (IGBP) colour table -- the actual 15 classes the current 781-site network
+# occupies (CVM, BSV, SNO among them). IGBP_order/IGBP_colours above list a
+# DIFFERENT 15 classes (SHR, URB, NV instead) and are left untouched for their
+# existing non-paper callers -- see docs/known_issues.md for the callers that
+# still silently drop CVM/BSV/SNO as a result. Every paper figure that colours
+# by IGBP (Figures 1b, 3, 4, and their matched/six-panel Extended Data
+# versions) should use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS (or
+# scale_fill_paper_igbp()/scale_color_paper_igbp()) instead.
+PAPER_IGBP_ORDER <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA",
+                       "SAV", "GRA", "WET", "CRO", "CVM", "BSV", "SNO")
+PAPER_IGBP_COLOURS <- c(
+  ENF = "#05450a", EBF = "#086a10", DNF = "#54a708", DBF = "#78d203", MF = "#009900",
+  CSH = "#c6b044", OSH = "#dcd159", WSA = "#dade48", SAV = "#fbff13",
+  GRA = "#b6ff05", WET = "#27ff87", CRO = "#c24f44", CVM = "#ff6d4c",
+  BSV = "#f9ffa4", SNO = "#69fff8"
+)
+
+#' Discrete fill scale for IGBP classes, paper-wide palette
+#'
+#' Uses [PAPER_IGBP_COLOURS] (Figure 4's MODIS/061/MCD12Q1 palette) -- the
+#' shared palette for every FLUXNET Annual Paper 2026 figure that colours by
+#' IGBP class, not [IGBP_colours] (see note above).
+#'
+#' @param ... Additional arguments passed to [ggplot2::scale_fill_manual()].
+#' @return A ggplot2 scale object.
+scale_fill_paper_igbp <- function(...) {
+  ggplot2::scale_fill_manual(values = PAPER_IGBP_COLOURS, breaks = PAPER_IGBP_ORDER, ...)
+}
+
+#' Discrete colour scale for IGBP classes, paper-wide palette
+#'
+#' Uses [PAPER_IGBP_COLOURS] (Figure 4's MODIS/061/MCD12Q1 palette) -- the
+#' shared palette for every FLUXNET Annual Paper 2026 figure that colours by
+#' IGBP class, not [IGBP_colours] (see note above).
+#'
+#' @param ... Additional arguments passed to [ggplot2::scale_color_manual()].
+#' @return A ggplot2 scale object.
+scale_color_paper_igbp <- function(...) {
+  ggplot2::scale_color_manual(values = PAPER_IGBP_COLOURS, breaks = PAPER_IGBP_ORDER, ...)
+}
+
 # DEPRECATED — use scale_fill_igbp() or scale_color_igbp() instead
 #' Qualitative HCL palette for IGBP classes (deprecated)
 #'

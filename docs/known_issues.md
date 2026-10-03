@@ -516,6 +516,51 @@ outputs" note in SESSION_LOG.md 2026-10-02 for the full list.
 
 ---
 
+## Section 11 — `IGBP_order`/`IGBP_colours` still drop CVM/BSV/SNO (open, 2026-10-02)
+
+`R/plot_constants.R::IGBP_order`/`IGBP_colours` list 15 classes, but the wrong 15 for the
+current FLUXNET Shuttle network: `SHR`, `URB`, `NV` (zero current-network towers report any of
+these) instead of `CVM`, `BSV`, `SNO` (7 + 9 + 2 = 18 towers that do occur). Any caller that
+filters on `IGBP_order` or colours via `scale_fill_igbp()`/`scale_color_igbp()` silently drops
+those 18 towers rather than erroring.
+
+Every FLUXNET Annual Paper 2026 figure that colours by IGBP class now uses the corrected shared
+palette instead -- `PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS` (`scale_fill_paper_igbp()`/
+`scale_color_paper_igbp()`), Figure 4's own MODIS/061/MCD12Q1 GEE palette, promoted to
+`R/plot_constants.R` 2026-10-02 (task 2). `IGBP_order`/`IGBP_colours` themselves were left
+untouched, since they have callers outside the paper's figure set not audited as part of that
+fix: `R/figures/fig_igbp.R`, `fig_environmental_response.R`, `fig_latitudinal.R`,
+`fig_growing_season.R`, `fig_climate.R`, `fig_timeseries.R`, plus `scripts/00_diagnostics.R` and
+`scripts/investigate_badm_management.R` (`scripts/00_candidate_figures.R` does not filter on
+it). Any of these that are later promoted into a paper figure should switch to
+`PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS` at that point, not before.
+
+---
+
+## Section 12 — Figure 4's own bin-category labels still fall back to ASCII hyphen (open, 2026-10-02)
+
+`scripts/figure4_representativeness.R::flux_bin_labels_print()` (NEE panel) builds category
+labels containing a literal Unicode minus sign (U+2212, e.g. `"< −250"`, `"−250 to
+−100"`) as plain-text `class_label` factor values, drawn directly via `scale_y_discrete()`
+with no separate display-label override. Confirmed directly (`options(warn=1)`): the base
+`grDevices::pdf()` device used for the PDF output cannot encode U+2212 as plain text either, and
+silently substitutes ASCII `-` back in with an `mbcsToSbcs` warning -- the same gap
+`R/nature_format.R::nature_minus_labels()` works around for every other figure's axis ticks and
+`R/figures/fig_climate.R`'s stepped-scale keys, by rendering the minus through plotmath's
+unary-minus operator (a quoted-string plus parsed-expression split) instead of a literal
+character.
+
+Not fixed as part of task 3 (2026-10-02): `class_label` is threaded through this script's join/
+colour-mapping/CSV-writing pipeline as a plain string, not just a display value, so splitting a
+parallel plotmath "display label" through it safely (the same pattern used in
+`R/figures/fig_climate.R`'s stepped NEE scale) would need auditing every consumer of
+`class_label`, out of proportion to a labels-only re-render that must leave Figure 4's n and J
+unchanged. The non-NEE panels' labels (`sprintf("%s–%s", ...)`, en dash U+2013) have the
+same fallback, but are not a "minus sign" case at all -- they separate two positive numbers in a
+range, where a plain hyphen is an ordinary, acceptable typographic substitute.
+
+---
+
 ## Future enhancements
 
 ### FAO GEZ shapefile

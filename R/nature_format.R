@@ -6,10 +6,17 @@
 #' superscript glyph (the PDF export's base PostScript Helvetica has no
 #' usable glyph for some of them); no caption or explanatory text drawn
 #' inside the figure itself (put it in the `.legend.txt` file instead); line
-#' weights 0.25-1 (ggplot2 `linewidth` units, the same raw numeric range
-#' `figure4_representativeness.R`'s own panel borders/gridlines already use,
-#' e.g. `panel.border` at 0.4, gridlines at 0.3-0.5); a vector PDF beside
-#' every PNG.
+#' weights 0.25-1 pt **as measured in the rendered PDF** (by
+#' `scripts/check_figure_format.R`, via `pdftocairo -svg`'s `stroke-width`) --
+#' NOT the same number as ggplot2's `linewidth` aesthetic. A ggplot2
+#' `linewidth` of 1 mm renders as `linewidth * .pt * 0.75` PDF points (`.pt`
+#' converts mm to "big points", `* 0.75` converts big points, 1/96in, to true
+#' PDF points, 1/72in) -- empirically confirmed at ~2.134 pt per linewidth
+#' unit by rendering known linewidths and measuring the output SVG. Use
+#' [nature_lwd()] to convert a target *output* pt value to the `linewidth=`
+#' argument a geom or theme element needs; never set `linewidth=` to a raw
+#' 0.25-1 number directly, since that silently renders ~2.13x too thick and
+#' will fail `scripts/check_figure_format.R`. A vector PDF beside every PNG.
 #'
 #' Main-text figures: 89 or 183 mm wide, at most 247 mm tall. Extended Data
 #' figures: at most 180 mm wide and 240 mm tall, plus a 300 p.p.i. JPEG
@@ -28,6 +35,47 @@ NATURE_MAX_HEIGHT_MM    <- 247
 NATURE_ED_MAX_WIDTH_MM  <- 180
 NATURE_ED_MAX_HEIGHT_MM <- 240
 NATURE_ED_JPEG_DPI      <- 300
+NATURE_LWD_TO_PT        <- ggplot2::.pt * 0.75   # ggplot2 linewidth unit -> rendered PDF pt; see header
+
+#' Convert a target rendered line weight (pt) to a ggplot2 `linewidth=` value
+#'
+#' @param pt Desired weight in the final PDF, in points (should be within
+#'   `[`[NATURE_LINEWIDTH_MIN]`, `[NATURE_LINEWIDTH_MAX]`]`).
+#' @export
+nature_lwd <- function(pt) pt / NATURE_LWD_TO_PT
+
+#' Axis-label formatter using a true minus sign (not ASCII hyphen-minus)
+#'
+#' Pass as `labels = nature_minus_labels()` to any `scale_x/y_continuous()`
+#' whose values can be negative -- R's/ggplot2's default tick-label formatter
+#' renders negative numbers with ASCII "-" (U+002D), not the typographic
+#' minus sign (U+2212) Nature format requires. A literal U+2212 CHARACTER in
+#' a plain-text label does not fix this: confirmed directly that the base
+#' `grDevices::pdf()` device (PostScript Helvetica, as [save_nature_figure()]
+#' uses for the PDF output) cannot encode U+2212 as plain text and silently
+#' substitutes ASCII "-" back in, with a `mbcsToSbcs` warning -- the same
+#' glyph-availability gap [panel_letter()]'s own doc note and this file's
+#' header describe for axis-title superscripts. The fix is the same one
+#' already used for axis titles throughout this codebase: route the minus
+#' sign through plotmath's unary-minus operator (rendered via the Symbol
+#' font's own minus glyph, not character encoding) instead of embedding
+#' U+2212 as a character -- this returns a label function producing
+#' `expression()`s, not plain strings, which ggplot2/grid render as plotmath.
+#' @export
+nature_minus_labels <- function(...) {
+  base_fn <- scales::label_number(...)
+  function(x) {
+    txt <- base_fn(x)
+    parsed <- lapply(txt, function(t) {
+      e <- tryCatch(parse(text = t)[[1]], error = function(e) NULL)
+      ## Falls back to a quoted plotmath string for text parse() can't
+      ## handle as a bare numeric literal (e.g. a space-grouped "4 000") --
+      ## such text contains no minus sign needing glyph substitution anyway.
+      if (is.null(e)) str2lang(deparse(t)) else e
+    })
+    do.call(expression, parsed)
+  }
+}
 
 #' ggplot2 theme add-on enforcing the Nature text/line rules
 #'
@@ -38,10 +86,10 @@ NATURE_ED_JPEG_DPI      <- 300
 #'
 #' @param base_size Base text size in pt (default [NATURE_BASE_PT]). Must be
 #'   within `[5, 7]`.
-#' @param panel_border_lwd `linewidth` for `panel.border` (default the
-#'   midpoint of the allowed range).
+#' @param panel_border_pt Rendered weight (pt) for `panel.border` (default
+#'   the midpoint of the allowed range).
 #' @export
-nature_theme <- function(base_size = NATURE_BASE_PT, panel_border_lwd = 0.5) {
+nature_theme <- function(base_size = NATURE_BASE_PT, panel_border_pt = (NATURE_LINEWIDTH_MIN + NATURE_LINEWIDTH_MAX) / 2) {
   if (base_size < NATURE_SMALL_PT || base_size > NATURE_BASE_PT) {
     stop("nature_theme(): base_size must be within [", NATURE_SMALL_PT, ", ",
          NATURE_BASE_PT, "] pt (Nature's 5-7 pt text rule). Got: ", base_size)
@@ -68,9 +116,9 @@ nature_theme <- function(base_size = NATURE_BASE_PT, panel_border_lwd = 0.5) {
     plot.title        = ggplot2::element_blank(),
     plot.subtitle     = ggplot2::element_blank(),
     plot.caption      = ggplot2::element_blank(),
-    panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = panel_border_lwd),
-    axis.line         = ggplot2::element_line(linewidth = NATURE_LINEWIDTH_MIN, colour = "black"),
-    axis.ticks        = ggplot2::element_line(linewidth = NATURE_LINEWIDTH_MIN, colour = "black"),
+    panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = nature_lwd(panel_border_pt)),
+    axis.line         = ggplot2::element_line(linewidth = nature_lwd(NATURE_LINEWIDTH_MIN), colour = "black"),
+    axis.ticks        = ggplot2::element_line(linewidth = nature_lwd(NATURE_LINEWIDTH_MIN), colour = "black"),
     plot.background   = ggplot2::element_rect(fill = "white", colour = NA),
     panel.background  = ggplot2::element_rect(fill = "white", colour = NA)
   )

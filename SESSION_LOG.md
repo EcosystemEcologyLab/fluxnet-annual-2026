@@ -4,6 +4,230 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (10) — Figures 1-3 + Extended Data finished: format checker, shared IGBP palette, Equal Earth maps (DONE)
+
+Finished the Nature-format pass on Figures 1-3 and their Extended Data versions: a format-
+compliance checker, one shared IGBP palette, review fixes on Figures 2/4 and three Extended Data
+figures, and the two new map figures (Figure 1a redrawn, a new regional-map Extended Data figure).
+`R/nature_format.R` used throughout.
+
+### 1. `scripts/check_figure_format.R`
+
+Measures every figure in `draft_manuscript_v1/` and `SupFigs/` **from the rendered PDF/PNG**, not
+the plotting code: file presence (`file.exists()`); page size (`pdfinfo`); font family
+(`pdffonts`); text size (`pdftotext -bbox`, calibrated empirically — bbox height / nominal pt =
+0.925, content-independent; rotated multi-character words use width instead of height; isolated
+punctuation and plotmath's own minus-sign glyph are excluded, both measurement artefacts rather
+than real size signals); line weight (`pdftocairo -svg`'s `stroke-width`, directly in PDF points —
+confirmed 1 SVG unit = 1 PDF point; white-on-white background strokes excluded). Prints one row
+per figure, exits non-zero on any failure, run last. `pdffonts` showing `Symbol` alongside
+Helvetica/Helvetica-Bold is accepted, not a violation: R's plotmath renders a true minus sign
+(U+2212) via the Symbol font's own glyph, since base-14 Helvetica's encoding has no minus-sign
+glyph at all (only ASCII hyphen) — confirmed directly that a figure with no negative numbers in
+any plotmath text has no `Symbol` reference.
+
+Two real bugs found while building and calibrating the checker, both fixed:
+- **Unicode minus signs don't work as plain text in the PDF output.** A literal U+2212 character
+  in an ordinary ggplot2 label/string silently falls back to ASCII hyphen in the base
+  `grDevices::pdf()` device, with an `mbcsToSbcs` warning — confirmed directly
+  (`options(warn=1)`). Fixed by routing every minus sign through plotmath instead: `R/nature_format.R::
+  nature_minus_labels()` (axis tick labels, returns `expression()`s via `parse()`, falling back to
+  a quoted string for anything that doesn't parse as a bare numeric literal, e.g. a space-grouped
+  "4 000") and a parallel display-label split in `fig_climate.R`'s stepped-scale legend (the
+  factor levels used for data matching stay plain ASCII; a separate plotmath `labels=` is what's
+  drawn). Not fixed: `figure4_representativeness.R`'s own NEE-panel bin-category labels, built the
+  same broken way but threaded through too much of that script's join/colour-mapping/CSV-writing
+  pipeline to split safely within a labels-only re-render — see `docs/known_issues.md` §12.
+- **ggplot2 `linewidth` is not 1:1 with rendered PDF points.** Empirically ~2.134x (`linewidth *
+  ggplot2::.pt * 0.75`) — a `linewidth = 0.5` panel border (the `nature_theme()` default) rendered
+  at 1.07 pt, over the 1 pt max, in nearly every figure. Added `nature_lwd(pt)` to
+  `R/nature_format.R` to convert a target *output* pt to the correct `linewidth=` value, and
+  applied it everywhere a Nature figure sets an explicit line weight (`nature_theme()`,
+  `fig_climate.R`'s `.whittaker_theme()` and stepped-scale override, `fig_maps.R`'s new Equal Earth
+  basemap layers, `figure4_representativeness.R`, `fig_network_growth.R::
+  fig_cumulative_siteyears_igbp()`, `generate_whittaker_ed_three_flux.R`).
+
+Sanity check: run against the commit-`HEAD` version of `fig_02_whittaker_current.pdf` (before this
+session's fixes), the checker correctly fails it — strokes up to 1.71 pt, matching the task's own
+"about 1.5 pt" estimate.
+
+Final checker table (all 11 current draft-manuscript/Extended Data figures):
+
+| Figure | Kind | Size (mm) | Fonts | Lines (pt) | Status |
+|---|---|---|---|---|---|
+| fig_01 | main | 88.9×127.4 | OK | 0.25–1.00 | PASS |
+| fig_01a_map_current_network | main | 88.9×38.5 | OK | 0.25–0.50 | PASS |
+| fig_01b_cumulative_siteyears_igbp | main | 88.9×88.9 | OK | 0.25–1.00 | PASS |
+| fig_02_whittaker_current | main | 88.9×88.9 | OK* | 0.25–1.03 | PASS |
+| fig_03_flux_comparison_combo_nep_et_h | main | 88.9×227.9 | OK* | 0.25–0.85 | PASS |
+| fig_04_representativeness | main | 182.7×173.2 | OK* | 0.25–1.00 | PASS |
+| supp_flux_comparison_matched_siteyears | ED | 88.9×227.9 | OK* | 0.25–0.85 | PASS |
+| supp_flux_comparison_six_panel | ED | 179.9×219.8 | OK* | 0.25–0.85 | PASS |
+| supp_map_regional | ED | 179.9×239.9 | OK | 0.25–0.60 | PASS |
+| supp_representativeness_geo_vs_geo | ED | 179.9×173.2 | OK* | 0.25–1.00 | PASS |
+| supp_whittaker_nee_gpp_ter | ED | 179.9×94.9 | OK* | 0.25–1.03 | PASS |
+
+(OK* = Helvetica/Helvetica-Bold plus the accepted `Symbol` minus-sign case.) 11/11 PASS, checker
+exits 0.
+
+### 2. Shared paper-wide IGBP palette
+
+`R/plot_constants.R`: added `PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS` (`scale_fill_paper_igbp()`/
+`scale_color_paper_igbp()`) — Figure 4's own 15-class MODIS/061/MCD12Q1 GEE palette (CVM/BSV/SNO
+included), promoted from its single-script copy to a shared constant. `figure4_representativeness.R`
+itself now derives its local `IGBP_ORDER`/`IGBP_COLORS` (16 classes — the 15 plus its own "Other"
+raster-classification bin) from the shared constant rather than keeping a parallel duplicate.
+Switched to the shared palette: `fig_cumulative_siteyears_igbp()` (Figure 1b — was already using a
+locally-scoped correct copy from a prior session's bug fix, now references the shared one instead)
+and the three flux-comparison scripts (Figure 3, `supp_flux_comparison_matched_siteyears`,
+`supp_flux_comparison_six_panel`). `IGBP_order`/`IGBP_colours` (the older, wrong-for-this-network
+15 classes) left untouched for their other, non-paper callers — documented in
+`docs/known_issues.md` §11.
+
+### 3. Units and true minus signs
+
+"g C m⁻² yr⁻¹" (space before C) in every figure that had "gC": the three flux-comparison scripts'
+plotmath unit expressions, and Figure 4's NEE panel title — both the plain-text legend copy *and*
+the separate `title_expr` plotmath expression actually drawn on the figure (found by inspecting
+the rendered PDF after the first fix only changed the unused plain-text copy). True minus signs:
+see §1 above (`nature_minus_labels()` + the stepped-scale display-label split); applied to every
+continuous axis that can show a negative value (Whittaker MAT axis, GPP/TER panels, all three
+flux-comparison scripts' NEP/ET/H axes).
+
+### 4. Figure 2 fixes
+
+- Line weights: panel border and axis ticks were inheriting `theme_classic(base_size = 16)`'s
+  default `base_line_size` (16/22 ≈ 0.73 mm ≈ 1.55 pt rendered) wherever `.whittaker_theme()` left
+  a line element's `linewidth` unset — now explicit via `nature_lwd()`. Contour overlay (in
+  `generate_whittaker_alt_fig02_update.R`) likewise.
+- Stepped key: every one of the 8 steps now shows a colour swatch, including "100 to 200" (zero
+  hexagons). `drop = FALSE` alone was not enough — the fill value is computed via
+  `after_stat(cut(...))` inside `stat_summary_hex()`, and a level with zero occurrences in the
+  rendered data is never registered in the scale's trained domain, so `guide_legend()` dropped its
+  swatch even though `breaks` still listed the label. Fix: also pass `limits = step_labels`,
+  forcing the scale's domain to the full step set regardless of what's observed.
+- Blank band around the plot: `coord_fixed(xlim=, ylim=)` clips the *view*, but the scale's own
+  default 5% expansion still padded beyond that clip on every side. Fixed with
+  `scale_x/y_continuous(expand = c(0, 0))` on both axes (same fix applied to the GPP/TER panels in
+  `supp_whittaker_nee_gpp_ter`, which share the same `coord_fixed()` pattern).
+
+### 5. `supp_whittaker_nee_gpp_ter` (GPP/TER stepped viridis + shared key)
+
+Named constants `GPP_TER_STEP_WIDTH <- 500`, `GPP_TER_MAX <- 3000`; 7 stepped viridis classes (six
+500-unit bins from 0 to 3000, plus "above 3000"), one shared `scale_fill_manual()`/key for both
+panels — not independently rescaled, not duplicated per panel. Points now drawn in front of the
+hexagons in panels b/c (previously behind), matching panel a's `points_in_front = TRUE`. Panel
+letters moved clear of the axes (`panel_letter(hjust = -0.6, vjust = 1.8)`). The shared key sits in
+its **own row** below the three panels via `patchwork::guide_area()` — the simpler
+`guides = "collect"` + `theme(legend.position = "bottom")` (no `guide_area()`) was tried first and
+rejected: patchwork sized the plot panels' shared column width to leave room for the legend
+*beside* them rather than below, crushing all three panels into a sliver.
+
+Hexagons per step (required report item):
+
+| Step | GPP | TER |
+|---|---|---|
+| 0 to 500 | 15 | 17 |
+| 500 to 1000 | 15 | 19 |
+| 1000 to 1500 | 18 | 31 |
+| 1500 to 2000 | 24 | 13 |
+| 2000 to 2500 | 8 | 2 |
+| 2500 to 3000 | 4 | 3 |
+| above 3000 | 5 | 4 |
+
+Figure resized 180×76 → 180×95 mm to fit the new legend row (within the 240 mm Extended Data
+limit).
+
+### 6. Other Extended Data fixes
+
+- `supp_representativeness_geo_vs_geo` was missing its JPEG (the only Extended Data figure not
+  using `save_nature_figure()` — `figure4_representativeness.R` predates it and keeps its own
+  bespoke `ggsave()`/patchwork pipeline for its row-height calibration). Added a direct
+  `ragg::agg_jpeg` write for the `geo_vs_geo` comparison only (not `geo_vs_data`/Figure 4, which
+  doesn't need one), and added `.jpg` to the script's own copy loop into `SupFigs/`.
+- `supp_flux_comparison_six_panel`: column titles' `plot.title` given explicit bottom margin to
+  clear the panel frame/secondary axis; `ggrepel` tuned (`box.padding = 0.4`, `force = 3`,
+  `max.overlaps = Inf`) to reduce IGBP-label/point overlap.
+
+### 7. Figure 1a redrawn (Equal Earth)
+
+`R/figures/fig_maps.R::fig_map_point_network()`, "white" backdrop path only (the "aridity" path is
+untouched): Equal Earth (EPSG:8857) via `coord_sf(crs = "EPSG:8857")`; canvas height fit to the
+map via the new `equal_earth_height_mm()` (dense-boundary-sampled projected bbox — Equal Earth is
+pseudo-cylindrical, so the top/bottom edges of a lon/lat window project as curves, and
+corner-only sampling under-estimates the width), not a fixed square (89 mm wide → 38.5 mm tall, not
+89×89). Points: shape 16 (filled, no separate outline aesthetic at all), semi-transparent
+(alpha 0.65) so overlap reads as darker. Basemap: new `.land_and_coast_sf()`/`.map_base_eqearth()`
+draw country borders and the coastline as two separate layers so the coastline can be thicker/
+darker than the (lighter, thinner) country borders — `ne_countries()` alone draws every internal
+border at the same weight as the true coastline. Antarctica/high Arctic excluded by cropping the
+basemap to latitude [-56, 85] **before** projecting, since Equal Earth's `ylim` is in projected
+metres, not degrees (a degree-based `coord_sf(ylim=)` clip, as the old unprojected map used, no
+longer applies). All 781 towers kept — none fall outside [-56, 85] anyway.
+
+One real bug found and fixed while building this: `geom_point(x=, y=)` with plain numeric lon/lat
+is **not** reprojected by `coord_sf(crs=)` — only layers carrying an actual `sf` geometry column
+are. The first render collapsed all 781 towers onto a single point near the Gulf of Guinea (their
+raw lon/lat values, interpreted as already-projected metres). Fixed by converting the site table to
+an `sf` POINT object (`sf::st_as_sf(..., crs = 4326)`) and plotting with `geom_sf()` instead.
+
+### 8. New Extended Data figure: `supp_map_regional`
+
+`scripts/generate_map_regional.R`. Panel a: the same Equal Earth world map as Figure 1a, full
+width, with the four regional extents outlined (each a densely-sampled polygon, reprojected the
+same way). Panels b-e: one Lambert Azimuthal Equal-Area projection per region
+(`+proj=laea +lat_0=<region centroid> +lon_0=<region centroid>`), each showing only the towers
+inside that region's own extent, with a labelled round-length scale bar (nearest of {50, 100, 200,
+250, 500, 1000, 1500, 2000, 2500, 3000} km to one quarter of that panel's displayed span) built
+from plain `annotate()` — no mapping package beyond base sf/ggplot2 was added (`ggspatial` is not
+installed).
+
+Starting extents checked directly against all 781 current-network towers (0.6° epsilon): only
+East/Southeast Asia needed adjustment — CN-Erg at 50.2°N sat 0.2° outside the starting 50°N edge;
+raised to 51.5°N (1.3° clearance). The other three regions had zero towers within 0.6° of any
+starting edge.
+
+| Panel | Region | Extent (lat, lon) | Towers | Scale bar |
+|---|---|---|---|---|
+| b | North America | [15, 72], [-170, -50] | 362 | 3000 km |
+| c | Europe | [34, 72], [-12, 42] | 198 | 1000 km |
+| d | East and Southeast Asia | [-10, 51.5], [95, 146] | 103 | 1500 km |
+| e | Australia and New Zealand | [-48, -10], [110, 180] | 53 | 2000 km |
+
+Towers outside all four extents (panel a only): **65 of 781**.
+
+### 9. Merged Figure 1
+
+`scripts/generate_fig01_merged.R`: `draft_manuscript_v1/fig_01.png`/`.pdf`/`.legend.txt` — panel a
+(the Equal Earth map) above panel b (cumulative site-years), 89 mm wide, 127.4 mm tall total
+(38.5 + 88.9), well within the 247 mm main-text limit. Built by calling the same two panel
+functions and pinned inputs as the separately-staged `fig_01a`/`fig_01b` files (not a different
+computation), which this merged file does not replace — both continue to be produced.
+**No "Fig01_AB" files were found anywhere in this repository** (checked directly, `find . -iname
+"*Fig01_AB*"`), so there was nothing to leave untouched beyond not creating anything under that
+name.
+
+### 10. Figure 4 re-render (labels only)
+
+`figure4_representativeness.R` re-rendered for the "g C" and IGBP-palette-source changes above.
+Script's own built-in check: **CONFIRMED — all 12 rows' n and J match
+`representativeness_metrics_fig4.csv` exactly**, no data, bins, exclusions, n, or J changed by
+this re-render.
+
+### 11. Updated
+
+`scripts/build_draft_manuscript_v1.R` (header notes for the new merged Figure 1 and regional map
+files; "gC" → "g C" in Figure 2's hardcoded legend text) and `docs/figure_inventory.md` (new
+"Figure 1 (merged)" and "Shared IGBP palette" sections; `supp_map_regional` row; updated
+`supp_whittaker_nee_gpp_ter` description).
+
+### 12. Manual visual check
+
+Opened every one of the 11 PNGs after the checker passed. No clipped or missing text found. One
+residual cosmetic imperfection, not fixed: `supp_flux_comparison_six_panel` panel a's `ggrepel`
+labels sit close to (not clipped by) a couple of points despite the tuning in §6 — a label-density
+limit of `ggrepel`, not a missing fix.
+
 ## 2026-10-02 (9) — Draft figures to Nature format; Figure 2 stepped scale; three new Extended Data figures (DONE)
 
 Brought the draft figures to Nature format (Helvetica; all text 5–7 pt; 8 pt bold lower-case panel

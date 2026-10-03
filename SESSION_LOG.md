@@ -4,6 +4,95 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (12) — Figure stage 2: the map becomes a main-text figure (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 2 only (promote the regional map to the main
+text, as its own figure, alongside a standalone cumulative site-years figure).
+
+### What changed
+
+- New `scripts/generate_fig_map_network.R` builds `draft_manuscript_v1/fig_map_network.png/.pdf/
+  .legend.txt`: the same five panels as the retired `SupFigs/supp_map_regional` (Equal Earth world
+  overview with the four regional extents outlined, plus four Lambert Azimuthal Equal-Area
+  regional close-ups), now 183 mm wide (main-text double-column) instead of 180 mm (Extended
+  Data), with no JPEG.
+- New `scripts/generate_fig_cumulative_siteyears.R` builds `draft_manuscript_v1/
+  fig_cumulative_siteyears_igbp.png/.pdf/.legend.txt`: cumulative site-years by IGBP class, 89 mm
+  wide, with no panel letter — it is no longer panel b of a merged Figure 1, but its own
+  single-panel figure. Same `fig_cumulative_siteyears_igbp()` function and pinned inputs as the
+  retired `fig_01b`/`fig_dur11_CumulativeSiteYears_IGBP`.
+- Retired (via `git mv`, not deleted) to `draft_manuscript_v1/deprecated/`: `fig_01.*`,
+  `fig_01a_map_current_network.*`, `fig_01b_cumulative_siteyears_igbp.*`. Retired to a new
+  `SupFigs/deprecated/`: `supp_map_regional.*`.
+- `scripts/build_draft_manuscript_v1.R` updated to drop the retired Figure 1 entries from its
+  copy map (Figure 1's map and cumulative site-years are now built and written directly by their
+  own scripts, the same pattern Figure 4 already used) and to correct its now-stale header/"Fig 1B
+  note" comments.
+
+### Two layout defects fixed, both from the task's own review notes
+
+1. **Blank vertical bands between rows.** The retired Extended Data version allocated each
+   row of the 2x2 regional grid a fixed height (half of "2 x panel-a-height", split evenly across
+   two equal-width columns) unrelated to the regions' own LAEA-projected aspect ratios (0.83 to
+   1.72 across the four regions) — `coord_sf`'s fixed-aspect rendering then padded the mismatch
+   with blank space, producing the visible bands above/below rows b/c and d/e. Fixed by computing
+   each row's height analytically as `183mm / (aspect_left + aspect_right)`, with each panel's own
+   width set to `that height x its own aspect` — this packs every row edge-to-edge in BOTH
+   directions (not just vertically) with zero letterboxing, confirmed by inspecting the row-boundary
+   pixels directly (no blank band remains at either seam).
+2. **Scale-bar labels over coastline/towers (panels c, d) and a panel letter touching an island
+   (panel e).** Previously fixed offsets (6%/8% from the bottom-left corner) happened to land on
+   land for Europe (Spain/Morocco coast) and East/Southeast Asia (Indonesian islands), and the
+   default top-left panel-letter corner for Australia/NZ landed on an island near the panel's NW
+   edge. Fixed programmatically, not by hand-tuning pixel offsets: a grid of candidate anchor
+   positions (4% steps across the panel), ordered by distance from the original default, is tested
+   with `sf::st_intersects()` against that panel's own land polygon (reprojected to the panel's own
+   LAEA CRS); the nearest land-clear candidate is used. Result: panel c's bar moved to the open
+   mid-Atlantic, panel d's bar moved to open water in the South China Sea, panel e's letter moved
+   to open water south of the island chain. Panels where the default was already clear of land
+   (panel b's bar/letter, panels a/c/d's letters apart from the one move each needed) landed at or
+   within one grid step of their original position — confirmed the search prefers minimal change
+   over relocation.
+
+### Checks
+
+- Tower counts per panel (programmatic, not eyeballed): a (outside all four regions) 65, b (North
+  America) 362, c (Europe) 198, d (East/Southeast Asia) 103, e (Australia/NZ) 53 — all five match
+  the task's expected counts exactly.
+- `data/snapshots/representativeness_metrics_fig4.csv` (the rule-5 invariant) confirmed untouched
+  (`git diff` empty) before committing.
+- `scripts/check_figure_format.R`: 9/9 PASS (5 main-text, 4 Extended Data) after the stage.
+- `fig_cumulative_siteyears_igbp`'s 15 IGBP legend swatches sampled directly from the rendered PNG
+  (not eyeballed): all 15 render distinct non-white fill colours, no blank key boxes.
+- Border-pixel scan of `fig_map_network.png` confirms nothing is clipped at the canvas edge.
+
+### Numbers asked for
+
+Final sizes: `fig_map_network` 182.7 x 217.3 mm (panel a 79.1mm + row b/c 64.3mm + row d/e
+74.1mm); `fig_cumulative_siteyears_igbp` 88.9 x 88.9 mm.
+
+Tower counts: see table in `review/figstage_status.md`, Stage 2 — all five match the task's
+expected 362/198/103/53/65 exactly.
+
+### Decisions for Dave
+
+- `fig_map_network`'s final height (217.3 mm) is above the task's "aim for 200mm or less" but
+  comfortably under Nature's hard 247mm main-text limit. The ~17mm gap is driven almost entirely
+  by panel a: at full 183mm width, the Equal Earth world map's own true aspect ratio needs 79.1mm
+  of height by itself. Getting under 200mm would require either shrinking panel a below full width
+  (reintroducing the same letterboxing this stage's row-height fix was built to remove) or
+  narrowing a region's extent (off limits — and would change the panel site counts away from the
+  task's expected values). Took the option that changes least: kept panel a full-bleed, accepted
+  217.3mm, and is flagging the trade-off here rather than guessing which Dave would prefer.
+- The land-avoidance grid search checks bar/letter placement against land polygons only, not
+  against tower points or against each other. No collisions appeared in this render (checked
+  visually), but it's not point-aware, which is worth knowing if a future network update shifts
+  point density enough to matter.
+
+Full write-up and per-panel detail: `review/figstage_status.md`, Stage 2.
+
+---
+
 ## 2026-10-02 (11) — Figure stage 1: Figure 2 key fix, panel a key added to the three-flux Extended Data figure (DONE)
 
 Unattended run per `logs/figstage_prompt.md`, stage 1 only (two defects found on review).

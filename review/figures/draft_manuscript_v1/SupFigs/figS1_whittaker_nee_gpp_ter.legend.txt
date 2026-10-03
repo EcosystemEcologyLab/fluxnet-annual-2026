@@ -22,8 +22,8 @@ medians) -- a hexagon with no towers is white (not drawn).
 
 PANELS:
   a NEE — same stepped ColorBrewer RdBu scale as Figure 3 (8 classes, no middle
-    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Own key shown (top-left
-    inset, identical to Figure 3's) --
+    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Key shown below the three
+    panels, beside the GPP/TER key (not overlaid on this panel's own data) --
     n = 656 sites.
   b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --
     n = 651 sites.
@@ -48,5 +48,5 @@ SOURCE: scripts/generate_whittaker_ed_three_flux.R. Panel a: fig_whittaker_world
 built directly in the script from compute_site_annual_fluxes()'s site-level medians --
 not NEE-specific, so not routed through fig_whittaker_worldclim(). Contour overlay:
 fig_whittaker_global_contour(), shared with Figure 3.
-DIMENSIONS: 180 x 95 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
+DIMENSIONS: 180 x 130 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
 Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt).

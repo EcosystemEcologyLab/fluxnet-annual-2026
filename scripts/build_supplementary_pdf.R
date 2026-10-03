@@ -2,8 +2,9 @@
 ## Figure stage 6b (logs/figstage_prompt.md, 2026-10-02): assembles
 ## SupFigs/supplementary_figures.pdf, one Supplementary Figure per page,
 ## each headed by its number and legend title -- from the already-rendered,
-## already-numbered figS1-figS5 PNGs and their .legend.txt TITLE lines (see
-## figure stage 6a / docs/figure_inventory.md). Does not recompute or
+## already-numbered figS1-figS6 PNGs and their .legend.txt TITLE lines (see
+## figure stage 6a / docs/figure_inventory.md; figS6 added in the close-out
+## session, 2026-10-02, once figure stage 3 was closed out). Does not recompute or
 ## re-render any figure; pure assembly, dependency-free (base grid/grDevices
 ## + the already-used png package -- no new package added, per CLAUDE.md
 ## "Package preferences").
@@ -27,7 +28,8 @@ STEMS <- c("figS1_whittaker_nee_gpp_ter",
            "figS2_flux_comparison_matched_siteyears",
            "figS3_flux_comparison_six_panel",
            "figS4_representativeness_geo_vs_geo",
-           "figS5_flux_representativeness")
+           "figS5_flux_representativeness",
+           "figS6_representativeness_trajectory")
 
 for (s in STEMS) {
   png_path <- file.path(SUPFIGS_DIR, paste0(s, ".png"))

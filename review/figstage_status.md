@@ -130,6 +130,78 @@ Tower count in each regional panel and outside all four (task expected 362, 198,
 
 ---
 
+## Stage 3 — supplementary trajectory figure: DONE (closed out 2026-10-02, close-out session)
+
+Found run to completion but never closed out (no status entry, no commit, no session log) by a
+prior session: `scripts/figure_representativeness_trajectory.R` and its full output set (figure,
+table, log) existed on disk, uncommitted, with the script's own validation already passing. This
+close-out session re-ran the script fresh to reconfirm the pass, renamed its `SupFigs/` copy to
+the Stage 6 numbering (`figS6_representativeness_trajectory`, the next number after
+`figS5_flux_representativeness` — Stage 6 had stopped at S5 specifically because Stage 3 was not
+yet DONE), corrected its legend text's stale "Extended Data"/"Figure 4" references to
+"Supplementary Figure"/"Figure 5" (the Stage 6 terminology/renumbering postdates this script's
+original, never-closed-out run), and committed everything.
+
+- **Required check (rule, and the task's own gate):** current-network Geo-vs-Geo values reproduce
+  `representativeness_metrics_fig4.csv`'s six rows exactly — re-confirmed on this fresh run
+  (`logs/figure_representativeness_trajectory_20261002_221901.log`): "Validation PASSED: all six
+  current-network Geo-vs-Geo rows match representativeness_metrics_fig4.csv exactly." Per-panel
+  fresh-extraction validations also passed: Panel B's fresh MODIS IGBP extraction matches
+  `site_igbp_fig4.csv` exactly (781/781 sites); Panels E/F's fresh TRENDY bilinear extraction +
+  `classify_flux_sites()` reproduces the committed `bin_geo` exactly for all 781 NEE and 781 ET
+  current-network sites.
+- Figure staged as `SupFigs/figS6_representativeness_trajectory.png/.pdf/.jpg/.legend.txt` (source,
+  unchanged name: `review/figures/representativeness/supp_representativeness_trajectory.*`). Table:
+  `data/snapshots/representativeness_metrics_trajectory.csv` (24 rows: 6 axes x 4 networks).
+- Following Stage 5's own conditional item (now unblocked): all 46 remaining
+  `scripts/figure_representativeness_summary.R` outputs (`fig_rep001`-`fig_rep018`,
+  `fig_representativeness_*`, `.png` + `.legend.txt`) `git mv`'d into
+  `review/figures/representativeness/deprecated/`; `docs/figure_inventory.md` updated to mark that
+  script superseded.
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` unchanged by this stage
+  (not read/write target of this script beyond the validation read above; `git diff` empty).
+- `scripts/check_figure_format.R`: 11/11 PASS after this stage (the new `figS6_
+  representativeness_trajectory ed 119.9x99.8mm OK 28w 0.25-0.71pt PASS`).
+- Visual check (rule 7): PNG opened directly — clean line chart, no clipped/overlapping text, no
+  stray blank bands; legend box (axis colours) fully inside the plot panel.
+
+### Numbers asked for
+
+J and n (n_classified / n_eligible) for every network and axis, Geo vs Geo
+(`data/snapshots/representativeness_metrics_trajectory.csv`):
+
+| Axis | Marconi (35) | La Thuile (252) | FLUXNET2015 (212) | Current (781) |
+|---|---|---|---|---|
+| A Koppen-Geiger | n=35, J=0.223 | n=252, J=0.292 | n=212, J=0.365 | n=781, J=0.372 |
+| B Land cover (IGBP) | n=35, J=0.354 | n=252, J=0.396 | n=212, J=0.491 | n=781, J=0.495 |
+| C Aridity | n=35, J=0.479 | n=250, J=0.532 | n=212, J=0.598 | n=781, J=0.666 |
+| D Biomass | n=35, J=0.409 | n=252, J=0.532 | n=212, J=0.554 | n=781, J=0.636 |
+| E NEE | n=35, J=0.494 | n=252, J=0.445 | n=212, J=0.466 | n=781, J=0.530 |
+| F ET | n=35, J=0.458 | n=252, J=0.385 | n=212, J=0.410 | n=781, J=0.456 |
+
+Every `n_classified` equals `n_eligible` (every site on every axis/network was classified) except
+one: Panel C (aridity), La Thuile, n_classified=250 of n_eligible=252.
+
+Historical sites that could not be classified, with reason: **2**, both on panel C (aridity),
+La Thuile network only — **CN-Do2** and **CN-Do3** (CGIAR Aridity Index v3.1 `unep_class_7` is `NA`
+in the existing `data/snapshots/site_aridity_la_thuile.csv` at these two towers' coordinates — a
+pre-existing extraction result, not recomputed by this script). No other axis/network combination
+had any unclassified site.
+
+### Decisions for Dave
+
+- Line-colour role assignment (Okabe-Ito palette, one colour per axis) carried over unchanged from
+  the original (never-closed-out) run: IGBP takes the colour role the retired
+  `fig_05_jaccard_trajectory_with_counts.png`'s LULC axis had, since both are land-cover axes — a
+  judgement call made in the original run, not re-litigated in this close-out.
+- The retirement of `scripts/figure_representativeness_summary.R`'s 46 remaining outputs (above)
+  was Stage 5's own conditional item, carried out now that its Stage-3 dependency is DONE — not a
+  new decision, just the originally-planned follow-through.
+
+Full write-up: `SESSION_LOG.md`, close-out session entry, 2026-10-02.
+
+---
+
 ## Stage 4 — supplementary flux figure, both versions side by side: DONE
 
 - New `review/figures/representativeness/supp_flux_representativeness.png/.pdf/.jpg/.legend.txt`

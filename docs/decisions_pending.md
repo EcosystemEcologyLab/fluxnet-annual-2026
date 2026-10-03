@@ -54,7 +54,7 @@ resolution uses `fluxnet_convert_units()` as normal.
 
 ---
 
-## Functionally active site definition — RESOLVED 2026-04-20
+## Functionally active site definition — RESOLVED 2026-04-20 — SUPERSEDED 2026-10-02
 
 **Decision (2026-04-20):** A site is considered functionally active if it has ≥3 months
 with valid `NEE_VUT_REF` in at least one year within the last 4 years (2022–2025). Active
@@ -65,6 +65,19 @@ per-site per-year valid month counts computed from MM FLUXMET data. Implemented 
 Note: the MM dataset has a dual ERA5/FLUXMET row structure that requires care in
 `compute_site_year_presence()` — see `known_issues.md` Section 6 for full details and
 outstanding verification steps.
+
+**Superseded 2026-10-02 (close-out session):** the "≥3 months" text above does not match what
+`R/utils.R::is_functionally_active()` actually implements and has implemented since before this
+decision was recorded — the April 2026 text was factually wrong about its own code, not a later
+code change. The function's own docstring (`R/utils.R` lines ~252-257) defines a site as
+functionally active in reference year `Y` if `presence_df` records `has_data = TRUE` — **any**
+non-NA value across NEE VUT/CUT, GPP, RECO, LE, or H, i.e. **at least one month**, not three — for
+**at least one year** within the window `[Y - 3, Y]` (`active_threshold = 4L`, the last 4 years).
+`docs/methods_requirements.md` §5.2 was corrected to this definition during figure stage 6
+(2026-10-02) and re-confirmed in the close-out session the same day. The code (`R/utils.R`) was
+not changed — only this decision record and the methods doc, which had both inherited the
+original, incorrect "≥3 months" description. Do not cite the ≥3-months figure anywhere in the
+paper; the correct threshold is ≥1 month.
 
 ---
 

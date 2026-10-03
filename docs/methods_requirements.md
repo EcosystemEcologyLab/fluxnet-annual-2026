@@ -128,13 +128,20 @@ assignment, regional grouping, and metadata fields used in the analysis.
 - Per-site VUT/CUT/neither split (NEE/GPP/RECO; `R/site_annual_fluxes.R::
   compute_site_annual_fluxes()`, `SESSION_LOG.md` 2026-10-02): VUT 616, CUT (fallback) 40, neither
   125 — sums to 781.
-- TO CONFIRM: a current-network (781-site) count of sites excluded for "all-missing NEE" (the
-  ONEFlux 15-day-gap rule) was not found in any committed table or script constant. The doc's
-  previous "106 of 672" is scoped to the April 2026, 672-site network (`docs/shuttle_team_report_
-  20260414.md` and three other docs dated 2026-04-16/04-20/04-28) and should not be reused or
-  rescaled for the current 781-site network without recomputing it. Do not confuse this with the
-  "neither 125" figure above, which is a different definition (no QC_THRESHOLD_YY-qualifying
-  year, not zero raw NEE rows).
+- Current-network (781-site) count of sites with no usable annual NEE: **125 of 781**
+  (re-verified directly, close-out session 2026-10-02: `compute_site_annual_fluxes()`'s
+  `site_summary$nee_median` is `NA` for exactly 125 sites). Definition used, stated explicitly
+  because it differs from the pre-2026-10-02 methods text's definition: a site counts here if it
+  has **zero QC_THRESHOLD_YY-qualifying annual NEE values** (per-site VUT, falling back to CUT —
+  the same per-site rule as `scripts/04_qc.R` and the "VUT/CUT/neither" split above; this is the
+  same 125 as "neither" there, not a separate count). This is NOT the doc's previous "all-missing
+  NEE (ONEFlux 15-day-gap rule), 106 of 672" definition (raw-data completeness, not QC-threshold
+  qualification) — that count is scoped to the April 2026, 672-site network (`docs/shuttle_team_
+  report_20260414.md` and three other docs dated 2026-04-16/04-20/04-28), no current-network
+  equivalent of that SPECIFIC definition was found in any committed table or script constant, and
+  it should not be reused or rescaled for the 781-site network without recomputing it from raw
+  ONEFlux gap flags (out of scope for this fix — see `docs/decisions_pending.md` if that specific
+  definition is needed later).
 - Functionally active threshold: 4-year window, ≥1 month of any flux variable present in ≥1 of
   those years — see corrected definition above (was previously misstated in this document).
 
@@ -213,18 +220,20 @@ partitioning, and uncertainty handling. Cross-hub validation if applicable.
 
 ---
 
-## 5.4 Derived metrics and benchmark construction
+## 5.4 Derived metrics and benchmark construction — DEPRECATED (not used by any current figure)
 
-**Status (verified 2026-10-02):** the anomaly-context figure pipeline described below
-(`R/figures/fig_anomaly_context.R` and its GEZ/Köppen-stratified callers) is **not wired into any
-currently-produced figure** — `scripts/07_figures.R` has zero references to it, and
-`docs/figure_inventory.md` does not list it at all. Its only callers,
+**Status: DEPRECATED (marked 2026-10-02, close-out session).** The anomaly-context figure
+pipeline described below (`R/figures/fig_anomaly_context.R` and its GEZ/Köppen-stratified
+callers) is **not wired into any currently-produced figure** — `scripts/07_figures.R` has zero
+references to it, and `docs/figure_inventory.md` does not list it at all. Its only callers,
 `scripts/generate_gez_anomaly_figures.R` and `scripts/generate_kg_anomaly_figures.R`, were last
 modified 2026-04-18, predating the current figure set (figure stages 1-6, all 2026-10-02) by
 roughly five months. This section's "Must cover"/"Key facts" below describe what that orphaned
 code *would* do if wired in — they do not describe a result currently reported anywhere in the
 manuscript. Do not draft methods prose from this section until/unless this analysis is actually
-reinstated into the active pipeline.
+reinstated into the active pipeline. Code and data files are left in place (figure-stage rule 3:
+do not delete files) — "deprecated" here describes this section's status as a methods-text source,
+not a request to remove the underlying scripts.
 
 **Purpose:** Explain how annual flux metrics, anomalies, and aggregated
 summaries were calculated.

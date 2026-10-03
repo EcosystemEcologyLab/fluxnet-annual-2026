@@ -1,0 +1,79 @@
+FIGURE LEGEND — figS6_representativeness_trajectory.png
+============================================================
+
+TITLE: Supplementary Figure S6 — Geo vs Geo representativeness through time
+
+DESCRIPTION:
+Geo vs Geo weighted Jaccard similarity (J) for Figure 5's own six axes (a Koppen-Geiger,
+b land cover as IGBP, c aridity, d biomass, e NEE, f ET), tracked across four FLUXNET
+network generations: Marconi, La Thuile, FLUXNET2015, and the current (781-site) network.
+Every site is classified by the gridded product's own value at its coordinate (never a
+tower-measured value) -- the same Geo vs Geo definition, classes, bin edges, land grids
+and totals as scripts/figure4_representativeness.R and figS4_representativeness_geo_vs_geo.png;
+see that figure's legend for the full per-axis methods notes. Classes/edges are not redefined
+here. New raster extractions for the three historical networks: MODIS MCD12C1 IGBP (nearest
+cell) and TRENDY model NEE/GPP/ET (bilinear) at each historical tower coordinate -- Koppen,
+aridity and biomass for the historical networks reuse existing data/snapshots/site_*_<net>.csv
+tables (same products/class schemes as Figure 5, confirmed before reuse).
+Final artwork size: 120 mm wide x 100 mm tall, Helvetica throughout. Supplementary Figure (target journal Scientific Data has no Extended Data concept) -- see docs/figure_inventory.md.
+
+X AXIS: four network generations in chronological order (Marconi, La Thuile, FLUXNET2015, Current).
+
+PRIMARY Y AXIS (left): weighted Jaccard similarity J in [0, 1]. Six coloured lines, one per axis.
+
+SECONDARY Y AXIS (right): site count (grey bars, width 0.38, black outline). Axis scaled so the
+maximum (781 sites, current network) aligns with J = 1.0 on the primary axis.
+
+CLASSIFICATION AXES AND LINE COLOURS (Okabe-Ito colourblind-safe palette; IGBP takes the role
+the retired fig_05_jaccard_trajectory_with_counts.png's LULC axis had -- see
+review/figstage_status.md, Stage 3 Decisions for Dave):
+  Koppen-Geiger:       #D55E00
+  Land cover (IGBP):   #CC79A7
+  Aridity:             #E69F00
+  Biomass:             #009E73
+  NEE:                 #0072B2
+  ET:                  #56B4E9
+
+JACCARD VALUES AND SITE COUNTS (n classified / n eligible), all four networks:
+  A Koppen-Geiger (koppen):
+      Marconi      n = 35 / 35, J = 0.223
+      La Thuile    n = 252 / 252, J = 0.292
+      FLUXNET2015  n = 212 / 212, J = 0.365
+      Current      n = 781 / 781, J = 0.372
+  B Land cover (IGBP) (igbp):
+      Marconi      n = 35 / 35, J = 0.354
+      La Thuile    n = 252 / 252, J = 0.396
+      FLUXNET2015  n = 212 / 212, J = 0.491
+      Current      n = 781 / 781, J = 0.495
+  C Aridity (aridity):
+      Marconi      n = 35 / 35, J = 0.479
+      La Thuile    n = 250 / 252, J = 0.532
+      FLUXNET2015  n = 212 / 212, J = 0.598
+      Current      n = 781 / 781, J = 0.666
+  D Biomass (biomass):
+      Marconi      n = 35 / 35, J = 0.409
+      La Thuile    n = 252 / 252, J = 0.532
+      FLUXNET2015  n = 212 / 212, J = 0.554
+      Current      n = 781 / 781, J = 0.636
+  E NEE (nee):
+      Marconi      n = 35 / 35, J = 0.494
+      La Thuile    n = 252 / 252, J = 0.445
+      FLUXNET2015  n = 212 / 212, J = 0.466
+      Current      n = 781 / 781, J = 0.530
+  F ET (et):
+      Marconi      n = 35 / 35, J = 0.458
+      La Thuile    n = 252 / 252, J = 0.385
+      FLUXNET2015  n = 212 / 212, J = 0.410
+      Current      n = 781 / 781, J = 0.456
+
+SITE COUNTS BY GENERATION: Marconi 35 | La Thuile 252 | FLUXNET2015 212 | Current 781.
+
+UNCLASSIFIED HISTORICAL SITES:
+  CN-Do2 (panel C, la_thuile): CGIAR Aridity Index v3.1 unep_class_7 is NA in the existing site_aridity_<net>.csv (raster NA at tower coordinate, pre-existing extraction result, not recomputed here)
+  CN-Do3 (panel C, la_thuile): CGIAR Aridity Index v3.1 unep_class_7 is NA in the existing site_aridity_<net>.csv (raster NA at tower coordinate, pre-existing extraction result, not recomputed here)
+
+REPRESENTATIVENESS METRIC: Weighted Jaccard (J) -- sum(pmin(p,q)) / sum(pmax(p,q)).
+
+SOURCE: scripts/figure_representativeness_trajectory.R.
+Table: data/snapshots/representativeness_metrics_trajectory.csv.
+Vector PDF alongside this PNG. Companion figure: figS4_representativeness_geo_vs_geo.png.

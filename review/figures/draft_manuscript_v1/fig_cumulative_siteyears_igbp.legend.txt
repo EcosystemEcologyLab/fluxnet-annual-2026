@@ -1,0 +1,22 @@
+FIGURE LEGEND — fig_cumulative_siteyears_igbp.png
+============================================================
+
+TITLE: Cumulative site-years of the FLUXNET Shuttle network through time,
+by IGBP land-cover class
+
+DESCRIPTION:
+Cumulative site-years of the current network through time, stacked by IGBP class
+(paper-wide palette, R/plot_constants.R::PAPER_IGBP_COLOURS), with Marconi 2000/La
+Thuile 2007/FLUXNET2015 cumulative site-year lines overlaid for historical context
+(comparison data only, not primary data -- see CLAUDE.md Hard Rule 1).
+No panel letter -- this is a standalone single-panel figure, not part of a composite.
+
+TOTAL SITE-YEARS PLOTTED (1991-2024): 6061
+
+SOURCE: scripts/generate_fig_cumulative_siteyears.R, calling
+R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp() -- the same function
+and pinned inputs as scripts/generate_duration_histograms.R (Dur11), which continues
+to stage fig_dur11_CumulativeSiteYears_IGBP.png in review/figures/network/ under its
+own canonical name.
+DIMENSIONS: 89 x 89 mm, 600 dpi PNG + vector PDF,
+Helvetica, white background. All text 5-7pt.

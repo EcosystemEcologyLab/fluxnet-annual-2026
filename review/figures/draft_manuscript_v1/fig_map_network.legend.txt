@@ -1,0 +1,38 @@
+FIGURE LEGEND — fig_map_network.png
+============================================================
+
+TITLE: Figure 1. Global distribution of the current FLUXNET network
+
+DESCRIPTION:
+Panel a: Equal Earth (EPSG:8857) world map, all 
+781 towers, with the four regional extents used in panels b-e outlined
+in orange. Panels b-e: one Lambert Azimuthal Equal-Area projection per region, centred on
+that region's own extent centroid, showing only the towers that fall inside that region's
+extent (towers outside all four extents -- 65 of 781 -- appear only in panel a, not in any regional panel).
+
+PANELS:
+  b North America -- lat [15, 72], lon [-170, -50]; n = 362 towers; scale bar 3000 km
+  c Europe -- lat [34, 72], lon [-12, 42]; n = 198 towers; scale bar 1000 km
+  d East and Southeast Asia -- lat [-10, 51.5], lon [95, 146]; n = 103 towers; scale bar 1500 km
+  e Australia and New Zealand -- lat [-48, -10], lon [110, 180]; n = 53 towers; scale bar 2000 km
+
+PROJECTIONS: panel a Equal Earth (EPSG:8857, equal-area, pseudo-cylindrical, whole-world).
+Panels b-e each their own Lambert Azimuthal Equal-Area (+proj=laea), centred on that panel's
+own region -- NOT the same projection or centre as panel a or as each other.
+
+SCALE BARS (panels b-e): round-length, labelled, in the panel's own projected (metre)
+coordinates -- chosen per panel as the nearest of {50, 100, 200, 250, 500, 1000, 1500, 2000,
+2500, 3000} km to one quarter of that panel's displayed span. Position is chosen
+programmatically per panel (nearest candidate to the default bottom-left corner whose
+rectangle -- bar plus label band -- does not intersect that panel's own land polygon); panel
+letters are placed the same way, scanning near the top-left corner. See
+scripts/generate_fig_map_network.R for the candidate search.
+
+POINT STYLE: identical in all five panels -- filled, no outline, semi-transparent (shape 16,
+colour #0072B2), so overlapping towers read as darker, matching the retired Extended Data
+version this figure replaces (SupFigs/supp_map_regional, now in SupFigs/deprecated/).
+
+SOURCE: scripts/generate_fig_map_network.R. Basemap: rnaturalearth::ne_countries()/
+ne_coastline() (1:50m), cropped per panel before projecting.
+DIMENSIONS: 183 x 217.5 mm (panel a 79.1mm + row b/c 64.3mm + row d/e 74.1mm), 600 dpi PNG + vector PDF,
+Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt).

@@ -400,7 +400,7 @@ run_pipeline <- function() {
                    group = interaction(.data$prob, .data$piece),
                    linetype = .data$prob_label),
       colour      = "black",
-      linewidth   = 0.7,
+      linewidth   = nature_lwd(0.6),
       inherit.aes = FALSE
     ) +
     ggplot2::scale_linetype_manual(

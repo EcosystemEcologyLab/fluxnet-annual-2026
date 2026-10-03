@@ -11,6 +11,7 @@
 #   fig_network_active_proportion()    — cumulative count + % functionally active over time
 
 source("R/plot_constants.R")
+source("R/nature_format.R")
 
 # ---- Internal helper --------------------------------------------------------
 
@@ -863,19 +864,12 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
   # doesn't filter on it) not audited or touched by this fix; see
   # SESSION_LOG.md 2026-10-02 for that full list, reported for a future,
   # separately-scoped decision on whether to fix the shared constant itself.
-  # Order/colours below are reused verbatim from scripts/
-  # figure4_representativeness.R's own IGBP_ORDER/IGBP_COLORS, sourced there
-  # from Google Earth Engine's documented MODIS/061/MCD12Q1 LC_Type1
-  # (IGBP) palette -- the authoritative source for these exact 15 classes
-  # elsewhere in this paper.
-  fig1b_igbp_order <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA",
-                         "SAV", "GRA", "WET", "CRO", "CVM", "BSV", "SNO")
-  fig1b_igbp_colours <- c(
-    ENF = "#05450a", EBF = "#086a10", DNF = "#54a708", DBF = "#78d203", MF = "#009900",
-    CSH = "#c6b044", OSH = "#dcd159", WSA = "#dade48", SAV = "#fbff13",
-    GRA = "#b6ff05", WET = "#27ff87", CRO = "#c24f44", CVM = "#ff6d4c",
-    BSV = "#f9ffa4", SNO = "#69fff8"
-  )
+  # Order/colours (task 2, 2026-10-02): the shared paper-wide IGBP palette,
+  # R/plot_constants.R::PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS -- Figure 4's own
+  # 15 classes, sourced there from Google Earth Engine's documented
+  # MODIS/061/MCD12Q1 LC_Type1 (IGBP) palette.
+  fig1b_igbp_order <- PAPER_IGBP_ORDER
+  fig1b_igbp_colours <- PAPER_IGBP_COLOURS
 
   igbp_lookup <- shuttle_meta |>
     dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
@@ -944,7 +938,7 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     # Vertical release-year reference lines (behind all data)
     ggplot2::geom_vline(
       xintercept = c(2000L, 2007L, 2015L),
-      linetype   = "dashed", colour = "grey55", linewidth = 0.7
+      linetype   = "dashed", colour = "grey55", linewidth = nature_lwd(0.4)
     ) +
     # Shuttle background: IGBP-stacked cumulative area
     ggplot2::geom_area(
@@ -965,7 +959,7 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
       ggplot2::aes(x      = .data$year,
                    y      = .data$n,
                    colour = .data$dataset),
-      linewidth = 1.5
+      linewidth = nature_lwd(NATURE_LINEWIDTH_MAX)
     ) +
     # Direct labels at peak (last) year
     ggplot2::geom_label(
@@ -976,7 +970,7 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                    colour = .data$dataset),
       fill        = "white",
       size        = max(base_size * 0.22, 2.2),
-      linewidth   = 0.5,
+      linewidth   = nature_lwd(NATURE_LINEWIDTH_MIN),
       fontface    = "bold",
       vjust       = -0.4,
       show.legend = FALSE

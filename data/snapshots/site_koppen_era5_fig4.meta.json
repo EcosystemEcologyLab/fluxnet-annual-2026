@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-02T23:20:14Z",
-  "pipeline_version": "0c55423",
+  "run_datetime_utc": "2026-10-03T00:45:54Z",
+  "pipeline_version": "6166665",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb",
     "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",

@@ -77,6 +77,8 @@ source("R/utils.R")
 source("R/climate_classification.R")
 source("R/units.R")
 source("R/site_annual_fluxes.R")
+source("R/nature_format.R")
+source("R/plot_constants.R")
 check_pipeline_config()
 
 suppressPackageStartupMessages({
@@ -677,8 +679,13 @@ msg("Saved: ", fig4_kg_era5_path)
 ## the Koppen/biomass panels' own total exactly.
 msg("\n=== PHASE 2: Land cover as IGBP (panel B) ===")
 
-IGBP_ORDER <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA", "SAV",
-                 "GRA", "WET", "CRO", "CVM", "BSV", "SNO", "Other")
+## IGBP_ORDER/IGBP_COLORS (task 2, 2026-10-02): the shared 15-class palette
+## from R/plot_constants.R::PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS -- originally
+## defined HERE and promoted there as the paper-wide source of truth -- plus
+## this script's own "Other" bin (panel B's merged Water+Urban land-cover
+## class), which is specific to this script's raster classification and not
+## part of the shared point/bar-colouring palette.
+IGBP_ORDER <- c(PAPER_IGBP_ORDER, "Other")
 IGBP_CODE_TO_CLASS <- c(
   "0" = "Other", "1" = "ENF", "2" = "EBF", "3" = "DNF", "4" = "DBF", "5" = "MF",
   "6" = "CSH", "7" = "OSH", "8" = "WSA", "9" = "SAV", "10" = "GRA", "11" = "WET",
@@ -698,12 +705,7 @@ IGBP_CODE_TO_CLASS <- c(
 ## own official grey (#a5a5a5), the larger and more land-relevant of the two
 ## merged classes, rather than Water's blue (#1c0dff), which would read as
 ## open water and mislead.
-IGBP_COLORS <- c(
-  ENF = "#05450a", EBF = "#086a10", DNF = "#54a708", DBF = "#78d203", MF = "#009900",
-  CSH = "#c6b044", OSH = "#dcd159", WSA = "#dade48", SAV = "#fbff13",
-  GRA = "#b6ff05", WET = "#27ff87", CRO = "#c24f44", CVM = "#ff6d4c",
-  BSV = "#f9ffa4", SNO = "#69fff8", Other = "#a5a5a5"
-)
+IGBP_COLORS <- c(PAPER_IGBP_COLOURS, Other = "#a5a5a5")
 
 ## ---- Global side: MODIS at Beck 1 km resolution ---------------------------
 beck_rast_path <- file.path(EXT, "koppen_beck2023", "1991_2020", "koppen_geiger_0p00833333.tif")
@@ -1802,15 +1804,15 @@ draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
   col_vals <- setNames(df$color_hex, as.character(df$class_label))
 
   p <- ggplot2::ggplot(df, ggplot2::aes(x = log2_sr_clip, y = class_label)) +
-    ggplot2::geom_vline(xintercept = c(-LOG2_MAX, -1, 1, LOG2_MAX), colour = "grey88", linewidth = 0.3) +
-    ggplot2::geom_vline(xintercept = 0, colour = "grey40", linewidth = 0.5)
+    ggplot2::geom_vline(xintercept = c(-LOG2_MAX, -1, 1, LOG2_MAX), colour = "grey88", linewidth = nature_lwd(0.3)) +
+    ggplot2::geom_vline(xintercept = 0, colour = "grey40", linewidth = nature_lwd(0.45))
   if (nrow(bar_df) > 0) {
     p <- p + ggplot2::geom_col(data = bar_df, ggplot2::aes(fill = class_label), width = 0.72,
-                                na.rm = TRUE, show.legend = FALSE, colour = "black", linewidth = 0.25)
+                                na.rm = TRUE, show.legend = FALSE, colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN))
   }
   if (nrow(none_df) > 0) {
     p <- p + ggplot2::geom_col(data = none_df, width = 0.72, na.rm = TRUE, show.legend = FALSE,
-                                fill = "white", colour = "black", linewidth = 0.25, linetype = "dashed")
+                                fill = "white", colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN), linetype = "dashed")
   }
   ## ---- Row order (task item 4): explicit `limits` on the y scale, NOT
   ## relied-on factor level order. Confirmed by direct reproduction that
@@ -1842,7 +1844,7 @@ draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
       text              = ggplot2::element_text(family = FIG_FONT, size = BASE_PT, colour = "grey10"),
       plot.background   = ggplot2::element_rect(fill = "white", colour = NA),
       panel.background  = ggplot2::element_rect(fill = "white", colour = NA),
-      panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = 0.4),
+      panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = nature_lwd(NATURE_LINEWIDTH_MAX)),
       panel.grid.major  = ggplot2::element_blank(),
       panel.grid.minor  = ggplot2::element_blank(),
       axis.ticks        = ggplot2::element_line(colour = "black"),
@@ -2007,8 +2009,8 @@ PANEL_SPECS <- list(
            title_expr = as.expression(bquote(Biomass ~ (Mg ~ ha^{-1}))),
            order_map = BIOMASS_ORDER_MAP, label_map = BIOMASS_LABEL_MAP, color_map = BIO7_COLORS,
            total_km2 = BIOMASS_LAND_TOTAL_KM2, land_grid = "Beck 2023 1 km mask (fine)"),
-  E = list(letter = "e", title = "NEE (gC m\u207b\u00b2 yr\u207b\u00b9)", axis = "nee",
-           title_expr = as.expression(bquote(NEE ~ (gC ~ m^{-2} ~ yr^{-1}))),
+  E = list(letter = "e", title = "NEE (g C m\u207b\u00b2 yr\u207b\u00b9)", axis = "nee",
+           title_expr = as.expression(bquote(NEE ~ ("g C" ~ m^{-2} ~ yr^{-1}))),
            order_map = FLUX_ORDER_MAP, label_map = NEE_LABEL_MAP, color_map = NEE7_COLORS,
            total_km2 = FLUX_LAND_TOTAL_KM2, land_grid = "TRENDY v14 ensemble-median, 0.5 deg"),
   F = list(letter = "f", title = "ET (mm yr\u207b\u00b9)", axis = "et",
@@ -2252,7 +2254,20 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   ## the Arial font file via systemfonts.
   ggplot2::ggsave(pdf_path, composite, width = FIG_WIDTH_MM, height = total_height_mm, units = "mm",
                    device = grDevices::pdf, family = "Helvetica")
-  msg("Saved: ", png_path, " and ", pdf_path)
+  if (comparison == "geo_vs_geo") {
+    ## Extended Data figure: also write the 300 p.p.i. JPEG required alongside
+    ## the PNG/PDF (task 6, 2026-10-02) -- this script predates
+    ## save_nature_figure() and keeps its own bespoke composite/ggsave
+    ## pipeline (patchwork row-height calibration above), so the JPEG is
+    ## added directly here rather than routing the whole script through
+    ## save_nature_figure().
+    jpeg_path <- file.path(FIG_DIR, paste0(fig4_output_name(comparison), ".jpg"))
+    ggplot2::ggsave(jpeg_path, composite, width = FIG_WIDTH_MM, height = total_height_mm, units = "mm",
+                     dpi = NATURE_ED_JPEG_DPI, device = ragg::agg_jpeg, bg = "white", quality = 95)
+    msg("Saved: ", png_path, ", ", pdf_path, " and ", jpeg_path)
+  } else {
+    msg("Saved: ", png_path, " and ", pdf_path)
+  }
 }
 
 ## ---- Confirm no data/n/J moved: reload the saved metrics CSV and diff
@@ -2465,10 +2480,12 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   base <- fig4_output_name(comparison)
   dest_dir <- if (comparison == "geo_vs_geo") SUPFIGS_DIR else DRAFT_DIR
-  for (ext in c(".png", ".pdf", ".meta.json", ".legend.txt")) {
+  exts <- if (comparison == "geo_vs_geo") c(".png", ".pdf", ".jpg", ".meta.json", ".legend.txt")
+          else c(".png", ".pdf", ".meta.json", ".legend.txt")
+  for (ext in exts) {
     fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(dest_dir, paste0(base, ext)), overwrite = TRUE)
   }
-  msg("Copied ", base, " (.png/.pdf/.meta.json/.legend.txt) to ", dest_dir)
+  msg("Copied ", base, " (", paste(exts, collapse = "/"), ") to ", dest_dir)
 }
 
 msg("\n=== figure4_representativeness.R: PRINT RE-RENDER COMPLETE ===")

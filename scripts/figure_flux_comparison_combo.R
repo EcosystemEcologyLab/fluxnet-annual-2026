@@ -56,7 +56,7 @@ FIG_HEIGHT_MM <- 228                      # 3 roughly-square panels, no in-figur
 ## format render (2026-10-02) -- same issue and fix as
 ## scripts/figure4_representativeness.R's own panel titles.
 PANELS <- list(
-  list(flux = "NEP", unit = quote(gC~m^{-2}~yr^{-1}), tag = "a"),
+  list(flux = "NEP", unit = quote("g C"~m^{-2}~yr^{-1}), tag = "a"),
   list(flux = "ET",  unit = quote(mm~yr^{-1}),        tag = "b"),
   list(flux = "H",   unit = quote(W~m^{-2}),          tag = "c")
 )
@@ -123,10 +123,12 @@ make_panel <- function(flux_code, unit_str, tag) {
     ggrepel::geom_text_repel(aes(label = igbp_class), size = 2.2, colour = "black",
               seed = 42, min.segment.length = 0.3, segment.size = 0.2,
               segment.colour = "grey50", box.padding = 0.3, point.padding = 0.2) +
-    scale_fill_igbp() +
+    scale_fill_paper_igbp() +
     scale_x_continuous(limits = lims, expand = expansion(mult = 0),
+                        labels = nature_minus_labels(),
                         sec.axis = dup_axis(name = NULL, labels = NULL)) +
     scale_y_continuous(limits = lims, expand = expansion(mult = 0),
+                        labels = nature_minus_labels(),
                         sec.axis = dup_axis(name = NULL, labels = NULL)) +
     # Panel tag anchored to this panel's own plot area (-Inf/Inf + hjust/vjust),
     # not patchwork's plot-level tag (which is positioned relative to the full

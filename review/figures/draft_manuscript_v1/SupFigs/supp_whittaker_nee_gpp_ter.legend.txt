@@ -22,20 +22,18 @@ medians) -- a hexagon with no towers is white (not drawn).
 
 PANELS:
   a NEE — same stepped ColorBrewer RdBu scale as Figure 2 (8 classes, no middle
-    class, 100 gC m⁻² yr⁻¹ steps, endpoints -400/200; see Figure 2's legend for
+    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200; see Figure 2's legend for
     the full definition). Own legend omitted here (identical to Figure 2's) --
     n = 656 sites.
-  b GPP — continuous viridis scale, limits shared with panel c (see COLOUR SCALE,
-    below) — n = 651 sites.
-  c TER — same shared viridis scale as panel b — n = 651 sites.
+  b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --
+    n = 651 sites.
+  c TER — same shared stepped viridis scale as panel b — n = 651 sites.
 
 COLOUR SCALE (panels b, c):
-Continuous viridis scale, ONE shared scale for both GPP and TER (not independently
-rescaled per panel), with limits set to the full range spanning both panels' own
-hexagon medians: 51.1 to 4285.2 gC m⁻² yr⁻¹.
-A hexagon median beyond these limits (none, in this build) would be squished to the
-nearest end colour. Panel a (NEE) uses its own, unrelated stepped scale -- GPP/TER and
-NEE values are never compared on the same colour scale.
+Stepped viridis scale, ONE shared key for both GPP and TER (not duplicated per panel,
+not independently rescaled): 500 g C m⁻² yr⁻¹ steps from 0 to 3000, plus a final "above 3000" bin -- 7 classes total (named constants GPP_TER_STEP_WIDTH, GPP_TER_MAX in the script).
+Panel a (NEE) uses its own, unrelated stepped scale -- GPP/TER and NEE values are never
+compared on the same colour scale.
 
 AXES:
   X (all panels) — Mean Annual Temperature (°C), fixed range -15 to 35
@@ -50,5 +48,5 @@ SOURCE: scripts/generate_whittaker_ed_three_flux.R. Panel a: fig_whittaker_world
 built directly in the script from compute_site_annual_fluxes()'s site-level medians --
 not NEE-specific, so not routed through fig_whittaker_worldclim(). Contour overlay:
 fig_whittaker_global_contour(), shared with Figure 2.
-DIMENSIONS: 180 x 76 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
+DIMENSIONS: 180 x 95 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
 Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt).

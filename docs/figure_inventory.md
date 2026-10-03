@@ -35,6 +35,30 @@ External data dependencies:
 | `fig_long_record_timeseries` | — | Annual time series of flux variables for top-`n` longest-record sites per continent (UN Geoscheme); lines coloured by IGBP with `scale_color_igbp()` | `R/figures/fig_timeseries.R:178` | YY | None |
 | `fig_growing_season_nee` | `growing_season_count.png`<br>`growing_season_span.png` | Growing season length (uptake-day count and calendar span) vs annual NEE scatter, coloured by IGBP | `R/figures/fig_growing_season.R:201` | YY + DD | None |
 
+## Figure 1 (merged)
+
+`scripts/generate_fig01_merged.R` builds `draft_manuscript_v1/fig_01.png`/`.pdf`/`.legend.txt`
+(added 2026-10-02, task 9): panel a (the Equal Earth network map) above panel b (cumulative
+site-years by IGBP), 89 mm wide, ONE file -- calling the same two panel-building functions and
+pinned inputs (`fig_map_point_network()`, `fig_cumulative_siteyears_igbp()`) as
+`scripts/generate_point_maps.R` and `scripts/generate_duration_histograms.R` below, which
+continue to stage the separate `fig_01a_map_current_network.png`/`fig_01b_cumulative_siteyears_
+igbp.png` files this merged file does not replace. Figure 1a's map is Equal Earth (EPSG:8857,
+`R/figures/fig_maps.R::fig_map_point_network()`, revised 2026-10-02, task 7): canvas height fit
+to the map (not a fixed square, via `equal_earth_height_mm()`), filled no-outline semi-transparent
+points, separate thinner/lighter country-border vs. coastline line layers
+(`.map_base_eqearth()`), Antarctica/high Arctic excluded by cropping the basemap and points to
+latitude [-56, 85] before projecting.
+
+## Shared IGBP palette (task 2, 2026-10-02)
+
+Every paper figure that colours by IGBP class (Figures 1b, 3, 4, and the matched/six-panel
+Extended Data figures) uses `R/plot_constants.R::PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS`
+(`scale_fill_paper_igbp()`/`scale_color_paper_igbp()`) -- Figure 4's own MODIS/061/MCD12Q1 GEE
+palette (15 classes, CVM/BSV/SNO included), promoted to a shared constant. This is DIFFERENT
+from the older `IGBP_order`/`IGBP_colours` (still used by other, non-paper figures) -- see
+`docs/known_issues.md` §11.
+
 ## Manuscript representativeness figures (Figure 4 and supplement)
 
 Not part of `07_figures.R` / `R/figures/` — these are standalone production scripts, each producing a
@@ -72,6 +96,7 @@ these scripts are wired into `scripts/build_draft_manuscript_v1.R` — each writ
 | Script | Output | Description |
 |---|---|---|
 | `scripts/figure4_representativeness.R` | `supp_representativeness_geo_vs_geo.png`/`.pdf` | See the main table above. |
-| `scripts/generate_whittaker_ed_three_flux.R` | `supp_whittaker_nee_gpp_ter.png`/`.pdf`/`.jpg` | Three-panel Whittaker climate-space hexbin (a NEE, stepped RdBu scale shared with Figure 2; b GPP, c TER, one shared continuous viridis scale) — same hexagons, points and global ice-free-land contour overlay as Figure 2. Values from `compute_site_annual_fluxes()`. |
+| `scripts/generate_whittaker_ed_three_flux.R` | `supp_whittaker_nee_gpp_ter.png`/`.pdf`/`.jpg` | Three-panel Whittaker climate-space hexbin (a NEE, stepped RdBu scale shared with Figure 2; b GPP, c TER, ONE shared STEPPED viridis scale, 500 g C m⁻² yr⁻¹ steps from 0 to 3000 plus an "above 3000" bin, one shared key in its own row below the panels) — same hexagons, points (drawn in front, same order in all three panels) and global ice-free-land contour overlay as Figure 2. Values from `compute_site_annual_fluxes()`. Stepped scale and shared-key layout revised 2026-10-02, task 5. |
 | `scripts/figure_flux_comparison_combo_alt_common_siteyears.R` | `supp_flux_comparison_matched_siteyears.png`/`.pdf`/`.jpg` | FLUXNET2015-vs-Shuttle NEP/ET/H comparison restricted to matched site-years (same site **and** calendar year required on both axes) — isolates ONEFlux processing-version differences from network-composition change. Rebuilt 2026-10-02 on `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()`; see `docs/known_issues.md` §10. |
 | `scripts/figure_flux_comparison_six_panel.R` | `supp_flux_comparison_six_panel.png`/`.pdf`/`.jpg` | Six-panel re-plot (no new computation) of the two tables above side by side: rows NEP/ET/H, left column = Figure 3's "all qualifying site-years" data, right column = the matched-site-years data, identical axis limits within each row. |
+| `scripts/generate_map_regional.R` | `supp_map_regional.png`/`.pdf`/`.jpg` | Regional network distribution (added 2026-10-02, task 8): panel a the same Equal Earth world map as Figure 1a with the four regional extents outlined; panels b–e, one Lambert Azimuthal Equal-Area projection per region (North America, Europe, East/Southeast Asia, Australia/New Zealand), each with a labelled round-length scale bar, showing only the towers inside that region's extent. |

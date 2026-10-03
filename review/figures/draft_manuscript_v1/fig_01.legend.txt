@@ -1,0 +1,21 @@
+FIGURE LEGEND — fig_01.png
+============================================================
+
+TITLE: Figure 1. The FLUXNET Shuttle 2025 network
+
+DESCRIPTION:
+Panel a: Equal Earth (EPSG:8857) map of all 781 current-network towers, 
+filled, no outline, semi-transparent points (overlap reads as darker). Country borders
+thinner/lighter than coastlines. Antarctica and the high Arctic (above 85N) excluded.
+Panel b: cumulative site-years of the current network through time, stacked by IGBP class
+(paper-wide palette, R/plot_constants.R::PAPER_IGBP_COLOURS), with Marconi 2000/La Thuile
+2007/FLUXNET2015 cumulative site-year lines overlaid for historical context (comparison
+data only, not primary data -- see CLAUDE.md Hard Rule 1).
+
+SOURCE: scripts/generate_fig01_merged.R, combining R/figures/fig_maps.R::
+fig_map_point_network() and R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp(),
+the same two functions and pinned inputs as scripts/generate_point_maps.R (panel a) and
+scripts/generate_duration_histograms.R (panel b), which continue to stage the separate
+fig_01a/fig_01b files this merged file does not replace.
+DIMENSIONS: 89 x 127.5 mm (panel a 38.5mm + panel b 89mm), 600 dpi PNG + vector PDF,
+Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt).

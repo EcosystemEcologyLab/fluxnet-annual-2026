@@ -85,8 +85,14 @@ p03_white <- fig_map_point_network(
   ggplot2::labs(subtitle = NULL) +  # draft-manuscript style: no title/subtitle (n reported in legend)
   panel_letter("a")                 # Figure 1a (Nature format, 2026-10-02)
 path03w_stem <- file.path(out_dir, "fig_03_map_current")
+## Canvas height fit to the Equal Earth map, not a fixed square (task 7,
+## 2026-10-02) -- equal_earth_height_mm() computes the true aspect ratio of
+## the projected, Antarctica-cropped extent at this width.
+fig01a_height_mm <- equal_earth_height_mm(NATURE_WIDTH_SINGLE_MM)
+message("  Figure 1a (Equal Earth) height at ", NATURE_WIDTH_SINGLE_MM, "mm wide: ",
+        round(fig01a_height_mm, 2), "mm")
 save_nature_figure(p03_white, path03w_stem, width_mm = NATURE_WIDTH_SINGLE_MM,
-                    height_mm = NATURE_WIDTH_SINGLE_MM)
+                    height_mm = fig01a_height_mm)
 path03w <- paste0(path03w_stem, ".png")
 message("  Saved: ", path03w, " (+ .pdf)")
 

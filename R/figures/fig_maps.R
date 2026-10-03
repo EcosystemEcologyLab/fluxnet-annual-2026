@@ -13,6 +13,7 @@
 # No file I/O occurs inside these functions.
 
 source("R/plot_constants.R")
+source("R/nature_format.R")
 
 # ---- Internal helpers ------------------------------------------------------
 
@@ -54,6 +55,65 @@ source("R/plot_constants.R")
     ggplot2::geom_sf(data = land, fill = land_fill, color = "black",
                      linewidth = 0.25) +
     ggplot2::labs(title = title)
+}
+
+# ---- Equal Earth projection helpers (tasks 7-8, 2026-10-02) ----------------
+#
+# Equal Earth (EPSG:8857) world map, distinct coastline/country-border line
+# weights, used by fig_map_point_network() (Figure 1a) and the new regional
+# map figure (supp_map_regional).
+
+EQUAL_EARTH_CRS <- "EPSG:8857"
+
+# Country polygons AND a separate coastline, both cropped to the same lon/lat
+# window BEFORE projection (Equal Earth's ylim is in projected metres, not
+# degrees, so the degree-based Antarctica/Arctic clip has to happen here,
+# pre-projection, rather than via coord_sf(ylim = ...) as the old unprojected
+# map did).
+.land_and_coast_sf <- function(scale = "medium",
+                                xmin = -180, xmax = 180,
+                                ymin =  -56, ymax =   85) {
+  land  <- rnaturalearth::ne_countries(scale = scale, returnclass = "sf") |> sf::st_make_valid()
+  coast <- rnaturalearth::ne_coastline(scale = scale, returnclass = "sf") |> sf::st_make_valid()
+  list(
+    land  = suppressWarnings(sf::st_crop(land,  xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)),
+    coast = suppressWarnings(sf::st_crop(coast, xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax))
+  )
+}
+
+# Country borders thinner/lighter than the coastline (task 7): two separate
+# geom_sf() layers, not one -- ne_countries() alone draws every country-
+# country border at the same weight as the true coastline.
+.map_base_eqearth <- function(land, coast,
+                               land_fill = "grey97", country_colour = "grey75",
+                               coast_colour = "black") {
+  ggplot2::ggplot() +
+    ggplot2::geom_sf(data = land, fill = land_fill, colour = country_colour,
+                      linewidth = nature_lwd(0.25)) +
+    ggplot2::geom_sf(data = coast, colour = coast_colour, linewidth = nature_lwd(0.5)) +
+    ggplot2::theme_void()
+}
+
+# Height (mm) that keeps an Equal Earth map's true aspect ratio at a given
+# width -- "fit canvas height to the map", not a fixed square (task 7).
+# Equal Earth is pseudo-cylindrical, so the projected bounding box of a
+# lon/lat window has to come from a DENSELY sampled boundary (not just the
+# four corners), since the top/bottom edges project as curves, not straight
+# lines -- confirmed directly: corner-only sampling under-estimates the
+# width at mid-latitudes.
+equal_earth_height_mm <- function(width_mm, ymin = -56, ymax = 85, n = 400) {
+  lons <- seq(-180, 180, length.out = n)
+  lats <- seq(ymin, ymax, length.out = n)
+  boundary <- rbind(
+    cbind(lons, ymin), cbind(lons, ymax),
+    cbind(-180, lats), cbind(180, lats)
+  )
+  pts  <- sf::st_as_sf(data.frame(x = boundary[, 1], y = boundary[, 2]),
+                        coords = c("x", "y"), crs = 4326)
+  proj <- sf::st_transform(pts, EQUAL_EARTH_CRS)
+  bb   <- sf::st_bbox(proj)
+  aspect <- unname((bb["xmax"] - bb["xmin"]) / (bb["ymax"] - bb["ymin"]))
+  width_mm / aspect
 }
 
 # Apply region-specific coordinate limits.
@@ -1119,34 +1179,42 @@ fig_map_point_network <- function(metadata,
     ) |>
     dplyr::distinct(.data$site_id, .keep_all = TRUE)
 
-  land <- .land_sf()
-
   if (backdrop == "aridity") {
+    land <- .land_sf()
     if (is.null(aridity_df)) aridity_df <- .aridity_raster_df()
     p <- .map_aridity_base(land, aridity_df, title = title)
+    p +
+      ggplot2::geom_point(
+        data = sites_clean,
+        ggplot2::aes(x = .data$location_long, y = .data$location_lat),
+        shape = 21, fill = "#0072B2", color = "black",
+        size = pt_size, stroke = 0.4, alpha = pt_alpha
+      ) +
+      ggplot2::labs(subtitle = paste0("n = ", nrow(sites_clean), " sites")) +
+      ggplot2::coord_sf(ylim = c(-56, 85), expand = FALSE, datum = NA)
   } else {
-    p <- .map_base(land, title = title, land_fill = "gray97") +
-      ggplot2::theme(
-        plot.subtitle = ggplot2::element_text(hjust = 0.5, size = 9,
-                                              colour = "grey40")
-      )
+    ## White backdrop: Equal Earth (EPSG:8857) projection, points filled with
+    ## no outline (shape 16 has no separate border aesthetic at all) and
+    ## semi-transparent so overlapping towers read as darker, country borders
+    ## thinner/lighter than the coastline, Antarctica/high Arctic excluded by
+    ## cropping the basemap before projecting, not via a post-projection ylim
+    ## (task 7, 2026-10-02). No real tower falls outside -56/85 anyway, so
+    ## sites_clean above (unbounded on latitude) still keeps all of them.
+    geo <- .land_and_coast_sf()
+    ## geom_sf(), not geom_point(x=,y=): coord_sf()'s automatic reprojection
+    ## only applies to layers carrying an sf geometry column with a known
+    ## CRS -- plain numeric x/y aesthetics are taken as ALREADY being in the
+    ## display CRS and are not transformed, which silently collapsed all 781
+    ## towers onto one point near the projection origin before this fix.
+    sites_sf <- sf::st_as_sf(sites_clean, coords = c("location_long", "location_lat"),
+                              crs = 4326, remove = FALSE)
+    .map_base_eqearth(geo$land, geo$coast) +
+      ggplot2::geom_sf(
+        data = sites_sf, shape = 16, colour = "#0072B2", size = pt_size, alpha = pt_alpha
+      ) +
+      ggplot2::labs(title = title, subtitle = paste0("n = ", nrow(sites_clean), " sites")) +
+      ggplot2::coord_sf(crs = EQUAL_EARTH_CRS, expand = FALSE, datum = NA)
   }
-
-  p +
-    ggplot2::geom_point(
-      data = sites_clean,
-      ggplot2::aes(x = .data$location_long, y = .data$location_lat),
-      shape  = 21,
-      fill   = "#0072B2",
-      color  = "black",
-      size   = pt_size,
-      stroke = 0.4,
-      alpha  = pt_alpha
-    ) +
-    ggplot2::labs(
-      subtitle = paste0("n = ", nrow(sites_clean), " sites")
-    ) +
-    ggplot2::coord_sf(ylim = c(-56, 85), expand = FALSE, datum = NA)
 }
 
 # ---- fig_map_point_snapshots -------------------------------------------------

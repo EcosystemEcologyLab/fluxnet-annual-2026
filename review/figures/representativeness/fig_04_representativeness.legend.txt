@@ -64,7 +64,7 @@ PER-PANEL n AND J (Geo vs Data):
   b Land cover (IGBP) (igbp): n = 781 / 781, J = 0.346
   c Aridity (aridity): n = 574 / 781, J = 0.675
   d Biomass (Mg ha⁻¹) (biomass): n = 781 / 781, J = 0.636
-  e NEE (gC m⁻² yr⁻¹) (nee): n = 656 / 781, J = 0.165
+  e NEE (g C m⁻² yr⁻¹) (nee): n = 656 / 781, J = 0.165
   f ET (mm yr⁻¹) (et): n = 665 / 781, J = 0.479
 
 EXCLUSIONS AND SOURCES (Geo vs Data, panels a and c only):

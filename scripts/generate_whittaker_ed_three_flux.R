@@ -100,8 +100,12 @@ panel_nee <- fig_whittaker_worldclim(
   point_size = POINT_SIZE, point_colour = POINT_COLOUR, point_alpha = POINT_ALPHA,
   fill_mode = "stepped", step_breaks = nee_step_breaks, step_colours = nee_step_colours,
   detail_lines = character(0), detail_hjust = 0, detail_x_offset = 0.6
-) + contour_layer() + nature_theme() + panel_letter("a") +
-  ggplot2::theme(legend.key.size = grid::unit(5, "pt"), legend.position = "none")
+) + contour_layer() + nature_theme() + panel_letter("a")
+## No legend.position theme override needed: fig_whittaker_worldclim()'s
+## fill_mode = "stepped" key is drawn with annotation_custom() (see
+## .stepped_fill_key_grob() in R/figures/fig_climate.R), not guide_legend(),
+## so it is not affected by ggplot2's legend.position/guides() machinery --
+## it simply always draws, giving panel a its own key (task, 2026-10-02).
 n_nee <- sum(!is.na(data_yy_nee$site_id[!duplicated(data_yy_nee$site_id)]))
 n_nee <- dplyr::n_distinct(data_yy_nee$site_id)
 msg("Panel a (NEE): n = ", n_nee, " sites")
@@ -226,9 +230,9 @@ panel_ter <- panel_ter + ggplot2::theme(legend.position = "bottom")
 ## which would overwrite all three panels' legend.position, undoing the other
 ## two).
 combo <- (panel_nee | panel_gpp | panel_ter) / patchwork::guide_area() +
-  patchwork::plot_layout(heights = c(1, 0.22), guides = "collect")
+  patchwork::plot_layout(heights = c(1, 0.38), guides = "collect")
 
-saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 95,
+saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 78,
                              extended_data = TRUE)
 msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
@@ -256,8 +260,8 @@ legend_lines <- c(
   "",
   "PANELS:",
   paste0("  a NEE — same stepped ColorBrewer RdBu scale as Figure 2 (8 classes, no middle"),
-  paste0("    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200; see Figure 2's legend for"),
-  "    the full definition). Own legend omitted here (identical to Figure 2's) --",
+  paste0("    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Own key shown (top-left"),
+  "    inset, identical to Figure 2's) --",
   paste0("    n = ", n_nee, " sites."),
   paste0("  b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --"),
   paste0("    n = ", n_gpp, " sites."),

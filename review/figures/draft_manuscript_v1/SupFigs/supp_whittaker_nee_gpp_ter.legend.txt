@@ -22,8 +22,8 @@ medians) -- a hexagon with no towers is white (not drawn).
 
 PANELS:
   a NEE — same stepped ColorBrewer RdBu scale as Figure 2 (8 classes, no middle
-    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200; see Figure 2's legend for
-    the full definition). Own legend omitted here (identical to Figure 2's) --
+    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Own key shown (top-left
+    inset, identical to Figure 2's) --
     n = 656 sites.
   b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --
     n = 651 sites.

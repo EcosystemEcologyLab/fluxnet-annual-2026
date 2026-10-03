@@ -4,6 +4,110 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (11) — Figure stage 1: Figure 2 key fix, panel a key added to the three-flux Extended Data figure (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 1 only (two defects found on review).
+
+### 1. Figure 2 key — "100 to 200" swatch missing
+
+Confirmed the defect: the box for the "100 to 200" NEE step was blank (white) in
+`draft_manuscript_v1/fig_02_whittaker_current.png`, despite the prior session's `limits =
+step_labels` fix (`R/figures/fig_climate.R`, session 2026-10-02 (10) §4) being present in the
+code and the figure having been rebuilt since.
+
+Root cause, confirmed directly with a minimal `ggplot2` reproduction (`geom_col()`, not specific
+to `stat_summary_hex()`/`geom_hex()`): for a `scale_fill_manual(limits =, drop = FALSE)` level
+with zero matching rows in the rendered layer data, `ggplot2::get_guide_data()` reports the
+scale's correct intended fill for that level, but the actual rendered `guide_legend()` key glyph
+is blank regardless — a ggplot2 4.0.x guide regression. Not fixable by `limits=`, `drop = FALSE`,
+`override.aes` (tested: applies to every key row, not just the missing one, and still left the
+two zero-count rows blank), or `key_glyph =` (tested `draw_key_polygon`, no effect) — confirmed
+by direct experimentation, not assumption. A phantom-data-row workaround (giving every step
+level at least one real row) was tried and rejected: `stat_summary_hex()`'s hex-grid anchor
+(`xbnds`/`ybnds`) is computed from the full data range including any added points, so even a
+point placed far outside the view shifted the real hexagons' bin alignment (confirmed: 177 vs.
+182 hexagons for the same real data, before vs. after adding one far-away point) — unacceptable
+given the stage's data-invariant rule.
+
+Fix: `R/figures/fig_climate.R` — added `.stepped_fill_key_grob()`, which draws the stepped-scale
+key directly with `grid` rect/text primitives (every row supplied directly and always complete,
+never looked up from the layer's own data) and is attached via `ggplot2::annotation_custom()`
+instead of `guide_legend()`. `fig_whittaker_worldclim(fill_mode = "stepped")` now sets
+`guide = "none"` on the fill scale and always draws its own key. No hexagon data, binning, or
+site counts changed by this fix (phantom-row approach was rejected precisely to avoid this).
+
+Regenerated via `scripts/generate_whittaker_alt_fig02_update.R` then
+`scripts/build_draft_manuscript_v1.R` (both already-existing scripts, re-run only). `n_sites`,
+`n_nee_sites`, `n_site_years` counts (781 / 656 / 4375) unchanged from the prior render.
+
+Pixel colour of each of the eight key boxes (`draft_manuscript_v1/fig_02_whittaker_current.png`,
+sampled directly from the rendered PNG):
+
+| Step | Hex | RGB |
+|---|---|---|
+| above 200 | #D6604D | (214, 96, 77) |
+| 100 to 200 | #F4A582 | (244, 165, 130) |
+| 0 to 100 | #FDDBC7 | (253, 219, 199) |
+| −100 to 0 | #D1E5F0 | (209, 229, 240) |
+| −200 to −100 | #92C5DE | (146, 197, 222) |
+| −300 to −200 | #4393C3 | (67, 147, 195) |
+| −400 to −300 | #2166AC | (33, 102, 172) |
+| below −400 | #053061 | (5, 48, 97) |
+
+All eight match `generate_whittaker_alt_fig02_update.R`'s `nee_step_colours` exactly, including
+"100 to 200" = #F4A582 as specified in the task.
+
+### 2. `supp_whittaker_nee_gpp_ter` — panel a NEE key added, blank bands trimmed
+
+Panel a (NEE) previously omitted its own key by design (`legend.position = "none"`, session
+2026-10-02 (10) §5: "identical to Figure 2's"). Since `.stepped_fill_key_grob()` above draws via
+`annotation_custom()` rather than `guide_legend()`, it is unaffected by `legend.position`/
+`guides()` and now always renders — removing the now-stale `legend.position = "none"` theme
+override in `scripts/generate_whittaker_ed_three_flux.R` was sufficient to give panel a the same
+eight-step key as Figure 2, with no other change to that panel's construction. Updated the
+figure's own `.legend.txt` ("Own legend omitted here" → "Own key shown").
+
+Blank bands: confirmed by direct pixel-row scanning of the rendered PNG that the three
+`coord_fixed()`-square panels (a/b/c) were vertically centred inside a taller row than their
+fixed aspect needed — patchwork's `plot_layout(heights = c(1, 0.22))` row 1 allocation (82% of
+the 95 mm total height) left roughly a third of that row as blank margin, split above the panels
+and between the panel row and the shared GPP/TER key row (`guide_area()`). Reduced to
+`heights = c(1, 0.38)` and overall figure height 95 → 78 mm (width unchanged at 180 mm); top
+margin fell from 13.1% to 4.9% of figure height, the inter-row gap from 11.5% to 5.5%. No change
+to panel content, hexagon data, or either embedded table.
+
+`scripts/check_figure_format.R`: 11/11 PASS, including `supp_whittaker_nee_gpp_ter` at its new
+179.9 × 78.0 mm (was 179.9 × 94.9 mm).
+
+Final size of the three-flux figure: **179.9 × 78.0 mm**.
+
+### Checks
+
+- `scripts/check_figure_format.R`: 11/11 PASS (table above).
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` untouched by this
+  stage (`git diff` empty) — confirmed, this stage never reads or writes it.
+- Manual visual check of both regenerated PNGs (and the three-flux figure's PDF/JPEG): no
+  clipped or overlapping text, all key colour boxes present and verified by direct pixel
+  sampling (table above for Figure 2; panel a's own key — same eight colours, confirmed by the
+  same pixel-sampling method — and the GPP/TER key in the legend row were also checked), no
+  blank bands beyond the small residual margins reported above.
+
+### Decisions for Dave
+
+- The `.stepped_fill_key_grob()` workaround bypasses `ggplot2::guide_legend()` entirely for every
+  `fill_mode = "stepped"` caller (currently Figure 2 and panel a of the three-flux Extended Data
+  figure) because of a confirmed ggplot2 4.0.x rendering bug, not a project-specific choice — if
+  a future ggplot2 release fixes the underlying guide regression, this workaround could be
+  reverted to `guide_legend()`, but there is no way to detect that automatically, so it was left
+  in place rather than attempting a version check.
+- `supp_whittaker_nee_gpp_ter`'s total height (95 → 78 mm) and `plot_layout(heights=)` ratio
+  (0.22 → 0.38) were tuned empirically against the rendered pixel output (no closed-form
+  calculation of patchwork's gtable centring was available) — acceptable per check_figure_format.R
+  and visual inspection, but a future content change to any of the three panels (e.g. a taller
+  legend) may require re-tuning.
+
+---
+
 ## 2026-10-02 (10) — Figures 1-3 + Extended Data finished: format checker, shared IGBP palette, Equal Earth maps (DONE)
 
 Finished the Nature-format pass on Figures 1-3 and their Extended Data versions: a format-

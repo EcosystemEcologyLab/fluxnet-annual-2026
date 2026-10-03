@@ -1,0 +1,9 @@
+panel,axis,comparison,land_grid,land_total_km2,n_eligible,n_classified,weighted_jaccard,bin_edges
+a,nee,geo_vs_geo,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.5298754549363103,-250;-100;-50;-25;0
+b,nee,geo_vs_data,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,656,656,0.16481578809724606,-250;-100;-50;-25;0
+c,gpp,geo_vs_geo,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.48784931070847076,300;700;1100;1500;2000
+d,gpp,geo_vs_data,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,651,651,0.528590725753268,300;700;1100;1500;2000
+e,ter,geo_vs_geo,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.4819611829389106,300;600;1000;1300;1800
+f,ter,geo_vs_data,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,651,651,0.511146389762643,300;600;1000;1300;1800
+g,et,geo_vs_geo,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,781,781,0.45626639245125744,200;350;450;600;850
+h,et,geo_vs_data,"TRENDY v14 ensemble-median, 0.5 deg, Koppen land mask",163331648.6684331,665,665,0.47933317597575115,200;350;450;600;850

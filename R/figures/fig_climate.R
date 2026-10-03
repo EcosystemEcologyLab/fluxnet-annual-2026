@@ -200,6 +200,77 @@ WHITTAKER_STYLE <- list(
 #'                              detail_label = "FLUXNET Shuttle 2025")
 #' }
 #'
+#' Manually-drawn stepped-scale legend key
+#'
+#' Draws a discrete colour-step legend (swatch + label per step) directly
+#' with \pkg{grid} primitives instead of \code{ggplot2::guide_legend()}.
+#'
+#' \code{guide_legend()} is not used for \code{fill_mode = "stepped"} in
+#' \code{\link{fig_whittaker_worldclim}} because of a confirmed ggplot2 4.0.x
+#' guide regression: for a \code{scale_fill_manual(limits=, drop = FALSE)}
+#' level with zero matching rows in the rendered layer data (e.g. Figure 2's
+#' "100 to 200" NEE step, which has no hexagons for the current network),
+#' \code{ggplot2::get_guide_data()} reports the scale's correct intended fill
+#' for that level, but the actual rendered key glyph is blank regardless --
+#' confirmed directly with a minimal \code{geom_col()} reproduction (not
+#' specific to \code{stat_summary_hex()}/\code{geom_hex()}), and not fixable
+#' by \code{limits=}, \code{drop = FALSE}, \code{override.aes}, or
+#' \code{key_glyph=} alone (task, 2026-10-02 -- supersedes the \code{limits=}
+#' fix note below, which was necessary but not sufficient). This function
+#' sidesteps the bug entirely by never asking \code{guide_legend()} to look
+#' up a per-level fill from the layer's own (possibly level-incomplete)
+#' data -- every row here is supplied directly and always complete.
+#'
+#' @param labels,colours Character vectors, same length, low-to-high order.
+#' @param title Character or \code{expression()}, legend title.
+#' @param style Named list (see \code{\link{WHITTAKER_STYLE}}) -- uses
+#'   \code{legend_pos} (top-left NPC anchor), \code{legend_text_size}, and
+#'   \code{legend_title_size}.
+#' @param reverse Logical (default \code{TRUE}); highest step drawn first
+#'   (top), matching \code{\link{fig_whittaker_worldclim}}'s prior
+#'   \code{guide_legend(reverse = TRUE)} behaviour.
+#' @return A \code{grid} grob, to be added to a ggplot via
+#'   \code{ggplot2::annotation_custom()}.
+#' @keywords internal
+.stepped_fill_key_grob <- function(labels, colours, title, style, reverse = TRUE) {
+  stopifnot(length(labels) == length(colours))
+  if (isTRUE(reverse)) {
+    labels  <- rev(labels)
+    colours <- rev(colours)
+  }
+  n         <- length(labels)
+  key_pt    <- style$legend_text_size
+  title_pt  <- style$legend_title_size
+  key_mm    <- max(key_pt / ggplot2::.pt * 1.3, 3)
+  gap_mm    <- key_mm * 0.35
+  border_lwd <- 0.5 * 96 / 72   # ~0.5 pt border, grid lwd units (1/96 in) from pt (1/72 in)
+  x0 <- grid::unit(style$legend_pos[1], "npc")
+  y0 <- grid::unit(style$legend_pos[2], "npc")
+  title_grob <- grid::textGrob(
+    title, x = x0, y = y0, just = c("left", "top"),
+    gp = grid::gpar(fontfamily = NATURE_FONT, fontsize = title_pt)
+  )
+  row_y <- function(i) {
+    y0 - grid::unit(title_pt / ggplot2::.pt + gap_mm, "mm") -
+      grid::unit((i - 1) * (key_mm + gap_mm), "mm") - grid::unit(key_mm / 2, "mm")
+  }
+  swatches <- lapply(seq_len(n), function(i) {
+    grid::rectGrob(
+      x = x0 + grid::unit(key_mm / 2, "mm"), y = row_y(i),
+      width = grid::unit(key_mm, "mm"), height = grid::unit(key_mm, "mm"),
+      gp = grid::gpar(fill = colours[i], col = "black", lwd = border_lwd)
+    )
+  })
+  texts <- lapply(seq_len(n), function(i) {
+    grid::textGrob(
+      labels[[i]], x = x0 + grid::unit(key_mm + gap_mm * 2, "mm"), y = row_y(i),
+      just = c("left", "center"),
+      gp = grid::gpar(fontfamily = NATURE_FONT, fontsize = key_pt)
+    )
+  })
+  grid::grobTree(children = do.call(grid::gList, c(list(title_grob), swatches, texts)))
+}
+
 #' @export
 fig_whittaker_worldclim <- function(
   data_yy,
@@ -499,15 +570,13 @@ fig_whittaker_worldclim <- function(
       values       = stats::setNames(step_colours, step_labels),
       breaks       = step_labels,
       ## `limits` (not just `breaks`) forces the scale's domain to the full
-      ## step set regardless of what's observed -- `drop = FALSE` alone does
-      ## not keep a step's colour swatch in the key when that step has zero
-      ## hexagons: the fill value here is computed via after_stat(cut(...))
-      ## inside stat_summary_hex(), and a level entirely absent from the
-      ## rendered data is never registered in the scale's trained domain, so
-      ## guide_legend() drops its swatch even though `breaks` still lists its
-      ## label -- confirmed directly: Figure 2's "100 to 200" step (zero
-      ## hexagons) showed a label with no colour box until `limits` was added
-      ## (task 4, 2026-10-02).
+      ## step set regardless of what's observed -- necessary so that fill
+      ## VALUES (the hexagons themselves) map correctly even for a step with
+      ## zero hexagons. Necessary but NOT sufficient for the on-screen KEY,
+      ## though: a ggplot2 4.0.x guide_legend() regression still renders a
+      ## blank swatch for any such level regardless of `limits`/`drop` --
+      ## see .stepped_fill_key_grob() above, which draws the key manually
+      ## instead of relying on guide_legend() at all (task, 2026-10-02).
       limits       = step_labels,
       ## Plotmath display labels (true minus signs) when available -- see
       ## step_display_labels above; falls back to the plain breaks text for
@@ -537,16 +606,15 @@ fig_whittaker_worldclim <- function(
     )
   }
 
+  nee_title_expr <- expression("NEE (g C m"^{-2}*" yr"^{-1}*")")
   fill_guide <- if (fill_mode == "stepped") {
-    ggplot2::guide_legend(
-      title    = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
-      ncol     = 1,
-      reverse  = TRUE,   # highest (source) step at top, lowest (sink) at bottom
-      override.aes = list(colour = "black", linewidth = 0.25)
-    )
+    ## "none": the key is drawn manually via .stepped_fill_key_grob() +
+    ## annotation_custom() below instead of guide_legend() -- see that
+    ## function's docs for why.
+    "none"
   } else {
     ggplot2::guide_colorbar(
-      title          = expression("NEE (g C m"^{-2}*" yr"^{-1}*")"),
+      title          = nee_title_expr,
       title.position = "top",
       barwidth       = style$colorbar_width,
       barheight      = style$colorbar_height,
@@ -592,6 +660,17 @@ fig_whittaker_worldclim <- function(
       y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
     ) +
     .whittaker_theme(style)
+
+  if (fill_mode == "stepped") {
+    key_grob <- .stepped_fill_key_grob(
+      labels  = if (!is.null(step_display_labels)) step_display_labels else step_labels,
+      colours = step_colours,
+      title   = nee_title_expr,
+      style   = style,
+      reverse = TRUE
+    )
+    p <- p + ggplot2::annotation_custom(key_grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
+  }
 
   p
 }

@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-06-30T18:47:15Z",
-  "pipeline_version": "0e0cdd6",
+  "run_datetime_utc": "2026-10-03T02:11:42Z",
+  "pipeline_version": "d41f615",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260624T095651.csv",
     "data/snapshots/site_flux_medians_shuttle.csv"

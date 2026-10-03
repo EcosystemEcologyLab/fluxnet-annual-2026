@@ -19,16 +19,18 @@
 ## statistics and the n >= 5 reliability threshold as in the primary figure
 ## (fig_flux_comparison_combo_nep_et_h.png).
 ##
-## Now an Extended Data figure (Nature format: 89mm wide, PDF + 300ppi JPEG
-## alongside the PNG, lower-case panel letters, no in-figure caption) rather
-## than a plain candidate PNG -- see docs/known_issues.md Sec 10 and
-## SESSION_LOG.md 2026-10-02.
+## Now a Supplementary Figure (Nature-style format: 89mm wide, PDF + 300ppi
+## JPEG alongside the PNG, lower-case panel letters, no in-figure caption)
+## rather than a plain candidate PNG -- see docs/known_issues.md Sec 10 and
+## SESSION_LOG.md 2026-10-02. Renumbered Supplementary Figure S2 under figure
+## stage 6 (2026-10-02; target journal Scientific Data has no Extended Data
+## concept) -- this script's own name is unchanged, see docs/figure_inventory.md.
 ##
 ## Outputs:
 ##   data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv
 ##     + .meta.json
-##   review/figures/draft_manuscript_v1/SupFigs/supp_flux_comparison_matched_siteyears.png/.pdf/.jpg
-##     + .legend.txt
+##   review/figures/draft_manuscript_v1/SupFigs/figS2_flux_comparison_matched_siteyears.png/.pdf/.jpg
+##     + .legend.txt (renumbered from supp_flux_comparison_matched_siteyears.*)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -63,7 +65,7 @@ DB_PATH     <- file.path(FLUXNET_DATA_ROOT, "duckdb/fluxnet.duckdb")
 SHUTTLE_MEDIANS_CSV <- "data/snapshots/site_flux_medians_shuttle.csv"
 OUT_CSV     <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv"
 OUT_DIR     <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
-OUT_STEM    <- file.path(OUT_DIR, "supp_flux_comparison_matched_siteyears")
+OUT_STEM    <- file.path(OUT_DIR, "figS2_flux_comparison_matched_siteyears")
 fs::dir_create(OUT_DIR)
 
 STANDARD_IGBP    <- c("EBF","MF","DBF","ENF","CSH","OSH",
@@ -306,15 +308,15 @@ msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 # ---- Legend --------------------------------------------------------------------
 n_matched <- site_flux |> group_by(flux) |> summarise(n_sites = n(), n_site_years = sum(n_matched_years))
 legend_lines <- c(
-  "FIGURE LEGEND — supp_flux_comparison_matched_siteyears.png",
+  "FIGURE LEGEND — figS2_flux_comparison_matched_siteyears.png",
   strrep("=", 60), "",
-  "TITLE: Extended Data Figure — FLUXNET2015 vs. current FLUXNET Shuttle per-IGBP-class median",
+  "TITLE: Supplementary Figure S2 — FLUXNET2015 vs. current FLUXNET Shuttle per-IGBP-class median",
   "flux comparison, restricted to matched site-years", "",
   "DESCRIPTION:",
   "Three vertically-stacked panels (a NEP, b ET, c H -- bold lower-case, 8pt) comparing, for",
   "each IGBP vegetation class, the median flux value computed from the FLUXNET2015 release",
   "against the median value from the current FLUXNET Shuttle network -- but unlike the",
-  "primary comparison figure (fig_03_flux_comparison_combo_nep_et_h.png), each site's",
+  "primary comparison figure (fig_04_flux_comparison_combo_nep_et_h.png), each site's",
   "median on BOTH axes is computed only over the calendar years where BOTH datasets have a",
   "QC_THRESHOLD_YY-qualifying value for that flux (matched independently per flux), so any",
   "shift between axes isolates ONEFlux processing-version differences from network-",

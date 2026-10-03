@@ -34,11 +34,29 @@ content-addressable persistent identifiers (PIDs) for reproducibility.
 - `data/snapshots/download_progress.csv` — download audit trail
 - `R/pipeline_config.R` — configuration constants
 
-**Key facts to include (update when finalised):**
-- Shuttle version: 0.3.7
-- Download date: 2026-04-14
-- Sites downloaded: 672
-- Hubs: AmeriFlux (340), ICOS (280), TERN (52)
+**Key facts (verified 2026-10-02, figure stage 6 — see `review/figstage_status.md` Stage 6 entry
+for sourcing detail):**
+- Shuttle version: `0.3.7` git tag, which self-reports as `0.3.7.post0+dirty` — this is the
+  string `FLUXNET_SHUTTLE_VERSION` and methods text should use (`R/pipeline_config.R`,
+  `.env.example`; CLAUDE.md's "Shuttle version monitoring" note). TO CONFIRM: the current local
+  `.env` on at least one machine is set to the bare `0.3.7` instead, which would fail the
+  `check_pipeline_config()` version match — a local configuration issue, not a methods-text fact.
+- Locked snapshot: `data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv`, 781 sites,
+  listed 2026-09-01 (`docs/shuttle_gap_download_20260901.md`). A later development-mode snapshot
+  (`fluxnet_shuttle_snapshot_20260920T102211.csv`, also 781 sites) exists but was explicitly not
+  promoted to locked status (`review/diagnostics/store_refresh_20260920/report.md`) — methods text
+  must cite the 20260901 file, not the 20260920 one.
+- Sites in the locked snapshot: 781 (not 672 — the 672 figure was from an April 2026 state of the
+  network and is now stale throughout this document).
+- Hubs (from the snapshot's own `data_hub` column — not the free-text, multi-affiliation
+  `network` column, and not inferred from site-ID prefix per CLAUDE.md Hard Rule 2): AmeriFlux
+  381, ICOS 348, TERN 52 (781 total, no other hubs).
+- TO CONFIRM: no snapshot `.meta.json` sidecar and no committed `download_progress*.csv` scoped to
+  the 2026-09-01 snapshot specifically were found (the three committed `download_progress*.csv`
+  files on disk are dated 2026-04-14/2026-06-01, both older network states). The only audit trail
+  for the 781-site snapshot's incremental download is the narrative doc
+  `docs/shuttle_gap_download_20260901.md`.
+- Data license: CC-BY-4.0, confirmed unchanged (CLAUDE.md "Data Use and Citation").
 
 ---
 
@@ -48,38 +66,77 @@ content-addressable persistent identifiers (PIDs) for reproducibility.
 assignment, regional grouping, and metadata fields used in the analysis.
 
 **Must cover:**
-- Site inclusion criteria (CC-BY-4.0 only, sites with valid NEE_VUT_REF)
+- Site inclusion criteria (CC-BY-4.0 only, sites with a qualifying annual NEE value)
 - How sites with all-missing NEE were identified and excluded
   (ONEFlux 15-day gap rule — confirmed by Dario Papale 2026-04-16)
-- NEE_CUT fallback for 36 sites where NEE_VUT_REF unavailable
-- IGBP classification source (BADM/BIF files)
-- UN subregional grouping (countrycode package, iso2c to un.regionsub.name)
-- FAO Global Ecological Zone assignment (GEZ 2010 shapefile, spatial join)
-- Koppen-Geiger climate classification (computed locally from each site's
-  bundled ERA5 monthly reanalysis data, per the Beck et al. rule cascade
-  applied to a 1991-2020 normal — see
-  `review/figures/representativeness/methods_koppen_era5.md`. Historical-
-  network comparisons and the global land-area backdrop still use the Beck
-  2023 raster; BADM CLIMATE_KOEPPEN is retained only as a QA comparison
-  column, not the classification source, as of 2026-08-20)
-- Functionally active site definition (≥3 months valid NEE in last 4 years)
-- Historical dataset site lists (Marconi, La Thuile, FLUXNET2015)
+- Per-site VUT/CUT fallback (`scripts/04_qc.R`, commit `ad7464f`) for sites where
+  `NEE_VUT_REF_QC` is unavailable
+- IGBP classification source (BADM/BIF `igbp` field, PI-reported)
+- UN subregional grouping and FAO Global Ecological Zone assignment — **status as of
+  2026-10-02: neither is used by any currently-produced figure or table** (verified by grep of
+  `scripts/07_figures.R`, `scripts/figure4_representativeness.R`,
+  `scripts/build_draft_manuscript_v1.R` — zero matches for GEZ/UN-subregion code in any of the
+  three). The only code paths that consume them (`R/historical_datasets.R`'s
+  `.subregion_from_site_id()`, `scripts/step3_extract_gez.R`,
+  `scripts/generate_gez_anomaly_figures.R`, `scripts/generate_kg_anomaly_figures.R`,
+  `R/figures/fig_anomaly_context.R` via `fig_long_record_timeseries()`) were last modified
+  2026-04-18 and are not listed with an export filename in `docs/figure_inventory.md` (shown as
+  `—`, "not yet wired into `07_figures.R`"). Methods text should either omit this bullet or mark
+  it explicitly as "assembled but not used in any reported figure" rather than imply it drives a
+  published result.
+- Koppen-Geiger climate classification — **two distinct, both-currently-valid uses, which must
+  not be conflated in methods text:**
+  1. Main pipeline / every figure except Figure 5 panel A's Geo-vs-Data side: ERA5-local
+     classification (Beck et al. rule cascade applied to each site's own 1991-2020 ERA5 monthly
+     climatology, `R/climate_classification.R`), output `data/snapshots/site_koppen_era5.csv`.
+     BADM `CLIMATE_KOEPPEN` is retained there only as a QA/comparison column. (This is what the
+     August 2026 note below described, and it is still current for this scope.)
+  2. Figure 5 panel A's Geo-vs-Data side only (added 2026-10-02, see §5.8): PI-reported BADM
+     `CLIMATE_KOEPPEN` used FIRST (603 of 781 sites), ERA5-local classification as a fallback only
+     for the remaining 178 (147 of which pass the three precipitation-dependent exclusion rules
+     below) — output to a *different* file, `data/snapshots/site_koppen_era5_fig4.csv`. This
+     redesign followed a diagnostic (`review/diagnostics/koppen_pi_vs_era5/`) finding the
+     ERA5-local class agreed with the PI-reported class only 59.5% of the time (n=603), while the
+     PI-reported class agreed better with the independent Beck 2023 raster (69.2%).
+  See `review/figures/representativeness/methods_koppen_era5.md` for both.
+  (Historical-network comparisons and the global land-area backdrop use the Beck 2023 raster
+  directly, unrelated to either per-site method above; BADM `CLIMATE_KOEPPEN` is retained as a QA
+  comparison column outside use 2, as of 2026-08-20.)
+- Functionally active site definition — **corrected 2026-10-02: the doc's previous "≥3 months
+  valid NEE in last 4 years" does not match the implementation.** `R/utils.R::
+  is_functionally_active()` (default `active_threshold = 4L`) actually requires: a site is active
+  at year Y if it has at least one month with any non-NA value among NEE(VUT/CUT)/GPP/RECO/LE/H
+  (not NEE-specifically) in at least one of the four years `[Y-3, Y]` — i.e. "≥1 month present in
+  ≥1 of the last 4 years," not "≥3 months… in the last 4 years." The per-year `has_data` flag it
+  consumes comes from `compute_site_year_presence()` (`R/utils.R`).
+- Historical dataset site lists (Marconi, La Thuile, FLUXNET2015) — see §5.5 for verified counts.
 
 **Primary code files:**
 - `scripts/03_read.R` — site reading and BADM extraction
 - `R/utils.R` — `compute_site_year_presence()`, `is_functionally_active()`
-- `R/external_data.R` — GEZ, WorldClim, aridity index loading
+- `R/climate_classification.R` — ERA5-local Köppen-Geiger classification
+- `R/site_annual_fluxes.R` — `compute_site_annual_fluxes()`, the shared per-site annual-flux
+  function (see §5.3)
+- `R/external_data.R` — GEZ, WorldClim, aridity index loading (GEZ currently unused — see above)
 - `R/historical_datasets.R` — historical site list loading
 - `data/snapshots/site_candidates_full.csv` — master site metadata table
-- `data/snapshots/site_gez_lookup.csv` — GEZ assignments
+- `data/snapshots/site_koppen_era5.csv`, `site_koppen_era5_fig4.csv` — the two Köppen outputs above
 - `data/snapshots/site_year_data_presence.csv` — monthly data presence
 - `docs/known_issues.md` — documented exclusions and their reasons
 
-**Key facts to include (update when finalised):**
-- Sites with valid NEE_VUT_REF: 530 of 672
-- Sites excluded (all-missing NEE): 106 (ONEFlux gap rule)
-- Sites with NEE_CUT only: 36
-- Functionally active threshold: 4 years, ≥3 months valid NEE
+**Key facts (verified 2026-10-02, 781-site locked network — see §5.1):**
+- Per-site VUT/CUT/neither split (NEE/GPP/RECO; `R/site_annual_fluxes.R::
+  compute_site_annual_fluxes()`, `SESSION_LOG.md` 2026-10-02): VUT 616, CUT (fallback) 40, neither
+  125 — sums to 781.
+- TO CONFIRM: a current-network (781-site) count of sites excluded for "all-missing NEE" (the
+  ONEFlux 15-day-gap rule) was not found in any committed table or script constant. The doc's
+  previous "106 of 672" is scoped to the April 2026, 672-site network (`docs/shuttle_team_report_
+  20260414.md` and three other docs dated 2026-04-16/04-20/04-28) and should not be reused or
+  rescaled for the current 781-site network without recomputing it. Do not confuse this with the
+  "neither 125" figure above, which is a different definition (no QC_THRESHOLD_YY-qualifying
+  year, not zero raw NEE rows).
+- Functionally active threshold: 4-year window, ≥1 month of any flux variable present in ≥1 of
+  those years — see corrected definition above (was previously misstated in this document).
 
 ---
 
@@ -90,35 +147,84 @@ partitioning, and uncertainty handling. Cross-hub validation if applicable.
 
 **Must cover:**
 - ONEFlux processing pipeline (all hubs use same pipeline)
-- QC gating: NEE_VUT_REF_QC threshold = 0.50, primary variable only
-  (not all QC columns — see pipeline decision log)
+- QC gating: per-site VUT-first, CUT-fallback (never mixed within a site), threshold 0.50 at
+  DD/WW/MM/YY resolution — see `scripts/04_qc.R` (commit `ad7464f`) and §5.2's VUT/CUT counts
+- The shared per-site annual-flux function (see Key facts below) that now underlies every current
+  figure/table needing a site's annual median flux value — methods text should name this function
+  once rather than re-describe the same QC/aggregation logic per figure
 - Variable naming conventions (FLUXNET standard)
 - Unit handling: pre-integrated annual/monthly data passed through
   unchanged; energy variables converted (LE→mm, H→MJ)
 - ERA5 climate variable integration (already in FLUXNET files)
-- Known data quality issues (anomalous ERA5 precipitation at 4 sites; separately,
-  FLUXNET-measured tower precipitation (`P_F`) has staggeringly wrong values at an
-  unknown number of sites — sites and magnitude not yet characterised; see
-  `docs/known_issues.md` §9. Methods must address how these anomalies are handled
-  in any figure or analysis that uses tower P as a primary axis or predictor.)
+- Known data quality issues: the ERA5-precipitation and FLUXNET-measured-precipitation (`P_F`)
+  defects are each a *family* of issues, not a single "4 sites" statement — see Key facts below
+  for the verified breakdown. Methods must address how these anomalies are handled in any figure
+  or analysis that uses tower P as a primary axis or predictor.
 
 **Primary code files:**
 - `scripts/04_qc.R` — QC gating implementation
 - `scripts/05_units.R` — unit conversion
 - `R/qc.R` — QC helper functions
 - `R/units.R` — unit conversion functions
-- `R/pipeline_config.R` — QC threshold constants
+- `R/site_annual_fluxes.R` — `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()`,
+  the shared function (see Key facts below)
+- `R/pipeline_config.R` — QC threshold and precipitation-exclusion constants
 - `docs/decisions_pending.md` — QC threshold decision rationale
-- `docs/known_issues.md` — ERA5 anomalies, ONEFlux gap rule
+- `docs/known_issues.md` §9/§9a/§9b/§9c — ERA5 and tower precipitation anomalies, ONEFlux gap rule
 
-**Key facts to include (update when finalised):**
-- QC threshold: NEE_VUT_REF_QC ≥ 0.50 (annual and monthly)
-- Unit convention: gC m⁻² yr⁻¹ for NEE/GPP/RECO, W m⁻² for LE/H
-- ERA5 variables: TA_ERA (K→°C), P_ERA (mm), VPD_ERA (kPa)
+**Key facts (verified 2026-10-02):**
+- QC threshold: `QC_THRESHOLD_DD = QC_THRESHOLD_WW = QC_THRESHOLD_MM = QC_THRESHOLD_YY = 0.50`
+  (`R/pipeline_config.R`), applied per-site VUT-first/CUT-fallback, never mixed within a site
+  (`scripts/04_qc.R`, confirmed unchanged since commit `ad7464f`).
+- Shared function: `R/site_annual_fluxes.R::compute_site_annual_fluxes()` (Shuttle/DuckDB
+  `annual` table) and `compute_site_annual_fluxes_from_df()` (pre-extracted comparison data, e.g.
+  FLUXNET2015) are the canonical, single implementation of "a site's median annual flux value,
+  QC-gated." Confirmed direct callers: `scripts/figure4_representativeness.R`,
+  `scripts/figure_flux_representativeness_supp.R`, `scripts/generate_whittaker_ed_three_flux.R`,
+  `scripts/generate_whittaker_alt_fig02_update.R`,
+  `scripts/figure_flux_comparison_combo_alt_common_siteyears.R`,
+  `scripts/assess_flux_data_by_igbp_shuttle.R`, `scripts/assess_flux_data_by_igbp_fluxnet2015.R`.
+  (`scripts/figure_flux_comparison_six_panel.R` and `scripts/build_draft_manuscript_v1.R` re-plot
+  those scripts' already-computed tables rather than calling the function themselves.)
+- Unit convention: confirmed matching CLAUDE.md's table exactly — NEE/GPP/RECO → gC m⁻² per
+  period; LE → mm H₂O; H and SW_IN → MJ m⁻²; TA → K (+273.15); VPD → kPa (÷10) (`R/units.R`,
+  `scripts/05_units.R`).
+- Precipitation data-quality defects (`docs/known_issues.md` §9/§9a/§9c) — the previous "4 sites"
+  statement conflated several distinct, differently-sized rules; the verified breakdown (all as of
+  2026-10-02, Figure 5 panels A and C, Geo vs Data only) is:
+  1. `GRP_ERA_DOWN` — 172 sites with no usable P_ERA-vs-measured regression slope (sentinel
+     `-9999` in the BIF `ERA_SLOPE` field).
+  2. `P_ERA_MAX_RATIO = 3` — a further 10 sites (panel C) / 0 sites (panel A fallback-only) where
+     mean annual P_ERA exceeds 3x every available reference (BADM MAP and WorldClim BIO12).
+  3. `P_ERA_MIN_RATIO = 1/3` — a further 22 sites (panel C) / 3 sites (panel A fallback-only)
+     where mean annual P_ERA falls below 1/3 of every available reference.
+  4. 4 sites with physically impossible raw ERA5 inputs to the FAO-56 PET calculation (panel C,
+     aridity, only): `CD-Ygb`, `DE-Zrk`, `FR-LBr`, `US-Sne`.
+  Panel A (Köppen, Geo vs Data): rules 1-3 apply only to the 178 sites without a PI-reported class,
+  never to a PI-sourced site — 31 of 178 excluded (750/781 total). Panel C (aridity): all three
+  rules plus rule 4 apply to every site — 207 of 781 excluded (574/781 total). See §5.8 for the
+  full per-panel exclusion counts.
+  Separately, `docs/known_issues.md` §9a (unchanged since 2026-06-03) reports 225 of 6,108 FLUXMET
+  site-years (3.7%) with `P_ERA > 5000 mm/yr` — a site-year count, not a unique-site count.
+  TO CONFIRM: the tower-measured precipitation (`P_F`) defect (§9b) remains **unquantified** — no
+  site count or magnitude exists anywhere in the repo as of 2026-10-02; `docs/known_issues.md`
+  itself still lists this as an open, not-yet-characterised item. Do not state a site count for
+  `P_F` in methods text.
 
 ---
 
 ## 5.4 Derived metrics and benchmark construction
+
+**Status (verified 2026-10-02):** the anomaly-context figure pipeline described below
+(`R/figures/fig_anomaly_context.R` and its GEZ/Köppen-stratified callers) is **not wired into any
+currently-produced figure** — `scripts/07_figures.R` has zero references to it, and
+`docs/figure_inventory.md` does not list it at all. Its only callers,
+`scripts/generate_gez_anomaly_figures.R` and `scripts/generate_kg_anomaly_figures.R`, were last
+modified 2026-04-18, predating the current figure set (figure stages 1-6, all 2026-10-02) by
+roughly five months. This section's "Must cover"/"Key facts" below describe what that orphaned
+code *would* do if wired in — they do not describe a result currently reported anywhere in the
+manuscript. Do not draft methods prose from this section until/unless this analysis is actually
+reinstated into the active pipeline.
 
 **Purpose:** Explain how annual flux metrics, anomalies, and aggregated
 summaries were calculated.
@@ -155,18 +261,34 @@ summaries were calculated.
 or model outputs used for comparison.
 
 **Must cover:**
-- Marconi dataset (Falge et al. 2001): 35 sites, 97 site-years, 1992–2000
+- Marconi dataset (Falge et al. 2001): 35 sites, **96 site-years** (corrected 2026-10-02 — the
+  previous "97" was off by one; recomputed directly from `data/lists/Marconi_to_Modern_SiteIDs.
+  xlsx`'s "Years in Marconi" column via `R/historical_datasets.R`'s own
+  `sum(last_year - first_year + 1)` logic), 1992–2000.
   Note: 3 of 38 original sites could not be matched to modern IDs
-- La Thuile dataset (2007): 252 sites, 965 site-years, 1991–2007
-- FLUXNET2015 (Pastorello et al. 2020): 212 sites, 1532 site-years,
+- La Thuile dataset (2007): 252 sites, 965 site-years (confirmed unchanged, recomputed from
+  `data/lists/LaThuileList.xlsx`'s year-indicator columns — note that naively summing
+  `last_year - first_year + 1` from the derived `years_la_thuile.csv` snapshot overestimates this
+  at 1008, since La Thuile site records are not contiguous; 965 from the raw indicator columns is
+  correct), 1991–2007
+- FLUXNET2015 (Pastorello et al. 2020): 212 sites, 1532 site-years (confirmed unchanged),
   1991–2014
 - How historical site lists were obtained and standardised
 - How historical sites not in Shuttle were handled (fallback metadata)
 - WorldClim v2.1 bioclimatic variables (Fick & Hijmans 2017):
   bio1 (MAT), bio12 (MAP), 2.5 arc-minute resolution, 1970–2000 baseline
 - CGIAR Global Aridity Index v3.1 (Zomer et al. 2022):
-  30 arc-second resolution, divide by 10000 for true AI values
-- FAO Global Ecological Zones 2010 shapefile
+  30 arc-second resolution, divide by 10000 for true AI values (confirmed unchanged 2026-10-02,
+  `review/figures/representativeness/methods_aridity_unep.md`). This remains the method for the
+  global side and the Geo vs Geo comparison everywhere, including Figure 5 panel C. A SEPARATE,
+  additional ERA5-based aridity calculation (1991–2020 P_ERA / FAO-56 PET) is used only for
+  Figure 5 panel C's Geo vs Data side (`methods_aridity_era5.md`) — it supplements, not replaces,
+  the CGIAR/UNEP method, and introduces the 1970–2000-vs-1991–2020 period mismatch noted in §5.8.
+- FAO Global Ecological Zones 2010 shapefile — **status as of 2026-10-02: not used by any
+  currently-produced figure or table** (same verification as §5.2's UN-subregion/GEZ note — zero
+  references in `scripts/07_figures.R`, `scripts/figure4_representativeness.R`, or
+  `scripts/build_draft_manuscript_v1.R`). Retained here as a documented external dataset
+  (`data/external/` provenance, CLAUDE.md) but not as an active input to any reported result.
 
 **Primary code files:**
 - `R/historical_datasets.R` — historical site list loading
@@ -233,7 +355,11 @@ structure for reproducing all figures and tables.
 
 ---
 
-## 5.8 Network representativeness (Figure 4 and supplemental figure)
+## 5.8 Network representativeness (Figure 5 and Supplementary Figure S4)
+
+(Renumbered from "Figure 4 and supplemental figure" under figure stage 6, 2026-10-02 — see
+`docs/figure_inventory.md`. `scripts/figure4_representativeness.R`'s own name and its FIG_DIR
+source basenames are unchanged; only the manuscript-facing numbering changed.)
 
 **Purpose:** Describe how the representativeness of the current 781-site network was
 assessed against global land across six independent axes, and the two-sided (Geo vs
@@ -256,9 +382,11 @@ Data / Geo vs Geo) comparison design.
   has no PI-reported analogue and applies all three rules to every site.
 - The period mismatch in panel C (CGIAR Aridity Index v3.1 baseline 1970–2000 vs.
   this figure's 1991–2020 ERA5-derived Geo vs Data side)
-- That the previous Figure 4 (`fig_rep001_current.png`, 767-site network, ESA CCI
-  Land Cover and TRENDY NEE-IAV/ET-median axes) is superseded, and is not a
-  re-analysis target — methods text should describe only the current figures
+- That the previous "Figure 4" (`fig_rep001_current.png`, 767-site network, ESA CCI
+  Land Cover and TRENDY NEE-IAV/ET-median axes — an older, unrelated figure-numbering
+  generation, not the current Figure 5 renumbered from this section's own prior "Figure 4" name)
+  is superseded, and is not a re-analysis target — methods text should describe only the current
+  figures
 
 **Primary code files:**
 - `scripts/figure4_representativeness.R` — the complete production script (5

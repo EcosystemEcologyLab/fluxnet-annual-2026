@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-03T02:05:39Z",
+  "pipeline_version": "bc4d5bf",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics_flux_supp.csv"
+  ],
+  "notes": "Panel a (NEE, Geo vs Geo), figure stage 4."
+}

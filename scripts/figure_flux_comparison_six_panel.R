@@ -1,6 +1,9 @@
 ## figure_flux_comparison_six_panel.R
-## Extended Data figure: six-panel FLUXNET2015-vs-Shuttle comparison, rows
-## NEP/ET/H, left column the primary Figure 3 panels (all qualifying years,
+## Supplementary Figure S3 (figure stage 6 renumbering, 2026-10-02; target
+## journal Scientific Data has no Extended Data concept -- this script's own
+## name is unchanged, see docs/figure_inventory.md): six-panel
+## FLUXNET2015-vs-Shuttle comparison, rows NEP/ET/H, left column the primary
+## Figure 4 panels (all qualifying years,
 ## independently per dataset), right column the matched-site-years panels
 ## from task 5 (same site AND same calendar year required on both axes).
 ## Reads both already-computed comparison tables directly -- does not
@@ -10,13 +13,15 @@
 ## Letters a-f across rows: a NEP/all, b NEP/matched, c ET/all, d ET/matched,
 ## e H/all, f H/matched. Axis limits are identical within a row (shared
 ## between the two columns), unlike the standalone Figure 3 and matched-
-## site-years figures, where each panel's limits are independently padded.
+## site-years figures (Figure 4 and Supplementary Figure S2), where each
+## panel's limits are independently padded.
 ## The classes plotted can differ between columns (matching n>=5 differs
 ## independently per table) -- stated in the legend, not inferred from the
 ## panels.
 ##
 ## Output: review/figures/draft_manuscript_v1/SupFigs/
-##   supp_flux_comparison_six_panel.png/.pdf/.jpg + .legend.txt
+##   figS3_flux_comparison_six_panel.png/.pdf/.jpg + .legend.txt
+##   (renumbered from supp_flux_comparison_six_panel.*)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -38,7 +43,7 @@ msg("=== Extended Data: six-panel FLUXNET2015 vs Shuttle comparison ===")
 ALL_CSV     <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv"
 MATCHED_CSV <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv"
 OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
-OUT_STEM <- file.path(OUT_DIR, "supp_flux_comparison_six_panel")
+OUT_STEM <- file.path(OUT_DIR, "figS3_flux_comparison_six_panel")
 fs::dir_create(OUT_DIR)
 
 for (f in c(ALL_CSV, MATCHED_CSV)) {
@@ -148,19 +153,19 @@ class_line <- function(fx) {
          "}; right (matched) n=", nr$matched, " classes {", paste(nr$classes_matched, collapse = ", "), "}")
 }
 legend_lines <- c(
-  "FIGURE LEGEND — supp_flux_comparison_six_panel.png",
+  "FIGURE LEGEND — figS3_flux_comparison_six_panel.png",
   strrep("=", 60), "",
-  "TITLE: Extended Data Figure — FLUXNET2015 vs. Shuttle per-IGBP-class median flux",
+  "TITLE: Supplementary Figure S3 — FLUXNET2015 vs. Shuttle per-IGBP-class median flux",
   "comparison, all qualifying site-years vs. matched site-years, side by side", "",
   "DESCRIPTION:",
   "Six panels, 3 rows (NEP, ET, H) x 2 columns, re-plotting the two comparison tables already",
   "built by scripts/figure_flux_comparison_fluxnet2015_vs_shuttle.R (left column, \"all",
   "qualifying site-years\": each dataset's per-class median computed independently, over",
-  "whatever site-years qualify in that dataset alone -- the data behind Figure 3) and",
+  "whatever site-years qualify in that dataset alone -- the data behind Figure 4) and",
   "scripts/figure_flux_comparison_combo_alt_common_siteyears.R (right column, \"matched",
   "site-years\": each site's median on both axes computed only over the calendar years where",
-  "BOTH datasets have a qualifying value -- the data behind the matched-site-years Extended",
-  "Data figure). This figure recomputes nothing; it reads both already-computed comparison",
+  "BOTH datasets have a qualifying value -- the data behind Supplementary Figure S2, the",
+  "matched-site-years figure). This figure recomputes nothing; it reads both already-computed comparison",
   "tables and re-plots them with shared axis limits for direct visual comparison. No plot",
   "title is drawn except the two column headers (above row 1 only, identifying which column",
   "is which method); no other caption or explanatory text is drawn inside the figure.",
@@ -170,8 +175,9 @@ legend_lines <- c(
   "  Columns: left (a, c, e) = all qualifying site-years; right (b, d, f) = matched site-years",
   "  Within each row, both panels share IDENTICAL x and y axis limits (equal x/y, 10% padding",
   "  on the combined range of both columns' values for that flux) -- unlike the standalone",
-  "  Figure 3 and matched-site-years figures, where each panel's limits are computed",
-  "  independently. Axis titles use plotmath, not a Unicode superscript-minus character.",
+  "  Figure 4 and Supplementary Figure S2 (matched-site-years), where each panel's limits",
+  "  are computed independently. Axis titles use plotmath, not a Unicode superscript-minus",
+  "  character.",
   "",
   "CLASSES PLOTTED MAY DIFFER BETWEEN COLUMNS (the n>=5 reliability threshold is applied",
   "independently to each table, and matching further removes some sites/classes):",

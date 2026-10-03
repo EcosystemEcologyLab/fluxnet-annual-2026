@@ -1,7 +1,7 @@
-FIGURE LEGEND — fig_flux_comparison_combo_nep_et_h.png
+FIGURE LEGEND — fig_04_flux_comparison_combo_nep_et_h.png
 =========================================================
 
-TITLE: Comparison of per-IGBP-class median flux values between FLUXNET2015
+TITLE: Figure 4. Comparison of per-IGBP-class median flux values between FLUXNET2015
 and the FLUXNET Shuttle network: net ecosystem production, evapotranspiration,
 and sensible heat flux
 

@@ -4,6 +4,426 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (15) — Figure stage 6: numbering, supplementary PDF, methods, final report (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 6 only.
+
+### What changed
+
+- **Numbering (part a).** Renumbered the five main-text figures to `fig_01_map_network` …
+  `fig_05_representativeness` and the five existing Supplementary Figures to
+  `figS1_whittaker_nee_gpp_ter` … `figS5_flux_representativeness`, in the task's fixed order, via
+  their generating scripts (`scripts/generate_fig_map_network.R`,
+  `scripts/generate_fig_cumulative_siteyears.R`, `scripts/build_draft_manuscript_v1.R`,
+  `scripts/figure4_representativeness.R`, `scripts/generate_whittaker_ed_three_flux.R`,
+  `scripts/figure_flux_comparison_combo_alt_common_siteyears.R`,
+  `scripts/figure_flux_comparison_six_panel.R`, `scripts/figure_flux_representativeness_supp.R`)
+  plus `git mv` of the already-rendered output files — all renames verified byte-identical to
+  their pre-rename source (no re-render). Every `.legend.txt`'s self-reference and figure-number
+  cross-references updated; "Extended Data"/"Supplemental Figure" replaced with "Supplementary
+  Figure" throughout (target journal Scientific Data has no Extended Data concept). Source
+  scripts, functions, and underlying data/table files keep their own names — only the
+  `draft_manuscript_v1`/`SupFigs` copy filenames changed, stated explicitly in the rewritten
+  `docs/figure_inventory.md`.
+- **Stage 3 discovered uncommitted.** `review/figstage_status.md` has no Stage 3 entry (jumps
+  Stage 2 → Stage 4). On disk, `scripts/figure_representativeness_trajectory.R` and its full
+  output set (`supp_representativeness_trajectory.*` in both `review/figures/representativeness/`
+  and `SupFigs/`, `data/snapshots/representativeness_metrics_trajectory.*`) exist, untracked, with
+  the script's own validation log (`logs/figure_representativeness_trajectory_20261002_185348.
+  log`) reporting its current-network Geo-vs-Geo rows reproducing `representativeness_metrics_
+  fig4.csv` exactly. Treated the same way Stage 5 already treated its own Stage-3-conditional
+  item: not-DONE means excluded — `supp_representativeness_trajectory` is not part of the figS1–S5
+  numbering, and this stage neither committed nor finalised Stage 3 itself (not its task). Left
+  exactly as found.
+- **Supplementary PDF (part b).** New `scripts/build_supplementary_pdf.R` (dependency-free: base
+  `grid`/`grDevices` + the already-used `png` package) builds `SupFigs/supplementary_figures.pdf`:
+  one figure per page, headed by its number and legend title (word-wrapped — an unwrapped title
+  was found running off the page edge on first render and fixed before the final version), image
+  at ~200 dpi (downsampled from the 600 dpi source; full-resolution originals untouched).
+  **0.57 MB, 5 pages**, well under the 10 MB task limit.
+- **Methods (part c).** `docs/methods_requirements.md` §5.1–5.5 and §5.8's header/cross-references
+  brought into line with the current code and committed tables, via a dedicated research pass that
+  sourced every number from a committed table, script constant, or this log — nothing estimated.
+  Corrected: snapshot (now `fluxnet_shuttle_snapshot_20260901T094522.csv`, 781 sites, not the
+  stale 672); hub counts from the snapshot's own `data_hub` column (AmeriFlux 381, ICOS 348, TERN
+  52); VUT/CUT/neither split (616/40/125); Marconi site-years (97→96); the vague "4 sites"
+  ERA5-precipitation statement replaced with the verified four-part exclusion-rule breakdown; the
+  Köppen-Geiger source description reconciled across its two genuinely-different current uses
+  (ERA5-local everywhere except Figure 5 panel A's Geo-vs-Data side, PI-reported-BADM-first since
+  2026-10-02); the functionally-active-site definition corrected from a factually wrong prior
+  statement ("≥3 months… in last 4 years") to what `R/utils.R::is_functionally_active()` actually
+  implements. Marked **TO CONFIRM** rather than guessed: a current-network all-missing-NEE
+  exclusion count, a snapshot metadata sidecar/download-audit CSV, the still-unquantified `P_F`
+  tower-precipitation defect. §5.4 flagged (not rewritten) as describing an orphaned analysis
+  (`R/figures/fig_anomaly_context.R` and its callers, last touched 2026-04-18) not wired into any
+  currently-produced figure. UN subregion/FAO GEZ flagged not-currently-used in either §5.2 or
+  §5.5, verified by grep of the active figure-producing scripts.
+- **Final report (part d).** `review/figstage_report.md`: status of all six stages, the check
+  script's table, every stage's requested numbers, and all Decisions for Dave in one list.
+
+### Checks
+
+- `scripts/check_figure_format.R`: 11/11 PASS after all edits (5 main-text, 5 numbered
+  Supplementary Figures, plus the untouched `supp_representativeness_trajectory`).
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` unchanged throughout —
+  MD5 `85a1c086ad51aa27d40114c9c6d0e5d9`, `git diff` empty before and after this stage.
+- Visual check (rule 7): every renamed figure confirmed byte-identical to its pre-rename source
+  (`shasum`, 100%-similarity git rename detection) — no re-render, so no new clipping/overlap/
+  blank-band risk. The new `supplementary_figures.pdf` rendered to PNG per page (`pdftoppm`) and
+  inspected directly: titles wrap within the margin, no clipped text/images, all colour keys
+  visible, no blank bands.
+
+### Decisions for Dave
+
+- Stage 3 was found fully run but never closed out (script, figure, table, log all exist
+  uncommitted; internal validation passed). Not committed or finalised by this stage (out of
+  scope) and excluded from the Supplementary Figure numbering. Recommend either re-running Stage 3
+  to completion or explicitly deciding to drop it.
+- Supplementary PDF downsamples to ~200 dpi for file size — full-resolution originals unchanged.
+- Two methods-doc facts marked TO CONFIRM rather than guessed: current-network all-missing-NEE
+  exclusion count; snapshot metadata sidecar/download-audit CSV for the locked 2026-09-01
+  snapshot.
+- §5.4 of the methods doc flagged as an orphaned, not-currently-wired-in analysis rather than
+  rewritten or removed.
+
+Full write-up: `review/figstage_report.md`; stage status in `review/figstage_status.md`, Stage 6.
+
+---
+
+## 2026-10-02 (14) — Figure stage 5: clean-up (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 5 only.
+
+### What changed
+
+- Regenerated `review/figures/historical/` (6 PNGs: `fig_compare_whittaker_{2000,2007,2015}.png`,
+  `fig_compare_duration_{2000,2007,2015}.png`) via `scripts/generate_historical_comparison_figures.R`,
+  against the current Shuttle snapshot (`fluxnet_shuttle_snapshot_20260920T102211.csv`, 781 sites,
+  6,108 YY rows) and the current historical site lists. Ran clean, no code changes.
+- Regenerated the five IGBP flux-median scaffold figures and their companion tables/metadata
+  (`review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png`,
+  `data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv/.meta.json`) via
+  `scripts/figure_flux_medians_by_igbp.R`, against the current
+  `data/snapshots/site_flux_medians_shuttle.csv` (781 sites). Ran clean. The script's own sign-check
+  flags OSH's NEP median as negative (-0.46 gC m⁻² yr⁻¹, n=33) — a property of the current data, not
+  introduced by this stage, and left as the script reports it (no bin/exclusion-rule changes, off
+  limits per rule 3).
+- Retired four superseded candidates from `review/figures/candidates/` to a new
+  `review/figures/candidates/deprecated/` (via `git mv`, all with their companion `.txt`/`.legend.txt`
+  files): `Supp_sampling_ratio_siteKG_IGBP_NEE_ET.*`, `Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.*`,
+  `Supp_compare_geospatial_vs_sitelevel_grid.*`, `ALT_fig_03_flux_comparison_combo_nep_et_h.*`.
+- Stage 3's conditional item (retiring `scripts/figure_representativeness_summary.R`'s outputs,
+  `fig_rep001`-`fig_rep018` and `fig_representativeness_*` in `review/figures/representativeness/`,
+  and marking that script superseded in `docs/figure_inventory.md`) was **SKIPPED**: `review/
+  figstage_status.md` has no Stage 3 entry at all (it jumps from Stage 2 straight to Stage 4), so
+  Stage 3 is not DONE and this stage's rule-1 dependency check applies.
+- `review/diagnostics/` and `data/snapshots/` (other than the five `flux_medians_by_igbp_*` table/
+  metadata pairs the task explicitly names) were left untouched, per the task's own instruction.
+
+### Checks
+
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` unchanged — MD5
+  `85a1c086ad51aa27d40114c9c6d0e5d9` before and after (`git status` empty on that file throughout).
+- `scripts/check_figure_format.R`: 11/11 PASS (unaffected by this stage — it only checks
+  `draft_manuscript_v1`/`SupFigs`, neither of which this stage wrote to).
+- Visual check (rule 7) of every PNG this stage wrote: the five flux-median scaffold figures and all
+  six historical-comparison figures render with no clipped or overlapping text and no blank bands,
+  **except** a pre-existing defect in all three `fig_compare_whittaker_*.png` panels: the left panel's
+  title text (`"Marconi 2000"` / `"FLUXNET2015"`) is overlapped by the inset NEE-colour-ramp legend
+  box drawn directly beneath it, leaving a stray `"(r"` / `")"` text fragment. Confirmed via
+  `git show HEAD:...` on each file that this exact overlap (pixel-for-pixel layout, modulo an
+  unrelated font/glyph rendering improvement in this run — the previous commit's superscripts
+  rendered as tofu boxes, this run's render correctly) was already present in the last-committed
+  version, i.e. predates this stage and is not a regression from the data refresh. Out of scope for a
+  "regenerate from current tables" cleanup stage (would require editing the legend/annotation layout
+  in `R/figures/fig_climate.R`, not a data change) — recorded below rather than fixed.
+
+### Decisions for Dave
+
+- The `fig_compare_whittaker_{2000,2007,2015}.png` left-panel title/legend overlap described above is
+  unfixed. It's cosmetic (doesn't affect any data or the right-hand Shuttle panel), pre-dates this
+  session, and sits in `review/figures/historical/` (an internal comparison diagnostic, not a
+  manuscript or supplementary figure checked by `check_figure_format.R`) — flagging per rule 2 rather
+  than guessing whether a layout fix belongs in this stage or a future one.
+- Stage 3's conditional retirement (the `figure_representativeness_summary.R` outputs and
+  `docs/figure_inventory.md` note) remains outstanding; it will need to run once Stage 3 itself is
+  DONE in `review/figstage_status.md`.
+
+Full write-up: `review/figstage_status.md`, "Stage 5 — clean-up".
+
+---
+
+## 2026-10-02 (13) — Figure stage 4: supplementary flux representativeness figure (NEE/GPP/TER/ET, Geo vs Geo and Geo vs Data) (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 4 only. No dependency on Stage 3 (not required
+by stage 4's own task text), so it ran regardless of that stage's status in `review/figstage_status.md`.
+
+### What changed
+
+- New `scripts/figure_flux_representativeness_supp.R` builds `review/figures/representativeness/
+  supp_flux_representativeness.png/.pdf/.jpg/.legend.txt` (copied to `draft_manuscript_v1/SupFigs/`)
+  and `data/snapshots/representativeness_metrics_flux_supp.csv`: four rows (NEE, GPP, TER, ET) x
+  two columns (Geo vs Geo left, Geo vs Data right), panels lettered a-h across rows, 180 x 172.7 mm.
+- Panel rendering (`draw_panel2()` and its layout/measurement helpers) is ported verbatim from
+  `scripts/figure4_representativeness.R`, not sourced — identical panel style, bar-label
+  conventions, header/caption grobs and column-gutter alignment as Figure 4 itself.
+- NEE (a/b) and ET (g/h) reuse Figure 4's own rasters, tower values and binning method
+  (`run_flux_panel()`, ported) unchanged. Checked programmatically before rendering: all four n/J
+  values match `representativeness_metrics_fig4.csv` rows E/F to the 1e-9 tolerance that script's
+  own self-check uses (NEE: n=781/656, J=0.5298754549363103/0.16481578809724606; ET: n=781/665,
+  J=0.45626639245125744/0.47933317597575115) — the task's explicit pass/fail gate.
+- GPP (c/d) and TER (e/f) are new. Model: the 17-model TRENDY v14 S3 ensemble-median, 1991-2020
+  mean (TER = ra+rh), on Figure 4's own Koppen 0.5 deg land mask —
+  `data/external/trendy/derived/candidate_gpp_median.tif`/`candidate_ter_median.tif`, already built
+  by `scripts/candidate_nee_gpp_ter_panels.R` and already loaded by `figure4_representativeness.R`
+  itself as its NEE bar-1 mask — reused as-is. Tower: the site median from `R/site_annual_fluxes.R::
+  compute_site_annual_fluxes()` (`gpp_median`/`reco_median`, `QC_THRESHOLD_YY=0.5`), per the task
+  instruction — deliberately not `scripts/diagnostics/flux_bin_breaks.R`'s own older QC>=0.80
+  mean-monthly-cycle tower values (flagged as wrong for this paper by `figure4_representativeness.R`'s
+  own header note). Bins: bar 1 = own model value <5 gC/m2/yr; bars 2-7 are the rounded (to 100
+  gC/m2/yr) sextiles of the 50/50 land/tower mixture CDF outside bar 1 — same histogram/rounding
+  steps `flux_bin_breaks.R` uses for these two fluxes (edges differ from that script's own GPP/TER
+  run because the tower-side distribution differs, per the QC method above). Geo vs Data requires a
+  qualifying tower value to be classified at all (`require_own = TRUE`), same rule NEE/ET use.
+- Colours: NEE/ET ramps copied verbatim from `figure4_representativeness.R`. GPP (green)/TER
+  (orange) ramps reused from `flux_bin_breaks.R`'s own choices, with bar 1 overridden to the shared
+  bare/ice colour (`#f7f4f9`, Figure 4's biomass bin-1 colour) on every row.
+- Invariant (rule 5) confirmed before and after: `data/snapshots/representativeness_metrics_fig4.csv`
+  untouched (`git diff` empty).
+- `scripts/check_figure_format.R`: 11/11 PASS after the stage (new figure: `supp_flux_representativeness
+  ed 179.9x172.5mm OK* 358w 0.25-1.00 PASS`).
+- Visual check (rule 7): PNG opened directly — no clipped/overlapping text, no inappropriate blank
+  bands (only the same ~4.4mm inter-row panel-margin gaps Figure 4's own rows have), `% land`/
+  `towers` headers present above panels a/b only (by design — the two-number meaning is identical
+  for every row). This figure has no separate legend/key swatch grid (each row's 7 bars are
+  themselves the colour-coded, directly-labelled bins), so rule 7's colour-box check was done
+  instead by pixel-matching each flux's most extreme bin colour (GPP `#00441b`, TER `#7f2704`, ET
+  `#06305a`, NEE `#0b3e09`) against the rendered PNG — tens of thousands of matching pixels each,
+  confirming no bin rendered blank/white even for the visually thinnest bars (GPP/TER's
+  ">2000"/">1800" rows, 13.8%/15.7% land share).
+
+### Numbers asked for
+
+| Panel | Flux | Comparison | Bin edges (bars 2-7 boundaries) | n | J |
+|---|---|---|---|---|---|
+| a | NEE | Geo vs Geo  | -250, -100, -50, -25, 0 | 781 | 0.530 |
+| b | NEE | Geo vs Data | -250, -100, -50, -25, 0 | 656 | 0.165 |
+| c | GPP | Geo vs Geo  | 300, 700, 1100, 1500, 2000 | 781 | 0.488 |
+| d | GPP | Geo vs Data | 300, 700, 1100, 1500, 2000 | 651 | 0.529 |
+| e | TER | Geo vs Geo  | 300, 600, 1000, 1300, 1800 | 781 | 0.482 |
+| f | TER | Geo vs Data | 300, 600, 1000, 1300, 1800 | 651 | 0.511 |
+| g | ET  | Geo vs Geo  | 200, 350, 450, 600, 850 | 781 | 0.456 |
+| h | ET  | Geo vs Data | 200, 350, 450, 600, 850 | 665 | 0.479 |
+
+Final figure size: 180 x 172.7 mm.
+
+### Decisions for Dave
+
+- GPP/TER's bin edges do not match `flux_bin_breaks.R`'s own earlier GPP/TER diagnostic edges, even
+  though both use the same rasters/bar-1 cut/rounding step — deliberate, per this stage's explicit
+  instruction to source tower values from `compute_site_annual_fluxes()`/`QC_THRESHOLD_YY` instead
+  of that script's own older method. Flagging in case the discrepancy is noticed without this context.
+- TER's orange/brown colour ramp was `flux_bin_breaks.R`'s own judgement call, not task-specified —
+  reused here rather than re-decided, so the two diagnostics stay visually consistent if compared.
+- This figure has no separate legend/key swatch (unlike Figure 2/`supp_whittaker_nee_gpp_ter`), so
+  rule 7's "every key label has its colour box" was satisfied by direct pixel-matching of bin fill
+  colours instead, as described above.
+
+---
+
+## 2026-10-02 (12) — Figure stage 2: the map becomes a main-text figure (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 2 only (promote the regional map to the main
+text, as its own figure, alongside a standalone cumulative site-years figure).
+
+### What changed
+
+- New `scripts/generate_fig_map_network.R` builds `draft_manuscript_v1/fig_map_network.png/.pdf/
+  .legend.txt`: the same five panels as the retired `SupFigs/supp_map_regional` (Equal Earth world
+  overview with the four regional extents outlined, plus four Lambert Azimuthal Equal-Area
+  regional close-ups), now 183 mm wide (main-text double-column) instead of 180 mm (Extended
+  Data), with no JPEG.
+- New `scripts/generate_fig_cumulative_siteyears.R` builds `draft_manuscript_v1/
+  fig_cumulative_siteyears_igbp.png/.pdf/.legend.txt`: cumulative site-years by IGBP class, 89 mm
+  wide, with no panel letter — it is no longer panel b of a merged Figure 1, but its own
+  single-panel figure. Same `fig_cumulative_siteyears_igbp()` function and pinned inputs as the
+  retired `fig_01b`/`fig_dur11_CumulativeSiteYears_IGBP`.
+- Retired (via `git mv`, not deleted) to `draft_manuscript_v1/deprecated/`: `fig_01.*`,
+  `fig_01a_map_current_network.*`, `fig_01b_cumulative_siteyears_igbp.*`. Retired to a new
+  `SupFigs/deprecated/`: `supp_map_regional.*`.
+- `scripts/build_draft_manuscript_v1.R` updated to drop the retired Figure 1 entries from its
+  copy map (Figure 1's map and cumulative site-years are now built and written directly by their
+  own scripts, the same pattern Figure 4 already used) and to correct its now-stale header/"Fig 1B
+  note" comments.
+
+### Two layout defects fixed, both from the task's own review notes
+
+1. **Blank vertical bands between rows.** The retired Extended Data version allocated each
+   row of the 2x2 regional grid a fixed height (half of "2 x panel-a-height", split evenly across
+   two equal-width columns) unrelated to the regions' own LAEA-projected aspect ratios (0.83 to
+   1.72 across the four regions) — `coord_sf`'s fixed-aspect rendering then padded the mismatch
+   with blank space, producing the visible bands above/below rows b/c and d/e. Fixed by computing
+   each row's height analytically as `183mm / (aspect_left + aspect_right)`, with each panel's own
+   width set to `that height x its own aspect` — this packs every row edge-to-edge in BOTH
+   directions (not just vertically) with zero letterboxing, confirmed by inspecting the row-boundary
+   pixels directly (no blank band remains at either seam).
+2. **Scale-bar labels over coastline/towers (panels c, d) and a panel letter touching an island
+   (panel e).** Previously fixed offsets (6%/8% from the bottom-left corner) happened to land on
+   land for Europe (Spain/Morocco coast) and East/Southeast Asia (Indonesian islands), and the
+   default top-left panel-letter corner for Australia/NZ landed on an island near the panel's NW
+   edge. Fixed programmatically, not by hand-tuning pixel offsets: a grid of candidate anchor
+   positions (4% steps across the panel), ordered by distance from the original default, is tested
+   with `sf::st_intersects()` against that panel's own land polygon (reprojected to the panel's own
+   LAEA CRS); the nearest land-clear candidate is used. Result: panel c's bar moved to the open
+   mid-Atlantic, panel d's bar moved to open water in the South China Sea, panel e's letter moved
+   to open water south of the island chain. Panels where the default was already clear of land
+   (panel b's bar/letter, panels a/c/d's letters apart from the one move each needed) landed at or
+   within one grid step of their original position — confirmed the search prefers minimal change
+   over relocation.
+
+### Checks
+
+- Tower counts per panel (programmatic, not eyeballed): a (outside all four regions) 65, b (North
+  America) 362, c (Europe) 198, d (East/Southeast Asia) 103, e (Australia/NZ) 53 — all five match
+  the task's expected counts exactly.
+- `data/snapshots/representativeness_metrics_fig4.csv` (the rule-5 invariant) confirmed untouched
+  (`git diff` empty) before committing.
+- `scripts/check_figure_format.R`: 9/9 PASS (5 main-text, 4 Extended Data) after the stage.
+- `fig_cumulative_siteyears_igbp`'s 15 IGBP legend swatches sampled directly from the rendered PNG
+  (not eyeballed): all 15 render distinct non-white fill colours, no blank key boxes.
+- Border-pixel scan of `fig_map_network.png` confirms nothing is clipped at the canvas edge.
+
+### Numbers asked for
+
+Final sizes: `fig_map_network` 182.7 x 217.3 mm (panel a 79.1mm + row b/c 64.3mm + row d/e
+74.1mm); `fig_cumulative_siteyears_igbp` 88.9 x 88.9 mm.
+
+Tower counts: see table in `review/figstage_status.md`, Stage 2 — all five match the task's
+expected 362/198/103/53/65 exactly.
+
+### Decisions for Dave
+
+- `fig_map_network`'s final height (217.3 mm) is above the task's "aim for 200mm or less" but
+  comfortably under Nature's hard 247mm main-text limit. The ~17mm gap is driven almost entirely
+  by panel a: at full 183mm width, the Equal Earth world map's own true aspect ratio needs 79.1mm
+  of height by itself. Getting under 200mm would require either shrinking panel a below full width
+  (reintroducing the same letterboxing this stage's row-height fix was built to remove) or
+  narrowing a region's extent (off limits — and would change the panel site counts away from the
+  task's expected values). Took the option that changes least: kept panel a full-bleed, accepted
+  217.3mm, and is flagging the trade-off here rather than guessing which Dave would prefer.
+- The land-avoidance grid search checks bar/letter placement against land polygons only, not
+  against tower points or against each other. No collisions appeared in this render (checked
+  visually), but it's not point-aware, which is worth knowing if a future network update shifts
+  point density enough to matter.
+
+Full write-up and per-panel detail: `review/figstage_status.md`, Stage 2.
+
+---
+
+## 2026-10-02 (11) — Figure stage 1: Figure 2 key fix, panel a key added to the three-flux Extended Data figure (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 1 only (two defects found on review).
+
+### 1. Figure 2 key — "100 to 200" swatch missing
+
+Confirmed the defect: the box for the "100 to 200" NEE step was blank (white) in
+`draft_manuscript_v1/fig_02_whittaker_current.png`, despite the prior session's `limits =
+step_labels` fix (`R/figures/fig_climate.R`, session 2026-10-02 (10) §4) being present in the
+code and the figure having been rebuilt since.
+
+Root cause, confirmed directly with a minimal `ggplot2` reproduction (`geom_col()`, not specific
+to `stat_summary_hex()`/`geom_hex()`): for a `scale_fill_manual(limits =, drop = FALSE)` level
+with zero matching rows in the rendered layer data, `ggplot2::get_guide_data()` reports the
+scale's correct intended fill for that level, but the actual rendered `guide_legend()` key glyph
+is blank regardless — a ggplot2 4.0.x guide regression. Not fixable by `limits=`, `drop = FALSE`,
+`override.aes` (tested: applies to every key row, not just the missing one, and still left the
+two zero-count rows blank), or `key_glyph =` (tested `draw_key_polygon`, no effect) — confirmed
+by direct experimentation, not assumption. A phantom-data-row workaround (giving every step
+level at least one real row) was tried and rejected: `stat_summary_hex()`'s hex-grid anchor
+(`xbnds`/`ybnds`) is computed from the full data range including any added points, so even a
+point placed far outside the view shifted the real hexagons' bin alignment (confirmed: 177 vs.
+182 hexagons for the same real data, before vs. after adding one far-away point) — unacceptable
+given the stage's data-invariant rule.
+
+Fix: `R/figures/fig_climate.R` — added `.stepped_fill_key_grob()`, which draws the stepped-scale
+key directly with `grid` rect/text primitives (every row supplied directly and always complete,
+never looked up from the layer's own data) and is attached via `ggplot2::annotation_custom()`
+instead of `guide_legend()`. `fig_whittaker_worldclim(fill_mode = "stepped")` now sets
+`guide = "none"` on the fill scale and always draws its own key. No hexagon data, binning, or
+site counts changed by this fix (phantom-row approach was rejected precisely to avoid this).
+
+Regenerated via `scripts/generate_whittaker_alt_fig02_update.R` then
+`scripts/build_draft_manuscript_v1.R` (both already-existing scripts, re-run only). `n_sites`,
+`n_nee_sites`, `n_site_years` counts (781 / 656 / 4375) unchanged from the prior render.
+
+Pixel colour of each of the eight key boxes (`draft_manuscript_v1/fig_02_whittaker_current.png`,
+sampled directly from the rendered PNG):
+
+| Step | Hex | RGB |
+|---|---|---|
+| above 200 | #D6604D | (214, 96, 77) |
+| 100 to 200 | #F4A582 | (244, 165, 130) |
+| 0 to 100 | #FDDBC7 | (253, 219, 199) |
+| −100 to 0 | #D1E5F0 | (209, 229, 240) |
+| −200 to −100 | #92C5DE | (146, 197, 222) |
+| −300 to −200 | #4393C3 | (67, 147, 195) |
+| −400 to −300 | #2166AC | (33, 102, 172) |
+| below −400 | #053061 | (5, 48, 97) |
+
+All eight match `generate_whittaker_alt_fig02_update.R`'s `nee_step_colours` exactly, including
+"100 to 200" = #F4A582 as specified in the task.
+
+### 2. `supp_whittaker_nee_gpp_ter` — panel a NEE key added, blank bands trimmed
+
+Panel a (NEE) previously omitted its own key by design (`legend.position = "none"`, session
+2026-10-02 (10) §5: "identical to Figure 2's"). Since `.stepped_fill_key_grob()` above draws via
+`annotation_custom()` rather than `guide_legend()`, it is unaffected by `legend.position`/
+`guides()` and now always renders — removing the now-stale `legend.position = "none"` theme
+override in `scripts/generate_whittaker_ed_three_flux.R` was sufficient to give panel a the same
+eight-step key as Figure 2, with no other change to that panel's construction. Updated the
+figure's own `.legend.txt` ("Own legend omitted here" → "Own key shown").
+
+Blank bands: confirmed by direct pixel-row scanning of the rendered PNG that the three
+`coord_fixed()`-square panels (a/b/c) were vertically centred inside a taller row than their
+fixed aspect needed — patchwork's `plot_layout(heights = c(1, 0.22))` row 1 allocation (82% of
+the 95 mm total height) left roughly a third of that row as blank margin, split above the panels
+and between the panel row and the shared GPP/TER key row (`guide_area()`). Reduced to
+`heights = c(1, 0.38)` and overall figure height 95 → 78 mm (width unchanged at 180 mm); top
+margin fell from 13.1% to 4.9% of figure height, the inter-row gap from 11.5% to 5.5%. No change
+to panel content, hexagon data, or either embedded table.
+
+`scripts/check_figure_format.R`: 11/11 PASS, including `supp_whittaker_nee_gpp_ter` at its new
+179.9 × 78.0 mm (was 179.9 × 94.9 mm).
+
+Final size of the three-flux figure: **179.9 × 78.0 mm**.
+
+### Checks
+
+- `scripts/check_figure_format.R`: 11/11 PASS (table above).
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` untouched by this
+  stage (`git diff` empty) — confirmed, this stage never reads or writes it.
+- Manual visual check of both regenerated PNGs (and the three-flux figure's PDF/JPEG): no
+  clipped or overlapping text, all key colour boxes present and verified by direct pixel
+  sampling (table above for Figure 2; panel a's own key — same eight colours, confirmed by the
+  same pixel-sampling method — and the GPP/TER key in the legend row were also checked), no
+  blank bands beyond the small residual margins reported above.
+
+### Decisions for Dave
+
+- The `.stepped_fill_key_grob()` workaround bypasses `ggplot2::guide_legend()` entirely for every
+  `fill_mode = "stepped"` caller (currently Figure 2 and panel a of the three-flux Extended Data
+  figure) because of a confirmed ggplot2 4.0.x rendering bug, not a project-specific choice — if
+  a future ggplot2 release fixes the underlying guide regression, this workaround could be
+  reverted to `guide_legend()`, but there is no way to detect that automatically, so it was left
+  in place rather than attempting a version check.
+- `supp_whittaker_nee_gpp_ter`'s total height (95 → 78 mm) and `plot_layout(heights=)` ratio
+  (0.22 → 0.38) were tuned empirically against the rendered pixel output (no closed-form
+  calculation of patchwork's gtable centring was available) — acceptable per check_figure_format.R
+  and visual inspection, but a future content change to any of the three panels (e.g. a taller
+  legend) may require re-tuning.
+
+---
+
 ## 2026-10-02 (10) — Figures 1-3 + Extended Data finished: format checker, shared IGBP palette, Equal Earth maps (DONE)
 
 Finished the Nature-format pass on Figures 1-3 and their Extended Data versions: a format-

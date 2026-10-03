@@ -1,13 +1,13 @@
 igbp_class,igbp_name,median,n_sites,total_site_years,std_dev,normalized_height
-EBF,Evergreen broadleaf forest,1826.345,37,199,1027.9855,1
-MF,Mixed forest,1279.695,22,132,719.4517,0.700686
-DBF,Deciduous broadleaf forest,1274.305,60,491,483.58,0.697735
-ENF,Evergreen needleleaf forest,1140.6,95,774,487.1639,0.624526
-CSH,Closed shrubland,862.156,11,50,374.6951,0.472066
-OSH,Open shrubland,322.621,31,178,398.9662,0.176648
-WSA,Woody savanna,952.373,15,137,476.5233,0.521464
-SAV,Savanna,958.2165,10,73,461.6406,0.524663
-GRA,Grassland,1189.995,120,644,709.287,0.651572
-WET,Wetland,619.493,89,382,545.7711,0.339198
-CRO,Cropland,1116.51,107,529,548.4646,0.611336
-CVM,Cropland/natural vegetation mosaic,852.684,7,24,516.9707,0.46688
+EBF,Evergreen broadleaf forest,1754.75,39,264,987.2044,1
+MF,Mixed forest,1271.41,23,146,681.9141,0.724553
+DBF,Deciduous broadleaf forest,1275.17,64,591,471.7903,0.726696
+ENF,Evergreen needleleaf forest,1128.28,101,890,510.6292,0.642986
+CSH,Closed shrubland,865.369,11,56,369.4121,0.493158
+OSH,Open shrubland,314.7415,32,215,396.8879,0.179365
+WSA,Woody savanna,950.7328,16,149,459.508,0.541805
+SAV,Savanna,937.062,11,80,448.7837,0.534015
+GRA,Grassland,1184.57,129,732,712.5122,0.675065
+WET,Wetland,628.171,93,452,550.883,0.357983
+CRO,Cropland,1127.585,112,581,543.7356,0.64259
+CVM,Cropland/natural vegetation mosaic,999.389,7,26,514.938,0.569534

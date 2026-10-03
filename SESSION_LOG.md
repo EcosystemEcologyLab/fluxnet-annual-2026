@@ -4,6 +4,69 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (14) — Figure stage 5: clean-up (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 5 only.
+
+### What changed
+
+- Regenerated `review/figures/historical/` (6 PNGs: `fig_compare_whittaker_{2000,2007,2015}.png`,
+  `fig_compare_duration_{2000,2007,2015}.png`) via `scripts/generate_historical_comparison_figures.R`,
+  against the current Shuttle snapshot (`fluxnet_shuttle_snapshot_20260920T102211.csv`, 781 sites,
+  6,108 YY rows) and the current historical site lists. Ran clean, no code changes.
+- Regenerated the five IGBP flux-median scaffold figures and their companion tables/metadata
+  (`review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png`,
+  `data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv/.meta.json`) via
+  `scripts/figure_flux_medians_by_igbp.R`, against the current
+  `data/snapshots/site_flux_medians_shuttle.csv` (781 sites). Ran clean. The script's own sign-check
+  flags OSH's NEP median as negative (-0.46 gC m⁻² yr⁻¹, n=33) — a property of the current data, not
+  introduced by this stage, and left as the script reports it (no bin/exclusion-rule changes, off
+  limits per rule 3).
+- Retired four superseded candidates from `review/figures/candidates/` to a new
+  `review/figures/candidates/deprecated/` (via `git mv`, all with their companion `.txt`/`.legend.txt`
+  files): `Supp_sampling_ratio_siteKG_IGBP_NEE_ET.*`, `Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.*`,
+  `Supp_compare_geospatial_vs_sitelevel_grid.*`, `ALT_fig_03_flux_comparison_combo_nep_et_h.*`.
+- Stage 3's conditional item (retiring `scripts/figure_representativeness_summary.R`'s outputs,
+  `fig_rep001`-`fig_rep018` and `fig_representativeness_*` in `review/figures/representativeness/`,
+  and marking that script superseded in `docs/figure_inventory.md`) was **SKIPPED**: `review/
+  figstage_status.md` has no Stage 3 entry at all (it jumps from Stage 2 straight to Stage 4), so
+  Stage 3 is not DONE and this stage's rule-1 dependency check applies.
+- `review/diagnostics/` and `data/snapshots/` (other than the five `flux_medians_by_igbp_*` table/
+  metadata pairs the task explicitly names) were left untouched, per the task's own instruction.
+
+### Checks
+
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` unchanged — MD5
+  `85a1c086ad51aa27d40114c9c6d0e5d9` before and after (`git status` empty on that file throughout).
+- `scripts/check_figure_format.R`: 11/11 PASS (unaffected by this stage — it only checks
+  `draft_manuscript_v1`/`SupFigs`, neither of which this stage wrote to).
+- Visual check (rule 7) of every PNG this stage wrote: the five flux-median scaffold figures and all
+  six historical-comparison figures render with no clipped or overlapping text and no blank bands,
+  **except** a pre-existing defect in all three `fig_compare_whittaker_*.png` panels: the left panel's
+  title text (`"Marconi 2000"` / `"FLUXNET2015"`) is overlapped by the inset NEE-colour-ramp legend
+  box drawn directly beneath it, leaving a stray `"(r"` / `")"` text fragment. Confirmed via
+  `git show HEAD:...` on each file that this exact overlap (pixel-for-pixel layout, modulo an
+  unrelated font/glyph rendering improvement in this run — the previous commit's superscripts
+  rendered as tofu boxes, this run's render correctly) was already present in the last-committed
+  version, i.e. predates this stage and is not a regression from the data refresh. Out of scope for a
+  "regenerate from current tables" cleanup stage (would require editing the legend/annotation layout
+  in `R/figures/fig_climate.R`, not a data change) — recorded below rather than fixed.
+
+### Decisions for Dave
+
+- The `fig_compare_whittaker_{2000,2007,2015}.png` left-panel title/legend overlap described above is
+  unfixed. It's cosmetic (doesn't affect any data or the right-hand Shuttle panel), pre-dates this
+  session, and sits in `review/figures/historical/` (an internal comparison diagnostic, not a
+  manuscript or supplementary figure checked by `check_figure_format.R`) — flagging per rule 2 rather
+  than guessing whether a layout fix belongs in this stage or a future one.
+- Stage 3's conditional retirement (the `figure_representativeness_summary.R` outputs and
+  `docs/figure_inventory.md` note) remains outstanding; it will need to run once Stage 3 itself is
+  DONE in `review/figstage_status.md`.
+
+Full write-up: `review/figstage_status.md`, "Stage 5 — clean-up".
+
+---
+
 ## 2026-10-02 (13) — Figure stage 4: supplementary flux representativeness figure (NEE/GPP/TER/ET, Geo vs Geo and Geo vs Data) (DONE)
 
 Unattended run per `logs/figstage_prompt.md`, stage 4 only. No dependency on Stage 3 (not required

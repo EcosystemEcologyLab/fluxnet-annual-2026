@@ -223,3 +223,53 @@ Final figure size: 180 x 172.7 mm.
 
 Full write-up: `SESSION_LOG.md`, "2026-10-02 (13) — Figure stage 4: supplementary flux
 representativeness figure (NEE/GPP/TER/ET, Geo vs Geo and Geo vs Data)".
+
+---
+
+## Stage 5 — clean-up: DONE
+
+- Regenerated `review/figures/historical/` (6 PNGs) via
+  `scripts/generate_historical_comparison_figures.R`, and the five IGBP flux-median scaffold figures
+  + companion tables/metadata (`review/figures/flux_medians/fig_flux_{nep,gpp,ter,et,h}_by_igbp.png`,
+  `data/snapshots/flux_medians_by_igbp_{nep,gpp,ter,et,h}.csv/.meta.json`) via
+  `scripts/figure_flux_medians_by_igbp.R`. Both ran clean against current tables, no code changes, no
+  path fixes needed.
+- Retired, via `git mv` into a new `review/figures/candidates/deprecated/` (companions included):
+  `Supp_sampling_ratio_siteKG_IGBP_NEE_ET.*`, `Supp_jaccard_trajectory_siteKG_IGBP_NEE_ET.*`,
+  `Supp_compare_geospatial_vs_sitelevel_grid.*`, `ALT_fig_03_flux_comparison_combo_nep_et_h.*`.
+- Stage 3's conditional item (retire `scripts/figure_representativeness_summary.R`'s outputs,
+  mark it superseded in `docs/figure_inventory.md`) **SKIPPED**: this file has no Stage 3 entry
+  (jumps Stage 2 → Stage 4), so Stage 3 is not DONE.
+- `review/diagnostics/` and `data/snapshots/` left untouched beyond the five named table/metadata
+  pairs above, per the task's own instruction.
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` unchanged (MD5
+  `85a1c086ad51aa27d40114c9c6d0e5d9` before and after).
+- `scripts/check_figure_format.R`: 11/11 PASS (this stage touched nothing it checks).
+- Visual check (rule 7): all 11 regenerated PNGs opened. Clean except a pre-existing defect, present
+  identically in the last-committed version (confirmed via `git show HEAD`) and therefore not a
+  regression from this stage: in all three `fig_compare_whittaker_{2000,2007,2015}.png`, the left
+  panel's title text is overlapped by the inset NEE-legend box beneath it, leaving a stray `"(r"`/`")"`
+  fragment. Left unfixed — see Decisions below.
+
+### Numbers asked for
+
+What was regenerated, what was retired, what was left (and why):
+
+| Action | Items |
+|---|---|
+| Regenerated | `review/figures/historical/` (6 PNGs, `generate_historical_comparison_figures.R`); `review/figures/flux_medians/` (5 PNGs + 5 CSV/meta.json pairs, `figure_flux_medians_by_igbp.R`) |
+| Retired | 4 candidates (8 files incl. companions) from `review/figures/candidates/` to `review/figures/candidates/deprecated/` |
+| Left, with reason | Stage 3's conditional retirement of `figure_representativeness_summary.R` outputs — Stage 3 not DONE in this file; the `fig_compare_whittaker_*` title/legend overlap — pre-existing, cosmetic, out of scope for a data-only regeneration |
+
+### Decisions for Dave
+
+- `fig_compare_whittaker_{2000,2007,2015}.png` (in `review/figures/historical/`, not a manuscript or
+  supplementary figure): left-panel title text is overlapped by the inset legend box beneath it,
+  leaving a stray `"(r"`/`")"` fragment. Confirmed pre-existing (identical in the last-committed PNG),
+  cosmetic only, doesn't affect any data. Left unfixed rather than editing
+  `R/figures/fig_climate.R`'s legend/annotation layout, which is outside "regenerate from current
+  tables" — flagging rather than guessing whether/when a layout fix belongs here.
+- Stage 3's conditional retirement item remains outstanding and will need a follow-up run once Stage 3
+  is marked DONE.
+
+Full write-up: `SESSION_LOG.md`, "2026-10-02 (14) — Figure stage 5: clean-up".

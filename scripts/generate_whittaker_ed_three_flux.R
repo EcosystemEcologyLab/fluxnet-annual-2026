@@ -1,16 +1,19 @@
 ## generate_whittaker_ed_three_flux.R
-## Extended Data figure: Whittaker climate-space hexbins for three fluxes
-## (NEE, GPP, TER) side by side -- same hexagons, points, and global
-## ice-free-land contour overlay as Figure 2 (NEE panel reuses
-## fig_whittaker_worldclim() directly, in fill_mode = "stepped", the same
-## call Figure 2 makes). GPP and TER are not NEE-specific in
+## Supplementary Figure S1 (figure stage 6 renumbering, 2026-10-02; target
+## journal Scientific Data has no Extended Data concept -- this script's own
+## name is unchanged, see docs/figure_inventory.md): Whittaker climate-space
+## hexbins for three fluxes (NEE, GPP, TER) side by side -- same hexagons,
+## points, and global ice-free-land contour overlay as Figure 3 (NEE panel
+## reuses fig_whittaker_worldclim() directly, in fill_mode = "stepped", the
+## same call Figure 3 makes). GPP and TER are not NEE-specific in
 ## fig_whittaker_worldclim(), so their panels are built directly here from
 ## compute_site_annual_fluxes()'s own per-site median values, reusing only
 ## the flux-agnostic pieces of the Whittaker machinery (WorldClim climate
 ## join, hex_regular equal-aspect binning, fig_whittaker_global_contour()).
 ##
 ## Output: review/figures/draft_manuscript_v1/SupFigs/
-##   supp_whittaker_nee_gpp_ter.png/.pdf/.jpg + .legend.txt
+##   figS1_whittaker_nee_gpp_ter.png/.pdf/.jpg + .legend.txt
+##   (renumbered from supp_whittaker_nee_gpp_ter.*)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -33,7 +36,7 @@ msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...
 msg("=== Extended Data: Whittaker NEE/GPP/TER three-flux figure ===")
 
 OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
-OUT_STEM <- file.path(OUT_DIR, "supp_whittaker_nee_gpp_ter")
+OUT_STEM <- file.path(OUT_DIR, "figS1_whittaker_nee_gpp_ter")
 fs::dir_create(OUT_DIR)
 
 # ---- Step: load site-level annual fluxes (shared function) -------------------
@@ -238,30 +241,30 @@ msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
 # ---- Legend --------------------------------------------------------------------
 legend_lines <- c(
-  "FIGURE LEGEND — supp_whittaker_nee_gpp_ter.png",
+  "FIGURE LEGEND — figS1_whittaker_nee_gpp_ter.png",
   strrep("=", 60), "",
-  "TITLE: Extended Data Figure — Whittaker climate-space distribution of the current",
+  "TITLE: Supplementary Figure S1 — Whittaker climate-space distribution of the current",
   "FLUXNET network for three fluxes: net ecosystem exchange, gross primary productivity,",
   "and total ecosystem respiration", "",
   "DESCRIPTION:",
   "Three panels in a row (a NEE, b GPP, c TER), each the same hexagonal-binned Whittaker",
-  "climate-space plot as Figure 2 (mean annual temperature, WorldClim v2.1 BIO1, by mean",
+  "climate-space plot as Figure 3 (mean annual temperature, WorldClim v2.1 BIO1, by mean",
   "annual precipitation, BIO12), with the same per-site points overlaid (dark charcoal,",
   "alpha 0.35, drawn in front of the hexagons) and the same global ice-free-land 95%",
-  "(solid) / 99% (dashed) highest-density-region contour overlay as Figure 2 -- identical",
+  "(solid) / 99% (dashed) highest-density-region contour overlay as Figure 3 -- identical",
   "geometry and registration, since both reuse the same cached density grid",
   "(data/processed/whittaker_global_density_grid.rds).",
   "",
   "Values come from R/site_annual_fluxes.R::compute_site_annual_fluxes(): each tower's",
   "value is the median of its annual values passing QC_THRESHOLD_YY, per-site VUT/CUT, the",
-  "same rule as Figure 4 and Figure 2. A hexagon's colour is the median, across the towers",
+  "same rule as Figure 5 and Figure 3. A hexagon's colour is the median, across the towers",
   "falling in that climate-space bin, of each tower's own median value (median of site",
   "medians) -- a hexagon with no towers is white (not drawn).",
   "",
   "PANELS:",
-  paste0("  a NEE — same stepped ColorBrewer RdBu scale as Figure 2 (8 classes, no middle"),
+  paste0("  a NEE — same stepped ColorBrewer RdBu scale as Figure 3 (8 classes, no middle"),
   paste0("    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Own key shown (top-left"),
-  "    inset, identical to Figure 2's) --",
+  "    inset, identical to Figure 3's) --",
   paste0("    n = ", n_nee, " sites."),
   paste0("  b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --"),
   paste0("    n = ", n_gpp, " sites."),
@@ -282,13 +285,13 @@ legend_lines <- c(
   "    axis title or text) — Mean Annual Precipitation (mm yr⁻¹), fixed range 0 to 4000",
   "Four-sided black tick marks (inward) via a duplicated secondary axis, no gridlines,",
   "solid black panel border, identical MAT:MAP physical-length ratio in all three panels",
-  "(coord_fixed(), same construction as Figure 2's hex_regular = TRUE).",
+  "(coord_fixed(), same construction as Figure 3's hex_regular = TRUE).",
   "",
   "SOURCE: scripts/generate_whittaker_ed_three_flux.R. Panel a: fig_whittaker_worldclim()",
-  "(R/figures/fig_climate.R), fill_mode = \"stepped\" (same call as Figure 2). Panels b/c:",
+  "(R/figures/fig_climate.R), fill_mode = \"stepped\" (same call as Figure 3). Panels b/c:",
   "built directly in the script from compute_site_annual_fluxes()'s site-level medians --",
   "not NEE-specific, so not routed through fig_whittaker_worldclim(). Contour overlay:",
-  "fig_whittaker_global_contour(), shared with Figure 2.",
+  "fig_whittaker_global_contour(), shared with Figure 3.",
   paste0("DIMENSIONS: ", NATURE_ED_MAX_WIDTH_MM, " x 95 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,"),
   "Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt)."
 )

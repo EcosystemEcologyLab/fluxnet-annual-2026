@@ -8,7 +8,10 @@
 ## scripts/generate_fig01_merged.R, so this file's content is pixel-for-pixel
 ## the same plot, just without panel_letter("b") and under a new name.
 ##
-## Output: review/figures/draft_manuscript_v1/fig_cumulative_siteyears_igbp.png/.pdf/.legend.txt
+## Output: review/figures/draft_manuscript_v1/fig_02_cumulative_siteyears_igbp.png/.pdf/.legend.txt
+## (renumbered from fig_cumulative_siteyears_igbp.* under figure stage 6
+## numbering, 2026-10-02; this script's own name is unchanged -- see
+## docs/figure_inventory.md)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -29,7 +32,7 @@ msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...
 msg("=== Figure: cumulative site-years by IGBP (standalone, no panel letter) ===")
 
 OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1")
-OUT_STEM <- file.path(OUT_DIR, "fig_cumulative_siteyears_igbp")
+OUT_STEM <- file.path(OUT_DIR, "fig_02_cumulative_siteyears_igbp")
 fs::dir_create(OUT_DIR)
 
 snap_file <- file.path(FLUXNET_DATA_ROOT, "snapshots", "fluxnet_shuttle_snapshot_20260901T094522.csv")
@@ -80,9 +83,9 @@ msg("Total site-years plotted (1991-2024): ", total_site_years)
 
 ## ---- Legend --------------------------------------------------------------------
 legend_lines <- c(
-  "FIGURE LEGEND — fig_cumulative_siteyears_igbp.png",
+  "FIGURE LEGEND — fig_02_cumulative_siteyears_igbp.png",
   strrep("=", 60), "",
-  "TITLE: Cumulative site-years of the FLUXNET Shuttle network through time,",
+  "TITLE: Figure 2. Cumulative site-years of the FLUXNET Shuttle network through time,",
   "by IGBP land-cover class", "",
   "DESCRIPTION:",
   "Cumulative site-years of the current network through time, stacked by IGBP class",

@@ -1,15 +1,18 @@
 FIGURE LEGEND — supp_flux_representativeness.png
 ============================================================
 
-TITLE: Supplementary Figure — Representativeness of the current FLUXNET network (n=781), fluxes
+TITLE: Supplementary Figure S5 — Representativeness of the current FLUXNET network (n=781), fluxes
+(manuscript copy: SupFigs/figS5_flux_representativeness.png; this source file keeps its own
+canonical, unnumbered name per docs/figure_inventory.md)
 
 DESCRIPTION:
-Companion to Figure 4 (fig_04_representativeness.png) and its Geo vs Geo supplement
-(supp_representativeness_geo_vs_geo.png) -- same panel style, bar-label conventions, and "Geo vs
-Geo"/"Geo vs Data" definitions (see Figure 4's legend for the full definitions). Eight panels, four
+Companion to Figure 5 (fig_05_representativeness.png) and its Geo vs Geo companion,
+Supplementary Figure S4 (figS4_representativeness_geo_vs_geo.png) -- same panel style, bar-label
+conventions, and "Geo vs Geo"/"Geo vs Data" definitions (see Figure 5's legend for the full
+definitions). Eight panels, four
 fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f TER (ecosystem respiration, ra+rh),
 g/h ET; left column (a, c, e, g) is Geo vs Geo, right column (b, d, f, h) is Geo vs Data.
-Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 4's own panels e and f --
+Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 5's own panels e and f --
 identical rasters, tower values and bins; their n and J are confirmed programmatically (not just
 visually) to equal representativeness_metrics_fig4.csv rows E/F exactly before this figure is drawn.
 Panels c, d (GPP) and e, f (TER) are new to this figure.
@@ -39,14 +42,13 @@ steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's 
 because the tower values here use compute_site_annual_fluxes()/QC_THRESHOLD_YY, not that script's
 older QC>=0.80 mean-monthly-cycle method.
 
-BAR LABELS: as Figure 4 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the
+BAR LABELS: as Figure 5 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the
 clip; faint gridlines at 1/5x, 1/2x, 2x, 5x; "% land"/"towers" column headers above panels a/b only
 (same two-number convention applies to every row); J (weighted Jaccard) right-aligned per panel; the
 bottom row's x axis reads "smaller proportion"/"greater proportion" of towers vs. land.
 
-Final artwork size: 180 mm wide x 172.7 mm tall, Helvetica throughout. Extended-Data-style
-(no Supplementary Information or Extended Data distinction for Scientific Data -- this is a
-Supplementary Figure).
+Final artwork size: 180 mm wide x 172.7 mm tall, Helvetica throughout. Supplementary Figure
+(target journal Scientific Data has no Extended Data concept).
 
 PER-PANEL n AND J:
   a NEE (Geo vs Geo): n = 781 / 781, J = 0.530

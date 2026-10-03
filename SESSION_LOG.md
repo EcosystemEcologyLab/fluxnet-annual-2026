@@ -4,6 +4,92 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-02 (15) — Figure stage 6: numbering, supplementary PDF, methods, final report (DONE)
+
+Unattended run per `logs/figstage_prompt.md`, stage 6 only.
+
+### What changed
+
+- **Numbering (part a).** Renumbered the five main-text figures to `fig_01_map_network` …
+  `fig_05_representativeness` and the five existing Supplementary Figures to
+  `figS1_whittaker_nee_gpp_ter` … `figS5_flux_representativeness`, in the task's fixed order, via
+  their generating scripts (`scripts/generate_fig_map_network.R`,
+  `scripts/generate_fig_cumulative_siteyears.R`, `scripts/build_draft_manuscript_v1.R`,
+  `scripts/figure4_representativeness.R`, `scripts/generate_whittaker_ed_three_flux.R`,
+  `scripts/figure_flux_comparison_combo_alt_common_siteyears.R`,
+  `scripts/figure_flux_comparison_six_panel.R`, `scripts/figure_flux_representativeness_supp.R`)
+  plus `git mv` of the already-rendered output files — all renames verified byte-identical to
+  their pre-rename source (no re-render). Every `.legend.txt`'s self-reference and figure-number
+  cross-references updated; "Extended Data"/"Supplemental Figure" replaced with "Supplementary
+  Figure" throughout (target journal Scientific Data has no Extended Data concept). Source
+  scripts, functions, and underlying data/table files keep their own names — only the
+  `draft_manuscript_v1`/`SupFigs` copy filenames changed, stated explicitly in the rewritten
+  `docs/figure_inventory.md`.
+- **Stage 3 discovered uncommitted.** `review/figstage_status.md` has no Stage 3 entry (jumps
+  Stage 2 → Stage 4). On disk, `scripts/figure_representativeness_trajectory.R` and its full
+  output set (`supp_representativeness_trajectory.*` in both `review/figures/representativeness/`
+  and `SupFigs/`, `data/snapshots/representativeness_metrics_trajectory.*`) exist, untracked, with
+  the script's own validation log (`logs/figure_representativeness_trajectory_20261002_185348.
+  log`) reporting its current-network Geo-vs-Geo rows reproducing `representativeness_metrics_
+  fig4.csv` exactly. Treated the same way Stage 5 already treated its own Stage-3-conditional
+  item: not-DONE means excluded — `supp_representativeness_trajectory` is not part of the figS1–S5
+  numbering, and this stage neither committed nor finalised Stage 3 itself (not its task). Left
+  exactly as found.
+- **Supplementary PDF (part b).** New `scripts/build_supplementary_pdf.R` (dependency-free: base
+  `grid`/`grDevices` + the already-used `png` package) builds `SupFigs/supplementary_figures.pdf`:
+  one figure per page, headed by its number and legend title (word-wrapped — an unwrapped title
+  was found running off the page edge on first render and fixed before the final version), image
+  at ~200 dpi (downsampled from the 600 dpi source; full-resolution originals untouched).
+  **0.57 MB, 5 pages**, well under the 10 MB task limit.
+- **Methods (part c).** `docs/methods_requirements.md` §5.1–5.5 and §5.8's header/cross-references
+  brought into line with the current code and committed tables, via a dedicated research pass that
+  sourced every number from a committed table, script constant, or this log — nothing estimated.
+  Corrected: snapshot (now `fluxnet_shuttle_snapshot_20260901T094522.csv`, 781 sites, not the
+  stale 672); hub counts from the snapshot's own `data_hub` column (AmeriFlux 381, ICOS 348, TERN
+  52); VUT/CUT/neither split (616/40/125); Marconi site-years (97→96); the vague "4 sites"
+  ERA5-precipitation statement replaced with the verified four-part exclusion-rule breakdown; the
+  Köppen-Geiger source description reconciled across its two genuinely-different current uses
+  (ERA5-local everywhere except Figure 5 panel A's Geo-vs-Data side, PI-reported-BADM-first since
+  2026-10-02); the functionally-active-site definition corrected from a factually wrong prior
+  statement ("≥3 months… in last 4 years") to what `R/utils.R::is_functionally_active()` actually
+  implements. Marked **TO CONFIRM** rather than guessed: a current-network all-missing-NEE
+  exclusion count, a snapshot metadata sidecar/download-audit CSV, the still-unquantified `P_F`
+  tower-precipitation defect. §5.4 flagged (not rewritten) as describing an orphaned analysis
+  (`R/figures/fig_anomaly_context.R` and its callers, last touched 2026-04-18) not wired into any
+  currently-produced figure. UN subregion/FAO GEZ flagged not-currently-used in either §5.2 or
+  §5.5, verified by grep of the active figure-producing scripts.
+- **Final report (part d).** `review/figstage_report.md`: status of all six stages, the check
+  script's table, every stage's requested numbers, and all Decisions for Dave in one list.
+
+### Checks
+
+- `scripts/check_figure_format.R`: 11/11 PASS after all edits (5 main-text, 5 numbered
+  Supplementary Figures, plus the untouched `supp_representativeness_trajectory`).
+- Invariant (rule 5): `data/snapshots/representativeness_metrics_fig4.csv` unchanged throughout —
+  MD5 `85a1c086ad51aa27d40114c9c6d0e5d9`, `git diff` empty before and after this stage.
+- Visual check (rule 7): every renamed figure confirmed byte-identical to its pre-rename source
+  (`shasum`, 100%-similarity git rename detection) — no re-render, so no new clipping/overlap/
+  blank-band risk. The new `supplementary_figures.pdf` rendered to PNG per page (`pdftoppm`) and
+  inspected directly: titles wrap within the margin, no clipped text/images, all colour keys
+  visible, no blank bands.
+
+### Decisions for Dave
+
+- Stage 3 was found fully run but never closed out (script, figure, table, log all exist
+  uncommitted; internal validation passed). Not committed or finalised by this stage (out of
+  scope) and excluded from the Supplementary Figure numbering. Recommend either re-running Stage 3
+  to completion or explicitly deciding to drop it.
+- Supplementary PDF downsamples to ~200 dpi for file size — full-resolution originals unchanged.
+- Two methods-doc facts marked TO CONFIRM rather than guessed: current-network all-missing-NEE
+  exclusion count; snapshot metadata sidecar/download-audit CSV for the locked 2026-09-01
+  snapshot.
+- §5.4 of the methods doc flagged as an orphaned, not-currently-wired-in analysis rather than
+  rewritten or removed.
+
+Full write-up: `review/figstage_report.md`; stage status in `review/figstage_status.md`, Stage 6.
+
+---
+
 ## 2026-10-02 (14) — Figure stage 5: clean-up (DONE)
 
 Unattended run per `logs/figstage_prompt.md`, stage 5 only.

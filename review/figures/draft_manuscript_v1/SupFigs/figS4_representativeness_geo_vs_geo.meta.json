@@ -12,5 +12,5 @@
     "site_nee_fig4.csv",
     "site_et_fig4.csv"
   ],
-  "notes": "New Figure 4 (Geo vs Geo version), Nature final-artwork re-render: 180 mm wide x 173.3 mm tall, Helvetica, 7pt text (row pitch 4.2mm). Rendering only -- confirmed against representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) render. Vector PDF saved alongside. See SESSION_LOG.md."
+  "notes": "Supplementary Figure S4 (renumbered under figure stage 6 numbering, 2026-10-02; companion to Figure 5, Geo vs Geo version), Nature final-artwork re-render: 180 mm wide x 173.3 mm tall, Helvetica, 7pt text (row pitch 4.2mm). Rendering only -- confirmed against representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) render. Vector PDF saved alongside. See SESSION_LOG.md."
 }

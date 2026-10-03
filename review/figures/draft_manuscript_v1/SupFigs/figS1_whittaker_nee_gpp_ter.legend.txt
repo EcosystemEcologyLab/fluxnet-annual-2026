@@ -1,29 +1,29 @@
-FIGURE LEGEND — supp_whittaker_nee_gpp_ter.png
+FIGURE LEGEND — figS1_whittaker_nee_gpp_ter.png
 ============================================================
 
-TITLE: Extended Data Figure — Whittaker climate-space distribution of the current
+TITLE: Supplementary Figure S1 — Whittaker climate-space distribution of the current
 FLUXNET network for three fluxes: net ecosystem exchange, gross primary productivity,
 and total ecosystem respiration
 
 DESCRIPTION:
 Three panels in a row (a NEE, b GPP, c TER), each the same hexagonal-binned Whittaker
-climate-space plot as Figure 2 (mean annual temperature, WorldClim v2.1 BIO1, by mean
+climate-space plot as Figure 3 (mean annual temperature, WorldClim v2.1 BIO1, by mean
 annual precipitation, BIO12), with the same per-site points overlaid (dark charcoal,
 alpha 0.35, drawn in front of the hexagons) and the same global ice-free-land 95%
-(solid) / 99% (dashed) highest-density-region contour overlay as Figure 2 -- identical
+(solid) / 99% (dashed) highest-density-region contour overlay as Figure 3 -- identical
 geometry and registration, since both reuse the same cached density grid
 (data/processed/whittaker_global_density_grid.rds).
 
 Values come from R/site_annual_fluxes.R::compute_site_annual_fluxes(): each tower's
 value is the median of its annual values passing QC_THRESHOLD_YY, per-site VUT/CUT, the
-same rule as Figure 4 and Figure 2. A hexagon's colour is the median, across the towers
+same rule as Figure 5 and Figure 3. A hexagon's colour is the median, across the towers
 falling in that climate-space bin, of each tower's own median value (median of site
 medians) -- a hexagon with no towers is white (not drawn).
 
 PANELS:
-  a NEE — same stepped ColorBrewer RdBu scale as Figure 2 (8 classes, no middle
+  a NEE — same stepped ColorBrewer RdBu scale as Figure 3 (8 classes, no middle
     class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Own key shown (top-left
-    inset, identical to Figure 2's) --
+    inset, identical to Figure 3's) --
     n = 656 sites.
   b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --
     n = 651 sites.
@@ -41,12 +41,12 @@ AXES:
     axis title or text) — Mean Annual Precipitation (mm yr⁻¹), fixed range 0 to 4000
 Four-sided black tick marks (inward) via a duplicated secondary axis, no gridlines,
 solid black panel border, identical MAT:MAP physical-length ratio in all three panels
-(coord_fixed(), same construction as Figure 2's hex_regular = TRUE).
+(coord_fixed(), same construction as Figure 3's hex_regular = TRUE).
 
 SOURCE: scripts/generate_whittaker_ed_three_flux.R. Panel a: fig_whittaker_worldclim()
-(R/figures/fig_climate.R), fill_mode = "stepped" (same call as Figure 2). Panels b/c:
+(R/figures/fig_climate.R), fill_mode = "stepped" (same call as Figure 3). Panels b/c:
 built directly in the script from compute_site_annual_fluxes()'s site-level medians --
 not NEE-specific, so not routed through fig_whittaker_worldclim(). Contour overlay:
-fig_whittaker_global_contour(), shared with Figure 2.
+fig_whittaker_global_contour(), shared with Figure 3.
 DIMENSIONS: 180 x 95 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
 Helvetica, white background. All text 5-7pt except the bold lower-case panel letters (8pt).

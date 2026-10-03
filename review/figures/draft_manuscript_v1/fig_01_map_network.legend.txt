@@ -1,4 +1,4 @@
-FIGURE LEGEND — fig_map_network.png
+FIGURE LEGEND — fig_01_map_network.png
 ============================================================
 
 TITLE: Figure 1. Global distribution of the current FLUXNET network

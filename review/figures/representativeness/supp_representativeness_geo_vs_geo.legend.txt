@@ -1,24 +1,25 @@
 FIGURE LEGEND — supp_representativeness_geo_vs_geo.png
 ============================================================
 
-TITLE: Supplemental Figure — Representativeness of the current FLUXNET network (n=781), Geo vs Geo
+TITLE: Supplementary Figure S4 — Representativeness of the current FLUXNET network (n=781), Geo vs Geo
+(manuscript copy: SupFigs/figS4_representativeness_geo_vs_geo.png; this source file
+keeps its own canonical, unnumbered name per docs/figure_inventory.md)
 
 DESCRIPTION:
-Companion to Figure 4 (fig_04_representativeness.png), same six panels (a Koppen-Geiger,
-b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and the same panel layout, bar-
-label conventions, land grids/totals, and column headers -- see Figure 4's legend for all
-of that, including the "Geo vs Data"/"Geo vs Geo" definitions, which this figure shares
-in full. The only difference is the site-side value: Geo vs Geo classifies every tower by
-the gridded product's own value at that tower's coordinate, rather than the site's own
-measured or site-derived value. Because every tower has a value in the gridded product by
-construction, no panel here has the precipitation-dependent exclusions that apply to
-Figure 4's panels a and c -- n = 781/781 for all six panels. Panels e and f here use the
-model's own value at the tower, not a tower measurement -- Figure 4's own panels e and f
+Companion to Figure 5 (fig_05_representativeness.png, source fig_04_representativeness.png),
+same six panels (a Koppen-Geiger, b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and
+the same panel layout, bar-label conventions, land grids/totals, and column headers -- see
+Figure 5's legend for all of that, including the "Geo vs Data"/"Geo vs Geo" definitions, which
+this figure shares in full. The only difference is the site-side value: Geo vs Geo classifies
+every tower by the gridded product's own value at that tower's coordinate, rather than the
+site's own measured or site-derived value. Because every tower has a value in the gridded
+product by construction, no panel here has the precipitation-dependent exclusions that apply to
+Figure 5's panels a and c -- n = 781/781 for all six panels. Panels e and f here use the
+model's own value at the tower, not a tower measurement -- Figure 5's own panels e and f
 (Geo vs Data) instead use each site's median annual value passing QC_THRESHOLD_YY=0.5,
-each flux gated on its own QC column, per-site VUT/CUT (see Figure 4's legend).
-Final artwork size: 180 mm wide x 173.3 mm tall, Helvetica throughout. Extended Data
-figure (no Supplementary Information figures in Nature) -- see SupFigs/ note in
-docs/figure_inventory.md.
+each flux gated on its own QC column, per-site VUT/CUT (see Figure 5's legend).
+Final artwork size: 180 mm wide x 173.3 mm tall, Helvetica throughout. Supplementary Figure
+(target journal Scientific Data has no Extended Data concept) -- see docs/figure_inventory.md.
 
 PER-PANEL n AND J (Geo vs Geo):
   a Köppen-Geiger (koppen): n = 781 / 781, J = 0.372

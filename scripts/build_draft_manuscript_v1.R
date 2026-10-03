@@ -95,9 +95,9 @@ fs::dir_create(out_dir)
 # source PNG -> descriptive draft-manuscript filename
 figs <- list(
   list(src = "review/figures/candidates/ALT_fig_02_whittaker_current.png",
-       dst = "fig_02_whittaker_current.png"),
+       dst = "fig_03_whittaker_current.png"),
   list(src = "review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png",
-       dst = "fig_03_flux_comparison_combo_nep_et_h.png")
+       dst = "fig_04_flux_comparison_combo_nep_et_h.png")
   # Figure 1 map (fig_map_network.png) and the standalone cumulative
   # site-years figure (fig_cumulative_siteyears_igbp.png) are no longer
   # sourced here -- see "Fig 1 note" above.
@@ -142,8 +142,8 @@ for (f in figs) {
 # hardcoded block below.
 legends <- list(
   list(src = "review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.legend.txt",
-       dst = "fig_03_flux_comparison_combo_nep_et_h.legend.txt",
-       fix_dims = NULL)
+       dst = "fig_04_flux_comparison_combo_nep_et_h.legend.txt",
+       fix_dims = NULL, fig_number = 4)
   # Figure 1 map / cumulative site-years legends are no longer sourced here
   # -- see "Fig 1 note" above.
   # Figure 4's legend (fig_04_representativeness.legend.txt) is no longer
@@ -160,6 +160,17 @@ for (l in legends) {
   txt <- readLines(l$src)
   if (!is.null(l$fix_dims)) {
     txt <- sub("^DIMENSIONS:.*$", l$fix_dims, txt)
+  }
+  # Figure stage 6 (2026-10-02): the draft-manuscript copy's own filename and
+  # figure number differ from the source legend's self-description (the
+  # source file keeps its own canonical, unnumbered name per docs/
+  # figure_inventory.md) -- rewrite the "FIGURE LEGEND --" header line to
+  # this copy's own filename, and prefix TITLE with the manuscript figure
+  # number, without touching the source file.
+  dst_png_name <- sub("\\.legend\\.txt$", ".png", l$dst)
+  txt <- sub("^FIGURE LEGEND .*$", paste0("FIGURE LEGEND — ", dst_png_name), txt)
+  if (!is.null(l$fig_number)) {
+    txt <- sub("^TITLE: ", paste0("TITLE: Figure ", l$fig_number, ". "), txt)
   }
   writeLines(txt, dst_path)
   message("Copied: ", l$src, " -> ", dst_path)
@@ -191,10 +202,10 @@ if (!file.exists(fig02_counts_path)) {
 fig02_counts <- jsonlite::fromJSON(fig02_counts_path)
 
 fig02_legend <- c(
-  "FIGURE LEGEND — fig_02_whittaker_current.png",
+  "FIGURE LEGEND — fig_03_whittaker_current.png",
   "==============================================",
   "",
-  "TITLE: Whittaker climate-space distribution of the current FLUXNET network,",
+  "TITLE: Figure 3. Whittaker climate-space distribution of the current FLUXNET network,",
   "coloured by median annual net ecosystem exchange, with global ice-free-land",
   "climate-space contours overlaid",
   "",
@@ -336,7 +347,7 @@ fig02_legend <- c(
   "Source script:       scripts/generate_whittaker_alt_fig02_update.R",
   "Output:              review/figures/candidates/ALT_fig_02_whittaker_current.png/.pdf,",
   "                     copied to",
-  "                     review/figures/draft_manuscript_v1/fig_02_whittaker_current.png/.pdf",
+  "                     review/figures/draft_manuscript_v1/fig_03_whittaker_current.png/.pdf",
   "                     by scripts/build_draft_manuscript_v1.R",
   "DIMENSIONS:          89 x 89 mm, 600 dpi PNG + vector PDF, Helvetica, white",
   "                     background. All text 5-7pt (axis titles/text 7pt;",
@@ -346,7 +357,7 @@ fig02_legend <- c(
   "                     SESSION_LOG.md and review/figures/RUN_LOG_fig02_promote.txt)",
   "DIMENSIONS: 3.5 × 3.5 inches, 300 dpi, white background"
 )
-fig02_legend_path <- file.path(out_dir, "fig_02_whittaker_current.legend.txt")
+fig02_legend_path <- file.path(out_dir, "fig_03_whittaker_current.legend.txt")
 writeLines(fig02_legend, fig02_legend_path)
 message("Wrote: ", fig02_legend_path, " (hardcoded, not copied)")
 

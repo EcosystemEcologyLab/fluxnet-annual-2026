@@ -1,7 +1,7 @@
-FIGURE LEGEND — fig_02_whittaker_current.png
+FIGURE LEGEND — fig_03_whittaker_current.png
 ==============================================
 
-TITLE: Whittaker climate-space distribution of the current FLUXNET network,
+TITLE: Figure 3. Whittaker climate-space distribution of the current FLUXNET network,
 coloured by median annual net ecosystem exchange, with global ice-free-land
 climate-space contours overlaid
 
@@ -139,7 +139,7 @@ Overlay functions:   fig_whittaker_global_contour(),
 Source script:       scripts/generate_whittaker_alt_fig02_update.R
 Output:              review/figures/candidates/ALT_fig_02_whittaker_current.png/.pdf,
                      copied to
-                     review/figures/draft_manuscript_v1/fig_02_whittaker_current.png/.pdf
+                     review/figures/draft_manuscript_v1/fig_03_whittaker_current.png/.pdf
                      by scripts/build_draft_manuscript_v1.R
 DIMENSIONS:          89 x 89 mm, 600 dpi PNG + vector PDF, Helvetica, white
                      background. All text 5-7pt (axis titles/text 7pt;

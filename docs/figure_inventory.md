@@ -35,42 +35,57 @@ External data dependencies:
 | `fig_long_record_timeseries` | — | Annual time series of flux variables for top-`n` longest-record sites per continent (UN Geoscheme); lines coloured by IGBP with `scale_color_igbp()` | `R/figures/fig_timeseries.R:178` | YY | None |
 | `fig_growing_season_nee` | `growing_season_count.png`<br>`growing_season_span.png` | Growing season length (uptake-day count and calendar span) vs annual NEE scatter, coloured by IGBP | `R/figures/fig_growing_season.R:201` | YY + DD | None |
 
-## Figure 1 (merged)
+## Main-text figures (`draft_manuscript_v1/`, figure stage 6 numbering, 2026-10-02)
 
-`scripts/generate_fig01_merged.R` builds `draft_manuscript_v1/fig_01.png`/`.pdf`/`.legend.txt`
-(added 2026-10-02, task 9): panel a (the Equal Earth network map) above panel b (cumulative
-site-years by IGBP), 89 mm wide, ONE file -- calling the same two panel-building functions and
-pinned inputs (`fig_map_point_network()`, `fig_cumulative_siteyears_igbp()`) as
-`scripts/generate_point_maps.R` and `scripts/generate_duration_histograms.R` below, which
-continue to stage the separate `fig_01a_map_current_network.png`/`fig_01b_cumulative_siteyears_
-igbp.png` files this merged file does not replace. Figure 1a's map is Equal Earth (EPSG:8857,
-`R/figures/fig_maps.R::fig_map_point_network()`, revised 2026-10-02, task 7): canvas height fit
-to the map (not a fixed square, via `equal_earth_height_mm()`), filled no-outline semi-transparent
-points, separate thinner/lighter country-border vs. coastline line layers
-(`.map_base_eqearth()`), Antarctica/high Arctic excluded by cropping the basemap and points to
-latitude [-56, 85] before projecting.
+Renumbered under figure stage 6 (`logs/figstage_prompt.md`) to close the gap left when Figure 1
+(map + cumulative site-years) and the map's Extended-Data predecessor were reworked in figure
+stages 1-2. Scripts, functions and underlying data files keep their own names (per figure stage 6
+rule 3) — only the `draft_manuscript_v1/` copy filenames below changed. `fig_01.*`,
+`fig_01a_map_current_network.*`, `fig_01b_cumulative_siteyears_igbp.*` (the earlier,
+now-superseded Figure 1 attempts) are retired in `draft_manuscript_v1/deprecated/` — see figure
+stage 2 in `SESSION_LOG.md`, 2026-10-02.
+
+| Manuscript file | Built by | Description |
+|---|---|---|
+| `fig_01_map_network.png`/`.pdf` | `scripts/generate_fig_map_network.R` (writes directly, no copy step) | Figure 1. Five-panel global network map: Equal Earth world overview (panel a) + four Lambert Azimuthal Equal-Area regional close-ups (b-e: North America, Europe, East/Southeast Asia, Australia/New Zealand), 183 mm wide. Promoted from the retired Extended Data `supp_map_regional` in figure stage 2. |
+| `fig_02_cumulative_siteyears_igbp.png`/`.pdf` | `scripts/generate_fig_cumulative_siteyears.R` (writes directly) | Figure 2. Cumulative site-years of the current network through time by IGBP class, with Marconi/La Thuile/FLUXNET2015 historical overlay lines, 89 mm wide, no panel letter. |
+| `fig_03_whittaker_current.png`/`.pdf` | `scripts/build_draft_manuscript_v1.R`, copying `review/figures/candidates/ALT_fig_02_whittaker_current.png` (source keeps its own name) | Figure 3. Whittaker climate-space hexbin of the current network, coloured by median annual NEE, with global ice-free-land contour overlay. |
+| `fig_04_flux_comparison_combo_nep_et_h.png`/`.pdf` | `scripts/build_draft_manuscript_v1.R`, copying `review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png` (source keeps its own name) | Figure 4. Per-IGBP-class median NEP/ET/H comparison, FLUXNET2015 (comparison data) vs. current FLUXNET Shuttle network. |
+| `fig_05_representativeness.png`/`.pdf` | `scripts/figure4_representativeness.R` (writes directly; FIG_DIR source keeps its own name, `fig_04_representativeness.*`) | Figure 5. Six-panel representativeness figure, Geo vs Data — see the dedicated table below. |
+
+Figure 1a's map is Equal Earth (EPSG:8857, `R/figures/fig_maps.R::.map_base_eqearth()`): canvas
+height fit to the map (not a fixed square), filled no-outline semi-transparent points, separate
+thinner/lighter country-border vs. coastline line layers, Antarctica/high Arctic excluded by
+cropping the basemap and points to latitude [-56, 85] before projecting. Panel-letter and
+scale-bar placement in panels b-e is chosen programmatically to avoid land (figure stage 2,
+`scripts/generate_fig_map_network.R::.find_clear_rect()`/`.place_letter()`).
 
 ## Shared IGBP palette (task 2, 2026-10-02)
 
-Every paper figure that colours by IGBP class (Figures 1b, 3, 4, and the matched/six-panel
-Extended Data figures) uses `R/plot_constants.R::PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS`
+Every paper figure that colours by IGBP class (Figures 2, 4, 5, and the matched/six-panel
+Supplementary Figures S2/S3) uses `R/plot_constants.R::PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS`
 (`scale_fill_paper_igbp()`/`scale_color_paper_igbp()`) -- Figure 4's own MODIS/061/MCD12Q1 GEE
 palette (15 classes, CVM/BSV/SNO included), promoted to a shared constant. This is DIFFERENT
 from the older `IGBP_order`/`IGBP_colours` (still used by other, non-paper figures) -- see
 `docs/known_issues.md` §11.
 
-## Manuscript representativeness figures (Figure 4 and supplement)
+## Manuscript representativeness figures (Figure 5 and supplement)
 
 Not part of `07_figures.R` / `R/figures/` — these are standalone production scripts, each producing a
 PNG + vector PDF pair plus a `.meta.json` and `.legend.txt`, copied into
-`review/figures/draft_manuscript_v1/`.
+`review/figures/draft_manuscript_v1/`. Renumbered Figure 4 -> Figure 5 under figure stage 6
+(2026-10-02) when Figure 1 (map) and Figure 2 (cumulative site-years) were split out as their own
+main-text figures (see "Main-text figures" above); `scripts/figure4_representativeness.R`'s own
+name and its FIG_DIR source basenames (`fig_04_representativeness.*`,
+`supp_representativeness_geo_vs_geo.*`) are unchanged — only the `draft_manuscript_v1`/`SupFigs`
+copy filenames were renumbered.
 
-| Script | Output (main location) | Draft-manuscript copy | Description | External data | Status |
+| Script | Output (main location, unchanged name) | Draft-manuscript copy (renumbered) | Description | External data | Status |
 |---|---|---|---|---|---|
-| `scripts/figure4_representativeness.R` | `review/figures/representativeness/fig_04_representativeness.png`/`.pdf` | `fig_04_representativeness.png`/`.pdf` | **Figure 4.** Six-panel log2 sampling-ratio figure (Köppen-Geiger, IGBP land cover, aridity, biomass, NEE, ET) vs. current 781-site network, Geo vs Data | Beck 2023 KG, MODIS MCD12C1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14, WorldClim BIO12, ERA5 | Current |
-| `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf` | `SupFigs/supp_representativeness_geo_vs_geo.png`/`.pdf` | **Extended Data figure** (revised 2026-10-02: moved from `draft_manuscript_v1/` into `draft_manuscript_v1/SupFigs/` and re-rendered at 180 mm wide — Nature takes no Supplementary Information figures, so this is Extended Data, not a "supplemental figure"; `draft_manuscript_v1/` itself keeps only main-text figures). Same six panels, Geo vs Geo (gridded product's own value at each tower, not the site's own measurement) | same as above | Current |
+| `scripts/figure4_representativeness.R` | `review/figures/representativeness/fig_04_representativeness.png`/`.pdf` | `fig_05_representativeness.png`/`.pdf` | **Figure 5.** Six-panel log2 sampling-ratio figure (Köppen-Geiger, IGBP land cover, aridity, biomass, NEE, ET) vs. current 781-site network, Geo vs Data | Beck 2023 KG, MODIS MCD12C1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14, WorldClim BIO12, ERA5 | Current |
+| `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf` | `SupFigs/figS4_representativeness_geo_vs_geo.png`/`.pdf` | **Supplementary Figure S4** (target journal Scientific Data has no Extended Data concept; `draft_manuscript_v1/` itself keeps only main-text figures). Same six panels, Geo vs Geo (gridded product's own value at each tower, not the site's own measurement) | same as above | Current |
 | `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/fig_rep001_current.png` | — (superseded, see below) | Prior "Figure 4": six-panel sampling ratio figure (Köppen-Geiger, ESA CCI Land Cover, CGIAR Aridity, ESA CCI Biomass, TRENDY NEE-IAV, TRENDY ET-median) vs. 767-site network | Beck 2023 KG, ESA CCI LC v2.1.1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14 | **Superseded** 2026-10-02 by `fig_04_representativeness.png` above |
-| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/fig_rep002_marconi.png` … `fig_rep008_jaccard_trajectory_with_counts.png` | — (see note below) | Historical-network representativeness comparisons (Marconi, La Thuile, FLUXNET2015) and the Jaccard-overlap trajectory over network history | same as fig_rep001 | Current (not touched by the Figure 4 work); `fig_rep008`'s draft-manuscript copy retired 2026-10-02 (see note below) |
+| `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/fig_rep002_marconi.png` … `fig_rep008_jaccard_trajectory_with_counts.png` | — (see note below) | Historical-network representativeness comparisons (Marconi, La Thuile, FLUXNET2015) and the Jaccard-overlap trajectory over network history | same as fig_rep001 | Current (not touched by the Figure 4/5 work); `fig_rep008`'s draft-manuscript copy retired 2026-10-02 (see note below) |
 
 **Superseded Figure 4.** `review/figures/draft_manuscript_v1/fig_04_current_network_sampling_ratios.png`
 (and its `.legend.txt`), the `fig_rep001_current.png`-sourced draft-manuscript copy of the prior Figure 4,
@@ -79,24 +94,65 @@ were moved to `review/figures/draft_manuscript_v1/deprecated/` on 2026-10-02 and
 `review/figures/representativeness/`) is untouched and still produced by
 `scripts/figure_representativeness_summary.R`.
 
-**Retired Figure 5.** `fig_05_jaccard_trajectory_with_counts.png`/`.legend.txt` (sourced from
-`fig_rep008_jaccard_trajectory_with_counts.png`) were taken out of the draft manuscript on 2026-10-02:
-moved to `review/figures/draft_manuscript_v1/deprecated/` and removed from
+**Retired Figure 5 (original, pre-renumbering).** `fig_05_jaccard_trajectory_with_counts.png`/`.legend.txt`
+(sourced from `fig_rep008_jaccard_trajectory_with_counts.png`) were taken out of the draft manuscript on
+2026-10-02: moved to `review/figures/draft_manuscript_v1/deprecated/` and removed from
 `scripts/build_draft_manuscript_v1.R`'s copy maps. `fig_rep008_jaccard_trajectory_with_counts.png` itself
-is untouched and still produced by `scripts/figure_representativeness_summary.R`.
+is untouched and still produced by `scripts/figure_representativeness_summary.R`. (This "Figure 5" name
+slot was later reused by figure stage 6, 2026-10-02, for the unrelated, renumbered
+`fig_05_representativeness.png` above — the two are not the same figure.)
 
-## Extended Data figures (`draft_manuscript_v1/SupFigs/`)
+**Pending: `scripts/figure_representativeness_summary.R`'s remaining outputs** (`fig_rep001`-
+`fig_rep018` and `fig_representativeness_*` in `review/figures/representativeness/`) are listed as
+"Current" above, but figure stage 5 (`SESSION_LOG.md`, 2026-10-02) flagged their retirement as
+conditional on figure stage 3 (the representativeness trajectory supplement) being marked DONE in
+`review/figstage_status.md` — which it is not (see Supplementary Figures note below). Not retired by
+figure stage 6 either, since that stage's scope is numbering, not stage-3/5 cleanup.
 
-Added 2026-10-02. Nature takes no Supplementary Information figures, so every figure in this
-folder is an Extended Data figure: ≤180 mm wide, ≤240 mm tall, PNG (600 dpi) + vector PDF +
-300 p.p.i. JPEG, Helvetica, all text 5–7 pt except 8 pt bold lower-case panel letters. None of
-these scripts are wired into `scripts/build_draft_manuscript_v1.R` — each writes directly to
-`SupFigs/`.
+## Supplementary Figures (`draft_manuscript_v1/SupFigs/`)
 
-| Script | Output | Description |
-|---|---|---|
-| `scripts/figure4_representativeness.R` | `supp_representativeness_geo_vs_geo.png`/`.pdf` | See the main table above. |
-| `scripts/generate_whittaker_ed_three_flux.R` | `supp_whittaker_nee_gpp_ter.png`/`.pdf`/`.jpg` | Three-panel Whittaker climate-space hexbin (a NEE, stepped RdBu scale shared with Figure 2; b GPP, c TER, ONE shared STEPPED viridis scale, 500 g C m⁻² yr⁻¹ steps from 0 to 3000 plus an "above 3000" bin, one shared key in its own row below the panels) — same hexagons, points (drawn in front, same order in all three panels) and global ice-free-land contour overlay as Figure 2. Values from `compute_site_annual_fluxes()`. Stepped scale and shared-key layout revised 2026-10-02, task 5. |
-| `scripts/figure_flux_comparison_combo_alt_common_siteyears.R` | `supp_flux_comparison_matched_siteyears.png`/`.pdf`/`.jpg` | FLUXNET2015-vs-Shuttle NEP/ET/H comparison restricted to matched site-years (same site **and** calendar year required on both axes) — isolates ONEFlux processing-version differences from network-composition change. Rebuilt 2026-10-02 on `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()`; see `docs/known_issues.md` §10. |
-| `scripts/figure_flux_comparison_six_panel.R` | `supp_flux_comparison_six_panel.png`/`.pdf`/`.jpg` | Six-panel re-plot (no new computation) of the two tables above side by side: rows NEP/ET/H, left column = Figure 3's "all qualifying site-years" data, right column = the matched-site-years data, identical axis limits within each row. |
-| `scripts/generate_map_regional.R` | `supp_map_regional.png`/`.pdf`/`.jpg` | Regional network distribution (added 2026-10-02, task 8): panel a the same Equal Earth world map as Figure 1a with the four regional extents outlined; panels b–e, one Lambert Azimuthal Equal-Area projection per region (North America, Europe, East/Southeast Asia, Australia/New Zealand), each with a labelled round-length scale bar, showing only the towers inside that region's extent. |
+Added 2026-10-02. The target journal is Scientific Data, which has no Extended Data concept —
+every figure in this folder is a Supplementary Figure (an earlier draft of this repo's figures/
+docs used "Extended Data"/"Supplemental Figure" terminology borrowed from Nature-family
+conventions before the target journal was settled as Scientific Data; both are now corrected to
+"Supplementary Figure" throughout, figure stage 6, 2026-10-02): ≤180 mm wide, ≤240 mm tall, PNG
+(600 dpi) + vector PDF + 300 p.p.i. JPEG, Helvetica, all text 5–7 pt except 8 pt bold lower-case
+panel letters (`scripts/check_figure_format.R` enforces the size rules; its own internal
+`extended_data`/`ED_*`/`NATURE_ED_*` names are unchanged code identifiers, not user-facing
+terminology). None of these scripts are wired into `scripts/build_draft_manuscript_v1.R` — each
+writes directly to `SupFigs/`.
+
+Numbered figS1–figS5 under figure stage 6 (2026-10-02), in the fixed order below, without gaps.
+Scripts, functions and underlying data/table files keep their own names (figure stage 6 rule 3) —
+only the `SupFigs/` copy filenames changed, from `supp_<name>.*` to `figS<N>_<name>.*`.
+
+| # | Script | FIG_DIR / canonical source name | `SupFigs/` copy (renumbered) | Description |
+|---|---|---|---|---|
+| S1 | `scripts/generate_whittaker_ed_three_flux.R` | (writes directly to `SupFigs/`, no separate FIG_DIR source) | `figS1_whittaker_nee_gpp_ter.png`/`.pdf`/`.jpg` | Three-panel Whittaker climate-space hexbin (a NEE, stepped RdBu scale shared with Figure 3; b GPP, c TER, ONE shared STEPPED viridis scale, 500 g C m⁻² yr⁻¹ steps from 0 to 3000 plus an "above 3000" bin, one shared key in its own row below the panels) — same hexagons, points (drawn in front, same order in all three panels) and global ice-free-land contour overlay as Figure 3. Values from `compute_site_annual_fluxes()`. Stepped scale and shared-key layout revised 2026-10-02, task 5. |
+| S2 | `scripts/figure_flux_comparison_combo_alt_common_siteyears.R` | (writes directly to `SupFigs/`) | `figS2_flux_comparison_matched_siteyears.png`/`.pdf`/`.jpg` | FLUXNET2015-vs-Shuttle NEP/ET/H comparison restricted to matched site-years (same site **and** calendar year required on both axes) — isolates ONEFlux processing-version differences from network-composition change. Rebuilt 2026-10-02 on `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()`; see `docs/known_issues.md` §10. |
+| S3 | `scripts/figure_flux_comparison_six_panel.R` | (writes directly to `SupFigs/`) | `figS3_flux_comparison_six_panel.png`/`.pdf`/`.jpg` | Six-panel re-plot (no new computation) of the two tables above side by side: rows NEP/ET/H, left column = Figure 4's "all qualifying site-years" data, right column = the matched-site-years data (Supplementary Figure S2), identical axis limits within each row. |
+| S4 | `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf`/`.jpg` | `figS4_representativeness_geo_vs_geo.png`/`.pdf`/`.jpg` | See the main representativeness table above. Companion to Figure 5, Geo vs Geo. |
+| S5 | `scripts/figure_flux_representativeness_supp.R` | `review/figures/representativeness/supp_flux_representativeness.png`/`.pdf`/`.jpg` | `figS5_flux_representativeness.png`/`.pdf`/`.jpg` | Eight panels: four fluxes (NEE, GPP, TER, ET) x two comparisons (Geo vs Geo, Geo vs Data). NEE/ET panels (a/b/g/h) are Figure 5's own panels e/f, confirmed programmatically identical (n/J) before rendering. GPP/TER (c/d/e/f) are new: TRENDY v14 S3 17-model ensemble-median (1991–2020 mean, TER = ra+rh) vs. tower medians from `compute_site_annual_fluxes()`. Table: `data/snapshots/representativeness_metrics_flux_supp.csv`. Added figure stage 4, 2026-10-02. |
+
+**Retired.** `scripts/generate_map_regional.R` → `supp_map_regional.png`/`.pdf`/`.jpg`: regional
+network distribution (panel a the Equal Earth world map with the four regional extents outlined;
+panels b–e, one Lambert Azimuthal Equal-Area projection per region). Retired to
+`SupFigs/deprecated/` in figure stage 2 (2026-10-02) when its five panels were promoted to the
+main-text `fig_01_map_network` (see "Main-text figures" above) — not part of the figS1–S5
+numbering.
+
+**Not numbered: `supp_representativeness_trajectory` (figure stage 3's deliverable).** Figure
+stage 3 (Geo-vs-Geo representativeness through time, Marconi/La Thuile/FLUXNET2015/current) is
+**not marked DONE** in `review/figstage_status.md` — the file jumps from Stage 2 straight to Stage
+4. On disk, `scripts/figure_representativeness_trajectory.R` and its outputs
+(`review/figures/representativeness/supp_representativeness_trajectory.*`,
+`SupFigs/supp_representativeness_trajectory.*`,
+`data/snapshots/representativeness_metrics_trajectory.*`) exist and that script's own internal
+validation log (`logs/figure_representativeness_trajectory_20261002_185348.log`) reports its
+current-network Geo-vs-Geo rows reproducing `representativeness_metrics_fig4.csv` exactly — but
+none of these files are committed to git, and Stage 3 was never closed out (no
+`review/figstage_status.md` entry, no `SESSION_LOG.md` entry). Figure stage 6 (numbering) treats
+this the same way figure stage 5 (clean-up) already did for its own conditional item: Stage 3
+not-DONE means its figure is excluded from the figS1–S5 numbering, so the sequence has no gap at
+"S6" — it simply stops at S5. See the "Decisions for Dave" note in `review/figstage_status.md`'s
+Stage 6 entry. |

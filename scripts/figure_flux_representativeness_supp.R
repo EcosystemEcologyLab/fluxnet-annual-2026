@@ -1,8 +1,11 @@
 ## figure_flux_representativeness_supp.R
 ##
-## Figure stage 4 (logs/figstage_prompt.md): SupFigs/supp_flux_representativeness
-## -- four rows (NEE, GPP, TER, ET) by two columns (Geo vs Geo left, Geo vs
-## Data right), panels lettered a-h across rows, in Figure 4's own panel
+## Figure stage 4 (logs/figstage_prompt.md): SupFigs/supp_flux_representativeness,
+## renumbered Supplementary Figure S5 under figure stage 6 (2026-10-02; see
+## DEST_BASE below and docs/figure_inventory.md; this script's own name and its
+## FIG_DIR source basename are unchanged) -- four rows (NEE, GPP, TER, ET) by
+## two columns (Geo vs Geo left, Geo vs Data right), panels lettered a-h across
+## rows, in Figure 5's own panel
 ## style (scripts/figure4_representativeness.R's draw_panel2() print
 ## rendering, header/caption grobs, column-gutter alignment -- ported
 ## verbatim below, not sourced, same convention that script already uses
@@ -842,14 +845,15 @@ n_lines <- vapply(ALL_LETTERS, panel_n_line, character(1))
 legend_lines <- c(
   sprintf("FIGURE LEGEND — %s", basename(paste0(fig_stem, ".png"))),
   strrep("=", 60), "",
-  "TITLE: Supplementary Figure — Representativeness of the current FLUXNET network (n=781), fluxes", "",
+  "TITLE: Supplementary Figure S5 — Representativeness of the current FLUXNET network (n=781), fluxes", "",
   "DESCRIPTION:",
-  "Companion to Figure 4 (fig_04_representativeness.png) and its Geo vs Geo supplement",
-  "(supp_representativeness_geo_vs_geo.png) -- same panel style, bar-label conventions, and \"Geo vs",
-  "Geo\"/\"Geo vs Data\" definitions (see Figure 4's legend for the full definitions). Eight panels, four",
+  "Companion to Figure 5 (fig_05_representativeness.png) and its Geo vs Geo companion,",
+  "Supplementary Figure S4 (figS4_representativeness_geo_vs_geo.png) -- same panel style, bar-label",
+  "conventions, and \"Geo vs Geo\"/\"Geo vs Data\" definitions (see Figure 5's legend for the full",
+  "definitions). Eight panels, four",
   "fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f TER (ecosystem respiration, ra+rh),",
   "g/h ET; left column (a, c, e, g) is Geo vs Geo, right column (b, d, f, h) is Geo vs Data.",
-  "Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 4's own panels e and f --",
+  "Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 5's own panels e and f --",
   "identical rasters, tower values and bins; their n and J are confirmed programmatically (not just",
   "visually) to equal representativeness_metrics_fig4.csv rows E/F exactly before this figure is drawn.",
   "Panels c, d (GPP) and e, f (TER) are new to this figure.", "",
@@ -864,7 +868,7 @@ legend_lines <- c(
   "TRENDY v14 S3, 17-model ensemble median, 1991-2020 mean, on the Beck 2023 Koppen-Geiger 0.5 deg land",
   "mask (same raster footprint for all four fluxes; TER = ra+rh). NEE and ET use",
   "data/external/trendy/derived/trendy_nee_fluxbased_median.tif and",
-  "flux_bin_breaks_et_median_1991_2020.tif (Figure 4's own rasters); GPP and TER use",
+  "flux_bin_breaks_et_median_1991_2020.tif (Figure 5's own rasters); GPP and TER use",
   "candidate_gpp_median.tif and candidate_ter_median.tif (scripts/candidate_nee_gpp_ter_panels.R).",
   sprintf("Land total: %s km2.", format(round(FLUX_LAND_TOTAL_KM2), big.mark = ",")), "",
   "BINS:",
@@ -875,13 +879,12 @@ legend_lines <- c(
   "steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's own GPP/TER edges",
   "because the tower values here use compute_site_annual_fluxes()/QC_THRESHOLD_YY, not that script's",
   "older QC>=0.80 mean-monthly-cycle method.", "",
-  "BAR LABELS: as Figure 4 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the",
+  "BAR LABELS: as Figure 5 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the",
   "clip; faint gridlines at 1/5x, 1/2x, 2x, 5x; \"% land\"/\"towers\" column headers above panels a/b only",
   "(same two-number convention applies to every row); J (weighted Jaccard) right-aligned per panel; the",
   "bottom row's x axis reads \"smaller proportion\"/\"greater proportion\" of towers vs. land.", "",
-  sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout. Extended-Data-style", FIG_WIDTH_MM, total_height_mm),
-  "(no Supplementary Information or Extended Data distinction for Scientific Data -- this is a",
-  "Supplementary Figure).", "",
+  sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout. Supplementary Figure", FIG_WIDTH_MM, total_height_mm),
+  "(target journal Scientific Data has no Extended Data concept).", "",
   "PER-PANEL n AND J:", n_lines, "",
   "SOURCE: scripts/figure_flux_representativeness_supp.R. Per-panel tables in",
   "review/figures/representativeness/tables/. Metrics table:",
@@ -895,17 +898,30 @@ write_output_metadata(
                      "trendy_nee_fluxbased_median.tif", "candidate_gpp_median.tif",
                      "candidate_ter_median.tif", "flux_bin_breaks_et_median_1991_2020.tif"),
   notes = sprintf(
-    paste0("Figure stage 4 (logs/figstage_prompt.md): supp_flux_representativeness, %g mm wide x %.1f mm ",
+    paste0("Figure stage 4 (logs/figstage_prompt.md): supp_flux_representativeness, renumbered ",
+           "Supplementary Figure S5 under figure stage 6 (2026-10-02), %g mm wide x %.1f mm ",
            "tall, Helvetica, %dpt text (row pitch %.1fmm). NEE/ET panels (a/b/g/h) confirmed identical to ",
-           "Figure 4 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/TER (c/d/e/f) new."),
+           "Figure 5 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/TER (c/d/e/f) new."),
     FIG_WIDTH_MM, total_height_mm, BASE_PT, ROW_PITCH_MM
   )
 )
 msg("Saved: ", saved$png, ".meta.json and .legend.txt")
 
+DEST_BASE <- "figS5_flux_representativeness"
 for (ext in c(".png", ".pdf", ".jpg", ".meta.json", ".legend.txt")) {
-  fs::file_copy(paste0(fig_stem, ext), file.path(SUPFIGS_DIR, paste0("supp_flux_representativeness", ext)), overwrite = TRUE)
+  src_file <- paste0(fig_stem, ext)
+  dst_file <- file.path(SUPFIGS_DIR, paste0(DEST_BASE, ext))
+  fs::file_copy(src_file, dst_file, overwrite = TRUE)
+  if (ext == ".legend.txt") {
+    ## Figure stage 6 (2026-10-02): rewrite only the self-referential header
+    ## line to this copy's own renumbered filename; the legend BODY already
+    ## says "Supplementary Figure S5"/"Figure 5" directly (written above),
+    ## since fig_stem there is the FIG_DIR source path.
+    txt <- readLines(dst_file)
+    txt <- sub("^FIGURE LEGEND .*$", paste0("FIGURE LEGEND \u2014 ", DEST_BASE, ".png"), txt)
+    writeLines(txt, dst_file)
+  }
 }
-msg("Copied supp_flux_representativeness (.png/.pdf/.jpg/.meta.json/.legend.txt) to ", SUPFIGS_DIR)
+msg("Copied supp_flux_representativeness -> ", DEST_BASE, " (.png/.pdf/.jpg/.meta.json/.legend.txt) to ", SUPFIGS_DIR)
 
 msg("\n=== figure_flux_representativeness_supp.R: COMPLETE ===")

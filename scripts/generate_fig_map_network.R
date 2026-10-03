@@ -31,7 +31,9 @@
 ##      than hand-tuned pixel offsets, which would not generalise if the
 ##      network (and hence site/land layout) changes.
 ##
-## Output: review/figures/draft_manuscript_v1/fig_map_network.png/.pdf/.legend.txt
+## Output: review/figures/draft_manuscript_v1/fig_01_map_network.png/.pdf/.legend.txt
+## (renumbered from fig_map_network.* under figure stage 6 numbering, 2026-10-02;
+## this script's own name is unchanged -- see docs/figure_inventory.md)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -51,7 +53,7 @@ msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...
 msg("=== Main-text Figure: five-panel network map (world + 4 regions) ===")
 
 OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1")
-OUT_STEM <- file.path(OUT_DIR, "fig_map_network")
+OUT_STEM <- file.path(OUT_DIR, "fig_01_map_network")
 fs::dir_create(OUT_DIR)
 
 .disable_s2()
@@ -317,7 +319,7 @@ region_line <- function(nm) {
          "], lon [", r$lon_min, ", ", r$lon_max, "]; n = ", rr$n, " towers; scale bar ", rr$bar_km, " km")
 }
 legend_lines <- c(
-  "FIGURE LEGEND — fig_map_network.png",
+  "FIGURE LEGEND — fig_01_map_network.png",
   strrep("=", 60), "",
   "TITLE: Figure 1. Global distribution of the current FLUXNET network",
   "",

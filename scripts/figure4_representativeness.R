@@ -13,7 +13,14 @@
 ## fig4_output_name() below -- the internal `comparison` value
 ## ("geo_vs_data"/"geo_vs_geo") still drives all data-selection logic
 ## throughout this script; only the output basename changed. Per-panel
-## tables use the same basenames. The previous Figure 4
+## tables use the same basenames. These FIG_DIR basenames are this script's
+## own canonical, unnumbered names and are unchanged by figure stage 6
+## (2026-10-02): only the DRAFT_DIR/SUPFIGS_DIR *copy* filenames were
+## renumbered, to fig_05_representativeness.* (was referred to as Figure 4
+## throughout this script/its legends before the stage-6 renumbering; now
+## Figure 5) and figS4_representativeness_geo_vs_geo.* (now Supplementary
+## Figure S4) respectively -- see DEST_BASENAME below and
+## docs/figure_inventory.md. The previous Figure 4
 ## (fig_04_current_network_sampling_ratios.png, from fig_rep001_current.png
 ## via scripts/figure_representativeness_summary.R) is superseded and its
 ## draft_manuscript_v1/ copy moved to draft_manuscript_v1/deprecated/.
@@ -97,9 +104,9 @@ SNAP_DIR   <- "data/snapshots"
 EXT        <- "data/external"
 FIG_DIR    <- "review/figures/representativeness"
 DRAFT_DIR  <- "review/figures/draft_manuscript_v1"
-## SupFigs/ (revised 2026-10-02): Nature takes no Supplementary Information
-## figures, so the geo_vs_geo supplemental figure is an Extended Data figure
-## -- draft_manuscript_v1/ itself keeps only main-text figures. Only the
+## SupFigs/ (revised 2026-10-02): the geo_vs_geo figure is a Supplementary
+## Figure (target journal Scientific Data has no Extended Data concept) --
+## draft_manuscript_v1/ itself keeps only main-text figures. Only the
 ## DRAFT_DIR *copy destination* for geo_vs_geo moves here; its primary
 ## output (FIG_DIR, review/figures/representativeness/) is unchanged.
 SUPFIGS_DIR <- file.path(DRAFT_DIR, "SupFigs")
@@ -2328,11 +2335,13 @@ write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
     lines <- c(
       sprintf("FIGURE LEGEND — %s", basename(fig_path)),
       strrep("=", 60), "",
-      "TITLE: Figure 4 — Representativeness of the current FLUXNET network (n=781), Geo vs Data", "",
-      "DEFINITIONS (shared with the supplemental Geo vs Geo figure,",
+      "TITLE: Figure 5 — Representativeness of the current FLUXNET network (n=781), Geo vs Data", "",
+      "(manuscript copy: draft_manuscript_v1/fig_05_representativeness.png; this source file",
+      "keeps its own canonical, unnumbered name per docs/figure_inventory.md)", "",
+      "DEFINITIONS (shared with the companion Supplementary Figure S4, Geo vs Geo,",
       "supp_representativeness_geo_vs_geo.png):",
       "\"Geo vs Data\" (this figure) compares the global land distribution of each axis against",
-      "each site's own measured or site-derived value. \"Geo vs Geo\" (supplemental figure)",
+      "each site's own measured or site-derived value. \"Geo vs Geo\" (Supplementary Figure S4)",
       "compares the same global land distribution against the gridded product's own value",
       "sampled at each tower's coordinate, instead of the site's own measurement.", "",
       "DESCRIPTION:",
@@ -2424,22 +2433,24 @@ write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
     lines <- c(
       sprintf("FIGURE LEGEND — %s", basename(fig_path)),
       strrep("=", 60), "",
-      "TITLE: Supplemental Figure — Representativeness of the current FLUXNET network (n=781), Geo vs Geo", "",
+      "TITLE: Supplementary Figure S4 — Representativeness of the current FLUXNET network (n=781), Geo vs Geo", "",
+      "(manuscript copy: SupFigs/figS4_representativeness_geo_vs_geo.png; this source file",
+      "keeps its own canonical, unnumbered name per docs/figure_inventory.md)", "",
       "DESCRIPTION:",
-      "Companion to Figure 4 (fig_04_representativeness.png), same six panels (a Koppen-Geiger,",
-      "b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and the same panel layout, bar-",
-      "label conventions, land grids/totals, and column headers -- see Figure 4's legend for all",
-      "of that, including the \"Geo vs Data\"/\"Geo vs Geo\" definitions, which this figure shares",
-      "in full. The only difference is the site-side value: Geo vs Geo classifies every tower by",
-      "the gridded product's own value at that tower's coordinate, rather than the site's own",
-      "measured or site-derived value. Because every tower has a value in the gridded product by",
-      "construction, no panel here has the precipitation-dependent exclusions that apply to",
-      "Figure 4's panels a and c -- n = 781/781 for all six panels. Panels e and f here use the",
-      "model's own value at the tower, not a tower measurement -- Figure 4's own panels e and f",
+      "Companion to Figure 5 (fig_05_representativeness.png, source fig_04_representativeness.png),",
+      "same six panels (a Koppen-Geiger, b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and",
+      "the same panel layout, bar-label conventions, land grids/totals, and column headers -- see",
+      "Figure 5's legend for all of that, including the \"Geo vs Data\"/\"Geo vs Geo\" definitions, which",
+      "this figure shares in full. The only difference is the site-side value: Geo vs Geo classifies",
+      "every tower by the gridded product's own value at that tower's coordinate, rather than the",
+      "site's own measured or site-derived value. Because every tower has a value in the gridded",
+      "product by construction, no panel here has the precipitation-dependent exclusions that apply to",
+      "Figure 5's panels a and c -- n = 781/781 for all six panels. Panels e and f here use the",
+      "model's own value at the tower, not a tower measurement -- Figure 5's own panels e and f",
       sprintf("(Geo vs Data) instead use each site's median annual value passing QC_THRESHOLD_YY=%s,", QC_THRESHOLD_YY),
-      "each flux gated on its own QC column, per-site VUT/CUT (see Figure 4's legend).",
-      sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout. Extended Data", width_mm, height_mm),
-      "figure (no Supplementary Information figures in Nature) -- see SupFigs/ note in",
+      "each flux gated on its own QC column, per-site VUT/CUT (see Figure 5's legend).",
+      sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout. Supplementary Figure", width_mm, height_mm),
+      "(target journal Scientific Data has no Extended Data concept) -- see",
       "docs/figure_inventory.md.", "",
       sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, "",
       "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
@@ -2460,10 +2471,11 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
                        "site_igbp_fig4.csv", "site_aridity.csv", "site_aridity_era5_fig4.csv",
                        "site_biomass_cci_v7.csv", "site_nee_fig4.csv", "site_et_fig4.csv"),
     notes = sprintf(
-      paste0("New Figure 4 (%s version), Nature final-artwork re-render: %g mm wide x %.1f mm tall, ",
+      paste0("%s (%s version), Nature final-artwork re-render: %g mm wide x %.1f mm tall, ",
              "Helvetica, %dpt text (row pitch %.1fmm). Rendering only -- confirmed against ",
              "representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) ",
              "render. Vector PDF saved alongside. See SESSION_LOG.md."),
+      if (comparison == "geo_vs_geo") "Supplementary Figure S4 (companion to Figure 5)" else "Figure 5",
       if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data",
       fig_widths_mm[[comparison]], fig_heights_mm[[comparison]],
       BASE_PT, ROW_PITCH_MM
@@ -2472,20 +2484,39 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   msg("Saved: ", fig_path, ".meta.json and .legend.txt")
 }
 
-## geo_vs_data (main-text Figure 4) copies into DRAFT_DIR as before.
-## geo_vs_geo (now an Extended Data figure) copies into SUPFIGS_DIR instead
-## -- draft_manuscript_v1/ itself keeps only main-text figures (task 1,
-## 2026-10-02; Nature takes no Supplementary Information figures, so
-## everything previously staged as a supplemental figure is Extended Data).
+## geo_vs_data (main-text Figure 5, FIG_DIR basename fig_04_representativeness)
+## copies into DRAFT_DIR under its renumbered name. geo_vs_geo (Supplementary
+## Figure S4, FIG_DIR basename supp_representativeness_geo_vs_geo) copies into
+## SUPFIGS_DIR under ITS renumbered name -- draft_manuscript_v1/ itself keeps
+## only main-text figures. Target journal is Scientific Data (no Extended
+## Data concept); figure stage 6 (2026-10-02) renumbered both copy
+## destinations -- see docs/figure_inventory.md. DEST_BASENAME differs from
+## the FIG_DIR source basename (fig4_output_name()); FIG_DIR itself is
+## unchanged (that script/data file keeps its own name).
+DEST_BASENAME <- list(geo_vs_geo = "figS4_representativeness_geo_vs_geo",
+                       geo_vs_data = "fig_05_representativeness")
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   base <- fig4_output_name(comparison)
+  dest_base <- DEST_BASENAME[[comparison]]
   dest_dir <- if (comparison == "geo_vs_geo") SUPFIGS_DIR else DRAFT_DIR
   exts <- if (comparison == "geo_vs_geo") c(".png", ".pdf", ".jpg", ".meta.json", ".legend.txt")
           else c(".png", ".pdf", ".meta.json", ".legend.txt")
   for (ext in exts) {
-    fs::file_copy(file.path(FIG_DIR, paste0(base, ext)), file.path(dest_dir, paste0(base, ext)), overwrite = TRUE)
+    src_file <- file.path(FIG_DIR, paste0(base, ext))
+    dst_file <- file.path(dest_dir, paste0(dest_base, ext))
+    fs::file_copy(src_file, dst_file, overwrite = TRUE)
+    if (ext == ".legend.txt" && dest_base != base) {
+      ## Rewrite only the self-referential header line to this copy's own
+      ## renumbered filename; the legend BODY text already says "Figure 5"/
+      ## "Supplementary Figure S4" directly (written above by
+      ## write_fig4_legend()), since fig_path there is the FIG_DIR source
+      ## path -- only the header's basename(fig_path) needs correcting here.
+      txt <- readLines(dst_file)
+      txt <- sub("^FIGURE LEGEND .*$", paste0("FIGURE LEGEND — ", dest_base, ".png"), txt)
+      writeLines(txt, dst_file)
+    }
   }
-  msg("Copied ", base, " (", paste(exts, collapse = "/"), ") to ", dest_dir)
+  msg("Copied ", base, " -> ", dest_base, " (", paste(exts, collapse = "/"), ") to ", dest_dir)
 }
 
 msg("\n=== figure4_representativeness.R: PRINT RE-RENDER COMPLETE ===")

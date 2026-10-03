@@ -1,7 +1,7 @@
-FIGURE LEGEND — fig_cumulative_siteyears_igbp.png
+FIGURE LEGEND — fig_02_cumulative_siteyears_igbp.png
 ============================================================
 
-TITLE: Cumulative site-years of the FLUXNET Shuttle network through time,
+TITLE: Figure 2. Cumulative site-years of the FLUXNET Shuttle network through time,
 by IGBP land-cover class
 
 DESCRIPTION:

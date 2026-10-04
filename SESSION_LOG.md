@@ -4,6 +4,100 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-04 — Collection comparison table; Figure 2 La Thuile line corrected to 965 (DONE)
+
+New `scripts/collection_comparison_table.R` (no new analysis — every number read from data already
+on disk) and a Figure 2 fix: the La Thuile cumulative line was drawn from a first-to-last-year span
+(ending at 1,008) instead of its own year-indicator matrix (965); corrected. No hand-tally
+discrepancies found — every number below matches the expected tally exactly.
+
+### 1. `scripts/collection_comparison_table.R`
+
+Writes four tables to `data/snapshots/` (each with a `.meta.json` companion), one row/record per
+collection (Marconi, La Thuile, FLUXNET2015, Current), reusing `scripts/generate_map_regional.R`'s
+`REGIONS` extents verbatim (extracted from its source text, not retyped) and
+`R/plot_constants.R::PAPER_IGBP_ORDER`.
+
+**`collection_sites_siteyears.csv`**
+
+| collection  | sites | site_years |
+|---|---|---|
+| Marconi     | 35  | 96   |
+| La Thuile   | 252 | 965  |
+| FLUXNET2015 | 212 | 1532 |
+| Current     | 781 | 6061 |
+
+**`collection_sites_by_region.csv`** (Figure 1's four regional extents, then South and Central
+America / Africa / Other for sites outside all four, bucketed from the country code the site_id
+prefix encodes — `countrycode::region23`, not a hub/network inference — CLAUDE.md Hard Rule 2)
+
+| region | Marconi | La Thuile | FLUXNET2015 | Current |
+|---|---|---|---|---|
+| North America | 21 | 106 | 85 | 362 |
+| Europe | 12 | 95 | 67 | 198 |
+| East and Southeast Asia | 0 | 23 | 12 | 103 |
+| Australia and New Zealand | 0 | 5 | 23 | 53 |
+| South and Central America | 1 | 10 | 7 | 24 |
+| Africa | 0 | 5 | 6 | 23 |
+| Other | 1 | 8 | 12 | 18 |
+
+Other site IDs — Marconi: IS-Gun. La Thuile: IL-Yat, IS-Gun, RU-Che, RU-Cok, RU-Ha1, RU-Ha2,
+RU-Ha3, RU-Zot. FLUXNET2015: CN-Dan, GL-ZaF, GL-ZaH, RU-Che, RU-Cok, RU-Ha1, RU-Sam, RU-SkP,
+RU-Tks, RU-Vrk, SJ-Adv, SJ-Blv. Current: CA-Mtk, CN-Dan, CN-DaW, GL-ZaF, GL-ZaH, IL-RmH, IL-Yat,
+RU-Ch2, RU-Che, RU-Ege, RU-Ha1, RU-NeB, RU-NeC, RU-NeF, RU-Sk2, RU-SkP, RU-Tur, SJ-Adv.
+
+**`collection_sites_by_igbp.csv`** (counts per `PAPER_IGBP_ORDER` class, one row per collection)
+
+| collection | ENF | EBF | DNF | DBF | MF | CSH | OSH | WSA | SAV | GRA | WET | CRO | CVM | BSV | SNO | classes present | non-standard |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Marconi | 15 | 2 | 0 | 6 | 3 | 2 | 0 | 0 | 0 | 1 | 4 | 2 | 0 | 0 | 0 | 8 | — |
+| La Thuile | 70 | 18 | 0 | 32 | 11 | 6 | 12 | 7 | 3 | 45 | 17 | 30 | 0 | 0 | 0 | 11 | CN-Xfs:TBD |
+| FLUXNET2015 | 49 | 15 | 1 | 26 | 9 | 3 | 13 | 6 | 9 | 39 | 21 | 20 | 0 | 0 | 1 | 13 | — |
+| Current | 114 | 44 | 13 | 81 | 24 | 12 | 41 | 18 | 14 | 146 | 117 | 139 | 9 | 7 | 2 | 15 | — |
+
+**`collection_sites_per_year.csv`** (sites with data per year, 1991-2007, La Thuile vs Current;
+2000-2004 shown — full 1991-2007 series is in the committed CSV)
+
+| year | 2000 | 2001 | 2002 | 2003 | 2004 |
+|---|---|---|---|---|---|
+| La Thuile | 55 | 79 | 104 | 129 | 160 |
+| Current | 43 | 65 | 84 | 101 | 126 |
+
+### 2. Figure 2 (`fig_02_cumulative_siteyears_igbp`) — La Thuile line corrected
+
+`fig_cumulative_siteyears_igbp()` (`R/figures/fig_network_growth.R`) cumulated Marconi/La
+Thuile/FLUXNET2015 the same way: expand each site's `first_year`-`last_year` span to one row per
+year, then cumsum. That's correct for Marconi and FLUXNET2015 (each dataset's own site records are
+contiguous within their span — the span sum already equals the year-indicator count: 96 and 1532,
+both confirmed unchanged), but La Thuile's records are not contiguous, so the span sum overestimates
+at 1,008 against the true 965 from the indicator matrix.
+
+Added an optional `la_thuile_year_matrix` argument (long-format actual presence, `site_id`/`year`/
+`present`, built from `LaThuileList.xlsx`'s year-indicator columns) to `fig_cumulative_siteyears_igbp()`.
+When supplied, the La Thuile line is drawn from actual presence instead of the span expansion;
+`NULL` (the default) preserves the old span-based behaviour for callers not updated here.
+`scripts/generate_fig_cumulative_siteyears.R` now builds this matrix and passes it in. Rebuilt
+`fig_02_cumulative_siteyears_igbp.png`/`.pdf`; line end points confirmed by the script's own log:
+Marconi 96, La Thuile 965, FLUXNET2015 1532. The `.legend.txt` now states the site-year rule for
+the current network and each historical collection explicitly.
+
+`scripts/generate_duration_histograms.R` (Dur11) calls the same shared function without the new
+argument and still uses the span-based La Thuile fallback (1,008) — it was not in scope for this
+task and was not regenerated; noted in the legend and in `docs/methods_requirements.md` 5.5.
+
+### 3. `scripts/check_figure_format.R`
+
+Re-ran after the Figure 2 rebuild: 11/11 figures PASS (5 main text + 6 Extended Data), including
+`fig_02_cumulative_siteyears_igbp` at 88.9×88.9 mm.
+
+### 4. `docs/methods_requirements.md` 5.5 updated
+
+Documented the Figure 2 La Thuile fix (with the reason Marconi/FLUXNET2015 needed no equivalent
+fix), the new `scripts/collection_comparison_table.R` and its four outputs, and added the new
+script/output files to the section's "Primary code files" list.
+
+---
+
 ## 2026-10-02 (16) — Figure stage close-out: Stage 3 committed, Figures 1/3/S1 review fixes, supplementary PDF, methods (DONE)
 
 Close-out session per `logs/figstage_prompt.md` rules 2-9: closed out Stage 3 (left uncommitted by

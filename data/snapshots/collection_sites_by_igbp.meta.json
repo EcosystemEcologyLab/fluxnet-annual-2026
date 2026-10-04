@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-10-04T17:49:53Z",
+  "pipeline_version": "a2557b3",
+  "input_sources": [
+    "data/snapshots/sites_marconi_clean.csv",
+    "data/snapshots/sites_la_thuile_clean.csv",
+    "data/snapshots/sites_fluxnet2015_clean.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "R/plot_constants.R::PAPER_IGBP_ORDER"
+  ],
+  "notes": "Counts are per-site (one row per distinct site_id), not per-site-year. nonstandard_sites lists site_id:class for any site whose igbp is missing (NA) or outside PAPER_IGBP_ORDER (e.g. La Thuile's 'TBD')."
+}

@@ -25,7 +25,7 @@ source("R/nature_format.R")
 check_pipeline_config()
 
 suppressPackageStartupMessages({
-  library(dplyr); library(readr); library(ggplot2)
+  library(dplyr); library(readr); library(ggplot2); library(readxl); library(tidyr)
 })
 
 msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...)
@@ -52,14 +52,29 @@ presence_df <- read_csv(file.path(FLUXNET_DATA_ROOT, "snapshots", "site_year_dat
   mutate(year = as.integer(.data$year), has_data = as.logical(.data$has_data))
 msg("Loaded presence_df: ", nrow(presence_df), " rows")
 
+## ---- La Thuile actual year-indicator presence (not first-to-last span) -----
+## Drives the La Thuile cumulative line to its correct total of 965 site-years
+## (span-based expansion of years_la_thuile.csv over-counts at 1008 -- La
+## Thuile site records are not contiguous within their first/last year; see
+## docs/methods_requirements.md 5.5 and scripts/collection_comparison_table.R).
+la_thuile_xlsx       <- read_excel("data/lists/LaThuileList.xlsx")
+la_thuile_yr_cols    <- names(la_thuile_xlsx)[grepl("^[0-9]{4}$", names(la_thuile_xlsx))]
+la_thuile_year_matrix <- la_thuile_xlsx |>
+  dplyr::select(site_id = "SITE", dplyr::all_of(la_thuile_yr_cols)) |>
+  tidyr::pivot_longer(cols = dplyr::all_of(la_thuile_yr_cols), names_to = "year", values_to = "flag") |>
+  dplyr::mutate(year = as.integer(.data$year), present = !is.na(.data$flag) & .data$flag == 1)
+msg("Loaded La Thuile year-indicator matrix: ",
+    sum(la_thuile_year_matrix$present), " site-years (expect 965)")
+
 ## ---- Build panel (no panel_letter -- this is a standalone figure) -----------
 panel <- fig_cumulative_siteyears_igbp(
-  presence_df       = presence_df,
-  shuttle_meta      = shuttle_meta,
-  sites_marconi     = sites_marconi,
-  sites_la_thuile   = sites_la_thuile,
-  sites_fluxnet2015 = sites_fluxnet2015,
-  base_size         = 9L
+  presence_df            = presence_df,
+  shuttle_meta           = shuttle_meta,
+  sites_marconi          = sites_marconi,
+  sites_la_thuile        = sites_la_thuile,
+  sites_fluxnet2015      = sites_fluxnet2015,
+  base_size              = 9L,
+  la_thuile_year_matrix  = la_thuile_year_matrix
 ) +
   ggplot2::theme(legend.key.size = grid::unit(7, "pt")) +
   nature_theme()
@@ -81,6 +96,19 @@ siteyears_plotted <- presence_df |>
 total_site_years <- nrow(siteyears_plotted)
 msg("Total site-years plotted (1991-2024): ", total_site_years)
 
+## ---- Historical line end points (reported in the legend) -------------------
+marconi_end     <- sites_marconi |>
+  dplyr::distinct(site_id, .keep_all = TRUE) |>
+  dplyr::filter(!is.na(first_year), !is.na(last_year)) |>
+  dplyr::summarise(n = sum(last_year - first_year + 1L)) |> dplyr::pull(n)
+la_thuile_end   <- sum(la_thuile_year_matrix$present)
+fluxnet2015_end <- sites_fluxnet2015 |>
+  dplyr::distinct(site_id, .keep_all = TRUE) |>
+  dplyr::filter(!is.na(first_year), !is.na(last_year)) |>
+  dplyr::summarise(n = sum(last_year - first_year + 1L)) |> dplyr::pull(n)
+msg("Historical line end points -- Marconi: ", marconi_end,
+    ", La Thuile: ", la_thuile_end, ", FLUXNET2015: ", fluxnet2015_end)
+
 ## ---- Legend --------------------------------------------------------------------
 legend_lines <- c(
   "FIGURE LEGEND — fig_02_cumulative_siteyears_igbp.png",
@@ -94,13 +122,24 @@ legend_lines <- c(
   "(comparison data only, not primary data -- see CLAUDE.md Hard Rule 1).",
   "No panel letter -- this is a standalone single-panel figure, not part of a composite.",
   "",
+  "SITE-YEAR RULE (each series counts site-years by its own collection's convention):",
+  paste0("  Current network: compute_site_year_presence() -- a site-year counts if any of its"),
+  "    flux variables (NEE/GPP/RECO/LE/H) has a non-NA monthly value; has_data = TRUE, 1991-2024.",
+  paste0("  Marconi: sum(last_year - first_year + 1) over its own 'Years in Marconi' ranges",
+         " -- ends at ", marconi_end, "."),
+  paste0("  La Thuile: count of 1s in its own year-indicator matrix (1991-2007), NOT the",
+         " first-to-last span (which over-counts at 1008) -- ends at ", la_thuile_end, "."),
+  paste0("  FLUXNET2015: count of non-NA cells in its own year-presence matrix (1991-2014)",
+         " -- ends at ", fluxnet2015_end, "."),
+  "",
   paste0("TOTAL SITE-YEARS PLOTTED (1991-2024): ", total_site_years),
   "",
   "SOURCE: scripts/generate_fig_cumulative_siteyears.R, calling",
   "R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp() -- the same function",
   "and pinned inputs as scripts/generate_duration_histograms.R (Dur11), which continues",
   "to stage fig_dur11_CumulativeSiteYears_IGBP.png in review/figures/network/ under its",
-  "own canonical name.",
+  "own canonical name. Dur11 still uses the La Thuile span-based fallback (not passed",
+  "la_thuile_year_matrix) -- see R/figures/fig_network_growth.R.",
   paste0("DIMENSIONS: ", NATURE_WIDTH_SINGLE_MM, " x ", NATURE_WIDTH_SINGLE_MM,
          " mm, 600 dpi PNG + vector PDF,"),
   "Helvetica, white background. All text 5-7pt."

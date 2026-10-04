@@ -279,9 +279,27 @@ or model outputs used for comparison.
   `data/lists/LaThuileList.xlsx`'s year-indicator columns — note that naively summing
   `last_year - first_year + 1` from the derived `years_la_thuile.csv` snapshot overestimates this
   at 1008, since La Thuile site records are not contiguous; 965 from the raw indicator columns is
-  correct), 1991–2007
+  correct), 1991–2007. Figure 2 (`fig_02_cumulative_siteyears_igbp`) drew its La Thuile cumulative
+  line from the 1008 span-based figure until 2026-10-04, when it was corrected to draw from the
+  actual year-indicator matrix instead (`R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp()`'s
+  new `la_thuile_year_matrix` argument, built in `scripts/generate_fig_cumulative_siteyears.R`); the
+  line now ends at 965, matching this section. Marconi and FLUXNET2015 needed no such fix — each of
+  their own site records is contiguous within its first/last year, so the span-based sum already
+  equals the indicator-based count (96 and 1532 respectively; `fig_dur11_CumulativeSiteYears_IGBP`,
+  which calls the same shared function without the new argument, still uses the span-based fallback
+  for La Thuile and was not regenerated as part of this fix).
 - FLUXNET2015 (Pastorello et al. 2020): 212 sites, 1532 site-years (confirmed unchanged),
   1991–2014
+- Collection comparison tables (`scripts/collection_comparison_table.R`, 2026-10-04): sites and
+  site-years, region, IGBP class, and sites-per-year breakdowns for all four collections side by
+  side, each using the convention above. Outputs: `data/snapshots/collection_sites_siteyears.csv`,
+  `collection_sites_by_region.csv` (Figure 1's four regional extents, reused verbatim from
+  `scripts/generate_map_regional.R`, plus South and Central America / Africa / Other for sites
+  outside all four, bucketed from the country code the site_id prefix encodes per CLAUDE.md Hard
+  Rule 2 — not a hub/network inference), `collection_sites_by_igbp.csv` (counts per
+  `PAPER_IGBP_ORDER` class, classes present, and any missing/non-standard class — one La Thuile
+  site, CN-Xfs, carries class "TBD"), and `collection_sites_per_year.csv` (sites with data per
+  year, 1991–2007, La Thuile vs current).
 - How historical site lists were obtained and standardised
 - How historical sites not in Shuttle were handled (fallback metadata)
 - WorldClim v2.1 bioclimatic variables (Fick & Hijmans 2017):
@@ -302,12 +320,18 @@ or model outputs used for comparison.
 **Primary code files:**
 - `R/historical_datasets.R` — historical site list loading
 - `R/external_data.R` — WorldClim, aridity index, GEZ loading
+- `R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp()` — Figure 2's panel function
+- `scripts/generate_fig_cumulative_siteyears.R` — Figure 2 driver script
+- `scripts/collection_comparison_table.R` — collection comparison tables (sites, site-years,
+  region, IGBP, per-year)
 - `data/snapshots/sites_marconi_clean.csv`
 - `data/snapshots/sites_la_thuile_clean.csv`
 - `data/snapshots/sites_fluxnet2015_clean.csv`
 - `data/snapshots/years_marconi.csv`
 - `data/snapshots/years_la_thuile.csv`
 - `data/snapshots/years_fluxnet2015.csv`
+- `data/snapshots/collection_sites_siteyears.csv`, `collection_sites_by_region.csv`,
+  `collection_sites_by_igbp.csv`, `collection_sites_per_year.csv`
 - `data/raw/Marconi_to_Modern_SiteIDs.xlsx` — site ID crosswalk
 
 **Citations required:**

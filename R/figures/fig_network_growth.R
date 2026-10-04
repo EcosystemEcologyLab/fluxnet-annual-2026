@@ -818,11 +818,23 @@ fig_siteyears_by_year_igbp <- function(presence_df,
 #'   \code{years_marconi.csv}; must contain \code{site_id}, \code{first_year},
 #'   and \code{last_year}.
 #' @param sites_la_thuile Data frame. La Thuile site list; same columns.
+#'   Used for the La Thuile cumulative line only when \code{la_thuile_year_matrix}
+#'   is \code{NULL} (span-based fallback — see \code{la_thuile_year_matrix}).
 #' @param sites_fluxnet2015 Data frame. FLUXNET2015 site list; same columns.
 #' @param year_range Integer vector. Calendar years to display (default
 #'   \code{1991:2024}).
 #' @param base_size Integer. Base font size for \code{\link{fluxnet_theme}}
 #'   (default \code{36L}).
+#' @param la_thuile_year_matrix Data frame or \code{NULL} (default). Long-format
+#'   actual per-site-year presence for La Thuile, built from the year-indicator
+#'   columns of \code{data/lists/LaThuileList.xlsx} — columns \code{site_id},
+#'   \code{year} (integer), \code{present} (logical/0-1). When supplied, the
+#'   La Thuile cumulative line is drawn from this actual presence data (correct
+#'   total: 965 site-years) instead of expanding \code{sites_la_thuile}'s
+#'   \code{first_year}-\code{last_year} span (which over-counts at 1008,
+#'   because La Thuile site records are not contiguous within their span —
+#'   see docs/methods_requirements.md 5.5). \code{NULL} preserves the old
+#'   span-based behaviour for callers that have not been updated (e.g. Dur11).
 #'
 #' @return A ggplot object.
 #'
@@ -843,7 +855,8 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                                            sites_la_thuile,
                                            sites_fluxnet2015,
                                            year_range = 1991:2024,
-                                           base_size  = 36L) {
+                                           base_size  = 36L,
+                                           la_thuile_year_matrix = NULL) {
 
   yr_min <- min(year_range)
   yr_max <- max(year_range)
@@ -920,9 +933,24 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     "FLUXNET2015" = "#3498DB"
   )
 
+  # La Thuile: actual year-indicator presence when supplied (correct — 965
+  # site-years), else fall back to the span-based expansion used by Marconi/
+  # FLUXNET2015 (which over-counts La Thuile at 1008 — see la_thuile_year_matrix
+  # above).
+  la_thuile_cumul <- if (!is.null(la_thuile_year_matrix)) {
+    la_thuile_year_matrix |>
+      dplyr::filter(.data$present, .data$year >= yr_min, .data$year <= yr_max) |>
+      dplyr::count(.data$year, name = "n") |>
+      tidyr::complete(year = yr_min:yr_max, fill = list(n = 0L)) |>
+      dplyr::arrange(.data$year) |>
+      dplyr::mutate(n = cumsum(.data$n))
+  } else {
+    .expand_years_cumul(sites_la_thuile)
+  }
+
   hist_all <- dplyr::bind_rows(
     dplyr::mutate(.expand_years_cumul(sites_marconi),     dataset = "Marconi"),
-    dplyr::mutate(.expand_years_cumul(sites_la_thuile),   dataset = "La Thuile"),
+    dplyr::mutate(la_thuile_cumul,                        dataset = "La Thuile"),
     dplyr::mutate(.expand_years_cumul(sites_fluxnet2015), dataset = "FLUXNET2015")
   ) |>
     dplyr::mutate(dataset = factor(.data$dataset, levels = names(hist_colours)))

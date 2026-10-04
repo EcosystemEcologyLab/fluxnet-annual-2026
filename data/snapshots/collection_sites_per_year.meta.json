@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-04T17:49:53Z",
+  "pipeline_version": "a2557b3",
+  "input_sources": [
+    "data/lists/LaThuileList.xlsx",
+    "data/snapshots/site_year_data_presence.csv"
+  ],
+  "notes": "n_sites per year, not cumulative. La Thuile: column sum of the 1991-2007 year-indicator matrix. Current: count of site_id with has_data = TRUE in compute_site_year_presence() output, restricted to 1991-2007 for comparison with La Thuile's own range."
+}

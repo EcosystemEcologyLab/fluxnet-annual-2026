@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-10-04T17:49:53Z",
+  "pipeline_version": "a2557b3",
+  "input_sources": [
+    "data/snapshots/sites_marconi_clean.csv",
+    "data/snapshots/sites_la_thuile_clean.csv",
+    "data/snapshots/sites_fluxnet2015_clean.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "scripts/generate_map_regional.R (REGIONS extents, reused verbatim)"
+  ],
+  "notes": "Region = Figure 1's four regional extents (lat/lon box) where a site falls inside one; otherwise bucketed by the country code the site_id prefix encodes (countrycode::region23), into South and Central America / Africa / Other -- per CLAUDE.md Hard Rule 2, not a hub/network inference."
+}

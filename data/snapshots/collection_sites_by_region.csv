@@ -1,0 +1,29 @@
+collection,region,n_sites,other_site_ids
+Marconi,North America,21,
+Marconi,Europe,12,
+Marconi,East and Southeast Asia,0,
+Marconi,Australia and New Zealand,0,
+Marconi,South and Central America,1,
+Marconi,Africa,0,
+Marconi,Other,1,IS-Gun
+La Thuile,North America,106,
+La Thuile,Europe,95,
+La Thuile,East and Southeast Asia,23,
+La Thuile,Australia and New Zealand,5,
+La Thuile,South and Central America,10,
+La Thuile,Africa,5,
+La Thuile,Other,8,IL-Yat; IS-Gun; RU-Che; RU-Cok; RU-Ha1; RU-Ha2; RU-Ha3; RU-Zot
+FLUXNET2015,North America,85,
+FLUXNET2015,Europe,67,
+FLUXNET2015,East and Southeast Asia,12,
+FLUXNET2015,Australia and New Zealand,23,
+FLUXNET2015,South and Central America,7,
+FLUXNET2015,Africa,6,
+FLUXNET2015,Other,12,CN-Dan; GL-ZaF; GL-ZaH; RU-Che; RU-Cok; RU-Ha1; RU-Sam; RU-SkP; RU-Tks; RU-Vrk; SJ-Adv; SJ-Blv
+Current,North America,362,
+Current,Europe,198,
+Current,East and Southeast Asia,103,
+Current,Australia and New Zealand,53,
+Current,South and Central America,24,
+Current,Africa,23,
+Current,Other,18,CA-Mtk; CN-Dan; CN-DaW; GL-ZaF; GL-ZaH; IL-RmH; IL-Yat; RU-Ch2; RU-Che; RU-Ege; RU-Ha1; RU-NeB; RU-NeC; RU-NeF; RU-Sk2; RU-SkP; RU-Tur; SJ-Adv

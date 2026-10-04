@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-10-04T17:49:53Z",
+  "pipeline_version": "a2557b3",
+  "input_sources": [
+    "data/lists/Marconi_to_Modern_SiteIDs.xlsx",
+    "data/lists/LaThuileList.xlsx",
+    "data/lists/FLUXNET2015.xlsx",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_year_data_presence.csv"
+  ],
+  "notes": "Site-years use each collection's own source convention (ranges for Marconi, year-indicator matrices for La Thuile/FLUXNET2015, has_data presence for Current) -- see script header."
+}

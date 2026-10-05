@@ -22,7 +22,9 @@
 ##                  (91-14) of data/lists/FLUXNET2015.xlsx.
 ##   Current      — compute_site_year_presence() output
 ##                  (data/snapshots/site_year_data_presence.csv), rows where
-##                  has_data is TRUE, year 1991-2024.
+##                  has_data is TRUE, year window data-driven via
+##                  R/utils.R::data_year_window() (first/last year any site
+##                  has data -- see 2026-10-05 SESSION_LOG entry).
 ##
 ## NOTE: Marconi/La Thuile/FLUXNET2015 are historical comparison datasets only
 ## -- non-Shuttle primary data (CLAUDE.md Hard Rule 1).
@@ -143,8 +145,18 @@ fluxnet2015_site_years <- as.integer(sum(!is.na(as.matrix(fluxnet2015_xlsx[, flu
 
 presence_df <- read_csv(PRESENCE_PATH, show_col_types = FALSE) |>
   mutate(year = as.integer(.data$year), has_data = as.logical(.data$has_data))
+## Data-driven year window (R/utils.R::data_year_window()) -- replaces the
+## previous hard-coded 1991-2024 filter, so this table's current-network
+## total and Figure 2's own total (scripts/generate_fig_cumulative_siteyears.R)
+## are read from the same window and cannot silently disagree.
+current_year_window <- data_year_window(presence_df)
+msg("Current-network year window: ", current_year_window$first_year, "-",
+    current_year_window$last_year, " (", current_year_window$n_sites_last_year,
+    " sites report ", current_year_window$last_year, ")")
 current_site_years <- presence_df |>
-  dplyr::filter(.data$has_data, .data$year >= 1991L, .data$year <= 2024L) |>
+  dplyr::filter(.data$has_data,
+                .data$year >= current_year_window$first_year,
+                .data$year <= current_year_window$last_year) |>
   nrow() |>
   as.integer()
 

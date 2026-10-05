@@ -4,6 +4,63 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-05 — Figure 2 extended to a data-driven year window (1991–2025)
+
+Figure 2 (cumulative site-years by IGBP) and the collection comparison table previously stopped
+at a hard-coded 1991–2024 current-network window, which had gone stale now that 2025 data exists.
+Made the window data-driven so it never needs hand-editing again.
+
+**New helper:** `data_year_window(presence_df)` (`R/utils.R`) returns the first/last calendar
+year with any `has_data = TRUE` row in a `compute_site_year_presence()`-style table, plus the
+number of sites reporting the final year. It ignores empty full-calendar-year ONEFlux padding
+rows automatically, since those rows are `has_data = FALSE` by construction (confirmed earlier
+this session in the "most recent data" DuckDB investigation, above).
+
+**Changes:**
+- `R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp()`: `year_range` now defaults to
+  `NULL`, resolved via `data_year_window(presence_df)` when not supplied (explicit `year_range`
+  still overrides). X-axis breaks changed from a hard-coded `seq(1990, 2025, 5)` to
+  `seq(floor(yr_min/5)*5, ceiling(yr_max/5)*5, 5)` so they track the window too.
+- `scripts/generate_fig_cumulative_siteyears.R`: hard-coded `1991L`/`2024L` filter replaced with
+  the helper; legend's year range, total site-years, and new "N of 781 sites report `<year>`"
+  line are all written from the computed window, not typed.
+- `scripts/collection_comparison_table.R`: Table 1's current-network site-year total now uses the
+  same helper, so it and Figure 2 read from the same window and cannot silently disagree.
+
+**Result (matches hand-tally of `site_year_data_presence.csv` exactly):**
+- Window: **1991–2025**
+- Current-network site-years: **6,200** (6,061 through 2024 + 139 in 2025)
+- Sites reporting 2025: **139 of 781**
+- Historical collections unchanged: Marconi 96, La Thuile 965, FLUXNET2015 1,532
+- `collection_sites_siteyears.csv` re-run: `Current,781,6200` (was `6061` before this change)
+
+Figure 2 rebuilt (`review/figures/draft_manuscript_v1/fig_02_cumulative_siteyears_igbp.png/.pdf`,
+axis now runs to 2025, stack reaches ~6,200, historical lines still flat at their own fixed
+endpoints) and visually confirmed. `scripts/check_figure_format.R`: **11/11 PASS**, including the
+rebuilt Figure 2 (88.9×88.9 mm, fonts OK, text 0.25–1.00pt line weights, no change to format
+compliance).
+
+**Side effect flagged, not fixed:** `scripts/generate_duration_histograms.R`'s Dur11 panel calls
+the same `fig_cumulative_siteyears_igbp()` without passing `year_range`, so its *plot* now also
+silently extends to the 2025 window — only its own console "site-years plotted" report line
+remains hard-coded at 1991–2024 (now inconsistent with what its plot shows). Not corrected in
+this pass per the task's scope (listed, not changed).
+
+**Other paper-figure/table scripts still hard-coding a 2024 end year (listed, not changed):**
+- `scripts/07_figures.R`:275 — `fig_map_nee_delta(..., recent_years = 2020:2024, min_years = 5L)`
+- `scripts/generate_duration_histograms.R` — Dur09/Dur10 (`fig_siteyears_by_year()` /
+  `fig_siteyears_by_year_igbp()` in `R/figures/fig_network_growth.R`, each with its own
+  independent `year_range = 1991:2024` default) and Dur11's `year <= 2024L` report-line filter
+  (see side effect above)
+- `scripts/generate_kg_anomaly_figures.R`:41 — `RECENT_YEARS <- 2019:2024`
+- `scripts/generate_gez_anomaly_figures.R`:37 — `RECENT_YEARS <- 2019:2024`
+  (both match `R/figures/fig_anomaly_context.R`'s own hard-coded `recent_years = 2019:2024`
+  defaults in two separate functions)
+
+`docs/methods_requirements.md` §5.5 updated with the new window, total, and this list.
+
+---
+
 ## 2026-10-05 — Most recent data and latency in the local DuckDB (read-only)
 
 Read-only query against `data/duckdb/fluxnet.duckdb` (built 2026-09-28, from a Shuttle

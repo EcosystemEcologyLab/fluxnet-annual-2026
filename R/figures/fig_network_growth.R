@@ -821,8 +821,12 @@ fig_siteyears_by_year_igbp <- function(presence_df,
 #'   Used for the La Thuile cumulative line only when \code{la_thuile_year_matrix}
 #'   is \code{NULL} (span-based fallback — see \code{la_thuile_year_matrix}).
 #' @param sites_fluxnet2015 Data frame. FLUXNET2015 site list; same columns.
-#' @param year_range Integer vector. Calendar years to display (default
-#'   \code{1991:2024}).
+#' @param year_range Integer vector or \code{NULL} (default). Calendar years
+#'   to display. When \code{NULL}, the window is derived from
+#'   \code{presence_df} via \code{\link{data_year_window}} — the first and
+#'   last calendar year in which any site has \code{has_data = TRUE} — so it
+#'   never needs to be hand-edited as new years of data arrive. Pass an
+#'   explicit vector to override.
 #' @param base_size Integer. Base font size for \code{\link{fluxnet_theme}}
 #'   (default \code{36L}).
 #' @param la_thuile_year_matrix Data frame or \code{NULL} (default). Long-format
@@ -854,9 +858,14 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                                            sites_marconi,
                                            sites_la_thuile,
                                            sites_fluxnet2015,
-                                           year_range = 1991:2024,
+                                           year_range = NULL,
                                            base_size  = 36L,
                                            la_thuile_year_matrix = NULL) {
+
+  if (is.null(year_range)) {
+    window     <- data_year_window(presence_df)
+    year_range <- window$first_year:window$last_year
+  }
 
   yr_min <- min(year_range)
   yr_max <- max(year_range)
@@ -1006,7 +1015,10 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     ggplot2::scale_colour_manual(values = hist_colours, guide = "none") +
     ggplot2::scale_x_continuous(
       limits   = c(yr_min, yr_max),
-      breaks   = seq(1990L, 2025L, by = 5L),
+      # 5-year breaks spanning the window, rounded outward to a multiple of 5
+      # (not hard-coded to 1990:2025) so the axis keeps pace with yr_max as
+      # new years of data arrive.
+      breaks   = seq(floor(yr_min / 5) * 5, ceiling(yr_max / 5) * 5, by = 5L),
       expand   = ggplot2::expansion(mult = c(0.01, 0.01)),
       sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)
     ) +

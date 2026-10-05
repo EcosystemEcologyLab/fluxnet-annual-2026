@@ -13,18 +13,22 @@ No panel letter -- this is a standalone single-panel figure, not part of a compo
 
 SITE-YEAR RULE (each series counts site-years by its own collection's convention):
   Current network: compute_site_year_presence() -- a site-year counts if any of its
-    flux variables (NEE/GPP/RECO/LE/H) has a non-NA monthly value; has_data = TRUE, 1991-2024.
+    flux variables (NEE/GPP/RECO/LE/H) has a non-NA monthly value; has_data = TRUE, 1991-2025.
   Marconi: sum(last_year - first_year + 1) over its own 'Years in Marconi' ranges -- ends at 96.
   La Thuile: count of 1s in its own year-indicator matrix (1991-2007), NOT the first-to-last span (which over-counts at 1008) -- ends at 965.
   FLUXNET2015: count of non-NA cells in its own year-presence matrix (1991-2014) -- ends at 1532.
 
-TOTAL SITE-YEARS PLOTTED (1991-2024): 6061
+YEAR WINDOW (data-driven, data_year_window() in R/utils.R -- not hard-coded): 1991-2025. 139 of 781 network sites report data in 2025, the most recent year with any site data (ignoring empty ONEFlux padding years).
+TOTAL SITE-YEARS PLOTTED (1991-2025): 6200
 
 SOURCE: scripts/generate_fig_cumulative_siteyears.R, calling
 R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp() -- the same function
 and pinned inputs as scripts/generate_duration_histograms.R (Dur11), which continues
 to stage fig_dur11_CumulativeSiteYears_IGBP.png in review/figures/network/ under its
 own canonical name. Dur11 still uses the La Thuile span-based fallback (not passed
-la_thuile_year_matrix) -- see R/figures/fig_network_growth.R.
+la_thuile_year_matrix) -- see R/figures/fig_network_growth.R. Dur11 does not pass
+year_range either, so as of 2026-10-05 it also now plots through the same data-driven
+window as this figure (previously both were independently hard-coded at 2024) -- see
+SESSION_LOG.md 2026-10-05.
 DIMENSIONS: 89 x 89 mm, 600 dpi PNG + vector PDF,
 Helvetica, white background. All text 5-7pt.

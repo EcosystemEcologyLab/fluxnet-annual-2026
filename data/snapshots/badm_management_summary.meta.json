@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-07-01T17:01:41Z",
-  "pipeline_version": "cfac10c",
+  "run_datetime_utc": "2026-10-05T15:18:16Z",
+  "pipeline_version": "b8c45a4",
   "input_sources": [
     "data/snapshots/badm_management_coverage.csv"
   ],

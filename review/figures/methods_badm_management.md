@@ -4,7 +4,11 @@
 **Outputs:** `data/snapshots/badm_management_coverage.csv`,
 `data/snapshots/badm_management_summary.csv`,
 `review/figures/candidates/fig_supp_badm_management_by_igbp.png`
-**Snapshot date:** 2026-07-01 (network snapshot `fluxnet_shuttle_snapshot_20260624T095651.csv`, 767 sites)
+**Snapshot date:** 2026-10-05 (network snapshot `fluxnet_shuttle_snapshot_20260901T094522.csv`, 781
+sites — locked 1 September snapshot, pinned explicitly rather than the newest snapshot in
+`data/snapshots/`). Supersedes the 2026-07-01 run on `fluxnet_shuttle_snapshot_20260624T095651.csv`
+(767 sites); see `SESSION_LOG.md` (2026-10-05 entry) for the full old-vs-new comparison. Category
+definitions and keyword lists are unchanged between the two runs.
 
 ## What BADM data was found
 
@@ -17,15 +21,18 @@ pre-concatenated copy also exists at `data/processed/badm.rds` (built by
 `data/extracted/` instead, so the result reflects the currently extracted
 site set and is reproducible without depending on that cache.
 
-759 of 767 shuttle-network sites (99.0%) have an extracted BIF file. The
-remaining 8 sites have not yet been extracted and are logged to
-`outputs/unknown_log.csv` (management status unknown, not "no management").
+781 of 781 shuttle-network sites (100.0%) in the locked 1 September snapshot have an extracted
+BIF file — no sites are logged to `outputs/unknown_log.csv` for missing BIF in this run. (At the
+prior 2026-07-01 run, 759 of 767 sites (99.0%) had an extracted BIF file; the remaining 8 have
+since been extracted.)
 
 **Critical finding: the standard AmeriFlux/FLUXNET event-based management
 BADM templates are absent from every single BIF file in this network.** A
-full-text search across all 759 files for the variable-group tokens `DM`,
-`HARV`, `HARV_M`, `TILL`, `TILL_M`, `FERT`, `FERT_M`, `GRZ`, `GRZ_M`, `IRR`,
-`IRR_M`, `BURN`, `THIN`, `LU`, `DRA` returned **zero matches**. These are the
+full-text search across all 781 BIF files (locked 1 September snapshot) for
+the variable-group tokens `DM`, `HARV`, `HARV_M`, `TILL`, `TILL_M`, `FERT`,
+`FERT_M`, `GRZ`, `GRZ_M`, `IRR`, `IRR_M`, `BURN`, `THIN`, `LU`, `DRA`
+**still returns zero matches**, confirming the 2026-07-01 finding holds at
+the larger, locked snapshot. These are the
 templates AmeriFlux's site-level BADM system uses to record discrete,
 dated management events (e.g. one row per fertilization application with a
 rate and date). None of that event-level detail is present in the FLUXNET
@@ -37,9 +44,10 @@ The only management-relevant structured field actually present is:
   tags) per site, drawn from: `Agriculture`, `Fire`, `Forestry`, `Grazing`,
   `Hydrologic event`, `Drought`, `Land cover change`, `Storm or wind`,
   `Temperature extreme`, `Pests and disease`, `Undisturbed`. Present for
-  272 of 762 sites in the cached badm.rds (fresh extraction gives similar
-  counts). This records *that* a dominant disturbance/management type
-  applies, never *what* was done, *when*, or *how much*.
+  277 of 781 sites (35.5%) in the 2026-10-05 run (272 of 759 BADM sites,
+  35.8%, at the 2026-07-01 run). This records *that* a dominant
+  disturbance/management type applies, never *what* was done, *when*, or
+  *how much*.
 
 - **`GRP_WTD`** — water-table-depth measurement records (found at only 3
   sites in the cached badm.rds). This is an environmental *measurement*
@@ -51,10 +59,21 @@ The only management-relevant structured field actually present is:
 Because the structured fields cannot distinguish tillage from fertilization
 from irrigation, or harvest from thinning, this analysis supplements them
 with **case-insensitive keyword mining of the free-text `SITE_DESC` field**
-(present for 366 of 759 sites), which frequently contains prose management
-detail the structured BADM fields do not capture (e.g. *"Managed grassland
-which is harvested 3-4 times per year"*, *"grazing is rotational"*, *"typical
-rotation of the region: corn / soybean / wheat-soybean"*).
+(present for 624 of 781 sites, 79.9%, in the 2026-10-05 run), which
+frequently contains prose management detail the structured BADM fields do
+not capture (e.g. *"Managed grassland which is harvested 3-4 times per
+year"*, *"grazing is rotational"*, *"typical rotation of the region: corn /
+soybean / wheat-soybean"*).
+
+> **Correction (2026-10-05):** the 2026-07-01 version of this document
+> stated SITE_DESC was present for "366 of 759 sites" (48%). That figure was
+> a documentation error — the archived output of that same 2026-07-01 run
+> (`data/snapshots/badm_management_coverage.csv` at commit `782b693`)
+> actually shows `has_site_desc = TRUE` for **612 of 759 sites (80.6%)**,
+> consistent with the 79.9% found here. The 44.3%/336-site `any_management`
+> headline number from that run was not affected by this error (it is
+> correct), but the "48% SITE_DESC coverage" framing in the limitations
+> section below has been corrected to the true ~80% figure.
 
 ## How coverage was interpreted
 
@@ -109,24 +128,74 @@ grey tick label instead of a palette colour).
 
 ## Results summary
 
-- **759 / 767 sites (99.0%)** have an extracted BIF/BADM file.
-- **336 / 759 BADM sites (44.3%)** carry at least one management-relevant
-  record by the definition above.
-- By category (of 759 BADM sites): grazing 86 (11.3%), burning 77 (10.1%),
-  drainage/water-table 53 (7.0%), tillage 52 (6.9%), other/unclassified 51
-  (6.7%), harvest 43 (5.7%), fertilization 31 (4.1%), forestry-unspecified 31
-  (4.1%), irrigation 27 (3.6%), thinning 5 (0.7%).
-- Best-documented IGBP classes: `CVM` (78%, n=9 — small sample), `CRO`
-  croplands (68.6%, n=137), `ENF` evergreen needleleaf forest (52.7%,
-  n=112), `OSH` open shrubland (51.3%, n=39).
-- Least-documented: `EBF` evergreen broadleaf forest (14.3%, n=42), `BSV`/
+**2026-10-05 run (pinned to the locked 1 September snapshot, 781 sites)** — current numbers, with
+the 2026-07-01 run (759 BADM sites) shown alongside for comparison:
+
+- **781 / 781 sites (100.0%)** have an extracted BIF/BADM file (was 759 / 767, 99.0%).
+- **342 / 781 BADM sites (43.8%)** carry at least one management-relevant record by the definition
+  above (was 336 / 759, 44.3%).
+- By category, new run (of 781 BADM sites) vs. old run (of 759 BADM sites):
+
+  | Category | New: n (%) | Old: n (%) | Δ sites |
+  |---|---|---|---|
+  | any_management | 342 (43.8%) | 336 (44.3%) | +6 |
+  | grazing | 89 (11.4%) | 86 (11.3%) | +3 |
+  | burning | 78 (10.0%) | 77 (10.1%) | +1 |
+  | drainage/water-table | 53 (6.8%) | 53 (7.0%) | 0 |
+  | tillage | 52 (6.7%) | 52 (6.9%) | 0 |
+  | other/unclassified | 52 (6.7%) | 51 (6.7%) | +1 |
+  | harvest | 45 (5.8%) | 43 (5.7%) | +2 |
+  | forestry-unspecified | 33 (4.2%) | 31 (4.1%) | +2 |
+  | fertilization | 31 (4.0%) | 31 (4.1%) | 0 |
+  | irrigation | 29 (3.7%) | 27 (3.6%) | +2 |
+  | thinning | 5 (0.6%) | 5 (0.7%) | 0 |
+
+  Only `any_management` changed by more than 5 sites between the two runs (+6); every individual
+  category shifted by 3 sites or fewer. The larger `any_management` delta reflects sites that are
+  newly positive in more than one category simultaneously (the union grows faster than any single
+  category).
+
+- **Three-way split** (structured `DOM_DIST_MGMT` tag only / `SITE_DESC` keyword only / both),
+  2026-10-05 run, of the 342 `any_management` sites: structured-only 92, keyword-only 133, both 117.
+  `fertilization`, `irrigation`, and `thinning` have **zero** structured-tag contribution by
+  construction (the category definitions OR a keyword against `DOM_DIST_MGMT` only for grazing and
+  burning) — all 31 fertilization, 29 irrigation, and 5 thinning positives are keyword-only or
+  (6, 21, 4 respectively) corroborated by an unrelated Agriculture/Forestry tag as "both" where that
+  tag happens to co-occur. This retroactive three-way split is not recoverable from the archived
+  2026-07-01 output (only the combined `mgmt_*` flags were written, not the intermediate
+  `txt_*`/`dom_dist_*` sub-flags).
+- **38 sites** enter `any_management` *only* through `mgmt_burning` (a `DOM_DIST_MGMT == "Fire"`
+  tag or a burn/fire `SITE_DESC` keyword, with no other category positive) — unchanged from the
+  2026-07-01 run (also 38).
+- Best-documented IGBP classes: `CVM` (77.8%, n=9 — small sample), `CRO`
+  croplands (68.3%, n=139), `ENF` evergreen needleleaf forest (52.6%,
+  n=114), `OSH` open shrubland (48.8%, n=41).
+- Least-documented: `EBF` evergreen broadleaf forest (13.6%, n=44), `BSV`/
   `SNO` (0%, small n), `DNF` (23.1%, n=13).
-- Grasslands (`GRA`, 45.0%, n=140) and wetlands (`WET`, 32.5%, n=114) sit
-  in the middle — wetlands are documented mainly through drainage/water-table
-  text mentions (19 of 114), not a dedicated wetland-management template.
-- Regional coverage (`any_management`): N. America 66.4% (n=354), S. America
-  51.7% (n=29), Africa 43.5% (n=23), Europe 29.6% (n=196), Asia 16.3%
-  (n=104), **Australia 1.9% (n=53)** — by far the weakest.
+- Grasslands (`GRA`, 45.2%, n=146) and wetlands (`WET`, 31.6%, n=117) sit
+  in the middle.
+- Regional coverage by `any_management` was not recomputed in this run (region bucketing is
+  unaffected by the snapshot pin); see the 2026-07-01 figures above for the last computed values.
+
+**`any_management` by IGBP class, 2026-10-05 run (count / n sites with BIF / %):**
+
+| IGBP | n_positive | n | % |
+|---|---|---|---|
+| CVM | 7 | 9 | 77.8 |
+| CRO | 95 | 139 | 68.3 |
+| ENF | 60 | 114 | 52.6 |
+| OSH | 20 | 41 | 48.8 |
+| GRA | 66 | 146 | 45.2 |
+| MF | 9 | 24 | 37.5 |
+| CSH | 4 | 12 | 33.3 |
+| WSA | 6 | 18 | 33.3 |
+| WET | 37 | 117 | 31.6 |
+| DBF | 25 | 81 | 30.9 |
+| SAV | 4 | 14 | 28.6 |
+| DNF | 3 | 13 | 23.1 |
+| EBF | 6 | 44 | 13.6 |
+| BSV | 0 | 7 | 0.0 |
+| SNO | 0 | 2 | 0.0 |
 
 ## Known limitations
 
@@ -148,12 +217,15 @@ grey tick label instead of a palette colour).
    field with no way to separate a natural fire from a prescribed burn, or
    natural windthrow from planned forest harvest, from the tag alone (text
    mining partially resolves this for burning, not for forestry).
-4. **Absence of a record is not evidence of absence of management.** Only
-   366 of 759 sites (48%) have any `SITE_DESC` text at all; a site with no
-   `SITE_DESC` and no `DOM_DIST_MGMT` tag is coded `any_management = NA`,
-   correctly reflecting "we don't know," but readers should not interpret
-   the 44.3% coverage figure as "56% of sites are known to be unmanaged."
-   Many are simply undocumented in this field.
+4. **Absence of a record is not evidence of absence of management.** 624 of
+   781 sites (79.9%) have any `SITE_DESC` text at all (corrected 2026-10-05 —
+   see the correction note above; this was previously mis-stated as 48%); a
+   site with no `SITE_DESC` and no `DOM_DIST_MGMT` tag is coded
+   `any_management = NA`, correctly reflecting "we don't know," but readers
+   should not interpret the 43.8% coverage figure as "56% of sites are known
+   to be unmanaged." Some sites remain undocumented in this field, but most
+   of the shortfall below 100% is genuine absence-of-management-record
+   within a *present* `SITE_DESC`, not a missing `SITE_DESC`.
 5. **The regional pattern may partly reflect metadata-submission practice
    per network/hub, not actual land management.** Australia's 1.9%
    `any_management` rate (vs. North America's 66.4%) is a striking outlier

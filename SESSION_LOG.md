@@ -4,6 +4,110 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-05 — BADM management coverage re-run on locked 1 September snapshot (DONE)
+
+`scripts/investigate_badm_management.R` re-run pinned to the locked snapshot
+`fluxnet_shuttle_snapshot_20260901T094522.csv` (781 sites), not the newest snapshot in
+`data/snapshots/` (`...20260920T102211.csv`). Category definitions and keyword lists unchanged
+from the 2026-07-01 run. Nothing restaged into `review/figures/draft_manuscript_v1/`. Outputs
+(`data/snapshots/badm_management_coverage.csv`/`.meta.json`, `badm_management_summary.csv`,
+`review/figures/candidates/fig_supp_badm_management_by_igbp.png`) regenerated in place;
+`review/figures/methods_badm_management.md` updated with the new numbers.
+
+### 1. Sites and BIF coverage
+
+| | New run (pinned, 781 sites) | Old run (2026-07-01, 767 sites) |
+|---|---|---|
+| Sites in snapshot | 781 | 767 |
+| Sites with an extracted BIF file | 781 (100.0%) | 759 (99.0%) |
+| Sites without one | 0 | 8 |
+
+### 2. `any_management` and all ten categories, old run beside new run
+
+| Category | New: n/781 (%) | Old: n/759 (%) | Δ sites |
+|---|---|---|---|
+| any_management | 342 (43.8%) | 336 (44.3%) | **+6** |
+| grazing | 89 (11.4%) | 86 (11.3%) | +3 |
+| burning | 78 (10.0%) | 77 (10.1%) | +1 |
+| drainage/water-table | 53 (6.8%) | 53 (7.0%) | 0 |
+| tillage | 52 (6.7%) | 52 (6.9%) | 0 |
+| other/unclassified | 52 (6.7%) | 51 (6.7%) | +1 |
+| harvest | 45 (5.8%) | 43 (5.7%) | +2 |
+| forestry-unspecified | 33 (4.2%) | 31 (4.1%) | +2 |
+| fertilization | 31 (4.0%) | 31 (4.1%) | 0 |
+| irrigation | 29 (3.7%) | 27 (3.6%) | +2 |
+| thinning | 5 (0.6%) | 5 (0.7%) | 0 |
+
+### 3. Three-way split (structured `DOM_DIST_MGMT` tag only / `SITE_DESC` keyword only / both)
+
+New run only — the archived 2026-07-01 output stored only the final combined `mgmt_*` booleans,
+not the intermediate `txt_*`/`dom_dist_*` sub-flags, so this split cannot be reconstructed exactly
+for the old run from committed data.
+
+| Flag | total | structured-only | keyword-only | both |
+|---|---|---|---|---|
+| any_management | 342 | 92 | 133 | 117 |
+| fertilization | 31 | 0 | 25 | 6 |
+| irrigation | 29 | 0 | 8 | 21 |
+| thinning | 5 | 0 | 1 | 4 |
+
+`fertilization`, `irrigation`, and `thinning` have **zero** structured-tag contribution by
+construction — the category logic only ORs a `DOM_DIST_MGMT` tag in for `mgmt_grazing` (Grazing)
+and `mgmt_burning` (Fire); the "both" counts above are co-occurrence with an unrelated structured
+tag (e.g. a keyword-fertilization site that also happens to carry an Agriculture `DOM_DIST_MGMT`
+tag), not a structured contribution to the fertilization/irrigation/thinning determination itself.
+
+### 4. Sites with any SITE_DESC text / any DOM_DIST_MGMT tag
+
+| | New (n/781) | Old (n/759, from archived CSV) | Old (as published in methods doc) |
+|---|---|---|---|
+| has_site_desc | 624 (79.9%) | 612 (80.6%) | 366 (48%) — **documentation error, now corrected** |
+| has_dom_dist_mgmt | 277 (35.5%) | 272 (35.8%) | 272 (matches) |
+
+The methods doc's 2026-07-01 text claimed SITE_DESC coverage of "366 of 759 (48%)". The archived
+output CSV from that same run (`data/snapshots/badm_management_coverage.csv` at commit `782b693`)
+actually shows 612/759 (80.6%) — the prose was wrong, the run itself was not. `any_management`
+(44.3%/336) was unaffected. Corrected in `review/figures/methods_badm_management.md`.
+
+### 5. Event-based management BADM groups (DM, HARV, TILL, FERT, GRZ, IRR, BURN, THIN, LU, DRA + `_M` forms)
+
+Still **zero matches** across all 781 BIF files in the pinned snapshot — confirms the 2026-07-01
+finding holds at the larger, locked snapshot.
+
+### 6. Fire-only entry into `any_management`
+
+**38 sites** enter `any_management` only via `mgmt_burning` (a `DOM_DIST_MGMT == "Fire"` tag or a
+burn/fire `SITE_DESC` keyword, with no other category positive) — unchanged from the 2026-07-01
+run (also 38).
+
+### 7. `any_management` by IGBP class (new run, count / n / %)
+
+| IGBP | n_positive | n | % |
+|---|---|---|---|
+| CVM | 7 | 9 | 77.8 |
+| CRO | 95 | 139 | 68.3 |
+| ENF | 60 | 114 | 52.6 |
+| OSH | 20 | 41 | 48.8 |
+| GRA | 66 | 146 | 45.2 |
+| MF | 9 | 24 | 37.5 |
+| CSH | 4 | 12 | 33.3 |
+| WSA | 6 | 18 | 33.3 |
+| WET | 37 | 117 | 31.6 |
+| DBF | 25 | 81 | 30.9 |
+| SAV | 4 | 14 | 28.6 |
+| DNF | 3 | 13 | 23.1 |
+| EBF | 6 | 44 | 13.6 |
+| BSV | 0 | 7 | 0.0 |
+| SNO | 0 | 2 | 0.0 |
+
+### Bottom line
+
+Only **`any_management` changed by more than five sites** (336 → 342, +6); every individual
+category shifted by 3 sites or fewer between the two network snapshots. Separately, a
+documentation error in the 2026-07-01 methods doc (SITE_DESC coverage mis-stated as 366/759,
+48%, instead of the archived run's actual 612/759, 80.6%) was found and corrected — a bigger
+discrepancy than any real snapshot-to-snapshot change, but a prose bug, not a data change.
+
 ## 2026-10-04 — Collection comparison table; Figure 2 La Thuile line corrected to 965 (DONE)
 
 New `scripts/collection_comparison_table.R` (no new analysis — every number read from data already

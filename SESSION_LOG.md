@@ -4,6 +4,42 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-05 — Most recent data and latency in the local DuckDB (read-only)
+
+Read-only query against `data/duckdb/fluxnet.duckdb` (built 2026-09-28, from a Shuttle
+download/listing dated 2026-09-20 per the `manifest` table's `download_time`). No changes
+to data, snapshots, or figures. Asked what the most recent data in the database is right
+now, and which sites have the lowest latency relative to today (2026-10-05).
+
+**Trap caught first:** a naive `MAX(TIMESTAMP)` / `MAX(TIMESTAMP_END)` over the `daily` and
+`hourly` tables reports `2026-12-31` and `2026-01-01` respectively. Checked the actual rows
+for the sites hitting that max and confirmed every core variable (`NEE_VUT_REF`,
+`NEE_CUT_REF`, `TA_F`, QC columns) is `NULL` on those dates — these are full-calendar-year
+placeholder rows that ONEFlux/FLUXNET pads every site-year out to, not real measurements.
+Same pattern confirmed via `manifest.last_year = 2026` for the same handful of sites
+(FR-Aur, GF-Guy, GL-NuF, GL-ZaH, IE-Cra, IT-Niv, IT-Tor, IT-TrF, NL-Vkp, ZM-Mon) — the
+placeholder year, not real coverage.
+
+**Real most-recent data: 2025-12-31.** Re-ran filtered to rows where a core variable is
+non-null. Result: **139 of 781 sites** have real daily/annual data reaching through
+2025-12-31 — the lowest-latency sites in the database right now (≈278 days / ~9 months
+behind today, consistent with normal ONEFlux processing/QC lag rather than a pipeline
+problem). No site has real data beyond that date. The remaining 642 sites lag further:
+379 sites' latest complete year is 2024, 401 sites 2023, 392 sites 2022, 388 sites 2021,
+401 sites 2020, 413 sites 2019, 348 sites 2018 (annual-table `TIMESTAMP` = year, non-null
+`NEE_VUT_REF`/`TA_F`).
+
+Sample of the 139 leading-edge sites: AU-Cum, AU-Ya2, AU-Cow, AU-Gin (TERN); US-DS3,
+US-NSa, US-BZo, US-NC4, US-Vcm, US-SRG, US-SD1 (AmeriFlux); NL-Vkp, DE-RuR, DE-Hzd,
+FR-Bil (ICOS/EUF).
+
+**Caveat, not acted on:** this reflects the DuckDB's state as last built (sourced from the
+2026-09-20 download), not a fresh `flux_listall()` call against the live Shuttle at the
+time of asking. The live manifest may have moved since 20 September; a live check was
+offered but not run this session.
+
+---
+
 ## 2026-10-05 — Version provenance check: 1 Sept listing and gap download (read-only)
 
 Read-only forensic check, no changes to data, snapshots, or figures. Asked which

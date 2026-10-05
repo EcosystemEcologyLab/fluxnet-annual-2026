@@ -1,0 +1,14 @@
+{
+  "run_datetime_utc": "2026-10-05T18:08:07Z",
+  "pipeline_version": "c835f33",
+  "input_sources": [
+    "data/external/koppen_beck2023/1991_2020/koppen_geiger_0p00833333.tif",
+    "data/external/cci_biomass/ESACCI-BIOMASS-L4-AGB-MERGED-1000m-fv7.0.tif",
+    "data/external/modis_landcover/MCD12C1.A2022001.061.2023244164746.hdf",
+    "data/snapshots/biomass_cci_v7_global_distribution.csv",
+    "data/snapshots/site_koppen_beck2023.csv",
+    "data/snapshots/site_biomass_cci_v7.csv",
+    "data/snapshots/site_igbp_fig4.csv"
+  ],
+  "notes": "Land area and tower counts for high-biomass (top hybrid bin, AGB >= 171 Mg/ha -- edge read from biomass_cci_v7_global_distribution.csv, not retyped) tropical (Koppen Af/Am/Aw) forest. Rasters, alignment (biomass resampled bilinear onto the Beck 2023 1km Koppen land mask grid; MODIS MCD12C1.061 resampled nearest-neighbour onto the same grid, masked to KG land) and the top-bin edge are identical to scripts/figure4_representativeness.R panels A/B/D and scripts/figure_representativeness_biomass.R. Global area rows: area_km2 and pct_of_land_base_147_3M (share of the 147,322,862 km2 KG land total) and pct_of_top_biomass_bin (share of the global top-bin area, 11,616,610 km2). Tower rows: n_towers (of 781, pinned 2026-09-01 snapshot) and pct_towers_of_781, using Geo-vs-Geo map values at each tower (site_koppen_beck2023.csv koppen_twoletter; site_biomass_cci_v7.csv biomass_bin==7; site_igbp_fig4.csv igbp_modis_class for MODIS-at-tower EBF) except the '..._PI_EBF' rows, which use the tower's PI-reported IGBP class (site_igbp_fig4.csv igbp_pi) instead, per task request for a PI-reported alternative to the EBF condition. No figures produced; no existing output overwritten other than this new file."
+}

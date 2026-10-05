@@ -247,6 +247,54 @@ compute_site_year_presence <- function(
   presence
 }
 
+#' Determine the data-driven year window from a site-year presence table
+#'
+#' Finds the first and last calendar year in which at least one site has
+#' real flux data (`has_data == TRUE`), per [compute_site_year_presence()].
+#' All-`FALSE` years — including any empty padding rows ONEFlux writes out
+#' to the end of the current (incomplete) calendar year — are ignored, since
+#' the window is derived only from rows that actually have data.
+#'
+#' @param presence_df Data frame. Output of [compute_site_year_presence()],
+#'   with columns `site_id`, `year` (integer), and `has_data` (logical).
+#'
+#' @return A list with elements `first_year` (integer), `last_year`
+#'   (integer), and `n_sites_last_year` (integer) — the number of distinct
+#'   sites with `has_data == TRUE` in `last_year`.
+#'
+#' @examples
+#' \dontrun{
+#' presence <- readr::read_csv("data/snapshots/site_year_data_presence.csv")
+#' window <- data_year_window(presence)
+#' window$first_year; window$last_year; window$n_sites_last_year
+#' }
+data_year_window <- function(presence_df) {
+  required_cols <- c("site_id", "year", "has_data")
+  missing_cols  <- setdiff(required_cols, names(presence_df))
+  if (length(missing_cols) > 0L) {
+    stop(
+      "data_year_window: presence_df is missing required column(s): ",
+      paste(missing_cols, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  real <- presence_df[presence_df$has_data, , drop = FALSE]
+  if (nrow(real) == 0L) {
+    stop("data_year_window: no rows with has_data == TRUE in presence_df", call. = FALSE)
+  }
+
+  first_year <- as.integer(min(real$year))
+  last_year  <- as.integer(max(real$year))
+  n_sites_last_year <- length(unique(real$site_id[real$year == last_year]))
+
+  list(
+    first_year        = first_year,
+    last_year         = last_year,
+    n_sites_last_year = n_sites_last_year
+  )
+}
+
 #' Test whether sites are functionally active at a reference year
 #'
 #' A site is *functionally active* in reference year `Y` if `presence_df`

@@ -83,18 +83,28 @@ saved <- save_nature_figure(panel, OUT_STEM, width_mm = NATURE_WIDTH_SINGLE_MM,
                              height_mm = NATURE_WIDTH_SINGLE_MM)
 msg("Saved: ", saved$png, ", ", saved$pdf)
 
+## ---- Data-driven year window (replaces the hard-coded 1991-2024 filter) ----
+## data_year_window() (R/utils.R) reads the first/last calendar year with any
+## has_data = TRUE row in presence_df, ignoring empty ONEFlux padding years --
+## so this figure (and its legend, below) extend automatically as new years
+## of data arrive, with no further editing here.
+year_window <- data_year_window(presence_df)
+msg("Data-driven year window: ", year_window$first_year, "-", year_window$last_year,
+    " (", year_window$n_sites_last_year, " sites report ", year_window$last_year, ")")
+
 ## ---- Report site-years actually plotted (parity with Dur11's own report) ----
 fig_igbp_order_report <- c("ENF", "EBF", "DNF", "DBF", "MF", "CSH", "OSH", "WSA",
                             "SAV", "GRA", "WET", "CRO", "CVM", "BSV", "SNO")
 siteyears_plotted <- presence_df |>
-  dplyr::filter(has_data, year >= 1991L, year <= 2024L) |>
+  dplyr::filter(has_data, year >= year_window$first_year, year <= year_window$last_year) |>
   dplyr::left_join(
     shuttle_meta |> dplyr::distinct(site_id, .keep_all = TRUE) |> dplyr::select(site_id, igbp),
     by = "site_id"
   ) |>
   dplyr::filter(!is.na(igbp), igbp %in% fig_igbp_order_report)
 total_site_years <- nrow(siteyears_plotted)
-msg("Total site-years plotted (1991-2024): ", total_site_years)
+msg("Total site-years plotted (", year_window$first_year, "-", year_window$last_year, "): ",
+    total_site_years)
 
 ## ---- Historical line end points (reported in the legend) -------------------
 marconi_end     <- sites_marconi |>
@@ -124,7 +134,8 @@ legend_lines <- c(
   "",
   "SITE-YEAR RULE (each series counts site-years by its own collection's convention):",
   paste0("  Current network: compute_site_year_presence() -- a site-year counts if any of its"),
-  "    flux variables (NEE/GPP/RECO/LE/H) has a non-NA monthly value; has_data = TRUE, 1991-2024.",
+  paste0("    flux variables (NEE/GPP/RECO/LE/H) has a non-NA monthly value; has_data = TRUE, ",
+         year_window$first_year, "-", year_window$last_year, "."),
   paste0("  Marconi: sum(last_year - first_year + 1) over its own 'Years in Marconi' ranges",
          " -- ends at ", marconi_end, "."),
   paste0("  La Thuile: count of 1s in its own year-indicator matrix (1991-2007), NOT the",
@@ -132,14 +143,23 @@ legend_lines <- c(
   paste0("  FLUXNET2015: count of non-NA cells in its own year-presence matrix (1991-2014)",
          " -- ends at ", fluxnet2015_end, "."),
   "",
-  paste0("TOTAL SITE-YEARS PLOTTED (1991-2024): ", total_site_years),
+  paste0("YEAR WINDOW (data-driven, data_year_window() in R/utils.R -- not hard-coded): ",
+         year_window$first_year, "-", year_window$last_year, ". ", year_window$n_sites_last_year,
+         " of ", dplyr::n_distinct(shuttle_meta$site_id), " network sites report data in ",
+         year_window$last_year, ", the most recent year with any site data (ignoring empty",
+         " ONEFlux padding years)."),
+  paste0("TOTAL SITE-YEARS PLOTTED (", year_window$first_year, "-", year_window$last_year, "): ",
+         total_site_years),
   "",
   "SOURCE: scripts/generate_fig_cumulative_siteyears.R, calling",
   "R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp() -- the same function",
   "and pinned inputs as scripts/generate_duration_histograms.R (Dur11), which continues",
   "to stage fig_dur11_CumulativeSiteYears_IGBP.png in review/figures/network/ under its",
   "own canonical name. Dur11 still uses the La Thuile span-based fallback (not passed",
-  "la_thuile_year_matrix) -- see R/figures/fig_network_growth.R.",
+  "la_thuile_year_matrix) -- see R/figures/fig_network_growth.R. Dur11 does not pass",
+  "year_range either, so as of 2026-10-05 it also now plots through the same data-driven",
+  "window as this figure (previously both were independently hard-coded at 2024) -- see",
+  "SESSION_LOG.md 2026-10-05.",
   paste0("DIMENSIONS: ", NATURE_WIDTH_SINGLE_MM, " x ", NATURE_WIDTH_SINGLE_MM,
          " mm, 600 dpi PNG + vector PDF,"),
   "Helvetica, white background. All text 5-7pt."

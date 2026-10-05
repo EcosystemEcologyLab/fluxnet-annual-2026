@@ -300,6 +300,35 @@ or model outputs used for comparison.
   `PAPER_IGBP_ORDER` class, classes present, and any missing/non-standard class — one La Thuile
   site, CN-Xfs, carries class "TBD"), and `collection_sites_per_year.csv` (sites with data per
   year, 1991–2007, La Thuile vs current).
+- **Current-network year window is data-driven, not hard-coded (2026-10-05):** the current
+  network's site-year window and total previously stopped at a hard-coded 1991–2024, which had
+  gone stale now that 2025 data exists. `R/utils.R::data_year_window(presence_df)` now computes
+  the window directly from `data/snapshots/site_year_data_presence.csv` — the first and last
+  calendar year in which any site has `has_data = TRUE` — ignoring the empty full-calendar-year
+  padding rows ONEFlux writes for the current, still-incomplete year (see SESSION_LOG.md
+  2026-10-05, "most recent data" investigation, for why those padding rows exist and how they were
+  confirmed empty). It also returns the number of sites reporting the final year. As of this
+  refresh: **window 1991–2025; 6,200 current-network site-years (6,061 through 2024 plus 139 in
+  2025); 139 of 781 sites report 2025.** Marconi/La Thuile/FLUXNET2015 totals are unaffected (96,
+  965, 1,532 — each collection's own fixed historical range). Both
+  `scripts/generate_fig_cumulative_siteyears.R` (Figure 2) and
+  `scripts/collection_comparison_table.R` (Table 1) now call this same helper for their
+  current-network window/total, so the two outputs cannot silently disagree. Figure 2's legend
+  reports the window, the total, and the final-year site count from the same computed values
+  rather than typed text.
+  **Not yet converted to the data-driven window** (hard-coded at a 2024 end year, unchanged in
+  this pass — see SESSION_LOG.md 2026-10-05 for the full list): `scripts/07_figures.R`'s
+  `fig_map_nee_delta(..., recent_years = 2020:2024)` call; `scripts/generate_duration_histograms.R`'s
+  Dur09/Dur10 panels (`fig_siteyears_by_year()`/`fig_siteyears_by_year_igbp()` in
+  `R/figures/fig_network_growth.R`, each with its own hard-coded `year_range = 1991:2024` default,
+  separate from `fig_cumulative_siteyears_igbp()` above) and Dur11's own `year <= 2024L`
+  site-years-plotted report line; `scripts/generate_kg_anomaly_figures.R` and
+  `scripts/generate_gez_anomaly_figures.R` (`RECENT_YEARS <- 2019:2024`, matching
+  `R/figures/fig_anomaly_context.R`'s own hard-coded `recent_years = 2019:2024` defaults in two
+  separate functions). Note: Dur11's *plot* itself (which calls `fig_cumulative_siteyears_igbp()`
+  without passing `year_range`) now extends to the same data-driven 2025 window as Figure 2, as a
+  side effect of the default change above — only its console report line and site-year total text
+  are still hard-coded at 2024.
 - How historical site lists were obtained and standardised
 - How historical sites not in Shuttle were handled (fallback metadata)
 - WorldClim v2.1 bioclimatic variables (Fick & Hijmans 2017):

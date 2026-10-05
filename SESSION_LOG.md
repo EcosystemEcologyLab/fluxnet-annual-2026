@@ -4,6 +4,57 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-05 — Figure 2: fixed right-edge clipping on the last x-axis tick label
+
+After extending Figure 2's year window to 2025 (above), the new last x-axis tick label,
+"2025", was clipped flush against the right edge of the PNG and PDF — confirmed by direct
+pixel inspection of the PNG (non-white content touched the very last image column, i.e. 0px
+margin) before any fix.
+
+**Fix:** added a right-side `plot.margin` (`ggplot2::margin(t = 5.5, r = 14, b = 5.5, l = 5.5,
+unit = "pt")`) in `scripts/generate_fig_cumulative_siteyears.R`, applied after `nature_theme()`
+in that script only — not inside the shared `fig_cumulative_siteyears_igbp()` function in
+`R/figures/fig_network_growth.R`, so it does not also change
+`scripts/generate_duration_histograms.R`'s Dur11 panel, which reuses the same function but is
+out of this fix's scope.
+
+**Confirmed by measurement, not by eye alone:**
+- PNG: rightmost non-white pixel column moved from `2101` (the literal last column, 0px/0mm
+  margin) to `2030` of `2101` — 71px / **3.0mm** of clear right margin at 600 dpi.
+- PDF: rightmost text bbox `xMax` (`pdftotext -bbox`) is `244.1pt` within a `252pt` page width —
+  **2.8mm** margin, consistent with the PNG measurement.
+- Visual crop of the right edge confirms "2025" sits fully inside the panel with white space to
+  its right.
+
+**Rebuilt and re-verified:** `scripts/check_figure_format.R` re-run, 11/11 PASS (Figure 2:
+88.9×88.9mm, unchanged from before this fix).
+
+**New edge-clipping check added to `scripts/check_figure_format.R`** (cheap — reuses the
+`pdftotext -bbox` per-word data `check_text_sizes()` already pulls, no new external tool): a new
+`check_edge_clipping()` fails any figure with a word's ink bbox within `1pt` (`EDGE_MARGIN_MIN_PT`)
+of, or past, a page edge. Threshold calibrated against every figure then in
+`review/figures/draft_manuscript_v1/`: every correctly-margined figure cleared ≥3.3pt; the
+pre-fix Figure 2 measured exactly 0pt. Reported as a new `EDGE(pt)` column in the check's output
+table.
+
+**Validated the check actually catches the original bug:** temporarily rebuilt Figure 2 with an
+under-sized margin (`r = 1pt`) — `check_figure_format.R` correctly failed it (`"202"` at
+`-1.03pt` clearance, exit 1) — then restored the real `r = 14pt` fix and re-confirmed 11/11 PASS.
+
+**Pre-existing issue surfaced, not fixed (out of this task's scope):** the new check also caught
+`figS5_flux_representativeness.pdf` at an apparent `-0.83pt` (past the top edge) on first run —
+investigated and found to be a false positive, not real clipping: the flagged words are the
+enclosing parenthesis and plotmath minus-sign superscript exponents ("⁻²"/"⁻¹") in a panel-header
+line sitting near the page's top margin. Visual inspection at 600 dpi confirms the text renders
+with a plainly visible gap above it — poppler's reported ink bbox for these glyphs overshoots the
+true visible ink, the same documented font-metrics artifact `check_text_sizes()` already excludes
+punctuation-only tokens for (see that function's own comments). Extended that same, already-
+established exclusion to the new edge check (punctuation-only tokens, and any token containing
+the Unicode minus sign U+2212) — figS5 now correctly reports a clean 2.75pt margin and the full
+run is 11/11 PASS. No different conclusion for any other figure.
+
+---
+
 ## 2026-10-05 — Figure 2 extended to a data-driven year window (1991–2025)
 
 Figure 2 (cumulative site-years by IGBP) and the collection comparison table previously stopped

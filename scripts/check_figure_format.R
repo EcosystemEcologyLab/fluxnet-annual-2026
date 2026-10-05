@@ -27,7 +27,14 @@
 ##                 regardless of glyph content, confirming poppler reports
 ##                 the font's ascent-to-descent box, not per-glyph ink
 ##                 extents, so this calibration is robust across all text
-##                 in these figures.
+##                 in these figures. The SAME per-word bboxes are reused
+##                 (2026-10-05) for an edge-clipping check: any word within
+##                 EDGE_MARGIN_MIN_PT (1pt) of a page edge, or past it
+##                 (negative clearance), fails -- added after fig_02's last
+##                 x-axis tick label ("2025") was found touching the PNG/PDF
+##                 edge with exactly 0pt clearance. Calibrated against every
+##                 other figure's own margins (all >=3.3pt) so a tight-but-
+##                 intentional layout is not flagged.
 ##   - pdftocairo -svg: converts to SVG (1 SVG user unit = 1 PDF point,
 ##                 confirmed directly: a 252pt-wide PDF produces
 ##                 width="252pt" viewBox="0 0 252 252"), then stroke-width
@@ -85,6 +92,17 @@ LINEWIDTH_MIN_PT <- 0.25
 LINEWIDTH_MAX_PT <- 1.0
 LINEWIDTH_TOLERANCE_PT <- 0.05
 
+## Minimum acceptable clearance (pt) between any word's ink bounding box
+## (pdftotext -bbox) and each of the four page edges. Below this, text is
+## touching or past the edge -- genuinely clipped on export, not merely
+## tightly laid out. Calibrated 2026-10-05 against every figure then in
+## review/figures/draft_manuscript_v1/: every correctly-margined figure
+## cleared >=3.3pt; fig_02's un-fixed last x-axis tick label ("2025") measured
+## exactly 0pt (confirmed separately by direct pixel inspection of the PNG --
+## non-white content touched the final image column). 1pt sits safely between
+## those two populations.
+EDGE_MARGIN_MIN_PT <- 1.0
+
 ALLOWED_FONTS <- c("Helvetica", "Helvetica-Bold", "Symbol")
 
 # ---- Step 1: discover figures ---------------------------------------------------
@@ -123,9 +141,9 @@ check_files_present <- function(stem, kind) {
 check_page_size <- function(pdf_path, kind) {
   info <- run_tool(c("pdfinfo", pdf_path))
   line <- grep("^Page size:", info, value = TRUE)
-  if (length(line) == 0L) return(list(ok = FALSE, issues = "pdfinfo: no page size found", w_mm = NA, h_mm = NA))
+  if (length(line) == 0L) return(list(ok = FALSE, issues = "pdfinfo: no page size found", w_mm = NA, h_mm = NA, w_pt = NA, h_pt = NA))
   m <- regmatches(line, regexec("Page size:\\s*([0-9.]+) x ([0-9.]+) pts", line))[[1]]
-  if (length(m) != 3L) return(list(ok = FALSE, issues = "pdfinfo: unparseable page size", w_mm = NA, h_mm = NA))
+  if (length(m) != 3L) return(list(ok = FALSE, issues = "pdfinfo: unparseable page size", w_mm = NA, h_mm = NA, w_pt = NA, h_pt = NA))
   w_pt <- as.numeric(m[2]); h_pt <- as.numeric(m[3])
   w_mm <- w_pt / PT_PER_MM; h_mm <- h_pt / PT_PER_MM
 
@@ -139,7 +157,66 @@ check_page_size <- function(pdf_path, kind) {
     if (w_mm > MM_ED_MAX_WIDTH + 0.5)  issues <- c(issues, sprintf("width %.1fmm exceeds %dmm", w_mm, MM_ED_MAX_WIDTH))
     if (h_mm > MM_ED_MAX_HEIGHT + 0.5) issues <- c(issues, sprintf("height %.1fmm exceeds %dmm", h_mm, MM_ED_MAX_HEIGHT))
   }
-  list(ok = length(issues) == 0L, issues = issues, w_mm = w_mm, h_mm = h_mm)
+  list(ok = length(issues) == 0L, issues = issues, w_mm = w_mm, h_mm = h_mm, w_pt = w_pt, h_pt = h_pt)
+}
+
+check_edge_clipping <- function(pdf_path, w_pt, h_pt) {
+  if (is.na(w_pt) || is.na(h_pt)) {
+    return(list(ok = TRUE, issues = character(0), min_clearance = NA_real_))
+  }
+  out <- run_tool(c("pdftotext", "-bbox", pdf_path, "-"))
+  words <- grep("<word ", out, value = TRUE)
+  if (length(words) == 0L) return(list(ok = TRUE, issues = character(0), min_clearance = NA_real_))
+
+  get_attr <- function(s, name) {
+    m <- regmatches(s, regexpr(paste0(name, '="[0-9.-]+"'), s))
+    as.numeric(sub(paste0(name, '="([0-9.-]+)"'), "\\1", m))
+  }
+  text_of <- function(s) sub(".*>(.*)</word>.*", "\\1", s)
+
+  xMin <- vapply(words, get_attr, numeric(1), name = "xMin")
+  yMin <- vapply(words, get_attr, numeric(1), name = "yMin")
+  xMax <- vapply(words, get_attr, numeric(1), name = "xMax")
+  yMax <- vapply(words, get_attr, numeric(1), name = "yMax")
+  txts <- vapply(words, text_of, character(1))
+
+  ## Clearance to the nearest of the four page edges, per word. Negative
+  ## means the word's own ink bbox extends past the page boundary (not just
+  ## touching it) -- pdftotext -bbox can report this for text clipped by the
+  ## device, since the bbox reflects the glyph's natural extent, not what the
+  ## renderer actually kept on-page.
+  clearance <- pmin(xMin, w_pt - xMax, yMin, h_pt - yMax)
+
+  ## Same unreliable-bbox categories check_text_sizes() already excludes from
+  ## its own pass/fail call, for the same underlying reason (poppler's
+  ## reported ink box for these glyphs is a font-design metric, not a tight
+  ## fit to the visible ink -- confirmed here by direct visual inspection:
+  ## figS5_flux_representativeness.pdf's "(g C m⁻² yr⁻¹)" sits with a
+  ## plainly visible gap above it at 600 dpi despite pdftotext reporting the
+  ## enclosing "(" and the plotmath minus-sign exponents "−2"/"−1" at up to
+  ## 0.83pt PAST the page's top edge). Excluded from both the reported
+  ## min_clearance and the fail determination; an ordinary word (e.g. a
+  ## genuinely clipped axis tick label) is digits/letters only and unaffected.
+  is_unreliable_bbox <- grepl("^[][().,;:−]+$", txts) | grepl("−", txts, fixed = TRUE)
+
+  clearance_reliable <- clearance[!is_unreliable_bbox]
+  min_clearance <- if (length(clearance_reliable) > 0L) {
+    suppressWarnings(min(clearance_reliable, na.rm = TRUE))
+  } else {
+    NA_real_
+  }
+
+  bad <- clearance < EDGE_MARGIN_MIN_PT & !is_unreliable_bbox
+  bad[is.na(bad)] <- FALSE
+  issues <- character(0)
+  if (any(bad)) {
+    bad_examples <- unique(sprintf("\"%s\" (%.2fpt clearance)", txts[bad], clearance[bad]))
+    issues <- c(issues, paste0(sum(bad), " word(s) within ", EDGE_MARGIN_MIN_PT,
+                                "pt of a page edge (clipped or touching): ",
+                                paste(utils::head(bad_examples, 6), collapse = "; "),
+                                if (length(bad_examples) > 6) "; ..." else ""))
+  }
+  list(ok = length(issues) == 0L, issues = issues, min_clearance = min_clearance)
 }
 
 check_fonts <- function(pdf_path) {
@@ -275,37 +352,43 @@ for (f in figures) {
   font_chk <- check_fonts(pdf_path)
   text_chk <- check_text_sizes(pdf_path)
   line_chk <- check_linewidths(pdf_path, tmp_dir)
+  edge_chk <- check_edge_clipping(pdf_path, size_chk$w_pt, size_chk$h_pt)
 
-  all_issues <- c(files_chk$issues, size_chk$issues, font_chk$issues, text_chk$issues, line_chk$issues)
+  all_issues <- c(files_chk$issues, size_chk$issues, font_chk$issues, text_chk$issues,
+                   line_chk$issues, edge_chk$issues)
   results[[name]] <- list(
     name = name, kind = f$kind, ok = length(all_issues) == 0L, issues = all_issues,
     w_mm = size_chk$w_mm, h_mm = size_chk$h_mm, fonts = font_chk$fonts,
     n_words = text_chk$n_words, n_warn = text_chk$n_warn,
-    lw_min = line_chk$min_w, lw_max = line_chk$max_w
+    lw_min = line_chk$min_w, lw_max = line_chk$max_w,
+    min_clearance = edge_chk$min_clearance
   )
 }
 
 # ---- Step 3: report ---------------------------------------------------------------
 cat("\n")
-cat(sprintf("%-42s %-5s %-12s %-6s %-6s %-10s %s\n",
-            "FIGURE", "KIND", "SIZE (mm)", "FONTS", "TEXT", "LINES(pt)", "STATUS"))
-cat(strrep("-", 110), "\n")
+cat(sprintf("%-42s %-5s %-12s %-6s %-6s %-10s %-8s %s\n",
+            "FIGURE", "KIND", "SIZE (mm)", "FONTS", "TEXT", "LINES(pt)", "EDGE(pt)", "STATUS"))
+cat(strrep("-", 118), "\n")
 any_fail <- FALSE
 for (r in results) {
   size_str <- if (!is.na(r$w_mm)) sprintf("%.1fx%.1f", r$w_mm, r$h_mm) else "?"
   font_str <- if (!is.null(r$fonts)) ifelse(setequal(r$fonts, intersect(r$fonts, c("Helvetica","Helvetica-Bold"))), "OK", "OK*") else "?"
   lw_str <- if (!is.null(r$lw_min) && !is.na(r$lw_min)) sprintf("%.2f-%.2f", r$lw_min, r$lw_max) else "n/a"
+  edge_str <- if (!is.null(r$min_clearance) && !is.na(r$min_clearance)) sprintf("%.2f", r$min_clearance) else "n/a"
   status <- if (r$ok) "PASS" else "FAIL"
   if (!r$ok) any_fail <- TRUE
-  cat(sprintf("%-42s %-5s %-12s %-6s %-6s %-10s %s\n",
+  cat(sprintf("%-42s %-5s %-12s %-6s %-6s %-10s %-8s %s\n",
               substr(r$name, 1, 42), r$kind, size_str, font_str,
-              paste0(r$n_words, "w"), lw_str, status))
+              paste0(r$n_words, "w"), lw_str, edge_str, status))
   if (!r$ok) {
     for (iss in r$issues) cat("    - ", iss, "\n", sep = "")
   }
 }
-cat(strrep("-", 110), "\n")
+cat(strrep("-", 118), "\n")
 cat("FONTS 'OK*' = Helvetica/Helvetica-Bold plus Symbol (true-minus-sign glyph substitution; see header).\n")
+cat(sprintf("EDGE(pt) = minimum clearance between any word's ink bbox and a page edge; fails below %.1fpt.\n",
+            EDGE_MARGIN_MIN_PT))
 cat(sprintf("TOTAL: %d figure(s), %d PASS, %d FAIL\n", length(results), sum(vapply(results, `[[`, logical(1), "ok")), sum(!vapply(results, `[[`, logical(1), "ok"))))
 
 if (any_fail) {

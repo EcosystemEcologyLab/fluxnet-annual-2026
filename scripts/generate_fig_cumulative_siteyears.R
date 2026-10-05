@@ -77,7 +77,18 @@ panel <- fig_cumulative_siteyears_igbp(
   la_thuile_year_matrix  = la_thuile_year_matrix
 ) +
   ggplot2::theme(legend.key.size = grid::unit(7, "pt")) +
-  nature_theme()
+  nature_theme() +
+  # Right margin (2026-10-05): the last x-axis tick (now a data-driven
+  # year_range, so its label can change -- see data_year_window() above) sits
+  # almost exactly at the panel's right edge (scale_x_continuous()'s 1%
+  # expansion inside fig_cumulative_siteyears_igbp() leaves very little
+  # room), so its centred tick label was clipped flush against the PNG/PDF
+  # edge with zero margin (confirmed by pixel inspection -- non-white content
+  # touched the very last image column). Scoped to this script only (not the
+  # shared theme/function), so it does not affect
+  # scripts/generate_duration_histograms.R's Dur11, which reuses the same
+  # fig_cumulative_siteyears_igbp() but is not part of this fix's scope.
+  ggplot2::theme(plot.margin = ggplot2::margin(t = 5.5, r = 14, b = 5.5, l = 5.5, unit = "pt"))
 
 saved <- save_nature_figure(panel, OUT_STEM, width_mm = NATURE_WIDTH_SINGLE_MM,
                              height_mm = NATURE_WIDTH_SINGLE_MM)

@@ -4,6 +4,53 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-05 — Version provenance check: 1 Sept listing and gap download (read-only)
+
+Read-only forensic check, no changes to data, snapshots, or figures. Asked which
+`fluxnet-shuttle` version actually produced `fluxnet_shuttle_snapshot_20260901T094522.csv`
+(the listing) and the same day's gap download of 22 sites
+(`logs/gap_download_delta_20260901.log`, documented in `docs/shuttle_gap_download_20260901.md`).
+
+**Listing — 0.3.7, well supported.** `logs/gap_check_listall_discover_20260901T094520.log`
+shows `check_pipeline_config()` printing `virtualenv: fluxnet_annual_2026` and
+`fluxnet-shuttle version OK: 0.3.7` immediately before `flux_listall()` ran and wrote the
+snapshot, in the same R session. Running `/Users/setanta/.virtualenvs/fluxnet_annual_2026/bin/fluxnet-shuttle --version`
+today confirms that venv reports `fluxnet-shuttle 0.3.7`. This is strong same-session evidence
+for the listing.
+
+**Download — 0.3.8, via a different venv than the one `check_pipeline_config()` validated.**
+`logs/gap_download_delta_20260901.log` (and `gap_check_single_site_test_20260901T094823.log`,
+`gap_retry_itcpz_20260901.log`) each open with the same `virtualenv: fluxnet_annual_2026` /
+`fluxnet-shuttle version OK: 0.3.7` lines, but shortly after `flux_download()` runs, every one
+of them prints: `Some Python package requirements declared via 'py_require()' are not
+installed in the selected Python environment: (/Users/setanta/.virtualenvs/fluxnet/bin/python)`.
+That names a second, separate reticulate virtualenv — `fluxnet` (not `fluxnet_annual_2026`) —
+as the environment actually used for the download call. Checked today:
+`/Users/setanta/.virtualenvs/fluxnet/bin/fluxnet-shuttle --version` → `fluxnet-shuttle 0.3.8`,
+installed via pip from git commit `028818791fef116db03e97f3f6b0aebdf1a89e90` per that venv's
+`fluxnet_shuttle-0.3.8.dist-info/direct_url.json`, with a `METADATA` mtime of
+`2026-06-04 15:50:58` — about three months before the 1 September run, and no `0.3.7` dist-info
+remnant found anywhere in that venv, so there's no evidence of a version change happening on
+1 September itself; 0.3.8 appears to have already been the standing state of that venv since
+June. No `uv` binary exists on this machine and no `uv` cache directory was found, so the
+ephemeral-uv-env theory in [[flux-download-uses-uv-head-not-pinned-venv]] (recorded 2026-05-25)
+does not hold on the mini as currently configured — the download instead ran via a second,
+persistent reticulate venv (`fluxnet`) that `scripts/batch_download.R` separately points
+`RETICULATE_PYTHON` at, independent of whichever ad hoc commands produced these particular
+gap-download logs (no committed script matches them; they read as one-off `Rscript` runs, not
+part of the numbered pipeline).
+
+**Net:** the listing is well-evidenced as 0.3.7. The download that same day ran against a
+*different* persistent venv holding 0.3.8, not an ephemeral uv env — so the listing and the
+download were not on the same shuttle version that day. This echoes, but refines, the existing
+[[flux-download-uses-uv-head-not-pinned-venv]] memory: the mechanism is a second named venv, not
+a uv ephemeral build, at least on this machine today. `docs/shuttle_gap_download_20260901.md`
+and the 2026-09-01 SESSION_LOG entry did not note this version split. Not acted on — read-only
+per the request; flagging here as a gap to resolve before final dataset lock (CLAUDE.md "Locking
+the Dataset for Final Paper Analysis").
+
+---
+
 ## 2026-10-05 — High-biomass tropical forest area; record-length counts (DONE)
 
 Two small counts for manuscript sentences, locked 1 September snapshot (781 sites). No figures;

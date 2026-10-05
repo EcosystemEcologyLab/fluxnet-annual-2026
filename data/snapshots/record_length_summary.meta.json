@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-10-05T18:04:06Z",
+  "pipeline_version": "c835f33",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_year_data_presence.csv",
+    "data/duckdb/fluxnet.duckdb",
+    "R/site_annual_fluxes.R",
+    "data/lists/FLUXNET2015.xlsx"
+  ],
+  "notes": "Record-length summary for manuscript sentences, locked 1 Sept 2026 snapshot (781 sites), years 1991-2024 (2025 excluded as a partial/incomplete year). 'years_with_data' = compute_site_year_presence() has_data (R/utils.R, any of NEE VUT/CUT, GPP NT/DT VUT/CUT, RECO NT/DT VUT/CUT, LE_F_MDS, H_F_MDS non-NA that month, >=1 month in the year), from the existing data/snapshots/site_year_data_presence.csv (raw, unfiltered monthly presence). 'span' = (last has_data year - first has_data year + 1) within the 1991-2024 window. Hand-tally check: 222/61 (years_with_data) and 233/64 (span) at thresholds 10/20 -- matched exactly, no discrepancy found. 'qualifying_nee_years' = count of non-NA NEE in compute_site_annual_fluxes()'s (R/site_annual_fluxes.R) site_year output (the paper's QC_THRESHOLD_YY=0.50 gate, per-site VUT/CUT source rule), restricted to 1991-2024; no new helper added, since site_year already exposes per-site-year NEE values. IGBP breakdowns (group_by='igbp') and the n-classes-present summary rows (group_by='igbp_n_classes_present') are reported only for the three threshold=10 sets, per the task request. FLUXNET2015 rows use the year-indicator matrix in data/lists/FLUXNET2015.xlsx (213 sites, 1991-2014 columns; '+' or 'Tier 2' both count as a year with data, both non-NA markers found in that matrix)."
+}

@@ -4,6 +4,95 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-05 — High-biomass tropical forest area; record-length counts (DONE)
+
+Two small counts for manuscript sentences, locked 1 September snapshot (781 sites). No figures;
+no existing output overwritten. New outputs: `data/snapshots/land_area_high_biomass_tropical.csv`
+and `data/snapshots/record_length_summary.csv`, each with a `.meta.json`.
+
+### A. Land area of high-biomass tropical forest
+
+Reused the exact rasters, land mask, alignment and top-bin edge `scripts/figure4_representativeness.R`
+panels A (Koppen), B (IGBP/MODIS) and D (biomass) already establish: Beck et al. (2023) Koppen-Geiger
+1 km land mask, ESA CCI Biomass v7.0 (band 18, 2024) resampled bilinear onto that grid, MODIS
+MCD12C1.061 resampled nearest-neighbour onto the same grid and masked to it. The top biomass-bin edge
+(171 Mg/ha) was **read from** `data/snapshots/biomass_cci_v7_global_distribution.csv`, not retyped.
+Two sanity checks against already-committed production numbers passed exactly: total land base
+147,322,862 km² and bin-7 global area 11,616,610 km² both reproduced bit-for-bit.
+
+**Global area (147.3M km² land base):**
+
+| Category | area km² | % of land base | % of top biomass bin |
+|---|---|---|---|
+| top bin within Af | 4,892,916 | 3.32% | 42.12% |
+| top bin within Am | 2,508,656 | 1.70% | 21.60% |
+| top bin within Aw | 1,364,453 | 0.93% | 11.75% |
+| top bin within tropical (Af+Am+Aw) combined | 8,766,025 | 5.95% | 75.46% |
+| top bin within MODIS EBF | 9,301,030 | 6.31% | 80.07% |
+| top bin within tropical AND EBF (both) | 8,411,861 | 5.71% | 72.41% |
+| MODIS EBF within tropical, any biomass | 10,502,508 | 7.13% | — |
+| top bin, global total (reference) | 11,616,610 | 7.89% | 100.00% |
+
+Share of the top biomass bin that is tropical: **75.46%**. Share that is EBF: **80.07%**.
+
+**Towers (of 781), Geo-vs-Geo map values at the tower:**
+
+| Category | n towers | % of 781 |
+|---|---|---|
+| top bin within Af | 6 | 0.8% |
+| top bin within Am | 5 | 0.6% |
+| top bin within Aw | 1 | 0.1% |
+| top bin within tropical combined | 12 | 1.5% |
+| top bin within MODIS-at-tower EBF | 18 | 2.3% |
+| top bin within PI-reported EBF | 15 | 1.9% |
+| top bin within tropical AND MODIS EBF | 12 | 1.5% |
+| top bin within tropical AND PI-reported EBF | 10 | 1.3% |
+| MODIS EBF within tropical, any biomass | 17 | 2.2% |
+| PI-reported EBF within tropical, any biomass | 17 | 2.2% |
+
+### B. Record length, locked snapshot, 1991–2024
+
+B1 (`compute_site_year_presence()` `has_data`, from the existing `site_year_data_presence.csv`,
+filtered to 1991–2024) matched the hand-tally **exactly**: 222/61 by years-with-data, 233/64 by
+first-to-last-year span, at thresholds 10/20. **No discrepancy found.**
+
+B2 used `compute_site_annual_fluxes()` (`R/site_annual_fluxes.R`) directly — its `site_year` output
+already exposes per-site-year NEE (NA where it doesn't qualify under the paper's QC gate), so no new
+helper was needed. Counted non-NA NEE years per site, 1991–2024.
+
+| Metric | ≥10 yr | ≥20 yr | denominator |
+|---|---|---|---|
+| years with data (`has_data`) | 222 | 61 | 781 |
+| span (first-to-last year) | 233 | 64 | 781 |
+| qualifying annual NEE values | 149 | 37 | 781 |
+| FLUXNET2015, years with data (`data/lists/FLUXNET2015.xlsx`) | 71 | 2 | 213 |
+
+**IGBP breakdown for the three "≥10" sets** (sites per class; classes present):
+
+| IGBP | years-with-data ≥10 | span ≥10 | qualifying NEE ≥10 |
+|---|---|---|---|
+| ENF | 45 | 46 | 36 |
+| GRA | 35 | 37 | 25 |
+| DBF | 30 | 30 | 24 |
+| WET | 23 | 27 | 14 |
+| CRO | 21 | 22 | 16 |
+| EBF | 17 | 20 | 10 |
+| OSH | 15 | 15 | 8 |
+| MF | 9 | 9 | 4 |
+| WSA | 8 | 8 | 6 |
+| SAV | 6 | 6 | 3 |
+| CSH | 4 | 4 | 0 |
+| DNF | 4 | 4 | 3 |
+| BSV | 2 | 2 | 0 |
+| CVM | 2 | 2 | 0 |
+| SNO | 1 | 1 | 0 |
+| **n classes present** | **15** | **15** | **11** |
+
+FLUXNET2015's year matrix (`data/lists/FLUXNET2015.xlsx`, 213 sites, columns 1991–2014) uses two
+non-NA markers, `"+"` and `"Tier 2"`; both counted as a year with data.
+
+---
+
 ## 2026-10-05 — BADM management coverage re-run on locked 1 September snapshot (DONE)
 
 `scripts/investigate_badm_management.R` re-run pinned to the locked snapshot

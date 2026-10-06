@@ -216,3 +216,100 @@ sites is therefore best read as an ICOS-weighted estimate, not a network-average
 ![QC flag distribution by resolution and variable](fig_stage1_qc_flag_distribution.png)
 
 ![Sub-daily measured/gap-fill split, 31 sites](fig_stage1_subdaily_qc_split.png)
+
+---
+
+## Stage 2 — Uncertainty at the annual step
+
+**Scope:** `annual` DuckDB table, `dataset = 'FLUXMET'`. Site-years qualifying under
+the paper's own rule, `(1 - QC) <= QC_THRESHOLD_YY` (=0.50), applied separately to
+VUT and CUT (each gated on its own `NEE_{VUT,CUT}_REF_QC` — not the single per-site
+VUT/CUT fallback `04_qc.R` uses for row exclusion, which by construction prevents
+both sides from qualifying at the same site-year; Stage 3 needs exactly that).
+**random** = `NEE_{VUT,CUT}_REF_RANDUNC`; **ustar_term** = `(NEE_{VUT,CUT}_84 -
+NEE_{VUT,CUT}_16) / 2`; **joint** = `NEE_{VUT,CUT}_REF_JOINTUNC`. All three are in
+gC m⁻² yr⁻¹ — confirmed: annual YY carbon passes through unconverted (CLAUDE.md Unit
+Conversion Reference) and `NEE_{VUT,CUT}_REF_RANDUNC`/`JOINTUNC`/the percentile
+columns are reported by ONEFlux in the same units as `NEE_{VUT,CUT}_REF` itself, so
+no conversion is needed or applied.
+
+**Outputs:** `table_stage2_site_year_nee_uncertainty.csv`,
+`table_stage2_joint_vs_rss_test.csv`, `table_stage2_nee_uncertainty_summary.csv`,
+`table_stage2_le_h_uncertainty_summary.csv`, `fig_stage2_joint_vs_rss.png`,
+`fig_stage2_uncertainty_terms_boxplot.png`, `fig_stage2_uncertainty_vs_nee_magnitude.png`.
+
+Qualifying site-years: **VUT = 4,017**, **CUT = 4,320** (out of 6,336 FLUXMET annual
+rows total).
+
+### Joint uncertainty equals the root-sum-of-squares of the other two, essentially exactly
+
+`JOINTUNC` **is** `sqrt(RANDUNC² + ustar_term²)` to within floating-point/rounding
+noise: median |joint − RSS| = 0.00009–0.00010 gC m⁻² yr⁻¹ (≈0.0004% of the joint
+value itself) for both VUT and CUT, `cor(joint, RSS) > 0.9999999999`, and **100% of
+site-years agree to within 1%** (`table_stage2_joint_vs_rss_test.csv`, confirmed
+visually in `fig_stage2_joint_vs_rss.png` — every point sits on the 1:1 line). No
+"what it actually equals instead" write-up is needed: the hypothesis in the task
+instructions is correct, not approximately but to numerical precision.
+
+### The u-star term dominates, not the random-error term
+
+| Carbon type | n | median random | median ustar_term | median joint | median ratio (ustar/random) | ustar dominates | random dominates |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| VUT | 4,017 | 5.56 | 15.71 | 17.40 | 2.85 | 88.2% | 11.2% |
+| CUT | 4,320 | 5.58 | 17.83 | 19.45 | 3.31 | 90.3% | 8.3% |
+
+(gC m⁻² yr⁻¹ except the dimensionless ratio/shares; full IQRs and by-IGBP breakdown
+in `table_stage2_nee_uncertainty_summary.csv`.) The u-star-threshold term is **~3×
+the random-error term at the median**, and **dominates total uncertainty in ~88–90%
+of qualifying site-years** for both VUT and CUT (`fig_stage2_uncertainty_terms_boxplot.png`).
+CUT's u-star term runs consistently higher than VUT's (median 17.8 vs 15.7) — CUT uses
+a single global threshold rather than VUT's site-specific one, so a wider swing across
+the u-star percentile ensemble is expected. Random uncertainty is tightly clustered
+(IQR ~4.5 gC m⁻² yr⁻¹ for both types) while the u-star term has a long right tail
+(IQR ~25–28 gC m⁻² yr⁻¹) — a handful of site-years reach u-star terms of 300–480 gC
+m⁻² yr⁻¹, an order of magnitude above the typical value.
+
+By IGBP class (`table_stage2_nee_uncertainty_summary.csv`), **EBF** has the highest
+median random uncertainty (12.2–13.1 gC m⁻² yr⁻¹, both carbon types) while **DBF**
+has the highest median u-star term (24.8–28.9); **OSH, SAV, BSV, SNO** sit at the low
+end for both terms. Forest classes (ENF, DBF, EBF, MF) generally carry larger u-star
+terms than open/short-canopy classes (GRA, CRO, OSH, SAV) — consistent with taller,
+more aerodynamically rough canopies producing more sensitive, less stable u-star
+filtering decisions.
+
+### Relation to the size of NEE
+
+Both uncertainty terms correlate positively with |NEE| but only moderately, and
+**random uncertainty correlates with |NEE| magnitude more strongly than the u-star
+term does**: `cor(random, |NEE|)` = 0.38 (VUT) / 0.38 (CUT) vs `cor(ustar_term,
+|NEE|)` = 0.18 (VUT) / 0.19 (CUT) (`table_stage2_nee_uncertainty_summary.csv`). The
+scatter (`fig_stage2_uncertainty_vs_nee_magnitude.png`) shows the u-star term is
+large and highly variable even for small-magnitude NEE site-years — it is driven by
+how sensitive a site's flux is to the choice of u-star threshold, which is not
+primarily a function of the annual total's own size — while the random term grows
+more smoothly and predictably with |NEE|, as expected for a term built from random
+flux-measurement noise aggregated over the year.
+
+### LE and H: only `RANDUNC` exists at the annual step
+
+Per Stage 0, LE/H have no u-star ensemble and no `JOINTUNC` for the uncorrected
+value at annual resolution — the joint/RSS test above cannot be repeated for them.
+Qualifying site-years: LE n=4,501, H n=4,631 (own-QC gate). Median `RANDUNC` is small
+relative to the flux itself: H 0.19 W m⁻² (median H_F_MDS = 23.9 W m⁻², i.e. ~0.8% of
+the value at the median), LE 0.16 W m⁻² (median LE_F_MDS = 37.3 W m⁻², ~0.5%) — note
+these are *annual-mean* W m⁻² rates (H_F_MDS/LE_F_MDS are mean rates at every
+resolution, never pre-integrated totals, per `R/units.R`/CLAUDE.md), not integrated
+annual totals, so this is not directly comparable to the NEE gC m⁻² yr⁻¹ figures
+above. `RANDUNC` correlates with |value| moderately for LE (`cor` = 0.67) and weakly
+for H (`cor` = 0.28). The energy-balance-corrected `LE_CORR`/`H_CORR` values are
+present for a minority of these qualifying site-years (LE: 3,048/4,501 = 67.7%; H:
+3,100/4,631 = 66.9%) but, as established in Stage 0, carry no spread/uncertainty
+column of their own at annual resolution (only at daily).
+
+### Figures
+
+![Joint vs RSS](fig_stage2_joint_vs_rss.png)
+
+![Uncertainty terms boxplot](fig_stage2_uncertainty_terms_boxplot.png)
+
+![Uncertainty vs NEE magnitude](fig_stage2_uncertainty_vs_nee_magnitude.png)

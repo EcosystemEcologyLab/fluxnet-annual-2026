@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:07:27Z",
+  "pipeline_version": "b26ae0d",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "One row per (site_id, year, carbon_type in {VUT, CUT}) for site-years qualifying under the paper's own rule, applied separately to VUT and CUT: (1 - QC) <= QC_THRESHOLD_YY (=0.5). random = NEE_{VUT,CUT}_REF_RANDUNC, ustar_term = (NEE_{VUT,CUT}_84 - NEE_{VUT,CUT}_16)/2, joint = NEE_{VUT,CUT}_REF_JOINTUNC, all in gC m-2 yr-1 (annual YY carbon passes through unconverted per CLAUDE.md Unit Conversion Reference). rss = sqrt(random^2 + ustar_term^2); joint_minus_rss = joint - rss (should be ~0 if joint is the RSS of the other two). dominant = whichever of random/ustar_term is larger for that site-year. NOT the same site set as 04_qc.R's output: that applies a single per-site VUT/CUT choice; here VUT and CUT are gated independently so both can qualify at the same site-year (needed for Stage 3)."
+}

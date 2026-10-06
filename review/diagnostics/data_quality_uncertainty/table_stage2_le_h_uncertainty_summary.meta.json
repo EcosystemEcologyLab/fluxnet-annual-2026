@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:07:27Z",
+  "pipeline_version": "b26ae0d",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "LE/H qualifying site-years (own QC >= 0.5). Only RANDUNC exists as an uncertainty column for LE/H at the annual step (Stage 0): no ustar-threshold ensemble, no JOINTUNC for the uncorrected value, no spread column for LE_CORR/H_CORR at this resolution (CORR spread columns exist only in the daily table). n_with_corr_value counts qualifying site-years that also have a non-NA energy-balance-corrected value."
+}

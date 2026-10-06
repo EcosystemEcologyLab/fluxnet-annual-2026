@@ -30,3 +30,19 @@ table_stage1_subdaily_qc_network_summary.csv, table_stage1_subdaily_vs_network_i
 table_stage1_subdaily_vs_network_hub.csv, fig_stage1_qc_flag_distribution.png, 
 fig_stage1_subdaily_qc_split.png (+ .meta.json each).
 
+
+## Stage 2 -- Uncertainty at the annual step
+
+Completed 2026-10-06T23:07:28Z.
+
+- Qualifying site-years ((1-QC)<=QC_THRESHOLD_YY=0.5), own-QC-gated per variable: VUT=4017, CUT=4320.
+- Joint vs RSS(random, ustar_term) test: VUT median|diff|=0 gC/m2/yr (0% of joint, cor=1); CUT median|diff|=0 gC/m2/yr (0% of joint, cor=1).
+- VUT: median random=5.56, median ustar_term=15.71, median joint=17.4 gC/m2/yr; ustar_term dominates 88.2% of site-years, random dominates 11.2%.
+- CUT: median random=5.58, median ustar_term=17.83, median joint=19.45 gC/m2/yr; ustar_term dominates 90.3% of site-years, random dominates 8.3%.
+- LE/H: only RANDUNC exists at the annual step (no ustar ensemble, no JOINTUNC for the uncorrected value); summarised in table_stage2_le_h_uncertainty_summary.csv.
+
+Outputs: table_stage2_site_year_nee_uncertainty.csv, table_stage2_joint_vs_rss_test.csv, 
+table_stage2_nee_uncertainty_summary.csv, table_stage2_le_h_uncertainty_summary.csv, 
+fig_stage2_joint_vs_rss.png, fig_stage2_uncertainty_terms_boxplot.png, 
+fig_stage2_uncertainty_vs_nee_magnitude.png (+ .meta.json each).
+

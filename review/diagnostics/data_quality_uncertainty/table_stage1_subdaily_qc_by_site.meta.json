@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:04:18Z",
+  "pipeline_version": "42f99ff",
+  "input_sources": [
+    "data/extracted/*_FLUXMET_HH_*.csv, *_FLUXMET_HR_*.csv (31 sites)"
+  ],
+  "notes": "True measured(0)/good(1)/medium(2)/poor(3) gap-fill split per site per variable, read directly from extracted sub-daily FLUXMET CSVs (QC columns only)."
+}

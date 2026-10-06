@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-06T23:04:18Z",
+  "pipeline_version": "42f99ff",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "table_stage0_hh_hr_sites.csv"
+  ],
+  "notes": "IGBP-class composition of the 31 sub-daily-extracted sites vs the full 781-site network."
+}

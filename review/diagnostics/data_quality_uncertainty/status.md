@@ -16,3 +16,17 @@ Completed 2026-10-06T23:00:37Z.
 Outputs: table_stage0_column_inventory.csv, table_stage0_hh_hr_sites.csv, 
 table_stage0_bif_ustar_summary.csv, table_stage0_bif_ustar_site_summary.csv (+ .meta.json each).
 
+
+## Stage 1 -- Gaps
+
+Completed 2026-10-06T23:04:18Z.
+
+- QC flag distribution computed for NEE_VUT, NEE_CUT, LE, H at daily/weekly/monthly/annual, overall + by IGBP + by hub (data_hub). 240 group rows written.
+- weekly resolution: only 1 site (US-MMS) in the DuckDB store -- not network-representative; flagged in report.md.
+- Sub-daily QC split read from 31 sites' extracted HH/HR CSVs (5145912 sub-daily records pooled); compared against network IGBP/hub composition.
+
+Outputs: table_stage1_qc_distribution.csv, table_stage1_subdaily_qc_by_site.csv, 
+table_stage1_subdaily_qc_network_summary.csv, table_stage1_subdaily_vs_network_igbp.csv, 
+table_stage1_subdaily_vs_network_hub.csv, fig_stage1_qc_flag_distribution.png, 
+fig_stage1_subdaily_qc_split.png (+ .meta.json each).
+

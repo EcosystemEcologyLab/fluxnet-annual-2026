@@ -110,3 +110,109 @@ usable as a single grouping key) and `data_hub` (single-valued: `AmeriFlux`/`ICO
 of this diagnostic use `data_hub`**, matching that precedent — it is manifest-derived
 from the download source, not inferred from site-ID prefixes, so it satisfies Hard
 Rule 2's intent despite not being the literally-named `network` column.
+
+---
+
+## Stage 1 — Gaps
+
+**Scope:** daily, weekly, monthly, annual DuckDB tables, `dataset = 'FLUXMET'`;
+QC flag = `NEE_VUT_REF_QC`, `NEE_CUT_REF_QC`, `LE_F_MDS_QC`, `H_F_MDS_QC`.
+
+**Outputs:** `table_stage1_qc_distribution.csv` (overall + by IGBP + by hub, all four
+resolutions), `table_stage1_subdaily_qc_by_site.csv`,
+`table_stage1_subdaily_qc_network_summary.csv`,
+`table_stage1_subdaily_vs_network_igbp.csv`, `table_stage1_subdaily_vs_network_hub.csv`,
+`fig_stage1_qc_flag_distribution.png`, `fig_stage1_subdaily_qc_split.png`.
+
+**At DD/WW/MM/YY resolution the QC flag is the fraction of underlying half-hourly/
+hourly records that were measured or good-quality gap-filled — it cannot distinguish
+"all measured" from "all MDS-gap-filled" within that fraction** (CLAUDE.md QC Flag
+Reference, System 1). A site-period with `QC = 0.95` could be 95% directly measured,
+or 95% high-confidence gap-fill, or any mixture; this stage's distributions describe
+that fraction only, not the measured/gap-filled split itself (that split is only
+recoverable from sub-daily files — see below).
+
+### Flag distribution, overall
+
+| Resolution | Variable | n site-periods | median | share ≥ 0.50 | share ≥ 0.75 | share = 1 |
+|---|---|---:|---:|---:|---:|---:|
+| daily | NEE_VUT | 1,860,909 | 1.00 | 0.903 | 0.858 | 0.508 |
+| daily | NEE_CUT | 2,002,221 | 1.00 | 0.897 | 0.852 | 0.507 |
+| daily | LE | 2,062,532 | 1.00 | 0.922 | 0.905 | 0.775 |
+| daily | H | 2,085,934 | 1.00 | 0.931 | 0.917 | 0.814 |
+| weekly\* | NEE_VUT | 1,300 | 0.946 | 0.972 | 0.888 | 0.071 |
+| weekly\* | NEE_CUT | 1,300 | 0.952 | 0.983 | 0.920 | 0.084 |
+| weekly\* | LE | 1,300 | 1.00 | 0.997 | 0.986 | 0.682 |
+| weekly\* | H | 1,300 | 1.00 | 0.997 | 0.988 | 0.677 |
+| monthly | NEE_VUT | 59,890 | 0.958 | 0.938 | 0.866 | 0.019 |
+| monthly | NEE_CUT | 64,441 | 0.958 | 0.932 | 0.857 | 0.020 |
+| monthly | LE | 66,409 | 0.995 | 0.952 | 0.905 | 0.194 |
+| monthly | H | 67,262 | 0.997 | 0.959 | 0.917 | 0.268 |
+| annual | NEE_VUT | 4,033 | 0.925 | 0.996 | 0.929 | 0.000 |
+| annual | NEE_CUT | 4,352 | 0.923 | 0.993 | 0.921 | 0.000 |
+| annual | LE | 4,509 | 0.974 | 0.998 | 0.974 | 0.002 |
+| annual | H | 4,638 | 0.983 | 0.998 | 0.981 | 0.005 |
+
+\* **Weekly resolution has only 1 site (`US-MMS`) in the current DuckDB store** — it
+is not a network-representative sample, unlike daily/monthly/annual (781 sites each).
+`CLAUDE.md`'s default `FLUXNET_EXTRACT_RESOLUTIONS="y m d"` does not include weekly
+extraction; this single site's weekly table appears to be left over from an earlier
+ad hoc extraction. Treat the weekly row as a single-site case study only.
+
+At every real (781-site) resolution, LE and H are flagged "good" (QC ≥ 0.75) more
+consistently than either NEE variant — e.g. at the annual step, `share_eq_1` is
+essentially 0 for NEE_VUT/CUT but LE/H still reach 0.002/0.005 (small but nonzero: a
+handful of site-years are 100% measured-or-good for the meteorological driver but
+never for NEE). `share_ge_050` (the paper's actual QC_THRESHOLD_YY/MM/DD/WW gate) is
+≥0.99 for NEE at daily→annual, meaning the QC_THRESHOLD=0.50 filter used by
+`04_qc.R` retains the overwhelming majority of site-periods; the stricter 0.75
+alternative removes a further ~7 percentage points at the annual step (0.929 → the
+complement, ~7%, would additionally fail).
+
+### By IGBP class and by hub (annual step, NEE_VUT; full table in the CSV)
+
+By IGBP class, median annual QC ranges from 0.849 (SNO, n=3 — too few site-years to
+be meaningful) and 0.894 (OSH, n=194) up to 0.941 (WSA, n=152) and 0.940 (CVM, n=26).
+Forest and wetland classes (ENF, DBF, WET) cluster around a median of 0.91–0.93;
+cropland/grassland (CRO, GRA) run slightly higher (~0.93–0.94). By hub: AmeriFlux
+sites have the lowest median annual QC (0.917, n=1719 site-years), ICOS intermediate
+(0.930, n=2042), TERN highest (0.940, n=272) — a modest but consistent ordering,
+visible in every variable and most resolutions (`table_stage1_qc_distribution.csv`).
+
+### Sub-daily ground truth: the true measured/gap-fill split
+
+The 31 sites with HH/HR files extracted (Stage 0) give 5,145,912 pooled sub-daily
+records with integer QC flags (0=measured, 1=good gap-fill (MDS), 2=medium, 3=poor).
+Pooled network split:
+
+| Variable | measured | good gap-fill | medium gap-fill | poor gap-fill |
+|---|---:|---:|---:|---:|
+| H | 70.2% | 22.8% | 4.0% | 3.1% |
+| LE | 61.9% | 29.3% | 5.1% | 3.7% |
+| NEE_CUT | 38.6% | 48.3% | 8.3% | 4.8% |
+| NEE_VUT | 39.1% | 48.5% | 8.1% | 4.2% |
+
+NEE is majority gap-filled even at the "good" level — only ~39% of half-hourly NEE
+records are direct measurements, versus ~62–70% for LE/H. This matches the physical
+expectation: NEE requires turbulent-flux quality screening (u-star filtering, among
+other QA/QC) that LE/H do not, so a much larger share of NEE half-hours are excluded
+and gap-filled. The DD/WW/MM/YY QC flag (which cannot separate measured from good
+gap-fill) therefore masks a real quality difference: a site-period with `QC ≈ 0.95`
+for NEE is mostly gap-filled flux, not mostly measured flux, in a way the same `QC`
+value for LE/H typically is not.
+
+**This 31-site subset is not representative of the network by hub**, though it is
+roughly representative by IGBP class. IGBP shares track the network closely (e.g. GRA
+19.4% of the subset vs 18.7% network-wide, CRO 16.1% vs 17.8%; `OSH`, `MF`, `SAV`,
+`CSH`, `SNO` — 10% of the network between them — are entirely unrepresented in the
+31, a real gap but a small one). By hub, the subset is strongly ICOS-skewed: ICOS is
+74.2% of the 31 sites but only 44.6% of the network; AmeriFlux is only 19.4% of the
+31 sites despite being 48.8% of the network; TERN is close to proportional (6.5% vs
+6.7%). Any conclusion about the true measured/gap-fill split drawn from these 31
+sites is therefore best read as an ICOS-weighted estimate, not a network-average one.
+
+### Figures
+
+![QC flag distribution by resolution and variable](fig_stage1_qc_flag_distribution.png)
+
+![Sub-daily measured/gap-fill split, 31 sites](fig_stage1_subdaily_qc_split.png)

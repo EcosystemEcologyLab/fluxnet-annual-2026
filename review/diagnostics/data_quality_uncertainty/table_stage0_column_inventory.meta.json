@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:00:37Z",
+  "pipeline_version": "29c001b",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "dataset = 'FLUXMET' only. n_sites_with_data = count(distinct site_id) with at least one non-NA value for that column, across all site-periods in that table. NA in n_sites_with_data means the column does not exist in that table at all (exists_in_db = FALSE). Network has 781 sites total (manifest)."
+}

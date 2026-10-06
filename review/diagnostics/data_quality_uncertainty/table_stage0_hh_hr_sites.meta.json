@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:00:34Z",
+  "pipeline_version": "29c001b",
+  "input_sources": [
+    "data/extracted (live flux_discover_files() scan)"
+  ],
+  "notes": "Sites with sub-daily (HH/HR) FLUXMET files currently extracted on disk. The DB's stored `manifest` table is stale relative to disk for sub-daily resolutions (shows 0 HH/HR FLUXMET files) because FLUXNET_EXTRACT_RESOLUTIONS defaults to 'y m d' and 03b_create_database.R's manifest reflects whatever was on disk when it last ran; this table instead uses a fresh flux_discover_files() scan of data/extracted as it exists now."
+}

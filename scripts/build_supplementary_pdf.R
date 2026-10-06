@@ -29,7 +29,8 @@ STEMS <- c("figS1_whittaker_nee_gpp_ter",
            "figS3_flux_comparison_six_panel",
            "figS4_representativeness_geo_vs_geo",
            "figS5_flux_representativeness",
-           "figS6_representativeness_trajectory")
+           "figS6_representativeness_trajectory",
+           "figS7_record_length")
 
 for (s in STEMS) {
   png_path <- file.path(SUPFIGS_DIR, paste0(s, ".png"))

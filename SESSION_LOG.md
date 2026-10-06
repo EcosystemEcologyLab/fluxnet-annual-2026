@@ -4,6 +4,47 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-06 — Figure 2 "historical only" presentation reveal companion
+
+Requested: a presentation aid to show before Figure 2 in a talk — identical in every way except
+without the FLUXNET Shuttle (current-network) site-years, i.e. only the Marconi/La Thuile/
+FLUXNET2015 lines, on x/y axes identical to the real Figure 2, so advancing the slide from this
+to the real Figure 2 reads as the Shuttle network data appearing on an unchanged scale.
+
+**Implementation:** added a `show_current_network = TRUE` parameter to
+`fig_cumulative_siteyears_igbp()` (`R/figures/fig_network_growth.R`). When `FALSE`, the Shuttle
+IGBP-stacked `geom_area()`/`scale_fill_manual()` ("IGBP" legend) layers are omitted; an invisible
+`geom_blank()` layer carrying the same per-year Shuttle stacked totals is added in their place, so
+the y-axis's automatic range (and therefore its breaks) is identical to the `TRUE` case even
+though nothing Shuttle-derived is drawn. The x-axis scale code is untouched and shared by both
+paths. **Confirmed the refactor is a true no-op for the default (`TRUE`) path**: rebuilt Figure 2
+after the change — PNG byte-identical (same md5) to the pre-refactor file; PDF bytes differed only
+in embedded timestamp metadata, confirmed by rendering both PDFs to PNG at 600 dpi and diffing —
+pixel-identical.
+
+New script `scripts/generate_fig02_historical_only.R` (same pinned snapshot/historical inputs,
+same `base_size = 9L`, same right-margin fix as Figure 2 — SESSION_LOG.md 2026-10-05 — as a single
+shared code path, so the two figures cannot drift apart in anything but the one intended
+difference) calls `fig_cumulative_siteyears_igbp(..., show_current_network = FALSE)` and saves to
+`review/figures/draft_manuscript_v1/SupFigs/fig_02_historical_only.png`/`.pdf`/`.jpg`/`.legend.txt`
+(`extended_data = TRUE`, so it gets the same 300 ppi JPEG as S1–S6).
+
+**Deliberately not given an S-number.** This is a talk aid, not Supplementary Information for
+journal submission — named `fig_02_historical_only` (not `figS7_...`) so it is not mistaken for
+one, with its purpose stated plainly at the top of both the script and its `.legend.txt`.
+`docs/figure_inventory.md`'s Supplementary Figures section updated with a note to this effect, so
+a future session does not assume it belongs in the S1–S6 sequence or the paper's own supplementary
+materials list.
+
+**Verified:** visual inspection confirms identical x-axis (1991–2025, same 5-year breaks),
+identical y-axis (0–7000, same breaks), identical dashed release-year reference lines
+(2000/2007/2015), and identical Marconi/La Thuile/FLUXNET2015 line styling/direct labels, with no
+Shuttle area or IGBP legend. `scripts/check_figure_format.R` re-run: **12/12 PASS**
+(`fig_02_historical_only`: 88.9×88.9mm, same `5.48pt` edge clearance as Figure 2 itself, since it
+reuses the identical margin fix).
+
+---
+
 ## 2026-10-05 — Figure 2: fixed right-edge clipping on the last x-axis tick label
 
 After extending Figure 2's year window to 2025 (above), the new last x-axis tick label,

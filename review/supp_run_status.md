@@ -99,3 +99,32 @@ matching the script's output exactly.
 Status: **Stage 3 PASSED validation gate as designed — produced the "otherwise report which differ"
 output rather than the full table, which is the correct and expected outcome given the Stage-3 file
 restriction.**
+
+## Stage 4 — Bowen ratio by vegetation class
+
+**Script:** `scripts/supp_stage4_bowen_ratio_by_igbp.R`
+
+Read the pre-QC `annual` table (DuckDB, `dataset='FLUXMET'`, never `annual_qc`/`annual_converted`).
+Site-years require `H_F_MDS_QC` and `LE_F_MDS_QC` to **each independently** satisfy
+`QC_THRESHOLD_YY` (same `(1 - QC) <= threshold` formula as `R/site_annual_fluxes.R`'s own
+`h_qualifies`/`et_qualifies`): 4,487 / 6,336 site-years qualified on both. `LE_F_MDS <= 0`: **0
+site-years dropped** (none occurred in the qualifying set). Bowen ratio = `H_F_MDS / LE_F_MDS`
+(both already native W m⁻² mean rates — no unit conversion needed or applied). Site value = median
+over that site's own qualifying site-years (665 sites, 4,487 site-years total).
+
+**`H_CORR`/`LE_CORR`:** both columns **exist** in the `annual` table — `H_CORR` has ≥1 non-NA value
+for 437 / 781 current-network sites, `LE_CORR` for 436 / 781. **Neither was used** in the Bowen
+ratio computation, per instruction (report only).
+
+**Output:** `review/figures/draft_manuscript_v1/SupTables/tableS_bowen_ratio_by_igbp.csv` — per IGBP
+class (+ Total) n sites, n site-years, median/25th/75th percentile of site values, and
+`flag_small_n` (TRUE for <5 sites — only SNO, 1 site, is flagged). Values are ecophysiologically
+sensible (lowest Bowen ratio in wetlands/croplands ~0.33–0.36, highest in sparse/dry shrubland and
+savanna classes ~1.2–2.2), consistent with expected energy-partitioning behaviour, which is a
+sanity check in itself. **PASSED** — table written.
+
+Status: **Stage 4 PASSED.**
+
+---
+
+RUN COMPLETE

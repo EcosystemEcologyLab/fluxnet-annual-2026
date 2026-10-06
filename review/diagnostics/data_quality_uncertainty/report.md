@@ -368,3 +368,89 @@ full ±2000 gC m⁻² yr⁻¹ range of annual NEE represented in this dataset).
 ![VUT minus CUT histogram](fig_stage3_vut_minus_cut_histogram.png)
 
 ![VUT vs CUT scatter](fig_stage3_vut_vs_cut_scatter.png)
+
+---
+
+## Stage 4 — Availability and failure
+
+**Scope:** `annual` DuckDB table, `dataset = 'FLUXMET'` (all 6,336 site-years, 781
+sites — not restricted to qualifying rows), plus the BIF `GRP_UST_THR` u-star
+method-success records found at all 781 sites in Stage 0.
+
+**Outputs:** `table_stage4_site_year_master.csv` (the requested site×year join
+table), `table_stage4_site_level_availability.csv`,
+`table_stage4_site_year_category_counts.csv`, `table_stage4_site_level_category_counts.csv`,
+`table_stage4_ustar_method_vs_qualification.csv`, `table_stage4_ustar_failure_by_category.csv`,
+`fig_stage4_site_year_availability.png`, `fig_stage4_site_availability.png`.
+
+"Qualifying" uses the same own-QC rule as Stages 2–3. A site-year/site is `both` /
+`VUT_only` / `CUT_only` / `neither` by which side(s) qualify; `neither` is split into
+`no_value` (no raw `NEE_VUT_REF` or `NEE_CUT_REF` value at all that year) vs
+`fails_qc` (a raw value exists on at least one side but fails the QC rule).
+
+### Site-year and site availability
+
+| Level | both | VUT_only | CUT_only | neither | neither: no_value | neither: fails_qc |
+|---|---:|---:|---:|---:|---:|---:|
+| Site-years (n=6,336) | 3,960 (62.5%) | 57 (0.9%) | 360 (5.7%) | 1,959 (30.9%) | 1,935 (98.8% of neither) | 24 (1.2% of neither) |
+| Sites (n=781, ≥1 qualifying year) | 575 (73.6%) | 41 (5.2%) | 40 (5.1%) | 125 (16.0%) | 125 (100% of neither) | 0 |
+
+Every site in the manifest has at least one FLUXMET annual row (0 sites with
+`no_annual_rows`). **125 sites (16.0%) never have a single qualifying annual NEE
+value under either processing path**, and for every one of those 125, the reason is
+that no raw `NEE_VUT_REF`/`NEE_CUT_REF` value exists in any year — none of them has
+data that simply falls short of the QC threshold. At the site-year level, `fails_qc`
+(a value exists but doesn't clear the 0.50 threshold) is rare — only 24 of 1,959
+`neither` site-years (1.2%) — so **"no qualifying annual NEE" is overwhelmingly a
+data-availability problem, not a QC-strictness problem**; raising `QC_THRESHOLD_YY`
+to the stricter 0.75 alternative would reclassify very few additional site-years as
+"neither" (consistent with Stage 1's `share_ge_075` figures of ~0.92–0.93 for annual
+NEE). 40 sites are CUT-only across their full record and 41 are VUT-only, close to
+CLAUDE.md's documented "~36 sites" CUT-only figure for the pipeline's per-site
+fallback rule — the small difference is expected, since that fallback rule and this
+stage's per-side independent qualification are different constructions (see Stage 2
+header note) and will not produce identical counts.
+
+### u-star method success, from BIF records
+
+`USTAR_CP_SUCCESS_RUN` (change-point method) and `USTAR_MP_SUCCESS_RUN` (moving-point
+method) are recorded for all 6,336 FLUXMET annual site-years (paired via `GROUP_ID`
+with their `_YEAR` companion). **The two methods fail at very different rates: CP
+fails 55.1% of the time (3,493/6,336 site-years), MP fails only 4.8% (305/6,336).**
+ONEFlux's combined threshold-selection procedure evidently leans on MP far more
+reliably than CP across this network.
+
+| NEE category | n site-years | share with ≥1 method failed | share with both methods failed |
+|---|---:|---:|---:|
+| both | 3,960 | 39.4% | 0.2% |
+| VUT_only | 57 | 54.4% | 1.8% |
+| CUT_only | 360 | 50.0% | 8.9% |
+| neither | 1,959 | 87.9% | 13.5% |
+
+u-star method failure is strongly associated with NEE qualification failure: site-years
+where NEE fails to qualify on either side (`neither`) have a method-failure rate of
+87.9%, more than double the 39.4% rate among site-years where both NEE values qualify.
+Combined with the `no_value`-dominated breakdown above, this points to a coherent
+mechanism: when u-star threshold estimation fails for a site-year, ONEFlux evidently
+tends not to produce a usable `NEE_VUT_REF`/`NEE_CUT_REF` value at all for that year
+(contributing to `no_value`), rather than producing one that is merely poorly
+gap-filled and fails the QC threshold (`fails_qc`) — consistent with `fails_qc` being
+rare. `both_methods_failed` is rare even within `neither` (13.5%), so most `neither`
+site-years still have at least one method nominally succeeding (usually MP) — the
+failure that blocks NEE qualification is not always reducible to "both u-star methods
+failed that year."
+
+### The site-year master join table
+
+`table_stage4_site_year_master.csv` has one row per FLUXMET annual site-year (6,336
+rows): `site_id`, `year`, `igbp`, `data_hub`, both NEE values and their own QC/random/
+`ustar_term`/joint columns, `VUT_minus_CUT` (computed whenever both raw values are
+present, regardless of QC), `qualifies_VUT`/`qualifies_CUT`, `category`, and
+`neither_reason`. This is the single table later work should join against for
+site×year-level quality/uncertainty context.
+
+### Figures
+
+![Site-year availability](fig_stage4_site_year_availability.png)
+
+![Site availability](fig_stage4_site_availability.png)

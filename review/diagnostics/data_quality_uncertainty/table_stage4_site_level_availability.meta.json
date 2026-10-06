@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-06T23:12:06Z",
+  "pipeline_version": "e186199",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "table_stage4_site_year_master.csv"
+  ],
+  "notes": "One row per site in the manifest (781 total). category: both/VUT_only/CUT_only/neither based on whether the site has >=1 qualifying year for each side (QC_THRESHOLD_YY); 'no_annual_rows' for sites in the manifest with zero FLUXMET rows in the annual table at all (none found in this run, see report.md). neither_reason: no_value (no raw NEE_VUT_REF or NEE_CUT_REF value in any year) vs fails_qc (has raw values but none ever qualify)."
+}

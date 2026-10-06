@@ -58,3 +58,18 @@ Outputs: table_stage3_site_year_vut_vs_cut.csv, table_stage3_site_year_summary.c
 table_stage3_site_level_vut_vs_cut.csv, table_stage3_site_level_summary.csv, 
 fig_stage3_vut_minus_cut_histogram.png, fig_stage3_vut_vs_cut_scatter.png (+ .meta.json each).
 
+
+## Stage 4 -- Availability and failure
+
+Completed 2026-10-06T23:12:09Z.
+
+- Site-years (n=6336): both=3960 (62.5%), neither=1959 (30.9%); 'neither' splits into no_value=1935 and fails_qc=24.
+- Sites (n=781): both=575 (73.6%), neither=125 (16%). Sites in manifest with zero FLUXMET annual rows: 0.
+- u-star BIF method-success records found (Stage 0 confirmed presence at all 781 sites): CP recorded for 6336 site-years (3493 failures), MP recorded for 6336 site-years (305 failures). Failure-by-category breakdown in table_stage4_ustar_failure_by_category.csv.
+- Master join table written: table_stage4_site_year_master.csv (6336 rows, one per FLUXMET annual site-year).
+
+Outputs: table_stage4_site_year_master.csv, table_stage4_site_level_availability.csv, 
+table_stage4_site_year_category_counts.csv, table_stage4_site_level_category_counts.csv, 
+table_stage4_ustar_method_vs_qualification.csv, table_stage4_ustar_failure_by_category.csv, 
+fig_stage4_site_year_availability.png, fig_stage4_site_availability.png (+ .meta.json each).
+

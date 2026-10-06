@@ -5,8 +5,57 @@
 
 ## Summary
 
-*(Placeholder — this section is rewritten once all stages are complete, per the
-task's closing instruction. See `status.md` for the current run state.)*
+All five stages (0–4) completed; nothing was blocked outright, though two scope
+limits turned out to matter and are flagged throughout rather than glossed over.
+**Weekly resolution in the current DuckDB store holds only one site** (`US-MMS`) —
+not network-representative, so Stage 1's weekly row is a single-site case study, not
+a network statistic. **Sub-daily (HH/HR) files are extracted for only 31 of 781
+sites**, and that subset is hub-skewed (74% ICOS vs 45% network-wide; AmeriFlux only
+19% vs 49% network-wide) though roughly IGBP-representative — Stage 1's true
+measured/gap-fill split should be read as ICOS-weighted, not a network average.
+Everything else — annual/monthly/daily resolution, the BIF u-star records, the
+VUT/CUT comparison, the availability tabulation — covers the full 781-site network.
+
+**Column inventory (Stage 0):** NEE (VUT and CUT) carries a full uncertainty
+apparatus at every resolution — reference value, QC flag, `RANDUNC`, `JOINTUNC`, the
+7-point u-star percentile ensemble, `USTAR50`, `MEAN`, `SE`. LE and H carry only a
+reference value, QC flag and `RANDUNC`; they have no u-star ensemble and no
+`JOINTUNC` for the uncorrected value at any resolution, and their energy-balance-corrected
+spread columns (`_CORR_25/75/JOINTUNC`) exist only in the daily table. All of this
+is genuine absence in the FLUXNET product, confirmed against raw extracted CSV
+headers, not an ingest artefact.
+
+**Gaps (Stage 1):** the DD/WW/MM/YY QC flag is a fraction (measured-or-good-gap-fill)
+that cannot separate "mostly measured" from "mostly gap-filled." The sub-daily ground
+truth shows why that matters: NEE is majority gap-filled even at the "good" tier
+(~39% directly measured) while LE/H are majority measured (~62–70%) — the coarse flag
+masks a real quality gap between flux variables that behaves identically in `QC`
+terms but very differently underneath.
+
+**Annual uncertainty (Stage 2):** `JOINTUNC` **is** `sqrt(RANDUNC² + ustar_term²)`
+to numerical precision (100% of qualifying site-years agree within 1%) — the
+hypothesis in the task holds exactly, not approximately. The u-star-threshold term
+(half the 16th–84th percentile spread) is the dominant uncertainty source, ~3× the
+random term at the median and larger in ~88–90% of qualifying site-years for both
+VUT and CUT.
+
+**VUT vs CUT (Stage 3):** median difference ≈0 (no systematic bias) across 3,960
+paired site-years at 575 sites, but with real spread — 14.3% of site-years differ by
+more than 25 gC m⁻² yr⁻¹, 2.2% by more than 100. 96.1% of differences are smaller than
+the two estimates' combined (quadrature-summed) joint uncertainty, and the two
+methods agree on sink/source sign in 98.4% of site-years.
+
+**Availability and failure (Stage 4):** 125 of 781 sites (16.0%) never produce a
+qualifying annual NEE under either VUT or CUT, and for every one of them the cause is
+a missing raw value, not a value that fails the QC threshold (`fails_qc` is only
+1.2% of "neither" site-years) — availability, not QC strictness, is the binding
+constraint on network coverage. The BIF change-point (CP) u-star method fails on
+55.1% of site-years, versus 4.8% for the moving-point (MP) method, and method failure
+tracks NEE non-qualification closely (87.9% vs 39.4% failure rate).
+
+A per-site-year master join table (`table_stage4_site_year_master.csv`, 6,336 rows)
+carries NEE_VUT/CUT, their QC/random/ustar/joint terms, `VUT_minus_CUT`, and
+qualification flags for all FLUXMET annual site-years, for later work to join against.
 
 ---
 

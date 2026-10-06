@@ -73,3 +73,13 @@ table_stage4_site_year_category_counts.csv, table_stage4_site_level_category_cou
 table_stage4_ustar_method_vs_qualification.csv, table_stage4_ustar_failure_by_category.csv, 
 fig_stage4_site_year_availability.png, fig_stage4_site_availability.png (+ .meta.json each).
 
+
+## Run complete
+
+All five stages (0-4) completed successfully; no stage was blocked. Scope limits
+(weekly resolution = 1 site only; HH/HR sub-daily extraction = 31/781 sites, hub-skewed
+toward ICOS) are documented in report.md rather than treated as failures, since the
+task anticipated this ("if a stage cannot be done with what exists, say exactly what
+is missing and go on") and these are partial-coverage notes, not missing stages.
+
+RUN COMPLETE

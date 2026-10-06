@@ -4,6 +4,53 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-06 — Unattended run: network-wide data quality / uncertainty diagnostic
+
+Unattended background run, diagnostic only — writes exclusively to
+`review/diagnostics/data_quality_uncertainty/` (no paper figures, snapshots, or metrics
+files touched). Reads the pre-QC DuckDB tables (`dataset = 'FLUXMET'`), never the
+QC-filtered or converted copies. Full stage-by-stage report in
+`review/diagnostics/data_quality_uncertainty/report.md`; run log in
+`review/diagnostics/data_quality_uncertainty/status.md` (`RUN COMPLETE`).
+
+**Stage 0 (inventory):** NEE (VUT, CUT) carries a full uncertainty apparatus at every
+resolution (reference value, QC flag, `RANDUNC`, `JOINTUNC`, the 7-point u-star
+percentile ensemble, `USTAR50`, `MEAN`, `SE`); LE/H carry only reference value, QC
+flag and `RANDUNC` — no u-star ensemble, no `JOINTUNC` for the uncorrected value at
+any resolution, and their energy-balance-corrected spread columns exist only in the
+daily table. Confirmed genuine absences (not an ingest drop) against raw CSV headers.
+31/781 sites have HH/HR files extracted (live scan — the DB's own stored manifest is
+stale and shows zero). All 781 BIF files carry a `GRP_UST_THR` u-star
+threshold/method-success group.
+
+**Stage 1 (gaps):** the DD/WW/MM/YY QC flag can't separate "mostly measured" from
+"mostly gap-filled." Sub-daily ground truth (31 sites, hub-skewed toward ICOS) shows
+NEE is majority gap-filled even at the "good" tier (~39% directly measured) while
+LE/H are majority measured (~62–70%). Weekly resolution in the DB holds only one site
+(`US-MMS`) — flagged as non-representative throughout.
+
+**Stage 2 (annual uncertainty):** `JOINTUNC` equals `sqrt(RANDUNC² + ustar_term²)`
+(ustar_term = half the 16th–84th percentile spread) to numerical precision — 100% of
+qualifying site-years agree within 1%. The u-star term dominates total uncertainty in
+~88–90% of qualifying site-years, ~3× the random term at the median.
+
+**Stage 3 (VUT vs CUT):** median VUT−CUT ≈0 across 3,960 paired site-years (575
+sites) — no systematic bias — but 14.3% of site-years differ by >25 gC m⁻² yr⁻¹, 2.2%
+by >100. 96.1% of differences are smaller than the two sides' combined (quadrature)
+joint uncertainty; sink/source sign agrees in 98.4% of site-years.
+
+**Stage 4 (availability and failure):** 125/781 sites (16.0%) never produce a
+qualifying annual NEE under either path, and for all of them the cause is a missing
+raw value, not a failed QC threshold (`fails_qc` is only 1.2% of "neither"
+site-years) — availability, not QC strictness, is the binding constraint. BIF
+change-point (CP) u-star method failure (55.1% of site-years) is far more common than
+moving-point (MP) failure (4.8%), and tracks NEE non-qualification closely (87.9% vs
+39.4%). Wrote `table_stage4_site_year_master.csv`, a 6,336-row site×year join table
+(NEE_VUT/CUT, QC/random/ustar/joint terms, `VUT_minus_CUT`, qualification flags) for
+later work to build on.
+
+---
+
 ## 2026-10-06 — Follow-up fixes: Figure S7 presentation and sampling-ratio table
 
 Two fixes to the 2026-10-06 unattended supplementary run's outputs (see `review/supp_run_status.md`,

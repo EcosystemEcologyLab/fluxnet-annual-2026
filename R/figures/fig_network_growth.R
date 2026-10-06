@@ -839,6 +839,15 @@ fig_siteyears_by_year_igbp <- function(presence_df,
 #'   because La Thuile site records are not contiguous within their span —
 #'   see docs/methods_requirements.md 5.5). \code{NULL} preserves the old
 #'   span-based behaviour for callers that have not been updated (e.g. Dur11).
+#' @param show_current_network Logical (default \code{TRUE}). When
+#'   \code{FALSE}, the FLUXNET Shuttle IGBP-stacked area (and its "IGBP"
+#'   legend) is omitted entirely -- only the Marconi/La Thuile/FLUXNET2015
+#'   historical lines are drawn. The x and y axes (range and breaks) are
+#'   identical either way: the Shuttle data still drives the y-axis range
+#'   even when not drawn, via an invisible layer, so a \code{FALSE} call's
+#'   plot is a strict visual subset of the \code{TRUE} call's -- built for a
+#'   presentation "reveal" (show the historical-only version, then advance
+#'   to the full figure on the same axes).
 #'
 #' @return A ggplot object.
 #'
@@ -860,7 +869,8 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                                            sites_fluxnet2015,
                                            year_range = NULL,
                                            base_size  = 36L,
-                                           la_thuile_year_matrix = NULL) {
+                                           la_thuile_year_matrix = NULL,
+                                           show_current_network = TRUE) {
 
   if (is.null(year_range)) {
     window     <- data_year_window(presence_df)
@@ -971,25 +981,51 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     dplyr::slice_max(.data$n, n = 1L, with_ties = FALSE) |>
     dplyr::ungroup()
 
+  # ---- Shuttle layer(s) — real stacked area, or an invisible y-range-only
+  # stand-in when show_current_network = FALSE (see its doc above). Returned
+  # as a list and spliced into the `+` chain below; ggplot2 adds each list
+  # element in turn, same as writing them inline.
+  shuttle_layers <- if (show_current_network) {
+    list(
+      # Shuttle background: IGBP-stacked cumulative area
+      ggplot2::geom_area(
+        data = shuttle_igbp_cumul,
+        ggplot2::aes(x = .data$year, y = .data$n, fill = .data$igbp),
+        position  = "stack",
+        alpha     = 0.8,
+        colour    = NA
+      ),
+      # fig1b_igbp_colours (not the shared scale_fill_igbp()/IGBP_colours --
+      # see the scoped-fix note above): keys exactly the 15 classes plotted,
+      # no more and no fewer.
+      ggplot2::scale_fill_manual(values = fig1b_igbp_colours, name = "IGBP",
+                                  breaks = fig1b_igbp_order)
+    )
+  } else {
+    # Draws nothing (no fill, no legend), but contributes the same top-of-
+    # stack values (total cumulative site-years per year) to the y-axis's
+    # automatic range calculation as the real geom_area would -- so this
+    # plot's y axis (and, via the unchanged scale_x/y_continuous() calls
+    # below, its x axis too) is identical to the show_current_network = TRUE
+    # version, even though the Shuttle data itself is never drawn.
+    shuttle_total_by_year <- shuttle_igbp_cumul |>
+      dplyr::group_by(.data$year) |>
+      dplyr::summarise(total = sum(.data$n), .groups = "drop")
+    list(
+      ggplot2::geom_blank(
+        data = shuttle_total_by_year,
+        ggplot2::aes(x = .data$year, y = .data$total)
+      )
+    )
+  }
+
   ggplot2::ggplot() +
     # Vertical release-year reference lines (behind all data)
     ggplot2::geom_vline(
       xintercept = c(2000L, 2007L, 2015L),
       linetype   = "dashed", colour = "grey55", linewidth = nature_lwd(0.4)
     ) +
-    # Shuttle background: IGBP-stacked cumulative area
-    ggplot2::geom_area(
-      data = shuttle_igbp_cumul,
-      ggplot2::aes(x = .data$year, y = .data$n, fill = .data$igbp),
-      position  = "stack",
-      alpha     = 0.8,
-      colour    = NA
-    ) +
-    # fig1b_igbp_colours (not the shared scale_fill_igbp()/IGBP_colours --
-    # see the scoped-fix note above): keys exactly the 15 classes plotted,
-    # no more and no fewer.
-    ggplot2::scale_fill_manual(values = fig1b_igbp_colours, name = "IGBP",
-                                breaks = fig1b_igbp_order) +
+    shuttle_layers +
     # Historical dataset lines
     ggplot2::geom_line(
       data = hist_all,

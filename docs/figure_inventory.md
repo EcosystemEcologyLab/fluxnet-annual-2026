@@ -149,3 +149,13 @@ panels b–e, one Lambert Azimuthal Equal-Area projection per region). Retired t
 main-text `fig_01_map_network` (see "Main-text figures" above) — not part of the figS1–S6
 numbering.
 
+**Not a numbered supplementary figure.** `scripts/generate_fig02_historical_only.R` →
+`fig_02_historical_only.png`/`.pdf`/`.jpg` (added 2026-10-06). A presentation "reveal" companion
+to Figure 2, not journal-submission content: identical x/y axes, dashed reference lines, and
+historical-collection lines as Figure 2, with the FLUXNET Shuttle IGBP-stacked area and its "IGBP"
+legend omitted — the y axis is still driven by the (undrawn) Shuttle totals via
+`fig_cumulative_siteyears_igbp(show_current_network = FALSE)`, so it is a strict visual subset of
+Figure 2 on the same scale, meant to be shown immediately before it in a talk. Deliberately named
+without an S-number so it is not mistaken for one, though it is validated by
+`scripts/check_figure_format.R` like every other file in `SupFigs/`. See SESSION_LOG.md 2026-10-06.
+

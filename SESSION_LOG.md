@@ -4,6 +4,112 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-06 — Unattended supplementary run: four small supplementary outputs
+
+Unattended background run (see `review/supp_run_status.md` for the full stage-by-stage report,
+including checks passed/failed). Four stages, each producing one or more outputs under
+`review/figures/draft_manuscript_v1/SupTables/` or `SupFigs/`.
+
+### Stage 1 — Record length, current network (`tableS_record_length_by_igbp.csv`)
+
+Two independent per-site record-length measures (years with `has_data`, years with a
+QC-qualifying annual NEE), by IGBP class and in total, at ≥5/≥10/≥20-year thresholds:
+
+```
+igbp_class n_sites data_ge5 nee_ge5 data_ge10 nee_ge10 data_ge20 nee_ge20
+ENF            114       88      69        46       36        19       12
+EBF             44       34      23        17       10         3        2
+DNF             13        8       3         4        3         1        1
+DBF             81       53      41        30       25        13        9
+MF              24       18       9         9        4         3        2
+CSH             12        7       6         5        0         0        0
+OSH             41       30      20        16        9         1        0
+WSA             18       12      11         8        6         3        3
+SAV             14       11       8         6        3         0        0
+GRA            146       86      58        35       25         6        3
+WET            117       61      32        23       14         4        2
+CRO            139       63      41        21       16        10        6
+CVM              9        5       3         2        0         0        0
+BSV              7        5       2         2        0         0        0
+SNO              2        2       0         1        0         0        0
+Total          781      483    326       225      151        63       40
+```
+
+### Stage 2 — Record length per collection + Figure S7
+
+Collection totals (sites, site-years), validated against `collection_sites_siteyears.csv` before
+the figure was written: Marconi 35, 96 (span-only); La Thuile 252, 965 (year-indicator columns);
+FLUXNET2015 212, 1,532 (two-digit year columns, second header row dropped, `+`/`Tier 2` both
+counted); Current 781, 6,200 (`has_data` count). All four matched the expected 96/965/1,532/6,200
+exactly. `figS7_record_length.png/.pdf/.jpg` + `.legend.txt` written (180 mm wide — not the
+requested 183 mm, since every other SupFig is ≤179.9 mm wide and `check_figure_format.R` hard-fails
+anything over 180 mm there; 183 mm panels in this repo are main-text, not SupFigs). Registered in
+`build_supplementary_pdf.R`; `check_figure_format.R` reports 13/13 PASS after rebuilding
+`supplementary_figures.pdf`.
+
+### Stage 3 — Sampling ratios behind Figure 5 / Figure S4
+
+Reconstructed land share / tower share / sampling ratio per class for all 6 axes × 2 comparisons
+from committed `site_*_fig4.csv` + `site_biomass_cci_v7.csv` + `*_global_distribution.csv` files
+only (no raster re-extraction). Recomputed weighted Jaccard vs.
+`data/snapshots/representativeness_metrics_fig4.csv` (unmodified):
+
+```
+axis    comparison  computed_j  reference_j      diff  agree
+aridity geo_vs_data      0.675        0.675  1.11e-16   TRUE
+aridity geo_vs_geo       0.605        0.666 -6.14e-02  FALSE  (ERA5-derived proxy substituted — true source outside permitted files)
+biomass geo_vs_data      0.636        0.636         0   TRUE
+biomass geo_vs_geo       0.636        0.636         0   TRUE
+et      geo_vs_data      0.479        0.479         0   TRUE
+et      geo_vs_geo       0.456        0.456         0   TRUE
+igbp    geo_vs_data      0.346        0.346         0   TRUE
+igbp    geo_vs_geo       0.495        0.495  5.55e-17   TRUE
+koppen  geo_vs_data      0.399        0.399         0   TRUE
+koppen  geo_vs_geo          NA        0.372        NA  FALSE  (not computable — source column entirely NA in the permitted file)
+nee     geo_vs_data      0.165        0.165         0   TRUE
+nee     geo_vs_geo       0.530        0.530         0   TRUE
+```
+
+10/12 agree to 6 decimals. Per instruction, `tableS_sampling_ratios_by_axis.csv` was **not**
+written (not all 12 agree); wrote `tableS_sampling_ratio_jaccard_check.csv` (the table above) and
+`tableS_sampling_ratio_extremes.csv` (3 lowest/3 highest sampling-ratio classes per axis ×
+comparison among classes holding ≥1% of land, 11 computable combinations × 6 rows = 66 rows)
+instead/regardless.
+
+### Stage 4 — Bowen ratio by vegetation class (`tableS_bowen_ratio_by_igbp.csv`)
+
+`H_F_MDS`/`LE_F_MDS`, each independently QC-gated (`QC_THRESHOLD_YY`); 4,487 / 6,336 site-years
+qualified on both; 0 dropped for `LE_F_MDS <= 0`; site value = median over qualifying site-years
+(665 sites, 4,487 site-years):
+
+```
+igbp_class n_sites n_site_years bowen_median bowen_p25 bowen_p75 flag_small_n
+ENF            103          963        0.890     0.542     1.13  FALSE
+EBF             40          282        0.417     0.250     0.858 FALSE
+DNF              7           63        1.46      0.815     1.51  FALSE
+DBF             64          593        0.560     0.418     0.776 FALSE
+MF              23          150        0.629     0.407     0.910 FALSE
+CSH             11           57        0.738     0.347     1.14  FALSE
+OSH             34          239        1.21      0.458     3.16  FALSE
+WSA             17          155        1.22      0.733     1.92  FALSE
+SAV             13           88        1.35      1.05      2.10  FALSE
+GRA            130          761        0.463     0.190     0.826 FALSE
+WET             95          479        0.357     0.176     0.615 FALSE
+CRO            113          598        0.327     0.208     0.439 FALSE
+CVM              7           26        0.419     0.339     0.818 FALSE
+BSV              7           30        2.23      1.46      7.58  FALSE
+SNO              1            3       -0.470    -0.470    -0.470 TRUE
+Total          665         4487        0.521     0.292     0.936 FALSE
+```
+
+`H_CORR`/`LE_CORR` both exist in the `annual` table (437/781 and 436/781 current-network sites
+respectively have ≥1 non-NA value); neither was used in this computation (report only, per
+instruction).
+
+`docs/methods_requirements.md` §5.9 added, summarising all four outputs.
+
+---
+
 ## 2026-10-06 — Figure 2 "historical only" presentation reveal companion
 
 Requested: a presentation aid to show before Figure 2 in a talk — identical in every way except

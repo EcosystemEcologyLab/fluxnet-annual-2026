@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-06T21:29:56Z",
+  "pipeline_version": "73e0007",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_year_data_presence.csv",
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Current (781-site) network, two record-length measures by IGBP class (PAPER_IGBP_ORDER; R/plot_constants.R) and in total. data_ge<N> = sites with >=N years of has_data==TRUE in compute_site_year_presence() output (R/utils.R; 'any month present' of 12 broad flux vars, over each site's own first_year:last_year window). nee_ge<N> = sites with >=N site-years of non-NA NEE in compute_site_annual_fluxes()$site_summary$n_years_nee (R/site_annual_fluxes.R; QC_THRESHOLD_YY-gated, per-site VUT/CUT fallback). Deliberately not data/snapshots/site_record_length.csv (stale; different, stricter QC_THRESHOLD_MM/>=6-months definition for a different purpose)."
+}

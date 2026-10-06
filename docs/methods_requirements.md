@@ -485,6 +485,52 @@ Data / Geo vs Geo) comparison design.
 
 ---
 
+## 5.9 Supplementary record-length, sampling-ratio and Bowen-ratio tables
+
+(Added 2026-10-06, unattended supplementary run — see `SESSION_LOG.md` and
+`review/supp_run_status.md` for the full stage-by-stage report.)
+
+**`tableS_record_length_by_igbp.csv`** (`scripts/supp_stage1_record_length_by_igbp.R`): current
+(781-site) network sites reaching ≥5/≥10/≥20 years, by IGBP class and in total, under two
+independent record-length definitions — years with `has_data == TRUE`
+(`compute_site_year_presence()`, R/utils.R) and years with a QC-qualifying annual NEE value
+(`compute_site_annual_fluxes()$site_summary$n_years_nee`, R/site_annual_fluxes.R). Not
+`data/snapshots/site_record_length.csv` (a different, stricter, QC-monthly-based definition for a
+different purpose).
+
+**Figure S7** (`scripts/supp_stage2_record_length_collections_figure.R`): current-network
+record-length histogram by IGBP (panel a) and share-of-sites-with-≥n-years step lines for all four
+FLUXNET network generations — Marconi, La Thuile, FLUXNET2015, current (panel b). Per-site year
+counts reuse `scripts/collection_comparison_table.R`'s own list-reading logic; validated against
+`data/snapshots/collection_sites_siteyears.csv` (96/965/1,532 historical site-years, matching
+current total) before the figure is produced. The legend states explicitly that "a year" means
+different things across collections (published-table listing vs. any-flux-value-in-≥1-month) and
+that Marconi's per-site values are first–last-year spans, not year-by-year records.
+
+**`tableS_sampling_ratio_jaccard_check.csv` / `tableS_sampling_ratio_extremes.csv`**
+(`scripts/supp_stage3_sampling_ratios.R`): land share / tower share / sampling ratio / log2 ratio
+per class, for Figure 5 / Figure S4's six representativeness axes, reconstructed strictly from
+already-committed `site_*_fig4.csv` + `site_biomass_cci_v7.csv` tower files and
+`*_global_distribution.csv` land files (no raster re-extraction). Recomputed weighted Jaccard
+agrees with `data/snapshots/representativeness_metrics_fig4.csv` (not modified) to 6 decimals for
+10 of 12 axis × comparison combinations; the Köppen geo-vs-geo panel is not reconstructable at all
+from this restricted file set (its source column is entirely `NA` in the permitted file), and the
+aridity geo-vs-geo panel is reconstructed here from an ERA5-derived proxy rather than its true
+CGIAR-raster-at-tower source — both outside the permitted file set, both documented inline rather
+than forced to agree. Because not all 12 agree, the full long table
+(`tableS_sampling_ratios_by_axis.csv`) was withheld per instruction; the Jaccard-check and extremes
+tables were written instead/regardless.
+
+**`tableS_bowen_ratio_by_igbp.csv`** (`scripts/supp_stage4_bowen_ratio_by_igbp.R`): Bowen ratio
+(`H_F_MDS / LE_F_MDS`, both native W m⁻² mean rates) by IGBP class, from the pre-QC DuckDB `annual`
+table with each variable gated independently on its own QC column
+(`QC_THRESHOLD_YY`, same rule as `R/site_annual_fluxes.R`). Site value = median over that site's
+own QC-qualifying, `LE_F_MDS > 0` site-years. `H_CORR`/`LE_CORR` exist in the `annual` table (437 /
+781 and 436 / 781 current-network sites respectively have ≥1 non-NA value) but were not used in
+this computation.
+
+---
+
 ## 6. Data availability statement
 
 **Template (fill in DATE and PID when snapshot is archived):**

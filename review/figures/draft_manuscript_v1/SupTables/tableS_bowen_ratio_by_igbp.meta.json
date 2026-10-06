@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-06T21:41:43Z",
+  "pipeline_version": "2d8f907",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"
+  ],
+  "notes": "Bowen ratio (H_F_MDS / LE_F_MDS, both native W m-2 mean rates, no unit conversion needed) by IGBP class (PAPER_IGBP_ORDER) and in total, current (781-site) network. Site-years require BOTH H_F_MDS_QC and LE_F_MDS_QC to independently satisfy QC_THRESHOLD_YY (same formula as R/site_annual_fluxes.R's h_qualifies/et_qualifies), read from the pre-QC DuckDB `annual` table (never annual_qc/annual_converted, which would drop rows on the unrelated NEE QC gate). 0 site-year(s) with LE_F_MDS <= 0 dropped (of 4487 site-years qualifying on QC alone). Site value = median Bowen ratio over that site's own qualifying site-years; bowen_median/bowen_p25/bowen_p75 are the median/25th/75th percentile of SITE values within each class (not pooled site-years). flag_small_n = TRUE for classes with <5 sites. H_CORR present in annual table: TRUE (437 current-network sites have >=1 non-NA value). LE_CORR present: TRUE (436 sites). Neither is used in this computation (task instruction: report only, do not compute with them)."
+}

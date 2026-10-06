@@ -4,6 +4,35 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-06 — Follow-up fixes: Figure S7 presentation and sampling-ratio table
+
+Two fixes to the 2026-10-06 unattended supplementary run's outputs (see `review/supp_run_status.md`,
+"Follow-up fixes" section, for the full report). No other changes.
+
+### Fix 1 — Figure S7 panel a (`scripts/supp_stage2_record_length_collections_figure.R`)
+
+Stacked IGBP classes in `PAPER_IGBP_ORDER` (factor levels, not encounter order) to match the
+legend key and Figure 2's own stacking; matched Figure 2's fill colours (already correct,
+`scale_fill_paper_igbp()`) and transparency (`alpha = 0.8`, added); moved the `n=` threshold
+labels off their dashed line (`THRESHOLDS - 0.5` → `THRESHOLDS + 0.5`) so the line no longer
+crosses the text. Rebuilt the figure, `supplementary_figures.pdf`, and reran
+`scripts/check_figure_format.R`: 13/13 PASS.
+
+### Fix 2 — Sampling-ratio table (`scripts/supp_stage3_sampling_ratios.R`)
+
+The original Stage 3 file restriction had excluded `site_koppen_beck2023.csv` and
+`site_aridity.csv` — the exact tower-side inputs `figure4_representativeness.R` itself uses for
+the koppen/geo_vs_geo and aridity/geo_vs_geo panels — forcing those two combinations to be
+"not computable" / a documented substitute. Switched both to read those two (already-committed,
+non-raster) snapshot files directly. Recomputed all 12 weighted Jaccard values: now **12/12 agree**
+with `representativeness_metrics_fig4.csv` to 6 decimals (previously 10/12). Wrote
+`tableS_sampling_ratios_by_axis.csv` (not written in the original run) and refreshed
+`tableS_sampling_ratio_jaccard_check.csv`. Refreshed `tableS_sampling_ratio_extremes.csv` using
+the new selection rule (classes with `sampling_ratio < 0.5` or `> 2` among classes holding ≥1% of
+land, replacing the original fixed three-lowest/three-highest), now including koppen/geo_vs_geo.
+
+---
+
 ## 2026-10-06 — Unattended supplementary run: four small supplementary outputs
 
 Unattended background run (see `review/supp_run_status.md` for the full stage-by-stage report,

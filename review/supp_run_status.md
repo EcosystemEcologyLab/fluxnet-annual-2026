@@ -127,4 +127,58 @@ Status: **Stage 4 PASSED.**
 
 ---
 
+## Follow-up fixes — 2026-10-06
+
+### Fix 1 — Figure S7 panel a: stack order, colours/alpha, label placement
+
+**Script:** `scripts/supp_stage2_record_length_collections_figure.R`
+
+Panel a's IGBP stack was built from a plain character `igbp` column, so `geom_histogram()`
+stacked classes in whatever order it encountered them rather than `PAPER_IGBP_ORDER`'s factor
+order -- out of step with the legend key and with Figure 2's own stacking
+(`fig_cumulative_siteyears_igbp()`, which explicitly sets `factor(igbp, levels = fig1b_igbp_order)`
+before stacking). Fixed by converting `igbp` to `factor(igbp, levels = PAPER_IGBP_ORDER)` before
+plotting. Fill colours already came from `scale_fill_paper_igbp()` (the same `PAPER_IGBP_COLOURS`
+Figure 2 uses) and needed no change; added `alpha = 0.8` to `geom_histogram()` to match Figure 2's
+`geom_area(alpha = 0.8)`. The `n=` threshold labels were anchored at the same x position as their
+dashed vertical line (`THRESHOLDS - 0.5`), so the line visually crossed the text; moved the labels
+one bin to the right (`THRESHOLDS + 0.5`), just inside the ">= threshold" side, clear of the line.
+
+Rebuilt `figS7_record_length.{png,pdf,jpg}` + `.legend.txt` (same thresholds/counts as before:
+n=483/225/63 at >=5/10/20 years -- this fix changed presentation only, not the underlying counts),
+rebuilt `supplementary_figures.pdf` (7 pages, 0.67 MB), and reran `scripts/check_figure_format.R`:
+**13/13 figures PASS**, including figS7.
+
+Status: **Fix 1 PASSED.**
+
+### Fix 2 — Sampling-ratio table: koppen/aridity geo_vs_geo now computable
+
+**Script:** `scripts/supp_stage3_sampling_ratios.R`
+
+Stage 3's original file restriction (`site_*_fig4.csv` / `site_biomass_cci_v7.csv` tower files
+only) excluded exactly the two files `figure4_representativeness.R` itself reads for the
+koppen/geo_vs_geo and aridity/geo_vs_geo panels -- `data/snapshots/site_koppen_beck2023.csv`
+(`koppen_twoletter`) and `data/snapshots/site_aridity.csv` (`unep_class_7`) -- which is why those
+two combinations were previously "not computable" / a documented substitute. Both are
+already-committed snapshot CSVs (prior raster-at-tower extractions), not rasters themselves, so
+reading them directly is still "no raster re-extraction." Both classify all 781 current-network
+sites with zero NA, so no fallback was needed once the correct file was used.
+
+Swapped both axes to read these two files for their `geo_vs_geo` comparison only (`geo_vs_data`
+unchanged) and recomputed all 12 weighted Jaccard values against
+`data/snapshots/representativeness_metrics_fig4.csv` (not modified): **12 / 12 agree to 6
+decimals** (koppen/geo_vs_geo: 0.372 vs 0.372; aridity/geo_vs_geo: 0.666 vs 0.666; the other 10
+unchanged from the original run). Per instruction, since all 12 now agree, wrote
+`tableS_sampling_ratios_by_axis.csv` (the full long table, not written in the original run) and
+refreshed `tableS_sampling_ratio_jaccard_check.csv`.
+
+Extremes table (`tableS_sampling_ratio_extremes.csv`) also refreshed, using the new selection rule
+(classes with `sampling_ratio < 0.5` or `> 2`, among classes holding >=1% of land, in place of the
+original fixed three-lowest/three-highest) and now including koppen/geo_vs_geo (previously
+excluded as not computable). Gated on the same 12/12 agreement as the main table, per instruction.
+
+Status: **Fix 2 PASSED.**
+
+---
+
 RUN COMPLETE

@@ -130,18 +130,30 @@ THRESHOLDS <- c(5L, 10L, 20L)
 ## ---- Panel a: current-network histogram, stacked by IGBP ------------------
 current_hist_df <- current_sites |>
   dplyr::left_join(current_per_site, by = "site_id") |>
-  dplyr::mutate(igbp = dplyr::if_else(igbp %in% PAPER_IGBP_ORDER, igbp, NA_character_))
+  dplyr::mutate(igbp = dplyr::if_else(igbp %in% PAPER_IGBP_ORDER, igbp, NA_character_)) |>
+  ## Stack order must follow PAPER_IGBP_ORDER's factor levels (matches the
+  ## legend key and Figure 2's own stacking, R/figures/fig_network_growth.R::
+  ## fig_cumulative_siteyears_igbp()) -- a plain character column stacks in
+  ## whatever order ggplot2 encounters the values, not the palette order.
+  dplyr::mutate(igbp = factor(igbp, levels = PAPER_IGBP_ORDER))
 
 thresh_counts <- vapply(THRESHOLDS, function(t) sum(current_hist_df$n_years >= t), integer(1L))
 msg("Current network sites at/above thresholds: ",
     paste(paste0(">=", THRESHOLDS, "yr: ", thresh_counts), collapse = "; "))
 
 panel_a <- ggplot(current_hist_df, aes(x = n_years, fill = igbp)) +
-  geom_histogram(binwidth = 1, boundary = 0.5, colour = NA) +
+  ## alpha = 0.8: same transparency as Figure 2's IGBP-stacked area
+  ## (fig_cumulative_siteyears_igbp()'s geom_area, alpha = 0.8); fill
+  ## colours come from the same PAPER_IGBP_COLOURS palette via
+  ## scale_fill_paper_igbp().
+  geom_histogram(binwidth = 1, boundary = 0.5, colour = NA, alpha = 0.8) +
   scale_fill_paper_igbp(name = "IGBP", na.value = "grey70") +
   geom_vline(xintercept = THRESHOLDS - 0.5, linetype = "dashed",
              linewidth = nature_lwd(0.5), colour = "grey20") +
-  annotate("text", x = THRESHOLDS - 0.5, y = Inf,
+  ## Labels shifted one full bin to the right of their dashed line (was
+  ## centred exactly on it, so the line visually crossed the text) --
+  ## placed just inside the ">= threshold" side, clear of the line.
+  annotate("text", x = THRESHOLDS + 0.5, y = Inf,
            label = paste0("n=", thresh_counts), angle = 90, vjust = 1.2, hjust = 1.1,
            size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "grey20") +
   scale_x_continuous(name = "Years with data (current network)", breaks = scales::breaks_pretty()) +

@@ -64,3 +64,38 @@ Added `figS7_record_length` to `scripts/build_supplementary_pdf.R`'s `STEMS`, re
 figures PASS**, including figS7.
 
 Status: **Stage 2 PASSED.**
+
+## Stage 3 — Sampling ratios behind Figure 5 and Figure S4
+
+**Script:** `scripts/supp_stage3_sampling_ratios.R`
+
+Built a long table (axis, comparison, class, land_share, tower_share, tower_count,
+n_towers_classified, sampling_ratio, log2_ratio) for all 6 axes x 2 comparisons strictly from
+committed files (`site_*_fig4.csv`, `site_biomass_cci_v7.csv`, `*_global_distribution.csv`) — no
+raster re-extraction, no other snapshot files. Classes with land and no towers got
+`sampling_ratio = 0` per instruction.
+
+**Check (recomputed weighted Jaccard per axis x comparison vs. `representativeness_metrics_fig4.csv`,
+not modified): 10 / 12 agree to 6 decimals exactly.** The 2 that don't, both for a structural reason
+identified before running, not a computation bug:
+- **koppen / geo_vs_geo — not computable at all** from the permitted files: `beck2023_kg_class` in
+  `site_koppen_era5_fig4.csv` is entirely `NA` for all 781 sites; the true source
+  (`site_koppen_beck2023.csv`) is outside the Stage 3 file restriction.
+- **aridity / geo_vs_geo — computed 0.605 vs. published 0.666 (diff −0.061)**: substituted the
+  ERA5-derived AI (`site_aridity_era5_fig4.csv`, the figure's own Geo-vs-Data source for this axis)
+  because the true Geo-vs-Geo source (`site_aridity.csv`, CGIAR raster at tower) is likewise outside
+  the file restriction.
+
+Both are flagged with explicit notes in the output rather than silently forced to agree.
+
+**Per instruction, since not all 12 agree:** did **not** write `tableS_sampling_ratios_by_axis.csv`.
+Wrote `tableS_sampling_ratio_jaccard_check.csv` instead (always written) — all 12 rows, computed vs.
+reference J, diff, and a note explaining the 2 mismatches. Also wrote
+`tableS_sampling_ratio_extremes.csv` unconditionally (3 lowest / 3 highest sampling-ratio classes
+per axis x comparison among classes holding ≥1% of land; koppen/geo_vs_geo excluded as not
+computable) — the 11 remaining computable axis x comparison combinations x 6 rows each = 66 rows,
+matching the script's output exactly.
+
+Status: **Stage 3 PASSED validation gate as designed — produced the "otherwise report which differ"
+output rather than the full table, which is the correct and expected outcome given the Stage-3 file
+restriction.**

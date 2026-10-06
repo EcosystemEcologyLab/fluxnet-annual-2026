@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T21:39:49Z",
+  "pipeline_version": "b98d82c",
+  "input_sources": [
+    "(derived from the same sources as tableS_sampling_ratio_jaccard_check.csv)"
+  ],
+  "notes": "Three lowest and three highest sampling-ratio classes per axis x comparison, restricted to classes holding >=1% of land. koppen/geo_vs_geo excluded (not computable -- see tableS_sampling_ratio_jaccard_check.csv). Written unconditionally, independent of whether tableS_sampling_ratios_by_axis.csv was written."
+}

@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-06T21:39:49Z",
-  "pipeline_version": "b98d82c",
+  "run_datetime_utc": "2026-10-06T22:42:53Z",
+  "pipeline_version": "2b32137",
   "input_sources": [
     "(derived from the same sources as tableS_sampling_ratio_jaccard_check.csv)"
   ],
-  "notes": "Three lowest and three highest sampling-ratio classes per axis x comparison, restricted to classes holding >=1% of land. koppen/geo_vs_geo excluded (not computable -- see tableS_sampling_ratio_jaccard_check.csv). Written unconditionally, independent of whether tableS_sampling_ratios_by_axis.csv was written."
+  "notes": "Classes with sampling_ratio < 0.5 (undersampled, extreme='lowest') or > 2 (oversampled, extreme='highest') per axis x comparison, restricted to classes holding >=1% of land -- not a fixed three per side. Written only because all 12 axis x comparison combinations agreed with representativeness_metrics_fig4.csv to 6 decimals (see tableS_sampling_ratio_jaccard_check.csv)."
 }

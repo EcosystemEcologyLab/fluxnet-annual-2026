@@ -46,3 +46,15 @@ table_stage2_nee_uncertainty_summary.csv, table_stage2_le_h_uncertainty_summary.
 fig_stage2_joint_vs_rss.png, fig_stage2_uncertainty_terms_boxplot.png, 
 fig_stage2_uncertainty_vs_nee_magnitude.png (+ .meta.json each).
 
+
+## Stage 3 -- VUT against CUT
+
+Completed 2026-10-06T23:09:35Z.
+
+- Site-year level: n=3960 site-years (575 sites) with both VUT and CUT qualifying. median diff=0.03, IQR=[-4.27, 5.77], 5-95pctile=[-33.23, 37.56] gC/m2/yr. share|diff|>25/50/100 = 0.143/0.06/0.022. share smaller than combined joint unc = 0.961. share sign differs = 0.016.
+- Site level (site medians): n=575 sites. median diff=0.03, IQR=[-2.62, 3.92], 5-95pctile=[-18.82, 29.49] gC/m2/yr. share|diff|>25/50/100 = 0.097/0.031/0.009. share smaller than combined joint unc = 0.977. share sign differs = 0.012.
+
+Outputs: table_stage3_site_year_vut_vs_cut.csv, table_stage3_site_year_summary.csv, 
+table_stage3_site_level_vut_vs_cut.csv, table_stage3_site_level_summary.csv, 
+fig_stage3_vut_minus_cut_histogram.png, fig_stage3_vut_vs_cut_scatter.png (+ .meta.json each).
+

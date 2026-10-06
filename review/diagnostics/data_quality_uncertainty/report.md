@@ -313,3 +313,58 @@ column of their own at annual resolution (only at daily).
 ![Uncertainty terms boxplot](fig_stage2_uncertainty_terms_boxplot.png)
 
 ![Uncertainty vs NEE magnitude](fig_stage2_uncertainty_vs_nee_magnitude.png)
+
+---
+
+## Stage 3 — VUT against CUT
+
+**Scope:** site-years from Stage 2 where `NEE_VUT_REF` and `NEE_CUT_REF` **both**
+independently qualify under the paper's `QC_THRESHOLD_YY` rule (each on its own QC
+column).
+
+**Outputs:** `table_stage3_site_year_vut_vs_cut.csv`, `table_stage3_site_year_summary.csv`,
+`table_stage3_site_level_vut_vs_cut.csv`, `table_stage3_site_level_summary.csv`,
+`fig_stage3_vut_minus_cut_histogram.png`, `fig_stage3_vut_vs_cut_scatter.png`.
+
+**n = 3,960 site-years (575 sites)** have both values qualifying. "Smaller than the
+joint uncertainty" is computed against `diff_joint = sqrt(JOINTUNC_VUT² +
+JOINTUNC_CUT²)` — the propagated uncertainty of a *difference* of two estimates,
+combining each side's own joint uncertainty term in quadrature. The task wording does
+not specify how to combine the two sides' joint terms into one threshold for the
+difference; this quadrature combination is the explicit, stated choice here (not
+e.g. comparing against just `JOINTUNC_VUT`, just `JOINTUNC_CUT`, or their sum).
+
+| Level | n | median diff | IQR | 5th–95th pctile | share \|diff\|>25 | share \|diff\|>50 | share \|diff\|>100 | share < joint unc | share sign differs |
+|---|---:|---:|---|---|---:|---:|---:|---:|---:|
+| Site-year | 3,960 (575 sites) | 0.03 | [−4.27, 5.77] | [−33.2, 37.6] | 14.3% | 6.0% | 2.2% | 96.1% | 1.6% |
+| Site (medians) | 575 sites | 0.03 | [−2.62, 3.92] | [−18.8, 29.5] | 9.7% | 3.1% | 0.9% | 97.7% | 1.2% |
+
+(All differences in gC m⁻² yr⁻¹.) **VUT and CUT agree closely on average** — median
+difference is ~0.03 gC m⁻² yr⁻¹ at both levels, i.e. no systematic bias either way —
+but the distribution has real width and a long tail (`fig_stage3_vut_minus_cut_histogram.png`):
+14.3% of site-years differ by more than 25 gC m⁻² yr⁻¹, 6.0% by more than 50, and 2.2%
+by more than 100 — 34 site-years fall outside ±150 gC m⁻² yr⁻¹ entirely, reflecting
+a handful of sites where the two u-star-filtering conventions diverge sharply for that
+year. Aggregating to the site level (median over each site's own qualifying years)
+narrows the distribution, as expected from averaging out year-to-year noise: the IQR
+shrinks from [−4.3, 5.8] to [−2.6, 3.9] and the share exceeding each threshold drops
+by roughly a third to a half.
+
+**96.1% of site-years (97.7% of sites) have |VUT − CUT| smaller than the propagated
+joint uncertainty** of the two estimates — the VUT/CUT disagreement is, for the large
+majority of site-years, within what the reported uncertainty already allows for. The
+remaining ~4% (2.3% at site level) are cases where the two methods disagree by more
+than their combined stated uncertainty would predict.
+
+**Sign of annual NEE (sink vs source) differs between VUT and CUT in only 1.6% of
+site-years (1.2% of sites)** — both methods agree on whether a site-year was a net
+carbon sink or source in the overwhelming majority of cases
+(`fig_stage3_vut_vs_cut_scatter.png` — essentially all points fall in the same
+quadrant relative to zero on both axes, with the 1:1 line closely tracked across the
+full ±2000 gC m⁻² yr⁻¹ range of annual NEE represented in this dataset).
+
+### Figures
+
+![VUT minus CUT histogram](fig_stage3_vut_minus_cut_histogram.png)
+
+![VUT vs CUT scatter](fig_stage3_vut_vs_cut_scatter.png)

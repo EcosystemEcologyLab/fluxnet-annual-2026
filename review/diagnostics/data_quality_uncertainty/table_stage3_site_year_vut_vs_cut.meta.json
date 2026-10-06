@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:09:34Z",
+  "pipeline_version": "0742a0d",
+  "input_sources": [
+    "review/diagnostics/data_quality_uncertainty/table_stage2_site_year_nee_uncertainty.csv"
+  ],
+  "notes": "Site-years where NEE_VUT_REF and NEE_CUT_REF both independently qualify under QC_THRESHOLD_YY (=0.5), each gated on its own QC column. diff = NEE_VUT - NEE_CUT (gC m-2 yr-1). diff_joint = sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2) -- the propagated uncertainty of a difference of two estimates, combining the two sides' own joint uncertainty terms in quadrature. This combination rule is not specified by the task and is this script's explicit choice; see report.md."
+}

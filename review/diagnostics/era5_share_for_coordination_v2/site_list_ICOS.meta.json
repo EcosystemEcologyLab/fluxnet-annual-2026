@@ -1,11 +1,11 @@
 {
-  "run_datetime_utc": "2026-10-07T11:56:23Z",
-  "pipeline_version": "34d67b9",
+  "run_datetime_utc": "2026-10-07T12:59:24Z",
+  "pipeline_version": "119ad37",
   "input_sources": [
     "data/snapshots/site_aridity_era5_fig4.csv",
     "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv",
     "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
     "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
   ],
-  "notes": "Every ICOS site carrying at least one of the four figure4_representativeness.R ('Figure 5') exclusion flags (no_slope, above_3x_every_reference, below_one_third, invalid_input). Sorted by flag, then by ratio to BIO12. 99 rows."
+  "notes": "Every ICOS site carrying at least one of the four figure4_representativeness.R ('Figure 5') exclusion flags (no_slope, above_3x_every_reference, below_one_third, invalid_input), with its severity tier (1-5, see README.md) and, where it shares its ERA5 annual value with another flagged ICOS site, that group's label. Sorted by tier, then by departure from parity (abs(log10(ratio to BIO12)), largest first). 99 rows."
 }

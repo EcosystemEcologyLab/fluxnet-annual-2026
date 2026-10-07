@@ -1,0 +1,10 @@
+data_hub,product_source_network,n_flagged,n_total
+AmeriFlux,AMF,104,381
+ICOS,CNF,13,32
+ICOS,EUF,31,138
+ICOS,FLX,8,18
+ICOS,ICOS,6,80
+ICOS,JPF,36,54
+ICOS,KOF,5,21
+ICOS,SAEON,0,5
+TERN,TERN,4,52

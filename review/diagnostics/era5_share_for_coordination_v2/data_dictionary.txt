@@ -14,6 +14,12 @@ flag                       Which of the four figure4_representativeness.R ('Figu
                            flagged site: 'no_slope', 'above_3x_every_reference',
                            'below_one_third', or 'invalid_input'. See README.md for
                            the exact rule and threshold behind each.
+tier                       Severity tier, 1 (most severe) to 5: 1=invalid_input;
+                           2=above_3x_every_reference or below_one_third; 3/4/5
+                           subdivide no_slope by how many available references its
+                           own ratio exceeds 3x (both / one / neither). See README.md.
+                           Site lists are sorted by tier, then by departure from
+                           parity (largest first).
 era5_map_mm                ERA5 mean annual precipitation, 1991-2020, mm/year.
                            Blank for invalid_input sites (see README.md).
 bio12_mm                   WorldClim v2.1 BIO12 (annual precipitation), mm/year, at
@@ -26,7 +32,15 @@ ratio_era5_to_badm         era5_map_mm / badm_map_mm. Blank where badm_map_mm is
                            blank.
 n_years_measured           Number of years of tower-measured precipitation
                            available for this site (precip_site_filter.R).
+mean_measured_precip_mm    Mean annual precipitation from the tower's own gauge
+                           record, mm/year, where any measured year exists
+                           (precip_site_filter.R, p_measured_mean_mm). Blank where
+                           n_years_measured is 0.
 era_slope                  The ERA_SLOPE value recorded in the site's own BIF
                            downscaling metadata (GRP_ERA_DOWN, ERA_VARIABLE=P): 1
                            for the standard 'not fitted' sentinel, or -9999 for the
                            GRP_ERA_DOWN sentinel that drives the no_slope flag.
+shared_value_group          Group label (e.g. 'ICOS-G01') where this site's
+                           era5_map_mm is numerically identical to >=1 other flagged
+                           site in the same hub's list. Blank where its value is
+                           unique within that hub's flagged list.

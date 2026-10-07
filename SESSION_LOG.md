@@ -4,6 +4,67 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — ERA5 coordination package v2: additions for an ICOS hub report
+
+Follow-up to the same-day v2 package below — diagnostic/correspondence only, writes exclusively
+to `review/diagnostics/era5_share_for_coordination_v2/` (same script,
+`scripts/diagnostics/era5_share_v2.R`, extended in place). No paper figure, snapshot, pipeline
+code, or source analysis folder modified. `scripts/diagnostics/era5_cumulative_test.R` was
+re-run unmodified against the current store with its output copied to a new
+`era5_cumulative_test_rerun/` subfolder here; the committed 18 September outputs in
+`review/diagnostics/era5_cumulative_test/` were restored via `git checkout` immediately
+afterward and are unchanged (verified clean).
+
+**New in this package**: `table_invalid_inputs.csv` reads each of the 4 `invalid_input` sites'
+own raw monthly ERA5 file directly and names the specific offending variable, month count, and
+value range — resolving the two sites (`DE-Zrk`, `FR-LBr`) the original v2 package could not
+attribute from committed tables alone (`DE-Zrk` → `VPD_ERA`, 261/360 months, 100.2–921.7 hPa;
+`FR-LBr` → `LW_IN_ERA`, 360/360 months, 1,633.6–2,106.6 W/m²; `US-Sne` → `LW_IN_ERA`, 356/360,
+−9,999 to 53,620 W/m²; `CD-Ygb` → `VPD_ERA`, 360/360, 1,403.6–1,928.1 hPa). A 5-tier severity
+ranking was added to the three site lists (re-sorted by tier, then departure from parity);
+`table_koppen_panel_dropped.csv` lists the 31 sites dropped from Figure 5's PI-class-first
+Köppen panel (a distinct, smaller list from this package's 207-site aridity-panel flagged list);
+`summary_by_source_network.csv` extends the ICOS-only network breakdown to all three hubs; a
+shared-ERA5-value group label was added to the site lists (sites in the same hub whose ERA5
+annual value is numerically identical — consistent with shared ERA5 grid cells, no cause
+asserted); and `fig2_map_flagged_sites_by_tier.png` maps all 207 flagged sites by tier and hub.
+
+**Checks against the independent hand tally**: flagged totals unchanged (99/104/4); tier totals
+by hub also sum to 99/104/4; shared-value counts matched exactly (31 of 92 ICOS `no_slope` sites
+in 14 groups, 38 of 75 AmeriFlux `no_slope` sites in 9 groups) under three different grouping
+scopes (within-hub full list, within-hub `no_slope`-only, network-wide), all of which agree. **No
+discrepancy found anywhere.**
+
+`summary_tiers_by_hub.csv`:
+
+| hub | tier 1 | tier 2 | tier 3 | tier 4 | tier 5 | total flagged |
+|---|---:|---:|---:|---:|---:|---:|
+| AmeriFlux | 1 | 28 | 64 | 11 | 0 | 104 |
+| ICOS | 3 | 4 | 70 | 19 | 3 | 99 |
+| TERN | 0 | 0 | 0 | 1 | 3 | 4 |
+
+`summary_by_source_network.csv`:
+
+| hub | source network | flagged | total |
+|---|---|---:|---:|
+| AmeriFlux | AMF | 104 | 381 |
+| ICOS | CNF | 13 | 32 |
+| ICOS | EUF | 31 | 138 |
+| ICOS | FLX | 8 | 18 |
+| ICOS | ICOS | 6 | 80 |
+| ICOS | JPF | 36 | 54 |
+| ICOS | KOF | 5 | 21 |
+| ICOS | SAEON | 0 | 5 |
+| TERN | TERN | 4 | 52 |
+
+The `era5_cumulative_test.R` re-run's verdict holds unchanged: the within-year cumulative-total
+pattern remains absent, with the re-run's Dec/Jan ratio and rank-correlation statistics matching
+the original report within ordinary reprocessing drift (site-years 5,509/29,207 vs. the
+original's 5,507/29,203). Full detail in
+`review/diagnostics/era5_share_for_coordination_v2/README.md`.
+
+---
+
 ## 2026-10-07 — ERA5 precipitation coordination package v2 (replaces 18 September package)
 
 Diagnostic/correspondence only — writes exclusively to

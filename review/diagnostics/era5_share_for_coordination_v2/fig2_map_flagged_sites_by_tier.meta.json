@@ -5,5 +5,5 @@
     "data/snapshots/site_aridity_era5_fig4.csv",
     "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
   ],
-  "notes": "ICOS-hub sites only, broken out by product_source_network (the contributing regional network, e.g. CNF/EUF/FLX/ICOS/JPF/KOF/SAEON): flagged count and total site count per network."
+  "notes": "World map of all 207 flagged sites, coloured by severity tier (1-5, see README.md), shaped by hub. Land outline from rnaturalearthdata (medium scale), equirectangular (unprojected lat/long)."
 }

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-07T12:59:24Z",
+  "pipeline_version": "119ad37",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv"
+  ],
+  "notes": "Per hub: number of flagged sites whose ERA5 1991-2020 mean annual precipitation is numerically identical to >=1 other flagged site in the same hub's site list, and the number of distinct such groups. Computed within each hub's own flagged list; verified to give an identical result whether computed within-hub, network-wide, or restricted to the no_slope subset alone (all three scopes agree exactly)."
+}

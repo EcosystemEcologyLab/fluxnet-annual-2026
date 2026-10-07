@@ -1,0 +1,5 @@
+site_id,data_hub,product_source_network,variable,threshold,n_invalid_months,n_total_months,min_offending_value,max_offending_value
+US-Sne,AmeriFlux,AMF,LW_IN_ERA,"LW_IN outside [0, 1000] W/m^2",356,360,-9999,53620.064
+CD-Ygb,ICOS,ICOS,VPD_ERA,"VPD outside [0, 100] hPa",360,360,1403.627,1928.075
+DE-Zrk,ICOS,EUF,VPD_ERA,"VPD outside [0, 100] hPa",261,360,100.219,921.69
+FR-LBr,ICOS,EUF,LW_IN_ERA,"LW_IN outside [0, 1000] W/m^2",360,360,1633.649,2106.571

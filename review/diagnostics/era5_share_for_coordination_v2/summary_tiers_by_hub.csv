@@ -1,0 +1,4 @@
+data_hub,tier1_invalid_input,tier2_above3x_or_below_third,tier3_no_slope_both_refs_above3x,tier4_no_slope_one_ref_above3x,tier5_no_slope_below3x,total_flagged
+AmeriFlux,1,28,64,11,0,104
+ICOS,3,4,70,19,3,99
+TERN,0,0,0,1,3,4

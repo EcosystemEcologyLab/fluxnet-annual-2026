@@ -5,5 +5,5 @@
     "data/snapshots/site_aridity_era5_fig4.csv",
     "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
   ],
-  "notes": "ICOS-hub sites only, broken out by product_source_network (the contributing regional network, e.g. CNF/EUF/FLX/ICOS/JPF/KOF/SAEON): flagged count and total site count per network."
+  "notes": "Flagged and total site counts per product_source_network (the contributing regional network), with its hub, across the whole 781-site current network."
 }

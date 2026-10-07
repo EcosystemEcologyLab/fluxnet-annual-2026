@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-07T12:59:24Z",
+  "pipeline_version": "119ad37",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "World map of all 207 flagged sites, coloured by severity tier (1-5, see README.md), shaped by hub. Land outline from rnaturalearthdata (medium scale), equirectangular (unprojected lat/long)."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-07T12:59:24Z",
+  "pipeline_version": "119ad37",
+  "input_sources": [
+    "data/snapshots/site_koppen_era5_fig4.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "Every site dropped from Figure 5's Koppen (panel A) Geo-vs-Data panel (panel_a_eligible == FALSE), with hub, source network, and panel_a_source (which rule caught it: excluded_grp_era_down or excluded_p_era_ratio_low here -- none dropped by excluded_p_era_ratio_high, since panel A is PI-class-first and every site that would be caught by the high-ratio rule has a PI-reported class instead). 31 sites, distinct from this package's own 207-site aridity-panel flagged list: panel A never excludes a PI-sourced site even if its own ERA5 climatology would otherwise fail one of these rules."
+}

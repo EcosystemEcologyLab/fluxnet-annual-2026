@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-07T12:59:24Z",
+  "pipeline_version": "119ad37",
+  "input_sources": [
+    "data/extracted/*/*_ERA5_MM_*.csv (the 4 invalid_era5_input sites' own raw monthly ERA5 files)"
+  ],
+  "notes": "For each of the 4 invalid_era5_input sites, the single raw ERA5 variable that fails figure4_representativeness.R's physical-plausibility screen, applied here per raw calendar month (1991-2020, up to 360 site-months) rather than to the script's own 12-point climatological-mean series: how many months fail, and the range of the offending raw monthly values. Each site fails for exactly one variable (no site has more than one variable flagged)."
+}

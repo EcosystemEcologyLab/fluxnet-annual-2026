@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-07T12:59:24Z",
+  "pipeline_version": "119ad37",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "Flagged and total site counts per product_source_network (the contributing regional network), with its hub, across the whole 781-site current network."
+}

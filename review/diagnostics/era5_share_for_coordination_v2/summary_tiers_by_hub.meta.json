@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-07T12:59:24Z",
+  "pipeline_version": "119ad37",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv"
+  ],
+  "notes": "Count of each of the 5 severity tiers (see README.md for exact definitions), by hub, plus each hub's total flagged-site count."
+}

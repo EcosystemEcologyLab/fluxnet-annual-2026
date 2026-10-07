@@ -1,5 +1,5 @@
-site_id,site_name,product_source_network,fluxnet_product_name,identifier_link,flag,era5_map_mm,bio12_mm,badm_map_mm,ratio_era5_to_bio12,ratio_era5_to_badm,n_years_measured,era_slope
-AU-Wac,Wallaby Creek,TERN,TERN_AU-Wac_FLUXNET_2005-2008_v1.3_r1.zip,https://dx.doi.org/10.25901/1ky7-6f15,no_slope,2962.6132000000007,1276,NA,2.321797178683386,NA,NA,-9999
-AU-APL,Alpine Peatland,TERN,TERN_AU-APL_FLUXNET_2017-2022_v1.3_r1.zip,https://dx.doi.org/10.25901/gtk0-m966,no_slope,4208.4393,1655,NA,2.5428636253776435,NA,NA,-9999
-AU-Col,Collie,TERN,TERN_AU-Col_FLUXNET_2017-2019_v1.3_r1.zip,https://dx.doi.org/10.25901/ade1-p928,no_slope,2023.5442333333333,767,NA,2.638258452846588,NA,NA,-9999
-AU-Fog,Fogg Dam,TERN,TERN_AU-Fog_FLUXNET_2006-2008_v1.3_r1.zip,https://dx.doi.org/10.25901/dvrw-kd19,no_slope,5851.212966666666,1466,NA,3.991277603456116,NA,NA,-9999
+site_id,site_name,product_source_network,fluxnet_product_name,identifier_link,flag,tier,era5_map_mm,bio12_mm,badm_map_mm,ratio_era5_to_bio12,ratio_era5_to_badm,n_years_measured,mean_measured_precip_mm,era_slope,shared_value_group
+AU-Fog,Fogg Dam,TERN,TERN_AU-Fog_FLUXNET_2006-2008_v1.3_r1.zip,https://dx.doi.org/10.25901/dvrw-kd19,no_slope,4,5851.212966666666,1466,NA,3.991277603456116,NA,NA,NA,-9999,NA
+AU-Col,Collie,TERN,TERN_AU-Col_FLUXNET_2017-2019_v1.3_r1.zip,https://dx.doi.org/10.25901/ade1-p928,no_slope,5,2023.5442333333333,767,NA,2.638258452846588,NA,NA,NA,-9999,NA
+AU-APL,Alpine Peatland,TERN,TERN_AU-APL_FLUXNET_2017-2022_v1.3_r1.zip,https://dx.doi.org/10.25901/gtk0-m966,no_slope,5,4208.4393,1655,NA,2.5428636253776435,NA,NA,NA,-9999,NA
+AU-Wac,Wallaby Creek,TERN,TERN_AU-Wac_FLUXNET_2005-2008_v1.3_r1.zip,https://dx.doi.org/10.25901/1ky7-6f15,no_slope,5,2962.6132000000007,1276,NA,2.321797178683386,NA,NA,NA,-9999,NA

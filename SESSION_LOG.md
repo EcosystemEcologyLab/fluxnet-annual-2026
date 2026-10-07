@@ -4,6 +4,58 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — ERA5 precipitation coordination package v2 (replaces 18 September package)
+
+Diagnostic/correspondence only — writes exclusively to
+`review/diagnostics/era5_share_for_coordination_v2/` (new) plus a superseded-banner addition to
+`review/diagnostics/era5_share_for_coordination/README.md`'s own header (nothing else in that
+folder touched). No paper figure, snapshot, pipeline code, or either of the two analysis folders
+read from (`precip_site_filter/`, `precip_downscaling_provenance/`) was modified. New script:
+`scripts/diagnostics/era5_share_v2.R`. Inputs are four already-committed tables only — no
+raster, no re-extraction.
+
+Replaces the 18 September package's ad hoc 4x/8x empirical clustering with the four exclusion
+flags `figure4_representativeness.R` (main-text Figure 5) actually applies to its
+precipitation-dependent Geo-vs-Data panels (`no_slope`, `above_3x_every_reference`,
+`below_one_third`, `invalid_input`), read directly from `data/snapshots/site_aridity_era5_fig4.csv`.
+207 sites flagged network-wide; every flagged site carries exactly one flag (verified, no
+overlaps).
+
+**`IT-MBo` correction.** The 18 September package's `IT-MBo` row (ERA5 MAP 24,150 mm/yr) was
+built from a stale local file; `it_mbo_parsimony_refresh/report.md` withdrew that number. `IT-MBo`
+carries none of the four flags here; current values: ERA5 MAP 1,136.9 mm/yr, BIO12 ratio 2.79,
+BADM ratio 0.83.
+
+**Counts verified against an independent hand tally — no discrepancy found** (all values below
+matched exactly, including the ICOS no-slope median rounding to the tally's 4.2 and its 82/92
+share between 3x and 6x):
+
+`summary_by_hub.csv`:
+
+| hub | no_slope | above_3x_every_reference | below_one_third | invalid_input | total flagged |
+|---|---:|---:|---:|---:|---:|
+| AmeriFlux | 75 | 7 | 21 | 1 | 104 |
+| ICOS | 92 | 3 | 1 | 3 | 99 |
+| TERN | 4 | 0 | 0 | 0 | 4 |
+
+`summary_icos_by_source_network.csv`:
+
+| source network | flagged | total |
+|---|---:|---:|
+| CNF | 13 | 32 |
+| EUF | 31 | 138 |
+| FLX | 8 | 18 |
+| ICOS | 6 | 80 |
+| JPF | 36 | 54 |
+| KOF | 5 | 21 |
+| SAEON | 0 | 5 |
+
+Full detail, flag definitions with thresholds quoted from `R/pipeline_config.R`, and the
+invalid-input sites' individual ERA5 variables in
+`review/diagnostics/era5_share_for_coordination_v2/README.md`.
+
+---
+
 ## 2026-10-06 — Unattended run: network-wide data quality / uncertainty diagnostic
 
 Unattended background run, diagnostic only — writes exclusively to

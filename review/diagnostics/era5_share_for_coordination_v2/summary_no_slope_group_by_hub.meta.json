@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-07T11:56:23Z",
+  "pipeline_version": "34d67b9",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv"
+  ],
+  "notes": "For the no_slope (GRP_ERA_DOWN / not_fitted_slope_9999) flagged group only: per hub, median ratio of ERA5 annual precipitation to WorldClim BIO12, and the share of that hub's no_slope sites with a ratio between 3x and 6x inclusive."
+}

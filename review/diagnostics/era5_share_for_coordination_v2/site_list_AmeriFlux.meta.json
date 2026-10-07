@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-10-07T11:56:23Z",
+  "pipeline_version": "34d67b9",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv",
+    "review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv",
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "Every AmeriFlux site carrying at least one of the four figure4_representativeness.R ('Figure 5') exclusion flags (no_slope, above_3x_every_reference, below_one_third, invalid_input). Sorted by flag, then by ratio to BIO12. 104 rows."
+}

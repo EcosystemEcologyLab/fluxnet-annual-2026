@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-07T11:56:23Z",
+  "pipeline_version": "34d67b9",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv",
+    "review/diagnostics/precip_downscaling_provenance/table_2_site_groups.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "Distribution of the ERA5-to-BIO12 annual precipitation ratio, log10 x-axis, for the two ERA_SLOPE metadata sentinel groups (slope=1 vs slope=-9999/GRP_ERA_DOWN), coloured by hub, all 781 current-network sites (minus the 4 invalid_era5_input sites and 1 zero-ratio site, which have no finite positive ratio)."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-07T11:56:23Z",
+  "pipeline_version": "34d67b9",
+  "input_sources": [
+    "data/snapshots/site_aridity_era5_fig4.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "ICOS-hub sites only, broken out by product_source_network (the contributing regional network, e.g. CNF/EUF/FLX/ICOS/JPF/KOF/SAEON): flagged count and total site count per network."
+}

@@ -4,6 +4,64 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — WUE isotope pilot: unattended setup prepared, full run not yet launched
+
+**Side analysis — not the FLUXNET Annual Paper 2026.** New standalone pilot comparing
+flux-derived water use efficiency with tree-ring intrinsic WUE estimates, at
+`WUE/isotope_pilot/` (code, docs, tables, figures, logs, `README.md`, `.gitignore`; data/
+gitignored, isolated `FLUXNET_DATA_ROOT`, built on the `WAFNET/energy_partitioning/` pattern).
+13 sites: 8 with published tree-ring isotopes (`US-Ha1`, `US-Ho2`, `US-MMS`, `US-SP1`, `US-Bar`,
+`US-Slt`, `US-Dk2`, `US-Fuf`) plus 5 flux-only (`DE-Tha`, `BE-Vie`, `NL-Loo`, `FI-Hyy`, `CH-Dav`).
+
+**Standing rules, written into `README.md` and `docs/methods_memo.md`:** GPP is the nighttime
+partition only — no `GPP_DT_*`/`RECO_DT_*` column is ever read (daytime partitioning uses VPD,
+so a VPD-weighted WUE built on it would be circular); this pilot stops at the pre-analysis
+report — no WUE, inherent WUE, underlying WUE, or VPD exponent is computed, and no rain-day or
+GPP screen is applied.
+
+**Preflight (2026-10-07):** credentials/`check_pipeline_config()` OK; live Shuttle manifest
+resolved all 13 sites across AmeriFlux/ICOS/TERN hubs; all required R packages already present
+in `renv/profiles/macos/renv.lock` (no installs needed); `US-Ho1` checked against the live
+manifest and confirmed absent, not added. Disk space check failed (95 GB free vs. the 100 GB
+allowance for the full 13-site sub-daily run) — flagged to the user, who chose to proceed and
+treat the 100 GB figure as non-binding for the final launch decision.
+
+**Smoke test (US-Fuf, 6 years, foreground):** `01_download_extract.R`, `02_read_subdaily.R`,
+`03_fetch_treering.R`, `04_report_preanalysis.R` all ran end to end. Two issues found and fixed
+during the test: (1) `treering_site_map.csv`'s no-metadata fallback returned one generic
+unidentified row instead of one row per requested site; (2) the precipitation cross-check
+against `review/diagnostics/precip_site_filter/` initially compared "any measured timestep" to
+that table's `n_years_measured`, which is actually annual-resolution `P_F_QC` fraction (measured
++ good-gapfill combined) exceeding `QC_THRESHOLD_YY = 0.50` — a different metric at a different
+resolution. Changed to "half-hourly measured-only share > 50%" and documented as a magnitude
+sanity check, not a re-derivation; for US-Fuf this now matches the reference exactly (5/6 years).
+Confirmed directly from the files (not recomputed) the two statements requested: the reference
+table's measured-year counts for `NL-Loo` (3/29), `US-Slt` (10/18), `US-SP1` (12/21), `US-Ha1`
+(21/35), `FI-Hyy` (21/29) all match; none of the 13 pilot sites appear in
+`review/diagnostics/era5_share_for_coordination_v2/site_list_*.csv`.
+
+**Tree-ring fetch (`03_fetch_treering.R`):** the Belmecheri et al. 2021 GitHub repo
+(`SBelmecheri/NE_Tree-Rings_Isotopes`) cloned cleanly (2 files: `README.md`, `isotopes`). The
+EDI package `edi.401` (Guerrieri et al. 2019) fetch failed — every PASTA+ REST API call,
+including an unrelated search query, returned HTTP 403 "not authorized", and the EDI data
+portal's own web UI now redirects anonymous access to a login page behind a Cloudflare
+Turnstile challenge. This appears to be an EDI-wide authentication requirement rather than
+something specific to package 401's permissions, though that can't be fully ruled out without
+an authenticated EDI session. Recorded as a failed fetch, not retried past that; the script and
+report both degrade gracefully (empty `treering_inventory.csv`, `treering_site_map.csv` rows
+identifying each site with "edi.401 fetch did not succeed" rather than silently omitting them).
+This blocks `tables/treering_inventory.csv` and the "stated vs. inferred" confirmation of the
+`US-SP1`/`US-Fuf` site-name mapping for the real 13-site run, pending either EDI credentials or
+a manual download.
+
+Smoke-test tables and report were deleted after inspection so the full run writes them fresh;
+the downloaded/extracted/read US-Fuf data was left in place. Code, README, `.gitignore`, and
+`docs/methods_memo.md` committed and pushed (`5051341`). **The full 13-site unattended run is
+prepared (`code/run_setup_20261007.sh`) but has not been launched** — per instructions, Claude
+does not launch it; the user runs it themselves from a plain terminal.
+
+---
+
 ## 2026-10-07 — ERA5 coordination package v2: additions for an ICOS hub report
 
 Follow-up to the same-day v2 package below — diagnostic/correspondence only, writes exclusively

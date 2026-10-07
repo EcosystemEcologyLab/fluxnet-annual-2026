@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:07:27Z",
+  "pipeline_version": "b26ae0d",
+  "input_sources": [
+    "table_stage2_site_year_nee_uncertainty.csv (derived)"
+  ],
+  "notes": "Medians/IQRs of random, ustar_term, joint (gC m-2 yr-1); median ratio ustar_term/random; share of site-years where each term dominates; Pearson correlation of each term with |NEE|. Overall and by IGBP class, each carbon_type (VUT/CUT)."
+}

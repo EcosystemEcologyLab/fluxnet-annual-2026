@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:04:04Z",
+  "pipeline_version": "42f99ff",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "QC flag = fraction of underlying records measured or good-quality gap-filled (DD/WW/MM/YY resolution; see CLAUDE.md QC Flag Reference System 1). This fraction cannot separate 'measured' from 'well gap-filled' -- both count toward it equally. weekly resolution has only 1 site (US-MMS) in the current DuckDB store, not a network-representative sample (see Stage 0 / Stage 1 report notes). group_type: overall (ALL FLUXMET site-periods with a non-NA QC value), igbp (by manifest IGBP class), hub (by manifest data_hub). n = count of non-NA QC values in that group."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:09:34Z",
+  "pipeline_version": "0742a0d",
+  "input_sources": [
+    "review/diagnostics/data_quality_uncertainty/table_stage2_site_year_nee_uncertainty.csv"
+  ],
+  "notes": "Per-site median of qualifying NEE_VUT_REF and median of qualifying NEE_CUT_REF (each computed over that side's own qualifying years independently, then paired by site_id -- not a site-level collapse of the already-paired site-year table). diff/diff_joint/smaller_than_joint/sign_differs defined identically to the site-year table, using each side's median joint uncertainty."
+}

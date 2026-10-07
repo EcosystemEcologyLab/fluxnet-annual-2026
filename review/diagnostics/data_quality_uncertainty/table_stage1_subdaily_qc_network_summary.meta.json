@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-06T23:04:18Z",
+  "pipeline_version": "42f99ff",
+  "input_sources": [
+    "table_stage1_subdaily_qc_by_site.csv (derived)"
+  ],
+  "notes": "Share of all sub-daily records (across the 31 sites, pooled) in each measured/good/medium/poor gap-fill category, per variable."
+}

@@ -1,0 +1,32 @@
+DATA DICTIONARY -- site_list_<hub>.csv
+
+site_id                    FLUXNET site ID.
+site_name                  Site name as recorded in the FLUXNET Shuttle manifest.
+product_source_network     The contributing regional network that produced this
+                           site's data product (e.g. AMF, ICOS, JPF, CNF, EUF,
+                           FLX, KOF, SAEON, TERN). Not derivable from the site ID.
+fluxnet_product_name       The distributed product's file/version name.
+identifier_link            A resolvable link to the product: a doi.org link for
+                           AmeriFlux, an hdl.handle.net link for ICOS, and the
+                           product's own URL (already a DOI link) for TERN.
+flag                       Which of the four figure4_representativeness.R ('Figure
+                           5') exclusion flags this site carries. Exactly one per
+                           flagged site: 'no_slope', 'above_3x_every_reference',
+                           'below_one_third', or 'invalid_input'. See README.md for
+                           the exact rule and threshold behind each.
+era5_map_mm                ERA5 mean annual precipitation, 1991-2020, mm/year.
+                           Blank for invalid_input sites (see README.md).
+bio12_mm                   WorldClim v2.1 BIO12 (annual precipitation), mm/year, at
+                           the tower coordinate.
+badm_map_mm                Mean annual precipitation as reported by the site PI in
+                           the site's own BADM metadata, mm/year. Blank where not
+                           reported.
+ratio_era5_to_bio12        era5_map_mm / bio12_mm.
+ratio_era5_to_badm         era5_map_mm / badm_map_mm. Blank where badm_map_mm is
+                           blank.
+n_years_measured           Number of years of tower-measured precipitation
+                           available for this site (precip_site_filter.R).
+era_slope                  The ERA_SLOPE value recorded in the site's own BIF
+                           downscaling metadata (GRP_ERA_DOWN, ERA_VARIABLE=P): 1
+                           for the standard 'not fitted' sentinel, or -9999 for the
+                           GRP_ERA_DOWN sentinel that drives the no_slope flag.

@@ -1,5 +1,11 @@
 # ERA5-derived annual precipitation vs. independent references: a network-wide check
 
+> **Superseded (2026-10-07).** This package is superseded by
+> [`review/diagnostics/era5_share_for_coordination_v2/`](../era5_share_for_coordination_v2/README.md),
+> which replaces this package's ad hoc 4x/8x empirical clustering with the four exclusion flags
+> `figure4_representativeness.R` (Figure 5) actually applies, and corrects this package's
+> `IT-MBo` row, which was built from a stale local file. See that package's README for detail.
+
 > **Provisional — pending store audit (2026-09-20).** The numbers in this package rest on the June 2026 `data/extracted/` extraction. One file in that extraction (IT-MBo's `FLUXNET_FLUXMET_MM` file) is known to differ from the currently-distributed archive under the same product ID. This package's conclusions are provisional pending `review/diagnostics/store_audit/` (in progress).
 
 This package summarises a check of ERA5-derived mean annual precipitation (MAP) against

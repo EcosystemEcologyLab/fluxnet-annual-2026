@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T02:56:39Z",
+  "pipeline_version": "74cdd95",
+  "input_sources": [
+    "WUE/isotope_pilot/data/processed/wue_augmented/ (06_build_site_years.R output)"
+  ],
+  "notes": "All days, all years -- no rain/quality screen applied, just the 05:00-21:00 window and the named radiation column's own non-negativity."
+}

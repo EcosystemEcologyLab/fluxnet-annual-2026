@@ -107,6 +107,19 @@ code/09_make_figures.R           # annual WUE/IWUE/uWUE + valid-days figures
 code/10_report_stage2.R          # docs/report_back_stage2_<date>.md
 code/run_stage2_20261007.sh      # runs 05-10 unattended (NOT 03 -- tree-ring stays
                                   # out of scope), commits+pushes tables/figures/docs
+
+# --- Shared helpers (sourced by stage 2 AND by the read-and-report side
+# analyses below, so they can never drift into two independent copies) ---
+code/rain_rule.R                 # pt_pet_mm_day() (Priestley-Taylor PET), rain_rule_excluded()
+code/netrad_gapfill.R            # fit_netrad_gapfill(): per-site NETRAD ~ SW_IN_F OLS fill
+code/zhou_screens.R              # run_zhou_screens(): the Zhou et al. (2015) screens a-d
+
+# --- Read-and-report side analyses (do not rerun stage 2, do not change the
+# rain rule, do not recompute WUE) ---
+code/11_precip_compare.R         # ERA5 (P_ERA) vs. tower gauge, daily scale -- see
+                                  # docs/report_precip_compare_<date>.md
+code/12_screen_variants.R        # rain-source x screen-c-radiation variant check, 3
+                                  # test sites -- see docs/report_screen_variants_<date>.md
 ```
 
 `WUE_SITE_SUBSET` (space-separated site IDs) narrows the site list for a

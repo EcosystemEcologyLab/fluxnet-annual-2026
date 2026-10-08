@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T02:56:39Z",
+  "pipeline_version": "74cdd95",
+  "input_sources": [
+    "WUE/isotope_pilot/data/processed/wue_augmented/ (06_build_site_years.R output)"
+  ],
+  "notes": "Kept years only (year_kept==TRUE in years_dropped.csv's complement). days_lost_screen_c is the former combined days_lost_daylight column (daylight window + the radiation_col/GPP/ET/VPD non-negative tests); days_lost_record_count + days_lost_gpp_test is the former combined days_lost_day_level."
+}

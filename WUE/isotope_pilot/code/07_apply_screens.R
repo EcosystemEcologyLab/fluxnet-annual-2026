@@ -43,9 +43,18 @@
 ##                          days_p_era_above_zero, days_removed_by_rain_rule,
 ##                          days_lost_quality, days_lost_daylight,
 ##                          days_lost_day_level, valid_days
+##
+## The per-site screen logic itself (screens a-d) lives in
+## run_zhou_screens() (code/zhou_screens.R, revised 2026-10-08) -- shared
+## with 12_screen_variants.R's rain-source/radiation-column comparison, so
+## the two can never silently diverge. This script calls it with every
+## argument at its default (rain from P_ERA, screen c's radiation test from
+## NETRAD_filled, PET pressure from daily mean PA_F) -- i.e. identical
+## behaviour to the inline version this replaced.
 
 source("WUE/isotope_pilot/code/00_config.R")
 source("WUE/isotope_pilot/code/rain_rule.R")
+source("WUE/isotope_pilot/code/zhou_screens.R")
 
 processed_dir <- file.path(WUE_ROOT, "data", "processed")
 augmented_dir <- file.path(processed_dir, "wue_augmented")
@@ -56,13 +65,6 @@ dir.create(valid_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(subdaily_valid_dir, recursive = TRUE, showWarnings = FALSE)
 
 years_dropped <- readr::read_csv(file.path(tables_dir, "years_dropped.csv"), show_col_types = FALSE)
-is_year_kept <- function(site, year) {
-  !any(years_dropped$site_id == site & years_dropped$year == year)
-}
-
-## pt_pet_mm_day() and rain_rule_excluded() come from rain_rule.R -- shared
-## with 11_precip_compare.R's gauge-vs-P_ERA rain-rule comparison, so both
-## apply IDENTICAL logic rather than two independent reimplementations.
 
 attrition_rows <- list()
 
@@ -74,137 +76,24 @@ process_one_site <- function(site) {
   }
   d <- readRDS(p)
   if (nrow(d) == 0) return(invisible(NULL))
+  d$site_id <- site
 
-  resolution  <- d$resolution[[1]]
-  day_thresh  <- if (identical(resolution, "HR")) 12L else 24L
+  res <- run_zhou_screens(d, years_dropped)
 
-  d$date <- as.Date(d$TIMESTAMP_START)
-  d$year <- lubridate::year(d$TIMESTAMP_START)
-  d$hour_decimal <- lubridate::hour(d$TIMESTAMP_START) + lubridate::minute(d$TIMESTAMP_START) / 60
+  ## screen_attrition.csv keeps its original single combined
+  ## days_lost_day_level column (days_lost_record_count + days_lost_gpp_test
+  ## -- run_zhou_screens() returns the split too, used only by
+  ## 12_screen_variants.R).
+  attrition_rows[[length(attrition_rows) + 1L]] <<- res$attrition[, c(
+    "site_id", "year", "days_in_year", "days_p_era_above_zero",
+    "days_removed_by_rain_rule", "days_lost_quality", "days_lost_daylight",
+    "days_lost_day_level", "valid_days", "year_kept"
+  )]
 
-  ## ---- Daily table over the FULL continuous date range ----------------
-  full_dates <- data.frame(date = seq(min(d$date), max(d$date), by = "day"))
-  daily_obs <- d |>
-    dplyr::group_by(date) |>
-    dplyr::summarise(
-      P_day = sum(P_ERA, na.rm = TRUE),
-      TA_day = mean(TA_F, na.rm = TRUE),
-      NETRAD_day = mean(NETRAD_filled, na.rm = TRUE),
-      PA_day = mean(PA_F, na.rm = TRUE),
-      day_netrad_estimated = any(netrad_estimated),
-      .groups = "drop"
-    )
-  daily <- dplyr::left_join(full_dates, daily_obs, by = "date")
-  daily <- daily[order(daily$date), ]
-  daily$PET_day <- pt_pet_mm_day(daily$NETRAD_day, daily$TA_day, daily$PA_day)
-
-  rainy <- !is.na(daily$P_day) & daily$P_day > 0
-  daily$excluded_rain_rule <- rain_rule_excluded(daily)
-
-  rain_excluded_by_date <- stats::setNames(daily$excluded_rain_rule, as.character(daily$date))
-  d$excluded_by_rain <- rain_excluded_by_date[as.character(d$date)]
-
-  ## ---- a: rain -----------------------------------------------------------
-  d$survives_a <- !d$excluded_by_rain
-
-  ## ---- b: quality ---------------------------------------------------------
-  qc_ok <- function(x) !is.na(x) & x %in% c(0, 1)
-  d$survives_b <- d$survives_a &
-    qc_ok(d$NEE_QC_sel) & qc_ok(d$LE_F_MDS_QC) & qc_ok(d$VPD_F_QC)
-
-  ## ---- c: daylight + non-negative -----------------------------------------
-  nonneg <- function(x) !is.na(x) & x >= 0
-  d$survives_c <- d$survives_b &
-    !is.na(d$hour_decimal) & d$hour_decimal >= 5 & d$hour_decimal <= 21 &
-    nonneg(d$NETRAD_filled) & nonneg(d$GPP_gC_sel) & nonneg(d$ET_mm) & nonneg(d$VPD_F)
-
-  ## ---- per-day record counts at each stage, + day-mean GPP among
-  ## survives_c records -------------------------------------------------------
-  per_day_counts <- d |>
-    dplyr::group_by(date) |>
-    dplyr::summarise(
-      n_after_a = sum(survives_a),
-      n_after_b = sum(survives_b),
-      n_after_c = sum(survives_c),
-      day_mean_gpp = if (any(survives_c)) mean(GPP_gC_sel[survives_c]) else NA_real_,
-      .groups = "drop"
-    )
-  daily <- dplyr::left_join(daily, per_day_counts, by = "date")
-  daily$n_after_a[is.na(daily$n_after_a)] <- 0L
-  daily$n_after_b[is.na(daily$n_after_b)] <- 0L
-  daily$n_after_c[is.na(daily$n_after_c)] <- 0L
-
-  daily$year <- lubridate::year(daily$date)
-  daily$candidate_valid <- daily$n_after_c >= day_thresh
-
-  ## ---- d: day level (10% of this site-year's max day-mean GPP) ------------
-  valid_rows <- list()
-  subdaily_valid_rows <- list()
-  attrition_this_site <- list()
-
-  for (yr in sort(unique(daily$year))) {
-    d_yr <- daily[daily$year == yr, , drop = FALSE]
-    kept <- is_year_kept(site, yr)
-
-    candidates <- d_yr[d_yr$candidate_valid, , drop = FALSE]
-    year_max_gpp <- if (nrow(candidates) > 0) max(candidates$day_mean_gpp, na.rm = TRUE) else NA_real_
-    d_yr$final_valid <- d_yr$candidate_valid &
-      !is.na(d_yr$day_mean_gpp) & !is.na(year_max_gpp) &
-      d_yr$day_mean_gpp >= 0.10 * year_max_gpp
-
-    if (kept) {
-      valid_dates <- d_yr$date[d_yr$final_valid]
-      if (length(valid_dates) > 0) {
-        day_tab <- d |>
-          dplyr::filter(survives_c, date %in% valid_dates) |>
-          dplyr::group_by(date) |>
-          dplyr::summarise(
-            GPP_d = sum(GPP_gC_sel), ET_d = sum(ET_mm), VPD_d = mean(VPD_F),
-            n_records = dplyr::n(), .groups = "drop"
-          ) |>
-          dplyr::left_join(d_yr[, c("date", "day_netrad_estimated")], by = "date") |>
-          dplyr::mutate(site_id = site, year = yr)
-        valid_rows[[length(valid_rows) + 1L]] <- as.data.frame(day_tab)
-
-        ## Sub-daily records contributing to this site-year's valid days --
-        ## kept for 08_compute_metrics.R's sub-daily-scale k* grid search.
-        rec_tab <- d[d$survives_c & d$date %in% valid_dates,
-                     c("date", "GPP_gC_sel", "ET_mm", "VPD_F"), drop = FALSE]
-        rec_tab$site_id <- site
-        rec_tab$year    <- yr
-        subdaily_valid_rows[[length(subdaily_valid_rows) + 1L]] <- rec_tab
-      }
-    }
-
-    days_in_year      <- nrow(d_yr)
-    days_rainy        <- sum(rainy[daily$year == yr], na.rm = TRUE)
-    days_rain_removed <- sum(d_yr$n_after_a == 0 & days_in_year > 0)
-    days_lost_quality <- sum(d_yr$n_after_a > 0 & d_yr$n_after_b == 0)
-    days_lost_daylight <- sum(d_yr$n_after_b > 0 & d_yr$n_after_c == 0)
-    days_lost_day_level <- sum(d_yr$n_after_c > 0 & !d_yr$final_valid)
-    valid_days_n <- sum(d_yr$final_valid)
-
-    attrition_this_site[[length(attrition_this_site) + 1L]] <- data.frame(
-      site_id = site, year = yr, days_in_year = days_in_year,
-      days_p_era_above_zero = days_rainy,
-      days_removed_by_rain_rule = days_rain_removed,
-      days_lost_quality = days_lost_quality,
-      days_lost_daylight = days_lost_daylight,
-      days_lost_day_level = days_lost_day_level,
-      valid_days = valid_days_n,
-      year_kept = kept,
-      stringsAsFactors = FALSE
-    )
-  }
-
-  attrition_rows[[length(attrition_rows) + 1L]] <<- do.call(rbind, attrition_this_site)
-
-  if (length(valid_rows) > 0) {
-    out <- do.call(rbind, valid_rows)
-    saveRDS(out, file.path(valid_dir, paste0(site, ".rds")))
-    rec_out <- do.call(rbind, subdaily_valid_rows)
-    saveRDS(rec_out, file.path(subdaily_valid_dir, paste0(site, ".rds")))
-    message("[WUE] ", site, ": ", nrow(out), " valid day(s) across kept years.")
+  if (!is.null(res$daily_valid)) {
+    saveRDS(res$daily_valid, file.path(valid_dir, paste0(site, ".rds")))
+    saveRDS(res$subdaily_valid, file.path(subdaily_valid_dir, paste0(site, ".rds")))
+    message("[WUE] ", site, ": ", nrow(res$daily_valid), " valid day(s) across kept years.")
   } else {
     message("[WUE] ", site, ": 0 valid days across kept years.")
   }

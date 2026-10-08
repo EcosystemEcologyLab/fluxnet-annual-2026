@@ -81,3 +81,14 @@ WUE_FORBIDDEN_DT_PATTERN <- "_DT_"
 
 message("[WUE isotope pilot] Data root: ", Sys.getenv("FLUXNET_DATA_ROOT"))
 message("[WUE isotope pilot] Sites (", length(WUE_SITES), "): ", paste(WUE_SITES, collapse = ", "))
+
+# --- Stage 2 (screens + WUE metrics) site list ------------------------------
+# PI decision, 2026-10-07: CH-Dav is dropped from stage 2 (3 years with no
+# nighttime GPP; stage 1 closure slope 0.46, r2 0.56 -- see
+# docs/methods_memo.md). The CH-Dav files already on disk are left in place,
+# only excluded from the stage-2 site list. intersect() with WUE_SITES (not
+# WUE_SITES_ALL) so WUE_SITE_SUBSET still narrows stage 2 the same way it
+# narrows stage 1 -- dropping CH-Dav is a no-op for a subset that excludes it.
+WUE_SITES_STAGE2 <- intersect(WUE_SITES, setdiff(WUE_SITES_ALL, "CH-Dav"))
+message("[WUE isotope pilot] Stage 2 sites (", length(WUE_SITES_STAGE2), "): ",
+        paste(WUE_SITES_STAGE2, collapse = ", "))

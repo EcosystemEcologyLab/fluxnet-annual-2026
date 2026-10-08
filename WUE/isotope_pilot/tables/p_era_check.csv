@@ -1,0 +1,4 @@
+"site_id","n_years","mean_annual_mm_here","mean_annual_mm_reference","pct_diff","status"
+"US-Fuf",6,674.23,674.222666666667,0.001,"ok"
+"US-Ho2",27,809.12,809.345703703704,-0.028,"ok"
+"US-MMS",25,1097.48,1097.52456,-0.004,"ok"

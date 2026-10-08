@@ -4,6 +4,55 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — WUE isotope pilot: hand-off figures for the 11 stage-2 sites
+
+**Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** Seven figures for
+hand-off, in the paper's Nature/Scientific Data format as the repo already applies it
+(`R/nature_format.R`: `nature_theme()`, `panel_letter()`/a new `panel_tag()`, `save_nature_figure()`,
+`nature_lwd()`; `PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS` from `R/plot_constants.R`; `R/figures/fig_maps.R`'s
+internal map helpers reused for the site map). New code: `code/13_handoff_figures.R`. All 11 stage-2
+sites (`WUE_SITES_STAGE2`); figures 3-4 additionally drop `NL-Loo`, whose precip_compare inputs
+predate its stage-2 removal.
+
+**Figures** (each PNG+PDF+`.legend.txt`+`.meta.json`, `figures/handoff/`): `fig0_map_sites` (North
+America/Europe panels, IGBP-coloured, site-code labels); `fig1_by_site_{ratio_to_mean,
+pct_change_guerrieri}` (one panel per site, ordered by IGBP then latitude, WUE/IWUE/uWUE/sub-daily
+k* vs. year under each of the two required normalisations, open points for <10 valid days, kept
+years with zero valid days showing no points, valid-days bars on a per-panel-correct secondary
+axis, red x-axis year labels where `share_days_gauge_measured < 0.8`); `fig2_by_pft_{ratio_to_mean,
+pct_change_guerrieri}` (DBF/ENF panels, BE-Vie/MF excluded and named in the legend, per-site thin
+lines + across-site median, mean-valid-days background bars); `fig3_rain_source_summary` (wet-day
+share and mean rain-rule days removed, gauge vs. `P_ERA`); `fig4_rain_rule_by_year` (redraws
+`figures/precip_compare/fig_days_removed_by_source.png` in this format). No trend tests or Sen's
+slopes anywhere. Plotted values in `tables/handoff/` (5 tables, each with `.meta.json`). Draft
+legends (each under 200 words) in `docs/handoff_figure_legends_20261008.md`.
+
+**`scripts/check_figure_format.R`** gained an optional first CLI argument overriding the checked
+directory (default unchanged: `review/figures/draft_manuscript_v1`) — verified both the new
+directory (7/7 PASS) and the unchanged default (13/13 PASS, same as before this change).
+
+**Three real bugs found and fixed during the required by-eye check**, none caught by the automated
+format checker (which only measures size/fonts/text/lines/edges, not content correctness):
+1. `ggrepel::geom_text_repel()` labels for sites outside a map panel's region bounding box bled
+   into the *other* panel — `coord_sf(xlim=, ylim=)` crops the rendered viewport but not ggrepel's
+   label placement. Fixed by pre-filtering each panel's points to its own region before plotting,
+   rather than relying on the coord to crop.
+2. The map's two otherwise-identical IGBP legends did not merge via `patchwork::plot_layout(guides
+   = "collect")`, and separately, a `scale_fill_manual(limits=, drop=FALSE)` level with zero actual
+   data rows renders its legend *text* but an *empty* colour swatch (a `geom_point` `draw_key` gap,
+   not a scale/guide option) — confirmed by direct minimal reproduction for both. Fixed by showing
+   the legend on one panel only, fed by an off-panel (not alpha=0 — that also blanks the key glyph)
+   dummy point for every class.
+3. `panel_letter()`'s `annotate(x = -Inf, y = Inf, ...)` positioning does not render at all on a
+   `coord_flip()` + discrete-axis plot (confirmed by direct reproduction) — fig3's two panels use a
+   new `plot.tag`-based `panel_tag()` helper instead; fig0's map (continuous lon/lat, no
+   `coord_flip()`) keeps `panel_letter()`, confirmed still working there.
+
+Stage 2's 12-site full run and this hand-off are otherwise independent; no stage 2 table, the rain
+rule, or WUE itself was touched by this figure-only task.
+
+---
+
 ## 2026-10-07 — WUE isotope pilot stage 2: full run, 11 sites (NL-Loo dropped at the P_ERA gate)
 
 **Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** Full run of `05`-`10`

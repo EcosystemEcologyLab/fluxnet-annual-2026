@@ -5,7 +5,7 @@
 ##
 ## Question: how many valid days per kept site-year survive the Zhou et al.
 ## (2015) screens when (i) the rain source, (ii) the radiation condition in
-## screen c, and (iii, added 2026-10-09) the GPP day test's reference
+## screen c, and (iii, added 2026-10-07) the GPP day test's reference
 ## maximum (gpp_test = "daymean" vs "halfhour") all change.
 ##
 ## GATE 1: run_zhou_screens() (code/zhou_screens.R, the function
@@ -17,7 +17,7 @@
 ## is deliberate: it matches the PET formula screen_attrition.csv was
 ## actually generated under (07 has not been re-run since the PA_F change).
 ##
-## GATE 2 (added 2026-10-09): with gpp_test = "daymean" and PET using the
+## GATE 2 (added 2026-10-07): with gpp_test = "daymean" and PET using the
 ## daily PA_F, the four rain x radiation variants below must reproduce the
 ## already-committed tables/screen_variants/attrition_by_variant.csv EXACTLY
 ## -- confirming the new gpp_test argument changed nothing when left at its
@@ -50,9 +50,9 @@
 ##                                   mean; 10% of the maximum record), plus
 ##                                   the maximum record GPP over all records
 ##                                   with NEE QC 0 or 1, for comparison
-##   records_in_window_by_month.csv  (unchanged from 2026-10-08 -- gpp_test
+##   records_in_window_by_month.csv  (unchanged from 2026-10-07 -- gpp_test
 ##                                   does not affect it, not recomputed)
-##   gauge_share.csv                 (unchanged from 2026-10-08, same reason)
+##   gauge_share.csv                 (unchanged from 2026-10-07, same reason)
 ## Output (docs/): report_screen_variants_<date>.md
 
 source("WUE/isotope_pilot/code/00_config.R")
@@ -185,7 +185,7 @@ avar_cols <- c("site_id", "year", "variant", "rain_source", "radiation_col",
 ## committed_avar may ALREADY be this script's own extended (gpp_test-column)
 ## output from a prior run -- filter to "daymean" first so the gate stays
 ## idempotent across re-runs, not just correct on the very first run against
-## the original (no gpp_test column) 2026-10-08 file.
+## the original (no gpp_test column) 2026-10-07 file.
 if ("gpp_test" %in% names(committed_avar)) {
   committed_avar <- committed_avar[committed_avar$gpp_test == "daymean", ]
 }
@@ -202,7 +202,7 @@ message("[WUE] GATE 2 PASSED: gpp_test = \"daymean\" reproduces the committed at
         "exactly (", nrow(daymean_rows), " rows).")
 
 write_csv_meta(attrition_by_variant, file.path(out_tables, "attrition_by_variant.csv"),
-  notes = "Extended 2026-10-09 with a gpp_test column (daymean/halfhour) -- Gate 2 confirms the daymean rows are unchanged from the 2026-10-08 version. Kept years only. days_lost_screen_c is the former combined days_lost_daylight column; days_lost_record_count + days_lost_gpp_test is the former combined days_lost_day_level.")
+  notes = "Extended 2026-10-07 with a gpp_test column (daymean/halfhour) -- Gate 2 confirms the daymean rows are unchanged from the 2026-10-07 version. Kept years only. days_lost_screen_c is the former combined days_lost_daylight column; days_lost_record_count + days_lost_gpp_test is the former combined days_lost_day_level.")
 
 valid_days_long <- do.call(rbind, valid_days_rows)
 valid_days_by_month <- valid_days_long |>
@@ -214,7 +214,7 @@ full_grid <- expand.grid(site_id = TEST_SITES, variant = vapply(VARIANTS, `[[`, 
 valid_days_by_month <- dplyr::left_join(full_grid, valid_days_by_month, by = c("site_id", "variant", "gpp_test", "month"))
 valid_days_by_month$valid_days[is.na(valid_days_by_month$valid_days)] <- 0L
 write_csv_meta(valid_days_by_month, file.path(out_tables, "valid_days_by_month.csv"),
-  notes = "Extended 2026-10-09 with a gpp_test column (daymean/halfhour). Kept years pooled (sum across all kept years of that site).")
+  notes = "Extended 2026-10-07 with a gpp_test column (daymean/halfhour). Kept years pooled (sum across all kept years of that site).")
 
 ## ============================================================================
 ## gpp_thresholds.csv -- per site/kept year, the two GPP-test thresholds and
@@ -232,7 +232,7 @@ gpp_thresholds <- do.call(rbind, gpp_threshold_rows)
 write_csv_meta(gpp_thresholds, file.path(out_tables, "gpp_thresholds.csv"),
   notes = "Reference variant: rain=P_ERA, radiation=NETRAD_filled, PET pressure from daily PA_F. threshold_daymean/threshold_halfhour are 10% of the respective year_max_gpp; max_record_gpp_qc01 is the max GPP_gC_sel over all records that year with NEE QC 0 or 1 (no other screen), for comparison.")
 
-message("[WUE] Tables written to ", out_tables, " (records_in_window_by_month.csv and gauge_share.csv unchanged from 2026-10-08 -- gpp_test does not affect them, not recomputed).")
+message("[WUE] Tables written to ", out_tables, " (records_in_window_by_month.csv and gauge_share.csv unchanged from 2026-10-07 -- gpp_test does not affect them, not recomputed).")
 
 ## ============================================================================
 ## REPORT
@@ -279,7 +279,7 @@ report_lines <- c(
   "",
   "**Question:** how many valid days per kept site-year survive the Zhou et al. (2015) screens",
   "when (i) the rain source, (ii) the radiation condition in screen c, and (iii, added",
-  "2026-10-09) the GPP day test's reference maximum all change.",
+  "2026-10-07) the GPP day test's reference maximum all change.",
   "",
   "## Gate 1",
   "",
@@ -289,7 +289,7 @@ report_lines <- c(
          " all ", nrow(gate_check), " site-year rows across the 3 test sites -- confirming the",
          " 07_apply_screens.R refactor into zhou_screens.R changed nothing."),
   "",
-  "## Gate 2 (added 2026-10-09)",
+  "## Gate 2 (added 2026-10-07)",
   "",
   paste0("With `gpp_test = \"daymean\"` and PET using the daily `PA_F`, the four rain x radiation",
          " variants reproduce the already-committed",
@@ -298,7 +298,7 @@ report_lines <- c(
   "",
   "## Eight variants (PET using the daily PA_F throughout)",
   "",
-  "Rain source x screen c radiation (as before, 2026-10-08):",
+  "Rain source x screen c radiation (as before, 2026-10-07):",
   "",
   "- `rain_P_ERA_rad_NETRAD`: rain from `P_ERA > 0`, screen c from `NETRAD_filled >= 0`.",
   "- `rain_P_ERA_rad_SW_IN`: rain from `P_ERA > 0`, screen c from `SW_IN_F >= 0`.",
@@ -306,7 +306,7 @@ report_lines <- c(
   "  fill where not), screen c from `NETRAD_filled >= 0`.",
   "- `rain_P_F_rad_SW_IN`: rain from `P_F > 0`, screen c from `SW_IN_F >= 0`.",
   "",
-  "Crossed with the GPP day test (added 2026-10-09):",
+  "Crossed with the GPP day test (added 2026-10-07):",
   "",
   "- `daymean` (default, 07's current code): a day's mean GPP must be >= 10% of the LARGEST such",
   "  daily mean among the site-year's candidate days.",
@@ -329,8 +329,8 @@ report_lines <- c(
   "## Supporting tables",
   "",
   "`tables/screen_variants/attrition_by_variant.csv`, `valid_days_by_month.csv` (both extended",
-  "2026-10-09 with a `gpp_test` column), `gpp_thresholds.csv` (new 2026-10-09),",
-  "`records_in_window_by_month.csv`, `gauge_share.csv` (both unchanged from 2026-10-08 -- `gpp_test`",
+  "2026-10-07 with a `gpp_test` column), `gpp_thresholds.csv` (new 2026-10-07),",
+  "`records_in_window_by_month.csv`, `gauge_share.csv` (both unchanged from 2026-10-07 -- `gpp_test`",
   "does not affect them) -- each with a `.meta.json` companion.",
   "",
   "## What I could not do",

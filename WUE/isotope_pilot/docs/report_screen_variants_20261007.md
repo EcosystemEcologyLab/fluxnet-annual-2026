@@ -6,19 +6,19 @@ overwritten.
 
 **Question:** how many valid days per kept site-year survive the Zhou et al. (2015) screens
 when (i) the rain source, (ii) the radiation condition in screen c, and (iii, added
-2026-10-09) the GPP day test's reference maximum all change.
+2026-10-07) the GPP day test's reference maximum all change.
 
 ## Gate 1
 
 `run_zhou_screens()` (code/zhou_screens.R) with rain from `P_ERA`, screen c's radiation test from `NETRAD_filled`, PET pressure fixed at 101.3 kPa, and `gpp_test = "daymean"` (default) reproduces the already-committed `tables/screen_attrition.csv` **exactly** for all 58 site-year rows across the 3 test sites -- confirming the 07_apply_screens.R refactor into zhou_screens.R changed nothing.
 
-## Gate 2 (added 2026-10-09)
+## Gate 2 (added 2026-10-07)
 
 With `gpp_test = "daymean"` and PET using the daily `PA_F`, the four rain x radiation variants reproduce the already-committed `tables/screen_variants/attrition_by_variant.csv` **exactly** for all 204 rows -- confirming the new `gpp_test` argument changed nothing at its default.
 
 ## Eight variants (PET using the daily PA_F throughout)
 
-Rain source x screen c radiation (as before, 2026-10-08):
+Rain source x screen c radiation (as before, 2026-10-07):
 
 - `rain_P_ERA_rad_NETRAD`: rain from `P_ERA > 0`, screen c from `NETRAD_filled >= 0`.
 - `rain_P_ERA_rad_SW_IN`: rain from `P_ERA > 0`, screen c from `SW_IN_F >= 0`.
@@ -26,7 +26,7 @@ Rain source x screen c radiation (as before, 2026-10-08):
   fill where not), screen c from `NETRAD_filled >= 0`.
 - `rain_P_F_rad_SW_IN`: rain from `P_F > 0`, screen c from `SW_IN_F >= 0`.
 
-Crossed with the GPP day test (added 2026-10-09):
+Crossed with the GPP day test (added 2026-10-07):
 
 - `daymean` (default, 07's current code): a day's mean GPP must be >= 10% of the LARGEST such
   daily mean among the site-year's candidate days.
@@ -90,8 +90,8 @@ Quality screen and daylight window are unchanged across all eight; PET always us
 ## Supporting tables
 
 `tables/screen_variants/attrition_by_variant.csv`, `valid_days_by_month.csv` (both extended
-2026-10-09 with a `gpp_test` column), `gpp_thresholds.csv` (new 2026-10-09),
-`records_in_window_by_month.csv`, `gauge_share.csv` (both unchanged from 2026-10-08 -- `gpp_test`
+2026-10-07 with a `gpp_test` column), `gpp_thresholds.csv` (new 2026-10-07),
+`records_in_window_by_month.csv`, `gauge_share.csv` (both unchanged from 2026-10-07 -- `gpp_test`
 does not affect them) -- each with a `.meta.json` companion.
 
 ## What I could not do

@@ -9,7 +9,7 @@
 ## from the daily mean PA_F -- rain_rule.R's pt_pet_mm_day() falls back to
 ## 101.3 kPa only where PA_F is itself missing that day -- and the day-level
 ## GPP test, gpp_test = "daymean", against the largest daily mean GPP among
-## candidate days, added 2026-10-09 alongside "halfhour").
+## candidate days, added 2026-10-07 alongside "halfhour").
 ##
 ## Priestley-Taylor PET ALWAYS uses NETRAD_filled for Rn, regardless of
 ## `radiation_col` -- `radiation_col` only changes screen c's own
@@ -30,7 +30,7 @@
 #' @param pressure_kpa Pressure (kPa) passed to `pt_pet_mm_day()` for the
 #'   psychrometric constant. `NULL` (default) uses the site's own daily mean
 #'   `PA_F` -- 07's current code. A single fixed value (e.g. `101.3`) forces
-#'   that pressure for every day, for reproducing the pre-2026-10-08 PET
+#'   that pressure for every day, for reproducing the pre-2026-10-07 PET
 #'   formula (see 12_screen_variants.R's gate check against the already-
 #'   committed `screen_attrition.csv`).
 #' @param gpp_test Which maximum the day-level 10% GPP test (screen d) is
@@ -40,7 +40,7 @@
 #'   passed the record-count test). `"halfhour"` (Zhou et al. 2015's own
 #'   wording): a day's mean GPP must instead be >= 10% of the maximum
 #'   SINGLE-RECORD GPP in the site-year, taken over every record passing
-#'   screens a-c (not just candidate days). Added 2026-10-09.
+#'   screens a-c (not just candidate days). Added 2026-10-07.
 #'
 #' @return A list: `daily_valid` (one row per valid day: date, year, GPP_d,
 #'   ET_d, VPD_d, n_records, day_netrad_estimated, site_id), `subdaily_valid`

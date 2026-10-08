@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-08T03:10:13Z",
-  "pipeline_version": "b117609",
+  "run_datetime_utc": "2026-10-08T03:11:59Z",
+  "pipeline_version": "69fce56",
   "input_sources": [
     "WUE/isotope_pilot/data/processed/wue_augmented/ (06_build_site_years.R output)"
   ],
-  "notes": "Extended 2026-10-09 with a gpp_test column (daymean/halfhour) -- Gate 2 confirms the daymean rows are unchanged from the 2026-10-08 version. Kept years only. days_lost_screen_c is the former combined days_lost_daylight column; days_lost_record_count + days_lost_gpp_test is the former combined days_lost_day_level."
+  "notes": "Extended 2026-10-07 with a gpp_test column (daymean/halfhour) -- Gate 2 confirms the daymean rows are unchanged from the 2026-10-07 version. Kept years only. days_lost_screen_c is the former combined days_lost_daylight column; days_lost_record_count + days_lost_gpp_test is the former combined days_lost_day_level."
 }

@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-08T02:56:39Z",
-  "pipeline_version": "74cdd95",
+  "run_datetime_utc": "2026-10-08T03:10:13Z",
+  "pipeline_version": "b117609",
   "input_sources": [
     "WUE/isotope_pilot/data/processed/wue_augmented/ (06_build_site_years.R output)"
   ],
-  "notes": "Kept years pooled (sum across all kept years of that site)."
+  "notes": "Extended 2026-10-09 with a gpp_test column (daymean/halfhour). Kept years pooled (sum across all kept years of that site)."
 }

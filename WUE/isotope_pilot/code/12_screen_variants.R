@@ -4,41 +4,55 @@
 ## not overwrite any stage 2 table.
 ##
 ## Question: how many valid days per kept site-year survive the Zhou et al.
-## (2015) screens when (i) the rain source and (ii) the radiation condition
-## in screen c change.
+## (2015) screens when (i) the rain source, (ii) the radiation condition in
+## screen c, and (iii, added 2026-10-09) the GPP day test's reference
+## maximum (gpp_test = "daymean" vs "halfhour") all change.
 ##
-## GATE (item 2 of the brief): before anything else, run_zhou_screens()
-## (code/zhou_screens.R, the function 07_apply_screens.R itself now calls)
-## with rain from P_ERA, screen c's radiation test from NETRAD_filled, and
-## PET pressure FIXED at 101.3 kPa must reproduce the already-committed
-## tables/screen_attrition.csv EXACTLY for these three sites -- confirming
-## the 07 refactor changed nothing. Stops if it does not. The fixed-101.3
-## pressure (not the daily PA_F now in rain_rule.R) is deliberate: it
-## matches the PET formula screen_attrition.csv was actually generated
-## under (07 has not been re-run since the PA_F change -- "do not rerun 07").
+## GATE 1: run_zhou_screens() (code/zhou_screens.R, the function
+## 07_apply_screens.R itself now calls) with rain from P_ERA, screen c's
+## radiation test from NETRAD_filled, PET pressure FIXED at 101.3 kPa, and
+## gpp_test = "daymean" (default) must reproduce the already-committed
+## tables/screen_attrition.csv EXACTLY -- confirming the 07 refactor changed
+## nothing. The fixed-101.3 pressure (not the daily PA_F now in rain_rule.R)
+## is deliberate: it matches the PET formula screen_attrition.csv was
+## actually generated under (07 has not been re-run since the PA_F change).
 ##
-## The four variants below (item 3) instead use PET with the daily PA_F --
-## "PET using the daily PA_F now in rain_rule.R" -- crossed with:
+## GATE 2 (added 2026-10-09): with gpp_test = "daymean" and PET using the
+## daily PA_F, the four rain x radiation variants below must reproduce the
+## already-committed tables/screen_variants/attrition_by_variant.csv EXACTLY
+## -- confirming the new gpp_test argument changed nothing when left at its
+## default. Both gates stop() on failure.
+##
+## Eight variants (PET using the daily PA_F throughout) cross:
 ##   rain source:    P_ERA > 0           | P_F > 0 (as distributed: gauge
 ##                                          where measured, P_ERA fill where not)
 ##   screen c input: NETRAD_filled >= 0  | SW_IN_F >= 0
-## Everything else (quality screen, daylight window, the 10% GPP day test)
-## stays exactly as coded. PET itself always uses NETRAD_filled regardless
-## of which radiation column screen c is tested against (see zhou_screens.R).
+##   gpp_test:       "daymean" (10% of the largest daily mean GPP among
+##                     candidate days) | "halfhour" (10% of the maximum
+##                     single-record GPP over screen a-c survivors, Zhou et
+##                     al. 2015's own wording)
+## Everything else (quality screen, daylight window) stays exactly as coded;
+## PET always uses NETRAD_filled regardless of the screen c column.
 ##
-## Output (tables/screen_variants/, git-tracked, each with .meta.json):
-##   attrition_by_variant.csv        site, kept year, variant: days removed
-##                                   by rain, lost to quality, lost to screen
-##                                   c, lost to record count, lost to GPP
-##                                   test, valid days
-##   valid_days_by_month.csv         valid days per site, variant, month
-##                                   (kept years pooled)
-##   records_in_window_by_month.csv  per site/month: median records per day
-##                                   in [05:00,21:00] with NETRAD_filled>=0,
-##                                   and with SW_IN_F>=0, before any other
-##                                   screen
-##   gauge_share.csv                 per site: share of days in kept years
-##                                   where P_F is fully gauge-measured
+## Output (tables/screen_variants/, git-tracked, each with .meta.json;
+## attrition_by_variant.csv and valid_days_by_month.csv extended with a
+## gpp_test column rather than replaced -- the gate above confirms their
+## "daymean" rows are unchanged):
+##   attrition_by_variant.csv        site, kept year, variant, gpp_test:
+##                                   days removed by rain, lost to quality,
+##                                   lost to screen c, lost to record count,
+##                                   lost to the GPP test, valid days
+##   valid_days_by_month.csv         valid days per site, variant, gpp_test,
+##                                   month (kept years pooled)
+##   gpp_thresholds.csv              per site/kept year (reference variant:
+##                                   rain=P_ERA, rad=NETRAD_filled): the two
+##                                   thresholds (10% of the largest daily
+##                                   mean; 10% of the maximum record), plus
+##                                   the maximum record GPP over all records
+##                                   with NEE QC 0 or 1, for comparison
+##   records_in_window_by_month.csv  (unchanged from 2026-10-08 -- gpp_test
+##                                   does not affect it, not recomputed)
+##   gauge_share.csv                 (unchanged from 2026-10-08, same reason)
 ## Output (docs/): report_screen_variants_<date>.md
 
 source("WUE/isotope_pilot/code/00_config.R")
@@ -115,7 +129,7 @@ message("[WUE] GATE PASSED: run_zhou_screens() reproduces the committed screen_a
         "for ", length(TEST_SITES), " site(s) (", nrow(gate_check), " site-year rows).")
 
 ## ============================================================================
-## Four variants, PET using the daily PA_F (rain_rule.R default)
+## Eight variants, PET using the daily PA_F (rain_rule.R default)
 ## ============================================================================
 VARIANTS <- list(
   list(key = "rain_P_ERA_rad_NETRAD", rain_col = "P_ERA", radiation_col = "NETRAD_filled"),
@@ -123,112 +137,102 @@ VARIANTS <- list(
   list(key = "rain_P_F_rad_NETRAD",   rain_col = "P_F",   radiation_col = "NETRAD_filled"),
   list(key = "rain_P_F_rad_SW_IN",    rain_col = "P_F",   radiation_col = "SW_IN_F")
 )
+GPP_TESTS <- c("daymean", "halfhour")
 
 attrition_rows <- list()
 valid_days_rows <- list()
 
 for (site in TEST_SITES) {
   for (v in VARIANTS) {
-    res <- run_zhou_screens(raw_data[[site]], years_dropped,
-                             rain_col = v$rain_col, radiation_col = v$radiation_col,
-                             pressure_kpa = NULL)  ## NULL -> daily mean PA_F
+    for (gt in GPP_TESTS) {
+      res <- run_zhou_screens(raw_data[[site]], years_dropped,
+                               rain_col = v$rain_col, radiation_col = v$radiation_col,
+                               pressure_kpa = NULL,  ## NULL -> daily mean PA_F
+                               gpp_test = gt)
 
-    att <- res$attrition
-    att$variant <- v$key
-    att$rain_source <- v$rain_col
-    att$radiation_col <- v$radiation_col
-    attrition_rows[[length(attrition_rows) + 1L]] <- att[att$year_kept, c(
-      "site_id", "year", "variant", "rain_source", "radiation_col",
-      "days_removed_by_rain_rule", "days_lost_quality",
-      "days_lost_daylight", "days_lost_record_count", "days_lost_gpp_test", "valid_days"
-    )]
+      att <- res$attrition
+      att$variant <- v$key
+      att$rain_source <- v$rain_col
+      att$radiation_col <- v$radiation_col
+      att$gpp_test <- gt
+      attrition_rows[[length(attrition_rows) + 1L]] <- att[att$year_kept, c(
+        "site_id", "year", "variant", "rain_source", "radiation_col", "gpp_test",
+        "days_removed_by_rain_rule", "days_lost_quality",
+        "days_lost_daylight", "days_lost_record_count", "days_lost_gpp_test", "valid_days"
+      )]
 
-    if (!is.null(res$daily_valid)) {
-      dv <- res$daily_valid
-      dv$month <- lubridate::month(dv$date)
-      dv$variant <- v$key
-      valid_days_rows[[length(valid_days_rows) + 1L]] <- dv[, c("site_id", "variant", "month")]
+      if (!is.null(res$daily_valid)) {
+        dv <- res$daily_valid
+        dv$month <- lubridate::month(dv$date)
+        dv$variant <- v$key
+        dv$gpp_test <- gt
+        valid_days_rows[[length(valid_days_rows) + 1L]] <- dv[, c("site_id", "variant", "gpp_test", "month")]
+      }
     }
   }
 }
 
 attrition_by_variant <- do.call(rbind, attrition_rows)
 names(attrition_by_variant)[names(attrition_by_variant) == "days_lost_daylight"] <- "days_lost_screen_c"
+
+## ---- GATE 2: the gpp_test = "daymean" rows must reproduce the already-
+## committed attrition_by_variant.csv exactly (confirms the new gpp_test
+## argument changed nothing at its default). ---------------------------------
+committed_avar <- readr::read_csv(file.path(out_tables, "attrition_by_variant.csv"), show_col_types = FALSE)
+avar_cols <- c("site_id", "year", "variant", "rain_source", "radiation_col",
+               "days_removed_by_rain_rule", "days_lost_quality", "days_lost_screen_c",
+               "days_lost_record_count", "days_lost_gpp_test", "valid_days")
+## committed_avar may ALREADY be this script's own extended (gpp_test-column)
+## output from a prior run -- filter to "daymean" first so the gate stays
+## idempotent across re-runs, not just correct on the very first run against
+## the original (no gpp_test column) 2026-10-08 file.
+if ("gpp_test" %in% names(committed_avar)) {
+  committed_avar <- committed_avar[committed_avar$gpp_test == "daymean", ]
+}
+daymean_rows <- attrition_by_variant[attrition_by_variant$gpp_test == "daymean", avar_cols]
+daymean_rows <- daymean_rows[order(daymean_rows$site_id, daymean_rows$year, daymean_rows$variant), ]
+committed_avar <- committed_avar[order(committed_avar$site_id, committed_avar$year, committed_avar$variant), ]
+gate2_match <- isTRUE(all.equal(as.data.frame(daymean_rows), as.data.frame(committed_avar[, avar_cols]),
+                                 check.attributes = FALSE))
+if (!gate2_match) {
+  stop("[WUE] GATE 2 FAILED: run_zhou_screens(gpp_test = \"daymean\") does not reproduce the ",
+       "already-committed tables/screen_variants/attrition_by_variant.csv exactly. Stopping per instructions.")
+}
+message("[WUE] GATE 2 PASSED: gpp_test = \"daymean\" reproduces the committed attrition_by_variant.csv ",
+        "exactly (", nrow(daymean_rows), " rows).")
+
 write_csv_meta(attrition_by_variant, file.path(out_tables, "attrition_by_variant.csv"),
-  notes = "Kept years only (year_kept==TRUE in years_dropped.csv's complement). days_lost_screen_c is the former combined days_lost_daylight column (daylight window + the radiation_col/GPP/ET/VPD non-negative tests); days_lost_record_count + days_lost_gpp_test is the former combined days_lost_day_level.")
+  notes = "Extended 2026-10-09 with a gpp_test column (daymean/halfhour) -- Gate 2 confirms the daymean rows are unchanged from the 2026-10-08 version. Kept years only. days_lost_screen_c is the former combined days_lost_daylight column; days_lost_record_count + days_lost_gpp_test is the former combined days_lost_day_level.")
 
 valid_days_long <- do.call(rbind, valid_days_rows)
 valid_days_by_month <- valid_days_long |>
-  dplyr::group_by(site_id, variant, month) |>
+  dplyr::group_by(site_id, variant, gpp_test, month) |>
   dplyr::summarise(valid_days = dplyr::n(), .groups = "drop")
-## Ensure every site x variant x month combination is present (0 where no valid days)
+## Ensure every site x variant x gpp_test x month combination is present (0 where no valid days)
 full_grid <- expand.grid(site_id = TEST_SITES, variant = vapply(VARIANTS, `[[`, character(1), "key"),
-                          month = 1:12, stringsAsFactors = FALSE)
-valid_days_by_month <- dplyr::left_join(full_grid, valid_days_by_month, by = c("site_id", "variant", "month"))
+                          gpp_test = GPP_TESTS, month = 1:12, stringsAsFactors = FALSE)
+valid_days_by_month <- dplyr::left_join(full_grid, valid_days_by_month, by = c("site_id", "variant", "gpp_test", "month"))
 valid_days_by_month$valid_days[is.na(valid_days_by_month$valid_days)] <- 0L
 write_csv_meta(valid_days_by_month, file.path(out_tables, "valid_days_by_month.csv"),
-  notes = "Kept years pooled (sum across all kept years of that site).")
+  notes = "Extended 2026-10-09 with a gpp_test column (daymean/halfhour). Kept years pooled (sum across all kept years of that site).")
 
 ## ============================================================================
-## records_in_window_by_month.csv -- median records/day in [05:00,21:00]
-## with NETRAD_filled>=0, and with SW_IN_F>=0, before any other screen.
-## All days, all years (not restricted to kept years or non-rain days).
+## gpp_thresholds.csv -- per site/kept year, the two GPP-test thresholds and
+## the max record GPP over NEE-QC-0-or-1 records, from the reference variant
+## (rain=P_ERA, radiation=NETRAD_filled; both thresholds are always computed
+## by run_zhou_screens() regardless of which gpp_test was requested).
 ## ============================================================================
-window_rows <- lapply(TEST_SITES, function(site) {
-  d <- raw_data[[site]]
-  d$date <- as.Date(d$TIMESTAMP_START)
-  d$month <- lubridate::month(d$TIMESTAMP_START)
-  d$hour_decimal <- lubridate::hour(d$TIMESTAMP_START) + lubridate::minute(d$TIMESTAMP_START) / 60
-  in_window <- !is.na(d$hour_decimal) & d$hour_decimal >= 5 & d$hour_decimal <= 21
-  d$in_window_netrad <- in_window & !is.na(d$NETRAD_filled) & d$NETRAD_filled >= 0
-  d$in_window_swin   <- in_window & !is.na(d$SW_IN_F) & d$SW_IN_F >= 0
-
-  per_day <- d |>
-    dplyr::group_by(date, month) |>
-    dplyr::summarise(n_netrad = sum(in_window_netrad), n_swin = sum(in_window_swin), .groups = "drop")
-  per_day |>
-    dplyr::group_by(month) |>
-    dplyr::summarise(
-      median_records_netrad_filled = stats::median(n_netrad),
-      median_records_sw_in_f = stats::median(n_swin),
-      n_days = dplyr::n(), .groups = "drop"
-    ) |>
-    dplyr::mutate(site_id = site)
+gpp_threshold_rows <- lapply(TEST_SITES, function(site) {
+  res <- run_zhou_screens(raw_data[[site]], years_dropped,
+                           rain_col = "P_ERA", radiation_col = "NETRAD_filled", pressure_kpa = NULL)
+  att <- res$attrition
+  att[att$year_kept, c("site_id", "year", "threshold_daymean", "threshold_halfhour", "max_record_gpp_qc01")]
 })
-records_in_window_by_month <- do.call(rbind, window_rows)[, c(
-  "site_id", "month", "median_records_netrad_filled", "median_records_sw_in_f", "n_days"
-)]
-write_csv_meta(records_in_window_by_month, file.path(out_tables, "records_in_window_by_month.csv"),
-  notes = "All days, all years -- no rain/quality screen applied, just the 05:00-21:00 window and the named radiation column's own non-negativity.")
+gpp_thresholds <- do.call(rbind, gpp_threshold_rows)
+write_csv_meta(gpp_thresholds, file.path(out_tables, "gpp_thresholds.csv"),
+  notes = "Reference variant: rain=P_ERA, radiation=NETRAD_filled, PET pressure from daily PA_F. threshold_daymean/threshold_halfhour are 10% of the respective year_max_gpp; max_record_gpp_qc01 is the max GPP_gC_sel over all records that year with NEE QC 0 or 1 (no other screen), for comparison.")
 
-## ============================================================================
-## gauge_share.csv -- share of days in kept years where P_F is fully
-## gauge-measured (P_F_QC == 0 at every expected timestep that day).
-## ============================================================================
-gauge_share_rows <- lapply(TEST_SITES, function(site) {
-  d <- raw_data[[site]]
-  res <- d$resolution[[1]]
-  tpd <- if (identical(res, "HR")) 24L else if (identical(res, "HH")) 48L else
-    stop("[WUE] ", site, ": unrecognised resolution '", res, "'.")
-  d$date <- as.Date(d$TIMESTAMP_START)
-  d$year <- lubridate::year(d$TIMESTAMP_START)
-  kept_years <- unique(d$year)[!vapply(unique(d$year), function(y) any(years_dropped$site_id == site & years_dropped$year == y), logical(1))]
-
-  d_kept <- d[d$year %in% kept_years, ]
-  daily <- d_kept |>
-    dplyr::group_by(date) |>
-    dplyr::summarise(n = dplyr::n(), n_qc0 = sum(!is.na(P_F_QC) & P_F_QC == 0), .groups = "drop")
-  daily$fully_gauge_measured <- daily$n == tpd & daily$n_qc0 == tpd
-
-  data.frame(site_id = site, n_days_kept_years = nrow(daily),
-             n_fully_gauge_measured = sum(daily$fully_gauge_measured),
-             share_fully_gauge_measured = round(mean(daily$fully_gauge_measured), 4))
-})
-gauge_share <- do.call(rbind, gauge_share_rows)
-write_csv_meta(gauge_share, file.path(out_tables, "gauge_share.csv"),
-  notes = "Kept years only (years_dropped.csv's complement). Fully gauge-measured = P_F_QC==0 at every expected sub-daily timestep that day.")
-
-message("[WUE] Tables written to ", out_tables)
+message("[WUE] Tables written to ", out_tables, " (records_in_window_by_month.csv and gauge_share.csv unchanged from 2026-10-08 -- gpp_test does not affect them, not recomputed).")
 
 ## ============================================================================
 ## REPORT
@@ -246,16 +250,24 @@ knitr_like_table <- function(df, n_max = 60) {
 }
 
 summary_wide <- attrition_by_variant |>
-  dplyr::group_by(site_id, variant) |>
+  dplyr::mutate(variant_gpp = paste0(variant, "_", gpp_test)) |>
+  dplyr::group_by(site_id, variant_gpp) |>
   dplyr::summarise(
     median_valid_days = stats::median(valid_days),
     min_valid_days = min(valid_days), max_valid_days = max(valid_days),
     .groups = "drop"
   ) |>
   dplyr::mutate(cell = sprintf("%s (%d-%d)", format(median_valid_days, trim = TRUE), min_valid_days, max_valid_days)) |>
-  dplyr::select(site_id, variant, cell) |>
-  tidyr::pivot_wider(names_from = variant, values_from = cell)
+  dplyr::select(site_id, variant_gpp, cell) |>
+  tidyr::pivot_wider(names_from = variant_gpp, values_from = cell)
 summary_wide <- as.data.frame(summary_wide)
+
+## Month-by-site table for the P_F + SW_IN_F variant, under each GPP test.
+month_table <- valid_days_by_month[valid_days_by_month$variant == "rain_P_F_rad_SW_IN", ] |>
+  dplyr::mutate(col = paste0("gpp_", gpp_test)) |>
+  dplyr::select(site_id, month, col, valid_days) |>
+  tidyr::pivot_wider(names_from = col, values_from = valid_days)
+month_table <- as.data.frame(month_table[order(month_table$site_id, month_table$month), ])
 
 report_path <- file.path(docs_dir, paste0("report_screen_variants_", format(Sys.Date(), "%Y%m%d"), ".md"))
 report_lines <- c(
@@ -266,41 +278,64 @@ report_lines <- c(
   "overwritten.",
   "",
   "**Question:** how many valid days per kept site-year survive the Zhou et al. (2015) screens",
-  "when (i) the rain source and (ii) the radiation condition in screen c change.",
+  "when (i) the rain source, (ii) the radiation condition in screen c, and (iii, added",
+  "2026-10-09) the GPP day test's reference maximum all change.",
   "",
-  "## Gate",
+  "## Gate 1",
   "",
   paste0("`run_zhou_screens()` (code/zhou_screens.R) with rain from `P_ERA`, screen c's radiation",
-         " test from `NETRAD_filled`, and PET pressure fixed at 101.3 kPa reproduces the",
-         " already-committed `tables/screen_attrition.csv` **exactly** for all ", nrow(gate_check),
-         " site-year rows across the 3 test sites -- confirming the 07_apply_screens.R refactor",
-         " into zhou_screens.R changed nothing."),
+         " test from `NETRAD_filled`, PET pressure fixed at 101.3 kPa, and `gpp_test = \"daymean\"`",
+         " (default) reproduces the already-committed `tables/screen_attrition.csv` **exactly** for",
+         " all ", nrow(gate_check), " site-year rows across the 3 test sites -- confirming the",
+         " 07_apply_screens.R refactor into zhou_screens.R changed nothing."),
   "",
-  "## Four variants (PET using the daily PA_F)",
+  "## Gate 2 (added 2026-10-09)",
   "",
-  "- `rain_P_ERA_rad_NETRAD`: rain from `P_ERA > 0`, screen c from `NETRAD_filled >= 0` (closest",
-  "  to 07_apply_screens.R's own current code, but with PA_F-based PET rather than the gate's",
-  "  fixed 101.3 kPa).",
+  paste0("With `gpp_test = \"daymean\"` and PET using the daily `PA_F`, the four rain x radiation",
+         " variants reproduce the already-committed",
+         " `tables/screen_variants/attrition_by_variant.csv` **exactly** for all ", nrow(daymean_rows),
+         " rows -- confirming the new `gpp_test` argument changed nothing at its default."),
+  "",
+  "## Eight variants (PET using the daily PA_F throughout)",
+  "",
+  "Rain source x screen c radiation (as before, 2026-10-08):",
+  "",
+  "- `rain_P_ERA_rad_NETRAD`: rain from `P_ERA > 0`, screen c from `NETRAD_filled >= 0`.",
   "- `rain_P_ERA_rad_SW_IN`: rain from `P_ERA > 0`, screen c from `SW_IN_F >= 0`.",
   "- `rain_P_F_rad_NETRAD`: rain from `P_F > 0` (as distributed: gauge where measured, `P_ERA`",
   "  fill where not), screen c from `NETRAD_filled >= 0`.",
   "- `rain_P_F_rad_SW_IN`: rain from `P_F > 0`, screen c from `SW_IN_F >= 0`.",
   "",
-  "Everything else (quality screen, daylight window, the 10% GPP day test) is unchanged across",
-  "variants; PET always uses `NETRAD_filled` for net radiation regardless of the screen c column.",
+  "Crossed with the GPP day test (added 2026-10-09):",
   "",
-  "## Valid days per kept year, median (range), by site and variant",
+  "- `daymean` (default, 07's current code): a day's mean GPP must be >= 10% of the LARGEST such",
+  "  daily mean among the site-year's candidate days.",
+  "- `halfhour` (Zhou et al. 2015's own wording): a day's mean GPP must instead be >= 10% of the",
+  "  maximum SINGLE-RECORD GPP in the site-year, over every record passing screens a-c.",
+  "",
+  "Quality screen and daylight window are unchanged across all eight; PET always uses",
+  "`NETRAD_filled` for net radiation regardless of the screen c column.",
+  "",
+  "## Valid days per kept year, median (range), by site, for all 8 variants",
   "",
   knitr_like_table(summary_wide),
   "",
+  "## Valid days by month, P_F + SW_IN_F variant, by GPP test",
+  "",
+  "`rain_P_F_rad_SW_IN`, kept years pooled, one row per site/month:",
+  "",
+  knitr_like_table(month_table, n_max = 40),
+  "",
   "## Supporting tables",
   "",
-  "`tables/screen_variants/attrition_by_variant.csv`, `valid_days_by_month.csv`,",
-  "`records_in_window_by_month.csv`, `gauge_share.csv` (each with a `.meta.json` companion).",
+  "`tables/screen_variants/attrition_by_variant.csv`, `valid_days_by_month.csv` (both extended",
+  "2026-10-09 with a `gpp_test` column), `gpp_thresholds.csv` (new 2026-10-09),",
+  "`records_in_window_by_month.csv`, `gauge_share.csv` (both unchanged from 2026-10-08 -- `gpp_test`",
+  "does not affect them) -- each with a `.meta.json` companion.",
   "",
   "## What I could not do",
   "",
-  "Nothing -- the gate passed and all four tables were produced for all 3 sites."
+  "Nothing -- both gates passed and all tables were produced for all 3 sites."
 )
 writeLines(unlist(report_lines), report_path)
 message("[WUE] Report written: ", report_path)

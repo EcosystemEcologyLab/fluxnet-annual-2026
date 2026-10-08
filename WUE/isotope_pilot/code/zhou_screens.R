@@ -7,7 +7,9 @@
 ## Defaults reproduce 07_apply_screens.R's current code (rain from P_ERA,
 ## screen c's non-negative-radiation test from NETRAD_filled, PET pressure
 ## from the daily mean PA_F -- rain_rule.R's pt_pet_mm_day() falls back to
-## 101.3 kPa only where PA_F is itself missing that day).
+## 101.3 kPa only where PA_F is itself missing that day -- and the day-level
+## GPP test, gpp_test = "daymean", against the largest daily mean GPP among
+## candidate days, added 2026-10-09 alongside "halfhour").
 ##
 ## Priestley-Taylor PET ALWAYS uses NETRAD_filled for Rn, regardless of
 ## `radiation_col` -- `radiation_col` only changes screen c's own
@@ -31,6 +33,14 @@
 #'   that pressure for every day, for reproducing the pre-2026-10-08 PET
 #'   formula (see 12_screen_variants.R's gate check against the already-
 #'   committed `screen_attrition.csv`).
+#' @param gpp_test Which maximum the day-level 10% GPP test (screen d) is
+#'   taken against. `"daymean"` (default, 07's current code): a day's mean
+#'   GPP (over its screen a-c survivors) must be >= 10% of the LARGEST such
+#'   daily mean among the site-year's candidate days (days that already
+#'   passed the record-count test). `"halfhour"` (Zhou et al. 2015's own
+#'   wording): a day's mean GPP must instead be >= 10% of the maximum
+#'   SINGLE-RECORD GPP in the site-year, taken over every record passing
+#'   screens a-c (not just candidate days). Added 2026-10-09.
 #'
 #' @return A list: `daily_valid` (one row per valid day: date, year, GPP_d,
 #'   ET_d, VPD_d, n_records, day_netrad_estimated, site_id), `subdaily_valid`
@@ -42,7 +52,9 @@
 #'   days_lost_record_count + days_lost_gpp_test, matching
 #'   screen_attrition.csv's single combined column), valid_days, year_kept).
 run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
-                              radiation_col = "NETRAD_filled", pressure_kpa = NULL) {
+                              radiation_col = "NETRAD_filled", pressure_kpa = NULL,
+                              gpp_test = c("daymean", "halfhour")) {
+  gpp_test <- match.arg(gpp_test)
   site <- d$site_id[[1]]
   is_year_kept <- function(yr) !any(years_dropped$site_id == site & years_dropped$year == yr)
 
@@ -112,7 +124,7 @@ run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
   daily$year <- lubridate::year(daily$date)
   daily$candidate_valid <- daily$n_after_c >= day_thresh
 
-  ## ---- d: day level (10% of this site-year's max day-mean GPP) ------------
+  ## ---- d: day level (10% of a site-year maximum -- gpp_test chooses which) -
   valid_rows <- list()
   subdaily_valid_rows <- list()
   attrition_rows <- list()
@@ -122,7 +134,23 @@ run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
     kept <- is_year_kept(yr)
 
     candidates <- d_yr[d_yr$candidate_valid, , drop = FALSE]
-    year_max_gpp <- if (nrow(candidates) > 0) max(candidates$day_mean_gpp, na.rm = TRUE) else NA_real_
+    ## Both maxima are always computed (regardless of which gpp_test is
+    ## active) and returned in `attrition` as threshold_daymean/
+    ## threshold_halfhour -- so a single call can report both thresholds
+    ## for comparison (12_screen_variants.R's gpp_thresholds.csv), without
+    ## a second, independent reimplementation of either.
+    year_max_gpp_daymean <- if (nrow(candidates) > 0) max(candidates$day_mean_gpp, na.rm = TRUE) else NA_real_
+    recs_year <- d[d$survives_c & d$year == yr, , drop = FALSE]
+    year_max_gpp_halfhour <- if (nrow(recs_year) > 0) max(recs_year$GPP_gC_sel, na.rm = TRUE) else NA_real_
+    year_max_gpp <- if (gpp_test == "daymean") year_max_gpp_daymean else year_max_gpp_halfhour
+
+    qc01_recs <- d[d$year == yr & !is.na(d$NEE_QC_sel) & d$NEE_QC_sel %in% c(0, 1), , drop = FALSE]
+    max_record_gpp_qc01 <- if (nrow(qc01_recs) > 0 && any(!is.na(qc01_recs$GPP_gC_sel))) {
+      max(qc01_recs$GPP_gC_sel, na.rm = TRUE)
+    } else {
+      NA_real_
+    }
+
     d_yr$final_valid <- d_yr$candidate_valid &
       !is.na(d_yr$day_mean_gpp) & !is.na(year_max_gpp) &
       d_yr$day_mean_gpp >= 0.10 * year_max_gpp
@@ -171,6 +199,9 @@ run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
       days_lost_day_level = days_lost_day_level,
       valid_days = valid_days_n,
       year_kept = kept,
+      threshold_daymean = 0.10 * year_max_gpp_daymean,
+      threshold_halfhour = 0.10 * year_max_gpp_halfhour,
+      max_record_gpp_qc01 = max_record_gpp_qc01,
       stringsAsFactors = FALSE
     )
   }

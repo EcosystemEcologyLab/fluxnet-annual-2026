@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T03:10:15Z",
+  "pipeline_version": "b117609",
+  "input_sources": [
+    "WUE/isotope_pilot/data/processed/wue_augmented/ (06_build_site_years.R output)"
+  ],
+  "notes": "Reference variant: rain=P_ERA, radiation=NETRAD_filled, PET pressure from daily PA_F. threshold_daymean/threshold_halfhour are 10% of the respective year_max_gpp; max_record_gpp_qc01 is the max GPP_gC_sel over all records that year with NEE QC 0 or 1 (no other screen), for comparison."
+}

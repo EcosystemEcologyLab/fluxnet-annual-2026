@@ -1,0 +1,12 @@
+concept,keyword,variable_group_raw,variable,definition_bifvarinfo,units,n_sites,n_records,n_sites_by_hub,n_sites_by_igbp,date_range,n_sites_with_date,n_sites_no_date,n_sites_2plus_dates,example_values
+Canopy height,HEIGHT,GRP_HEIGHTC / HEIGHTC,HEIGHTC,NA,NA,482,15722,ICOS=344; AmeriFlux=86; TERN=51,GRA=109; ENF=77; CRO=72; WET=51; DBF=47; EBF=39; OSH=24; MF=16; DNF=12; WSA=12; SAV=11; CSH=5; BSV=3; CVM=2; SNO=1,1993-2026,466,16,150,1.36; 3.67; 1.65; 0.52; 35
+Leaf/plant area index,LAI,GRP_LAI,LAI,NA,NA,158,10716,ICOS=158,ENF=29; GRA=27; CRO=25; DBF=19; WET=19; DNF=10; EBF=10; MF=7; OSH=7; SAV=3; CSH=2,1993-2030,158,0,86,2.75; 3.84; 3.9; 5.3; 6.4
+Biomass,BIOMASS,GRP_BIOMASS,BIOMASS,NA,gC m-2; kgDM m-2,82,15246,ICOS=82,ENF=23; GRA=16; WET=12; CRO=9; DBF=9; EBF=3; MF=3; CSH=2; OSH=2; SAV=2; DNF=1,1993-2026,82,0,68,0.179925833333333; 0.0999576963664069; 0.032905; 0.0601657422156798; 0.106566666666667
+Stem diameter (DBH),DBH,GRP_DBH,DBH,NA,NA,42,4913,ICOS=42,ENF=24; DBF=8; EBF=4; MF=2; SAV=2; DNF=1; GRA=1,1994-2026,42,0,26,15.007; 3.229; 9.599; 17.45; 14.713
+Basal area,BASAL,GRP_BASAL_AREA,BASAL_AREA,NA,NA,36,5799,ICOS=36,ENF=24; DBF=6; EBF=3; MF=2; DNF=1,1994-2025,36,0,23,1.14; 1.362; 0.275; 3.541; 0.369
+Tree count/density,TREE,GRP_TREES_NUM,TREES_NUM,NA,NA,42,5846,ICOS=42,ENF=25; DBF=8; EBF=4; MF=2; SAV=2; DNF=1,2001-2026,42,0,24,104; 185.385; 10; 435; 15
+Litter,LITTER,GRP_LITTER,LITTER,NA,kgDM m-2,15,16670,ICOS=15,ENF=7; DBF=5; EBF=1; GRA=1; MF=1,2016-2026,15,0,14,0.0004123; 0.00035735899317073; 0.000978; 0.000133; 0
+Rooting depth,ROOT,GRP_ROOT_DEPTH,ROOT_DEPTH,NA,NA,7,7,ICOS=7,ENF=4; GRA=2; EBF=1,2003-2025,8,-1,0,50; 85; 25; 100; 13
+"Species composition (dominant, SPP)",SPP,GRP_SPP,SPP_O,NA,NA,40,1311,ICOS=40,WET=9; CRO=8; GRA=7; DBF=5; ENF=4; CSH=2; OSH=2; DNF=1; EBF=1; SAV=1,2003-2026,44,-4,22,Agrostis stolonifera L.; Anthoxanthum odoratum L.; Aulacomnium palustre (Hedw.) Schwägr.; Avenella flexuosa (L.) Drejer; Calluna vulgaris (L.) Hull
+"Species composition (overstory, SPP_O)",SPP,GRP_SPP_O,SPP_O_SPP,NA,NA,23,4508,ICOS=23,ENF=15; DBF=5; MF=2; EBF=1,2014-2025,23,0,20,Betula pendula Roth; Picea abies (L.) H.Karst.; Pinus sylvestris L.; Salix caprea L.; Sorbus aucuparia L.
+Disturbance/management category,DISTURB,DOM_DIST_MGMT,DOM_DIST_MGMT,NA,NA,277,363,AmeriFlux=277,CRO=78; ENF=47; WET=46; GRA=35; DBF=22; OSH=16; WSA=7; CVM=6; EBF=6; CSH=5; MF=5; BSV=2; DNF=1; SAV=1,NA,0,277,0,Agriculture; Grazing; Land cover change; Drought; Undisturbed

@@ -1,0 +1,8 @@
+igbp,n_sites_total,n_any_biomass,n_any_dbh,n_any_basal_area,n_any_canopy_ht,n_any_lifestage,n_any_species_comp,n_any_of_these,n_2plus_dates_any
+DBF,81,9,8,6,47,6,10,47,17
+DNF,13,1,1,1,12,1,1,12,1
+EBF,44,3,4,3,39,1,2,39,9
+ENF,114,23,24,24,77,20,19,77,23
+MF,24,3,2,2,16,2,2,16,5
+Total (forest classes),276,39,39,36,191,30,34,191,55
+Total (non-forest classes),505,43,3,0,290,2,29,290,93

@@ -1,5 +1,5 @@
 Check 1 -- DuckDB (annual FLUXMET table) vs snapshot of record (fluxnet_shuttle_snapshot_20260920T102211.csv): MATCH. DB sites=781, snapshot sites=781, only-in-DB=0, only-in-snapshot=0.
-Check 3 -- NEE_VUT_SE present at 732 sites vs 618 for REF/MEAN/percentiles: of the 1544 site-years where NEE_VUT_SE has a value but NEE_VUT_REF does not, all 1544 (100%) also have NEE_VUT_REF_NIGHT (and NEE_VUT_REF_DAY) populated. ONEFlux's day/night-partitioned pipeline -- and the SE computed from it -- still ran and produced output for these site-years; only the combined (day+night) REF/MEAN/percentile-ensemble selection did not. This is a genuine ONEFlux processing-pipeline asymmetry visible in the data, not a database join artefact.
+Check 3 -- NEE_VUT_SE present at 732 sites vs 618 for REF/MEAN/percentiles: at 1544 site-years, NEE_VUT_SE and NEE_VUT_REF_NIGHT/NEE_VUT_REF_DAY (the average nighttime and daytime NEE from daily data -- BIFVARINFO_YY VAR_INFO_DEFINITION) are reported while the combined annual NEE_VUT_REF is -9999 (NA). No cause is offered for this pattern.
 Check 2 -- headline numbers:
   site-years (FLUXMET annual): brief=6336, data=6336 (confirmed)
   sites: brief=781, data=781 (confirmed)

@@ -11,7 +11,12 @@ uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2).
 joint-uncertainty term itself unavailable on at least one side even though
 both REF values qualify -- drawn as a visible open dark-grey circle (not
 the small semi-transparent dot used for the other two classes), since 20
-points would otherwise be lost among the other 3,940.
+points would otherwise be lost among the other 3,940. All three legend
+keys are shown at full alpha and an enlarged size (override.aes) regardless
+of how faint/small their actual points are drawn (the ~3,940-point
+'within combined uncertainty' class in particular is plotted at alpha=0.4,
+size=0.5 to stay legible as overlapping points, which would otherwise make
+its own legend key nearly invisible).
 (b) Histogram of VUT-CUT with dashed vertical lines at +/-25, 50 and 100 g
 C m^-2 yr^-1. The x-axis is clipped at +/-150; the number of site-years
 lying beyond that clip (34) is printed in the panel.

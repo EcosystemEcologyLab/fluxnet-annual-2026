@@ -32,7 +32,6 @@ check_pipeline_config()
 suppressPackageStartupMessages({
   library(DBI); library(duckdb); library(dplyr); library(readr); library(tidyr)
   library(ggplot2); library(patchwork); library(fs); library(jsonlite); library(scales)
-  library(ggrepel)
 })
 source("R/plot_constants.R")
 source("R/nature_format.R")
@@ -139,13 +138,16 @@ se_vs_mean <- dbGetQuery(con, "
               AND NEE_VUT_REF_NIGHT IS NOT NULL THEN 1 ELSE 0 END) AS n_se_only_with_night
   FROM annual WHERE dataset = 'FLUXMET'
 ")
-add_check("Check 3 -- NEE_VUT_SE present at 732 sites vs 618 for REF/MEAN/percentiles: of the ",
-          se_vs_mean$n_se_only_rows, " site-years where NEE_VUT_SE has a value but NEE_VUT_REF ",
-          "does not, all ", se_vs_mean$n_se_only_with_night, " (100%) also have NEE_VUT_REF_NIGHT ",
-          "(and NEE_VUT_REF_DAY) populated. ONEFlux's day/night-partitioned pipeline -- and the SE ",
-          "computed from it -- still ran and produced output for these site-years; only the ",
-          "combined (day+night) REF/MEAN/percentile-ensemble selection did not. This is a genuine ",
-          "ONEFlux processing-pipeline asymmetry visible in the data, not a database join artefact.")
+## Rewritten as an observation only, per instruction -- no cause offered.
+## NEE_VUT_REF_NIGHT/_DAY are the average nighttime/daytime NEE computed
+## from daily data (BIFVARINFO_YY VAR_INFO_DEFINITION, confirmed identical
+## across sites), not a "day/night partitioning method" -- that causal/
+## mechanistic framing in an earlier version of this check is withdrawn.
+add_check("Check 3 -- NEE_VUT_SE present at 732 sites vs 618 for REF/MEAN/percentiles: at ",
+          se_vs_mean$n_se_only_rows, " site-years, NEE_VUT_SE and NEE_VUT_REF_NIGHT/",
+          "NEE_VUT_REF_DAY (the average nighttime and daytime NEE from daily data -- ",
+          "BIFVARINFO_YY VAR_INFO_DEFINITION) are reported while the combined annual ",
+          "NEE_VUT_REF is -9999 (NA). No cause is offered for this pattern.")
 dbDisconnect(con, shutdown = TRUE)
 msg("Check 3: ", se_vs_mean$n_se_only_rows, " site-years explained by day/night partials.")
 
@@ -446,7 +448,12 @@ panel3a <- ggplot(stage3_sy, aes(x = NEE_VUT, y = NEE_CUT, colour = exceeds_lab)
        y = expression("NEE"["CUT"]*" (g C "*m^{-2}*" "*yr^{-1}*")")) +
   tv_theme() +
   theme(legend.position = "bottom") +
-  guides(colour = guide_legend(override.aes = list(shape = c(16, 16, 21), size = c(1, 1, 1.3),
+  ## "within combined uncertainty"'s actual points are drawn at size=0.5,
+  ## alpha=0.4 (deliberately faint -- ~3,940 overlapping points); without
+  ## an override its legend key renders at that same faint size/alpha and
+  ## is hard to see. override.aes bumps every key to full alpha and a
+  ## larger, legible size regardless of how its points are actually drawn.
+  guides(colour = guide_legend(override.aes = list(shape = c(16, 16, 21), size = c(2.2, 2.2, 1.6),
                                                      alpha = c(1, 1, 1), fill = c(NA, NA, "white"))))
 
 CLIP <- 150
@@ -480,7 +487,12 @@ writeLines(c(
 "joint-uncertainty term itself unavailable on at least one side even though",
 "both REF values qualify -- drawn as a visible open dark-grey circle (not",
 "the small semi-transparent dot used for the other two classes), since 20",
-"points would otherwise be lost among the other 3,940.",
+"points would otherwise be lost among the other 3,940. All three legend",
+"keys are shown at full alpha and an enlarged size (override.aes) regardless",
+"of how faint/small their actual points are drawn (the ~3,940-point",
+"'within combined uncertainty' class in particular is plotted at alpha=0.4,",
+"size=0.5 to stay legible as overlapping points, which would otherwise make",
+"its own legend key nearly invisible).",
 "(b) Histogram of VUT-CUT with dashed vertical lines at +/-25, 50 and 100 g",
 "C m^-2 yr^-1. The x-axis is clipped at +/-150; the number of site-years",
 paste0("lying beyond that clip (", n_beyond, ") is printed in the panel."),
@@ -542,43 +554,34 @@ avail_df <- bind_rows(sy_cat, site_cat) |>
   mutate(share = n / sum(n)) |>
   ungroup()
 
-## Every category is labelled with its count, per the task brief -- even at
-## 100%-stacked proportions, the thinnest segments (e.g. below quality
-## rule=24/6,336=0.4%) are still too narrow to hold inline text, so labels
-## are placed at each segment's true stack midpoint and let ggrepel spread
-## overlapping ones outward along x (direction="x": only x moves, so a
-## label never drifts onto the other bar's row), each with a thin leader
-## segment back to its real position. The x-axis is widened to 0-1.42 to
-## give that overflow somewhere to go.
-label_df <- avail_df |>
-  filter(n > 0) |>
-  arrange(level, cat2) |>
-  group_by(level) |>
-  mutate(xmax = cumsum(share), xmin = dplyr::lag(xmax, default = 0), xmid = (xmin + xmax) / 2) |>
-  ungroup()
+## No in-bar labels: each category's exact count is carried in its own
+## legend label instead, "<category> (<n> site-years, <n> sites)" -- so the
+## bars themselves stay a plain, uncluttered 0-100% stacked proportion.
+cat_counts <- avail_df |>
+  select(cat2, level, n) |>
+  tidyr::pivot_wider(names_from = level, values_from = n, values_fill = 0)
+CAT_LABELS <- setNames(
+  sprintf("%s (%s site-years, %s sites)", cat_counts$cat2,
+          format(cat_counts[["Site-years (n = 6,336)"]], big.mark = ","),
+          format(cat_counts[["Sites (n = 781)"]], big.mark = ",")),
+  as.character(cat_counts$cat2)
+)
 
 panel4a <- ggplot(avail_df, aes(y = level, x = share, fill = cat2)) +
   ## position_stack(reverse = TRUE): ggplot2's default stacking order for
   ## orientation="y" placed the LAST CAT_LEVELS entry ("below quality rule")
   ## at x=0 and the FIRST ("both usable") at the far end -- the opposite of
-  ## CAT_LEVELS/the legend order -- which also threw every repelled label
-  ## below out of alignment with its actual segment. reverse=TRUE matches
-  ## visual stacking order to CAT_LEVELS/label_df's cumsum order.
+  ## CAT_LEVELS/the legend order. reverse=TRUE matches visual stacking
+  ## order to CAT_LEVELS/the legend order.
   geom_col(width = 0.6, orientation = "y", position = position_stack(reverse = TRUE)) +
-  ggrepel::geom_text_repel(
-    data = label_df, aes(x = xmid, y = level, label = n), inherit.aes = FALSE,
-    direction = "x", seed = 42, size = 5 / .pt, family = NATURE_FONT, colour = "black",
-    segment.size = nature_lwd(0.25), segment.colour = "grey30", min.segment.length = 0,
-    box.padding = 0.1, point.padding = 0, force = 3, max.overlaps = Inf,
-    xlim = c(NA, 1.4)
-  ) +
-  scale_fill_manual(values = CAT_COLOURS, name = NULL, breaks = CAT_LEVELS) +
-  scale_x_continuous(labels = scales::label_percent(), limits = c(0, 1.42),
-                      expand = expansion(mult = c(0.01, 0))) +
+  scale_fill_manual(values = CAT_COLOURS, name = NULL, breaks = CAT_LEVELS,
+                     labels = CAT_LABELS[CAT_LEVELS]) +
+  scale_x_continuous(labels = scales::label_percent(), limits = c(0, 1),
+                      breaks = c(0, 0.25, 0.5, 0.75, 1), expand = expansion(mult = c(0, 0))) +
   labs(x = "Share", y = NULL) +
   tv_theme() +
   theme(legend.position = "bottom") +
-  guides(fill = guide_legend(ncol = 2))
+  guides(fill = guide_legend(ncol = 1))
 
 ## (b) Share where CP/MP did not succeed, by site-year category.
 method_qc <- read_csv(file.path(DIAG_DIR, "table_stage4_ustar_method_vs_qualification.csv"),
@@ -649,12 +652,11 @@ writeLines(c(
 "NEE_VUT_REF/NEE_CUT_REF value exists that year/site) and 'below quality",
 "rule' (a raw value exists but does not clear QC_THRESHOLD_YY=0.50).",
 "'Usable' = (1-QC) <= QC_THRESHOLD_YY, own QC column per side (same rule as",
-"Figures 2-3). Every category with a nonzero count is labelled with its",
-"exact count (VUT only usable: 57 site-years / 41 sites; CUT only usable:",
-"360/40; no reported value: 1,935/125; below quality rule: 24/0; both",
-"usable: 3,960/575); thin segments' labels are repelled outward along the",
-"x-axis (ggrepel), each connected to its true position by a thin leader",
-"line, rather than omitted for overlap as an earlier draft of this figure did.",
+"Figures 2-3). No in-bar count labels -- each category's exact count is",
+"given in its own legend entry instead, '<category> (<n> site-years, <n>",
+"sites)': both usable (3,960 site-years, 575 sites); VUT only usable (57,",
+"41); CUT only usable (360, 40); no reported value (1,935, 125); below",
+"quality rule (24, 0).",
 "(b) For each site-year availability category, the share where",
 "USTAR_CP_SUCCESS_RUN did not succeed (series 'CP'), where",
 "USTAR_MP_SUCCESS_RUN did not succeed (series 'MP'), and where both did",

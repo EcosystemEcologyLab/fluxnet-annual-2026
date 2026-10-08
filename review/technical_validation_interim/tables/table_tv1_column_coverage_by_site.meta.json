@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-08T16:21:32Z",
-  "pipeline_version": "a34e389",
+  "run_datetime_utc": "2026-10-08T16:40:02Z",
+  "pipeline_version": "f7c250c",
   "input_sources": [
     "review/diagnostics/data_quality_uncertainty/table_stage0_column_inventory.csv"
   ],

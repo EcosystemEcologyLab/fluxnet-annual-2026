@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-03T02:05:39Z",
-  "pipeline_version": "bc4d5bf",
+  "run_datetime_utc": "2026-10-08T20:13:43Z",
+  "pipeline_version": "2a4ed4a",
   "input_sources": [
     "data/snapshots/representativeness_metrics_flux_supp.csv"
   ],
-  "notes": "Panel b (NEE, Geo vs Data), figure stage 4."
+  "notes": "Panel b (NEE, the site's own value), figure stage 4."
 }

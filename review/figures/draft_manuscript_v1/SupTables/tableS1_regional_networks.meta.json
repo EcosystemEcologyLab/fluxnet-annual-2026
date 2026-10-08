@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-08T19:04:23Z",
+  "pipeline_version": "2a4ed4a",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/snapshots/site_year_data_presence.csv"
+  ],
+  "notes": "network_code parsed from each site's own fluxnet_product_name (first underscore-delimited token); processing_hub is the snapshot's own data_hub field (CLAUDE.md Hard Rule 2 -- not inferred from the code or from site-ID prefixes). n_site_years uses the paper's own definition (years with any of the twelve broad flux variables present in at least one month, R/utils.R::compute_site_year_presence()), same as Figure 2 -- read from the already-computed site_year_data_presence.csv, not recomputed. Checks run and passed: sites sum to 781; hub totals AmeriFlux=381, ICOS=348, TERN=52; site-years sum to 6,200."
+}

@@ -18,8 +18,9 @@
 ## (2026-10-02): only the DRAFT_DIR/SUPFIGS_DIR *copy* filenames were
 ## renumbered, to fig_05_representativeness.* (was referred to as Figure 4
 ## throughout this script/its legends before the stage-6 renumbering; now
-## Figure 5) and figS4_representativeness_geo_vs_geo.* (now Supplementary
-## Figure S4) respectively -- see DEST_BASENAME below and
+## Figure 5) and figS3_sampling_gridded_at_tower.* (figS4_representativeness_
+## geo_vs_geo.* until the supplementary material restructure, 2026-10-08;
+## now Supplementary Figure S3) respectively -- see DEST_BASENAME below and
 ## docs/figure_inventory.md. The previous Figure 4
 ## (fig_04_current_network_sampling_ratios.png, from fig_rep001_current.png
 ## via scripts/figure_representativeness_summary.R) is superseded and its
@@ -2335,13 +2336,13 @@ write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
     lines <- c(
       sprintf("FIGURE LEGEND — %s", basename(fig_path)),
       strrep("=", 60), "",
-      "TITLE: Figure 5 — Representativeness of the current FLUXNET network (n=781), Geo vs Data", "",
+      "TITLE: Figure 5 — Network sampling of the current FLUXNET network (n=781), Geo vs Data", "",
       "(manuscript copy: draft_manuscript_v1/fig_05_representativeness.png; this source file",
       "keeps its own canonical, unnumbered name per docs/figure_inventory.md)", "",
-      "DEFINITIONS (shared with the companion Supplementary Figure S4, Geo vs Geo,",
+      "DEFINITIONS (shared with the companion Supplementary Figure S3, Geo vs Geo,",
       "supp_representativeness_geo_vs_geo.png):",
       "\"Geo vs Data\" (this figure) compares the global land distribution of each axis against",
-      "each site's own measured or site-derived value. \"Geo vs Geo\" (Supplementary Figure S4)",
+      "each site's own measured or site-derived value. \"Geo vs Geo\" (Supplementary Figure S3)",
       "compares the same global land distribution against the gridded product's own value",
       "sampled at each tower's coordinate, instead of the site's own measurement.", "",
       "DESCRIPTION:",
@@ -2433,26 +2434,36 @@ write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
     lines <- c(
       sprintf("FIGURE LEGEND — %s", basename(fig_path)),
       strrep("=", 60), "",
-      "TITLE: Supplementary Figure S4 — Representativeness of the current FLUXNET network (n=781), Geo vs Geo", "",
-      "(manuscript copy: SupFigs/figS4_representativeness_geo_vs_geo.png; this source file",
+      "TITLE: Supplementary Figure S3 — Network sampling of the current FLUXNET network (n=781), gridded value at the tower", "",
+      "(manuscript copy: SupFigs/figS3_sampling_gridded_at_tower.png; this source file",
       "keeps its own canonical, unnumbered name per docs/figure_inventory.md)", "",
+      "PUBLICATION LEGEND:",
+      "Supplementary Figure S3. Network sampling of the snapshot (n=781 sites) across six axes --",
+      "Koppen-Geiger climate class, land cover (IGBP), aridity, aboveground biomass, net ecosystem",
+      "exchange and evapotranspiration -- using the gridded value at the tower coordinate rather",
+      "than each site's own measurement. This is the companion to the main text's sampling figure,",
+      "which instead uses the site's own value; the two together show how much the network's",
+      "apparent sampling depends on that choice. Network sampling analysis is described in",
+      "Section 2.7.", "",
       "DESCRIPTION:",
       "Companion to Figure 5 (fig_05_representativeness.png, source fig_04_representativeness.png),",
       "same six panels (a Koppen-Geiger, b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and",
       "the same panel layout, bar-label conventions, land grids/totals, and column headers -- see",
-      "Figure 5's legend for all of that, including the \"Geo vs Data\"/\"Geo vs Geo\" definitions, which",
-      "this figure shares in full. The only difference is the site-side value: Geo vs Geo classifies",
-      "every tower by the gridded product's own value at that tower's coordinate, rather than the",
-      "site's own measured or site-derived value. Because every tower has a value in the gridded",
-      "product by construction, no panel here has the precipitation-dependent exclusions that apply to",
-      "Figure 5's panels a and c -- n = 781/781 for all six panels. Panels e and f here use the",
-      "model's own value at the tower, not a tower measurement -- Figure 5's own panels e and f",
-      sprintf("(Geo vs Data) instead use each site's median annual value passing QC_THRESHOLD_YY=%s,", QC_THRESHOLD_YY),
+      "Figure 5's legend for all of that, including what Figure 5 calls the \"Geo vs Data\"/\"Geo vs Geo\"",
+      "comparison -- in this figure's own terms, \"the site's own value\" vs \"gridded value at the",
+      "tower\" (same definitions, renamed here). The only difference is the site-side value: gridded",
+      "value at the tower classifies every tower by the gridded product's own value at that tower's",
+      "coordinate, rather than the site's own measured or site-derived value. Because every tower has",
+      "a value in the gridded product by construction, no panel here has the precipitation-dependent",
+      "exclusions that apply to Figure 5's panels a and c -- n = 781/781 for all six panels. Panels e",
+      "and f here use the model's own value at the tower, not a tower measurement -- Figure 5's own",
+      "panels e and f",
+      sprintf("(the site's own value) instead use each site's median annual value passing QC_THRESHOLD_YY=%s,", QC_THRESHOLD_YY),
       "each flux gated on its own QC column, per-site VUT/CUT (see Figure 5's legend).",
       sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout. Supplementary Figure", width_mm, height_mm),
       "(target journal Scientific Data has no Extended Data concept) -- see",
       "docs/figure_inventory.md.", "",
-      sprintf("PER-PANEL n AND J (%s):", cmp_label), n_lines, "",
+      sprintf("PER-PANEL n AND J (%s):", "gridded value at the tower"), n_lines, "",
       "SOURCE: scripts/figure4_representativeness.R. Per-panel tables (bin, land area km2,",
       "land fraction, towers, tower fraction) in review/figures/representativeness/tables/.",
       "Vector PDF alongside this PNG. Methods notes: methods_igbp.md, methods_aridity_era5.md,",
@@ -2475,8 +2486,8 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
              "Helvetica, %dpt text (row pitch %.1fmm). Rendering only -- confirmed against ",
              "representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) ",
              "render. Vector PDF saved alongside. See SESSION_LOG.md."),
-      if (comparison == "geo_vs_geo") "Supplementary Figure S4 (companion to Figure 5)" else "Figure 5",
-      if (comparison == "geo_vs_geo") "Geo vs Geo" else "Geo vs Data",
+      if (comparison == "geo_vs_geo") "Supplementary Figure S3 (companion to Figure 5)" else "Figure 5",
+      if (comparison == "geo_vs_geo") "gridded value at the tower" else "Geo vs Data",
       fig_widths_mm[[comparison]], fig_heights_mm[[comparison]],
       BASE_PT, ROW_PITCH_MM
     )
@@ -2493,7 +2504,12 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
 ## destinations -- see docs/figure_inventory.md. DEST_BASENAME differs from
 ## the FIG_DIR source basename (fig4_output_name()); FIG_DIR itself is
 ## unchanged (that script/data file keeps its own name).
-DEST_BASENAME <- list(geo_vs_geo = "figS4_representativeness_geo_vs_geo",
+## geo_vs_geo renumbered figS4_representativeness_geo_vs_geo ->
+## figS3_sampling_gridded_at_tower (supplementary material restructure,
+## 2026-10-08, SESSION_LOG.md) -- the SupFigs/ copy's filename only; the
+## FIG_DIR source basename (fig4_output_name()) is unchanged, per this
+## script's own convention. geo_vs_data (main-text Figure 5) is untouched.
+DEST_BASENAME <- list(geo_vs_geo = "figS3_sampling_gridded_at_tower",
                        geo_vs_data = "fig_05_representativeness")
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   base <- fig4_output_name(comparison)

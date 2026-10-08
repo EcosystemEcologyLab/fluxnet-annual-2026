@@ -1,44 +1,52 @@
 FIGURE LEGEND — supp_flux_representativeness.png
 ============================================================
 
-TITLE: Supplementary Figure S5 — Representativeness of the current FLUXNET network (n=781), fluxes
-(manuscript copy: SupFigs/figS5_flux_representativeness.png; this source file keeps its own
-canonical, unnumbered name per docs/figure_inventory.md)
+TITLE: Supplementary Figure S4 — Network sampling of the current FLUXNET network (n=781), fluxes
+
+PUBLICATION LEGEND:
+Supplementary Figure S4. Network sampling of the snapshot for four fluxes -- net ecosystem
+exchange, gross primary productivity, ecosystem respiration and evapotranspiration -- each
+compared using both the gridded value at the tower and the site's own value. Extends the main
+text's sampling figure (which covers net ecosystem exchange and evapotranspiration) to add
+gross primary productivity and ecosystem respiration. Network sampling analysis is described
+in Section 2.7.
 
 DESCRIPTION:
-Companion to Figure 5 (fig_05_representativeness.png) and its Geo vs Geo companion,
-Supplementary Figure S4 (figS4_representativeness_geo_vs_geo.png) -- same panel style, bar-label
-conventions, and "Geo vs Geo"/"Geo vs Data" definitions (see Figure 5's legend for the full
+Companion to Figure 5 (fig_05_representativeness.png) and its gridded-value-at-the-tower companion,
+Supplementary Figure S3 (figS3_sampling_gridded_at_tower.png) -- same panel style, bar-label
+conventions, and "gridded value at the tower"/"the site's own value" definitions (what Figure 5's
+legend itself still calls "Geo vs Geo"/"Geo vs Data" -- see Figure 5's legend for the full
 definitions). Eight panels, four
-fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f TER (ecosystem respiration, ra+rh),
-g/h ET; left column (a, c, e, g) is Geo vs Geo, right column (b, d, f, h) is Geo vs Data.
+fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f RECO (ecosystem respiration, ra+rh),
+g/h ET; left column (a, c, e, g) is gridded value at the tower, right column (b, d, f, h) is the
+site's own value.
 Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 5's own panels e and f --
 identical rasters, tower values and bins; their n and J are confirmed programmatically (not just
 visually) to equal representativeness_metrics_fig4.csv rows E/F exactly before this figure is drawn.
-Panels c, d (GPP) and e, f (TER) are new to this figure.
+Panels c, d (GPP) and e, f (RECO) are new to this figure.
 
 TOWER VALUES:
 Each tower's value is the median of its QC_THRESHOLD_YY=0.5-qualifying annual values
-(R/site_annual_fluxes.R::compute_site_annual_fluxes()): NEE/GPP/TER(RECO) gated on the per-site
+(R/site_annual_fluxes.R::compute_site_annual_fluxes()): NEE/GPP/RECO gated on the per-site
 VUT/CUT-chosen NEE QC column (scripts/04_qc.R's rule); ET gated on LE_F_MDS_QC, independent of the
-NEE gate. In Geo vs Data, a tower is only classified (including bar 1) if it has a qualifying tower
-value for that flux -- a tower with no NEE years, say, is never counted via its model-GPP mask value
-alone.
+NEE gate. In "the site's own value", a tower is only classified (including bar 1) if it has a
+qualifying tower value for that flux -- a tower with no NEE years, say, is never counted via its
+model-GPP mask value alone.
 
 MODEL VALUES AND LAND GRID:
 TRENDY v14 S3, 17-model ensemble median, 1991-2020 mean, on the Beck 2023 Koppen-Geiger 0.5 deg land
-mask (same raster footprint for all four fluxes; TER = ra+rh). NEE and ET use
+mask (same raster footprint for all four fluxes; RECO = ra+rh). NEE and ET use
 data/external/trendy/derived/trendy_nee_fluxbased_median.tif and
-flux_bin_breaks_et_median_1991_2020.tif (Figure 4's own rasters); GPP and TER use
+flux_bin_breaks_et_median_1991_2020.tif (Figure 5's own rasters); GPP and RECO use
 candidate_gpp_median.tif and candidate_ter_median.tif (scripts/candidate_nee_gpp_ter_panels.R).
 Land total: 163,331,649 km2.
 
 BINS:
 Bar 1 is "unvegetated" for NEE (own model GPP < 5 gC/m2/yr -- NEE is signed and cannot be cut on its
-own magnitude) or "0-5" for GPP/TER (gC/m2/yr)/ET (mm/yr) -- each flux's own model value at that
+own magnitude) or "0-5" for GPP/RECO (gC/m2/yr)/ET (mm/yr) -- each flux's own model value at that
 cell/tower. Bars 2-7 are the sextiles (5 edges) of the 50/50 land/tower mixture CDF outside bar 1,
-rounded to the nearest 25 (NEE), 100 (GPP, TER) or 50 (ET) gC m-2 yr-1 or mm yr-1 -- same rounding
-steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's own GPP/TER edges
+rounded to the nearest 25 (NEE), 100 (GPP, RECO) or 50 (ET) gC m-2 yr-1 or mm yr-1 -- same rounding
+steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's own GPP/RECO edges
 because the tower values here use compute_site_annual_fluxes()/QC_THRESHOLD_YY, not that script's
 older QC>=0.80 mean-monthly-cycle method.
 
@@ -51,14 +59,14 @@ Final artwork size: 180 mm wide x 172.7 mm tall, Helvetica throughout. Supplemen
 (target journal Scientific Data has no Extended Data concept).
 
 PER-PANEL n AND J:
-  a NEE (Geo vs Geo): n = 781 / 781, J = 0.530
-  b NEE (Geo vs Data): n = 656 / 781, J = 0.165
-  c GPP (Geo vs Geo): n = 781 / 781, J = 0.488
-  d GPP (Geo vs Data): n = 651 / 781, J = 0.529
-  e TER (Geo vs Geo): n = 781 / 781, J = 0.482
-  f TER (Geo vs Data): n = 651 / 781, J = 0.511
-  g ET (Geo vs Geo): n = 781 / 781, J = 0.456
-  h ET (Geo vs Data): n = 665 / 781, J = 0.479
+  a NEE (gridded value at the tower): n = 781 / 781, J = 0.530
+  b NEE (the site's own value): n = 656 / 781, J = 0.165
+  c GPP (gridded value at the tower): n = 781 / 781, J = 0.488
+  d GPP (the site's own value): n = 651 / 781, J = 0.529
+  e RECO (gridded value at the tower): n = 781 / 781, J = 0.482
+  f RECO (the site's own value): n = 651 / 781, J = 0.511
+  g ET (gridded value at the tower): n = 781 / 781, J = 0.456
+  h ET (the site's own value): n = 665 / 781, J = 0.479
 
 SOURCE: scripts/figure_flux_representativeness_supp.R. Per-panel tables in
 review/figures/representativeness/tables/. Metrics table:

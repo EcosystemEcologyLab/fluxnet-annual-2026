@@ -121,7 +121,7 @@ total_row <- count_row(site_record, "Total")
 table1 <- bind_rows(by_class, total_row)
 print(table1, n = Inf, width = Inf)
 
-out_path <- file.path(OUT_DIR, "tableS_record_length_by_igbp.csv")
+out_path <- file.path(OUT_DIR, "tableS2_record_length_by_igbp.csv")
 write_csv(table1, out_path)
 write_output_metadata(
   out_path,

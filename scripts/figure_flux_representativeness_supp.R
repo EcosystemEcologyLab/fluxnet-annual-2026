@@ -1,10 +1,12 @@
 ## figure_flux_representativeness_supp.R
 ##
 ## Figure stage 4 (logs/figstage_prompt.md): SupFigs/supp_flux_representativeness,
-## renumbered Supplementary Figure S5 under figure stage 6 (2026-10-02; see
-## DEST_BASE below and docs/figure_inventory.md; this script's own name and its
-## FIG_DIR source basename are unchanged) -- four rows (NEE, GPP, TER, ET) by
-## two columns (Geo vs Geo left, Geo vs Data right), panels lettered a-h across
+## renumbered Supplementary Figure S5 under figure stage 6 (2026-10-02), then
+## Supplementary Figure S4 in the supplementary material restructure
+## (2026-10-08, SESSION_LOG.md; see DEST_BASE below and docs/figure_inventory.md;
+## this script's own name and its FIG_DIR source basename are unchanged) -- four
+## rows (NEE, GPP, RECO, ET) by two columns (gridded value at the tower left,
+## the site's own value right), panels lettered a-h across
 ## rows, in Figure 5's own panel
 ## style (scripts/figure4_representativeness.R's draw_panel2() print
 ## rendering, header/caption grobs, column-gutter alignment -- ported
@@ -703,7 +705,7 @@ build_panel_df <- function(merged_df, order_map, label_map, color_map, total_km2
 flux_title_expr <- function(flux_label, unit_expr, cmp_label) {
   as.expression(bquote(.(flux_label) ~ .(unit_expr) * .(paste0(", ", cmp_label))))
 }
-CMP_TITLE <- c(geo_vs_geo = "Geo vs Geo", geo_vs_data = "Geo vs Data")
+CMP_TITLE <- c(geo_vs_geo = "gridded value at the tower", geo_vs_data = "the site's own value")
 
 PANEL_SPECS <- list(
   A = list(letter = "a", flux = "NEE", comparison = "geo_vs_geo", result = nee_result,
@@ -718,12 +720,12 @@ PANEL_SPECS <- list(
   D = list(letter = "d", flux = "GPP", comparison = "geo_vs_data", result = gpp_result,
            label_map = GPP_LABEL_MAP, color_map = GPP7_COLORS,
            title_expr = flux_title_expr("GPP", quote(("g C" ~ m^{-2} ~ yr^{-1})), CMP_TITLE[["geo_vs_data"]])),
-  E = list(letter = "e", flux = "TER", comparison = "geo_vs_geo", result = ter_result,
+  E = list(letter = "e", flux = "RECO", comparison = "geo_vs_geo", result = ter_result,
            label_map = TER_LABEL_MAP, color_map = TER7_COLORS,
-           title_expr = flux_title_expr("TER", quote(("g C" ~ m^{-2} ~ yr^{-1})), CMP_TITLE[["geo_vs_geo"]])),
-  F = list(letter = "f", flux = "TER", comparison = "geo_vs_data", result = ter_result,
+           title_expr = flux_title_expr("RECO", quote(("g C" ~ m^{-2} ~ yr^{-1})), CMP_TITLE[["geo_vs_geo"]])),
+  F = list(letter = "f", flux = "RECO", comparison = "geo_vs_data", result = ter_result,
            label_map = TER_LABEL_MAP, color_map = TER7_COLORS,
-           title_expr = flux_title_expr("TER", quote(("g C" ~ m^{-2} ~ yr^{-1})), CMP_TITLE[["geo_vs_data"]])),
+           title_expr = flux_title_expr("RECO", quote(("g C" ~ m^{-2} ~ yr^{-1})), CMP_TITLE[["geo_vs_data"]])),
   G = list(letter = "g", flux = "ET", comparison = "geo_vs_geo", result = et_result,
            label_map = ET_LABEL_MAP, color_map = ET7_COLORS,
            title_expr = flux_title_expr("ET", quote((mm ~ yr^{-1})), CMP_TITLE[["geo_vs_geo"]])),
@@ -845,38 +847,47 @@ n_lines <- vapply(ALL_LETTERS, panel_n_line, character(1))
 legend_lines <- c(
   sprintf("FIGURE LEGEND — %s", basename(paste0(fig_stem, ".png"))),
   strrep("=", 60), "",
-  "TITLE: Supplementary Figure S5 — Representativeness of the current FLUXNET network (n=781), fluxes", "",
+  "TITLE: Supplementary Figure S4 — Network sampling of the current FLUXNET network (n=781), fluxes", "",
+  "PUBLICATION LEGEND:",
+  "Supplementary Figure S4. Network sampling of the snapshot for four fluxes -- net ecosystem",
+  "exchange, gross primary productivity, ecosystem respiration and evapotranspiration -- each",
+  "compared using both the gridded value at the tower and the site's own value. Extends the main",
+  "text's sampling figure (which covers net ecosystem exchange and evapotranspiration) to add",
+  "gross primary productivity and ecosystem respiration. Network sampling analysis is described",
+  "in Section 2.7.", "",
   "DESCRIPTION:",
-  "Companion to Figure 5 (fig_05_representativeness.png) and its Geo vs Geo companion,",
-  "Supplementary Figure S4 (figS4_representativeness_geo_vs_geo.png) -- same panel style, bar-label",
-  "conventions, and \"Geo vs Geo\"/\"Geo vs Data\" definitions (see Figure 5's legend for the full",
+  "Companion to Figure 5 (fig_05_representativeness.png) and its gridded-value-at-the-tower companion,",
+  "Supplementary Figure S3 (figS3_sampling_gridded_at_tower.png) -- same panel style, bar-label",
+  "conventions, and \"gridded value at the tower\"/\"the site's own value\" definitions (what Figure 5's",
+  "legend itself still calls \"Geo vs Geo\"/\"Geo vs Data\" -- see Figure 5's legend for the full",
   "definitions). Eight panels, four",
-  "fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f TER (ecosystem respiration, ra+rh),",
-  "g/h ET; left column (a, c, e, g) is Geo vs Geo, right column (b, d, f, h) is Geo vs Data.",
+  "fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f RECO (ecosystem respiration, ra+rh),",
+  "g/h ET; left column (a, c, e, g) is gridded value at the tower, right column (b, d, f, h) is the",
+  "site's own value.",
   "Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 5's own panels e and f --",
   "identical rasters, tower values and bins; their n and J are confirmed programmatically (not just",
   "visually) to equal representativeness_metrics_fig4.csv rows E/F exactly before this figure is drawn.",
-  "Panels c, d (GPP) and e, f (TER) are new to this figure.", "",
+  "Panels c, d (GPP) and e, f (RECO) are new to this figure.", "",
   "TOWER VALUES:",
   sprintf("Each tower's value is the median of its QC_THRESHOLD_YY=%s-qualifying annual values", QC_THRESHOLD_YY),
-  "(R/site_annual_fluxes.R::compute_site_annual_fluxes()): NEE/GPP/TER(RECO) gated on the per-site",
+  "(R/site_annual_fluxes.R::compute_site_annual_fluxes()): NEE/GPP/RECO gated on the per-site",
   "VUT/CUT-chosen NEE QC column (scripts/04_qc.R's rule); ET gated on LE_F_MDS_QC, independent of the",
-  "NEE gate. In Geo vs Data, a tower is only classified (including bar 1) if it has a qualifying tower",
-  "value for that flux -- a tower with no NEE years, say, is never counted via its model-GPP mask value",
-  "alone.", "",
+  "NEE gate. In \"the site's own value\", a tower is only classified (including bar 1) if it has a",
+  "qualifying tower value for that flux -- a tower with no NEE years, say, is never counted via its",
+  "model-GPP mask value alone.", "",
   "MODEL VALUES AND LAND GRID:",
   "TRENDY v14 S3, 17-model ensemble median, 1991-2020 mean, on the Beck 2023 Koppen-Geiger 0.5 deg land",
-  "mask (same raster footprint for all four fluxes; TER = ra+rh). NEE and ET use",
+  "mask (same raster footprint for all four fluxes; RECO = ra+rh). NEE and ET use",
   "data/external/trendy/derived/trendy_nee_fluxbased_median.tif and",
-  "flux_bin_breaks_et_median_1991_2020.tif (Figure 5's own rasters); GPP and TER use",
+  "flux_bin_breaks_et_median_1991_2020.tif (Figure 5's own rasters); GPP and RECO use",
   "candidate_gpp_median.tif and candidate_ter_median.tif (scripts/candidate_nee_gpp_ter_panels.R).",
   sprintf("Land total: %s km2.", format(round(FLUX_LAND_TOTAL_KM2), big.mark = ",")), "",
   "BINS:",
   "Bar 1 is \"unvegetated\" for NEE (own model GPP < 5 gC/m2/yr -- NEE is signed and cannot be cut on its",
-  "own magnitude) or \"0-5\" for GPP/TER (gC/m2/yr)/ET (mm/yr) -- each flux's own model value at that",
+  "own magnitude) or \"0-5\" for GPP/RECO (gC/m2/yr)/ET (mm/yr) -- each flux's own model value at that",
   "cell/tower. Bars 2-7 are the sextiles (5 edges) of the 50/50 land/tower mixture CDF outside bar 1,",
-  "rounded to the nearest 25 (NEE), 100 (GPP, TER) or 50 (ET) gC m-2 yr-1 or mm yr-1 -- same rounding",
-  "steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's own GPP/TER edges",
+  "rounded to the nearest 25 (NEE), 100 (GPP, RECO) or 50 (ET) gC m-2 yr-1 or mm yr-1 -- same rounding",
+  "steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's own GPP/RECO edges",
   "because the tower values here use compute_site_annual_fluxes()/QC_THRESHOLD_YY, not that script's",
   "older QC>=0.80 mean-monthly-cycle method.", "",
   "BAR LABELS: as Figure 5 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the",
@@ -899,15 +910,17 @@ write_output_metadata(
                      "candidate_ter_median.tif", "flux_bin_breaks_et_median_1991_2020.tif"),
   notes = sprintf(
     paste0("Figure stage 4 (logs/figstage_prompt.md): supp_flux_representativeness, renumbered ",
-           "Supplementary Figure S5 under figure stage 6 (2026-10-02), %g mm wide x %.1f mm ",
-           "tall, Helvetica, %dpt text (row pitch %.1fmm). NEE/ET panels (a/b/g/h) confirmed identical to ",
-           "Figure 5 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/TER (c/d/e/f) new."),
+           "Supplementary Figure S5 under figure stage 6 (2026-10-02), re-numbered Supplementary ",
+           "Figure S4 in the supplementary material restructure (2026-10-08, SESSION_LOG.md), ",
+           "%g mm wide x %.1f mm tall, Helvetica, %dpt text (row pitch %.1fmm). NEE/ET panels ",
+           "(a/b/g/h) confirmed identical to ",
+           "Figure 5 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/RECO (c/d/e/f) new."),
     FIG_WIDTH_MM, total_height_mm, BASE_PT, ROW_PITCH_MM
   )
 )
 msg("Saved: ", saved$png, ".meta.json and .legend.txt")
 
-DEST_BASE <- "figS5_flux_representativeness"
+DEST_BASE <- "figS4_sampling_flux_axes"
 for (ext in c(".png", ".pdf", ".jpg", ".meta.json", ".legend.txt")) {
   src_file <- paste0(fig_stem, ext)
   dst_file <- file.path(SUPFIGS_DIR, paste0(DEST_BASE, ext))

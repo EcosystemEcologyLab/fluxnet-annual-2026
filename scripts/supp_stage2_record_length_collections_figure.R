@@ -179,8 +179,13 @@ step_df <- dplyr::bind_rows(
   share_curve(current_per_site$n_years,     "Current")
 )
 coll_n <- step_df |> dplyr::distinct(collection, n_sites)
+## Display label only -- coll_n$collection itself (used as the lookup key
+## below, and for the validation join against SITEYEARS_CHECK's own
+## "collection" column) stays the literal data value "Current"; only what's
+## actually drawn in the legend key is renamed to "the snapshot".
+coll_display <- ifelse(coll_n$collection == "Current", "the snapshot", coll_n$collection)
 coll_labels <- setNames(
-  paste0(coll_n$collection, " (n=", coll_n$n_sites, ")"),
+  paste0(coll_display, " (n=", coll_n$n_sites, ")"),
   coll_n$collection
 )
 step_df$collection_label <- coll_labels[step_df$collection]
@@ -217,7 +222,7 @@ composite <- panel_a + panel_b + patchwork::plot_layout(ncol = 2, widths = c(1, 
 FIG_WIDTH_MM  <- 180
 FIG_HEIGHT_MM <- 90
 
-fig_stem <- file.path(SUPFIGS_DIR, "figS7_record_length")
+fig_stem <- file.path(SUPFIGS_DIR, "figS6_record_length")
 saved <- save_nature_figure(composite, fig_stem, width_mm = FIG_WIDTH_MM, height_mm = FIG_HEIGHT_MM,
                              extended_data = TRUE)
 png_path <- saved$png
@@ -225,17 +230,23 @@ msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
 ## ---- Legend file -----------------------------------------------------------
 legend_text <- paste0(
-"FIGURE LEGEND -- figS7_record_length.png\n",
+"FIGURE LEGEND -- figS6_record_length.png\n",
 "============================================================\n\n",
-"TITLE: Supplementary Figure S7 -- Record length of the current network and across FLUXNET collections\n\n",
+"TITLE: Supplementary Figure S6 — Record length of the snapshot and across FLUXNET collections\n\n",
+"PUBLICATION LEGEND:\n",
+"Supplementary Figure S6. Record length of the snapshot and of three prior FLUXNET data\n",
+"collections (Marconi, La Thuile, FLUXNET2015). Panel a shows the distribution of years with\n",
+"data per site in the snapshot, by IGBP class. Panel b shows, for each collection, the share of\n",
+"its sites with at least a given number of years of data. Data used in the analyses are\n",
+"described in Section 2.5.\n\n",
 "DESCRIPTION:\n",
-"Panel a: distribution of years with data per site for the current (781-site) FLUXNET Shuttle\n",
-"network, stacked by IGBP class (PAPER_IGBP_ORDER palette, R/plot_constants.R). Dashed vertical\n",
+"Panel a: distribution of years with data per site for the snapshot (781-site) network,\n",
+"stacked by IGBP class (PAPER_IGBP_ORDER palette, R/plot_constants.R). Dashed vertical\n",
 "lines mark 5, 10 and 20 years, each labelled with the number of sites at or above that\n",
 "threshold (n=", thresh_counts[1], ", n=", thresh_counts[2], ", n=", thresh_counts[3], ").\n\n",
-"Panel b: for each of four FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, current),\n",
-"the share of that collection's sites with at least n years of data, as a step line. Site counts\n",
-"shown in the legend key. Current-network line coloured dark grey; the three historical\n",
+"Panel b: for each of four FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, the\n",
+"snapshot), the share of that collection's sites with at least n years of data, as a step line.\n",
+"Site counts shown in the legend key. The snapshot's line coloured dark grey; the three historical\n",
 "collections use the same colours as their lines in Figure 2 (Marconi #2ECC71, La Thuile #E74C3C,\n",
 "FLUXNET2015 #3498DB).\n\n",
 "IMPORTANT -- two different meanings of 'a year', not interchangeable:\n",
@@ -244,7 +255,7 @@ legend_text <- paste0(
 "    (La Thuile: 1991-2007 year-indicator columns of data/lists/LaThuileList.xlsx; FLUXNET2015:\n",
 "    two-digit year columns of data/lists/FLUXNET2015.xlsx, where a plus sign or the text\n",
 "    'Tier 2' both count as a year with data, same as a plain year marker).\n",
-"  - Current network: a year counts if ANY flux value (of the 12 broad flux variables checked by\n",
+"  - The snapshot: a year counts if ANY flux value (of the 12 broad flux variables checked by\n",
 "    compute_site_year_presence(), R/utils.R) is present in AT LEAST ONE MONTH of that year --\n",
 "    not a published site-table listing, since the current network has no such table.\n",
 "  - Marconi values are SPANS ONLY: Marconi_to_Modern_SiteIDs.xlsx records only a first-last year\n",
@@ -256,7 +267,7 @@ legend_text <- paste0(
 "COLLECTION TOTALS (sites, site-years): Marconi ", nrow(marconi_per_site), ", ", marconi_total,
 "; La Thuile ", nrow(la_thuile_per_site), ", ", la_thuile_total,
 "; FLUXNET2015 ", nrow(fluxnet2015_per_site), ", ", fluxnet2015_total,
-"; Current ", nrow(current_per_site), ", ", current_total, ".\n\n",
+"; the snapshot ", nrow(current_per_site), ", ", current_total, ".\n\n",
 "Final artwork size: 180 mm wide x 90 mm tall, Helvetica throughout. Supplementary Figure (target\n",
 "journal Scientific Data has no Extended Data concept) -- see docs/figure_inventory.md.\n\n",
 "SOURCE: scripts/supp_stage2_record_length_collections_figure.R.\n",

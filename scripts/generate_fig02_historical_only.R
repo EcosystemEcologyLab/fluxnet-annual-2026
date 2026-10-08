@@ -11,13 +11,14 @@
 ## Figure 2 on the same axes to reveal the current network's growth.
 ##
 ## NOT a numbered Supplementary Information figure for journal submission --
-## saved alongside S1-S6 in SupFigs/ (the repo's general "supplemental
-## materials" location, per the user's request) under a name that does not
-## claim an S-number, so it is not mistaken for one. check_figure_format.R
-## still validates it (same Extended Data size/font/text/line/edge rules),
-## since every PNG placed in that directory is in-scope for that checker.
+## moved out of SupFigs/ into review/figures/presentation_figures/, a
+## talk/presentation companion pool beside draft_manuscript_v1/ (supplementary
+## material restructure, 2026-10-08, SESSION_LOG.md; previously lived in
+## SupFigs/ under a name that deliberately did not claim an S-number).
+## check_figure_format.R still validates it (same Extended Data size/font/
+## text/line/edge rules), run explicitly against this new directory.
 ##
-## Output: review/figures/draft_manuscript_v1/SupFigs/fig_02_historical_only.png/.pdf/.jpg/.legend.txt
+## Output: review/figures/presentation_figures/fig_02_historical_only.png/.pdf/.jpg/.legend.txt
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -37,7 +38,7 @@ suppressPackageStartupMessages({
 msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...)
 msg("=== Figure: cumulative site-years, historical collections only (Figure 2 reveal companion) ===")
 
-OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
+OUT_DIR  <- file.path("review", "figures", "presentation_figures")
 OUT_STEM <- file.path(OUT_DIR, "fig_02_historical_only")
 fs::dir_create(OUT_DIR)
 
@@ -117,17 +118,17 @@ legend_lines <- c(
   "",
   "PURPOSE: NOT a numbered Supplementary Information figure for journal submission.",
   "A presentation aid: show this slide, then advance to the real Figure 2",
-  "(fig_02_cumulative_siteyears_igbp.png, same directory level up) on an identical x/y",
-  "axis to reveal the FLUXNET Shuttle network's growth on top of the historical context.",
+  "(fig_02_cumulative_siteyears_igbp.png, draft_manuscript_v1/) on an identical x/y",
+  "axis to reveal the snapshot's growth on top of the historical context.",
   "",
   "DESCRIPTION:",
   "Identical to Figure 2 in every respect -- same data, same x/y axis range and breaks,",
   "same dashed release-year reference lines (2000/2007/2015), same line colours/styling,",
-  "same 89 x 89 mm Nature-format dimensions -- EXCEPT that the FLUXNET Shuttle",
-  "(current-network) IGBP-stacked area and its 'IGBP' legend are omitted entirely: only",
+  "same 89 x 89 mm Nature-format dimensions -- EXCEPT that the snapshot's",
+  "IGBP-stacked area and its 'IGBP' legend are omitted entirely: only",
   "the Marconi 2000 / La Thuile 2007 / FLUXNET2015 cumulative site-year lines are drawn.",
-  "The y axis is identical to Figure 2's even though the Shuttle data is not drawn: the",
-  "same Shuttle cumulative totals still drive the axis range via an invisible layer",
+  "The y axis is identical to Figure 2's even though the snapshot's data is not drawn: the",
+  "same snapshot cumulative totals still drive the axis range via an invisible layer",
   "(fig_cumulative_siteyears_igbp(show_current_network = FALSE) in",
   "R/figures/fig_network_growth.R), so this figure is a strict visual subset of Figure 2",
   "on the same axes, not a separately-scaled plot.",

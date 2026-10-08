@@ -37,7 +37,14 @@ msg("=== Stage 3: sampling ratios (Figure 5 / Figure S4) ===")
 
 SNAP_DIR <- "data/snapshots"
 OUT_DIR  <- "review/figures/draft_manuscript_v1/SupTables"
+## Jaccard-check and extremes tables moved out of SupTables/ into a dedicated
+## diagnostics location (supplementary material restructure, 2026-10-08,
+## SESSION_LOG.md) -- they are validation/derived-check outputs, not
+## supplementary submission tables; tableS3_sampling_ratios_by_axis.csv
+## itself stays in OUT_DIR/SupTables.
+CHECKS_DIR <- "review/diagnostics/sampling_ratio_checks"
 fs::dir_create(OUT_DIR)
+fs::dir_create(CHECKS_DIR)
 
 weighted_jaccard <- function(p, q) sum(pmin(p, q)) / sum(pmax(p, q))
 
@@ -193,7 +200,7 @@ n_total <- nrow(jcheck_df)
 msg(n_agree, " / ", n_total, " axis x comparison combinations agree with ",
     "representativeness_metrics_fig4.csv to 6 decimals.")
 
-jcheck_path <- file.path(OUT_DIR, "tableS_sampling_ratio_jaccard_check.csv")
+jcheck_path <- file.path(CHECKS_DIR, "tableS_sampling_ratio_jaccard_check.csv")
 write_csv(jcheck_df, jcheck_path)
 write_output_metadata(
   jcheck_path,
@@ -222,7 +229,7 @@ write_output_metadata(
 msg("Saved: ", jcheck_path)
 
 if (n_agree == n_total) {
-  out_path <- file.path(OUT_DIR, "tableS_sampling_ratios_by_axis.csv")
+  out_path <- file.path(OUT_DIR, "tableS3_sampling_ratios_by_axis.csv")
   write_csv(long_table, out_path)
   write_output_metadata(
     out_path,
@@ -231,7 +238,7 @@ if (n_agree == n_total) {
   )
   msg("All combinations agreed -- wrote: ", out_path)
 } else {
-  msg("NOT writing tableS_sampling_ratios_by_axis.csv -- ", n_total - n_agree,
+  msg("NOT writing tableS3_sampling_ratios_by_axis.csv -- ", n_total - n_agree,
       " / ", n_total, " combinations disagree with representativeness_metrics_fig4.csv (see ",
       jcheck_path, " for which, and by how much).")
 }
@@ -254,7 +261,7 @@ if (n_agree == n_total) {
     dplyr::arrange(axis, comparison, extreme, sampling_ratio)
   print(extremes, n = Inf, width = Inf)
 
-  extremes_path <- file.path(OUT_DIR, "tableS_sampling_ratio_extremes.csv")
+  extremes_path <- file.path(CHECKS_DIR, "tableS_sampling_ratio_extremes.csv")
   write_csv(extremes, extremes_path)
   write_output_metadata(
     extremes_path,

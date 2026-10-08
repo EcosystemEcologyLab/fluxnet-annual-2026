@@ -1,0 +1,50 @@
+FIGURE LEGEND -- figS6_record_length.png
+============================================================
+
+TITLE: Supplementary Figure S6 — Record length of the snapshot and across FLUXNET collections
+
+PUBLICATION LEGEND:
+Supplementary Figure S6. Record length of the snapshot and of three prior FLUXNET data
+collections (Marconi, La Thuile, FLUXNET2015). Panel a shows the distribution of years with
+data per site in the snapshot, by IGBP class. Panel b shows, for each collection, the share of
+its sites with at least a given number of years of data. Data used in the analyses are
+described in Section 2.5.
+
+DESCRIPTION:
+Panel a: distribution of years with data per site for the snapshot (781-site) network,
+stacked by IGBP class (PAPER_IGBP_ORDER palette, R/plot_constants.R). Dashed vertical
+lines mark 5, 10 and 20 years, each labelled with the number of sites at or above that
+threshold (n=483, n=225, n=63).
+
+Panel b: for each of four FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, the
+snapshot), the share of that collection's sites with at least n years of data, as a step line.
+Site counts shown in the legend key. The snapshot's line coloured dark grey; the three historical
+collections use the same colours as their lines in Figure 2 (Marconi #2ECC71, La Thuile #E74C3C,
+FLUXNET2015 #3498DB).
+
+IMPORTANT -- two different meanings of 'a year', not interchangeable:
+  - Marconi, La Thuile, FLUXNET2015 (the three historical collections): a year counts if that
+    site is LISTED as having data for that year in the collection's own published site table
+    (La Thuile: 1991-2007 year-indicator columns of data/lists/LaThuileList.xlsx; FLUXNET2015:
+    two-digit year columns of data/lists/FLUXNET2015.xlsx, where a plus sign or the text
+    'Tier 2' both count as a year with data, same as a plain year marker).
+  - The snapshot: a year counts if ANY flux value (of the 12 broad flux variables checked by
+    compute_site_year_presence(), R/utils.R) is present in AT LEAST ONE MONTH of that year --
+    not a published site-table listing, since the current network has no such table.
+  - Marconi values are SPANS ONLY: Marconi_to_Modern_SiteIDs.xlsx records only a first-last year
+    range per site (e.g. '1997-1998'), not a year-by-year record, so Marconi's per-site year
+    count is that range's length, not a count of individually-confirmed data years. La Thuile and
+    FLUXNET2015, by contrast, are genuine year-by-year indicator counts.
+
+Because of this, panel b's four lines are not a strictly like-for-like comparison -- stated here
+so the figure is not read as claiming otherwise.
+
+COLLECTION TOTALS (sites, site-years): Marconi 35, 96; La Thuile 252, 965; FLUXNET2015 212, 1532; the snapshot 781, 6200.
+
+Final artwork size: 180 mm wide x 90 mm tall, Helvetica throughout. Supplementary Figure (target
+journal Scientific Data has no Extended Data concept) -- see docs/figure_inventory.md.
+
+SOURCE: scripts/supp_stage2_record_length_collections_figure.R.
+Validated against data/snapshots/collection_sites_siteyears.csv (96 / 965 / 1,532 / 6200 site-years).
+Vector PDF alongside this PNG; 300 ppi JPEG alongside both.
+

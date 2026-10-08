@@ -196,7 +196,8 @@ check_edge_clipping <- function(pdf_path, w_pt, h_pt) {
   ## its own pass/fail call, for the same underlying reason (poppler's
   ## reported ink box for these glyphs is a font-design metric, not a tight
   ## fit to the visible ink -- confirmed here by direct visual inspection:
-  ## figS5_flux_representativeness.pdf's "(g C m⁻² yr⁻¹)" sits with a
+  ## figS4_sampling_flux_axes.pdf's (figS5_flux_representativeness.pdf before
+  ## the 2026-10-08 supplementary material restructure) "(g C m⁻² yr⁻¹)" sits with a
   ## plainly visible gap above it at 600 dpi despite pdftotext reporting the
   ## enclosing "(" and the plotmath minus-sign exponents "−2"/"−1" at up to
   ## 0.83pt PAST the page's top edge). Excluded from both the reported

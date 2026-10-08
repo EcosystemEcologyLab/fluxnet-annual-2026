@@ -1,0 +1,8 @@
+FIGURE LEGEND -- fig2_by_pft_pct_change_guerrieri
+TITLE: WUE, IWUE, uWUE and k* by plant functional type, percent change from baseline
+DESCRIPTION: Same layout as fig2_by_pft_ratio_to_mean, but each site's series is percent
+change from its own first year with a value and at least 10 valid days before the
+across-site median is taken, per calendar year and metric. No trend tests or slopes are
+shown.
+
+============================================================

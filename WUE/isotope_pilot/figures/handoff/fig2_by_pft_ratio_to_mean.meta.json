@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T12:40:10Z",
+  "pipeline_version": "b10557e",
+  "input_sources": [
+    "WUE/isotope_pilot/tables/ (stage 2), WUE/isotope_pilot/tables/precip_compare/, data/snapshots/ (read-only)"
+  ],
+  "notes": ""
+}

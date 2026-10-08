@@ -1,0 +1,7 @@
+FIGURE LEGEND -- fig0_map_sites
+TITLE: Map of the 11 WUE isotope pilot sites
+DESCRIPTION: Panel a, North America; panel b, Europe. Each site is a large dot coloured by
+IGBP class (PAPER_IGBP_COLOURS/PAPER_IGBP_ORDER), labelled with its site code. No values are
+plotted here, only site location and vegetation class.
+
+============================================================

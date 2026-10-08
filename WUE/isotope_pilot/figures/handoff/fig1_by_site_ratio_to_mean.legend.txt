@@ -1,0 +1,12 @@
+FIGURE LEGEND -- fig1_by_site_ratio_to_mean
+TITLE: WUE, IWUE, uWUE and k* by site, normalised to the site's own mean
+DESCRIPTION: One panel per site (11), ordered by IGBP then latitude, each titled with the
+site code and the site's IGBP/Koppen class in the top-right corner. Four coloured lines
+(WUE, IWUE, uWUE, sub-daily k*) show each metric's annual value divided by that site's own
+mean over its plotted years. k* excludes site-years where it sat on a grid-search limit (0
+or 1.5). Site-years with fewer than 10 valid days are open points; kept years with zero
+valid days (US-Ho2 2012, 2013) show no points. Light grey bars (secondary axis, right) show
+valid days per year. Year labels on the x-axis are red where fewer than 80% of that year's
+days had a fully gauge-measured precipitation record. No trend tests or slopes are shown.
+
+============================================================

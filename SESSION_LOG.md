@@ -4,6 +4,46 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — WUE isotope pilot stage 2: full run, 11 sites (NL-Loo dropped at the P_ERA gate)
+
+**Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** Full run of `05`-`10`
+for all 12 stage-2 sites with the reconstructed screens (previous entry below: rain from `P_F`,
+screen c from `SW_IN_F`, `gpp_test = "halfhour"`), go-ahead given in conversation.
+
+**`NL-Loo` failed the pre-existing P_ERA integrity check** in `06_build_site_years.R`
+(mean annual sub-daily `P_ERA` sum vs. `review/diagnostics/precip_site_filter`'s reference,
+required within 2%): -3.08%, the only one of the 12 sites to fail (next closest: `FI-Hyy` exactly
+-2.00%, `DE-Tha` -1.89%, `BE-Vie` -1.14%). That check's existing hard `stop()` halted the whole
+run, as designed — left as-is, not bypassed or weakened. Asked the user how to proceed; chose to
+drop `NL-Loo` from stage 2, alongside `CH-Dav` (`WUE_SITES_STAGE2` in `code/00_config.R` now
+excludes both; `NL-Loo`'s files are left on disk, unread). Documented in `README.md` and
+`docs/methods_memo.md` ("Stage 2 — site list: CH-Dav and NL-Loo dropped").
+
+**Reran `05`-`10` cleanly for the remaining 11 sites.** `years_dropped.csv` checked against the
+stage 1 expected list already built into `10_report_stage2.R`: matches exactly except `US-Ho2`'s
+already-anticipated new CUT-based entries (not previously assessed in stage 1, which ran on VUT).
+`07`'s cross-check against `tables/screen_variants/attrition_by_variant.csv`'s
+`rain_P_F_rad_SW_IN`/`halfhour` rows passed exactly for the 51 overlapping (3-test-site)
+site-years. Units check against Zhou et al. (2015) still passes: uWUE_y 4.03-18.23 (Zhou:
+3.50-15.83), IWUE_y 15.63-63.29 (Zhou: 5.32-62.31).
+
+**`docs/report_back_stage2_20261007.md` extended** with: the full `screen_attrition.csv` table (252
+site-year rows, all 11 sites); a per-site kept-year summary — number of kept years, kept years
+with zero valid days (`US-Ho2` 2012 and 2013, listed), median and range of valid days per kept
+year both including and excluding the zero-valid-day years, and median/minimum
+`share_days_gauge_measured` per site; kept site-years with fewer than 10 valid days, listed (6
+site-years: `BE-Vie` 2020/2021, `US-Ha1` 2003/2005, `US-Ho2` 2012/2013); and k*-at-grid-limit
+counts (2 of 228 site-years at the sub-daily scale, 7 of 228 at the daily scale). **Built from
+`screen_attrition.csv`, not `wue_annual.csv`** — a kept year with zero valid days never appears in
+`wue_annual.csv` at all (`08_compute_metrics.R` builds it only from days that survived the
+screens), so the zero-valid-day years would have been invisible from `wue_annual.csv` alone. No
+interpretation, no trend tests.
+
+Figures (`fig_wue_annual.png`, `fig_iwue_annual.png`, `fig_uwue_annual.png`, `fig_valid_days.png`)
+and `tables/wue_annual.csv`/`wue_daily.csv.gz` regenerated for the 11 sites.
+
+---
+
 ## 2026-10-07 — WUE isotope pilot stage 2: reconstructed Zhou screens adopted, 3-site test rerun
 
 **Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** PI decision, same day,

@@ -1,0 +1,31 @@
+FIGURE LEGEND -- fig_tv2_uncertainty_usable_annual_nee.png
+=============================================================
+
+TITLE: Figure 2. Uncertainty of usable annual NEE
+
+DESCRIPTION:
+(a) Boxplots (median, IQR box, 1.5xIQR whiskers, outlier points) of the
+random uncertainty term (NEE_REF_RANDUNC), the u*-threshold term
+((P84-P16)/2 of the u*-percentile ensemble), and the joint term
+(NEE_REF_JOINTUNC), for VUT and CUT side by side, log10 y-axis (the u*
+term has a long right tail -- see report.md Stage 2). (b,c) Random (b) and
+u*-threshold (c) uncertainty terms against |NEE|, one point per usable
+site-year, VUT/CUT in two colours, both axes log10.
+
+COLOUR CODING: VUT/CUT, fixed 2-colour palette (VUT_CUT_COLOURS in
+scripts/technical_validation_interim.R; no dedicated palette yet exists in
+R/plot_constants.R for VUT/CUT).
+
+QUALIFICATION RULE: 'usable' = (1 - QC) <= QC_THRESHOLD_YY (0.50),
+applied separately to VUT (own NEE_VUT_REF_QC) and CUT (own
+NEE_CUT_REF_QC) -- not the single per-site VUT/CUT fallback 04_qc.R uses
+for row exclusion. n = 4,017 usable VUT site-years, 4,320 usable CUT
+site-years (confirmed, this section's Check 2).
+
+DATA SOURCE: table_stage2_site_year_nee_uncertainty.csv, unchanged (no new
+computation; column definitions as in report.md Stage 2).
+
+REPRODUCIBILITY:
+Script: scripts/technical_validation_interim.R
+Upstream diagnostic: scripts/diagnostics/dq_stage2_annual_uncertainty.R
+DIMENSIONS: 183 x 170 mm, 600 dpi PNG + vector PDF, Helvetica, white background.

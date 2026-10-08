@@ -4,6 +4,78 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — Technical Validation interim redraw (Trevor Keenan comment 25)
+
+Candidate Technical Validation section for all co-authors, redrawing the completed
+`review/diagnostics/data_quality_uncertainty/` diagnostic (stages 0–4, prior session) as four
+Nature-format figures and one table in `review/technical_validation_interim/`
+(`scripts/technical_validation_interim.R`). Side output: no paper figure, snapshot, or metrics
+file was touched; the diagnostic itself was not rerun — every output below reuses its existing
+CSVs, except three documented exceptions (Figure 1a's ECDFs, and Checks 1/3 below) that needed
+direct read-only DuckDB queries at a granularity the summary tables don't carry.
+
+**Checks requested against the diagnostic:**
+1. **DuckDB store vs. the 20 September snapshot of record** (`fluxnet_shuttle_snapshot_20260920T102211.csv`):
+   confirmed match — the `annual` table's FLUXMET site list (781 sites) is identical to the
+   snapshot's, zero set difference.
+2. **Headline numbers**: all confirmed against the diagnostic's own tables — 6,336 site-years;
+   781 sites; 4,017 usable VUT / 4,320 usable CUT site-years; 3,960 site-years (575 sites) with
+   both usable; 31 sub-daily sites (ICOS 74.2% of the subset vs. 44.6% network-wide); 125 sites
+   with no usable annual NEE in any year. No corrections needed.
+3. **Why `NEE_VUT_SE` has values at 732 sites when the percentile/MEAN ensemble and REF sit at
+   617–618**: traced to the data, not re-analysed — of the 1,544 NEE_VUT site-years where `_SE`
+   has a value but `_REF` does not, all 1,544 also have `NEE_VUT_REF_NIGHT`/`_DAY` populated.
+   ONEFlux's day/night-partitioned pipeline (and the SE computed from it) still ran for these
+   site-years; only the combined (day+night) REF/MEAN/percentile-ensemble selection did not. A
+   genuine ONEFlux processing-pipeline asymmetry, not a database join artefact.
+
+**Figures** (183 mm wide, PNG + PDF + `.legend.txt`, `R/nature_format.R`/`R/plot_constants.R`;
+passed `scripts/check_figure_format.R` on the first format-compliant iteration after fixing three
+issues it caught: a stray `"|"` character in a plotmath expression rendering as a glyph artefact
+in the PDF export, ~16,600 zero-width hairline point-border strokes from ggplot2's default point
+shape, and a false-positive on rotated axis text that `pdftotext -bbox` over-measures):
+- **Figure 1** — gaps by variable/time step: (a) ECDFs of the QC flag fraction (daily/monthly/
+  annual, weekly excluded as a 1-site, non-representative table) for NEE_VUT/NEE_CUT/LE/H; (b)
+  pooled sub-daily measured/good/medium/poor gap-fill shares, 31 sites.
+- **Figure 2** — uncertainty of usable annual NEE: (a) random/u*-threshold/joint term boxplots,
+  VUT vs. CUT, log₁₀; (b,c) random and u*-threshold terms against NEE magnitude, log-log.
+- **Figure 3** — VUT vs. CUT, 3,960 site-years where both are usable: (a) 1:1 scatter, points
+  exceeding the propagated combined (quadrature-summed) joint uncertainty in a second colour, plus
+  a third "no reported value" colour for 20 site-years where the joint-uncertainty term itself is
+  unavailable on at least one side; (b) VUT−CUT histogram, ±25/50/100 reference lines, clipped at
+  ±150 with the 34 site-years beyond that clip counted in-panel.
+- **Figure 4** — availability of annual NEE: (a) site-years (6,336) and sites (781) by category,
+  "neither" split into "no reported value" (no raw value) vs. "below quality rule" (value exists,
+  fails QC); (b) per-category share where the BIF `USTAR_CP_SUCCESS_RUN`/`USTAR_MP_SUCCESS_RUN`
+  flags did not succeed. Per the task's instruction not to interpret these two BIF fields: they
+  take exactly two distinct values (0, 1) with no missing/other codes in the 6,336 joined
+  site-years, and no file anywhere in this repository (CLAUDE.md, `R/`, `docs/`, or any
+  `data/extracted` `BIFVARINFO` file) defines what the two codes mean — the "did not succeed" = 0
+  labelling used here is inherited from `scripts/diagnostics/dq_stage4_availability.R`'s own
+  inline, name-inferred convention, not independently sourced or re-derived.
+
+Labels/legends throughout use the task's neutral wording ("usable", "not usable", "no reported
+value", "below quality rule", "did not succeed") and never "fail"/"error".
+
+**Table** — `table_tv1_column_coverage_by_site.csv`: per-site column coverage (reference value,
+QC, RANDUNC, JOINTUNC, the 7-point u*-percentile ensemble, USTAR50, MEAN, SE, and the `_CORR`
+family with its spread columns) for NEE_VUT/NEE_CUT/LE/H at daily/monthly/annual resolution,
+pivoted directly from `table_stage0_column_inventory.csv` — no new computation.
+
+**Errata added to `review/diagnostics/data_quality_uncertainty/report.md`** (dated 2026-10-08,
+appended, no existing text altered): (i) CUT is one u*-threshold per site held constant across
+years, not a single network-wide threshold — VUT's threshold varies by site-year, not by whether
+it varies by site; (ii) only `NEE_{VUT,CUT}_SE` reaches the higher (732/660-site) coverage tier —
+the MEAN and percentile columns sit at 617–618, the same tier as REF/QC/RANDUNC/JOINTUNC, contrary
+to the original prose's implication that the whole ensemble-statistic family was elevated; (iii)
+the JOINTUNC = sqrt(RANDUNC² + u*-term²) identity confirms the diagnostic reproduced ONEFlux's own
+documented formula correctly — it is a consistency check, not an independent empirical finding;
+(iv) two causal claims (forest-canopy aerodynamic roughness explaining larger u*-threshold terms;
+u*-method failure "causing" ONEFlux to withhold rather than QC-fail a value) are withdrawn as
+unsupported speculation layered on top of real, retained correlational patterns.
+
+---
+
 ## 2026-10-08 — WUE isotope pilot: hand-off figure fixes
 
 **Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** Six groups of fixes to

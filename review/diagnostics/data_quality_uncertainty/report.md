@@ -503,3 +503,56 @@ site×year-level quality/uncertainty context.
 ![Site-year availability](fig_stage4_site_year_availability.png)
 
 ![Site availability](fig_stage4_site_availability.png)
+
+---
+
+## Errata (2026-10-08)
+
+Added during the Technical Validation interim redraw
+(`review/technical_validation_interim/`, scripts/technical_validation_interim.R)
+for Trevor Keenan's review comment 25. The underlying tables and figures above are
+unchanged; these four points correct wording in the prose only.
+
+(i) **Stage 2's VUT/CUT u-star threshold description is imprecise.** The line
+"CUT uses a single global threshold rather than VUT's site-specific one" (above,
+Stage 2) should read: CUT ("Constant USTAR Threshold") uses **one u-star threshold
+per site, held constant across all of that site's years**; VUT ("Variable USTAR
+Threshold") uses **a threshold chosen per site-year** (so it can vary year to year
+at the same site). Neither is a single network-wide ("global") threshold — both are
+site-level quantities; they differ in whether the choice is allowed to vary by year
+within a site, not in whether they vary by site.
+
+(ii) **Stage 0's "more sites carry the u-star ensemble statistics than carry a
+usable REF value" is only true of `_SE`, not the ensemble as a whole.** The cited
+range "~617–732 for the ensemble-statistic columns (MEAN/SE/percentiles)" implied
+the whole MEAN/SE/percentile family sits above the REF/QC/RANDUNC/JOINTUNC group.
+In fact only `NEE_VUT_SE`/`NEE_CUT_SE` reach the higher count (732/660 sites at the
+annual step); `NEE_{VUT,CUT}_MEAN` and all seven percentile columns sit at 617–618,
+the same tier as REF/QC/RANDUNC/JOINTUNC (615–616), not the 732 tier. This
+Technical Validation redraw's Check 3 traced the cause: of the 1,544 NEE_VUT
+site-years where `_SE` has a value but `_REF` does not, all 1,544 also have
+`NEE_VUT_REF_NIGHT`/`_DAY` populated — ONEFlux's day/night-partitioned pipeline (and
+the SE computed from it) still ran for these site-years; only the combined
+(day+night) REF/MEAN/percentile-ensemble selection did not.
+
+(iii) **Stage 2's "JOINTUNC is sqrt(RANDUNC² + ustar_term²) ... to numerical
+precision" is a consistency check on ONEFlux's own documented definition, not an
+independent empirical finding.** The result (100% agreement within 1%) confirms
+this diagnostic reproduced ONEFlux's stated formula correctly from the data; it is
+not new information about the data itself and should not be read or cited as one.
+
+(iv) **Two causal/mechanistic claims are withdrawn as unsupported by the analysis
+actually performed, and should not be relied on:**
+  - Stage 2's canopy-roughness explanation for forest classes' larger u-star terms
+    ("consistent with taller, more aerodynamically rough canopies producing more
+    sensitive, less stable u-star filtering decisions") — no roughness, canopy
+    height, or aerodynamic data was analysed; this was speculation presented
+    alongside a real pattern (forest classes do carry larger median u-star terms)
+    and should be separated from it.
+  - Stage 4's "coherent mechanism" claim that u-star method failure directly causes
+    ONEFlux to withhold a `NEE_REF` value rather than producing one that fails QC
+    ("when u-star threshold estimation fails for a site-year, ONEFlux evidently
+    tends not to produce a usable value at all ... rather than producing one that is
+    merely poorly gap-filled") — the data support the correlation (method failure
+    tracks non-qualification, Stage 4's own table), not the causal mechanism asserted
+    on top of it.

@@ -4,6 +4,29 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — Session start blocked: uncommitted modifications to tracked files
+
+Before starting stage 2 of the WUE isotope pilot (`WUE/isotope_pilot/` — screens, WUE metrics,
+tables and figures, per the user's stage 2 brief), the session-start check required by
+`CLAUDE.md` ("Session Start — Multi-Machine Sync") found the working tree was not clean, so
+`git pull` was not run.
+
+**Modified tracked files found:** `outputs/session_info.txt`; `renv/activate.R`; seven
+`data/snapshots/*.meta.json` companions (`nee_signed5_occupancy_jaccard`,
+`site_trendy_nee_signed5_data_current_781`, `site_trendy_nee_signed5_data_fluxnet2015`,
+`site_trendy_nee_signed5_data_la_thuile`, `site_trendy_nee_signed5_data_marconi`,
+`site_trendy_nee_signed5_geo_current_781`, `trendy_nee_signed5_global_distribution`); and 17
+files under `review/diagnostics/nee_corrected_axis/` (6 PNG figures, 11 CSV/`.meta.json`
+tables). A long list of untracked files (logs, `renv/profiles/*/renv/`, new snapshot CSVs,
+`Rplots.pdf`, etc.) was also present but is not part of this problem — untracked files do not
+block a pull under the CLAUDE.md rule.
+
+Per the rule, these were reported to the user rather than pulled over or discarded; the choice
+of how to reconcile them (commit, stash, or leave as-is) was referred back to the user and had
+not been resolved as of this entry. No pull, commit, stash, or WUE stage 2 work has started yet.
+
+---
+
 ## 2026-10-07 — WUE isotope pilot: unattended setup prepared, full run not yet launched
 
 **Side analysis — not the FLUXNET Annual Paper 2026.** New standalone pilot comparing

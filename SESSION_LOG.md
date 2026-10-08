@@ -4,6 +4,52 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — WUE isotope pilot: screen-variant check (side analysis)
+
+**Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot
+itself, which stays on hold.** Read-and-report check on the 3 stage 2 test sites (`US-Fuf`,
+`US-Ho2`, `US-MMS`): how many valid days per kept site-year survive the Zhou et al. (2015) screens
+when (i) the rain source and (ii) screen c's radiation column change. New code:
+`code/zhou_screens.R`, `code/12_screen_variants.R`.
+
+**Refactor.** Moved `07_apply_screens.R`'s per-site screen logic (screens a-d) into
+`run_zhou_screens()` (`zhou_screens.R`), with arguments for the rain-screen precipitation column
+and screen c's radiation column (defaults reproduce `07`'s current code: `P_ERA`,
+`NETRAD_filled`). `07_apply_screens.R` now calls this function instead of its old inline body —
+**not re-run**; `tables/screen_attrition.csv` untouched (verified via `git status`).
+
+**Gate (passed).** `run_zhou_screens()` with rain from `P_ERA`, screen c's radiation test from
+`NETRAD_filled`, and PET pressure fixed at 101.3 kPa (matching the formula the committed
+`screen_attrition.csv` was actually generated under, before the 2026-10-08 PA_F change) reproduces
+it **exactly** — all 58 site-year rows across the 3 sites — confirming the refactor changed
+nothing.
+
+**Four variants** (PET now using the daily `PA_F`, per the same-day PET-pressure fix): rain from
+`P_ERA > 0` or `P_F > 0` (as distributed: gauge where measured, `P_ERA` fill where not), crossed
+with screen c tested against `NETRAD_filled >= 0` or `SW_IN_F >= 0`. Quality screen, daylight
+window, and the 10% GPP day test unchanged across all four; PET always uses `NETRAD_filled`
+regardless of which column screen c is tested against.
+
+**Finding: switching screen c's radiation test from `NETRAD_filled` to `SW_IN_F` increases valid
+days per kept year several-fold at all three sites** — e.g. `US-Fuf` median (range) 14 (10-29) ->
+84 (71-98) with rain held at `P_ERA`; `US-Ho2` 15 (0-28) -> 34 (0-51); `US-MMS` 8 (0-17) -> 25
+(9-44). `tables/screen_variants/records_in_window_by_month.csv` shows the mechanism: median
+in-window (05:00-21:00) records with `NETRAD_filled >= 0` is only ~17-25 of the 33 possible
+half-hours, vs. a full 33 for `SW_IN_F >= 0` (net radiation, unlike incoming shortwave, is
+routinely negative near dawn/dusk within the window). **Rain source also matters**: switching from
+`P_ERA` to `P_F` (gauge-measured where available) roughly doubles valid days at a given radiation
+column (e.g. `US-Fuf` `P_ERA`/`NETRAD`: 14 (10-29) vs. `P_F`/`NETRAD`: 24 (16-35)) — consistent
+with the same-day precip-comparison finding that `P_ERA` over-reports wet days relative to the
+gauge. `tables/screen_variants/gauge_share.csv`: the gauge is fully measured on 83-97% of days in
+kept years at these 3 sites, so the `P_F` variant is not merely swapping in a mostly-absent series.
+
+Full per-site-year, per-month, and supporting tables: `tables/screen_variants/` (4 tables, each
+with a `.meta.json`). Report: `docs/report_screen_variants_20261007.md`. No cause asserted beyond
+the mechanism directly shown in `records_in_window_by_month.csv`; no screen, threshold, or rain
+rule changed; WUE not recomputed; stage 2 full run remains on hold.
+
+---
+
 ## 2026-10-07 — WUE isotope pilot: ERA5-vs-gauge precip comparison finished (side analysis)
 
 **Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot

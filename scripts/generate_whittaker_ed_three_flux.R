@@ -294,10 +294,10 @@ combo <- panel_nee + panel_gpp + panel_ter + nee_key_cell + patchwork::guide_are
 ABC
 DEE
 ",
-    heights = c(1, 0.85), guides = "collect"
+    heights = c(1, 0.67), guides = "collect"
   )
 
-saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 130,
+saved <- save_nature_figure(combo, OUT_STEM, width_mm = NATURE_ED_MAX_WIDTH_MM, height_mm = 110,
                              extended_data = TRUE)
 msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 

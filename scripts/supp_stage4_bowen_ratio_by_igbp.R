@@ -130,7 +130,12 @@ total_row <- summarise_class(site_values, "Total")
 table4 <- bind_rows(by_class, total_row)
 print(table4, n = Inf, width = Inf)
 
-out_path <- file.path(OUT_DIR, "tableS4_bowen_ratio_by_igbp.csv")
+## Renumbered tableS4_bowen_ratio_by_igbp.csv -> tableS3_bowen_ratio_by_igbp.csv
+## (2026-10-08 follow-up): S3 freed up by tableS3_sampling_ratios_by_axis.csv's
+## own rename to supplementary_data_2_sampling_ratios.csv (no longer a
+## numbered Supplementary Table). Old tableS4_bowen_ratio_by_igbp.* moved to
+## SupTables/deprecated/.
+out_path <- file.path(OUT_DIR, "tableS3_bowen_ratio_by_igbp.csv")
 write_csv(table4, out_path)
 write_output_metadata(
   out_path,

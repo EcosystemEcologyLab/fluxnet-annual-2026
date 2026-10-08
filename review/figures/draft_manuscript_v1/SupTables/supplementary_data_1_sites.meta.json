@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-08T19:05:54Z",
-  "pipeline_version": "2a4ed4a",
+  "run_datetime_utc": "2026-10-08T21:02:59Z",
+  "pipeline_version": "6cf3c86",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
   ],
-  "notes": "One row per site from the snapshot of record, 20 September 2026. product_version parsed from product_name itself (vX.Y_rZ), not the snapshot's coarser oneflux_code_version field. network_code: product_name's first underscore-delimited token (same convention as Table S1). doi_or_handle: snapshot's own product_id field. Checks run and passed: 781 rows, no missing product_version or doi_or_handle."
+  "notes": "One row per site from the snapshot of record, 20 September 2026. product_name has its trailing .zip dropped. product_version parsed from product_name itself (vX.Y_rZ), not the snapshot's coarser oneflux_code_version field. network_code: product_name's first underscore-delimited token (same convention as Table S1). identifier_url/identifier_type: AMF and TERN sites' product_id is a DOI, rewritten to a canonical https://doi.org/ URL; every other (ICOS-hub) network code's product_id is an ICOS handle suffix, rewritten to https://hdl.handle.net/11676/<product_id>. Checks run and passed: 781 rows, no missing product_version or identifier_url, 433 DOIs + 348 handles."
 }

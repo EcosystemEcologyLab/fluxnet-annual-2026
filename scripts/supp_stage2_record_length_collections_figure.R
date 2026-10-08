@@ -156,7 +156,7 @@ panel_a <- ggplot(current_hist_df, aes(x = n_years, fill = igbp)) +
   annotate("text", x = THRESHOLDS + 0.5, y = Inf,
            label = paste0("n=", thresh_counts), angle = 90, vjust = 1.2, hjust = 1.1,
            size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "grey20") +
-  scale_x_continuous(name = "Years with data (current network)", breaks = scales::breaks_pretty()) +
+  scale_x_continuous(name = "Years with data (the snapshot)", breaks = scales::breaks_pretty()) +
   scale_y_continuous(name = "Number of sites", expand = expansion(mult = c(0, 0.08))) +
   nature_theme() +
   theme(legend.key.size = unit(2.2, "mm")) +

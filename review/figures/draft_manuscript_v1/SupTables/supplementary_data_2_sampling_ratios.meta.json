@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T21:03:40Z",
+  "pipeline_version": "6cf3c86",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics_fig4.csv"
+  ],
+  "notes": "All 12 axis x comparison combinations agreed with representativeness_metrics_fig4.csv to 6 decimals; full long table written."
+}

@@ -289,7 +289,7 @@ make_panel <- function(flux_code, unit_expr, tag) {
     panel_letter(tag, x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6) +
     labs(
       x = as.expression(bquote("FLUXNET2015 median" ~ .(flux_code) ~ "± SD (" * .(unit_expr) * ")")),
-      y = as.expression(bquote("the snapshot median" ~ .(flux_code) ~ "± SD (" * .(unit_expr) * ")"))
+      y = as.expression(bquote("Snapshot median" ~ .(flux_code) ~ "± SD (" * .(unit_expr) * ")"))
     ) +
     combo_theme()
 }

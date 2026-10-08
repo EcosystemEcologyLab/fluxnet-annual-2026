@@ -4,6 +4,56 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — WUE isotope pilot: ERA5-vs-gauge daily precipitation comparison (side analysis)
+
+**Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot
+itself.** Requested before deciding whether to launch the WUE isotope pilot's stage 2 full run
+(12 sites, screens + WUE metrics — prepared and smoke-tested on 3 sites the same day, held at
+the user's request pending this check). Read-and-report only: no threshold proposed or applied,
+the rain screen unchanged, WUE not recomputed. New code: `WUE/isotope_pilot/code/11_precip_compare.R`
+(+ two shared helpers factored out for reuse, see below). Output:
+`WUE/isotope_pilot/tables/precip_compare/`, `docs/report_precip_compare_20261007.md`.
+
+**Why:** prior ERA5-precipitation investigations (SESSION_LOG 2026-09-17 to 2026-09-22, and the
+two 2026-10-07 ERA5 coordination-package entries below) all compared annual or monthly totals,
+network-wide. None asked how often `P_ERA` reports rain on a day — the question that matters for
+the WUE isotope pilot's stage 2 rain screen (every day with `P_ERA > 0` is excluded, MY DECISION
+4). This analysis targeted exactly that gap, for the WUE pilot's 12 stage-2 sites only.
+
+**Identity check (run first, per instructions): fails at 11 of 12 sites.** The 2026-09-20
+SESSION_LOG entry found, at 3 different sites (IT-MBo, US-HB4, FI-Hyy), that at HH/HR resolution
+`P_F_QC==2` records are 100% identical to `P_ERA` and `P_F_QC==0` non-zero records are 0%
+identical — the System 2 QC convention holding correctly (unlike the MM-resolution QC-polarity
+flip found 2026-09-18). Re-checked here at the WUE pilot's own 12 sites: the `P_F_QC==2` side
+holds exactly (100% everywhere with any such records; `US-Dk2` has none, `NA`). The `P_F_QC==0`
+non-zero side does **not** hold exactly anywhere except `US-SP1` (0%) — the other 11 sites show a
+small but non-zero coincidental-match rate, 0.05–0.43% of measured non-zero gauge records exactly
+equal to `P_ERA` (e.g. `FI-Hyy` 0.43%, `BE-Vie` 0.27%, `US-SP1` 0%, most others 0.05–0.16%). Per
+instructions ("stop and tell me if a site departs from 100% and 0%"), the script stops at this
+gate — items 2-9 (totals, gauge resolution, wet-day frequency, agreement, `P_ERA` on gauge-dry
+days, frequency-matching amount, duration, rain-rule consequence) and the three figures were not
+computed. No cause asserted for the small non-zero rate (plausibly coincidental rounding where
+the gauge's own resolution is coarse, not investigated further here). Full numbers:
+`tables/precip_compare/identity_check.csv`; the falsifiability statement (written before any
+number was computed, per instructions) is in the report.
+
+**Refactor, verified non-destructive:** extracted the Priestley-Taylor PET formula and the Zhou
+et al. (2015) rain-day-exclusion propagation out of `07_apply_screens.R` into a new
+`code/rain_rule.R`, and the per-site `NETRAD ~ SW_IN_F` gap-fill out of `06_build_site_years.R`
+into `code/netrad_gapfill.R` — so this new script reuses the identical functions the stage 2
+pipeline itself calls, rather than a second, independent implementation. Re-ran the existing
+3-site stage 2 smoke test (`US-Fuf`, `US-Ho2`, `US-MMS`) after each refactor step:
+`screen_attrition.csv`, `netrad_fits.csv`, `years_dropped.csv`, `site_product.csv`, and
+`wue_annual.csv` are all byte-identical before and after.
+
+Also ran `05_read_subdaily_wue.R` for all 12 stage-2 sites (previously only the 3 smoke-test
+sites had been read) — a pure re-read of already-extracted data, no download, no judgment, no
+git-tracked output — so this comparison's identity check could run network-wide rather than on
+the 3-site subset. Stage 2's own `06`-`10` were NOT run for the other 9 sites; the stage 2 full
+run remains on hold, not launched, pending the user's review of this report.
+
+---
+
 ## 2026-10-07 — Session start blocked: uncommitted modifications to tracked files
 
 Before starting stage 2 of the WUE isotope pilot (`WUE/isotope_pilot/` — screens, WUE metrics,

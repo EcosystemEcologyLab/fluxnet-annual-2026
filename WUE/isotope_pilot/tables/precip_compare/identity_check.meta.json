@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T01:26:50Z",
+  "pipeline_version": "c73ff90",
+  "input_sources": [
+    "WUE/isotope_pilot/data/processed/subdaily_wue/ (from data/extracted/, FLUXNET Shuttle)"
+  ],
+  "notes": "Confirms the 2026-09-20 SESSION_LOG identity (P_F_QC==2 <-> P_ERA; P_F_QC==0 nonzero <-> never P_ERA) at the 12 WUE pilot sites."
+}

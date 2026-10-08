@@ -1,0 +1,12 @@
+Check 1 -- DuckDB (annual FLUXMET table) vs snapshot of record (fluxnet_shuttle_snapshot_20260920T102211.csv): MATCH. DB sites=781, snapshot sites=781, only-in-DB=0, only-in-snapshot=0.
+Check 3 -- NEE_VUT_SE present at 732 sites vs 618 for REF/MEAN/percentiles: of the 1544 site-years where NEE_VUT_SE has a value but NEE_VUT_REF does not, all 1544 (100%) also have NEE_VUT_REF_NIGHT (and NEE_VUT_REF_DAY) populated. ONEFlux's day/night-partitioned pipeline -- and the SE computed from it -- still ran and produced output for these site-years; only the combined (day+night) REF/MEAN/percentile-ensemble selection did not. This is a genuine ONEFlux processing-pipeline asymmetry visible in the data, not a database join artefact.
+Check 2 -- headline numbers:
+  site-years (FLUXMET annual): brief=6336, data=6336 (confirmed)
+  sites: brief=781, data=781 (confirmed)
+  usable VUT site-years: brief=4017, data=4017 (confirmed)
+  usable CUT site-years: brief=4320, data=4320 (confirmed)
+  site-years with both usable: brief=3960, data=3960 (confirmed)
+  sites with both usable: brief=575, data=575 (confirmed)
+  sub-daily (HH/HR) sites: brief=31, data=31 (confirmed)
+  sites with no usable annual NEE (ever): brief=125, data=125 (confirmed)
+  ICOS sub-daily share: brief~74% vs data 74.2%; ICOS network-wide share: brief~45% vs data 44.6% (both confirmed by rounding).

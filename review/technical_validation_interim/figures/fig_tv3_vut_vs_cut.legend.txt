@@ -1,0 +1,26 @@
+FIGURE LEGEND -- fig_tv3_vut_vs_cut.png
+=============================================================
+
+TITLE: Figure 3. VUT against CUT, site-years where both are usable
+
+DESCRIPTION:
+(a) Scatter of annual NEE_CUT against NEE_VUT on equal axes, dashed 1:1
+line. Points coloured by whether |VUT-CUT| exceeds the propagated combined
+uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2);
+20 of 3,960 site-years have no reported value for this comparison (the
+joint-uncertainty term itself is unavailable on at least one side even
+though both REF values qualify) and are coloured separately.
+(b) Histogram of VUT-CUT with dashed vertical lines at +/-25, 50 and 100 g
+C m^-2 yr^-1. The x-axis is clipped at +/-150; the number of site-years
+lying beyond that clip (34) is printed in the panel.
+
+n = 3,960 site-years (575 sites) where both NEE_VUT and NEE_CUT
+independently clear the paper's QC_THRESHOLD_YY=0.50 rule on their own QC
+column (confirmed, this section's Check 2).
+
+DATA SOURCE: table_stage3_site_year_vut_vs_cut.csv, unchanged.
+
+REPRODUCIBILITY:
+Script: scripts/technical_validation_interim.R
+Upstream diagnostic: scripts/diagnostics/dq_stage3_vut_vs_cut.R
+DIMENSIONS: 183 x 100 mm, 600 dpi PNG + vector PDF, Helvetica, white background.

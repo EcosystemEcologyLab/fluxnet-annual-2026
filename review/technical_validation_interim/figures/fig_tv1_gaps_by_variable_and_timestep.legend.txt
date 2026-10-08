@@ -1,0 +1,39 @@
+FIGURE LEGEND -- fig_tv1_gaps_by_variable_and_timestep.png
+=============================================================
+
+TITLE: Figure 1. Gaps by variable and time step
+
+DESCRIPTION:
+(a) Empirical cumulative distribution functions (ECDFs) of the quality-control
+(QC) flag fraction for NEE_VUT, NEE_CUT, LE and H, one panel per temporal
+resolution (daily, monthly, annual; left to right), across all 781-site
+FLUXMET site-periods. Weekly resolution is excluded -- the current DuckDB
+store holds weekly data for only one site (US-MMS), not a network-
+representative sample. The dashed vertical line marks QC = 0.50, the
+paper's QC_THRESHOLD_YY/MM/DD/WW gate (R/pipeline_config.R).
+(b) Pooled share of sub-daily (half-hourly/hourly) records in each of the
+four true QC categories (measured, good/medium/poor gap-fill), for the 31
+of 781 sites with sub-daily FLUXMET files extracted on disk. This 31-site
+subset is hub-skewed toward ICOS (74% of the subset vs 45% network-wide)
+though roughly IGBP-representative -- read as an ICOS-weighted estimate,
+not a network average.
+
+COLOUR CODING:
+(a) NEE_VUT/NEE_CUT/LE/H, fixed 4-colour palette defined in
+scripts/technical_validation_interim.R (FOUR_VAR_COLOURS; no dedicated
+palette yet exists in R/plot_constants.R for these four variables).
+(b) QC category, blue (measured) to red (poor gap-fill), ordinal.
+
+DATA SOURCE:
+(a) Direct read of the annual/monthly/daily DuckDB tables (dataset =
+'FLUXMET'), read-only -- the existing table_stage1_qc_distribution.csv only
+stores summary quantiles, not the full per-site-period distribution an ECDF
+needs. (b) table_stage1_subdaily_qc_network_summary.csv, unchanged.
+Both ultimately trace to data/duckdb/fluxnet.duckdb, confirmed (this
+section's Check 1) to match the snapshot of record,
+data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv.
+
+REPRODUCIBILITY:
+Script: scripts/technical_validation_interim.R
+Upstream diagnostic: scripts/diagnostics/dq_stage0_inventory.R, dq_stage1_gaps.R
+DIMENSIONS: 183 x 150 mm, 600 dpi PNG + vector PDF, Helvetica, white background.

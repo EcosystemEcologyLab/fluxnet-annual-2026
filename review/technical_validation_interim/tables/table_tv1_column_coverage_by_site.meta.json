@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T15:38:24Z",
+  "pipeline_version": "fe7ef57",
+  "input_sources": [
+    "review/diagnostics/data_quality_uncertainty/table_stage0_column_inventory.csv"
+  ],
+  "notes": "Pivot of table_stage0_column_inventory.csv restricted to daily/monthly/annual resolution (weekly excluded -- 1 site only, not network-representative) and the NEE_VUT/NEE_CUT/LE/H families. n_sites_* = count(distinct site_id) with at least one non-NA value for that column at that resolution; NA means the column does not exist in that table at all. No new computation -- values unchanged from the source table."
+}

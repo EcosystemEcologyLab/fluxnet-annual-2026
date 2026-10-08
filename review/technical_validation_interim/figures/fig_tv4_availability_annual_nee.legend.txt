@@ -1,0 +1,44 @@
+FIGURE LEGEND -- fig_tv4_availability_annual_nee.png
+=============================================================
+
+TITLE: Figure 4. Availability of annual NEE
+
+DESCRIPTION:
+(a) Site-years (n=6,336) and sites (n=781) by availability category: both
+VUT and CUT usable, VUT only, CUT only, or neither -- 'neither' split into
+'no reported value' (no raw NEE_VUT_REF/NEE_CUT_REF value exists that
+year/site) and 'below quality rule' (a raw value exists but does not clear
+QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <= QC_THRESHOLD_YY, own QC column
+per side (same rule as Figures 2-3).
+(b) For each site-year availability category, the share where
+USTAR_CP_SUCCESS_RUN did not succeed (series 'CP'), where
+USTAR_MP_SUCCESS_RUN did not succeed (series 'MP'), and where both did
+not succeed (series 'both') -- the y-axis title states 'that did not
+succeed' once rather than repeating it in each legend entry (which
+truncated at 183mm page width when spelled out per-series). Panel (b)'s
+x-axis uses shortened category labels ('both'/'VUT only'/'CUT only'/
+'neither') so the text can stay horizontal -- rotated text is measured by
+scripts/check_figure_format.R's pdftotext-bbox check as larger than its
+true rendered size. Panel (a), immediately to the left, gives the full
+category names ('both usable', 'VUT only usable', etc.).
+IMPORTANT: USTAR_CP_SUCCESS_RUN
+and USTAR_MP_SUCCESS_RUN take exactly two distinct values (0, 1) in the
+BIF records joined here, with no missing/other codes. No documentation in
+this repository defines what these two codes mean -- the 'did not
+succeed' = 0 labelling is inherited from the diagnostic script's own
+inline, name-inferred convention (scripts/diagnostics/dq_stage4_availability.R),
+not independently verified against FLUXNET/BADM product documentation, and
+this figure does not attempt to re-interpret it further.
+
+COLOUR CODING: (a) 5-category palette, VUT/CUT-only categories reuse
+VUT_CUT_COLOURS. (b) method, 3-colour palette, both local to
+scripts/technical_validation_interim.R.
+
+DATA SOURCE: (a) table_stage4_site_year_master.csv,
+table_stage4_site_level_availability.csv. (b)
+table_stage4_ustar_method_vs_qualification.csv. All unchanged.
+
+REPRODUCIBILITY:
+Script: scripts/technical_validation_interim.R
+Upstream diagnostic: scripts/diagnostics/dq_stage4_availability.R
+DIMENSIONS: 183 x 115 mm, 600 dpi PNG + vector PDF, Helvetica, white background.

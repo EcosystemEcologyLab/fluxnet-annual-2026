@@ -4,6 +4,46 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — WUE isotope pilot stage 2: reconstructed Zhou screens adopted, 3-site test rerun
+
+**Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** PI decision, same day,
+replacing the earlier rain-screen decision, after the two side analyses that examined it directly
+(previous two entries below): rain now sums `P_F` (as distributed: gauge where measured, `P_ERA`
+fill where not), screen c now tests `SW_IN_F >= 0` (not `NETRAD_filled >= 0`), and the day-level
+GPP test now uses `gpp_test = "halfhour"` (Zhou et al. 2015's own wording: 10% of the site-year's
+maximum single-record GPP over screen a-c survivors, not 10% of the largest daily mean). The
+80% completeness rule, the rain following-day logic, and PET (Priestley-Taylor from
+`NETRAD_filled` + daily `PA_F`) are unchanged.
+
+**Made the new `run_zhou_screens()` defaults** (`code/zhou_screens.R`), so `07_apply_screens.R`'s
+call (every argument already at default) adopts them without a code change at the call site
+itself. Recorded in `README.md` ("Stage 2 — reconstructed screens") and `docs/methods_memo.md`
+("Stage 2 — Zhou et al. (2015) screens (reconstructed, PI decision 2026-10-07)"), both pointing to
+`docs/report_screen_variants_20261007.md` and `docs/report_precip_compare_20261007.md` for the
+basis.
+
+**Reran `06`-`10` for the 3 stage 2 test sites** (`US-Fuf`, `US-Ho2`, `US-MMS`). `06`'s output
+(product choice, P_ERA check, NETRAD fits, years dropped) is byte-identical — unaffected by this
+decision, as expected (`06` itself untouched). `07` now cross-checks its own valid-day counts
+against `tables/screen_variants/attrition_by_variant.csv`'s `rain_P_F_rad_SW_IN`/`halfhour` rows
+and `stop()`s on any mismatch — **passed exactly, 51 kept site-years**. `screen_attrition.csv`
+gains `share_days_gauge_measured` (share of that year's days with `P_F_QC == 0` at every expected
+timestep, independent of which column drives the rain screen).
+
+**Valid days per kept year rose substantially** under the reconstructed screens: `US-Fuf` median
+109 (range 88-123, 5 kept years), `US-Ho2` median 60 (range 18-91, 19 kept years), `US-MMS` median
+48 (range 18-77, 25 kept years) — up from the prior screens' single digits to twenties. Annual
+uWUE/IWUE stay within the same order of magnitude as Zhou et al. (2015): uWUE_y 7.97-17.67 (Zhou:
+3.50-15.83), IWUE_y 22.78-61.53 (Zhou: 5.32-62.31). k* sits on a grid-search limit (0 or 1.5) for
+only 1 of 49 site-years at the sub-daily scale and 0 of 49 at the daily scale. Figures and
+`tables/wue_annual.csv`/`wue_daily.csv.gz` regenerated for the 3 sites; full screen-attrition
+table, the valid-days summary, and the k*-limit counts are in
+`docs/report_back_stage2_20261007.md` (extended, no interpretation, no trend tests).
+
+The 12-site stage 2 full run remains on hold, pending go-ahead.
+
+---
+
 ## 2026-10-07 — WUE isotope pilot: GPP day-test (daymean vs halfhour) check (side analysis)
 
 **Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot

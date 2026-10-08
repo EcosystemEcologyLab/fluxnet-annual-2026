@@ -4,6 +4,58 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — WUE isotope pilot: GPP day-test (daymean vs halfhour) check (side analysis)
+
+**Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot
+itself, which stays on hold.** Extends the same-day screen-variant check (previous entry below)
+with a third crossed factor: the day-level 10% GPP test's reference maximum. Read-and-report, on
+the same 3 stage 2 test sites (`US-Fuf`, `US-Ho2`, `US-MMS`). `07_apply_screens.R` not touched
+this round.
+
+**Note on dates:** this session's own code comments, report text, and `.meta.json` notes earlier
+today mistakenly referenced "2026-10-08"/"2026-10-09" as if separate days had passed between the
+PET-pressure fix, the first screen-variant check, and this GPP day-test extension — the system
+clock was 2026-10-07 throughout (confirmed via `Sys.Date()`). Corrected in
+`zhou_screens.R`/`12_screen_variants.R` and the regenerated report; no data table changed, only
+comment/metadata text (commit `66270bd`).
+
+**Added `gpp_test` to `run_zhou_screens()`** (`zhou_screens.R`): `"daymean"` (default, matches
+`07`'s existing code unchanged) tests a day's mean GPP against 10% of the largest daily mean GPP
+among that site-year's candidate days; `"halfhour"` (Zhou et al. 2015's own wording) tests it
+against 10% of the maximum single-record GPP over every record passing screens a-c instead. Both
+year-max values are now always computed and returned (`threshold_daymean`/`threshold_halfhour`),
+regardless of which mode is active.
+
+**Two gates, both passed.** Gate 1 (unchanged from the prior entry): `run_zhou_screens()` with
+rain=`P_ERA`, radiation=`NETRAD_filled`, PET pressure fixed at 101.3 kPa, `gpp_test="daymean"`
+reproduces the committed `tables/screen_attrition.csv` exactly (58 site-year rows). **New Gate
+2:** with `gpp_test="daymean"` and PET using the daily `PA_F`, the four rain x radiation variants
+reproduce the already-committed `tables/screen_variants/attrition_by_variant.csv` exactly (204
+rows) — confirming the new argument changes nothing at its default. (One bookkeeping fix found and
+fixed during this check: the gate's own comparison target, read fresh from disk each run, became
+the script's own prior extended output after the first successful run — made idempotent by
+filtering to `gpp_test=="daymean"` when that column is already present, so repeat runs compare
+against the same baseline rather than against themselves.)
+
+**Finding: `"halfhour"` is consistently at least as restrictive as `"daymean"`** — mechanically
+guaranteed, since a site-year's maximum single-record GPP is always >= its maximum daily-mean GPP,
+so the halfhour threshold is always >= the daymean threshold
+(`tables/screen_variants/gpp_thresholds.csv` confirms this holds at every one of the checked
+site-years). The gap in valid days is concentrated in shoulder-season months and negligible at
+peak growing season — e.g. for the `P_F`+`SW_IN_F` variant, `US-Fuf` January drops from 9 to 2
+valid days (daymean -> halfhour) and November from 36 to 29, while May-June are unchanged or
+within 1 day; `US-MMS` November drops from 7 to 1. Per-site median (range) valid days per kept
+year across all 8 variants (rain x radiation x gpp_test):
+`docs/report_screen_variants_20261007.md`.
+
+Outputs: `attrition_by_variant.csv` and `valid_days_by_month.csv` extended (not replaced) with a
+`gpp_test` column; new `gpp_thresholds.csv` (per site/kept year: both thresholds plus the maximum
+record GPP over NEE-QC-0-or-1 records, for comparison); `records_in_window_by_month.csv` and
+`gauge_share.csv` untouched (`gpp_test` does not affect them). No screen, threshold, or rain rule
+changed by this check itself; WUE not recomputed; stage 2 full run remains on hold.
+
+---
+
 ## 2026-10-07 — WUE isotope pilot: screen-variant check (side analysis)
 
 **Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot

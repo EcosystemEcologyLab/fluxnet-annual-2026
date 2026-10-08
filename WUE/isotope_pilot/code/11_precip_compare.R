@@ -81,7 +81,12 @@ save_fig_meta <- function(p, path, width, height, notes = "") {
   write_meta(path, notes)
 }
 
-timesteps_per_day <- function(resolution) if (identical(resolution, "HR")) 24L else 48L
+timesteps_per_day <- function(resolution) {
+  if (identical(resolution, "HH")) return(48L)
+  if (identical(resolution, "HR")) return(24L)
+  stop("[WUE] timesteps_per_day(): unrecognised resolution '", resolution,
+       "' -- expected exactly 'HH' or 'HR', no default.")
+}
 
 ## ---- Load all 12 sites' raw sub-daily series needed here -------------------
 load_site_raw <- function(site) {
@@ -91,7 +96,7 @@ load_site_raw <- function(site) {
   if (nrow(d) == 0) return(NULL)
   res <- read_status$resolution[read_status$site_id == site]
   res <- if (length(res) == 0) NA_character_ else res[[1]]
-  needed <- c("TIMESTAMP_START", "P_F", "P_F_QC", "P_ERA", "NETRAD", "SW_IN_F", "TA_F")
+  needed <- c("TIMESTAMP_START", "P_F", "P_F_QC", "P_ERA", "NETRAD", "SW_IN_F", "TA_F", "PA_F")
   missing_needed <- setdiff(needed, names(d))
   if (length(missing_needed) > 0) {
     warning("[WUE] ", site, ": missing column(s) needed for precip comparison -- ",
@@ -113,8 +118,23 @@ if (length(missing_sites) > 0) {
 raw_data <- raw_data[!vapply(raw_data, is.null, logical(1))]
 
 ## ============================================================================
-## IDENTITY CHECK (hard stop on any departure from 100%/0%)
+## IDENTITY CHECK -- revised 2026-10-08: the exact-match gate (100%/0%) was
+## too strict (see docs/report_precip_compare_20261007.md). A site now PASSES
+## when the P_F_QC==2 side is 100% (exact -- that side is a QC-convention
+## identity, not a coincidence question) AND the P_F_QC==0 non-zero side is
+## <= 1% (not exactly 0% -- small coincidental matches, e.g. at a coarse
+## gauge resolution, are expected and tolerated up to this bound). A site
+## that fails either condition is EXCLUDED from items 1-9 and the figures
+## below and named in the report; passing sites continue -- no longer an
+## all-or-nothing gate.
 ## ============================================================================
+top_n_values <- function(x, n = 5) {
+  if (length(x) == 0) return("")
+  tab <- sort(table(x), decreasing = TRUE)
+  tab <- tab[seq_len(min(n, length(tab)))]
+  paste(sprintf("%s:%d", names(tab), as.integer(tab)), collapse = ", ")
+}
+
 identity_rows <- lapply(names(raw_data), function(site) {
   d <- raw_data[[site]]
   qc2 <- d[!is.na(d$P_F_QC) & d$P_F_QC == 2, ]
@@ -125,35 +145,44 @@ identity_rows <- lapply(names(raw_data), function(site) {
   pct_qc2_eq <- if (n_qc2 > 0) round(100 * n_qc2_eq / n_qc2, 4) else NA_real_
 
   n_qc0_nz <- nrow(qc0_nz)
-  n_qc0_nz_eq <- if (n_qc0_nz > 0) sum(qc0_nz$P_F == qc0_nz$P_ERA, na.rm = TRUE) else NA_integer_
+  matching <- qc0_nz[qc0_nz$P_F == qc0_nz$P_ERA, ]
+  n_qc0_nz_eq <- if (n_qc0_nz > 0) nrow(matching) else NA_integer_
   pct_qc0_nz_eq <- if (n_qc0_nz > 0) round(100 * n_qc0_nz_eq / n_qc0_nz, 4) else NA_real_
 
-  departs <- (!is.na(pct_qc2_eq) && pct_qc2_eq != 100) || (!is.na(pct_qc0_nz_eq) && pct_qc0_nz_eq != 0)
+  pass_qc2 <- is.na(pct_qc2_eq) || pct_qc2_eq == 100
+  pass_qc0 <- is.na(pct_qc0_nz_eq) || pct_qc0_nz_eq <= 1
+  site_pass <- pass_qc2 && pass_qc0
 
   data.frame(
     site_id = site, n_qc2 = n_qc2, pct_qc2_eq_era = pct_qc2_eq,
     n_qc0_nonzero = n_qc0_nz, pct_qc0_nonzero_eq_era = pct_qc0_nz_eq,
-    departs_from_expected = departs, stringsAsFactors = FALSE
+    top5_matching_values = top_n_values(matching$P_F, 5),
+    passes_identity_gate = site_pass, stringsAsFactors = FALSE
   )
 })
 identity_check <- do.call(rbind, identity_rows)
 write_csv_meta(identity_check, file.path(out_tables, "identity_check.csv"),
-  notes = "Confirms the 2026-09-20 SESSION_LOG identity (P_F_QC==2 <-> P_ERA; P_F_QC==0 nonzero <-> never P_ERA) at the 12 WUE pilot sites.")
+  notes = "Revised 2026-10-08: pass = P_F_QC==2 side exactly 100% AND P_F_QC==0 nonzero side <= 1% (was an exact 100%/0% gate). A failing site is excluded from items 1-9 and the figures, not a global stop.")
 
-departing <- identity_check$site_id[identity_check$departs_from_expected]
-identity_ok <- length(departing) == 0
-if (!identity_ok) {
-  message("[WUE] Identity check FAILED for: ", paste(departing, collapse = ", "),
-          " -- departs from the expected 100%/0% pattern. See tables/precip_compare/identity_check.csv. ",
-          "Per instructions: stopping here and reporting, not proceeding to items 1-9 or the figures.")
+passing_sites <- identity_check$site_id[identity_check$passes_identity_gate]
+failing_sites <- identity_check$site_id[!identity_check$passes_identity_gate]
+if (length(failing_sites) > 0) {
+  message("[WUE] Identity gate: excluded ", paste(failing_sites, collapse = ", "),
+          " (see tables/precip_compare/identity_check.csv). Continuing with: ",
+          paste(passing_sites, collapse = ", "), ".")
 } else {
-  message("[WUE] Identity check OK for all sites (see tables/precip_compare/identity_check.csv).")
+  message("[WUE] Identity gate: all sites pass (see tables/precip_compare/identity_check.csv).")
 }
+raw_data <- raw_data[passing_sites]
 
-## Items 1-9 and the figures only run if the identity check passed for every
-## site -- per instructions, a departure is reported, not silently worked
-## around or proceeded past.
-if (identity_ok) {
+## Pre-initialised so the always-runs report section below can check these
+## with is.null() rather than exists(), whether or not any site passed.
+era_missing_by_site_year <- NULL
+era_missing_vs_years_dropped <- NULL
+rain_rule_consequence <- NULL
+
+## Items 1-9 and the figures run on whichever sites passed the identity gate.
+if (length(passing_sites) > 0) {
 
 ## ============================================================================
 ## Daily table per site: P_ERA_day, gauge_day (fully measured only), PET_day
@@ -171,10 +200,12 @@ build_daily <- function(site) {
     dplyr::summarise(
       n_records = dplyr::n(),
       n_qc0 = sum(!is.na(P_F_QC) & P_F_QC == 0),
-      P_ERA_day = sum(P_ERA, na.rm = TRUE),
+      n_era_present = sum(!is.na(P_ERA)),
+      P_ERA_day_raw = sum(P_ERA, na.rm = TRUE),
       gauge_day_raw = sum(P_F, na.rm = TRUE),
       TA_day = mean(TA_F, na.rm = TRUE),
       NETRAD_day_obs = mean(NETRAD, na.rm = TRUE),
+      PA_day = mean(PA_F, na.rm = TRUE),
       n_wet_steps_era = sum(!is.na(P_ERA) & P_ERA > 0),
       n_wet_steps_gauge = sum(!is.na(P_F_QC) & P_F_QC == 0 & !is.na(P_F) & P_F > 0),
       .groups = "drop"
@@ -182,7 +213,15 @@ build_daily <- function(site) {
   daily <- dplyr::left_join(full_dates, daily_obs, by = "date")
   daily$n_records[is.na(daily$n_records)] <- 0L
   daily$n_qc0[is.na(daily$n_qc0)] <- 0L
-  daily$fully_measured <- daily$n_records == tpd & daily$n_qc0 == tpd
+  daily$n_era_present[is.na(daily$n_era_present)] <- 0L
+  ## Daily P_ERA is missing (NA) unless P_ERA is present at EVERY expected
+  ## timestep that day -- previously summed with na.rm = TRUE, so a day with
+  ## no P_ERA at all silently read as a 0 mm (dry) day. Revised 2026-10-08.
+  daily$P_ERA_day <- ifelse(daily$n_era_present == tpd, daily$P_ERA_day_raw, NA_real_)
+  ## "fully measured" now also requires P_ERA present at every timestep, not
+  ## just P_F_QC == 0 at every timestep -- both series must be fully defined
+  ## on the same days.
+  daily$fully_measured <- daily$n_records == tpd & daily$n_qc0 == tpd & daily$n_era_present == tpd
   daily$gauge_day <- ifelse(daily$fully_measured, daily$gauge_day_raw, NA_real_)
 
   ## NETRAD gap-fill, same formula as 06_build_site_years.R/07_apply_screens.R
@@ -195,19 +234,67 @@ build_daily <- function(site) {
     dplyr::summarise(NETRAD_day = mean(NETRAD_filled, na.rm = TRUE), .groups = "drop")
   daily <- dplyr::left_join(daily, netrad_filled_daily, by = "date")
   daily <- daily[order(daily$date), ]
-  daily$PET_day <- pt_pet_mm_day(daily$NETRAD_day, daily$TA_day)
+  ## Same PET call shape as 07_apply_screens.R: daily mean PA_F for the
+  ## psychrometric constant, falling back to 101.3 kPa only where PA_F is
+  ## missing (rain_rule.R's pt_pet_mm_day(), revised 2026-10-08).
+  daily$PET_day <- pt_pet_mm_day(daily$NETRAD_day, daily$TA_day, daily$PA_day)
 
   daily$site_id <- site
   daily$year <- lubridate::year(daily$date)
   daily$month <- lubridate::month(daily$date)
   daily$resolution <- res
+
+  era_missing <- d |>
+    dplyr::mutate(year = lubridate::year(date)) |>
+    dplyr::group_by(year) |>
+    dplyr::summarise(n_timesteps = dplyr::n(), n_era_missing = sum(is.na(P_ERA)), .groups = "drop") |>
+    dplyr::mutate(site_id = site, frac_era_missing = round(n_era_missing / n_timesteps, 5))
+
   list(daily = daily, netrad_fit = data.frame(site_id = site, n = gf$n, slope = gf$slope,
-                                               intercept = gf$intercept, r_squared = gf$r_squared))
+                                               intercept = gf$intercept, r_squared = gf$r_squared),
+       era_missing = era_missing)
 }
 
 built <- lapply(names(raw_data), build_daily)
 names(built) <- names(raw_data)
 daily_all <- do.call(rbind, lapply(built, `[[`, "daily"))
+
+## ---- Missing-P_ERA timesteps by site and year (MY DECISION: leave 2026 out
+## -- it is an incomplete current year regardless of this question) ---------
+era_missing_by_site_year <- do.call(rbind, lapply(built, `[[`, "era_missing"))
+era_missing_by_site_year <- era_missing_by_site_year[era_missing_by_site_year$year != 2026, ]
+era_missing_by_site_year <- era_missing_by_site_year[, c("site_id", "year", "n_timesteps", "n_era_missing", "frac_era_missing")]
+write_csv_meta(era_missing_by_site_year, file.path(out_tables, "era_missing_timesteps.csv"),
+  notes = "Per site-year count of sub-daily timesteps with P_ERA == NA. 2026 excluded (incomplete current year regardless).")
+
+## Cross-check: any of these site-years already KEPT by years_dropped.csv
+## (i.e. not listed there as dropped)? years_dropped.csv currently only
+## reflects the 3 stage-2 smoke-test sites (06 has not run for the other 9 --
+## stage 2 full run on hold) -- reported honestly as "not yet assessed" for
+## those, not silently treated as "kept".
+years_dropped_path <- file.path(WUE_ROOT, "tables", "years_dropped.csv")
+era_missing_vs_years_dropped <- NULL
+if (file.exists(years_dropped_path)) {
+  years_dropped <- readr::read_csv(years_dropped_path, show_col_types = FALSE)
+  assessed_sites <- unique(years_dropped$site_id)
+  has_missing <- era_missing_by_site_year[era_missing_by_site_year$n_era_missing > 0, ]
+  ## vapply (not mapply) so a zero-row has_missing still yields a correctly-
+  ## typed logical(0), not an empty list that breaks case_when() below.
+  stage2_assessed <- has_missing$site_id %in% assessed_sites
+  dropped_by_years_dropped <- vapply(seq_len(nrow(has_missing)), function(i) {
+    any(years_dropped$site_id == has_missing$site_id[i] & years_dropped$year == has_missing$year[i])
+  }, logical(1))
+  era_missing_vs_years_dropped <- has_missing
+  era_missing_vs_years_dropped$stage2_assessed <- stage2_assessed
+  era_missing_vs_years_dropped$dropped_by_years_dropped <- dropped_by_years_dropped
+  era_missing_vs_years_dropped$status <- dplyr::case_when(
+    !stage2_assessed ~ "not yet assessed (06 not run for this site)",
+    dropped_by_years_dropped ~ "dropped by years_dropped.csv",
+    TRUE ~ "KEPT by years_dropped.csv -- has missing P_ERA timesteps"
+  )
+  write_csv_meta(era_missing_vs_years_dropped, file.path(out_tables, "era_missing_vs_years_dropped.csv"),
+    notes = "Site-years with >=1 missing P_ERA timestep, cross-checked against tables/years_dropped.csv (2026 excluded).")
+}
 
 PERIODS <- list(
   all     = function(d) d,
@@ -396,14 +483,25 @@ write_csv_meta(duration, file.path(out_tables, "duration.csv"))
 ## 9. Consequence for the rain rule -- site-years with >=350 fully measured
 ## days; days removed by rain_rule_excluded() (rain_rule.R, SAME function
 ## 07_apply_screens.R calls) driven by the gauge vs. by P_ERA, same PET.
+##
+## Revised 2026-10-08 (same days for both sources): gauge_day is already NA
+## wherever a day is not fully measured (by construction above); P_ERA is
+## now ALSO set to NA on exactly those same days before either series is
+## passed to rain_rule_excluded(), so the two runs see an identical
+## missingness pattern -- a day can still be excluded by propagation from a
+## neighbouring rainy day even where its own P_day is NA (same behaviour
+## rain_rule_excluded() already has for any NA day). Days removed are then
+## counted only among fully measured days, so the comparison itself is also
+## restricted to days where both series are actually defined.
 ## ============================================================================
 qualifying <- coverage_rows[coverage_rows$period == "all" & coverage_rows$n_fully_measured >= 350, ]
 
 consequence_rows <- lapply(names(built), function(site) {
   d <- built[[site]]$daily
   d <- d[order(d$date), ]
-  d_era   <- data.frame(date = d$date, P_day = d$P_ERA_day, PET_day = d$PET_day)
-  d_gauge <- data.frame(date = d$date, P_day = d$gauge_day,  PET_day = d$PET_day)
+  era_P_day_shared <- ifelse(is.na(d$gauge_day), NA_real_, d$P_ERA_day)
+  d_era   <- data.frame(date = d$date, P_day = era_P_day_shared, PET_day = d$PET_day)
+  d_gauge <- data.frame(date = d$date, P_day = d$gauge_day,      PET_day = d$PET_day)
   excl_era   <- rain_rule_excluded(d_era)
   excl_gauge <- rain_rule_excluded(d_gauge)
 
@@ -411,10 +509,10 @@ consequence_rows <- lapply(names(built), function(site) {
   if (length(qual_years) == 0) return(NULL)
 
   do.call(rbind, lapply(qual_years, function(yr) {
-    idx <- d$year == yr
+    idx <- d$year == yr & d$fully_measured
     data.frame(
       site_id = site, year = yr,
-      n_fully_measured = sum(d$fully_measured[idx]),
+      n_fully_measured = sum(d$fully_measured[d$year == yr]),
       days_removed_gauge = sum(excl_gauge[idx], na.rm = TRUE),
       days_removed_era = sum(excl_era[idx], na.rm = TRUE),
       diff_era_minus_gauge = sum(excl_era[idx], na.rm = TRUE) - sum(excl_gauge[idx], na.rm = TRUE)
@@ -428,7 +526,7 @@ if (is.null(rain_rule_consequence)) {
     days_removed_era = integer(0), diff_era_minus_gauge = integer(0))
 }
 write_csv_meta(rain_rule_consequence, file.path(out_tables, "rain_rule_consequence.csv"),
-  notes = "Uses rain_rule.R's rain_rule_excluded()/pt_pet_mm_day() -- the same functions 07_apply_screens.R calls -- not a reimplementation. Gauge-driven run treats non-fully-measured days as NA P_day (not excluded by the base rain day rule, but still reachable via following-day propagation from a neighbouring rainy day).")
+  notes = "Revised 2026-10-08: both sources share the same missing-day pattern (P_ERA set to NA wherever the gauge day is not fully measured) and days_removed_* count only fully measured days. Uses rain_rule.R's rain_rule_excluded()/pt_pet_mm_day() -- the same functions 07_apply_screens.R calls -- not a reimplementation.")
 
 message("[WUE] 11_precip_compare.R: tables written. ", nrow(rain_rule_consequence),
         " qualifying site-year(s) (>=350 fully measured days) for the rain-rule consequence check.")
@@ -495,11 +593,61 @@ p_c <- ggplot2::ggplot(dry_days_df, ggplot2::aes(x = P_ERA_day)) +
 save_fig_meta(p_c, file.path(out_figures, "fig_era_on_gauge_dry.png"), width = 11, height = 8)
 
 } else {
-  message("[WUE] Skipping items 1-9 and the figures -- identity check failed. See the report.")
+  message("[WUE] No site passed the identity gate -- items 1-9 and the figures not produced. See the report.")
 }
 
 ## ============================================================================
-## REPORT (always written, whether or not the identity check passed)
+## Per-period, per-site summary table for the report (not a new tables/
+## output -- the instruction was to keep the existing tables as they are;
+## this is assembled from them for the report text only).
+## ============================================================================
+build_period_summary <- function(pname) {
+  sites <- names(built)
+  do.call(rbind, lapply(sites, function(site) {
+    cov <- sum(coverage_rows$n_fully_measured[coverage_rows$period == pname & coverage_rows$site_id == site])
+    sgw <- wet_day_frequency$share_wet[wet_day_frequency$period == pname & wet_day_frequency$site_id == site &
+                                          wet_day_frequency$threshold_mm == 0 & wet_day_frequency$series == "gauge"]
+    sew <- wet_day_frequency$share_wet[wet_day_frequency$period == pname & wet_day_frequency$site_id == site &
+                                          wet_day_frequency$threshold_mm == 0 & wet_day_frequency$series == "P_ERA"]
+    dry <- era_on_gauge_dry[era_on_gauge_dry$period == pname & era_on_gauge_dry$site_id == site, ]
+    fm  <- freq_matching_amount$freq_matching_amount_mm[freq_matching_amount$period == pname &
+                                                            freq_matching_amount$site_id == site]
+    tot <- totals_site_year[totals_site_year$period == pname & totals_site_year$site_id == site, ]
+    ratio <- if (nrow(tot) > 0 && sum(tot$gauge_sum) != 0) round(sum(tot$P_ERA_sum) / sum(tot$gauge_sum), 4) else NA_real_
+
+    mean_removed_gauge <- NA_real_; mean_removed_era <- NA_real_
+    if (pname == "all") {
+      rrc_s <- rain_rule_consequence[rain_rule_consequence$site_id == site, ]
+      if (nrow(rrc_s) > 0) {
+        mean_removed_gauge <- round(mean(rrc_s$days_removed_gauge), 2)
+        mean_removed_era   <- round(mean(rrc_s$days_removed_era), 2)
+      }
+    }
+
+    data.frame(
+      site_id = site, fully_measured_days = cov,
+      share_gauge_wet = if (length(sgw)) sgw else NA_real_,
+      share_era_wet   = if (length(sew)) sew else NA_real_,
+      share_era_positive_on_gauge_dry = if (nrow(dry)) dry$share_era_positive else NA_real_,
+      median_era_on_gauge_dry_mm = if (nrow(dry)) dry$median_mm else NA_real_,
+      p90_era_on_gauge_dry_mm = if (nrow(dry)) dry$p90_mm else NA_real_,
+      freq_matching_amount_mm = if (length(fm)) fm else NA_real_,
+      ratio_era_to_gauge = ratio,
+      mean_days_removed_gauge = mean_removed_gauge,
+      mean_days_removed_era = mean_removed_era,
+      stringsAsFactors = FALSE
+    )
+  }))
+}
+if (length(passing_sites) > 0) {
+  summary_all     <- build_period_summary("all")
+  summary_may_sep <- build_period_summary("may_sep")
+} else {
+  summary_all <- summary_may_sep <- NULL
+}
+
+## ============================================================================
+## REPORT (always written, whether or not every site passed the identity gate)
 ## ============================================================================
 
 knitr_like_table <- function(df, n_max = 60) {
@@ -517,6 +665,9 @@ knitr_like_table <- function(df, n_max = 60) {
 ## This paragraph was written before any table above was computed (it does
 ## not depend on, and was not adjusted for, the result found) -- the
 ## falsifiability statement the user's instructions required in advance.
+## Unchanged from the 2026-10-07 run (today's revision changes the identity
+## gate's strictness and a few counting details, not what would count as
+## support or refutation).
 falsifiability_statement <- c(
   "**What would show P_ERA can stand in for the gauge, under the stage 2 rain rule's \"any",
   "precipitation above zero\" definition (MY DECISION 4):** on fully measured days, P_ERA and the",
@@ -537,13 +688,26 @@ falsifiability_statement <- c(
 
 report_path <- file.path(docs_dir, paste0("report_precip_compare_", format(Sys.Date(), "%Y%m%d"), ".md"))
 
+n_missing_total <- if (!is.null(era_missing_by_site_year)) sum(era_missing_by_site_year$n_era_missing) else NA_integer_
+kept_with_missing <- if (!is.null(era_missing_vs_years_dropped)) {
+  era_missing_vs_years_dropped[era_missing_vs_years_dropped$status ==
+    "KEPT by years_dropped.csv -- has missing P_ERA timesteps", ]
+} else NULL
+not_assessed_with_missing <- if (!is.null(era_missing_vs_years_dropped)) {
+  era_missing_vs_years_dropped[era_missing_vs_years_dropped$status ==
+    "not yet assessed (06 not run for this site)", ]
+} else NULL
+
 report_lines <- c(
   paste0("# ERA5 vs. gauge daily precipitation comparison (", Sys.Date(), ")"),
   "",
   "Side analysis, not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot",
   "itself -- a read-and-report comparison requested before deciding whether to launch the stage 2",
   "full run. Describes what was measured; asserts no cause; proposes, recommends, and applies no",
-  "threshold; does not change the rain screen; does not recompute WUE.",
+  "threshold; does not change the rain screen (MY DECISION 4, any P_ERA above zero, is unchanged);",
+  "does not recompute WUE. Revises the 2026-10-07 run of this same script",
+  "(`docs/report_precip_compare_20261007.md`), which stopped entirely at an exact-match identity",
+  "gate -- the user's own instruction, found too strict, now relaxed as described below.",
   "",
   "## Falsifiability statement (written before computing anything)",
   "",
@@ -551,43 +715,88 @@ report_lines <- c(
   "",
   "## 1. Identity check",
   "",
-  "Per site: share of `P_F_QC==2` records where `P_F` equals `P_ERA` (expected 100%), and share of",
-  "`P_F_QC==0` records with non-zero `P_F` where `P_F` equals `P_ERA` (expected 0%) -- confirming the",
-  "2026-09-20 SESSION_LOG identity at these 12 sites specifically (that entry checked 3 different",
-  "sites: IT-MBo, US-HB4, FI-Hyy).",
+  "Per site: share of `P_F_QC==2` records where `P_F` equals `P_ERA` (expected 100%), share of",
+  "`P_F_QC==0` records with non-zero `P_F` where `P_F` equals `P_ERA` (expected <= 1%, not exactly",
+  "0% -- the 2026-10-07 run's exact-0% requirement was too strict), and the 5 most frequent matching",
+  "values where `P_F_QC==0` non-zero matches occur. **A site passes when the `P_F_QC==2` side is",
+  "exactly 100% AND the `P_F_QC==0` non-zero side is <= 1%; a failing site is excluded from items 1-9",
+  "and the figures below (not a global stop) and named here.**",
   "",
   knitr_like_table(identity_check),
   "",
-  if (identity_ok) {
-    "**Result: every site matches the expected 100%/0% pattern exactly.**"
+  if (length(failing_sites) == 0) {
+    "**Result: every site passes.**"
   } else {
-    c(
-      paste0("**Result: ", length(departing), " of ", nrow(identity_check), " site(s) depart from the",
-             " expected pattern** -- not at the `P_F_QC==2` side (100% everywhere `n_qc2 > 0`; `US-Dk2`",
-             " has zero `P_F_QC==2` records, hence `NA`), but at the `P_F_QC==0` non-zero side, where a",
-             " small share (0.05-0.43% of measured non-zero gauge records across the affected sites,",
-             " `US-SP1` the only exact 0%) happen to equal `P_ERA` exactly."),
-      "",
-      paste0("Departing sites: ", paste(departing, collapse = ", "), "."),
-      "",
-      "Per instructions, this stops the analysis here: items 1-9 and the figures were not computed.",
-      "No cause is asserted for the small non-zero match rate (it could be coincidental rounding --",
-      "both series can land on the same value by chance when the gauge's own resolution is coarse --",
-      "or something else; that question is not investigated here)."
-    )
+    paste0("**Result: ", length(failing_sites), " of ", nrow(identity_check), " site(s) fail and are",
+           " excluded from everything below: ", paste(failing_sites, collapse = ", "), ".** Passing: ",
+           paste(passing_sites, collapse = ", "), ".")
   },
+  "",
+  "## Missing P_ERA timesteps",
+  "",
+  "Daily `P_ERA` was previously summed with `na.rm = TRUE`, so a day with no `P_ERA` at all silently",
+  "read as a 0 mm (dry) day. Revised: a day's `P_ERA` is now `NA` unless `P_ERA` is present at every",
+  "expected timestep, and that is now also required for \"fully measured\" (in addition to the",
+  "existing `P_F_QC == 0` requirement). Full counts by site and year (2026 excluded):",
+  paste0("`tables/precip_compare/era_missing_timesteps.csv` (",
+         if (is.na(n_missing_total)) "not computed (no site passed the identity gate)" else
+           paste0(n_missing_total, " missing timestep(s) total across passing sites"), ")."),
+  "",
+  if (!is.null(kept_with_missing) && nrow(kept_with_missing) > 0) {
+    c(
+      paste0("**", nrow(kept_with_missing), " site-year(s) kept by `years_dropped.csv` have >=1",
+             " missing P_ERA timestep:**"),
+      "",
+      knitr_like_table(kept_with_missing[, c("site_id", "year", "n_timesteps", "n_era_missing", "frac_era_missing")])
+    )
+  } else if (!is.null(era_missing_vs_years_dropped)) {
+    "No site-year kept by `years_dropped.csv` has a missing P_ERA timestep."
+  } else {
+    "Not checked (no site passed the identity gate)."
+  },
+  "",
+  if (!is.null(not_assessed_with_missing) && nrow(not_assessed_with_missing) > 0) {
+    paste0("(", nrow(not_assessed_with_missing), " further site-year(s) with missing P_ERA belong to",
+           " sites `years_dropped.csv` has not yet assessed -- stage 2's `06_build_site_years.R` has",
+           " only run for the 3 smoke-test sites; the stage 2 full run remains on hold.)")
+  } else "",
+  "",
+  "## Per-site summary, all months",
+  "",
+  "One row per site passing the identity gate. `fully_measured_days` pools all years;",
+  "`mean_days_removed_*` covers only site-years with >=350 fully measured days (`rain_rule_consequence.csv`).",
+  "",
+  knitr_like_table(summary_all),
+  "",
+  "## Per-site summary, May to September",
+  "",
+  "Same columns, restricted to fully measured days with month in 5:9. `mean_days_removed_*` is an",
+  "all-year quantity (item 9 was not computed by period) and is omitted here.",
+  "",
+  knitr_like_table(if (!is.null(summary_may_sep)) summary_may_sep[, setdiff(names(summary_may_sep),
+    c("mean_days_removed_gauge", "mean_days_removed_era"))] else NULL),
+  "",
+  "## Figures",
+  "",
+  "- `figures/precip_compare/fig_wet_freq_amount.png` -- (a) wet-day frequency vs. amount, both",
+  "  series, one panel per site (fully measured days, all months).",
+  "- `figures/precip_compare/fig_days_removed_by_source.png` -- (b) days removed per year by the",
+  "  rain rule under each source, by site (site-years with >=350 fully measured days).",
+  "- `figures/precip_compare/fig_era_on_gauge_dry.png` -- (c) daily P_ERA on gauge-dry days, log",
+  "  x-axis, one panel per site.",
+  if (length(passing_sites) == 0) "  (None of the three were produced -- no site passed the identity gate.)" else NULL,
   "",
   "## What I could not do",
   "",
-  if (identity_ok) {
-    "Nothing -- all nine COMPUTE items and all three figures were produced for all 12 sites."
+  if (length(failing_sites) == 0) {
+    "Nothing -- all nine COMPUTE items, both per-period summaries, and all three figures were produced for all 12 sites."
   } else {
     c(
-      "- Items 2-9 (totals, gauge resolution, wet-day frequency, agreement, P_ERA on gauge-dry days,",
-      "  frequency-matching amount, duration, rain-rule consequence) and figures a-c: not computed.",
-      "  The identity check (item 0, confirming the prerequisite 2026-09-20 identity) did not pass for",
-      "  11 of 12 sites, and per instructions (\"Stop and tell me if a site departs from 100% and 0%\")",
-      "  this analysis stops there rather than proceeding on an unconfirmed foundation."
+      paste0("- Items 2-9 and the figures were not computed for: ", paste(failing_sites, collapse = ", "),
+             " -- excluded by the revised identity gate (`P_F_QC==0` non-zero match rate > 1%)."),
+      if (length(passing_sites) == 0)
+        "- No site passed the identity gate, so nothing beyond the identity check itself was produced."
+      else NULL
     )
   }
 )

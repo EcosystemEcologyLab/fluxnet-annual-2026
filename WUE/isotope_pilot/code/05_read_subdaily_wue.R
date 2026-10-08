@@ -102,7 +102,10 @@ read_status <- lapply(WUE_SITES_STAGE2, function(site) {
     message("[WUE] ", site, ": already read -- skipping (", out_path, ")")
     existing <- readRDS(out_path)
     resolution <- if (nrow(existing) == 0 || !"TIMESTAMP_START" %in% names(existing)) NA_character_ else {
-      dt <- as.numeric(diff(sort(unique(existing$TIMESTAMP_START))[1:2]))
+      ## Explicit units -- diff() on POSIXct returns a difftime whose unit
+      ## auto-scales (e.g. "hours" at an hourly site, where dt would then be
+      ## 1, not 60, and silently fall through to "unknown"). Force minutes.
+      dt <- as.numeric(diff(sort(unique(existing$TIMESTAMP_START))[1:2]), units = "mins")
       if (is.na(dt)) NA_character_ else if (dt == 30) "HH" else if (dt == 60) "HR" else "unknown"
     }
     return(data.frame(

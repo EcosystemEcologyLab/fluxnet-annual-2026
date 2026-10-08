@@ -6,16 +6,21 @@
 ## can never make the two diverge silently. Not sourced by 00_config.R;
 ## sourced explicitly by whichever script needs it.
 
-#' Priestley-Taylor PET (alpha = 1.26), G = 0, fixed sea-level pressure.
-#' See docs/methods_memo.md "Stage 2 -- Priestley-Taylor PET" for the reading
-#' behind the fixed-pressure assumption (the user's instructions name only
-#' daily mean net radiation and air temperature as inputs).
-pt_pet_mm_day <- function(rn_wm2_mean, ta_degc, alpha = 1.26) {
+#' Priestley-Taylor PET (alpha = 1.26), G = 0.
+#'
+#' Revised 2026-10-08: pressure is now an explicit argument -- pass the
+#' site's own daily mean `PA_F` (already in kPa, no conversion needed). Where
+#' `pressure_kpa` is `NA` (e.g. `PA_F` missing that day), falls back to a
+#' fixed standard sea-level pressure (101.3 kPa), the original behaviour, so
+#' a missing pressure reading never turns an otherwise-computable PET into
+#' `NA`. See docs/methods_memo.md "Stage 2 -- Priestley-Taylor PET".
+pt_pet_mm_day <- function(rn_wm2_mean, ta_degc, pressure_kpa = NA_real_, alpha = 1.26) {
   rn_mj_day <- rn_wm2_mean * 86400 * 1e-6          # G = 0, so (Rn - G) = Rn
   lambda    <- 2.501 - 0.002361 * ta_degc          # MJ/kg (FAO-56)
   es        <- 0.6108 * exp(17.27 * ta_degc / (ta_degc + 237.3))  # kPa
   delta     <- 4098 * es / (ta_degc + 237.3)^2     # kPa/degC
-  gamma     <- 1.013e-3 * 101.3 / (0.622 * lambda) # kPa/degC, fixed sea-level P
+  p         <- ifelse(is.na(pressure_kpa), 101.3, pressure_kpa)
+  gamma     <- 1.013e-3 * p / (0.622 * lambda)     # kPa/degC
   alpha * (delta / (delta + gamma)) * rn_mj_day / lambda
 }
 

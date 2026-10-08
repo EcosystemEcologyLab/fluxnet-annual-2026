@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T02:09:52Z",
+  "pipeline_version": "d4e4dd6",
+  "input_sources": [
+    "WUE/isotope_pilot/data/processed/subdaily_wue/ (from data/extracted/, FLUXNET Shuttle)"
+  ],
+  "notes": "Per site-year, from all individually-measured (P_F_QC==0, P_F>0) timesteps -- not restricted to fully measured days."
+}

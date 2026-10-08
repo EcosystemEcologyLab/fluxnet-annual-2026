@@ -11,12 +11,11 @@
 ##    continuous date range (not reset at calendar-year boundaries), so a
 ##    rain event on Dec 31 can still exclude Jan 1-2 of the next year.
 ##
-##    Priestley-Taylor inputs: the user's instructions name only daily mean
-##    net radiation and air temperature (G = 0) as inputs -- no atmospheric
-##    pressure. The psychrometric constant therefore uses a FIXED standard
-##    sea-level pressure (101.3 kPa), not site-specific PA_F. This is my
-##    reading, not stated in Zhou et al. 2015 section 2.1 itself (same
-##    caveat as the k* method below).
+##    Priestley-Taylor inputs: daily mean net radiation, air temperature, and
+##    (revised 2026-10-08) daily mean PA_F for the psychrometric constant --
+##    falling back to a fixed standard sea-level pressure (101.3 kPa) only
+##    where PA_F is missing that day. See rain_rule.R and
+##    docs/methods_memo.md "Stage 2 -- Priestley-Taylor PET".
 ##
 ## b. Quality: keep records where NEE_QC_sel, LE_F_MDS_QC, VPD_F_QC are each
 ##    0 or 1 (NA fails).
@@ -91,12 +90,13 @@ process_one_site <- function(site) {
       P_day = sum(P_ERA, na.rm = TRUE),
       TA_day = mean(TA_F, na.rm = TRUE),
       NETRAD_day = mean(NETRAD_filled, na.rm = TRUE),
+      PA_day = mean(PA_F, na.rm = TRUE),
       day_netrad_estimated = any(netrad_estimated),
       .groups = "drop"
     )
   daily <- dplyr::left_join(full_dates, daily_obs, by = "date")
   daily <- daily[order(daily$date), ]
-  daily$PET_day <- pt_pet_mm_day(daily$NETRAD_day, daily$TA_day)
+  daily$PET_day <- pt_pet_mm_day(daily$NETRAD_day, daily$TA_day, daily$PA_day)
 
   rainy <- !is.na(daily$P_day) & daily$P_day > 0
   daily$excluded_rain_rule <- rain_rule_excluded(daily)

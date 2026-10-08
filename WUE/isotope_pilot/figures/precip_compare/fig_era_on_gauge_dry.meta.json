@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T02:09:54Z",
+  "pipeline_version": "d4e4dd6",
+  "input_sources": [
+    "WUE/isotope_pilot/data/processed/subdaily_wue/ (from data/extracted/, FLUXNET Shuttle)"
+  ],
+  "notes": ""
+}

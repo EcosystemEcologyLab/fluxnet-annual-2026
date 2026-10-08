@@ -468,7 +468,13 @@ panel3b <- ggplot(stage3_sy |> filter(abs(diff) <= CLIP), aes(x = diff)) +
             label = paste0(n_beyond, " site-years beyond ±", CLIP, " (clipped)")) +
   tv_theme()
 
-fig3 <- (panel3a | panel3b) + plot_annotation(tag_levels = "a") & tv_tag_theme()
+## guides = "collect": panel3a's own legend.position="bottom" centred its
+## 3-key legend under panel3a's column alone (~half the 183mm figure
+## width), too narrow for the full row -- it overflowed symmetrically past
+## the left edge, clipping "within combined uncertainty". Collecting moves
+## it to the bottom of the whole two-panel composite, which is wide enough.
+fig3 <- (panel3a | panel3b) + plot_layout(guides = "collect") +
+  plot_annotation(tag_levels = "a") & tv_tag_theme() & theme(legend.position = "bottom")
 saved3 <- save_nature_figure(fig3, file.path(FIG_DIR, "fig_tv3_vut_vs_cut"),
                               width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 100)
 msg("Saved Figure 3: ", saved3$png, " (", n_beyond, " site-years beyond +/-", CLIP, ")")
@@ -492,7 +498,11 @@ writeLines(c(
 "of how faint/small their actual points are drawn (the ~3,940-point",
 "'within combined uncertainty' class in particular is plotted at alpha=0.4,",
 "size=0.5 to stay legible as overlapping points, which would otherwise make",
-"its own legend key nearly invisible).",
+"its own legend key nearly invisible). The legend is collected (patchwork",
+"plot_layout(guides='collect')) and centred under the full two-panel",
+"figure, not under panel (a) alone -- panel (a)'s own column is too narrow",
+"for the 3-key row, which previously overflowed past the left edge and",
+"clipped 'within combined uncertainty'.",
 "(b) Histogram of VUT-CUT with dashed vertical lines at +/-25, 50 and 100 g",
 "C m^-2 yr^-1. The x-axis is clipped at +/-150; the number of site-years",
 paste0("lying beyond that clip (", n_beyond, ") is printed in the panel."),
@@ -560,10 +570,13 @@ avail_df <- bind_rows(sy_cat, site_cat) |>
 cat_counts <- avail_df |>
   select(cat2, level, n) |>
   tidyr::pivot_wider(names_from = level, values_from = n, values_fill = 0)
+## trim = TRUE: format()'s default right-pads every element to a common
+## width (so e.g. "57" rendered as "  57" to match "3,960"'s width) --
+## trim removes that fixed-width padding, leaving plain "57".
 CAT_LABELS <- setNames(
   sprintf("%s (%s site-years, %s sites)", cat_counts$cat2,
-          format(cat_counts[["Site-years (n = 6,336)"]], big.mark = ","),
-          format(cat_counts[["Sites (n = 781)"]], big.mark = ",")),
+          format(cat_counts[["Site-years (n = 6,336)"]], big.mark = ",", trim = TRUE),
+          format(cat_counts[["Sites (n = 781)"]], big.mark = ",", trim = TRUE)),
   as.character(cat_counts$cat2)
 )
 
@@ -614,7 +627,11 @@ panel4b <- ggplot(method_summary, aes(x = category, y = share, fill = method)) +
   scale_fill_manual(values = c("CP" = "#FC8D62", "MP" = "#8DA0CB", "both" = "#4D4D4D"), name = NULL,
                      labels = c("CP" = "CP", "MP" = "MP", "both" = "CP and MP")) +
   scale_y_continuous(labels = scales::label_percent(), expand = expansion(mult = c(0, 0.05))) +
-  labs(x = "NEE availability category", y = "Share of site-years in which the method did not succeed") +
+  ## Shortened from "...in which the method did not succeed": the longer
+  ## title's rotated text ran up into the patchwork tag "b", anchored near
+  ## the top-left of the whole plot (which includes the y-axis title
+  ## margin, not just the panel).
+  labs(x = "NEE availability category", y = "Share of site-years, method did not succeed") +
   tv_theme() +
   theme(legend.position = "bottom")
 
@@ -660,9 +677,12 @@ writeLines(c(
 "(b) For each site-year availability category, the share where",
 "USTAR_CP_SUCCESS_RUN did not succeed (series 'CP'), where",
 "USTAR_MP_SUCCESS_RUN did not succeed (series 'MP'), and where both did",
-"not succeed (series 'CP and MP') -- the y-axis title states 'in which the",
-"method did not succeed' once rather than repeating it in each legend",
-"entry (which truncated at 183mm page width when spelled out per-series).",
+"not succeed (series 'CP and MP') -- the y-axis title ('Share of",
+"site-years, method did not succeed') states that once rather than",
+"repeating it in each legend entry (which truncated at 183mm page width",
+"when spelled out per-series); shortened again from an even longer first",
+"draft ('...in which the method did not succeed'), whose rotated text ran",
+"up into the patchwork tag 'b'.",
 "Panel (b)'s",
 "x-axis uses shortened category labels ('both'/'VUT only'/'CUT only'/",
 "'neither') so the text can stay horizontal -- rotated text is measured by",

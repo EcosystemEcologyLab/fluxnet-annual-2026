@@ -4,6 +4,29 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — Technical Validation interim: three layout fixes
+
+Three layout fixes to `review/technical_validation_interim/` found on review of the prior
+session entry's output, no new analysis.
+
+1. **Figure 3a**: the legend was centred under panel (a)'s own column (~half the 183mm figure
+   width) — too narrow for its 3-key row, which overflowed past the left edge and clipped
+   "within combined uncertainty". Fixed with patchwork `plot_layout(guides = "collect")`,
+   which centres the single collected legend under the full two-panel composite instead of
+   under panel (a) alone.
+2. **Figure 4a**: removed `format()`'s default fixed-width padding (`trim = TRUE`) from the
+   legend count labels — now plain `"VUT only usable (57 site-years, 41 sites)"`, not
+   `"(  57 site-years,  41 sites)"`.
+3. **Figure 4b**: shortened the y-axis title to "Share of site-years, method did not succeed"
+   — the longer first-draft title's rotated text ran up into the patchwork tag "b" (anchored
+   near the top-left of the whole plot, which includes the y-axis title margin, not just the
+   panel).
+
+`scripts/check_figure_format.R`: 4/4 PASS — Figure 3's measured edge clearance rose from
+2.66pt to 8.97pt, consistent with the legend-clipping fix.
+
+---
+
 ## 2026-10-08 — Technical Validation interim: final tidy before circulation
 
 Five fixes to `review/technical_validation_interim/`, `scripts/technical_validation_interim.R`,

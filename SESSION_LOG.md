@@ -4,6 +4,62 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — WUE isotope pilot: hand-off figure fixes
+
+**Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** Six groups of fixes to
+the 7 hand-off figures from the prior session entry below, all in `code/13_handoff_figures.R`.
+Plotted values (`tables/handoff/*.csv`) and the figure legend files (`figures/handoff/*.legend.txt`,
+`docs/handoff_figure_legends_20261008.md`) were explicitly out of scope and are byte-identical to
+before this entry; only their `.meta.json` run timestamps refreshed.
+
+1. **`fig0_map_sites`**: removed the "x"/"y" axis titles (an un-set `labs()` left ggplot2's default
+   aesthetic-name titles showing). Panel a re-zoomed to the conterminous US (~125W-65W/24N-50N) so
+   the New England cluster (US-Ho2/US-Bar/US-Ha1/US-Slt) separates; panel b to a tight box around
+   the 3 European sites. Custom boxes are applied via `coord_sf()` directly in
+   `build_region_map()`, not `R/figures/fig_maps.R`'s `.apply_region()` — its numeric-vector branch
+   turned out to be unreachable, confirmed directly: `switch()`'s first argument must itself be
+   length 1, so passing a length-4 box errors before that branch is ever reached. `fig_maps.R` was
+   left untouched (out of this pilot's scope) and the custom-box path was built locally instead.
+   `ggrepel::geom_text_repel()` tuning (`box.padding`, `force`, `max.overlaps = Inf`, `max.iter`)
+   raised until no label sat on or under a dot — US-Slt's did at the original settings. Asymmetric
+   panel widths (`plot_layout(widths = c(2.2, 1))`), matching each box's true geographic aspect
+   ratio at its own mid-latitude, trimmed the empty vertical margin that equal widths had left
+   around the shorter (wider-than-tall) North America panel.
+2. **`fig1_by_site_{ratio_to_mean,pct_change_guerrieri}`**: year labels now show only every 5
+   years, with unlabelled minor tick marks at every single year via ggplot2 4.0's native
+   `guide_axis(minor.ticks = TRUE)` — confirmed by direct reproduction to render real tick marks
+   (not just gridlines), with no new package dependency (`ggh4x` is not installed, and CLAUDE.md
+   asks that new dependencies not be introduced without discussion). The red-text year-label
+   styling for `share_days_gauge_measured < 0.8` years was replaced with a short red tick drawn
+   inside the panel's bottom edge, as the last layer so it stays visible over a tall valid-day bar.
+3. **`fig2_by_pft_{ratio_to_mean,pct_change_guerrieri}`**: added a narrow site-count strip below
+   each PFT panel (number of sites, 1-5, contributing to that calendar year's median, computed per
+   normalisation since `norm_pct` needs a baseline year and so can be `NA` in a year `norm_ratio`
+   is not), x-aligned to the main panel via matching `scale_x_continuous(limits = ...)` in both.
+   The existing static "n = 5 sites" corner annotation (the group's total site count, not a
+   per-year count) is unchanged.
+4. **`fig3_rain_source_summary`**: one shared Gauge/P_ERA legend for both panels. fig3a's points
+   were switched from a `colour` to a `fill` aesthetic (`shape = 21`) to match fig3b's `geom_col()`
+   fill scale — even so, `plot_layout(guides = "collect")` still rendered two side-by-side legend
+   blocks, confirmed directly: the two panels' legend key glyphs (point vs. rect) differ even when
+   the underlying scale is identical. Fixed with the same one-panel-shows/one-suppresses pattern
+   already used for the map's IGBP legend in the prior session entry.
+5. **`fig4_rain_rule_by_year`**: every facet panel now shows the same effective one-year bar width.
+   `facet_wrap(scales = "free_x")` gives every panel the same physical width but auto-ranges each
+   panel's own x domain to just that site's data, so a fixed-width (0.7-year) bar rendered far
+   wider on screen in a short-record panel (US-Fuf, one qualifying year) than in a long one. Fixed
+   with an invisible `geom_blank()` anchor per site at its own min/max year, padded to a shared
+   10-year minimum span (sites already wider than that are left alone).
+6. `scripts/check_figure_format.R` was rerun unmodified (not in this turn's scope) against
+   `figures/handoff/`: 7/7 PASS.
+
+**By-eye inspection** (PIL crops, not `sips --cropOffset` — this session's own prior entry notes
+`sips`'s coordinate origin is unreliable for debugging) confirmed all four Figure 0 requirements,
+Figure 1's major/minor ticks and red floor-ticks on an actual panel (DE-Tha), Figure 2's strips,
+Figure 3's single legend, and Figure 4's comparable bar widths across sparse and dense panels.
+
+---
+
 ## 2026-10-08 — WUE isotope pilot: hand-off figures for the 11 stage-2 sites
 
 **Stage 2 of the WUE isotope pilot — not the FLUXNET Annual Paper 2026.** Seven figures for

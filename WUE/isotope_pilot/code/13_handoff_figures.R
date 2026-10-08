@@ -229,9 +229,25 @@ build_site_panel <- function(sid, norm_col, ylab) {
 
   bad_gauge_years <- d |> filter(share_days_gauge_measured < 0.8) |> pull(year) |> unique()
   all_years <- sort(unique(d$year))
-  x_labels <- ifelse(all_years %in% bad_gauge_years,
-                      paste0("<span style='color:#CC3311'>", all_years, "</span>"),
-                      as.character(all_years))
+  ## Major labelled breaks on the calendar 5-year grid (2000, 2005, ...),
+  ## clipped to this panel's own year range; minor (unlabelled) ticks at
+  ## every single year via ggplot2 4.0's native guide_axis(minor.ticks=TRUE)
+  ## -- confirmed by direct reproduction to render real tick marks (not just
+  ## gridlines) with no new package dependency (ggh4x is not installed and
+  ## CLAUDE.md asks that new dependencies not be introduced without
+  ## discussion). A degenerate single/short-range site-year span may have no
+  ## multiple-of-5 year in range; fall back to its own years as majors so the
+  ## panel is never left with zero x labels.
+  major_years <- seq(floor(min(all_years) / 5) * 5, ceiling(max(all_years) / 5) * 5, by = 5)
+  major_years <- major_years[major_years >= min(all_years) & major_years <= max(all_years)]
+  if (length(major_years) == 0) major_years <- all_years
+
+  ## Short red ticks inside the panel's bottom edge flag <80%-gauge-measured
+  ## years, replacing the earlier red x-axis label text -- drawn as the LAST
+  ## layer (on top of the grey valid-day bars, which also start at the same
+  ## floor) so the mark stays visible even in a year with a tall bar.
+  tick_h <- diff(yrange) * 0.035
+  bad_tick_df <- d |> filter(year %in% bad_gauge_years) |> distinct(year)
 
   p <- ggplot(d, aes(x = year)) +
     geom_rect(data = bar_df, inherit.aes = FALSE,
@@ -242,8 +258,14 @@ build_site_panel <- function(sid, norm_col, ylab) {
                shape = 19, size = 0.8, na.rm = TRUE) +
     geom_point(data = d |> filter(low_days), aes(y = .data[[norm_col]], colour = metric),
                shape = 1, size = 0.8, stroke = nature_lwd(0.4), na.rm = TRUE) +
+    (if (nrow(bad_tick_df) > 0)
+       geom_segment(data = bad_tick_df, inherit.aes = FALSE,
+                     aes(x = year, xend = year, y = bars$floor, yend = bars$floor + tick_h),
+                     colour = "#CC3311", linewidth = nature_lwd(0.8))
+     else NULL) +
     scale_colour_manual(values = METRIC_COLOURS, name = NULL, drop = FALSE) +
-    scale_x_continuous(breaks = all_years, labels = x_labels) +
+    scale_x_continuous(breaks = major_years, minor_breaks = all_years,
+                        guide = guide_axis(minor.ticks = TRUE)) +
     scale_y_continuous(
       limits = yrange,
       labels = if (grepl("pct", norm_col)) nature_minus_labels() else waiver(),
@@ -251,7 +273,9 @@ build_site_panel <- function(sid, norm_col, ylab) {
     ) +
     labs(x = NULL, y = ylab, title = sid) +
     site_panel_title_theme +
-    theme(axis.text.x = ggtext::element_markdown(size = NATURE_SMALL_PT, angle = 90, vjust = 0.5, hjust = 1)) +
+    theme(axis.text.x = element_text(size = NATURE_SMALL_PT, angle = 0, hjust = 0.5),
+          axis.minor.ticks.length.x = unit(0.7, "mm"),
+          axis.ticks.length.x = unit(1.4, "mm")) +
     annotate("text", x = Inf, y = Inf, label = paste0(meta_row$igbp, " / ", meta_row$koppen),
               hjust = 1.05, vjust = 1.4, size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "grey30")
   p
@@ -290,17 +314,29 @@ build_pft_panel <- function(pft, norm_col, ylab) {
     group_by(year) |>
     summarise(mean_valid_days = mean(valid_days), .groups = "drop")
 
+  ## Sites contributing per calendar year to THIS normalisation's median
+  ## (norm_pct can be NA in years norm_ratio is not, since it additionally
+  ## needs a baseline year -- so the count is computed per norm_col, not
+  ## shared between the ratio and pct-change versions of this figure).
+  n_sites_year <- d |>
+    filter(!is.na(.data[[norm_col]])) |>
+    group_by(year) |>
+    summarise(n_sites_year = n_distinct(site_id), .groups = "drop")
+
+  year_range <- range(c(d$year, days_mean$year), na.rm = TRUE)
+
   yrange <- panel_y_range(c(d[[norm_col]], med$med_val))
   bars <- bar_rescale(days_mean, "mean_valid_days", yrange)
   days_mean$bar_y <- bars$floor + days_mean$mean_valid_days * bars$scale_factor
 
-  p <- ggplot() +
+  main <- ggplot() +
     geom_rect(data = days_mean, aes(xmin = year - 0.4, xmax = year + 0.4, ymin = bars$floor, ymax = bar_y),
               fill = "grey88", colour = NA) +
     geom_line(data = d, aes(x = year, y = .data[[norm_col]], group = interaction(site_id, metric), colour = metric),
               linewidth = nature_lwd(0.25), alpha = 0.25, na.rm = TRUE) +
     geom_line(data = med, aes(x = year, y = med_val, colour = metric), linewidth = nature_lwd(0.9), na.rm = TRUE) +
     scale_colour_manual(values = METRIC_COLOURS, name = NULL, drop = FALSE) +
+    scale_x_continuous(limits = year_range) +
     scale_y_continuous(
       limits = yrange,
       labels = if (grepl("pct", norm_col)) nature_minus_labels() else waiver(),
@@ -308,10 +344,29 @@ build_pft_panel <- function(pft, norm_col, ylab) {
     ) +
     labs(x = NULL, y = ylab, title = pft) +
     site_panel_title_theme +
-    theme(axis.text.x = element_text(size = NATURE_SMALL_PT)) +
+    ## The strip below carries the year axis -- this panel's own x-axis text
+    ## is blanked so the two don't show duplicate year labels back to back.
+    theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
+          axis.line.x = element_blank()) +
     annotate("text", x = Inf, y = Inf, label = paste0("n = ", n_sites, " sites"),
               hjust = 1.05, vjust = 1.4, size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "grey30")
-  p
+
+  ## Narrow strip: number of sites contributing that calendar year (1-5),
+  ## x-aligned to the main panel above via the same scale_x_continuous()
+  ## limits (patchwork aligns the two panels' physical widths when stacked;
+  ## identical x limits in both is what keeps a given year at the same x
+  ## pixel position in both panels).
+  strip <- ggplot(n_sites_year, aes(x = year, y = 0, label = n_sites_year)) +
+    geom_text(size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "grey20") +
+    scale_x_continuous(limits = year_range) +
+    scale_y_continuous(limits = c(-0.5, 0.5), breaks = NULL) +
+    labs(x = NULL, y = NULL) +
+    nature_theme() +
+    theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.line.y = element_blank(),
+          panel.border = element_blank(),
+          axis.text.x = element_text(size = NATURE_SMALL_PT))
+
+  (main / strip) + patchwork::plot_layout(heights = c(10, 1.6))
 }
 
 make_fig2 <- function(norm_col, ylab) {
@@ -342,18 +397,32 @@ map_pts <- site_meta |> rename(x = location_long, y = location_lat)
 ## theme_void() base so nature_theme() has only ordinary element_text()
 ## slots to override.
 ##
-## Region bounding boxes -- MUST match .apply_region()'s own internal
-## switch() exactly (north_america/europe lon/lat limits), copied here
-## (not re-derived from it) so points/labels for sites outside a panel's
-## region can be filtered out BEFORE plotting. coord_sf(xlim=, ylim=) only
-## crops the rendered viewport -- it does NOT stop ggrepel::geom_text_repel()
-## from placing a label (with a leader line) for an off-panel point
-## somewhere inside the visible frame, confirmed directly: the first render
-## showed "BE-Vie"/"DE-Tha"/"FI-Hyy" labels bleeding into the North America
-## panel and every US site's label bleeding into the Europe panel.
+## Region bounding boxes -- custom per-panel zoom (conterminous US; a tight
+## box around the 3 European sites). NOT routed through .apply_region() --
+## its numeric-vector branch (`is.numeric(region) && length(region) == 4L`)
+## is unreachable in practice: switch()'s first argument must itself be a
+## length-1 vector, so passing a length-4 box directly errors ("EXPR must be
+## a length 1 vector") before that branch is ever reached, confirmed
+## directly. coord_sf() is applied inline in build_region_map() below
+## instead, with the same xlim=/ylim=/expand=FALSE/datum=NA .apply_region()
+## itself would use for a custom box -- fig_maps.R stays untouched, out of
+## this pilot's scope.
+## (The point/label pre-filter below is still needed regardless: coord_sf(
+## xlim=, ylim=) only crops the
+## rendered viewport -- it does NOT stop ggrepel::geom_text_repel() from
+## placing a label for an off-panel point somewhere inside the visible
+## frame, confirmed directly: the first render showed "BE-Vie"/"DE-Tha"/
+## "FI-Hyy" labels bleeding into the North America panel and every US
+## site's label bleeding into the Europe panel.)
+##   north_america: conterminous US, ~125W-65W/24N-50N (PI spec) so the New
+##     England sites (US-Ha1/US-Bar/US-SP1 etc.) separate instead of
+##     clustering at world-map scale.
+##   europe: tight box around the 3 European sites -- BE-Vie (50.30N,
+##     6.00E), DE-Tha (50.96N, 13.57E), FI-Hyy (61.85N, 24.29E) -- padded a
+##     few degrees on each side.
 REGION_BBOX <- list(
-  north_america = c(xmin = -170, xmax = -50, ymin = 5,  ymax = 83),
-  europe        = c(xmin = -25,  xmax = 45,  ymin = 34, ymax = 72)
+  north_america = c(xmin = -125, xmax = -65, ymin = 24, ymax = 50),
+  europe        = c(xmin = 1,    xmax = 29,  ymin = 46, ymax = 65)
 )
 ## Same IGBP domain (limits=) in both panels' fill scale, even though each
 ## panel's own sites only cover a subset of these classes -- so patchwork
@@ -387,14 +456,23 @@ build_region_map <- function(region, include_full_legend = FALSE) {
     geom_sf(data = land, fill = "gray95", colour = "black", linewidth = nature_lwd(0.25)) +
     geom_point(data = pts, aes(x = x, y = y, fill = igbp), shape = 21,
                colour = "black", size = 3, stroke = 0.4) +
+    ## Tuned against the real New-England (US-Slt/US-Ha1) and central-Europe
+    ## (BE-Vie/DE-Tha) close-point clusters -- the defaults left a label
+    ## sitting on or under its own dot for all four, confirmed visually.
+    ## min.segment.length = 0 always draws a (short) leader line whenever a
+    ## label is nudged off its point, rather than only past a length
+    ## threshold; max.overlaps = Inf and max.iter raise the repel solver's
+    ## effort rather than silently dropping a crowded label.
     ggrepel::geom_text_repel(data = pts, aes(x = x, y = y, label = site_id),
                               size = NATURE_SMALL_PT / .pt, colour = "black", seed = 42,
-                              min.segment.length = 0.1, segment.size = nature_lwd(0.25),
-                              box.padding = 0.3, point.padding = 0.2) +
+                              min.segment.length = 0, segment.size = nature_lwd(0.25),
+                              box.padding = 0.8, point.padding = 0.3, force = 15, force_pull = 0.3,
+                              max.overlaps = Inf, max.iter = 50000, max.time = 5) +
     scale_fill_paper_igbp(name = "IGBP", limits = IGBP_USED, drop = FALSE) +
     theme_void() +
-    nature_theme()
-  .apply_region(p, region)
+    nature_theme() +
+    labs(x = NULL, y = NULL)
+  p + coord_sf(xlim = bb[c("xmin", "xmax")], ylim = bb[c("ymin", "ymax")], expand = FALSE, datum = NA)
 }
 
 ## plot_layout(guides = "collect") did not merge the two panels' otherwise-
@@ -405,7 +483,16 @@ build_region_map <- function(region, include_full_legend = FALSE) {
 ## just panel a's own subset.
 fig0_na <- build_region_map("north_america", include_full_legend = TRUE) + panel_letter("a") + theme(legend.position = "bottom")
 fig0_eu <- build_region_map("europe") + panel_letter("b") + theme(legend.position = "none")
-fig0_map <- patchwork::wrap_plots(fig0_na, fig0_eu, ncol = 2)
+## Unequal panel widths so each panel's own true geographic aspect ratio
+## (coord_sf() keeps this, rather than stretching to fill a fixed box) is
+## matched by its allotted rectangle -- otherwise, at equal widths, the
+## wide-short NA box and the narrow-tall EU box force a shared panel height
+## tall enough for EU alone, leaving a large empty margin above/below NA.
+## Ratio (~2.2:1) computed from each bbox's true lon/lat extent at its own
+## mid-latitude (cos(lat) longitude scaling): NA 60 deg lon x 26 deg lat at
+## ~37N vs EU 28 deg lon x 19 deg lat at ~55.5N.
+fig0_map <- patchwork::wrap_plots(fig0_na, fig0_eu, ncol = 2) +
+  patchwork::plot_layout(widths = c(2.2, 1))
 
 msg("Figure 0 (map) built.")
 
@@ -422,11 +509,18 @@ wet_share_wide <- wet_freq |>
 write_csv_meta(wet_share_wide |> select(site_id, gauge, P_ERA), file.path(OUT_TBL, "fig3_wet_day_share.csv"),
   notes = "Share of fully measured days with daily total > 0 mm, gauge vs P_ERA (tables/precip_compare/wet_day_frequency.csv, period=all, threshold=0).")
 
+## Points use shape = 21 (fillable) with a `fill` aesthetic -- the SAME
+## aesthetic fig3b's geom_col() below uses for Gauge/P_ERA -- rather than
+## `colour`, specifically so the two panels' otherwise-identical Gauge/P_ERA
+## legends are the same scale/guide and can be collapsed to one shared
+## legend via plot_layout(guides = "collect") below. colour and fill are
+## different ggplot2 aesthetics and do not merge even with matching labels
+## and values, confirmed by direct reproduction.
 fig3a <- ggplot(wet_share_wide) +
   geom_segment(aes(x = site_id, xend = site_id, y = gauge, yend = P_ERA), linewidth = nature_lwd(0.4), colour = "grey50") +
-  geom_point(aes(x = site_id, y = gauge, colour = "Gauge"), size = 1.2) +
-  geom_point(aes(x = site_id, y = P_ERA, colour = "P_ERA"), size = 1.2) +
-  scale_colour_manual(values = c(Gauge = "#1F78B4", P_ERA = "#E66101"), name = NULL) +
+  geom_point(aes(x = site_id, y = gauge, fill = "Gauge"), shape = 21, colour = "black", size = 1.4, stroke = 0.3) +
+  geom_point(aes(x = site_id, y = P_ERA, fill = "P_ERA"), shape = 21, colour = "black", size = 1.4, stroke = 0.3) +
+  scale_fill_manual(values = c(Gauge = "#1F78B4", P_ERA = "#E66101"), name = NULL) +
   coord_flip() +
   labs(x = NULL, y = "Share of fully measured days wet (> 0 mm)") +
   nature_theme() + theme(legend.position = "bottom") +
@@ -454,9 +548,20 @@ fig3b <- ggplot(days_removed_long, aes(x = site_id, y = days, fill = source)) +
   scale_fill_manual(values = c(Gauge = "#1F78B4", P_ERA = "#E66101"), name = NULL) +
   coord_flip() +
   labs(x = NULL, y = "Mean days removed per year by the rain rule") +
-  nature_theme() + theme(legend.position = "bottom", axis.text.y = element_blank(), axis.ticks.y = element_blank()) +
+  nature_theme() + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), legend.position = "none") +
   panel_tag("b")
 
+## plot_layout(guides = "collect") did NOT merge fig3a/fig3b's now-identical
+## fill scales into one legend either, confirmed directly: even with the
+## same aesthetic (fill), same Gauge/P_ERA labels and colours on both sides,
+## collect still rendered two side-by-side legend blocks because the two
+## panels' legend KEY GLYPHS differ (geom_point's point key vs geom_col's
+## rect key) -- the same practical failure as the map's IGBP legend
+## (R/figures/fig_maps.R), different cause. Same fix: show the legend on
+## one panel only (fig3a) and suppress it on the other (fig3b,
+## legend.position = "none" above) -- the two panels share one identical
+## Gauge/P_ERA colour mapping, so a single (point-style) legend correctly
+## represents both.
 fig3 <- patchwork::wrap_plots(fig3a, fig3b, ncol = 2)
 
 msg("Figure 3 (rain source summary) built.")
@@ -486,7 +591,28 @@ integer_year_breaks <- function(x) {
   seq(ceiling(rng[1] / step) * step, floor(rng[2] / step) * step, by = step)
 }
 
+## facet_wrap(scales = "free_x") gives every panel the SAME physical width
+## but lets each panel's own x domain auto-range to just that site's data --
+## so a fixed DATA-unit bar width (0.7 years) renders much wider on screen
+## in a short-record panel (e.g. US-Fuf, a single qualifying year) than in a
+## long-record one, confirmed visually (US-Fuf's bars nearly filled its
+## panel). Fix: an invisible geom_blank() anchor at each site's own
+## min/max year, padded out to a shared minimum span, so every panel's
+## auto-ranged x domain is at least MIN_YEAR_SPAN years wide and the bar's
+## on-screen width becomes comparable across panels. Sites whose own range
+## already exceeds MIN_YEAR_SPAN are left alone (pad = 0), so already-wide
+## panels are not stretched further.
+MIN_YEAR_SPAN <- 10
+year_anchors <- rrc_long |>
+  group_by(site_id) |>
+  summarise(year_min = min(year), year_max = max(year), .groups = "drop") |>
+  mutate(pad = pmax(0, (MIN_YEAR_SPAN - (year_max - year_min)) / 2)) |>
+  tidyr::pivot_longer(c(year_min, year_max), values_to = "edge") |>
+  mutate(year = ifelse(name == "year_min", edge - pad, edge + pad)) |>
+  select(site_id, year)
+
 fig4 <- ggplot(rrc_long, aes(x = year, y = days, fill = source)) +
+  geom_blank(data = year_anchors, aes(x = year, y = NULL, fill = NULL)) +
   geom_col(position = position_dodge(width = 0.8), width = 0.7) +
   scale_fill_manual(values = c(Gauge = "#1F78B4", P_ERA = "#E66101"), name = NULL) +
   scale_x_continuous(breaks = integer_year_breaks, labels = function(x) round(x)) +
@@ -509,7 +635,7 @@ save_fig_with_meta <- function(plot, stem, width_mm, height_mm, notes = "") {
   invisible(out)
 }
 
-save_fig_with_meta(fig0_map,   file.path(FIG_DIR, "fig0_map_sites"),                   width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 110)
+save_fig_with_meta(fig0_map,   file.path(FIG_DIR, "fig0_map_sites"),                   width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 88)
 save_fig_with_meta(fig1_ratio, file.path(FIG_DIR, "fig1_by_site_ratio_to_mean"),        width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 240)
 save_fig_with_meta(fig1_pct,   file.path(FIG_DIR, "fig1_by_site_pct_change_guerrieri"), width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 240)
 save_fig_with_meta(fig2_ratio, file.path(FIG_DIR, "fig2_by_pft_ratio_to_mean"),         width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 100)

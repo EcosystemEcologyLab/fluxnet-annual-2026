@@ -81,17 +81,38 @@ if (!is.null(years_dropped)) {
   )
 }
 
-## ---- Valid days per kept year, median and range, per site ----------------
-valid_days_summary <- NULL
-if (!is.null(wue_annual)) {
-  valid_days_summary <- wue_annual |>
-    dplyr::group_by(site) |>
+## ---- Per-site kept-year summary -------------------------------------------
+## Uses screen_attrition.csv, NOT wue_annual.csv -- a kept year with ZERO
+## valid days never appears in wue_annual.csv at all (08_compute_metrics.R
+## builds it from wue_daily_valid/<site>.rds, which only has rows for valid
+## days), so wue_annual.csv alone cannot show the zero-valid-day years.
+kept_year_summary <- NULL
+zero_valid_years <- NULL
+low_valid_years <- NULL
+if (!is.null(screen_attrition)) {
+  kept <- screen_attrition[screen_attrition$year_kept, ]
+
+  kept_year_summary <- kept |>
+    dplyr::group_by(site_id) |>
     dplyr::summarise(
       n_kept_years = dplyr::n(),
-      median_valid_days = stats::median(valid_days),
-      min_valid_days = min(valid_days), max_valid_days = max(valid_days),
+      n_zero_valid_years = sum(valid_days == 0),
+      median_valid_days_incl_zero = stats::median(valid_days),
+      min_valid_days_incl_zero = min(valid_days),
+      max_valid_days_incl_zero = max(valid_days),
+      median_valid_days_excl_zero = if (any(valid_days > 0)) stats::median(valid_days[valid_days > 0]) else NA_real_,
+      min_valid_days_excl_zero = if (any(valid_days > 0)) min(valid_days[valid_days > 0]) else NA_real_,
+      max_valid_days_excl_zero = if (any(valid_days > 0)) max(valid_days[valid_days > 0]) else NA_real_,
+      median_share_gauge_measured = stats::median(share_days_gauge_measured),
+      min_share_gauge_measured = min(share_days_gauge_measured),
       .groups = "drop"
     )
+
+  zero_valid_years <- kept[kept$valid_days == 0, c("site_id", "year")]
+  zero_valid_years <- zero_valid_years[order(zero_valid_years$site_id, zero_valid_years$year), ]
+
+  low_valid_years <- kept[kept$valid_days < 10, c("site_id", "year", "valid_days")]
+  low_valid_years <- low_valid_years[order(low_valid_years$site_id, low_valid_years$year), ]
 }
 
 ## ---- k* at a grid limit (0 or 1.5), sub-daily and daily scales -----------
@@ -157,9 +178,11 @@ report_lines <- c(
   "",
   "## 1. Sites",
   "",
-  paste0(length(WUE_SITES_STAGE2), " sites (CH-Dav dropped by PI decision -- stage 1 closure ",
-         "slope 0.46, r2 0.56, and three years with no nighttime GPP; its files are left on disk, ",
-         "unread by stage 2): ", paste(WUE_SITES_STAGE2, collapse = ", ")),
+  paste0(length(WUE_SITES_STAGE2), " sites. `CH-Dav` dropped by PI decision -- stage 1 closure ",
+         "slope 0.46, r2 0.56, and three years with no nighttime GPP. `NL-Loo` also dropped, PI ",
+         "decision -- the only stage-2 site to fail the P_ERA integrity check (-3.08%, threshold ",
+         "2%; see tables/p_era_check.csv and docs/methods_memo.md). Both sites' files are left on ",
+         "disk, unread by stage 2: ", paste(WUE_SITES_STAGE2, collapse = ", ")),
   "",
   "## 2. Product choice (VUT where available, CUT where not; NEE/GPP/RECO from the same product)",
   "",
@@ -193,11 +216,23 @@ report_lines <- c(
   "rule, days lost to the quality/daylight(screen c)/day-level screens, valid days remaining, and ",
   "(added 2026-10-07) the share of that year's days where P_F is fully gauge-measured:",
   "",
-  knitr_like_table(screen_attrition, n_max = 100),
+  knitr_like_table(screen_attrition, n_max = 300),
   "",
-  "## 7. Valid days per kept year, median and range, per site",
+  "## 7. Per-site kept-year summary",
   "",
-  knitr_like_table(valid_days_summary),
+  "Per site: number of kept years, kept years with zero valid days, median and range of valid ",
+  "days per kept year (including and excluding the zero-valid-day years), and the median/minimum ",
+  "share of each kept year's days where P_F is fully gauge-measured:",
+  "",
+  knitr_like_table(kept_year_summary),
+  "",
+  "**Kept years with zero valid days:**",
+  "",
+  knitr_like_table(zero_valid_years),
+  "",
+  "**Kept site-years with fewer than 10 valid days** (includes the zero-valid-day years above):",
+  "",
+  knitr_like_table(low_valid_years, n_max = 100),
   "",
   "## 8. Annual WUE metrics",
   "",

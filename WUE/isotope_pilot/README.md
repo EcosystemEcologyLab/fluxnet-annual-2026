@@ -37,17 +37,20 @@ diagnostic packages). Nothing in this analysis writes outside
 Tree-ring data (`code/03_fetch_treering.R` and its helpers) remain out of
 scope for stage 2 — left in place, not run, not touched.
 
-## Sites (12 for stage 2; 13 for stage 1)
+## Sites (11 for stage 2; 13 for stage 1)
 
 With published tree-ring isotopes (Guerrieri et al. 2019; Belmecheri et al. 2021):
 `US-Ha1`, `US-Ho2`, `US-MMS`, `US-SP1`, `US-Bar`, `US-Slt`, `US-Dk2`, `US-Fuf`.
 
-Flux only: `DE-Tha`, `BE-Vie`, `NL-Loo`, `FI-Hyy`.
+Flux only: `DE-Tha`, `BE-Vie`, `FI-Hyy`.
 
 `CH-Dav` was dropped for stage 2 by PI decision (2026-10-07): stage 1 energy
 balance closure slope 0.46 (r2 0.56), and three years with no nighttime GPP.
-Its downloaded/extracted files are left on disk, just not read by stage 2's
-scripts (`WUE_SITES_STAGE2` in `code/00_config.R`).
+`NL-Loo` was also dropped by PI decision (2026-10-07), while attempting the
+12-site full run: the only stage-2 site to fail `06_build_site_years.R`'s
+P_ERA integrity check (-3.08%, threshold 2%). Both sites' downloaded/extracted
+files are left on disk, just not read by stage 2's scripts (`WUE_SITES_STAGE2`
+in `code/00_config.R`).
 
 ## Stage 2 — reconstructed screens (PI decision, 2026-10-07)
 
@@ -110,7 +113,7 @@ code/04_report_preanalysis.R     # pre-analysis report: inventory, availability,
                                   # (stage 1 end -- superseded by stage 2 below)
 code/run_setup_20261007.sh       # runs 01-04 unattended, commits+pushes tables/ and docs/
 
-# --- Stage 2 (2026-10-07): screens + WUE metrics, 12 sites (CH-Dav dropped) ---
+# --- Stage 2 (2026-10-07): screens + WUE metrics, 11 sites (CH-Dav, NL-Loo dropped) ---
 code/05_read_subdaily_wue.R      # re-read sub-daily FLUXMET, + P_ERA/NEE_CUT_REF/
                                   # NEE_CUT_REF_QC/RECO_NT_CUT_REF
 code/06_build_site_years.R       # per-site VUT/CUT choice, P_ERA check (hard stop on
@@ -140,7 +143,7 @@ code/12_screen_variants.R        # rain-source x screen-c-radiation variant chec
 
 `WUE_SITE_SUBSET` (space-separated site IDs) narrows the site list for a
 smoke test without editing any script — see `code/00_config.R`. Stage 2's
-own site list, `WUE_SITES_STAGE2`, additionally always excludes `CH-Dav`.
+own site list, `WUE_SITES_STAGE2`, additionally always excludes `CH-Dav` and `NL-Loo`.
 
 Launch either unattended run from the repo root in a plain terminal (not a
 Claude Code session):

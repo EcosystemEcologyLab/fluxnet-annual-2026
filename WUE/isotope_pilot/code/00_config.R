@@ -89,6 +89,12 @@ message("[WUE isotope pilot] Sites (", length(WUE_SITES), "): ", paste(WUE_SITES
 # only excluded from the stage-2 site list. intersect() with WUE_SITES (not
 # WUE_SITES_ALL) so WUE_SITE_SUBSET still narrows stage 2 the same way it
 # narrows stage 1 -- dropping CH-Dav is a no-op for a subset that excludes it.
-WUE_SITES_STAGE2 <- intersect(WUE_SITES, setdiff(WUE_SITES_ALL, "CH-Dav"))
+#
+# PI decision, 2026-10-07 (12-site full run attempt): NL-Loo also dropped --
+# fails 06_build_site_years.R's P_ERA integrity check by -3.08% (threshold
+# 2%; see tables/p_era_check.csv and docs/methods_memo.md), the only one of
+# the 12 stage-2 sites to do so. Its files are likewise left on disk, only
+# excluded from the stage-2 site list.
+WUE_SITES_STAGE2 <- intersect(WUE_SITES, setdiff(WUE_SITES_ALL, c("CH-Dav", "NL-Loo")))
 message("[WUE isotope pilot] Stage 2 sites (", length(WUE_SITES_STAGE2), "): ",
         paste(WUE_SITES_STAGE2, collapse = ", "))

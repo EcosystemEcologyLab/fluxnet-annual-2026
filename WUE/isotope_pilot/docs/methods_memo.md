@@ -40,16 +40,27 @@ session, after PI review of `tables/wue_annual.csv`,
 Tree-ring data remain out of scope for stage 2 — `code/03_fetch_treering.R`
 and `code/treering_report_helpers.R` are left in place, not run, not edited.
 
-## Stage 2 — site list: CH-Dav dropped
+## Stage 2 — site list: CH-Dav and NL-Loo dropped
 
 PI decision, 2026-10-07: `CH-Dav` is dropped from stage 2. Reasons from the
 stage 1 report (`docs/report_back_20261007.md`): its energy-balance closure
 slope was 0.46 (r2 = 0.56), the weakest of the 13 sites, and (per the
 variable-availability-by-year table) it has three years with no nighttime
 GPP at all. Its downloaded/extracted files are left on disk; `code/00_config.R`
-defines `WUE_SITES_STAGE2` (12 sites) by excluding `CH-Dav` from whichever
-site list `WUE_SITES`/`WUE_SITE_SUBSET` already resolves to, so every stage 2
-script simply never reads it.
+defines `WUE_SITES_STAGE2` by excluding `CH-Dav` from whichever site list
+`WUE_SITES`/`WUE_SITE_SUBSET` already resolves to, so every stage 2 script
+simply never reads it.
+
+PI decision, 2026-10-07 (attempting the 12-site full run): `NL-Loo` is also
+dropped, the only one of the 12 stage-2 sites to fail
+`06_build_site_years.R`'s P_ERA integrity check (mean annual sub-daily
+`P_ERA` sum vs. `review/diagnostics/precip_site_filter/table_1_site_level_precip_estimates.csv`'s
+`p_era_mean_mm_tower_years`, required within 2%): 1035.67 mm/yr here vs.
+1068.62 mm/yr reference, -3.08%, a hard `stop()` per that check's design.
+(The next-closest site, `FI-Hyy`, sits exactly at the -2.00% boundary and
+passes; `DE-Tha` and `BE-Vie` are at -1.89% and -1.14%.) Added to
+`WUE_SITES_STAGE2`'s exclusion list alongside `CH-Dav`; its files are
+likewise left on disk, not investigated further.
 
 ## Stage 2 — product choice (VUT where available, CUT where not)
 

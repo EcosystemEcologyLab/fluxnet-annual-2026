@@ -9,7 +9,7 @@ series mean. Tree-ring data remain out of scope.
 
 ## 1. Sites
 
-3 sites (CH-Dav dropped by PI decision -- stage 1 closure slope 0.46, r2 0.56, and three years with no nighttime GPP; its files are left on disk, unread by stage 2): US-Fuf, US-Ho2, US-MMS
+11 sites. `CH-Dav` dropped by PI decision -- stage 1 closure slope 0.46, r2 0.56, and three years with no nighttime GPP. `NL-Loo` also dropped, PI decision -- the only stage-2 site to fail the P_ERA integrity check (-3.08%, threshold 2%; see tables/p_era_check.csv and docs/methods_memo.md). Both sites' files are left on disk, unread by stage 2: US-Ha1, US-Ho2, US-MMS, US-SP1, US-Bar, US-Slt, US-Dk2, US-Fuf, DE-Tha, BE-Vie, FI-Hyy
 
 ## 2. Product choice (VUT where available, CUT where not; NEE/GPP/RECO from the same product)
 
@@ -18,9 +18,17 @@ applied against the sub-daily data rather than annual DuckDB rows.
 
 | site_id | product | n_vut_qc | n_cut_qc | resolution |
 |---|---|---|---|---|
-| US-Fuf | VUT | 92596 | 92596 | HH |
+| US-Ha1 | VUT | 298838 | 298838 | HR |
 | US-Ho2 | CUT | 0 | 460270 | HH |
 | US-MMS | VUT | 219144 | 219144 | HR |
+| US-SP1 | VUT | 341892 | 341949 | HH |
+| US-Bar | VUT | 334974 | 334942 | HH |
+| US-Slt | VUT | 307088 | 307116 | HH |
+| US-Dk2 | VUT | 135656 | 135656 | HH |
+| US-Fuf | VUT | 92596 | 92596 | HH |
+| DE-Tha | VUT | 530126 | 530126 | HH |
+| BE-Vie | VUT | 524836 | 524836 | HH |
+| FI-Hyy | VUT | 500316 | 500276 | HH |
 
 ## 3. P_ERA integrity check
 
@@ -30,33 +38,63 @@ Mean annual sub-daily P_ERA sum (this pilot's tower years) vs.
 
 | site_id | n_years | mean_annual_mm_here | mean_annual_mm_reference | pct_diff | status |
 |---|---|---|---|---|---|
-| US-Fuf | 6 | 674.23 | 674.2227 | 0.001 | ok |
+| US-Ha1 | 35 | 1221.87 | 1221.765 | 0.009 | ok |
 | US-Ho2 | 27 | 809.12 | 809.3457 | -0.028 | ok |
 | US-MMS | 25 | 1097.48 | 1097.525 | -0.004 | ok |
+| US-SP1 | 21 | 1649.95 | 1649.83 | 0.008 | ok |
+| US-Bar | 20 | 1198.66 | 1198.741 | -0.007 | ok |
+| US-Slt | 18 | 1092.55 | 1092.659 | -0.01 | ok |
+| US-Dk2 | 8 | 1053.46 | 1053.616 | -0.015 | ok |
+| US-Fuf | 6 | 674.23 | 674.2227 | 0.001 | ok |
+| DE-Tha | 31 | 780.01 | 795.0661 | -1.894 | ok |
+| BE-Vie | 31 | 921.78 | 932.4322 | -1.142 | ok |
+| FI-Hyy | 30 | 688.83 | 702.8818 | -2 | ok |
 
 ## 4. Net radiation gap-fill fits (NETRAD ~ SW_IN_F, per site)
 
 | site_id | n | slope | intercept | r_squared |
 |---|---|---|---|---|
-| US-Fuf | 84633 | 0.8201 | -79.4245 | 0.9804 |
+| US-Ha1 | 231361 | 0.7342 | -33.7948 | 0.941 |
 | US-Ho2 | 382304 | 0.8254 | -36.574 | 0.9647 |
 | US-MMS | 131447 | 0.811 | -44.2795 | 0.974 |
+| US-SP1 | 328831 | 0.8007 | -32.4454 | 0.9767 |
+| US-Bar | 346835 | 0.7559 | -34.429 | 0.9697 |
+| US-Slt | 313658 | 0.7612 | -42.2022 | 0.9685 |
+| US-Dk2 | 140256 | 0.7854 | -45.4463 | 0.9577 |
+| US-Fuf | 84633 | 0.8201 | -79.4245 | 0.9804 |
+| DE-Tha | 524734 | 0.8417 | -38.5699 | 0.9679 |
+| BE-Vie | 482599 | 0.8091 | -25.9193 | 0.9658 |
+| FI-Hyy | 424866 | 0.7859 | -27.389 | 0.9362 |
 
 ## 5. Years dropped (completeness < 80% nighttime GPP, or year 2026)
 
 | site_id | year | completeness | reason |
 |---|---|---|---|
-| US-Fuf | 2005 | 0.3628 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-Ha1 | 1991 | 0.2236 | completeness < 0.80 (nighttime GPP, chosen product) |
 | US-Ho2 | 1999 | 0 | completeness < 0.80 (nighttime GPP, chosen product) |
 | US-Ho2 | 2000 | 0 | completeness < 0.80 (nighttime GPP, chosen product) |
 | US-Ho2 | 2001 | 0 | completeness < 0.80 (nighttime GPP, chosen product) |
 | US-Ho2 | 2007 | 0 | completeness < 0.80 (nighttime GPP, chosen product) |
 | US-Ho2 | 2019 | 0.6156 | completeness < 0.80 (nighttime GPP, chosen product) |
 | US-Ho2 | 2025 | 0.7016 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-SP1 | 2000 | 0.5319 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-SP1 | 2002 | 0.541 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-SP1 | 2014 | 0.5414 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-Bar | 2018 | 0.7336 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-Bar | 2022 | 0.6517 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-Slt | 2022 | 0.5169 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-Dk2 | 2001 | 0.7374 | completeness < 0.80 (nighttime GPP, chosen product) |
+| US-Fuf | 2005 | 0.3628 | completeness < 0.80 (nighttime GPP, chosen product) |
+| DE-Tha | 1996 | 0.5964 | completeness < 0.80 (nighttime GPP, chosen product) |
+| DE-Tha | 2026 | 0.6411 | year 2026 (current, incomplete by instruction) |
+| BE-Vie | 1996 | 0.4633 | completeness < 0.80 (nighttime GPP, chosen product) |
+| BE-Vie | 2026 | 0.6411 | year 2026 (current, incomplete by instruction) |
+| FI-Hyy | 1999 | 0.4554 | completeness < 0.80 (nighttime GPP, chosen product) |
+| FI-Hyy | 2000 | 0.6131 | completeness < 0.80 (nighttime GPP, chosen product) |
+| FI-Hyy | 2026 | 0.6411 | year 2026 (current, incomplete by instruction) |
 
 Comparison against the expected list in the stage 2 brief (completeness-based drops only, excluding 2026):
 
-- Expected but NOT found in the derived list: US-Ha1 1991, BE-Vie 1996, DE-Tha 1996, FI-Hyy 1999, FI-Hyy 2000, US-SP1 2000, US-SP1 2002, US-SP1 2014, US-Dk2 2001, US-Bar 2018, US-Bar 2022, US-Slt 2022
 - Found in the derived list but NOT in the expected list: US-Ho2 1999, US-Ho2 2000, US-Ho2 2001, US-Ho2 2007, US-Ho2 2019, US-Ho2 2025
 
 ## 6. Screen attrition (reconstructed screens: rain from P_F, screen c from SW_IN_F, 
@@ -68,12 +106,41 @@ rule, days lost to the quality/daylight(screen c)/day-level screens, valid days 
 
 | site_id | year | days_in_year | days_p_era_above_zero | days_removed_by_rain_rule | days_lost_quality | days_lost_daylight | days_lost_day_level | valid_days | year_kept | share_days_gauge_measured |
 |---|---|---|---|---|---|---|---|---|---|---|
-| US-Fuf | 2005 | 365 | 186 | 207 | 74 | 0 | 53 | 31 | FALSE | 0.2795 |
-| US-Fuf | 2006 | 365 | 134 | 171 | 17 | 1 | 88 | 88 | TRUE | 0.9616 |
-| US-Fuf | 2007 | 365 | 130 | 155 | 0 | 0 | 87 | 123 | TRUE | 0.9096 |
-| US-Fuf | 2008 | 366 | 126 | 151 | 32 | 1 | 73 | 109 | TRUE | 0.9044 |
-| US-Fuf | 2009 | 365 | 129 | 154 | 30 | 2 | 83 | 96 | TRUE | 0.7753 |
-| US-Fuf | 2010 | 365 | 146 | 174 | 46 | 1 | 33 | 111 | TRUE | 0.6027 |
+| US-Ha1 | 1991 | 365 | 252 | 289 | 76 | 0 | 0 | 0 | FALSE | 0 |
+| US-Ha1 | 1992 | 366 | 275 | 305 | 13 | 1 | 17 | 30 | TRUE | 0 |
+| US-Ha1 | 1993 | 365 | 275 | 308 | 26 | 2 | 12 | 17 | TRUE | 0 |
+| US-Ha1 | 1994 | 365 | 274 | 313 | 8 | 1 | 32 | 11 | TRUE | 0 |
+| US-Ha1 | 1995 | 365 | 264 | 297 | 3 | 0 | 33 | 32 | TRUE | 0 |
+| US-Ha1 | 1996 | 366 | 296 | 328 | 1 | 1 | 21 | 15 | TRUE | 0 |
+| US-Ha1 | 1997 | 365 | 277 | 307 | 15 | 5 | 28 | 10 | TRUE | 0 |
+| US-Ha1 | 1998 | 365 | 258 | 299 | 1 | 2 | 41 | 22 | TRUE | 0 |
+| US-Ha1 | 1999 | 365 | 246 | 291 | 1 | 0 | 37 | 36 | TRUE | 0 |
+| US-Ha1 | 2000 | 366 | 289 | 324 | 7 | 2 | 20 | 13 | TRUE | 0 |
+| US-Ha1 | 2001 | 365 | 259 | 290 | 14 | 2 | 34 | 25 | TRUE | 0 |
+| US-Ha1 | 2002 | 365 | 273 | 310 | 25 | 2 | 14 | 14 | TRUE | 0 |
+| US-Ha1 | 2003 | 365 | 281 | 320 | 22 | 2 | 18 | 3 | TRUE | 0 |
+| US-Ha1 | 2004 | 366 | 285 | 328 | 0 | 1 | 25 | 12 | TRUE | 0 |
+| US-Ha1 | 2005 | 365 | 154 | 268 | 31 | 1 | 61 | 4 | TRUE | 1 |
+| US-Ha1 | 2006 | 365 | 144 | 230 | 4 | 2 | 74 | 55 | TRUE | 1 |
+| US-Ha1 | 2007 | 365 | 152 | 224 | 17 | 0 | 86 | 38 | TRUE | 1 |
+| US-Ha1 | 2008 | 366 | 162 | 258 | 17 | 2 | 58 | 31 | TRUE | 1 |
+| US-Ha1 | 2009 | 365 | 156 | 244 | 60 | 1 | 46 | 14 | TRUE | 1 |
+| US-Ha1 | 2010 | 365 | 134 | 200 | 4 | 0 | 118 | 43 | TRUE | 1 |
+| US-Ha1 | 2011 | 365 | 156 | 226 | 13 | 5 | 97 | 24 | TRUE | 1 |
+| US-Ha1 | 2012 | 366 | 126 | 193 | 3 | 1 | 128 | 41 | TRUE | 1 |
+| US-Ha1 | 2013 | 365 | 147 | 246 | 0 | 2 | 73 | 44 | TRUE | 1 |
+| US-Ha1 | 2014 | 365 | 143 | 246 | 15 | 4 | 65 | 35 | TRUE | 1 |
+| US-Ha1 | 2015 | 365 | 146 | 243 | 0 | 4 | 60 | 58 | TRUE | 1 |
+| US-Ha1 | 2016 | 366 | 144 | 238 | 0 | 1 | 56 | 71 | TRUE | 1 |
+| US-Ha1 | 2017 | 365 | 161 | 256 | 0 | 0 | 60 | 49 | TRUE | 1 |
+| US-Ha1 | 2018 | 365 | 171 | 267 | 0 | 0 | 52 | 46 | TRUE | 1 |
+| US-Ha1 | 2019 | 365 | 116 | 222 | 0 | 1 | 92 | 50 | TRUE | 1 |
+| US-Ha1 | 2020 | 366 | 131 | 234 | 9 | 0 | 64 | 59 | TRUE | 1 |
+| US-Ha1 | 2021 | 365 | 167 | 260 | 0 | 0 | 67 | 38 | TRUE | 1 |
+| US-Ha1 | 2022 | 365 | 141 | 240 | 0 | 1 | 74 | 50 | TRUE | 1 |
+| US-Ha1 | 2023 | 365 | 175 | 262 | 28 | 0 | 57 | 18 | TRUE | 1 |
+| US-Ha1 | 2024 | 366 | 163 | 230 | 4 | 0 | 89 | 43 | TRUE | 0.9973 |
+| US-Ha1 | 2025 | 365 | 174 | 227 | 3 | 4 | 73 | 58 | TRUE | 0.8192 |
 | US-Ho2 | 1999 | 365 | 204 | 264 | 101 | 0 | 0 | 0 | FALSE | 0.5014 |
 | US-Ho2 | 2000 | 366 | 161 | 231 | 135 | 0 | 0 | 0 | FALSE | 0.9699 |
 | US-Ho2 | 2001 | 365 | 126 | 181 | 184 | 0 | 0 | 0 | FALSE | 0.9397 |
@@ -126,26 +193,221 @@ rule, days lost to the quality/daylight(screen c)/day-level screens, valid days 
 | US-MMS | 2021 | 365 | 148 | 241 | 0 | 2 | 72 | 50 | TRUE | 0.9753 |
 | US-MMS | 2022 | 365 | 134 | 225 | 0 | 2 | 76 | 62 | TRUE | 0.9808 |
 | US-MMS | 2023 | 365 | 132 | 214 | 0 | 2 | 81 | 68 | TRUE | 0.9534 |
+| US-SP1 | 2000 | 366 | 174 | 208 | 65 | 0 | 89 | 4 | FALSE | 0.4727 |
+| US-SP1 | 2001 | 365 | 136 | 164 | 1 | 1 | 124 | 75 | TRUE | 0.9562 |
+| US-SP1 | 2002 | 365 | 197 | 236 | 37 | 1 | 70 | 21 | FALSE | 0.4767 |
+| US-SP1 | 2003 | 365 | 123 | 170 | 10 | 0 | 86 | 99 | TRUE | 0.9973 |
+| US-SP1 | 2004 | 366 | 172 | 202 | 4 | 0 | 148 | 12 | TRUE | 0.4973 |
+| US-SP1 | 2005 | 365 | 130 | 189 | 0 | 1 | 124 | 51 | TRUE | 0.9918 |
+| US-SP1 | 2006 | 365 | 45 | 70 | 35 | 1 | 211 | 48 | TRUE | 1 |
+| US-SP1 | 2007 | 365 | 114 | 148 | 3 | 1 | 173 | 40 | TRUE | 0.8027 |
+| US-SP1 | 2008 | 366 | 261 | 290 | 2 | 1 | 57 | 16 | TRUE | 0 |
+| US-SP1 | 2009 | 365 | 255 | 282 | 0 | 0 | 58 | 25 | TRUE | 0 |
+| US-SP1 | 2010 | 365 | 230 | 259 | 8 | 0 | 73 | 25 | TRUE | 0 |
+| US-SP1 | 2011 | 365 | 244 | 272 | 0 | 1 | 71 | 21 | TRUE | 0 |
+| US-SP1 | 2012 | 366 | 284 | 306 | 3 | 0 | 44 | 13 | TRUE | 0 |
+| US-SP1 | 2013 | 365 | 274 | 296 | 8 | 0 | 45 | 16 | TRUE | 0 |
+| US-SP1 | 2014 | 365 | 243 | 276 | 26 | 0 | 32 | 31 | FALSE | 0.2795 |
+| US-SP1 | 2015 | 365 | 165 | 224 | 0 | 0 | 66 | 75 | TRUE | 0.9397 |
+| US-SP1 | 2016 | 366 | 139 | 177 | 4 | 2 | 92 | 91 | TRUE | 0.847 |
+| US-SP1 | 2017 | 365 | 158 | 195 | 0 | 0 | 132 | 38 | TRUE | 0.8301 |
+| US-SP1 | 2018 | 365 | 156 | 213 | 0 | 0 | 59 | 93 | TRUE | 0.9507 |
+| US-SP1 | 2019 | 365 | 154 | 196 | 12 | 2 | 60 | 95 | TRUE | 0.9014 |
+| US-SP1 | 2020 | 366 | 145 | 199 | 55 | 0 | 60 | 52 | TRUE | 0.9754 |
+| US-Bar | 2004 | 366 | 182 | 241 | 14 | 3 | 79 | 29 | TRUE | 0.6694 |
+| US-Bar | 2005 | 365 | 141 | 212 | 0 | 2 | 125 | 26 | TRUE | 1 |
+| US-Bar | 2006 | 365 | 136 | 217 | 0 | 5 | 114 | 29 | TRUE | 1 |
+| US-Bar | 2007 | 365 | 136 | 198 | 3 | 2 | 121 | 41 | TRUE | 0.9918 |
+| US-Bar | 2008 | 366 | 150 | 255 | 3 | 11 | 70 | 27 | TRUE | 1 |
+| US-Bar | 2009 | 365 | 140 | 219 | 5 | 3 | 99 | 39 | TRUE | 0.9945 |
+| US-Bar | 2010 | 365 | 123 | 208 | 10 | 1 | 98 | 48 | TRUE | 1 |
+| US-Bar | 2011 | 365 | 153 | 241 | 2 | 2 | 83 | 37 | TRUE | 1 |
+| US-Bar | 2012 | 366 | 133 | 225 | 0 | 3 | 92 | 46 | TRUE | 1 |
+| US-Bar | 2013 | 365 | 142 | 228 | 0 | 3 | 97 | 37 | TRUE | 1 |
+| US-Bar | 2014 | 365 | 151 | 234 | 7 | 3 | 93 | 28 | TRUE | 0.9699 |
+| US-Bar | 2015 | 365 | 124 | 189 | 16 | 4 | 145 | 11 | TRUE | 1 |
+| US-Bar | 2016 | 366 | 133 | 226 | 0 | 6 | 106 | 28 | TRUE | 1 |
+| US-Bar | 2017 | 365 | 139 | 235 | 0 | 6 | 70 | 54 | TRUE | 1 |
+| US-Bar | 2018 | 365 | 145 | 240 | 68 | 1 | 26 | 30 | FALSE | 1 |
+| US-Bar | 2019 | 365 | 148 | 249 | 1 | 6 | 67 | 42 | TRUE | 1 |
+| US-Bar | 2020 | 366 | 125 | 218 | 0 | 2 | 84 | 62 | TRUE | 1 |
+| US-Bar | 2021 | 365 | 138 | 219 | 12 | 9 | 84 | 41 | TRUE | 1 |
+| US-Bar | 2022 | 365 | 147 | 230 | 58 | 0 | 31 | 46 | FALSE | 1 |
+| US-Bar | 2023 | 365 | 148 | 228 | 33 | 0 | 58 | 46 | TRUE | 1 |
+| US-Slt | 2005 | 365 | 125 | 198 | 0 | 0 | 112 | 55 | TRUE | 0.9918 |
+| US-Slt | 2006 | 365 | 122 | 202 | 0 | 0 | 119 | 44 | TRUE | 0.9945 |
+| US-Slt | 2007 | 365 | 126 | 201 | 0 | 0 | 105 | 59 | TRUE | 0.9945 |
+| US-Slt | 2008 | 366 | 125 | 210 | 0 | 0 | 76 | 80 | TRUE | 0.9973 |
+| US-Slt | 2009 | 365 | 144 | 236 | 0 | 1 | 74 | 54 | TRUE | 1 |
+| US-Slt | 2010 | 365 | 113 | 201 | 0 | 0 | 79 | 85 | TRUE | 0.9973 |
+| US-Slt | 2011 | 365 | 121 | 211 | 0 | 1 | 91 | 62 | TRUE | 0.9973 |
+| US-Slt | 2012 | 366 | 132 | 203 | 0 | 0 | 112 | 51 | TRUE | 0.9973 |
+| US-Slt | 2013 | 365 | 135 | 227 | 0 | 0 | 99 | 39 | TRUE | 1 |
+| US-Slt | 2014 | 365 | 143 | 229 | 9 | 1 | 79 | 47 | TRUE | 0.9945 |
+| US-Slt | 2015 | 365 | 243 | 287 | 13 | 0 | 32 | 33 | TRUE | 0 |
+| US-Slt | 2016 | 366 | 236 | 298 | 0 | 0 | 45 | 23 | TRUE | 0 |
+| US-Slt | 2017 | 365 | 263 | 307 | 0 | 0 | 36 | 22 | TRUE | 0 |
+| US-Slt | 2018 | 365 | 271 | 323 | 0 | 0 | 24 | 18 | TRUE | 0 |
+| US-Slt | 2019 | 365 | 254 | 307 | 7 | 0 | 35 | 16 | TRUE | 0 |
+| US-Slt | 2020 | 366 | 254 | 310 | 0 | 1 | 42 | 13 | TRUE | 0 |
+| US-Slt | 2021 | 365 | 252 | 306 | 1 | 0 | 37 | 21 | TRUE | 0 |
+| US-Slt | 2022 | 365 | 230 | 284 | 53 | 0 | 27 | 1 | FALSE | 0 |
+| US-Dk2 | 2001 | 365 | 116 | 163 | 66 | 1 | 76 | 59 | FALSE | 1 |
+| US-Dk2 | 2002 | 365 | 128 | 189 | 0 | 0 | 97 | 79 | TRUE | 1 |
+| US-Dk2 | 2003 | 365 | 157 | 224 | 0 | 0 | 92 | 49 | TRUE | 1 |
+| US-Dk2 | 2004 | 366 | 130 | 210 | 0 | 0 | 87 | 69 | TRUE | 1 |
+| US-Dk2 | 2005 | 365 | 135 | 211 | 0 | 0 | 80 | 74 | TRUE | 1 |
+| US-Dk2 | 2006 | 365 | 133 | 207 | 5 | 0 | 82 | 71 | TRUE | 1 |
+| US-Dk2 | 2007 | 365 | 110 | 161 | 1 | 1 | 88 | 114 | TRUE | 1 |
+| US-Dk2 | 2008 | 366 | 145 | 212 | 23 | 1 | 54 | 76 | TRUE | 1 |
+| US-Fuf | 2005 | 365 | 186 | 207 | 74 | 0 | 53 | 31 | FALSE | 0.2795 |
+| US-Fuf | 2006 | 365 | 134 | 171 | 17 | 1 | 88 | 88 | TRUE | 0.9616 |
+| US-Fuf | 2007 | 365 | 130 | 155 | 0 | 0 | 87 | 123 | TRUE | 0.9096 |
+| US-Fuf | 2008 | 366 | 126 | 151 | 32 | 1 | 73 | 109 | TRUE | 0.9044 |
+| US-Fuf | 2009 | 365 | 129 | 154 | 30 | 2 | 83 | 96 | TRUE | 0.7753 |
+| US-Fuf | 2010 | 365 | 146 | 174 | 46 | 1 | 33 | 111 | TRUE | 0.6027 |
+| DE-Tha | 1996 | 366 | 261 | 301 | 32 | 0 | 15 | 18 | FALSE | 0.5137 |
+| DE-Tha | 1997 | 365 | 239 | 289 | 6 | 0 | 10 | 60 | TRUE | 0.4932 |
+| DE-Tha | 1998 | 365 | 247 | 290 | 8 | 0 | 17 | 50 | TRUE | 0.7479 |
+| DE-Tha | 1999 | 365 | 228 | 285 | 0 | 1 | 12 | 67 | TRUE | 0.789 |
+| DE-Tha | 2000 | 366 | 227 | 297 | 0 | 1 | 6 | 62 | TRUE | 0.9563 |
+| DE-Tha | 2001 | 365 | 234 | 305 | 0 | 0 | 7 | 53 | TRUE | 0.9671 |
+| DE-Tha | 2002 | 365 | 214 | 276 | 5 | 1 | 27 | 56 | TRUE | 0.9753 |
+| DE-Tha | 2003 | 365 | 181 | 247 | 2 | 1 | 30 | 85 | TRUE | 0.9753 |
+| DE-Tha | 2004 | 366 | 224 | 290 | 0 | 0 | 12 | 64 | TRUE | 1 |
+| DE-Tha | 2005 | 365 | 218 | 287 | 0 | 0 | 21 | 57 | TRUE | 0.989 |
+| DE-Tha | 2006 | 365 | 207 | 287 | 1 | 0 | 19 | 58 | TRUE | 1 |
+| DE-Tha | 2007 | 365 | 229 | 288 | 0 | 0 | 18 | 59 | TRUE | 1 |
+| DE-Tha | 2008 | 366 | 201 | 280 | 0 | 0 | 17 | 69 | TRUE | 1 |
+| DE-Tha | 2009 | 365 | 207 | 281 | 0 | 0 | 13 | 71 | TRUE | 0.9973 |
+| DE-Tha | 2010 | 365 | 207 | 273 | 0 | 0 | 17 | 75 | TRUE | 0.9918 |
+| DE-Tha | 2011 | 365 | 177 | 246 | 0 | 0 | 40 | 79 | TRUE | 0.9808 |
+| DE-Tha | 2012 | 366 | 190 | 265 | 0 | 0 | 17 | 84 | TRUE | 1 |
+| DE-Tha | 2013 | 365 | 213 | 276 | 0 | 0 | 15 | 74 | TRUE | 1 |
+| DE-Tha | 2014 | 365 | 195 | 273 | 0 | 0 | 30 | 62 | TRUE | 1 |
+| DE-Tha | 2015 | 365 | 200 | 261 | 0 | 0 | 23 | 81 | TRUE | 0.9863 |
+| DE-Tha | 2016 | 366 | 203 | 271 | 0 | 0 | 11 | 84 | TRUE | 1 |
+| DE-Tha | 2017 | 365 | 201 | 265 | 0 | 0 | 24 | 76 | TRUE | 1 |
+| DE-Tha | 2018 | 365 | 165 | 232 | 0 | 0 | 36 | 97 | TRUE | 1 |
+| DE-Tha | 2019 | 365 | 181 | 250 | 1 | 0 | 22 | 92 | TRUE | 1 |
+| DE-Tha | 2020 | 366 | 179 | 261 | 0 | 0 | 12 | 93 | TRUE | 0.9672 |
+| DE-Tha | 2021 | 365 | 228 | 277 | 0 | 1 | 6 | 81 | TRUE | 0.926 |
+| DE-Tha | 2022 | 365 | 211 | 265 | 69 | 0 | 7 | 24 | TRUE | 0.9315 |
+| DE-Tha | 2023 | 365 | 223 | 274 | 0 | 0 | 11 | 80 | TRUE | 0.937 |
+| DE-Tha | 2024 | 366 | 196 | 259 | 0 | 0 | 10 | 97 | TRUE | 0.9809 |
+| DE-Tha | 2025 | 365 | 185 | 247 | 0 | 0 | 19 | 99 | TRUE | 0.9836 |
+| DE-Tha | 2026 | 365 | 108 | 149 | 130 | 0 | 7 | 79 | FALSE | 0.6356 |
+| BE-Vie | 1996 | 366 | 261 | 299 | 34 | 1 | 6 | 26 | FALSE | 0.4098 |
+| BE-Vie | 1997 | 365 | 206 | 248 | 1 | 0 | 46 | 70 | TRUE | 1 |
+| BE-Vie | 1998 | 365 | 230 | 278 | 0 | 1 | 28 | 58 | TRUE | 0.9973 |
+| BE-Vie | 1999 | 365 | 226 | 274 | 1 | 2 | 24 | 64 | TRUE | 1 |
+| BE-Vie | 2000 | 366 | 252 | 302 | 0 | 2 | 14 | 48 | TRUE | 1 |
+| BE-Vie | 2001 | 365 | 242 | 290 | 2 | 1 | 16 | 56 | TRUE | 1 |
+| BE-Vie | 2002 | 365 | 206 | 260 | 3 | 5 | 26 | 71 | TRUE | 1 |
+| BE-Vie | 2003 | 365 | 179 | 228 | 7 | 1 | 45 | 84 | TRUE | 1 |
+| BE-Vie | 2004 | 366 | 220 | 273 | 5 | 3 | 27 | 58 | TRUE | 1 |
+| BE-Vie | 2005 | 365 | 204 | 256 | 1 | 1 | 34 | 73 | TRUE | 0.9973 |
+| BE-Vie | 2006 | 365 | 216 | 261 | 7 | 4 | 41 | 52 | TRUE | 1 |
+| BE-Vie | 2007 | 365 | 234 | 278 | 0 | 0 | 32 | 55 | TRUE | 1 |
+| BE-Vie | 2008 | 366 | 232 | 295 | 0 | 2 | 16 | 53 | TRUE | 1 |
+| BE-Vie | 2009 | 365 | 206 | 265 | 34 | 0 | 28 | 38 | TRUE | 1 |
+| BE-Vie | 2010 | 365 | 181 | 253 | 0 | 6 | 39 | 67 | TRUE | 0.9863 |
+| BE-Vie | 2011 | 365 | 175 | 214 | 0 | 0 | 76 | 75 | TRUE | 0.9973 |
+| BE-Vie | 2012 | 366 | 198 | 249 | 4 | 4 | 52 | 57 | TRUE | 0.9945 |
+| BE-Vie | 2013 | 365 | 179 | 230 | 2 | 6 | 67 | 60 | TRUE | 0.9945 |
+| BE-Vie | 2014 | 365 | 205 | 262 | 1 | 2 | 47 | 53 | TRUE | 0.9973 |
+| BE-Vie | 2015 | 365 | 198 | 246 | 17 | 0 | 32 | 70 | TRUE | 0.9425 |
+| BE-Vie | 2016 | 366 | 193 | 264 | 0 | 0 | 38 | 64 | TRUE | 0.9973 |
+| BE-Vie | 2017 | 365 | 205 | 266 | 0 | 0 | 23 | 76 | TRUE | 0.8274 |
+| BE-Vie | 2018 | 365 | 183 | 239 | 1 | 0 | 39 | 86 | TRUE | 0.8712 |
+| BE-Vie | 2019 | 365 | 202 | 259 | 0 | 0 | 24 | 82 | TRUE | 1 |
+| BE-Vie | 2020 | 366 | 269 | 302 | 52 | 1 | 7 | 4 | TRUE | 0.3333 |
+| BE-Vie | 2021 | 365 | 348 | 359 | 0 | 0 | 5 | 1 | TRUE | 0.9945 |
+| BE-Vie | 2022 | 365 | 260 | 292 | 3 | 0 | 9 | 61 | TRUE | 0.8548 |
+| BE-Vie | 2023 | 365 | 254 | 293 | 6 | 0 | 8 | 58 | TRUE | 0.9918 |
+| BE-Vie | 2024 | 366 | 270 | 309 | 0 | 0 | 20 | 37 | TRUE | 0.7814 |
+| BE-Vie | 2025 | 365 | 212 | 257 | 0 | 0 | 24 | 84 | TRUE | 0.8493 |
+| BE-Vie | 2026 | 365 | 133 | 151 | 131 | 0 | 6 | 77 | FALSE | 0.5644 |
+| FI-Hyy | 1997 | 365 | 297 | 318 | 0 | 0 | 13 | 34 | TRUE | 0 |
+| FI-Hyy | 1998 | 365 | 320 | 331 | 11 | 0 | 4 | 19 | TRUE | 0 |
+| FI-Hyy | 1999 | 365 | 312 | 322 | 31 | 0 | 5 | 7 | FALSE | 0 |
+| FI-Hyy | 2000 | 366 | 312 | 324 | 23 | 0 | 5 | 14 | FALSE | 0 |
+| FI-Hyy | 2001 | 365 | 318 | 337 | 0 | 0 | 5 | 23 | TRUE | 0 |
+| FI-Hyy | 2002 | 365 | 291 | 309 | 3 | 0 | 16 | 37 | TRUE | 0 |
+| FI-Hyy | 2003 | 365 | 315 | 338 | 0 | 0 | 13 | 14 | TRUE | 0 |
+| FI-Hyy | 2004 | 366 | 319 | 342 | 5 | 0 | 9 | 10 | TRUE | 0 |
+| FI-Hyy | 2005 | 365 | 242 | 287 | 37 | 0 | 13 | 28 | TRUE | 0.7425 |
+| FI-Hyy | 2006 | 365 | 220 | 265 | 0 | 0 | 16 | 84 | TRUE | 1 |
+| FI-Hyy | 2007 | 365 | 239 | 280 | 0 | 0 | 21 | 64 | TRUE | 1 |
+| FI-Hyy | 2008 | 366 | 261 | 300 | 0 | 0 | 10 | 56 | TRUE | 1 |
+| FI-Hyy | 2009 | 365 | 243 | 281 | 0 | 0 | 24 | 60 | TRUE | 1 |
+| FI-Hyy | 2010 | 365 | 254 | 291 | 4 | 0 | 10 | 60 | TRUE | 1 |
+| FI-Hyy | 2011 | 365 | 245 | 300 | 41 | 0 | 3 | 21 | TRUE | 1 |
+| FI-Hyy | 2012 | 366 | 272 | 316 | 0 | 0 | 11 | 39 | TRUE | 1 |
+| FI-Hyy | 2013 | 365 | 225 | 287 | 5 | 0 | 22 | 51 | TRUE | 1 |
+| FI-Hyy | 2014 | 365 | 228 | 294 | 0 | 0 | 18 | 53 | TRUE | 1 |
+| FI-Hyy | 2015 | 365 | 202 | 282 | 7 | 0 | 12 | 64 | TRUE | 1 |
+| FI-Hyy | 2016 | 366 | 197 | 275 | 0 | 1 | 18 | 72 | TRUE | 1 |
+| FI-Hyy | 2017 | 365 | 211 | 295 | 2 | 0 | 18 | 50 | TRUE | 1 |
+| FI-Hyy | 2018 | 365 | 192 | 261 | 37 | 0 | 30 | 37 | TRUE | 0.9151 |
+| FI-Hyy | 2019 | 365 | 198 | 272 | 0 | 0 | 19 | 74 | TRUE | 0.9342 |
+| FI-Hyy | 2020 | 366 | 212 | 268 | 0 | 0 | 30 | 68 | TRUE | 0.9126 |
+| FI-Hyy | 2021 | 365 | 218 | 290 | 9 | 0 | 9 | 57 | TRUE | 0.789 |
+| FI-Hyy | 2022 | 365 | 210 | 273 | 0 | 0 | 35 | 57 | TRUE | 0.8438 |
+| FI-Hyy | 2023 | 365 | 209 | 276 | 1 | 1 | 30 | 57 | TRUE | 0.8301 |
+| FI-Hyy | 2024 | 366 | 212 | 282 | 6 | 0 | 39 | 39 | TRUE | 0.9071 |
+| FI-Hyy | 2025 | 365 | 221 | 280 | 0 | 0 | 40 | 45 | TRUE | 0.8329 |
+| FI-Hyy | 2026 | 365 | 92 | 157 | 133 | 1 | 21 | 53 | FALSE | 0.6329 |
 
-## 7. Valid days per kept year, median and range, per site
+## 7. Per-site kept-year summary
 
-| site | n_kept_years | median_valid_days | min_valid_days | max_valid_days |
-|---|---|---|---|---|
-| US-Fuf | 5 | 109 | 88 | 123 |
-| US-Ho2 | 19 | 60 | 18 | 91 |
-| US-MMS | 25 | 48 | 18 | 77 |
+Per site: number of kept years, kept years with zero valid days, median and range of valid 
+days per kept year (including and excluding the zero-valid-day years), and the median/minimum 
+share of each kept year's days where P_F is fully gauge-measured:
+
+| site_id | n_kept_years | n_zero_valid_years | median_valid_days_incl_zero | min_valid_days_incl_zero | max_valid_days_incl_zero | median_valid_days_excl_zero | min_valid_days_excl_zero | max_valid_days_excl_zero | median_share_gauge_measured | min_share_gauge_measured |
+|---|---|---|---|---|---|---|---|---|---|---|
+| BE-Vie | 29 | 0 | 60 | 1 | 86 | 60 | 1 | 86 | 0.9973 | 0.3333 |
+| DE-Tha | 29 | 0 | 74 | 24 | 99 | 74 | 24 | 99 | 0.9863 | 0.4932 |
+| FI-Hyy | 27 | 0 | 51 | 10 | 84 | 51 | 10 | 84 | 0.9151 | 0 |
+| US-Bar | 18 | 0 | 38 | 11 | 62 | 38 | 11 | 62 | 1 | 0.6694 |
+| US-Dk2 | 7 | 0 | 74 | 49 | 114 | 74 | 49 | 114 | 1 | 1 |
+| US-Fuf | 5 | 0 | 109 | 88 | 123 | 109 | 88 | 123 | 0.9044 | 0.6027 |
+| US-Ha1 | 34 | 0 | 33.5 | 3 | 71 | 33.5 | 3 | 71 | 1 | 0 |
+| US-Ho2 | 21 | 2 | 58 | 0 | 91 | 60 | 18 | 91 | 0.9672 | 0.6521 |
+| US-MMS | 25 | 0 | 48 | 18 | 77 | 48 | 18 | 77 | 0.9808 | 0.8795 |
+| US-SP1 | 18 | 0 | 44 | 12 | 99 | 44 | 12 | 99 | 0.8385 | 0 |
+| US-Slt | 17 | 0 | 44 | 13 | 85 | 44 | 13 | 85 | 0.9945 | 0 |
+
+**Kept years with zero valid days:**
+
+| site_id | year |
+|---|---|
+| US-Ho2 | 2012 |
+| US-Ho2 | 2013 |
+
+**Kept site-years with fewer than 10 valid days** (includes the zero-valid-day years above):
+
+| site_id | year | valid_days |
+|---|---|---|
+| BE-Vie | 2020 | 4 |
+| BE-Vie | 2021 | 1 |
+| US-Ha1 | 2003 | 3 |
+| US-Ha1 | 2005 | 4 |
+| US-Ho2 | 2012 | 0 |
+| US-Ho2 | 2013 | 0 |
 
 ## 8. Annual WUE metrics
 
 See `tables/wue_annual.csv` and `tables/wue_daily.csv.gz`.
 
-uWUE_y range here: 7.974 to 17.667 (mean 11.241) g C hPa^0.5 kg H2O-1 -- Zhou et al. (2015): 3.5-15.83 (mean 9.47).
-IWUE_y range here: 22.776 to 61.527 (mean 38.308) g C hPa kg H2O-1 -- Zhou et al. (2015): 5.32-62.31 (mean 33.62).
+uWUE_y range here: 4.029 to 18.226 (mean 11.341) g C hPa^0.5 kg H2O-1 -- Zhou et al. (2015): 3.5-15.83 (mean 9.47).
+IWUE_y range here: 15.625 to 63.294 (mean 38.352) g C hPa kg H2O-1 -- Zhou et al. (2015): 5.32-62.31 (mean 33.62).
 
 ## 9. k* at a grid search limit (0 or 1.5)
 
-Sub-daily scale: 1 of 49 site-year(s) have k* at a grid limit (0 or 1.5).
-Daily scale: 0 of 49 site-year(s) have k* at a grid limit (0 or 1.5).
+Sub-daily scale: 2 of 228 site-year(s) have k* at a grid limit (0 or 1.5).
+Daily scale: 7 of 228 site-year(s) have k* at a grid limit (0 or 1.5).
 
 ## 10. Figures
 

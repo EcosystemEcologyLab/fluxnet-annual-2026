@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-03T00:46:51Z",
-  "pipeline_version": "6166665",
+  "run_datetime_utc": "2026-10-08T20:13:33Z",
+  "pipeline_version": "2a4ed4a",
   "input_sources": [
     "data/snapshots/representativeness_metrics_fig4.csv",
     "site_koppen_beck2023.csv",
@@ -12,5 +12,5 @@
     "site_nee_fig4.csv",
     "site_et_fig4.csv"
   ],
-  "notes": "Figure 5 (renumbered from Figure 4 under figure stage 6 numbering, 2026-10-02; Geo vs Data version), Nature final-artwork re-render: 183 mm wide x 173.3 mm tall, Helvetica, 7pt text (row pitch 4.2mm). Rendering only -- confirmed against representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) render. Vector PDF saved alongside. See SESSION_LOG.md."
+  "notes": "Figure 5 (Geo vs Data version), Nature final-artwork re-render: 183 mm wide x 173.3 mm tall, Helvetica, 7pt text (row pitch 4.2mm). Rendering only -- confirmed against representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) render. Vector PDF saved alongside. See SESSION_LOG.md."
 }

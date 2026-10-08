@@ -1,8 +1,13 @@
 ## figure_flux_comparison_six_panel.R
-## Supplementary Figure S3 (figure stage 6 renumbering, 2026-10-02; target
-## journal Scientific Data has no Extended Data concept -- this script's own
-## name is unchanged, see docs/figure_inventory.md): six-panel
-## FLUXNET2015-vs-Shuttle comparison, rows NEP/ET/H, left column the primary
+## Out of the supplement (supplementary material restructure, 2026-10-08,
+## SESSION_LOG.md): no longer a numbered Supplementary Figure -- moved to
+## review/figures/presentation_figures/, a talk/presentation companion pool
+## beside draft_manuscript_v1/, not journal-submission content (same
+## treatment as scripts/generate_fig02_historical_only.R). Stem dropped the
+## now-inapplicable "figS3_" prefix (it was Supplementary Figure S3 before
+## this restructure) -- not a hand rename, the script itself now writes
+## under the new stem. Six-panel FLUXNET2015-vs-snapshot comparison, rows
+## NEP/ET/H, left column the primary
 ## Figure 4 panels (all qualifying years,
 ## independently per dataset), right column the matched-site-years panels
 ## from task 5 (same site AND same calendar year required on both axes).
@@ -19,9 +24,11 @@
 ## independently per table) -- stated in the legend, not inferred from the
 ## panels.
 ##
-## Output: review/figures/draft_manuscript_v1/SupFigs/
-##   figS3_flux_comparison_six_panel.png/.pdf/.jpg + .legend.txt
-##   (renumbered from supp_flux_comparison_six_panel.*)
+## Output: review/figures/presentation_figures/
+##   flux_comparison_six_panel.png/.pdf/.jpg + .legend.txt
+##   (was SupFigs/figS3_flux_comparison_six_panel.*, renumbered in turn from
+##   supp_flux_comparison_six_panel.* -- that SupFigs copy moved to
+##   SupFigs/deprecated/)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -42,8 +49,8 @@ msg("=== Extended Data: six-panel FLUXNET2015 vs Shuttle comparison ===")
 
 ALL_CSV     <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv"
 MATCHED_CSV <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv"
-OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
-OUT_STEM <- file.path(OUT_DIR, "figS3_flux_comparison_six_panel")
+OUT_DIR  <- file.path("review", "figures", "presentation_figures")
+OUT_STEM <- file.path(OUT_DIR, "flux_comparison_six_panel")
 fs::dir_create(OUT_DIR)
 
 for (f in c(ALL_CSV, MATCHED_CSV)) {
@@ -96,7 +103,7 @@ make_panel <- function(df, flux_code, unit_expr, tag, lims, column_title = NULL)
     panel_letter(tag, x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6) +
     labs(
       x = as.expression(bquote("FLUXNET2015 median" ~ .(flux_code) ~ "(" * .(unit_expr) * ")")),
-      y = as.expression(bquote("Shuttle median" ~ .(flux_code) ~ "(" * .(unit_expr) * ")")),
+      y = as.expression(bquote("the snapshot median" ~ .(flux_code) ~ "(" * .(unit_expr) * ")")),
       title = column_title
     ) +
     combo_theme() +
@@ -153,9 +160,9 @@ class_line <- function(fx) {
          "}; right (matched) n=", nr$matched, " classes {", paste(nr$classes_matched, collapse = ", "), "}")
 }
 legend_lines <- c(
-  "FIGURE LEGEND — figS3_flux_comparison_six_panel.png",
+  "FIGURE LEGEND — flux_comparison_six_panel.png",
   strrep("=", 60), "",
-  "TITLE: Supplementary Figure S3 — FLUXNET2015 vs. Shuttle per-IGBP-class median flux",
+  "TITLE: FLUXNET2015 vs. the snapshot per-IGBP-class median flux",
   "comparison, all qualifying site-years vs. matched site-years, side by side", "",
   "DESCRIPTION:",
   "Six panels, 3 rows (NEP, ET, H) x 2 columns, re-plotting the two comparison tables already",

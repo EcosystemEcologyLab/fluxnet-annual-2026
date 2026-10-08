@@ -1,13 +1,22 @@
 FIGURE LEGEND — figS2_flux_comparison_matched_siteyears.png
 ============================================================
 
-TITLE: Supplementary Figure S2 — FLUXNET2015 vs. current FLUXNET Shuttle per-IGBP-class median
+TITLE: Supplementary Figure S2 — FLUXNET2015 vs. the snapshot per-IGBP-class median
 flux comparison, restricted to matched site-years
+
+PUBLICATION LEGEND:
+Supplementary Figure S2. Comparison of per-IGBP-class median net ecosystem production (NEP),
+evapotranspiration (ET) and sensible heat flux (H) between the FLUXNET2015 release and the
+snapshot, restricted to site-years present and qualifying in both datasets for a given site
+and calendar year. This matched comparison isolates differences arising from updated
+flux-processing software from differences arising from network composition change,
+complementing the full-network comparison in the main text. Data used in the analyses are
+described in Section 2.5.
 
 DESCRIPTION:
 Three vertically-stacked panels (a NEP, b ET, c H -- bold lower-case, 8pt) comparing, for
 each IGBP vegetation class, the median flux value computed from the FLUXNET2015 release
-against the median value from the current FLUXNET Shuttle network -- but unlike the
+against the median value from the snapshot -- but unlike the
 primary comparison figure (fig_04_flux_comparison_combo_nep_et_h.png), each site's
 median on BOTH axes is computed only over the calendar years where BOTH datasets have a
 QC_THRESHOLD_YY-qualifying value for that flux (matched independently per flux), so any

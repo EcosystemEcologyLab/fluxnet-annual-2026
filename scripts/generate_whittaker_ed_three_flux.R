@@ -2,18 +2,21 @@
 ## Supplementary Figure S1 (figure stage 6 renumbering, 2026-10-02; target
 ## journal Scientific Data has no Extended Data concept -- this script's own
 ## name is unchanged, see docs/figure_inventory.md): Whittaker climate-space
-## hexbins for three fluxes (NEE, GPP, TER) side by side -- same hexagons,
+## hexbins for three fluxes (NEE, GPP, RECO) side by side -- same hexagons,
 ## points, and global ice-free-land contour overlay as Figure 3 (NEE panel
 ## reuses fig_whittaker_worldclim() directly, in fill_mode = "stepped", the
-## same call Figure 3 makes). GPP and TER are not NEE-specific in
+## same call Figure 3 makes). GPP and RECO are not NEE-specific in
 ## fig_whittaker_worldclim(), so their panels are built directly here from
 ## compute_site_annual_fluxes()'s own per-site median values, reusing only
 ## the flux-agnostic pieces of the Whittaker machinery (WorldClim climate
 ## join, hex_regular equal-aspect binning, fig_whittaker_global_contour()).
 ##
 ## Output: review/figures/draft_manuscript_v1/SupFigs/
-##   figS1_whittaker_nee_gpp_ter.png/.pdf/.jpg + .legend.txt
-##   (renumbered from supp_whittaker_nee_gpp_ter.*)
+##   figS1_whittaker_nee_gpp_reco.png/.pdf/.jpg + .legend.txt
+##   (renumbered from supp_whittaker_nee_gpp_ter.*, then re-stemmed from
+##   figS1_whittaker_nee_gpp_ter.* to figS1_whittaker_nee_gpp_reco.* in the
+##   supplementary material restructure, 2026-10-08 -- "TER" renamed to
+##   "RECO" throughout this figure's user-facing text, see SESSION_LOG.md)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -33,10 +36,10 @@ suppressPackageStartupMessages({
 })
 
 msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...)
-msg("=== Extended Data: Whittaker NEE/GPP/TER three-flux figure ===")
+msg("=== Extended Data: Whittaker NEE/GPP/RECO three-flux figure ===")
 
 OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
-OUT_STEM <- file.path(OUT_DIR, "figS1_whittaker_nee_gpp_ter")
+OUT_STEM <- file.path(OUT_DIR, "figS1_whittaker_nee_gpp_reco")
 fs::dir_create(OUT_DIR)
 
 # ---- Step: load site-level annual fluxes (shared function) -------------------
@@ -161,7 +164,7 @@ gpp_ter_step_labels <- c(
   paste0("above ", GPP_TER_MAX)
 )
 gpp_ter_step_colours <- setNames(viridisLite::viridis(length(gpp_ter_step_labels)), gpp_ter_step_labels)
-gpp_ter_unit_expr <- expression("GPP & TER (g C m"^{-2}*" yr"^{-1}*")")
+gpp_ter_unit_expr <- expression("GPP & RECO (g C m"^{-2}*" yr"^{-1}*")")
 
 flux_step_scale <- function() {
   ggplot2::scale_fill_manual(
@@ -226,7 +229,7 @@ hex_layer_idx <- function(p) which(vapply(p$layers, function(l) inherits(l$stat,
   msg(label, " hexagons per step: ", paste(names(counts), "=", as.integer(counts), collapse = "; "))
 }
 .report_hex_steps(panel_gpp, "GPP")
-.report_hex_steps(panel_ter, "TER")
+.report_hex_steps(panel_ter, "RECO")
 
 ## One shared legend for panels b/c, in its OWN dedicated row via
 ## patchwork::guide_area() -- task 5. The simpler `guides = "collect"` +
@@ -300,13 +303,21 @@ msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
 # ---- Legend --------------------------------------------------------------------
 legend_lines <- c(
-  "FIGURE LEGEND — figS1_whittaker_nee_gpp_ter.png",
+  "FIGURE LEGEND — figS1_whittaker_nee_gpp_reco.png",
   strrep("=", 60), "",
-  "TITLE: Supplementary Figure S1 — Whittaker climate-space distribution of the current",
-  "FLUXNET network for three fluxes: net ecosystem exchange, gross primary productivity,",
-  "and total ecosystem respiration", "",
+  "TITLE: Supplementary Figure S1 — Whittaker climate-space distribution of the snapshot",
+  "for three fluxes: net ecosystem exchange, gross primary productivity,",
+  "and ecosystem respiration (RECO)", "",
+  "PUBLICATION LEGEND:",
+  "Supplementary Figure S1. Whittaker climate-space distribution of the snapshot network's net",
+  "ecosystem exchange (NEE), gross primary productivity (GPP) and ecosystem respiration (RECO).",
+  "Towers are placed in mean-annual-temperature by mean-annual-precipitation space (WorldClim",
+  "v2.1) and coloured by the hexagon-binned median of each site's flux. Solid and dashed black",
+  "lines show the 95% and 99% highest-density regions of global ice-free land in the same",
+  "climate space, for comparison with the main text's equivalent NEE distribution. Data used in",
+  "the analyses are described in Section 2.5.", "",
   "DESCRIPTION:",
-  "Three panels in a row (a NEE, b GPP, c TER), each the same hexagonal-binned Whittaker",
+  "Three panels in a row (a NEE, b GPP, c RECO), each the same hexagonal-binned Whittaker",
   "climate-space plot as Figure 3 (mean annual temperature, WorldClim v2.1 BIO1, by mean",
   "annual precipitation, BIO12), with the same per-site points overlaid (dark charcoal,",
   "alpha 0.35, drawn in front of the hexagons) and the same global ice-free-land 95%",
@@ -323,19 +334,19 @@ legend_lines <- c(
   "PANELS:",
   paste0("  a NEE — same stepped ColorBrewer RdBu scale as Figure 3 (8 classes, no middle"),
   paste0("    class, 100 g C m⁻² yr⁻¹ steps, endpoints −400/200). Key shown below the three"),
-  "    panels, beside the GPP/TER key (not overlaid on this panel's own data) --",
+  "    panels, beside the GPP/RECO key (not overlaid on this panel's own data) --",
   paste0("    n = ", n_nee, " sites."),
   paste0("  b GPP — stepped viridis scale, shared with panel c (see COLOUR SCALE, below) --"),
   paste0("    n = ", n_gpp, " sites."),
-  paste0("  c TER — same shared stepped viridis scale as panel b — n = ", n_ter, " sites."),
+  paste0("  c RECO — same shared stepped viridis scale as panel b — n = ", n_ter, " sites."),
   "",
   "COLOUR SCALE (panels b, c):",
-  "Stepped viridis scale, ONE shared key for both GPP and TER (not duplicated per panel,",
+  "Stepped viridis scale, ONE shared key for both GPP and RECO (not duplicated per panel,",
   paste0("not independently rescaled): ", GPP_TER_STEP_WIDTH, " g C m⁻² yr⁻¹ steps from 0 to ",
          GPP_TER_MAX, ", plus a final \"above ", GPP_TER_MAX, "\" bin -- ",
          length(gpp_ter_step_labels), " classes total (named constants GPP_TER_STEP_WIDTH,",
          " GPP_TER_MAX in the script)."),
-  "Panel a (NEE) uses its own, unrelated stepped scale -- GPP/TER and NEE values are never",
+  "Panel a (NEE) uses its own, unrelated stepped scale -- GPP/RECO and NEE values are never",
   "compared on the same colour scale.",
   "",
   "AXES:",

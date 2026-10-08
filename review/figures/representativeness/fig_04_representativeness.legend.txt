@@ -2,14 +2,14 @@ FIGURE LEGEND — fig_04_representativeness.png
 ============================================================
 
 TITLE: Figure 5 — Representativeness of the current FLUXNET network (n=781), Geo vs Data
-(manuscript copy: draft_manuscript_v1/fig_05_representativeness.png; this source file
-keeps its own canonical, unnumbered name, fig_04_representativeness.png, per
-docs/figure_inventory.md)
 
-DEFINITIONS (shared with the companion Supplementary Figure S4, Geo vs Geo,
+(manuscript copy: draft_manuscript_v1/fig_05_representativeness.png; this source file
+keeps its own canonical, unnumbered name per docs/figure_inventory.md)
+
+DEFINITIONS (shared with the companion Supplementary Figure S3, Geo vs Geo,
 supp_representativeness_geo_vs_geo.png):
 "Geo vs Data" (this figure) compares the global land distribution of each axis against
-each site's own measured or site-derived value. "Geo vs Geo" (Supplementary Figure S4)
+each site's own measured or site-derived value. "Geo vs Geo" (Supplementary Figure S3)
 compares the same global land distribution against the gridded product's own value
 sampled at each tower's coordinate, instead of the site's own measurement.
 

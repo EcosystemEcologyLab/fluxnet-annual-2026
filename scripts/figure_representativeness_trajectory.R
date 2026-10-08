@@ -89,7 +89,7 @@ weighted_jaccard <- function(p, q) sum(pmin(p, q)) / sum(pmax(p, q))
 # ==============================================================================
 NETWORKS <- c("marconi", "la_thuile", "fluxnet2015", "current")
 NETWORK_LABELS <- c(marconi = "Marconi", la_thuile = "La Thuile",
-                     fluxnet2015 = "FLUXNET2015", current = "Current")
+                     fluxnet2015 = "FLUXNET2015", current = "the snapshot")
 ## Same pin figure4_representativeness.R uses for the current network.
 CURRENT_SNAPSHOT <- "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv"
 
@@ -546,7 +546,7 @@ TRAJ_COLORS <- c(
   nee     = "#0072B2",  # blue
   et      = "#56B4E9"   # sky blue
 )
-AXIS_LABELS <- c(koppen = "Koppen-Geiger", igbp = "Land cover (IGBP)", aridity = "Aridity",
+AXIS_LABELS <- c(koppen = "Köppen-Geiger", igbp = "Land cover (IGBP)", aridity = "Aridity",
                   biomass = "Biomass", nee = "NEE", et = "ET")
 
 traj_df <- metrics_rows |>
@@ -605,33 +605,40 @@ msg("Saved figure: ", out_files$png, " / ", out_files$pdf, " / ", out_files$jpeg
 # 13. Legend (.legend.txt) -- same convention as supp_representativeness_geo_vs_geo
 # ==============================================================================
 legend_lines <- c(
-  "FIGURE LEGEND — figS6_representativeness_trajectory.png",
+  "FIGURE LEGEND — figS5_sampling_collections.png",
   strrep("=", 60),
   "",
-  "TITLE: Supplementary Figure S6 — Geo vs Geo representativeness through time",
+  "TITLE: Supplementary Figure S5 — Network sampling (gridded value at the tower) through time",
+  "",
+  "PUBLICATION LEGEND:",
+  "Supplementary Figure S5. Network sampling (gridded value at the tower) tracked across four",
+  "generations of FLUXNET data collection -- Marconi, La Thuile, FLUXNET2015 and the snapshot --",
+  "for the same six axes as the main text's sampling figure. Shows how the network's coverage of",
+  "climate, land-cover, aridity, biomass and flux space has changed as the network has grown.",
+  "Network sampling analysis is described in Section 2.7.",
   "",
   "DESCRIPTION:",
-  "Geo vs Geo weighted Jaccard similarity (J) for Figure 5's own six axes (a Koppen-Geiger,",
-  "b land cover as IGBP, c aridity, d biomass, e NEE, f ET), tracked across four FLUXNET",
-  "network generations: Marconi, La Thuile, FLUXNET2015, and the current (781-site) network.",
+  "Gridded-value-at-the-tower weighted Jaccard similarity (J) for Figure 5's own six axes (a",
+  "Köppen-Geiger, b land cover as IGBP, c aridity, d biomass, e NEE, f ET), tracked across four",
+  "FLUXNET network generations: Marconi, La Thuile, FLUXNET2015, and the snapshot (781 sites).",
   "Every site is classified by the gridded product's own value at its coordinate (never a",
-  "tower-measured value) -- the same Geo vs Geo definition, classes, bin edges, land grids",
-  "and totals as scripts/figure4_representativeness.R and figS4_representativeness_geo_vs_geo.png;",
+  "tower-measured value) -- the same gridded-value-at-the-tower definition, classes, bin edges,",
+  "land grids and totals as scripts/figure4_representativeness.R and figS3_sampling_gridded_at_tower.png;",
   "see that figure's legend for the full per-axis methods notes. Classes/edges are not redefined",
   "here. New raster extractions for the three historical networks: MODIS MCD12C1 IGBP (nearest",
-  "cell) and TRENDY model NEE/GPP/ET (bilinear) at each historical tower coordinate -- Koppen,",
+  "cell) and TRENDY model NEE/GPP/ET (bilinear) at each historical tower coordinate -- Köppen,",
   "aridity and biomass for the historical networks reuse existing data/snapshots/site_*_<net>.csv",
   "tables (same products/class schemes as Figure 5, confirmed before reuse).",
   paste0("Final artwork size: ", FIG_WIDTH_MM, " mm wide x ", FIG_HEIGHT_MM,
          " mm tall, Helvetica throughout. Supplementary Figure (target journal Scientific Data",
          " has no Extended Data concept) -- see docs/figure_inventory.md."),
   "",
-  "X AXIS: four network generations in chronological order (Marconi, La Thuile, FLUXNET2015, Current).",
+  "X AXIS: four network generations in chronological order (Marconi, La Thuile, FLUXNET2015, the snapshot).",
   "",
   "PRIMARY Y AXIS (left): weighted Jaccard similarity J in [0, 1]. Six coloured lines, one per axis.",
   "",
   "SECONDARY Y AXIS (right): site count (grey bars, width 0.38, black outline). Axis scaled so the",
-  paste0("maximum (", MAX_N, " sites, current network) aligns with J = 1.0 on the primary axis."),
+  paste0("maximum (", MAX_N, " sites, the snapshot) aligns with J = 1.0 on the primary axis."),
   "",
   "CLASSIFICATION AXES AND LINE COLOURS (Okabe-Ito colourblind-safe palette; IGBP takes the role",
   "the retired fig_05_jaccard_trajectory_with_counts.png's LULC axis had -- see",
@@ -649,7 +656,7 @@ for (spec in PANEL_SPECS) {
   }
 }
 legend_lines <- c(legend_lines, "",
-  "SITE COUNTS BY GENERATION: Marconi 35 | La Thuile 252 | FLUXNET2015 212 | Current 781.",
+  "SITE COUNTS BY GENERATION: Marconi 35 | La Thuile 252 | FLUXNET2015 212 | the snapshot 781.",
   "",
   "UNCLASSIFIED HISTORICAL SITES:")
 if (nrow(unclassified_df) == 0) {
@@ -661,11 +668,11 @@ if (nrow(unclassified_df) == 0) {
   }
 }
 legend_lines <- c(legend_lines, "",
-  "REPRESENTATIVENESS METRIC: Weighted Jaccard (J) -- sum(pmin(p,q)) / sum(pmax(p,q)).",
+  "NETWORK SAMPLING METRIC: Weighted Jaccard (J) -- sum(pmin(p,q)) / sum(pmax(p,q)).",
   "",
   "SOURCE: scripts/figure_representativeness_trajectory.R.",
   "Table: data/snapshots/representativeness_metrics_trajectory.csv.",
-  "Vector PDF alongside this PNG. Companion figure: figS4_representativeness_geo_vs_geo.png."
+  "Vector PDF alongside this PNG. Companion figure: figS3_sampling_gridded_at_tower.png."
 )
 legend_path <- paste0(fig_stem, ".legend.txt")
 writeLines(legend_lines, legend_path)
@@ -675,12 +682,14 @@ msg("Saved legend: ", legend_path)
 # 14. Copy to SupFigs/
 # ==============================================================================
 ## SupFigs/ copy renamed to the Stage 6 numbering (figS6, the next number
-## after figS5_flux_representativeness -- the task's own "S1...S6" list) --
-## the FIG_DIR source above keeps its own descriptive name
-## (supp_representativeness_trajectory), same pattern figure4_
-## representativeness.R uses for Figure 5/figS4 (DEST_BASENAME, source name
-## unchanged, only the SupFigs/draft_manuscript_v1 copy renamed).
-supfigs_stem <- file.path(SUPFIGS_DIR, "figS6_representativeness_trajectory")
+## after figS5_flux_representativeness -- the task's own "S1...S6" list),
+## then to figS5_sampling_collections in the supplementary material
+## restructure (2026-10-08, SESSION_LOG.md) -- the FIG_DIR source above
+## keeps its own descriptive name (supp_representativeness_trajectory),
+## same pattern figure4_representativeness.R uses for Figure 5/figS3
+## (DEST_BASENAME, source name unchanged, only the SupFigs/draft_manuscript_v1
+## copy renamed).
+supfigs_stem <- file.path(SUPFIGS_DIR, "figS5_sampling_collections")
 fs::file_copy(paste0(fig_stem, ".png"), paste0(supfigs_stem, ".png"), overwrite = TRUE)
 fs::file_copy(paste0(fig_stem, ".pdf"), paste0(supfigs_stem, ".pdf"), overwrite = TRUE)
 fs::file_copy(paste0(fig_stem, ".jpg"), paste0(supfigs_stem, ".jpg"), overwrite = TRUE)

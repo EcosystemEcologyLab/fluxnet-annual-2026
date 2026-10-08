@@ -1,0 +1,36 @@
+FIGURE LEGEND — fig_02_historical_only.png
+============================================================
+
+TITLE: Figure 2 (historical collections only) — presentation reveal companion
+
+PURPOSE: NOT a numbered Supplementary Information figure for journal submission.
+A presentation aid: show this slide, then advance to the real Figure 2
+(fig_02_cumulative_siteyears_igbp.png, draft_manuscript_v1/) on an identical x/y
+axis to reveal the snapshot's growth on top of the historical context.
+
+DESCRIPTION:
+Identical to Figure 2 in every respect -- same data, same x/y axis range and breaks,
+same dashed release-year reference lines (2000/2007/2015), same line colours/styling,
+same 89 x 89 mm Nature-format dimensions -- EXCEPT that the snapshot's
+IGBP-stacked area and its 'IGBP' legend are omitted entirely: only
+the Marconi 2000 / La Thuile 2007 / FLUXNET2015 cumulative site-year lines are drawn.
+The y axis is identical to Figure 2's even though the snapshot's data is not drawn: the
+same snapshot cumulative totals still drive the axis range via an invisible layer
+(fig_cumulative_siteyears_igbp(show_current_network = FALSE) in
+R/figures/fig_network_growth.R), so this figure is a strict visual subset of Figure 2
+on the same axes, not a separately-scaled plot.
+(comparison data only, not primary data -- see CLAUDE.md Hard Rule 1).
+
+SITE-YEAR RULE (each series counts site-years by its own collection's convention --
+same as Figure 2):
+  Marconi: sum(last_year - first_year + 1) over its own 'Years in Marconi' ranges -- ends at 96.
+  La Thuile: count of 1s in its own year-indicator matrix (1991-2007), NOT the first-to-last span (which over-counts at 1008) -- ends at 965.
+  FLUXNET2015: count of non-NA cells in its own year-presence matrix (1991-2014) -- ends at 1532.
+
+AXIS WINDOW (data-driven, data_year_window() in R/utils.R -- identical to Figure 2): 1991-2025.
+
+SOURCE: scripts/generate_fig02_historical_only.R, calling the same
+R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp() function as Figure 2
+(scripts/generate_fig_cumulative_siteyears.R), with show_current_network = FALSE.
+DIMENSIONS: 89 x 89 mm, 600 dpi PNG + vector PDF + 300 ppi JPEG,
+Helvetica, white background. All text 5-7pt.

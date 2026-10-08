@@ -1,0 +1,10 @@
+network_code,network_name,processing_hub,n_sites,n_site_years
+AMF,AmeriFlux,AmeriFlux,381,2891
+EUF,European Fluxes Database,ICOS,138,959
+ICOS,ICOS,ICOS,80,983
+JPF,JapanFlux,ICOS,54,507
+TERN,TERN,TERN,52,430
+CNF,ChinaFLUX,ICOS,32,246
+KOF,KoFlux,ICOS,21,82
+FLX,not affiliated with a regional network,ICOS,18,87
+SAEON,South African Environmental Observation Network,ICOS,5,15

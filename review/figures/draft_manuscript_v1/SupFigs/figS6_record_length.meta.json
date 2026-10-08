@@ -1,0 +1,13 @@
+{
+  "run_datetime_utc": "2026-10-08T20:13:57Z",
+  "pipeline_version": "2a4ed4a",
+  "input_sources": [
+    "data/lists/Marconi_to_Modern_SiteIDs.xlsx",
+    "data/lists/LaThuileList.xlsx",
+    "data/lists/FLUXNET2015.xlsx",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/collection_sites_siteyears.csv"
+  ],
+  "notes": "Figure S7: current-network record-length histogram by IGBP (panel a) and cross-collection share-with->=n-years step lines (panel b). See .legend.txt for the two-meanings-of-a-year caveat and Marconi-is-a-span caveat."
+}

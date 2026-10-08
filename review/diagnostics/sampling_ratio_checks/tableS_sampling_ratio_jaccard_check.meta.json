@@ -1,0 +1,21 @@
+{
+  "run_datetime_utc": "2026-10-08T19:05:16Z",
+  "pipeline_version": "2a4ed4a",
+  "input_sources": [
+    "data/snapshots/representativeness_metrics_fig4.csv",
+    "data/snapshots/site_koppen_era5_fig4.csv",
+    "data/snapshots/site_koppen_beck2023.csv",
+    "data/snapshots/site_igbp_fig4.csv",
+    "data/snapshots/site_aridity_era5_fig4.csv",
+    "data/snapshots/site_aridity.csv",
+    "data/snapshots/site_biomass_cci_v7.csv",
+    "data/snapshots/site_nee_fig4.csv",
+    "data/snapshots/site_et_fig4.csv",
+    "data/snapshots/koppen_beck2023_global_distribution.csv",
+    "data/snapshots/igbp_mcd12c1_global_distribution.csv",
+    "data/snapshots/aridity_unep7_global_distribution.csv",
+    "data/snapshots/biomass_cci_v7_global_distribution.csv",
+    "data/snapshots/nee_et_fig4_global_distribution.csv"
+  ],
+  "notes": "Always written (reports the Stage 3 validation outcome regardless of pass/fail). Weighted Jaccard recomputed from a long table built from committed site_*_fig4.csv / site_biomass_cci_v7.csv tower files, plus (for koppen/geo_vs_geo and aridity/geo_vs_geo only) the same tower-side inputs figure4_representativeness.R itself uses for those two panels (site_koppen_beck2023.csv, site_aridity.csv -- both already-committed snapshot CSVs, no raster re-extraction), and *_global_distribution.csv land files throughout, compared against data/snapshots/representativeness_metrics_fig4.csv (not modified). 12 / 12 agree to 6 decimals. See each row's own note column and review/supp_run_status.md."
+}

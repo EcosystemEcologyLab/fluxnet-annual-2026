@@ -62,8 +62,10 @@ scale-bar placement in panels b-e is chosen programmatically to avoid land (figu
 
 ## Shared IGBP palette (task 2, 2026-10-02)
 
-Every paper figure that colours by IGBP class (Figures 2, 4, 5, and the matched/six-panel
-Supplementary Figures S2/S3) uses `R/plot_constants.R::PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS`
+Every paper figure that colours by IGBP class (Figures 2, 4, 5, Supplementary Figure S2, and
+`review/figures/presentation_figures/flux_comparison_six_panel.png`, not a numbered supplementary
+figure since the 2026-10-08 restructure -- see "Supplementary Figures" below) uses
+`R/plot_constants.R::PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS`
 (`scale_fill_paper_igbp()`/`scale_color_paper_igbp()`) -- Figure 4's own MODIS/061/MCD12Q1 GEE
 palette (15 classes, CVM/BSV/SNO included), promoted to a shared constant. This is DIFFERENT
 from the older `IGBP_order`/`IGBP_colours` (still used by other, non-paper figures) -- see
@@ -83,7 +85,7 @@ copy filenames were renumbered.
 | Script | Output (main location, unchanged name) | Draft-manuscript copy (renumbered) | Description | External data | Status |
 |---|---|---|---|---|---|
 | `scripts/figure4_representativeness.R` | `review/figures/representativeness/fig_04_representativeness.png`/`.pdf` | `fig_05_representativeness.png`/`.pdf` | **Figure 5.** Six-panel log2 sampling-ratio figure (Köppen-Geiger, IGBP land cover, aridity, biomass, NEE, ET) vs. current 781-site network, Geo vs Data | Beck 2023 KG, MODIS MCD12C1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14, WorldClim BIO12, ERA5 | Current |
-| `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf` | `SupFigs/figS4_representativeness_geo_vs_geo.png`/`.pdf` | **Supplementary Figure S4** (target journal Scientific Data has no Extended Data concept; `draft_manuscript_v1/` itself keeps only main-text figures). Same six panels, Geo vs Geo (gridded product's own value at each tower, not the site's own measurement) | same as above | Current |
+| `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf` | `SupFigs/figS3_sampling_gridded_at_tower.png`/`.pdf` (was `figS4_representativeness_geo_vs_geo.*` before the 2026-10-08 supplementary material restructure, SESSION_LOG.md) | **Supplementary Figure S3** (target journal Scientific Data has no Extended Data concept; `draft_manuscript_v1/` itself keeps only main-text figures). Same six panels, using the gridded product's own value at each tower (not the site's own measurement) -- what Figure 5's own legend still calls "Geo vs Geo" | same as above | Current |
 | `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/deprecated/fig_rep001_current.png` | — (superseded) | Prior "Figure 4": six-panel sampling ratio figure (Köppen-Geiger, ESA CCI Land Cover, CGIAR Aridity, ESA CCI Biomass, TRENDY NEE-IAV, TRENDY ET-median) vs. 767-site network | Beck 2023 KG, ESA CCI LC v2.1.1, CGIAR Aridity v3.1, ESA CCI Biomass v7, TRENDY v14 | **Superseded** 2026-10-02 by `fig_04_representativeness.png`/`fig_05_representativeness.png` above |
 | `scripts/figure_representativeness_summary.R` | `review/figures/representativeness/deprecated/fig_rep002_marconi.png` … `fig_rep018_jaccard_et_median_aggregation.png`, `fig_representativeness_*.png` | — (superseded) | Historical-network representativeness comparisons (Marconi, La Thuile, FLUXNET2015), the Jaccard-overlap trajectory over network history, and per-axis diagnostic aggregation figures (Köppen/land-cover/aridity/biomass/TRENDY NEE/TRENDY ET at various class resolutions) | same as fig_rep001 | **Superseded** 2026-10-02 (see note below) |
 
@@ -104,11 +106,12 @@ slot was later reused by figure stage 6, 2026-10-02, for the unrelated, renumber
 
 **Superseded: `scripts/figure_representativeness_summary.R`'s remaining outputs.** Figure stage 5
 (`SESSION_LOG.md`, 2026-10-02) flagged their retirement as conditional on figure stage 3 (the
-representativeness trajectory supplement, now Supplementary Figure S6) being marked DONE in
+representativeness trajectory supplement, now Supplementary Figure S5) being marked DONE in
 `review/figstage_status.md`. Stage 3 was closed out in the close-out session (2026-10-02): its
 current-network Geo-vs-Geo values were reconfirmed to reproduce
 `representativeness_metrics_fig4.csv`'s six rows exactly, and its figure staged as
-`SupFigs/figS6_representativeness_trajectory.*`. With stage 3 DONE, all 46 remaining
+`SupFigs/figS5_sampling_collections.*` (was `figS6_representativeness_trajectory.*` before the
+2026-10-08 supplementary material restructure). With stage 3 DONE, all 46 remaining
 `scripts/figure_representativeness_summary.R` outputs (`fig_rep001`-`fig_rep018` and
 `fig_representativeness_*`, `.png` + `.legend.txt` companions) were `git mv`'d into
 `review/figures/representativeness/deprecated/` in the same close-out session. The script itself is
@@ -117,30 +120,53 @@ location again on a fresh run; it is not deleted or renamed, per figure-stage ru
 
 ## Supplementary Figures (`draft_manuscript_v1/SupFigs/`)
 
-Added 2026-10-02. The target journal is Scientific Data, which has no Extended Data concept —
-every figure in this folder is a Supplementary Figure (an earlier draft of this repo's figures/
-docs used "Extended Data"/"Supplemental Figure" terminology borrowed from Nature-family
-conventions before the target journal was settled as Scientific Data; both are now corrected to
-"Supplementary Figure" throughout, figure stage 6, 2026-10-02): ≤180 mm wide, ≤240 mm tall, PNG
-(600 dpi) + vector PDF + 300 p.p.i. JPEG, Helvetica, all text 5–7 pt except 8 pt bold lower-case
-panel letters (`scripts/check_figure_format.R` enforces the size rules; its own internal
+**Renumbered S1–S6 in the supplementary material restructure (2026-10-08, SESSION_LOG.md)** --
+old-stem -> new-stem, with `figS3_flux_comparison_six_panel` dropped from the numbering entirely
+(moved to `review/figures/presentation_figures/`, see below):
+
+| Old # (added 2026-10-02) | Old stem | New # | New stem |
+|---|---|---|---|
+| S1 | `figS1_whittaker_nee_gpp_ter` | S1 | `figS1_whittaker_nee_gpp_reco` |
+| S2 | `figS2_flux_comparison_matched_siteyears` | S2 | `figS2_flux_comparison_matched_siteyears` (unchanged) |
+| S3 | `figS3_flux_comparison_six_panel` | -- | moved to `presentation_figures/flux_comparison_six_panel` (no longer numbered) |
+| S4 | `figS4_representativeness_geo_vs_geo` | S3 | `figS3_sampling_gridded_at_tower` |
+| S5 | `figS5_flux_representativeness` | S4 | `figS4_sampling_flux_axes` |
+| S6 | `figS6_representativeness_trajectory` | S5 | `figS5_sampling_collections` |
+| S7 | `figS7_record_length` | S6 | `figS6_record_length` |
+
+Wording changes applied throughout the plotting code, `.legend.txt` files and the compiled PDF for
+the figures listed: "Representativeness" -> "Network sampling" (S3, S4, S5 titles); "FLUXNET
+Shuttle"/"Current"/"current FLUXNET network" -> "the snapshot" (S1, S2, S5, S6, and the two figures
+moved to `presentation_figures/`); "TER" -> "RECO" (S1, S4); "Koppen" -> "Köppen" (S5 key); "Geo vs
+Geo"/"Geo vs Data" -> "gridded value at the tower"/"the site's own value" (S3/S4 titles and panel
+headers). Figure 5 (main text) is unchanged in both content and wording -- only its cross-references
+to its companion figure's number were updated (S4 -> S3).
+
+Old-S1-S6 PNG/PDF/JPEG/`.legend.txt` (and `.meta.json` where present) moved to
+`SupFigs/deprecated/`, not deleted, per CLAUDE.md. The compiled PDF
+(`SupFigs/supplementary_figures.pdf`) was rebuilt and renamed
+`SupFigs/supplementary_information.pdf` (also now includes Tables S1–S4 as formatted table pages
+after the six figure pages, and a publication-facing legend -- see below); the old
+`supplementary_figures.pdf` moved to `SupFigs/deprecated/` alongside the superseded figures.
+
+Target journal Scientific Data has no Extended Data concept — every figure in this folder is a
+Supplementary Figure: ≤180 mm wide, ≤240 mm tall, PNG (600 dpi) + vector PDF + 300 p.p.i. JPEG,
+Helvetica, all text 5–7 pt except 8 pt bold lower-case panel letters
+(`scripts/check_figure_format.R` enforces the size rules; its own internal
 `extended_data`/`ED_*`/`NATURE_ED_*` names are unchanged code identifiers, not user-facing
 terminology). None of these scripts are wired into `scripts/build_draft_manuscript_v1.R` — each
-writes directly to `SupFigs/`.
+writes directly to `SupFigs/`. Scripts, functions and underlying data/table files keep their own
+names (figure stage 6 rule 3, still honoured by the 2026-10-08 restructure) — only the `SupFigs/`
+copy filenames changed.
 
-Numbered figS1–figS6 (figS6 added in the close-out session, 2026-10-02, once figure stage 3 was
-closed out — see below), in the fixed order below, without gaps. Scripts, functions and underlying
-data/table files keep their own names (figure stage 6 rule 3) — only the `SupFigs/` copy filenames
-changed, from `supp_<name>.*` to `figS<N>_<name>.*`.
-
-| # | Script | FIG_DIR / canonical source name | `SupFigs/` copy (renumbered) | Description |
+| # | Script | FIG_DIR / canonical source name | `SupFigs/` copy | Description |
 |---|---|---|---|---|
-| S1 | `scripts/generate_whittaker_ed_three_flux.R` | (writes directly to `SupFigs/`, no separate FIG_DIR source) | `figS1_whittaker_nee_gpp_ter.png`/`.pdf`/`.jpg` | Three-panel Whittaker climate-space hexbin (a NEE, stepped RdBu scale shared with Figure 3; b GPP, c TER, ONE shared STEPPED viridis scale, 500 g C m⁻² yr⁻¹ steps from 0 to 3000 plus an "above 3000" bin, one shared key in its own row below the panels) — same hexagons, points (drawn in front, same order in all three panels) and global ice-free-land contour overlay as Figure 3. Values from `compute_site_annual_fluxes()`. Stepped scale and shared-key layout revised 2026-10-02, task 5. |
-| S2 | `scripts/figure_flux_comparison_combo_alt_common_siteyears.R` | (writes directly to `SupFigs/`) | `figS2_flux_comparison_matched_siteyears.png`/`.pdf`/`.jpg` | FLUXNET2015-vs-Shuttle NEP/ET/H comparison restricted to matched site-years (same site **and** calendar year required on both axes) — isolates ONEFlux processing-version differences from network-composition change. Rebuilt 2026-10-02 on `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()`; see `docs/known_issues.md` §10. |
-| S3 | `scripts/figure_flux_comparison_six_panel.R` | (writes directly to `SupFigs/`) | `figS3_flux_comparison_six_panel.png`/`.pdf`/`.jpg` | Six-panel re-plot (no new computation) of the two tables above side by side: rows NEP/ET/H, left column = Figure 4's "all qualifying site-years" data, right column = the matched-site-years data (Supplementary Figure S2), identical axis limits within each row. |
-| S4 | `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf`/`.jpg` | `figS4_representativeness_geo_vs_geo.png`/`.pdf`/`.jpg` | See the main representativeness table above. Companion to Figure 5, Geo vs Geo. |
-| S5 | `scripts/figure_flux_representativeness_supp.R` | `review/figures/representativeness/supp_flux_representativeness.png`/`.pdf`/`.jpg` | `figS5_flux_representativeness.png`/`.pdf`/`.jpg` | Eight panels: four fluxes (NEE, GPP, TER, ET) x two comparisons (Geo vs Geo, Geo vs Data). NEE/ET panels (a/b/g/h) are Figure 5's own panels e/f, confirmed programmatically identical (n/J) before rendering. GPP/TER (c/d/e/f) are new: TRENDY v14 S3 17-model ensemble-median (1991–2020 mean, TER = ra+rh) vs. tower medians from `compute_site_annual_fluxes()`. Table: `data/snapshots/representativeness_metrics_flux_supp.csv`. Added figure stage 4, 2026-10-02. |
-| S6 | `scripts/figure_representativeness_trajectory.R` | `review/figures/representativeness/supp_representativeness_trajectory.png`/`.pdf`/`.jpg` | `figS6_representativeness_trajectory.png`/`.pdf`/`.jpg` | Geo vs Geo weighted Jaccard similarity (J), Figure 5's own six axes, tracked across four FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, current 781-site). Classes/bin edges/land grids/J-definition taken as-is from `scripts/figure4_representativeness.R`'s own committed tables, not redefined. New raster extractions for the three historical networks: MODIS MCD12C1 IGBP (nearest cell) and TRENDY model NEE/GPP/ET (bilinear). Current-network values confirmed to reproduce `representativeness_metrics_fig4.csv`'s six Geo-vs-Geo rows exactly. Table: `data/snapshots/representativeness_metrics_trajectory.csv`. Figure stage 3 (2026-10-02); closed out (committed, numbered) in the close-out session, 2026-10-02 — see `review/figstage_status.md` Stage 3 entry. |
+| S1 | `scripts/generate_whittaker_ed_three_flux.R` | (writes directly to `SupFigs/`, no separate FIG_DIR source) | `figS1_whittaker_nee_gpp_reco.png`/`.pdf`/`.jpg` | Three-panel Whittaker climate-space hexbin (a NEE, stepped RdBu scale shared with Figure 3; b GPP, c RECO, ONE shared STEPPED viridis scale, 500 g C m⁻² yr⁻¹ steps from 0 to 3000 plus an "above 3000" bin, one shared key in its own row below the panels) — same hexagons, points (drawn in front, same order in all three panels) and global ice-free-land contour overlay as Figure 3. Values from `compute_site_annual_fluxes()`. Stepped scale and shared-key layout revised 2026-10-02, task 5. |
+| S2 | `scripts/figure_flux_comparison_combo_alt_common_siteyears.R` | (writes directly to `SupFigs/`) | `figS2_flux_comparison_matched_siteyears.png`/`.pdf`/`.jpg` | FLUXNET2015-vs-snapshot NEP/ET/H comparison restricted to matched site-years (same site **and** calendar year required on both axes) — isolates ONEFlux processing-version differences from network-composition change. Rebuilt 2026-10-02 on `compute_site_annual_fluxes()`/`compute_site_annual_fluxes_from_df()`; see `docs/known_issues.md` §10. |
+| S3 | `scripts/figure4_representativeness.R` | `review/figures/representativeness/supp_representativeness_geo_vs_geo.png`/`.pdf`/`.jpg` | `figS3_sampling_gridded_at_tower.png`/`.pdf`/`.jpg` | See the main representativeness table above. Companion to Figure 5 (what Figure 5's own legend calls Geo vs Geo; this figure's own wording: "gridded value at the tower"). |
+| S4 | `scripts/figure_flux_representativeness_supp.R` | `review/figures/representativeness/supp_flux_representativeness.png`/`.pdf`/`.jpg` | `figS4_sampling_flux_axes.png`/`.pdf`/`.jpg` | Eight panels: four fluxes (NEE, GPP, RECO, ET) x two comparisons (gridded value at the tower, the site's own value). NEE/ET panels (a/b/g/h) are Figure 5's own panels e/f, confirmed programmatically identical (n/J) before rendering. GPP/RECO (c/d/e/f) are new: TRENDY v14 S3 17-model ensemble-median (1991–2020 mean, RECO = ra+rh) vs. tower medians from `compute_site_annual_fluxes()`. Table: `data/snapshots/representativeness_metrics_flux_supp.csv`. Added figure stage 4, 2026-10-02. |
+| S5 | `scripts/figure_representativeness_trajectory.R` | `review/figures/representativeness/supp_representativeness_trajectory.png`/`.pdf`/`.jpg` | `figS5_sampling_collections.png`/`.pdf`/`.jpg` | Gridded-value-at-the-tower weighted Jaccard similarity (J), Figure 5's own six axes, tracked across four FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, the snapshot, 781-site). Classes/bin edges/land grids/J-definition taken as-is from `scripts/figure4_representativeness.R`'s own committed tables, not redefined. New raster extractions for the three historical networks: MODIS MCD12C1 IGBP (nearest cell) and TRENDY model NEE/GPP/ET (bilinear). Snapshot values confirmed to reproduce `representativeness_metrics_fig4.csv`'s six Geo-vs-Geo rows exactly. Table: `data/snapshots/representativeness_metrics_trajectory.csv`. Figure stage 3 (2026-10-02); closed out (committed, numbered) in the close-out session, 2026-10-02 — see `review/figstage_status.md` Stage 3 entry. |
+| S6 | `scripts/supp_stage2_record_length_collections_figure.R` | (writes directly to `SupFigs/`) | `figS6_record_length.png`/`.pdf`/`.jpg` | Record length of the snapshot and across three prior FLUXNET collections (Marconi, La Thuile, FLUXNET2015) — panel a: distribution of years-with-data per site in the snapshot, by IGBP class; panel b: share of each collection's sites with at least n years of data. |
 
 **Retired.** `scripts/generate_map_regional.R` → `supp_map_regional.png`/`.pdf`/`.jpg`: regional
 network distribution (panel a the Equal Earth world map with the four regional extents outlined;
@@ -149,13 +175,34 @@ panels b–e, one Lambert Azimuthal Equal-Area projection per region). Retired t
 main-text `fig_01_map_network` (see "Main-text figures" above) — not part of the figS1–S6
 numbering.
 
-**Not a numbered supplementary figure.** `scripts/generate_fig02_historical_only.R` →
-`fig_02_historical_only.png`/`.pdf`/`.jpg` (added 2026-10-06). A presentation "reveal" companion
-to Figure 2, not journal-submission content: identical x/y axes, dashed reference lines, and
-historical-collection lines as Figure 2, with the FLUXNET Shuttle IGBP-stacked area and its "IGBP"
-legend omitted — the y axis is still driven by the (undrawn) Shuttle totals via
-`fig_cumulative_siteyears_igbp(show_current_network = FALSE)`, so it is a strict visual subset of
-Figure 2 on the same scale, meant to be shown immediately before it in a talk. Deliberately named
-without an S-number so it is not mistaken for one, though it is validated by
-`scripts/check_figure_format.R` like every other file in `SupFigs/`. See SESSION_LOG.md 2026-10-06.
+## Presentation figures (`review/figures/presentation_figures/`)
+
+Added 2026-10-08 (supplementary material restructure, SESSION_LOG.md). A pool of talk/presentation
+companion figures, beside `draft_manuscript_v1/`, not journal-submission content; neither is a
+numbered Supplementary Figure, but both are still validated by `scripts/check_figure_format.R`
+(run explicitly against this directory) using the same Extended-Data-style size/font/text/line/edge
+rules as everything in `SupFigs/`.
+
+| Script | `presentation_figures/` output | Description |
+|---|---|---|
+| `scripts/figure_flux_comparison_six_panel.R` | `flux_comparison_six_panel.png`/`.pdf`/`.jpg` | Six-panel re-plot (no new computation) of the Figure 4 and Supplementary Figure S2 comparison tables side by side: rows NEP/ET/H, left column = Figure 4's "all qualifying site-years" data, right column = the matched-site-years data (Supplementary Figure S2), identical axis limits within each row. Was `SupFigs/figS3_flux_comparison_six_panel.*` before this restructure; the "figS3_" stem prefix was dropped (not a hand rename -- the script itself now writes under the new stem) since it is no longer part of the S-numbering. |
+| `scripts/generate_fig02_historical_only.R` | `fig_02_historical_only.png`/`.pdf`/`.jpg` | A presentation "reveal" companion to Figure 2: identical x/y axes, dashed reference lines, and historical-collection lines as Figure 2, with the snapshot's IGBP-stacked area and its "IGBP" legend omitted — the y axis is still driven by the (undrawn) snapshot totals via `fig_cumulative_siteyears_igbp(show_current_network = FALSE)`, so it is a strict visual subset of Figure 2 on the same scale, meant to be shown immediately before it in a talk. Was `SupFigs/fig_02_historical_only.*` (added 2026-10-06) before this restructure; stem unchanged, only the directory moved. |
+
+## Supplementary Tables (`draft_manuscript_v1/SupTables/`)
+
+Added/renamed in the supplementary material restructure (2026-10-08, SESSION_LOG.md).
+
+| Table | Script | Description |
+|---|---|---|
+| `tableS1_regional_networks.csv` | `scripts/supp_stage5_regional_networks_table.R` (new) | One row per regional network, from the snapshot of record (`fluxnet_shuttle_snapshot_20260920T102211.csv`): network code, name, processing hub (snapshot's own `data_hub` field), number of sites, number of site-years (the paper's own definition, same as Figure 2). Checked against sites=781, hub totals AmeriFlux=381/ICOS=348/TERN=52, site-years=6,200; the script stops rather than writing the table if any check fails or a product code is not in its known list. |
+| `tableS2_record_length_by_igbp.csv` | `scripts/supp_stage1_record_length_by_igbp.R` | Was `tableS_record_length_by_igbp.csv`; regenerated under the new name, unchanged content. |
+| `tableS3_sampling_ratios_by_axis.csv` | `scripts/supp_stage3_sampling_ratios.R` | Was `tableS_sampling_ratios_by_axis.csv`; regenerated under the new name, unchanged content. |
+| `tableS4_bowen_ratio_by_igbp.csv` | `scripts/supp_stage4_bowen_ratio_by_igbp.R` | Was `tableS_bowen_ratio_by_igbp.csv`; regenerated under the new name, unchanged content. |
+| `supplementary_data_1_sites.csv` | `scripts/supp_stage6_sites_data_table.R` (new) | One row per site from the snapshot of record: site ID, product name, product version (parsed from the product name, e.g. `v1.3_r1`), network code, DOI or handle (`product_id`). |
+
+`tableS_sampling_ratio_extremes.csv` and `tableS_sampling_ratio_jaccard_check.csv` (both from
+`scripts/supp_stage3_sampling_ratios.R`) moved out of `SupTables/` to
+`review/diagnostics/sampling_ratio_checks/` — validation/derived-check outputs, not supplementary
+submission tables; names unchanged, only the location moved. Old copies of all five renamed/moved
+tables are in `SupTables/deprecated/`, not deleted, per CLAUDE.md.
 

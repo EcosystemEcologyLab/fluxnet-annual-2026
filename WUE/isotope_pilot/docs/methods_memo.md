@@ -87,17 +87,24 @@ per Standing Rule 3.
 
 ## Stage 2 — Priestley-Taylor PET
 
-Daily PET (for the rain screen in `code/07_apply_screens.R`) uses
-Priestley-Taylor with alpha = 1.26, soil heat flux G = 0, from daily mean
-net radiation (the NETRAD gap-fill series below) and daily mean air
-temperature. The user's instructions name only these two inputs (plus
-G = 0) — no atmospheric pressure — so the psychrometric constant here uses
-a **fixed standard sea-level pressure (101.3 kPa)**, not a site-specific,
-elevation-adjusted `PA_F`. The saturation-vapor-pressure slope (Delta) and
-psychrometric constant (gamma) formulas are the standard FAO-56 (Allen et
-al. 1998) forms; Zhou et al. (2015) section 2.1 does not give the exact
-formula either, so this is this analysis's own reading, not a reproduction
-of a cited equation — same caveat as the k* method below.
+Daily PET (for the rain screen in `code/07_apply_screens.R`, shared via
+`code/rain_rule.R`'s `pt_pet_mm_day()`) uses Priestley-Taylor with
+alpha = 1.26, soil heat flux G = 0, from daily mean net radiation (the
+NETRAD gap-fill series below) and daily mean air temperature. The
+saturation-vapor-pressure slope (Delta) and psychrometric constant (gamma)
+formulas are the standard FAO-56 (Allen et al. 1998) forms; Zhou et al.
+(2015) section 2.1 does not give the exact formula, so this is this
+analysis's own reading, not a reproduction of a cited equation — same
+caveat as the k* method below.
+
+**Pressure, revised 2026-10-08:** `pt_pet_mm_day()` takes an explicit
+`pressure_kpa` argument for the psychrometric constant. Both
+`07_apply_screens.R` and `code/11_precip_compare.R` pass the site's own
+daily mean `PA_F` (native unit already kPa, no conversion needed) — not the
+fixed standard sea-level pressure (101.3 kPa) the first stage 2 run used.
+The fixed 101.3 kPa value remains the fallback, applied only where a day's
+mean `PA_F` is `NA`. Both callers pass `PA_F` through the identical
+`pt_pet_mm_day()` call shape so they can never drift apart on this point.
 
 ## Stage 2 — net radiation gap-fill
 

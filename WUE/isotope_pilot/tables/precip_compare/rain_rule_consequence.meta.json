@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T02:09:53Z",
+  "pipeline_version": "d4e4dd6",
+  "input_sources": [
+    "WUE/isotope_pilot/data/processed/subdaily_wue/ (from data/extracted/, FLUXNET Shuttle)"
+  ],
+  "notes": "Revised 2026-10-08: both sources share the same missing-day pattern (P_ERA set to NA wherever the gauge day is not fully measured) and days_removed_* count only fully measured days. Uses rain_rule.R's rain_rule_excluded()/pt_pet_mm_day() -- the same functions 07_apply_screens.R calls -- not a reimplementation."
+}

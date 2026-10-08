@@ -4,6 +4,66 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — Technical Validation interim: read-only checks (pre-circulation)
+
+Four read-only checks on the Technical Validation interim redraw (session entries below),
+requested before the report circulates to co-authors. No outputs, figures, tables, or
+`checks.txt` were changed — this is a reporting-only investigation.
+
+### a. Sub-daily file versions/dates vs. the 20 September snapshot
+
+For all 31 sites with sub-daily FLUXMET files extracted (`table_stage0_hh_hr_sites.csv`): the
+embedded product name and version string (parsed from each file's parent directory, e.g.
+`CNF_CN-Aro_FLUXNET_2013-2024_v1.3_r2`) was compared against the snapshot's own
+`fluxnet_product_name`/`oneflux_code_version` fields for that site. **Zero mismatches** — all
+31 product names and version strings (including the two `v1.3_r2` sites, `CN-Aro` and
+`DE-Akm`, both minority revisions against the network's dominant `v1.3_r1`) match the snapshot
+exactly. By filesystem date, however: only 1 of 31 (`US-MMS`, the sole HR — not HH — site)
+predates the lock session, dated 2026-05-25; the other 30 HH sites were all extracted on
+2026-09-20 itself, the same session (`logs/store_refresh_stage3b_download_20260920.log`) that
+produced the locked snapshot. **Correction to report.md's Stage 0 text**: "these 31 are
+evidently leftover from earlier ad hoc/test extractions" overstates it for 30 of the 31 — only
+`US-MMS`'s HR file is an actual leftover (its product/version label still matches the current
+snapshot, so not necessarily stale content, just not re-extracted in the locking session).
+
+### b. Daily QC=0 and the -9999 to NA conversion
+
+**Conversion confirmed, universally, at ingest**: `nullstr = ['NA', '-9999']` is set on the
+DuckDB `read_csv()` call building every flux-data table (annual/monthly/weekly/daily/hourly)
+in both `scripts/duckdb_setup.R` and `scripts/duckdb_update.R` — -9999 becomes `NULL` before
+any table exists for a diagnostic script to read. Confirmed empirically: zero literal `-9999`
+values remain anywhere in the daily `NEE_VUT_REF`/`NEE_VUT_REF_QC` columns.
+
+Daily `NEE_VUT_REF_QC = 0` (fully gap-filled, lowest confidence): 127,914 site-days. **All
+127,914 (100%) also have a non-missing `NEE_VUT_REF`** — same pattern for `NEE_CUT_REF`
+(143,011/143,011), `LE_F_MDS` (130,219/130,219), `H_F_MDS` (117,545/117,545). QC=0 means
+"entirely gap-filled," not "value absent": ONEFlux's MDS gap-filling always produces a number,
+even at the lowest-confidence tier.
+
+### c. 5 of the 125 sites with no usable annual NEE: raw YY CSV + daily check
+
+Sampled `US-UTJ`, `US-A74`, `GL-ZaF`, `AR-Bal`, `ES-Ln2` (random sample, seed 1, from the
+125). In every one of the 5 raw YY CSVs: `NEE_VUT_REF` is a **present column, literally
+`-9999` in every year**; `NEE_CUT_REF` is **not a column in the file at all** (CUT processing
+was never included for these sites' output, not merely NA-valued). **For all 125 sites** (not
+only the 5 sampled): every single one has at least one day with a non-missing `NEE_VUT_REF` or
+`NEE_CUT_REF` at daily resolution (125/125, DuckDB `daily` table, `dataset='FLUXMET'`).
+**Refines report.md's Stage 4 "no raw value exists" framing**: true at the *annual* level, but
+not a blanket absence of flux data for these sites — they have partial daily-resolution data
+that never aggregated into a valid annual ONEFlux output.
+
+### d. USTAR_CP_SUCCESS_RUN / USTAR_MP_SUCCESS_RUN documentation search
+
+Full-scan grep, zero hits: all 2,543 `BIFVARINFO_*` files in `data/extracted/` (every
+resolution, every site), `docs/` (including the 7 files that otherwise mention ONEFlux), and
+the installed `fluxnet` R package's `Rd` help pages (`tools::Rd_db("fluxnet")`). No text
+anywhere in this repository or the installed package defines what these two codes mean,
+confirming Figure 4b's legend.txt caveat.
+
+`checks.txt` is unchanged this session, per instruction.
+
+---
+
 ## 2026-10-08 — Technical Validation interim figure fixes (follow-up to comment 25)
 
 Five figure-only fixes to the Technical Validation interim redraw (session entry below),

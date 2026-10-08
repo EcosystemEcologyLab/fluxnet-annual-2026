@@ -18,9 +18,12 @@ quality rule (24, 0).
 (b) For each site-year availability category, the share where
 USTAR_CP_SUCCESS_RUN did not succeed (series 'CP'), where
 USTAR_MP_SUCCESS_RUN did not succeed (series 'MP'), and where both did
-not succeed (series 'CP and MP') -- the y-axis title states 'in which the
-method did not succeed' once rather than repeating it in each legend
-entry (which truncated at 183mm page width when spelled out per-series).
+not succeed (series 'CP and MP') -- the y-axis title ('Share of
+site-years, method did not succeed') states that once rather than
+repeating it in each legend entry (which truncated at 183mm page width
+when spelled out per-series); shortened again from an even longer first
+draft ('...in which the method did not succeed'), whose rotated text ran
+up into the patchwork tag 'b'.
 Panel (b)'s
 x-axis uses shortened category labels ('both'/'VUT only'/'CUT only'/
 'neither') so the text can stay horizontal -- rotated text is measured by

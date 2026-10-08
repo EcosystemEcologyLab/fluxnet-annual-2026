@@ -16,7 +16,11 @@ keys are shown at full alpha and an enlarged size (override.aes) regardless
 of how faint/small their actual points are drawn (the ~3,940-point
 'within combined uncertainty' class in particular is plotted at alpha=0.4,
 size=0.5 to stay legible as overlapping points, which would otherwise make
-its own legend key nearly invisible).
+its own legend key nearly invisible). The legend is collected (patchwork
+plot_layout(guides='collect')) and centred under the full two-panel
+figure, not under panel (a) alone -- panel (a)'s own column is too narrow
+for the 3-key row, which previously overflowed past the left edge and
+clipped 'within combined uncertainty'.
 (b) Histogram of VUT-CUT with dashed vertical lines at +/-25, 50 and 100 g
 C m^-2 yr^-1. The x-axis is clipped at +/-150; the number of site-years
 lying beyond that clip (34) is printed in the panel.

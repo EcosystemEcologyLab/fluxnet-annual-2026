@@ -55,6 +55,7 @@
 ##   years_dropped.csv       site, year, completeness, reason
 
 source("WUE/isotope_pilot/code/00_config.R")
+source("WUE/isotope_pilot/code/netrad_gapfill.R")
 source("R/units.R")
 
 processed_dir  <- file.path(WUE_ROOT, "data", "processed")
@@ -203,29 +204,21 @@ augment_one_site <- function(site) {
   lambda <- lambda_MJ_per_kg(d$TA_F)
   d$ET_mm <- d$LE_F_MDS * spt * 1e-6 / lambda
 
-  ## NETRAD gap-fill: per-site OLS of NETRAD ~ SW_IN_F on paired non-NA
-  ## records (any QC -- magnitude fit only).
-  fit_data <- d[!is.na(d$NETRAD) & !is.na(d$SW_IN_F), c("NETRAD", "SW_IN_F")]
-  n_fit <- nrow(fit_data)
-  if (n_fit >= 30L) {
-    fit <- stats::lm(NETRAD ~ SW_IN_F, data = fit_data)
-    s <- summary(fit)
-    slope <- unname(stats::coef(fit)[2]); intercept <- unname(stats::coef(fit)[1])
-    r2 <- s$r.squared
-    predicted <- intercept + slope * d$SW_IN_F
-  } else {
-    slope <- NA_real_; intercept <- NA_real_; r2 <- NA_real_
-    predicted <- rep(NA_real_, nrow(d))
-    warning("[WUE] ", site, ": only ", n_fit, " paired NETRAD/SW_IN_F records -- ",
+  ## NETRAD gap-fill: per-site OLS of NETRAD ~ SW_IN_F, via the shared
+  ## netrad_gapfill.R helper (also used by 11_precip_compare.R, so both
+  ## apply the identical fit rather than two independent reimplementations).
+  gf <- fit_netrad_gapfill(d$NETRAD, d$SW_IN_F)
+  if (gf$n < 30L) {
+    warning("[WUE] ", site, ": only ", gf$n, " paired NETRAD/SW_IN_F records -- ",
             "too thin to fit; NETRAD_filled will be NA wherever NETRAD itself is NA.")
   }
   netrad_fit_rows[[length(netrad_fit_rows) + 1L]] <<- data.frame(
-    site_id = site, n = n_fit, slope = slope, intercept = intercept, r_squared = r2,
-    stringsAsFactors = FALSE
+    site_id = site, n = gf$n, slope = gf$slope, intercept = gf$intercept,
+    r_squared = gf$r_squared, stringsAsFactors = FALSE
   )
 
-  d$netrad_estimated <- is.na(d$NETRAD)
-  d$NETRAD_filled <- ifelse(is.na(d$NETRAD), predicted, d$NETRAD)
+  d$netrad_estimated <- gf$estimated
+  d$NETRAD_filled <- gf$filled
 
   d[, c(
     "TIMESTAMP_START", "TIMESTAMP_END", "NIGHT",

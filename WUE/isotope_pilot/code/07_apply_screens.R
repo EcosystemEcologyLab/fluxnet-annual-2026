@@ -46,6 +46,7 @@
 ##                          days_lost_day_level, valid_days
 
 source("WUE/isotope_pilot/code/00_config.R")
+source("WUE/isotope_pilot/code/rain_rule.R")
 
 processed_dir <- file.path(WUE_ROOT, "data", "processed")
 augmented_dir <- file.path(processed_dir, "wue_augmented")
@@ -60,15 +61,9 @@ is_year_kept <- function(site, year) {
   !any(years_dropped$site_id == site & years_dropped$year == year)
 }
 
-## ---- Priestley-Taylor PET (alpha = 1.26), G = 0, fixed P = 101.3 kPa ------
-pt_pet_mm_day <- function(rn_wm2_mean, ta_degc, alpha = 1.26) {
-  rn_mj_day <- rn_wm2_mean * 86400 * 1e-6          # G = 0, so (Rn - G) = Rn
-  lambda    <- 2.501 - 0.002361 * ta_degc          # MJ/kg (FAO-56)
-  es        <- 0.6108 * exp(17.27 * ta_degc / (ta_degc + 237.3))  # kPa
-  delta     <- 4098 * es / (ta_degc + 237.3)^2     # kPa/degC
-  gamma     <- 1.013e-3 * 101.3 / (0.622 * lambda) # kPa/degC, fixed sea-level P
-  alpha * (delta / (delta + gamma)) * rn_mj_day / lambda
-}
+## pt_pet_mm_day() and rain_rule_excluded() come from rain_rule.R -- shared
+## with 11_precip_compare.R's gauge-vs-P_ERA rain-rule comparison, so both
+## apply IDENTICAL logic rather than two independent reimplementations.
 
 attrition_rows <- list()
 
@@ -104,20 +99,7 @@ process_one_site <- function(site) {
   daily$PET_day <- pt_pet_mm_day(daily$NETRAD_day, daily$TA_day)
 
   rainy <- !is.na(daily$P_day) & daily$P_day > 0
-  sev2  <- !is.na(daily$P_day) & !is.na(daily$PET_day) & daily$P_day > 2 * daily$PET_day
-  sev1  <- !is.na(daily$P_day) & !is.na(daily$PET_day) & daily$P_day > daily$PET_day & !sev2
-
-  n <- nrow(daily)
-  excluded_following <- rep(FALSE, n)
-  idx2 <- which(sev2)
-  for (i in idx2) {
-    for (off in 1:2) if (i + off <= n) excluded_following[i + off] <- TRUE
-  }
-  idx1 <- which(sev1)
-  for (i in idx1) {
-    if (i + 1 <= n) excluded_following[i + 1] <- TRUE
-  }
-  daily$excluded_rain_rule <- rainy | excluded_following
+  daily$excluded_rain_rule <- rain_rule_excluded(daily)
 
   rain_excluded_by_date <- stats::setNames(daily$excluded_rain_rule, as.character(daily$date))
   d$excluded_by_rain <- rain_excluded_by_date[as.character(d$date)]

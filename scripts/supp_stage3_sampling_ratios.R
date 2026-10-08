@@ -228,8 +228,14 @@ write_output_metadata(
 )
 msg("Saved: ", jcheck_path)
 
+## Renamed tableS3_sampling_ratios_by_axis.csv -> supplementary_data_2_
+## sampling_ratios.csv (2026-10-08 follow-up): this full long table is no
+## longer one of the numbered Supplementary Tables (S1-S3) assembled into
+## the Word Supplementary Information document -- it joins
+## supplementary_data_1_sites.csv as its own standalone supplementary data
+## file. Old tableS3_sampling_ratios_by_axis.* moved to SupTables/deprecated/.
 if (n_agree == n_total) {
-  out_path <- file.path(OUT_DIR, "tableS3_sampling_ratios_by_axis.csv")
+  out_path <- file.path(OUT_DIR, "supplementary_data_2_sampling_ratios.csv")
   write_csv(long_table, out_path)
   write_output_metadata(
     out_path,
@@ -238,7 +244,7 @@ if (n_agree == n_total) {
   )
   msg("All combinations agreed -- wrote: ", out_path)
 } else {
-  msg("NOT writing tableS3_sampling_ratios_by_axis.csv -- ", n_total - n_agree,
+  msg("NOT writing supplementary_data_2_sampling_ratios.csv -- ", n_total - n_agree,
       " / ", n_total, " combinations disagree with representativeness_metrics_fig4.csv (see ",
       jcheck_path, " for which, and by how much).")
 }

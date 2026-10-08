@@ -4,6 +4,52 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — Supplementary follow-up: wording/layout fixes, site identifiers, table renumbering
+
+Six small follow-ups to the supplementary material restructure below, requested the same day.
+No new analysis — every changed output regenerated from its R script, nothing renamed by hand.
+
+1. `figS6_record_length` panel a's x-axis title: "Years with data (current network)" -> "Years
+   with data (the snapshot)" (`scripts/supp_stage2_record_length_collections_figure.R`).
+2. `figS2_flux_comparison_matched_siteyears`'s y-axis titles recapitalised: "the snapshot median
+   NEP ± SD (...)" -> "Snapshot median NEP ± SD (...)"
+   (`scripts/figure_flux_comparison_combo_alt_common_siteyears.R`).
+3. `figS1_whittaker_nee_gpp_reco`: patchwork row heights `c(1, 0.85)` -> `c(1, 0.67)` and
+   `height_mm` 130 -> 110 (`scripts/generate_whittaker_ed_three_flux.R`), removing a blank band
+   that had opened up between the three panels and the NEE/GPP-RECO keys below them. Width
+   unchanged at 180 mm; `check_figure_format.R` now measures 179.9×109.7 mm (was 179.9×129.8 mm),
+   still PASS. Iterated twice to find the right row-height ratio — an initial cut left the NEE
+   key's 8-step stack clipped before landing on a ratio that shows all 8 steps with no leftover
+   blank space.
+4. `supplementary_data_1_sites.csv`: `doi_or_handle` replaced by `identifier_url` +
+   `identifier_type` (`scripts/supp_stage6_sites_data_table.R`). AMF and TERN sites' `product_id`
+   is a DOI, rewritten to a canonical `https://doi.org/<doi>` URL (TERN's own value already
+   carried a `https://dx.doi.org/` prefix, stripped first); every other network code sits on the
+   ICOS hub and its `product_id` is an ICOS Carbon Portal handle suffix, rewritten to
+   `https://hdl.handle.net/11676/<product_id>`. `product_name`'s trailing `.zip` also dropped.
+   Checks passed: 433 DOIs (AMF 381 + TERN 52) and 348 handles (the ICOS hub total from Table S1).
+5. Tables renumbered: `tableS3_sampling_ratios_by_axis.csv` -> `supplementary_data_2_sampling_
+   ratios.csv` (the full long table; no longer one of the numbered Supplementary Tables, now a
+   standalone supplementary data file alongside `supplementary_data_1_sites.csv` —
+   `scripts/supp_stage3_sampling_ratios.R`). Re-running that script today reproduces all 12 of 12
+   axis×comparison combinations against `representativeness_metrics_fig4.csv` (the original
+   2026-10-06 run saw 10 of 12; `docs/methods_requirements.md` §5.9 now records both). `tableS4_
+   bowen_ratio_by_igbp.csv` -> `tableS3_bowen_ratio_by_igbp.csv` (renumbered down, freed up by the
+   rename above; `scripts/supp_stage4_bowen_ratio_by_igbp.R`). Old copies of both moved to
+   `SupTables/deprecated/`, not deleted.
+6. `scripts/build_supplementary_pdf.R`: dropped table-page assembly entirely (the `gridExtra`
+   dependency, `TABLE_STEMS`/`TABLE_CAPTIONS`, `format_for_display()`, `draw_table_page()` all
+   removed) — output renamed `supplementary_information.pdf` -> `supplementary_figures_proof.pdf`,
+   now six figure pages only (figures + their publication legends, unchanged). The actual
+   Supplementary Information document (figures + Tables S1–S3) is now assembled in Word outside
+   this pipeline, so this PDF's old name would have been misleading; old `supplementary_
+   information.pdf` moved to `SupFigs/deprecated/`.
+
+`scripts/check_figure_format.R`: 11/11 PASS. `docs/figure_inventory.md` and `docs/methods_
+requirements.md` §5.9 cross-references updated to match.
+
+---
+
 ## 2026-10-08 — Supplementary material restructure
 
 Full renumbering and reorganisation of the supplement, requested as an 8-point task. Every

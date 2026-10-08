@@ -149,6 +149,21 @@ Old-S1-S6 PNG/PDF/JPEG/`.legend.txt` (and `.meta.json` where present) moved to
 after the six figure pages, and a publication-facing legend -- see below); the old
 `supplementary_figures.pdf` moved to `SupFigs/deprecated/` alongside the superseded figures.
 
+**2026-10-08 follow-up (same day, after the restructure above).** Three figure-level wording/layout
+fixes, regenerated from their scripts: S6 panel a's x axis "Years with data (current network)" ->
+"Years with data (the snapshot)" (`scripts/supp_stage2_record_length_collections_figure.R`); S2's
+y-axis titles recapitalised, "the snapshot median NEP ± SD (...)" -> "Snapshot median NEP ± SD
+(...)" (`scripts/figure_flux_comparison_combo_alt_common_siteyears.R`); S1's panel/key row heights
+retuned (`heights = c(1, 0.85)` -> `c(1, 0.67)`, `height_mm` 130 -> 110) to remove a blank band that
+had opened up between the three panels and the NEE/GPP-RECO keys below them, width unchanged at
+180 mm (`scripts/generate_whittaker_ed_three_flux.R`).
+
+Same follow-up: `SupFigs/supplementary_information.pdf` dropped its table pages and was renamed
+`SupFigs/supplementary_figures_proof.pdf` -- six figure pages only (figures + publication legends,
+unchanged), no longer the Supplementary Information document itself. The actual Supplementary
+Information (figures + Tables S1–S3) is now assembled in Word outside this pipeline. The old
+`supplementary_information.pdf` moved to `SupFigs/deprecated/`.
+
 Target journal Scientific Data has no Extended Data concept — every figure in this folder is a
 Supplementary Figure: ≤180 mm wide, ≤240 mm tall, PNG (600 dpi) + vector PDF + 300 p.p.i. JPEG,
 Helvetica, all text 5–7 pt except 8 pt bold lower-case panel letters
@@ -196,13 +211,14 @@ Added/renamed in the supplementary material restructure (2026-10-08, SESSION_LOG
 |---|---|---|
 | `tableS1_regional_networks.csv` | `scripts/supp_stage5_regional_networks_table.R` (new) | One row per regional network, from the snapshot of record (`fluxnet_shuttle_snapshot_20260920T102211.csv`): network code, name, processing hub (snapshot's own `data_hub` field), number of sites, number of site-years (the paper's own definition, same as Figure 2). Checked against sites=781, hub totals AmeriFlux=381/ICOS=348/TERN=52, site-years=6,200; the script stops rather than writing the table if any check fails or a product code is not in its known list. |
 | `tableS2_record_length_by_igbp.csv` | `scripts/supp_stage1_record_length_by_igbp.R` | Was `tableS_record_length_by_igbp.csv`; regenerated under the new name, unchanged content. |
-| `tableS3_sampling_ratios_by_axis.csv` | `scripts/supp_stage3_sampling_ratios.R` | Was `tableS_sampling_ratios_by_axis.csv`; regenerated under the new name, unchanged content. |
-| `tableS4_bowen_ratio_by_igbp.csv` | `scripts/supp_stage4_bowen_ratio_by_igbp.R` | Was `tableS_bowen_ratio_by_igbp.csv`; regenerated under the new name, unchanged content. |
-| `supplementary_data_1_sites.csv` | `scripts/supp_stage6_sites_data_table.R` (new) | One row per site from the snapshot of record: site ID, product name, product version (parsed from the product name, e.g. `v1.3_r1`), network code, DOI or handle (`product_id`). |
+| `tableS3_bowen_ratio_by_igbp.csv` | `scripts/supp_stage4_bowen_ratio_by_igbp.R` | Renumbered from `tableS4_bowen_ratio_by_igbp.csv` (2026-10-08 follow-up, same day as the restructure above), freed up when S3 moved to `supplementary_data_2_sampling_ratios.csv` below; unchanged content. |
+| `supplementary_data_1_sites.csv` | `scripts/supp_stage6_sites_data_table.R` | One row per site from the snapshot of record: site ID, product name (trailing `.zip` dropped), product version (parsed from the product name, e.g. `v1.3_r1`), network code, `identifier_url`, `identifier_type`. **2026-10-08 follow-up:** the original single `doi_or_handle` column (the snapshot's raw `product_id`) was replaced by this `identifier_url`/`identifier_type` pair -- AMF and TERN sites' `product_id` is a DOI, rewritten to a canonical `https://doi.org/<doi>` URL (TERN's own `product_id` already carried a `https://dx.doi.org/` prefix, stripped first); every other network code sits on the ICOS hub and its `product_id` is an ICOS Carbon Portal handle suffix, rewritten to `https://hdl.handle.net/11676/<product_id>`. Checked against 433 DOIs (AMF 381 + TERN 52) and 348 handles (the ICOS hub total from Table S1); the script stops if either count is off. |
+| `supplementary_data_2_sampling_ratios.csv` | `scripts/supp_stage3_sampling_ratios.R` | Renamed from `tableS3_sampling_ratios_by_axis.csv` (2026-10-08 follow-up): no longer one of the numbered Supplementary Tables assembled into the Word Supplementary Information document, now a standalone supplementary data file alongside `supplementary_data_1_sites.csv`. Unchanged content. |
 
 `tableS_sampling_ratio_extremes.csv` and `tableS_sampling_ratio_jaccard_check.csv` (both from
 `scripts/supp_stage3_sampling_ratios.R`) moved out of `SupTables/` to
 `review/diagnostics/sampling_ratio_checks/` — validation/derived-check outputs, not supplementary
-submission tables; names unchanged, only the location moved. Old copies of all five renamed/moved
-tables are in `SupTables/deprecated/`, not deleted, per CLAUDE.md.
+submission tables; names unchanged, only the location moved. Old copies of all renamed/moved
+tables (including the follow-up's `tableS3_sampling_ratios_by_axis.csv` and
+`tableS4_bowen_ratio_by_igbp.csv`) are in `SupTables/deprecated/`, not deleted, per CLAUDE.md.
 

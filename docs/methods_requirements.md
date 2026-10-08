@@ -507,7 +507,9 @@ counts reuse `scripts/collection_comparison_table.R`'s own list-reading logic; v
 `data/snapshots/collection_sites_siteyears.csv` (96/965/1,532 historical site-years, matching
 current total) before the figure is produced. The legend states explicitly that "a year" means
 different things across collections (published-table listing vs. any-flux-value-in-≥1-month) and
-that Marconi's per-site values are first–last-year spans, not year-by-year records.
+that Marconi's per-site values are first–last-year spans, not year-by-year records. Panel a's
+x-axis title was reworded "Years with data (current network)" -> "Years with data (the snapshot)"
+in a 2026-10-08 follow-up (same day as the restructure above), regenerated from the script.
 
 **`tableS_sampling_ratio_jaccard_check.csv` / `tableS_sampling_ratio_extremes.csv`** (moved from
 `SupTables/` to `review/diagnostics/sampling_ratio_checks/` in the 2026-10-08 supplementary
@@ -516,24 +518,33 @@ material restructure, SESSION_LOG.md -- names unchanged, only the location moved
 per class, for Figure 5 / Figure S3's six representativeness axes, reconstructed strictly from
 already-committed `site_*_fig4.csv` + `site_biomass_cci_v7.csv` tower files and
 `*_global_distribution.csv` land files (no raster re-extraction). Recomputed weighted Jaccard
-agrees with `data/snapshots/representativeness_metrics_fig4.csv` (not modified) to 6 decimals for
-10 of 12 axis × comparison combinations; the Köppen geo-vs-geo panel is not reconstructable at all
-from this restricted file set (its source column is entirely `NA` in the permitted file), and the
-aridity geo-vs-geo panel is reconstructed here from an ERA5-derived proxy rather than its true
-CGIAR-raster-at-tower source — both outside the permitted file set, both documented inline rather
-than forced to agree. Because not all 12 agree, the full long table
-(`tableS3_sampling_ratios_by_axis.csv`, `tableS_sampling_ratios_by_axis.csv` before the 2026-10-08
-restructure) was withheld per instruction; the Jaccard-check and extremes
-tables were written instead/regardless.
+agreed with `data/snapshots/representativeness_metrics_fig4.csv` (not modified) to 6 decimals for
+10 of 12 axis × comparison combinations at the original 2026-10-06 run (the Köppen geo-vs-geo panel
+was not reconstructable at all from this restricted file set, and the aridity geo-vs-geo panel used
+an ERA5-derived proxy rather than its true CGIAR-raster-at-tower source — both documented inline
+rather than forced to agree); re-running the same script now (2026-10-08) reproduces all 12 of 12
+combinations, so the full long table is written every run as of this date. That full table is
+`supplementary_data_2_sampling_ratios.csv` as of the 2026-10-08 follow-up (`tableS3_sampling_ratios_by_axis.csv`
+in the restructure earlier the same day, `tableS_sampling_ratios_by_axis.csv` before that) — no
+longer one of the numbered Supplementary Tables, now a standalone supplementary data file.
 
-**`tableS4_bowen_ratio_by_igbp.csv`** (`tableS_bowen_ratio_by_igbp.csv` before the 2026-10-08
-restructure; `scripts/supp_stage4_bowen_ratio_by_igbp.R`): Bowen ratio
+**`tableS3_bowen_ratio_by_igbp.csv`** (`tableS4_bowen_ratio_by_igbp.csv` in the 2026-10-08
+restructure earlier the same day, renumbered down in the same day's follow-up when S3 was freed up
+by the `supplementary_data_2_sampling_ratios.csv` rename above; `tableS_bowen_ratio_by_igbp.csv`
+before the restructure; `scripts/supp_stage4_bowen_ratio_by_igbp.R`): Bowen ratio
 (`H_F_MDS / LE_F_MDS`, both native W m⁻² mean rates) by IGBP class, from the pre-QC DuckDB `annual`
 table with each variable gated independently on its own QC column
 (`QC_THRESHOLD_YY`, same rule as `R/site_annual_fluxes.R`). Site value = median over that site's
 own QC-qualifying, `LE_F_MDS > 0` site-years. `H_CORR`/`LE_CORR` exist in the `annual` table (437 /
 781 and 436 / 781 current-network sites respectively have ≥1 non-NA value) but were not used in
 this computation.
+
+**2026-10-08 follow-up, same day as the restructure above.** Three further changes, all
+regenerated from their scripts, none changing any underlying analysis:
+- S6 panel a's x-axis wording fix, noted above. S2's y-axis titles recapitalised, "the snapshot median NEP ± SD (...)" -> "Snapshot median NEP ± SD (...)" (`scripts/figure_flux_comparison_combo_alt_common_siteyears.R`; S2 is not otherwise described in this document).
+- S1's panel/key layout retuned to remove a blank band between the panels and the keys (`scripts/generate_whittaker_ed_three_flux.R`), same content, width unchanged at 180 mm.
+- `supplementary_data_1_sites.csv`'s `doi_or_handle` column replaced by `identifier_url`/`identifier_type`: AMF/TERN sites' DOI rewritten to a canonical `https://doi.org/<doi>` URL; every other (ICOS-hub) network code's handle suffix rewritten to `https://hdl.handle.net/11676/<product_id>`. Checked against 433 DOIs (AMF 381 + TERN 52) and 348 handles (the ICOS hub total). `product_name`'s trailing `.zip` also dropped.
+- `scripts/build_supplementary_pdf.R` no longer assembles table pages; its output is renamed `supplementary_figures_proof.pdf` (from `supplementary_information.pdf`) and is a figure-order/legend proof only, not the submission Supplementary Information document, which is now assembled in Word outside this pipeline.
 
 ---
 

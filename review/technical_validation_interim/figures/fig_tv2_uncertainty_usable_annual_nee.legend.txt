@@ -9,8 +9,10 @@ random uncertainty term (NEE_REF_RANDUNC), the u*-threshold term
 ((P84-P16)/2 of the u*-percentile ensemble), and the joint term
 (NEE_REF_JOINTUNC), for VUT and CUT side by side, log10 y-axis (the u*
 term has a long right tail -- see report.md Stage 2). (b,c) Random (b) and
-u*-threshold (c) uncertainty terms against |NEE|, one point per usable
-site-year, VUT/CUT in two colours, both axes log10.
+u*-threshold (c) uncertainty terms (g C m^-2 yr^-1) against NEE magnitude
+(g C m^-2 yr^-1), one point per usable site-year, VUT/CUT in two colours,
+both axes log10. Log-axis tick labels are plain integers (e.g. '1000'),
+not the scales-package default space-grouped '1 000.0'.
 
 COLOUR CODING: VUT/CUT, fixed 2-colour palette (VUT_CUT_COLOURS in
 scripts/technical_validation_interim.R; no dedicated palette yet exists in

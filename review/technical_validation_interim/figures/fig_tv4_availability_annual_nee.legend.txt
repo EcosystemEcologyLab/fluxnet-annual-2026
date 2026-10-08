@@ -4,18 +4,25 @@ FIGURE LEGEND -- fig_tv4_availability_annual_nee.png
 TITLE: Figure 4. Availability of annual NEE
 
 DESCRIPTION:
-(a) Site-years (n=6,336) and sites (n=781) by availability category: both
-VUT and CUT usable, VUT only, CUT only, or neither -- 'neither' split into
-'no reported value' (no raw NEE_VUT_REF/NEE_CUT_REF value exists that
-year/site) and 'below quality rule' (a raw value exists but does not clear
-QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <= QC_THRESHOLD_YY, own QC column
-per side (same rule as Figures 2-3).
+(a) Two 100%-stacked horizontal bars -- site-years (n=6,336) and sites
+(n=781) -- by availability category: both VUT and CUT usable, VUT only,
+CUT only, or neither -- 'neither' split into 'no reported value' (no raw
+NEE_VUT_REF/NEE_CUT_REF value exists that year/site) and 'below quality
+rule' (a raw value exists but does not clear QC_THRESHOLD_YY=0.50).
+'Usable' = (1-QC) <= QC_THRESHOLD_YY, own QC column per side (same rule as
+Figures 2-3). Every category with a nonzero count is labelled with its
+exact count (VUT only usable: 57 site-years / 41 sites; CUT only usable:
+360/40; no reported value: 1,935/125; below quality rule: 24/0; both
+usable: 3,960/575); thin segments' labels are repelled outward along the
+x-axis (ggrepel), each connected to its true position by a thin leader
+line, rather than omitted for overlap as an earlier draft of this figure did.
 (b) For each site-year availability category, the share where
 USTAR_CP_SUCCESS_RUN did not succeed (series 'CP'), where
 USTAR_MP_SUCCESS_RUN did not succeed (series 'MP'), and where both did
-not succeed (series 'both') -- the y-axis title states 'that did not
-succeed' once rather than repeating it in each legend entry (which
-truncated at 183mm page width when spelled out per-series). Panel (b)'s
+not succeed (series 'CP and MP') -- the y-axis title states 'in which the
+method did not succeed' once rather than repeating it in each legend
+entry (which truncated at 183mm page width when spelled out per-series).
+Panel (b)'s
 x-axis uses shortened category labels ('both'/'VUT only'/'CUT only'/
 'neither') so the text can stay horizontal -- rotated text is measured by
 scripts/check_figure_format.R's pdftotext-bbox check as larger than its

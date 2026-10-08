@@ -32,6 +32,7 @@ check_pipeline_config()
 suppressPackageStartupMessages({
   library(DBI); library(duckdb); library(dplyr); library(readr); library(tidyr)
   library(ggplot2); library(patchwork); library(fs); library(jsonlite); library(scales)
+  library(ggrepel)
 })
 source("R/plot_constants.R")
 source("R/nature_format.R")
@@ -77,6 +78,19 @@ tv_theme <- function() {
       axis.ticks.length = grid::unit(-3, "pt")
     ) +
     nature_theme()
+}
+
+## Panel-letter tagging: patchwork's own plot_annotation(tag_levels=...)
+## (grid/gtable-level, scale-agnostic), NOT R/nature_format.R::panel_letter()
+## (a ggplot2 annotate() layer at x=-Inf/y=Inf). Confirmed by direct
+## reproduction: annotate(x=-Inf) silently drops its row on a log10-
+## transformed scale (log(-Inf) = NaN -> "Removed 1 row ... geom_text()",
+## exactly the missing Figure 1b/2b/2c tags this fixes) and is unreliable
+## under coord_flip(). patchwork's tag is unaffected by the underlying
+## panel's coordinate transform or flip. tv_tag_theme() is added via `&` to
+## a finished patchwork composite that already has tag_levels = "a" set.
+tv_tag_theme <- function() {
+  ggplot2::theme(plot.tag = ggplot2::element_text(face = "bold", size = 8, family = NATURE_FONT))
 }
 
 ## No dedicated VUT/CUT or 4-variable palette exists yet in R/plot_constants.R
@@ -207,9 +221,9 @@ msg("Figure 1a: ", nrow(ecdf_data), " QC values pulled (daily/monthly/annual x 4
 
 ecdf_data <- ecdf_data |> mutate(resolution = factor(resolution, levels = c("daily", "monthly", "annual")))
 
-make_ecdf_panel <- function(res_name, show_tag) {
+make_ecdf_panel <- function(res_name) {
   d <- ecdf_data |> filter(resolution == res_name)
-  p <- ggplot(d, aes(x = qc, colour = variable)) +
+  ggplot(d, aes(x = qc, colour = variable)) +
     stat_ecdf(geom = "step", linewidth = nature_lwd(0.5)) +
     geom_vline(xintercept = 0.50, linetype = "dashed", colour = "grey50", linewidth = nature_lwd(0.3)) +
     scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable") +
@@ -218,15 +232,17 @@ make_ecdf_panel <- function(res_name, show_tag) {
     labs(x = paste0(tools::toTitleCase(res_name), " QC flag (fraction)"), y = "Cumulative share") +
     tv_theme() +
     theme(legend.position = "none")
-  if (show_tag) p <- p + panel_letter("a", x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
-  p
 }
-p1a_daily   <- make_ecdf_panel("daily", TRUE)
-p1a_monthly <- make_ecdf_panel("monthly", FALSE)
-p1a_annual  <- make_ecdf_panel("annual", FALSE) +
+p1a_daily   <- make_ecdf_panel("daily")
+p1a_monthly <- make_ecdf_panel("monthly")
+p1a_annual  <- make_ecdf_panel("annual") +
   theme(legend.position = "right") + guides(colour = guide_legend(title = "Variable"))
 
-panel1a <- p1a_daily | p1a_monthly | p1a_annual
+## wrap_elements(full=...) collapses the row of 3 resolution sub-plots into
+## ONE opaque unit for patchwork's tagging purposes, so it gets a single "a"
+## (as the task's figure spec treats it -- "one panel per resolution" under
+## one lettered item), not a/b/c for the three sub-plots individually.
+panel1a <- patchwork::wrap_elements(full = p1a_daily | p1a_monthly | p1a_annual)
 
 ## (b) Pooled sub-daily QC 0/1/2/3 shares, 31 sites, horizontal stacked bars.
 subdaily_net <- read_csv(file.path(DIAG_DIR, "table_stage1_subdaily_qc_network_summary.csv"),
@@ -242,10 +258,10 @@ panel1b <- ggplot(subdaily_net, aes(x = variable, y = share, fill = flag)) +
   scale_y_continuous(labels = scales::label_percent(), expand = expansion(mult = c(0, 0.02))) +
   labs(x = NULL, y = "Share of sub-daily records (31 sites)") +
   tv_theme() +
-  theme(legend.position = "bottom") +
-  panel_letter("b", x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
+  theme(legend.position = "bottom")
 
-fig1 <- panel1a / panel1b + plot_layout(heights = c(1, 0.8))
+fig1 <- (panel1a / panel1b) + plot_layout(heights = c(1, 0.8)) +
+  plot_annotation(tag_levels = "a") & tv_tag_theme()
 saved1 <- save_nature_figure(fig1, file.path(FIG_DIR, "fig_tv1_gaps_by_variable_and_timestep"),
                               width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 150)
 msg("Saved Figure 1: ", saved1$png)
@@ -310,10 +326,19 @@ panel2a <- ggplot(box_long, aes(x = term, y = value, fill = carbon_type)) +
   scale_y_log10(labels = nature_minus_labels()) +
   labs(x = "Uncertainty term", y = expression("Uncertainty (g C "*m^{-2}*" "*yr^{-1}*", log"[10]*")")) +
   tv_theme() +
-  theme(legend.position = "right") +
-  panel_letter("a", x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
+  theme(legend.position = "right")
 
-make_vs_nee_panel <- function(term_col, ylab, tag) {
+## drop0trailing=TRUE, big.mark="": nature_minus_labels()'s default scales::
+## label_number() formatting rendered the top log10 break as "1 000.0"
+## (space-grouped, one decimal applied uniformly to every break because the
+## auto-accuracy heuristic is set by the smallest gap, here 0.1 vs 1) --
+## fixed to the plain integer "1000". accuracy=1 alone was tried first and
+## rejected: it forces every label to the nearest whole number, which
+## rounds the 0.1 break down to "0". drop0trailing only strips zeros that
+## are actually trailing, so "0.1" is untouched while "1000.0" -> "1000".
+log_labels <- function() nature_minus_labels(drop0trailing = TRUE, big.mark = "")
+
+make_vs_nee_panel <- function(term_col, ylab) {
   d <- stage2_sy |> mutate(abs_nee = abs(NEE), term_val = .data[[term_col]]) |>
     filter(abs_nee > 0, term_val > 0)
   ggplot(d, aes(x = abs_nee, y = term_val, colour = carbon_type)) +
@@ -323,8 +348,8 @@ make_vs_nee_panel <- function(term_col, ylab, tag) {
     ## ~16,600 strokes at 0.01pt, outside the 0.25-1pt Nature rule.
     geom_point(shape = 16, size = 0.5, alpha = 0.35) +
     scale_colour_manual(values = VUT_CUT_COLOURS, name = NULL) +
-    scale_x_log10(labels = nature_minus_labels()) +
-    scale_y_log10(labels = nature_minus_labels()) +
+    scale_x_log10(labels = log_labels()) +
+    scale_y_log10(labels = log_labels()) +
     ## NEE magnitude, not "|NEE|": a literal "|" pipe character inside a
     ## plotmath expression() renders as a stray "I" glyph in the PDF export's
     ## base PostScript Helvetica (confirmed by direct render -- same class of
@@ -333,13 +358,16 @@ make_vs_nee_panel <- function(term_col, ylab, tag) {
     ## plotmath group("|", ., "|"), which hits the same font gap.
     labs(x = expression("NEE magnitude (g C "*m^{-2}*" "*yr^{-1}*", log"[10]*")"), y = ylab) +
     tv_theme() +
-    theme(legend.position = if (tag == "b") "none" else "right") +
-    panel_letter(tag, x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
+    theme(legend.position = "none")
 }
-panel2b <- make_vs_nee_panel("random", expression("Random term (log"[10]*")"), "b")
-panel2c <- make_vs_nee_panel("ustar_term", expression("u*-threshold term (log"[10]*")"), "c")
+panel2b <- make_vs_nee_panel("random",
+  expression("Random term (g C "*m^{-2}*" "*yr^{-1}*", log"[10]*")"))
+panel2c <- make_vs_nee_panel("ustar_term",
+  expression("u*-threshold term (g C "*m^{-2}*" "*yr^{-1}*", log"[10]*")")) +
+  theme(legend.position = "right")
 
-fig2 <- panel2a / (panel2b | panel2c) + plot_layout(heights = c(0.8, 1))
+fig2 <- (panel2a / (panel2b | panel2c)) + plot_layout(heights = c(0.8, 1)) +
+  plot_annotation(tag_levels = "a") & tv_tag_theme()
 saved2 <- save_nature_figure(fig2, file.path(FIG_DIR, "fig_tv2_uncertainty_usable_annual_nee"),
                               width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 170)
 msg("Saved Figure 2: ", saved2$png)
@@ -356,8 +384,10 @@ writeLines(c(
 "((P84-P16)/2 of the u*-percentile ensemble), and the joint term",
 "(NEE_REF_JOINTUNC), for VUT and CUT side by side, log10 y-axis (the u*",
 "term has a long right tail -- see report.md Stage 2). (b,c) Random (b) and",
-"u*-threshold (c) uncertainty terms against |NEE|, one point per usable",
-"site-year, VUT/CUT in two colours, both axes log10.",
+"u*-threshold (c) uncertainty terms (g C m^-2 yr^-1) against NEE magnitude",
+"(g C m^-2 yr^-1), one point per usable site-year, VUT/CUT in two colours,",
+"both axes log10. Log-axis tick labels are plain integers (e.g. '1000'),",
+"not the scales-package default space-grouped '1 000.0'.",
 "",
 "COLOUR CODING: VUT/CUT, fixed 2-colour palette (VUT_CUT_COLOURS in",
 "scripts/technical_validation_interim.R; no dedicated palette yet exists in",
@@ -384,24 +414,31 @@ writeLines(c(
 msg("=== Figure 3 ===")
 stage3_sy <- read_csv(file.path(DIAG_DIR, "table_stage3_site_year_vut_vs_cut.csv"), show_col_types = FALSE) |>
   mutate(exceeds_lab = case_when(
-    is.na(smaller_than_joint) ~ "no reported value",
+    is.na(smaller_than_joint) ~ "joint uncertainty not reported",
     smaller_than_joint        ~ "within combined uncertainty",
     !smaller_than_joint       ~ "exceeds combined uncertainty"
-  ) |> factor(levels = c("within combined uncertainty", "exceeds combined uncertainty", "no reported value")))
+  ) |> factor(levels = c("within combined uncertainty", "exceeds combined uncertainty",
+                          "joint uncertainty not reported")))
 ## 20 of 3,960 site-years have smaller_than_joint = NA (JOINTUNC_VUT or
 ## JOINTUNC_CUT itself unavailable even though both REF values qualify --
 ## consistent with Stage 0's REF/RANDUNC/JOINTUNC group not being
-## perfectly co-populated at every qualifying site-year); labelled
-## "no reported value" rather than dropped, per the task's neutral-wording list.
+## perfectly co-populated at every qualifying site-year). Drawn as an open,
+## dark-grey symbol (not the small semi-transparent dots used for the other
+## two classes) so these 20 points are visible rather than lost among 3,940
+## others.
+pts_main    <- stage3_sy |> filter(exceeds_lab != "joint uncertainty not reported")
+pts_special <- stage3_sy |> filter(exceeds_lab == "joint uncertainty not reported")
 
 eq_rng <- range(c(stage3_sy$NEE_VUT, stage3_sy$NEE_CUT), na.rm = TRUE)
 
 panel3a <- ggplot(stage3_sy, aes(x = NEE_VUT, y = NEE_CUT, colour = exceeds_lab)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "grey50", linewidth = nature_lwd(0.3)) +
-  geom_point(shape = 16, size = 0.5, alpha = 0.4) +  ## see Figure 2 note on shape=16
+  geom_point(data = pts_main, shape = 16, size = 0.5, alpha = 0.4) +  ## see Figure 2 note on shape=16
+  geom_point(data = pts_special, shape = 21, fill = "white", size = 1.3,
+             stroke = nature_lwd(0.5), alpha = 1) +
   scale_colour_manual(values = c("within combined uncertainty" = "grey40",
                                   "exceeds combined uncertainty" = "#D7301F",
-                                  "no reported value" = "#BDBDBD"), name = NULL) +
+                                  "joint uncertainty not reported" = "grey30"), name = NULL) +
   coord_equal(xlim = eq_rng, ylim = eq_rng) +
   scale_x_continuous(labels = nature_minus_labels()) +
   scale_y_continuous(labels = nature_minus_labels()) +
@@ -409,7 +446,8 @@ panel3a <- ggplot(stage3_sy, aes(x = NEE_VUT, y = NEE_CUT, colour = exceeds_lab)
        y = expression("NEE"["CUT"]*" (g C "*m^{-2}*" "*yr^{-1}*")")) +
   tv_theme() +
   theme(legend.position = "bottom") +
-  panel_letter("a", x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
+  guides(colour = guide_legend(override.aes = list(shape = c(16, 16, 21), size = c(1, 1, 1.3),
+                                                     alpha = c(1, 1, 1), fill = c(NA, NA, "white"))))
 
 CLIP <- 150
 n_beyond <- sum(abs(stage3_sy$diff) > CLIP, na.rm = TRUE)
@@ -421,10 +459,9 @@ panel3b <- ggplot(stage3_sy |> filter(abs(diff) <= CLIP), aes(x = diff)) +
   labs(x = expression("NEE"["VUT"]*" - NEE"["CUT"]*" (g C "*m^{-2}*" "*yr^{-1}*")"), y = "Site-years") +
   annotate("text", x = -Inf, y = Inf, hjust = -0.1, vjust = 1.5, size = 5 / .pt, family = "Helvetica",
             label = paste0(n_beyond, " site-years beyond ±", CLIP, " (clipped)")) +
-  tv_theme() +
-  panel_letter("b", x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
+  tv_theme()
 
-fig3 <- panel3a | panel3b
+fig3 <- (panel3a | panel3b) + plot_annotation(tag_levels = "a") & tv_tag_theme()
 saved3 <- save_nature_figure(fig3, file.path(FIG_DIR, "fig_tv3_vut_vs_cut"),
                               width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 100)
 msg("Saved Figure 3: ", saved3$png, " (", n_beyond, " site-years beyond +/-", CLIP, ")")
@@ -438,10 +475,12 @@ writeLines(c(
 "DESCRIPTION:",
 "(a) Scatter of annual NEE_CUT against NEE_VUT on equal axes, dashed 1:1",
 "line. Points coloured by whether |VUT-CUT| exceeds the propagated combined",
-"uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2);",
-"20 of 3,960 site-years have no reported value for this comparison (the",
-"joint-uncertainty term itself is unavailable on at least one side even",
-"though both REF values qualify) and are coloured separately.",
+"uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2).",
+"20 of 3,960 site-years ('joint uncertainty not reported') have the",
+"joint-uncertainty term itself unavailable on at least one side even though",
+"both REF values qualify -- drawn as a visible open dark-grey circle (not",
+"the small semi-transparent dot used for the other two classes), since 20",
+"points would otherwise be lost among the other 3,940.",
 "(b) Histogram of VUT-CUT with dashed vertical lines at +/-25, 50 and 100 g",
 "C m^-2 yr^-1. The x-axis is clipped at +/-150; the number of site-years",
 paste0("lying beyond that clip (", n_beyond, ") is printed in the panel."),
@@ -488,30 +527,58 @@ CAT_COLOURS <- c("both usable" = "#4D4D4D", "VUT only usable" = VUT_CUT_COLOURS[
                   "CUT only usable" = VUT_CUT_COLOURS[["CUT"]],
                   "no reported value" = "#BDBDBD", "below quality rule" = "#756BB1")
 
+## Redrawn as two 100%-stacked horizontal bars (proportion, not raw count) --
+## this alone fixes most of the earlier overlap problem, since the Sites bar
+## (781 total) no longer has to share one axis with the 8x-larger Site-years
+## bar (6,336 total); each bar now spans the same 0-100% width regardless of
+## its own total. y = level, x = share, orientation = "y" throughout (not
+## coord_flip(), which this script's patchwork-tag fix found unreliable for
+## annotate()-based placement; geom_col/geom_text's own `orientation` arg
+## gives genuinely horizontal bars without flipping the coordinate system).
 avail_df <- bind_rows(sy_cat, site_cat) |>
   mutate(cat2 = factor(cat2, levels = CAT_LEVELS),
-         level = factor(level, levels = c("Site-years (n = 6,336)", "Sites (n = 781)")))
+         level = factor(level, levels = c("Sites (n = 781)", "Site-years (n = 6,336)"))) |>
+  group_by(level) |>
+  mutate(share = n / sum(n)) |>
+  ungroup()
 
-## Both bars share one y-axis (0-6,336), so a segment's labelling threshold
-## must be relative to that SHARED scale, not its own bar's total -- e.g. 41
-## of 781 sites is 5.3% of the Sites bar but only 0.6% of the shared axis,
-## too thin a slice to hold a legible label and collides with its neighbour.
-avail_df <- avail_df |> mutate(share_of_axis = n / max(n_site_years))
+## Every category is labelled with its count, per the task brief -- even at
+## 100%-stacked proportions, the thinnest segments (e.g. below quality
+## rule=24/6,336=0.4%) are still too narrow to hold inline text, so labels
+## are placed at each segment's true stack midpoint and let ggrepel spread
+## overlapping ones outward along x (direction="x": only x moves, so a
+## label never drifts onto the other bar's row), each with a thin leader
+## segment back to its real position. The x-axis is widened to 0-1.42 to
+## give that overflow somewhere to go.
+label_df <- avail_df |>
+  filter(n > 0) |>
+  arrange(level, cat2) |>
+  group_by(level) |>
+  mutate(xmax = cumsum(share), xmin = dplyr::lag(xmax, default = 0), xmid = (xmin + xmax) / 2) |>
+  ungroup()
 
-panel4a <- ggplot(avail_df, aes(x = level, y = n, fill = cat2)) +
-  geom_col(width = 0.6) +
-  ## Count labels only on segments big enough to hold them legibly (>3% of
-  ## the shared axis) -- the exact counts for every segment, including the
-  ## small ones this omits (e.g. VUT-only=57/41, CUT-only=40, below quality
-  ## rule=24), are in this section's Check 2 and the source tables.
-  geom_text(data = avail_df |> filter(share_of_axis > 0.03), aes(label = n),
-            position = position_stack(vjust = 0.5), size = 5 / .pt, colour = "white") +
+panel4a <- ggplot(avail_df, aes(y = level, x = share, fill = cat2)) +
+  ## position_stack(reverse = TRUE): ggplot2's default stacking order for
+  ## orientation="y" placed the LAST CAT_LEVELS entry ("below quality rule")
+  ## at x=0 and the FIRST ("both usable") at the far end -- the opposite of
+  ## CAT_LEVELS/the legend order -- which also threw every repelled label
+  ## below out of alignment with its actual segment. reverse=TRUE matches
+  ## visual stacking order to CAT_LEVELS/label_df's cumsum order.
+  geom_col(width = 0.6, orientation = "y", position = position_stack(reverse = TRUE)) +
+  ggrepel::geom_text_repel(
+    data = label_df, aes(x = xmid, y = level, label = n), inherit.aes = FALSE,
+    direction = "x", seed = 42, size = 5 / .pt, family = NATURE_FONT, colour = "black",
+    segment.size = nature_lwd(0.25), segment.colour = "grey30", min.segment.length = 0,
+    box.padding = 0.1, point.padding = 0, force = 3, max.overlaps = Inf,
+    xlim = c(NA, 1.4)
+  ) +
   scale_fill_manual(values = CAT_COLOURS, name = NULL, breaks = CAT_LEVELS) +
-  labs(x = NULL, y = "Count") +
+  scale_x_continuous(labels = scales::label_percent(), limits = c(0, 1.42),
+                      expand = expansion(mult = c(0.01, 0))) +
+  labs(x = "Share", y = NULL) +
   tv_theme() +
   theme(legend.position = "bottom") +
-  guides(fill = guide_legend(ncol = 2)) +
-  panel_letter("a", x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
+  guides(fill = guide_legend(ncol = 2))
 
 ## (b) Share where CP/MP did not succeed, by site-year category.
 method_qc <- read_csv(file.path(DIAG_DIR, "table_stage4_ustar_method_vs_qualification.csv"),
@@ -537,20 +604,18 @@ method_summary <- method_qc |>
   mutate(category = factor(category, levels = c("both", "VUT only", "CUT only", "neither")),
          method = factor(method, levels = c("CP", "MP", "both")))
 
-## Legend/series are labelled by method only ("CP"/"MP"/"both"); the y-axis
-## title states what is being shared ("...that did not succeed") once,
-## rather than repeating "did not succeed" in every legend entry (it
-## truncated the 183mm legend row when spelled out per-series).
+## Legend/series labelled "CP", "MP", "CP and MP"; y-axis title states what
+## is being shared in full.
 panel4b <- ggplot(method_summary, aes(x = category, y = share, fill = method)) +
   geom_col(position = position_dodge(width = 0.75), width = 0.7) +
-  scale_fill_manual(values = c("CP" = "#FC8D62", "MP" = "#8DA0CB", "both" = "#4D4D4D"), name = NULL) +
+  scale_fill_manual(values = c("CP" = "#FC8D62", "MP" = "#8DA0CB", "both" = "#4D4D4D"), name = NULL,
+                     labels = c("CP" = "CP", "MP" = "MP", "both" = "CP and MP")) +
   scale_y_continuous(labels = scales::label_percent(), expand = expansion(mult = c(0, 0.05))) +
-  labs(x = "NEE availability category", y = "Share of site-years that did not succeed") +
+  labs(x = "NEE availability category", y = "Share of site-years in which the method did not succeed") +
   tv_theme() +
-  theme(legend.position = "bottom") +
-  panel_letter("b", x = -Inf, y = Inf, hjust = -0.4, vjust = 1.4)
+  theme(legend.position = "bottom")
 
-fig4 <- panel4a | panel4b
+fig4 <- (panel4a | panel4b) + plot_annotation(tag_levels = "a") & tv_tag_theme()
 saved4 <- save_nature_figure(fig4, file.path(FIG_DIR, "fig_tv4_availability_annual_nee"),
                               width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 115)
 msg("Saved Figure 4: ", saved4$png)
@@ -578,18 +643,25 @@ writeLines(c(
 "TITLE: Figure 4. Availability of annual NEE",
 "",
 "DESCRIPTION:",
-"(a) Site-years (n=6,336) and sites (n=781) by availability category: both",
-"VUT and CUT usable, VUT only, CUT only, or neither -- 'neither' split into",
-"'no reported value' (no raw NEE_VUT_REF/NEE_CUT_REF value exists that",
-"year/site) and 'below quality rule' (a raw value exists but does not clear",
-"QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <= QC_THRESHOLD_YY, own QC column",
-"per side (same rule as Figures 2-3).",
+"(a) Two 100%-stacked horizontal bars -- site-years (n=6,336) and sites",
+"(n=781) -- by availability category: both VUT and CUT usable, VUT only,",
+"CUT only, or neither -- 'neither' split into 'no reported value' (no raw",
+"NEE_VUT_REF/NEE_CUT_REF value exists that year/site) and 'below quality",
+"rule' (a raw value exists but does not clear QC_THRESHOLD_YY=0.50).",
+"'Usable' = (1-QC) <= QC_THRESHOLD_YY, own QC column per side (same rule as",
+"Figures 2-3). Every category with a nonzero count is labelled with its",
+"exact count (VUT only usable: 57 site-years / 41 sites; CUT only usable:",
+"360/40; no reported value: 1,935/125; below quality rule: 24/0; both",
+"usable: 3,960/575); thin segments' labels are repelled outward along the",
+"x-axis (ggrepel), each connected to its true position by a thin leader",
+"line, rather than omitted for overlap as an earlier draft of this figure did.",
 "(b) For each site-year availability category, the share where",
 "USTAR_CP_SUCCESS_RUN did not succeed (series 'CP'), where",
 "USTAR_MP_SUCCESS_RUN did not succeed (series 'MP'), and where both did",
-"not succeed (series 'both') -- the y-axis title states 'that did not",
-"succeed' once rather than repeating it in each legend entry (which",
-"truncated at 183mm page width when spelled out per-series). Panel (b)'s",
+"not succeed (series 'CP and MP') -- the y-axis title states 'in which the",
+"method did not succeed' once rather than repeating it in each legend",
+"entry (which truncated at 183mm page width when spelled out per-series).",
+"Panel (b)'s",
 "x-axis uses shortened category labels ('both'/'VUT only'/'CUT only'/",
 "'neither') so the text can stay horizontal -- rotated text is measured by",
 "scripts/check_figure_format.R's pdftotext-bbox check as larger than its",

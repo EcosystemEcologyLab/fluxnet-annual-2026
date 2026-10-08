@@ -6,10 +6,12 @@ TITLE: Figure 3. VUT against CUT, site-years where both are usable
 DESCRIPTION:
 (a) Scatter of annual NEE_CUT against NEE_VUT on equal axes, dashed 1:1
 line. Points coloured by whether |VUT-CUT| exceeds the propagated combined
-uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2);
-20 of 3,960 site-years have no reported value for this comparison (the
-joint-uncertainty term itself is unavailable on at least one side even
-though both REF values qualify) and are coloured separately.
+uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2).
+20 of 3,960 site-years ('joint uncertainty not reported') have the
+joint-uncertainty term itself unavailable on at least one side even though
+both REF values qualify -- drawn as a visible open dark-grey circle (not
+the small semi-transparent dot used for the other two classes), since 20
+points would otherwise be lost among the other 3,940.
 (b) Histogram of VUT-CUT with dashed vertical lines at +/-25, 50 and 100 g
 C m^-2 yr^-1. The x-axis is clipped at +/-150; the number of site-years
 lying beyond that clip (34) is printed in the panel.

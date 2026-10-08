@@ -4,6 +4,59 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — Technical Validation interim figure fixes (follow-up to comment 25)
+
+Five figure-only fixes to the Technical Validation interim redraw (session entry below),
+`scripts/technical_validation_interim.R`, no new analysis.
+
+**Root cause found and fixed: `R/nature_format.R::panel_letter()` silently drops its panel
+letter on log-scale or `coord_flip()` panels.** `panel_letter()` places its letter via a
+ggplot2 `annotate()` layer at `x = -Inf, y = Inf`; direct reproduction confirmed `-Inf` on a
+`scale_x_log10()`/`scale_y_log10()` panel transforms to `log(-Inf) = NaN`, so the whole
+annotation row is silently dropped (`"Removed 1 row ... geom_text()"`, visible in this
+session's own earlier run log but not connected to the missing letters until now), and the
+placement is independently unreliable under `coord_flip()`. This explains why Figure 1b and
+Figure 2b/c had no panel letter in the first commit. Fixed throughout
+`technical_validation_interim.R` by switching to patchwork's `plot_annotation(tag_levels =
+"a")` (grid/gtable-level tagging, confirmed scale-agnostic by direct test), with
+`patchwork::wrap_elements(full = ...)` used to collapse Figure 1's three-resolution ECDF row
+into a single tagged unit (so it gets one "a", not a/b/c for the sub-panels). This is a bug in
+this script's own use of `panel_letter()`, not a defect in the shared `R/nature_format.R`
+function itself (which other paper figures use successfully on linear, non-flipped axes); no
+change was made to `R/nature_format.R`.
+
+1. **Panel letters**: added (now via the patchwork fix above) to Figure 1b and Figure 2b/c.
+2. **Figure 2b/2c**: added `g C m⁻² yr⁻¹` units to both y-axis titles; fixed the log-scale
+   `"1 000.0"` tick label to `"1000"` — `drop0trailing = TRUE` (not `accuracy = 1`, which was
+   tried first and rejected because it also rounded the `0.1` tick down to `0`).
+3. **Figure 3a**: renamed the third legend class to "joint uncertainty not reported" and drew
+   its 20 points as a visible open dark-grey circle (separate `geom_point()` layer) instead of
+   the same small semi-transparent dot used for the other ~3,940 points.
+4. **Figure 4a**: redrawn as two 100%-stacked horizontal bars (site-years, sites) with every
+   nonzero category labelled with its exact count (VUT only: 57/41; CUT only: 360/40; no
+   reported value: 1,935/125; below quality rule: 24/0; both usable: 3,960/575), using
+   `ggrepel` to spread thin-segment labels outward along the x-axis with a leader line back to
+   their true position. Found and fixed a second bug in the process: `position_stack()`'s
+   default order for `orientation = "y"` bars was the reverse of the legend/`CAT_LEVELS`
+   order, which had thrown every label out of alignment with its actual segment (`reverse =
+   TRUE` fixes it).
+5. **Figure 4b**: legend relabelled "CP"/"MP"/"CP and MP"; y-axis title changed to "Share of
+   site-years in which the method did not succeed".
+
+**`NEE_VUT_REF_NIGHT`/`NEE_VUT_REF_DAY` definitions, requested from FLUXNET product
+documentation**: found in the product's own per-site `BIFVARINFO_YY` files (`VARIABLE_GROUP =
+GRP_VAR_INFO`), confirmed byte-identical across sites checked (`DE-SfS`, `US-Rms`):
+`NEE_VUT_REF_NIGHT` = "Average nighttime NEE, from NEE_VUT_REF calculated from daily nighttime
+data" (units µmol CO₂ m⁻² s⁻¹); `NEE_VUT_REF_DAY` = "Average daytime NEE, from NEE_VUT_REF
+calculated from daily daytime data" (same units). No non-BIF `VARINFO` file exists in
+`data/extracted/`; `BIFVARINFO_*` was the only place this documentation was found. Per
+instruction, `checks.txt`'s Check 3 explanation was left unchanged this session pending
+review of these definitions.
+
+`scripts/check_figure_format.R`: 4/4 PASS.
+
+---
+
 ## 2026-10-08 — Technical Validation interim redraw (Trevor Keenan comment 25)
 
 Candidate Technical Validation section for all co-authors, redrawing the completed

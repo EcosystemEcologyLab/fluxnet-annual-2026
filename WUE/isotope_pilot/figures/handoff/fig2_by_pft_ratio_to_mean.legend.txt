@@ -1,0 +1,9 @@
+FIGURE LEGEND -- fig2_by_pft_ratio_to_mean
+TITLE: WUE, IWUE, uWUE and k* by plant functional type, normalised to each site's own mean
+DESCRIPTION: Two panels, DBF and ENF (BE-Vie, the only MF site among the 11, is left out of
+this figure). Thin faint lines show each contributing site's own ratio-to-mean series; the
+bold line is the across-site median per calendar year, per metric. Grey background bars
+(secondary axis) show the mean valid days per year across contributing sites. The number of
+sites in the group is noted in the top-right corner. No trend tests or slopes are shown.
+
+============================================================

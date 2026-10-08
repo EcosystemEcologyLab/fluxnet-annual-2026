@@ -139,6 +139,10 @@ code/11_precip_compare.R         # ERA5 (P_ERA) vs. tower gauge, daily scale -- 
                                   # docs/report_precip_compare_<date>.md
 code/12_screen_variants.R        # rain-source x screen-c-radiation variant check, 3
                                   # test sites -- see docs/report_screen_variants_<date>.md
+code/13_handoff_figures.R        # hand-off figures, 11 stage-2 sites, Nature/Scientific
+                                  # Data format (R/nature_format.R + PAPER_IGBP_* from
+                                  # R/plot_constants.R) -- figures/handoff/, tables/handoff/,
+                                  # docs/handoff_figure_legends_<date>.md
 ```
 
 `WUE_SITE_SUBSET` (space-separated site IDs) narrows the site list for a

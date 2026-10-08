@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T12:40:03Z",
+  "pipeline_version": "b10557e",
+  "input_sources": [
+    "WUE/isotope_pilot/tables/ (stage 2), WUE/isotope_pilot/tables/precip_compare/, data/snapshots/ (read-only)"
+  ],
+  "notes": "Share of fully measured days with daily total > 0 mm, gauge vs P_ERA (tables/precip_compare/wet_day_frequency.csv, period=all, threshold=0)."
+}

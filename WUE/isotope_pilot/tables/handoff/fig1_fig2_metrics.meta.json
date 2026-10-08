@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T12:40:02Z",
+  "pipeline_version": "b10557e",
+  "input_sources": [
+    "WUE/isotope_pilot/tables/ (stage 2), WUE/isotope_pilot/tables/precip_compare/, data/snapshots/ (read-only)"
+  ],
+  "notes": "One row per kept site-year x metric (WUE, IWUE, uWUE, sub-daily k*). k* is NA where it sat on a grid-search limit (0 or 1.5). norm_ratio = value / site's own mean over its plotted years; norm_pct = percent change from the site's first year with a value and >=10 valid days (Guerrieri et al. 2019 style). low_days = TRUE for valid_days in (0,10)."
+}

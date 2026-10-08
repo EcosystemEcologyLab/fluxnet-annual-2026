@@ -1,0 +1,9 @@
+FIGURE LEGEND -- fig1_by_site_pct_change_guerrieri
+TITLE: WUE, IWUE, uWUE and k* by site, percent change from each site's first qualifying year
+DESCRIPTION: Same layout and panels as fig1_by_site_ratio_to_mean, but each metric is shown
+as percent change from the site's first year with a value and at least 10 valid days (0%
+baseline), following Guerrieri et al. (2019)'s normalisation. Open points, zero-valid-day
+years, background valid-day bars, and red gauge-coverage year labels as in the ratio
+version. No trend tests or slopes are shown.
+
+============================================================

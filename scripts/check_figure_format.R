@@ -106,7 +106,12 @@ EDGE_MARGIN_MIN_PT <- 1.0
 ALLOWED_FONTS <- c("Helvetica", "Helvetica-Bold", "Symbol")
 
 # ---- Step 1: discover figures ---------------------------------------------------
-MAIN_DIR <- "review/figures/draft_manuscript_v1"
+## Optional first CLI argument overrides the directory checked (default
+## unchanged: review/figures/draft_manuscript_v1). Added 2026-10-08 so this
+## checker can also run against a different figure set (e.g.
+## WUE/isotope_pilot/figures/handoff/) without touching its own defaults.
+cli_args <- commandArgs(trailingOnly = TRUE)
+MAIN_DIR <- if (length(cli_args) >= 1L && nzchar(cli_args[1])) cli_args[1] else "review/figures/draft_manuscript_v1"
 ED_DIR   <- file.path(MAIN_DIR, "SupFigs")
 
 main_pngs <- list.files(MAIN_DIR, pattern = "\\.png$", full.names = TRUE)

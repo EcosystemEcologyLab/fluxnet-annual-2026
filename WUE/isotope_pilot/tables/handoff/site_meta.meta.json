@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-08T12:40:02Z",
+  "pipeline_version": "b10557e",
+  "input_sources": [
+    "WUE/isotope_pilot/tables/ (stage 2), WUE/isotope_pilot/tables/precip_compare/, data/snapshots/ (read-only)"
+  ],
+  "notes": "site_id, lat/lon, IGBP from data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv; two-letter Koppen class (panel_a_class_used) from data/snapshots/site_koppen_era5_fig4.csv."
+}

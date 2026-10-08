@@ -1,0 +1,9 @@
+FIGURE LEGEND -- fig3_rain_source_summary
+TITLE: Rain source summary, 11 sites
+DESCRIPTION: Panel a: share of each site's fully measured days with a daily total above 0 mm,
+by the tower gauge and by P_ERA (one pair of points per site, connected by a grey segment).
+Panel b: mean days removed per year by the stage 2 rain rule when driven by the gauge versus
+by P_ERA, over site-years with at least 350 fully measured days. Sites in both panels are
+ordered by IGBP then latitude. No cause is asserted.
+
+============================================================

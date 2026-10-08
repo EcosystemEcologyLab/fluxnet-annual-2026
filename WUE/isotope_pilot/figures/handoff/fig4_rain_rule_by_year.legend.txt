@@ -1,0 +1,8 @@
+FIGURE LEGEND -- fig4_rain_rule_by_year
+TITLE: Days removed by the rain rule, by site-year and source
+DESCRIPTION: One panel per site (11), days removed per year by the stage 2 rain rule, gauge-
+driven versus P_ERA-driven, for site-years with at least 350 fully measured days. Redraws
+figures/precip_compare/fig_days_removed_by_source.png in this hand-off's Nature format. No
+trend tests or slopes are shown.
+
+============================================================

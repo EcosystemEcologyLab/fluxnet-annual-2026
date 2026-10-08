@@ -4,6 +4,65 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — Supplementary material restructure
+
+Full renumbering and reorganisation of the supplement, requested as an 8-point task. Every
+changed output was regenerated from its R script under its new name — no file was renamed by
+hand. Verified complete (including picking up where an earlier pass in this same session had
+left off before a context compaction) rather than re-done from scratch.
+
+1. **Figures renumbered S1–S6**, old stem → new stem: `figS1_whittaker_nee_gpp_ter` →
+   `figS1_whittaker_nee_gpp_reco`; `figS2_flux_comparison_matched_siteyears` unchanged (stem)
+   but regenerated; `figS4_representativeness_geo_vs_geo` → `figS3_sampling_gridded_at_tower`;
+   `figS5_flux_representativeness` → `figS4_sampling_flux_axes`;
+   `figS6_representativeness_trajectory` → `figS5_sampling_collections`; `figS7_record_length`
+   → `figS6_record_length`. `scripts/build_supplementary_pdf.R`'s `STEMS` updated to this order.
+2. **`figS3_flux_comparison_six_panel` and `fig_02_historical_only` moved out of the
+   supplement** into a new `review/figures/presentation_figures/` pool — their own scripts
+   (`scripts/figure_flux_comparison_six_panel.R`, `scripts/generate_fig02_historical_only.R`)
+   now write there directly, dropped from every supplementary build list. Old `SupFigs` copies
+   moved to `SupFigs/deprecated/`.
+3. **Tables.** New `tableS1_regional_networks.csv` (network code/name/processing hub/sites/
+   site-years from `fluxnet_shuttle_snapshot_20260920T102211.csv`, via new
+   `scripts/supp_stage5_regional_networks_table.R`) — checks passed: 781 sites, hubs AmeriFlux
+   381 / ICOS 348 / TERN 52, 6,200 site-years. `tableS2_record_length_by_igbp`,
+   `tableS3_sampling_ratios_by_axis`, `tableS4_bowen_ratio_by_igbp` renamed from their old
+   `tableS_*` stems (unchanged content). New `supplementary_data_1_sites.csv` (781 sites: site
+   ID, product name/version, network code, DOI; new `scripts/supp_stage6_sites_data_table.R`).
+   `tableS_sampling_ratio_extremes`/`_jaccard_check` moved to
+   `review/diagnostics/sampling_ratio_checks/`; old `SupTables` copies to
+   `SupTables/deprecated/`.
+4. **Wording.** "Representativeness" → "Network sampling" in S3–S5 titles and in Figure 5's
+   own legend title line; "Geo vs Geo"/"Geo vs Data" → "gridded value at the tower"/"the site's
+   own value" in S3–S5 titles and S4 panel headers (Figure 5 itself keeps its own "Geo vs
+   Geo"/"Geo vs Data" terms, which S3–S5 now cross-reference by name); "FLUXNET Shuttle"/
+   "Current"/"current FLUXNET network" → "the snapshot" in S1, S2, S5, S6 and the two figures
+   moved to `presentation_figures/`; "TER" → "RECO" in S1 and S4; "Koppen" → "Köppen" in S5's
+   key. Doubled dash in the record-length title already clean.
+5. **Compiled PDF** renamed `supplementary_figures.pdf` → `supplementary_information.pdf`:
+   one page per figure (S1–S6) with a full publication legend (≤350 words, paper terms, no
+   script paths) under the title, then Tables S1–S4 as formatted table pages with short
+   captions. Rebuilt: 13 pages (6 figures + 7 table pages: S1 1pg, S2 1pg, S3 4pg, S4 1pg).
+6. **Cross-references** in `.legend.txt`/`.meta.json`, `build_supplementary_pdf.R`,
+   `check_figure_format.R`, `docs/figure_inventory.md`, `docs/methods_requirements.md` updated
+   to the new numbering/stems. Repo-wide grep for old stems/numbers turned up only legitimate
+   "was X before this restructure" historical notes (in `docs/figure_inventory.md`,
+   `docs/methods_requirements.md`, and pre-existing progress logs `review/figstage_report.md`,
+   `review/figstage_status.md`, `review/supp_run_status.md`) — nothing stale left uncorrected.
+   `README.md`/`CLAUDE.md` have no supplement-stem references to update.
+7. Main-text figures and the Word manuscript untouched — confirmed via `git status` (no
+   `.docx` changes) and `check_figure_format.R`'s unchanged 5 main-text figures.
+8. **Verification:** `scripts/check_figure_format.R` 11/11 PASS (5 main + 6 supplementary).
+   Supplementary PDF rebuilt and confirmed 13-page order S1→S6, Table S1→S4.
+   `figS3_flux_comparison_six_panel`/`fig_02_historical_only` confirmed absent from `SupFigs`
+   outside `deprecated/` and present in `presentation_figures/`. Table S1 totals confirmed
+   (781 sites; 381/348/52 by hub; 6,200 site-years). Committed and pushed
+   (`e2bac45`); pre-existing unrelated local modifications (snapshot `.meta.json` files,
+   `outputs/session_info.txt`, `renv/activate.R`, the Technical Validation `nee_corrected_axis`
+   diagnostics) left untouched and unstaged, as separate commit decisions.
+
+---
+
 ## 2026-10-08 — Technical Validation interim: three layout fixes
 
 Three layout fixes to `review/technical_validation_interim/` found on review of the prior

@@ -4,6 +4,58 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-07 — WUE isotope pilot: ERA5-vs-gauge precip comparison finished (side analysis)
+
+**Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot
+itself.** Finishes the comparison that stopped at an exact-match identity gate earlier the same
+day (previous entry below) — the gate was the user's own instruction, found too strict. Five
+fixes applied, in order, then the full 12-site run:
+
+1. **Resolution label bug.** `05_read_subdaily_wue.R`'s cached-read branch computed the sub-daily
+   timestep via `as.numeric(diff(...))` with no explicit unit — at an hourly site `diff()`
+   auto-scales to hours (`dt=1`), so the 30/60-minute test silently fell through to `"unknown"`.
+   Fixed with `units = "mins"`. `11_precip_compare.R`'s `timesteps_per_day()` now `stop()`s on
+   anything other than `"HH"`/`"HR"`, no default. Verified: `US-Ha1`/`US-MMS` HR, the other ten HH.
+2. **Identity gate relaxed.** A site now passes when the `P_F_QC==2` side is exactly 100% AND the
+   `P_F_QC==0` non-zero side is `<= 1%` (was an exact 100%/0% requirement). A failing site is
+   excluded from items 1-9 and the figures and named in the report, not a global stop. Added the 5
+   most frequent matching values per site to `identity_check.csv`. **Result: all 12 sites now
+   pass** (earlier same-day run: 11 of 12 failed on the `<=1%` side alone, with matches of
+   0.05-0.43%).
+3. **Missing P_ERA silently read as dry.** Daily `P_ERA` was summed with `na.rm = TRUE`, so a day
+   with zero `P_ERA` records present read as a 0 mm (dry) day. Fixed: a day's `P_ERA` is now `NA`
+   unless present at every expected timestep, and that is now also required for "fully measured"
+   alongside the existing `P_F_QC == 0` requirement. New `era_missing_timesteps.csv` (2026
+   excluded) and a cross-check against `years_dropped.csv` — **zero missing P_ERA timesteps found
+   across all 12 sites**, so no kept site-year is affected. `07_apply_screens.R`'s own summing is
+   deliberately left as-is, per instruction.
+4. **Item 9 (rain-rule consequence)** now runs both sources on the same days: `P_ERA` is set to
+   `NA` wherever the gauge day is not fully measured, and days removed are counted only among
+   fully measured days.
+5. **PET pressure.** `rain_rule.R`'s `pt_pet_mm_day()` gained an explicit `pressure_kpa` argument
+   (falling back to the prior fixed 101.3 kPa only where missing); both `07_apply_screens.R` and
+   `11_precip_compare.R` now pass the site's own daily mean `PA_F` (added to the columns `11`
+   loads). Documented in `docs/methods_memo.md`.
+
+**Findings (descriptive only — no cause asserted, no threshold proposed or applied, the rain
+rule's "any P_ERA above zero" definition is unchanged, WUE not recomputed):** at every one of the
+12 sites, `P_ERA` reports a day as wet (`>0`) far more often than the gauge does
+(`share_era_wet` 0.47-0.87 vs. `share_gauge_wet` 0.31-0.64, all months); 28-69% of gauge-dry fully
+measured days carry positive `P_ERA`. Annual `P_ERA`-to-gauge sum ratios are close to 1 at every
+site (0.974-1.126) — the daily-frequency disagreement is not a magnitude/totals problem. Driving
+the stage 2 rain rule by `P_ERA` instead of the gauge removes substantially more days per year at
+every site (e.g. `US-Ha1` 239 vs. 311 mean days/year among site-years with >=350 fully measured
+days; `FI-Hyy` 289 vs. 335). Full numbers: `tables/precip_compare/` (13 tables, each with a
+`.meta.json`); figures: `fig_wet_freq_amount.png`, `fig_days_removed_by_source.png`,
+`fig_era_on_gauge_dry.png`. Report: `docs/report_precip_compare_20261007.md` (overwrites the
+same-day stopped-early version, superseding it). The falsifiability statement the user required
+in advance is unchanged from the first run — today's revisions changed the identity gate's
+strictness and counting details, not what would count as support or refutation.
+
+Stage 2's own `06`-`10` were not run; the stage 2 full run remains on hold.
+
+---
+
 ## 2026-10-07 — WUE isotope pilot: ERA5-vs-gauge daily precipitation comparison (side analysis)
 
 **Side analysis — not the FLUXNET Annual Paper 2026, and not stage 2 of the WUE isotope pilot

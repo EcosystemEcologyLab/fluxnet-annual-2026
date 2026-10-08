@@ -4,6 +4,38 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — Technical Validation interim: final tidy before circulation
+
+Five fixes to `review/technical_validation_interim/`, `scripts/technical_validation_interim.R`,
+no new analysis, closing out the read-only checks in the session entry below.
+
+1. **Figure 4a**: removed the in-bar count labels and `ggrepel` entirely. Each category's
+   exact count now lives in its own legend label, `"<category> (<n> site-years, <n> sites)"`
+   (e.g. `"VUT only usable (57 site-years, 41 sites)"`, `"below quality rule (24 site-years, 0
+   sites)"`). X-axis set to a plain 0–100%.
+2. **Figure 3a**: the `"within combined uncertainty"` legend key (and the other two) bumped to
+   full alpha and a larger `override.aes` size — its ~3,940 actual points are deliberately
+   drawn faint (`alpha = 0.4`, `size = 0.5`, to stay legible as an overlapping mass), which
+   otherwise left its own legend key almost invisible.
+3. **`checks.txt` Check 3 rewritten as an observation only, no cause offered**:
+   `NEE_VUT_REF_NIGHT`/`_DAY` are the average nighttime/daytime NEE computed from daily data
+   (`BIFVARINFO_YY` `VAR_INFO_DEFINITION`, confirmed identical across sites), not a "day/night
+   partitioning pipeline" — that causal framing from the first draft of this check is
+   withdrawn. New text: at 1,544 site-years, `NEE_VUT_SE` and the night/day averages are
+   reported while the combined annual `NEE_VUT_REF` is `-9999`.
+4. **Errata (v) and (vi) appended** to `review/diagnostics/data_quality_uncertainty/report.md`
+   (existing errata text unchanged): (v) withdraws "leftover from ad hoc extractions" for 30 of
+   the 31 sub-daily sites — only `US-MMS` predates the snapshot lock session, confirmed by this
+   session's own read-only check (a); (vi) narrows Stage 4's "no raw value exists" for the 125
+   sites to the annual product only — `NEE_VUT_REF` is written as the literal `-9999` (not
+   absent) in the raw YY files, `NEE_CUT_REF` is absent as a column, and all 125 have at least
+   one day of non-missing daily NEE, per this session's checks (c).
+5. Figure 3 and Figure 4 `.legend.txt` updated to match.
+
+`scripts/check_figure_format.R`: 4/4 PASS.
+
+---
+
 ## 2026-10-08 — Technical Validation interim: read-only checks (pre-circulation)
 
 Four read-only checks on the Technical Validation interim redraw (session entries below),

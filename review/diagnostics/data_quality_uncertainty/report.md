@@ -556,3 +556,19 @@ actually performed, and should not be relied on:**
     merely poorly gap-filled") — the data support the correlation (method failure
     tracks non-qualification, Stage 4's own table), not the causal mechanism asserted
     on top of it.
+
+(v) **Stage 0's "these 31 are evidently leftover from earlier ad hoc/test extractions"
+is withdrawn for all but one of the 31 sub-daily sites.** Checked against the 20
+September snapshot of record: 30 of the 31 sub-daily FLUXMET files were extracted on
+2026-09-20, the same session that produced the locked snapshot, and all 31 files'
+product name and version string match the snapshot's own record for that site
+exactly. Only `US-MMS` (the sole HR, not HH, site) predates that session, dated
+2026-05-25.
+
+(vi) **Stage 4's "no raw NEE_VUT_REF/NEE_CUT_REF value exists" for the 125 sites
+without a usable annual NEE applies to the annual product only, not to flux data for
+those sites generally.** Checked directly against the raw extracted YY CSVs: annual
+`NEE_VUT_REF` is written as the literal sentinel `-9999` (not a blank or absent
+field) in every one of the 5 sampled files, and `NEE_CUT_REF` is absent as a column
+entirely in all 5. At daily resolution, all 125 of the 125 sites have at least one
+day with a non-missing `NEE_VUT_REF` or `NEE_CUT_REF` value.

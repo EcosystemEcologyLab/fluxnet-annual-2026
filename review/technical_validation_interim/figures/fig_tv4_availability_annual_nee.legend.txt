@@ -10,12 +10,11 @@ CUT only, or neither -- 'neither' split into 'no reported value' (no raw
 NEE_VUT_REF/NEE_CUT_REF value exists that year/site) and 'below quality
 rule' (a raw value exists but does not clear QC_THRESHOLD_YY=0.50).
 'Usable' = (1-QC) <= QC_THRESHOLD_YY, own QC column per side (same rule as
-Figures 2-3). Every category with a nonzero count is labelled with its
-exact count (VUT only usable: 57 site-years / 41 sites; CUT only usable:
-360/40; no reported value: 1,935/125; below quality rule: 24/0; both
-usable: 3,960/575); thin segments' labels are repelled outward along the
-x-axis (ggrepel), each connected to its true position by a thin leader
-line, rather than omitted for overlap as an earlier draft of this figure did.
+Figures 2-3). No in-bar count labels -- each category's exact count is
+given in its own legend entry instead, '<category> (<n> site-years, <n>
+sites)': both usable (3,960 site-years, 575 sites); VUT only usable (57,
+41); CUT only usable (360, 40); no reported value (1,935, 125); below
+quality rule (24, 0).
 (b) For each site-year availability category, the share where
 USTAR_CP_SUCCESS_RUN did not succeed (series 'CP'), where
 USTAR_MP_SUCCESS_RUN did not succeed (series 'MP'), and where both did

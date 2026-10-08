@@ -3,31 +3,41 @@
 ## a/b/c and day-level for d. Operates only on the site-years
 ## 06_build_site_years.R did NOT drop (years_dropped.csv).
 ##
-## a. Rain: daily P = midnight-to-midnight sum of P_ERA. Daily PET =
-##    Priestley-Taylor (alpha 1.26) from daily mean NETRAD_filled and TA_F,
-##    G = 0. Exclude every day with P > 0 (MY DECISION 4 -- no threshold).
-##    Also exclude the two following days when P > 2*PET, or the one
-##    following day when P > PET. Propagated across the site's FULL
-##    continuous date range (not reset at calendar-year boundaries), so a
-##    rain event on Dec 31 can still exclude Jan 1-2 of the next year.
+## PI decision, 2026-10-07, replacing the earlier rain-screen decision --
+## basis in docs/report_precip_compare_20261007.md and
+## docs/report_screen_variants_20261007.md, recorded in
+## docs/methods_memo.md "Stage 2 -- reconstructed screens":
 ##
-##    Priestley-Taylor inputs: daily mean net radiation, air temperature, and
-##    (revised 2026-10-08) daily mean PA_F for the psychrometric constant --
-##    falling back to a fixed standard sea-level pressure (101.3 kPa) only
-##    where PA_F is missing that day. See rain_rule.R and
-##    docs/methods_memo.md "Stage 2 -- Priestley-Taylor PET".
+## a. Rain: daily P = midnight-to-midnight sum of P_F (as distributed: gauge
+##    where measured, P_ERA fill where not -- NOT P_ERA alone, which
+##    systematically over-reports wet days relative to the gauge). Daily
+##    PET = Priestley-Taylor (alpha 1.26) from daily mean NETRAD_filled and
+##    TA_F, G = 0, daily mean PA_F for the psychrometric constant (falls
+##    back to 101.3 kPa only where PA_F is missing that day). Exclude every
+##    day with P > 0 (MY DECISION 4 -- no threshold; unchanged). Also
+##    exclude the two following days when P > 2*PET, or the one following
+##    day when P > PET (unchanged). Propagated across the site's FULL
+##    continuous date range, not reset at calendar-year boundaries.
 ##
 ## b. Quality: keep records where NEE_QC_sel, LE_F_MDS_QC, VPD_F_QC are each
-##    0 or 1 (NA fails).
+##    0 or 1 (NA fails) -- unchanged.
 ##
 ## c. Daylight: keep records with TIMESTAMP_START's local-standard-time
-##    hour-of-day in [05:00, 21:00]. Exclude records with negative
-##    NETRAD_filled, GPP_gC_sel, ET_mm, or VPD_F (NA fails).
+##    hour-of-day in [05:00, 21:00] (unchanged). Exclude records with
+##    negative SW_IN_F (NOT NETRAD_filled -- Zhou's text says "net solar
+##    radiation", and NETRAD_filled is routinely negative near dawn/dusk
+##    within the window even after gap-filling, discarding far more records
+##    than Zhou's own method implies), GPP_gC_sel, ET_mm, or VPD_F (NA fails).
 ##
 ## d. Day level: a day is valid only if >=24 records survive a+b+c (HH
-##    sites) or >=12 (HR sites: US-Ha1, US-MMS), AND its mean GPP (over
-##    surviving records) is >=10% of the max such mean among this
-##    site-year's day candidates that already passed the record-count test.
+##    sites) or >=12 (HR sites: US-Ha1, US-MMS) -- unchanged -- AND its mean
+##    GPP (over surviving records) is >=10% of the maximum SINGLE-RECORD GPP
+##    over every record passing screens a-c that site-year (gpp_test =
+##    "halfhour", Zhou's own wording -- NOT 10% of the largest daily mean
+##    among candidate days).
+##
+## The 80% nighttime-GPP completeness rule (06_build_site_years.R) is
+## unchanged by this decision.
 ##
 ## Output (data/processed/, gitignored):
 ##   wue_daily_valid/<site_id>.rds    one row per valid day: date, year,
@@ -42,15 +52,17 @@
 ##   screen_attrition.csv   site_id, year, days_in_year,
 ##                          days_p_era_above_zero, days_removed_by_rain_rule,
 ##                          days_lost_quality, days_lost_daylight,
-##                          days_lost_day_level, valid_days
+##                          days_lost_day_level, valid_days,
+##                          share_days_gauge_measured (added 2026-10-07 --
+##                          share of days that year with P_F_QC == 0 at
+##                          every expected timestep, independent of which
+##                          column actually drives the rain screen)
 ##
 ## The per-site screen logic itself (screens a-d) lives in
-## run_zhou_screens() (code/zhou_screens.R, revised 2026-10-08) -- shared
-## with 12_screen_variants.R's rain-source/radiation-column comparison, so
-## the two can never silently diverge. This script calls it with every
-## argument at its default (rain from P_ERA, screen c's radiation test from
-## NETRAD_filled, PET pressure from daily mean PA_F) -- i.e. identical
-## behaviour to the inline version this replaced.
+## run_zhou_screens() (code/zhou_screens.R) -- shared with
+## 12_screen_variants.R's rain-source/radiation-column/gpp-test comparison,
+## so the two can never silently diverge. This script calls it with every
+## argument at its default, i.e. the PI decision above.
 
 source("WUE/isotope_pilot/code/00_config.R")
 source("WUE/isotope_pilot/code/rain_rule.R")
@@ -87,7 +99,7 @@ process_one_site <- function(site) {
   attrition_rows[[length(attrition_rows) + 1L]] <<- res$attrition[, c(
     "site_id", "year", "days_in_year", "days_p_era_above_zero",
     "days_removed_by_rain_rule", "days_lost_quality", "days_lost_daylight",
-    "days_lost_day_level", "valid_days", "year_kept"
+    "days_lost_day_level", "valid_days", "year_kept", "share_days_gauge_measured"
   )]
 
   if (!is.null(res$daily_valid)) {
@@ -106,5 +118,28 @@ screen_attrition <- do.call(rbind, attrition_rows)
 write.csv(screen_attrition, file.path(tables_dir, "screen_attrition.csv"), row.names = FALSE)
 message("[WUE] screen_attrition.csv written (", nrow(screen_attrition), " site-year rows, ",
         "including dropped years for context -- see year_kept column).")
+
+## ---- Cross-check against 12_screen_variants.R's rain_P_F_rad_SW_IN
+## halfhour variant (same screens, independently run against the same 3
+## test sites) -- the valid-day counts must match exactly. Stop if not.
+variants_path <- file.path(tables_dir, "screen_variants", "attrition_by_variant.csv")
+if (file.exists(variants_path)) {
+  variants <- readr::read_csv(variants_path, show_col_types = FALSE)
+  ref <- variants[variants$variant == "rain_P_F_rad_SW_IN" & variants$gpp_test == "halfhour",
+                   c("site_id", "year", "valid_days")]
+  kept <- screen_attrition[screen_attrition$year_kept, c("site_id", "year", "valid_days")]
+  cmp <- merge(kept, ref, by = c("site_id", "year"), suffixes = c("_07", "_variants"))
+  mismatches <- cmp[cmp$valid_days_07 != cmp$valid_days_variants, ]
+  if (nrow(cmp) > 0 && nrow(mismatches) > 0) {
+    stop("[WUE] Valid-day counts from 07_apply_screens.R do NOT match ",
+         "tables/screen_variants/attrition_by_variant.csv's rain_P_F_rad_SW_IN/halfhour rows ",
+         "for: ", paste(paste0(mismatches$site_id, " ", mismatches$year), collapse = ", "),
+         ". Stopping per instructions.")
+  }
+  message("[WUE] Cross-check OK: valid-day counts match rain_P_F_rad_SW_IN/halfhour exactly ",
+          "for ", nrow(cmp), " kept site-year(s) in common.")
+} else {
+  warning("[WUE] ", variants_path, " not found -- cross-check against 12_screen_variants.R skipped.")
+}
 
 message("[WUE] 07_apply_screens.R complete.")

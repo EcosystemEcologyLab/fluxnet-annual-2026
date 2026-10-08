@@ -49,6 +49,22 @@ balance closure slope 0.46 (r2 0.56), and three years with no nighttime GPP.
 Its downloaded/extracted files are left on disk, just not read by stage 2's
 scripts (`WUE_SITES_STAGE2` in `code/00_config.R`).
 
+## Stage 2 — reconstructed screens (PI decision, 2026-10-07)
+
+Replacing the earlier rain-screen decision, after two read-and-report side
+analyses examined it directly: `docs/report_precip_compare_20261007.md`
+(ERA5 `P_ERA` vs. the tower gauge, daily scale) and
+`docs/report_screen_variants_20261007.md` (rain source x screen c radiation
+column x GPP day-test reference, crossed on the 3 test sites). `07`'s rain
+screen now sums `P_F` (as distributed: gauge where measured, `P_ERA` fill
+where not), screen c tests `SW_IN_F >= 0` (not `NETRAD_filled`), and the
+day-level GPP test uses `gpp_test = "halfhour"` (Zhou et al. 2015's own
+wording: 10% of the site-year's maximum single-record GPP, not 10% of the
+largest daily mean). These are now `run_zhou_screens()`'s defaults
+(`code/zhou_screens.R`); full basis and numbers in
+`docs/methods_memo.md` "Stage 2 — Zhou et al. (2015) screens (reconstructed,
+PI decision 2026-10-07)".
+
 ## Data
 
 Sub-daily (HH or HR, auto-detected per site) and daily (DD) eddy covariance

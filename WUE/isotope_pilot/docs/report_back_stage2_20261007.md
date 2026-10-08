@@ -59,20 +59,95 @@ Comparison against the expected list in the stage 2 brief (completeness-based dr
 - Expected but NOT found in the derived list: US-Ha1 1991, BE-Vie 1996, DE-Tha 1996, FI-Hyy 1999, FI-Hyy 2000, US-SP1 2000, US-SP1 2002, US-SP1 2014, US-Dk2 2001, US-Bar 2018, US-Bar 2022, US-Slt 2022
 - Found in the derived list but NOT in the expected list: US-Ho2 1999, US-Ho2 2000, US-Ho2 2001, US-Ho2 2007, US-Ho2 2019, US-Ho2 2025
 
-## 6. Screen attrition
+## 6. Screen attrition (reconstructed screens: rain from P_F, screen c from SW_IN_F, 
+gpp_test = "halfhour" -- PI decision 2026-10-07, see docs/methods_memo.md)
 
-See `tables/screen_attrition.csv` (per site-year: days in year, days with P_ERA > 0, 
-days removed by the rain rule, days lost to the quality/daylight/day-level screens, 
-valid days remaining).
+Per site-year: days in year, days with the rain-screen source > 0, days removed by the rain 
+rule, days lost to the quality/daylight(screen c)/day-level screens, valid days remaining, and 
+(added 2026-10-07) the share of that year's days where P_F is fully gauge-measured:
 
-## 7. Annual WUE metrics
+| site_id | year | days_in_year | days_p_era_above_zero | days_removed_by_rain_rule | days_lost_quality | days_lost_daylight | days_lost_day_level | valid_days | year_kept | share_days_gauge_measured |
+|---|---|---|---|---|---|---|---|---|---|---|
+| US-Fuf | 2005 | 365 | 186 | 207 | 74 | 0 | 53 | 31 | FALSE | 0.2795 |
+| US-Fuf | 2006 | 365 | 134 | 171 | 17 | 1 | 88 | 88 | TRUE | 0.9616 |
+| US-Fuf | 2007 | 365 | 130 | 155 | 0 | 0 | 87 | 123 | TRUE | 0.9096 |
+| US-Fuf | 2008 | 366 | 126 | 151 | 32 | 1 | 73 | 109 | TRUE | 0.9044 |
+| US-Fuf | 2009 | 365 | 129 | 154 | 30 | 2 | 83 | 96 | TRUE | 0.7753 |
+| US-Fuf | 2010 | 365 | 146 | 174 | 46 | 1 | 33 | 111 | TRUE | 0.6027 |
+| US-Ho2 | 1999 | 365 | 204 | 264 | 101 | 0 | 0 | 0 | FALSE | 0.5014 |
+| US-Ho2 | 2000 | 366 | 161 | 231 | 135 | 0 | 0 | 0 | FALSE | 0.9699 |
+| US-Ho2 | 2001 | 365 | 126 | 181 | 184 | 0 | 0 | 0 | FALSE | 0.9397 |
+| US-Ho2 | 2002 | 365 | 184 | 255 | 56 | 1 | 12 | 41 | TRUE | 0.7562 |
+| US-Ho2 | 2003 | 365 | 168 | 235 | 6 | 0 | 67 | 57 | TRUE | 0.874 |
+| US-Ho2 | 2004 | 366 | 137 | 213 | 2 | 4 | 89 | 58 | TRUE | 0.929 |
+| US-Ho2 | 2005 | 365 | 195 | 242 | 25 | 1 | 54 | 43 | TRUE | 0.6521 |
+| US-Ho2 | 2006 | 365 | 169 | 240 | 8 | 5 | 54 | 58 | TRUE | 0.9726 |
+| US-Ho2 | 2007 | 365 | 127 | 202 | 163 | 0 | 0 | 0 | FALSE | 0.9753 |
+| US-Ho2 | 2008 | 366 | 142 | 233 | 47 | 0 | 24 | 62 | TRUE | 0.9672 |
+| US-Ho2 | 2009 | 365 | 154 | 242 | 30 | 1 | 47 | 45 | TRUE | 0.8493 |
+| US-Ho2 | 2010 | 365 | 140 | 217 | 2 | 1 | 71 | 74 | TRUE | 0.9699 |
+| US-Ho2 | 2011 | 365 | 161 | 250 | 62 | 3 | 32 | 18 | TRUE | 0.9945 |
+| US-Ho2 | 2012 | 366 | 154 | 248 | 118 | 0 | 0 | 0 | TRUE | 1 |
+| US-Ho2 | 2013 | 365 | 138 | 220 | 145 | 0 | 0 | 0 | TRUE | 0.9397 |
+| US-Ho2 | 2014 | 365 | 154 | 244 | 61 | 0 | 12 | 48 | TRUE | 0.8959 |
+| US-Ho2 | 2015 | 365 | 135 | 215 | 44 | 0 | 26 | 80 | TRUE | 0.9918 |
+| US-Ho2 | 2016 | 366 | 142 | 234 | 0 | 0 | 41 | 91 | TRUE | 1 |
+| US-Ho2 | 2017 | 365 | 154 | 226 | 3 | 9 | 60 | 67 | TRUE | 0.9589 |
+| US-Ho2 | 2018 | 365 | 145 | 237 | 2 | 4 | 62 | 60 | TRUE | 0.989 |
+| US-Ho2 | 2019 | 365 | 168 | 259 | 46 | 0 | 23 | 37 | FALSE | 0.9014 |
+| US-Ho2 | 2020 | 366 | 150 | 225 | 0 | 2 | 70 | 69 | TRUE | 0.9672 |
+| US-Ho2 | 2021 | 365 | 129 | 204 | 0 | 1 | 92 | 68 | TRUE | 1 |
+| US-Ho2 | 2022 | 365 | 151 | 231 | 0 | 0 | 61 | 73 | TRUE | 1 |
+| US-Ho2 | 2023 | 365 | 192 | 251 | 27 | 1 | 56 | 30 | TRUE | 0.7699 |
+| US-Ho2 | 2024 | 366 | 153 | 208 | 6 | 2 | 74 | 76 | TRUE | 0.9617 |
+| US-Ho2 | 2025 | 365 | 180 | 224 | 41 | 2 | 59 | 39 | FALSE | 0.5534 |
+| US-MMS | 1999 | 365 | 134 | 203 | 9 | 15 | 84 | 54 | TRUE | 0.9342 |
+| US-MMS | 2000 | 366 | 138 | 217 | 62 | 7 | 62 | 18 | TRUE | 0.9317 |
+| US-MMS | 2001 | 365 | 129 | 200 | 0 | 3 | 114 | 48 | TRUE | 0.9589 |
+| US-MMS | 2002 | 365 | 139 | 225 | 0 | 0 | 93 | 47 | TRUE | 0.9644 |
+| US-MMS | 2003 | 365 | 149 | 214 | 0 | 3 | 94 | 54 | TRUE | 0.9808 |
+| US-MMS | 2004 | 366 | 138 | 195 | 0 | 1 | 105 | 65 | TRUE | 0.9918 |
+| US-MMS | 2005 | 365 | 137 | 197 | 0 | 1 | 108 | 59 | TRUE | 0.9945 |
+| US-MMS | 2006 | 365 | 146 | 222 | 0 | 1 | 98 | 44 | TRUE | 0.9836 |
+| US-MMS | 2007 | 365 | 134 | 200 | 0 | 2 | 125 | 38 | TRUE | 1 |
+| US-MMS | 2008 | 366 | 145 | 220 | 0 | 3 | 106 | 37 | TRUE | 1 |
+| US-MMS | 2009 | 365 | 137 | 219 | 0 | 5 | 110 | 31 | TRUE | 0.9863 |
+| US-MMS | 2010 | 365 | 133 | 193 | 0 | 0 | 120 | 52 | TRUE | 0.9425 |
+| US-MMS | 2011 | 365 | 146 | 219 | 0 | 0 | 112 | 34 | TRUE | 0.989 |
+| US-MMS | 2012 | 366 | 123 | 202 | 0 | 0 | 87 | 77 | TRUE | 1 |
+| US-MMS | 2013 | 365 | 150 | 218 | 0 | 0 | 106 | 41 | TRUE | 1 |
+| US-MMS | 2014 | 365 | 135 | 205 | 0 | 3 | 111 | 46 | TRUE | 1 |
+| US-MMS | 2015 | 365 | 138 | 220 | 27 | 0 | 68 | 50 | TRUE | 0.9973 |
+| US-MMS | 2016 | 366 | 139 | 237 | 0 | 1 | 93 | 35 | TRUE | 0.9863 |
+| US-MMS | 2017 | 365 | 146 | 238 | 0 | 1 | 80 | 46 | TRUE | 0.8795 |
+| US-MMS | 2018 | 365 | 160 | 242 | 0 | 0 | 81 | 42 | TRUE | 0.9562 |
+| US-MMS | 2019 | 365 | 150 | 243 | 0 | 1 | 62 | 59 | TRUE | 0.9699 |
+| US-MMS | 2020 | 366 | 151 | 239 | 0 | 2 | 60 | 65 | TRUE | 0.9781 |
+| US-MMS | 2021 | 365 | 148 | 241 | 0 | 2 | 72 | 50 | TRUE | 0.9753 |
+| US-MMS | 2022 | 365 | 134 | 225 | 0 | 2 | 76 | 62 | TRUE | 0.9808 |
+| US-MMS | 2023 | 365 | 132 | 214 | 0 | 2 | 81 | 68 | TRUE | 0.9534 |
+
+## 7. Valid days per kept year, median and range, per site
+
+| site | n_kept_years | median_valid_days | min_valid_days | max_valid_days |
+|---|---|---|---|---|
+| US-Fuf | 5 | 109 | 88 | 123 |
+| US-Ho2 | 19 | 60 | 18 | 91 |
+| US-MMS | 25 | 48 | 18 | 77 |
+
+## 8. Annual WUE metrics
 
 See `tables/wue_annual.csv` and `tables/wue_daily.csv.gz`.
 
-uWUE_y range here: 7.488 to 18.1 (mean 11.341) g C hPa^0.5 kg H2O-1 -- Zhou et al. (2015): 3.5-15.83 (mean 9.47).
-IWUE_y range here: 24.911 to 67.391 (mean 41.348) g C hPa kg H2O-1 -- Zhou et al. (2015): 5.32-62.31 (mean 33.62).
+uWUE_y range here: 7.974 to 17.667 (mean 11.241) g C hPa^0.5 kg H2O-1 -- Zhou et al. (2015): 3.5-15.83 (mean 9.47).
+IWUE_y range here: 22.776 to 61.527 (mean 38.308) g C hPa kg H2O-1 -- Zhou et al. (2015): 5.32-62.31 (mean 33.62).
 
-## 8. Figures
+## 9. k* at a grid search limit (0 or 1.5)
+
+Sub-daily scale: 1 of 49 site-year(s) have k* at a grid limit (0 or 1.5).
+Daily scale: 0 of 49 site-year(s) have k* at a grid limit (0 or 1.5).
+
+## 10. Figures
 
 `figures/fig_wue_annual.png`, `figures/fig_iwue_annual.png`, `figures/fig_uwue_annual.png`, 
 `figures/fig_valid_days.png`.

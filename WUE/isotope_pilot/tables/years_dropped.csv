@@ -1,0 +1,8 @@
+"site_id","year","completeness","reason"
+"US-Fuf",2005,0.3628,"completeness < 0.80 (nighttime GPP, chosen product)"
+"US-Ho2",1999,0,"completeness < 0.80 (nighttime GPP, chosen product)"
+"US-Ho2",2000,0,"completeness < 0.80 (nighttime GPP, chosen product)"
+"US-Ho2",2001,0,"completeness < 0.80 (nighttime GPP, chosen product)"
+"US-Ho2",2007,0,"completeness < 0.80 (nighttime GPP, chosen product)"
+"US-Ho2",2019,0.6156,"completeness < 0.80 (nighttime GPP, chosen product)"
+"US-Ho2",2025,0.7016,"completeness < 0.80 (nighttime GPP, chosen product)"

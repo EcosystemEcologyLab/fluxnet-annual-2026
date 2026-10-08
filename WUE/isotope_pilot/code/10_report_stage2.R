@@ -81,6 +81,36 @@ if (!is.null(years_dropped)) {
   )
 }
 
+## ---- Valid days per kept year, median and range, per site ----------------
+valid_days_summary <- NULL
+if (!is.null(wue_annual)) {
+  valid_days_summary <- wue_annual |>
+    dplyr::group_by(site) |>
+    dplyr::summarise(
+      n_kept_years = dplyr::n(),
+      median_valid_days = stats::median(valid_days),
+      min_valid_days = min(valid_days), max_valid_days = max(valid_days),
+      .groups = "drop"
+    )
+}
+
+## ---- k* at a grid limit (0 or 1.5), sub-daily and daily scales -----------
+## K_GRID in 08_compute_metrics.R is seq(0, 1.5, by = 0.01); floating-point
+## seq() steps are not exact, so compare with a small tolerance rather than ==.
+at_limit <- function(x) !is.na(x) & (abs(x - 0) < 1e-6 | abs(x - 1.5) < 1e-6)
+k_limit_lines <- character(0)
+if (!is.null(wue_annual)) {
+  n_sub_limit <- sum(at_limit(wue_annual$k_star_subdaily))
+  n_day_limit <- sum(at_limit(wue_annual$k_star_daily))
+  n_total <- nrow(wue_annual)
+  k_limit_lines <- c(
+    paste0("Sub-daily scale: ", n_sub_limit, " of ", n_total,
+           " site-year(s) have k* at a grid limit (0 or 1.5)."),
+    paste0("Daily scale: ", n_day_limit, " of ", n_total,
+           " site-year(s) have k* at a grid limit (0 or 1.5).")
+  )
+}
+
 ## ---- Units check summary (recomputed here for the report text only) ------
 zhou_uwue_range <- c(3.50, 15.83); zhou_iwue_range <- c(5.32, 62.31)
 units_lines <- if (!is.null(wue_annual)) {
@@ -156,19 +186,30 @@ report_lines <- c(
   "",
   dropped_comparison_lines,
   "",
-  "## 6. Screen attrition",
+  "## 6. Screen attrition (reconstructed screens: rain from P_F, screen c from SW_IN_F, ",
+  "gpp_test = \"halfhour\" -- PI decision 2026-10-07, see docs/methods_memo.md)",
   "",
-  "See `tables/screen_attrition.csv` (per site-year: days in year, days with P_ERA > 0, ",
-  "days removed by the rain rule, days lost to the quality/daylight/day-level screens, ",
-  "valid days remaining).",
+  "Per site-year: days in year, days with the rain-screen source > 0, days removed by the rain ",
+  "rule, days lost to the quality/daylight(screen c)/day-level screens, valid days remaining, and ",
+  "(added 2026-10-07) the share of that year's days where P_F is fully gauge-measured:",
   "",
-  "## 7. Annual WUE metrics",
+  knitr_like_table(screen_attrition, n_max = 100),
+  "",
+  "## 7. Valid days per kept year, median and range, per site",
+  "",
+  knitr_like_table(valid_days_summary),
+  "",
+  "## 8. Annual WUE metrics",
   "",
   "See `tables/wue_annual.csv` and `tables/wue_daily.csv.gz`.",
   "",
   units_lines,
   "",
-  "## 8. Figures",
+  "## 9. k* at a grid search limit (0 or 1.5)",
+  "",
+  k_limit_lines,
+  "",
+  "## 10. Figures",
   "",
   "`figures/fig_wue_annual.png`, `figures/fig_iwue_annual.png`, `figures/fig_uwue_annual.png`, ",
   "`figures/fig_valid_days.png`.",

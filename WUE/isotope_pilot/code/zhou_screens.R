@@ -4,12 +4,23 @@
 ## screen-variant side analysis (12_screen_variants.R) call the SAME
 ## function rather than keeping two copies that can drift apart.
 ##
-## Defaults reproduce 07_apply_screens.R's current code (rain from P_ERA,
-## screen c's non-negative-radiation test from NETRAD_filled, PET pressure
-## from the daily mean PA_F -- rain_rule.R's pt_pet_mm_day() falls back to
-## 101.3 kPa only where PA_F is itself missing that day -- and the day-level
-## GPP test, gpp_test = "daymean", against the largest daily mean GPP among
-## candidate days, added 2026-10-07 alongside "halfhour").
+## Defaults are the PI's 2026-10-07 reconstructed-screens decision (replacing
+## the earlier rain-screen decision; see docs/methods_memo.md "Stage 2 --
+## reconstructed screens" and the basis in docs/report_screen_variants_20261007.md
+## / docs/report_precip_compare_20261007.md):
+##   - rain from P_F (as distributed: gauge where measured, P_ERA fill where
+##     not), not P_ERA -- P_ERA systematically over-reports wet days
+##     relative to the gauge (report_precip_compare).
+##   - screen c's non-negative test from SW_IN_F ("net solar radiation" per
+##     Zhou's text; their US-Goo figure keeps days that cannot reach 24
+##     half-hours of positive NETRAD), not NETRAD_filled -- NETRAD_filled is
+##     routinely negative near dawn/dusk within the 05:00-21:00 window even
+##     after gap-filling, discarding far more records than Zhou's own method
+##     implies (report_screen_variants).
+##   - gpp_test = "halfhour" (Zhou's own wording), not "daymean".
+## PET pressure still from the daily mean PA_F (rain_rule.R's
+## pt_pet_mm_day() falls back to 101.3 kPa only where PA_F is itself missing
+## that day) -- unchanged by this decision.
 ##
 ## Priestley-Taylor PET ALWAYS uses NETRAD_filled for Rn, regardless of
 ## `radiation_col` -- `radiation_col` only changes screen c's own
@@ -23,24 +34,26 @@
 #' @param years_dropped The `years_dropped.csv` data frame (site_id, year),
 #'   listing site-years 06 dropped for incomplete nighttime GPP or year 2026.
 #' @param rain_col Column in `d` summed to a daily total for the rain screen
-#'   (screen a). Default `"P_ERA"` -- 07's current behaviour.
+#'   (screen a). Default `"P_F"` (PI decision, 2026-10-07) -- gauge where
+#'   measured, `P_ERA` fill where not, as distributed.
 #' @param radiation_col Column in `d` tested for non-negativity in screen c.
-#'   Default `"NETRAD_filled"` -- 07's current behaviour. Does NOT affect the
+#'   Default `"SW_IN_F"` (PI decision, 2026-10-07). Does NOT affect the
 #'   Priestley-Taylor PET input, which always uses `NETRAD_filled`.
 #' @param pressure_kpa Pressure (kPa) passed to `pt_pet_mm_day()` for the
 #'   psychrometric constant. `NULL` (default) uses the site's own daily mean
-#'   `PA_F` -- 07's current code. A single fixed value (e.g. `101.3`) forces
-#'   that pressure for every day, for reproducing the pre-2026-10-07 PET
-#'   formula (see 12_screen_variants.R's gate check against the already-
-#'   committed `screen_attrition.csv`).
+#'   `PA_F`. A single fixed value (e.g. `101.3`) forces that pressure for
+#'   every day, for reproducing the pre-2026-10-07 PET formula (see
+#'   12_screen_variants.R's gate check against the already-committed
+#'   `screen_attrition.csv`).
 #' @param gpp_test Which maximum the day-level 10% GPP test (screen d) is
-#'   taken against. `"daymean"` (default, 07's current code): a day's mean
-#'   GPP (over its screen a-c survivors) must be >= 10% of the LARGEST such
-#'   daily mean among the site-year's candidate days (days that already
-#'   passed the record-count test). `"halfhour"` (Zhou et al. 2015's own
-#'   wording): a day's mean GPP must instead be >= 10% of the maximum
-#'   SINGLE-RECORD GPP in the site-year, taken over every record passing
-#'   screens a-c (not just candidate days). Added 2026-10-07.
+#'   taken against. `"halfhour"` (default, PI decision 2026-10-07 -- Zhou et
+#'   al. 2015's own wording): a day's mean GPP (over its screen a-c
+#'   survivors) must be >= 10% of the maximum SINGLE-RECORD GPP in the
+#'   site-year, taken over every record passing screens a-c (not just
+#'   candidate days). `"daymean"`: a day's mean GPP must instead be >= 10% of
+#'   the LARGEST such daily mean among the site-year's candidate days (days
+#'   that already passed the record-count test) -- the original reading,
+#'   kept for comparison.
 #'
 #' @return A list: `daily_valid` (one row per valid day: date, year, GPP_d,
 #'   ET_d, VPD_d, n_records, day_netrad_estimated, site_id), `subdaily_valid`
@@ -50,16 +63,19 @@
 #'   days_removed_by_rain_rule, days_lost_quality, days_lost_daylight,
 #'   days_lost_record_count, days_lost_gpp_test, days_lost_day_level (=
 #'   days_lost_record_count + days_lost_gpp_test, matching
-#'   screen_attrition.csv's single combined column), valid_days, year_kept).
-run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
-                              radiation_col = "NETRAD_filled", pressure_kpa = NULL,
-                              gpp_test = c("daymean", "halfhour")) {
+#'   screen_attrition.csv's single combined column), valid_days, year_kept,
+#'   share_days_gauge_measured (share of days that year with P_F_QC == 0 at
+#'   every expected timestep -- independent of `rain_col`)).
+run_zhou_screens <- function(d, years_dropped, rain_col = "P_F",
+                              radiation_col = "SW_IN_F", pressure_kpa = NULL,
+                              gpp_test = c("halfhour", "daymean")) {
   gpp_test <- match.arg(gpp_test)
   site <- d$site_id[[1]]
   is_year_kept <- function(yr) !any(years_dropped$site_id == site & years_dropped$year == yr)
 
   resolution  <- d$resolution[[1]]
   day_thresh  <- if (identical(resolution, "HR")) 12L else 24L
+  tpd         <- if (identical(resolution, "HR")) 24L else 48L  ## expected timesteps/day
 
   d$date <- as.Date(d$TIMESTAMP_START)
   d$year <- lubridate::year(d$TIMESTAMP_START)
@@ -77,10 +93,15 @@ run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
       NETRAD_day = mean(NETRAD_filled, na.rm = TRUE),   ## PET input -- fixed, never radiation_col
       PA_day = mean(PA_F, na.rm = TRUE),
       day_netrad_estimated = any(netrad_estimated),
+      n_records_day = dplyr::n(),
+      n_qc0_pf = sum(!is.na(P_F_QC) & P_F_QC == 0),
       .groups = "drop"
     )
   daily <- dplyr::left_join(full_dates, daily_obs, by = "date")
   daily <- daily[order(daily$date), ]
+  daily$n_records_day[is.na(daily$n_records_day)] <- 0L
+  daily$n_qc0_pf[is.na(daily$n_qc0_pf)] <- 0L
+  daily$gauge_measured <- daily$n_records_day == tpd & daily$n_qc0_pf == tpd
   pressure_for_pet <- if (is.null(pressure_kpa)) daily$PA_day else pressure_kpa
   daily$PET_day <- pt_pet_mm_day(daily$NETRAD_day, daily$TA_day, pressure_for_pet)
 
@@ -178,6 +199,7 @@ run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
     }
 
     days_in_year        <- nrow(d_yr)
+    share_days_gauge_measured <- round(mean(d_yr$gauge_measured), 4)
     days_rainy          <- sum(rainy[daily$year == yr], na.rm = TRUE)
     days_rain_removed   <- sum(d_yr$n_after_a == 0 & days_in_year > 0)
     days_lost_quality   <- sum(d_yr$n_after_a > 0 & d_yr$n_after_b == 0)
@@ -199,6 +221,7 @@ run_zhou_screens <- function(d, years_dropped, rain_col = "P_ERA",
       days_lost_day_level = days_lost_day_level,
       valid_days = valid_days_n,
       year_kept = kept,
+      share_days_gauge_measured = share_days_gauge_measured,
       threshold_daymean = 0.10 * year_max_gpp_daymean,
       threshold_halfhour = 0.10 * year_max_gpp_halfhour,
       max_record_gpp_qc01 = max_record_gpp_qc01,

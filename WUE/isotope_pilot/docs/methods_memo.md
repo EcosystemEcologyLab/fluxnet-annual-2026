@@ -127,26 +127,63 @@ if the year is 2026. This is independent of the Zhou screens below — it is
 a data-completeness gate over the whole year, decided before any day is
 screened. `code/06_build_site_years.R`; `tables/years_dropped.csv`.
 
-## Stage 2 — Zhou et al. (2015) screens
+## Stage 2 — Zhou et al. (2015) screens (reconstructed, PI decision 2026-10-07)
 
-Applied in `code/07_apply_screens.R`, in order:
+Applied in `code/07_apply_screens.R` via `run_zhou_screens()` (`code/zhou_screens.R`),
+in order. **This replaces an earlier rain-screen decision**, made the same day the
+3-site smoke test was first run, after two side analyses examined it directly:
+`docs/report_precip_compare_20261007.md` (ERA5 `P_ERA` vs. the tower gauge, daily
+scale) and `docs/report_screen_variants_20261007.md` (rain source x screen c
+radiation column x GPP day-test reference maximum, crossed on the 3 test sites).
+The reconstructed screens are now `run_zhou_screens()`'s defaults, so
+`07_apply_screens.R`'s call (every argument at its default) uses them without
+change to the call site itself.
 
-- **a. Rain** — exclude every day with P_ERA (midnight-to-midnight sum) > 0
-  (no threshold, per instruction). Also exclude the two following days when
-  P > 2×PET, or the one following day when P > PET. Propagated across each
-  site's full continuous date range, not reset at calendar-year boundaries.
+- **a. Rain** — exclude every day with `P_F` (midnight-to-midnight sum, **as
+  distributed**: gauge-measured where available, `P_ERA`-filled where not) > 0
+  (no threshold, MY DECISION 4 — unchanged). Also exclude the two following days
+  when P > 2×PET, or the one following day when P > PET — unchanged. Propagated
+  across each site's full continuous date range, not reset at calendar-year
+  boundaries. **Changed from `P_ERA` alone**: `report_precip_compare_20261007.md`
+  found `P_ERA` reports a day as wet far more often than the gauge does at every
+  one of the 12 sites (`share_era_wet` 0.47–0.87 vs. `share_gauge_wet` 0.31–0.64,
+  all months) despite annual `P_ERA`-to-gauge total ratios close to 1 everywhere —
+  a daily-frequency disagreement, not a magnitude one. PET is unchanged: still
+  Priestley-Taylor from daily mean `NETRAD_filled`, `TA_F`, and `PA_F`.
 - **b. Quality** — keep records where the chosen-product NEE QC flag,
-  `LE_F_MDS_QC`, and `VPD_F_QC` are each 0 or 1 (NA fails).
+  `LE_F_MDS_QC`, and `VPD_F_QC` are each 0 or 1 (NA fails) — unchanged.
 - **c. Daylight** — keep records with `TIMESTAMP_START` local-standard-time
-  hour-of-day in [05:00, 21:00]; exclude records with negative (gap-filled)
-  net radiation, GPP, ET, or VPD.
+  hour-of-day in [05:00, 21:00] (unchanged). Exclude records with negative
+  **`SW_IN_F`** (NOT `NETRAD_filled`), GPP, ET, or VPD. **Changed from
+  `NETRAD_filled`**: Zhou et al. (2015)'s own text specifies "net solar
+  radiation" for this test, and their US-Goo example figure keeps days that
+  cannot reach 24 half-hours of positive net radiation — i.e. a test that
+  rarely excludes daylight-window records, unlike `NETRAD_filled` (full net
+  radiation, routinely negative near dawn/dusk within the window even after
+  gap-filling). `report_screen_variants_20261007.md`'s
+  `records_in_window_by_month.csv` found the median in-window record count
+  with `NETRAD_filled >= 0` was only ~17–25 of 33 possible half-hours at the
+  3 test sites, vs. a full 33 for `SW_IN_F >= 0` — `NETRAD_filled` was
+  discarding far more daylight-window records than Zhou's own method implies.
 - **d. Day level** — a day is valid only if it has >=24 surviving records
-  (HH sites) or >=12 (HR sites: `US-Ha1`, `US-MMS`), AND its mean GPP over
-  those records is >=10% of the maximum such mean among that site-year's
-  day candidates that already passed the record-count test.
+  (HH sites) or >=12 (HR sites: `US-Ha1`, `US-MMS`) — unchanged — AND its mean
+  GPP over those records is >=10% of the maximum **single-record** GPP over
+  every record passing screens a-c that site-year (`gpp_test = "halfhour"`).
+  **Changed from the daily-mean reference** (`gpp_test = "daymean"`: 10% of the
+  largest daily mean among candidate days): Zhou et al. (2015)'s own wording
+  specifies the single maximum half-hourly (or hourly) GPP value, not a daily
+  mean. `report_screen_variants_20261007.md` found `"halfhour"` is mechanically
+  always at least as restrictive as `"daymean"` (a site-year's max single
+  record is always >= its max daily mean), with the difference concentrated in
+  shoulder-season months and negligible at peak growing season.
+
+The 80% nighttime-GPP completeness rule (`code/06_build_site_years.R`) is
+unchanged by this decision.
 
 `tables/screen_attrition.csv` records, per site-year, how many days are
-removed at each stage.
+removed at each stage, plus (added 2026-10-07) `share_days_gauge_measured` —
+the share of days that year with `P_F_QC == 0` at every expected timestep,
+independent of which column actually drives the rain screen.
 
 ## Stage 2 — k* (VPD exponent)
 

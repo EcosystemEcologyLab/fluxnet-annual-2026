@@ -7,8 +7,13 @@ time, by IGBP land-cover class, with a record-length inset
 Candidate figure -- not a replacement for Figure 2 (fig_02_cumulative_siteyears_igbp) or
 Supplementary Figure S6 (figS6_record_length). Combines both as a single panel: the current
 Figure 2 cumulative site-years chart as the main panel, with the S6 record-length histogram
-as an inset in the main panel's empty upper-left region (left of the 2000 historical-release
-reference line, above the Marconi/La Thuile labels).
+as an inset sized and placed to match review/figures/candidates/fig_02alt_mockup_dave.png
+(Dave's hand mockup) -- footprint in main-panel data coordinates: year 1993-2010 (x),
+2,300-7,000 cumulative site-years (y), roughly 49% of the
+panel's width and 64% of its height. Opaque white background, no
+border box. This covers the 2000 and 2007 historical-release dashed lines where they would
+otherwise sit above the data (both remain visible below the inset, where the stacked area and
+historical lines actually are -- the inset never touches either).
 
 MAIN PANEL: cumulative site-years of the current network through time, stacked by IGBP class
 (PAPER_IGBP_COLOURS, R/plot_constants.R), with Marconi/La Thuile/FLUXNET2015 cumulative
@@ -28,7 +33,10 @@ snapshot (S6 itself remains pinned to its own documented snapshot -- see
 docs/decisions_pending.md 2026-10-12).
 
 LEGEND: one shared IGBP legend for both panels (both use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS),
-placed to the right of the inset, inside the main panel. No panel letters.
+placed in the inset's own empty upper-right region (record length beyond ~18 years, above ~30
+sites -- the histogram's sparse tail), extending past the inset's right edge into the main
+panel where its own content needs more room, clear of the stacked area and the FLUXNET2015
+label. No panel letters.
 
 DATA: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv (781 sites, the latest
 snapshot at the time this candidate was built -- see docs/decisions_pending.md 2026-10-12).

@@ -129,28 +129,109 @@ msg("Gate checks PASSED: 6200 main-panel site-years; 781 inset sites; thresholds
 
 ## ---- Main panel -------------------------------------------------------------
 ## Same call as scripts/generate_fig_cumulative_siteyears.R, but its own
-## internal "inside" legend is repositioned (not removed) to sit to the right
-## of the inset -- one shared legend for both panels, since both use the same
-## PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS palette (fig1b_igbp_colours inside
+## internal "inside" legend is repositioned (not removed) -- one shared
+## legend for both panels, since both use the same PAPER_IGBP_ORDER/
+## PAPER_IGBP_COLOURS palette (fig1b_igbp_colours inside
 ## fig_cumulative_siteyears_igbp() IS PAPER_IGBP_COLOURS; fig_record_length_
 ## histogram()'s scale_fill_paper_igbp() draws from the same constant).
 ##
-## Layout constants (npc, align_to = "panel" i.e. relative to the plot panel
-## area only, not axis text/titles): the 2000 dashed reference line sits at
-## npc x ~= 0.269 given the data-driven year window below (1991-2025, 1%
-## scale expansion each side) -- the inset and legend must stay clear of it
-## (and of 2007/2015, further right) so no dashed line, stacked area,
-## historical line, or historical label is covered. INSET_RIGHT is kept
-## below that line; the legend, which is text/colour chips with far more
-## negative space than the inset's opaque panel background, is allowed to
-## extend a little past it, the same way the existing "FLUXNET2015" label
-## already crosses the 2015 line in the unmodified Figure 2.
-INSET_LEFT   <- 0.02
-INSET_BOTTOM <- 0.50
-INSET_RIGHT  <- 0.23
-INSET_TOP    <- 0.97
-LEGEND_X     <- 0.30
-LEGEND_Y     <- 0.97
+## Layout (revision 2026-10-12, logs/prompts/2026-10-12_fig02_inset_rev1.md):
+## the first candidate kept the inset entirely left of the year-2000 dashed
+## line so it covered nothing -- too conservative, and far smaller than
+## review/figures/candidates/fig_02alt_mockup_dave.png (Dave's own hand
+## mockup, added to the repo after that first candidate shipped). This
+## revision matches the mockup instead: the inset's footprint is specified
+## directly in MAIN-PANEL DATA COORDINATES (year x site-years), not a
+## conservative npc guess -- x in [1993, 2010], y in [2300, 7000]. It is
+## deliberately large enough to cover the 2000 and 2007 dashed lines where
+## they'd otherwise sit above the data (they remain visible below the inset,
+## where the data actually is). Converted to npc via the main panel's own
+## scale_x/y_continuous() expansion (1% each side on x; 0/18% on y) so the
+## footprint stays correct if the data-driven year window or y-axis max ever
+## changes -- never hand-tuned npc fractions.
+##
+## Checked directly against the data (see run report): the stacked area's
+## cumulative total never exceeds 1,516 site-years within year range
+## [1993, 2010] (confirmed by direct computation), and no historical line
+## exceeds 1,532 (FLUXNET2015's final value) anywhere -- both comfortably
+## below the inset's y = 2300 bottom edge, so the inset cannot touch the
+## stacked area or any historical line at this footprint.
+x_expand_half <- 0.01 * (window$last_year - window$first_year)
+x_lo <- window$first_year - x_expand_half
+x_hi <- window$last_year  + x_expand_half
+npc_x <- function(year) (year - x_lo) / (x_hi - x_lo)
+
+y_hi <- main_total_siteyears * 1.18   # scale_y_continuous(expand = c(0, 0.18)) in fig_cumulative_siteyears_igbp()
+npc_y <- function(siteyears) siteyears / y_hi
+
+INSET_LEFT   <- npc_x(1993)
+INSET_RIGHT  <- npc_x(2010)
+INSET_BOTTOM <- npc_y(2300)
+INSET_TOP    <- npc_y(7000)
+msg("Inset footprint (npc): left=", round(INSET_LEFT, 3), " right=", round(INSET_RIGHT, 3),
+    " bottom=", round(INSET_BOTTOM, 3), " top=", round(INSET_TOP, 3),
+    " (", round(100 * (INSET_RIGHT - INSET_LEFT), 1), "% width x ",
+    round(100 * (INSET_TOP - INSET_BOTTOM), 1), "% height of the panel)")
+
+## Legend: NOT main_panel's own internal legend -- patchwork::inset_element()
+## draws on top (on_top = TRUE) by default, so the histogram inset's opaque
+## white background would otherwise completely hide a legend living inside
+## main_panel wherever the two overlap (confirmed: an earlier attempt placed
+## the legend via main_panel's own legend.position = "inside" and it
+## vanished entirely behind the inset). Built instead as its own minimal,
+## transparent-background plot (legend_panel(), below) and layered as a
+## SECOND inset_element, added after (so stacked on top of) the histogram
+## inset -- see build_combined(). Positioned in the inset's own empty
+## upper-right region (record length beyond ~18 years, above ~30 sites),
+## extending right into the main panel as needed; its bottom edge never
+## drops below INSET_BOTTOM, so it stays within the same safe vertical band
+## confirmed clear of the stacked area/historical lines (see note above).
+## Bottom edge set near the top of the "safe band" cleared above (y = 1700,
+## comfortably above FLUXNET2015's max of 1532, the highest point any
+## historical line or the stacked area reaches anywhere right of the inset)
+## -- not pinned to INSET_BOTTOM -- so the legend's full ~16-row height has
+## room without being clipped. Right edge wide, left edge narrow: a
+## generous box the legend (anchored top-left within it) draws into at its
+## own natural size, not stretched to fill it.
+LEGEND_LEFT   <- INSET_LEFT + 0.84 * (INSET_RIGHT - INSET_LEFT)
+LEGEND_RIGHT  <- 0.97
+LEGEND_BOTTOM <- npc_y(1700)
+LEGEND_TOP    <- INSET_TOP - 0.02
+
+## A near-empty theme_void() plot carrying only the legend, positioned via
+## legend.position.inside -- NOT extracted as a raw grob via wrap_elements():
+## that approach stretched the legend to fill the entire assigned npc box
+## (patchwork fits a bare grob into a flexible "null"-sized gtable cell,
+## which rescales -- and hence font/key size -- to match the box, confirmed
+## by direct rendering: the same box produced illegibly oversized text). A
+## full ggplot's own internal legend keeps absolute pt/mm sizes regardless
+## of its assigned inset box; the box here is simply sized generously enough
+## (height set empirically below, see LEGEND_BOTTOM) that the legend's
+## natural ~16-row height fits inside it with no clipping.
+legend_panel <- function(base_size) {
+  legend_size <- base_size
+  ggplot2::ggplot(record_length$hist_df, ggplot2::aes(x = 1, y = 1, fill = .data$igbp)) +
+    ggplot2::geom_point(alpha = 0) +
+    scale_fill_paper_igbp(name = "IGBP", na.value = "grey70") +
+    ggplot2::guides(fill = ggplot2::guide_legend(
+      override.aes = list(alpha = 1, shape = 22, size = 4, colour = NA),
+      ncol = 2   # halves the vertical footprint vs. 1 column -- see LEGEND_BOTTOM note
+    )) +
+    ggplot2::theme_void() +
+    ggplot2::theme(
+      legend.position         = "inside",
+      legend.position.inside  = c(0, 1),
+      legend.justification    = c(0, 1),
+      legend.background       = ggplot2::element_blank(),
+      legend.key              = ggplot2::element_rect(fill = NA, colour = NA),
+      legend.key.size         = grid::unit(2.0, "mm"),
+      legend.key.spacing.y    = grid::unit(0, "pt"),
+      legend.spacing.y        = grid::unit(0, "pt"),
+      legend.text             = ggplot2::element_text(size = legend_size, family = NATURE_FONT, colour = "grey10"),
+      legend.title            = ggplot2::element_text(size = legend_size, family = NATURE_FONT, colour = "grey10"),
+      plot.background         = ggplot2::element_rect(fill = NA, colour = NA)
+    )
+}
 
 main_panel <- fig_cumulative_siteyears_igbp(
   presence_df           = presence_df,
@@ -163,22 +244,23 @@ main_panel <- fig_cumulative_siteyears_igbp(
 ) +
   nature_theme(base_size = NATURE_BASE_PT) +
   ggplot2::theme(
-    legend.position.inside = c(LEGEND_X, LEGEND_Y),
-    legend.justification   = c(0, 1),
-    legend.key.size        = grid::unit(1.8, "mm"),
-    legend.text            = ggplot2::element_text(size = NATURE_SMALL_PT, family = NATURE_FONT, colour = "grey10"),
-    legend.title           = ggplot2::element_text(size = NATURE_SMALL_PT, family = NATURE_FONT, colour = "grey10"),
-    legend.spacing.y       = grid::unit(0, "pt"),
-    plot.margin             = ggplot2::margin(t = 5.5, r = 14, b = 5.5, l = 5.5, unit = "pt")
+    legend.position  = "none",   # the shared legend is drawn by legend_panel() instead -- see above
+    plot.margin      = ggplot2::margin(t = 5.5, r = 14, b = 5.5, l = 5.5, unit = "pt")
   )
 
-## ---- Inset: record-length histogram (no panel letter, no own legend) -------
-## Built per output size, not once: the inset's npc footprint (INSET_LEFT/
-## RIGHT/BOTTOM/TOP) is a fixed fraction of the main panel, so its physical
-## size scales up with the figure -- at 120mm there is enough room to try the
-## main panel's own 7pt (NATURE_BASE_PT) instead of the 5pt floor
-## (NATURE_SMALL_PT) needed at 89mm. Checked by rendering and inspecting both
-## (see run report) -- never go below the 5pt floor either way.
+## ---- Inset: record-length histogram (no panel letter, no own legend --
+## the legend lives on main_panel above, positioned over the inset's empty
+## upper-right). Axis titles and "n=" threshold labels restored (the first
+## candidate dropped both for space; the larger footprint here has room).
+## Opaque white background, no border -- per the revision, not a bordered
+## box like the first candidate's small inset.
+##
+## Built per output size, not once: the inset's npc footprint is a fixed
+## fraction of the main panel, so its physical size scales up with the
+## figure -- at 120mm there is enough room to try the main panel's own 7pt
+## (NATURE_BASE_PT) instead of the 5pt floor (NATURE_SMALL_PT). Checked by
+## rendering and inspecting both (see run report) -- never go below the 5pt
+## floor either way.
 build_inset_panel <- function(base_size) {
   rl <- fig_record_length_histogram(
     site_meta           = shuttle_meta,
@@ -186,14 +268,14 @@ build_inset_panel <- function(base_size) {
     thresholds          = c(5L, 10L, 20L),
     base_size           = base_size,
     show_legend         = FALSE,
-    show_thresh_labels  = FALSE,
-    x_label             = NULL,
-    y_label             = "Sites"
+    show_thresh_labels  = TRUE,
+    x_label             = "Record length (years)",
+    y_label             = "Number of sites"
   )
   rl$plot +
     ggplot2::theme(
-      plot.background  = ggplot2::element_rect(fill = "white", colour = "grey40",
-                                                 linewidth = nature_lwd(NATURE_LINEWIDTH_MIN)),
+      plot.background  = ggplot2::element_rect(fill = "white", colour = NA),
+      panel.border     = ggplot2::element_blank(),   # no border box, per the revision
       plot.margin      = ggplot2::margin(t = 2, r = 2, b = 2, l = 2, unit = "pt"),
       axis.title       = ggplot2::element_text(size = base_size),
       axis.text        = ggplot2::element_text(size = base_size)
@@ -201,12 +283,19 @@ build_inset_panel <- function(base_size) {
 }
 
 build_combined <- function(inset_base_size) {
-  inset_panel <- build_inset_panel(inset_base_size)
-  main_panel + patchwork::inset_element(
-    inset_panel,
-    left = INSET_LEFT, bottom = INSET_BOTTOM, right = INSET_RIGHT, top = INSET_TOP,
-    align_to = "panel"
-  )
+  inset_panel  <- build_inset_panel(inset_base_size)
+  legend_inset <- legend_panel(inset_base_size)
+  main_panel +
+    patchwork::inset_element(
+      inset_panel,
+      left = INSET_LEFT, bottom = INSET_BOTTOM, right = INSET_RIGHT, top = INSET_TOP,
+      align_to = "panel"
+    ) +
+    patchwork::inset_element(   # added after (drawn on top of) inset_panel -- see LEGEND_* note above
+      legend_inset,
+      left = LEGEND_LEFT, bottom = LEGEND_BOTTOM, right = LEGEND_RIGHT, top = LEGEND_TOP,
+      align_to = "panel"
+    )
 }
 
 ## ---- Local save helper (not save_nature_figure(): that function asserts
@@ -223,17 +312,25 @@ save_candidate <- function(plot, path_stem, width_mm, height_mm) {
   invisible(list(png = png_path, pdf = pdf_path))
 }
 
+## 120mm built and checked first per the revision; 89mm only follows if it
+## passes every rule (see the run loop below -- an 89mm entry that fails is
+## dropped, not silently kept with a non-compliant render).
 SIZES <- list(
-  sq89  = list(mm = 89,  stem = paste0(OUT_STEM, "_89mm"),  inset_base_size = NATURE_SMALL_PT),
-  sq120 = list(mm = 120, stem = paste0(OUT_STEM, "_120mm"), inset_base_size = NATURE_BASE_PT)
+  sq120 = list(mm = 120, stem = paste0(OUT_STEM, "_120mm"), inset_base_size = NATURE_BASE_PT),
+  sq89  = list(mm = 89,  stem = paste0(OUT_STEM, "_89mm"),  inset_base_size = NATURE_BASE_PT)
 )
 
 legend_text_common <- paste0(
   "Candidate figure -- not a replacement for Figure 2 (fig_02_cumulative_siteyears_igbp) or\n",
   "Supplementary Figure S6 (figS6_record_length). Combines both as a single panel: the current\n",
   "Figure 2 cumulative site-years chart as the main panel, with the S6 record-length histogram\n",
-  "as an inset in the main panel's empty upper-left region (left of the 2000 historical-release\n",
-  "reference line, above the Marconi/La Thuile labels).\n\n",
+  "as an inset sized and placed to match review/figures/candidates/fig_02alt_mockup_dave.png\n",
+  "(Dave's hand mockup) -- footprint in main-panel data coordinates: year 1993-2010 (x),\n",
+  "2,300-7,000 cumulative site-years (y), roughly ", round(100 * (INSET_RIGHT - INSET_LEFT)), "% of the\n",
+  "panel's width and ", round(100 * (INSET_TOP - INSET_BOTTOM)), "% of its height. Opaque white background, no\n",
+  "border box. This covers the 2000 and 2007 historical-release dashed lines where they would\n",
+  "otherwise sit above the data (both remain visible below the inset, where the stacked area and\n",
+  "historical lines actually are -- the inset never touches either).\n\n",
   "MAIN PANEL: cumulative site-years of the current network through time, stacked by IGBP class\n",
   "(PAPER_IGBP_COLOURS, R/plot_constants.R), with Marconi/La Thuile/FLUXNET2015 cumulative\n",
   "site-year lines overlaid for historical context (comparison data only, not primary data --\n",
@@ -252,7 +349,10 @@ legend_text_common <- paste0(
   "snapshot (S6 itself remains pinned to its own documented snapshot -- see\n",
   "docs/decisions_pending.md 2026-10-12).\n\n",
   "LEGEND: one shared IGBP legend for both panels (both use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS),\n",
-  "placed to the right of the inset, inside the main panel. No panel letters.\n\n",
+  "placed in the inset's own empty upper-right region (record length beyond ~18 years, above ~30\n",
+  "sites -- the histogram's sparse tail), extending past the inset's right edge into the main\n",
+  "panel where its own content needs more room, clear of the stacked area and the FLUXNET2015\n",
+  "label. No panel letters.\n\n",
   "DATA: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv (781 sites, the latest\n",
   "snapshot at the time this candidate was built -- see docs/decisions_pending.md 2026-10-12).\n\n",
   "SOURCE: scripts/generate_fig02alt_cumulative_siteyears_record_length_inset.R, calling\n",

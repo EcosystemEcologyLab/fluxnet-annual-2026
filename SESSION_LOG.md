@@ -4,6 +4,45 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-12 — Three supplementary figure fixes (S1, S5, S6)
+
+Full prompt: `logs/prompts/2026-10-12_supfig_fixes.md`. Small follow-up fixes to three
+supplementary figures from the renumbering commit (`b778437`) — same names, gates, and
+`check_figure_format.R` checks as before; only layout/wording changed.
+
+- **S1 `figS1_record_length_collections`** (`scripts/supp_stage2_record_length_collections_figure.R`):
+  legend moved from the right margin to inside the panel's own empty upper-right corner
+  (`legend.position = "inside"`, `legend.position.inside = c(0.98, 0.98)`), so the panel now
+  uses the figure's full width. Snapshot key label changed from "the snapshot (n=781)" to
+  "Snapshot (n=781)". Gates re-verified live: 96/965/1,532/6,200 site-years, 781 sites.
+- **S5 `figS5_quality_flags`** (`scripts/generate_figS5_quality_flags.R`): panel a's ECDF
+  colour variable given an explicit factor order (`NEE_VUT, NEE_CUT, LE, H`) matching panel
+  b, which was already in that order. Legend text now states the QC fraction's direction
+  (1 = all records measured or good-quality gap-filled, lower = more medium/poor gap-fill)
+  and explicitly calls the dashed line "the 0.5 rule". Gates re-verified live: 23/31 ICOS
+  sites (74.2%), US-MMS = HR.
+- **S6 `figS6_availability_annual_nee`** (`scripts/generate_figS6_availability_annual_nee.R`):
+  category renamed "no reported value" → "no annual NEE in the product" throughout (factor
+  levels, colours, legend text, `write_output_metadata()` notes). Legend keys sized to the
+  text height (`legend.key.size = unit(7, "pt")`, matching the panel's 7pt base text).
+  Legend text adds a site-bar definition: a site counts as "both usable" if it has at least
+  one usable year under VUT and at least one (not necessarily the same) usable year under
+  CUT; "below quality rule" has 0 sites because no site in the snapshot fails the 0.50 rule
+  in every year it reports a value — confirmed directly from
+  `table_stage4_site_level_availability.csv` (`neither_reason == "fails_qc"` has 0 rows at
+  site resolution). Gates re-verified live: 6,336 site-years, 781 sites.
+
+One format regression found and fixed during verification: lengthening the "no annual NEE
+in the product" category label caused `check_figure_format.R` to flag `figS6` for edge
+clipping (-1.99pt clearance on the word "sites)"). Fixed by wrapping each legend key onto
+two lines (category name, then the `(n site-years, n sites)` counts) rather than one long
+line. Final `check_figure_format.R` run: 13/13 PASS.
+
+No underlying analysis numbers changed — only legend placement/wording, a category label,
+and legend key sizing.
+
+---
+
 ## 2026-10-12 — Manuscript renumbering: Figure 2 rebuild, S1–S9, main Figure 7
 
 Full prompt: `logs/prompts/2026-10-12_renumber_figures.md`. Renumbered the manuscript figures

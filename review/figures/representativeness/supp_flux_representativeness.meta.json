@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-08T20:13:44Z",
-  "pipeline_version": "2a4ed4a",
+  "run_datetime_utc": "2026-10-12T20:54:39Z",
+  "pipeline_version": "1714520",
   "input_sources": [
     "representativeness_metrics_fig4.csv",
     "representativeness_metrics_flux_supp.csv",
@@ -9,5 +9,5 @@
     "candidate_ter_median.tif",
     "flux_bin_breaks_et_median_1991_2020.tif"
   ],
-  "notes": "Figure stage 4 (logs/figstage_prompt.md): supp_flux_representativeness, renumbered Supplementary Figure S5 under figure stage 6 (2026-10-02), re-numbered Supplementary Figure S4 in the supplementary material restructure (2026-10-08, SESSION_LOG.md), 180 mm wide x 172.7 mm tall, Helvetica, 7pt text (row pitch 4.2mm). NEE/ET panels (a/b/g/h) confirmed identical to Figure 5 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/RECO (c/d/e/f) new."
+  "notes": "Figure stage 4 (logs/figstage_prompt.md): supp_flux_representativeness, renumbered Supplementary Figure S5 under figure stage 6 (2026-10-02), re-numbered Supplementary Figure S4 in the supplementary material restructure (2026-10-08, SESSION_LOG.md), then Supplementary Figure S8 in the 2026-10-12 renumber (logs/prompts/2026-10-12_renumber_figures.md), 180 mm wide x 172.7 mm tall, Helvetica, 7pt text (row pitch 4.2mm). NEE/ET panels (a/b/g/h) confirmed identical to Figure 7 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/RECO (c/d/e/f) new."
 }

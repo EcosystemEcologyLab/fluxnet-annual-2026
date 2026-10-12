@@ -16,12 +16,15 @@
 ## tables use the same basenames. These FIG_DIR basenames are this script's
 ## own canonical, unnumbered names and are unchanged by figure stage 6
 ## (2026-10-02): only the DRAFT_DIR/SUPFIGS_DIR *copy* filenames were
-## renumbered, to fig_05_representativeness.* (was referred to as Figure 4
-## throughout this script/its legends before the stage-6 renumbering; now
-## Figure 5) and figS3_sampling_gridded_at_tower.* (figS4_representativeness_
-## geo_vs_geo.* until the supplementary material restructure, 2026-10-08;
-## now Supplementary Figure S3) respectively -- see DEST_BASENAME below and
-## docs/figure_inventory.md. The previous Figure 4
+## renumbered -- fig_04_representativeness.* became fig_05_representativeness.*
+## (stage 6) then fig_07_network_sampling.* (2026-10-12 renumber, "network
+## sampling" replacing "representativeness" in its title/legend -- see
+## logs/prompts/2026-10-12_renumber_figures.md), now Figure 7.
+## supp_representativeness_geo_vs_geo.* became figS4_representativeness_
+## geo_vs_geo.* (supplementary material restructure, 2026-10-08) then
+## figS3_sampling_gridded_at_tower.* then figS7_sampling_gridded_at_tower.*
+## (2026-10-12 renumber), now Supplementary Figure S7 -- see DEST_BASENAME
+## below and docs/figure_inventory.md. The previous Figure 4
 ## (fig_04_current_network_sampling_ratios.png, from fig_rep001_current.png
 ## via scripts/figure_representativeness_summary.R) is superseded and its
 ## draft_manuscript_v1/ copy moved to draft_manuscript_v1/deprecated/.
@@ -2336,13 +2339,13 @@ write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
     lines <- c(
       sprintf("FIGURE LEGEND — %s", basename(fig_path)),
       strrep("=", 60), "",
-      "TITLE: Figure 5 — Network sampling of the current FLUXNET network (n=781), Geo vs Data", "",
-      "(manuscript copy: draft_manuscript_v1/fig_05_representativeness.png; this source file",
+      "TITLE: Figure 7 — Network sampling of the current FLUXNET network (n=781), Geo vs Data", "",
+      "(manuscript copy: draft_manuscript_v1/fig_07_network_sampling.png; this source file",
       "keeps its own canonical, unnumbered name per docs/figure_inventory.md)", "",
-      "DEFINITIONS (shared with the companion Supplementary Figure S3, Geo vs Geo,",
+      "DEFINITIONS (shared with the companion Supplementary Figure S7, Geo vs Geo,",
       "supp_representativeness_geo_vs_geo.png):",
       "\"Geo vs Data\" (this figure) compares the global land distribution of each axis against",
-      "each site's own measured or site-derived value. \"Geo vs Geo\" (Supplementary Figure S3)",
+      "each site's own measured or site-derived value. \"Geo vs Geo\" (Supplementary Figure S7)",
       "compares the same global land distribution against the gridded product's own value",
       "sampled at each tower's coordinate, instead of the site's own measurement.", "",
       "DESCRIPTION:",
@@ -2434,11 +2437,11 @@ write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
     lines <- c(
       sprintf("FIGURE LEGEND — %s", basename(fig_path)),
       strrep("=", 60), "",
-      "TITLE: Supplementary Figure S3 — Network sampling of the current FLUXNET network (n=781), gridded value at the tower", "",
-      "(manuscript copy: SupFigs/figS3_sampling_gridded_at_tower.png; this source file",
+      "TITLE: Supplementary Figure S7 — Network sampling of the current FLUXNET network (n=781), gridded value at the tower", "",
+      "(manuscript copy: SupFigs/figS7_sampling_gridded_at_tower.png; this source file",
       "keeps its own canonical, unnumbered name per docs/figure_inventory.md)", "",
       "PUBLICATION LEGEND:",
-      "Supplementary Figure S3. Network sampling of the snapshot (n=781 sites) across six axes --",
+      "Supplementary Figure S7. Network sampling of the snapshot (n=781 sites) across six axes --",
       "Koppen-Geiger climate class, land cover (IGBP), aridity, aboveground biomass, net ecosystem",
       "exchange and evapotranspiration -- using the gridded value at the tower coordinate rather",
       "than each site's own measurement. This is the companion to the main text's sampling figure,",
@@ -2446,20 +2449,20 @@ write_fig4_legend <- function(comparison, fig_path, height_mm, width_mm) {
       "apparent sampling depends on that choice. Network sampling analysis is described in",
       "Section 2.7.", "",
       "DESCRIPTION:",
-      "Companion to Figure 5 (fig_05_representativeness.png, source fig_04_representativeness.png),",
+      "Companion to Figure 7 (fig_07_network_sampling.png, source fig_04_representativeness.png),",
       "same six panels (a Koppen-Geiger, b land cover as IGBP, c aridity, d biomass, e NEE, f ET) and",
       "the same panel layout, bar-label conventions, land grids/totals, and column headers -- see",
-      "Figure 5's legend for all of that, including what Figure 5 calls the \"Geo vs Data\"/\"Geo vs Geo\"",
+      "Figure 7's legend for all of that, including what Figure 7 calls the \"Geo vs Data\"/\"Geo vs Geo\"",
       "comparison -- in this figure's own terms, \"the site's own value\" vs \"gridded value at the",
       "tower\" (same definitions, renamed here). The only difference is the site-side value: gridded",
       "value at the tower classifies every tower by the gridded product's own value at that tower's",
       "coordinate, rather than the site's own measured or site-derived value. Because every tower has",
       "a value in the gridded product by construction, no panel here has the precipitation-dependent",
-      "exclusions that apply to Figure 5's panels a and c -- n = 781/781 for all six panels. Panels e",
-      "and f here use the model's own value at the tower, not a tower measurement -- Figure 5's own",
+      "exclusions that apply to Figure 7's panels a and c -- n = 781/781 for all six panels. Panels e",
+      "and f here use the model's own value at the tower, not a tower measurement -- Figure 7's own",
       "panels e and f",
       sprintf("(the site's own value) instead use each site's median annual value passing QC_THRESHOLD_YY=%s,", QC_THRESHOLD_YY),
-      "each flux gated on its own QC column, per-site VUT/CUT (see Figure 5's legend).",
+      "each flux gated on its own QC column, per-site VUT/CUT (see Figure 7's legend).",
       sprintf("Final artwork size: %g mm wide x %.1f mm tall, Helvetica throughout. Supplementary Figure", width_mm, height_mm),
       "(target journal Scientific Data has no Extended Data concept) -- see",
       "docs/figure_inventory.md.", "",
@@ -2486,7 +2489,7 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
              "Helvetica, %dpt text (row pitch %.1fmm). Rendering only -- confirmed against ",
              "representativeness_metrics_fig4.csv that no n or J changed from the prior (non-print) ",
              "render. Vector PDF saved alongside. See SESSION_LOG.md."),
-      if (comparison == "geo_vs_geo") "Supplementary Figure S3 (companion to Figure 5)" else "Figure 5",
+      if (comparison == "geo_vs_geo") "Supplementary Figure S7 (companion to Figure 7)" else "Figure 7",
       if (comparison == "geo_vs_geo") "gridded value at the tower" else "Geo vs Data",
       fig_widths_mm[[comparison]], fig_heights_mm[[comparison]],
       BASE_PT, ROW_PITCH_MM
@@ -2495,9 +2498,9 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   msg("Saved: ", fig_path, ".meta.json and .legend.txt")
 }
 
-## geo_vs_data (main-text Figure 5, FIG_DIR basename fig_04_representativeness)
+## geo_vs_data (main-text Figure 7, FIG_DIR basename fig_04_representativeness)
 ## copies into DRAFT_DIR under its renumbered name. geo_vs_geo (Supplementary
-## Figure S4, FIG_DIR basename supp_representativeness_geo_vs_geo) copies into
+## Figure S7, FIG_DIR basename supp_representativeness_geo_vs_geo) copies into
 ## SUPFIGS_DIR under ITS renumbered name -- draft_manuscript_v1/ itself keeps
 ## only main-text figures. Target journal is Scientific Data (no Extended
 ## Data concept); figure stage 6 (2026-10-02) renumbered both copy
@@ -2506,11 +2509,13 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
 ## unchanged (that script/data file keeps its own name).
 ## geo_vs_geo renumbered figS4_representativeness_geo_vs_geo ->
 ## figS3_sampling_gridded_at_tower (supplementary material restructure,
-## 2026-10-08, SESSION_LOG.md) -- the SupFigs/ copy's filename only; the
-## FIG_DIR source basename (fig4_output_name()) is unchanged, per this
-## script's own convention. geo_vs_data (main-text Figure 5) is untouched.
-DEST_BASENAME <- list(geo_vs_geo = "figS3_sampling_gridded_at_tower",
-                       geo_vs_data = "fig_05_representativeness")
+## 2026-10-08) -> figS7_sampling_gridded_at_tower (2026-10-12 renumber,
+## logs/prompts/2026-10-12_renumber_figures.md) -- the SupFigs/ copy's
+## filename only; the FIG_DIR source basename (fig4_output_name()) is
+## unchanged, per this script's own convention. geo_vs_data was
+## fig_05_representativeness, now fig_07_network_sampling (same renumber).
+DEST_BASENAME <- list(geo_vs_geo = "figS7_sampling_gridded_at_tower",
+                       geo_vs_data = "fig_07_network_sampling")
 for (comparison in c("geo_vs_geo", "geo_vs_data")) {
   base <- fig4_output_name(comparison)
   dest_base <- DEST_BASENAME[[comparison]]

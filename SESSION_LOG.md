@@ -4,6 +4,139 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-12 — Manuscript renumbering: Figure 2 rebuild, S1–S9, main Figure 7
+
+Full prompt: `logs/prompts/2026-10-12_renumber_figures.md`. Renumbered the manuscript figures
+and supplementary material to the new citation order and rebuilt Figure 2 to match Dave's
+edited mockup. Figures and legend/meta text only — no Word document touched.
+
+### Figure 2 — rebuilt with a framed record-length inset
+
+`scripts/generate_fig_cumulative_siteyears.R` rewritten to build a composite: the existing
+cumulative site-years main panel plus a framed record-length histogram inset (upper left,
+single-column IGBP legend inside the frame), matching
+`review/figures/candidates/fig_02alt_mockup_dave_02.png`. Inset footprint measured directly
+from the mockup's own pixel geometry (panel border, inset border, axis tick-label positions —
+not eyeballed): roughly 58% of the panel's width, flush to the top-left corner. The mockup's
+own bottom edge (~y=1,894 cumulative site-years) would sit inside the main panel's stacked
+area by year 2012 (checked directly: cumulative total there is 1,968) — kept the previously-
+proven-safe y=2,300 bottom edge instead (332 site-year margin) and extended the top edge
+closer to the panel's own top to recover most of the mockup's larger intent. 120×120mm (not
+the 89/183mm `save_nature_figure()` ceiling — same local `save_candidate()` helper pattern as
+the candidate). Three release-year dashed lines removed from the main panel; Marconi's line
+and label recoloured dark grey (`#404040`); La Thuile stays red, FLUXNET2015 stays blue. Both
+new parameters (`show_release_year_lines`, `marconi_colour`) added to
+`fig_cumulative_siteyears_igbp()` with defaults that preserve every other caller's behaviour
+unchanged (`generate_duration_histograms.R`, `generate_fig02_historical_only.R`,
+`generate_fig01_merged.R`, `build_draft_manuscript_v1.R`). Snapshot moved from the old pinned
+`fluxnet_shuttle_snapshot_20260901T094522.csv` to the latest
+(`fluxnet_shuttle_snapshot_20260920T102211.csv`, same 781 sites) — this script had no
+documented pin reason of its own, per the snapshot-of-record policy in
+`docs/decisions_pending.md`. Gates passed: 6,200 main-panel site-years, 781 inset sites,
+483/225/63 thresholds.
+
+Verified by measurement, not visual check, same method as revision 2: all 15 legend keys
+sampled against the exact expected alpha-0.8-over-white composite colour — matched exactly
+(>100 matching pixels each, 0.015 RGB tolerance) for all 15 `PAPER_IGBP_COLOURS`. Legend bbox
+confirmed to sit entirely inside the inset's own frame (cropped-image inspection) and clear of
+every bar. Pixel measurement of the rendered PNG confirmed the inset's footprint matches the
+script's own reported npc values exactly (inset left/right/top/bottom border rows and columns
+back-calculated from the main panel's own known axis calibration). The pre-rebuild (5 October)
+`fig_02_cumulative_siteyears_igbp.*` moved to `deprecated/fig_02_cumulative_siteyears_igbp_20261005.*`.
+The two `candidates/fig_02alt_cumulative_siteyears_record_length_inset_*mm` outputs marked
+superseded in their own `.legend.txt`.
+
+### Supplementary figures and tables — renumbered S1–S9 / S1–S4
+
+Old `figS6` (two panels) split: panel a (current-network record-length histogram) now lives
+only in Figure 2's own inset; panel b (share of each collection's sites with ≥n years)
+promoted to the new standalone S1 (`figS1_record_length_collections`,
+`scripts/supp_stage2_record_length_collections_figure.R`). Collection colours as in Figure 2
+(Marconi `#404040`); the snapshot's own line drawn true black at a heavier weight so the two
+dark-grey-ish lines stay visually distinct. Gates (96/965/1,532/6,200) validated against
+`data/snapshots/collection_sites_siteyears.csv` before saving, as before.
+
+Old S1→S2 (`figS2_whittaker_nee_gpp_reco`), old S2→S3 (`figS3_flux_comparison_matched_siteyears`,
+legend's section reference corrected Section 2.5→2.6), old S3/S4/S5→S7/S8/S9
+(`figS7_sampling_gridded_at_tower`, `figS8_sampling_flux_axes`, `figS9_sampling_collections`,
+all from `scripts/figure4_representativeness.R` / `figure_flux_representativeness_supp.R` /
+`figure_representativeness_trajectory.R`) — content unchanged in every case (confirmed: the
+underlying `data/snapshots/representativeness_metrics_*.csv` tables are byte-identical;
+re-running these scripts only touched legend/meta text and PDF creation timestamps), only
+filenames, in-script `DEST_BASENAME`/`DEST_BASE`/`supfigs_stem` variables, and cross-reference
+text (old figure/supplement numbers in each other's legends) updated. S4 reserved for the
+round robin — built nothing; `scripts/build_supplementary_pdf.R`'s `STEMS`/`NUMBERS` vectors
+updated so the assembled PDF's page numbering skips S4 with no placeholder page (confirmed:
+rebuilt proof PDF reads S1, S2, S3, S5, S6, S7, S8, S9, 8 pages).
+
+Two new supplementary figures promoted from the interim technical-validation candidate
+(`scripts/technical_validation_interim.R`, read-only — no `dq_stage*.R` diagnostic re-run):
+`scripts/generate_figS5_quality_flags.R` (daily/monthly QC-flag ECDFs for 4 variables, annual
+moves to Figure 6 and is not built here, plus the sub-daily measured/gap-filled panel; 23 of
+the 31 sites with sub-daily data are ICOS, computed from `data_hub` per CLAUDE.md Hard Rule 2,
+not inferred from site ID; US-MMS confirmed HR from its 2026-05-25 extraction) and
+`scripts/generate_figS6_availability_annual_nee.R` (availability of annual NEE by usability
+category, u*-method-success panel dropped; "no reported value" = no annual NEE at all in the
+product, distinct from "below quality rule"; uses 6,336 annual FLUXMET rows, explicitly
+distinguished in its legend from Figure 2's 6,200 site-years — different measures by design,
+not a discrepancy).
+
+New Supplementary Table S3 (`tableS3_quality_uncertainty_coverage.csv`, quality/uncertainty
+variables by time step, promoted from `table_tv1_column_coverage_by_site.csv`): missing a
+committed generating script initially — written as
+`scripts/supp_stage7_quality_uncertainty_coverage_table.R` and confirmed to reproduce the
+table byte-identically. Absent columns marked `not provided` per cell (not blank or zero),
+distinct from a present column with zero sites. Old `tableS3_bowen_ratio_by_igbp.csv` renumbered
+back to `tableS4_bowen_ratio_by_igbp.csv` (`scripts/supp_stage4_bowen_ratio_by_igbp.R`),
+content unchanged.
+
+Main Figure 5 (`fig_05_representativeness`) renamed Figure 7
+(`fig_07_network_sampling`, `scripts/figure4_representativeness.R`), "network sampling" in
+place of "representativeness" throughout its own title/legend/meta.json wording — references
+to the script's own name and its `FIG_DIR` source basenames (`fig_04_representativeness.*`,
+which legitimately still say "representativeness") are unchanged, per the established
+convention that only the numbered draft-manuscript/SupFigs copy names change. Figures 5 and 6
+are not built in this renumber (`FIGURE_INVENTORY.md` records both as "Not built").
+`review/figures/draft_manuscript_v1/SupFigs/deprecated/fig_02_historical_only.jpg` removed —
+confirmed `review/figures/presentation_figures/` already holds the same file (png/pdf/jpg/
+legend all present there); only the duplicate `.jpg` was removed, its `.png`/`.pdf`/`.legend.txt`
+siblings stay in `deprecated/` as the archival record.
+
+`review/figures/FIGURE_INVENTORY.md` rewritten from a stale, out-of-date descriptive category
+survey into the single number-to-file lookup table the task asked for; the fuller build
+provenance (generating scripts, renumbering history, panel-by-panel descriptions) stays in
+`docs/figure_inventory.md`, also updated with a dated renumbering table (old stem → new
+number/stem for every S1–S9).
+
+### Verification
+
+`scripts/check_figure_format.R` run on the full `draft_manuscript_v1`/`SupFigs` set after
+every change (not just once): found and fixed three real format violations the initial build
+missed — `figS1_record_length_collections`'s "Current" line, requested at the
+`NATURE_LINEWIDTH_MAX` ceiling via `scale_linewidth_manual()`, rendered its *legend key glyph*
+(not the in-plot line itself, confirmed by direct SVG stroke inspection) at 1.07pt because
+`scale_linewidth_manual(guide = "none")` drops linewidth from the colour legend's own key
+glyphs, which then fall back to a ggplot2 default — fixed with `override.aes(linewidth = ...)`
+on the colour scale's own guide; `figS5_quality_flags` and `figS6_availability_annual_nee`
+both called `save_nature_figure()` without `extended_data = TRUE`, so neither wrote the
+required companion JPEG and S5 exceeded the 180mm SupFigs width ceiling (it used the 183mm
+main-text double-column width instead) — both fixed. Final run: 13/13 figures PASS (5
+main-text, 8 SupFigs). Two pre-existing gaps noted, not introduced by this renumber and out of
+this task's scope: `figS2_whittaker_nee_gpp_reco`, `figS3_flux_comparison_matched_siteyears`,
+and `figS9_sampling_collections` have no companion `.meta.json` (their prior, pre-renumber
+incarnations didn't either).
+
+### Report: final number-to-file map
+
+See `review/figures/FIGURE_INVENTORY.md` for the complete, authoritative table. Summary: Figure
+2 rebuilt (120mm, framed inset); Figures 5/6 not built; Figure 5→7 (network sampling); S1–S3
+renumbered/content-preserved except S1 (new content: old S6 panel b only) and S3 (section
+reference fix); S4 reserved, not built; S5/S6 new (promoted from the technical-validation
+interim candidate); S7–S9 renumbered/content-preserved; SupTables S1/S2 unchanged, S3 new, S4
+is the renumbered-back Bowen ratio table. No analysis numbers changed anywhere — every
+regenerated data file was confirmed byte-identical to its pre-renumber version; only names,
+titles, legend text, and three line/JPEG/width format fixes.
+
 ## 2026-10-12 — Figure 2 + record-length inset candidate, revision 2 (measured fixes)
 
 Fixed four problems in the revision-1 candidate, found by Dave and confirmed here by

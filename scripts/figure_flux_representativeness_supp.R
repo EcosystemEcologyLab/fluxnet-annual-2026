@@ -3,11 +3,13 @@
 ## Figure stage 4 (logs/figstage_prompt.md): SupFigs/supp_flux_representativeness,
 ## renumbered Supplementary Figure S5 under figure stage 6 (2026-10-02), then
 ## Supplementary Figure S4 in the supplementary material restructure
-## (2026-10-08, SESSION_LOG.md; see DEST_BASE below and docs/figure_inventory.md;
-## this script's own name and its FIG_DIR source basename are unchanged) -- four
+## (2026-10-08, SESSION_LOG.md), then Supplementary Figure S8 in the
+## 2026-10-12 renumber (logs/prompts/2026-10-12_renumber_figures.md; see
+## DEST_BASE below and docs/figure_inventory.md; this script's own name and
+## its FIG_DIR source basename are unchanged) -- four
 ## rows (NEE, GPP, RECO, ET) by two columns (gridded value at the tower left,
 ## the site's own value right), panels lettered a-h across
-## rows, in Figure 5's own panel
+## rows, in Figure 7's own panel
 ## style (scripts/figure4_representativeness.R's draw_panel2() print
 ## rendering, header/caption grobs, column-gutter alignment -- ported
 ## verbatim below, not sourced, same convention that script already uses
@@ -847,24 +849,24 @@ n_lines <- vapply(ALL_LETTERS, panel_n_line, character(1))
 legend_lines <- c(
   sprintf("FIGURE LEGEND — %s", basename(paste0(fig_stem, ".png"))),
   strrep("=", 60), "",
-  "TITLE: Supplementary Figure S4 — Network sampling of the current FLUXNET network (n=781), fluxes", "",
+  "TITLE: Supplementary Figure S8 — Network sampling of the current FLUXNET network (n=781), fluxes", "",
   "PUBLICATION LEGEND:",
-  "Supplementary Figure S4. Network sampling of the snapshot for four fluxes -- net ecosystem",
+  "Supplementary Figure S8. Network sampling of the snapshot for four fluxes -- net ecosystem",
   "exchange, gross primary productivity, ecosystem respiration and evapotranspiration -- each",
   "compared using both the gridded value at the tower and the site's own value. Extends the main",
   "text's sampling figure (which covers net ecosystem exchange and evapotranspiration) to add",
   "gross primary productivity and ecosystem respiration. Network sampling analysis is described",
   "in Section 2.7.", "",
   "DESCRIPTION:",
-  "Companion to Figure 5 (fig_05_representativeness.png) and its gridded-value-at-the-tower companion,",
-  "Supplementary Figure S3 (figS3_sampling_gridded_at_tower.png) -- same panel style, bar-label",
-  "conventions, and \"gridded value at the tower\"/\"the site's own value\" definitions (what Figure 5's",
-  "legend itself still calls \"Geo vs Geo\"/\"Geo vs Data\" -- see Figure 5's legend for the full",
+  "Companion to Figure 7 (fig_07_network_sampling.png) and its gridded-value-at-the-tower companion,",
+  "Supplementary Figure S7 (figS7_sampling_gridded_at_tower.png) -- same panel style, bar-label",
+  "conventions, and \"gridded value at the tower\"/\"the site's own value\" definitions (what Figure 7's",
+  "legend itself still calls \"Geo vs Geo\"/\"Geo vs Data\" -- see Figure 7's legend for the full",
   "definitions). Eight panels, four",
   "fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f RECO (ecosystem respiration, ra+rh),",
   "g/h ET; left column (a, c, e, g) is gridded value at the tower, right column (b, d, f, h) is the",
   "site's own value.",
-  "Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 5's own panels e and f --",
+  "Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 7's own panels e and f --",
   "identical rasters, tower values and bins; their n and J are confirmed programmatically (not just",
   "visually) to equal representativeness_metrics_fig4.csv rows E/F exactly before this figure is drawn.",
   "Panels c, d (GPP) and e, f (RECO) are new to this figure.", "",
@@ -879,7 +881,7 @@ legend_lines <- c(
   "TRENDY v14 S3, 17-model ensemble median, 1991-2020 mean, on the Beck 2023 Koppen-Geiger 0.5 deg land",
   "mask (same raster footprint for all four fluxes; RECO = ra+rh). NEE and ET use",
   "data/external/trendy/derived/trendy_nee_fluxbased_median.tif and",
-  "flux_bin_breaks_et_median_1991_2020.tif (Figure 5's own rasters); GPP and RECO use",
+  "flux_bin_breaks_et_median_1991_2020.tif (Figure 7's own rasters); GPP and RECO use",
   "candidate_gpp_median.tif and candidate_ter_median.tif (scripts/candidate_nee_gpp_ter_panels.R).",
   sprintf("Land total: %s km2.", format(round(FLUX_LAND_TOTAL_KM2), big.mark = ",")), "",
   "BINS:",
@@ -890,7 +892,7 @@ legend_lines <- c(
   "steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's own GPP/RECO edges",
   "because the tower values here use compute_site_annual_fluxes()/QC_THRESHOLD_YY, not that script's",
   "older QC>=0.80 mean-monthly-cycle method.", "",
-  "BAR LABELS: as Figure 5 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the",
+  "BAR LABELS: as Figure 7 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the",
   "clip; faint gridlines at 1/5x, 1/2x, 2x, 5x; \"% land\"/\"towers\" column headers above panels a/b only",
   "(same two-number convention applies to every row); J (weighted Jaccard) right-aligned per panel; the",
   "bottom row's x axis reads \"smaller proportion\"/\"greater proportion\" of towers vs. land.", "",
@@ -911,16 +913,17 @@ write_output_metadata(
   notes = sprintf(
     paste0("Figure stage 4 (logs/figstage_prompt.md): supp_flux_representativeness, renumbered ",
            "Supplementary Figure S5 under figure stage 6 (2026-10-02), re-numbered Supplementary ",
-           "Figure S4 in the supplementary material restructure (2026-10-08, SESSION_LOG.md), ",
+           "Figure S4 in the supplementary material restructure (2026-10-08, SESSION_LOG.md), then ",
+           "Supplementary Figure S8 in the 2026-10-12 renumber (logs/prompts/2026-10-12_renumber_figures.md), ",
            "%g mm wide x %.1f mm tall, Helvetica, %dpt text (row pitch %.1fmm). NEE/ET panels ",
            "(a/b/g/h) confirmed identical to ",
-           "Figure 5 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/RECO (c/d/e/f) new."),
+           "Figure 7 (representativeness_metrics_fig4.csv rows E/F) before rendering. GPP/RECO (c/d/e/f) new."),
     FIG_WIDTH_MM, total_height_mm, BASE_PT, ROW_PITCH_MM
   )
 )
 msg("Saved: ", saved$png, ".meta.json and .legend.txt")
 
-DEST_BASE <- "figS4_sampling_flux_axes"
+DEST_BASE <- "figS8_sampling_flux_axes"
 for (ext in c(".png", ".pdf", ".jpg", ".meta.json", ".legend.txt")) {
   src_file <- paste0(fig_stem, ext)
   dst_file <- file.path(SUPFIGS_DIR, paste0(DEST_BASE, ext))

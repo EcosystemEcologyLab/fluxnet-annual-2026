@@ -1,0 +1,45 @@
+FIGURE LEGEND -- figS6_availability_annual_nee.png
+============================================================
+
+TITLE: Supplementary Figure S6 -- Availability of annual NEE
+
+PUBLICATION LEGEND:
+Supplementary Figure S6. Availability of annual NEE across the snapshot, by usability
+category.
+
+DESCRIPTION:
+Two 100%-stacked horizontal bars -- site-years (n=6,336) and sites (n=781) -- by
+availability category: both VUT and CUT usable, VUT only, CUT only, or neither --
+'neither' split into 'no reported value' (no annual NEE in the product -- neither
+NEE_VUT_REF nor NEE_CUT_REF has a raw value for that site-year) and 'below quality rule'
+(a raw value exists but does not clear QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <=
+QC_THRESHOLD_YY, own QC column per side. No in-bar count labels -- each category's exact
+count is given in its own legend entry instead, '<category> (<n> site-years, <n> sites)':
+  both usable (3,960 site-years, 575 sites)
+  VUT only usable (57 site-years, 41 sites)
+  CUT only usable (360 site-years, 40 sites)
+  no reported value (1,935 site-years, 125 sites)
+  below quality rule (24 site-years, 0 sites)
+
+SITE-YEAR COUNT: this figure uses 6,336 site-years -- every row in the FLUXMET annual
+table (dataset = 'FLUXMET'), regardless of quality. This differs from the 6,200 site-years
+in Figure 2, which counts site-years via compute_site_year_presence() -- any of several
+flux variables present in at least one month, filtered to Figure 2's own data-driven year
+window and to sites with a recognised IGBP class. The two figures use different site-year
+measures by design; this is not a discrepancy to be reconciled.
+
+NOTE: the u*-threshold method-success panel (CP/MP, panel b of the interim candidate's
+fig_tv4) is not included here.
+
+COLOUR CODING: 5-category palette; VUT/CUT-only categories reuse VUT_CUT_COLOURS
+(this script's own, as in Supplementary Figure S5).
+
+DATA SOURCE: table_stage4_site_year_master.csv, table_stage4_site_level_availability.csv
+(review/diagnostics/data_quality_uncertainty/), unchanged.
+
+PROVENANCE: promoted from the interim technical-validation candidate
+(scripts/technical_validation_interim.R, review/technical_validation_interim/fig_tv4_*),
+panel a only.
+
+SOURCE: scripts/generate_figS6_availability_annual_nee.R.
+DIMENSIONS: 89 x 80 mm, 600 dpi PNG + vector PDF, Helvetica, white background.

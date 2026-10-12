@@ -25,14 +25,24 @@ msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...
 SUPFIGS_DIR <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
 OUT_PDF <- file.path(SUPFIGS_DIR, "supplementary_figures_proof.pdf")
 
-## Order fixed by the supplementary material restructure (2026-10-08,
-## SESSION_LOG.md; see docs/figure_inventory.md).
-STEMS <- c("figS1_whittaker_nee_gpp_reco",
-           "figS2_flux_comparison_matched_siteyears",
-           "figS3_sampling_gridded_at_tower",
-           "figS4_sampling_flux_axes",
-           "figS5_sampling_collections",
-           "figS6_record_length")
+## Order fixed by the 2026-10-12 renumber
+## (logs/prompts/2026-10-12_renumber_figures.md; see docs/figure_inventory.md,
+## which replaced docs/figure_inventory.md's role as the number-to-file map --
+## FIGURE_INVENTORY.md at the repo root). S4 is reserved for the round robin
+## and built nothing in this renumber -- SKIP_NUMBERS below keeps page
+## numbering in sync with STEMS without a placeholder page.
+STEMS <- c("figS1_record_length_collections",
+           "figS2_whittaker_nee_gpp_reco",
+           "figS3_flux_comparison_matched_siteyears",
+           ## S4 reserved for the round robin -- not built, no page.
+           "figS5_quality_flags",
+           "figS6_availability_annual_nee",
+           "figS7_sampling_gridded_at_tower",
+           "figS8_sampling_flux_axes",
+           "figS9_sampling_collections")
+## Supplementary Figure number for each STEMS entry -- NOT the vector index
+## (S4 is skipped, so S5 onward are offset by one from their STEMS position).
+NUMBERS <- c(1L, 2L, 3L, 5L, 6L, 7L, 8L, 9L)
 
 for (s in STEMS) {
   png_path <- file.path(SUPFIGS_DIR, paste0(s, ".png"))
@@ -109,7 +119,7 @@ for (i in seq_along(STEMS)) {
   legend_text <- gsub("—", "-", read_publication_legend(txt_path))
   wc <- n_words(legend_text)
   if (wc > 350) stop(s, ": publication legend is ", wc, " words, exceeds the 350-word limit.")
-  num_label <- paste0("Supplementary Figure S", i)
+  num_label <- paste0("Supplementary Figure S", NUMBERS[i])
 
   img <- png::readPNG(png_path)
   d <- dim(img)

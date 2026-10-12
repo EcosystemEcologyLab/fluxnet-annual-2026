@@ -1,0 +1,13 @@
+{
+  "run_datetime_utc": "2026-10-12T21:05:40Z",
+  "pipeline_version": "1714520",
+  "input_sources": [
+    "data/lists/Marconi_to_Modern_SiteIDs.xlsx",
+    "data/lists/LaThuileList.xlsx",
+    "data/lists/FLUXNET2015.xlsx",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/collection_sites_siteyears.csv"
+  ],
+  "notes": "Figure S1: cross-collection share-with->=n-years step lines (formerly panel b of figS6_record_length; former panel a now lives in Figure 2's inset). See .legend.txt for the two-meanings-of-a-year caveat and Marconi-is-a-span caveat."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-12T21:04:02Z",
+  "pipeline_version": "1714520",
+  "input_sources": [
+    "review/diagnostics/data_quality_uncertainty/table_stage4_site_year_master.csv",
+    "review/diagnostics/data_quality_uncertainty/table_stage4_site_level_availability.csv"
+  ],
+  "notes": "Supplementary Figure S6: availability of annual NEE, promoted from the interim technical-validation candidate's fig_tv4 panel a (u*-method-success panel b not included). Uses 6336 annual FLUXMET rows, distinct from Figure 2's 6,200 site-years (different measures -- see .legend.txt)."
+}

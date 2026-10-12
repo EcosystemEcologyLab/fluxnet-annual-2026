@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-10-12T21:03:56Z",
+  "pipeline_version": "1714520",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "review/diagnostics/data_quality_uncertainty/table_stage1_subdaily_qc_network_summary.csv",
+    "review/diagnostics/data_quality_uncertainty/table_stage0_hh_hr_sites.csv"
+  ],
+  "notes": "Supplementary Figure S5: quality flags, promoted from the interim technical-validation candidate's fig_tv1 (daily/monthly ECDF panels only; annual moves to Figure 6). 23 of 31 sub-daily sites are ICOS; US-MMS is hourly from the 2026-05-25 extraction. See .legend.txt."
+}

@@ -38440,3 +38440,3439 @@ loaded via a namespace (and not attached):
 [43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
 [46] labeling_0.4.3       compiler_4.6.0       S7_0.2.2            
 [49] markdown_2.0         gridtext_0.1.6      
+
+---
+2026-10-12T20:39:18Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    tidyr_1.3.2        readxl_1.5.0      
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] generics_0.1.4       renv_1.2.3           xml2_1.5.2          
+ [4] stringi_1.8.7        lattice_0.22-9       hms_1.1.4           
+ [7] magrittr_2.0.5       grid_4.6.0           cellranger_1.1.0    
+[10] jsonlite_2.0.0       Matrix_1.7-5         purrr_1.2.2         
+[13] scales_1.4.0         textshaping_1.0.5    cli_3.6.6           
+[16] rlang_1.2.0          crayon_1.5.3         scatterplot3d_0.3-45
+[19] litedown_0.9         commonmark_2.0.0     bit64_4.8.2         
+[22] withr_3.0.2          tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          ragg_1.5.2           pkgconfig_2.0.3     
+[37] pillar_1.11.1        gtable_0.3.6         glue_1.8.1          
+[40] Rcpp_1.1.1-1.1       systemfonts_1.3.2    xfun_0.57           
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] labeling_0.4.3       compiler_4.6.0       S7_0.2.2            
+[49] markdown_2.0         gridtext_0.1.6      
+
+---
+2026-10-12T20:41:12Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    tidyr_1.3.2        readxl_1.5.0      
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] generics_0.1.4       renv_1.2.3           xml2_1.5.2          
+ [4] stringi_1.8.7        lattice_0.22-9       hms_1.1.4           
+ [7] magrittr_2.0.5       grid_4.6.0           cellranger_1.1.0    
+[10] jsonlite_2.0.0       Matrix_1.7-5         purrr_1.2.2         
+[13] scales_1.4.0         textshaping_1.0.5    cli_3.6.6           
+[16] rlang_1.2.0          crayon_1.5.3         scatterplot3d_0.3-45
+[19] litedown_0.9         commonmark_2.0.0     bit64_4.8.2         
+[22] withr_3.0.2          tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          ragg_1.5.2           pkgconfig_2.0.3     
+[37] pillar_1.11.1        gtable_0.3.6         glue_1.8.1          
+[40] Rcpp_1.1.1-1.1       systemfonts_1.3.2    xfun_0.57           
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] labeling_0.4.3       compiler_4.6.0       S7_0.2.2            
+[49] markdown_2.0         gridtext_0.1.6      
+
+---
+2026-10-12T20:41:48Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           dotenv_1.0.3       patchwork_1.3.2    tidyr_1.3.2       
+ [5] readxl_1.5.0       readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4  
+ [9] RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3     
+[13] png_0.1-9         
+
+loaded via a namespace (and not attached):
+ [1] generics_0.1.4       renv_1.2.3           xml2_1.5.2          
+ [4] stringi_1.8.7        lattice_0.22-9       hms_1.1.4           
+ [7] magrittr_2.0.5       grid_4.6.0           cellranger_1.1.0    
+[10] jsonlite_2.0.0       Matrix_1.7-5         purrr_1.2.2         
+[13] scales_1.4.0         textshaping_1.0.5    cli_3.6.6           
+[16] rlang_1.2.0          crayon_1.5.3         scatterplot3d_0.3-45
+[19] litedown_0.9         commonmark_2.0.0     bit64_4.8.2         
+[22] withr_3.0.2          tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             lifecycle_1.0.5     
+[31] stringr_1.6.0        bit_4.6.0            vroom_1.7.1         
+[34] ragg_1.5.2           pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    xfun_0.57            tibble_3.3.1        
+[43] tidyselect_1.2.1     farver_2.1.2         labeling_0.4.3      
+[46] compiler_4.6.0       S7_0.2.2             markdown_2.0        
+[49] gridtext_0.1.6      
+
+---
+2026-10-12T20:42:11Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           dotenv_1.0.3       patchwork_1.3.2    tidyr_1.3.2       
+ [5] readxl_1.5.0       readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4  
+ [9] RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3     
+[13] png_0.1-9         
+
+loaded via a namespace (and not attached):
+ [1] generics_0.1.4       renv_1.2.3           xml2_1.5.2          
+ [4] stringi_1.8.7        lattice_0.22-9       hms_1.1.4           
+ [7] magrittr_2.0.5       grid_4.6.0           cellranger_1.1.0    
+[10] jsonlite_2.0.0       Matrix_1.7-5         purrr_1.2.2         
+[13] scales_1.4.0         textshaping_1.0.5    cli_3.6.6           
+[16] rlang_1.2.0          crayon_1.5.3         scatterplot3d_0.3-45
+[19] litedown_0.9         commonmark_2.0.0     bit64_4.8.2         
+[22] withr_3.0.2          tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             lifecycle_1.0.5     
+[31] stringr_1.6.0        bit_4.6.0            vroom_1.7.1         
+[34] ragg_1.5.2           pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    xfun_0.57            tibble_3.3.1        
+[43] tidyselect_1.2.1     farver_2.1.2         labeling_0.4.3      
+[46] compiler_4.6.0       S7_0.2.2             markdown_2.0        
+[49] gridtext_0.1.6      
+
+---
+2026-10-12T20:47:03Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    tidyr_1.3.2        readxl_1.5.0      
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.6           generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] cellranger_1.1.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] tools_4.6.0          parallel_4.6.0       fluxnet_0.3.2.9000  
+[25] tzdb_0.5.0           reticulate_1.46.0    vctrs_0.7.3         
+[28] R6_2.6.1             png_0.1-9            lifecycle_1.0.5     
+[31] stringr_1.6.0        bit_4.6.0            vroom_1.7.1         
+[34] ragg_1.5.2           pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         labeling_0.4.3       compiler_4.6.0      
+[46] S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:49:51Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     scales_1.4.0      
+[13] png_0.1-9          reticulate_1.46.0  lattice_0.22-9     R6_2.6.1          
+[17] generics_0.1.4     tibble_3.3.1       lubridate_1.9.5    pillar_1.11.1     
+[21] RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0        stringi_1.8.7     
+[25] S7_0.2.2           bit64_4.8.2        otel_0.2.0         timechange_0.4.0  
+[29] cli_3.6.6          withr_3.0.2        magrittr_2.0.5     grid_4.6.0        
+[33] vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5    vctrs_0.7.3       
+[37] fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2       codetools_0.2-20  
+[41] tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:52Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:49:53Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     textshaping_1.0.5 
+[13] systemfonts_1.3.2  scales_1.4.0       png_0.1-9          reticulate_1.46.0 
+[17] lattice_0.22-9     R6_2.6.1           generics_0.1.4     tibble_3.3.1      
+[21] lubridate_1.9.5    pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0        
+[25] rlang_1.2.0        stringi_1.8.7      S7_0.2.2           bit64_4.8.2       
+[29] otel_0.2.0         timechange_0.4.0   cli_3.6.6          withr_3.0.2       
+[33] magrittr_2.0.5     grid_4.6.0         vroom_1.7.1        hms_1.1.4         
+[37] lifecycle_1.0.5    vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1        
+[41] farver_2.1.2       ragg_1.5.2         codetools_0.2-20   tools_4.6.0       
+[45] pkgconfig_2.0.3   
+
+---
+2026-10-12T20:50:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           jsonlite_2.0.0     terra_1.9-27       tidyr_1.3.2       
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0            Matrix_1.7-5         gtable_0.3.6        
+ [4] crayon_1.5.3         compiler_4.6.0       renv_1.2.3          
+ [7] tidyselect_1.2.1     Rcpp_1.1.1-1.1       xml2_1.5.2          
+[10] stringr_1.6.0        parallel_4.6.0       scales_1.4.0        
+[13] png_0.1-9            reticulate_1.46.0    lattice_0.22-9      
+[16] R6_2.6.1             generics_0.1.4       tibble_3.3.1        
+[19] tzdb_0.5.0           pillar_1.11.1        rlang_1.2.0         
+[22] stringi_1.8.7        S7_0.2.2             bit64_4.8.2         
+[25] cli_3.6.6            withr_3.0.2          magrittr_2.0.5      
+[28] grid_4.6.0           gridtext_0.1.6       vroom_1.7.1         
+[31] hms_1.1.4            lifecycle_1.0.5      vctrs_0.7.3         
+[34] fluxnet_0.3.2.9000   scatterplot3d_0.3-45 glue_1.8.1          
+[37] farver_2.1.2         codetools_0.2-20     purrr_1.2.2         
+[40] tools_4.6.0          pkgconfig_2.0.3     
+
+---
+2026-10-12T20:50:40Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:50:40Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:33Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:34Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:34Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:34Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:34Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:51:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:51:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:51:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:51:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:51:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:51:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:38Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:51:38Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:52:59Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+ [5] fs_2.1.0           patchwork_1.3.2    ggplot2_4.0.3      tidyr_1.3.2       
+ [9] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+[13] dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] generics_0.1.4       renv_1.2.3           xml2_1.5.2          
+ [4] stringi_1.8.7        lattice_0.22-9       hms_1.1.4           
+ [7] magrittr_2.0.5       grid_4.6.0           jsonlite_2.0.0      
+[10] Matrix_1.7-5         purrr_1.2.2          scales_1.4.0        
+[13] textshaping_1.0.5    cli_3.6.6            rlang_1.2.0         
+[16] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[19] withr_3.0.2          otel_0.2.0           parallel_4.6.0      
+[22] tools_4.6.0          fluxnet_0.3.2.9000   tzdb_0.5.0          
+[25] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[28] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[31] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[34] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[37] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] labeling_0.4.3       compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:53:41Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           tidyr_1.3.2        readr_2.2.0        dplyr_1.2.1       
+ [5] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+ [9] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0            Matrix_1.7-5         gtable_0.3.6        
+ [4] jsonlite_2.0.0       crayon_1.5.3         compiler_4.6.0      
+ [7] renv_1.2.3           tidyselect_1.2.1     Rcpp_1.1.1-1.1      
+[10] xml2_1.5.2           stringr_1.6.0        parallel_4.6.0      
+[13] textshaping_1.0.5    systemfonts_1.3.2    scales_1.4.0        
+[16] png_0.1-9            reticulate_1.46.0    lattice_0.22-9      
+[19] R6_2.6.1             generics_0.1.4       tibble_3.3.1        
+[22] tzdb_0.5.0           pillar_1.11.1        rlang_1.2.0         
+[25] stringi_1.8.7        S7_0.2.2             bit64_4.8.2         
+[28] cli_3.6.6            withr_3.0.2          magrittr_2.0.5      
+[31] grid_4.6.0           gridtext_0.1.6       vroom_1.7.1         
+[34] hms_1.1.4            lifecycle_1.0.5      vctrs_0.7.3         
+[37] scatterplot3d_0.3-45 fluxnet_0.3.2.9000   glue_1.8.1          
+[40] farver_2.1.2         ragg_1.5.2           purrr_1.2.2         
+[43] tools_4.6.0          pkgconfig_2.0.3     
+
+---
+2026-10-12T20:54:07Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           tidyr_1.3.2        readr_2.2.0        dplyr_1.2.1       
+ [5] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+ [9] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0            Matrix_1.7-5         gtable_0.3.6        
+ [4] jsonlite_2.0.0       crayon_1.5.3         compiler_4.6.0      
+ [7] renv_1.2.3           tidyselect_1.2.1     Rcpp_1.1.1-1.1      
+[10] xml2_1.5.2           stringr_1.6.0        parallel_4.6.0      
+[13] textshaping_1.0.5    systemfonts_1.3.2    scales_1.4.0        
+[16] png_0.1-9            reticulate_1.46.0    lattice_0.22-9      
+[19] R6_2.6.1             generics_0.1.4       tibble_3.3.1        
+[22] tzdb_0.5.0           pillar_1.11.1        rlang_1.2.0         
+[25] stringi_1.8.7        S7_0.2.2             bit64_4.8.2         
+[28] cli_3.6.6            withr_3.0.2          magrittr_2.0.5      
+[31] grid_4.6.0           gridtext_0.1.6       vroom_1.7.1         
+[34] hms_1.1.4            lifecycle_1.0.5      vctrs_0.7.3         
+[37] scatterplot3d_0.3-45 fluxnet_0.3.2.9000   glue_1.8.1          
+[40] farver_2.1.2         ragg_1.5.2           purrr_1.2.2         
+[43] tools_4.6.0          pkgconfig_2.0.3     
+
+---
+2026-10-12T20:54:34Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:54:35Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:54:36Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     scales_1.4.0      
+[13] png_0.1-9          reticulate_1.46.0  lattice_0.22-9     R6_2.6.1          
+[17] generics_0.1.4     tibble_3.3.1       lubridate_1.9.5    pillar_1.11.1     
+[21] RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0        stringi_1.8.7     
+[25] S7_0.2.2           bit64_4.8.2        otel_0.2.0         timechange_0.4.0  
+[29] cli_3.6.6          withr_3.0.2        magrittr_2.0.5     grid_4.6.0        
+[33] vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5    vctrs_0.7.3       
+[37] fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2       codetools_0.2-20  
+[41] tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           jsonlite_2.0.0     terra_1.9-27       tidyr_1.3.2       
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0            Matrix_1.7-5         gtable_0.3.6        
+ [4] crayon_1.5.3         compiler_4.6.0       renv_1.2.3          
+ [7] tidyselect_1.2.1     Rcpp_1.1.1-1.1       xml2_1.5.2          
+[10] stringr_1.6.0        parallel_4.6.0       scales_1.4.0        
+[13] png_0.1-9            reticulate_1.46.0    lattice_0.22-9      
+[16] R6_2.6.1             generics_0.1.4       tibble_3.3.1        
+[19] tzdb_0.5.0           pillar_1.11.1        rlang_1.2.0         
+[22] stringi_1.8.7        S7_0.2.2             bit64_4.8.2         
+[25] cli_3.6.6            withr_3.0.2          magrittr_2.0.5      
+[28] grid_4.6.0           gridtext_0.1.6       vroom_1.7.1         
+[31] hms_1.1.4            lifecycle_1.0.5      vctrs_0.7.3         
+[34] fluxnet_0.3.2.9000   scatterplot3d_0.3-45 glue_1.8.1          
+[37] farver_2.1.2         codetools_0.2-20     purrr_1.2.2         
+[40] tools_4.6.0          pkgconfig_2.0.3     
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:37Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     systemfonts_1.3.2 
+[13] scales_1.4.0       png_0.1-9          reticulate_1.46.0  lattice_0.22-9    
+[17] R6_2.6.1           generics_0.1.4     tibble_3.3.1       lubridate_1.9.5   
+[21] pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0         rlang_1.2.0       
+[25] stringi_1.8.7      S7_0.2.2           bit64_4.8.2        otel_0.2.0        
+[29] timechange_0.4.0   cli_3.6.6          withr_3.0.2        magrittr_2.0.5    
+[33] grid_4.6.0         vroom_1.7.1        hms_1.1.4          lifecycle_1.0.5   
+[37] vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1         farver_2.1.2      
+[41] codetools_0.2-20   tools_4.6.0        pkgconfig_2.0.3   
+
+---
+2026-10-12T20:54:39Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0        patchwork_1.3.2 ggplot2_4.0.3   terra_1.9-27   
+[5] readr_2.2.0     dplyr_1.2.1     duckdb_1.5.2    DBI_1.3.0      
+[9] dotenv_1.0.3   
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0          Matrix_1.7-5       gtable_0.3.6       jsonlite_2.0.0    
+ [5] crayon_1.5.3       compiler_4.6.0     renv_1.2.3         tidyselect_1.2.1  
+ [9] Rcpp_1.1.1-1.1     stringr_1.6.0      parallel_4.6.0     textshaping_1.0.5 
+[13] systemfonts_1.3.2  scales_1.4.0       png_0.1-9          reticulate_1.46.0 
+[17] lattice_0.22-9     R6_2.6.1           generics_0.1.4     tibble_3.3.1      
+[21] lubridate_1.9.5    pillar_1.11.1      RColorBrewer_1.1-3 tzdb_0.5.0        
+[25] rlang_1.2.0        stringi_1.8.7      S7_0.2.2           bit64_4.8.2       
+[29] otel_0.2.0         timechange_0.4.0   cli_3.6.6          withr_3.0.2       
+[33] magrittr_2.0.5     grid_4.6.0         vroom_1.7.1        hms_1.1.4         
+[37] lifecycle_1.0.5    vctrs_0.7.3        fluxnet_0.3.2.9000 glue_1.8.1        
+[41] farver_2.1.2       ragg_1.5.2         codetools_0.2-20   tools_4.6.0       
+[45] pkgconfig_2.0.3   
+
+---
+2026-10-12T20:55:19Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] dplyr_1.2.1
+
+loaded via a namespace (and not attached):
+ [1] R6_2.6.1         bit_4.6.0        tidyselect_1.2.1 tzdb_0.5.0      
+ [5] magrittr_2.0.5   glue_1.8.1       tibble_3.3.1     parallel_4.6.0  
+ [9] pkgconfig_2.0.3  bit64_4.8.2      generics_0.1.4   lifecycle_1.0.5 
+[13] readr_2.2.0      cli_3.6.6        vctrs_0.7.3      withr_3.0.2     
+[17] renv_1.2.3       compiler_4.6.0   tools_4.6.0      hms_1.1.4       
+[21] pillar_1.11.1    jsonlite_2.0.0   crayon_1.5.3     rlang_1.2.0     
+[25] vroom_1.7.1     
+
+---
+2026-10-12T20:55:27Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:27Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:28Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:29Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:29Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:29Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:29Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:30Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:55:30Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:55:30Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:55:30Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:55:30Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:55:30Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         codetools_0.2-20    
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] otel_0.2.0           tools_4.6.0          parallel_4.6.0      
+[25] fluxnet_0.3.2.9000   tzdb_0.5.0           reticulate_1.46.0   
+[28] vctrs_0.7.3          R6_2.6.1             png_0.1-9           
+[31] lifecycle_1.0.5      stringr_1.6.0        bit_4.6.0           
+[34] vroom_1.7.1          pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T20:55:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:32Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:33Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:33Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    terra_1.9-27       lubridate_1.9.5   
+ [5] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+ [9] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+[13] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] tidyr_1.3.2          generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] timechange_0.4.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] codetools_0.2-20     cli_3.6.6            rlang_1.2.0         
+[19] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[22] withr_3.0.2          otel_0.2.0           tools_4.6.0         
+[25] parallel_4.6.0       fluxnet_0.3.2.9000   tzdb_0.5.0          
+[28] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[31] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[34] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[37] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[40] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[43] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[46] compiler_4.6.0       S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T20:55:46Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           duckdb_1.5.2       DBI_1.3.0          readr_2.2.0       
+ [5] dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2  
+ [9] ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0            Matrix_1.7-5         gtable_0.3.6        
+ [4] jsonlite_2.0.0       crayon_1.5.3         compiler_4.6.0      
+ [7] renv_1.2.3           tidyselect_1.2.1     Rcpp_1.1.1-1.1      
+[10] xml2_1.5.2           stringr_1.6.0        parallel_4.6.0      
+[13] scales_1.4.0         png_0.1-9            reticulate_1.46.0   
+[16] lattice_0.22-9       R6_2.6.1             generics_0.1.4      
+[19] tibble_3.3.1         tzdb_0.5.0           pillar_1.11.1       
+[22] rlang_1.2.0          utf8_1.2.6           stringi_1.8.7       
+[25] S7_0.2.2             bit64_4.8.2          otel_0.2.0          
+[28] cli_3.6.6            withr_3.0.2          magrittr_2.0.5      
+[31] grid_4.6.0           gridtext_0.1.6       vroom_1.7.1         
+[34] hms_1.1.4            lifecycle_1.0.5      vctrs_0.7.3         
+[37] scatterplot3d_0.3-45 fluxnet_0.3.2.9000   glue_1.8.1          
+[40] farver_2.1.2         tools_4.6.0          pkgconfig_2.0.3     
+
+---
+2026-10-12T21:02:16Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] fs_2.1.0     readr_2.2.0  dplyr_1.2.1  dotenv_1.0.3
+
+loaded via a namespace (and not attached):
+ [1] crayon_1.5.3       vctrs_0.7.3        cli_3.6.6          rlang_1.2.0       
+ [5] stringi_1.8.7      png_0.1-9          renv_1.2.3         generics_0.1.4    
+ [9] jsonlite_2.0.0     bit_4.6.0          glue_1.8.1         hms_1.1.4         
+[13] grid_4.6.0         tibble_3.3.1       tzdb_0.5.0         lifecycle_1.0.5   
+[17] stringr_1.6.0      compiler_4.6.0     fluxnet_0.3.2.9000 Rcpp_1.1.1-1.1    
+[21] pkgconfig_2.0.3    lattice_0.22-9     R6_2.6.1           reticulate_1.46.0 
+[25] tidyselect_1.2.1   parallel_4.6.0     vroom_1.7.1        pillar_1.11.1     
+[29] magrittr_2.0.5     Matrix_1.7-5       bit64_4.8.2        tools_4.6.0       
+
+---
+2026-10-12T21:03:44Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    tidyr_1.3.2        readxl_1.5.0      
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.6           generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] cellranger_1.1.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] tools_4.6.0          parallel_4.6.0       fluxnet_0.3.2.9000  
+[25] tzdb_0.5.0           reticulate_1.46.0    vctrs_0.7.3         
+[28] R6_2.6.1             png_0.1-9            lifecycle_1.0.5     
+[31] stringr_1.6.0        bit_4.6.0            vroom_1.7.1         
+[34] ragg_1.5.2           pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         labeling_0.4.3       compiler_4.6.0      
+[46] S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T21:03:56Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+ [5] fs_2.1.0           patchwork_1.3.2    ggplot2_4.0.3      tidyr_1.3.2       
+ [9] readr_2.2.0        dplyr_1.2.1        duckdb_1.5.2       DBI_1.3.0         
+[13] dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] generics_0.1.4       renv_1.2.3           xml2_1.5.2          
+ [4] stringi_1.8.7        lattice_0.22-9       hms_1.1.4           
+ [7] magrittr_2.0.5       grid_4.6.0           jsonlite_2.0.0      
+[10] Matrix_1.7-5         purrr_1.2.2          scales_1.4.0        
+[13] textshaping_1.0.5    cli_3.6.6            rlang_1.2.0         
+[16] crayon_1.5.3         scatterplot3d_0.3-45 bit64_4.8.2         
+[19] withr_3.0.2          otel_0.2.0           parallel_4.6.0      
+[22] tools_4.6.0          fluxnet_0.3.2.9000   tzdb_0.5.0          
+[25] reticulate_1.46.0    vctrs_0.7.3          R6_2.6.1            
+[28] png_0.1-9            lifecycle_1.0.5      stringr_1.6.0       
+[31] bit_4.6.0            vroom_1.7.1          ragg_1.5.2          
+[34] pkgconfig_2.0.3      pillar_1.11.1        gtable_0.3.6        
+[37] glue_1.8.1           Rcpp_1.1.1-1.1       systemfonts_1.3.2   
+[40] tibble_3.3.1         tidyselect_1.2.1     farver_2.1.2        
+[43] labeling_0.4.3       compiler_4.6.0       S7_0.2.2            
+[46] gridtext_0.1.6      
+
+---
+2026-10-12T21:04:02Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           tidyr_1.3.2        readr_2.2.0        dplyr_1.2.1       
+ [5] Polychrome_1.5.4   RColorBrewer_1.1-3 colorspace_2.1-2   ggtext_0.1.2      
+ [9] ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] bit_4.6.0            Matrix_1.7-5         gtable_0.3.6        
+ [4] jsonlite_2.0.0       crayon_1.5.3         compiler_4.6.0      
+ [7] renv_1.2.3           tidyselect_1.2.1     Rcpp_1.1.1-1.1      
+[10] xml2_1.5.2           stringr_1.6.0        parallel_4.6.0      
+[13] textshaping_1.0.5    systemfonts_1.3.2    scales_1.4.0        
+[16] png_0.1-9            reticulate_1.46.0    lattice_0.22-9      
+[19] R6_2.6.1             generics_0.1.4       tibble_3.3.1        
+[22] tzdb_0.5.0           pillar_1.11.1        rlang_1.2.0         
+[25] stringi_1.8.7        S7_0.2.2             bit64_4.8.2         
+[28] cli_3.6.6            withr_3.0.2          magrittr_2.0.5      
+[31] grid_4.6.0           gridtext_0.1.6       vroom_1.7.1         
+[34] hms_1.1.4            lifecycle_1.0.5      vctrs_0.7.3         
+[37] scatterplot3d_0.3-45 fluxnet_0.3.2.9000   glue_1.8.1          
+[40] farver_2.1.2         ragg_1.5.2           purrr_1.2.2         
+[43] tools_4.6.0          pkgconfig_2.0.3     
+
+---
+2026-10-12T21:04:50Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    tidyr_1.3.2        readxl_1.5.0      
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.6           generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] cellranger_1.1.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] tools_4.6.0          parallel_4.6.0       fluxnet_0.3.2.9000  
+[25] tzdb_0.5.0           reticulate_1.46.0    vctrs_0.7.3         
+[28] R6_2.6.1             png_0.1-9            lifecycle_1.0.5     
+[31] stringr_1.6.0        bit_4.6.0            vroom_1.7.1         
+[34] ragg_1.5.2           pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         labeling_0.4.3       compiler_4.6.0      
+[46] S7_0.2.2             gridtext_0.1.6      
+
+---
+2026-10-12T21:05:40Z 
+R version 4.6.0 (2026-04-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Tahoe 26.5.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Phoenix
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] fs_2.1.0           patchwork_1.3.2    tidyr_1.3.2        readxl_1.5.0      
+ [5] readr_2.2.0        dplyr_1.2.1        Polychrome_1.5.4   RColorBrewer_1.1-3
+ [9] colorspace_2.1-2   ggtext_0.1.2       ggplot2_4.0.3      dotenv_1.0.3      
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.6           generics_0.1.4       renv_1.2.3          
+ [4] xml2_1.5.2           stringi_1.8.7        lattice_0.22-9      
+ [7] hms_1.1.4            magrittr_2.0.5       grid_4.6.0          
+[10] cellranger_1.1.0     jsonlite_2.0.0       Matrix_1.7-5        
+[13] purrr_1.2.2          scales_1.4.0         textshaping_1.0.5   
+[16] cli_3.6.6            rlang_1.2.0          crayon_1.5.3        
+[19] scatterplot3d_0.3-45 bit64_4.8.2          withr_3.0.2         
+[22] tools_4.6.0          parallel_4.6.0       fluxnet_0.3.2.9000  
+[25] tzdb_0.5.0           reticulate_1.46.0    vctrs_0.7.3         
+[28] R6_2.6.1             png_0.1-9            lifecycle_1.0.5     
+[31] stringr_1.6.0        bit_4.6.0            vroom_1.7.1         
+[34] ragg_1.5.2           pkgconfig_2.0.3      pillar_1.11.1       
+[37] gtable_0.3.6         glue_1.8.1           Rcpp_1.1.1-1.1      
+[40] systemfonts_1.3.2    tibble_3.3.1         tidyselect_1.2.1    
+[43] farver_2.1.2         labeling_0.4.3       compiler_4.6.0      
+[46] S7_0.2.2             gridtext_0.1.6      

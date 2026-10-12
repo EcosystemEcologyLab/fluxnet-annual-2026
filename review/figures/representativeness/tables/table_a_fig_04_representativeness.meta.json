@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-08T20:13:32Z",
-  "pipeline_version": "2a4ed4a",
+  "run_datetime_utc": "2026-10-12T20:55:32Z",
+  "pipeline_version": "1714520",
   "input_sources": [
     "data/snapshots/representativeness_metrics_fig4.csv"
   ],

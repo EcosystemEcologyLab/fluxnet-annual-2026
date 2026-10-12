@@ -1,0 +1,47 @@
+FIGURE LEGEND -- figS5_quality_flags.png
+============================================================
+
+TITLE: Supplementary Figure S5 -- Quality flags by variable and time step
+
+PUBLICATION LEGEND:
+Supplementary Figure S5. Quality-control (QC) flag distributions for four flux variables,
+and the measured/gap-filled share of sub-daily records at the sites with sub-daily data
+extracted.
+
+DESCRIPTION:
+(a) Empirical cumulative distribution functions (ECDFs) of the QC flag fraction for
+NEE_VUT, NEE_CUT, LE and H, one panel per temporal resolution (daily, monthly; left to
+right), across all 781-site FLUXMET site-periods. The annual panel (and weekly, excluded
+throughout for the same reason as daily/monthly here) is not shown here -- annual QC moves
+to Figure 6 (not built in this run). The dashed vertical line marks QC = 0.50, the paper's
+QC_THRESHOLD_YY/MM/DD/WW gate (R/pipeline_config.R).
+(b) Pooled share of sub-daily (half-hourly/hourly) records in each of the four true
+QC categories (measured, good/medium/poor gap-fill), for the 31 of 781 sites with
+sub-daily FLUXMET files extracted on disk -- 23 of these 31 sites (74%) are ICOS
+sites (computed from data_hub in the snapshot of record, not inferred from site ID prefix --
+CLAUDE.md Hard Rule 2), so this subset is hub-skewed toward ICOS relative to the network as a
+whole, though roughly IGBP-representative -- read as an ICOS-weighted estimate, not a network
+average. One of the 31, US-MMS, is hourly (HR) rather than half-hourly (HH), from its
+May 2026 extraction (data/extracted/AMF_US-MMS_FLUXNET_1999-2023_v1.3_r1/, files dated
+2026-05-25).
+
+COLOUR CODING:
+(a) NEE_VUT/NEE_CUT/LE/H, fixed 4-colour palette (this script's own FOUR_VAR_COLOURS;
+no dedicated palette yet exists in R/plot_constants.R for these four variables).
+(b) QC category, blue (measured) to red (poor gap-fill), ordinal.
+
+DATA SOURCE:
+(a) Direct read of the daily/monthly DuckDB tables (dataset = 'FLUXMET'), read-only -- the
+existing table_stage1_qc_distribution.csv only stores summary quantiles, not the full
+per-site-period distribution an ECDF needs.
+(b) review/diagnostics/data_quality_uncertainty/table_stage1_subdaily_qc_network_summary.csv,
+unchanged. ICOS count computed here from table_stage0_hh_hr_sites.csv joined to the
+snapshot of record (fluxnet_shuttle_snapshot_20260920T102211.csv) on data_hub.
+Both ultimately trace to data/duckdb/fluxnet.duckdb.
+
+PROVENANCE: promoted from the interim technical-validation candidate
+(scripts/technical_validation_interim.R, review/technical_validation_interim/fig_tv1_*),
+same data and panel-building logic, annual sub-panel dropped (see DESCRIPTION above).
+
+SOURCE: scripts/generate_figS5_quality_flags.R.
+DIMENSIONS: 180 x 150 mm, 600 dpi PNG + vector PDF, Helvetica, white background.

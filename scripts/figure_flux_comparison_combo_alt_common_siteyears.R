@@ -25,11 +25,15 @@
 ## SESSION_LOG.md 2026-10-02. Renumbered Supplementary Figure S2 under figure
 ## stage 6 (2026-10-02; target journal Scientific Data has no Extended Data
 ## concept) -- this script's own name is unchanged, see docs/figure_inventory.md.
+## Renumbered again S2 -> S3, 2026-10-12 (S1 is now the record-length
+## collections figure, S2 is now Whittaker NEE/GPP/RECO) -- see
+## logs/prompts/2026-10-12_renumber_figures.md. Legend's section reference
+## also corrected Section 2.5 -> Section 2.6 at the same time.
 ##
 ## Outputs:
 ##   data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv
 ##     + .meta.json
-##   review/figures/draft_manuscript_v1/SupFigs/figS2_flux_comparison_matched_siteyears.png/.pdf/.jpg
+##   review/figures/draft_manuscript_v1/SupFigs/figS3_flux_comparison_matched_siteyears.png/.pdf/.jpg
 ##     + .legend.txt (renumbered from supp_flux_comparison_matched_siteyears.*)
 
 if (file.exists(".env")) {
@@ -65,7 +69,7 @@ DB_PATH     <- file.path(FLUXNET_DATA_ROOT, "duckdb/fluxnet.duckdb")
 SHUTTLE_MEDIANS_CSV <- "data/snapshots/site_flux_medians_shuttle.csv"
 OUT_CSV     <- "data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv"
 OUT_DIR     <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
-OUT_STEM    <- file.path(OUT_DIR, "figS2_flux_comparison_matched_siteyears")
+OUT_STEM    <- file.path(OUT_DIR, "figS3_flux_comparison_matched_siteyears")
 fs::dir_create(OUT_DIR)
 
 STANDARD_IGBP    <- c("EBF","MF","DBF","ENF","CSH","OSH",
@@ -308,18 +312,18 @@ msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 # ---- Legend --------------------------------------------------------------------
 n_matched <- site_flux |> group_by(flux) |> summarise(n_sites = n(), n_site_years = sum(n_matched_years))
 legend_lines <- c(
-  "FIGURE LEGEND — figS2_flux_comparison_matched_siteyears.png",
+  "FIGURE LEGEND — figS3_flux_comparison_matched_siteyears.png",
   strrep("=", 60), "",
-  "TITLE: Supplementary Figure S2 — FLUXNET2015 vs. the snapshot per-IGBP-class median",
+  "TITLE: Supplementary Figure S3 — FLUXNET2015 vs. the snapshot per-IGBP-class median",
   "flux comparison, restricted to matched site-years", "",
   "PUBLICATION LEGEND:",
-  "Supplementary Figure S2. Comparison of per-IGBP-class median net ecosystem production (NEP),",
+  "Supplementary Figure S3. Comparison of per-IGBP-class median net ecosystem production (NEP),",
   "evapotranspiration (ET) and sensible heat flux (H) between the FLUXNET2015 release and the",
   "snapshot, restricted to site-years present and qualifying in both datasets for a given site",
   "and calendar year. This matched comparison isolates differences arising from updated",
   "flux-processing software from differences arising from network composition change,",
   "complementing the full-network comparison in the main text. Data used in the analyses are",
-  "described in Section 2.5.", "",
+  "described in Section 2.6.", "",
   "DESCRIPTION:",
   "Three vertically-stacked panels (a NEP, b ET, c H -- bold lower-case, 8pt) comparing, for",
   "each IGBP vegetation class, the median flux value computed from the FLUXNET2015 release",

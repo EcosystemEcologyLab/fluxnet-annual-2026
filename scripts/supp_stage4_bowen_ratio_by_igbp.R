@@ -134,8 +134,10 @@ print(table4, n = Inf, width = Inf)
 ## (2026-10-08 follow-up): S3 freed up by tableS3_sampling_ratios_by_axis.csv's
 ## own rename to supplementary_data_2_sampling_ratios.csv (no longer a
 ## numbered Supplementary Table). Old tableS4_bowen_ratio_by_igbp.* moved to
-## SupTables/deprecated/.
-out_path <- file.path(OUT_DIR, "tableS3_bowen_ratio_by_igbp.csv")
+## SupTables/deprecated/. Renumbered back tableS3 -> tableS4 (2026-10-12,
+## logs/prompts/2026-10-12_renumber_figures.md): S3 is now
+## tableS3_quality_uncertainty_coverage.csv.
+out_path <- file.path(OUT_DIR, "tableS4_bowen_ratio_by_igbp.csv")
 write_csv(table4, out_path)
 write_output_metadata(
   out_path,

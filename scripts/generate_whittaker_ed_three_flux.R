@@ -1,22 +1,25 @@
 ## generate_whittaker_ed_three_flux.R
-## Supplementary Figure S1 (figure stage 6 renumbering, 2026-10-02; target
-## journal Scientific Data has no Extended Data concept -- this script's own
-## name is unchanged, see docs/figure_inventory.md): Whittaker climate-space
-## hexbins for three fluxes (NEE, GPP, RECO) side by side -- same hexagons,
-## points, and global ice-free-land contour overlay as Figure 3 (NEE panel
-## reuses fig_whittaker_worldclim() directly, in fill_mode = "stepped", the
-## same call Figure 3 makes). GPP and RECO are not NEE-specific in
-## fig_whittaker_worldclim(), so their panels are built directly here from
-## compute_site_annual_fluxes()'s own per-site median values, reusing only
-## the flux-agnostic pieces of the Whittaker machinery (WorldClim climate
-## join, hex_regular equal-aspect binning, fig_whittaker_global_contour()).
+## Supplementary Figure S2 (renumbered 2026-10-12 from S1,
+## logs/prompts/2026-10-12_renumber_figures.md -- S1 is now the record-length
+## collections figure; target journal Scientific Data has no Extended Data
+## concept -- this script's own name is unchanged, see docs/figure_inventory.md):
+## Whittaker climate-space hexbins for three fluxes (NEE, GPP, RECO) side by
+## side -- same hexagons, points, and global ice-free-land contour overlay as
+## Figure 3 (NEE panel reuses fig_whittaker_worldclim() directly, in
+## fill_mode = "stepped", the same call Figure 3 makes). GPP and RECO are not
+## NEE-specific in fig_whittaker_worldclim(), so their panels are built
+## directly here from compute_site_annual_fluxes()'s own per-site median
+## values, reusing only the flux-agnostic pieces of the Whittaker machinery
+## (WorldClim climate join, hex_regular equal-aspect binning,
+## fig_whittaker_global_contour()).
 ##
 ## Output: review/figures/draft_manuscript_v1/SupFigs/
-##   figS1_whittaker_nee_gpp_reco.png/.pdf/.jpg + .legend.txt
+##   figS2_whittaker_nee_gpp_reco.png/.pdf/.jpg + .legend.txt
 ##   (renumbered from supp_whittaker_nee_gpp_ter.*, then re-stemmed from
 ##   figS1_whittaker_nee_gpp_ter.* to figS1_whittaker_nee_gpp_reco.* in the
 ##   supplementary material restructure, 2026-10-08 -- "TER" renamed to
-##   "RECO" throughout this figure's user-facing text, see SESSION_LOG.md)
+##   "RECO" throughout this figure's user-facing text, see SESSION_LOG.md --
+##   then renumbered figS1 -> figS2, 2026-10-12.)
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -39,7 +42,7 @@ msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...
 msg("=== Extended Data: Whittaker NEE/GPP/RECO three-flux figure ===")
 
 OUT_DIR  <- file.path("review", "figures", "draft_manuscript_v1", "SupFigs")
-OUT_STEM <- file.path(OUT_DIR, "figS1_whittaker_nee_gpp_reco")
+OUT_STEM <- file.path(OUT_DIR, "figS2_whittaker_nee_gpp_reco")
 fs::dir_create(OUT_DIR)
 
 # ---- Step: load site-level annual fluxes (shared function) -------------------
@@ -303,13 +306,13 @@ msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
 # ---- Legend --------------------------------------------------------------------
 legend_lines <- c(
-  "FIGURE LEGEND — figS1_whittaker_nee_gpp_reco.png",
+  "FIGURE LEGEND — figS2_whittaker_nee_gpp_reco.png",
   strrep("=", 60), "",
-  "TITLE: Supplementary Figure S1 — Whittaker climate-space distribution of the snapshot",
+  "TITLE: Supplementary Figure S2 — Whittaker climate-space distribution of the snapshot",
   "for three fluxes: net ecosystem exchange, gross primary productivity,",
   "and ecosystem respiration (RECO)", "",
   "PUBLICATION LEGEND:",
-  "Supplementary Figure S1. Whittaker climate-space distribution of the snapshot network's net",
+  "Supplementary Figure S2. Whittaker climate-space distribution of the snapshot network's net",
   "ecosystem exchange (NEE), gross primary productivity (GPP) and ecosystem respiration (RECO).",
   "Towers are placed in mean-annual-temperature by mean-annual-precipitation space (WorldClim",
   "v2.1) and coloured by the hexagon-binned median of each site's flux. Solid and dashed black",

@@ -1,8 +1,18 @@
 ## supp_stage2_record_length_collections_figure.R
 ##
 ## Unattended supplementary run, Stage 2: record length per collection
-## (Marconi, La Thuile, FLUXNET2015, current network), and Supplementary
-## Figure S7.
+## (Marconi, La Thuile, FLUXNET2015, current network) -- Supplementary
+## Figure S1.
+##
+## Renumbered 2026-10-12 (logs/prompts/2026-10-12_renumber_figures.md): this
+## script used to build a two-panel figS6_record_length (panel a, the
+## current-network record-length histogram; panel b, the cross-collection
+## share-with->=n-years step lines). Panel a's content now lives directly in
+## the rebuilt Figure 2's inset (scripts/generate_fig_cumulative_siteyears.R,
+## calling the same fig_record_length_histogram()), so it is no longer
+## duplicated here -- this script now builds ONLY the former panel b, alone,
+## as the new single-panel Supplementary Figure S1
+## (figS1_record_length_collections).
 ##
 ## Per-site year counts, reusing scripts/collection_comparison_table.R's own
 ## list-reading code verbatim (not reimplemented): Marconi "Years in
@@ -17,7 +27,9 @@
 ## Validates against data/snapshots/collection_sites_siteyears.csv before
 ## producing any output -- if the per-collection totals this script computes
 ## do not match 96 / 965 / 1,532 / that file's own Current total, the stage
-## stops without writing the figure (see review/supp_run_status.md).
+## stops without writing the figure (see review/supp_run_status.md). Still
+## pinned to its own older snapshot (see docs/decisions_pending.md
+## 2026-10-12) -- unaffected by this renumbering.
 
 if (file.exists(".env")) {
   library(dotenv)
@@ -36,7 +48,7 @@ suppressPackageStartupMessages({
 })
 
 msg <- function(...) message(format(Sys.time(), "[%Y-%m-%d %H:%M:%S]"), " ", ...)
-msg("=== Stage 2: record length per collection + Figure S7 ===")
+msg("=== Stage 2: record length per collection -- Figure S1 ===")
 
 OUT_DIR     <- "review/figures/draft_manuscript_v1/SupTables"
 SUPFIGS_DIR <- "review/figures/draft_manuscript_v1/SupFigs"
@@ -122,30 +134,11 @@ if (!all(checks$ok)) {
 msg("Validation PASSED: all four collection totals match collection_sites_siteyears.csv / the task's stated checks.")
 
 ## =============================================================================
-## Figure S7: two panels
+## Figure S1: single panel -- share of sites with >= n years, four collections
 ## =============================================================================
-msg("--- Building Figure S7 ---")
+msg("--- Building Figure S1 ---")
 
-THRESHOLDS <- c(5L, 10L, 20L)
-
-## ---- Panel a: current-network histogram, stacked by IGBP ------------------
-## Panel-building logic lives in R/figures/fig_network_growth.R::
-## fig_record_length_histogram() (extracted 2026-10-12), shared with the
-## Figure 2 record-length inset candidate -- same inputs (current_sites,
-## presence), same geoms/defaults as the inline code this replaced.
-record_length <- fig_record_length_histogram(
-  site_meta   = current_sites,
-  presence_df = presence,
-  thresholds  = THRESHOLDS
-)
-current_hist_df <- record_length$hist_df
-thresh_counts   <- record_length$thresh_counts
-msg("Current network sites at/above thresholds: ",
-    paste(paste0(">=", THRESHOLDS, "yr: ", thresh_counts), collapse = "; "))
-
-panel_a <- record_length$plot + panel_letter("a")
-
-## ---- Panel b: share of sites with >= n years, four collections -----------
+## ---- Share of sites with >= n years, four collections ---------------------
 share_curve <- function(n_years_vec, label) {
   n_total <- length(n_years_vec)
   max_n <- max(n_years_vec, na.rm = TRUE)
@@ -173,65 +166,72 @@ coll_labels <- setNames(
 )
 step_df$collection_label <- coll_labels[step_df$collection]
 
-## Figure 2's own collection colours (R/figures/fig_network_growth.R), plus
-## dark grey for the current network per task instruction.
+## Collection colours as in the rebuilt Figure 2 (Marconi is now dark grey
+## there, not green -- see scripts/generate_fig_cumulative_siteyears.R,
+## marconi_colour = "#404040"), plus true black at a heavier line weight for
+## the snapshot so it reads as distinct from Marconi's similar dark grey.
 COLLECTION_COLOURS <- c(
-  "Marconi"     = "#2ECC71",
+  "Marconi"     = "#404040",
   "La Thuile"   = "#E74C3C",
   "FLUXNET2015" = "#3498DB",
-  "Current"     = "grey20"
+  "Current"     = "black"
+)
+COLLECTION_LWD <- c(
+  "Marconi"     = nature_lwd(0.75),
+  "La Thuile"   = nature_lwd(0.75),
+  "FLUXNET2015" = nature_lwd(0.75),
+  "Current"     = nature_lwd(1.0)   # heavier -- distinct from Marconi's similar grey; NATURE_LINEWIDTH_MAX
 )
 names(COLLECTION_COLOURS) <- coll_labels[names(COLLECTION_COLOURS)]
+names(COLLECTION_LWD)     <- coll_labels[names(COLLECTION_LWD)]
 step_df$collection_label <- factor(step_df$collection_label, levels = coll_labels[c("Marconi", "La Thuile", "FLUXNET2015", "Current")])
 
-panel_b <- ggplot(step_df, aes(x = n, y = share, colour = collection_label)) +
-  geom_step(linewidth = nature_lwd(0.75)) +
-  scale_colour_manual(name = NULL, values = COLLECTION_COLOURS) +
+## check_figure_format.R measures the RENDERED stroke, including legend key
+## glyphs. The in-plot step lines render at exactly their COLLECTION_LWD
+## values (confirmed by direct SVG inspection), but the colour legend's own
+## key glyphs do not inherit linewidth from scale_linewidth_manual() once
+## its own guide is suppressed (guide = "none", needed so only one legend --
+## colour -- is drawn, not two) -- they fall back to a ggplot2 default that
+## measured 1.07pt, just over the 1.00pt (+-0.05pt tolerance) ceiling.
+## override.aes on the colour legend's own guide fixes the key glyphs to a
+## single safe width, independent of each line's actual in-plot width.
+panel_s1 <- ggplot(step_df, aes(x = n, y = share, colour = collection_label, linewidth = collection_label)) +
+  geom_step() +
+  scale_colour_manual(name = NULL, values = COLLECTION_COLOURS,
+                       guide = guide_legend(override.aes = list(linewidth = nature_lwd(0.75)))) +
+  scale_linewidth_manual(values = COLLECTION_LWD, guide = "none") +
   scale_x_continuous(name = "At least n years with data", breaks = scales::breaks_pretty()) +
   scale_y_continuous(name = "Share of sites", labels = scales::label_percent(), limits = c(0, 1)) +
   nature_theme() +
-  theme(legend.position = "right", legend.key.size = unit(2.2, "mm")) +
-  panel_letter("b")
+  theme(legend.position = "right", legend.key.size = unit(2.2, "mm"))
 
-composite <- panel_a + panel_b + patchwork::plot_layout(ncol = 2, widths = c(1, 1))
-
-## SupFig (Extended-Data-style) width limit: 180 mm, not the 183 mm main-text
-## double-column width -- scripts/check_figure_format.R enforces <=180mm for
-## every figure under SupFigs/ (confirmed: every existing figS1-figS6 is
-## <=179.9mm wide; the repo's only 183mm-wide panels, e.g.
-## fig_05_representativeness, live in draft_manuscript_v1/ as main-text
-## figures, not SupFigs/). Using 180mm here (not 183mm) so this figure is
-## consistent with that established convention and passes the format check.
-FIG_WIDTH_MM  <- 180
+## Single panel now (panel b alone) -- same per-panel size it had inside the
+## old two-panel 180x90mm composite (each panel was ~90mm wide x 90mm tall).
+FIG_WIDTH_MM  <- 90
 FIG_HEIGHT_MM <- 90
 
-fig_stem <- file.path(SUPFIGS_DIR, "figS6_record_length")
-saved <- save_nature_figure(composite, fig_stem, width_mm = FIG_WIDTH_MM, height_mm = FIG_HEIGHT_MM,
+fig_stem <- file.path(SUPFIGS_DIR, "figS1_record_length_collections")
+saved <- save_nature_figure(panel_s1, fig_stem, width_mm = FIG_WIDTH_MM, height_mm = FIG_HEIGHT_MM,
                              extended_data = TRUE)
 png_path <- saved$png
 msg("Saved: ", saved$png, ", ", saved$pdf, ", ", saved$jpeg)
 
 ## ---- Legend file -----------------------------------------------------------
 legend_text <- paste0(
-"FIGURE LEGEND -- figS6_record_length.png\n",
+"FIGURE LEGEND -- figS1_record_length_collections.png\n",
 "============================================================\n\n",
-"TITLE: Supplementary Figure S6 — Record length of the snapshot and across FLUXNET collections\n\n",
+"TITLE: Supplementary Figure S1 — Record length across FLUXNET collections and the snapshot\n\n",
 "PUBLICATION LEGEND:\n",
-"Supplementary Figure S6. Record length of the snapshot and of three prior FLUXNET data\n",
-"collections (Marconi, La Thuile, FLUXNET2015). Panel a shows the distribution of years with\n",
-"data per site in the snapshot, by IGBP class. Panel b shows, for each collection, the share of\n",
-"its sites with at least a given number of years of data. Data used in the analyses are\n",
-"described in Section 2.5.\n\n",
+"Supplementary Figure S1. For each of four FLUXNET network generations (Marconi, La Thuile,\n",
+"FLUXNET2015, the snapshot), the share of that collection's sites with at least n years of\n",
+"data, as a step line. Data used in the analyses are described in Section 2.5.\n\n",
 "DESCRIPTION:\n",
-"Panel a: distribution of years with data per site for the snapshot (781-site) network,\n",
-"stacked by IGBP class (PAPER_IGBP_ORDER palette, R/plot_constants.R). Dashed vertical\n",
-"lines mark 5, 10 and 20 years, each labelled with the number of sites at or above that\n",
-"threshold (n=", thresh_counts[1], ", n=", thresh_counts[2], ", n=", thresh_counts[3], ").\n\n",
-"Panel b: for each of four FLUXNET network generations (Marconi, La Thuile, FLUXNET2015, the\n",
-"snapshot), the share of that collection's sites with at least n years of data, as a step line.\n",
-"Site counts shown in the legend key. The snapshot's line coloured dark grey; the three historical\n",
-"collections use the same colours as their lines in Figure 2 (Marconi #2ECC71, La Thuile #E74C3C,\n",
-"FLUXNET2015 #3498DB).\n\n",
+"Share of each collection's sites with at least n years of data, as a step line. Site counts\n",
+"shown in the legend key. Collection colours as in Figure 2: Marconi dark grey (#404040),\n",
+"La Thuile red (#E74C3C), FLUXNET2015 blue (#3498DB); the snapshot is drawn true black, at a\n",
+"heavier line weight than the other three, so it reads as distinct from Marconi's similarly\n",
+"dark grey. (Figure 2's own record-length histogram by IGBP class -- formerly this figure's\n",
+"panel a -- now lives directly in Figure 2's inset; it is not duplicated here.)\n\n",
 "IMPORTANT -- two different meanings of 'a year', not interchangeable:\n",
 "  - Marconi, La Thuile, FLUXNET2015 (the three historical collections): a year counts if that\n",
 "    site is LISTED as having data for that year in the collection's own published site table\n",
@@ -245,13 +245,13 @@ legend_text <- paste0(
 "    range per site (e.g. '1997-1998'), not a year-by-year record, so Marconi's per-site year\n",
 "    count is that range's length, not a count of individually-confirmed data years. La Thuile and\n",
 "    FLUXNET2015, by contrast, are genuine year-by-year indicator counts.\n\n",
-"Because of this, panel b's four lines are not a strictly like-for-like comparison -- stated here\n",
-"so the figure is not read as claiming otherwise.\n\n",
+"Because of this, this figure's four lines are not a strictly like-for-like comparison --\n",
+"stated here so the figure is not read as claiming otherwise.\n\n",
 "COLLECTION TOTALS (sites, site-years): Marconi ", nrow(marconi_per_site), ", ", marconi_total,
 "; La Thuile ", nrow(la_thuile_per_site), ", ", la_thuile_total,
 "; FLUXNET2015 ", nrow(fluxnet2015_per_site), ", ", fluxnet2015_total,
 "; the snapshot ", nrow(current_per_site), ", ", current_total, ".\n\n",
-"Final artwork size: 180 mm wide x 90 mm tall, Helvetica throughout. Supplementary Figure (target\n",
+"Final artwork size: 90 mm wide x 90 mm tall, Helvetica throughout. Supplementary Figure (target\n",
 "journal Scientific Data has no Extended Data concept) -- see docs/figure_inventory.md.\n\n",
 "SOURCE: scripts/supp_stage2_record_length_collections_figure.R.\n",
 "Validated against data/snapshots/collection_sites_siteyears.csv (96 / 965 / 1,532 / ",
@@ -266,7 +266,7 @@ write_output_metadata(
   png_path,
   input_sources = c("data/lists/Marconi_to_Modern_SiteIDs.xlsx", "data/lists/LaThuileList.xlsx",
                      "data/lists/FLUXNET2015.xlsx", CURRENT_SNAPSHOT, PRESENCE_PATH, SITEYEARS_CHECK),
-  notes = "Figure S7: current-network record-length histogram by IGBP (panel a) and cross-collection share-with->=n-years step lines (panel b). See .legend.txt for the two-meanings-of-a-year caveat and Marconi-is-a-span caveat."
+  notes = "Figure S1: cross-collection share-with->=n-years step lines (formerly panel b of figS6_record_length; former panel a now lives in Figure 2's inset). See .legend.txt for the two-meanings-of-a-year caveat and Marconi-is-a-span caveat."
 )
 
 msg("=== Stage 2 done ===")

@@ -1,10 +1,10 @@
 FIGURE LEGEND — supp_flux_representativeness.png
 ============================================================
 
-TITLE: Supplementary Figure S4 — Network sampling of the current FLUXNET network (n=781), fluxes
+TITLE: Supplementary Figure S8 — Network sampling of the current FLUXNET network (n=781), fluxes
 
 PUBLICATION LEGEND:
-Supplementary Figure S4. Network sampling of the snapshot for four fluxes -- net ecosystem
+Supplementary Figure S8. Network sampling of the snapshot for four fluxes -- net ecosystem
 exchange, gross primary productivity, ecosystem respiration and evapotranspiration -- each
 compared using both the gridded value at the tower and the site's own value. Extends the main
 text's sampling figure (which covers net ecosystem exchange and evapotranspiration) to add
@@ -12,15 +12,15 @@ gross primary productivity and ecosystem respiration. Network sampling analysis 
 in Section 2.7.
 
 DESCRIPTION:
-Companion to Figure 5 (fig_05_representativeness.png) and its gridded-value-at-the-tower companion,
-Supplementary Figure S3 (figS3_sampling_gridded_at_tower.png) -- same panel style, bar-label
-conventions, and "gridded value at the tower"/"the site's own value" definitions (what Figure 5's
-legend itself still calls "Geo vs Geo"/"Geo vs Data" -- see Figure 5's legend for the full
+Companion to Figure 7 (fig_07_network_sampling.png) and its gridded-value-at-the-tower companion,
+Supplementary Figure S7 (figS7_sampling_gridded_at_tower.png) -- same panel style, bar-label
+conventions, and "gridded value at the tower"/"the site's own value" definitions (what Figure 7's
+legend itself still calls "Geo vs Geo"/"Geo vs Data" -- see Figure 7's legend for the full
 definitions). Eight panels, four
 fluxes (rows) x two comparisons (columns): a/b NEE, c/d GPP, e/f RECO (ecosystem respiration, ra+rh),
 g/h ET; left column (a, c, e, g) is gridded value at the tower, right column (b, d, f, h) is the
 site's own value.
-Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 5's own panels e and f --
+Panels a, b (NEE) and g, h (ET) are reproduced unchanged from Figure 7's own panels e and f --
 identical rasters, tower values and bins; their n and J are confirmed programmatically (not just
 visually) to equal representativeness_metrics_fig4.csv rows E/F exactly before this figure is drawn.
 Panels c, d (GPP) and e, f (RECO) are new to this figure.
@@ -37,7 +37,7 @@ MODEL VALUES AND LAND GRID:
 TRENDY v14 S3, 17-model ensemble median, 1991-2020 mean, on the Beck 2023 Koppen-Geiger 0.5 deg land
 mask (same raster footprint for all four fluxes; RECO = ra+rh). NEE and ET use
 data/external/trendy/derived/trendy_nee_fluxbased_median.tif and
-flux_bin_breaks_et_median_1991_2020.tif (Figure 5's own rasters); GPP and RECO use
+flux_bin_breaks_et_median_1991_2020.tif (Figure 7's own rasters); GPP and RECO use
 candidate_gpp_median.tif and candidate_ter_median.tif (scripts/candidate_nee_gpp_ter_panels.R).
 Land total: 163,331,649 km2.
 
@@ -50,7 +50,7 @@ steps as scripts/diagnostics/flux_bin_breaks.R. Edges differ from that script's 
 because the tower values here use compute_site_annual_fluxes()/QC_THRESHOLD_YY, not that script's
 older QC>=0.80 mean-monthly-cycle method.
 
-BAR LABELS: as Figure 5 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the
+BAR LABELS: as Figure 7 -- log2 sampling ratio, clipped at +-5x with an exact-ratio annotation at the
 clip; faint gridlines at 1/5x, 1/2x, 2x, 5x; "% land"/"towers" column headers above panels a/b only
 (same two-number convention applies to every row); J (weighted Jaccard) right-aligned per panel; the
 bottom row's x axis reads "smaller proportion"/"greater proportion" of towers vs. land.

@@ -848,6 +848,16 @@ fig_siteyears_by_year_igbp <- function(presence_df,
 #'   plot is a strict visual subset of the \code{TRUE} call's -- built for a
 #'   presentation "reveal" (show the historical-only version, then advance
 #'   to the full figure on the same axes).
+#' @param show_release_year_lines Logical (default \code{TRUE}). When
+#'   \code{FALSE}, the dashed vertical reference lines at the historical
+#'   release years (2000, 2007, 2015) are omitted. Added 2026-10-12 for the
+#'   rebuilt Figure 2 (logs/prompts/2026-10-12_renumber_figures.md), which
+#'   drops the lines entirely; default preserves the original behaviour for
+#'   all other callers.
+#' @param marconi_colour Character scalar (default \code{"#2ECC71"}, green).
+#'   Colour used for the Marconi cumulative line and its direct label. Added
+#'   2026-10-12 so the rebuilt Figure 2 can use dark grey (\code{"#404040"})
+#'   without changing the default for other callers.
 #'
 #' @return A ggplot object.
 #'
@@ -870,7 +880,9 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                                            year_range = NULL,
                                            base_size  = 36L,
                                            la_thuile_year_matrix = NULL,
-                                           show_current_network = TRUE) {
+                                           show_current_network = TRUE,
+                                           show_release_year_lines = TRUE,
+                                           marconi_colour = "#2ECC71") {
 
   if (is.null(year_range)) {
     window     <- data_year_window(presence_df)
@@ -947,7 +959,7 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
   }
 
   hist_colours <- c(
-    "Marconi"     = "#2ECC71",
+    "Marconi"     = marconi_colour,
     "La Thuile"   = "#E74C3C",
     "FLUXNET2015" = "#3498DB"
   )
@@ -1019,12 +1031,21 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     )
   }
 
+  release_year_layer <- if (show_release_year_lines) {
+    list(
+      ggplot2::geom_vline(
+        xintercept = c(2000L, 2007L, 2015L),
+        linetype   = "dashed", colour = "grey55", linewidth = nature_lwd(0.4)
+      )
+    )
+  } else {
+    list()
+  }
+
   ggplot2::ggplot() +
-    # Vertical release-year reference lines (behind all data)
-    ggplot2::geom_vline(
-      xintercept = c(2000L, 2007L, 2015L),
-      linetype   = "dashed", colour = "grey55", linewidth = nature_lwd(0.4)
-    ) +
+    # Vertical release-year reference lines (behind all data; omitted when
+    # show_release_year_lines = FALSE)
+    release_year_layer +
     shuttle_layers +
     # Historical dataset lines
     ggplot2::geom_line(

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-12T21:02:16Z",
+  "pipeline_version": "1714520",
+  "input_sources": [
+    "review/technical_validation_interim/tables/table_tv1_column_coverage_by_site.csv"
+  ],
+  "notes": "Supplementary Table S3: quality and uncertainty variables by time step, promoted from the interim technical-validation candidate's table_tv1_column_coverage_by_site.csv (review/technical_validation_interim/). n_sites_* = count(distinct site_id) with at least one non-NA value for that column at that resolution; a variable with no column at all in that resolution's table is marked 'not provided' (not blank or zero -- these are two different kinds of absence). See logs/prompts/2026-10-12_renumber_figures.md."
+}

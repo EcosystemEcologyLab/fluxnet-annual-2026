@@ -1,0 +1,16 @@
+{
+  "run_datetime_utc": "2026-10-12T20:42:11Z",
+  "pipeline_version": "1714520",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/sites_marconi_clean.csv",
+    "data/snapshots/years_marconi.csv",
+    "data/snapshots/sites_la_thuile_clean.csv",
+    "data/snapshots/years_la_thuile.csv",
+    "data/lists/LaThuileList.xlsx",
+    "data/snapshots/sites_fluxnet2015_clean.csv",
+    "data/snapshots/years_fluxnet2015.csv"
+  ],
+  "notes": "Rebuilt 2026-10-12 to match Dave's edited mockup (fig_02alt_mockup_dave_02.png): framed record-length inset, no release-year dashed lines, Marconi dark grey. Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv. Gate checks passed: 6200 main-panel site-years, 781 inset sites, thresholds 483/225/63. See .legend.txt."
+}

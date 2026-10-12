@@ -4,6 +4,43 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Figure 6 and S5 fixes: panel c text layout, variable display labels
+
+Full prompt: `logs/prompts/2026-10-13_fig06_fixes.md`. Small follow-up fixes to Figure 6
+(commit `577af22`) and Supplementary Figure S5. Same names, gates, and
+`check_figure_format.R` checks as before.
+
+**Figure 6 panel c text** (`scripts/generate_fig06_quality_uncertainty.R`). The in-panel
+3-line annotation ("152 of 3960 exceed combined uncertainty" / "20 lack the joint term" / "34
+beyond ±150 (clipped)") collided with the "1500" y-axis tick label and its three lines were
+misaligned with each other. Root cause of the misalignment: `annotate("text", ...)` with a
+non-0/1 `hjust` (it was `-0.03`) mis-justifies a multi-line label's lines relative to each
+other — confirmed by isolated reproduction (`hjust = 0` left-aligns all lines correctly;
+`hjust = -0.03` staggers them, with the widest line shifted right relative to the others).
+Fixed: `hjust = 0` exactly, anchor moved from `x = -Inf` to `x = -CLIP * 0.85` (right of the
+left edge), and top expansion increased `0.28` → `0.55` for headroom above the tallest bar.
+Also added thousands separators throughout the label ("152 of 3,960", "20", "34" — only the
+site-year totals needed a separator). Gates unchanged (6,336/3,960/4,017/4,320/20).
+
+**Figure 6 panel a and Supplementary Figure S5 (both panels), variable display labels.**
+Column names (`NEE_VUT`, `NEE_CUT`, `LE`, `H`) relabelled for display only — `NEE (VUT)`,
+`NEE (CUT)`, `LE`, `H`, same order and colours (`FOUR_VAR_COLOURS`) — via a new shared
+`VAR_LABELS` named vector in each script, matched to each `scale_*_manual(labels = ...)` by
+name so it resolves correctly regardless of break order: `scale_colour_manual(labels =
+VAR_LABELS)` for the ECDF legends (Figure 6 panel a, S5 panel a), and a new
+`scale_x_discrete(labels = VAR_LABELS)` for S5 panel b's `coord_flip()`ped category axis
+(previously unlabelled beyond the raw factor levels). Underlying data/factor values
+(`NEE_VUT` etc.) left unchanged, since `FOUR_VAR_COLOURS`'s own names must still match them.
+
+**Also fixed in passing** (both scripts, directly stale from Figure 6 shipping since the
+6-fixes-ago commit): S5's legend text still said annual QC "moves to Figure 6 (not built in
+this run)" — corrected to state Figure 6 is now built, with its path.
+
+Both figures' legend texts updated to describe the new display labels. `check_figure_format.R`:
+14/14 PASS.
+
+---
+
 ## 2026-10-13 — Main Figure 6: quality and uncertainty of annual fluxes
 
 Full prompt: `logs/prompts/2026-10-13_fig06_quality_uncertainty.md`. Built main Figure 6 for

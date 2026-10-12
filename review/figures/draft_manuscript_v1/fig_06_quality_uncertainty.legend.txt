@@ -1,0 +1,68 @@
+FIGURE LEGEND -- fig_06_quality_uncertainty.png
+============================================================
+
+TITLE: Figure 6. Quality and uncertainty of annual fluxes
+
+PUBLICATION LEGEND:
+Figure 6. Quality and uncertainty of annual fluxes. (a) Completeness of the annual record by
+variable. (b) Magnitude of each uncertainty term contributing to usable annual NEE, VUT and
+CUT compared. (c) Effect of the VUT/CUT processing choice on annual NEE sums, for site-years
+where both are usable.
+
+DESCRIPTION:
+(a) Empirical cumulative distribution functions (ECDFs) of the annual quality-control (QC)
+flag fraction for NEE_VUT, NEE_CUT, LE and H, across all 781-site FLUXMET annual rows
+(n = 6,336). The QC flag fraction runs 1 (every underlying half-hourly/hourly record
+for that site-year was measured or good-quality gap-filled) down to 0 (every record is
+medium- or poor-quality gap-filled, or missing) -- higher is better. The dashed vertical
+line marks QC = 0.50, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY,
+R/pipeline_config.R). This is the annual panel removed from Supplementary Figure S5, which
+now keeps only the daily/monthly panels.
+(b) Boxplots (median, IQR box, 1.5xIQR whiskers, outlier points) of three uncertainty terms
+for usable annual NEE: the random uncertainty term (NEE_REF_RANDUNC), the u*-threshold term
+((P84-P16)/2 of the u*-percentile ensemble), and the joint term (NEE_REF_JOINTUNC), VUT and
+CUT side by side, log10 y-axis (the u*-threshold term has a long right tail). LE and H have
+no u*-threshold term in the FLUXNET Shuttle product and are not shown in this panel.
+(c) Histogram of NEE_VUT - NEE_CUT for site-years where both are usable (one bar per 5 g C
+m^-2 yr^-1 bin), n = 3,960. The panel states how many of these differences exceed the
+propagated combined uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2),
+and how many site-years have the joint-uncertainty term itself unavailable on at least one
+side even though both REF values qualify. The x-axis is clipped at +/-150 g C m^-2 yr^-1;
+the number of site-years lying beyond that clip is stated in the panel separately from the
+combined-uncertainty count -- clipping is a display choice and does not affect either count.
+
+PATTERNS (described neutrally, no cause offered):
+(a) NEE_VUT and NEE_CUT reach similar annual QC fractions at every percentile; LE and H
+reach a given QC fraction at a lower percentile than the two NEE variables.
+(b) The joint term is larger than either the random or u*-threshold term alone for both VUT
+and CUT, consistent with it combining the two; the u*-threshold term's distribution has a
+longer right tail than the random term's.
+(c) Differences cluster near zero; 152 of 3960 site-years (3.8%) exceed the combined
+uncertainty, and 20 lack a joint-uncertainty value on at least one side.
+
+QUALIFICATION RULE (panels b, c): 'usable' = (1 - QC) <= QC_THRESHOLD_YY (0.50), applied
+separately to VUT (own NEE_VUT_REF_QC) and CUT (own NEE_CUT_REF_QC) -- not the single
+per-site VUT/CUT fallback scripts/04_qc.R uses for row exclusion elsewhere in the paper.
+n = 4,017 usable VUT site-years, 4,320 usable CUT site-years, 3,960 site-years where both are
+usable (panel c and panel b's paired comparison).
+
+COLOUR CODING:
+(a) NEE_VUT/NEE_CUT/LE/H, the same 4-colour palette as Supplementary Figure S5
+(FOUR_VAR_COLOURS).
+(b) VUT/CUT, the same 2-colour palette as Supplementary Figures S5 and S6
+(VUT_CUT_COLOURS).
+
+DATA SOURCE:
+(a) Direct read of the annual DuckDB table (dataset = 'FLUXMET'), read-only -- the existing
+table_stage1_qc_distribution.csv only stores summary quantiles, not the full per-site-year
+distribution an ECDF needs (same documented exception as
+scripts/technical_validation_interim.R's own Figure 1a).
+(b) review/diagnostics/data_quality_uncertainty/table_stage2_site_year_nee_uncertainty.csv,
+unchanged.
+(c) review/diagnostics/data_quality_uncertainty/table_stage3_site_year_vut_vs_cut.csv,
+unchanged. No dq_stage*.R diagnostic was re-run to build this figure.
+
+SNAPSHOT: fluxnet_shuttle_snapshot_20260920T102211.csv (781 sites).
+
+SOURCE: scripts/generate_fig06_quality_uncertainty.R.
+DIMENSIONS: 183 x 78 mm, 600 dpi PNG + vector PDF, Helvetica, white background.

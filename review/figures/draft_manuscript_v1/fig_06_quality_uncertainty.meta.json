@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-10-12T23:43:45Z",
+  "pipeline_version": "294986a",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "review/diagnostics/data_quality_uncertainty/table_stage4_site_year_master.csv",
+    "review/diagnostics/data_quality_uncertainty/table_stage2_site_year_nee_uncertainty.csv",
+    "review/diagnostics/data_quality_uncertainty/table_stage3_site_year_vut_vs_cut.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "Main Figure 6: quality and uncertainty of annual fluxes (Results 3.4). Panel a is a direct, read-only DuckDB query (annual QC fractions) -- the annual panel removed from Supplementary Figure S5; panels b/c reuse review/diagnostics/data_quality_uncertainty/ table_stage2/table_stage3 unchanged, no dq_stage*.R diagnostic re-run. Gates passed: 6,336 annual rows; 3,960 both usable; 4,017 VUT usable; 4,320 CUT usable; 20 missing the joint term. See .legend.txt."
+}

@@ -15,7 +15,7 @@ lookup table, not a narrative. Last renumbered 2026-10-12
 | 3 | `fig_03_whittaker_current.png`/`.pdf` | Whittaker climate-space hexbin, current network. |
 | 4 | `fig_04_flux_comparison_combo_nep_et_h.png`/`.pdf` | Per-IGBP median NEP/ET/H, FLUXNET2015 vs. the snapshot. |
 | 5 | — | Not built. |
-| 6 | — | Not built. |
+| 6 | `fig_06_quality_uncertainty.png`/`.pdf` | Quality and uncertainty of annual fluxes (Results 3.4): annual QC ECDF; NEE uncertainty terms (random/u*-threshold/joint), VUT vs. CUT; VUT−CUT histogram. 183 mm wide. |
 | 7 | `fig_07_network_sampling.png`/`.pdf` | Six-panel network sampling (Geo vs Data). Was `fig_05_representativeness.png`. |
 
 ## Supplementary figures (`draft_manuscript_v1/SupFigs/`)

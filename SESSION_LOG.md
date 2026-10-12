@@ -4,6 +4,53 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-08 — BADM vegetation-structure/growth search (read-only)
+
+Read-only search of the BIF and BIFVARINFO files for all 781 sites in the 20 September snapshot
+(`data/extracted`), for vegetation structure and growth information. No data, code, figure,
+snapshot or DuckDB content was modified and nothing was downloaded; BIF-reading reused the
+existing pattern from `scripts/investigate_badm_management.R`
+(`SITE_ID, GROUP_ID, VARIABLE_GROUP, VARIABLE, DATAVALUE`), no new parser written. Full report and
+six CSVs: `review/diagnostics/badm_vegetation_search/report.md`.
+
+**Inventory and keyword search.** 69 raw `VARIABLE_GROUP` labels across 3.17M BIF rows. Of 24
+requested keywords, 11 (AGE, BASAL, BIOMASS, CANOPY, DBH, HEIGHT, LAI, LITTER, ROOT, SPP, TREE)
+match a structured group/variable name; the other 13 (AG_BIOMASS, WOOD, STEM, SPECIES, STAND,
+DENSITY, NPP, GROWTH, ALLOM, DISTURB, HARVEST, THIN, MANAGE) never appear as a group or variable
+name — DISTURB appears once as free-text category content ("Undisturbed" inside `DOM_DIST_MGMT`),
+the rest only as coincidental substrings in unrelated fields (e.g. "age" inside "Manager", "stand"
+inside "standard").
+
+**Vegetation-structure data exists but is small and hub-concentrated.** Canopy height, LAI/GAI/PAI,
+biomass, DBH, basal area, tree count, litter, rooting depth and species composition all have
+dedicated BADM groups (7–482 sites each). Every one of these **except canopy height is carried
+only by ICOS-hub sites** (0 AmeriFlux, 0 TERN); canopy height is the one variable present at all
+three hubs (344 ICOS + 86 AmeriFlux + 51 TERN = 482/781). AmeriFlux's own BIF export carries no
+biomass/DBH/basal-area/trees/litter/LAI/species data at all — its one vegetation-adjacent field is
+the coarse categorical `DOM_DIST_MGMT` (disturbance/management type, 277 AmeriFlux sites, 0
+ICOS/TERN).
+
+**No BADM variable is defined in BIFVARINFO.** All 251 keyword hits against the 320,928-row
+`BIFVARINFO_YY` definitions table (flux/met variables only: `NEE_*`, `TA_F_MDS*`, `PPFD_*`, …) are
+coincidental substrings ("density" in "photon flux density", "stand" in "standard deviation",
+"age" in "percentage", "stem" in "system") — zero relate to vegetation.
+
+**No numeric stand/tree age exists anywhere.** The closest field is `*_LIFESTAGE`, a two-value tag
+(Mature/Sapling) on a subset of biomass/DBH/canopy-height/basal-area/trees-count/species records.
+
+**Forest focus** (ENF/EBF/DNF/DBF/MF, 276 sites): 191 (69%) have canopy height; only 39 have
+biomass (24 of those tagged tree-vegtype specifically, 15 non-tree), 39 DBH, 36 basal area, 34
+species composition, 30 a lifestage tag. Only 55 of 276 (20%) have any of these six concepts on
+two or more distinct years — the minimum needed for anything about growth.
+
+Three raw-data anomalies noted and left as found (read-only): a Windows file path leaked into the
+`VARIABLE_GROUP` field for one site (`JP-Shn`, canopy-height/LAI blocks); a stray malformed row at
+`AU-Ync`; a casing mismatch (`NZ-CLa` vs. the snapshot's `NZ-Cla`) and 15 blank-`SITE_ID` rows
+(apparently `AU-Dry`'s own file) — none fall inside any of the vegetation-structure groups
+analysed, so they do not affect the counts reported.
+
+---
+
 ## 2026-10-08 — Supplementary follow-up: wording/layout fixes, site identifiers, table renumbering
 
 Six small follow-ups to the supplementary material restructure below, requested the same day.

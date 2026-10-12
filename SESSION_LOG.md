@@ -4,6 +4,66 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-12 — Figure 2 + record-length inset candidate, revision 2 (measured fixes)
+
+Fixed four problems in the revision-1 candidate, found by Dave and confirmed here by
+measurement (pixel sampling and `pdftotext -bbox`), not visual inspection. Full prompt:
+`logs/prompts/2026-10-12_fig02_inset_rev2.md`. New one-off verification script:
+`scripts/verify_fig02alt_inset_rev2.R`.
+
+**1. Legend key colour.** Keys were drawn at `alpha = 1` while every plotted fill (the main
+panel's `geom_area()`, the inset's `geom_histogram()`) uses `alpha = 0.8`, so every key was
+visibly darker than its matching colour in the plot. `legend_panel()`'s `override.aes` now
+uses `alpha = 0.8`. Verified: sampled the rendered pixel at the centre of all 15 legend keys
+against the mathematically expected alpha-0.8-over-white composite of each
+`PAPER_IGBP_COLOURS` hex value — exact match (not just close) for all 15 classes, at both
+89mm and 120mm.
+
+**2. Legend overlapping data at 89mm.** `LEGEND_RIGHT` in revision 1 was set to npc 0.97
+without ever checking it against the year-2015 dashed line's own position (npc 0.70) — at
+89mm, where the legend's fixed-pt text is a larger fraction of the (smaller) panel, it
+reached far enough right to cover the 2015 line and the stacked area near 2015–2017
+(cumulative 2,776–3,397 site-years there). Fixed by capping `LEGEND_RIGHT` at the year-2012
+position: the stacked-area cumulative through 2012 is 1,968 (computed directly), comfortably
+below the legend box's y = 2,300 bottom edge (reused from `INSET_BOTTOM`, already proven
+safe). Verified: computed the legend's bounding box in main-panel data coordinates and
+confirmed no stacked area, historical line, or newly-exposed dashed line falls inside it
+(the box may still sit over the already-inset-covered 2000/2007 lines — that's the inset's
+own approved footprint, not a new overlap) — margin >= 332 site-years at both sizes.
+
+**3. Oversized legend keys.** `override.aes(shape = 22, size = 4)` set the key *symbol's* own
+size independently of `legend.key.size`, and the two disagreed — keys rendered roughly twice
+the text's cap height. Replaced `geom_point()` (which needs a `size` aesthetic to show a
+shape at all) with `geom_tile()` (no `size` aesthetic), so key size is governed purely by
+`legend.key.size`, set from the legend's own font size so the key is about one text line
+tall. This incidentally also fixed problem 2 by shrinking the legend's footprint, but
+`LEGEND_RIGHT` was still capped explicitly rather than relying on that side effect.
+
+**4. "n=483" label overlapping the tallest bar.** The real bug: for `angle = 90` annotate
+text, `hjust` — not `vjust` — controls which way the label grows relative to its y anchor,
+confirmed directly with an isolated test plot measured via `pdftotext -bbox` (`hjust` near 1
+grows the label down toward the bars; near 0, up away from them; `vjust` instead shifts its
+horizontal position). The first attempt at this fix (raising the anchor height, keeping
+`hjust = 1.1`) still grew the label downward and, confirmed by the same bbox measurement,
+still clipped the tallest bar by about 0.8pt. Fixed in `fig_record_length_histogram()`
+(`R/figures/fig_network_growth.R`) with `hjust = -0.1` — shared by S6 and the inset, so S6
+was regenerated with the same fix. Verified by measurement, not visual check: calibrated each
+PDF's own histogram axes from its own tick-label text (e.g. 50/100/150, unambiguous — no
+other number in the document matches), then compared the exact pixel position of the tallest
+bar's top edge (height 104, at 6 years with data) to each "n=" label's bbox. Clearance: 8.0–8.3pt
+(inset 120mm), 6.0–6.2pt (inset 89mm), 9.6–9.9pt (S6) — all three labels clear in all three
+figures.
+
+Kept the gates, file names and text-size rules from revision 1; both 89mm and 120mm still
+meet every rule (89mm needed its legend text dropped to the 5pt floor — a 15-row legend at
+the inset's own 7pt overflowed into the inset's x-axis title at that size — while the inset's
+own axis/tick text stays at 7pt, same as the main panel, at both sizes).
+`check_figure_format.R` passes both sizes and S6. Legend text updated to describe the final
+key styling and the 2000/2007-vs-2015 distinction for what the legend's bounding box is and
+isn't allowed to cross.
+
+---
+
 ## 2026-10-12 — Figure 2 + record-length inset candidate, revision 1 (match Dave's mockup)
 
 Revised the same-day Figure 2 inset candidate after Dave pushed his own hand mockup,

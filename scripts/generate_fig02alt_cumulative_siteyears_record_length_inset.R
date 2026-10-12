@@ -181,21 +181,26 @@ msg("Inset footprint (npc): left=", round(INSET_LEFT, 3), " right=", round(INSET
 ## vanished entirely behind the inset). Built instead as its own minimal,
 ## transparent-background plot (legend_panel(), below) and layered as a
 ## SECOND inset_element, added after (so stacked on top of) the histogram
-## inset -- see build_combined(). Positioned in the inset's own empty
-## upper-right region (record length beyond ~18 years, above ~30 sites),
-## extending right into the main panel as needed; its bottom edge never
-## drops below INSET_BOTTOM, so it stays within the same safe vertical band
-## confirmed clear of the stacked area/historical lines (see note above).
-## Bottom edge set near the top of the "safe band" cleared above (y = 1700,
-## comfortably above FLUXNET2015's max of 1532, the highest point any
-## historical line or the stacked area reaches anywhere right of the inset)
-## -- not pinned to INSET_BOTTOM -- so the legend's full ~16-row height has
-## room without being clipped. Right edge wide, left edge narrow: a
-## generous box the legend (anchored top-left within it) draws into at its
-## own natural size, not stretched to fill it.
-LEGEND_LEFT   <- INSET_LEFT + 0.84 * (INSET_RIGHT - INSET_LEFT)
-LEGEND_RIGHT  <- 0.97
-LEGEND_BOTTOM <- npc_y(1700)
+## inset -- see build_combined().
+##
+## Revision 2 (2026-10-12, logs/prompts/2026-10-12_fig02_inset_rev2.md):
+## revision 1's LEGEND_RIGHT = 0.97 was wrong -- set without checking it
+## against the year-2015 dashed line's own position (npc_x(2015) = 0.70) at
+## all, so at 89mm, where the same absolute-pt legend text occupies a larger
+## fraction of the (smaller) panel, the rendered legend reached far enough
+## right to cover both the 2015 line and the stacked area near 2015-2017
+## (cumulative site-years there: 2,776-3,397, confirmed by direct
+## computation -- nowhere near "clear of all data"). Fixed by explicitly
+## capping LEGEND_RIGHT at npc_x(2012): the stacked-area cumulative total
+## through year 2012 is 1,968 (computed directly, same method as the
+## INSET_BOTTOM note above), comfortably below LEGEND_BOTTOM's y = 2,300 --
+## reusing INSET_BOTTOM itself, already proven safe. Left edge (LEGEND_LEFT)
+## stays inside the inset's own empty upper-right region (record length
+## beyond ~18 years), confirmed clear of the histogram's own bars by
+## rendering and inspection, same as revision 1.
+LEGEND_LEFT   <- INSET_LEFT + 0.78 * (INSET_RIGHT - INSET_LEFT)
+LEGEND_RIGHT  <- npc_x(2012)
+LEGEND_BOTTOM <- INSET_BOTTOM
 LEGEND_TOP    <- INSET_TOP - 0.02
 
 ## A near-empty theme_void() plot carrying only the legend, positioned via
@@ -206,16 +211,35 @@ LEGEND_TOP    <- INSET_TOP - 0.02
 ## by direct rendering: the same box produced illegibly oversized text). A
 ## full ggplot's own internal legend keeps absolute pt/mm sizes regardless
 ## of its assigned inset box; the box here is simply sized generously enough
-## (height set empirically below, see LEGEND_BOTTOM) that the legend's
-## natural ~16-row height fits inside it with no clipping.
-legend_panel <- function(base_size) {
-  legend_size <- base_size
+## that the legend's natural single-column, 15-row height fits inside it
+## with no clipping (confirmed by rendering: it only needs about half the
+## available vertical space, so it never reaches down into the inset's own
+## x-axis title).
+##
+## Revision 2 fixes two more problems here:
+##  - Key/fill alpha: geom_point(alpha = 0) + override.aes(alpha = 1) drew
+##    fully opaque keys against the plot's alpha = 0.8 fills (geom_area and
+##    geom_histogram both use alpha = 0.8) -- every key was visibly darker
+##    than its matching colour in the plot. override.aes now uses the same
+##    alpha = 0.8, composited over the same white background, so key and
+##    fill match (confirmed by pixel sampling -- see run report).
+##  - Key size: override.aes(shape = 22, size = 4) kept the KEY SYMBOL'S own
+##    size (a point "size", in mm, roughly twice the legend text's cap
+##    height) independent of legend.key.size, which only sets the key's
+##    background box -- the two could disagree, and did (confirmed: with
+##    legend.key.size = 2mm, size = 4 rendered a visibly larger swatch).
+##    Replaced geom_point() with geom_tile(), which has no "size" aesthetic
+##    of its own -- the key's rendered size is governed purely by
+##    legend.key.size, set below from legend_size so the key is
+##    approximately one text-line tall, not a fixed, unrelated value.
+legend_panel <- function(legend_size) {
+  key_mm <- legend_size * 0.37   # ~1 text line height in mm (1pt = 0.3528mm; a little slack for ascenders)
   ggplot2::ggplot(record_length$hist_df, ggplot2::aes(x = 1, y = 1, fill = .data$igbp)) +
-    ggplot2::geom_point(alpha = 0) +
+    ggplot2::geom_tile(alpha = 0) +
     scale_fill_paper_igbp(name = "IGBP", na.value = "grey70") +
     ggplot2::guides(fill = ggplot2::guide_legend(
-      override.aes = list(alpha = 1, shape = 22, size = 4, colour = NA),
-      ncol = 2   # halves the vertical footprint vs. 1 column -- see LEGEND_BOTTOM note
+      override.aes = list(alpha = 0.8),   # matches geom_area()/geom_histogram()'s own alpha = 0.8
+      ncol = 1
     )) +
     ggplot2::theme_void() +
     ggplot2::theme(
@@ -223,9 +247,9 @@ legend_panel <- function(base_size) {
       legend.position.inside  = c(0, 1),
       legend.justification    = c(0, 1),
       legend.background       = ggplot2::element_blank(),
-      legend.key              = ggplot2::element_rect(fill = NA, colour = NA),
-      legend.key.size         = grid::unit(2.0, "mm"),
-      legend.key.spacing.y    = grid::unit(0, "pt"),
+      legend.key              = ggplot2::element_rect(fill = "white", colour = NA),
+      legend.key.size         = grid::unit(key_mm, "mm"),
+      legend.key.spacing.y    = grid::unit(key_mm * 0.15, "mm"),
       legend.spacing.y        = grid::unit(0, "pt"),
       legend.text             = ggplot2::element_text(size = legend_size, family = NATURE_FONT, colour = "grey10"),
       legend.title            = ggplot2::element_text(size = legend_size, family = NATURE_FONT, colour = "grey10"),
@@ -282,9 +306,9 @@ build_inset_panel <- function(base_size) {
     )
 }
 
-build_combined <- function(inset_base_size) {
+build_combined <- function(inset_base_size, legend_size) {
   inset_panel  <- build_inset_panel(inset_base_size)
-  legend_inset <- legend_panel(inset_base_size)
+  legend_inset <- legend_panel(legend_size)
   main_panel +
     patchwork::inset_element(
       inset_panel,
@@ -315,9 +339,14 @@ save_candidate <- function(plot, path_stem, width_mm, height_mm) {
 ## 120mm built and checked first per the revision; 89mm only follows if it
 ## passes every rule (see the run loop below -- an 89mm entry that fails is
 ## dropped, not silently kept with a non-compliant render).
+## legend_size is independent of inset_base_size: the legend's natural
+## 15-row height, at a given text size, is a fixed number of mm regardless
+## of the inset's own (data-driven) footprint, so it fits the smaller 89mm
+## panel only at a smaller size -- found by rendering and measuring (see
+## run report), not computed in closed form.
 SIZES <- list(
-  sq120 = list(mm = 120, stem = paste0(OUT_STEM, "_120mm"), inset_base_size = NATURE_BASE_PT),
-  sq89  = list(mm = 89,  stem = paste0(OUT_STEM, "_89mm"),  inset_base_size = NATURE_BASE_PT)
+  sq120 = list(mm = 120, stem = paste0(OUT_STEM, "_120mm"), inset_base_size = NATURE_BASE_PT, legend_size = NATURE_BASE_PT),
+  sq89  = list(mm = 89,  stem = paste0(OUT_STEM, "_89mm"),  inset_base_size = NATURE_BASE_PT, legend_size = NATURE_SMALL_PT)
 )
 
 legend_text_common <- paste0(
@@ -343,16 +372,21 @@ legend_text_common <- paste0(
   "month of that year -- not a published site-table listing (the current network has no such\n",
   "table). Dashed vertical lines mark 5, 10 and 20 years with data, each labelled with the\n",
   "number of sites at or above that threshold: n=", record_length$thresh_counts[1], " (>=5yr), n=",
-  record_length$thresh_counts[2], " (>=10yr), n=", record_length$thresh_counts[3], " (>=20yr).\n",
+  record_length$thresh_counts[2], " (>=10yr), n=", record_length$thresh_counts[3], " (>=20yr),\n",
+  "positioned with a margin above the tallest bar (confirmed clear by direct measurement of the\n",
+  "rendered PDF, not visual inspection -- see SESSION_LOG.md 2026-10-12 revision 2).\n",
   "Same panel-building function as Supplementary Figure S6 panel a\n",
   "(fig_record_length_histogram(), R/figures/fig_network_growth.R), called here on the latest\n",
   "snapshot (S6 itself remains pinned to its own documented snapshot -- see\n",
   "docs/decisions_pending.md 2026-10-12).\n\n",
-  "LEGEND: one shared IGBP legend for both panels (both use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS),\n",
-  "placed in the inset's own empty upper-right region (record length beyond ~18 years, above ~30\n",
-  "sites -- the histogram's sparse tail), extending past the inset's right edge into the main\n",
-  "panel where its own content needs more room, clear of the stacked area and the FLUXNET2015\n",
-  "label. No panel letters.\n\n",
+  "LEGEND: one shared IGBP legend for both panels (both use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS).\n",
+  "Keys drawn at the same alpha (0.8, over white) as the plotted fills, confirmed by pixel\n",
+  "sampling to match exactly; key height set to approximately one text line, not a larger,\n",
+  "unrelated value. Placed in the inset's own empty upper-right region (record length beyond\n",
+  "~18 years), capped so its bounding box never reaches the 2015 reference line or the stacked\n",
+  "area/historical lines near it (confirmed by measurement: at least 332 site-years of margin at\n",
+  "both sizes) -- it may still sit over the 2000/2007 lines, which the inset itself already,\n",
+  "legitimately covers (see INSET note above). No panel letters.\n\n",
   "DATA: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv (781 sites, the latest\n",
   "snapshot at the time this candidate was built -- see docs/decisions_pending.md 2026-10-12).\n\n",
   "SOURCE: scripts/generate_fig02alt_cumulative_siteyears_record_length_inset.R, calling\n",
@@ -362,18 +396,27 @@ legend_text_common <- paste0(
 )
 
 for (sz in SIZES) {
-  combined <- build_combined(sz$inset_base_size)
+  combined <- build_combined(sz$inset_base_size, sz$legend_size)
   saved <- save_candidate(combined, sz$stem, width_mm = sz$mm, height_mm = sz$mm)
   msg("Saved: ", saved$png, ", ", saved$pdf, " (inset text ", sz$inset_base_size, "pt)")
 
   inset_size_note <- if (sz$inset_base_size <= NATURE_SMALL_PT) {
-    paste0("inset text ", sz$inset_base_size,
+    paste0("inset axis/tick text ", sz$inset_base_size,
            "pt -- the 5pt floor; larger text did not fit legibly in the inset's ",
            "available width at this figure size (see run report).")
   } else {
-    paste0("inset text ", sz$inset_base_size,
+    paste0("inset axis/tick text ", sz$inset_base_size,
            "pt -- the same size as the main panel's own text (the ceiling: inset text is never ",
            "drawn larger than the main panel's); confirmed to fit at this figure size (see run report).")
+  }
+  legend_size_note <- if (sz$legend_size <= NATURE_SMALL_PT) {
+    paste0("legend text ", sz$legend_size,
+           "pt -- the 5pt floor; the legend's 15-row height, at the inset's own ",
+           sz$inset_base_size, "pt, overflowed into the inset's x-axis title at this figure size ",
+           "(confirmed by rendering and inspection), so the legend alone (not the inset's own ",
+           "axis/tick text) is drawn smaller here.")
+  } else {
+    paste0("legend text ", sz$legend_size, "pt -- same as the inset's own text; fits with room to spare.")
   }
 
   legend_lines <- paste0(
@@ -383,7 +426,7 @@ for (sz in SIZES) {
     "time, by IGBP land-cover class, with a record-length inset\n\n",
     legend_text_common,
     "DIMENSIONS: ", sz$mm, " x ", sz$mm, " mm, 600 dpi PNG + vector PDF, Helvetica, white\n",
-    "background. Main-panel text 7pt; ", inset_size_note, "\n"
+    "background. Main-panel text 7pt; ", inset_size_note, "; ", legend_size_note, "\n"
   )
   writeLines(legend_lines, paste0(sz$stem, ".legend.txt"))
   msg("Saved: ", paste0(sz$stem, ".legend.txt"))

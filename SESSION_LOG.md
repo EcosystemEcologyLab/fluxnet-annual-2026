@@ -4,6 +4,57 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-12 — Figure 2 + record-length inset candidate
+
+Built a candidate alternative to Figure 2 combining the main cumulative-site-years panel with
+the Supplementary Figure S6 record-length histogram as an inset — a candidate only, not a
+replacement; the existing `fig_02_cumulative_siteyears_igbp.*` and `figS6_record_length.*`
+outputs are untouched. Full prompt: `logs/prompts/2026-10-12_fig02_inset.md`.
+
+**Refactor.** Extracted the S6 panel a histogram (previously inline in
+`scripts/supp_stage2_record_length_collections_figure.R`) into
+`fig_record_length_histogram()` in `R/figures/fig_network_growth.R`, with new optional
+parameters (`show_thresh_labels`, `x_label`/`y_label` accepting `NULL`) so the inset can drop
+its axis title and "n=" threshold labels — both would otherwise overlap at inset width —
+without changing S6's own call, which uses the unchanged defaults. Confirmed S6 regenerates
+byte-identical PNG/JPEG and an unchanged `.legend.txt`; the only PDF difference is the embedded
+creation timestamp (same byte count, differs at the header date field). Threshold counts
+unchanged: 483 / 225 / 63 sites at ≥5 / ≥10 / ≥20 years.
+
+**New script:** `scripts/generate_fig02alt_cumulative_siteyears_record_length_inset.R`, built
+on the latest snapshot (`fluxnet_shuttle_snapshot_20260920T102211.csv`, 781 sites) rather than
+either existing script's own older pinned snapshot. Gate checks (stop before saving on any
+mismatch) confirmed: main-panel total 6,200 site-years (1991–2025 window), inset 781 sites,
+threshold counts 483/225/63 — all passed on the first run.
+
+**Layout.** The inset sits left of the year-2000 dashed reference line (npc x ≈ 0–0.23 of the
+panel), the only region touching no stacked area, historical line, historical label, or dashed
+line — confirmed by pixel-level crop inspection, not just the full-figure view. The single
+shared IGBP legend (both panels use `PAPER_IGBP_ORDER`/`PAPER_IGBP_COLOURS`) sits between the
+2000 and 2007 lines, clear of both. No panel letters, per the brief.
+
+**Text size.** Built two sizes with inset text set independently: 89×89 mm uses the inset's
+own 5 pt floor (`NATURE_SMALL_PT`) — 7 pt was tried first and overflowed the inset's narrow
+width at that figure size; 120×120 mm uses 7 pt (`NATURE_BASE_PT`, the main panel's own size —
+the stated ceiling) and fits cleanly, confirmed by inspection. Both documented per-size in each
+output's `.legend.txt`.
+
+**Outputs** (`review/figures/candidates/`, each with `.png`, `.pdf`, `.legend.txt`,
+`.meta.json`): `fig_02alt_cumulative_siteyears_record_length_inset_89mm.*` and `_120mm.*`.
+`scripts/check_figure_format.R` run against a copy of just these four files in isolation (the
+shared `review/figures/candidates/` directory mixes in older files without matching PDFs that
+make the checker error out on the whole directory) — both PASS: fonts OK, line weights
+0.25–1.00 pt, edge clearance 10.95 pt (well above the 1 pt clipping threshold), no text-size
+failures. Note: the checker's main-text width check passed 119.9 mm against its nominal
+89/183 mm rule because `all.equal()`'s default tolerance is relative, not absolute (0.5
+tolerance ≈ ±50% relative) — a pre-existing checker quirk, not something this session changed
+or relied on by design.
+
+**Decision recorded:** `docs/decisions_pending.md`, 2026-10-12 — the latest snapshot is now the
+default for new analyses and figures; pinning an older snapshot requires a documented reason.
+
+---
+
 ## 2026-10-08 — BADM vegetation-structure/growth search (read-only)
 
 Read-only search of the BIF and BIFVARINFO files for all 781 sites in the 20 September snapshot

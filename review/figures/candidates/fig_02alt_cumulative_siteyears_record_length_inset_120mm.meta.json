@@ -1,0 +1,16 @@
+{
+  "run_datetime_utc": "2026-10-12T14:46:40Z",
+  "pipeline_version": "3de5007",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/sites_marconi_clean.csv",
+    "data/snapshots/years_marconi.csv",
+    "data/snapshots/sites_la_thuile_clean.csv",
+    "data/snapshots/years_la_thuile.csv",
+    "data/lists/LaThuileList.xlsx",
+    "data/snapshots/sites_fluxnet2015_clean.csv",
+    "data/snapshots/years_fluxnet2015.csv"
+  ],
+  "notes": "Candidate figure (not a replacement for Figure 2 or S6): Figure 2 main panel + S6 record-length histogram as an inset. Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv. Gate checks passed: 6200 main-panel site-years, 781 inset sites, thresholds 483/225/63. See .legend.txt."
+}

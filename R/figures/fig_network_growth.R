@@ -1080,6 +1080,150 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
     )
 }
 
+# ---- fig_record_length_histogram --------------------------------------------
+
+#' Record-length histogram: sites by years with data, stacked by IGBP
+#'
+#' Shared panel builder for Supplementary Figure S6 (panel a) and the
+#' Figure 2 "record length" inset candidate
+#' (\code{scripts/generate_fig02alt_cumulative_siteyears_record_length_inset.R}).
+#' For each site in \code{site_meta}, counts the number of years with data
+#' (\code{sum(has_data)} across \code{presence_df}, i.e. the same per-site-year
+#' presence measure as \code{\link{compute_site_year_presence}}) and draws a
+#' histogram of that count, stacked by IGBP class, with dashed vertical lines
+#' and "n=" labels at each threshold in \code{thresholds}.
+#'
+#' Extracted (2026-10-12) from what was inline code in
+#' \code{scripts/supp_stage2_record_length_collections_figure.R}'s panel a, so
+#' both callers share one implementation. Moving this out changed nothing
+#' about the plot itself — same inputs, same geoms, same defaults.
+#'
+#' @param site_meta Data frame. One row per site, with columns \code{site_id}
+#'   and \code{igbp}. Typically a Shuttle snapshot CSV.
+#' @param presence_df Data frame. Output of
+#'   \code{\link{compute_site_year_presence}} (or
+#'   \code{data/snapshots/site_year_data_presence.csv}), with columns
+#'   \code{site_id}, \code{year} (integer), and \code{has_data} (logical).
+#' @param thresholds Integer vector. Years-with-data thresholds marked with
+#'   dashed vertical lines and "n=" labels (default \code{c(5L, 10L, 20L)}).
+#' @param igbp_order Character vector. IGBP class stacking order and legend
+#'   key order (default \code{\link{PAPER_IGBP_ORDER}} — the same palette
+#'   \code{\link{fig_cumulative_siteyears_igbp}} uses, so one legend serves
+#'   both when combined in a single figure).
+#' @param base_size Nature text base size in pt, passed to
+#'   \code{\link{nature_theme}} (default \code{\link{NATURE_BASE_PT}}). Must
+#'   be within \code{[}\code{\link{NATURE_SMALL_PT}}\code{,}
+#'   \code{\link{NATURE_BASE_PT}}\code{]} — \code{nature_theme()} itself stops
+#'   otherwise, so this function never renders text below the 5 pt floor.
+#' @param annot_pt Font size (pt) for the "n=" threshold labels (default
+#'   \code{\link{NATURE_SMALL_PT}}).
+#' @param show_legend Logical (default \code{TRUE}). \code{FALSE} suppresses
+#'   the IGBP legend — for inset use, where a single shared legend is drawn
+#'   once, externally, for both panels.
+#' @param legend_key_mm Legend key size in mm (default \code{2.2}).
+#' @param show_thresh_labels Logical (default \code{TRUE}). \code{FALSE}
+#'   suppresses the rotated "n=" threshold labels — for inset use at a width
+#'   too narrow for them to avoid overlapping each other; the same counts are
+#'   still returned in \code{thresh_counts} for the caller to report
+#'   elsewhere (e.g. a \code{.legend.txt} file).
+#' @param x_label,y_label Axis titles (defaults match the original S6 panel
+#'   a). Pass \code{NULL} to omit a title entirely (no space reserved) — for
+#'   inset use where a long title would overflow the available width.
+#'
+#' @return A list:
+#' \describe{
+#'   \item{plot}{The ggplot object (no \code{\link{panel_letter}} applied —
+#'     callers add that themselves, e.g. only for the S6 panel, not the
+#'     inset).}
+#'   \item{hist_df}{The per-site \code{site_id}/\code{igbp}/\code{n_years}
+#'     data frame used to build the histogram.}
+#'   \item{thresh_counts}{Integer vector, same length and order as
+#'     \code{thresholds}: number of sites with \code{n_years >=} each
+#'     threshold.}
+#'   \item{n_sites}{Integer, \code{nrow(hist_df)}.}
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' shuttle  <- readr::read_csv("data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv")
+#' presence <- readr::read_csv("data/snapshots/site_year_data_presence.csv")
+#' rl <- fig_record_length_histogram(shuttle, presence)
+#' print(rl$plot)
+#' rl$thresh_counts
+#' }
+#' @export
+fig_record_length_histogram <- function(site_meta,
+                                         presence_df,
+                                         thresholds    = c(5L, 10L, 20L),
+                                         igbp_order    = PAPER_IGBP_ORDER,
+                                         base_size     = NATURE_BASE_PT,
+                                         annot_pt      = NATURE_SMALL_PT,
+                                         show_legend   = TRUE,
+                                         legend_key_mm = 2.2,
+                                         show_thresh_labels = TRUE,
+                                         x_label       = "Years with data (the snapshot)",
+                                         y_label       = "Number of sites") {
+
+  required_meta <- c("site_id", "igbp")
+  missing_meta  <- setdiff(required_meta, names(site_meta))
+  if (length(missing_meta) > 0L) {
+    stop("fig_record_length_histogram: site_meta is missing required column(s): ",
+         paste(missing_meta, collapse = ", "), call. = FALSE)
+  }
+  required_presence <- c("site_id", "year", "has_data")
+  missing_presence  <- setdiff(required_presence, names(presence_df))
+  if (length(missing_presence) > 0L) {
+    stop("fig_record_length_histogram: presence_df is missing required column(s): ",
+         paste(missing_presence, collapse = ", "), call. = FALSE)
+  }
+
+  site_tbl <- site_meta |>
+    dplyr::distinct(.data$site_id, .keep_all = TRUE) |>
+    dplyr::select("site_id", "igbp")
+
+  per_site <- presence_df |>
+    dplyr::group_by(.data$site_id) |>
+    dplyr::summarise(n_years = sum(.data$has_data), .groups = "drop") |>
+    dplyr::filter(.data$site_id %in% site_tbl$site_id)
+
+  hist_df <- site_tbl |>
+    dplyr::left_join(per_site, by = "site_id") |>
+    dplyr::mutate(
+      igbp = dplyr::if_else(.data$igbp %in% igbp_order, .data$igbp, NA_character_),
+      igbp = factor(.data$igbp, levels = igbp_order)
+    )
+
+  thresh_counts <- vapply(thresholds, function(t) sum(hist_df$n_years >= t), integer(1L))
+
+  p <- ggplot2::ggplot(hist_df, ggplot2::aes(x = .data$n_years, fill = .data$igbp)) +
+    ggplot2::geom_histogram(binwidth = 1, boundary = 0.5, colour = NA, alpha = 0.8) +
+    scale_fill_paper_igbp(name = "IGBP", na.value = "grey70") +
+    ggplot2::geom_vline(
+      xintercept = thresholds - 0.5, linetype = "dashed",
+      linewidth = nature_lwd(0.5), colour = "grey20"
+    )
+
+  if (show_thresh_labels) {
+    p <- p + ggplot2::annotate(
+      "text", x = thresholds + 0.5, y = Inf,
+      label = paste0("n=", thresh_counts), angle = 90, vjust = 1.2, hjust = 1.1,
+      size = annot_pt / ggplot2::.pt, family = NATURE_FONT, colour = "grey20"
+    )
+  }
+
+  p <- p +
+    ggplot2::scale_x_continuous(name = x_label, breaks = scales::breaks_pretty()) +
+    ggplot2::scale_y_continuous(name = y_label, expand = ggplot2::expansion(mult = c(0, 0.08))) +
+    nature_theme(base_size = base_size) +
+    ggplot2::theme(legend.key.size = grid::unit(legend_key_mm, "mm"))
+
+  if (!show_legend) {
+    p <- p + ggplot2::theme(legend.position = "none")
+  }
+
+  list(plot = p, hist_df = hist_df, thresh_counts = thresh_counts, n_sites = nrow(hist_df))
+}
+
 # ---- fig_network_growth -----------------------------------------------------
 
 #' Cumulative site growth stacked area chart

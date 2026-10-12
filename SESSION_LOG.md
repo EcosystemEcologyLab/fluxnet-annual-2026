@@ -4,6 +4,51 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Main Figure 6: quality and uncertainty of annual fluxes
+
+Full prompt: `logs/prompts/2026-10-13_fig06_quality_uncertainty.md`. Built main Figure 6 for
+Results 3.4, `scripts/generate_fig06_quality_uncertainty.R` → `review/figures/draft_manuscript_v1/
+fig_06_quality_uncertainty.{png,pdf}` (+ `.legend.txt`, `.meta.json`). Source data: the interim
+technical-validation outputs (`scripts/technical_validation_interim.R`,
+`review/diagnostics/data_quality_uncertainty/`), read-only — no `dq_stage*.R` diagnostic re-run.
+
+**Panels.** (a) ECDF of the annual QC flag fraction for NEE_VUT/NEE_CUT/LE/H (fixed order,
+`FOUR_VAR_COLOURS` as Supplementary Figure S5) — this is the annual panel removed from S5 on
+2026-10-12, rebuilt here via the same documented exception S5/the interim script's own Figure 1a
+use (a direct, read-only DuckDB query of the annual table, since the existing summary table
+stores only quantiles, not the full per-row distribution an ECDF needs); dashed line at the 0.5
+rule; x-axis states the direction ("fraction measured or good-quality gap-filled"). (b)
+Boxplots of the three uncertainty terms for usable annual NEE — random (`NEE_REF_RANDUNC`),
+u*-threshold ((P84−P16)/2), joint (`NEE_REF_JOINTUNC`) — VUT vs. CUT (`VUT_CUT_COLOURS`, same as
+S5/S6), log10 y-axis, reproducing interim Figure TV2a exactly from
+`table_stage2_site_year_nee_uncertainty.csv`, unchanged. (c) Histogram of NEE_VUT − NEE_CUT for
+the 3,960 site-years where both are usable (`table_stage3_site_year_vut_vs_cut.csv`, unchanged),
+clipped at ±150 g C m⁻² yr⁻¹ (34 site-years beyond, stated in-panel); in-panel text states 152 of
+3,960 (3.8%) exceed the propagated combined uncertainty (`sqrt(JOINTUNC_VUT²+JOINTUNC_CUT²)`) and
+20 lack the joint term on at least one side.
+
+**Gates** (stop-and-report, checked live before saving, all passed): 6,336 annual rows
+(`table_stage4_site_year_master.csv`); 3,960 site-years both usable; 4,017 usable VUT site-years;
+4,320 usable CUT site-years; 20 site-years missing the joint term. 183 mm wide, one row of three
+panels, panel letters a–c.
+
+**One format fix.** `check_figure_format.R` first failed on 6 oversized words (10.2–10.7pt) in
+panel (b)'s rotated (`angle = 20`) x-axis tick labels ("random"/"u*-threshold"/"joint") — the
+checker's height-based pt-size estimate reads a rotated glyph's larger bounding-box extent as a
+larger font. Fixed by dropping the rotation (the three labels fit horizontally at this panel
+width regardless). Re-run: 14/14 PASS.
+
+Legend states the usable rule (`(1-QC) <= QC_THRESHOLD_YY=0.50`, applied separately per VUT/CUT
+column, not the single per-site fallback `scripts/04_qc.R` uses elsewhere) and all counts, and
+describes patterns neutrally (e.g. "NEE_VUT and NEE_CUT reach similar annual QC fractions... LE
+and H reach a given QC fraction at a lower percentile", "differences cluster near zero") with no
+causal claims, per house convention (`technical_validation_interim.R`'s own Check 3: "no cause
+offered"). `review/figures/FIGURE_INVENTORY.md` updated (row 6, was "Not built"); two stale
+"annual moves to Figure 6, not built" references in `docs/figure_inventory.md` corrected to note
+it is now built.
+
+---
+
 ## 2026-10-12 — New side project: TowerTango (card game), `update_cards.R`
 
 Full prompt: `logs/prompts/2026-10-12_towertango_update_cards.md`. New side project,

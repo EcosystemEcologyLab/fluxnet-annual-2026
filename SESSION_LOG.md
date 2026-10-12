@@ -4,6 +4,55 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-12 — Figure 2 + record-length inset candidate, revision 1 (match Dave's mockup)
+
+Revised the same-day Figure 2 inset candidate after Dave pushed his own hand mockup,
+`review/figures/candidates/fig_02alt_mockup_dave.png`, to the repo mid-session. Full prompt:
+`logs/prompts/2026-10-12_fig02_inset_rev1.md`.
+
+**What changed and why.** The first candidate (below) kept the inset strictly left of the
+year-2000 dashed line so it covered nothing at all — reading "must not cover the dashed
+lines" as an absolute rule. Measuring the mockup directly (pixel analysis, not just
+eyeballing) showed it covers the 2000 and 2007 dashed lines where they'd sit above the data;
+Dave confirmed that first reading was wrong and asked for a much larger inset matching the
+mockup's proportions. Flagged the conflict and asked before guessing which source (the rough
+mockup vs. the first candidate's strict reading of the brief) should win — see the
+`AskUserQuestion` exchange in this session.
+
+**New layout**, specified directly in main-panel data coordinates (not npc guesses): inset
+footprint year 1993–2010 × 2,300–7,000 cumulative site-years — 49% of the panel's width, 64%
+of its height, confirmed by direct computation to clear the stacked area (max 1,516 within
+that year range) and every historical line (FLUXNET2015's final value, 1,532, is the highest
+any of them reach) with room to spare. Opaque white background, no border box (removed
+`panel.border`, which `nature_theme()` draws by default). Axis titles and the "n=" threshold
+labels restored (the first candidate had dropped both for space).
+
+**Legend placement bug and fix.** Positioning the shared IGBP legend via the main panel's own
+`legend.position = "inside"` put it entirely behind the histogram inset's opaque background —
+`patchwork::inset_element()` draws later elements on top by default, confirmed by direct
+rendering (the legend vanished). Extracting the legend as a raw grob and placing it via
+`patchwork::wrap_elements(full = ...)` surfaced a second bug: the grob was stretched to fill
+its entire assigned box, inflating the text to several times its intended size. The working
+fix: a second small ggplot carrying only the legend (`legend_panel()`,
+`R/figures/fig_network_growth.R`'s `fig_record_length_histogram()` is unaffected), added as
+its own `inset_element()` layered after the histogram inset so it draws on top, with a 2-column
+legend (`guide_legend(ncol = 2)`) to roughly halve its vertical footprint — a 1-column version
+at the same text size overflowed the inset's own x-axis title. Positioned in the inset's own
+sparse upper-right region, confirmed by crop inspection to sit clear of the histogram bars, the
+n= labels, the stacked area, the FLUXNET2015 label, and the 2015 dashed line.
+
+**Text size.** Both 89×89 mm and 120×120 mm render cleanly at 7pt (`NATURE_BASE_PT`) — the
+main panel's own size, the explicit ceiling — with no clipping or overlap at either size
+(confirmed by crop inspection of both); the first candidate's 5pt floor at 89mm was not
+needed once the inset was sized to the mockup's larger proportions. `check_figure_format.R`
+(run against an isolated copy of just these two files, same reason as before) — both PASS,
+55 words each, fonts OK, line weights 0.25–1.00pt, edge clearance 10.95pt.
+
+Same gates as the first candidate, same file names (outputs overwritten in place): main panel
+6,200 site-years, inset 781 sites, threshold counts 483/225/63 — all passed again on this run.
+
+---
+
 ## 2026-10-12 — Figure 2 + record-length inset candidate
 
 Built a candidate alternative to Figure 2 combining the main cumulative-site-years panel with

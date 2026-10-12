@@ -1204,16 +1204,36 @@ fig_record_length_histogram <- function(site_meta,
     )
 
   if (show_thresh_labels) {
+    ## Label anchor tied to the tallest bar (not y = Inf): the panel's upper
+    ## y expansion below is generous specifically so these labels clear
+    ## every bar, confirmed by measuring the rendered label/bar bounding
+    ## boxes (pdftotext -bbox on the PDF, not a visual check) in both this
+    ## inset's own figure and Supplementary Figure S6 (2026-10-12 revision 2
+    ## -- the previous y = Inf + expand = 0.08 let "n=483" sit directly on
+    ## top of the tallest bar, ~104-105 sites at 6 years with data).
+    ##
+    ## For angle = 90 text, hjust -- not vjust -- controls which way the
+    ## label grows relative to its y anchor: confirmed directly (isolated
+    ## test, measured via pdftotext -bbox) that hjust near 1 grows the label
+    ## DOWN from the anchor (toward smaller y / the bars) and hjust near 0
+    ## grows it UP (away from the bars); vjust instead shifts its horizontal
+    ## position. An earlier attempt at this same fix kept hjust = 1.1 (grows
+    ## down) and only raised the anchor -- confirmed by the same bbox
+    ## measurement to still clip the tallest bar by ~0.8pt. hjust = -0.1
+    ## here (grows up) is the actual fix; the anchor only needs a small
+    ## margin above the tallest bar, not a large one.
+    max_bar_count <- max(table(hist_df$n_years))
+    label_y        <- max_bar_count * 1.05
     p <- p + ggplot2::annotate(
-      "text", x = thresholds + 0.5, y = Inf,
-      label = paste0("n=", thresh_counts), angle = 90, vjust = 1.2, hjust = 1.1,
+      "text", x = thresholds + 0.5, y = label_y,
+      label = paste0("n=", thresh_counts), angle = 90, vjust = 1.2, hjust = -0.1,
       size = annot_pt / ggplot2::.pt, family = NATURE_FONT, colour = "grey20"
     )
   }
 
   p <- p +
     ggplot2::scale_x_continuous(name = x_label, breaks = scales::breaks_pretty()) +
-    ggplot2::scale_y_continuous(name = y_label, expand = ggplot2::expansion(mult = c(0, 0.08))) +
+    ggplot2::scale_y_continuous(name = y_label, expand = ggplot2::expansion(mult = c(0, 0.30))) +
     nature_theme(base_size = base_size) +
     ggplot2::theme(legend.key.size = grid::unit(legend_key_mm, "mm"))
 

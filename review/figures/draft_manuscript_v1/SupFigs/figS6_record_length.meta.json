@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-12T14:39:07Z",
-  "pipeline_version": "3de5007",
+  "run_datetime_utc": "2026-10-12T15:42:37Z",
+  "pipeline_version": "e9c752c",
   "input_sources": [
     "data/lists/Marconi_to_Modern_SiteIDs.xlsx",
     "data/lists/LaThuileList.xlsx",

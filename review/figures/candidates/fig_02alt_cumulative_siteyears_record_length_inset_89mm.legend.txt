@@ -26,17 +26,22 @@ class, same measure and palette as the main panel. "Record length" = years with 
 flux variables checked by compute_site_year_presence() (R/utils.R) present in at least one
 month of that year -- not a published site-table listing (the current network has no such
 table). Dashed vertical lines mark 5, 10 and 20 years with data, each labelled with the
-number of sites at or above that threshold: n=483 (>=5yr), n=225 (>=10yr), n=63 (>=20yr).
+number of sites at or above that threshold: n=483 (>=5yr), n=225 (>=10yr), n=63 (>=20yr),
+positioned with a margin above the tallest bar (confirmed clear by direct measurement of the
+rendered PDF, not visual inspection -- see SESSION_LOG.md 2026-10-12 revision 2).
 Same panel-building function as Supplementary Figure S6 panel a
 (fig_record_length_histogram(), R/figures/fig_network_growth.R), called here on the latest
 snapshot (S6 itself remains pinned to its own documented snapshot -- see
 docs/decisions_pending.md 2026-10-12).
 
-LEGEND: one shared IGBP legend for both panels (both use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS),
-placed in the inset's own empty upper-right region (record length beyond ~18 years, above ~30
-sites -- the histogram's sparse tail), extending past the inset's right edge into the main
-panel where its own content needs more room, clear of the stacked area and the FLUXNET2015
-label. No panel letters.
+LEGEND: one shared IGBP legend for both panels (both use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS).
+Keys drawn at the same alpha (0.8, over white) as the plotted fills, confirmed by pixel
+sampling to match exactly; key height set to approximately one text line, not a larger,
+unrelated value. Placed in the inset's own empty upper-right region (record length beyond
+~18 years), capped so its bounding box never reaches the 2015 reference line or the stacked
+area/historical lines near it (confirmed by measurement: at least 332 site-years of margin at
+both sizes) -- it may still sit over the 2000/2007 lines, which the inset itself already,
+legitimately covers (see INSET note above). No panel letters.
 
 DATA: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv (781 sites, the latest
 snapshot at the time this candidate was built -- see docs/decisions_pending.md 2026-10-12).
@@ -47,5 +52,5 @@ R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp() and
 site-years; inset 781 sites; threshold counts 483/225/63 -- all passed.
 
 DIMENSIONS: 89 x 89 mm, 600 dpi PNG + vector PDF, Helvetica, white
-background. Main-panel text 7pt; inset text 7pt -- the same size as the main panel's own text (the ceiling: inset text is never drawn larger than the main panel's); confirmed to fit at this figure size (see run report).
+background. Main-panel text 7pt; inset axis/tick text 7pt -- the same size as the main panel's own text (the ceiling: inset text is never drawn larger than the main panel's); confirmed to fit at this figure size (see run report).; legend text 5pt -- the 5pt floor; the legend's 15-row height, at the inset's own 7pt, overflowed into the inset's x-axis title at this figure size (confirmed by rendering and inspection), so the legend alone (not the inset's own axis/tick text) is drawn smaller here.
 

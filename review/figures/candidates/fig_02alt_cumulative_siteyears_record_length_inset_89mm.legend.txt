@@ -1,0 +1,43 @@
+FIGURE LEGEND -- fig_02alt_cumulative_siteyears_record_length_inset_89mm.png
+============================================================
+
+TITLE: Figure 2 (candidate) -- Cumulative site-years of the FLUXNET Shuttle network through
+time, by IGBP land-cover class, with a record-length inset
+
+Candidate figure -- not a replacement for Figure 2 (fig_02_cumulative_siteyears_igbp) or
+Supplementary Figure S6 (figS6_record_length). Combines both as a single panel: the current
+Figure 2 cumulative site-years chart as the main panel, with the S6 record-length histogram
+as an inset in the main panel's empty upper-left region (left of the 2000 historical-release
+reference line, above the Marconi/La Thuile labels).
+
+MAIN PANEL: cumulative site-years of the current network through time, stacked by IGBP class
+(PAPER_IGBP_COLOURS, R/plot_constants.R), with Marconi/La Thuile/FLUXNET2015 cumulative
+site-year lines overlaid for historical context (comparison data only, not primary data --
+see CLAUDE.md Hard Rule 1). Identical to fig_02_cumulative_siteyears_igbp.png except for the
+inset and the repositioned legend. Total site-years plotted (1991-2025): 6200.
+
+INSET: distribution of years with data per site in the snapshot (781 sites), stacked by IGBP
+class, same measure and palette as the main panel. "Record length" = years with any of the
+flux variables checked by compute_site_year_presence() (R/utils.R) present in at least one
+month of that year -- not a published site-table listing (the current network has no such
+table). Dashed vertical lines mark 5, 10 and 20 years with data, each labelled with the
+number of sites at or above that threshold: n=483 (>=5yr), n=225 (>=10yr), n=63 (>=20yr).
+Same panel-building function as Supplementary Figure S6 panel a
+(fig_record_length_histogram(), R/figures/fig_network_growth.R), called here on the latest
+snapshot (S6 itself remains pinned to its own documented snapshot -- see
+docs/decisions_pending.md 2026-10-12).
+
+LEGEND: one shared IGBP legend for both panels (both use PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS),
+placed to the right of the inset, inside the main panel. No panel letters.
+
+DATA: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv (781 sites, the latest
+snapshot at the time this candidate was built -- see docs/decisions_pending.md 2026-10-12).
+
+SOURCE: scripts/generate_fig02alt_cumulative_siteyears_record_length_inset.R, calling
+R/figures/fig_network_growth.R::fig_cumulative_siteyears_igbp() and
+::fig_record_length_histogram(). Gate checks (stop, no save, on mismatch): main panel 6,200
+site-years; inset 781 sites; threshold counts 483/225/63 -- all passed.
+
+DIMENSIONS: 89 x 89 mm, 600 dpi PNG + vector PDF, Helvetica, white
+background. Main-panel text 7pt; inset text 5pt -- the 5pt floor; larger text did not fit legibly in the inset's available width at this figure size (see run report).
+

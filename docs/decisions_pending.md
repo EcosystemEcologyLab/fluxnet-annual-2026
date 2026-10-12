@@ -1,6 +1,23 @@
 > Technical bugs and data quality issues with external dependencies (fluxnet R package,
 > FLUXNET Shuttle) are tracked in [docs/known_issues.md](known_issues.md), not here.
 
+## Latest snapshot is the default for new analyses and figures (2026-10-12)
+
+**Decision (2026-10-12):** The latest available Shuttle snapshot (by filename timestamp in
+`data/snapshots/`) is the default input for all new analyses and figures going forward. Pinning
+an older snapshot is acceptable only in specific, documented cases -- e.g. a figure tied to a
+locked paper-lock snapshot (see "Locking the Dataset for Final Paper Analysis" in CLAUDE.md), a
+regression/comparison test against a prior figure's exact output, or a script whose own header
+comment records why it stays pinned (e.g. `scripts/supp_stage2_record_length_collections_figure.R`
+remains pinned to `fluxnet_shuttle_snapshot_20260901T094522.csv`, predating this decision, to keep
+Supplementary Figure S6 stable against its own documented validation gate; a future refresh of that
+pin is a separate, deliberate decision, not implied by this one). New work with no such reason
+should use the latest snapshot. First applied in the Figure 2 record-length inset candidate (see
+`scripts/generate_fig02alt_cumulative_siteyears_record_length_inset.R`, which uses
+`fluxnet_shuttle_snapshot_20260920T102211.csv`), per `logs/prompts/2026-10-12_fig02_inset.md`.
+
+---
+
 ## Pipeline regeneration deferred at +8 ICOS sites (2026-06-24)
 
 Snapshot `fluxnet_shuttle_snapshot_20260624T095651.csv` adds 8 ICOS sites (mostly historical

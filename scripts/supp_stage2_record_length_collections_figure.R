@@ -28,6 +28,7 @@ check_pipeline_config()
 source("R/utils.R")
 source("R/nature_format.R")
 source("R/plot_constants.R")
+source("R/figures/fig_network_growth.R")
 
 suppressPackageStartupMessages({
   library(dplyr); library(readr); library(readxl); library(tidyr)
@@ -128,39 +129,21 @@ msg("--- Building Figure S7 ---")
 THRESHOLDS <- c(5L, 10L, 20L)
 
 ## ---- Panel a: current-network histogram, stacked by IGBP ------------------
-current_hist_df <- current_sites |>
-  dplyr::left_join(current_per_site, by = "site_id") |>
-  dplyr::mutate(igbp = dplyr::if_else(igbp %in% PAPER_IGBP_ORDER, igbp, NA_character_)) |>
-  ## Stack order must follow PAPER_IGBP_ORDER's factor levels (matches the
-  ## legend key and Figure 2's own stacking, R/figures/fig_network_growth.R::
-  ## fig_cumulative_siteyears_igbp()) -- a plain character column stacks in
-  ## whatever order ggplot2 encounters the values, not the palette order.
-  dplyr::mutate(igbp = factor(igbp, levels = PAPER_IGBP_ORDER))
-
-thresh_counts <- vapply(THRESHOLDS, function(t) sum(current_hist_df$n_years >= t), integer(1L))
+## Panel-building logic lives in R/figures/fig_network_growth.R::
+## fig_record_length_histogram() (extracted 2026-10-12), shared with the
+## Figure 2 record-length inset candidate -- same inputs (current_sites,
+## presence), same geoms/defaults as the inline code this replaced.
+record_length <- fig_record_length_histogram(
+  site_meta   = current_sites,
+  presence_df = presence,
+  thresholds  = THRESHOLDS
+)
+current_hist_df <- record_length$hist_df
+thresh_counts   <- record_length$thresh_counts
 msg("Current network sites at/above thresholds: ",
     paste(paste0(">=", THRESHOLDS, "yr: ", thresh_counts), collapse = "; "))
 
-panel_a <- ggplot(current_hist_df, aes(x = n_years, fill = igbp)) +
-  ## alpha = 0.8: same transparency as Figure 2's IGBP-stacked area
-  ## (fig_cumulative_siteyears_igbp()'s geom_area, alpha = 0.8); fill
-  ## colours come from the same PAPER_IGBP_COLOURS palette via
-  ## scale_fill_paper_igbp().
-  geom_histogram(binwidth = 1, boundary = 0.5, colour = NA, alpha = 0.8) +
-  scale_fill_paper_igbp(name = "IGBP", na.value = "grey70") +
-  geom_vline(xintercept = THRESHOLDS - 0.5, linetype = "dashed",
-             linewidth = nature_lwd(0.5), colour = "grey20") +
-  ## Labels shifted one full bin to the right of their dashed line (was
-  ## centred exactly on it, so the line visually crossed the text) --
-  ## placed just inside the ">= threshold" side, clear of the line.
-  annotate("text", x = THRESHOLDS + 0.5, y = Inf,
-           label = paste0("n=", thresh_counts), angle = 90, vjust = 1.2, hjust = 1.1,
-           size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "grey20") +
-  scale_x_continuous(name = "Years with data (the snapshot)", breaks = scales::breaks_pretty()) +
-  scale_y_continuous(name = "Number of sites", expand = expansion(mult = c(0, 0.08))) +
-  nature_theme() +
-  theme(legend.key.size = unit(2.2, "mm")) +
-  panel_letter("a")
+panel_a <- record_length$plot + panel_letter("a")
 
 ## ---- Panel b: share of sites with >= n years, four collections -----------
 share_curve <- function(n_years_vec, label) {

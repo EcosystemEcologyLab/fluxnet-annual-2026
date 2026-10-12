@@ -16,7 +16,8 @@ site-periods. The QC flag fraction runs 1 (every underlying half-hourly/hourly r
 that site-period was measured or good-quality gap-filled) down to 0 (every record is
 medium- or poor-quality gap-filled, or missing) -- higher is better. The annual panel (and
 weekly, excluded throughout for the same reason as daily/monthly here) is not shown here --
-annual QC moves to Figure 6 (not built in this run). The dashed vertical line marks QC =
+annual QC moved to Figure 6 (review/figures/draft_manuscript_v1/fig_06_quality_uncertainty.png,
+built 2026-10-13). The dashed vertical line marks QC =
 0.50, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY/MM/DD/WW,
 R/pipeline_config.R).
 (b) Pooled share of sub-daily (half-hourly/hourly) records in each of the four true
@@ -31,7 +32,9 @@ May 2026 extraction (data/extracted/AMF_US-MMS_FLUXNET_1999-2023_v1.3_r1/, files
 
 COLOUR CODING:
 (a) NEE_VUT/NEE_CUT/LE/H, fixed 4-colour palette (this script's own FOUR_VAR_COLOURS;
-no dedicated palette yet exists in R/plot_constants.R for these four variables).
+no dedicated palette yet exists in R/plot_constants.R for these four variables), displayed
+in the legend (a) and axis labels (b) as 'NEE (VUT)', 'NEE (CUT)', 'LE', 'H' (same order and
+colours as the underlying column names).
 (b) QC category, blue (measured) to red (poor gap-fill), ordinal.
 
 DATA SOURCE:

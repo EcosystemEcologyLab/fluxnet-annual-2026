@@ -48,7 +48,8 @@ usable (panel c and panel b's paired comparison).
 
 COLOUR CODING:
 (a) NEE_VUT/NEE_CUT/LE/H, the same 4-colour palette as Supplementary Figure S5
-(FOUR_VAR_COLOURS).
+(FOUR_VAR_COLOURS), displayed in the legend as 'NEE (VUT)', 'NEE (CUT)', 'LE', 'H' (same
+order and colours as the underlying column names).
 (b) VUT/CUT, the same 2-colour palette as Supplementary Figures S5 and S6
 (VUT_CUT_COLOURS).
 

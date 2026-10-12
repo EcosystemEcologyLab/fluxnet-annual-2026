@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-12T23:43:45Z",
-  "pipeline_version": "294986a",
+  "run_datetime_utc": "2026-10-12T23:57:11Z",
+  "pipeline_version": "0bc3ee3",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb",
     "review/diagnostics/data_quality_uncertainty/table_stage4_site_year_master.csv",

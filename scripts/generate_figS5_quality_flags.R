@@ -56,6 +56,10 @@ tv_theme <- function() {
     nature_theme()
 }
 FOUR_VAR_COLOURS <- c(NEE_VUT = "#2C7BB6", NEE_CUT = "#D7301F", LE = "#1B9E77", H = "#E6AB02")
+## Display labels for the four QC variables -- same order/colours as
+## FOUR_VAR_COLOURS, matched by name so scale_*_manual(labels=) resolves
+## correctly regardless of break order. Matches main Figure 6.
+VAR_LABELS <- c(NEE_VUT = "NEE (VUT)", NEE_CUT = "NEE (CUT)", LE = "LE", H = "H")
 QC_FLAG_COLOURS <- c(measured = "#2166AC", good_gapfill = "#92C5DE",
                       medium_gapfill = "#F4A582", poor_gapfill = "#B2182B")
 QC_FLAG_LABELS  <- c(measured = "measured", good_gapfill = "good gap-fill",
@@ -94,7 +98,7 @@ make_ecdf_panel <- function(res_name, show_legend) {
   p <- ggplot(d, aes(x = qc, colour = variable)) +
     stat_ecdf(geom = "step", linewidth = nature_lwd(0.5)) +
     geom_vline(xintercept = 0.50, linetype = "dashed", colour = "grey50", linewidth = nature_lwd(0.3)) +
-    scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable") +
+    scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable", labels = VAR_LABELS) +
     scale_x_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
     scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
     labs(x = paste0(tools::toTitleCase(res_name), " QC flag (fraction)"), y = "Cumulative share") +
@@ -117,6 +121,7 @@ subdaily_net <- read_csv(file.path(DIAG_DIR, "table_stage1_subdaily_qc_network_s
 panel_b <- ggplot(subdaily_net, aes(x = variable, y = share, fill = flag)) +
   geom_col(width = 0.7) +
   coord_flip() +
+  scale_x_discrete(labels = VAR_LABELS) +
   scale_fill_manual(values = QC_FLAG_COLOURS, labels = QC_FLAG_LABELS, name = NULL) +
   scale_y_continuous(labels = scales::label_percent(), expand = expansion(mult = c(0, 0.02))) +
   labs(x = NULL, y = "Share of sub-daily records (31 sites)") +
@@ -166,7 +171,8 @@ legend_lines <- c(
   "that site-period was measured or good-quality gap-filled) down to 0 (every record is",
   "medium- or poor-quality gap-filled, or missing) -- higher is better. The annual panel (and",
   "weekly, excluded throughout for the same reason as daily/monthly here) is not shown here --",
-  "annual QC moves to Figure 6 (not built in this run). The dashed vertical line marks QC =",
+  "annual QC moved to Figure 6 (review/figures/draft_manuscript_v1/fig_06_quality_uncertainty.png,",
+  "built 2026-10-13). The dashed vertical line marks QC =",
   "0.50, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY/MM/DD/WW,",
   "R/pipeline_config.R).",
   sprintf("(b) Pooled share of sub-daily (half-hourly/hourly) records in each of the four true"),
@@ -180,7 +186,9 @@ legend_lines <- c(
   "2026-05-25).", "",
   "COLOUR CODING:",
   "(a) NEE_VUT/NEE_CUT/LE/H, fixed 4-colour palette (this script's own FOUR_VAR_COLOURS;",
-  "no dedicated palette yet exists in R/plot_constants.R for these four variables).",
+  "no dedicated palette yet exists in R/plot_constants.R for these four variables), displayed",
+  "in the legend (a) and axis labels (b) as 'NEE (VUT)', 'NEE (CUT)', 'LE', 'H' (same order and",
+  "colours as the underlying column names).",
   "(b) QC category, blue (measured) to red (poor gap-fill), ordinal.", "",
   "DATA SOURCE:",
   "(a) Direct read of the daily/monthly DuckDB tables (dataset = 'FLUXMET'), read-only -- the",

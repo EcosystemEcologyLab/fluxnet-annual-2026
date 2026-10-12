@@ -74,6 +74,10 @@ log_labels <- function() nature_minus_labels(drop0trailing = TRUE, big.mark = ""
 ## scripts/technical_validation_interim.R, which originated them).
 VUT_CUT_COLOURS  <- c(VUT = "#2C7BB6", CUT = "#D7301F")
 FOUR_VAR_COLOURS <- c(NEE_VUT = "#2C7BB6", NEE_CUT = "#D7301F", LE = "#1B9E77", H = "#E6AB02")
+## Display labels for the four QC variables -- same order/colours as
+## FOUR_VAR_COLOURS, matched by name so scale_*_manual(labels=) resolves
+## correctly regardless of break order. Matches Supplementary Figure S5.
+VAR_LABELS <- c(NEE_VUT = "NEE (VUT)", NEE_CUT = "NEE (CUT)", LE = "LE", H = "H")
 
 ## ==============================================================================
 ## Gates -- stop and report on any mismatch, before building or saving anything
@@ -134,7 +138,7 @@ annual_qc <- annual_qc |>
 panel_a <- ggplot(annual_qc, aes(x = qc, colour = variable)) +
   stat_ecdf(geom = "step", linewidth = nature_lwd(0.5)) +
   geom_vline(xintercept = 0.50, linetype = "dashed", colour = "grey50", linewidth = nature_lwd(0.3)) +
-  scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable") +
+  scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable", labels = VAR_LABELS) +
   scale_x_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
   scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
   labs(x = "Annual QC flag (fraction measured or\ngood-quality gap-filled)", y = "Cumulative share") +
@@ -175,16 +179,23 @@ msg("Panel c: ", n_exceeds, " of ", nrow(stage3), " exceed combined uncertainty;
     n_no_joint, " lack the joint term; ", n_beyond_clip, " beyond +/-", CLIP, " (clipped from view).")
 
 panel_c_label <- paste0(
-  n_exceeds, " of ", nrow(stage3), " exceed combined uncertainty\n",
-  n_no_joint, " lack the joint term\n",
-  n_beyond_clip, " beyond ±", CLIP, " (clipped)"
+  format(n_exceeds, big.mark = ","), " of ", format(nrow(stage3), big.mark = ","), " exceed combined uncertainty\n",
+  format(n_no_joint, big.mark = ","), " lack the joint term\n",
+  format(n_beyond_clip, big.mark = ","), " beyond ±", CLIP, " (clipped)"
 )
+## x shifted right from the left edge (not -Inf) and hjust set to exactly 0
+## (not a small negative value) -- a non-zero/non-one hjust applied to a
+## multi-line annotate() label mis-aligns the lines relative to each other
+## (confirmed by isolated reproduction); hjust = 0 left-aligns all three
+## lines flush to the same x. Extra top expansion (0.55, was 0.28) gives
+## the 3-line block headroom above the tallest bar so it clears the y-axis
+## tick labels (it previously collided with the "1500" tick).
 panel_c <- ggplot(stage3 |> dplyr::filter(abs(diff) <= CLIP), aes(x = diff)) +
   geom_histogram(binwidth = 5, fill = "grey60", colour = "white", linewidth = nature_lwd(0.25)) +
   scale_x_continuous(limits = c(-CLIP, CLIP), labels = nature_minus_labels()) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.28))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.55))) +
   labs(x = expression("NEE"["VUT"]*" - NEE"["CUT"]*" (g C "*m^{-2}*" "*yr^{-1}*")"), y = "Site-years") +
-  annotate("text", x = -Inf, y = Inf, hjust = -0.03, vjust = 1.2, size = 5 / .pt, family = "Helvetica",
+  annotate("text", x = -CLIP * 0.85, y = Inf, hjust = 0, vjust = 1.1, size = 5 / .pt, family = "Helvetica",
            label = panel_c_label) +
   tv_theme()
 
@@ -249,7 +260,8 @@ legend_lines <- c(
   "usable (panel c and panel b's paired comparison).", "",
   "COLOUR CODING:",
   "(a) NEE_VUT/NEE_CUT/LE/H, the same 4-colour palette as Supplementary Figure S5",
-  "(FOUR_VAR_COLOURS).",
+  "(FOUR_VAR_COLOURS), displayed in the legend as 'NEE (VUT)', 'NEE (CUT)', 'LE', 'H' (same",
+  "order and colours as the underlying column names).",
   "(b) VUT/CUT, the same 2-colour palette as Supplementary Figures S5 and S6",
   "(VUT_CUT_COLOURS).", "",
   "DATA SOURCE:",

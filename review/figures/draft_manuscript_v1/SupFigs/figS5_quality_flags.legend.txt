@@ -10,11 +10,15 @@ extracted.
 
 DESCRIPTION:
 (a) Empirical cumulative distribution functions (ECDFs) of the QC flag fraction for
-NEE_VUT, NEE_CUT, LE and H, one panel per temporal resolution (daily, monthly; left to
-right), across all 781-site FLUXMET site-periods. The annual panel (and weekly, excluded
-throughout for the same reason as daily/monthly here) is not shown here -- annual QC moves
-to Figure 6 (not built in this run). The dashed vertical line marks QC = 0.50, the paper's
-QC_THRESHOLD_YY/MM/DD/WW gate (R/pipeline_config.R).
+NEE_VUT, NEE_CUT, LE and H -- shown in that fixed order in both panels -- one panel per
+temporal resolution (daily, monthly; left to right), across all 781-site FLUXMET
+site-periods. The QC flag fraction runs 1 (every underlying half-hourly/hourly record for
+that site-period was measured or good-quality gap-filled) down to 0 (every record is
+medium- or poor-quality gap-filled, or missing) -- higher is better. The annual panel (and
+weekly, excluded throughout for the same reason as daily/monthly here) is not shown here --
+annual QC moves to Figure 6 (not built in this run). The dashed vertical line marks QC =
+0.50, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY/MM/DD/WW,
+R/pipeline_config.R).
 (b) Pooled share of sub-daily (half-hourly/hourly) records in each of the four true
 QC categories (measured, good/medium/poor gap-fill), for the 31 of 781 sites with
 sub-daily FLUXMET files extracted on disk -- 23 of these 31 sites (74%) are ICOS

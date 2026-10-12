@@ -10,16 +10,27 @@ category.
 DESCRIPTION:
 Two 100%-stacked horizontal bars -- site-years (n=6,336) and sites (n=781) -- by
 availability category: both VUT and CUT usable, VUT only, CUT only, or neither --
-'neither' split into 'no reported value' (no annual NEE in the product -- neither
-NEE_VUT_REF nor NEE_CUT_REF has a raw value for that site-year) and 'below quality rule'
-(a raw value exists but does not clear QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <=
+'neither' split into 'no annual NEE in the product' (neither NEE_VUT_REF nor NEE_CUT_REF
+has a raw value for that site-year) and 'below quality rule' (a raw value exists but does
+not clear QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <=
 QC_THRESHOLD_YY, own QC column per side. No in-bar count labels -- each category's exact
 count is given in its own legend entry instead, '<category> (<n> site-years, <n> sites)':
   both usable (3,960 site-years, 575 sites)
   VUT only usable (57 site-years, 41 sites)
   CUT only usable (360 site-years, 40 sites)
-  no reported value (1,935 site-years, 125 sites)
+  no annual NEE in the product (1,935 site-years, 125 sites)
   below quality rule (24 site-years, 0 sites)
+
+SITE-YEAR BAR vs. SITE BAR: at site-year resolution, 'both usable' means that single
+site-year's row has both VUT and CUT usable (necessarily the same year, since a site-year
+row is one site in one year). At site resolution, the two sides are judged independently
+across a site's own years: a site counts as 'both usable' if it has at least one year
+usable under VUT and at least one year usable under CUT, not necessarily the same year --
+likewise 'VUT only usable' / 'CUT only usable' mean only that side ever clears the rule
+across the site's years. 'Below quality rule' has 0 sites at site resolution: no site in
+the snapshot fails the 0.50 rule in every year it reports an annual NEE value -- any site
+with multiple reporting years has at least one usable year, or else has no reported value
+in a given year at all (landing that year in 'no annual NEE in the product' instead).
 
 SITE-YEAR COUNT: this figure uses 6,336 site-years -- every row in the FLUXMET annual
 table (dataset = 'FLUXMET'), regardless of quality. This differs from the 6,200 site-years

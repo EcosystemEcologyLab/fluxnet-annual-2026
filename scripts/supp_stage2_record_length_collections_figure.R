@@ -158,8 +158,8 @@ coll_n <- step_df |> dplyr::distinct(collection, n_sites)
 ## Display label only -- coll_n$collection itself (used as the lookup key
 ## below, and for the validation join against SITEYEARS_CHECK's own
 ## "collection" column) stays the literal data value "Current"; only what's
-## actually drawn in the legend key is renamed to "the snapshot".
-coll_display <- ifelse(coll_n$collection == "Current", "the snapshot", coll_n$collection)
+## actually drawn in the legend key is renamed to "Snapshot".
+coll_display <- ifelse(coll_n$collection == "Current", "Snapshot", coll_n$collection)
 coll_labels <- setNames(
   paste0(coll_display, " (n=", coll_n$n_sites, ")"),
   coll_n$collection
@@ -195,15 +195,24 @@ step_df$collection_label <- factor(step_df$collection_label, levels = coll_label
 ## measured 1.07pt, just over the 1.00pt (+-0.05pt tolerance) ceiling.
 ## override.aes on the colour legend's own guide fixes the key glyphs to a
 ## single safe width, independent of each line's actual in-plot width.
+## Legend moved inside the panel's own empty upper-right corner (share is
+## already low there for every collection by the time n is large) rather
+## than reserved to the right of the panel, so the panel itself can use the
+## figure's full width.
 panel_s1 <- ggplot(step_df, aes(x = n, y = share, colour = collection_label, linewidth = collection_label)) +
   geom_step() +
   scale_colour_manual(name = NULL, values = COLLECTION_COLOURS,
                        guide = guide_legend(override.aes = list(linewidth = nature_lwd(0.75)))) +
   scale_linewidth_manual(values = COLLECTION_LWD, guide = "none") +
-  scale_x_continuous(name = "At least n years with data", breaks = scales::breaks_pretty()) +
+  scale_x_continuous(name = "At least n years with data", breaks = scales::breaks_pretty(),
+                       expand = expansion(mult = c(0, 0.02))) +
   scale_y_continuous(name = "Share of sites", labels = scales::label_percent(), limits = c(0, 1)) +
   nature_theme() +
-  theme(legend.position = "right", legend.key.size = unit(2.2, "mm"))
+  theme(legend.position = "inside",
+        legend.position.inside = c(0.98, 0.98),
+        legend.justification.inside = c(1, 1),
+        legend.background = ggplot2::element_rect(fill = "white", colour = NA),
+        legend.key.size = unit(2.2, "mm"))
 
 ## Single panel now (panel b alone) -- same per-panel size it had inside the
 ## old two-panel 180x90mm composite (each panel was ~90mm wide x 90mm tall).

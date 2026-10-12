@@ -84,7 +84,10 @@ ecdf_data <- bind_rows(lapply(names(resolutions), function(res_name) {
 dbDisconnect(con, shutdown = TRUE)
 msg("Panel a: ", nrow(ecdf_data), " QC values pulled (daily/monthly x 4 variables).")
 
-ecdf_data <- ecdf_data |> mutate(resolution = factor(resolution, levels = c("daily", "monthly")))
+## Variable order fixed to NEE_VUT, NEE_CUT, LE, H (matches panel b, which
+## already sets this factor order on subdaily_net$variable below).
+ecdf_data <- ecdf_data |> mutate(resolution = factor(resolution, levels = c("daily", "monthly")),
+                                   variable = factor(variable, levels = c("NEE_VUT", "NEE_CUT", "LE", "H")))
 
 make_ecdf_panel <- function(res_name, show_legend) {
   d <- ecdf_data |> filter(resolution == res_name)
@@ -157,11 +160,15 @@ legend_lines <- c(
   "extracted.", "",
   "DESCRIPTION:",
   sprintf("(a) Empirical cumulative distribution functions (ECDFs) of the QC flag fraction for"),
-  "NEE_VUT, NEE_CUT, LE and H, one panel per temporal resolution (daily, monthly; left to",
-  "right), across all 781-site FLUXMET site-periods. The annual panel (and weekly, excluded",
-  "throughout for the same reason as daily/monthly here) is not shown here -- annual QC moves",
-  "to Figure 6 (not built in this run). The dashed vertical line marks QC = 0.50, the paper's",
-  "QC_THRESHOLD_YY/MM/DD/WW gate (R/pipeline_config.R).",
+  "NEE_VUT, NEE_CUT, LE and H -- shown in that fixed order in both panels -- one panel per",
+  "temporal resolution (daily, monthly; left to right), across all 781-site FLUXMET",
+  "site-periods. The QC flag fraction runs 1 (every underlying half-hourly/hourly record for",
+  "that site-period was measured or good-quality gap-filled) down to 0 (every record is",
+  "medium- or poor-quality gap-filled, or missing) -- higher is better. The annual panel (and",
+  "weekly, excluded throughout for the same reason as daily/monthly here) is not shown here --",
+  "annual QC moves to Figure 6 (not built in this run). The dashed vertical line marks QC =",
+  "0.50, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY/MM/DD/WW,",
+  "R/pipeline_config.R).",
   sprintf("(b) Pooled share of sub-daily (half-hourly/hourly) records in each of the four true"),
   sprintf("QC categories (measured, good/medium/poor gap-fill), for the %d of 781 sites with", n_subdaily),
   sprintf("sub-daily FLUXMET files extracted on disk -- %d of these %d sites (%.0f%%) are ICOS", n_icos, n_subdaily, 100*n_icos/n_subdaily),

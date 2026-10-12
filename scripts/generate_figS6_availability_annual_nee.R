@@ -11,9 +11,9 @@
 ## re-run any dq_stage*.R diagnostic -- reads only its already-written table
 ## CSVs, read-only.
 ##
-## "No reported value" = no annual NEE value at all in the product (neither
-## VUT nor CUT has a raw value for that site-year) -- distinct from "below
-## quality rule" (a raw value exists but does not clear QC_THRESHOLD_YY).
+## "No annual NEE in the product" = no annual NEE value at all in the product
+## (neither VUT nor CUT has a raw value for that site-year) -- distinct from
+## "below quality rule" (a raw value exists but does not clear QC_THRESHOLD_YY).
 ##
 ## Site-year count used here (6,336, all FLUXMET annual rows regardless of
 ## quality) differs from Figure 2's 6,200: Figure 2 counts site-years via
@@ -66,7 +66,7 @@ msg("Site-years (FLUXMET annual rows): ", n_site_years, "; sites: ", n_sites)
 ## ---- Panel: site-years and sites by availability category -----------------
 sy_cat <- master |>
   mutate(cat2 = case_when(
-    category == "neither" & neither_reason == "no_value" ~ "no reported value",
+    category == "neither" & neither_reason == "no_value" ~ "no annual NEE in the product",
     category == "neither" & neither_reason == "fails_qc" ~ "below quality rule",
     category == "both" ~ "both usable",
     category == "VUT_only" ~ "VUT only usable",
@@ -75,7 +75,7 @@ sy_cat <- master |>
 
 site_cat <- site_avail |>
   mutate(cat2 = case_when(
-    category == "neither" & neither_reason == "no_value" ~ "no reported value",
+    category == "neither" & neither_reason == "no_value" ~ "no annual NEE in the product",
     category == "neither" & neither_reason == "fails_qc" ~ "below quality rule",
     category == "both" ~ "both usable",
     category == "VUT_only" ~ "VUT only usable",
@@ -83,10 +83,10 @@ site_cat <- site_avail |>
   )) |> count(cat2, name = "n") |> mutate(level = paste0("Sites (n = ", n_sites, ")"))
 
 CAT_LEVELS <- c("both usable", "VUT only usable", "CUT only usable",
-                "no reported value", "below quality rule")
+                "no annual NEE in the product", "below quality rule")
 CAT_COLOURS <- c("both usable" = "#4D4D4D", "VUT only usable" = VUT_CUT_COLOURS[["VUT"]],
                   "CUT only usable" = VUT_CUT_COLOURS[["CUT"]],
-                  "no reported value" = "#BDBDBD", "below quality rule" = "#756BB1")
+                  "no annual NEE in the product" = "#BDBDBD", "below quality rule" = "#756BB1")
 
 sy_level_label   <- unique(sy_cat$level)
 site_level_label <- unique(site_cat$level)
@@ -101,8 +101,11 @@ avail_df <- bind_rows(sy_cat, site_cat) |>
 cat_counts <- avail_df |>
   select(cat2, level, n) |>
   tidyr::pivot_wider(names_from = level, values_from = n, values_fill = 0)
+## Two lines per key (category name, then counts) -- the longest category
+## name ("no annual NEE in the product") plus its count suffix on one line
+## clipped the right page edge (check_figure_format.R) at this figure's width.
 CAT_LABELS <- setNames(
-  sprintf("%s (%s site-years, %s sites)", cat_counts$cat2,
+  sprintf("%s\n(%s site-years, %s sites)", cat_counts$cat2,
           format(cat_counts[[sy_level_label]], big.mark = ",", trim = TRUE),
           format(cat_counts[[site_level_label]], big.mark = ",", trim = TRUE)),
   as.character(cat_counts$cat2)
@@ -117,6 +120,7 @@ panel <- ggplot(avail_df, aes(y = level, x = share, fill = cat2)) +
   labs(x = "Share", y = NULL) +
   tv_theme() +
   theme(legend.position = "bottom",
+        legend.key.size = grid::unit(7, "pt"),
         plot.margin = ggplot2::margin(t = 5.5, r = 12, b = 5.5, l = 5.5, unit = "pt")) +
   guides(fill = guide_legend(ncol = 1))
 
@@ -141,14 +145,24 @@ legend_lines <- c(
   sprintf("Two 100%%-stacked horizontal bars -- site-years (n=%s) and sites (n=%s) -- by",
           format(n_site_years, big.mark = ","), n_sites),
   "availability category: both VUT and CUT usable, VUT only, CUT only, or neither --",
-  "'neither' split into 'no reported value' (no annual NEE in the product -- neither",
-  "NEE_VUT_REF nor NEE_CUT_REF has a raw value for that site-year) and 'below quality rule'",
-  "(a raw value exists but does not clear QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <=",
+  "'neither' split into 'no annual NEE in the product' (neither NEE_VUT_REF nor NEE_CUT_REF",
+  "has a raw value for that site-year) and 'below quality rule' (a raw value exists but does",
+  "not clear QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <=",
   "QC_THRESHOLD_YY, own QC column per side. No in-bar count labels -- each category's exact",
   "count is given in its own legend entry instead, '<category> (<n> site-years, <n> sites)':",
   paste0("  ", fmt_counts("both usable")), paste0("  ", fmt_counts("VUT only usable")),
-  paste0("  ", fmt_counts("CUT only usable")), paste0("  ", fmt_counts("no reported value")),
+  paste0("  ", fmt_counts("CUT only usable")), paste0("  ", fmt_counts("no annual NEE in the product")),
   paste0("  ", fmt_counts("below quality rule")), "",
+  "SITE-YEAR BAR vs. SITE BAR: at site-year resolution, 'both usable' means that single",
+  "site-year's row has both VUT and CUT usable (necessarily the same year, since a site-year",
+  "row is one site in one year). At site resolution, the two sides are judged independently",
+  "across a site's own years: a site counts as 'both usable' if it has at least one year",
+  "usable under VUT and at least one year usable under CUT, not necessarily the same year --",
+  "likewise 'VUT only usable' / 'CUT only usable' mean only that side ever clears the rule",
+  "across the site's years. 'Below quality rule' has 0 sites at site resolution: no site in",
+  "the snapshot fails the 0.50 rule in every year it reports an annual NEE value -- any site",
+  "with multiple reporting years has at least one usable year, or else has no reported value",
+  "in a given year at all (landing that year in 'no annual NEE in the product' instead).", "",
   sprintf("SITE-YEAR COUNT: this figure uses %s site-years -- every row in the FLUXMET annual",
           format(n_site_years, big.mark = ",")),
   "table (dataset = 'FLUXMET'), regardless of quality. This differs from the 6,200 site-years",

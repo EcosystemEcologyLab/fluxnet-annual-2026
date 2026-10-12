@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-10-12T23:02:03Z",
+  "pipeline_version": "d309d0f",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/duckdb/fluxnet.duckdb",
+    "data/extracted/*/*_BIF_*.csv (one file per site, resolved via fluxnet::flux_discover_files())",
+    "data/snapshots/site_worldclim.csv"
+  ],
+  "notes": "TowerTango card table. card_year_established via compute_site_year_presence() on monthly FLUXMET; card_sink_strength_nep_gC_m2_yr/card_et_* via compute_site_annual_fluxes() (VUT with CUT fallback, QC_THRESHOLD_YY=0.5); card_tower_height_m is a best-effort free-text regex extraction (no structured field exists in this BIF export -- see README.md); card_map_mm_yr/card_mat_degC from site_worldclim.csv with a local-raster fallback for any site missing from it. Snapshot: fluxnet_shuttle_snapshot_20260920T102211.csv."
+}

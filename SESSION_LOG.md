@@ -4,6 +4,81 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-12 — New side project: TowerTango (card game), `update_cards.R`
+
+Full prompt: `logs/prompts/2026-10-12_towertango_update_cards.md`. New side project,
+**not part of the FLUXNET Annual Paper 2026** — a card game built on site information, one
+card per FLUXNET Shuttle site. Set up like `WUE/isotope_pilot/`: `TowerTango/` at the repo
+root with `README.md`, `code/`, `docs/`, `tables/`. Unlike `isotope_pilot` (which gets its own
+isolated data root), TowerTango reads the main repo's `data/snapshots/`, local flux store
+(`data/duckdb/fluxnet.duckdb`), and BADM BIF files directly, strictly read-only, and never
+downloads anything. It uses its own local `.meta.json` writer rather than
+`R/utils.R::write_output_metadata()`, for the same reason `isotope_pilot` does: that function
+always appends to the repo-root `outputs/session_info.txt`, which would violate "writes
+nothing outside `TowerTango/`."
+
+**Snapshot selection.** `code/update_cards.R` selects the latest snapshot by parsing the
+`YYYYMMDDTHHMMSS` timestamp embedded in each `fluxnet_shuttle_snapshot_*.csv` filename and
+taking the max of that — not filesystem mtime or directory order ("newest file in the
+folder"), which is exactly how a prior figure script once picked up an ad hoc 775-site
+development snapshot (`docs/figure_rebuild_781_20260901.md`, Step 1). Used (and printed):
+`fluxnet_shuttle_snapshot_20260920T102211.csv`, 781 sites, gate (`site_id` unique) passed.
+
+**Card columns**, appended after every snapshot column unchanged: `card_site_name`,
+`card_regional_network`, `card_site_id` (verbatim copies of `site_name`/`network`/`site_id`);
+`card_year_established` (first year with data, `compute_site_year_presence()` on monthly
+FLUXMET pulled fresh from the local flux store — 6,200/6,336 site-years have data, matching
+Figure 2 vs. Supplementary Figure S6's own documented distinction exactly); `card_sink_
+strength_nep_gC_m2_yr`/`card_nep_n_years` and `card_et_mm_yr`/`card_et_mm_d`/`card_et_n_years`
+(`compute_site_annual_fluxes()`, VUT-with-CUT-fallback, the paper's QC rule — the same function
+that already underlies the paper's own `flux_medians_by_igbp_et` output, so the ET conversion
+is identical by construction, not merely matched); `card_tower_height_m`/`card_tower_height_
+source`; `card_map_mm_yr`/`card_mat_degC` (WorldClim 2.1 bio12/bio1, from `site_worldclim.csv`
+with a local-raster fallback — not needed this run, all 781 sites already covered);
+`card_site_description`/`card_site_description_words` (BADM `SITE_DESC`).
+
+**BIF file resolution — a real bug avoided.** The 2026-10-08 BADM search's own read pattern
+(glob every `*_BIF_*.csv` under `data/extracted/`) was checked first and found unsafe to reuse
+as-is here: some sites have multiple extracted BIF files on disk from re-extractions at
+different year ranges (e.g. `FR-Hes`, `DE-Kli` ×3), and naively combining all of them would
+have duplicated every `SITE_DESC`/BADM record for those sites, corrupting the "several entries"
+logic. Fixed by resolving exactly one BIF file per site via `fluxnet::flux_discover_files()`
+(the same deduplicating tool `scripts/duckdb_setup.R` already uses for this purpose) before
+reading anything — confirmed 781/781 sites resolve to exactly one file each.
+
+**Tower height — no structured field exists.** A full scan of every `VARIABLE` name across all
+extracted BIF files for `HEIGHT`/`FLUX`/`INSTRUMENT` substrings found no structured EC-
+instrument-height field anywhere in this reduced BIF export (only canopy height, `HEIGHTC`, is
+structured; `FLUX_MEASUREMENTS`/`GRP_FLUX_MEASUREMENTS` groups carry only date/method/comment/
+variable fields). `card_tower_height_m` is therefore a documented best-effort regex extraction
+from the free-text `FLUX_MEASUREMENTS_COMMENT` field (a number-of-metres value within 60
+characters of the word "height") — 2 of 781 sites (`CA-Ca3`: 31 m; `US-Jo1`: 5 m), with
+`card_tower_height_source` recording the field used. This low coverage is a genuine data
+limitation, not a parsing gap, and is documented as such in `README.md` and the report.
+
+**Checks** (`docs/update_cards_report.md`): coverage table (overall and by `data_hub`) — most
+columns at 781/781 (`card_regional_network` 771/781, matching 10 sites with a genuinely blank
+`network` field in the raw snapshot itself); `card_site_description` 624/781, with TERN at a
+genuine 0/52 (confirmed directly: a TERN site's BIF export carries no `SITE_DESC`/
+`GRP_SITE_DESC` group at all, not a join bug). SITE_DESC word counts: min 1, Q1 27, median
+54.5, Q3 100, max 484; 290 sites under 50 words, 280 at 50–150, 54 over 150. One site
+(`DE-Rns`) has 2 `SITE_DESC` entries — confirmed byte-identical duplicate text under two
+`GROUP_ID`s within the same BIF file, not dated versions or separate pieces; joined with
+`" | "` per instructions regardless. Spot-check: `CA-Ca3` (AmeriFlux), `DE-Tha` (ICOS),
+`AU-GWW` (TERN) — NEP, ET, and tower height recomputed independently by hand directly from the
+`annual` table's raw columns and from BADM text, all three sites matching the card values
+exactly. Out-of-range (listed, not dropped): 3 sites exceed ±1,500 gC m⁻² yr⁻¹ NEP (`US-Bi2`
+−1,677.8; `CN-Sb1` 1,829.8; `IT-Lav` 1,962.1); none exceed 2,000 mm yr⁻¹ ET or 100 m tower
+height.
+
+Output: `TowerTango/tables/towertango_cards_20260920T102211.csv` (781 rows × 33 columns: 18
+snapshot + 15 card) + `.meta.json` listing every source file. Confirmed nothing was written
+outside `TowerTango/` by this run (checked `git status` before/after; the only repo-root
+changes present — `outputs/session_info.txt`, `Rplots.pdf` — both predate this run, from
+earlier work in the same session).
+
+---
+
 ## 2026-10-12 — Three supplementary figure fixes (S1, S5, S6)
 
 Full prompt: `logs/prompts/2026-10-12_supfig_fixes.md`. Small follow-up fixes to three

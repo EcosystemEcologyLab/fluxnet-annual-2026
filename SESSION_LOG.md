@@ -4,6 +4,46 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — TowerTango: tower height from VAR_INFO blocked — not present at YY resolution
+
+Full prompt: `logs/prompts/2026-10-13_towertango_tower_height.md`. Investigated before writing any
+code (no changes made to `update_cards.R` or the card table this session). Requested:
+replace `card_tower_height_m`'s existing free-text `FLUX_MEASUREMENTS_COMMENT` regex guess with
+a structured read of `VAR_INFO_HEIGHT` from each site's `*_FLUXNET_BIFVARINFO_YY_*.csv`
+(`NEE_VUT_REF`, else `NEE_CUT_REF`, else `USTAR`, latest `VAR_INFO_DATE`), spot-checked against
+CA-TP1 (10 m, 2014), US-Ha1 (29 m) and DE-Tha (42 m).
+
+**Finding: `VAR_INFO_HEIGHT` does not exist at YY resolution, anywhere in the corpus.**
+Checked all 2,543 `*_FLUXNET_BIFVARINFO_*.csv` files under `data/extracted/` (781 distinct
+sites, every resolution present on disk). Zero `BIFVARINFO_YY`, `_MM`, or `_DD` file contains a
+`VAR_INFO_HEIGHT` row, for any site. The field only appears in `BIFVARINFO_HH`/`_HR` files —
+and this project extracts only `y m d` resolutions by default (`FLUXNET_EXTRACT_RESOLUTIONS=y m
+d`, `.env`, matching the CLAUDE.md default), so only 31 of 781 sites have an HH/HR VARINFO file
+on disk at all (apparently left over from earlier ad hoc work, not the main pipeline). Of those
+31, 30 actually carry `VAR_INFO_HEIGHT` (the 31st, AU-Ya1's HH file, has none). Confirmed
+structurally, not just as a gap in this run: height metadata is attached to the native-resolution
+flux/met variables themselves (`NEE_VUT_REF`, `USTAR`, `CO2_F_MDS`, etc.), which only exist as
+columns at HH/HR resolution — the YY/MM/DD exports carry no per-variable height record to
+inherit it from.
+
+**None of the three requested spot-check sites have it.** CA-TP1, US-Ha1 and DE-Tha are all
+YY/MM/DD-only locally (no HH/HR BIFVARINFO extracted for any of them) and so are not among the
+30 sites above. The requested 10 m/29 m/42 m values are therefore not reproducible from data
+currently on disk, at any resolution — not a bug in the extraction logic, a gap in what's been
+extracted for those three sites specifically (and almost everywhere else).
+
+**Not actioned without confirmation:** building `card_tower_height_m` from YY files as literally
+specified would produce an all-NA column (0/781 coverage, including all three spot-check sites)
+with no structured source to fall back to short of re-running `scripts/02_extract.R` with an
+added HH/HR resolution for the sites in question — a `data/extracted`-rebuilding pipeline stage
+that needs confirmation first per CLAUDE.md's local-machine autonomy rules, and is a materially
+larger undertaking (network-wide HH re-extraction) than this card-table side project has done so
+far. Flagged to the user rather than guessed at; `update_cards.R`'s existing
+`FLUX_MEASUREMENTS_COMMENT`-based `card_tower_height_m`/`card_tower_height_source` logic is left
+unchanged pending a decision on how (or whether) to proceed.
+
+---
+
 ## 2026-10-13 — TowerTango: canopy height added to the cards
 
 Full prompt: `logs/prompts/2026-10-13_towertango_canopy_height.md`. Added three new card columns

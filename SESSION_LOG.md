@@ -4,6 +4,58 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Correction: the previous "VAR_INFO_HEIGHT absent at YY resolution" finding was wrong
+
+**Supersedes the entry immediately below ("TowerTango: tower height from VAR_INFO blocked") —
+that entry is left unedited per convention, but its central claim was false.** Dave reported
+that his own laptop copies of three YY-resolution BIFVARINFO files do contain
+`VAR_INFO_HEIGHT`, with specific sizes/md5s/match counts, and asked for a read-only
+verification plus an exact account of how the original 2,543-file check searched. No code or
+data was changed this session — report and log only.
+
+**The three files, verified on the mini — match Dave's laptop copies byte-for-byte:**
+
+| File | Size | md5 | PRODUCT_PROCESSING_DATE | `,VAR_INFO_HEIGHT,` matches |
+|---|---|---|---|---|
+| `AMF_CA-TP1_FLUXNET_BIFVARINFO_YY_2002-2023_v1.3_r1.csv` | 423,552 B | `79d958974bad4ee9fe3f0c8bacefe043` | 20260328 | 879 |
+| `AMF_US-Ha1_FLUXNET_BIFVARINFO_YY_1991-2025_v1.3_r1.csv` | 160,910 B | `5bc96e74771e339eb4e7f500f8ad0504` | 20260329 | 282 |
+| `ICOS_DE-Tha_FLUXNET_BIFVARINFO_YY_1996-2024_v1.3_r1.csv` | 383,887 B | `f9226ffd529eb9fddaf84dc4d2c0a9aa` | 20260319 | 787 |
+
+(A second, newer DE-Tha extraction also exists on disk — `..._1996-2025_v1.3_r1`, mtime
+2026-09-20, PRODUCT_PROCESSING_DATE 20260820, md5 `948980a68b0e307938c9848b8d1ce631` — same 787
+matches; not what was asked about, noted for completeness.)
+
+**Root cause of the original false-negative: the `grep` used was a broken wrapper, not the real
+binary.** `type grep` in this shell resolves to a shell function (from a Claude Code shell
+snapshot file), not `/usr/bin/grep` — the same silent-failure mode already recorded in memory
+(`feedback_grep_wrapper_silent_fail.md`), not applied to this check at the time. Confirmed
+directly: `grep -c ',VAR_INFO_HEIGHT,'` on the CA-TP1 file above exits 1 (no match) through this
+wrapper, but returns 879 through `command grep` (bypassing the wrapper) — same file, same
+pattern. The original check's two commands were both plain `grep`, unanchored string
+`"VAR_INFO_HEIGHT"` (no column restriction), no `command` prefix:
+`grep -rl "VAR_INFO_HEIGHT" data/extracted --include="*BIFVARINFO*"` (recursive, all
+resolutions) and `grep -l "VAR_INFO_HEIGHT" data/extracted/*/*BIFVARINFO_YY*.csv` (YY-only
+glob) — both silently undercounted.
+
+**Rerun with `command grep`, same 2,543-file corpus (all resolutions, all 781 sites):**
+
+| Resolution | Files with `VAR_INFO_HEIGHT` / total | Distinct sites |
+|---|---|---|
+| YY | 834 / 837 | 778 / 781 |
+| MM | 834 / 837 | — |
+| DD | 834 / 837 | — |
+| HH | 29 / 30 | — |
+| HR | 1 / 1 | — |
+
+`VAR_INFO_HEIGHT` is present at YY resolution for 778 of 781 sites — essentially network-wide,
+not zero. Re-derived the three spot-check values directly from these files using the originally
+requested rule (`NEE_VUT_REF`, else `NEE_CUT_REF`, else `USTAR`, latest `VAR_INFO_DATE`): CA-TP1
+→ 10 m (`VAR_INFO_DATE` 201408), US-Ha1 → 29 m (199110280100), DE-Tha → 42 m (202101010000) —
+all three match exactly. The tower-height-from-VAR_INFO task is feasible after all; building
+`card_tower_height_m` from it has not been actioned yet, pending further instruction.
+
+---
+
 ## 2026-10-13 — TowerTango: tower height from VAR_INFO blocked — not present at YY resolution
 
 Full prompt: `logs/prompts/2026-10-13_towertango_tower_height.md`. Investigated before writing any

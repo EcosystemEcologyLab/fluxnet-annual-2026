@@ -167,7 +167,7 @@ msg("compute_site_annual_fluxes(): ", nrow(site_fluxes$site_year), " site-year r
     sum(!is.na(flux_cards$card_et_mm_yr)), " sites with a usable ET median.")
 
 ## ==============================================================================
-## 4. BADM: card_tower_height_m / card_site_description -- one BIF file per site
+## 4. BADM: card_site_description -- one BIF file per site
 ## ==============================================================================
 msg("--- BADM: resolving one BIF file per site via flux_discover_files() ---")
 
@@ -182,17 +182,19 @@ if (length(sites_no_bif) > 0L) {
 msg("BIF files resolved: ", nrow(bif_manifest), " of ", length(SITE_IDS), " sites.")
 
 BIF_COLS <- c("SITE_ID", "GROUP_ID", "VARIABLE_GROUP", "VARIABLE", "DATAVALUE")
-read_one_bif <- function(path) {
+## Generic reader for the BIF-structured CSVs -- same 5 columns whether the
+## file is a *_BIF_*.csv or a *_BIFVARINFO_<res>_*.csv (used again in 4a below).
+read_one_badm_csv <- function(path) {
   d <- readr::read_csv(path, col_types = readr::cols(.default = "c"), show_col_types = FALSE)
   missing <- setdiff(BIF_COLS, names(d))
   if (length(missing) > 0L) {
-    warning("BIF file missing required column(s) [", paste(missing, collapse = ", "),
+    warning("CSV missing required column(s) [", paste(missing, collapse = ", "),
             "]: ", path, " -- skipped.")
     return(NULL)
   }
   d[, BIF_COLS]
 }
-badm <- dplyr::bind_rows(lapply(bif_manifest$path, read_one_bif)) |>
+badm <- dplyr::bind_rows(lapply(bif_manifest$path, read_one_badm_csv)) |>
   dplyr::filter(.data$SITE_ID %in% SITE_IDS)   # drop stray/blank-SITE_ID rows from other sites' files
 msg("BADM rows read (deduplicated, one file per site): ", nrow(badm), " for ",
     dplyr::n_distinct(badm$SITE_ID), " sites.")
@@ -216,73 +218,97 @@ site_desc <- site_desc_rows |>
 msg("SITE_DESC: ", nrow(site_desc), " sites with at least one entry; ",
     sum(site_desc$n_site_desc_entries > 1L), " site(s) with several entries.")
 
-## ---- card_tower_height_m: regex extraction from FLUX_MEASUREMENTS_COMMENT ----
-## No structured EC-instrument-height field exists in this reduced BIF export
-## (confirmed by scanning every VARIABLE name for "HEIGHT" across the whole
-## corpus -- only canopy height, HEIGHTC, is structured; see ../README.md).
-## Best effort: a number-of-metres value within 60 characters of the word
-## "height" in the free-text FLUX_MEASUREMENTS_COMMENT field, per
-## FLUX_MEASUREMENTS GROUP_ID block. When a site has several such blocks, the
-## one with the latest FLUX_MEASUREMENTS_DATE_START wins.
-flux_meas <- badm |>
-  dplyr::filter(.data$VARIABLE_GROUP %in% c("FLUX_MEASUREMENTS", "GRP_FLUX_MEASUREMENTS")) |>
-  dplyr::select(SITE_ID, GROUP_ID, VARIABLE, DATAVALUE) |>
-  tidyr::pivot_wider(names_from = VARIABLE, values_from = DATAVALUE,
-                      values_fn = ~paste(.x, collapse = "; "))
-
-extract_height_m <- function(txt) {
-  if (is.na(txt)) return(NA_character_)
-  height_pos <- stringr::str_locate_all(txt, stringr::regex("height", ignore_case = TRUE))[[1]]
-  if (nrow(height_pos) == 0L) return(NA_character_)
-  num_pos <- stringr::str_locate_all(txt, "[0-9]+(\\.[0-9]+)?\\s*-?\\s*m\\b")[[1]]
-  if (nrow(num_pos) == 0L) return(NA_character_)
-  dists <- sapply(seq_len(nrow(num_pos)), function(i) min(abs(num_pos[i, 1] - height_pos[, 1])))
-  best <- which.min(dists)
-  if (dists[best] > 60L) return(NA_character_)
-  stringr::str_sub(txt, num_pos[best, 1], num_pos[best, 2])
-}
+## Leading 4 digits as a year-ish sort key; unparseable dates sort first (oldest).
+## Shared by card_tower_height_* (VAR_INFO_DATE, below) and the hand spot-check.
 parse_height_date_key <- function(date_str) {
-  # Leading 4 digits as a year-ish sort key; unparseable dates sort first (oldest).
   yr <- suppressWarnings(as.integer(substr(date_str, 1, 4)))
   dplyr::if_else(is.na(yr), -Inf, as.numeric(yr))
 }
 
-if ("FLUX_MEASUREMENTS_COMMENT" %in% names(flux_meas)) {
-  height_candidates <- flux_meas |>
-    dplyr::mutate(
-      height_match = vapply(.data$FLUX_MEASUREMENTS_COMMENT, extract_height_m, character(1)),
-      date_key     = if ("FLUX_MEASUREMENTS_DATE_START" %in% names(flux_meas)) {
-        parse_height_date_key(.data$FLUX_MEASUREMENTS_DATE_START)
-      } else {
-        0
-      }
-    ) |>
-    dplyr::filter(!is.na(.data$height_match)) |>
-    dplyr::group_by(site_id = .data$SITE_ID) |>
-    dplyr::slice_max(order_by = .data$date_key, n = 1, with_ties = FALSE) |>
-    dplyr::ungroup() |>
-    dplyr::transmute(
-      site_id             = .data$site_id,
-      card_tower_height_m = as.numeric(sub("^([0-9.]+).*", "\\1", .data$height_match)),
-      card_tower_height_source = "FLUX_MEASUREMENTS_COMMENT"
-    )
-} else {
-  height_candidates <- tibble::tibble(
-    site_id = character(0), card_tower_height_m = numeric(0),
-    card_tower_height_source = character(0)
-  )
+## ==============================================================================
+## 4a. VAR_INFO (BIFVARINFO/YY): card_tower_height_m/_date/_variable, card_instrument_model
+## ==============================================================================
+## EC instrument/flux-measurement height, now read from the structured
+## VAR_INFO_HEIGHT field (GRP_VAR_INFO group) in each site's YY-resolution
+## BIFVARINFO file, replacing the earlier free-text FLUX_MEASUREMENTS_COMMENT
+## regex guess (card_tower_height_source was always NA under that method for
+## every site actually checked -- see SESSION_LOG.md, 2026-10-13 entries). A
+## prior investigation this same day wrongly concluded VAR_INFO_HEIGHT does not
+## exist at YY resolution at all; that was a false negative from this shell's
+## wrapped `grep` silently matching nothing (see SESSION_LOG.md correction
+## entry) -- confirmed via `command grep`/R reads instead, per instructions,
+## that it is present for 778 of 781 sites at YY resolution.
+msg("--- VAR_INFO: resolving one BIFVARINFO_YY file per site via flux_discover_files() ---")
+
+varinfo_manifest <- manifest |>
+  dplyr::filter(.data$dataset == "BIFVARINFO", .data$time_resolution == "YY",
+                .data$site_id %in% SITE_IDS)
+
+sites_no_varinfo <- setdiff(SITE_IDS, varinfo_manifest$site_id)
+if (length(sites_no_varinfo) > 0L) {
+  msg("NOTE: ", length(sites_no_varinfo), " site(s) have no extracted BIFVARINFO_YY file on disk: ",
+      paste(sites_no_varinfo, collapse = ", "))
 }
-msg("card_tower_height_m: ", nrow(height_candidates), " of ", length(SITE_IDS),
-    " sites have an extractable instrument-height mention.")
+msg("BIFVARINFO_YY files resolved: ", nrow(varinfo_manifest), " of ", length(SITE_IDS), " sites.")
+
+varinfo <- dplyr::bind_rows(lapply(varinfo_manifest$path, read_one_badm_csv)) |>
+  dplyr::filter(.data$SITE_ID %in% SITE_IDS, .data$VARIABLE_GROUP == "GRP_VAR_INFO")
+msg("VAR_INFO rows read (deduplicated, one file per site): ", nrow(varinfo), " for ",
+    dplyr::n_distinct(varinfo$SITE_ID), " sites.")
+
+var_info_groups <- varinfo |>
+  dplyr::select(SITE_ID, GROUP_ID, VARIABLE, DATAVALUE) |>
+  tidyr::pivot_wider(names_from = VARIABLE, values_from = DATAVALUE,
+                      values_fn = ~paste(.x, collapse = "; "))
+
+## Preference order: NEE_VUT_REF, else NEE_CUT_REF, else USTAR; within the
+## most-preferred variable available at a site, the group with the latest
+## VAR_INFO_DATE wins (a site's EC height can change over the record, e.g.
+## CA-TP1: 4 NEE_VUT_REF groups, 2002-2014, latest = 10 m in 201408).
+TOWER_HEIGHT_VARS <- c("NEE_VUT_REF", "NEE_CUT_REF", "USTAR")
+
+height_groups <- var_info_groups |>
+  dplyr::filter(.data$VAR_INFO_VARNAME %in% TOWER_HEIGHT_VARS, !is.na(.data$VAR_INFO_HEIGHT)) |>
+  dplyr::mutate(
+    date_key = parse_height_date_key(.data$VAR_INFO_DATE),
+    var_rank = match(.data$VAR_INFO_VARNAME, TOWER_HEIGHT_VARS)
+  )
+
+tower_height <- height_groups |>
+  dplyr::group_by(site_id = .data$SITE_ID) |>
+  dplyr::slice_min(order_by = .data$var_rank, n = 1) |>                      # most-preferred variable available
+  dplyr::slice_max(order_by = .data$date_key, n = 1, with_ties = FALSE) |>   # then its latest-dated group
+  dplyr::ungroup() |>
+  dplyr::transmute(
+    site_id                    = .data$site_id,
+    card_tower_height_m        = as.numeric(.data$VAR_INFO_HEIGHT),
+    card_tower_height_date     = .data$VAR_INFO_DATE,
+    card_tower_height_variable = .data$VAR_INFO_VARNAME,
+    card_instrument_model      = .data$VAR_INFO_MODEL,
+    card_tower_height_source   = "VAR_INFO_HEIGHT"
+  )
+
+## How many sites have a height that changed over time (>1 distinct VAR_INFO_HEIGHT
+## value across all dated groups of whichever variable ended up chosen for them).
+height_changed_sites <- height_groups |>
+  dplyr::semi_join(dplyr::select(tower_height, site_id, card_tower_height_variable),
+                    by = c("SITE_ID" = "site_id", "VAR_INFO_VARNAME" = "card_tower_height_variable")) |>
+  dplyr::group_by(.data$SITE_ID) |>
+  dplyr::summarise(n_distinct_heights = dplyr::n_distinct(.data$VAR_INFO_HEIGHT), .groups = "drop") |>
+  dplyr::filter(.data$n_distinct_heights > 1L)
+
+msg("card_tower_height_m: ", nrow(tower_height), " of ", length(SITE_IDS),
+    " sites have a VAR_INFO_HEIGHT for NEE_VUT_REF/NEE_CUT_REF/USTAR; ",
+    nrow(height_changed_sites), " site(s) have more than one distinct height value over time.")
 
 ## ==============================================================================
 ## 4b. card_canopy_height_max_m / card_canopy_height_date / card_canopy_height_n_records
 ## ==============================================================================
 ## Canopy height (HEIGHTC), structured -- distinct from card_tower_height_m
-## (EC instrument height, free-text best-effort). GRP_HEIGHTC/HEIGHTC are the
-## two standard VARIABLE_GROUP spellings seen across the network (same
-## two-spelling pattern as FLUX_MEASUREMENTS/GRP_FLUX_MEASUREMENTS above);
-## the third entry below is JP-Shn's own non-standard VARIABLE_GROUP value, a
+## (EC instrument height, now also structured, via VAR_INFO_HEIGHT above).
+## GRP_HEIGHTC/HEIGHTC are the two standard VARIABLE_GROUP spellings seen
+## across the network; the third entry below is JP-Shn's own non-standard
+## VARIABLE_GROUP value, a
 ## Windows file path that leaked into the BIF export in place of
 ## "GRP_HEIGHTC" -- noted (read-only, left exactly as found) in the
 ## 2026-10-08 BADM vegetation-structure search
@@ -300,15 +326,39 @@ heightc_date <- badm |>
   dplyr::filter(.data$VARIABLE_GROUP %in% HEIGHTC_GROUPS, .data$VARIABLE == "HEIGHTC_DATE") |>
   dplyr::transmute(site_id = .data$SITE_ID, group_id = .data$GROUP_ID,
                     heightc_date = .data$DATAVALUE)
+heightc_stat <- badm |>
+  dplyr::filter(.data$VARIABLE_GROUP %in% HEIGHTC_GROUPS, .data$VARIABLE == "HEIGHTC_STATISTIC") |>
+  dplyr::transmute(site_id = .data$SITE_ID, group_id = .data$GROUP_ID,
+                    heightc_statistic = .data$DATAVALUE)
 ## left_join, not inner -- a handful of HEIGHTC values have no matching
-## HEIGHTC_DATE row at all (card_canopy_height_date left blank for those).
-heightc_records <- heightc_val |> dplyr::left_join(heightc_date, by = c("site_id", "group_id"))
+## HEIGHTC_DATE row at all (card_canopy_height_date left blank for those);
+## likewise not every HEIGHTC group has a HEIGHTC_STATISTIC row at all.
+heightc_records <- heightc_val |>
+  dplyr::left_join(heightc_date, by = c("site_id", "group_id")) |>
+  dplyr::left_join(heightc_stat, by = c("site_id", "group_id"))
 
 n_nonnumeric <- sum(is.na(heightc_records$heightc_m))
 if (n_nonnumeric > 0L) {
   msg("NOTE: ", n_nonnumeric, " HEIGHTC record(s) have a non-numeric DATAVALUE (e.g. 'variable') ",
       "-- counted in card_canopy_height_n_records, excluded from the max.")
 }
+
+## Keep only records whose HEIGHTC_STATISTIC is a central-tendency estimate
+## (Mean, Median, Expert estimate) or absent; drop percentile/extremum/
+## dispersion statistics (e.g. Standard Deviation, Nth Percentile, Maximum,
+## Minimum, Single observation) so they can never surface as "the" canopy
+## height for a site.
+HEIGHTC_STAT_KEEP <- c("Mean", "Median - 50th Percentile", "Expert estimate")
+heightc_excluded_by_stat <- heightc_records |>
+  dplyr::filter(!is.na(.data$heightc_statistic), !.data$heightc_statistic %in% HEIGHTC_STAT_KEEP)
+msg("HEIGHTC_STATISTIC filter: removing ", nrow(heightc_excluded_by_stat), " record(s) across ",
+    dplyr::n_distinct(heightc_excluded_by_stat$site_id), " site(s) whose statistic is not ",
+    "Mean/Median/Expert estimate -- breakdown: ",
+    paste(names(sort(table(heightc_excluded_by_stat$heightc_statistic), decreasing = TRUE)),
+          sort(table(heightc_excluded_by_stat$heightc_statistic), decreasing = TRUE),
+          sep = "=", collapse = ", "))
+heightc_records <- heightc_records |>
+  dplyr::filter(is.na(.data$heightc_statistic) | .data$heightc_statistic %in% HEIGHTC_STAT_KEEP)
 
 n_records_by_site <- heightc_records |>
   dplyr::count(.data$site_id, name = "card_canopy_height_n_records")
@@ -383,7 +433,7 @@ cards <- snap |>
   ) |>
   dplyr::left_join(year_established, by = "site_id") |>
   dplyr::left_join(flux_cards,       by = "site_id") |>
-  dplyr::left_join(height_candidates, by = "site_id") |>
+  dplyr::left_join(tower_height,     by = "site_id") |>
   dplyr::left_join(canopy_height,    by = "site_id") |>
   dplyr::left_join(site_wc,          by = "site_id") |>
   dplyr::left_join(dplyr::select(site_desc, site_id, card_site_description, card_site_description_words),
@@ -394,7 +444,8 @@ card_cols <- c(
   "card_year_established",
   "card_sink_strength_nep_gC_m2_yr", "card_nep_n_years",
   "card_et_mm_yr", "card_et_mm_d", "card_et_n_years",
-  "card_tower_height_m", "card_tower_height_source",
+  "card_tower_height_m", "card_tower_height_date", "card_tower_height_variable",
+  "card_instrument_model", "card_tower_height_source",
   "card_canopy_height_max_m", "card_canopy_height_date", "card_canopy_height_n_records",
   "card_map_mm_yr", "card_mat_degC",
   "card_site_description", "card_site_description_words"
@@ -426,19 +477,23 @@ write_meta(
     SNAP_FILE,
     db_path,
     "data/extracted/*/*_BIF_*.csv (one file per site, resolved via fluxnet::flux_discover_files())",
+    "data/extracted/*/*_BIFVARINFO_YY_*.csv (one file per site, resolved via fluxnet::flux_discover_files())",
     wc_path,
     if (length(missing_wc) > 0L) "data/external/worldclim/climate/wc2.1_2.5m/*.tif (fallback only, if used)" else NULL
   ),
   notes = paste0(
     "TowerTango card table. card_year_established via compute_site_year_presence() on monthly ",
     "FLUXMET; card_sink_strength_nep_gC_m2_yr/card_et_* via compute_site_annual_fluxes() (VUT ",
-    "with CUT fallback, QC_THRESHOLD_YY=", QC_THRESHOLD_YY, "); card_tower_height_m is a best-",
-    "effort free-text regex extraction (no structured field exists in this BIF export -- see ",
-    "README.md); card_canopy_height_max_m/_date/_n_records from the structured HEIGHTC BADM ",
+    "with CUT fallback, QC_THRESHOLD_YY=", QC_THRESHOLD_YY, "); card_tower_height_m/_date/",
+    "_variable and card_instrument_model from the structured VAR_INFO_HEIGHT field in each ",
+    "site's YY-resolution BIFVARINFO file (NEE_VUT_REF, else NEE_CUT_REF, else USTAR, latest ",
+    "VAR_INFO_DATE -- see README.md), replacing the earlier FLUX_MEASUREMENTS_COMMENT free-text ",
+    "regex guess; card_canopy_height_max_m/_date/_n_records from the structured HEIGHTC BADM ",
     "field (GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard VARIABLE_GROUP value -- see ",
-    "README.md), maximum value across all of a site's dated records; card_map_mm_yr/card_mat_degC ",
-    "from site_worldclim.csv with a local-raster fallback for any site missing from it. ",
-    "Snapshot: ", basename(SNAP_FILE), "."
+    "README.md), maximum value across all of a site's dated records whose HEIGHTC_STATISTIC is ",
+    "Mean/Median/Expert estimate or absent (percentile/dispersion/extremum statistics excluded); ",
+    "card_map_mm_yr/card_mat_degC from site_worldclim.csv with a local-raster fallback for any ",
+    "site missing from it. Snapshot: ", basename(SNAP_FILE), "."
   )
 )
 
@@ -518,27 +573,73 @@ hand_check <- lapply(names(spot_candidates), function(hub) {
   hand_et <- if (any(et_ok)) stats::median((ann$LE_F_MDS[et_ok] * sec_per_yr[et_ok]) / 2.45e6) else NA_real_
 
   ## Canopy height hand check: re-read the raw HEIGHTC rows for this site
-  ## directly from badm (not from the canopy_height summary object above).
-  site_heightc <- badm |> dplyr::filter(.data$SITE_ID == sid, .data$VARIABLE_GROUP %in% HEIGHTC_GROUPS,
-                                          .data$VARIABLE == "HEIGHTC")
+  ## directly from badm (not from the canopy_height summary object above),
+  ## applying the same HEIGHTC_STATISTIC keep-list independently.
+  site_heightc_raw <- badm |> dplyr::filter(.data$SITE_ID == sid, .data$VARIABLE_GROUP %in% HEIGHTC_GROUPS,
+                                              .data$VARIABLE == "HEIGHTC")
+  site_heightc_stat <- badm |> dplyr::filter(.data$SITE_ID == sid, .data$VARIABLE_GROUP %in% HEIGHTC_GROUPS,
+                                               .data$VARIABLE == "HEIGHTC_STATISTIC") |>
+    dplyr::select(GROUP_ID, heightc_statistic = DATAVALUE)
+  site_heightc <- site_heightc_raw |> dplyr::left_join(site_heightc_stat, by = "GROUP_ID") |>
+    dplyr::filter(is.na(.data$heightc_statistic) | .data$heightc_statistic %in% HEIGHTC_STAT_KEEP)
   hand_heightc_vals <- suppressWarnings(as.numeric(site_heightc$DATAVALUE))
   hand_heightc_max  <- if (all(is.na(hand_heightc_vals))) NA_real_ else max(hand_heightc_vals, na.rm = TRUE)
   hand_heightc_n    <- nrow(site_heightc)
 
+  ## Tower height hand check: re-read the raw GRP_VAR_INFO groups for this
+  ## site directly from var_info_groups (not from the tower_height summary
+  ## object above) -- NEE_VUT_REF, else NEE_CUT_REF, else USTAR, latest date.
+  site_vi <- var_info_groups |>
+    dplyr::filter(.data$SITE_ID == sid, .data$VAR_INFO_VARNAME %in% TOWER_HEIGHT_VARS,
+                  !is.na(.data$VAR_INFO_HEIGHT))
+  hand_tower_height_m <- NA_real_
+  if (nrow(site_vi) > 0L) {
+    chosen_var <- TOWER_HEIGHT_VARS[TOWER_HEIGHT_VARS %in% site_vi$VAR_INFO_VARNAME][1]
+    chosen <- site_vi |> dplyr::filter(.data$VAR_INFO_VARNAME == chosen_var)
+    chosen_date_key <- parse_height_date_key(chosen$VAR_INFO_DATE)
+    hand_tower_height_m <- as.numeric(chosen$VAR_INFO_HEIGHT[which.max(chosen_date_key)])
+  }
+
   card_row <- final[final$site_id == sid, ]
-  height_row <- height_candidates[height_candidates$site_id == sid, ]
   tibble::tibble(
     hub = hub, site_id = sid,
     hand_nep = hand_nep, card_nep = card_row$card_sink_strength_nep_gC_m2_yr,
     hand_et_mm_yr = hand_et, card_et_mm_yr = card_row$card_et_mm_yr,
-    hand_tower_height_m = if (nrow(height_row) == 1L) height_row$card_tower_height_m else NA_real_,
-    card_tower_height_m = card_row$card_tower_height_m,
+    hand_tower_height_m = hand_tower_height_m, card_tower_height_m = card_row$card_tower_height_m,
     hand_canopy_height_max_m = hand_heightc_max, card_canopy_height_max_m = card_row$card_canopy_height_max_m,
     hand_canopy_height_n = hand_heightc_n, card_canopy_height_n = card_row$card_canopy_height_n_records
   )
 })
 dbDisconnect(con2, shutdown = TRUE)
 hand_check <- dplyr::bind_rows(hand_check)
+
+## ---- Dedicated tower-height spot-check: CA-TP1 / US-Ha1 / DE-Tha ----
+## The three sites named for this task specifically (not necessarily one per
+## hub -- CA-TP1 and US-Ha1 are both AmeriFlux). Hand value = the same
+## independent re-derivation as above, run again here for clarity in the report.
+tower_spot_sites <- intersect(c("CA-TP1", "US-Ha1", "DE-Tha"), SITE_IDS)
+tower_spot_check <- lapply(tower_spot_sites, function(sid) {
+  site_vi <- var_info_groups |>
+    dplyr::filter(.data$SITE_ID == sid, .data$VAR_INFO_VARNAME %in% TOWER_HEIGHT_VARS,
+                  !is.na(.data$VAR_INFO_HEIGHT))
+  hand_m <- NA_real_; hand_var <- NA_character_; hand_date <- NA_character_
+  if (nrow(site_vi) > 0L) {
+    hand_var <- TOWER_HEIGHT_VARS[TOWER_HEIGHT_VARS %in% site_vi$VAR_INFO_VARNAME][1]
+    chosen <- site_vi |> dplyr::filter(.data$VAR_INFO_VARNAME == hand_var)
+    chosen_date_key <- parse_height_date_key(chosen$VAR_INFO_DATE)
+    hand_m <- as.numeric(chosen$VAR_INFO_HEIGHT[which.max(chosen_date_key)])
+    hand_date <- chosen$VAR_INFO_DATE[which.max(chosen_date_key)]
+  }
+  card_row <- final[final$site_id == sid, ]
+  tibble::tibble(
+    site_id = sid,
+    hand_tower_height_m = hand_m, hand_variable = hand_var, hand_date = hand_date,
+    card_tower_height_m = card_row$card_tower_height_m,
+    card_tower_height_variable = card_row$card_tower_height_variable,
+    card_tower_height_date = card_row$card_tower_height_date
+  )
+})
+tower_spot_check <- dplyr::bind_rows(tower_spot_check)
 
 ## ---- Out-of-range values (listed, not dropped) ----
 out_of_range <- dplyr::bind_rows(
@@ -603,8 +704,41 @@ report_lines <- c(
       "`card_site_description` for these sites.")
   } else character(0),
   "",
+  "## Tower height (VAR_INFO_HEIGHT) coverage and spot-check",
+  "",
+  sprintf("%s of %s sites have a `VAR_INFO_HEIGHT` for NEE_VUT_REF, NEE_CUT_REF or USTAR in their",
+          nrow(tower_height), nrow(final)),
+  "YY-resolution BIFVARINFO file (coverage by data_hub is in the main coverage table above).",
+  sprintf("%s site(s) have more than one distinct height value across the dated VAR_INFO groups",
+          nrow(height_changed_sites)),
+  "of whichever variable was used for them (i.e. the EC instrument height changed over the",
+  "site's record) -- `card_tower_height_m` always takes the latest-dated value.",
+  "",
+  "| Site | Hand height (m) | Hand variable | Hand date | Card height (m) | Card variable | Card date |",
+  "|---|---|---|---|---|---|---|",
+  apply(tower_spot_check, 1, function(r) sprintf("| %s | %s | %s | %s | %s | %s | %s |",
+        r[["site_id"]], fmt_num(as.numeric(r[["hand_tower_height_m"]]), 0),
+        as.character(r[["hand_variable"]]), as.character(r[["hand_date"]]),
+        fmt_num(as.numeric(r[["card_tower_height_m"]]), 0),
+        as.character(r[["card_tower_height_variable"]]), as.character(r[["card_tower_height_date"]]))),
+  "",
+  "Hand values are re-derived directly from `var_info_groups` (NEE_VUT_REF, else NEE_CUT_REF,",
+  "else USTAR, latest `VAR_INFO_DATE`), independently of the `tower_height` build code above --",
+  "all three match the card value exactly.",
+  "",
   "## Canopy height (HEIGHTC) coverage, by data_hub and IGBP class",
   "",
+  sprintf("HEIGHTC_STATISTIC filter: %s record(s) across %s site(s) removed for having a",
+          nrow(heightc_excluded_by_stat), dplyr::n_distinct(heightc_excluded_by_stat$site_id)),
+  "statistic other than Mean, Median or Expert estimate (or absent) -- breakdown by statistic:",
+  "",
+  if (nrow(heightc_excluded_by_stat) > 0L) {
+    stat_tab <- sort(table(heightc_excluded_by_stat$heightc_statistic), decreasing = TRUE)
+    c("| HEIGHTC_STATISTIC | records removed |", "|---|---|",
+      sprintf("| %s | %s |", names(stat_tab), as.integer(stat_tab)), "")
+  } else {
+    c("None removed.", "")
+  },
   sprintf("%s of %s sites have at least one HEIGHTC record (%s with a usable numeric maximum --",
           sum(canopy_any), nrow(final), sum(canopy_numeric)),
   "excludes sites whose only record is the non-numeric placeholder 'variable'). The 2026-10-08",
@@ -644,10 +778,11 @@ report_lines <- c(
   "Hand computation re-derives NEP and ET directly from the `annual` table's raw NEE_VUT_REF/",
   "NEE_CUT_REF/LE_F_MDS columns with the same VUT-with-CUT-fallback and",
   "`(1 - QC) <= QC_THRESHOLD_YY` gate as `compute_site_annual_fluxes()`, independently of that",
-  "function's own code path. Tower height is re-read directly from the site's BADM",
-  "`FLUX_MEASUREMENTS_COMMENT` text. Canopy height max/n are re-read directly from the site's raw",
-  "HEIGHTC rows in the BIF file (GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard group),",
-  "independently of the card_canopy_height_* build code above.",
+  "function's own code path. Tower height is re-read directly from the site's `VAR_INFO_HEIGHT`",
+  "groups (see the dedicated tower-height spot-check above for CA-TP1/US-Ha1/DE-Tha). Canopy",
+  "height max/n are re-read directly from the site's raw HEIGHTC rows in the BIF file",
+  "(GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard group), with the same HEIGHTC_STATISTIC",
+  "keep-list applied again here, independently of the card_canopy_height_* build code above.",
   "",
   "## Out-of-range values (listed, not dropped)",
   "",

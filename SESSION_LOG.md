@@ -4,6 +4,65 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — TowerTango: tower height built from VAR_INFO_HEIGHT; canopy height statistic filter
+
+Full prompt: `logs/prompts/2026-10-13_towertango_heights.md`. Follows the same-day correction
+below (`VAR_INFO_HEIGHT` is in fact present at YY resolution for most sites). Only
+`TowerTango/` changed (code, docs, README). All verification greps/reads in this task used
+`command grep` or R reads, per instruction.
+
+**`card_tower_height_m` rebuilt from `VAR_INFO_HEIGHT`.** Replaces the earlier
+`FLUX_MEASUREMENTS_COMMENT` free-text regex guess (coverage was 0/781 for every site actually
+spot-checked) with a structured read of each site's YY-resolution BIFVARINFO file
+(`data/extracted/*/*_FLUXNET_BIFVARINFO_YY_*.csv`), resolved one file per site via
+`fluxnet::flux_discover_files()` exactly like the BIF file already was. Selection: `NEE_VUT_REF`,
+else `NEE_CUT_REF`, else `USTAR`, the group with the latest `VAR_INFO_DATE`. Three new columns
+added — `card_tower_height_date`, `card_tower_height_variable`, `card_instrument_model`
+(`VAR_INFO_MODEL`) — `card_tower_height_source` kept, now always `"VAR_INFO_HEIGHT"`.
+
+**Coverage: 777 of 781 sites** (AmeriFlux 381/381, ICOS 348/348, TERN 48/52). The 4 without a
+value (`AU-Ya1`, `AU-Ya2`, `NZ-ScF`, `NZ-Cla`) have no `VAR_INFO_HEIGHT` for any of the three
+candidate variables in their YY BIFVARINFO file — a genuine data gap, not a code gap. **88
+sites** have more than one distinct height value across the dated VAR_INFO groups of whichever
+variable was used (instrument height changed over the record) — `card_tower_height_m` always
+takes the latest. Full-range sanity check: 1.1-95 m, 0 sites <=0 or >100.
+
+**Spot-check, exact match:** CA-TP1 10 m (`VAR_INFO_DATE` 201408, `NEE_VUT_REF`), US-Ha1 29 m
+(199110280100, `NEE_VUT_REF`), DE-Tha 42 m (202101010000, `NEE_VUT_REF`) — hand-derived
+independently from `var_info_groups` in a dedicated report table, all three equal to the card
+value.
+
+**`card_canopy_height_max_m`: added a `HEIGHTC_STATISTIC` keep-list.** Previously any `HEIGHTC`
+record contributed to the max regardless of what kind of statistic it was. Now only records
+whose `HEIGHTC_STATISTIC` is `Mean`, `Median - 50th Percentile`, or `Expert estimate` — or has no
+`HEIGHTC_STATISTIC` row at all (absence is not evidence of a dispersion statistic) — are kept;
+records with `Standard Deviation`, any `Nth Percentile`, `Maximum`, `Minimum`, or `Single
+observation` are excluded before taking the max.
+
+**Removed 7,057 records across 93 sites.** Breakdown: Standard Deviation 1,583; 90th Percentile
+1,236; Maximum 1,079; Minimum 1,044; Single observation 679; 25th Percentile 655; 75th Percentile
+646; 5th Percentile 47; 95th Percentile 39; 50th Percentile (distinct from "Median - 50th
+Percentile", not matched) 32; 10th/99th/1st Percentile 6/6/5. Of the 93 affected sites, **18 lost
+HEIGHTC coverage entirely** (every one of their records was a dispersion/percentile/extremum
+statistic): `DE-Brs`, `DE-Har`, `DE-Hdn`, `FI-Ruk`, `IE-CaC`, `IE-CaN`, `IT-Ro1`, `JP-Hc2`,
+`JP-Hc3`, `JP-KaP`, `JP-Mse`, `KR-HPK`, `RU-Fy3`, `RU-Ha1`, `US-Lin`, `US-UiC`, `US-UiD`,
+`VU-Coc`. Network-wide "any HEIGHTC record" coverage accordingly drops from 483/781 (previous
+2026-10-13 entry) to 465/781 (459 with a usable numeric maximum, down from 477). Out-of-range
+re-listed with the filter applied: unchanged from before (4 sites above 60 m -- `CH-Rh2` 226.3 m,
+`CH-Rh1` 209.9 m, `CH-Oe3` 96.5 m, `AU-Wac` 100.0 m, all statistic `Mean`, so not excluded by this
+filter; 2 sites at 0.0 m -- `FI-Nsv`, `DE-Zrk`, both with no `HEIGHTC_STATISTIC` row, so also kept).
+
+**Coverage by `data_hub`, both columns, now in the main coverage table** (`docs/update_cards_report.md`):
+tower height -- AmeriFlux 381/381, ICOS 348/348, TERN 48/52; canopy height -- AmeriFlux 83/381,
+ICOS 331/348, TERN 51/52 (45 numeric).
+
+Re-ran on the same latest snapshot (`fluxnet_shuttle_snapshot_20260920T102211.csv`, 781 sites);
+`TowerTango/tables/towertango_cards_20260920T102211.csv` now has 39 columns (18 snapshot + 21
+card, was 36/18). `docs/update_cards_report.md` and `README.md`'s card-columns table regenerated/
+updated accordingly. Confirmed nothing was written outside `TowerTango/` by this run.
+
+---
+
 ## 2026-10-13 — Correction: the previous "VAR_INFO_HEIGHT absent at YY resolution" finding was wrong
 
 **Supersedes the entry immediately below ("TowerTango: tower height from VAR_INFO blocked") —

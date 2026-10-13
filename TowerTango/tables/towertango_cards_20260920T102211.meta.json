@@ -1,11 +1,12 @@
 {
-  "run_datetime_utc": "2026-10-13T00:04:46Z",
-  "pipeline_version": "a0c741c",
+  "run_datetime_utc": "2026-10-13T13:53:12Z",
+  "pipeline_version": "9a3018c",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
     "data/duckdb/fluxnet.duckdb",
     "data/extracted/*/*_BIF_*.csv (one file per site, resolved via fluxnet::flux_discover_files())",
+    "data/extracted/*/*_BIFVARINFO_YY_*.csv (one file per site, resolved via fluxnet::flux_discover_files())",
     "data/snapshots/site_worldclim.csv"
   ],
-  "notes": "TowerTango card table. card_year_established via compute_site_year_presence() on monthly FLUXMET; card_sink_strength_nep_gC_m2_yr/card_et_* via compute_site_annual_fluxes() (VUT with CUT fallback, QC_THRESHOLD_YY=0.5); card_tower_height_m is a best-effort free-text regex extraction (no structured field exists in this BIF export -- see README.md); card_canopy_height_max_m/_date/_n_records from the structured HEIGHTC BADM field (GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard VARIABLE_GROUP value -- see README.md), maximum value across all of a site's dated records; card_map_mm_yr/card_mat_degC from site_worldclim.csv with a local-raster fallback for any site missing from it. Snapshot: fluxnet_shuttle_snapshot_20260920T102211.csv."
+  "notes": "TowerTango card table. card_year_established via compute_site_year_presence() on monthly FLUXMET; card_sink_strength_nep_gC_m2_yr/card_et_* via compute_site_annual_fluxes() (VUT with CUT fallback, QC_THRESHOLD_YY=0.5); card_tower_height_m/_date/_variable and card_instrument_model from the structured VAR_INFO_HEIGHT field in each site's YY-resolution BIFVARINFO file (NEE_VUT_REF, else NEE_CUT_REF, else USTAR, latest VAR_INFO_DATE -- see README.md), replacing the earlier FLUX_MEASUREMENTS_COMMENT free-text regex guess; card_canopy_height_max_m/_date/_n_records from the structured HEIGHTC BADM field (GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard VARIABLE_GROUP value -- see README.md), maximum value across all of a site's dated records whose HEIGHTC_STATISTIC is Mean/Median/Expert estimate or absent (percentile/dispersion/extremum statistics excluded); card_map_mm_yr/card_mat_degC from site_worldclim.csv with a local-raster fallback for any site missing from it. Snapshot: fluxnet_shuttle_snapshot_20260920T102211.csv."
 }

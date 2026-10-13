@@ -15,8 +15,8 @@ flag fraction for NEE_VUT, NEE_CUT, LE and H, across all 781-site FLUXMET annual
 (n = 6,336). The QC flag fraction runs 1 (every underlying half-hourly/hourly record
 for that site-year was measured or good-quality gap-filled) down to 0 (every record is
 medium- or poor-quality gap-filled, or missing) -- higher is better. The x-axis is shown from
-0.5 to 1.0 only; the dashed vertical line at the left edge marks QC = 0.50, the 0.5 rule
-applied throughout this synthesis (QC_THRESHOLD_YY, R/pipeline_config.R). The variable legend
+0.5 to 1.0 only, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY,
+R/pipeline_config.R). The variable legend
 is placed inside the panel's upper-left area, which the ECDF curves do not reach. Annual QC
 values below 0.50 (off the plotted range) are not shown in the curve but are counted here:
 16 of 4,033 NEE_VUT, 32 of 4,352 NEE_CUT, 8 of 4,509 LE, and 7 of 4,638 H annual QC values fall

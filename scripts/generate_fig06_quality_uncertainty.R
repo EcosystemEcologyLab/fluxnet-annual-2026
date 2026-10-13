@@ -153,7 +153,6 @@ msg("Panel a: annual QC < 0.5 (below the plotted x-axis range), by variable: ",
 ## displayed curve still reflects the full [0,1] data.
 panel_a <- ggplot(annual_qc, aes(x = qc, colour = variable)) +
   stat_ecdf(geom = "step", linewidth = nature_lwd(1.0)) +
-  geom_vline(xintercept = 0.50, linetype = "dashed", colour = "grey50", linewidth = nature_lwd(0.3)) +
   scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable", labels = VAR_LABELS) +
   scale_x_continuous(breaks = c(0.5, 0.75, 1)) +
   coord_cartesian(xlim = c(0.5, 1)) +
@@ -241,8 +240,8 @@ legend_lines <- c(
   sprintf("(n = %s). The QC flag fraction runs 1 (every underlying half-hourly/hourly record", format(nrow(master), big.mark=",")),
   "for that site-year was measured or good-quality gap-filled) down to 0 (every record is",
   "medium- or poor-quality gap-filled, or missing) -- higher is better. The x-axis is shown from",
-  "0.5 to 1.0 only; the dashed vertical line at the left edge marks QC = 0.50, the 0.5 rule",
-  "applied throughout this synthesis (QC_THRESHOLD_YY, R/pipeline_config.R). The variable legend",
+  "0.5 to 1.0 only, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY,",
+  "R/pipeline_config.R). The variable legend",
   "is placed inside the panel's upper-left area, which the ECDF curves do not reach. Annual QC",
   "values below 0.50 (off the plotted range) are not shown in the curve but are counted here:",
   sprintf("%s of %s NEE_VUT, %s of %s NEE_CUT, %s of %s LE, and %s of %s H annual QC values fall",

@@ -4,6 +4,16 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Figure 6a: removed the QC=0.50 dashed vertical line
+
+Quick follow-up to the Figure 6 revision below. Removed `geom_vline(xintercept = 0.50, ...)` from
+panel a of `scripts/generate_fig06_quality_uncertainty.R` — the ECDF x-axis is already clipped to
+start at 0.5, so the marker line was redundant with the axis's own left edge. Removed the matching
+sentence from `fig_06_quality_uncertainty.legend.txt`'s panel (a) description. No other changes;
+same name, gates, and `check_figure_format.R` result (14/14 PASS).
+
+---
+
 ## 2026-10-13 — Figure 6 revision: in-panel legends, thicker ECDF lines, panel c notes moved to legend.txt
 
 Full prompt: `logs/prompts/2026-10-13_fig06_revision.md`. Revises commit a0c741c

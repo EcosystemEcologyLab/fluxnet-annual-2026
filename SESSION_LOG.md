@@ -4,6 +4,55 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — TowerTango: canopy height added to the cards
+
+Full prompt: `logs/prompts/2026-10-13_towertango_canopy_height.md`. Added three new card columns
+to `TowerTango/code/update_cards.R` — `card_canopy_height_max_m`, `card_canopy_height_date`,
+`card_canopy_height_n_records` — placed right after `card_tower_height_source`, which is left
+unchanged. Only `TowerTango/` changed.
+
+**Source.** BADM `HEIGHTC` (structured canopy height), distinct from `card_tower_height_m`'s
+free-text EC-instrument-height guess. Read from the same deduplicated, one-file-per-site
+`badm` table already built for `card_site_description`/`card_tower_height_m` — three
+`VARIABLE_GROUP` spellings accepted: `HEIGHTC`, `GRP_HEIGHTC`, and, as instructed, JP-Shn's own
+non-standard value (a Windows file path, `C:\Users\difio\Desktop\R\MakeBIF\GRP_HEIGHTC`, that
+leaked into its BIF export in place of `GRP_HEIGHTC` — noted read-only in the 2026-10-08 BADM
+vegetation-structure search, `review/diagnostics/badm_vegetation_search/report.md`). Per site:
+`card_canopy_height_n_records` counts every dated `HEIGHTC` record found (numeric or not);
+`card_canopy_height_max_m`/`_date` take the maximum numeric value and its record's raw date
+string, ties broken by ascending `GROUP_ID` ("BADM order", same convention as
+`card_site_description`). 6 of 781 sites' only `HEIGHTC` record has the non-numeric placeholder
+value `"variable"` — counted in `_n_records`, contributes nothing to `_max_m` (left blank for a
+site whose only record is non-numeric).
+
+**Coverage.** 483 of 781 sites have at least one `HEIGHTC` record (477 with a usable numeric
+maximum) — by hub: AmeriFlux 86/86, ICOS 346/346, TERN 51/45 (6 non-numeric at TERN). The
+2026-10-08 search reported 482 (344 ICOS + 86 AmeriFlux + 51 TERN); AmeriFlux and TERN's
+any-record counts match exactly, ICOS is 2 off. Investigated and explained, not forced to
+match: that search read every BIF file under `data/extracted/` directly (naive glob, no
+one-file-per-site resolution — and it documented its own anomalies, e.g. a casing mismatch,
+`NZ-CLa` vs. the snapshot's `NZ-Cla`), whereas this run resolves exactly one BIF file per site
+via `fluxnet::flux_discover_files()`. Coverage also reported by IGBP class (new, 15 classes,
+`GRA` highest at 109/146 sites).
+
+**Spot-check** (extended the existing 3-hub table): `CA-Ca3` (AmeriFlux, 1 record, 7.57 m),
+`DE-Tha` (ICOS, 513 records, 37.50 m), `AU-GWW` (TERN, 1 record, 18.00 m) — all three
+hand-recomputed directly from the site's raw `HEIGHTC` BIF rows, independently of the
+`card_canopy_height_*` build code, and all three match exactly.
+
+**Out-of-range values** (listed, not dropped, per instructions): 4 sites above 60 m —
+`CH-Rh2` 226.3 m, `CH-Rh1` 209.9 m, `CH-Oe3` 96.5 m, `AU-Wac` 100.0 m (implausible for any real
+canopy; left exactly as recorded in BADM, not corrected or excluded) — and 2 sites at exactly
+0.0 m (`FI-Nsv`, `DE-Zrk`), below the 0.05 m floor.
+
+Re-ran on the same latest snapshot (`fluxnet_shuttle_snapshot_20260920T102211.csv`, 781 sites);
+`TowerTango/tables/towertango_cards_20260920T102211.csv` now has 36 columns (18 snapshot + 18
+card, was 33/15). `TowerTango/docs/update_cards_report.md` regenerated with the new coverage
+tables, extended spot-check, and new out-of-range entries. Confirmed (as before) that nothing
+was written outside `TowerTango/` by this run.
+
+---
+
 ## 2026-10-13 — Figure 6 and S5 fixes: panel c text layout, variable display labels
 
 Full prompt: `logs/prompts/2026-10-13_fig06_fixes.md`. Small follow-up fixes to Figure 6

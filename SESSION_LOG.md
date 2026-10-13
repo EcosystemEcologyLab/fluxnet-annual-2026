@@ -4,6 +4,59 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — TowerTango: removed HEIGHTC statistic filter, added card_height_check flag column
+
+Full prompt: `logs/prompts/2026-10-13_towertango_height_flags.md`. Reverses part of the
+same-day entry below (removes the `HEIGHTC_STATISTIC` filter added there) and adds a new
+`card_height_check` column instead. Only `TowerTango/` changed (code, docs, README).
+
+**`card_canopy_height_max_m` no longer filters by `HEIGHTC_STATISTIC`.** The keep-list added
+earlier today (`Mean`/`Median - 50th Percentile`/`Expert estimate`, or absent) is removed.
+`card_canopy_height_max_m` is again the maximum numeric `HEIGHTC` value across ALL of a site's
+dated records, used exactly as recorded in BADM, including dispersion/percentile/extremum
+statistics. Canopy coverage reverts to the earlier (pre-filter) numbers: **483 of 781 sites**
+with at least one `HEIGHTC` record (477 with a usable numeric maximum) — AmeriFlux 86/86, ICOS
+346/346, TERN 51/45.
+
+**New column `card_height_check`** flags (never excludes or alters) a site for a by-hand check
+against the source BADM record. Blank (`""`) when nothing is flagged; otherwise one or more of,
+joined with `"; "`:
+- `canopy height above 60 m`
+- `canopy height of 0 m`
+- `canopy height greater than tower height` (i.e. `card_canopy_height_max_m >
+  card_tower_height_m`)
+- `instrument height changed over the record (<min>-<max> m)` — the same 88 sites as the
+  `VAR_INFO_HEIGHT` multi-value sites from the earlier entry below, now with the min-max range
+  given explicitly
+
+**102 of 781 sites flagged**, by flag (a site can carry more than one):
+
+| Flag | Sites |
+|---|---|
+| canopy height above 60 m | 4 |
+| canopy height of 0 m | 2 |
+| canopy height greater than tower height | 26 |
+| instrument height changed over the record | 88 |
+
+Full flagged-site list (site_id, hub, tower height, canopy height, flags) is in
+`docs/update_cards_report.md`, "Height flags (card_height_check)" section. A one-line pointer to
+that section, and to the no-filtering-or-alteration policy, is in `README.md`'s "Heights are
+taken from BADM as reported" paragraph.
+
+**Coverage by data_hub, both height columns** (full table in the report's main coverage table):
+
+| data_hub | sites | card_tower_height_m | card_canopy_height_max_m |
+|---|---|---|---|
+| ALL | 781 | 777 | 477 |
+| AmeriFlux | 381 | 381 | 86 |
+| ICOS | 348 | 348 | 346 |
+| TERN | 52 | 48 | 45 |
+
+Re-ran Update Cards end to end; `docs/update_cards_report.md`, the card table/`.meta.json`, and
+`README.md` all regenerated/updated accordingly.
+
+---
+
 ## 2026-10-13 — TowerTango: tower height built from VAR_INFO_HEIGHT; canopy height statistic filter
 
 Full prompt: `logs/prompts/2026-10-13_towertango_heights.md`. Follows the same-day correction

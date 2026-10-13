@@ -49,7 +49,8 @@ Appended, in order, after every column of the snapshot CSV unchanged:
 | `card_sink_strength_nep_gC_m2_yr`, `card_nep_n_years` | Median usable annual NEP (= -NEE), via `compute_site_annual_fluxes()` (`R/site_annual_fluxes.R`) — VUT with CUT fallback, the paper's QC rule |
 | `card_et_mm_yr`, `card_et_mm_d`, `card_et_n_years` | Median usable annual ET from LE, same conversion as the paper's `flux_medians_by_igbp_et` output (`compute_site_annual_fluxes()`'s own `fluxnet_convert_units()` call); mm/d = mm/yr ÷ 365.25 |
 | `card_tower_height_m`, `card_tower_height_date`, `card_tower_height_variable`, `card_instrument_model`, `card_tower_height_source` | BADM EC instrument measurement height (not canopy height) — see "Tower height" below |
-| `card_canopy_height_max_m`, `card_canopy_height_date`, `card_canopy_height_n_records` | BADM canopy height (`HEIGHTC`, distinct from `card_tower_height_m`): the maximum `HEIGHTC` value across all of a site's dated `GRP_HEIGHTC`/`HEIGHTC` records with a central-tendency `HEIGHTC_STATISTIC` (plus JP-Shn's own non-standard `VARIABLE_GROUP` value, a leaked Windows file path — see the 2026-10-08 BADM search report), the raw date string of that record, and the total number of qualifying records found (numeric or not) — see "Canopy height" below |
+| `card_canopy_height_max_m`, `card_canopy_height_date`, `card_canopy_height_n_records` | BADM canopy height (`HEIGHTC`, distinct from `card_tower_height_m`): the maximum `HEIGHTC` value across ALL of a site's dated `GRP_HEIGHTC`/`HEIGHTC` records (plus JP-Shn's own non-standard `VARIABLE_GROUP` value, a leaked Windows file path — see the 2026-10-08 BADM search report), used exactly as recorded with no statistic filter, the raw date string of that record, and the total number of records found (numeric or not) — see "Canopy height" below |
+| `card_height_check` | Blank, or one or more of: canopy height above 60 m; canopy height of 0 m; canopy height greater than `card_tower_height_m`; instrument height changed over the record (with the range) — flags a site for a by-hand check, never excludes or alters a value — see "Height flags" below |
 | `card_map_mm_yr`, `card_mat_degC` | WorldClim 2.1 bio12 (MAP), bio1 (MAT), from `data/snapshots/site_worldclim.csv`, with a local-raster fallback for any site missing from it (never downloaded) |
 | `card_site_description`, `card_site_description_words` | BADM `SITE_DESC`, same sources as the 2026-10-08 BADM search (`data/extracted/*/*_BIF_*.csv`, resolved one file per site via `flux_discover_files()`); several entries joined with `" | "` in ascending `GROUP_ID` ("BADM order") |
 
@@ -67,11 +68,13 @@ coverage was effectively zero. An initial 2026-10-13 investigation wrongly concl
 shell's wrapped `grep` silently matching nothing; see `SESSION_LOG.md`'s 2026-10-13 correction
 entry. Coverage (`docs/update_cards_report.md`) is 777 of 781 sites.
 
-**Canopy height.** `HEIGHTC_STATISTIC` records a central-tendency estimate (`Mean`, `Median -
-50th Percentile`, `Expert estimate`) for most sites, but some sites report only a dispersion,
-percentile, or extremum statistic (`Standard Deviation`, `Nth Percentile`, `Maximum`, `Minimum`,
-`Single observation`) for some or all of their `HEIGHTC` records. Records whose
-`HEIGHTC_STATISTIC` is not `Mean`/`Median - 50th Percentile`/`Expert estimate` are excluded
-before taking the max (a record with no `HEIGHTC_STATISTIC` at all is kept, since absence isn't
-evidence it's a dispersion statistic) — see `docs/update_cards_report.md` for the exact
-record/site counts removed and the breakdown by statistic.
+**Canopy height.** `card_canopy_height_max_m` is the maximum `HEIGHTC` value across all of a
+site's dated records, used exactly as recorded in BADM — no `HEIGHTC_STATISTIC` filter (a filter
+on `HEIGHTC_STATISTIC` was added, then removed again, both on 2026-10-13; see `SESSION_LOG.md`).
+
+**Heights are taken from BADM as reported, with no filtering or alteration.** Both height
+columns can include unusual-looking values (a dispersion statistic reported as `HEIGHTC`, a
+canopy height greater than the EC instrument height, etc.) because nothing is excluded. Sites
+worth checking by hand before use are flagged in `card_height_check` (see the column table
+above) — see "Height flags" in `docs/update_cards_report.md` for the full list and per-flag
+counts.

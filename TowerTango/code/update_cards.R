@@ -289,13 +289,21 @@ tower_height <- height_groups |>
   )
 
 ## How many sites have a height that changed over time (>1 distinct VAR_INFO_HEIGHT
-## value across all dated groups of whichever variable ended up chosen for them).
-height_changed_sites <- height_groups |>
+## value across all dated groups of whichever variable ended up chosen for them),
+## and the min-max range of those heights (used by card_height_check in 4c below).
+height_variability <- height_groups |>
   dplyr::semi_join(dplyr::select(tower_height, site_id, card_tower_height_variable),
                     by = c("SITE_ID" = "site_id", "VAR_INFO_VARNAME" = "card_tower_height_variable")) |>
-  dplyr::group_by(.data$SITE_ID) |>
-  dplyr::summarise(n_distinct_heights = dplyr::n_distinct(.data$VAR_INFO_HEIGHT), .groups = "drop") |>
-  dplyr::filter(.data$n_distinct_heights > 1L)
+  dplyr::mutate(height_num = suppressWarnings(as.numeric(.data$VAR_INFO_HEIGHT))) |>
+  dplyr::group_by(site_id = .data$SITE_ID) |>
+  dplyr::summarise(
+    n_distinct_heights = dplyr::n_distinct(.data$VAR_INFO_HEIGHT),
+    height_min_m        = min(.data$height_num, na.rm = TRUE),
+    height_max_m        = max(.data$height_num, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+height_changed_sites <- height_variability |> dplyr::filter(.data$n_distinct_heights > 1L)
 
 msg("card_tower_height_m: ", nrow(tower_height), " of ", length(SITE_IDS),
     " sites have a VAR_INFO_HEIGHT for NEE_VUT_REF/NEE_CUT_REF/USTAR; ",
@@ -326,16 +334,10 @@ heightc_date <- badm |>
   dplyr::filter(.data$VARIABLE_GROUP %in% HEIGHTC_GROUPS, .data$VARIABLE == "HEIGHTC_DATE") |>
   dplyr::transmute(site_id = .data$SITE_ID, group_id = .data$GROUP_ID,
                     heightc_date = .data$DATAVALUE)
-heightc_stat <- badm |>
-  dplyr::filter(.data$VARIABLE_GROUP %in% HEIGHTC_GROUPS, .data$VARIABLE == "HEIGHTC_STATISTIC") |>
-  dplyr::transmute(site_id = .data$SITE_ID, group_id = .data$GROUP_ID,
-                    heightc_statistic = .data$DATAVALUE)
 ## left_join, not inner -- a handful of HEIGHTC values have no matching
-## HEIGHTC_DATE row at all (card_canopy_height_date left blank for those);
-## likewise not every HEIGHTC group has a HEIGHTC_STATISTIC row at all.
+## HEIGHTC_DATE row at all (card_canopy_height_date left blank for those).
 heightc_records <- heightc_val |>
-  dplyr::left_join(heightc_date, by = c("site_id", "group_id")) |>
-  dplyr::left_join(heightc_stat, by = c("site_id", "group_id"))
+  dplyr::left_join(heightc_date, by = c("site_id", "group_id"))
 
 n_nonnumeric <- sum(is.na(heightc_records$heightc_m))
 if (n_nonnumeric > 0L) {
@@ -343,22 +345,13 @@ if (n_nonnumeric > 0L) {
       "-- counted in card_canopy_height_n_records, excluded from the max.")
 }
 
-## Keep only records whose HEIGHTC_STATISTIC is a central-tendency estimate
-## (Mean, Median, Expert estimate) or absent; drop percentile/extremum/
-## dispersion statistics (e.g. Standard Deviation, Nth Percentile, Maximum,
-## Minimum, Single observation) so they can never surface as "the" canopy
-## height for a site.
-HEIGHTC_STAT_KEEP <- c("Mean", "Median - 50th Percentile", "Expert estimate")
-heightc_excluded_by_stat <- heightc_records |>
-  dplyr::filter(!is.na(.data$heightc_statistic), !.data$heightc_statistic %in% HEIGHTC_STAT_KEEP)
-msg("HEIGHTC_STATISTIC filter: removing ", nrow(heightc_excluded_by_stat), " record(s) across ",
-    dplyr::n_distinct(heightc_excluded_by_stat$site_id), " site(s) whose statistic is not ",
-    "Mean/Median/Expert estimate -- breakdown: ",
-    paste(names(sort(table(heightc_excluded_by_stat$heightc_statistic), decreasing = TRUE)),
-          sort(table(heightc_excluded_by_stat$heightc_statistic), decreasing = TRUE),
-          sep = "=", collapse = ", "))
-heightc_records <- heightc_records |>
-  dplyr::filter(is.na(.data$heightc_statistic) | .data$heightc_statistic %in% HEIGHTC_STAT_KEEP)
+## No HEIGHTC_STATISTIC filter here (a filter was added, then removed again,
+## both on 2026-10-13 -- see SESSION_LOG.md). Every dated HEIGHTC record is
+## kept and used exactly as recorded in BADM, including dispersion/
+## percentile/extremum statistics; unusual-looking results (e.g. above 60 m,
+## 0 m, or greater than card_tower_height_m) are instead surfaced via
+## card_height_check (4c below) so they can be checked by hand, never
+## silently excluded or altered.
 
 n_records_by_site <- heightc_records |>
   dplyr::count(.data$site_id, name = "card_canopy_height_n_records")
@@ -380,6 +373,49 @@ canopy_height <- n_records_by_site |> dplyr::left_join(max_by_site, by = "site_i
 msg("card_canopy_height_*: ", nrow(canopy_height), " of ", length(SITE_IDS),
     " sites have at least one HEIGHTC record (", sum(!is.na(canopy_height$card_canopy_height_max_m)),
     " with a usable numeric maximum).")
+
+## ==============================================================================
+## 4c. card_height_check -- flag sites to check by hand (nothing excluded or altered)
+## ==============================================================================
+## Both height columns above are used exactly as reported in BADM. This
+## column instead flags sites whose recorded value looks unusual, for a
+## by-hand check against the source BADM record before use in the game.
+## Blank ("") when nothing is flagged.
+msg("--- card_height_check: flag unusual recorded heights for a by-hand check ---")
+
+height_check_base <- dplyr::full_join(
+    dplyr::select(tower_height, site_id, card_tower_height_m),
+    dplyr::select(canopy_height, site_id, card_canopy_height_max_m),
+    by = "site_id"
+  ) |>
+  dplyr::left_join(dplyr::select(height_changed_sites, site_id, height_min_m, height_max_m),
+                    by = "site_id")
+
+height_check <- height_check_base |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    card_height_check = paste(
+      c(
+        if (!is.na(.data$card_canopy_height_max_m) && .data$card_canopy_height_max_m > 60)
+          "canopy height above 60 m",
+        if (!is.na(.data$card_canopy_height_max_m) && .data$card_canopy_height_max_m == 0)
+          "canopy height of 0 m",
+        if (!is.na(.data$card_canopy_height_max_m) && !is.na(.data$card_tower_height_m) &&
+            .data$card_canopy_height_max_m > .data$card_tower_height_m)
+          "canopy height greater than tower height",
+        if (!is.na(.data$height_min_m))
+          sprintf("instrument height changed over the record (%s-%s m)",
+                   formatC(.data$height_min_m, digits = 0, format = "f"),
+                   formatC(.data$height_max_m, digits = 0, format = "f"))
+      ),
+      collapse = "; "
+    )
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::select(site_id, card_height_check)
+
+msg("card_height_check: ", sum(height_check$card_height_check != ""), " of ", nrow(height_check),
+    " sites (with either height column) flagged for a by-hand check.")
 
 ## ==============================================================================
 ## 5. card_map_mm_yr / card_mat_degC -- WorldClim 2.1 (bio12, bio1)
@@ -435,6 +471,8 @@ cards <- snap |>
   dplyr::left_join(flux_cards,       by = "site_id") |>
   dplyr::left_join(tower_height,     by = "site_id") |>
   dplyr::left_join(canopy_height,    by = "site_id") |>
+  dplyr::left_join(height_check,     by = "site_id") |>
+  dplyr::mutate(card_height_check = dplyr::coalesce(.data$card_height_check, "")) |>
   dplyr::left_join(site_wc,          by = "site_id") |>
   dplyr::left_join(dplyr::select(site_desc, site_id, card_site_description, card_site_description_words),
                     by = "site_id")
@@ -447,6 +485,7 @@ card_cols <- c(
   "card_tower_height_m", "card_tower_height_date", "card_tower_height_variable",
   "card_instrument_model", "card_tower_height_source",
   "card_canopy_height_max_m", "card_canopy_height_date", "card_canopy_height_n_records",
+  "card_height_check",
   "card_map_mm_yr", "card_mat_degC",
   "card_site_description", "card_site_description_words"
 )
@@ -490,10 +529,13 @@ write_meta(
     "VAR_INFO_DATE -- see README.md), replacing the earlier FLUX_MEASUREMENTS_COMMENT free-text ",
     "regex guess; card_canopy_height_max_m/_date/_n_records from the structured HEIGHTC BADM ",
     "field (GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard VARIABLE_GROUP value -- see ",
-    "README.md), maximum value across all of a site's dated records whose HEIGHTC_STATISTIC is ",
-    "Mean/Median/Expert estimate or absent (percentile/dispersion/extremum statistics excluded); ",
-    "card_map_mm_yr/card_mat_degC from site_worldclim.csv with a local-raster fallback for any ",
-    "site missing from it. Snapshot: ", basename(SNAP_FILE), "."
+    "README.md), maximum value across ALL of a site's dated records as recorded in BADM (no ",
+    "HEIGHTC_STATISTIC filter -- a filter was added, then removed again, both on 2026-10-13, ",
+    "see SESSION_LOG.md); card_height_check flags (never excludes or alters) sites with a canopy ",
+    "height above 60 m, of 0 m, greater than card_tower_height_m, or an instrument height that ",
+    "changed over the record (with the range), blank when nothing is flagged; card_map_mm_yr/",
+    "card_mat_degC from site_worldclim.csv with a local-raster fallback for any site missing ",
+    "from it. Snapshot: ", basename(SNAP_FILE), "."
   )
 )
 
@@ -573,15 +615,10 @@ hand_check <- lapply(names(spot_candidates), function(hub) {
   hand_et <- if (any(et_ok)) stats::median((ann$LE_F_MDS[et_ok] * sec_per_yr[et_ok]) / 2.45e6) else NA_real_
 
   ## Canopy height hand check: re-read the raw HEIGHTC rows for this site
-  ## directly from badm (not from the canopy_height summary object above),
-  ## applying the same HEIGHTC_STATISTIC keep-list independently.
-  site_heightc_raw <- badm |> dplyr::filter(.data$SITE_ID == sid, .data$VARIABLE_GROUP %in% HEIGHTC_GROUPS,
-                                              .data$VARIABLE == "HEIGHTC")
-  site_heightc_stat <- badm |> dplyr::filter(.data$SITE_ID == sid, .data$VARIABLE_GROUP %in% HEIGHTC_GROUPS,
-                                               .data$VARIABLE == "HEIGHTC_STATISTIC") |>
-    dplyr::select(GROUP_ID, heightc_statistic = DATAVALUE)
-  site_heightc <- site_heightc_raw |> dplyr::left_join(site_heightc_stat, by = "GROUP_ID") |>
-    dplyr::filter(is.na(.data$heightc_statistic) | .data$heightc_statistic %in% HEIGHTC_STAT_KEEP)
+  ## directly from badm (not from the canopy_height summary object above) --
+  ## no statistic filter, every dated record counted, as recorded in BADM.
+  site_heightc <- badm |> dplyr::filter(.data$SITE_ID == sid, .data$VARIABLE_GROUP %in% HEIGHTC_GROUPS,
+                                          .data$VARIABLE == "HEIGHTC")
   hand_heightc_vals <- suppressWarnings(as.numeric(site_heightc$DATAVALUE))
   hand_heightc_max  <- if (all(is.na(hand_heightc_vals))) NA_real_ else max(hand_heightc_vals, na.rm = TRUE)
   hand_heightc_n    <- nrow(site_heightc)
@@ -642,23 +679,36 @@ tower_spot_check <- lapply(tower_spot_sites, function(sid) {
 tower_spot_check <- dplyr::bind_rows(tower_spot_check)
 
 ## ---- Out-of-range values (listed, not dropped) ----
+## Height anomalies (above 60 m, 0 m, canopy > tower, instrument height
+## changed) are surfaced via card_height_check instead -- see "Height flags"
+## below, not duplicated here.
 out_of_range <- dplyr::bind_rows(
   final |> dplyr::filter(abs(.data$card_sink_strength_nep_gC_m2_yr) > 1500) |>
     dplyr::transmute(site_id, data_hub, check = "NEP beyond +/-1500 gC/m2/yr",
                       value = .data$card_sink_strength_nep_gC_m2_yr),
   final |> dplyr::filter(.data$card_et_mm_yr > 2000) |>
     dplyr::transmute(site_id, data_hub, check = "ET above 2000 mm/yr",
-                      value = .data$card_et_mm_yr),
-  final |> dplyr::filter(.data$card_tower_height_m > 100) |>
-    dplyr::transmute(site_id, data_hub, check = "Tower height above 100 m",
-                      value = .data$card_tower_height_m),
-  final |> dplyr::filter(.data$card_canopy_height_max_m > 60) |>
-    dplyr::transmute(site_id, data_hub, check = "Canopy height above 60 m",
-                      value = .data$card_canopy_height_max_m),
-  final |> dplyr::filter(.data$card_canopy_height_max_m < 0.05) |>
-    dplyr::transmute(site_id, data_hub, check = "Canopy height below 0.05 m",
-                      value = .data$card_canopy_height_max_m)
+                      value = .data$card_et_mm_yr)
 )
+
+## ---- Height flags (card_height_check) ----
+flag_defs <- c(
+  "canopy height above 60 m",
+  "canopy height of 0 m",
+  "canopy height greater than tower height",
+  "instrument height changed over the record"
+)
+flag_counts <- tibble::tibble(
+  flag    = flag_defs,
+  n_sites = vapply(flag_defs, function(f)
+    sum(stringr::str_detect(final$card_height_check, stringr::fixed(f))), integer(1))
+)
+flagged_sites <- final |>
+  dplyr::filter(.data$card_height_check != "") |>
+  dplyr::transmute(site_id, data_hub, card_tower_height_m, card_canopy_height_max_m, card_height_check) |>
+  dplyr::arrange(.data$site_id)
+msg("card_height_check: ", nrow(flagged_sites), " of ", nrow(final), " sites flagged -- ",
+    paste(flag_counts$flag, flag_counts$n_sites, sep = "=", collapse = ", "))
 
 ## ==============================================================================
 ## 9. Write the report
@@ -728,17 +778,11 @@ report_lines <- c(
   "",
   "## Canopy height (HEIGHTC) coverage, by data_hub and IGBP class",
   "",
-  sprintf("HEIGHTC_STATISTIC filter: %s record(s) across %s site(s) removed for having a",
-          nrow(heightc_excluded_by_stat), dplyr::n_distinct(heightc_excluded_by_stat$site_id)),
-  "statistic other than Mean, Median or Expert estimate (or absent) -- breakdown by statistic:",
+  "No HEIGHTC_STATISTIC filter is applied -- every dated HEIGHTC record is used exactly as",
+  "recorded in BADM, including dispersion/percentile/extremum statistics. (A filter was added,",
+  "then removed again, both on 2026-10-13 -- see SESSION_LOG.md.) Unusual-looking results are",
+  "instead surfaced in \"Height flags\" below, not excluded here.",
   "",
-  if (nrow(heightc_excluded_by_stat) > 0L) {
-    stat_tab <- sort(table(heightc_excluded_by_stat$heightc_statistic), decreasing = TRUE)
-    c("| HEIGHTC_STATISTIC | records removed |", "|---|---|",
-      sprintf("| %s | %s |", names(stat_tab), as.integer(stat_tab)), "")
-  } else {
-    c("None removed.", "")
-  },
   sprintf("%s of %s sites have at least one HEIGHTC record (%s with a usable numeric maximum --",
           sum(canopy_any), nrow(final), sum(canopy_numeric)),
   "excludes sites whose only record is the non-numeric placeholder 'variable'). The 2026-10-08",
@@ -761,6 +805,30 @@ report_lines <- c(
   apply(canopy_coverage_by_igbp, 1, function(r) sprintf("| %s | %s | %s | %s |",
         r[["igbp"]], r[["n_sites"]], r[["any_record"]], r[["numeric_max"]])),
   "",
+  "## Height flags (card_height_check)",
+  "",
+  "Both height columns are used exactly as reported in BADM -- nothing is excluded or altered.",
+  "This column instead flags sites whose recorded height looks unusual, for a by-hand check",
+  "against the source BADM record before use; blank when nothing is flagged.",
+  "",
+  sprintf("%s of %s sites flagged for at least one check.", nrow(flagged_sites), nrow(final)),
+  "",
+  "| Flag | Sites |",
+  "|---|---|",
+  sprintf("| %s | %s |", flag_counts$flag, flag_counts$n_sites),
+  "",
+  if (nrow(flagged_sites) > 0L) {
+    c("| site_id | data_hub | card_tower_height_m | card_canopy_height_max_m | card_height_check |",
+      "|---|---|---|---|---|",
+      apply(flagged_sites, 1, function(r) sprintf("| %s | %s | %s | %s | %s |",
+            r[["site_id"]], r[["data_hub"]],
+            fmt_num(as.numeric(r[["card_tower_height_m"]]), 0),
+            fmt_num(as.numeric(r[["card_canopy_height_max_m"]]), 2),
+            r[["card_height_check"]])),
+      "")
+  } else {
+    c("No sites flagged.", "")
+  },
   "## Spot-check: 3 sites from different hubs, hand-recomputed from source",
   "",
   "| Hub | Site | Hand NEP (gC/m2/yr) | Card NEP | Hand ET (mm/yr) | Card ET | Hand tower height (m) | Card tower height | Hand canopy height max (m) | Card canopy height max | Hand canopy n | Card canopy n |",
@@ -781,8 +849,8 @@ report_lines <- c(
   "function's own code path. Tower height is re-read directly from the site's `VAR_INFO_HEIGHT`",
   "groups (see the dedicated tower-height spot-check above for CA-TP1/US-Ha1/DE-Tha). Canopy",
   "height max/n are re-read directly from the site's raw HEIGHTC rows in the BIF file",
-  "(GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard group), with the same HEIGHTC_STATISTIC",
-  "keep-list applied again here, independently of the card_canopy_height_* build code above.",
+  "(GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard group), no statistic filter, every",
+  "dated record counted, independently of the card_canopy_height_* build code above.",
   "",
   "## Out-of-range values (listed, not dropped)",
   "",
@@ -792,8 +860,8 @@ report_lines <- c(
                                                     r[["site_id"]], r[["data_hub"]], r[["check"]],
                                                     fmt_num(as.numeric(r[["value"]])))))
   } else {
-    paste0("None — no site exceeds +/-1,500 gC m-2 yr-1 NEP, 2,000 mm yr-1 ET, 100 m tower ",
-           "height, 60 m canopy height, or is below 0.05 m canopy height.")
+    paste0("None — no site exceeds +/-1,500 gC m-2 yr-1 NEP or 2,000 mm yr-1 ET. (Height ",
+           "anomalies are reported separately under \"Height flags\" above.)")
   },
   ""
 )

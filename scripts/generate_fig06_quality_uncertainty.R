@@ -135,16 +135,35 @@ msg("Panel a: ", nrow(annual_qc), " annual QC values pulled (4 variables).")
 annual_qc <- annual_qc |>
   dplyr::mutate(variable = factor(variable, levels = c("NEE_VUT", "NEE_CUT", "LE", "H")))
 
+## Sites below the panel's now-restricted x-axis range (0.5-1.0, see below) --
+## reported here (msg() + legend.txt caption sentence), not drawn in-panel.
+below_half <- annual_qc |>
+  dplyr::group_by(variable) |>
+  dplyr::summarise(n_below_0.5 = sum(qc < 0.5), n_total = dplyr::n(), .groups = "drop")
+msg("Panel a: annual QC < 0.5 (below the plotted x-axis range), by variable: ",
+    paste(sprintf("%s=%s/%s", below_half$variable, below_half$n_below_0.5, below_half$n_total),
+          collapse = ", "))
+
+## coord_cartesian(xlim=), not scale_x_continuous(limits=): a continuous
+## scale's own `limits` drops out-of-range rows BEFORE stat_ecdf() computes
+## the curve, which would renormalize the ECDF to the 0.5-1.0 subset alone
+## (curve starting at 0 right at x=0.5) instead of showing the true
+## cumulative share at x=0.5 (a small nonzero value -- the below_half counts
+## above). coord_cartesian() only zooms the already-computed curve, so the
+## displayed curve still reflects the full [0,1] data.
 panel_a <- ggplot(annual_qc, aes(x = qc, colour = variable)) +
-  stat_ecdf(geom = "step", linewidth = nature_lwd(0.5)) +
+  stat_ecdf(geom = "step", linewidth = nature_lwd(1.0)) +
   geom_vline(xintercept = 0.50, linetype = "dashed", colour = "grey50", linewidth = nature_lwd(0.3)) +
   scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable", labels = VAR_LABELS) +
-  scale_x_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
+  scale_x_continuous(breaks = c(0.5, 0.75, 1)) +
+  coord_cartesian(xlim = c(0.5, 1)) +
   scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
   labs(x = "Annual QC flag (fraction measured or\ngood-quality gap-filled)", y = "Cumulative share") +
   tv_theme() +
-  theme(legend.position = "bottom", legend.key.size = grid::unit(6, "pt")) +
-  guides(colour = guide_legend(ncol = 2))
+  theme(legend.position = c(0.04, 0.97), legend.justification = c(0, 1),
+        legend.background = ggplot2::element_rect(fill = "white", colour = NA),
+        legend.key.size = grid::unit(6, "pt")) +
+  guides(colour = guide_legend(ncol = 1))
 
 ## ==============================================================================
 ## Panel b: uncertainty terms for usable annual NEE, VUT vs CUT (as TV2a)
@@ -164,7 +183,9 @@ panel_b <- ggplot(box_long, aes(x = term, y = value, fill = carbon_type)) +
   scale_y_log10(labels = log_labels()) +
   labs(x = "Uncertainty term", y = expression("Uncertainty (g C "*m^{-2}*" "*yr^{-1}*", log"[10]*")")) +
   tv_theme() +
-  theme(legend.position = "bottom", legend.key.size = grid::unit(6, "pt"))
+  theme(legend.position = c(0.04, 0.97), legend.justification = c(0, 1),
+        legend.background = ggplot2::element_rect(fill = "white", colour = NA),
+        legend.key.size = grid::unit(6, "pt"))
 
 ## ==============================================================================
 ## Panel c: histogram of NEE_VUT - NEE_CUT, site-years where both are usable
@@ -174,29 +195,22 @@ n_exceeds   <- sum(stage3$smaller_than_joint == FALSE, na.rm = TRUE)
 n_within    <- sum(stage3$smaller_than_joint == TRUE,  na.rm = TRUE)
 n_no_joint  <- sum(is.na(stage3$smaller_than_joint))
 CLIP <- 150
+n_beyond_100 <- sum(abs(stage3$diff) > 100, na.rm = TRUE)
 n_beyond_clip <- sum(abs(stage3$diff) > CLIP, na.rm = TRUE)
 msg("Panel c: ", n_exceeds, " of ", nrow(stage3), " exceed combined uncertainty; ",
-    n_no_joint, " lack the joint term; ", n_beyond_clip, " beyond +/-", CLIP, " (clipped from view).")
+    n_no_joint, " lack the joint term; ", n_beyond_100, " beyond +/-100; ",
+    n_beyond_clip, " beyond +/-", CLIP, " (clipped from view).")
 
-panel_c_label <- paste0(
-  format(n_exceeds, big.mark = ","), " of ", format(nrow(stage3), big.mark = ","), " exceed combined uncertainty\n",
-  format(n_no_joint, big.mark = ","), " lack the joint term\n",
-  format(n_beyond_clip, big.mark = ","), " beyond ±", CLIP, " (clipped)"
-)
-## x shifted right from the left edge (not -Inf) and hjust set to exactly 0
-## (not a small negative value) -- a non-zero/non-one hjust applied to a
-## multi-line annotate() label mis-aligns the lines relative to each other
-## (confirmed by isolated reproduction); hjust = 0 left-aligns all three
-## lines flush to the same x. Extra top expansion (0.55, was 0.28) gives
-## the 3-line block headroom above the tallest bar so it clears the y-axis
-## tick labels (it previously collided with the "1500" tick).
+## No in-panel text (2026-10-13 revision) -- the three counts previously
+## annotated here (exceeds combined uncertainty, lacks the joint term,
+## outside the plotted range) are instead caption sentences in .legend.txt.
+## y-axis limit fixed at 1,490 (no longer needs the extra top expansion a
+## multi-line in-panel label once required).
 panel_c <- ggplot(stage3 |> dplyr::filter(abs(diff) <= CLIP), aes(x = diff)) +
   geom_histogram(binwidth = 5, fill = "grey60", colour = "white", linewidth = nature_lwd(0.25)) +
   scale_x_continuous(limits = c(-CLIP, CLIP), labels = nature_minus_labels()) +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.55))) +
+  scale_y_continuous(limits = c(0, 1490), expand = expansion(mult = c(0, 0))) +
   labs(x = expression("NEE"["VUT"]*" - NEE"["CUT"]*" (g C "*m^{-2}*" "*yr^{-1}*")"), y = "Site-years") +
-  annotate("text", x = -CLIP * 0.85, y = Inf, hjust = 0, vjust = 1.1, size = 5 / .pt, family = "Helvetica",
-           label = panel_c_label) +
   tv_theme()
 
 ## ==============================================================================
@@ -226,23 +240,40 @@ legend_lines <- c(
   "flag fraction for NEE_VUT, NEE_CUT, LE and H, across all 781-site FLUXMET annual rows",
   sprintf("(n = %s). The QC flag fraction runs 1 (every underlying half-hourly/hourly record", format(nrow(master), big.mark=",")),
   "for that site-year was measured or good-quality gap-filled) down to 0 (every record is",
-  "medium- or poor-quality gap-filled, or missing) -- higher is better. The dashed vertical",
-  "line marks QC = 0.50, the 0.5 rule applied throughout this synthesis (QC_THRESHOLD_YY,",
-  "R/pipeline_config.R). This is the annual panel removed from Supplementary Figure S5, which",
-  "now keeps only the daily/monthly panels.",
+  "medium- or poor-quality gap-filled, or missing) -- higher is better. The x-axis is shown from",
+  "0.5 to 1.0 only; the dashed vertical line at the left edge marks QC = 0.50, the 0.5 rule",
+  "applied throughout this synthesis (QC_THRESHOLD_YY, R/pipeline_config.R). The variable legend",
+  "is placed inside the panel's upper-left area, which the ECDF curves do not reach. Annual QC",
+  "values below 0.50 (off the plotted range) are not shown in the curve but are counted here:",
+  sprintf("%s of %s NEE_VUT, %s of %s NEE_CUT, %s of %s LE, and %s of %s H annual QC values fall",
+          format(below_half$n_below_0.5[below_half$variable == "NEE_VUT"], big.mark = ","),
+          format(below_half$n_total[below_half$variable == "NEE_VUT"], big.mark = ","),
+          format(below_half$n_below_0.5[below_half$variable == "NEE_CUT"], big.mark = ","),
+          format(below_half$n_total[below_half$variable == "NEE_CUT"], big.mark = ","),
+          format(below_half$n_below_0.5[below_half$variable == "LE"], big.mark = ","),
+          format(below_half$n_total[below_half$variable == "LE"], big.mark = ","),
+          format(below_half$n_below_0.5[below_half$variable == "H"], big.mark = ","),
+          format(below_half$n_total[below_half$variable == "H"], big.mark = ",")),
+  "below 0.50.",
+  "This is the annual panel removed from Supplementary Figure S5, which now keeps only the",
+  "daily/monthly panels.",
   "(b) Boxplots (median, IQR box, 1.5xIQR whiskers, outlier points) of three uncertainty terms",
   "for usable annual NEE: the random uncertainty term (NEE_REF_RANDUNC), the u*-threshold term",
   "((P84-P16)/2 of the u*-percentile ensemble), and the joint term (NEE_REF_JOINTUNC), VUT and",
   "CUT side by side, log10 y-axis (the u*-threshold term has a long right tail). LE and H have",
-  "no u*-threshold term in the FLUXNET Shuttle product and are not shown in this panel.",
+  "no u*-threshold term in the FLUXNET Shuttle product and are not shown in this panel. The",
+  "VUT/CUT legend is placed inside the panel's upper-left area.",
   "(c) Histogram of NEE_VUT - NEE_CUT for site-years where both are usable (one bar per 5 g C",
-  sprintf("m^-2 yr^-1 bin), n = %s. The panel states how many of these differences exceed the", format(nrow(stage3), big.mark=",")),
-  "propagated combined uncertainty of the two estimates, sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2),",
-  "and how many site-years have the joint-uncertainty term itself unavailable on at least one",
-  "side even though both REF values qualify. The x-axis is clipped at +/-150 g C m^-2 yr^-1;",
-  "the number of site-years lying beyond that clip is stated in the panel separately from the",
-  "combined-uncertainty count -- clipping is a display choice and does not affect either count.",
-  "", "PATTERNS (described neutrally, no cause offered):",
+  sprintf("m^-2 yr^-1 bin), n = %s. No notes are drawn in the panel; the three counts below are", format(nrow(stage3), big.mark=",")),
+  "reported here instead. Of the",
+  sprintf("%s site-years, %s exceed the propagated combined uncertainty of the two estimates,",
+          format(nrow(stage3), big.mark = ","), format(n_exceeds, big.mark = ",")),
+  "sqrt(JOINTUNC_VUT^2 + JOINTUNC_CUT^2);",
+  sprintf("%s site-years have the joint-uncertainty term itself unavailable on at least one side", format(n_no_joint, big.mark = ",")),
+  "even though both REF values qualify; and",
+  sprintf("%s site-years fall outside the plotted range (+/-%d g C m^-2 yr^-1) and are not shown", format(n_beyond_clip, big.mark = ","), CLIP),
+  "in the histogram -- clipping is a display choice and does not affect either count above. The",
+  "y-axis is fixed at 1,490 site-years.", "", "PATTERNS (described neutrally, no cause offered):",
   "(a) NEE_VUT and NEE_CUT reach similar annual QC fractions at every percentile; LE and H",
   "reach a given QC fraction at a lower percentile than the two NEE variables.",
   "(b) The joint term is larger than either the random or u*-threshold term alone for both VUT",
@@ -294,7 +325,11 @@ write_output_metadata(
     "read-only DuckDB query (annual QC fractions) -- the annual panel removed from Supplementary ",
     "Figure S5; panels b/c reuse review/diagnostics/data_quality_uncertainty/ table_stage2/",
     "table_stage3 unchanged, no dq_stage*.R diagnostic re-run. Gates passed: 6,336 annual rows; ",
-    "3,960 both usable; 4,017 VUT usable; 4,320 CUT usable; 20 missing the joint term. See .legend.txt."
+    "3,960 both usable; 4,017 VUT usable; 4,320 CUT usable; 20 missing the joint term. 2026-10-13 ",
+    "revision: ECDF lines in panel a thickened to 1.0pt (same change in Supplementary Figure S5a); ",
+    "panel a x-axis restricted to 0.5-1.0 with the variable legend moved inside the panel; panel b's ",
+    "legend moved inside the panel; panel c's in-panel text removed (counts now in .legend.txt only) ",
+    "and its y-axis fixed at 1,490. See .legend.txt."
   )
 )
 

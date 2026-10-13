@@ -4,6 +4,55 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Figure 6 revision: in-panel legends, thicker ECDF lines, panel c notes moved to legend.txt
+
+Full prompt: `logs/prompts/2026-10-13_fig06_revision.md`. Revises commit a0c741c
+(`scripts/generate_fig06_quality_uncertainty.R`, `scripts/generate_figS5_quality_flags.R`). Same
+output filenames, same gates (6,336 annual rows; 3,960 both usable; 4,017 VUT usable; 4,320 CUT
+usable; 20 missing the joint term), same `check_figure_format.R` checks.
+
+**Text:** already at the 7 pt ceiling for all axis labels, tick labels, and legend text in every
+panel via `nature_theme()`'s `base_size = NATURE_BASE_PT` (7) default (`R/nature_format.R`) — no
+code change needed there; confirmed by re-running `check_figure_format.R` after the changes below
+(see TEXT column, still within the 5-7pt band every figure already passed).
+
+**Lines:** ECDF curve `linewidth` in 6a raised from `nature_lwd(0.5)` to `nature_lwd(1.0)` (the
+line-weight ceiling, `NATURE_LINEWIDTH_MAX`). Same change applied to both ECDF sub-panels in
+Supplementary Figure S5a (`make_ecdf_panel()`).
+
+**6a:** x-axis changed to `coord_cartesian(xlim = c(0.5, 1))`, NOT
+`scale_x_continuous(limits = c(0.5, 1))` — the latter drops out-of-range rows before
+`stat_ecdf()` computes the curve, which would renormalize the ECDF to the 0.5-1.0 subset alone
+(curve starting at 0 right at x = 0.5) instead of showing the true cumulative share at that point.
+`coord_cartesian()` only zooms the already-computed curve. Variable legend moved inside the panel
+(`legend.position = c(0.04, 0.97)`, justification top-left, white background) — the ECDF curves
+never reach the upper-left corner. Annual QC values below 0.5 (off the plotted range), by
+variable: NEE_VUT 16/4,033, NEE_CUT 32/4,352, LE 8/4,509, H 7/4,638 — not drawn in-panel, reported
+in `.legend.txt` instead.
+
+**6b:** VUT/CUT legend moved inside the panel, same position/style as 6a.
+
+**6c:** the 3-line `annotate("text", ...)` block (added in a0c741c to fix its own hjust/alignment
+bug) removed entirely — no in-panel text remains. Y-axis fixed at `scale_y_continuous(limits =
+c(0, 1490), expand = expansion(mult = c(0, 0)))` (max bin height is 1,029; 1,490 gives headroom
+with no annotation needed). X-axis unchanged at ±150. New counts: **86 of 3,960 site-years beyond
+±100**, **34 beyond ±150** (vs. 152 of 3,960 exceeding the propagated combined uncertainty, and 20
+lacking the joint term on at least one side — both unchanged from a0c741c).
+
+**Legend text (`fig_06_quality_uncertainty.legend.txt`):** panel (a) DESCRIPTION now states the
+restricted x-axis range and the four below-0.5 counts as caption sentences; panel (c) DESCRIPTION
+replaces "the panel states ..." with the three counts directly — 152 of 3,960 site-years exceed
+the combined uncertainty, 20 lack the joint-uncertainty term on at least one side, and 34 fall
+outside the plotted ±150 range — plus a note that the y-axis is fixed at 1,490. No change to
+Supplementary Figure S5's legend text beyond the line-weight code change (nothing in its wording
+referenced line weight).
+
+**`check_figure_format.R`: 14/14 PASS**, unchanged figure count, both `fig_06_quality_uncertainty`
+and `figS5_quality_flags` passing (lines now report 0.25-1.00pt for both, confirming the new 1.0pt
+ceiling renders correctly).
+
+---
+
 ## 2026-10-13 — TowerTango: removed HEIGHTC statistic filter, added card_height_check flag column
 
 Full prompt: `logs/prompts/2026-10-13_towertango_height_flags.md`. Reverses part of the

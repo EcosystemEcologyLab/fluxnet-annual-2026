@@ -96,7 +96,7 @@ ecdf_data <- ecdf_data |> mutate(resolution = factor(resolution, levels = c("dai
 make_ecdf_panel <- function(res_name, show_legend) {
   d <- ecdf_data |> filter(resolution == res_name)
   p <- ggplot(d, aes(x = qc, colour = variable)) +
-    stat_ecdf(geom = "step", linewidth = nature_lwd(0.5)) +
+    stat_ecdf(geom = "step", linewidth = nature_lwd(1.0)) +
     geom_vline(xintercept = 0.50, linetype = "dashed", colour = "grey50", linewidth = nature_lwd(0.3)) +
     scale_colour_manual(values = FOUR_VAR_COLOURS, name = "Variable", labels = VAR_LABELS) +
     scale_x_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +

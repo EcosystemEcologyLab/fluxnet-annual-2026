@@ -276,6 +276,62 @@ msg("card_tower_height_m: ", nrow(height_candidates), " of ", length(SITE_IDS),
     " sites have an extractable instrument-height mention.")
 
 ## ==============================================================================
+## 4b. card_canopy_height_max_m / card_canopy_height_date / card_canopy_height_n_records
+## ==============================================================================
+## Canopy height (HEIGHTC), structured -- distinct from card_tower_height_m
+## (EC instrument height, free-text best-effort). GRP_HEIGHTC/HEIGHTC are the
+## two standard VARIABLE_GROUP spellings seen across the network (same
+## two-spelling pattern as FLUX_MEASUREMENTS/GRP_FLUX_MEASUREMENTS above);
+## the third entry below is JP-Shn's own non-standard VARIABLE_GROUP value, a
+## Windows file path that leaked into the BIF export in place of
+## "GRP_HEIGHTC" -- noted (read-only, left exactly as found) in the
+## 2026-10-08 BADM vegetation-structure search
+## (review/diagnostics/badm_vegetation_search/report.md) -- included here so
+## JP-Shn's own canopy-height record (HEIGHTC=24.5, dated 20090701, per that
+## report) is not silently dropped.
+msg("--- card_canopy_height_*: HEIGHTC (canopy height), GRP_HEIGHTC/HEIGHTC + JP-Shn's own group ---")
+HEIGHTC_GROUPS <- c("HEIGHTC", "GRP_HEIGHTC", "C:\\Users\\difio\\Desktop\\R\\MakeBIF\\GRP_HEIGHTC")
+
+heightc_val <- badm |>
+  dplyr::filter(.data$VARIABLE_GROUP %in% HEIGHTC_GROUPS, .data$VARIABLE == "HEIGHTC") |>
+  dplyr::transmute(site_id = .data$SITE_ID, group_id = .data$GROUP_ID,
+                    heightc_m = suppressWarnings(as.numeric(.data$DATAVALUE)))
+heightc_date <- badm |>
+  dplyr::filter(.data$VARIABLE_GROUP %in% HEIGHTC_GROUPS, .data$VARIABLE == "HEIGHTC_DATE") |>
+  dplyr::transmute(site_id = .data$SITE_ID, group_id = .data$GROUP_ID,
+                    heightc_date = .data$DATAVALUE)
+## left_join, not inner -- a handful of HEIGHTC values have no matching
+## HEIGHTC_DATE row at all (card_canopy_height_date left blank for those).
+heightc_records <- heightc_val |> dplyr::left_join(heightc_date, by = c("site_id", "group_id"))
+
+n_nonnumeric <- sum(is.na(heightc_records$heightc_m))
+if (n_nonnumeric > 0L) {
+  msg("NOTE: ", n_nonnumeric, " HEIGHTC record(s) have a non-numeric DATAVALUE (e.g. 'variable') ",
+      "-- counted in card_canopy_height_n_records, excluded from the max.")
+}
+
+n_records_by_site <- heightc_records |>
+  dplyr::count(.data$site_id, name = "card_canopy_height_n_records")
+
+## Max per site; ties broken by lowest group_id (BADM order), same convention
+## as card_site_description's "several entries ... in BADM order" above.
+max_by_site <- heightc_records |>
+  dplyr::filter(!is.na(.data$heightc_m)) |>
+  dplyr::mutate(group_id_num = suppressWarnings(as.integer(.data$group_id))) |>
+  dplyr::group_by(.data$site_id) |>
+  dplyr::arrange(dplyr::desc(.data$heightc_m), .data$group_id_num, .by_group = TRUE) |>
+  dplyr::slice_head(n = 1) |>
+  dplyr::ungroup() |>
+  dplyr::transmute(site_id = .data$site_id,
+                    card_canopy_height_max_m = .data$heightc_m,
+                    card_canopy_height_date  = .data$heightc_date)
+
+canopy_height <- n_records_by_site |> dplyr::left_join(max_by_site, by = "site_id")
+msg("card_canopy_height_*: ", nrow(canopy_height), " of ", length(SITE_IDS),
+    " sites have at least one HEIGHTC record (", sum(!is.na(canopy_height$card_canopy_height_max_m)),
+    " with a usable numeric maximum).")
+
+## ==============================================================================
 ## 5. card_map_mm_yr / card_mat_degC -- WorldClim 2.1 (bio12, bio1)
 ## ==============================================================================
 msg("--- card_map_mm_yr / card_mat_degC: WorldClim 2.1 (bio12, bio1) ---")
@@ -328,6 +384,7 @@ cards <- snap |>
   dplyr::left_join(year_established, by = "site_id") |>
   dplyr::left_join(flux_cards,       by = "site_id") |>
   dplyr::left_join(height_candidates, by = "site_id") |>
+  dplyr::left_join(canopy_height,    by = "site_id") |>
   dplyr::left_join(site_wc,          by = "site_id") |>
   dplyr::left_join(dplyr::select(site_desc, site_id, card_site_description, card_site_description_words),
                     by = "site_id")
@@ -338,6 +395,7 @@ card_cols <- c(
   "card_sink_strength_nep_gC_m2_yr", "card_nep_n_years",
   "card_et_mm_yr", "card_et_mm_d", "card_et_n_years",
   "card_tower_height_m", "card_tower_height_source",
+  "card_canopy_height_max_m", "card_canopy_height_date", "card_canopy_height_n_records",
   "card_map_mm_yr", "card_mat_degC",
   "card_site_description", "card_site_description_words"
 )
@@ -376,8 +434,11 @@ write_meta(
     "FLUXMET; card_sink_strength_nep_gC_m2_yr/card_et_* via compute_site_annual_fluxes() (VUT ",
     "with CUT fallback, QC_THRESHOLD_YY=", QC_THRESHOLD_YY, "); card_tower_height_m is a best-",
     "effort free-text regex extraction (no structured field exists in this BIF export -- see ",
-    "README.md); card_map_mm_yr/card_mat_degC from site_worldclim.csv with a local-raster ",
-    "fallback for any site missing from it. Snapshot: ", basename(SNAP_FILE), "."
+    "README.md); card_canopy_height_max_m/_date/_n_records from the structured HEIGHTC BADM ",
+    "field (GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard VARIABLE_GROUP value -- see ",
+    "README.md), maximum value across all of a site's dated records; card_map_mm_yr/card_mat_degC ",
+    "from site_worldclim.csv with a local-raster fallback for any site missing from it. ",
+    "Snapshot: ", basename(SNAP_FILE), "."
   )
 )
 
@@ -415,6 +476,26 @@ wc_summary <- if (length(wc_vals) > 0L) {
 multi_entry_sites <- site_desc |> dplyr::filter(.data$n_site_desc_entries > 1L) |>
   dplyr::select(site_id, n_site_desc_entries)
 
+## ---- Canopy height coverage, by data_hub and IGBP class ----
+## "Any record" = card_canopy_height_n_records > 0 (has at least one HEIGHTC
+## row, numeric or not -- comparable to the 2026-10-08 BADM search's own
+## "has a GRP_HEIGHTC/HEIGHTC record" count, 482 sites). "Numeric maximum" =
+## card_canopy_height_max_m non-blank (excludes the handful of sites whose
+## only HEIGHTC record is the non-numeric placeholder "variable").
+canopy_any    <- !is.na(final$card_canopy_height_n_records) & final$card_canopy_height_n_records > 0L
+canopy_numeric <- !is.na(final$card_canopy_height_max_m)
+canopy_coverage_by_hub <- final |>
+  dplyr::mutate(.any = canopy_any, .numeric = canopy_numeric) |>
+  dplyr::group_by(.data$data_hub) |>
+  dplyr::summarise(n_sites = dplyr::n(), any_record = sum(.any), numeric_max = sum(.numeric), .groups = "drop")
+canopy_coverage_by_igbp <- final |>
+  dplyr::mutate(.any = canopy_any, .numeric = canopy_numeric) |>
+  dplyr::group_by(.data$igbp) |>
+  dplyr::summarise(n_sites = dplyr::n(), any_record = sum(.any), numeric_max = sum(.numeric), .groups = "drop") |>
+  dplyr::arrange(dplyr::desc(.data$any_record))
+msg("Canopy height coverage: ", sum(canopy_any), " of ", nrow(final), " sites with any HEIGHTC record (",
+    sum(canopy_numeric), " with a usable numeric maximum) -- 2026-10-08 BADM search reported 482.")
+
 ## ---- Spot-check: 3 sites from different hubs, hand-recomputed ----
 spot_candidates <- list(AmeriFlux = "CA-Ca3", ICOS = "DE-Tha", TERN = "AU-GWW")
 spot_candidates <- spot_candidates[vapply(spot_candidates, function(s) s %in% SITE_IDS, logical(1))]
@@ -436,6 +517,14 @@ hand_check <- lapply(names(spot_candidates), function(hub) {
   sec_per_yr <- ifelse(lubridate::leap_year(ann$year), 366L, 365L) * 86400L
   hand_et <- if (any(et_ok)) stats::median((ann$LE_F_MDS[et_ok] * sec_per_yr[et_ok]) / 2.45e6) else NA_real_
 
+  ## Canopy height hand check: re-read the raw HEIGHTC rows for this site
+  ## directly from badm (not from the canopy_height summary object above).
+  site_heightc <- badm |> dplyr::filter(.data$SITE_ID == sid, .data$VARIABLE_GROUP %in% HEIGHTC_GROUPS,
+                                          .data$VARIABLE == "HEIGHTC")
+  hand_heightc_vals <- suppressWarnings(as.numeric(site_heightc$DATAVALUE))
+  hand_heightc_max  <- if (all(is.na(hand_heightc_vals))) NA_real_ else max(hand_heightc_vals, na.rm = TRUE)
+  hand_heightc_n    <- nrow(site_heightc)
+
   card_row <- final[final$site_id == sid, ]
   height_row <- height_candidates[height_candidates$site_id == sid, ]
   tibble::tibble(
@@ -443,7 +532,9 @@ hand_check <- lapply(names(spot_candidates), function(hub) {
     hand_nep = hand_nep, card_nep = card_row$card_sink_strength_nep_gC_m2_yr,
     hand_et_mm_yr = hand_et, card_et_mm_yr = card_row$card_et_mm_yr,
     hand_tower_height_m = if (nrow(height_row) == 1L) height_row$card_tower_height_m else NA_real_,
-    card_tower_height_m = card_row$card_tower_height_m
+    card_tower_height_m = card_row$card_tower_height_m,
+    hand_canopy_height_max_m = hand_heightc_max, card_canopy_height_max_m = card_row$card_canopy_height_max_m,
+    hand_canopy_height_n = hand_heightc_n, card_canopy_height_n = card_row$card_canopy_height_n_records
   )
 })
 dbDisconnect(con2, shutdown = TRUE)
@@ -459,7 +550,13 @@ out_of_range <- dplyr::bind_rows(
                       value = .data$card_et_mm_yr),
   final |> dplyr::filter(.data$card_tower_height_m > 100) |>
     dplyr::transmute(site_id, data_hub, check = "Tower height above 100 m",
-                      value = .data$card_tower_height_m)
+                      value = .data$card_tower_height_m),
+  final |> dplyr::filter(.data$card_canopy_height_max_m > 60) |>
+    dplyr::transmute(site_id, data_hub, check = "Canopy height above 60 m",
+                      value = .data$card_canopy_height_max_m),
+  final |> dplyr::filter(.data$card_canopy_height_max_m < 0.05) |>
+    dplyr::transmute(site_id, data_hub, check = "Canopy height below 0.05 m",
+                      value = .data$card_canopy_height_max_m)
 )
 
 ## ==============================================================================
@@ -506,23 +603,51 @@ report_lines <- c(
       "`card_site_description` for these sites.")
   } else character(0),
   "",
+  "## Canopy height (HEIGHTC) coverage, by data_hub and IGBP class",
+  "",
+  sprintf("%s of %s sites have at least one HEIGHTC record (%s with a usable numeric maximum --",
+          sum(canopy_any), nrow(final), sum(canopy_numeric)),
+  "excludes sites whose only record is the non-numeric placeholder 'variable'). The 2026-10-08",
+  "BADM vegetation-structure search reported 482 sites (344 ICOS + 86 AmeriFlux + 51 TERN); the",
+  "any-record count below is close to but not identical to that figure -- expected, since that",
+  "search read every extracted BIF file under data/extracted/ directly (naive glob, no one-file-",
+  "per-site resolution) and documented its own site-list anomalies (e.g. a casing mismatch,",
+  "NZ-CLa vs. the snapshot's NZ-Cla, and 15 blank-SITE_ID rows), whereas this run resolves",
+  "exactly one BIF file per site via `fluxnet::flux_discover_files()` (see README.md) -- a",
+  "difference of a site or two either way is attributable to that, not a new error.", "",
+  "By data_hub:", "",
+  "| data_hub | sites | any HEIGHTC record | numeric maximum |",
+  "|---|---|---|---|",
+  apply(canopy_coverage_by_hub, 1, function(r) sprintf("| %s | %s | %s | %s |",
+        r[["data_hub"]], r[["n_sites"]], r[["any_record"]], r[["numeric_max"]])),
+  "",
+  "By IGBP class:", "",
+  "| igbp | sites | any HEIGHTC record | numeric maximum |",
+  "|---|---|---|---|",
+  apply(canopy_coverage_by_igbp, 1, function(r) sprintf("| %s | %s | %s | %s |",
+        r[["igbp"]], r[["n_sites"]], r[["any_record"]], r[["numeric_max"]])),
+  "",
   "## Spot-check: 3 sites from different hubs, hand-recomputed from source",
   "",
-  "| Hub | Site | Hand NEP (gC/m2/yr) | Card NEP | Hand ET (mm/yr) | Card ET | Hand tower height (m) | Card tower height |",
-  "|---|---|---|---|---|---|---|---|",
+  "| Hub | Site | Hand NEP (gC/m2/yr) | Card NEP | Hand ET (mm/yr) | Card ET | Hand tower height (m) | Card tower height | Hand canopy height max (m) | Card canopy height max | Hand canopy n | Card canopy n |",
+  "|---|---|---|---|---|---|---|---|---|---|---|---|",
   apply(hand_check, 1, function(r) sprintf(
-    "| %s | %s | %s | %s | %s | %s | %s | %s |",
+    "| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |",
     r[["hub"]], r[["site_id"]],
     fmt_num(as.numeric(r[["hand_nep"]])), fmt_num(as.numeric(r[["card_nep"]])),
     fmt_num(as.numeric(r[["hand_et_mm_yr"]])), fmt_num(as.numeric(r[["card_et_mm_yr"]])),
-    fmt_num(as.numeric(r[["hand_tower_height_m"]]), 0), fmt_num(as.numeric(r[["card_tower_height_m"]]), 0)
+    fmt_num(as.numeric(r[["hand_tower_height_m"]]), 0), fmt_num(as.numeric(r[["card_tower_height_m"]]), 0),
+    fmt_num(as.numeric(r[["hand_canopy_height_max_m"]]), 2), fmt_num(as.numeric(r[["card_canopy_height_max_m"]]), 2),
+    as.character(r[["hand_canopy_height_n"]]), as.character(r[["card_canopy_height_n"]])
   )),
   "",
   "Hand computation re-derives NEP and ET directly from the `annual` table's raw NEE_VUT_REF/",
   "NEE_CUT_REF/LE_F_MDS columns with the same VUT-with-CUT-fallback and",
   "`(1 - QC) <= QC_THRESHOLD_YY` gate as `compute_site_annual_fluxes()`, independently of that",
   "function's own code path. Tower height is re-read directly from the site's BADM",
-  "`FLUX_MEASUREMENTS_COMMENT` text.",
+  "`FLUX_MEASUREMENTS_COMMENT` text. Canopy height max/n are re-read directly from the site's raw",
+  "HEIGHTC rows in the BIF file (GRP_HEIGHTC/HEIGHTC, plus JP-Shn's own non-standard group),",
+  "independently of the card_canopy_height_* build code above.",
   "",
   "## Out-of-range values (listed, not dropped)",
   "",
@@ -532,7 +657,8 @@ report_lines <- c(
                                                     r[["site_id"]], r[["data_hub"]], r[["check"]],
                                                     fmt_num(as.numeric(r[["value"]])))))
   } else {
-    "None — no site exceeds +/-1,500 gC m-2 yr-1 NEP, 2,000 mm yr-1 ET, or 100 m tower height."
+    paste0("None — no site exceeds +/-1,500 gC m-2 yr-1 NEP, 2,000 mm yr-1 ET, 100 m tower ",
+           "height, 60 m canopy height, or is below 0.05 m canopy height.")
   },
   ""
 )

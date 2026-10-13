@@ -103,7 +103,8 @@ run_pipeline <- function() {
     rl("not found (not required): .env at .env -- proceeding without it (Codespace Secrets path)")
   }
   for (req_path in c("R/pipeline_config.R", "R/plot_constants.R", "R/figures/fig_climate.R",
-                      "R/units.R", "R/site_annual_fluxes.R", "R/nature_format.R")) {
+                      "R/units.R", "R/site_annual_fluxes.R", "R/nature_format.R",
+                      "R/presentation_format.R")) {
     if (!file.exists(req_path)) {
       rl("MISSING REQUIRED INPUT: ", req_path, " -- checked exact path '", req_path,
          "', not found. Not substituting -- stopping.")
@@ -117,6 +118,7 @@ run_pipeline <- function() {
   source("R/units.R")
   source("R/site_annual_fluxes.R")
   source("R/nature_format.R")
+  source("R/presentation_format.R")
   suppressMessages({
     library(dplyr); library(ggplot2); library(colorspace); library(duckdb); library(readr)
   })
@@ -523,6 +525,128 @@ run_pipeline <- function() {
   writeLines(counts_json, out_counts)
   rl("completed: wrote ", out_counts, " (n_sites=", n_sites, ", n_nee_sites=", n_nee_sites,
      ", n_site_years=", n_site_years, ")")
+
+  # ---- Step: presentation-mode slides (talk deck; additive, FLUXNET_PRESENTATION_MODE=1 only) ----
+  # Figure 3 of the presentation deck: (1) land climate envelope (contour) alone,
+  # (2) with the hexbin + site-point layer. Both share the SAME axes/style/
+  # coord_fixed() so step 1 is a strict visual subset of step 2 (same extent,
+  # colours, layout -- only the hex+points layer appears in step 2). Reuses
+  # this run's own data (data_yy, shuttle_meta, contour_df, line_map,
+  # nee_step_breaks/colours, inset_lines) and the manuscript's tuned inset
+  # layout fields (legend_pos_new, legend_margin_trbl, detail_lineheight,
+  # detail_x_offset_new) -- those are NDC/data-unit positions, not pt sizes,
+  # so they carry over unchanged to the wider slide canvas. WHITTAKER_STYLE's
+  # OWN defaults (axis_text_size=22, axis_title_size=24, legend_text_size=20,
+  # legend_title_size=22, detail_text_size=6.5 i.e. ~18.5pt) were already
+  # calibrated for a 14x7in poster canvas (see R/figures/fig_climate.R's
+  # comment above WHITTAKER_STYLE) -- comfortably within this task's
+  # 18pt-tick/20-24pt-axis-title/14pt-floor targets, so style_presentation
+  # only overrides canvas size and reuses the manuscript's inset-layout
+  # tuning, not the manuscript's Nature-shrunk text sizes (style_3x3).
+  presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
+  if (presentation_mode) {
+    rl("attempting: presentation-mode slides (FLUXNET_PRESENTATION_MODE=1)")
+    slide_dir <- file.path("review", "figures", "presentation_figures", "slides")
+
+    # legend_pos/detail_lineheight NDC tuning below is presentation-specific,
+    # NOT reused from style_3x3/legend_pos_new -- those were hand-tuned for
+    # the manuscript's much smaller detail_text_size (NATURE_SMALL_PT/.pt ~
+    # 1.76 "size" units). An initial attempt at legend_pos[2]=0.815 (the
+    # manuscript value) badly overlapped WHITTAKER_STYLE's own, much taller,
+    # 4-line inset text block; 0.60 cleared the text but then ran the 8-row
+    # stepped-fill key off the bottom of the panel (found by rendering and
+    # inspecting both). Fixed by both pushing legend_pos down further (0.78,
+    # leaving a clear gap below the 4-line text block) AND trimming the key's
+    # own text/title size from WHITTAKER_STYLE's 20/22pt defaults to 16/18pt
+    # (still comfortably above the 14pt floor -- this is a secondary 8-row
+    # colour key, not a primary axis/tick label) so all 8 rows fit above y=0.
+    style_presentation <- utils::modifyList(WHITTAKER_STYLE, list(
+      width_in             = PRESENTATION_IMG_WIDTH_IN,
+      height_in            = PRESENTATION_IMG_HEIGHT_IN,
+      detail_lineheight    = 0.92,
+      legend_pos           = c(0.032, 0.70),
+      legend_text_size     = 16,
+      legend_title_size    = 18,
+      legend_margin        = do.call(ggplot2::margin, c(as.list(legend_margin_trbl), unit = "pt")),
+      legend_title_margin  = do.call(ggplot2::margin, c(as.list(legend_title_margin_trbl), unit = "pt")),
+      legend_box_margin    = do.call(ggplot2::margin, c(as.list(legend_box_margin_trbl), unit = "pt"))
+    ))
+    point_size_pres  <- 1.3    # scaled up from the manuscript's 0.35 for slide-scale visibility
+    point_alpha_pres <- 0.45
+
+    # ---- step 2: hexbin + points + contour, presentation scale ----
+    fig3_step2 <- fig_whittaker_worldclim(
+      data_yy         = data_yy,
+      site_meta       = shuttle_meta,
+      detail_label    = "FLUXNET Shuttle 2025",
+      style           = style_presentation,
+      hex_regular     = TRUE,
+      points_in_front = TRUE,
+      point_size      = point_size_pres,
+      point_colour    = point_colour_new,
+      point_alpha     = point_alpha_pres,
+      fill_mode       = "stepped",
+      step_breaks     = nee_step_breaks,
+      step_colours    = nee_step_colours,
+      detail_lines    = inset_lines,
+      detail_hjust    = 0,
+      detail_x_offset = detail_x_offset_new
+    ) +
+      ggplot2::theme(legend.key.size = grid::unit(16, "pt"),
+                     legend.spacing.y = grid::unit(2, "pt")) +
+      ggplot2::geom_path(
+        data = contour_df,
+        ggplot2::aes(x = .data$x, y = .data$y,
+                     group = interaction(.data$prob, .data$piece),
+                     linetype = .data$prob_label),
+        colour      = "black",
+        linewidth   = presentation_lwd(2.5),
+        inherit.aes = FALSE
+      ) +
+      ggplot2::scale_linetype_manual(
+        values = line_map[levels(contour_df$prob_label)],
+        guide  = "none"
+      )
+    # Presentation slides carry no in-figure notes (plan requirement, applies
+    # to every figure, not just this one) -- fig_whittaker_worldclim() always
+    # draws an inset "N = ... sites | ... site-years" (or detail_label/
+    # detail_lines override) text annotation via annotate("text", ...); there
+    # is no parameter to suppress it, so it's dropped post-hoc here by
+    # filtering out its GeomText layer (the only GeomText layer this plot
+    # has -- hexbins/points/contour are GeomHex/GeomPoint/GeomPath).
+    fig3_step2$layers <- Filter(function(l) !inherits(l$geom, "GeomText"), fig3_step2$layers)
+    step2_path <- save_presentation_figure(fig3_step2, file.path(slide_dir, "fig03_step2_with_sites"))
+    rl("completed: presentation slide written: ", step2_path)
+
+    # ---- step 1: contour (climate envelope) alone, SAME axes/style as step 2 ----
+    hex_ratio_pres <- diff(range(style_presentation$xlim)) / diff(range(style_presentation$ylim))
+    fig3_step1 <- ggplot2::ggplot() +
+      ggplot2::geom_path(
+        data = contour_df,
+        ggplot2::aes(x = .data$x, y = .data$y,
+                     group = interaction(.data$prob, .data$piece),
+                     linetype = .data$prob_label),
+        colour      = "black",
+        linewidth   = presentation_lwd(2.5),
+        inherit.aes = FALSE
+      ) +
+      ggplot2::scale_linetype_manual(
+        values = line_map[levels(contour_df$prob_label)],
+        guide  = "none"
+      ) +
+      ggplot2::coord_fixed(ratio = hex_ratio_pres, xlim = style_presentation$xlim, ylim = style_presentation$ylim) +
+      ggplot2::scale_x_continuous(labels = nature_minus_labels(), expand = c(0, 0),
+                                   sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+      ggplot2::scale_y_continuous(labels = nature_minus_labels(), expand = c(0, 0),
+                                   sec.axis = ggplot2::dup_axis(name = NULL, labels = NULL)) +
+      ggplot2::labs(
+        x = expression("Mean Annual Temperature (" * degree * "C)"),
+        y = expression(atop("Mean Annual Precipitation", "(mm yr"^{-1}*")"))
+      ) +
+      .whittaker_theme(style_presentation)
+    step1_path <- save_presentation_figure(fig3_step1, file.path(slide_dir, "fig03_step1_envelope"))
+    rl("completed: presentation slide written: ", step1_path)
+  }
 
   invisible(TRUE)
 }

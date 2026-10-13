@@ -4,6 +4,107 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Presentation versions of Figures 1, 2, 3, 4, 6, 7 (talk deck)
+
+Full prompt: `logs/prompts/2026-10-13_presentation_versions.md`. Added a talk-deck "presentation
+mode" to six manuscript figure scripts, producing 23 large-format PNG slides and an assembled
+`presentation_versions.pptx`, with the manuscript figures left byte-identical. Figure 5 excluded
+per the prompt (waits for the round-robin).
+
+**Approach:** each of the six scripts gained an additive block gated on
+`FLUXNET_PRESENTATION_MODE=1` (default unset — every ordinary invocation is unaffected), placed
+*after* the script's existing manuscript save, reusing the same already-loaded data, gate checks
+and colour constants. New shared infrastructure in `R/presentation_format.R` (parallel to, never
+imported by, `R/nature_format.R`): `presentation_theme()` (18pt tick labels, 20-24pt axis/legend
+titles, nothing below 14pt), `presentation_lwd()` (2-3pt rendered data lines), and
+`save_presentation_figure()` (single PNG, no Nature size/dpi gates, 12.8x6.3in @ 200dpi).
+
+**Per-figure:**
+- **Figure 1** (`scripts/generate_fig_map_network.R`): step 1 is new code — historical-collection
+  sites (Marconi/La Thuile/FLUXNET2015, matched to current IDs via `load_historical_site_lists()`,
+  n=499: 35/252/212) on the same Equal Earth extent as the rest, coloured as Figure 2
+  (`#404040`/`#E74C3C`/`#3498DB`). Steps 2-6 reuse the manuscript's own `panel_a` (all 781 sites)
+  and the 4 regional panels (only 4 regions exist — North America/Europe/Asia/ANZ — matching
+  "slides 3 to 6" exactly), re-themed.
+- **Figure 2** (`scripts/generate_fig_cumulative_siteyears.R`): steps 1-2 reuse
+  `fig_cumulative_siteyears_igbp(show_current_network=FALSE/TRUE, ...)` on the same fixed axes
+  (direct end-of-line labels for step 1, no inset for step 2, legend restored); step 3 calls the
+  already-standalone `fig_record_length_histogram()` directly (n=483/225/63 at the 5/10/20-year
+  thresholds). Added an optional `line_pt` parameter to `fig_cumulative_siteyears_igbp()`
+  (`R/figures/fig_network_growth.R`) for the thicker presentation-scale line — default unchanged.
+- **Figure 3** (`scripts/generate_whittaker_alt_fig02_update.R`): step 1 is new code — the 95%/99%
+  land-climate contour alone, same `coord_fixed()`/axes as step 2 (hexbin + sites + contour,
+  re-themed). `fig_whittaker_worldclim()`'s inset "N = ... sites | ... site-years" text annotation
+  (an always-drawn `GeomText` layer, no parameter to suppress it) is stripped post-hoc from the
+  step 2 presentation object — presentation slides carry no in-figure notes, per the prompt, even
+  where the manuscript figure's own design includes one.
+- **Figure 4** (`scripts/figure_flux_comparison_combo.R`): `make_panel()` gained a `presentation`
+  argument (bigger points, direct IGBP-class labels via `ggrepel` instead of a legend, two fully
+  separate `geom_text_repel()` calls so the manuscript path can't drift). Caught and fixed a real
+  bug during implementation: an earlier version applied presentation-only `ggrepel` tuning
+  unconditionally, changing the manuscript PNG's label layout — fixed, manuscript PNG re-verified
+  byte-identical. Also caught and fixed a real rendering bug after implementation: the NEP panel's
+  rotated y-axis title at 22pt ("FLUXNET Shuttle median NEP ± SD (g C m⁻² yr⁻¹)", ~45 characters)
+  needed about 7.5in of vertical space, more than the 6.3in slide image height, so it was clipped
+  at the top edge (leading "F" cut off). Fixed by wrapping both axis titles onto two lines via
+  `atop()` in presentation mode only (manuscript path untouched, confirmed still byte-identical).
+- **Figure 6** (`scripts/generate_fig06_quality_uncertainty.R`): `panel_a`/`panel_b`/`panel_c`
+  rebuilt individually at presentation scale (no panel-letter tags); panel a kept a compact legend
+  rather than direct end-of-curve labels since NEE_VUT/NEE_CUT track each other too closely for
+  non-overlapping same-colour labels.
+- **Figure 7** (`scripts/figure4_representativeness.R`, the hard case): the 6 axis panels are
+  gtables built by `draw_panel2()` under a shared 2-column manuscript calibration
+  (`panel_mm_per_unit`/`BASE_PT`/`LETTER_PT`/column-gutter alignment computed jointly across all 6
+  panels). Presentation mode reuses the same per-axis `df`/`j_val` (zero recomputation) and calls
+  `draw_panel2()` directly with a single-panel calibration sized for the 12.8in slide width
+  (simpler than the manuscript's joint calibration, since a standalone slide needs no cross-panel
+  alignment), presentation-scale `BASE_PT`/`LETTER_PT`, empty panel letter (suppresses the tag,
+  keeps the "J = x.xxx" header and the "% land"/tower-count in-bar labels the prompt explicitly
+  asks to keep). All 6 J values confirmed matching the manuscript legend: Köppen 0.399, IGBP 0.346,
+  Aridity 0.675, Biomass 0.636, NEE 0.165, ET 0.479.
+
+**Outputs:** `review/figures/presentation_figures/slides/*.png` (23 files, 2560×1260px =
+12.8×6.3in @ 200dpi), `review/figures/presentation_figures/manifest.csv` (slide number, PNG,
+source figure, script, build step, speaker notes with snapshot filenames),
+`review/figures/presentation_figures/presentation_versions.pptx` (23 slides, 13.333×7.5in 16:9
+canvas — officer's default template is 4:3; widened by a small post-process on the saved pptx's
+`ppt/presentation.xml` `<p:sldSz>`, verified against a LibreOffice-rendered PDF reporting exactly
+960×540pt = 13.333×7.5in), empty title placeholder per slide, speaker notes via
+`officer::set_notes()`. Driver scripts: `scripts/build_presentation_slides.R` (sources all 6
+figure scripts with the env var set) and `scripts/build_presentation_deck.R` (assembles the pptx
+from manifest.csv). No new package dependency — `officer` 0.7.5 was already resolvable from the
+lockfile.
+
+**Checks:**
+- Data gates: free by construction (presentation blocks run after each script's existing
+  `stop()`-on-mismatch gate checks, same process, same loaded data).
+- Manuscript byte-identity: every manuscript/candidate/intermediate PNG (`fig_01_map_network.png`,
+  `fig_02_cumulative_siteyears_igbp.png`, `ALT_fig_02_whittaker_current.png`,
+  `fig_flux_comparison_combo_nep_et_h.png`, `fig_06_quality_uncertainty.png`,
+  `fig_04_representativeness.png`/`fig_07_network_sampling.png`, `figS7_sampling_gridded_at_tower.png`,
+  `supp_representativeness_geo_vs_geo.png`) confirmed md5-identical to a pre-change baseline (PNG
+  rendering via `ragg::agg_png` is deterministic). The corresponding PDFs/`.meta.json` files
+  necessarily pick up a fresh embedded timestamp/`run_datetime_utc`/`pipeline_version` on any
+  re-run of these scripts (pre-existing behaviour, confirmed via a controlled before/after test —
+  not something this task introduced) — reverted to their committed state via `git checkout`
+  before staging, so nothing manuscript-adjacent shows as changed in this commit.
+  `scripts/check_figure_format.R` re-run against `draft_manuscript_v1`: still 14/14 PASS,
+  unchanged.
+- Deck visual QA: installed LibreOffice (`brew install --cask libreoffice`, user-approved) for
+  headless pptx→pdf conversion; rendered `presentation_versions.pptx` to PDF (23 pages, confirmed
+  960×540pt = 13.333×7.5in), rasterized every page with `pdftoppm` and visually inspected all 23 —
+  found and fixed two real issues before this check passed clean (the Figure 4 NEP title clipping
+  and the Figure 3 in-panel note, both described above). Final pass: no clipping, no overlap, no
+  text below 14pt, title band empty on every slide, build-sequence axes/layout consistent within
+  each figure (Figure 1 steps 1-2, Figure 2 steps 1-2, Figure 3 steps 1-2).
+
+Implementation delegated across 6 parallel forked subagents (one per figure), each independently
+verifying its own manuscript byte-identity before reporting; final integration (consistency
+re-render of the three figures that ran before a shared-theme margin fix landed, deck assembly,
+LibreOffice QA pass, this log entry) done directly.
+
+---
+
 ## 2026-10-13 — Figure 6a: removed the QC=0.50 dashed vertical line
 
 Quick follow-up to the Figure 6 revision below. Removed `geom_vline(xintercept = 0.50, ...)` from

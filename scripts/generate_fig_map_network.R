@@ -43,6 +43,8 @@ source("R/pipeline_config.R")
 source("R/plot_constants.R")
 source("R/figures/fig_maps.R")
 source("R/nature_format.R")
+source("R/presentation_format.R")
+source("R/historical_datasets.R")
 check_pipeline_config()
 
 suppressPackageStartupMessages({
@@ -364,4 +366,90 @@ legend_lines <- c(
 )
 writeLines(legend_lines, paste0(OUT_STEM, ".legend.txt"))
 msg("Saved: ", paste0(OUT_STEM, ".legend.txt"))
+
+## ==============================================================================
+## Presentation mode: 6 talk slides (review/figures/presentation_figures/slides/).
+## Gated by FLUXNET_PRESENTATION_MODE=1 -- off by default, no effect on anything
+## above. Reuses the same pinned snapshot, map base/extent/projection and
+## colours as the manuscript figure above.
+## ==============================================================================
+presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
+if (presentation_mode) {
+  msg("--- Presentation mode: building Figure 1 slides ---")
+  SLIDE_DIR <- file.path("review", "figures", "presentation_figures", "slides")
+  fs::dir_create(SLIDE_DIR)
+
+  ## ---- Step 1: historical-collection sites only, matched to current IDs,
+  ## coloured as in Figure 2 (Marconi #404040, La Thuile #E74C3C,
+  ## FLUXNET2015 #3498DB). load_historical_site_lists() left-joins each
+  ## collection to the current Shuttle snapshot by site_id (current
+  ## coordinates/IGBP take priority when the site is in Shuttle) -- the same
+  ## matching Table 1 (scripts/collection_comparison_table.R) relies on.
+  ## bind_rows() in chronological order (Marconi, La Thuile, FLUXNET2015)
+  ## gives correct oldest-under-newest draw order for free within one
+  ## colour-mapped geom_sf() layer.
+  hist_lists <- load_historical_site_lists(shuttle_snapshot = snap_file)
+  HIST_COLOURS <- c("Marconi 2000" = "#404040", "La Thuile 2007" = "#E74C3C", "FLUXNET2015" = "#3498DB")
+  hist_sites <- dplyr::bind_rows(hist_lists$marconi, hist_lists$la_thuile, hist_lists$fluxnet2015) |>
+    dplyr::filter(!is.na(location_lat), !is.na(location_long)) |>
+    dplyr::mutate(dataset = factor(dataset, levels = names(HIST_COLOURS)))
+  hist_sites_sf <- sf::st_as_sf(hist_sites, coords = c("location_long", "location_lat"),
+                                 crs = 4326, remove = FALSE)
+  msg("Presentation step 1: ", nrow(hist_sites), " historical-collection sites (",
+      paste(sprintf("%s=%d", levels(hist_sites$dataset), table(hist_sites$dataset)), collapse = ", "), ")")
+
+  p_step1 <- .map_base_eqearth(geo_world$land, geo_world$coast) +
+    ggplot2::geom_sf(data = hist_sites_sf, ggplot2::aes(colour = dataset), shape = 16, size = 3, alpha = 0.6) +
+    ggplot2::scale_colour_manual(values = HIST_COLOURS, name = NULL) +
+    ggplot2::coord_sf(crs = EQUAL_EARTH_CRS, expand = FALSE, datum = NA) +
+    ggplot2::theme(legend.position = "bottom") +
+    presentation_theme() +
+    ggplot2::guides(colour = ggplot2::guide_legend(override.aes = list(size = 6, alpha = 1)))
+  save_presentation_figure(p_step1, file.path(SLIDE_DIR, "fig01_step1_historical_collections"))
+
+  ## ---- Step 2: all 781 snapshot sites (manuscript panel_a, re-themed) ------
+  p_step2 <- .map_base_eqearth(geo_world$land, geo_world$coast) +
+    ggplot2::geom_sf(data = sites_sf_all, shape = 16, colour = "#0072B2", size = 3, alpha = 0.5) +
+    ggplot2::coord_sf(crs = EQUAL_EARTH_CRS, expand = FALSE, datum = NA) +
+    presentation_theme()
+  save_presentation_figure(p_step2, file.path(SLIDE_DIR, "fig01_step2_all_sites"))
+
+  ## ---- Steps 3-6: each regional panel on its own slide ----------------------
+  REGION_STEP <- c(north_america = 3L, europe = 4L, asia = 5L, anz = 6L)
+  REGION_SLUG <- c(north_america = "north_america", europe = "europe", asia = "asia", anz = "anz")
+  for (nm in names(REGIONS)) {
+    r <- REGIONS[[nm]]
+    clon <- mean(c(r$lon_min, r$lon_max)); clat <- mean(c(r$lat_min, r$lat_max))
+    crs_laea <- sprintf("+proj=laea +lat_0=%f +lon_0=%f +datum=WGS84 +units=m +no_defs", clat, clon)
+    pad_lon <- (r$lon_max - r$lon_min) * 0.15; pad_lat <- (r$lat_max - r$lat_min) * 0.15
+    geo <- .land_and_coast_sf(xmin = max(r$lon_min - pad_lon, -180), xmax = min(r$lon_max + pad_lon, 180),
+                               ymin = max(r$lat_min - pad_lat, -60), ymax = min(r$lat_max + pad_lat, 85))
+    sites_r <- sites_clean[in_region(sites_clean, r), ]
+    sites_r_sf <- sf::st_as_sf(sites_r, coords = c("location_long", "location_lat"), crs = 4326, remove = FALSE)
+    boundary <- .dense_boundary_sf(r$lon_min, r$lon_max, r$lat_min, r$lat_max)
+    boundary_proj <- sf::st_transform(sf::st_sf(geometry = boundary), crs_laea)
+    bb <- sf::st_bbox(boundary_proj)
+    span_km <- unname((bb["xmax"] - bb["xmin"]) / 1000)
+    bar_km  <- .nice_round_km(span_km)
+    bar_m   <- bar_km * 1000
+    bar_x0 <- unname(bb["xmin"]) + 0.06 * (unname(bb["xmax"] - bb["xmin"]))
+    bar_y0 <- unname(bb["ymin"]) + 0.08 * (unname(bb["ymax"] - bb["ymin"]))
+
+    p_region <- .map_base_eqearth(geo$land, geo$coast) +
+      ggplot2::geom_sf(data = sites_r_sf, shape = 16, colour = "#0072B2", size = 3.5, alpha = 0.6) +
+      ggplot2::annotate("segment", x = bar_x0, xend = bar_x0 + bar_m, y = bar_y0, yend = bar_y0,
+                         linewidth = presentation_lwd(2.5), colour = "black") +
+      ggplot2::annotate("text", x = bar_x0 + bar_m / 2, y = bar_y0, label = paste0(bar_km, " km"),
+                         size = PRESENTATION_TICK_PT / ggplot2::.pt, vjust = -0.6, colour = "black",
+                         family = PRESENTATION_FONT) +
+      ggplot2::coord_sf(crs = crs_laea, xlim = c(bb["xmin"], bb["xmax"]), ylim = c(bb["ymin"], bb["ymax"]),
+                         expand = FALSE, datum = NA) +
+      presentation_theme()
+    out_stem <- file.path(SLIDE_DIR, sprintf("fig01_step%d_%s", REGION_STEP[[nm]], REGION_SLUG[[nm]]))
+    save_presentation_figure(p_region, out_stem)
+    msg("Presentation step ", REGION_STEP[[nm]], " (", r$label, "): ", nrow(sites_r), " towers -> ", out_stem, ".png")
+  }
+  msg("--- Presentation mode: Figure 1 slides done ---")
+}
+
 msg("=== Done ===")

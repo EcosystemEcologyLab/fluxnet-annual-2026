@@ -89,6 +89,7 @@ source("R/climate_classification.R")
 source("R/units.R")
 source("R/site_annual_fluxes.R")
 source("R/nature_format.R")
+source("R/presentation_format.R")
 source("R/plot_constants.R")
 check_pipeline_config()
 
@@ -2538,6 +2539,74 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
     }
   }
   msg("Copied ", base, " -> ", dest_base, " (", paste(exts, collapse = "/"), ") to ", dest_dir)
+}
+
+## ==============================================================================
+## PRESENTATION MODE (Figure 7 only -- 6 single-axis slides, geo_vs_data)
+## ==============================================================================
+## Additive, env-var-gated: when FLUXNET_PRESENTATION_MODE is unset, nothing
+## below this point runs and every manuscript output above (both geo_vs_geo
+## and geo_vs_data, already fully saved and metric-verified above) is
+## untouched. Reuses draw_panel2()/build_merged_for_panel()/build_panel_df()/
+## get_j_fig4()/panel_title_for_render() -- same data, same J values, same
+## colour maps -- with a fresh single-panel (not shared 2-column) size
+## calibration and presentation-scale text. Scoped strictly to the
+## "geo_vs_data" comparison (Figure 7); the geo_vs_geo/S7 outputs above are
+## not touched by anything in this block.
+presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
+if (presentation_mode) {
+  msg("\n=== Presentation mode: building 6 single-axis Figure 7 slides (geo_vs_data) ===")
+
+  PRES_PT               <- PRESENTATION_AXIS_TITLE_PT   # 22pt -- single scalar satisfies both the
+                                                          # >=18pt tick floor and the 20-24pt axis-title band
+                                                          # for every text element draw_panel2() draws
+                                                          # (axis text, header/"J=" text, in-bar %land/tower labels)
+  PRES_PANEL_MARGIN_MM  <- 6
+  PRES_WIDTH_MM         <- PRESENTATION_IMG_WIDTH_IN * 25.4   # ~325.1mm, single full-slide-width panel
+
+  ## Save every global draw_panel2()/measure_panel_layout_mm()/
+  ## panel_mm_per_unit_for() close over, so this block cannot perturb the
+  ## already-saved geo_vs_geo/geo_vs_data manuscript renders above.
+  .pres_saved_globals <- mget(c("BASE_PT", "LETTER_PT", "PANEL_MARGIN_MM", "COL_WIDTH_MM"),
+                               envir = .GlobalEnv)
+  BASE_PT         <- PRES_PT
+  LETTER_PT       <- PRES_PT
+  PANEL_MARGIN_MM <- PRES_PANEL_MARGIN_MM
+  COL_WIDTH_MM    <- PRES_WIDTH_MM   # single "column" = the full slide-image width, no 2-col split
+
+  pres_slide_stem <- c(A = "fig07_step1_koppen", B = "fig07_step2_landcover",
+                        C = "fig07_step3_aridity", D = "fig07_step4_biomass",
+                        E = "fig07_step5_nee", F = "fig07_step6_et")
+
+  for (letter in ALL_LETTERS) {
+    spec   <- PANEL_SPECS[[letter]]
+    labs   <- panel_y_limits(letter)
+    merged <- build_merged_for_panel(letter, "geo_vs_data")
+    df     <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
+    j_val  <- get_j_fig4(letter, "geo_vs_data")
+
+    ## This axis's own natural left (y-axis label) gutter at presentation
+    ## text size -- no cross-panel alignment needed for a standalone slide,
+    ## unlike the manuscript's shared-column TARGET_GUTTER_MM.
+    own_left_mm <- measure_panel_layout_mm(labs, show_xlab = TRUE)$left_mm
+    pres_mm_per_unit <- panel_mm_per_unit_for(labs, show_xlab = TRUE, target_left_mm = own_left_mm)
+
+    g <- draw_panel2(df, pres_mm_per_unit, letter = "", title_text = panel_title_for_render(letter),
+                      j_val = j_val, show_xlab = TRUE, show_header = TRUE, label_pt = PRES_PT,
+                      target_left_mm = NA_real_)
+
+    out_stem <- file.path("review/figures/presentation_figures/slides", pres_slide_stem[[letter]])
+    save_presentation_figure(g, out_stem)
+    msg("Saved presentation slide: ", out_stem, ".png (axis ", spec$axis, ", J = ",
+        if (!is.na(j_val)) sprintf("%.3f", j_val) else "NA", ")")
+  }
+
+  ## Restore globals exactly -- nothing after this point in the script
+  ## depends on them, but restore unconditionally for safety/re-sourceability.
+  for (nm in names(.pres_saved_globals)) assign(nm, .pres_saved_globals[[nm]], envir = .GlobalEnv)
+  rm(.pres_saved_globals)
+
+  msg("=== Presentation mode: Figure 7 slides complete ===")
 }
 
 msg("\n=== figure4_representativeness.R: PRINT RE-RENDER COMPLETE ===")

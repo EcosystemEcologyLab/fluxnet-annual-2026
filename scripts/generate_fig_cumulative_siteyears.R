@@ -42,6 +42,7 @@ source("R/utils.R")
 source("R/plot_constants.R")
 source("R/figures/fig_network_growth.R")
 source("R/nature_format.R")
+source("R/presentation_format.R")
 check_pipeline_config()
 
 suppressPackageStartupMessages({
@@ -404,5 +405,72 @@ write_output_metadata(
                   "Snapshot: ", SNAP_FILE, ". Gate checks passed: 6200 main-panel site-years, ",
                   "781 inset sites, thresholds 483/225/63. See .legend.txt.")
 )
+
+## =============================================================================
+## Presentation mode (slide deck) -- additive, gated by an env var; does not
+## touch anything above (same data/gates/colours as the manuscript figure).
+## Default (unset) behaviour is unaffected -- see R/presentation_format.R.
+## =============================================================================
+presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
+if (presentation_mode) {
+  msg("--- Presentation mode: building Figure 2 slides ---")
+  SLIDE_DIR <- file.path("review", "figures", "presentation_figures", "slides")
+  fs::dir_create(SLIDE_DIR)
+
+  ## Step 1: historical lines only, on the final axes. The function's own
+  ## geom_label() direct end-of-line labels already identify the 3 series --
+  ## no separate legend needed.
+  pres_step1 <- fig_cumulative_siteyears_igbp(
+    presence_df             = presence_df,
+    shuttle_meta             = shuttle_meta,
+    sites_marconi            = sites_marconi,
+    sites_la_thuile          = sites_la_thuile,
+    sites_fluxnet2015        = sites_fluxnet2015,
+    base_size                = 32L,
+    la_thuile_year_matrix    = la_thuile_year_matrix,
+    show_current_network     = FALSE,
+    show_release_year_lines  = FALSE,
+    marconi_colour           = "#404040",
+    line_pt                  = 2.5
+  ) + presentation_theme()
+  save_presentation_figure(pres_step1, file.path(SLIDE_DIR, "fig02_step1_historical_lines"))
+
+  ## Step 2: + IGBP-stacked areas, no inset, one large legend, same axes as
+  ## step 1 (fig_cumulative_siteyears_igbp() keeps the y-range identical
+  ## either way via its internal geom_blank() mechanism).
+  pres_step2 <- fig_cumulative_siteyears_igbp(
+    presence_df             = presence_df,
+    shuttle_meta             = shuttle_meta,
+    sites_marconi            = sites_marconi,
+    sites_la_thuile          = sites_la_thuile,
+    sites_fluxnet2015        = sites_fluxnet2015,
+    base_size                = 32L,
+    la_thuile_year_matrix    = la_thuile_year_matrix,
+    show_current_network     = TRUE,
+    show_release_year_lines  = FALSE,
+    marconi_colour           = "#404040",
+    line_pt                  = 2.5
+  ) + presentation_theme()
+  save_presentation_figure(pres_step2, file.path(SLIDE_DIR, "fig02_step2_igbp_areas"))
+
+  ## Step 3: record-length histogram, standalone, full slide (not the small
+  ## framed inset version) -- same 5/10/20yr thresholds and counts.
+  pres_rl <- fig_record_length_histogram(
+    site_meta           = shuttle_meta,
+    presence_df         = presence_df,
+    thresholds          = c(5L, 10L, 20L),
+    base_size           = NATURE_BASE_PT,
+    annot_pt            = 20,
+    show_legend         = TRUE,
+    legend_key_mm       = 8,
+    show_thresh_labels  = TRUE,
+    x_label             = "Record length (years)",
+    y_label             = "Number of sites"
+  )
+  pres_step3 <- pres_rl$plot + presentation_theme()
+  save_presentation_figure(pres_step3, file.path(SLIDE_DIR, "fig02_step3_record_length_histogram"))
+
+  msg("Presentation slides saved: fig02_step1/2/3 -> ", SLIDE_DIR)
+}
 
 msg("=== Done ===")

@@ -33,6 +33,7 @@ check_pipeline_config()
 source("R/utils.R")
 source("R/plot_constants.R")
 source("R/nature_format.R")
+source("R/presentation_format.R")
 
 suppressPackageStartupMessages({
   library(DBI); library(duckdb); library(dplyr); library(readr); library(tidyr)
@@ -331,5 +332,66 @@ write_output_metadata(
     "and its y-axis fixed at 1,490. See .legend.txt."
   )
 )
+
+## ==============================================================================
+## Presentation mode: one large-format slide PNG per panel (talk deck)
+## ==============================================================================
+presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
+if (presentation_mode) {
+  msg("--- Presentation mode: building slide PNGs ---")
+  PRES_DIR <- "review/figures/presentation_figures/slides"
+  fs::dir_create(PRES_DIR)
+  pres_ticks <- theme(axis.ticks.length = grid::unit(-8, "pt"))
+
+  ## Step 1: panel a, QC ECDF. NEE_VUT and NEE_CUT track each other closely
+  ## at every x (confirmed: at x=0.92 their ECDF values are 0.466 vs 0.478,
+  ## too close for separate end-of-curve text labels without collision) --
+  ## direct labels don't fit cleanly here, so this slide keeps one compact
+  ## legend, sized up to presentation scale, same top-left placement as the
+  ## manuscript panel.
+  pres_panel_a <- ggplot(annual_qc, aes(x = qc, colour = variable)) +
+    stat_ecdf(geom = "step", linewidth = presentation_lwd(2.5)) +
+    scale_colour_manual(values = FOUR_VAR_COLOURS, name = NULL, labels = VAR_LABELS) +
+    scale_x_continuous(breaks = c(0.5, 0.75, 1)) +
+    coord_cartesian(xlim = c(0.5, 1)) +
+    scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
+    labs(x = "Annual QC flag (fraction measured or good-quality gap-filled)", y = "Cumulative share") +
+    theme_classic(base_size = PRESENTATION_AXIS_TITLE_PT) +
+    theme(axis.text = element_text(colour = "black"), axis.ticks = element_line(colour = "black")) +
+    presentation_theme() + pres_ticks +
+    theme(legend.position = c(0.02, 0.98), legend.justification = c(0, 1),
+          legend.background = element_rect(fill = "white", colour = NA),
+          legend.key.size = grid::unit(22, "pt")) +
+    guides(colour = guide_legend(ncol = 1))
+  save_presentation_figure(pres_panel_a, file.path(PRES_DIR, "fig06_step1_qc_distribution"))
+
+  ## Step 2: panel b, uncertainty terms. One legend (VUT/CUT).
+  pres_panel_b <- ggplot(box_long, aes(x = term, y = value, fill = carbon_type)) +
+    geom_boxplot(outlier.size = 1.2, outlier.alpha = 0.3, linewidth = presentation_lwd(2.2), width = 0.6) +
+    scale_fill_manual(values = VUT_CUT_COLOURS, name = NULL) +
+    scale_y_log10(labels = log_labels()) +
+    labs(x = "Uncertainty term", y = expression("Uncertainty (g C "*m^{-2}*" "*yr^{-1}*", log"[10]*")")) +
+    theme_classic(base_size = PRESENTATION_AXIS_TITLE_PT) +
+    theme(axis.text = element_text(colour = "black"), axis.ticks = element_line(colour = "black")) +
+    presentation_theme() + pres_ticks +
+    theme(legend.position = c(0.02, 0.98), legend.justification = c(0, 1),
+          legend.background = element_rect(fill = "white", colour = NA),
+          legend.key.size = grid::unit(22, "pt"))
+  save_presentation_figure(pres_panel_b, file.path(PRES_DIR, "fig06_step2_uncertainty_terms"))
+
+  ## Step 3: panel c, VUT-CUT histogram. No in-panel text (manuscript already
+  ## has none; kept that way here).
+  pres_panel_c <- ggplot(stage3 |> dplyr::filter(abs(diff) <= CLIP), aes(x = diff)) +
+    geom_histogram(binwidth = 5, fill = "grey60", colour = "white", linewidth = presentation_lwd(1.0)) +
+    scale_x_continuous(limits = c(-CLIP, CLIP), labels = nature_minus_labels()) +
+    scale_y_continuous(limits = c(0, 1490), expand = expansion(mult = c(0, 0))) +
+    labs(x = expression("NEE"["VUT"]*" - NEE"["CUT"]*" (g C "*m^{-2}*" "*yr^{-1}*")"), y = "Site-years") +
+    theme_classic(base_size = PRESENTATION_AXIS_TITLE_PT) +
+    theme(axis.text = element_text(colour = "black"), axis.ticks = element_line(colour = "black")) +
+    presentation_theme() + pres_ticks
+  save_presentation_figure(pres_panel_c, file.path(PRES_DIR, "fig06_step3_vut_minus_cut"))
+
+  msg("Presentation slides saved: fig06_step1_qc_distribution.png, fig06_step2_uncertainty_terms.png, fig06_step3_vut_minus_cut.png")
+}
 
 msg("=== Done ===")

@@ -858,6 +858,12 @@ fig_siteyears_by_year_igbp <- function(presence_df,
 #'   Colour used for the Marconi cumulative line and its direct label. Added
 #'   2026-10-12 so the rebuilt Figure 2 can use dark grey (\code{"#404040"})
 #'   without changing the default for other callers.
+#' @param line_pt Numeric (default \code{\link{NATURE_LINEWIDTH_MAX}}).
+#'   Rendered weight (pt) of the three historical cumulative lines, via
+#'   \code{\link{nature_lwd}}. Added 2026-10-13 for the presentation-mode
+#'   slide deck (\code{scripts/build_presentation_slides.R}), which needs
+#'   2-3pt lines; default unchanged for every other caller, including the
+#'   manuscript Figure 2.
 #'
 #' @return A ggplot object.
 #'
@@ -882,7 +888,8 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
                                            la_thuile_year_matrix = NULL,
                                            show_current_network = TRUE,
                                            show_release_year_lines = TRUE,
-                                           marconi_colour = "#2ECC71") {
+                                           marconi_colour = "#2ECC71",
+                                           line_pt = NATURE_LINEWIDTH_MAX) {
 
   if (is.null(year_range)) {
     window     <- data_year_window(presence_df)
@@ -1053,7 +1060,7 @@ fig_cumulative_siteyears_igbp <- function(presence_df,
       ggplot2::aes(x      = .data$year,
                    y      = .data$n,
                    colour = .data$dataset),
-      linewidth = nature_lwd(NATURE_LINEWIDTH_MAX)
+      linewidth = nature_lwd(line_pt)
     ) +
     # Direct labels at peak (last) year
     ggplot2::geom_label(

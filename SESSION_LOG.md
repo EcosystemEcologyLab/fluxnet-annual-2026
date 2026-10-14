@@ -4,6 +4,73 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Site-citation generator audit: fluxnet-quickstart's 03_cite.R vs. this repo
+
+Asked to look at `examples/03_cite.R` in the sibling `fluxnet-quickstart` repository and evaluate
+whether it is a useful way to generate a full reference list of all sites used in the FLUXNET
+Annual Paper, and report how best to do this within this repository. No code was changed; this is
+an investigation report and a set of decisions still needed from the user.
+
+**What `03_cite.R` actually is:** a tutorial wrapper demonstrating `generate_fluxnet_citations()`,
+a function vendored into that repo's `R/generate_fluxnet_citations.R` (itself a copy of a
+standalone tool at `github.com/EcosystemEcologyLab/fluxnet-citations`). It reads a FLUXNET shuttle
+manifest/snapshot CSV and writes a `.bib` (one `@misc` per site plus mandated network-level
+`@article` refs), an acknowledgments `.md`, and a review-flags `.md`.
+
+**Key finding: this repository already has the same tool, and more.**
+`scripts/generate_fluxnet_citations.R` (added 2026-05-28, commit `d1d5547`, last touched
+`7f31497`) is an earlier copy of the identical function. It is paired with
+`R/parse_bib_to_apa.R`'s `bib_to_apa()`, which converts the `.bib` into a human-readable **APA
+reference list** (plain text, `.docx`, or a native Google Doc) — a second stage the
+fluxnet-quickstart version does not have. Both are already documented in
+`CONTRIBUTOR_QUICKSTART.md` ("Generating citations and APA reference lists"), though that doc
+section is stale in places (references "718 sites", a placeholder `07_figures.R`).
+
+**Live test against the real data** (not just a code read): ran both stages against the most
+recent 781-site snapshot, `data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv`, with
+output redirected into `outputs/citations/` (gitignored test run, deleted afterward — never
+pointed at `bib_to_apa()`'s default Google Drive sync path, which is outside the repository).
+- `generate_fluxnet_citations()`: 777 of 781 sites parsed into BibTeX cleanly; 30 non-fatal review
+  flags (24 ICOS/JPF sites with no author block in their citation, handled gracefully; 2
+  preserved-verbatim upstream quirks: `AU-Cow`'s "FLUXNEXT" typo, `US-Hsm`'s `Kyle_Delwiche`
+  author string).
+- `bib_to_apa()`: 777 correctly formatted APA 7th-edition entries produced from that `.bib`
+  (example: `Gassmann, M. I., & Tonti, N. E. (2026). AmeriFlux FLUXNET-1F AR-Bal Balcarce BA, Ver.
+  v1.3_r1 (2012-2013), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571144`).
+- `product_citation`/`product_id`/`product_source_network` are present and complete (zero NA) for
+  all 781 sites in the current snapshot; all 9 `product_source_network` codes present (AMF, EUF,
+  ICOS, JPF, TERN, CNF, KOF, FLX, SAEON) are covered by the script's `KNOWN_NETWORKS` list.
+
+**One real, previously undocumented bug found:** 4 of the network's 5 SAEON sites (`ZA-BfK`,
+`ZA-BfS`, `ZA-Spk`, `ZA-Uby`) fail to parse — `parse_saeon()` has no "no-author" branch (unlike
+`parse_icos()`, which already has one), and these 4 citations begin directly with `(2025).` with
+no author block. Not caught before because SAEON only recently grew to 5 sites in the network.
+Fix is a small, well-precedented one (mirror `parse_icos()`'s existing no-author branch inside
+`parse_saeon()`); not yet applied, pending the user's go-ahead.
+
+**Decisions needed from the user before generating a citeable full reference list:**
+1. Apply the `parse_saeon()` no-author fix (777/781 → 781/781)?
+2. Which snapshot is authoritative for "all sites used in the paper"? Two different "current,
+   781-site" snapshots are in use across figures right now
+   (`fluxnet_shuttle_snapshot_20260901T094522.csv` for Figs 1/3/4/7,
+   `fluxnet_shuttle_snapshot_20260920T102211.csv` for Figs 2/6) — neither is yet a CLAUDE.md
+   "locked" snapshot (`FLUXNET_SNAPSHOT_MODE` is still `development`). The citation run should
+   either wait for a locked snapshot or use an explicitly chosen one, not auto-discovery.
+3. The tool hardcodes Yu et al. (2006), the ChinaFLUX paper, as the hub reference for *all* JPF
+   (AsiaFlux/Japan) sites and flags this itself for manual verification in its own output — worth
+   checking once rather than trusting blindly, since JPF covers more than just ChinaFLUX-affiliated
+   sites.
+4. Output location: currently defaults to `outputs/` (gitignored). Recommended instead:
+   `review/citations/`, git-tracked like `review/figures/`, with a companion `.meta.json` via
+   `write_output_metadata()` (snapshot path, run date) for provenance, consistent with every other
+   committed output in this repo.
+
+**Minor, unrelated doc staleness noted:** CLAUDE.md's "Data Use and Citation" section still
+refers to a `data_citation` field; the actual column in the current snapshot schema is
+`product_citation`. Not fixed as part of this investigation.
+
+---
+
 ## 2026-10-13 — Presentation versions v2: paper aspect ratio, no deck (replaces the talk-deck version)
 
 Full prompt: `logs/prompts/2026-10-13_presentation_versions_v2.md`. Redo of the same-day talk-deck

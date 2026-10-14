@@ -495,7 +495,7 @@ Required fields:
 |---|---|---|
 | `run_datetime_utc` | ISO 8601 timestamp of pipeline run | `format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")` |
 | `pipeline_version` | Git commit hash at run time | `system("git rev-parse --short HEAD", intern = TRUE)` |
-| `input_sources` | Snapshot CSV path + per-site DOIs from snapshot | from `data/snapshots/` and snapshot `data_citation` field |
+| `input_sources` | Snapshot CSV path + per-site DOIs from snapshot | from `data/snapshots/` and snapshot `product_citation` field |
 | `r_session_info` | Output of `sessionInfo()` | saved to `outputs/session_info.txt` at end of every run |
 | `notes` | Manual decisions, overrides, or deviations from defaults | free text; empty string if none — field must always be present |
 
@@ -694,7 +694,10 @@ When ready to lock the dataset for the final paper analysis:
 ## Data Use and Citation
 
 All Shuttle data is CC-BY-4.0. Per-site DOIs are available in the snapshot
-CSV (`data_citation` field) and must be included in the paper.
+CSV (`product_citation`/`product_id` fields) and must be included in the paper's reference
+section (not supplementary material only), per the FLUXNET data use policy
+(https://data.fluxnet.org/?p=30). See `scripts/generate_fluxnet_citations.R` and
+`R/parse_bib_to_apa.R` for generating the full site reference list and acknowledgment text.
 
 Cite:
 - Pastorello et al. (2020) Sci. Data 7:225 for the ONEFlux pipeline

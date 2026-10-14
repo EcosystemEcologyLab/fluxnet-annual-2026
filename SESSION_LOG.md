@@ -4,6 +4,89 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Generated the paper's full site reference list (follow-up to the bbbd02c audit)
+
+Full prompt: `logs/prompts/2026-10-13_site_reference_list.md`. Implemented the decisions from the
+same-day citation-generator audit (commit `bbbd02c`, entry below) and generated the paper's full
+site reference list.
+
+**Code fixes, `scripts/generate_fluxnet_citations.R`:**
+- `parse_saeon()`: added a no-author branch mirroring `parse_icos()`'s existing one (citation
+  begins `(year).` with no author before it). Closes the 4-site SAEON parse-failure gap found in
+  the audit — **781 of 781 sites now parse**, up from 777/781.
+- `mandated_bib()`: split the JPF/CNF reference trigger that was wrong — Yu et al. (2006) is now
+  triggered by `"CNF" %in% networks` (ChinaFlux), not `"JPF"`; `Ueyama2025` is JPF-only, title
+  corrected to "The JapanFlux2024 dataset for eddy covariance observations covering Japan and East
+  Asia from 1990 to 2023" (was the wrong title, "AsiaFlux dataset of ecosystem carbon, water, and
+  energy fluxes"), pages corrected to `3807--3833`. `Isaac2017` corrected from the wrong
+  `Earth System Science Data 9:349` (doi:10.5194/essd-9-349-2017) to the real
+  `Biogeosciences 14:2903-2928` (doi:10.5194/bg-14-2903-2017) — verified against both the FLUXNET
+  data policy and the DOI itself.
+- `build_acknowledgments()`: rewritten to follow the FLUXNET data use policy
+  (https://data.fluxnet.org/?p=30, "Required Attribution") directly rather than paraphrased
+  invented text — the global network-list + modified-ERA5-data credit, the AmeriFlux DOE funding
+  sentence, the ChinaFlux/NESDC sentence, the OzFlux + TERN data-portal sentences, and the policy's
+  Data Availability template. Removed "Per-site DOIs are listed in the supplementary material" —
+  the policy's item 1 requires each site's citation in the paper's own reference section, not
+  supplementary material. No invented sentences for ICOS/KoFlux/SAEON (the policy has none for
+  them individually; they remain covered by the global network list). The policy's own long-form
+  text could not be fetched as one verbatim block (the fetch tool used truncates long quotes at
+  125 characters) — reconstructed from multiple consistent fetches of the same page rather than
+  guessed; flagged in the script's own comment to spot-check against the live page before final
+  submission.
+- `build_review_flags()`: the no-author flag now also covers SAEON (previously ICOS-family only).
+  The "Mandatory reference verification" section's JPF/CNF/TERN entries updated to match the fixes
+  above; the old "verify this is the correct network attribution for all JPF sites" caveat on
+  Yu2006 is gone (resolved, not just silenced) now that CNF/JPF are correctly split.
+
+**New driver script**, `scripts/generate_site_reference_list.R`: pins
+`data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv` explicitly (no auto-discovery, no
+figure regeneration), runs `generate_fluxnet_citations()` then `bib_to_apa()` twice (`.txt` and
+`.docx`), and writes a `.meta.json` via `write_output_metadata()` — all to `review/citations/`
+(git-tracked, like `review/figures/`), never to `bib_to_apa()`'s default Google Drive sync path.
+
+**Run result:**
+- **781 of 781 sites parsed** (0 failures, up from 777/781 pre-fix).
+- **30 review flags remain**, all non-fatal and already known/expected: 28 sites with no author
+  block in their upstream `product_citation` (24 ICOS/JPF + 4 SAEON, `author` field omitted from
+  their BibTeX entry rather than guessed), plus 2 preserved-verbatim upstream quirks (`AU-Cow`'s
+  "FLUXNEXT" typo, `US-Hsm`'s `Kyle_Delwiche` author string).
+- **Sites by network:** AMF 381, EUF 138, ICOS 80, JPF 54, TERN 52, CNF 32, KOF 21, FLX 18,
+  SAEON 5 (781 total).
+- **Example APA entries** (APA 7th edition, from `review/citations/fluxnet_site_references_apa.txt`):
+  - JPF — `Saitoh, T., & Tamagawa, I. (2026). Fluxnet Archive Product from Takayama evergreen
+    coniferous forest site, 2005-2015, FLUXNET [Dataset]. https://hdl.handle.net/11676/CmfB4bc3xT3z8lqsrgqLbIGm`
+  - CNF — `Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Zhangye wetland,
+    2012-2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/tFBkzpRGg9Iwux3atrGwD_ur`
+  - SAEON — `Joubert, W., Maswanganye, S., Selala, S., & Smart, K. (2025). Fluxnet Archive Product
+    from Jonkershoek, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/pJ8V89PtIUTciotXGRT7PLki`
+  - Also confirmed: a CNF-prefixed-looking site ID is not reliable evidence of network membership
+    — `CN-Lsh`'s `product_source_network` is `JPF`, not `CNF` — this is exactly the failure mode
+    CLAUDE.md Hard Rule 2 ("never infer hub/region from site ID prefix") already warns about, now
+    directly confirmed in this network's own data.
+
+**Outputs** (`review/citations/`, git-tracked): `fluxnet_site_references.bib`,
+`fluxnet_site_references_acknowledgments.md`, `fluxnet_site_references_review_flags.md`,
+`fluxnet_site_references_apa.txt`, `fluxnet_site_references_apa.docx`,
+`fluxnet_site_references.meta.json`.
+
+**Docs:** `CLAUDE.md`'s "Data Use and Citation" section and its Output Metadata table both
+corrected from the stale `data_citation` field name to the real `product_citation`/`product_id`
+fields, with a pointer to the new driver script. `CONTRIBUTOR_QUICKSTART.md`'s citation section
+rewritten: the old "all sites" example was actually a 3-site placeholder mislabeled "All 718
+sites" (a real, if harmless, documentation bug); replaced with the canonical
+`scripts/generate_site_reference_list.R` driver as the primary path, and the subset-filtering
+examples kept but corrected to pass an explicit `snapshot_path`/`bib_path` rather than relying on
+auto-discovery or the Google Drive default.
+
+**Not changed:** `fluxnet-quickstart` and the standalone `fluxnet-citations` tool it's vendored
+from carry the same `parse_saeon()` no-author gap and the same JPF/CNF reference mix-up this audit
+found and fixed here — confirmed by direct comparison, not just inference, since
+`fluxnet-quickstart`'s copy is near-byte-identical to this repo's pre-fix version. Per the task
+scope, those two repositories were not touched; the fixes are local to this repository only.
+
+---
+
 ## 2026-10-13 — Site-citation generator audit: fluxnet-quickstart's 03_cite.R vs. this repo
 
 Asked to look at `examples/03_cite.R` in the sibling `fluxnet-quickstart` repository and evaluate

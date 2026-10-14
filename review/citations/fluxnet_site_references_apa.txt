@@ -1,0 +1,787 @@
+FLUXNET Site Dataset Citations — APA 7th Edition
+Source    : review/citations/fluxnet_site_references.bib
+Generated : 2026-10-13T19:28:47 MST
+Sites     : 781
+------------------------------------------------------------------------
+
+Gassmann, M. I., & Tonti, N. E. (2026). AmeriFlux FLUXNET-1F AR-Bal Balcarce BA, Ver. v1.3_r1 (2012-2013), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571144
+Posse, G. (2026). AmeriFlux FLUXNET-1F AR-CCa Carlos Casares agriculture, Ver. v1.3_r1 (2012-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571134
+Posse, G. (2025). AmeriFlux FLUXNET-1F AR-CCg Carlos Casares grassland, Ver. v1.3_r1 (2018-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469434
+Kutzbach, L. (2025). AmeriFlux FLUXNET-1F AR-TF1 Rio Moat bog, Ver. v1.3_r1 (2016-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1818370
+Kutzbach, L. (2025). AmeriFlux FLUXNET-1F AR-TF2 Rio Pipo bog, Ver. v1.3_r1 (2016-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571120
+Antonino, A. (2025). AmeriFlux FLUXNET-1F BR-CST Caatinga Serra Talhada, Ver. v1.3_r1 (2014-2015), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902820
+Guillemot, J. (2026). AmeriFlux FLUXNET-1F BR-ITA MataFLUX: Multi-species tree restoration planting, Ver. v1.3_r1 (2020-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027371
+Araujo, A. (2026). AmeriFlux FLUXNET-1F BR-Ji3 Ji-Paraná/RO - Reserva Biológica do Jaru (RBJ), Ver. v1.3_r1 (2004-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027314
+Araujo, A., von Randow, C., Manzi, A., Nobre, A., Pastorello, G., e Silva, J. A. d. F., Leal, L. d. S. M., Sá, M., Teixeira, P., & von Randow, R. (2026). AmeriFlux FLUXNET-1F BR-Ma2 Manaus - ZF2 K34, Ver. v1.3_r1 (1999-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027671
+Araujo, A. (2026). AmeriFlux FLUXNET-1F BR-Ma3 ZF3, Colosso farm, Ver. v1.3_r1 (2008-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027359
+Vourlitis, G., Dalmagro, H., Nogueira, J. d. S., Johnson, M., & Arruda, P. (2026). AmeriFlux FLUXNET-1F BR-Npw Northern Pantanal Wetland, Ver. v1.3_r1 (2013-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881563
+Restrepo-Coupe, N., & Saleska, S. (2026). AmeriFlux FLUXNET-1F BR-Sa1 Santarem-Km67-Primary Forest, Ver. v1.3_r1 (2002-2011), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027310
+Goulden, M. (2026). AmeriFlux FLUXNET-1F BR-Sa3 Santarem-Km83-Logged Forest, Ver. v1.3_r1 (2000-2004), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027311
+Roberti, D. R. (2026). AmeriFlux FLUXNET-1F BR-SM1 Cachoeira do Sul Rice Paddy, Ver. v1.3_r1 (2015-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027374
+Dalmagro, H., & Johnson, M. (2026). AmeriFlux FLUXNET-1F BR-Xpw XomanoFlux, Ver. v1.3_r1 (2017-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365275
+Todd, A., & Humphreys, E. (2025). AmeriFlux FLUXNET-1F CA-ARB Attawapiskat River Bog, Ver. v1.3_r1 (2011-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902821
+Todd, A., & Humphreys, E. (2026). AmeriFlux FLUXNET-1F CA-ARF Attawapiskat River Fen, Ver. v1.3_r1 (2011-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902822
+Garneau, M. (2026). AmeriFlux FLUXNET-1F CA-BOU Bouleau Peatland, Ver. v1.3_r1 (2018-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469435
+Black, T. A. (2025). AmeriFlux FLUXNET-1F CA-Ca1 British Columbia - 1949 Douglas-fir stand, Ver. v1.3_r1 (1997-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007163
+Black, T. A. (2025). AmeriFlux FLUXNET-1F CA-Ca2 British Columbia - Clearcut Douglas-fir stand (harvested winter 1999/2000), Ver. v1.3_r1 (2000-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007164
+Black, T. A. (2026). AmeriFlux FLUXNET-1F CA-Ca3 British Columbia - Pole sapling Douglas-fir stand, Ver. v1.3_r1 (2001-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027312
+Staebler, R. (2026). AmeriFlux FLUXNET-1F CA-Cbo Ontario - Mixed Deciduous, Borden Forest Site, Ver. v1.3_r1 (1996-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1854365
+Papakyriakou, T. (2026). AmeriFlux FLUXNET-1F CA-CF1 Churchill Fen Site 1, Ver. v1.3_r1 (2007-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229375
+Tenuta, M. (2026). AmeriFlux FLUXNET-1F CA-CF2 Churchill Fen Site 2, Ver. v1.3_r1 (2008-2011), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027323
+Arndt, K., & Natali, S. (2026). AmeriFlux FLUXNET-1F CA-CF3 Churchill Fen Site 3, Ver. v1.3_r1 (2022-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027357
+Knox, S. (2025). AmeriFlux FLUXNET-1F CA-DB2 Delta Burns Bog 2, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881564
+Christen, A., & Knox, S. (2025). AmeriFlux FLUXNET-1F CA-DBB Delta Burns Bog, Ver. v1.3_r1 (2015-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881565
+Knox, S. (2025). AmeriFlux FLUXNET-1F CA-DSM Delta Salt Marsh, Ver. v1.3_r1 (2021-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571137
+Badiou, P. (2025). AmeriFlux FLUXNET-1F CA-EM1 Newdale Manitoba, Ver. v1.3_r1 (2021-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469436
+Badiou, P. (2025). AmeriFlux FLUXNET-1F CA-EM2 Shoal Lake Manitoba, Ver. v1.3_r1 (2021-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571141
+McCaughey, H. (2025). AmeriFlux FLUXNET-1F CA-Gro Ontario - Groundhog River, Boreal Mixedwood Forest, Ver. v1.3_r1 (2003-2014), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902823
+Sonnentag, O., & Marsh, P. (2026). AmeriFlux FLUXNET-1F CA-HPC Havikpak Creek, Ver. v1.3_r1 (2018-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469437
+Humphreys, E. (2026). AmeriFlux FLUXNET-1F CA-KLP Kinoje Lake Peatland, Ver. v1.3_r1 (2011-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027324
+Black, T. A. (2026). AmeriFlux FLUXNET-1F CA-LP1 British Columbia - Mountain pine beetle-attacked lodgepole pine stand , Ver. v1.3_r1 (2007-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832155
+Schulze, C., Olefeldt, D., & Sonnentag, O. (2026). AmeriFlux FLUXNET-1F CA-LU1 Steen River, Ver. v1.3_r1 (2020-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027376
+Schulze, C., Olefeldt, D., & Sonnentag, O. (2026). AmeriFlux FLUXNET-1F CA-LU2 Lutose, Ver. v1.3_r1 (2020-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027377
+Amiro, B. (2025). AmeriFlux FLUXNET-1F CA-MA1 Manitoba Agricultural Site 1, Ver. v1.3_r1 (2009-2011), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007165
+Amiro, B. (2025). AmeriFlux FLUXNET-1F CA-MA2 Manitoba Agricultural Site 2, Ver. v1.3_r1 (2009-2011), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007166
+Amiro, B. (2025). AmeriFlux FLUXNET-1F CA-MA3 Manitoba Agricultural Site 3, Ver. v1.3_r1 (2009-2011), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007167
+Amiro, B. (2025). AmeriFlux FLUXNET-1F CA-Man Manitoba - Northern Old Black Spruce (former BOREAS Northern Study Area), Ver. v1.3_r1 (1994-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571101
+Humphreys, E., & Lafleur, P. (2025). AmeriFlux FLUXNET-1F CA-Mer Ontario - Eastern Peatland, Mer Bleue, Ver. v1.3_r1 (1998-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571102
+Arndt, K., & Natali, S. (2026). AmeriFlux FLUXNET-1F CA-Mtk Mittimatalik (Pond Inlet) Tundra, Ver. v1.3_r1 (2024-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571152
+Bourque, C. P.-A. (2026). AmeriFlux FLUXNET-1F CA-Na1 New Brunswick - 1967 Balsam Fir - Nashwaak Lake Site 01 (Mature balsam fir forest), Ver. v1.3_r1 (2003-2005), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027672
+Black, A. T. (2026). AmeriFlux FLUXNET-1F CA-Ojp Saskatchewan - Western Boreal, Mature Jack Pine, Ver. v1.3_r1 (1999-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365260
+Humphreys, E. (2026). AmeriFlux FLUXNET-1F CA-PB1 Polar Bear 1 - Peat Plateau, Ver. v1.3_r1 (2016-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027379
+Humphreys, E. (2026). AmeriFlux FLUXNET-1F CA-PB2 Polar Bear 2 - Fen, Ver. v1.3_r1 (2017-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027380
+Margolis, H. (2025). AmeriFlux FLUXNET-1F CA-Qc2 Quebec - 1975 Harvested Black Spruce (HBS75), Ver. v1.3_r1 (2007-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469438
+Margolis, H. A. (2025). AmeriFlux FLUXNET-1F CA-Qfo Quebec - Eastern Boreal, Mature Black Spruce, Ver. v1.3_r1 (2003-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006960
+Knox, S. (2026). AmeriFlux FLUXNET-1F CA-RBM Richmond Brackish Marsh, Ver. v1.3_r1 (2022-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027354
+Sonnentag, O., & Quinton, W. L. (2025). AmeriFlux FLUXNET-1F CA-SCB Scotty Creek Bog, Ver. v1.3_r1 (2014-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469439
+Sonnentag, O., & Quinton, W. L. (2026). AmeriFlux FLUXNET-1F CA-SCC Scotty Creek Landscape, Ver. v1.3_r1 (2013-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469440
+Amiro, B. (2026). AmeriFlux FLUXNET-1F CA-SF1 Saskatchewan - Western Boreal, forest burned in 1977, Ver. v1.3_r1 (2003-2006), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902831
+Amiro, B. (2026). AmeriFlux FLUXNET-1F CA-SF2 Saskatchewan - Western Boreal, forest burned in 1989, Ver. v1.3_r1 (2001-2005), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006961
+Amiro, B. (2026). AmeriFlux FLUXNET-1F CA-SF3 Saskatchewan - Western Boreal, forest burned in 1998, Ver. v1.3_r1 (2001-2006), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027313
+Barr, A., & Black, A. T. (2026). AmeriFlux FLUXNET-1F CA-SJ2 Saskatchewan - Western Boreal, Jack Pine forest harvested in 2002, Ver. v1.3_r1 (2003-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365261
+Sonnentag, O. (2026). AmeriFlux FLUXNET-1F CA-SMC Smith Creek, Ver. v1.3_r1 (2018-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571111
+Arain, M. A. (2026). AmeriFlux FLUXNET-1F CA-TP1 Ontario - Turkey Point 2002 Plantation White Pine, Ver. v1.3_r1 (2002-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006962
+Arain, M. A. (2026). AmeriFlux FLUXNET-1F CA-TP2 Ontario - Turkey Point 1989 Plantation White Pine, Ver. v1.3_r1 (2002-2007), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365262
+Arain, M. A. (2025). AmeriFlux FLUXNET-1F CA-TP3 Ontario - Turkey Point 1974 Plantation White Pine, Ver. v1.3_r1 (2002-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881566
+Arain, M. A. (2026). AmeriFlux FLUXNET-1F CA-TP4 Ontario - Turkey Point 1939 Plantation White Pine, Ver. v1.3_r1 (2002-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365263
+Arain, M. A. (2026). AmeriFlux FLUXNET-1F CA-TPA Ontario Turkey Point Observatory Agricultural Site, Ver. v1.3_r1 (2020-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027362
+Arain, M. A. (2025). AmeriFlux FLUXNET-1F CA-TPD Ontario - Turkey Point Mature Deciduous, Ver. v1.3_r1 (2012-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881567
+Sonnentag, O., & Marsh, P. (2026). AmeriFlux FLUXNET-1F CA-TVC Trail Valley Creek, Ver. v1.3_r1 (2017-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365267
+Lara, A. (2025). AmeriFlux FLUXNET-1F CL-ACF Alerce Costero Forest, Ver. v1.3_r1 (2018-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571129
+Perez-Quezada, J., & Armesto, J. J. (2025). AmeriFlux FLUXNET-1F CL-SDF Senda Darwin Forest, Ver. v1.3_r1 (2014-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469441
+Perez-Quezada, J., & Armesto, J. J. (2025). AmeriFlux FLUXNET-1F CL-SDP Senda Darwin Peatland, Ver. v1.3_r1 (2014-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571108
+Johnson, M. (2025). AmeriFlux FLUXNET-1F CR-Fsc Filadelfia sugar cane cropland, Ver. v1.3_r1 (2015-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571109
+Yepez, E. A., & Rojas-Robles, N. E. (2026). AmeriFlux FLUXNET-1F MX-Aog Alamos Old-Growth tropical dry forest, Ver. v1.3_r1 (2016-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027343
+Alvarado-Barrientos, Ma. S. (2026). AmeriFlux FLUXNET-1F MX-PMm Puerto Morelos mangrove, Ver. v1.3_r1 (2017-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027673
+Yepez, E. A., & Garatuza, J. (2025). AmeriFlux FLUXNET-1F MX-Tes Tesopaco, secondary tropical dry forest, Ver. v1.3_r1 (2004-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832156
+Roman, T., Griffis, T., Kolka, R., Wayson, C., Lilleskov, E., del Castillo, D., Fachín, L., & Rengifo, J. (2026). AmeriFlux FLUXNET-1F PE-QFR Quistococha Forest Reserve, Ver. v1.3_r1 (2018-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832157
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F PR-xGU NEON Guanica Forest (GUAN), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365270
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F PR-xLA NEON Lajas Experimental Station (LAJA), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3010288
+Sullivan, R., Billesbach, D., Cook, D., & Biraud, S. (2026). AmeriFlux FLUXNET-1F US-A03 ARM-AMF3-Oliktok, Ver. v1.3_r1 (2015-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365269
+Sullivan, R., Billesbach, D., Cook, D., & Biraud, S. (2026). AmeriFlux FLUXNET-1F US-A10 ARM-NSA-Barrow, Ver. v1.3_r1 (2011-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3025776
+Billesbach, D., Kueppers, L., Torn, M., & Biraud, S. (2026). AmeriFlux FLUXNET-1F US-A32 ARM-SGP Medford hay pasture, Ver. v1.3_r1 (2015-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881568
+Sullivan, R., Keeler, E., Kyrouac, J., & Pal, S. (2026). AmeriFlux FLUXNET-1F US-A37 ARM-SGP-Waukomis, Ver. v1.3_r1 (2024-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571154
+Sullivan, R., Billesbach, D., Cook, D., Keeler, E., Kyrouac, J., Biraud, S., & Pal, S. (2026). AmeriFlux FLUXNET-1F US-A39 ARM-SGP-Morrison, Ver. v1.3_r1 (2024-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571116
+Billesbach, D., Kueppers, L., Torn, M., & Biraud, S. (2026). AmeriFlux FLUXNET-1F US-A74 ARM SGP milo field, Ver. v1.3_r1 (2016-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006963
+Bernacchi, C., Boughton, E., DeLucia, E., Sparks, J., & Gomez-Casanovas, N. (2026). AmeriFlux FLUXNET-1F US-ABa Archbold grazed seminative pasture, Ver. v1.3_r1 (2013-2015), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365279
+Bernacchi, C., Boughton, E., DeLucia, E., Sparks, J., & Gomez-Casanovas, N. (2026). AmeriFlux FLUXNET-1F US-ABb Archbold ungrazed seminative pasture, Ver. v1.3_r1 (2013-2015), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365280
+Bernacchi, C., Boughton, E., Sparks, J., & Gomez-Casanovas, N. (2026). AmeriFlux FLUXNET-1F US-ABc Archbold grazed improved pasture, Ver. v1.3_r1 (2013-2015), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365281
+Bernacchi, C., Boughton, E., DeLucia, E., Sparks, J., & Gomez-Casanovas, N. (2026). AmeriFlux FLUXNET-1F US-ABd Archbold ungrazed improved pasture, Ver. v1.3_r1 (2013-2015), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365282
+Bernacchi, C., Boughton, E., DeLucia, E., Sparks, J., & Gomez-Casanovas, N. (2026). AmeriFlux FLUXNET-1F US-ABe Archbold Ungrazed Wetland, Ver. v1.3_r1 (2013-2015), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365278
+Moreo, M. (2026). AmeriFlux FLUXNET-1F US-ADR Amargosa Desert Research Site (ADRS), Ver. v1.3_r1 (2011-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027322
+Leclerc, M. (2026). AmeriFlux FLUXNET-1F US-Akn Savannah River Site, Ver. v1.3_r1 (2011-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469442
+Desai, A., Desai, A., & Olson, B. (2026). AmeriFlux FLUXNET-1F US-ALQ Allequash Creek Site, Ver. v1.3_r1 (2015-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006964
+Billesbach, D., Bradford, J., & Torn, M. (2026). AmeriFlux FLUXNET-1F US-AR1 ARM USDA UNL OSU Woodward Switchgrass 1, Ver. v1.3_r1 (2009-2012), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006965
+Billesbach, D., Bradford, J., & Torn, M. (2026). AmeriFlux FLUXNET-1F US-AR2 ARM USDA UNL OSU Woodward Switchgrass 2, Ver. v1.3_r1 (2009-2012), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006966
+Torn, M. (2026). AmeriFlux FLUXNET-1F US-ARb ARM Southern Great Plains burn site- Lamont, Ver. v1.3_r1 (2005-2006), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006967
+Torn, M. (2026). AmeriFlux FLUXNET-1F US-ARc ARM Southern Great Plains control site- Lamont, Ver. v1.3_r1 (2005-2006), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006968
+Biraud, S., Fischer, M., Chan, S., & Torn, M. (2026). AmeriFlux FLUXNET-1F US-ARM ARM Southern Great Plains site- Lamont, Ver. v1.3_r1 (2003-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1854366
+Anderson, R. G. (2026). AmeriFlux FLUXNET-1F US-ASH USSL San Joaquin Valley Almond High Salinity, Ver. v1.3_r1 (2016-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469443
+Anderson, R. G. (2026). AmeriFlux FLUXNET-1F US-ASM USSL San Joaquin Valley Almond Medium Salinity, Ver. v1.3_r1 (2016-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469444
+Krishnan, P., Kochendorfer, J., & Meyers, T. (2026). AmeriFlux FLUXNET-1F US-Aud Audubon Research Ranch, Ver. v1.3_r1 (2002-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365264
+Richardson, A., & Hollinger, D. (2026). AmeriFlux FLUXNET-1F US-Bar Bartlett Experimental Forest, Ver. v1.3_r1 (2004-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006969
+Rey-Sanchez, C., Wang, C. T., Szutu, D., Shortt, R., Chamberlain, S. D., Verfaillie, J., & Baldocchi, D. (2025). AmeriFlux FLUXNET-1F US-Bi1 Bouldin Island Alfalfa, Ver. v1.3_r1 (2016-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871134
+Rey-Sanchez, C., Wang, C. T., Szutu, D., Hemes, K., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Bi2 Bouldin Island corn, Ver. v1.3_r1 (2017-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871135
+Novick, K. (2026). AmeriFlux FLUXNET-1F US-BRG Bayles Road Grassland Tower, Ver. v1.3_r1 (2017-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006970
+Euskirchen, E. (2026). AmeriFlux FLUXNET-1F US-BZB Bonanza Creek Thermokarst Bog, Ver. v1.3_r1 (2011-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881569
+Euskirchen, E. (2026). AmeriFlux FLUXNET-1F US-BZF Bonanza Creek Rich Fen, Ver. v1.3_r1 (2011-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881570
+Euskirchen, E. (2026). AmeriFlux FLUXNET-1F US-BZo Bonanza Creek Old Thermokarst Bog, Ver. v1.3_r1 (2018-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881571
+Arndt, K., & Natali, S. (2026). AmeriFlux FLUXNET-1F US-CAK Council Alaska Tundra, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571153
+Bowling, D., Kannenberg, S., & Anderegg, W. (2025). AmeriFlux FLUXNET-1F US-CdM Cedar Mesa, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469445
+Skowronski, N. S., Brown, K. C., Patterson, M. M., Cole, J., Ouimette, A., Ruzol, R. A., Gallagher, M. R., & Clark, K. (2026). AmeriFlux FLUXNET-1F US-Ced Cedar Bridge, Ver. v1.3_r1 (2005-2014), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006971
+Phillips, C. L., Russell, E. S., & Huggins, D. (2026). AmeriFlux FLUXNET-1F US-CF1 CAF-LTAR Cook East, Ver. v1.3_r1 (2017-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832158
+Huggins, D. (2026). AmeriFlux FLUXNET-1F US-CF2 CAF-LTAR Cook West, Ver. v1.3_r1 (2017-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881573
+Huggins, D. (2026). AmeriFlux FLUXNET-1F US-CF3 CAF-LTAR Boyd North, Ver. v1.3_r1 (2017-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881574
+Huggins, D. (2026). AmeriFlux FLUXNET-1F US-CF4 CAF-LTAR Boyd South, Ver. v1.3_r1 (2017-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881575
+Oikawa, P., & Fenster, T. (2026). AmeriFlux FLUXNET-1F US-CGG Concord Grazed Grassland, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469446
+Cely-Toro, I. M., Krishnan, P., Saylor, R., Kochendorfer, J., & Meyers, T. (2026). AmeriFlux FLUXNET-1F US-ChR Chestnut Ridge, Ver. v1.3_r1 (2006-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027315
+Davis, K. J. (2026). AmeriFlux FLUXNET-1F US-CLF Cole Farm, Ver. v1.3_r1 (2017-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027355
+Miyata, A., & Harazono, Y. (2026). AmeriFlux FLUXNET-1F US-Cms Central Marsh, Ver. v1.3_r1 (1999-2005), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571114
+Scott, R. (2026). AmeriFlux FLUXNET-1F US-CMW Charleston Mesquite Woodland, Ver. v1.3_r1 (2001-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3028957
+Bowling, D. (2026). AmeriFlux FLUXNET-1F US-Cop Corral Pocket, Ver. v1.3_r1 (2001-2007), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006972
+Noormets, A., Baniya, B., Kim, D., Dong, J., & Nkrumah, M. (2026). AmeriFlux FLUXNET-1F US-CRK Davy Crockett National Forest, Ver. v1.3_r1 (2022-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571140
+Chen, J., & Chu, H. (2026). AmeriFlux FLUXNET-1F US-CRT Curtice Walter-Berger cropland, Ver. v1.3_r1 (2011-2013), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006974
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-CS1 Central Sands Irrigated Agricultural Field, Ver. v1.3_r1 (2018-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881576
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-CS2 Tri county school Pine Forest, Ver. v1.3_r1 (2018-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881577
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-CS3 Central Sands Irrigated Agricultural Field, Ver. v1.3_r1 (2019-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881578
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-CS4 Central Sands Irrigated Agricultural Field, Ver. v1.3_r1 (2020-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881579
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-CS5 Central Sands Irrigated Agricultural Field, Ver. v1.3_r1 (2021-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469447
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-CS6 Central Sands Irrigated Agricultural Field, Ver. v1.3_r1 (2022-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469448
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-CS8 Central Sands Irrigated Agricultural Field, Ver. v1.3_r1 (2023-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469449
+Novick, K. (2026). AmeriFlux FLUXNET-1F US-Cst Crossett Experimental Forest, Ver. v1.3_r1 (2013-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469450
+Oishi, A. C. (2026). AmeriFlux FLUXNET-1F US-Cwt Coweeta, Ver. v1.3_r1 (2011-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027331
+Duff, A., & Desai, A. (2026). AmeriFlux FLUXNET-1F US-DFC US Dairy Forage Research Center, Prairie du Sac, Ver. v1.3_r1 (2018-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2006975
+Duff, A., Desai, A., & Risso, V. P. (2026). AmeriFlux FLUXNET-1F US-DFK Dairy Forage Research Center - Kernza, Ver. v1.3_r1 (2018-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571122
+Clark, K., Skowronski, N. S., Brown, K. C., & Gallagher, M. R. (2026). AmeriFlux FLUXNET-1F US-Dix Fort Dix, Ver. v1.3_r1 (2005-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007168
+Oishi, C., Novick, K., & Stoy, P. (2026). AmeriFlux FLUXNET-1F US-Dk1 Duke Forest-open field, Ver. v1.3_r1 (2001-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027316
+Oishi, C., Novick, K., & Stoy, P. (2026). AmeriFlux FLUXNET-1F US-Dk2 Duke Forest-hardwoods, Ver. v1.3_r1 (2001-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027317
+Oishi, C., Novick, K., & Stoy, P. (2026). AmeriFlux FLUXNET-1F US-Dk3 Duke Forest - loblolly pine, Ver. v1.3_r1 (2001-2008), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027318
+Arias-Ortiz, A., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Dmg Dutch Slough Marsh Gilbert Tract, Ver. v1.3_r1 (2021-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469451
+Hinkle, C. R., & Bracho, R. (2026). AmeriFlux FLUXNET-1F US-DPW Disney Wilderness Preserve Wetland, Ver. v1.3_r1 (2013-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571121
+Christen, N. (2026). AmeriFlux FLUXNET-1F US-DS1 Staten Corn 1, Ver. v1.3_r1 (2018-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571132
+Deverel, S. (2026). AmeriFlux FLUXNET-1F US-DS2 Staten Corn 2, Ver. v1.3_r1 (2020-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571148
+Schuppenhauer, M. R., Biraud, S. C., Deverel, S., & Chan, S. (2026). AmeriFlux FLUXNET-1F US-DS3 Staten Rice 1, Ver. v1.3_r1 (2021-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229376
+McKinney, T. (2026). AmeriFlux FLUXNET-1F US-EA4 EAA Field Research Park Woodland, Ver. v1.3_r1 (2021-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027353
+McKinney, T. (2026). AmeriFlux FLUXNET-1F US-EA5 Uvalde Ranch Mesquite Woodland, Ver. v1.3_r1 (2021-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571138
+Fleck, P. (2026). AmeriFlux FLUXNET-1F US-EA6 Camp Wood Shield Ranch Oak Savannah, Ver. v1.3_r1 (2023-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571142
+Oikawa, P. (2026). AmeriFlux FLUXNET-1F US-EDN Eden Landing Ecological Reserve, Ver. v1.3_r1 (2018-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832159
+Paytan, A. (2026). AmeriFlux FLUXNET-1F US-EKH Elkhorn Slough Hester Marsh, Ver. v1.3_r1 (2022-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027348
+Paytan, A. (2026). AmeriFlux FLUXNET-1F US-EKN Elkhorn Slough North Marsh, Ver. v1.3_r1 (2023-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027358
+Paytan, A. (2026). AmeriFlux FLUXNET-1F US-EKP Elkhorn Slough Porter Marsh, Ver. v1.3_r1 (2022-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027349
+Starr, G., & Oberbauer, S. (2026). AmeriFlux FLUXNET-1F US-Elm Everglades (long hydroperiod marsh), Ver. v1.3_r1 (2008-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007169
+Bracho, R., Celis, G., Rodenhizer, H., See, C., & Schuur, E. A. (2026). AmeriFlux FLUXNET-1F US-EML Eight Mile Lake Permafrost thaw gradient, Healy Alaska., Ver. v1.3_r1 (2008-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007170
+Starr, G., & Oberbauer, S. (2026). AmeriFlux FLUXNET-1F US-Esm Everglades (short hydroperiod marsh), Ver. v1.3_r1 (2008-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007171
+Starr, G., & Oberbuer, S. F. (2026). AmeriFlux FLUXNET-1F US-EvM Everglades Saltwater intrusion marsh, Ver. v1.3_r1 (2020-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571136
+Ueyama, M., Iwata, H., & Harazono, Y. (2026). AmeriFlux FLUXNET-1F US-Fcr Cascaden Ridge Fire Scar, Ver. v1.3_r1 (2011-2014), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007172
+Dore, S., & Kolb, T. (2026). AmeriFlux FLUXNET-1F US-Fmf Flagstaff - Managed Forest, Ver. v1.3_r1 (2005-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007173
+Krishnan, P., Kochendorfer, J., & Heuer, M. (2026). AmeriFlux FLUXNET-1F US-Fo1 Flux Observations of Carbon from an Airborne Laboratory (FOCAL) Campaign Site 1, Ver. v1.3_r1 (2013-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027356
+Krishnan, P., & Heuer, M. (2026). AmeriFlux FLUXNET-1F US-Fo2 Flux Observations of Carbon from an Airborne Laboratory (FOCAL) Campaign Site 2, Ver. v1.3_r1 (2023-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365273
+Dore, S., & Kolb, T. (2026). AmeriFlux FLUXNET-1F US-Fuf Flagstaff - Unmanaged Forest, Ver. v1.3_r1 (2005-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007174
+Dore, S., & Kolb, T. (2026). AmeriFlux FLUXNET-1F US-Fwf Flagstaff - Wildfire, Ver. v1.3_r1 (2005-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469452
+Frank, J., Valentine, G., & Massman, B. (2026). AmeriFlux FLUXNET-1F US-GLE GLEES, Ver. v1.3_r1 (2005-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871136
+Munger, J. W., Urbanski, S., Golden, M., Barford, C., Matthes, J., & Wofsy, S. (2026). AmeriFlux FLUXNET-1F US-Ha1 Harvard Forest EMS Tower (HFR1), Ver. v1.3_r1 (1991-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871137
+Schermaier, D., Forsythe, J. D., Kline, M. A., & O'Halloran, T. L. (2026). AmeriFlux FLUXNET-1F US-HB1 North Inlet Crab Haul Creek, Ver. v1.3_r1 (2018-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832160
+Forsythe, J. D., Kline, M. A., & O'Halloran, T. L. (2026). AmeriFlux FLUXNET-1F US-HB2 Hobcaw Barony Mature Longleaf Pine, Ver. v1.3_r1 (2018-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229377
+Forsythe, J. D., Kline, M. A., & O'Halloran, T. L. (2026). AmeriFlux FLUXNET-1F US-HB3 Hobcaw Barony Longleaf Pine Restoration, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229378
+O'Halloran, T. (2026). AmeriFlux FLUXNET-1F US-HB4 Minim Creek Brackish Impoundment, Ver. v1.3_r1 (2020-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571130
+Kelsey, E., & Green, M. (2026). AmeriFlux FLUXNET-1F US-HBK Hubbard Brook Experimental Forest, Ver. v1.3_r1 (2016-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027326
+Liu, H., Huang, M., & Chen, X. (2026). AmeriFlux FLUXNET-1F US-Hn2 Hanford 100H grassland, Ver. v1.3_r1 (2015-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902832
+Liu, H., Huang, M., & Chen, X. (2026). AmeriFlux FLUXNET-1F US-Hn3 Hanford 100H sagebrush, Ver. v1.3_r1 (2017-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881580
+Ouimette, A., & Ruzol, R. (2026). AmeriFlux FLUXNET-1F US-Ho2 Howland Forest (west tower), Ver. v1.3_r1 (1999-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881581
+Ouimette, A., & Ruzol, R. (2026). AmeriFlux FLUXNET-1F US-Ho3 Howland Forest (harvest site), Ver. v1.3_r1 (2003-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365265
+Runkle, B. R. K. (2026). AmeriFlux FLUXNET-1F US-HRA Humnoke Farm Rice Field – Field A, Ver. v1.3_r1 (2015-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027341
+Reba, M. L. (2026). AmeriFlux FLUXNET-1F US-HRC Humnoke Farm Rice Field – Field C, Ver. v1.3_r1 (2015-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027321
+Delwiche, K., Arias-Ortiz, A., Szutu, D., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Hsm Hill Slough Marsh, Ver. v1.3_r1 (2021-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571131
+Miyata, A., & Harazono, Y. (2026). AmeriFlux FLUXNET-1F US-HVs Happy Valley Wet Sedge Tundra, Ver. v1.3_r1 (1995-1995), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571115
+Goslee, S. (2026). AmeriFlux FLUXNET-1F US-HWB USDA ARS Pasture Sytems and Watershed Management Research Unit- Hawbecker Site, Ver. v1.3_r1 (2015-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881582
+Guler Aslan Sungur (Rojda), & Andy, V. (2026). AmeriFlux FLUXNET-1F US-IAB Iowa State University NE tower, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027372
+Guler Aslan Sungur (Rojda), & Andy, V. (2026). AmeriFlux FLUXNET-1F US-IAC Iowa State University SE tower, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027373
+Guler Aslan Sungur (Rojda), & Andy, V. (2026). AmeriFlux FLUXNET-1F US-IAM Iowa State University Miscanthus, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027366
+Euskirchen, E., Shaver, G., & Bret-Harte, S. (2026). AmeriFlux FLUXNET-1F US-ICh Imnavait Creek Watershed Heath Tundra, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2007175
+Euskirchen, E., Shaver, G., & Bret-Harte, S. (2026). AmeriFlux FLUXNET-1F US-ICs Imnavait Creek Watershed Wet Sedge Tundra, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871138
+Euskirchen, E., Shaver, G., & Bret-Harte, S. (2026). AmeriFlux FLUXNET-1F US-ICt Imnavait Creek Watershed Tussock Tundra, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881583
+Tweedie, C. (2026). AmeriFlux FLUXNET-1F US-Jo1 Jornada Experimental Range Bajada Site, Ver. v1.3_r1 (2010-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902833
+Vivoni, E. R., & Perez-Ruiz, E. R. (2026). AmeriFlux FLUXNET-1F US-Jo2 Jornada Experimental Range Mixed Shrubland, Ver. v1.3_r1 (2010-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881584
+Brunsell, N. (2026). AmeriFlux FLUXNET-1F US-KFS Kansas Field Station, Ver. v1.3_r1 (2007-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881585
+Brunsell, N. (2026). AmeriFlux FLUXNET-1F US-KLS Kansas Land Institute, Ver. v1.3_r1 (2012-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1854367
+Brunsell, N. (2026). AmeriFlux FLUXNET-1F US-Kon Konza Prairie LTER (KNZ), Ver. v1.3_r1 (2004-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2316062
+Sullivan, P. (2026). AmeriFlux FLUXNET-1F US-KPL Lily Lake Fen, Ver. v1.3_r1 (2021-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571133
+Drake, B., Hinkle, R., Bracho, R., Powell, T., & Dore, S. (2026). AmeriFlux FLUXNET-1F US-KS1 Kennedy Space Center (slash pine), Ver. v1.3_r1 (2002-2003), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229379
+Drake, B., Hinkle, R., Bracho, R., Dore, S., & Powell, T. (2026). AmeriFlux FLUXNET-1F US-KS2 Kennedy Space Center (scrub oak), Ver. v1.3_r1 (2003-2006), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229380
+Bracho, R., & Hinkle, C. R. (2026). AmeriFlux FLUXNET-1F US-KS3 Kennedy Space Center (salt marsh), Ver. v1.3_r1 (2018-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881586
+Ward, E., Merino, S., Stagg, C., & Krauss, K. (2026). AmeriFlux FLUXNET-1F US-LA2 Salvador WMA Freshwater Marsh, Ver. v1.3_r1 (2011-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027332
+Ward, E., Merino, S., Stagg, C., & Krauss, K. (2026). AmeriFlux FLUXNET-1F US-LA3 Barataria Bay Saline Marsh, Ver. v1.3_r1 (2019-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571117
+Fares, S. (2026). AmeriFlux FLUXNET-1F US-Lin Lindcove Orange Orchard, Ver. v1.3_r1 (2009-2010), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229381
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-Los Lost Creek, Ver. v1.3_r1 (2000-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027319
+Scott, R. (2026). AmeriFlux FLUXNET-1F US-LS1 San Pedro River Lewis Springs Sacaton Grassland, Ver. v1.3_r1 (2003-2007), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027342
+Scott, R. (2026). AmeriFlux FLUXNET-1F US-LS2 San Pedro River Lewis Springs Savanna, Ver. v1.3_r1 (2003-2007), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204870
+Roman, T., Hill, A. C., Kolka, R., Griffis, T., & Deventer, J. (2026). AmeriFlux FLUXNET-1F US-MBP Marcell Bog Lake Peatland, Ver. v1.3_r1 (2009-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027340
+Law, B. (2026). AmeriFlux FLUXNET-1F US-Me1 Metolius - Eyerly burn, Ver. v1.3_r1 (2004-2005), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902834
+Law, B. (2026). AmeriFlux FLUXNET-1F US-Me3 Metolius-second young aged pine, Ver. v1.3_r1 (2004-2009), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902835
+Law, B. (2026). AmeriFlux FLUXNET-1F US-Me5 Metolius-first young aged pine, Ver. v1.3_r1 (2000-2002), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365266
+Hanson, C., Still, C., & Law, B. (2026). AmeriFlux FLUXNET-1F US-Me6 Metolius Young Pine Burn, Ver. v1.3_r1 (2010-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204871
+Hanson, C., & Still, C. (2026). AmeriFlux FLUXNET-1F US-Me7 Metolius Low Burn Severity Subcanopy, Ver. v1.3_r1 (2022-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027360
+Frank, J., & Valentine, G. (2026). AmeriFlux FLUXNET-1F US-MEF Manitou Experimental Forest, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027364
+Novick, K., & Phillips, R. (2026). AmeriFlux FLUXNET-1F US-MMS Morgan Monroe State Forest, Ver. v1.3_r1 (1999-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1854369
+Helseth, C., & Johnson, J. (2026). AmeriFlux FLUXNET-1F US-MN1 Morris: Corn-Soybean with Cover Crops, Strip Tillage, Ver. v1.3_r1 (2017-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571145
+Helseth, C., & Johnson, J. (2026). AmeriFlux FLUXNET-1F US-MN2 Morris: Corn-Soybean-Wheat with Cover Crops, Minimal Tillage, Ver. v1.3_r1 (2017-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571146
+Helseth, C., & Johnson, J. (2026). AmeriFlux FLUXNET-1F US-MN3 Morris: Corn-Soybean, Conventional Tillage, Ver. v1.3_r1 (2020-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571147
+Schreiner-McGraw, A. (2026). AmeriFlux FLUXNET-1F US-Mo1 LTAR CMRB Field 1 (CMRB ASP), Ver. v1.3_r1 (2015-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229382
+Schreiner-McGraw, A. (2026). AmeriFlux FLUXNET-1F US-Mo2 LTAR CMRB Tucker Prairie (CMRB TP), Ver. v1.3_r1 (2018-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229383
+Schreiner-McGraw, A. (2026). AmeriFlux FLUXNET-1F US-Mo3 LTAR CMRB Field 3 (CMRB BAU), Ver. v1.3_r1 (2016-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229384
+Wood, J., & Gu, L. (2026). AmeriFlux FLUXNET-1F US-MOz Missouri Ozark Site, Ver. v1.3_r1 (2004-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1854370
+Litvak, M. (2026). AmeriFlux FLUXNET-1F US-Mpj Mountainair Pinyon-Juniper Woodland, Ver. v1.3_r1 (2008-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832161
+Barron-Gafford, G. (2026). AmeriFlux FLUXNET-1F US-MtB Mt Bigelow, Ver. v1.3_r1 (2009-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571103
+Matthes, J. H., Sturtevant, C., Oikawa, P., Chamberlain, S. D., Szutu, D., Arias-Ortiz, A., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Myb Mayberry Wetland, Ver. v1.3_r1 (2010-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871139
+Morin, T. (2026). AmeriFlux FLUXNET-1F US-MZA Hidden Marsh, Montezuma NWR, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027375
+Noormets, A., Sun, G., Gavazzi, M., McNulty, S., Domec, J., & King, J. (2026). AmeriFlux FLUXNET-1F US-NC1 NC_Clearcut, Ver. v1.3_r1 (2005-2012), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902836
+Noormets, A., Sun, G., Gavazzi, M., Domec, J., McNulty, S., Miao, G., Aguilos, M., Mitra, B., Minick, K., King, J., Baniya, B., Dong, J., Yang, L., Belgado, M. L., & Prajapati, P. (2026). AmeriFlux FLUXNET-1F US-NC2 NC_Loblolly Plantation, Ver. v1.3_r1 (2005-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027320
+Noormets, A., Gavazzi, M., Aguilos, M., King, J., Mitra, B., & Domec, J. (2026). AmeriFlux FLUXNET-1F US-NC3 NC_Clearcut#3, Ver. v1.3_r1 (2013-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204872
+Noormets, A., King, J., Mitra, B., Miao, G., Aguilos, M., Minick, K., Prajapati, P., Domec, J., Baniya, B., Dong, J., & Belgado, M. L. (2026). AmeriFlux FLUXNET-1F US-NC4 NC_AlligatorRiver, Ver. v1.3_r1 (2009-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902837
+Sun, G., King, J., Boggs, J., & Aguilos, M. (2026). AmeriFlux FLUXNET-1F US-NC5 NC Butner Farm, Ver. v1.3_r1 (2025-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365277
+Suyker, A. (2026). AmeriFlux FLUXNET-1F US-Ne1 Mead - irrigated continuous maize site, Ver. v1.3_r1 (2001-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871140
+Suyker, A. (2026). AmeriFlux FLUXNET-1F US-Ne2 Mead - irrigated maize-soybean rotation site, Ver. v1.3_r1 (2001-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2574638
+Suyker, A. (2026). AmeriFlux FLUXNET-1F US-Ne3 Mead - rainfed maize-soybean rotation site, Ver. v1.3_r1 (2001-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3028954
+Torn, M., & Dengel, S. (2026). AmeriFlux FLUXNET-1F US-NGB NGEE Arctic Barrow, Ver. v1.3_r1 (2012-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832162
+Torn, M., & Dengel, S. (2026). AmeriFlux FLUXNET-1F US-NGC NGEE Arctic Council, Ver. v1.3_r1 (2017-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1902838
+Blanken, P. D., Monson, R. K., Burns, S. P., Bowling, D. R., Turnipseed, A. A., & Knowles, J. F. (2026). AmeriFlux FLUXNET-1F US-NR1 Niwot Ridge Forest (LTER NWT1), Ver. v1.3_r1 (1998-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871141
+Knowles, J. (2026). AmeriFlux FLUXNET-1F US-NR3 Niwot Ridge Alpine (T-Van West), Ver. v1.3_r1 (2007-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365271
+Davis, K. (2026). AmeriFlux FLUXNET-1F US-NSa NASA HAQ - SJV East Irrigated Vineyard, Ver. v1.3_r1 (2023-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027367
+Davis, K. (2026). AmeriFlux FLUXNET-1F US-NSb NASA HAQ - SJV West Irrigated Cotton, Ver. v1.3_r1 (2023-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027368
+Chen, J., Chu, H., & Noormets, A. (2026). AmeriFlux FLUXNET-1F US-Oho Oak Openings, Ver. v1.3_r1 (2004-2013), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229385
+Silveira, M. L., & Bracho, R. (2025). AmeriFlux FLUXNET-1F US-ONA Florida pine flatwoods, Ver. v1.3_r1 (2016-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832163
+Alfieri, J. (2026). AmeriFlux FLUXNET-1F US-OPE Optimizing Production Inputs for Economic and Environmental Enhancement (OPE3), Ver. v1.3_r1 (2022-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027345
+Bohrer, G., & McMurray, S. E. (2026). AmeriFlux FLUXNET-1F US-OWC Old Woman Creek, Ver. v1.3_r1 (2015-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871142
+Bracho, R., & Silveira, M. L. (2026). AmeriFlux FLUXNET-1F US-PAS Florida, Paspalum notatum pasture, Ver. v1.3_r1 (2021-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571135
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFb NW1 Pine-1 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469454
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFc NW2 Aspen-1 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469455
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFd NW3 Tussock-1 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469456
+Desai, A., Butterworth, B., Thom, J., & Stoy, P. (2026). AmeriFlux FLUXNET-1F US-PFf NW5 Grass-1 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027335
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFg NE1 Pine-2 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571124
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFh NE2 Pine-3 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571125
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFi NE3 Hardwood-1 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571126
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFj NE4 Maple-1 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571127
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFk SW1 Aspen-2 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469457
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFL SW2 Aspen-3 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469458
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFm SW3 Hardwood-2 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469459
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFn SW4 Hardwood-3 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469460
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFp SE2 Hardwood-4 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469461
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFq SE3 Aspen-4 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469462
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFr SE4 Tussock-2 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571128
+Desai, A., Butterworth, B., & Oncley, S. (2026). AmeriFlux FLUXNET-1F US-PFt SE6 Pine-4 CHEESEHEAD 2019, Ver. v1.3_r1 (2019-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469463
+Forbrich, I. (2026). AmeriFlux FLUXNET-1F US-PLo Plum Island Oligohaline Marsh, Ver. v1.3_r1 (2022-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027350
+Iwahana, G., Kobayashi, H., Ikawa, H., & Suzuki, R. (2026). AmeriFlux FLUXNET-1F US-Prr Poker Flat Research Range Black Spruce Forest, Ver. v1.3_r1 (2010-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571106
+Anderson, R. G. (2026). AmeriFlux FLUXNET-1F US-PSH USSL San Joaquin Valley Pistachio High, Ver. v1.3_r1 (2016-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469464
+Anderson, R. G. (2026). AmeriFlux FLUXNET-1F US-PSL USSL San Joaquin Valley Pistachio Low, Ver. v1.3_r1 (2016-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469465
+Chi, J., Lamb, B., & Pressley, S. (2026). AmeriFlux FLUXNET-1F US-RC1 Cook Agronomy Farm - No Till, Ver. v1.3_r1 (2011-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027328
+Chi, J., Lamb, B., & Pressley, S. (2026). AmeriFlux FLUXNET-1F US-RC2 Cook Agronomy Farm - Conventional Till, Ver. v1.3_r1 (2012-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027327
+Chi, J., Lamb, B., & Pressley, S. (2026). AmeriFlux FLUXNET-1F US-RC3 WSU Lind Dryland Research Station, Ver. v1.3_r1 (2012-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365268
+Chi, J., Lamb, B., & Pressley, S. (2026). AmeriFlux FLUXNET-1F US-RC4 Moscow Mountain on-farm site, Ver. v1.3_r1 (2012-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027329
+Chi, J., Lamb, B., & Pressley, S. (2026). AmeriFlux FLUXNET-1F US-RC5 Moses Lake on-farm site, Ver. v1.3_r1 (2013-2015), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027330
+Schuppenhauer, M. R., Biraud, S. C., & Chan, S. (2026). AmeriFlux FLUXNET-1F US-RGA Arkansas Corn Farm, Ver. v1.3_r1 (2021-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204873
+Schuppenhauer, M., Biraud, S. C., & Chan, S. (2026). AmeriFlux FLUXNET-1F US-RGB Butte County Rice Farm, Ver. v1.3_r1 (2021-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204874
+Schuppenhauer, M. R., Biraud, S. C., & Chan, S. (2026). AmeriFlux FLUXNET-1F US-RGF Stanislaus County Forage Farm, Ver. v1.3_r1 (2023-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469466
+Schuppenhauer, M. R., Biraud, S. C., & Chan, S. (2026). AmeriFlux FLUXNET-1F US-RGo Glenn County Organic Rice Farm, Ver. v1.3_r1 (2021-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204875
+Schuppenhauer, M. R., Biraud, S. C., & Chan, S. (2026). AmeriFlux FLUXNET-1F US-RGW Desha County Rice Farm, Ver. v1.3_r1 (2022-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469467
+Flerchinger, G. (2026). AmeriFlux FLUXNET-1F US-Rls RCEW Low Sagebrush, Ver. v1.3_r1 (2014-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229387
+Flerchinger, G. (2026). AmeriFlux FLUXNET-1F US-Rms RCEW Mountain Big Sagebrush, Ver. v1.3_r1 (2014-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881587
+Baker, J., Griffis, T., & Griffis, T. (2026). AmeriFlux FLUXNET-1F US-Ro1 Rosemount- G21, Ver. v1.3_r1 (2004-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881588
+Baker, J., & Griffis, T. (2026). AmeriFlux FLUXNET-1F US-Ro2 Rosemount- C7, Ver. v1.3_r1 (2008-2016), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204876
+Baker, J., & Griffis, T. (2026). AmeriFlux FLUXNET-1F US-Ro3 Rosemount- G19, Ver. v1.3_r1 (2004-2007), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469468
+Baker, J., & Griffis, T. (2026). AmeriFlux FLUXNET-1F US-Ro4 Rosemount Prairie, Ver. v1.3_r1 (2014-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881589
+Baker, J., & Griffis, T. (2025). AmeriFlux FLUXNET-1F US-Ro5 Rosemount I18_South, Ver. v1.3_r1 (2017-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1818371
+Baker, J., & Griffis, T. (2025). AmeriFlux FLUXNET-1F US-Ro6 Rosemount I18_North, Ver. v1.3_r1 (2017-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881590
+Ueyama, M., Iwata, H., & Harazono, Y. (2026). AmeriFlux FLUXNET-1F US-Rpf Poker Flat Research Range: Succession from fire scar to deciduous forest, Ver. v1.3_r1 (2008-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229388
+Haber, L., & Poppe, K. (2025). AmeriFlux FLUXNET-1F US-RRC Rice Rivers Center Marsh, Ver. v1.3_r1 (2022-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469469
+Flerchinger, G., & Reba, M. L. (2026). AmeriFlux FLUXNET-1F US-Rwe RCEW Reynolds Mountain East, Ver. v1.3_r1 (2003-2007), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871143
+Flerchinger, G. (2026). AmeriFlux FLUXNET-1F US-Rwf RCEW Upper Sheep Prescibed Fire, Ver. v1.3_r1 (2014-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881591
+Flerchinger, G. (2026). AmeriFlux FLUXNET-1F US-Rws Reynolds Creek Wyoming big sagebrush, Ver. v1.3_r1 (2014-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881592
+Miyata, A., & Harazono, Y. (2026). AmeriFlux FLUXNET-1F US-Sag Sag River, Ver. v1.3_r1 (1996-1996), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571113
+Key, K., & Novick, K. (2026). AmeriFlux FLUXNET-1F US-SD1 Shatto Ditch Paired Cropland - Site 1 (Corn/Soy; No Cover Crops), Ver. v1.3_r1 (2023-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027381
+Key, K., & Novick, K. (2026). AmeriFlux FLUXNET-1F US-SD2 Shatto Ditch Paired Cropland - Site 2 (Corn/Soy; Cover Crops), Ver. v1.3_r1 (2023-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027382
+Litvak, M. (2026). AmeriFlux FLUXNET-1F US-Seg Sevilleta grassland, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1984572
+Litvak, M. (2026). AmeriFlux FLUXNET-1F US-Ses Sevilleta shrubland, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1984573
+Wolf, S. (2026). AmeriFlux FLUXNET-1F US-SHC Sagehen Creek Field Station, Ver. v1.3_r1 (2017-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571110
+Clark, K., Skowronski, N. S., Brown, K. C., Patterson, M. M., Cole, J., Ouimette, A., Ruzol, R. A., & Gallagher, M. R. (2026). AmeriFlux FLUXNET-1F US-Slt Silas Little- New Jersey, Ver. v1.3_r1 (2005-2022), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571104
+Shortt, R., Hemes, K., Szutu, D., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Sne Sherman Island Restored Wetland, Ver. v1.3_r1 (2016-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871144
+Kusak, K., Sanchez, C. R., Szutu, D., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Snf Sherman Barn, Ver. v1.3_r1 (2018-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1854371
+Bracho, R., & Martin, T. A. (2026). AmeriFlux FLUXNET-1F US-SP1 Slashpine-Austin Cary- 65yrs nat regen, Ver. v1.3_r1 (2000-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469470
+Kurc, S. (2026). AmeriFlux FLUXNET-1F US-SRC Santa Rita Creosote, Ver. v1.3_r1 (2008-2014), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871145
+Scott, R. (2026). AmeriFlux FLUXNET-1F US-SRG Santa Rita Grassland, Ver. v1.3_r1 (2008-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204877
+Scott, R. (2026). AmeriFlux FLUXNET-1F US-SRM Santa Rita Mesquite, Ver. v1.3_r1 (2004-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2475756
+Bergamaschi, B., & Windham-Myers, L. (2026). AmeriFlux FLUXNET-1F US-Srr Suisun marsh - Rush Ranch, Ver. v1.3_r1 (2014-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229389
+Vivoni, E. R., & Perez-Ruiz, E. R. (2026). AmeriFlux FLUXNET-1F US-SRS Santa Rita Savanna, Ver. v1.3_r1 (2011-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204878
+Forsythe, B. R., Horne, J., & Davis, K. J. (2026). AmeriFlux FLUXNET-1F US-SSH Susquehanna Shale Hills Critical Zone Observatory, Ver. v1.3_r1 (2016-2021), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469471
+Ewers, B., & Pendall, E. (2026). AmeriFlux FLUXNET-1F US-Sta Saratoga, Ver. v1.3_r1 (2005-2009), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571107
+Vargas, R. (2026). AmeriFlux FLUXNET-1F US-StJ St Jones Reserve, Ver. v1.3_r1 (2015-2020), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229390
+Desai, A. (2026). AmeriFlux FLUXNET-1F US-Syv Sylvania Wilderness Area, Ver. v1.3_r1 (2001-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204879
+Malone, S., & Troxler, T. (2026). AmeriFlux FLUXNET-1F US-TaS Taylor Slough/Panhandle, Ver. v1.3_r1 (2017-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365274
+Bret-Harte, S. (2026). AmeriFlux FLUXNET-1F US-TKs Toolik Shrub Tundra, Ver. v1.3_r1 (2018-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027378
+Rey-Sanchez, C. (2026). AmeriFlux FLUXNET-1F US-TLR Timberlake Observatory for Wetland Restoration (TOWeR), Ver. v1.3_r1 (2024-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027363
+Ma, S., Xu, L., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Ton Tonzi Ranch, Ver. v1.3_r1 (2001-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204880
+Valach, A., Shortt, R., Szutu, D., Eichelmann, E., Knox, S., Hemes, K., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Tw1 Twitchell Wetland West Pond, Ver. v1.3_r1 (2011-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1832165
+Sturtevant, C., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Tw2 Twitchell Corn, Ver. v1.3_r1 (2012-2013), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881593
+Chamberlain, S. D., Oikawa, P., Sturtevant, C., Szutu, D., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Tw3 Twitchell Alfalfa, Ver. v1.3_r1 (2013-2018), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881594
+Eichelmann, E., Shortt, R., Knox, S., Sanchez, C. R., Valach, A., Sturtevant, C., Szutu, D., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Tw4 Twitchell East End Wetland, Ver. v1.3_r1 (2013-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2204881
+Valach, A., Kasak, K., Szutu, D., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Tw5 East Pond Wetland, Ver. v1.3_r1 (2018-2019), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881595
+Knox, S., Matthes, J. H., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Twt Twitchell Island, Ver. v1.3_r1 (2009-2017), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571105
+Ueyama, M., Iwata, H., & Harazono, Y. (2026). AmeriFlux FLUXNET-1F US-Uaf University of Alaska, Fairbanks, Ver. v1.3_r1 (2003-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027325
+Goslee, S. (2026). AmeriFlux FLUXNET-1F US-UC1 LTAR UCB (Upper Chesapeake Bay) EC1, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469472
+Goslee, S. (2026). AmeriFlux FLUXNET-1F US-UC2 LTAR UCB (Upper Chesapeake Bay) EC2, Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469473
+Bernacchi, C., Blakely, B., Moore, C., & Pederson, T. (2026). AmeriFlux FLUXNET-1F US-UiA University of Illinois Switchgrass, Ver. v1.3_r1 (2008-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027336
+Bernacchi, C. J., Blakely, B., Moore, C., & Pederson, T. (2026). AmeriFlux FLUXNET-1F US-UiB University of Illinois Miscanthus, Ver. v1.3_r1 (2008-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027337
+Bernacchi, C. J., Blakely, B., Moore, C., & Pederson, T. (2026). AmeriFlux FLUXNET-1F US-UiC University of Illinois Maize-Soy, Ver. v1.3_r1 (2008-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027338
+Bernacchi, C., Blakely, B., Moore, C., & Pederson, T. (2026). AmeriFlux FLUXNET-1F US-UiD University of Illinois Restored Native Prairie, Ver. v1.3_r1 (2008-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027339
+Bernacchi, C. J. (2026). AmeriFlux FLUXNET-1F US-UiE University of Illinois Sorghum-Soy, Ver. v1.3_r1 (2018-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027347
+Bernacchi, C. J. (2026). AmeriFlux FLUXNET-1F US-UiF University of Illinois Miscanthus 2, Ver. v1.3_r1 (2018-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027351
+Bernacchi, C. J. (2026). AmeriFlux FLUXNET-1F US-UiG University of Illinois Maize-Soy 2, Ver. v1.3_r1 (2018-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027352
+Bohrer, G., Gough, C., Classen, A., Lenters, J., & Curtis, P. (2026). AmeriFlux FLUXNET-1F US-UMd UMBS Disturbance, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881597
+Ladig, K., & Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTB UFLUX Bonneville Salt Flats, Ver. v1.3_r1 (2021-2023), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469474
+Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTD UFLUX Dugout Ranch, Ver. v1.3_r1 (2023-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571139
+Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTE UFLUX Escalante, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571151
+Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTJ UFLUX Bluff, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571150
+Menuz, D., & Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTL UFLUX Pelican Lake, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365276
+Ladig, K., & Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTM UFLUX Matheson, Ver. v1.3_r1 (2022-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3365272
+Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTP UFLUX Great Salt Lake Phragmites, Ver. v1.3_r1 (2024-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571149
+Ladig, K., & Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTV UFLUX Desert View, Ver. v1.3_r1 (2023-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571143
+Ladig, K., & Inkenbrandt, P. (2026). AmeriFlux FLUXNET-1F US-UTW UFLUX Wellington, Ver. v1.3_r1 (2021-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027344
+Ma, S., Xu, L., Verfaillie, J., & Baldocchi, D. (2026). AmeriFlux FLUXNET-1F US-Var Vaira Ranch- Ione, Ver. v1.3_r1 (2000-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1993904
+Litvak, M. (2026). AmeriFlux FLUXNET-1F US-Vcm Valles Caldera Mixed Conifer, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229391
+Litvak, M. (2026). AmeriFlux FLUXNET-1F US-Vcp Valles Caldera Ponderosa Pine, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229392
+Key, K., & Novick, K. (2026). AmeriFlux FLUXNET-1F US-VT1 Vermillion Tributary Paired Cropland – Site 1 (Corn/Soy; No Cover Crops), Ver. v1.3_r1 (2023-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027369
+Key, K., & Novick, K. (2026). AmeriFlux FLUXNET-1F US-VT2 Vermillion Tributary Paired Cropland – Site 2 (Corn/Soy; Cover Crops), Ver. v1.3_r1 (2023-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027370
+Desai, A., & Desai, A. (2026). AmeriFlux FLUXNET-1F US-WCr Willow Creek, Ver. v1.3_r1 (1999-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3028955
+Scott, R. (2026). AmeriFlux FLUXNET-1F US-Whs Walnut Gulch Lucky Hills Shrub, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1984574
+Litvak, M. (2026). AmeriFlux FLUXNET-1F US-Wjs Willard Juniper Savannah, Ver. v1.3_r1 (2007-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1871146
+Scott, R. (2026). AmeriFlux FLUXNET-1F US-Wkg Walnut Gulch Kendall Grasslands, Ver. v1.3_r1 (2004-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1984575
+Chen, J., & Chu, H. (2026). AmeriFlux FLUXNET-1F US-WPT Winous Point North Marsh, Ver. v1.3_r1 (2011-2013), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229402
+Bednarz, C. (2026). AmeriFlux FLUXNET-1F US-WT1 Kress, TX no-till cotton and grain sorghum production, Ver. v1.3_r1 (2023-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027361
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xAB NEON Abby Road (ABBY), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229403
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xAE NEON Klemme Range Research Station (OAES), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985434
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xBA NEON Barrow Environmental Observatory (BARR), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229404
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xBL NEON Blandy Experimental Farm (BLAN), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229405
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xBN NEON Caribou Creek - Poker Flats Watershed (BONA), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229406
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xBR NEON Bartlett Experimental Forest (BART), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1881598
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xCL NEON LBJ National Grassland (CLBJ), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985435
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xCP NEON Central Plains Experimental Range (CPER), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985436
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xDC NEON Dakota Coteau Field School (DCFS), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985437
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xDJ NEON Delta Junction (DEJU), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229407
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xDL NEON Dead Lake (DELA), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985438
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xDS NEON Disney Wilderness Preserve (DSNY), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985439
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xGR NEON Great Smoky Mountains National Park, Twin Creeks (GRSM), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985440
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xHA NEON Harvard Forest (HARV), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985441
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xHE NEON Healy (HEAL), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985442
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xJE NEON Jones Ecological Research Center (JERC), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985443
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xJR NEON Jornada LTER (JORN), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229408
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xKA NEON Konza Prairie Biological Station - Relocatable (KONA), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985444
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xKZ NEON Konza Prairie Biological Station (KONZ), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985445
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xLE NEON Lenoir Landing (LENO), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027333
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xMB NEON Moab (MOAB), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985446
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xML NEON Mountain Lake Biological Station (MLBS), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985447
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xNG NEON Northern Great Plains Research Laboratory (NOGP), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985448
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xNQ NEON Onaqui-Ault (ONAQ), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985449
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xNW NEON Niwot Ridge Mountain Research Station (NIWO), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571112
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xPU NEON Pu'u Maka'ala Natural Area Reserve (PUUM), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3010289
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xRM NEON Rocky Mountain National Park, CASTNET (RMNP), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985450
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xRN NEON Oak Ridge National Lab (ORNL), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571119
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xSB NEON Ordway-Swisher Biological Station (OSBS), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985451
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xSC NEON Smithsonian Conservation Biology Institute (SCBI), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229409
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xSE NEON Smithsonian Environmental Research Center (SERC), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985452
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xSJ NEON San Joaquin Experimental Range (SJER), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229410
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xSL NEON North Sterling, CO (STER), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229411
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xSP NEON Soaproot Saddle (SOAP), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3028956
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xSR NEON Santa Rita Experimental Range (SRER), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985453
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xST NEON Steigerwaldt Land Services (STEI), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985454
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xTA NEON Talladega National Forest (TALL), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985455
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xTE NEON Lower Teakettle (TEAK), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027334
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xTL NEON Toolik (TOOL), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469475
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xTR NEON Treehaven (TREE), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985456
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xUK NEON The University of Kansas Field Station (UKFS), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985457
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xUN NEON University of Notre Dame Environmental Research Center (UNDE), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985458
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xWD NEON Woodworth (WOOD), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2229412
+NEON (National Ecological Observatory Network). (2025). AmeriFlux FLUXNET-1F US-xWR NEON Wind River Experimental Forest (WREF), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2571118
+NEON (National Ecological Observatory Network). (2026). AmeriFlux FLUXNET-1F US-xYE NEON Yellowstone Northern Range (Frog Rock) (YELL), Ver. v1.3_r1 (2019-2024), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/1985459
+Natali, S. (2026). AmeriFlux FLUXNET-1F US-YK1 Yukon-Kuskokwim Delta, Izaviknek-Kingaglia uplands, Burned 2015, Ver. v1.3_r1 (2019-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027346
+Natali, S. (2026). AmeriFlux FLUXNET-1F US-YK2 Yukon-Kuskokwim Delta, Izaviknek-Kingaglia uplands, Unburned, Ver. v1.3_r1 (2019-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/2469476
+Biraud, S. C. (2026). AmeriFlux FLUXNET-1F US-ZF1 Zumwalt Farm Treatment, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3377750
+Biraud, S. C. (2026). AmeriFlux FLUXNET-1F US-ZF2 Zumwalt Farm Control, Ver. v1.3_r1 (2024-2025), AmeriFlux AMP [Dataset]. https://doi.org/10.17190/AMF/3027365
+[No author listed]. (2025). Fluxnet Archive Product from Umhlabuyalingana, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/STLJfs_nkGgsI6sPzHNIgYE0
+[No author listed]. (2025). Fluxnet Archive Product from Spioenkop, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/9DBU3ZCobRStxNAcLBAZVtok
+Joubert, W., Maswanganye, S., Selala, S., & Smart, K. (2025). Fluxnet Archive Product from Jonkershoek, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/pJ8V89PtIUTciotXGRT7PLki
+[No author listed]. (2025). Fluxnet Archive Product from Benfontien Savanna, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/7D87eYcefMtCZ131SjGfAEvu
+[No author listed]. (2025). Fluxnet Archive Product from Benfontien Karoo, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/L3b447DFrFAeO56M1P7eueuq
+Cho, S., Chun, J., & Kim, A. (2026). Fluxnet Archive Product from Wando Evergreen broadleaf forest, 2015–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/eX7IFzdl2WPUmwGiAQ3UI6RD
+Cho, S., Kang, M., & Shim, K. (2026). Fluxnet Archive Product from Uiseong Apple Orchard, 2017–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/_55n5cfT3PjNVp8hjP7P_GLa
+Kim, H. (2025). Fluxnet Archive Product from Taehwa Coniferous forest, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/GrvLMNKKbTTAaT6auJyS_xJj
+Kim, H. (2025). Fluxnet Archive Product from Taehwa Broadleaf forest, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/mgAw4w8tckxD-oe0sc6ng63R
+Cho, S., & Kim, K. (2026). Fluxnet Archive Product from Seolmacheon Mixed forest, 2015–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/VK7v0BF3ASSyw7wQ9MoSmq5T
+Cho, S., Chun, J., & Kim, A. (2026). Fluxnet Archive Product from Samcheok Coniferous forest, 2015–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/6dwzloq1r3LGTyJ3wGCMxk0C
+Cho, S., Chun, J., & Kim, A. (2026). Fluxnet Archive Product from Pyeongchang Deciduous forest, 2015–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/4wKzVD2bJxwyGKiuPS3-bBLW
+Cho, J., Ha, J., & Jeong, S. (2026). Fluxnet Archive Product from Naju Rice Paddy 2, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/o9_1GTQfYPO5QensOTM6NVIz
+Cho, J., Ha, J., & Jeong, S. (2025). Fluxnet Archive Product from Naju Rice Paddy 1, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/ho-3zaqsi4UTaFuVjoKo6tcK
+Cho, S., & Kim, A. (2026). Fluxnet Archive Product from Gwangneung Deciduous forest, 2016–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/n2qEvY4a79bHgLKrB0qipAJ_
+Cho, S., & Kim, A. (2025). Fluxnet Archive Product from Gwangneung Coniferous forest, 2016–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/1RvfmPwtVEtfGXXUyFU-U7CT
+Cho, S., Chun, J., & Kim, A. (2026). Fluxnet Archive Product from Jeju Mixed forest, 2015–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/Wq4UZR5CnT0upivSDf3D8uUc
+Cho, J., & Cho, S. (2025). Fluxnet Archive Product from Haenam Farmland (HFK), 2016–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/6juxi14AX0CYmbd3rABrd8Qg
+Cho, S., Chun, J., & Kim, A. (2026). Fluxnet Archive Product from Hongcheon Mixed forest, 2015–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/j9Kwyg7s5TpieDfvx4qg9WSR
+Kim, J. (2026). Fluxnet Archive Product from Haenam Paddy-field, 2016–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/zfSFiNxBUci2ScUx6BSMynNA
+Cho, S., Kang, M., & Shim, K. (2026). Fluxnet Archive Product from Gimje Soybean Field, 2017–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/5Kb3vNI8mqBd_eETiy2wuWSK
+Cho, S., Kang, M., & Shim, K. (2026). Fluxnet Archive Product from Gimje Rice Paddy, 2017–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/Ssyo985v7h7CTmNEtvwTbQsE
+Cho, S., Kang, M., & Shim, K. (2026). Fluxnet Archive Product from Gimje Rice-barley double cropping Paddy Field, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/0TTeq3pvvIas1NLdD2HMvWMC
+Cho, S., & Kim, K. (2025). Fluxnet Archive Product from Cheongmicheon Farmland, 2012–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/9yCK9zGwG8buI8JKtUWmROLY
+Kang, M., Kim, J., Ryu, Y., & Sohn, S. (2025). Fluxnet Archive Product from Cheorwon Rice paddy, 2015–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/H8OP2ngO7ZJkZ087BV4UNehk
+Cho, S., Chun, J., & Kim, A. (2026). Fluxnet Archive Product from Anmyeondo Coniferous forest, 2015–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/m5QvlBnkK_hdAFCUpmGPzXTI
+Kumagai, T., & Takamura, N. (2026). Fluxnet Archive Product from Mae Moh plantation, 2005–2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/xAfMteUmc_R9X2IXVuuRkSa3
+Kumagai, T., & Takamura, N. (2026). Fluxnet Archive Product from Kog-Ma Wateshed, 2005–2013, FLUXNET [Dataset]. https://hdl.handle.net/11676/UeiwpE7b8yxM3HJis9B-clmg
+[No author listed]. (2026). Fluxnet Archive Product from Tura, 2004, FLUXNET [Dataset]. https://hdl.handle.net/11676/Rd4_p0MUa-ttK6FzOMLontdl
+Hiyama, T., Iijima, Y., Kotani, A., Maximov, T., & Yabuki, H. (2026). Fluxnet Archive Product from Yakutsk Spasskaya Pad larch, 2004–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/EQli39tXbluFl81vRolYNGMQ
+[No author listed]. (2026). Fluxnet Archive Product from Yakutsk Spasskaya Pad Pine, 2004–2008, FLUXNET [Dataset]. https://hdl.handle.net/11676/gHfX6bXPIDHzHbwVE7gWolFT
+Machimura, T. (2026). Fluxnet Archive Product from Neleger larch forest, 2000–2006, FLUXNET [Dataset]. https://hdl.handle.net/11676/MTJpX3fgVsWfWNXaw59q41td
+Machimura, T. (2026). Fluxnet Archive Product from Neleger Cutover, 2001–2006, FLUXNET [Dataset]. https://hdl.handle.net/11676/BGkXJsSt5UVy1vDEw7Z30_7v
+Machimura, T. (2026). Fluxnet Archive Product from Neleger Burnt Forest, 1999–2000, FLUXNET [Dataset]. https://hdl.handle.net/11676/62X8tlaZVNU1oh_okQKPco3F
+Hiyama, T., Kotani, A., & Maximov, T. (2026). Fluxnet Archive Product from Elgeeii forest station, 2010–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/b5nU8v8vNcUd71xRKtWQdbLl
+Hata, Y., Kumagai, T., Kume, T., & Matsumoto, K. (2026). Fluxnet Archive Product from Lambir Hills National Park, 2009–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/ug2smfKpeFuNSWo-g_LKn8R4
+[No author listed]. (2026). Fluxnet Archive Product from Udleg practice forest, 2010–2012, FLUXNET [Dataset]. https://hdl.handle.net/11676/zPXpxhbjz_GLVPOMGg_bGCuF
+[No author listed]. (2026). Fluxnet Archive Product from Nalaikh grassland, 2015–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/wOMUKsoUO8-izEp_YKLHLZCH
+Asanuma, J. (2026). Fluxnet Archive Product from Kherlenbayan Ulaan, 2003–2008, FLUXNET [Dataset]. https://hdl.handle.net/11676/qboNh8q5SAEz1-NZO2ZA_s6V
+[No author listed]. (2026). Fluxnet Archive Product from Hustai grassland, 2015–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/13XztQKfZ_zocPMte-r5AtGa
+[No author listed]. (2026). Fluxnet Archive Product from Kampong Thom Lowland Dry Evergreen Forest, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/7HZxy0gTRodMZnmJU6ak4vHi
+Matsumoto, K., Takashima, A., & Taniguchi, S. (2026). Fluxnet Archive Product from Yona-Field Tower Site, 2013–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/Z6-dU8nagfkiCVVyjdnFCe5b
+Inoue, Y., & Kominami, Y. (2026). Fluxnet Archive Product from Yamashiro forest meteorology research site, 2000–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/fI4RJEyaI5ASWeYLUEHZddaP
+Ide, R., Nakaji, T., & Nakamura, M. (2026). Fluxnet Archive Product from Tomakomai Crane site, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/RweHalPjm2fLhREAqrL5xXXr
+Hirano, T., & Hirata, R. (2026). Fluxnet Archive Product from Tomakomai Flux Research Site, 2001–2003, FLUXNET [Dataset]. https://hdl.handle.net/11676/bCOHeAK5zPgbC1DQddUjFOlA
+Hirano, T., & Hirata, R. (2026). Fluxnet Archive Product from Tomakomai Flux Research Site Disturbed, 2005–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/0o-e7G4yJgKYUrpjjLe7w0lt
+Iida, S., Iwagami, S., Kabeya, N., & Shimizu, T. (2026). Fluxnet Archive Product from Tsukuba Experimental Watershed, 2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/DJQ3QbfTvEPAp9g4mpyX5ABJ
+Asanuma, J., & Shimoda, S. (2026). Fluxnet Archive Product from Terrestrial Environment Research Center Tsukuba, 2002–2004, FLUXNET [Dataset]. https://hdl.handle.net/11676/YeHEbZudsqdYtd2YAggVVQL6
+Hirata, R., & Takagi, K. (2025). Fluxnet Archive Product from CC-LaG Teshio Experimental Forest, 2001–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/U36jKvGfGICHSJO01Sk4jEZT
+[No author listed]. (2026). Fluxnet Archive Product from Takayama deciduous broadleaf forest site, 1998–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/3ISWj-Lz0wAZ7bHcl0axSoWX
+Saitoh, T., & Tamagawa, I. (2026). Fluxnet Archive Product from Takayama evergreen coniferous forest site, 2005–2015, FLUXNET [Dataset]. https://hdl.handle.net/11676/CmfB4bc3xT3z8lqsrgqLbIGm
+[No author listed]. (2026). Fluxnet Archive Product from Shirakami Beech Forest Site, 2010–2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/eFz2nv5isK9K_5qkLLh6xxAF
+Kitamura, K., & Mizoguchi, Y. (2026). Fluxnet Archive Product from Sapporo forest meteorology research site, 2000–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/js_dXPMf2Ctz9mN3PGXCd2zb
+Iwata, H., & Suzuki, J. (2026). Fluxnet Archive Product from Shinshu University Experimental Forest Site, 2014–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/2odGxi9yoGlFUuRSPP0IvuyH
+[No author listed]. (2026). Fluxnet Archive Product from Sarobetsu Mire Sasa, 2007–2010, FLUXNET [Dataset]. https://hdl.handle.net/11676/Pxix-JtRatuGLAPdOuOHUdzr
+[No author listed]. (2026). Fluxnet Archive Product from Sarobetsu Mire Moss, 2007–2010, FLUXNET [Dataset]. https://hdl.handle.net/11676/jOdJ40q12wURBzPC91Zd1Nrx
+Kotani, A., & Ohta, T. (2026). Fluxnet Archive Product from Seto Mixed Forest Site, 2002–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/OJmZUckooZnjzhPVMCBvUM85
+Ueyama, M. (2026). Fluxnet Archive Product from Farm field in Osaka Metropolitan University, 2022–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/1LRw8IWf3BDKYACdAj8ouheV
+Awal, M. (2026). Fluxnet Archive Product from Nagoya University Forest, 2000–2001, FLUXNET [Dataset]. https://hdl.handle.net/11676/rBNU9avgc7c4tNBrBRWVn22z
+Matsuura, S. (2026). Fluxnet Archive Product from NILGS Nasu Research Station Manure Application Plot, 2004–2015, FLUXNET [Dataset]. https://hdl.handle.net/11676/qug7pUfVBqZPbH4yxh0PKfgu
+Matsuura, S. (2026). Fluxnet Archive Product from NILGS Nasu Research Station Chemical Fertilizer Plot, 2004–2015, FLUXNET [Dataset]. https://hdl.handle.net/11676/9MJ6Rbkq1nwFkdiq96CdBSn_
+Iwata, H. (2026). Fluxnet Archive Product from Nishikoma Site, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/jQlGe7FF-AoWrmDdvmU4gojQ
+[No author listed]. (2026). Fluxnet Archive Product from Mase rice paddy field, 2002–2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/496cflc8MbepzdjJvLU5v4cg
+Hara, T., Kodama, Y., Nakai, T., Sumida, A., & Toda, M. (2026). Fluxnet Archive Product from Moshiri Mixd Forest Site, 2004–2011, FLUXNET [Dataset]. https://hdl.handle.net/11676/Gq5ddm9JljmhtiELU0sAXSqu
+[No author listed]. (2026). Fluxnet Archive Product from Moshiri Birch Forest Site, 2004–2011, FLUXNET [Dataset]. https://hdl.handle.net/11676/dP1aRNVfrf316N-6GTejUbIk
+Kobayashi, T., Nakaya, K., & Yasuike, S. (2026). Fluxnet Archive Product from Karuizawa, 2001–2008, FLUXNET [Dataset]. https://hdl.handle.net/11676/heCzGI50bl4F9zNueG7UvN3S
+Hagino, K., Kitamura, K., Kobayashi, M., Kominami, Y., Mizoguchi, Y., Ohnuki, Y., Shimizu, A., Shimizu, T., & Tamai, K. (2026). Fluxnet Archive Product from Kahoku Experiment watershed, 2000–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/ws7GV5BLwsKMaGOsosxNThpD
+[No author listed]. (2026). Fluxnet Archive Product from Kasumigaura lotus paddy, 1997, FLUXNET [Dataset]. https://hdl.handle.net/11676/7QrnIdeknEjsBsGnEAcpIxqx
+Iwata, T., & Takimoto, T. (2026). Fluxnet Archive Product from Hachihama Experimental Farm Double Crop, 2005–2008, FLUXNET [Dataset]. https://hdl.handle.net/11676/7mRmcdv3o0cDwldpdIkzLgqj
+Iwata, T., & Takimoto, T. (2026). Fluxnet Archive Product from Hachihama Experimental Farm, 2003–2004, FLUXNET [Dataset]. https://hdl.handle.net/11676/Tjd4S1VJ4LO2w5OrXE1eWhYl
+Matsuda, K., & Takagi, K. (2026). Fluxnet Archive Product from Field Museum Tama Hills, 2014–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/eWDbJgVovrhZWWNoXdZwB1GA
+Inoue, Y., Kominami, Y., Miyama, T., & Mizoguchi, Y. (2026). Fluxnet Archive Product from Fujiyoshida forest meteorology research site, 2001–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/rPUO8Mfj9nIziKi_4d2XRkCh
+Hirata, R., Hirose, Y., Ide, R., Liang, N., Takahashi, Y., & Yamao, Y. (2026). Fluxnet Archive Product from Fuji Hokuroku Flux Observation Site, 2006–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/5HO9DkOtLv80oPgti-3L_1gg
+Hirano, T., Kominami, Y., & Ueyama, M. (2026). Fluxnet Archive Product from Bibai bog, 2014–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/pMEqkfODsJGzX9RKz9kSDRtA
+[No author listed]. (2026). Fluxnet Archive Product from Appi forest meteorology research site, 2000–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/6FLIvFghC2kn5jdWiKfUjx9S
+[No author listed]. (2026). Fluxnet Archive Product from Palangkaraya undrained forest, 2004–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/I6zVvSdiWHZ4d2Bal9dhQhoi
+Hirano, T., & Ohkubo, S. (2026). Fluxnet Archive Product from Palangkaraya Drained forest, 2001–2017, FLUXNET [Dataset]. https://hdl.handle.net/11676/RaxQP0fkOSWCXKIIhi7Bnevj
+Hirano, T., & Ohkubo, S. (2026). Fluxnet Archive Product from Palangkaraya Drained Burnt forest, 2004–2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/MpLHCY-ecJkBO48pW8l-Tra-
+Saigusa, N., & Wang, H. (2025). Fluxnet Archive Product from Laoshan, 2002–2006, FLUXNET [Dataset]. https://hdl.handle.net/11676/eEffx70YefN_2F5Yx_sowWVR
+Du, M., Gu, S., Kato, T., Li, Y., Liang, Z., & Zhang, F. (2026). Fluxnet Archive Product from Haibei Alpine Tibet site, 2001–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/eHxCM4Gfk3Wo-yA1sym5lBRo
+Nemitz, E., Cash, J., Coyle, M., Fincham, W., Grenier, M., Harvey, D., Helfter, C., Jones, M., Leeson, S., Levy, P., Mullinger, N., Ocallaghan, F., van Dijk, N., Vandome, E., & Yeung, K. (2026). Fluxnet Archive Product from Auchencorth Moss, 2003–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/bUNge2BcADhYDR1h9NHDXbem
+Peichl, M., Nilsson, M., Larmanou, E., Smith, P., Marklund, P., De Simon, G., Lofvenius, P., Dignam, R., Holst, J., Molder, M., Andersson, T., Boschetti, F., Kozii, N., Linderson, M., Lindgren, K., & Ottosson-Löfvenius, M. (2026). Fluxnet Archive Product from Svartberget, 2014–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/6APPPkAwbCF69Dx4gIGfRo8j
+Lundin, E., Crill, P., Grudd, H., Holst, J., Kristoffersson, A., Meire, A., Molder, M., & Rakos, N. (2025). Fluxnet Archive Product from Abisko-Stordalen Palsa Bog, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/gROMoDY5jMLhMTRejjKXtC-s
+Kljun, N., Molder, M., Lehner, I., Bergström, G., Båth, A., Holst, J., & Linderson, M. (2026). Fluxnet Archive Product from Norunda, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/TQJ13O19n72qJ3MoGHnXCdRB
+Heliasz, M., Kljun, N., Biermann, T., Holst, J., Holst, T., Kornacher, P., Linderson, M., Molder, M., & Rinne, J. (2025). Fluxnet Archive Product from Hyltemossa, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/8hMY0lY7kERIfokXkEpev-03
+Nilsson, M., Peichl, M., Marklund, P., Boschetti, F., De Simon, G., Holst, J., Smith, P., Kozii, N., Dignam, R., Larmanou, E., Lofvenius, P., Molder, M., Andersson, T., Linderson, M., & Lindgren, K. (2025). Fluxnet Archive Product from Degero, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/IiyJGdmPkDhdItxg1_8lgLFp
+Lange, H., Zhao, J., Meissner, H., & Guzman, R. (2026). Fluxnet Archive Product from Hurdal, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/CDVyAitBD2Nv07IGEndbf0mk
+van der Molen, M., Barten, J., Kruijt, B., Lootens, R., Ronda, R., Snellen, H., & Zhao, H. (2026). Fluxnet Archive Product from Loobos, 1997–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/fnq1hhvNLYGhtdiC16YIM0YQ
+Galvagno, M., Ferraris, D., & Filippa, G. (2026). Fluxnet Archive Product from Torgnon-LD, 2012–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/29NWndTHqEfVHMiVvFYTVd9e
+Cremonese, E., Galvagno, M., & Morra di Cella, U. (2026). Fluxnet Archive Product from Torgnon, 2008–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/RwvbnA8B9w4xSHzjc5eV45CK
+Arriga, N., Goded, I., Grüning, C., Dell'Acqua, A., & Matteucci, M. (2026). Fluxnet Archive Product from San Rossore 2, 2013–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/xmKHyUZQfcLwolbWA7E2YEYg
+Montagnani, L., Tomelleri, E., Bortoli, M., Cobbe, I., Folino, G., Minerbi, S., Stecher, M., Tenca, F., & Ventura, M. (2026). Fluxnet Archive Product from Renon, 1999–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/pNTPZfSPE9VmxdZ-g9ijYCSc
+Spano, D., Lo Cascio, M., Lucarini, A., Marras, S., & Sirca, C. (2026). Fluxnet Archive Product from Arca di Noe - Le Prigionette, 2022–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/cJ06EF968EyjEU6NujzFDtgA
+Provenzale, A., Baneschi, I., Giamberini, M., Raco, B., & Vivaldo, G. (2026). Fluxnet Archive Product from Nivolet, 2019–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/lMjgrvS4zf_ZimDSnpQ5cdtO
+Gianelle, D., Belelli Marchesini, L., Cavagna, M., Marcolla, B., Rodeghiero, M., Vescovo, L., & Zampedri, R. (2026). Fluxnet Archive Product from Monte Bondone, 2003–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/enS2fTzGG_9PS5-51hqet8iH
+Pitacco, A., Tezza, L., Meggio, F., Peressotti, A., & Vendrame, N. (2026). Fluxnet Archive Product from Lison, 2016–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/K-GOp2uurEY--2x3wWw8n1Ac
+Fares, S., Alivernini, A., Chianucci, F., Conte, A., Corsanici, R., Ferrara, C., Fusaro, L., Ilardi, F., Moretti, V., & Sorgi, T. (2026). Fluxnet Archive Product from Castelporziano2, 2012–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/Oz2rJQyIT8nYjOwvl4nCxlsl
+Gerosa, G., Bignotti, L., Finco, A., Marzuoli, R., & Plebani, D. (2026). Fluxnet Archive Product from Bosco Fontana, 2019–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/8UQ9ATu4z2i3sFoq4KVNw-kl
+Magliulo, V., Calandrelli, D., Cuocolo, D., Di Tommasi, P., Esposito, A., Famulari, D., Manco, A., Vitale, L., & Zenone, T. (2026). Fluxnet Archive Product from Borgo Cioffi, 2004–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/2LNryh4qBQqqtGj-L8ONRyxA
+Saunders, M. (2026). Fluxnet Archive Product from Clara Raised Bog, 2020–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/mU-KbJVlM50AB1sGJMwmKHsQ
+Jackowicz-Korczynski, M., Jensen, R., & Larmanou, E. (2026). Fluxnet Archive Product from Zackenberg Gras, 2020–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/xSezAuPuEWtDU6peOk5xDi8I
+Jackowicz-Korczynski, M., Jensen, R., Larmanou, E., López-Blanco, E., & Rudd, D., Røjle Christensen, T. (2025). Fluxnet Archive Product from Zackenberg Fen, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/Lf3j25yaK_SzajN-sxvn-Mfj
+Friborg, T., & Jensen, R. (2026). Fluxnet Archive Product from Nuuk Fen, 2019–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/QR9BBqqZy5rUr4szZgHgzgNX
+Friborg, T., & Jensen, R. (2026). Fluxnet Archive Product from Disko, 2020–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/kC7cwDWXS2G6vPpfo6iAKHPm
+Bonal, D., Brechet, L., & Burban, B. (2026). Fluxnet Archive Product from Guyaflux, 2004–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/NWyicIqnZ9k5ECe3WLq8BvOK
+Calvet, J., Canut-Rocafort, G., Etienne, J., Pommies, S., Maurel, W., & Paci, A. (2026). Fluxnet Archive Product from Toulouse, 2018–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/_bAXw_GAvp0HwOAaJJRMiIMQ
+Joffre, R., Limousin, J., Kempf, J., Ourcival, J., & Piquemal, K. (2026). Fluxnet Archive Product from Puechabon, 2000–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/HaC9deo1SSLTZxUtYYJcdLAd
+Flechard, C., Fauvel, Y., Hamon, Y., & Jacotot, A. (2026). Fluxnet Archive Product from Mejusseaume, 2019–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/o3EABLXhro9lDfVSoil4ycG9
+Gastal, F., Beauclair, P., Chabbi, A., Chebil, B., de Berranger, C., Decau, M., Huguet, C., Lafont, S., & Perrot, C. (2025). Fluxnet Archive Product from Lusignan, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/S_NN3abNF1zutV6hnPOuCupl
+Klumpp, K., Darsonville, O., Bloor, J., Bosio, I., Colosse, D., Galliot, J., Martin, R., Michaud, L., Pavot, L., Tyssandier, J., & Winck, B. (2025). Fluxnet Archive Product from Laqueuille, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/FT09cB-tv2MKDSSw1R_JXBJx
+Brut, A., Tallec, T., Granouillac, F., Zawilski, B., Claverie, N., Lemaire, B., & Ceschia, E. (2025). Fluxnet Archive Product from Lamasquere, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/zwxh7ZEI7AWEJOF5ggdX2bpK
+Gogo, S., Jacotot, A., Guimbaud, C., Jourdain, L., Lecas, T., Mazeron, J., Moquet, J., Paroissien, J., Perdereau, L., & Stephane, C. (2026). Fluxnet Archive Product from La Guette, 2017–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/UMboDXr3WG42YyPcyuL7LzHW
+Cuntz, M., Joetzjer, E., Aiguier, T., Courtois, P., Lily, J., & Naiken, A. (2026). Fluxnet Archive Product from Hesse, 1997–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/Di7uhs3hUdH1SvS0f0Wv5vjH
+Buysse, P., Loubet, B., Depuydt, J., Durand, B., Gueudet, J., & Kalalian, C. (2026). Fluxnet Archive Product from Grignon, 2004–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/gsAnVUkxq-6VBt2qu1hewpGD
+Berveiller, D., Dufrêne, E., Delpierre, N., Morfin, A., Vincent, G., Bazot, S., Soudani, K., Girardin, C., Guillot, T., & Perot-Guillaume, C. (2025). Fluxnet Archive Product from Fontainebleau-Barbeau, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/vgMluaOupOEt-hzl3RWXI99X
+Simioni, G., Marloie, O., & Martin - Saint Paul, N. (2026). Fluxnet Archive Product from Font-Blanche, 2008–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/dw5JqZoWiNVw0JQS-QXykPY6
+Leonard, J., Bornet, F., François, B., & Grehan, E. (2026). Fluxnet Archive Product from Estrees-Mons A28, 2017–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/tqY53lt1dCh3HZXtN-rLGEp5
+Voisin, D., Barral, H., Biron, R., Cohard, J., Coulaud, C., Foret, J., Foulquier, A., Gavoty, E., Liger, L., Salze, P., Valay, J., & Vannard, R. (2026). Fluxnet Archive Product from Col du Lautaret, 2019–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/Ioa3MKkE2Hh0vcxOxxeZ6vER
+Domec, J., Loustau, D., Aluome, C., Chipeaux, C., Denou, J., Depuydt, J., Garrigou, C., Kruszewski, A., & Lafont, S. (2026). Fluxnet Archive Product from Bilos, 2014–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/OHrM-TP6a33pLElt40MWm6rD
+Tallec, T., Ceschia, E., Granouillac, F., Claverie, N., Zawilski, B., Brut, A., Lemaire, B., & Gibrin, H. (2026). Fluxnet Archive Product from Aurade, 2005–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/e9BJpil-VqESMF4Y5NacyLVf
+Kolari, P., Aalto, P., Keronen, P., Kulmala, L., & Sahoo, G. (2026). Fluxnet Archive Product from Varrio, 2016–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/yu-qbz8ScXeQLBioQVflVJIq
+Aurela, M., Aaltonen, H., Hatakka, J., Laurila, T., Lohila, A., Mäkelä, T., Männikkö, M., Rainne, J., Suopajärvi, S., Tuovinen, J., & Varjonen, S. (2025). Fluxnet Archive Product from Sodankyla, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/TNkSnk2tWf7rkMpSQ2Dtf8FI
+Tuittila, E., Kolari, P., Korrensalo, A., Laakso, H., Levula, J., Mammarella, I., Matilainen, T., Männistö, E., Taipale, R., & Vesala, T. (2025). Fluxnet Archive Product from Siikaneva, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/mkbfyrZKqg3Djz0tW1rRap1c
+Korkiakoski, M., Aaltonen, H., Aurela, M., Hatakka, J., Laurila, T., Lohila, A., Rainne, J., & Tuovinen, J. (2026). Fluxnet Archive Product from Lettosuo, 2010–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/lJA2M5NajEvo4LNStPxtuMhX
+Laurila, T., Aaltonen, H., Aurela, M., Hatakka, J., Rainne, J., Suopajärvi, S., & Varjonen, S. (2026). Fluxnet Archive Product from Kenttarova, 2018–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/Ri-8dhfYd2gnZiThyc9UXyZe
+Mammarella, I., Aalto, J., Back, J., Kolari, P., Laakso, H., Levula, J., Matilainen, T., Pihlatie, M., Pumpanen, J., Ryhti, K., Taipale, R., Thomas, A., & Vesala, T. (2026). Fluxnet Archive Product from Hyytiala, 1997–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/oIJ9cFYf8Q0e9nfMRRS-90vM
+[No author listed]. (2026). Fluxnet Archive Product from Anttila, 2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/WfnJvocMuoIL6hVB8mRB3XxS
+Alonso, L., Carrara, A., Lopez Jimenez, R., Martín, M., & Moreno, G. (2026). Fluxnet Archive Product from Las Majadas de Tietar, 2020–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/WHuC_WF5n_uhQMHgTWaBSmrr
+Friborg, T., Jensen, R., & Rasmussen, L. (2025). Fluxnet Archive Product from Voulundgaard, 2020–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/SdbEo5oQOf__w-zjUCIB3EOL
+Ibrom, A., Lange Rønn, E., Lodsgaard Justesen, M., Møller, F., Pilegaard, K., & Schaarup Sørensen, J. (2026). Fluxnet Archive Product from Soroe, 1996–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/lwXfRUVQCnuq5OcIe-F6tpib
+Friborg, T., & Jensen, R. (2026). Fluxnet Archive Product from Skjern, 2020–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/JPkhq8xhlXF20Cijd7pHUd-T
+Ibrom, A., Pilegaard, K., Lange Rønn, E., Møller, F., & Schaarup Sørensen, J. (2026). Fluxnet Archive Product from Riso Campus Willow, 2023–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/n7btzoKSWqU_0YyN9omZcsdh
+Friborg, T., & Jensen, R. (2024). Fluxnet Archive Product from Gludsted Plantage, 2020–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/vDQDn0hIxnz9gRAIc3duWbUE
+Bernhofer, C., Eichelmann, U., Gruenwald, T., Hehn, M., Mauder, M., Moderow, U., & Prasse, H. (2026). Fluxnet Archive Product from Tharandt, 1996–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/3LQRnWuwu9ngPJQCQu2r2DTy
+Schmidt, M., Bagheri, S., Becker, N., Dolfus, D., Esser, O., Graf, A., Haustein, A., Kettler, M., Kummer, S., & Mattes, J. (2026). Fluxnet Archive Product from Selhausen Juelich, 2011–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/FBKUgeqFtfcDerDqdwv8lVSX
+Schmidt, M., Bagheri, S., Becker, N., Dolfus, D., Graf, A., Kettler, M., Kummer, S., & Mattes, J. (2026). Fluxnet Archive Product from Rollesbroich, 2011–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/Vs7FI6NOiRl_VH7Wkclfl_3t
+Drösler, M., Eberl, J., Klatt, J., Meyer, H., & Schlaipfer, M. (2026). Fluxnet Archive Product from Mooseurach, 2020–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/PSOHmMVaU1pPQSoGDVJRPW6y
+Bernhofer, C., Eichelmann, U., Gruenwald, T., Hehn, M., Mauder, M., Moderow, U., & Prasse, H. (2025). Fluxnet Archive Product from Klingenberg, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/ViYMPdxbY25optpqiQ7OVgXN
+Schmidt, M., Bagheri, S., Baltes, U., Becker, N., Dolfus, D., Drüe, C., Graf, A., Kettler, M., Kummer, S., & Mattes, J. (2026). Fluxnet Archive Product from Wustebach, 2012–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/mlrCmtpUu7ZzEbkvYEK1DpMg
+Bernhofer, C., Eichelmann, U., Gruenwald, T., Hehn, M., Mauder, M., Moderow, U., & Prasse, H. (2026). Fluxnet Archive Product from Hetzdorf, 2010–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/0bxipd79PBLdqj1HiB_ghXvT
+Rebmann, C., Dienstbach, L., Schmidt, P., Wiesen, R., Meis, J., Feldmann, I., Bastos Campos, F., Dejosez, S., Garcia Quiros, I., Gimper, S., Hautmann, D., Hildebrandt, A., Kempka, P., & Paasch, S. (2026). Fluxnet Archive Product from Hohes Holz, 2015–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/tfW10G3Do0hp0cimfI4XrgSd
+Christen, A., Baab, F., Kolbe, S., Plapp, T., Redepenning, D., & Schindler, D. (2026). Fluxnet Archive Product from Hartheim, 2020–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/AG7-cp4Sxh0AESZmLri2F-At
+Knohl, A., Tiedemann, F., Klosterhalfen, A., Markwitz, C., Fellert, D., Herbst, M., Kolle, O., Kreilein, H., Kutsch, W., Kutsch, W., Rebmann, C., & Siebicke, L. (2026). Fluxnet Archive Product from Hainich, 2000–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/VsQ1NTQTcEO5zRyfZjrBtkQa
+Schmid, H., & Sellmaier, S., Völksch, I. (2026). Fluxnet Archive Product from Graswang, 2023–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/S17epXE0dyBL-CiW8bGF9CNu
+Hildebrandt, A., Rebmann, C., Bastos Campos, F., Dejosez, S., Dienstbach, L., Hautmann, D., Schmidt, P., & Wiesen, R. (2026). Fluxnet Archive Product from Grosses Bruch, 2015–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/NY1UuClNrkeU0UUXUUoECmLZ
+Bernhofer, C., Eichelmann, U., Gruenwald, T., Hehn, M., Mauder, M., Moderow, U., & Prasse, H. (2026). Fluxnet Archive Product from Grillenburg, 2004–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/X0926p0IGvNrpp1IJMw0tdUd
+Brümmer, C., Akubia, J., Delorme, J., Schrader, F., & Shivhalli Gopal, A. (2026). Fluxnet Archive Product from Gebesee, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/jFkfMT_3ZahqoODz-R82VeUG
+Schmid, H., & Sellmaier, S., Völksch, I. (2026). Fluxnet Archive Product from Fendt, 2023–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/eETzHZHUPeVJNjSa3fM24SeW
+Herbst, M., Boeske, L., Braden-Behrens, J., Jaske, M., & Pletsch, H. (2026). Fluxnet Archive Product from Braunschweig, 2023–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/6vn4QkbfvwSPJpiJvhtI7OcR
+Gharun, M., & Behrens, N. (2026). Fluxnet Archive Product from Amtsvenn, 2023–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/D540Aaoeoyu95tgun4okCWUT
+Dusek, J., Kivalov, S., Pavelka, M., Šigut, L., Jocher, G., Czerný, R., Staník, K., Stellner, S., & Trusina, J. (2026). Fluxnet Archive Product from Trebon, 2006–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/ezclJdsSs31JZaOdM4gbLbIn
+Kowalska, N., Bellan, M., Czerný, R., Darenová, E., Fischer, M., Foltýnová, L., Jocher, G., Krejza, J., Mensah, C., Nezval, O., Pavelka, M., Staník, K., & Trusina, J., Šigut, L., Šlížek, J. (2026). Fluxnet Archive Product from Lanzhot, 2015–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/qtH0gyWH-yg0lP-HmC2lXv24
+Šigut, L., Bellan, M., Czerný, R., Darenová, E., Fischer, M., Foltýnová, L., Jocher, G., Klimo, P., Konrádová, P., Kowalska, N., Krejza, J., Marek, M., Nezval, O., Pavelka, M., Staník, K., Taufarová, K., & Trusina, J., Vágner, L., Šlížek, J. (2026). Fluxnet Archive Product from Bily Kriz forest, 2004–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/HH11awh469XrSeL0fO6WxYA4
+Feigenwinter, I., Etzold, S., Gharun, M., Hortnagl, L., Meier, P., Liechti, K., Stutz, T., Burri, S., Zweifel, R., Buchmann, N., Baur, T., Eugster, W., Gessler, A., Hug, C., Hummel, D., Häni, M., Hüglin, C., Kumar, S., Köchli, R., Marty, M., Schmitt Oehler, M., Staudinger, M., Sutter, F., Thimonier Rickenmann, A., Trotsiuk, V., Waldner, P., Walser, M., Wilhelm, M., Zhu, J., & Zimmermann, S. (2026). Fluxnet Archive Product from Davos, 1997–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/Pr9SZHBdwu6YbWLoOGhzjSJQ
+Boeckx, P., Verbeeck, H., Bauters, M., Boon, G., Bulonza, E., Daelman, R., Ekili, D., Kimbesa, F., Lefevre, L., Mbifo, J., Sibret, T., & Van Damme, F. (2026). Fluxnet Archive Product from Yangambi, 2020–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/4yxFg7HiX3wwcXY7t16U5Jec
+Vincke, C., Bogaerts, G., Chebbi, W., Chopin, H., Clément, T., De Ligne, A., Demoulin, L., Douxfils, B., Engelmann, T., Faurès, A., Heinesch, B., Manise, T., Orgun, A., Piret, A., & Thyrion, T. (2026). Fluxnet Archive Product from Vielsalm, 1996–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/mYZAS5TMuYruvEj80RAUa5OO
+Roland, M., Bresseleers, S., De Meulder, T., Lefevre, L., Naseer, M., Segers, J., Van Look, J., & Vande Sompele, A. (2026). Fluxnet Archive Product from Maasmechelen, 2016–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/DwEiFNFPCZypbHKn5zK7Phsl
+Dumont, B., Heinesch, B., Bodson, B., Bogaerts, G., Chopin, H., De Ligne, A., Demoulin, L., Douxfils, B., Engelmann, T., Faurès, A., Longdoz, B., Manise, T., Orgun, A., Piret, A., & Thyrion, T. (2026). Fluxnet Archive Product from Lonzee, 2004–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/1u2xQ5XcQoX0j2wJiZcyDP3M
+Heinesch, B., Bogaerts, G., Chopin, H., Culot, P., Demoulin, L., Engelmann, T., Faurès, A., Longdoz, B., Manise, T., Orgun, A., Piret, A., & Thyrion, T. (2026). Fluxnet Archive Product from Dorinne, 2011–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/geqYNPk-fvkZDGtnJI-sq1Je
+Janssens, I., Bresseleers, S., De Meulder, T., Lefevre, L., Naseer, M., Roland, M., Segers, J., Van Look, J., & Vande Sompele, A. (2026). Fluxnet Archive Product from Brasschaat, 1999–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/LFEir6YGDlkpjoTnCuB1qWeS
+Roupsard, O. (2026). Fluxnet Archive Product from Cocoflux, 2001–2004, FLUXNET [Dataset]. https://hdl.handle.net/11676/PrWE9DMXpEen7ZyDmWcJ1EnX
+Grippa, M., Kergoat, L., & Timouk, F. (2026). Fluxnet Archive Product from Kelma, 2007–2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/L1sLzW4BHbMbHpflq7z4oWu3
+[No author listed]. (2026). Fluxnet Archive Product from Maktau, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/-dDx4tGmNR4X0U5IZ1WtSjW_
+Leitner, S., Merbold, L., & Odongo, V. (2025). Fluxnet Archive Product from Kapiti, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/NIXGBI6SVBOylbOHTxoujI4u
+Räsänen, M., Pellikka, P., Omondi, J., & Vesala, T. (2026). Fluxnet Archive Product from Choke, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/NrkrMl1trwC3-wWAgM4sxHvE
+Leitner, S., Merbold, L., & Odongo, V. (2025). Fluxnet Archive Product from Ausquest 2, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/QFscsSwywYpuelYVvg63oaJu
+[No author listed]. (2025). Fluxnet Archive Product from Ausquest 1, 2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/i4EXIipasIDWP9d8IyG0XJjN
+Knohl, A., Klosterhalfen, A., Peksa, M., & Tunsch, E. (2026). Fluxnet Archive Product from Jambi Oil Palm Plantation, 2014–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/PPguZ8g7dO0HMK1i3qLRsXdQ
+Lai, D., Liu, J., & Lui, T. (2026). Fluxnet Archive Product from Mai Po Mangrove, 2016–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/5RA91yfzwElWmxeRuI5iXuf6
+Bonnefond, J., Gay, F., Roupsard, O., & Van Den Meersche, K. (2026). Fluxnet Archive Product from Aquiares Coffee-Flux, 2009–2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/yRjv2loTLxMX5_elU4L2aqKw
+[No author listed]. (2026). Fluxnet Archive Product from Shanghai Beihu wetland, 2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/tLlXyXLFaO-WvTNGORpwMidp
+Mu, X., Sun, R., & Yan, G. (2026). Fluxnet Archive Product from Saihanba young Scotch pine, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/wsgSpuYtd8ayCmJtInYU4yhz
+Mu, X., Sun, R., & Yan, G. (2026). Fluxnet Archive Product from Saihanba mature larch, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/HaDwZsk1Ot6vY7zDB1eLSeCg
+Hayman, G., & Helfter, C. (2025). Fluxnet Archive Product from Nxaraga, 2019–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/OAWAcJkAaBET5Vn-Kx2tRvsb
+Hayman, G., & Helfter, C. (2025). Fluxnet Archive Product from Guma, 2018–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/4tYejpkp-7QNMRnCzgTb9TY1
+Barral, H., Cohard, J., & Mamadou, O. (2026). Fluxnet Archive Product from Nalohou, 2008–2017, FLUXNET [Dataset]. https://hdl.handle.net/11676/lmKaXHkgzrf_23otyyDTLet5
+Koukoui, R., & Mamadou, O. (2026). Fluxnet Archive Product from DANGBO, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/bqZsKSML866fLpZmVsqJ1vC4
+Cohard, J., Mamadou, O., Barral, H., Afouda, S., Houngue, R., & Ouani, T. (2026). Fluxnet Archive Product from Bellefoungou, 2008–2017, FLUXNET [Dataset]. https://hdl.handle.net/11676/3e0Uvz3eNFxHLxOGL6H7ciVC
+Kutsch, W. (2026). Fluxnet Archive Product from Mongu, 2007–2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/4JqFnFICrXRzbEbd4p5YFNee
+Blake, K., Cumming, A., D'Acunha, B., Field, R., Morrison, R., & Riutta, T., van den Berg, M. (2025). Fluxnet Archive Product from Hope Farm, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/9XNveiBJ_2A4uYC0hHFDy3RS
+D'Acunha, B., Evans, C., Morrison, R., Riutta, T., & Shuckburgh, E., van den Berg, M. (2025). Fluxnet Archive Product from High Fen, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/0bh_V0qcsU1jVRdLmTN38MrV
+Cooper, H., Cumming, A., & Morrison, R. (2025). Fluxnet Archive Product from Glenwherry, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/kdw13mqVIM_fuCSUoFjwLTBX
+Cooper, H., Cumming, A., & Morrison, R. (2025). Fluxnet Archive Product from Glenullin, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/rr5GFzsDarjbHdARWXryBopk
+Cooper, H., Cumming, A., & Morrison, R. (2025). Fluxnet Archive Product from Garry Bog, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/3ur3ylHM5TMBuyVRXci8ohT_
+D'Acunha, B., Evans, C., Morrison, R., Riutta, T., & Shuckburgh, E., van den Berg, M. (2026). Fluxnet Archive Product from Coveney, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/37X3GrWRM7AEcdIt8WRasg1l
+Cumming, A., D'Acunha, B., Evans, C., Jovani, J., Morrison, R., & Riutta, T., van den Berg, M. (2026). Fluxnet Archive Product from Cors Caron, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/LrO8fItItMas7E62Hm_A032I
+Cooper, H., Cumming, A., & Morrison, R. (2025). Fluxnet Archive Product from Ballynahone Bog, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/QBlY2INal0mc2mRsgN9Wr_CV
+Crabtree, D., D'Acunha, B., Evans, C., Morrison, R., & Riutta, T., van den Berg, M. (2025). Fluxnet Archive Product from Anglesey, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/84y7MrbQ3ZSBKr4Kv-0_fdiY
+Cournac, L., Jourdan, C., Roupsard, O., & Timouk, F. (2025). Fluxnet Archive Product from Niakhar, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/X5l5NTHw0ymH6hudWtJMskZe
+Ardo, J., & Fensholt, R. (2026). Fluxnet Archive Product from Dahra, 2010–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/KdzlABR5BBUtxi1T7yzDK4_Z
+Christensen, T., Mastepanov, M., & Pirk, N. (2026). Fluxnet Archive Product from Adventdalen, 2012–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/su1D8nSqFTMQqji9sxkE6BFD
+Järveoja, J., & Peichl, M. (2025). Fluxnet Archive Product from Trollberget, 2021–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/zZioWvKJVU9_vq3xFG9pr7F7
+Jansen, J., Friborg, T., Jammet, M., & Crill, P. (2026). Fluxnet Archive Product from Stordalen grassland, 2012–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/QnQ0hNAqbtj_erSyXrx7UQOl
+Peichl, M. (2026). Fluxnet Archive Product from Storjarn, 2020–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/SYMcSsHs0Hu8XkbwZd8W8lg7
+De Simon, G., Nilsson, M., & Peichl, M. (2026). Fluxnet Archive Product from Rosinedal-3, 2014–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/zCQ_a4ZQA3TU9BlDvoZorna3
+Peichl, M. (2026). Fluxnet Archive Product from Halmyran, 2020–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/Z3YbTS2DrdSQ0M2ee0yvjl1R
+Peichl, M. (2026). Fluxnet Archive Product from Halsingfors mire, 2020–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/d2E6mfPz9El6AVmc8bV_2xnA
+Ardo, J., & Bashir, E. (2026). Fluxnet Archive Product from Demokeya, 2007–2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/fVuGjYQ3WMlneX1PCnbxiEaR
+Belelli Marchesini, L., & Papale, D. (2026). Fluxnet Archive Product from Hakasia steppe, 2002–2004, FLUXNET [Dataset]. https://hdl.handle.net/11676/f8QnEpCdYzurGpSNcvdrv03n
+Varlagin, A. (2026). Fluxnet Archive Product from Fyodorovskoye, 1998–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/GW1i5FQInU-IW_0iisGVDXW3
+Avilov, V., Ivanov, D., Kurbatova, J., & Mamkin, V. (2026). Fluxnet Archive Product from Fyodorovskoye bog, 2015–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/hItM4WCQqnQ68mQo9OvhTd6F
+Avilov, V., Kurbatova, J., & Mamkin, V. (2026). Fluxnet Archive Product from Fyodorovskoye Clear-cut, 2016–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/U-mck6ENkctdQRlTnynkSDWV
+Varlagin, A. (2025). Fluxnet Archive Product from Fyodorovskoye dry spruce stand, 2015–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/Vh2pWjfw5HPNZJDA6XfQSvcP
+Goeckede, M., Kittler, F., Kolle, O., Merbold, L., & Rebmann, C. (2026). Fluxnet Archive Product from Cherski, 2013–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/UMw2SbLULWP0FP70WzGnJ08C
+Goeckede, M., Kittler, F., & Kolle, O. (2026). Fluxnet Archive Product from Cherski reference, 2014–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/3xSmQwrTa-Ufn-rKi86qwxkR
+Wolf, S. (2026). Fluxnet Archive Product from Sardinilla-Pasture, 2007–2010, FLUXNET [Dataset]. https://hdl.handle.net/11676/IgPrzHJAztMihbt5A6F8ftZP
+Wolf, S. (2026). Fluxnet Archive Product from Sardinilla Plantation, 2007–2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/S5_n_nsdmDH3A4K0uyIhcfyM
+Pirk, N. (2026). Fluxnet Archive Product from Iskoras, 2019–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/8LmO1TBatCif6_LoU8kHEcPy
+Pirk, N., & Tallaksen, L. (2026). Fluxnet Archive Product from Finse, 2017–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/kDrWIYdOIg7jxi4gGpiV2vMK
+G.Drake, B., & Hansen, G., P. Rasse, D., P.Rasse, D. (2026). Fluxnet Archive Product from Andoya, 2008–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/KkqfRlPbN-GjF2nQXq4edZ6A
+Barten, J., Hartogensis, O., & Heusinkveld, B. (2026). Fluxnet Archive Product from Veenkampen, 2014–2025, FLUXNET [Dataset]. https://hdl.handle.net/11676/NjPFe8mMhEmbG6xHDtKSw-sx
+Barten, J., Hartogensis, O., & Heusinkveld, B. (2026). Fluxnet Archive Product from Haarweg, 2001–2010, FLUXNET [Dataset]. https://hdl.handle.net/11676/PQYUjF6JlyFnKvHTnv1BfTHn
+Manca, G. (2026). Fluxnet Archive Product from San Rossore, 1999–2012, FLUXNET [Dataset]. https://hdl.handle.net/11676/I0dHiKkliSYYaY8YAFuTO2MB
+Arriga, N., Belelli Marchesini, L., Canfora, E., Manca, G., Papale, D., Sabbatini, S., Tomassucci, M., & Valentini, R. (2026). Fluxnet Archive Product from Roccarespampani 2, 2002–2012, FLUXNET [Dataset]. https://hdl.handle.net/11676/GGulpe22_jQxGfff-1ulxR8a
+Arriga, N., Belelli Marchesini, L., Manca, G., Papale, D., Tomassucci, M., Valentini, R., & Vitale, D. (2026). Fluxnet Archive Product from Roccarespampani 1, 2000–2008, FLUXNET [Dataset]. https://hdl.handle.net/11676/bWEnFVz5SrMe27oyKA5hHirX
+[No author listed]. (2026). Fluxnet Archive Product from Parco Ticino forest, 2002–2004, FLUXNET [Dataset]. https://hdl.handle.net/11676/luWKnq47m8-eiwpb7TlQmKUQ
+Canone, D., Gentile, A., & Gisolo, D. (2026). Fluxnet Archive Product from Nivolet grassland, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/AFk3rC6RlVTrfbe2tNBYfSCG
+Wohlfahrt, G., & Niedrist, G. (2026). Fluxnet Archive Product from Muntatschinig Pasture, 2014–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/5BjUNIFTfUg-gh1sC_mGsrkc
+Wohlfahrt, G., & Niedrist, G. (2026). Fluxnet Archive Product from Muntatschinig Meadow, 2014–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/cULijyah3HGsQjOGEpbrHEZu
+Belelli Marchesini, L., & Sottocornola, M. (2026). Fluxnet Archive Product from Lavarone, 2003–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/XKQE9dtAKgDbkY1obJ-3Ym4s
+Arriga, N., Mazzenga, F., Papale, D., Sabbatini, S., & Valentini, R. (2026). Fluxnet Archive Product from Castelporziano, 2001–2008, FLUXNET [Dataset]. https://hdl.handle.net/11676/oMua13T8N3ukhoEtyKD76Su2
+Arriga, N., Matteucci, G., Papale, D., Sabbatini, S., & Tomassucci, M. (2026). Fluxnet Archive Product from Castel d'Asso3, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/MAXpa5PAn0L1aK-6zb-kcOs7
+Arriga, N., Gioli, B., Papale, D., Sabbatini, S., & Tomassucci, M. (2026). Fluxnet Archive Product from Castel d'Asso2, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/4nX2fCUltlN4ejOTF1KYMSzf
+Arriga, N., Papale, D., Sabbatini, S., & Tomassucci, M. (2026). Fluxnet Archive Product from Castel d'Asso1, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/JaiQh6fJCspNapWnx20Mx_-J
+Canone, D., Ferraris, S., Gentile, A., & Gisolo, D. (2026). Fluxnet Archive Product from Bussoleno, 2020–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/1ToCntM4yoaRk9TpAd3Z-pAn
+Canone, D., Ferraris, S., Ferraris, S., & Gisolo, D. (2026). Fluxnet Archive Product from Bussoleno Bosco, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/m7FE4F9G5kn2XaEsWLMCtomo
+Canton, M., Meggio, F., Pitacco, A., & Tezza, L. (2026). Fluxnet Archive Product from Arzelle, 2016–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/xK4i981ZSwQZHJeKKfpx5eZo
+Rotenberg, E., Schwartz, E., & Yakir, D. (2026). Fluxnet Archive Product from Yatir, 2000–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/ddBS_ZLjXuBI8SSQV2cskqda
+Li, Q., & Tas, E. (2026). Fluxnet Archive Product from Ramat Hanadiv, 2015–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/BDfZZGumiN8Ci3FRoFGYGKdQ
+Lanigan, G., Ni Choncubhair, O., O'Neill, M., & Osborne, B. (2026). Fluxnet Archive Product from Gowran, 2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/GDCw0QfMze-6S4E59YD2vQBI
+Davis, P., Osborne, B., & Saunders, M. (2026). Fluxnet Archive Product from Carlow No Tillage, 2003–2007, FLUXNET [Dataset]. https://hdl.handle.net/11676/fqas87xDJV_zXM6w23MBsleq
+Davis, P., Osborne, B., & Saunders, M. (2026). Fluxnet Archive Product from Carlow Conventional Tillage, 2003–2007, FLUXNET [Dataset]. https://hdl.handle.net/11676/olP0y9DuPPJFn_A3uWTEjEFU
+Nicolini, G., & Valentini, R. (2026). Fluxnet Archive Product from Ankasa, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/KGeOFn8sIXSOmMXfGprQynOP
+Buysse, P., Flechard, C., Hamon, Y., & Jacotot, A. (2026). Fluxnet Archive Product from Naizin, 2016–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/NySpPG4qsETA19sRa2e_ONBG
+Calvet, J., & Maurel, W. (2026). Fluxnet Archive Product from Mauzac, 2005–2011, FLUXNET [Dataset]. https://hdl.handle.net/11676/ebGKrL-UajXA0SkdfSt100r9
+Bonnefond, J., Jarosz, N., & Loustau, D. (2026). Fluxnet Archive Product from Le Bray, 1998–2008, FLUXNET [Dataset]. https://hdl.handle.net/11676/edFutLlMMA1D7S31ZC4pf2E2
+Alekseychik, P., Kolari, P., Korrensalo, A., Tuittila, E., & Vesala, T. (2026). Fluxnet Archive Product from Siikaneva-2 Bog, 2012–2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/Wojh4t-c8scGC-S00oT_sfAW
+Peltola, O., & Shurpali, N. (2026). Fluxnet Archive Product from Sarkisuo, 2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/xUETR-0OEq8u2S5UUHl8sLm_
+Aaltonen, H., Gerin, S., Hatakka, J., Korkiakoski, M., Suopajärvi, S., & Vekuri, H. (2026). Fluxnet Archive Product from Ruukki, 2020–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/TYPI56oF2JQVeXc0g4SU60It
+Aurela, M., & Rautakoski, H. (2025). Fluxnet Archive Product from Ranskalankorpi, 2020–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/Agmj31O2_U5UxIfjk_idGdLg
+Heimsch, L., Kulmala, L., & Lohila, A. (2026). Fluxnet Archive Product from Qvidja, 2018–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/UuvYrldK3v4VzDgfH6nC0ed7
+Peltola, O., & Shurpali, N. (2026). Fluxnet Archive Product from Pappilansuo, 2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/u2xUfhEZCOWwWb3gVywfqYw_
+Buzacott, A., Laasasenaho, K., Lohila, A., & Minkkinen, K. (2026). Fluxnet Archive Product from Naarasneva, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/cSm1qTXbblwvWpF9j1Oow7qX
+Aurela, M., Korkiakoski, M., & Lohila, A., Lång, K. (2026). Fluxnet Archive Product from Jokioinen, 2000–2003, FLUXNET [Dataset]. https://hdl.handle.net/11676/8PzFwQMtdQ_ly0Tahg8oE1Sz
+Chebbi, W., López Serrano, F., & Rubio Caballero, E. (2026). Fluxnet Archive Product from Yeste, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/sHycwsOK158vpmp0rDH1ujPO
+Carrara, A., & Gimeno, C. (2026). Fluxnet Archive Product from Vall d Alinya (Lleida), 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/mLCP7JnLuR2woC45y23wPdGC
+Manuel Sánchez, J., González Piqueras, J., Calera, A., & Rodriguez, A. (2026). Fluxnet Archive Product from Tarazona de la Mancha, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/gu5gauPM7ynjb6T28S4OY_sW
+López Ballesteros, A. (2026). Fluxnet Archive Product from Sarrion, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/zeJEF_Ad4wJIKY-U5orJ3sKQ
+[No author listed]. (2026). Fluxnet Archive Product from Pozoblanco, 2020–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/7xwSGufRWY7Duyrf11N282pK
+Kowalski, A., Sanchez-Canete, E., & Serrano, P. (2026). Fluxnet Archive Product from Padul, 2014–2017, FLUXNET [Dataset]. https://hdl.handle.net/11676/2ymbZLqZeToLY29BAzHOvpA4
+López Ballesteros, A. (2026). Fluxnet Archive Product from Manzanera, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/HPlYEFEhMzxWYOTC7Ch8Ku5a
+Gomez-Giraldez, P., Valero, A., Boixo, I., Bustamante, J., & Escobar, E. (2026). Fluxnet Archive Product from MonteNegro, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/lJTi2ztBm4QTcyuhsB4tcap1
+Gomez-Giraldez, P., Valero, A., Boixo, I., Bustamante, J., & Escobar, E. (2026). Fluxnet Archive Product from MonteBlanco, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/fZRunEwzLwhz0ZYzshuo9-cS
+Carrara, A., & Iglesias, D. (2026). Fluxnet Archive Product from Moncada, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/jyX3FQLrXu_wjllntwoO10IQ
+Ruiz Reverter, B. (2026). Fluxnet Archive Product from Lanjaron-Salvage logging, 2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/g9leg2h8KqvlcEUVuisiJFd9
+Ruiz Reverter, B., & Sanchez-Canete, E. (2026). Fluxnet Archive Product from Laguna Seca, 2007–2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/39o6NThdN0JnaIr99K8pvny2
+Carrara, A., El-Madany, T., Hammer, T., Kolle, O., Lee, S., Migliavacca, M., & Reichstein, M. (2026). Fluxnet Archive Product from Majadas del Tietar South, 2014–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/CgWe1iCQaO3oYYxgSMEe1BSq
+Carrara, A., El-Madany, T., Hammer, T., Kolle, O., Lee, S., Migliavacca, M., & Reichstein, M. (2026). Fluxnet Archive Product from Majadas del Tietar North, 2014–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/9c9e--DRFTTyhtl6c0lcA3O6
+Domingo Poveda, F., Kowalski, A., Sanchez-Canete, E., & Serrano, P. (2026). Fluxnet Archive Product from Llano de los Juanes, 2004–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/TWomFhgjVCGRurmVpcaHcRD5
+Chebbi, W., López Serrano, F., & Rubio Caballero, E. (2026). Fluxnet Archive Product from Hellin, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/MFHVWXPN9W_gfpI8fA4UtBVf
+Chebbi, W., López Serrano, F., & Rubio Caballero, E. (2026). Fluxnet Archive Product from Hellín Burnt, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/K1e9bqWUrsIlqHjlDzbl2VzM
+García Moreno, A. (2026). Fluxnet Archive Product from Hinojosa del Duque, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/w-KQ8NQ2IIyy_hF0LeeyY5EY
+Kowalski, A., Sanchez-Canete, E., & Serrano, P. (2026). Fluxnet Archive Product from Guadiana, 2014–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/EhJy8Xkd_vyJfhWOz3TNnFg-
+Gomez-Giraldez, P., Valero, A., Boixo, I., Bustamante, J., & Escobar, E. (2026). Fluxnet Archive Product from FuenteDuque, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/XVdkuBOyHTuezFce92fJHego
+Gomez-Giraldez, P., Valero, A., Boixo, I., Bustamante, J., & Escobar, E. (2026). Fluxnet Archive Product from Donana, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/dnuv1IF5YfwR9HAxV7HJCIcx
+Carrara, A., & Lopez Jimenez, R. (2026). Fluxnet Archive Product from Caroig, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/OuvCtRGBok2ZxUrKwXIP5LDY
+Aranda-Barranco, S., Kowalski, A., Sanchez-Canete, E., & Serrano, P. (2026). Fluxnet Archive Product from Conde, 2014–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/ak3chQKBZovcC1AIpPf0aaJw
+Domingo Poveda, F., López Ballesteros, A., Moya, M., Oyonarte Gutierrez, C., & Sanchez-Canete, E. (2026). Fluxnet Archive Product from Amoladeras, 2007–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/O6rek4-yeo_2LQrvCqM88Xvf
+Domingo Poveda, F., López Ballesteros, A., Moya, M., Oyonarte Gutierrez, C., & Sanchez-Canete, E. (2026). Fluxnet Archive Product from Aguamarga, 2006–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/smUITWSfoJ6VoyqONgDBxTSn
+El-Madany, T., Lee, S., Migliavacca, M., & Nadolski, L. (2026). Fluxnet Archive Product from Albuera, 2015–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/9_zyiamtBTthobX1dZHj5Z_G
+Krasnova, A., & Soosaar, K. (2026). Fluxnet Archive Product from Soontaga Forest Station, 2016–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/C4Y455t1rGorFhBAkA5CiOXw
+Kasak, K., & Pindus, M. (2026). Fluxnet Archive Product from Ruhingu, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/bokdUcMa7H-mSuOKeMR3mYiK
+Kasak, K., & Pindus, M. (2026). Fluxnet Archive Product from Pitsalu, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/j8jcyOzfXuBoZFKfMcbX5HQb
+Olesen, J., & Schelde, K. (2026). Fluxnet Archive Product from Foulum, 2005, FLUXNET [Dataset]. https://hdl.handle.net/11676/-2GoD8_IvjHfXvvW0-AkljOu
+[No author listed]. (2026). Fluxnet Archive Product from Enghave, 2005–2007, FLUXNET [Dataset]. https://hdl.handle.net/11676/AK-_MzK94ElJrWETR-czULE2
+Sachs, T., & Wille, C. (2026). Fluxnet Archive Product from Zarnekow, 2013–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/2FbdCUZozMmOpJwWEN3plb49
+Bernhofer, C., & Gruenwald, T. (2026). Fluxnet Archive Product from Spreewald, 2010–2015, FLUXNET [Dataset]. https://hdl.handle.net/11676/gb2UwUz8CoKkqKzLApzvIDME
+Dettmann, U., Klatt, J., & Tiemeyer, B., Völksch, I. (2026). Fluxnet Archive Product from Schechenfilz Sued, 2010–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/3wyudmvcaouNNJhVUFGNapGm
+Schmidt, M., & Schneider, K. (2026). Fluxnet Archive Product from Selhausen, 2007–2010, FLUXNET [Dataset]. https://hdl.handle.net/11676/CpSdf06dlgeBWeO1tSHFwc2D
+[No author listed]. (2026). Fluxnet Archive Product from Sonnenberger Moor, 2023–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/JeVgt8rDc-YmluX84aD3xarU
+Graf, A., & Schmidt, M. (2026). Fluxnet Archive Product from Merzenhausen, 2011–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/u8eIM1nL0KdiWr-MLixNMsMS
+Graf, A., & Schmidt, M. (2026). Fluxnet Archive Product from Wustebach Clearcut, 2013–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/MKtmPmXNZnCQc-p38RBQGATH
+Knohl, A., Markwitz, C., & Tunsch, E. (2026). Fluxnet Archive Product from Reinshof, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/ZOfRvdcakFBnrRQoiDMUEyds
+Bernhofer, C., & Gruenwald, T. (2025). Fluxnet Archive Product from Oberbarenburg, 2008–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/mk-YBqXT0YwbluI9V726yD2d
+Klosterhalfen, A., Knohl, A., Markwitz, C., & Tiedemann, F. (2026). Fluxnet Archive Product from Leinefelde, 2002–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/Iy6uj-QptZzaR9BFnqiv4hF6
+Schmid, H., Völksch, I. (2026). Fluxnet Archive Product from Lackenberg, 2009–2013, FLUXNET [Dataset]. https://hdl.handle.net/11676/VNA_ubq_zjZPgC8339cL7BwL
+Koebsch, F., & Jurasinski, G. (2026). Fluxnet Archive Product from Huetelmoor, 2009–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/zbIc22jMQSru_HymYjw5kWC-
+Gottschalk, P., Sachs, T., Sachs, T., Wille, C., & Wille, C. (2026). Fluxnet Archive Product from Heydenhof, 2020–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/6L5koGxrPosquldCoKHd45Q8
+Christen, A., Sulzer, M., & Werner, C. (2026). Fluxnet Archive Product from Ettenheim, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/timq13anOgu_cC9YrhwCaa1K
+Bernhofer, C., & Gruenwald, T. (2026). Fluxnet Archive Product from Anklam, 2009–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/P8ryFkG8dw0RkoDJmqv06lnk
+Czerný, R., & Pavelka, M., Šigut, L. (2026). Fluxnet Archive Product from Stitna, 2010–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/CM9ZMyBcfqBoKkmLPUDwiyMo
+Czerný, R., Kowalska, N., & Pavelka, M., Šigut, L. (2026). Fluxnet Archive Product from Rajec, 2012–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/LlmTy3u9548FEMXEW59RiWpY
+Czerný, R., Kowalska, N., Pavelka, M., & Trusina, J. (2025). Fluxnet Archive Product from Lanzhot Grassland, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/cezPci33oJjpbkjDF47P8YIK
+Acosta, M., & Czerný, R. (2026). Fluxnet Archive Product from Kresin u Pacova, 2014–2023, FLUXNET [Dataset]. https://hdl.handle.net/11676/cqH_ifs_P83CsahNQXGTp3Im
+Czerný, R., & Pavelka, M. (2026). Fluxnet Archive Product from Bily Kriz grassland, 2006–2012, FLUXNET [Dataset]. https://hdl.handle.net/11676/x40X4P6k4g30f_OFC6o4vHvJ
+Buchmann, N., Hortnagl, L., & Turco, F. (2026). Fluxnet Archive Product from Tanikon, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/mkSJOp0Dw6pVHTYytNO2XjZW
+Hirschi, M., Michel, D., & Seneviratne, S. (2026). Fluxnet Archive Product from Rietholzbach, 2009–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/ZSw7OruD5oGCPKwcw5aAC563
+Ammann, C., Paul, S., & Schweizer, D. (2025). Fluxnet Archive Product from Ruethi peatland covered, 2018–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/s29xGnt-hLzMlal-qo4i1iwb
+Ammann, C., Paul, S., & Schweizer, D. (2026). Fluxnet Archive Product from Ruethi peatland reference, 2018–2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/dvdiSGaj5yT3Cv3bSaKktRf5
+Ammann, C. (2026). Fluxnet Archive Product from Oensingen extensive grassland, 2002–2011, FLUXNET [Dataset]. https://hdl.handle.net/11676/Jk2_wTjn37nJQ0Ex5QzdqT8D
+Buchmann, N., Hortnagl, L., Maier, R., Turco, F., Baur, T., & Meier, P. (2026). Fluxnet Archive Product from Oensingen crop, 2004–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/nayPPdWP7UC3vBVNv1HnbxOJ
+Ammann, C. (2026). Fluxnet Archive Product from Oensingen grassland, 2002–2011, FLUXNET [Dataset]. https://hdl.handle.net/11676/Yhvt49ceMFBoaJhA4RgbYQf4
+Buchmann, N., Hortnagl, L., Gharun, M., Etzold, S., Paul-Limoges, E., Shekhar, A., Scapucci, L., Baur, T., & Meier, P. (2025). Fluxnet Archive Product from Laegern, 2004–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/V_BAvTqbUIgSItmCcoHgP3Vy
+Buchmann, N., Hortnagl, L., Zeeman, M., Fuchs, K., Feigenwinter, I., Burri, S., Baur, T., & Meier, P. (2025). Fluxnet Archive Product from Fruebuel, 2005–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/xnRKIWdx6isC5GLqv_pHq5hU
+Wohlfahrt, G. (2026). Fluxnet Archive Product from Furka, 2013–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/DyO-bck7H9h82Jj_OFEFlWHD
+Allemann, L., Baur, T., Buchmann, N., Hortnagl, L., Kohonen, K., Meier, P., & Ruegg, M. (2026). Fluxnet Archive Product from Forel, 2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/J588sazh4YQmAe0rk3vLQAvD
+Ammann, C., Paul, S., & Schweizer, D. (2026). Fluxnet Archive Product from Cressier, 2015–2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/imYdB4O0vIcmT-V5Xecz4Ww6
+Buchmann, N., Hortnagl, L., Feigenwinter, I., Wang, Y., Zeeman, M., Fuchs, K., Baur, T., & Meier, P. (2026). Fluxnet Archive Product from Chamau, 2005–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/_BRGI6F0aH0BpH6M9QscIcym
+Buchmann, N., Hortnagl, L., Kohonen, K., Zeeman, M., Ghiasi, S., Baur, T., & Meier, P. (2026). Fluxnet Archive Product from Alp Weissenstein, 2006–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/2c8FDF30wAcPfPTgr_PwL3qv
+Caquet, B., & Nouvellon, Y. (2026). Fluxnet Archive Product from Tchizalamou, 2006–2009, FLUXNET [Dataset]. https://hdl.handle.net/11676/FCFD-_Unczb9xHrj6_dm8loj
+De Meulder, T., Lefevre, L., Roland, M., Segers, J., & Van Look, J. (2025). Fluxnet Archive Product from Lochristi, 2019–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/oc2rvgUbNz-kUIeMsNmvNv8X
+Knaebel, K., Kobler, J., Matthews, B., & Pröll, G. (2026). Fluxnet Archive Product from Zoebelboden, 2014–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/cp3qmc9PDJw4kLwCX34YIr1M
+Baur, P., & Glatzel, S. (2026). Fluxnet Archive Product from Puergschachen Moor, 2015–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/STpBN0N9Df49Aabujg7yoJar
+Baur, P., & Glatzel, S. (2026). Fluxnet Archive Product from Neusiedl, 2018–2022, FLUXNET [Dataset]. https://hdl.handle.net/11676/2Itqw8Hspuyjolyphte0hHnO
+[No author listed]. (2026). Fluxnet Archive Product from Neustift, 2002–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/igjTOOy6rdzyQ7RPN590N98N
+Platter, A., & Wohlfahrt, G. (2025). Fluxnet Archive Product from Mieming, 2021–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/SR8Y7XJE2CuwVkPh9WO7iXKF
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Zhangye wetland, 2012–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/tFBkzpRGg9Iwux3atrGwD_ur
+Fadong, L. (2026). Fluxnet Archive Product from Yucheng, 2011–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/NFU16xgbyY-I0UsIppkbnnAV
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Yakou, 2015–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/vRR8XgOrD3OP9aSNCJm9qe2P
+Du, L., Ma, L., Qiao, C., & Wang, Y. (2026). Fluxnet Archive Product from Yanchi Planted Shrubs, 2016–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/lc9678eCbEfan19oZCTEp4yW
+Jia, X. (2026). Fluxnet Archive Product from Yanchi natural shrubland, 2011–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/6pt5rPsY7WPz3-14KSumsu47
+Chen, S. (2026). Fluxnet Archive Product from Xilinhot grassland site (X03), 2011–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/Q9e9OH0qQmaJV4OiVUDW3BAV
+Dong, G. (2026). Fluxnet Archive Product from Wulanbuhe, 2021, FLUXNET [Dataset]. https://hdl.handle.net/11676/Ed_4y2WO5VnXMnrBdzHXIhpj
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Sidaoqiao, 2013–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/3lCvpR-G0sl29NE-OD2rgvf7
+Gou, R., Li, Q., Liu, W., & Pang, J. (2026). Fluxnet Archive Product from Qinling, 2022–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/0G-jY-Q07vGfkXXWOr9iSo2z
+Li, Y. (2026). Fluxnet Archive Product from Naiman, 2015–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/0v70myjZ6UGZr9O6hJG55c-t
+He, Q. (2026). Fluxnet Archive Product from Maoxian, 2015–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/LC7IDEUVMo2L4DrP_LRCS8PR
+Zhang, Y. (2026). Fluxnet Archive Product from Luancheng, 2008–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/z2J76ckVo1ywgV-s6QoYLklQ
+Jia, Q., Zhou, G., & Zhou, L. (2026). Fluxnet Archive Product from Jinzhou, 2011–2016, FLUXNET [Dataset]. https://hdl.handle.net/11676/IdPKbpSMd_1dl0ReNyYlmqoX
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Jingyangling, 2018–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/-j9SFp6fnVpcNTpZmfQG_mJm
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Huazhaizi, 2015–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/1T6b8TLnKLGWf4tOzEuap3QT
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Heihe mixed forest, 2013–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/jF6IagFB3JTernoRBEid7jI1
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Heihe desert, 2019–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/vYhdwdwjsWz9BbCqBCrlbO1M
+Li, Y., Liang, Z., Zhang, F., & Zhao, X. (2026). Fluxnet Archive Product from Haibei Wetland, 2011–2018, FLUXNET [Dataset]. https://hdl.handle.net/11676/zcDT70pAxkOj3APSR2JAKGXf
+Li, Y., Liang, Z., Zhang, F., & Zhao, X. (2026). Fluxnet Archive Product from Haibei Shrubland, 2011–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/fO5BuMb3iizRc0O5TY5c-d7_
+Fuquan, H., & Liang, Z. (2026). Fluxnet Archive Product from Guoluo Tuihua, 2015–2017, FLUXNET [Dataset]. https://hdl.handle.net/11676/e-sKFJBYhUCvVrCNIiPw-bYV
+Chen, S. (2026). Fluxnet Archive Product from Eerguna, 2016–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/YnJJoUgJzknCQc4Hl_yo1yyx
+Chuan, Y., Guoyu, L., Rui, S., Xinwei, G., & Zhixiang, W. (2026). Fluxnet Archive Product from Danzhou, 2010–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/cRRcmwgDGkL_FN07mKZghrOa
+Chen, S. (2026). Fluxnet Archive Product from Duolun_grassland (D01), 2011–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/4iVSvtAHibzF9fw90Vijm_Bi
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Dashalong, 2013–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/CuNYBsqS22epRiBFdnFTFpHD
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Daman, 2012–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/rDvBU2EyWJDrd8bxJoMF69Lt
+Meng, Z., Yan, J., & Yu, M. (2026). Fluxnet Archive Product from Dinghushan, 2010–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/eIM3dmOatc4k0XhMwrwZZGkW
+Zhou, G., & Zhou, L. (2026). Fluxnet Archive Product from Damao, 2011–2014, FLUXNET [Dataset]. https://hdl.handle.net/11676/LfCurmcmjbwq0kACEe81OTEW
+He, Y., Niu, B., Shi, P., & Zhang, X. (2026). Fluxnet Archive Product from Dangxiong, 2011–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/5nBFYMv5AuND3EaDf_ScE4kY
+He, Y., Niu, B., Shi, P., & Zhang, X. (2026). Fluxnet Archive Product from Dangxiong wetland, 2011–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/DQKmnAHmBm3CphGIcY5xQPmD
+Jia, X. (2026). Fluxnet Archive Product from Beijing Olympic Forest Park, 2012–2020, FLUXNET [Dataset]. https://hdl.handle.net/11676/bGwvrJ7bcVh2rAzAE59-6SwC
+Fan, Z., Palingamoorthy, G., Song, Q., Yu, Y., & Zhang, J. (2026). Fluxnet Archive Product from Ailaoshan, 2009–2019, FLUXNET [Dataset]. https://hdl.handle.net/11676/-aqgpma6k0HrmLYRSsZInJHG
+Liu, S., Che, T., & Xu, Z. (2026). Fluxnet Archive Product from Arou, 2013–2024, FLUXNET [Dataset]. https://hdl.handle.net/11676/jxTNODjDo67lOrOxUacBPDO4
+Pendall, E. (2026). Yarramundi Control FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/ramf-vb64
+Hunt, J., & Laubach, J. (2026). Ashley Dene Wet FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/60yf-et36
+Beringer, J., Moore, C., & Lardner, T. (2026). Ridgefield FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/rs7z-7y12
+Ewenz, C., Stevens, R. M., Grigson, G., & Conner, S. (2026). Loxton FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/4xcf-9v74
+Macfarlane, C. K., & Prober, S. M. (2026). Great Western Woodlands FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/683k-7e46
+Beringer, J., & Moore, C. (2026). Boyagin FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/qhwv-0j21
+Campbell, D., & Schipper, L. (2026). Kopuatai FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/39mm-8518
+Campbell, D., & Schipper, L. (2026). Scott Farm FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/xhwv-a218
+Hovenden, M., & Yates, B. (2026). Wedgetail FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/71r0-0836
+Smale, D. (2026). Lauder FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/6zb3-2m14
+Grace, P., Gane, M., Grace, L., & Brunk, C. (2026). Samford FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/z48h-ng94
+Hunt, J. (2026). Oxford FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/atjw-xm72
+Beringer, J., Arndt, S., Loew, M., & Hinko-Najera, N. (2026). Whroo FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/8smh-v474
+Macdonald, B., Antille, D., Kitchen, M., Brown, Z., Nadelko, A., Hodgson, D., & Smith, V. (2026). Myall Vale A FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/wcq3-1613
+Hunt, J., & Laubach, J. (2026). Beacon Farm Managed FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/x1jz-cc60
+Beringer, J. (2026). Collie FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/ade1-p928
+Beringer, J., Hutley, L., & Northwood, M. (2026). Red Dirt Melon Farm FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/q42b-r648
+Woodgate, W., Stol, J., & Kitchen, M. (2026). Tumbarumba 1 FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/w7jx-at32
+Laubach, J. (2026). Clareview FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/51kz-kf65
+Kitchen, M. (2026). Otway FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/gjjp-c297
+Beringer, J., & Hutley, L. (2026). Adelaide River FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/bwf9-br18
+Griebel, A., Cleverly, J., Eamus, D., & Lieff, N. (2026). Alice Springs Mulga FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/azz4-x655
+Beringer, J., Hutley, L., & Northwood, M. (2026). Litchfield FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/4vb1-tr22
+Beringer, J., & McHugh, I. (2026). Riggs Creek FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/nvg6-hr60
+Beringer, J., & Hutley, L. (2026). Fogg Dam FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/dvrw-kd19
+Liddell, M., & Weigand, N. (2026). Robson Creek FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/4911-j064
+Beringer, J., Hutley, L., & Northwood, M. (2026). Daly River Uncleared FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/nkbt-pa39
+Grover, S. (2026). Alpine Peatland FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/gtk0-m966
+Beringer, J., & Hutley, L. (2026). Daly River Pasture FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/v6n6-x925
+Beringer, J., Hutley, L., & Northwood, M. (2026). Dry River FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/mt7s-d941
+Griebel, A., & Lieff, N. (2026). Ti Tree East FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/6sr7-ap81
+Anderson, M., & Jensen, E. (2026). Wellington FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/jztk-0d69
+Feitz, A., Schroder, I., & Kitchen, M. (2026). Emerald FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/trb3-6033
+Pendall, E. (2026). Yarramundi Irrigated FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/5wpr-vr80
+Silberstein, R., Beringer, J., & Moore, C. (2026). Gingin FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/sbym-ad50
+Rowlings, D., Grace, P., Tucker, D., Grace, L., & Brunk, C. (2026). Longreach Mitchell Grass FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/cdf2-d144
+Macdonald, B., Stenson, M., Antille, D., Kitchen, M., Brown, Z., Hodgson, D., & Smith, V. (2026). Myall Vale B FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/pf5h-1t18
+Beringer, J., Hutley, L., & Northwood, M. (2026). Sturt Plains FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/exc5-x691
+Laubach, J., & Hunt, J. (2026). Ashley Dene Dry FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/5cp7-ss13
+Liddell, M., & Weigand, N. (2026). Cow Bay FLUXNEXT Release 2026_r1 [Dataset]. https://doi.org/10.25901/5j6g-mj24
+Beringer, J., Hutley, L., & Northwood, M. (2026). Howard Springs FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/8p4w-xa85
+Liddell, M., & Weigand, N. (2026). Cape Tribulation FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/4zh8-9y75
+Pendall, E., Griebel, A., Barton, C., & Metzen, D. (2026). Cumberland Plain FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/gjm4-9020
+Hovenden, M., & Yates, B. (2026). Silverplains FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/z5rr-ww68
+Arndt, S., Griebel, A., Hinko-Najera, N., & Loew, M. (2026). Wombat State Forest FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/gw8s-7a26
+Beringer, J., & Walker, J. (2026). Yanco FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/k8zr-kn41
+Beringer, J., & McHugh, I. (2026). Wallaby Creek FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/1ky7-6f15
+Hunt, J., & Laubach, J. (2026). Beacon Farm Unmanaged FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/04zp-2272
+Hovenden, M., Nicotra, A., Rose Dawson, H., Brown, Z., & Battey, N. (2026). Snow Gum FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/a5wv-9416
+Liddell, M., & Weigand, N. (2026). Fletcherview FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/wrhr-ey86
+Wardlaw, T., & Phillips, A. (2026). Warra FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/t3x2-b871
+Meyer, W., Ewenz, C., Koerber, G., & Lubcke, T. (2026). Calperum Chowilla FLUXNET Release 2026_r1 [Dataset]. https://doi.org/10.25901/braj-w973

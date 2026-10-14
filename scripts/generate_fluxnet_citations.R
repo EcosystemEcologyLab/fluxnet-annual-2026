@@ -147,17 +147,35 @@ parse_tern <- function(cit, pid) {
 }
 
 parse_saeon <- function(cit, pid) {
-  # Structure: {authors} ({year}). Fluxnet Archive Product from {site}, {range}, FLUXNET, https://...
+  # Structure: [{authors} ]({year}). Fluxnet Archive Product from {site}, {range}, FLUXNET, https://...
+  # No-author variant (4 of 5 current SAEON sites): citation begins "(year)."
+  # directly, same shape as parse_icos()'s no-author branch -- mirrored here
+  # 2026-10-14 after the fix was found missing (SESSION_LOG.md 2026-10-13
+  # citation-generator audit).
   parts <- strsplit(cit, ", https://", fixed = TRUE)[[1]]
   if (length(parts) < 2L) stop("SAEON: no URL separator in: ", cit)
-  m <- str_match(parts[[1]], "^(.*) \\((\\d{4})\\)\\. (.+)$")
-  if (is.na(m[[1]])) stop("SAEON: cannot parse author/year/title from: ", parts[[1]])
-  list(
-    authors = m[[2]],
-    year    = m[[3]],
-    title   = m[[4]],
-    url     = paste0("https://hdl.handle.net/11676/", pid)
-  )
+  lhs <- parts[[1]]
+  url <- paste0("https://hdl.handle.net/11676/", pid)
+
+  if (startsWith(lhs, "(")) {
+    m <- str_match(lhs, "^\\(([^)]+)\\)\\. (.+)$")
+    if (is.na(m[[1]])) stop("SAEON no-author: cannot parse year/title from: ", lhs)
+    list(
+      authors = NA_character_,
+      year    = sub("^(\\d{4}).*", "\\1", m[[2]]),
+      title   = m[[3]],
+      url     = url
+    )
+  } else {
+    m <- str_match(lhs, "^(.*) \\((\\d{4})\\)\\. (.+)$")
+    if (is.na(m[[1]])) stop("SAEON: cannot parse author/year/title from: ", lhs)
+    list(
+      authors = m[[2]],
+      year    = m[[3]],
+      title   = m[[4]],
+      url     = url
+    )
+  }
 }
 
 # ---- Cite key ----------------------------------------------------------------
@@ -213,7 +231,7 @@ build_bib_entry <- function(row) {
   if (is.null(parsed)) return(list(site_id = sid, bib = NULL, flag = flag))
 
   # Per-site preserved-verbatim flags
-  if (net %in% ICOS_NETWORKS && is.na(parsed$authors))
+  if ((net %in% ICOS_NETWORKS || net == "SAEON") && is.na(parsed$authors))
     flag <- "No author block in citation (author field omitted from BibTeX entry)"
   if (sid == "AU-Cow" && grepl("FLUXNEXT", cit))
     flag <- "Title contains 'FLUXNEXT' (typo for 'FLUXNET') — preserved from upstream source"
@@ -241,7 +259,13 @@ mandated_bib <- function(networks) {
     doi     = "10.1038/s41597-020-0534-3"
   )
 
-  # TERN present: Beringer 2016 + Isaac 2017
+  # TERN (also covers OzFlux -- the manifest's product_source_network uses
+  # "TERN" for both, no separate "OZF" code; see the audit below) present:
+  # Beringer 2016 + Isaac 2017. Isaac2017's journal/volume/pages/doi corrected
+  # 2026-10-14 against the FLUXNET data policy (https://data.fluxnet.org/?p=30,
+  # "Required Attribution" items 2.4/2.5) -- it is Biogeosciences 14:2903-2928,
+  # doi:10.5194/bg-14-2903-2017, NOT Earth System Science Data 9:349 as this
+  # file previously had it (SESSION_LOG.md 2026-10-13 citation-generator audit).
   if ("TERN" %in% networks) {
     refs$b2016 <- format_article_entry(
       key     = "Beringer2016",
@@ -255,22 +279,33 @@ mandated_bib <- function(networks) {
       key     = "Isaac2017",
       author  = "Isaac, P. and others",
       title   = "OzFlux Data: Network integration from collection to curation",
-      journal = "Earth System Science Data",
-      year    = "2017", volume = "9", pages = "349--361",
-      doi     = "10.5194/essd-9-349-2017"
+      journal = "Biogeosciences",
+      year    = "2017", volume = "14", pages = "2903--2928",
+      doi     = "10.5194/bg-14-2903-2017"
     )
   }
 
-  # JPF present: Ueyama 2025 + Yu 2006
+  # JPF present: Ueyama 2025 only (NOT Yu 2006 -- that is the CNF/ChinaFlux
+  # reference, see below; the two were previously both triggered by "JPF
+  # present", which is wrong -- see SESSION_LOG.md 2026-10-13 citation-
+  # generator audit). Title/pages corrected 2026-10-14 against the FLUXNET
+  # data policy (https://data.fluxnet.org/?p=30, item 2.3) and the paper
+  # itself: this is "The JapanFlux2024 dataset for eddy covariance
+  # observations covering Japan and East Asia from 1990 to 2023", not
+  # "AsiaFlux dataset of ecosystem carbon, water, and energy fluxes".
   if ("JPF" %in% networks) {
     refs$u2025 <- format_article_entry(
       key     = "Ueyama2025",
       author  = "Ueyama, M. and others",
-      title   = "AsiaFlux dataset of ecosystem carbon, water, and energy fluxes",
+      title   = "The JapanFlux2024 dataset for eddy covariance observations covering Japan and East Asia from 1990 to 2023",
       journal = "Earth System Science Data",
-      year    = "2025", volume = "17", pages = "3807--3831",
+      year    = "2025", volume = "17", pages = "3807--3833",
       doi     = "10.5194/essd-17-3807-2025"
     )
+  }
+
+  # CNF (ChinaFlux) present: Yu 2006 -- moved here from the JPF block above.
+  if ("CNF" %in% networks) {
     refs$y2006 <- format_article_entry(
       key     = "Yu2006",
       author  = "Yu, G.-R. and others",
@@ -285,18 +320,37 @@ mandated_bib <- function(networks) {
 }
 
 # ---- Acknowledgments ---------------------------------------------------------
-
+#
+# Rewritten 2026-10-14 to follow the FLUXNET data use policy's "Required
+# Attribution" text (https://data.fluxnet.org/?p=30) directly, rather than
+# paraphrased text invented for this script. Covers exactly the elements the
+# policy requires: the global network-list + modified-ERA5 credit (item 2),
+# the AmeriFlux funding sentence (item 2.1), the ChinaFlux/NESDC sentence
+# (item 2.2), the OzFlux and TERN data-portal sentences (items 2.4/2.5), and
+# the Data Availability template (item 3) -- no invented per-network sentences
+# for ICOS/KoFlux/SAEON, since the policy has none; those three networks are
+# still covered by being named in the global network list. The old "Per-site
+# DOIs are listed in the supplementary material" line is removed: the policy's
+# item 1 requires each site's citation in the paper's reference section, not
+# supplementary material (see generate_fluxnet_citations()'s own .bib output).
+#
+# The global paragraph and the ERA5 sentence are reproduced as given by the
+# policy page; the connecting prose around them could not be fetched as a
+# single verbatim block (the fetch tool used to read the page truncates long
+# quotes), so it is reconstructed from multiple consistent fetches of the same
+# page rather than guessed -- spot-check against the live policy page before
+# final submission.
 build_acknowledgments <- function(networks) {
   lines <- c(
     "# FLUXNET Data Acknowledgments",
     "",
-    "## Global",
+    "## Required acknowledgment text (FLUXNET data use policy, https://data.fluxnet.org/?p=30)",
     "",
-    "The FLUXNET data used in this study were collected and quality-controlled by site",
-    "principal investigators and processed through the ONEFlux pipeline (Pastorello et",
-    "al. 2020, doi:10.1038/s41597-020-0534-3). Per-site DOIs are listed in the",
-    "supplementary material. We acknowledge the FLUXNET Coordination Project and all",
-    "contributing site PIs for making these data openly available under CC-BY-4.0.",
+    "FLUXNET data products were produced and harmonized by eddy covariance regional",
+    "networks and data processing centers, including AmeriFlux, ChinaFlux, European",
+    "Fluxes Database, ICOS, JapanFlux, KoFlux, OzFlux, SAEON, and TERN. These products",
+    "also include a modified version of ERA5 hourly data provided by the Copernicus",
+    "Climate Change Service.",
     ""
   )
 
@@ -304,62 +358,32 @@ build_acknowledgments <- function(networks) {
     lines <- c(lines,
       "## AmeriFlux",
       "",
-      "Funding for AmeriFlux data resources was provided by the U.S. Department of",
-      "Energy's Office of Science.",
+      "Funding for the AmeriFlux data service was provided by the U.S. Department of",
+      "Energy Office of Science.",
       ""
     )
   }
 
-  if (any(c("EUF", "ICOS", "FLX") %in% networks)) {
+  if ("CNF" %in% networks) {
     lines <- c(lines,
-      "## ICOS",
+      "## ChinaFlux",
       "",
-      "The authors acknowledge the ICOS Research Infrastructure, its National Networks,",
-      "and the ICOS Carbon Portal for data sharing (https://www.icos-cp.eu/).",
-      ""
-    )
-  }
-
-  if (any(c("CNF", "KOF") %in% networks)) {
-    lines <- c(lines,
-      "## ChinaFlux / KoFlux",
-      "",
-      "The authors acknowledge the ChinaFLUX and KoFlux networks and their contributing",
-      "site PIs for data access.",
-      ""
-    )
-  }
-
-  if ("JPF" %in% networks) {
-    lines <- c(lines,
-      "## AsiaFlux / Japan Flux Program",
-      "",
-      "The authors acknowledge the AsiaFlux/JPF network and its site PIs for data",
-      "access. Cite Ueyama et al. (2025, doi:10.5194/essd-17-3807-2025) and Yu et al.",
-      "(2006, doi:10.1016/j.agrformet.2006.02.011) when using JPF data.",
+      "ChinaFlux data are from the National Ecosystem Science Data Center (NESDC;",
+      "https://www.nesdc.org.cn). Cite Yu et al. (2006, doi:10.1016/j.agrformet.2006.02.011)",
+      "when using ChinaFlux data.",
       ""
     )
   }
 
   if ("TERN" %in% networks) {
     lines <- c(lines,
-      "## TERN / OzFlux",
+      "## OzFlux and TERN",
       "",
-      "This research was enabled by data and infrastructure provided by the Terrestrial",
-      "Ecosystem Research Network (TERN; https://www.tern.org.au), supported by the",
-      "Australian Government's National Collaborative Research Infrastructure Strategy",
-      "(NCRIS). Cite Beringer et al. (2016, doi:10.5194/bg-13-5895-2016) and Isaac",
-      "et al. (2017, doi:10.5194/essd-9-349-2017) when using OzFlux/TERN data.",
-      ""
-    )
-  }
-
-  if ("SAEON" %in% networks) {
-    lines <- c(lines,
-      "## SAEON",
-      "",
-      "The authors acknowledge the South African Environmental Observation Network",
-      "(SAEON; https://www.saeon.ac.za) for providing South African flux tower data.",
+      "OzFlux data are from the OzFlux Data Portal",
+      "(https://data.ozflux.org.au/home.jspx). TERN data are from the TERN Data",
+      "Discovery Portal (https://portal.tern.org.au/browse/theme). Cite Beringer et al.",
+      "(2016, doi:10.5194/bg-13-5895-2016) and Isaac et al. (2017,",
+      "doi:10.5194/bg-14-2903-2017) when using OzFlux/TERN data.",
       ""
     )
   }
@@ -367,9 +391,8 @@ build_acknowledgments <- function(networks) {
   lines <- c(lines,
     "## Data Availability Statement",
     "",
-    "The FLUXNET data used in this study are available from the FLUXNET Shuttle at",
-    "[SOURCE], accessed [DATE]. Per-site dataset DOIs and handle identifiers are listed",
-    "in Supplementary Table S1. All data are distributed under CC-BY-4.0.",
+    "The FLUXNET data products used in this work were downloaded from [SOURCE] on",
+    "[XX Month YYYY]. Each site's dataset citation is given in the reference section.",
     ""
   )
 
@@ -398,13 +421,13 @@ build_review_flags <- function(flags_named, sites_df) {
     ""
   )
 
-  # No-author ICOS/JPF sites — those flagged in entries
+  # No-author ICOS/JPF/SAEON sites — those flagged in entries
   no_author_ids <- names(flags_named)[
     vapply(flags_named, function(f) grepl("No author block", f), logical(1L))
   ]
   if (length(no_author_ids) > 0L) {
     lines <- c(lines,
-      "## No-author ICOS/JPF sites",
+      "## No-author ICOS/JPF/SAEON sites",
       "",
       sprintf(
         "%d site(s) have no author block in their product_citation (citation starts with",
@@ -441,15 +464,24 @@ build_review_flags <- function(flags_named, sites_df) {
   )
   if ("TERN" %in% nets) {
     lines <- c(lines,
-      "- **Beringer2016** (TERN sites present): doi:10.5194/bg-13-5895-2016 — Biogeosciences 13:5895 — verify",
-      "- **Isaac2017** (TERN sites present): doi:10.5194/essd-9-349-2017 — ESSD 9:349 — verify"
+      "- **Beringer2016** (TERN sites present): doi:10.5194/bg-13-5895-2016 — Biogeosciences 13:5895 — **confirmed**",
+      "- **Isaac2017** (TERN sites present): doi:10.5194/bg-14-2903-2017 — Biogeosciences 14:2903 — **confirmed",
+      "  2026-10-14 against the FLUXNET data policy (https://data.fluxnet.org/?p=30) -- was previously misattributed",
+      "  as Earth System Science Data 9:349, see SESSION_LOG.md**"
     )
   }
   if ("JPF" %in% nets) {
     lines <- c(lines,
-      "- **Ueyama2025** (JPF sites present): doi:10.5194/essd-17-3807-2025 — ESSD 17:3807 — **confirmed (given DOI)**",
-      "- **Yu2006** (JPF sites present): doi:10.1016/j.agrformet.2006.02.011 — Agric. For. Met. 137:125 — **verify;",
-      "  this is the ChinaFLUX paper — confirm it is the correct network attribution for all JPF sites**"
+      "- **Ueyama2025** (JPF sites present): doi:10.5194/essd-17-3807-2025 — ESSD 17:3807 — **confirmed 2026-10-14,",
+      "  title corrected to \"The JapanFlux2024 dataset for eddy covariance observations covering Japan and East",
+      "  Asia from 1990 to 2023\", see SESSION_LOG.md**"
+    )
+  }
+  if ("CNF" %in% nets) {
+    lines <- c(lines,
+      "- **Yu2006** (CNF/ChinaFlux sites present): doi:10.1016/j.agrformet.2006.02.011 — Agric. For. Met. 137:125",
+      "  — **confirmed**. Moved here from the JPF trigger 2026-10-14 (was previously attached to JPF as well as",
+      "  CNF, which was wrong — Yu2006 is the ChinaFlux/CNF reference, not JapanFlux/JPF — see SESSION_LOG.md**"
     )
   }
   lines <- c(lines, "")

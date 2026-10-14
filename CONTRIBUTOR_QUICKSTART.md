@@ -120,27 +120,55 @@ Expected time: 60–120 minutes. Expected disk usage: ~300MB extracted CSVs
 
 ## Generating citations and APA reference lists
 
-Two scripts handle citation output for the paper. Both support filtering to a
-specific subset of sites — useful for drafting, regional sub-analyses, or
-co-author review.
+### The full paper reference list — `scripts/generate_site_reference_list.R`
 
-### Step 1 — generate a BibTeX file
+This is the canonical, committed driver for the paper's site reference list — not a
+placeholder. It pins an explicit snapshot (no auto-discovery), generates BibTeX for every
+site in it, converts that to an APA 7th Edition reference list (`.txt` and `.docx`), and
+writes everything to `review/citations/` (git-tracked, like `review/figures/`), with a
+`.meta.json` companion for provenance:
+
+```bash
+Rscript scripts/generate_site_reference_list.R
+```
+
+```
+→ review/citations/fluxnet_site_references.bib
+→ review/citations/fluxnet_site_references_acknowledgments.md
+→ review/citations/fluxnet_site_references_review_flags.md
+→ review/citations/fluxnet_site_references_apa.txt
+→ review/citations/fluxnet_site_references_apa.docx
+→ review/citations/fluxnet_site_references.meta.json
+```
+
+As of the current pinned snapshot this covers 781 sites (0 parse failures). Site counts
+change as the network grows — check the script's own console output (`Stage 1 (BibTeX): N
+of N sites parsed`) rather than trusting a number in this doc, and check
+`fluxnet_site_references_review_flags.md` before using the output in the paper (a handful
+of sites with no author block in their upstream citation, or other preserved-verbatim
+upstream quirks, are flagged there, not treated as errors).
+
+### Generating citations for a subset of sites
+
+`generate_fluxnet_citations()` (`scripts/generate_fluxnet_citations.R`) and `bib_to_apa()`
+(`R/parse_bib_to_apa.R`) — the two functions the driver above calls — both support
+filtering to a specific subset of sites directly, useful for drafting, regional
+sub-analyses, or co-author review without regenerating the full list:
 
 ```r
 source("scripts/generate_fluxnet_citations.R")
 
-# All 718 sites
+# A specific subset, by site_ids vector
 generate_fluxnet_citations(
-  site_ids      = c("US-MMS", "DE-Tha", "AU-How"),   # or use site_ids_csv below
-  output_prefix = "outputs/citations/paper2026"
+  site_ids      = c("US-MMS", "DE-Tha", "AU-How"),
+  snapshot_path = "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+  output_prefix = "outputs/citations/subset"
 )
-# → outputs/citations/paper2026.bib
-# → outputs/citations/paper2026_acknowledgments.md
-# → outputs/citations/paper2026_review_flags.md
 
 # Filter via CSV (any CSV with a "site_id" column)
 generate_fluxnet_citations(
   site_ids_csv  = "data/my_sites.csv",
+  snapshot_path = "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
   output_prefix = "outputs/citations/subset"
 )
 
@@ -148,38 +176,35 @@ generate_fluxnet_citations(
 generate_fluxnet_citations(
   site_ids_csv  = "data/analysis_sites.csv",
   site_id_col   = "SITE_ID",
+  snapshot_path = "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
   output_prefix = "outputs/citations/subset"
 )
 ```
 
-### Step 2 — convert to APA plain text, Word document, or Google Doc
-
 ```r
 source("R/parse_bib_to_apa.R")
 
-# Plain text (default) — writes to Google Drive sync folder
-bib_to_apa()
+# Plain text, filtered to a subset of the .bib just generated above
+bib_to_apa(bib_path = "outputs/citations/subset.bib",
+           out_path = "outputs/citations/subset_apa.txt")
 
-# Filter to a subset — vector or CSV
-bib_to_apa(site_ids = c("US-MMS", "DE-Tha", "AU-How"))
-bib_to_apa(site_ids_csv = "data/my_sites.csv")
-
-# Word document (requires officer package)
-bib_to_apa(output_format = "docx")
-bib_to_apa(site_ids_csv = "data/my_sites.csv",
-           out_path      = "~/Desktop/citations_subset.docx",
+# Word document (requires the officer package)
+bib_to_apa(bib_path = "outputs/citations/subset.bib",
+           out_path = "outputs/citations/subset_apa.docx",
            output_format = "docx")
 
-# Native Google Doc (requires googledrive; triggers browser OAuth on first use)
-bib_to_apa(output_format = "gdoc")
-bib_to_apa(site_ids = c("US-MMS", "DE-Tha"),
-           out_path      = "Subset Citations 2026",
+# Native Google Doc (requires googledrive; triggers browser OAuth on first use) —
+# only use this for a personal, disposable working copy, never for the paper's
+# actual reference list (which belongs in review/citations/, git-tracked, as above).
+bib_to_apa(bib_path = "outputs/citations/subset.bib",
+           out_path = "Subset Citations 2026",
            output_format = "gdoc",
            gdrive_path   = "My Drive/Paper2026")
 ```
 
-The default output path for `txt` and `docx` formats is the project's Google
-Drive sync folder (`~/Library/CloudStorage/…/My Drive/FLUXNET_APA_Citations.*`).
+`bib_to_apa()`'s default `out_path` (when omitted) is the project's Google Drive sync
+folder (`~/Library/CloudStorage/…/My Drive/FLUXNET_APA_Citations.*`) — always pass an
+explicit `out_path` for anything that should land in the repository instead.
 
 ---
 
@@ -217,7 +242,8 @@ scripts/
   06_analysis.R                 # Analysis (placeholder)
   07_figures.R                  # Final paper figures (placeholder)
   batch_download.R              # Full download in batches of 50
-  generate_fluxnet_citations.R  # BibTeX + acknowledgments from snapshot
+  generate_fluxnet_citations.R  # BibTeX + acknowledgments from snapshot (function library)
+  generate_site_reference_list.R # Canonical driver: full paper reference list -> review/citations/
 
 R/
   pipeline_config.R       # QC thresholds, env vars, config checks

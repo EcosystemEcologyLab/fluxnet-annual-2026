@@ -4,6 +4,64 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-14 — WAFNET x FLUXCOM comparison, Stage 1 pre-analysis report
+
+Full prompt: `logs/prompts/2026-10-14_wafnet_fluxcom_stage1.md`. New side analysis requested by
+Ossénatou Mamadou (WAF-Net paper) via David Moore. Stood up `WAFNET/fluxcom_comparison/` with the
+same layout as `WAFNET/energy_partitioning/` (README, code/, docs/, tables/, figures/, gitignored
+data/). **Not part of the Annual Paper; FLUXCOM is explicitly labelled non-Shuttle comparison data
+throughout, per CLAUDE.md Hard Rule #1.** No FLUXCOM product was downloaded and no comparison
+statistic was computed — this is a pre-analysis report only. Full report:
+`WAFNET/fluxcom_comparison/docs/report_back_20261014.md`.
+
+**FLUXCOM product survey (web research):** FLUXCOM-X-BASE (Nelson et al. 2024,
+doi:10.5194/bg-21-5079-2024) distributes GPP/NEE/ET/ETT only — no Reco/TER, no H, no
+daytime-partition member — at 0.05° (paper)/0.5° (ICOS archive), monthly, 2001–2020 (paper text) or
+2001–2021 (ICOS archive; this one-year discrepancy was not resolved and is flagged for Stage 2).
+Original FLUXCOM carbon (RS: Tramontana et al. 2016, doi:10.5194/bg-13-4291-2016; RS+METEO: Jung et
+al. 2020, doi:10.5194/bg-17-1343-2020) does distribute GPP/TER/NEE with a true `FP-DT` daytime
+member, at 0.0833°/0.5°, but only to 2015 (RS) or a forcing-dependent end year up to 2017
+(RS+METEO, CRU JRA forcing). Original FLUXCOM energy (RS/RS+METEO: Jung et al. 2019,
+doi:10.1038/s41597-019-0076-8) distributes LE/H/Rn directly but has no partitioning concept and the
+same 2015–2017 period ceiling. No product exposes a point-extraction API; every access route is a
+full-grid FTP/portal download (hundreds of GB for the original-FLUXCOM archives). All CC BY 4.0.
+
+**Training-site membership:** no product publishes a machine-readable site list. Checked directly
+against Tramontana et al. (2016) supplement Table S1 (text-extracted PDF, high confidence):
+`GH-Ank` is in the original-FLUXCOM training set, the other five WAFNET sites are not. For
+FLUXCOM-X-BASE, matched against the paper's reference list only (Table 1 itself is an un-OCR'd
+image) — `GH-Ank` and `SN-Dhr` likely in-sample, the other four likely not. `GH-Ank`/`SN-Dhr`
+comparisons are therefore partly within-sample, not independent validation, for the relevant
+product lines.
+
+**Observations (repo-root YY/MM extracts, read-only):** all six WAFNET sites resolve to VUT (none
+fall back to CUT). QC-passing annual record is short and gappy at most sites (1–7 years); monthly
+record is fuller (22–106 months). `GPP_DT`/`RECO_DT` have no QC column of their own at MM/YY and
+are gated on the site's NEE QC column, matching the convention already used by
+`R/site_annual_fluxes.R` for NT GPP/RECO.
+
+**Overlap (site x variable x product):** no single FLUXCOM line covers every site/variable.
+`BJ-Db1` (qualifying years 2023–2024) has **zero** overlap with every product line at both
+resolutions — its record postdates even FLUXCOM-X-BASE's most generous bound. `SN-Nkr` (qualifying
+years 2019–2024) overlaps only FLUXCOM-X-BASE (3 of 6 years / 46 of 80 months under the 2001–2021
+bound; 2 of 6 years under the stricter 2001–2020 bound) and has zero overlap with every
+original-FLUXCOM line. Full counts in `tables/site_variable_product_overlap_{yy,mm}.csv`.
+
+**Grid scale:** no land-cover product in the repo is pre-aggregated to any FLUXCOM native grid
+cell for these sites. Closest proxies already computed: MCD12C1 MODIS IGBP (0.05° grid-cell,
+`data/snapshots/site_igbp_fig4.csv`) and ESA CCI Land Cover v2.0.7/v2.1.1 (exact 300 m pixel,
+`data/snapshots/site_landcover_cci*.csv`). Four of six sites (`BJ-Db1`, `BJ-Nhu`, `BJ-Bfg`,
+`SN-Nkr`) show PI-IGBP vs. MODIS-cell-IGBP disagreement even at 0.05° — expected to be at least as
+large at FLUXCOM's coarser native grids, but not computed.
+
+**Decisions flagged for the PI, not resolved here:** which product (or per-variable combination)
+to use given no single line covers everything; how to mark likely-in-sample sites (`GH-Ank`,
+`SN-Dhr`) in figures; whether/how to report `BJ-Db1` (no usable overlap) and `SN-Nkr` (thin,
+single-product overlap); resolving the X-BASE 2020-vs-2021 period discrepancy against an actual
+downloaded file; and the H/LE comparison basis (native W m⁻² vs. integrated MJ m⁻²/mm H₂O).
+
+---
+
 ## 2026-10-13 — Generated the paper's full site reference list (follow-up to the bbbd02c audit)
 
 Full prompt: `logs/prompts/2026-10-13_site_reference_list.md`. Implemented the decisions from the

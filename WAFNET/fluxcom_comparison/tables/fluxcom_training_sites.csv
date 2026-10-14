@@ -1,0 +1,7 @@
+site_id,fluxcom_x_base,fluxcom_carbon_rs,fluxcom_carbon_rs_meteo,fluxcom_energy_rs,fluxcom_energy_rs_meteo,confidence_basis
+GH-Ank,likely YES,YES,YES (inherits RS training set),YES (inherits RS training set),YES (inherits RS training set),"X-BASE: reference-list match only (Table 1 is an un-OCR'd image), medium confidence. Original FLUXCOM: direct text-extracted match in Tramontana (2016) supplement Table S1, high confidence."
+BJ-Db1,likely NOT included,NOT found,NOT found,NOT found,NOT found,"Not found in either source's site list/reference list; absence is high-confidence for original FLUXCOM (direct Table S1 search), medium-confidence for X-BASE (reference-list proxy only)."
+BJ-Nhu,likely NOT included,NOT found,NOT found,NOT found,NOT found,"Same basis as BJ-Db1."
+BJ-Bfg,likely NOT included,NOT found,NOT found,NOT found,NOT found,"Same basis as BJ-Db1."
+SN-Nkr,likely NOT included,NOT found,NOT found,NOT found,NOT found,"Same basis as BJ-Db1."
+SN-Dhr,likely YES,NOT found,NOT found,NOT found,NOT found,"X-BASE: reference-list match (Tagesson et al. 2016, FLUXNET2015 SN-Dhr Dahra), medium confidence. Original FLUXCOM: searched directly in Table S1, NOT found - high confidence of absence."

@@ -4,6 +4,93 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-13 — Presentation versions v2: paper aspect ratio, no deck (replaces the talk-deck version)
+
+Full prompt: `logs/prompts/2026-10-13_presentation_versions_v2.md`. Redo of the same-day talk-deck
+task (commit `df76f19`, entry below): the 16:9-stretched, restyled slides were replaced with PNGs
+at each paper figure's own aspect ratio, uniformly scaled up (text/lines/points only — same
+layout, legends, panel letters, annotations, colours as the manuscript). The pptx deck is
+dropped; text is added beside each image in PowerPoint by hand. Manuscript figures confirmed
+byte-identical throughout (PNG md5 sweep + `check_figure_format.R`, still 14/14 PASS).
+
+**Removed:** `review/figures/presentation_figures/{slides/,presentation_versions.pptx,
+presentation_versions.pdf,manifest.csv}` (old 23-slide v1 set) and `scripts/build_presentation_deck.R`.
+
+**`R/presentation_format.R` rewritten** around one generic rule instead of a fixed 16:9 canvas:
+`PRESENTATION_SCALE <- 2.5` (chosen so the manuscript's 7pt axis text lands at 17.5pt, inside the
+16-18pt target, and its smallest 5pt text clears the 12pt floor at 12.5pt); `presentation_scale_ggplot
+(plot, scale)` multiplies every already-set theme text size and line width, and every layer's fixed
+`size`/`linewidth`, by `scale` — called on each manuscript panel *before* composing, so the
+manuscript's own composition/legend/patchwork-tag code is reused unchanged; `presentation_fit_dims()`
+and `save_presentation_figure(plot, path_stem, aspect_w, aspect_h, dpi=200)` fit that aspect ratio
+inside a 12.3x6.5in box. No restyling helper exists in this file — only size scaling.
+
+**17 slides** (`review/figures/presentation_figures/slides/`), manifest at
+`review/figures/presentation_figures/manifest.csv` (file, source figure, script, step, snapshot,
+pixel size, smallest on-slide text pt, caption):
+- **Network growth** (new, `scripts/generate_fig_network_growth_slides.R`, no manuscript
+  counterpart): 4 slides, Marconi 2000 / La Thuile 2007 / FLUXNET2015 / current snapshot, each on
+  the identical Equal Earth world extent/basemap as Figure 1a, one symbol/colour (`#0072B2`)
+  throughout, small corner label (collection + n). Site counts gated against Table 1
+  (`data/snapshots/collection_sites_siteyears.csv`): 35/252/212/781, all matched before any slide
+  is written.
+- **Figure 1** (`scripts/generate_fig_map_network.R`): 4 slides — full figure; panel a alone; North
+  America + Europe; Asia + ANZ — all built by scaling the manuscript's own `panel_a`/
+  `region_results[[nm]]$panel` objects, then recomposing with the manuscript's own patchwork
+  code/ratios. Investigated the reported Europe-panel diagonal land-edge artifact: confirmed it is
+  present in the manuscript figure itself (Kola Peninsula/Barents Sea corner, from
+  `build_region_panel()`'s 0.15 lon/lat crop-margin fraction being too tight once reprojected to
+  LAEA) — manuscript left unchanged; the presentation slides use a presentation-only copy of the
+  Europe panel with a wider crop margin instead. The "1000 km" label/Spain overlap reported in the
+  v1 version is gone, because v2 reuses the manuscript's own `.find_clear_rect()`-placed panel
+  rather than rebuilding it without that search.
+- **Figure 2** (`scripts/generate_fig_cumulative_siteyears.R`): 3 slides — historical lines only;
+  + IGBP-stacked areas, no inset; full figure with inset. Confirmed the three historical lines'
+  direct end-of-line labels are the manuscript's own design (used in every mode), not a
+  presentation substitute for a legend. Known minor residual, reported not fixed: the inset's "30"
+  x-tick lightly touches the legend's bottom "SNO" row; tried raising the legend `inset_element()`'s
+  bottom bound, confirmed by pixel-identical re-render that `patchwork::inset_element()` does not
+  reflow the legend's own rendered height to that bound, so the attempt was reverted rather than
+  leave a no-op in place. Both labels stay individually legible.
+- **Figure 3** (`scripts/generate_whittaker_alt_fig02_update.R`): 2 slides — land climate envelope
+  only, same axes; full figure. The full-figure slide keeps the manuscript's in-panel "N = ... sites
+  | ... site-years" annotation this time (v1 had stripped it; v2's rule is no restyling, and
+  stripping an existing annotation is a restyle).
+- **Figure 4** (`scripts/figure_flux_comparison_combo.R`): 1 slide (full figure; v1 had built 3
+  separate panel slides). Removed v1's `presentation=` branch from `make_panel()` entirely — one
+  manuscript code path again. This figure's own paper aspect ratio (89x228mm, a tall 3-panel
+  vertical stack) cannot fit inside the 12.3x6.5in box at any text size clear of the 12pt floor
+  without overlap (confirmed: box-fitting at that ratio forces a canvas narrower than the
+  manuscript's own 3.5in print page width, which collided badly on first render). Resolved by
+  scaling the canvas by the same 2.0x factor as the text (smallest element 12.5pt), i.e. a uniform
+  enlargement of the manuscript page — 7.0x17.95in, taller than the nominal box by design.
+- **Figure 6** (`scripts/generate_fig06_quality_uncertainty.R`): 1 slide (full figure; v1 had built
+  3 separate panel slides). Fixed two clipping bugs found on visual QA: panel c's x-axis title
+  overflowing the image's right edge (extra right margin, panel c only); panel b's three category
+  labels ("random"/"u*-threshold"/"joint") touching with no gap (wrapped "u*-threshold" onto two
+  lines at its hyphen — a label line-break, not a font or design change).
+- **Figure 7** (`scripts/figure4_representativeness.R`): 2 slides — panels a-d (Köppen/IGBP/
+  Aridity/Biomass) and e-f (NEE/ET), both reusing `draw_panel2()`/`measure_panel_layout_mm()`/
+  `panel_mm_per_unit_for()` unchanged with presentation-scale `BASE_PT`/`LETTER_PT`/
+  `PANEL_MARGIN_MM`/`COL_WIDTH_MM`, restoring the manuscript's real panel letters (v1 had passed
+  `letter=""`, dropping them) and each panel's own `show_header`/`show_xlab` values (v1 had forced
+  `show_header=TRUE` everywhere). The v1 "smaller proportion"/"greater proportion" caption-clipping
+  bug is fixed: `save_presentation_figure()` no longer forces a fixed canvas, so each slide is sized
+  to its own computed content height via a direct `ggsave()` call. Panels a-d's 13+15-class density
+  pins text at the 12pt floor and pushes that slide to 8.95in tall (box exceeded, same trade-off as
+  Figure 4).
+
+**Checks:** each figure's own `stop()`-on-mismatch gates (run as part of each script, before the
+presentation block); Table 1 site-count gate for the 4 growth slides; full visual inspection of all
+17 PNGs at full size (2 real bugs found and fixed beyond what the implementing passes reported:
+Figure 4's canvas-sizing collision, Figure 6's panel b label collision — both confirmed fixed by
+re-inspection); PNG md5 sweep of every manuscript/candidate figure against a pre-task baseline,
+all byte-identical; `scripts/check_figure_format.R` re-run against the manuscript directory,
+14/14 PASS, unchanged. PDF/`.meta.json` timestamp-only diffs from re-running the six scripts were
+restored via `git checkout --` before committing.
+
+---
+
 ## 2026-10-13 — Presentation versions of Figures 1, 2, 3, 4, 6, 7 (talk deck)
 
 Full prompt: `logs/prompts/2026-10-13_presentation_versions.md`. Added a talk-deck "presentation

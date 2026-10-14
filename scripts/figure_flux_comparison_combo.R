@@ -97,14 +97,19 @@ combo_theme <- function() {
     nature_theme()   # Nature format, 2026-10-02: all text 7pt, Helvetica
 }
 
-## `presentation = TRUE` (2026-10-13): builds the same panel at talk-slide
-## scale instead of Nature-journal scale -- larger points/error bars/direct
-## IGBP labels, no panel-letter tag (tags are manuscript-only; presentation
-## slides carry one panel each with no letter), `presentation_theme()`
-## layered after `combo_theme()` so it wins over `nature_theme()`'s 7pt/
-## 0.25-1pt rules. Single source of truth for both renders -- no separate
-## duplicated panel-building code to drift out of sync.
-make_panel <- function(flux_code, unit_str, tag, presentation = FALSE) {
+## `two_line_titles` (presentation mode only): the rotated y-axis title's
+## rendered length (since rotated 90 degrees) maps to vertical space on the
+## page. This figure's 3-panel vertical stack is tall and narrow even in the
+## manuscript (89 x 228mm) -- fitted into the 12.3x6.5in presentation box at
+## that same aspect ratio, each panel's row is physically NARROWER than the
+## manuscript's own 89mm page width, so a single-line axis title at
+## presentation scale overlaps the adjacent panel's title. `atop()` renders
+## the title as two stacked plotmath lines instead of one, roughly halving
+## the per-line rendered length. Manuscript (default FALSE) path is
+## byte-for-byte unchanged -- every other aesthetic (point size, error bars,
+## repel tuning, panel letter) is identical between both paths; only the
+## axis-title line count differs, and only in presentation mode.
+make_panel <- function(flux_code, unit_str, tag, two_line_titles = FALSE) {
   df <- cmp |> filter(flux == flux_code, !excluded)
 
   all_vals <- c(df$fluxnet2015_median - df$fluxnet2015_sd,
@@ -117,42 +122,20 @@ make_panel <- function(flux_code, unit_str, tag, presentation = FALSE) {
   pad  <- diff(rng) * 0.10
   lims <- c(rng[1] - pad, rng[2] + pad)
 
-  point_size      <- if (presentation) 6               else 2
-  point_stroke    <- if (presentation) 1.1              else 0.3
-  abline_lwd      <- if (presentation) presentation_lwd(2)   else 0.4
-  errbar_lwd      <- if (presentation) presentation_lwd(2.5) else 0.25
-  ## ggrepel 0.9.8 has no `size.unit=` (unlike ggplot2's own text geoms) --
-  ## `size=` is always mm, so a 16pt presentation label is 16 / ggplot2::.pt mm.
-  ## Two FULLY separate geom_text_repel() calls (not one call with
-  ## conditional args): the manuscript (presentation = FALSE) call is
-  ## byte-for-byte the original pre-2026-10-13 call, so the manuscript
-  ## render cannot drift from adding presentation-only repel tuning
-  ## (max.overlaps/force/max.time/max.iter) -- confirmed this mattered: an
-  ## earlier version of this block applied `max.overlaps = Inf` unconditionally
-  ## and changed the manuscript PNG's label layout.
-  repel_layer <- if (presentation) {
-    ggrepel::geom_text_repel(aes(label = igbp_class), size = 16 / ggplot2::.pt, colour = "black",
-              seed = 42, min.segment.length = 0.3, segment.size = 1.0,
-              segment.colour = "grey50", box.padding = 1.4, point.padding = 0.8,
-              max.overlaps = Inf, force = 10, max.time = 2, max.iter = 20000)
-  } else {
-    ggrepel::geom_text_repel(aes(label = igbp_class), size = 2.2, colour = "black",
-              seed = 42, min.segment.length = 0.3, segment.size = 0.2,
-              segment.colour = "grey50", box.padding = 0.3, point.padding = 0.2)
-  }
-
   p <- ggplot(df, aes(x = fluxnet2015_median, y = shuttle_median)) +
     geom_abline(slope = 1, intercept = 0, linetype = "dashed",
-                colour = "grey70", linewidth = abline_lwd) +
+                colour = "grey70", linewidth = 0.4) +
     geom_errorbar(aes(xmin = fluxnet2015_median - fluxnet2015_sd,
                        xmax = fluxnet2015_median + fluxnet2015_sd),
-                   orientation = "y", width = 0, colour = "black", linewidth = errbar_lwd) +
+                   orientation = "y", width = 0, colour = "black", linewidth = 0.25) +
     geom_errorbar(aes(ymin = shuttle_median - shuttle_sd,
                        ymax = shuttle_median + shuttle_sd),
-                   width = 0, colour = "black", linewidth = errbar_lwd) +
-    geom_point(aes(fill = igbp_class), shape = 21, size = point_size, colour = "black",
-               stroke = point_stroke) +
-    repel_layer +
+                   width = 0, colour = "black", linewidth = 0.25) +
+    geom_point(aes(fill = igbp_class), shape = 21, size = 2, colour = "black",
+               stroke = 0.3) +
+    ggrepel::geom_text_repel(aes(label = igbp_class), size = 2.2, colour = "black",
+              seed = 42, min.segment.length = 0.3, segment.size = 0.2,
+              segment.colour = "grey50", box.padding = 0.3, point.padding = 0.2) +
     scale_fill_paper_igbp() +
     scale_x_continuous(limits = lims, expand = expansion(mult = 0),
                         labels = nature_minus_labels(),
@@ -166,24 +149,12 @@ make_panel <- function(flux_code, unit_str, tag, presentation = FALSE) {
       ## it as plotmath (confirmed by direct reproduction: without this, the
       ## axis showed the raw unparsed call text, e.g. literal quote marks
       ## and "^{-2}", not a superscript).
-      ##
-      ## Presentation mode (2026-10-13): the rotated y-axis title is drawn as
-      ## ONE physical line of text whose rendered length (since rotated 90
-      ## degrees) maps to vertical space on the page -- at presentation font
-      ## size (22pt) the full single-line NEP title ("FLUXNET Shuttle median
-      ## NEP +/- SD (g C m^-2 yr^-1)", ~45 characters) needs about 7.5in,
-      ## more than the entire 6.3in slide-image height, so it overflowed past
-      ## the device's top edge and was silently clipped (confirmed by direct
-      ## render: the leading "F" of "FLUXNET" was cut off). `atop()` renders
-      ## plotmath as two stacked lines instead of one, roughly halving the
-      ## per-line length -- comfortably fits. Manuscript (presentation=FALSE)
-      ## path is untouched, single-line as before.
-      x = if (presentation) {
+      x = if (two_line_titles) {
         as.expression(bquote(atop("FLUXNET2015 median" ~ .(flux_code), "± SD (" * .(unit_str) * ")")))
       } else {
         as.expression(bquote("FLUXNET2015 median" ~ .(flux_code) ~ "± SD (" * .(unit_str) * ")"))
       },
-      y = if (presentation) {
+      y = if (two_line_titles) {
         as.expression(bquote(atop("FLUXNET Shuttle median" ~ .(flux_code), "± SD (" * .(unit_str) * ")")))
       } else {
         as.expression(bquote("FLUXNET Shuttle median" ~ .(flux_code) ~ "± SD (" * .(unit_str) * ")"))
@@ -191,17 +162,12 @@ make_panel <- function(flux_code, unit_str, tag, presentation = FALSE) {
     ) +
     combo_theme()
 
-  if (presentation) {
-    # No panel letter on a presentation slide (one panel per slide).
-    p + presentation_theme() + theme(axis.ticks.length = grid::unit(-10, "pt"))
-  } else {
-    # Panel tag anchored to this panel's own plot area (-Inf/Inf + hjust/vjust),
-    # not patchwork's plot-level tag (which is positioned relative to the full
-    # subplot including axis text, and collided with the y-axis tick labels).
-    # Lower-case, 8pt bold (Nature format, 2026-10-02 -- was uppercase 3.2mm
-    # i.e. ~9.1pt, both non-compliant).
-    p + panel_letter(tag, x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6)
-  }
+  # Panel tag anchored to this panel's own plot area (-Inf/Inf + hjust/vjust),
+  # not patchwork's plot-level tag (which is positioned relative to the full
+  # subplot including axis text, and collided with the y-axis tick labels).
+  # Lower-case, 8pt bold (Nature format, 2026-10-02 -- was uppercase 3.2mm
+  # i.e. ~9.1pt, both non-compliant).
+  p + panel_letter(tag, x = -Inf, y = Inf, hjust = -0.5, vjust = 1.6)
 }
 
 # ---- Build panels and stack ------------------------------------------------------
@@ -222,22 +188,55 @@ combo <- (panel_plots[[1]] / panel_plots[[2]] / panel_plots[[3]]) +
 saved <- save_nature_figure(combo, OUT_STEM, width_mm = FIG_WIDTH_MM, height_mm = FIG_HEIGHT_MM)
 msg("Saved: ", saved$png, " and ", saved$pdf, " (", FIG_WIDTH_MM, " x ", FIG_HEIGHT_MM, " mm, 600 dpi)")
 
-# ---- Presentation mode (2026-10-13): one slide per flux ------------------------
-## Talk-ready PNGs at 13.333x7.5in slide scale, one panel (NEP/ET/H) per
-## slide, large text/lines, direct IGBP labels (ggrepel, already present)
-## instead of a separate legend. Only runs when explicitly requested so the
-## manuscript output above is unaffected by default.
+# ---- Presentation mode (v2, 2026-10-13): one full-figure slide -----------------
+## Talk-ready PNG of the complete NEP/ET/H combo, same layout/legend-free
+## direct-label design/panel letters/colours as the manuscript figure, text/
+## lines/points uniformly scaled up (R/presentation_format.R). Each panel is
+## scaled individually, BEFORE composing, so the manuscript's own composition
+## expression can be reused unchanged on the pre-scaled panels. Only runs
+## when explicitly requested so the manuscript output above is unaffected by
+## default.
 presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
 if (presentation_mode) {
-  msg("--- Presentation mode: NEP/ET/H slides ---")
+  msg("--- Presentation mode: Figure 4 full-figure slide ---")
   PRES_SLIDE_DIR <- "review/figures/presentation_figures/slides"
-  pres_names <- c("fig04_step1_nep", "fig04_step2_et", "fig04_step3_h")
-  for (i in seq_along(PANELS)) {
-    p <- PANELS[[i]]
-    pres_panel <- make_panel(p$flux, p$unit, p$tag, presentation = TRUE)
-    out <- save_presentation_figure(pres_panel, file.path(PRES_SLIDE_DIR, pres_names[i]))
-    msg("  Saved presentation slide: ", out)
-  }
+  ## This figure's own aspect ratio (89 x 228mm, a tall 3-panel vertical
+  ## stack) is far narrower than the 12.3x6.5in presentation box's own
+  ## ratio. Fitting it at that exact aspect ratio via the box-fit helper
+  ## (presentation_fit_dims(), height-capped at 6.5in) forces a canvas only
+  ## 2.54in WIDE -- physically narrower than the manuscript's own print page
+  ## width (89mm = 3.5in) -- while still asking for enlarged (2x) text. That
+  ## combination (bigger text, smaller canvas) is self-contradictory and
+  ## produced real overlapping/garbled axis titles when first tried (caught
+  ## on visual QA, not merely "tight"). The fix used here: scale the CANVAS
+  ## by the same factor as the text (so the slide is a uniform photographic
+  ## enlargement of the manuscript page -- same relative proportions, same
+  ## freedom from overlap the manuscript page already has), bypassing the
+  ## 12.3x6.5in box for this one outlier figure rather than squeezing into
+  ## it. The resulting slide is taller than the nominal box (height-only
+  ## deviation, width stays a modest 7in) -- the same category of deviation
+  ## already accepted for fig07_1 (that slide also exceeds 6.5in to keep
+  ## text off the 12pt floor's wrong side intact rather than clip).
+  ##
+  ## FIG4_PRES_SCALE: the smallest multiplier that clears the 12pt floor on
+  ## this figure's own smallest fixed element (the 2.2mm/6.26pt ggrepel
+  ## IGBP-class label, smaller than the 7pt axis text): 12 / 6.26 = 1.92,
+  ## rounded up to 2.0 (axis text/titles land at 14pt, panel letters 16pt).
+  FIG4_PRES_SCALE <- 2.0
+  pres_panels <- lapply(PANELS, function(p) {
+    presentation_scale_ggplot(make_panel(p$flux, p$unit, p$tag, two_line_titles = TRUE), scale = FIG4_PRES_SCALE)
+  })
+  pres_combo <- (pres_panels[[1]] / pres_panels[[2]] / pres_panels[[3]]) +
+    plot_layout(heights = c(1, 1, 1))
+  pres_width_in  <- (FIG_WIDTH_MM  / 25.4) * FIG4_PRES_SCALE
+  pres_height_in <- (FIG_HEIGHT_MM / 25.4) * FIG4_PRES_SCALE
+  fs::dir_create(PRES_SLIDE_DIR)
+  out <- file.path(PRES_SLIDE_DIR, "fig04_1_full.png")
+  ggplot2::ggsave(out, pres_combo, width = pres_width_in, height = pres_height_in,
+                   units = "in", dpi = PRESENTATION_DPI, device = ragg::agg_png, bg = "white")
+  msg("  Saved presentation slide: ", out, " (", round(pres_width_in, 2), "x",
+      round(pres_height_in, 2), "in, scale ", FIG4_PRES_SCALE, "x -- taller than the ",
+      "12.3x6.5in box by design, see comment above)")
 }
 
 msg("\n=== Combo figure complete ===")

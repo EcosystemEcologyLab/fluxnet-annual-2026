@@ -1,0 +1,23 @@
+FIGURE LEGEND — network growth (presentation-only talk slides)
+============================================================
+
+TITLE: Network growth: historical collections and the current FLUXNET Shuttle network
+
+DESCRIPTION:
+Four slides, one per collection, on the identical Equal Earth (EPSG:8857) world extent and
+basemap used for Figure 1a, so the slides flip cleanly as a build. Each slide shows only that
+collection's own sites, one symbol and colour throughout (filled circle, #0072B2), with a
+small top-left corner label giving the collection name and site count. Sites are matched to
+current FLUXNET Shuttle site IDs as for Table 1 (scripts/collection_comparison_table.R).
+
+STEPS:
+  1. Marconi 2000 -- n = 35
+  2. La Thuile 2007 -- n = 252
+  3. FLUXNET2015 -- n = 212
+  4. Current FLUXNET Shuttle snapshot -- n = 781
+
+Site counts confirmed against Table 1 (data/snapshots/collection_sites_siteyears.csv):
+  Marconi 35, La Thuile 252, FLUXNET2015 212, Current 781 -- all matched (gate passed).
+
+SNAPSHOT: data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv
+SOURCE: scripts/generate_fig_network_growth_slides.R (presentation-only; no manuscript figure).

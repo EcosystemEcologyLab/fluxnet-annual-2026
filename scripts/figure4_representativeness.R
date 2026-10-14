@@ -2542,69 +2542,202 @@ for (comparison in c("geo_vs_geo", "geo_vs_data")) {
 }
 
 ## ==============================================================================
-## PRESENTATION MODE (Figure 7 only -- 6 single-axis slides, geo_vs_data)
+## PRESENTATION MODE (Figure 7 only -- 2 multi-axis slides, geo_vs_data) [v2]
 ## ==============================================================================
 ## Additive, env-var-gated: when FLUXNET_PRESENTATION_MODE is unset, nothing
 ## below this point runs and every manuscript output above (both geo_vs_geo
 ## and geo_vs_data, already fully saved and metric-verified above) is
 ## untouched. Reuses draw_panel2()/build_merged_for_panel()/build_panel_df()/
-## get_j_fig4()/panel_title_for_render() -- same data, same J values, same
-## colour maps -- with a fresh single-panel (not shared 2-column) size
-## calibration and presentation-scale text. Scoped strictly to the
-## "geo_vs_data" comparison (Figure 7); the geo_vs_geo/S7 outputs above are
-## not touched by anything in this block.
+## get_j_fig4()/panel_title_for_render()/measure_panel_layout_mm()/
+## panel_mm_per_unit_for()/measure_panel_overhead_mm() -- same data, same J
+## values, same colour maps, same per-letter show_xlab_for()/show_header_for()
+## -- with a presentation-scale (PRESENTATION_SCALE = 2.5x) text/margin/row-
+## pitch calibration recomputed for a 2-column slide instead of the
+## manuscript's shared 6-panel grid. Scoped strictly to the "geo_vs_data"
+## comparison (Figure 7); the geo_vs_geo/S7 outputs above are not touched by
+## anything in this block.
+##
+## v1 (2026-10-13) built 6 single-axis slides, each dropping its panel letter
+## (`letter = ""`) and forcing `show_header = TRUE` even for E/F -- both
+## "restyling" relative to the manuscript, forbidden under the v2 spec -- and
+## saved every slide at a FIXED 12.8x6.3in canvas regardless of the gtable's
+## actual required height, which silently clipped the "smaller proportion"/
+## "greater proportion" caption text (drawn by caption_grob(), show_xlab
+## panels only) when it needed more vertical room than that fixed box. v2
+## replaces this with exactly 2 multi-axis slides (keeping panel letters and
+## each letter's own show_header_for()/show_xlab_for() value, matching the
+## manuscript) and sizes each slide's image to the ACTUALLY COMPUTED mm
+## content size (same technique as the manuscript's own height_mm math),
+## which removes the fixed-canvas clipping class of bug entirely.
 presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
 if (presentation_mode) {
-  msg("\n=== Presentation mode: building 6 single-axis Figure 7 slides (geo_vs_data) ===")
-
-  PRES_PT               <- PRESENTATION_AXIS_TITLE_PT   # 22pt -- single scalar satisfies both the
-                                                          # >=18pt tick floor and the 20-24pt axis-title band
-                                                          # for every text element draw_panel2() draws
-                                                          # (axis text, header/"J=" text, in-bar %land/tower labels)
-  PRES_PANEL_MARGIN_MM  <- 6
-  PRES_WIDTH_MM         <- PRESENTATION_IMG_WIDTH_IN * 25.4   # ~325.1mm, single full-slide-width panel
+  msg("\n=== Presentation mode: building 2 multi-axis Figure 7 slides (geo_vs_data) ===")
 
   ## Save every global draw_panel2()/measure_panel_layout_mm()/
-  ## panel_mm_per_unit_for() close over, so this block cannot perturb the
-  ## already-saved geo_vs_geo/geo_vs_data manuscript renders above.
+  ## panel_mm_per_unit_for()/measure_panel_overhead_mm() close over, so this
+  ## block cannot perturb the already-saved geo_vs_geo/geo_vs_data manuscript
+  ## renders above. Restored in a finally-style on.exit below so a mid-block
+  ## error can't leave the globals at presentation-scale values.
   .pres_saved_globals <- mget(c("BASE_PT", "LETTER_PT", "PANEL_MARGIN_MM", "COL_WIDTH_MM"),
                                envir = .GlobalEnv)
-  BASE_PT         <- PRES_PT
-  LETTER_PT       <- PRES_PT
-  PANEL_MARGIN_MM <- PRES_PANEL_MARGIN_MM
-  COL_WIDTH_MM    <- PRES_WIDTH_MM   # single "column" = the full slide-image width, no 2-col split
-
-  pres_slide_stem <- c(A = "fig07_step1_koppen", B = "fig07_step2_landcover",
-                        C = "fig07_step3_aridity", D = "fig07_step4_biomass",
-                        E = "fig07_step5_nee", F = "fig07_step6_et")
-
-  for (letter in ALL_LETTERS) {
-    spec   <- PANEL_SPECS[[letter]]
-    labs   <- panel_y_limits(letter)
-    merged <- build_merged_for_panel(letter, "geo_vs_data")
-    df     <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
-    j_val  <- get_j_fig4(letter, "geo_vs_data")
-
-    ## This axis's own natural left (y-axis label) gutter at presentation
-    ## text size -- no cross-panel alignment needed for a standalone slide,
-    ## unlike the manuscript's shared-column TARGET_GUTTER_MM.
-    own_left_mm <- measure_panel_layout_mm(labs, show_xlab = TRUE)$left_mm
-    pres_mm_per_unit <- panel_mm_per_unit_for(labs, show_xlab = TRUE, target_left_mm = own_left_mm)
-
-    g <- draw_panel2(df, pres_mm_per_unit, letter = "", title_text = panel_title_for_render(letter),
-                      j_val = j_val, show_xlab = TRUE, show_header = TRUE, label_pt = PRES_PT,
-                      target_left_mm = NA_real_)
-
-    out_stem <- file.path("review/figures/presentation_figures/slides", pres_slide_stem[[letter]])
-    save_presentation_figure(g, out_stem)
-    msg("Saved presentation slide: ", out_stem, ".png (axis ", spec$axis, ", J = ",
-        if (!is.na(j_val)) sprintf("%.3f", j_val) else "NA", ")")
+  .pres_restore <- function() {
+    for (nm in names(.pres_saved_globals)) assign(nm, .pres_saved_globals[[nm]], envir = .GlobalEnv)
   }
 
-  ## Restore globals exactly -- nothing after this point in the script
-  ## depends on them, but restore unconditionally for safety/re-sourceability.
-  for (nm in names(.pres_saved_globals)) assign(nm, .pres_saved_globals[[nm]], envir = .GlobalEnv)
-  rm(.pres_saved_globals)
+  ## IMPORTANT: this figure's row/column layout is composed with
+  ## `grid::unit(..., "mm")` -- ABSOLUTE physical units, unlike a plain
+  ## ggplot's flexible ("null") panel area. The manuscript's own save step
+  ## (above, ~line 2260) always calls `ggsave(..., width = FIG_WIDTH_MM,
+  ## height = total_height_mm, units = "mm")`, i.e. the DEVICE size always
+  ## matches the composite's own designed mm total EXACTLY. If a device of a
+  ## *different* size were requested (e.g. via save_presentation_figure()'s
+  ## generic box-fit, which rescales width/height to fit 12.3x6.5in while
+  ## keeping the aspect ratio), the absolute-mm row heights would no longer
+  ## match the device and panels overlap/clip -- confirmed directly: an
+  ## earlier version of this block did exactly that and produced badly
+  ## garbled, overlapping text on the 4-panel slide. The fix below computes
+  ## a presentation scale `k` PER SLIDE (two-pass: measure the natural mm
+  ## size at k=1, i.e. manuscript pt sizes, for exactly this slide's panel
+  ## subset, then solve for the largest k <= PRESENTATION_SCALE that keeps
+  ## the result inside the 12.3x6.5in box -- clamped to never let text drop
+  ## below PRESENTATION_MIN_PT, which takes priority over the box when the
+  ## two conflict, since a dense 4-panel slide (Koppen 13 classes + IGBP 15+
+  ## classes) may need more than 6.5in of height to stay legible) and then
+  ## saves with ggsave(..., units = "mm") at the EXACT resulting size --
+  ## never through save_presentation_figure()'s box-fit path.
+  MAX_IMG_WIDTH_MM  <- PRESENTATION_MAX_IMG_WIDTH_IN * 25.4
+  MAX_IMG_HEIGHT_MM <- PRESENTATION_MAX_IMG_HEIGHT_IN * 25.4
+  K_FLOOR <- PRESENTATION_MIN_PT / 7   # smallest k keeping BASE_PT=7k >= the 12pt floor (binds before LETTER_PT=8k)
+
+  tryCatch({
+    ## Builds one slide from a set of panel letters arranged in rows of up
+    ## to 2 columns (reading PANEL_LAYOUT/COLUMN_LAYOUT row order).
+    build_pres_slide <- function(letters_by_row, out_stem) {
+      all_letters <- unlist(letters_by_row)
+
+      ## ---- Pass 1: measure this slide's natural mm size at k=1 (BASE_PT=7,
+      ## PANEL_MARGIN_MM=2, i.e. manuscript pt sizes) to solve for k. Row
+      ## heights depend only on n_rows (data-driven, k-independent) and
+      ## per-k overhead/pitch, so this measurement is cheap and exact.
+      assign("BASE_PT", 7, envir = .GlobalEnv)
+      assign("PANEL_MARGIN_MM", 2, envir = .GlobalEnv)
+      n_rows_by_letter <- setNames(vapply(all_letters, function(l) {
+        spec   <- PANEL_SPECS[[l]]
+        merged <- build_merged_for_panel(l, "geo_vs_data")
+        df     <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
+        nlevels(df$class_label) + if (show_header_for(l)) 1L else 0L
+      }, integer(1)), all_letters)
+      row_heights_k1 <- vapply(letters_by_row, function(row_letters) {
+        overhead <- measure_panel_overhead_mm(show_xlab_for(row_letters[[1]]), show_header_for(row_letters[[1]]))
+        overhead + max(n_rows_by_letter[row_letters]) * ROW_PITCH_MM
+      }, numeric(1))
+      height_k1 <- 6 + 10 + sum(row_heights_k1)   # top_pad(6) + bottom_pad(10) at k=1
+      width_k1  <- 91.5 * 2                        # manuscript's own two-column width (COL_WIDTH_MM x2) at k=1
+
+      k_fit   <- min(PRESENTATION_SCALE, MAX_IMG_WIDTH_MM / width_k1, MAX_IMG_HEIGHT_MM / height_k1)
+      k_final <- max(k_fit, K_FLOOR)
+      if (k_final > k_fit) {
+        msg("  NOTE: ", basename(out_stem), " needs k=", round(k_final, 3),
+            " to keep text >= ", PRESENTATION_MIN_PT, "pt, which exceeds the 12.3x6.5in box ",
+            "(box-fitting k would be ", round(k_fit, 3), "). Prioritising the text-size floor: ",
+            "this slide's image will be larger than 12.3x6.5in. See run report.")
+      }
+
+      BASE_PT         <- 7 * k_final
+      LETTER_PT       <- 8 * k_final
+      PANEL_MARGIN_MM <- 2 * k_final
+      COL_WIDTH_MM    <- 91.5 * k_final
+      pres_row_pitch_mm  <- ROW_PITCH_MM * k_final
+      pres_top_pad_mm    <- 6 * k_final
+      pres_bottom_pad_mm <- 10 * k_final
+      assign("BASE_PT", BASE_PT, envir = .GlobalEnv)
+      assign("LETTER_PT", LETTER_PT, envir = .GlobalEnv)
+      assign("PANEL_MARGIN_MM", PANEL_MARGIN_MM, envir = .GlobalEnv)
+      assign("COL_WIDTH_MM", COL_WIDTH_MM, envir = .GlobalEnv)
+
+      ## ---- Pass 2: build at the final k ----------------------------------
+      ## Column-aligned left gutters, scoped to the letters on THIS slide
+      ## only (mirrors the manuscript's TARGET_GUTTER_MM, computed over all
+      ## 6 letters there; here, just the subset present on this slide).
+      panel_layout_mm <- setNames(
+        lapply(all_letters, function(l) measure_panel_layout_mm(panel_y_limits(l), show_xlab_for(l))),
+        all_letters
+      )
+      gutter_mm <- vapply(panel_layout_mm, `[[`, numeric(1), "left_mm")
+      target_gutter_mm <- setNames(rep(NA_real_, length(all_letters)), all_letters)
+      for (col_name in c("col1", "col2")) {
+        col_letters <- intersect(COLUMN_LAYOUT[[col_name]], all_letters)
+        if (length(col_letters) > 0) target_gutter_mm[col_letters] <- max(gutter_mm[col_letters])
+      }
+
+      panel_mm_per_unit <- setNames(
+        vapply(all_letters, function(l) {
+          panel_mm_per_unit_for(panel_y_limits(l), show_xlab_for(l), target_gutter_mm[[l]])
+        }, numeric(1)),
+        all_letters
+      )
+
+      built <- setNames(lapply(all_letters, function(l) {
+        spec   <- PANEL_SPECS[[l]]
+        merged <- build_merged_for_panel(l, "geo_vs_data")
+        df     <- build_panel_df(merged, spec$order_map, spec$label_map, spec$color_map, spec$total_km2)
+        j_val  <- get_j_fig4(l, "geo_vs_data")
+        g <- draw_panel2(df, panel_mm_per_unit[[l]], letter = spec$letter,
+                          title_text = panel_title_for_render(l), j_val = j_val,
+                          show_xlab = show_xlab_for(l), show_header = show_header_for(l),
+                          label_pt = BASE_PT, target_left_mm = target_gutter_mm[[l]])
+        n_rows <- nlevels(df$class_label) + if (show_header_for(l)) 1L else 0L
+        list(df = df, grob = g, n_rows = n_rows)
+      }), all_letters)
+
+      row_heights_mm <- vapply(letters_by_row, function(row_letters) {
+        overhead <- measure_panel_overhead_mm(show_xlab_for(row_letters[[1]]), show_header_for(row_letters[[1]]))
+        n_row <- max(vapply(row_letters, function(l) built[[l]]$n_rows, integer(1)))
+        overhead + n_row * pres_row_pitch_mm
+      }, numeric(1))
+
+      ## Build a 2-column grob list for every row (a lone-letter row, e.g.
+      ## slide 2 having only 1 content row of 2 letters, still fills both
+      ## columns naturally since E/F are both present; no spacer needed
+      ## mid-grid -- only the top/bottom padding rows below are spacers).
+      row_grobs <- lapply(letters_by_row, function(row_letters) {
+        lapply(row_letters, function(l) built[[l]]$grob)
+      })
+      grobs <- c(list(patchwork::plot_spacer(), patchwork::plot_spacer()),
+                 unlist(row_grobs, recursive = FALSE),
+                 list(patchwork::plot_spacer(), patchwork::plot_spacer()))
+      composite <- patchwork::wrap_plots(
+        grobs, ncol = 2,
+        heights = grid::unit(c(pres_top_pad_mm, row_heights_mm, pres_bottom_pad_mm), "mm")
+      )
+
+      total_width_mm  <- COL_WIDTH_MM * 2
+      total_height_mm <- pres_top_pad_mm + sum(row_heights_mm) + pres_bottom_pad_mm
+
+      ## Exact-mm save (NOT save_presentation_figure()'s generic box-fit --
+      ## see header note above): device size must match the absolute-mm
+      ## layout exactly, same technique the manuscript's own ggsave() call
+      ## uses a few hundred lines above.
+      fs::dir_create(dirname(out_stem))
+      png_path <- paste0(out_stem, ".png")
+      ggplot2::ggsave(png_path, composite, width = total_width_mm, height = total_height_mm,
+                       units = "mm", dpi = PRESENTATION_DPI, device = ragg::agg_png, bg = "white")
+      msg("Saved presentation slide: ", png_path, " (", paste(all_letters, collapse = ","),
+          "; k=", round(k_final, 3), "; BASE_PT=", round(BASE_PT, 1), "pt, LETTER_PT=", round(LETTER_PT, 1),
+          "pt; ", round(total_width_mm, 1), "x", round(total_height_mm, 1), "mm = ",
+          round(total_width_mm / 25.4, 2), "x", round(total_height_mm / 25.4, 2), "in content)")
+    }
+
+    build_pres_slide(
+      list(c("A", "B"), c("C", "D")),
+      file.path("review/figures/presentation_figures/slides", "fig07_1_koppen_igbp_aridity_biomass")
+    )
+    build_pres_slide(
+      list(c("E", "F")),
+      file.path("review/figures/presentation_figures/slides", "fig07_2_nee_et")
+    )
+  }, finally = .pres_restore())
+  rm(.pres_saved_globals, .pres_restore)
 
   msg("=== Presentation mode: Figure 7 slides complete ===")
 }

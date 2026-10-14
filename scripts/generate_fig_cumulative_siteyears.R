@@ -413,64 +413,125 @@ write_output_metadata(
 ## =============================================================================
 presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
 if (presentation_mode) {
-  msg("--- Presentation mode: building Figure 2 slides ---")
+  msg("--- Presentation mode v2: building Figure 2 slides ---")
   SLIDE_DIR <- file.path("review", "figures", "presentation_figures", "slides")
   fs::dir_create(SLIDE_DIR)
 
-  ## Step 1: historical lines only, on the final axes. The function's own
-  ## geom_label() direct end-of-line labels already identify the 3 series --
-  ## no separate legend needed.
-  pres_step1 <- fig_cumulative_siteyears_igbp(
-    presence_df             = presence_df,
-    shuttle_meta             = shuttle_meta,
-    sites_marconi            = sites_marconi,
-    sites_la_thuile          = sites_la_thuile,
-    sites_fluxnet2015        = sites_fluxnet2015,
-    base_size                = 32L,
-    la_thuile_year_matrix    = la_thuile_year_matrix,
-    show_current_network     = FALSE,
-    show_release_year_lines  = FALSE,
-    marconi_colour           = "#404040",
-    line_pt                  = 2.5
-  ) + presentation_theme()
-  save_presentation_figure(pres_step1, file.path(SLIDE_DIR, "fig02_step1_historical_lines"))
+  ## All three slides use the manuscript's own 120x120mm panel aspect (the
+  ## inset, when present, overlays inside that same panel area -- it adds no
+  ## extra canvas). Built with the SAME base_size=9L + nature_theme(7pt)
+  ## normalisation as the manuscript main_panel, then uniformly scaled --
+  ## "only size changes" per the v2 design rule.
 
-  ## Step 2: + IGBP-stacked areas, no inset, one large legend, same axes as
-  ## step 1 (fig_cumulative_siteyears_igbp() keeps the y-range identical
-  ## either way via its internal geom_blank() mechanism).
-  pres_step2 <- fig_cumulative_siteyears_igbp(
-    presence_df             = presence_df,
-    shuttle_meta             = shuttle_meta,
-    sites_marconi            = sites_marconi,
-    sites_la_thuile          = sites_la_thuile,
-    sites_fluxnet2015        = sites_fluxnet2015,
-    base_size                = 32L,
-    la_thuile_year_matrix    = la_thuile_year_matrix,
-    show_current_network     = TRUE,
-    show_release_year_lines  = FALSE,
-    marconi_colour           = "#404040",
-    line_pt                  = 2.5
-  ) + presentation_theme()
-  save_presentation_figure(pres_step2, file.path(SLIDE_DIR, "fig02_step2_igbp_areas"))
-
-  ## Step 3: record-length histogram, standalone, full slide (not the small
-  ## framed inset version) -- same 5/10/20yr thresholds and counts.
-  pres_rl <- fig_record_length_histogram(
-    site_meta           = shuttle_meta,
-    presence_df         = presence_df,
-    thresholds          = c(5L, 10L, 20L),
-    base_size           = NATURE_BASE_PT,
-    annot_pt            = 20,
-    show_legend         = TRUE,
-    legend_key_mm       = 8,
-    show_thresh_labels  = TRUE,
-    x_label             = "Record length (years)",
-    y_label             = "Number of sites"
+  ## Step 1: historical lines only, on the manuscript's own final axes. The
+  ## function's own geom_label() direct end-of-line labels + scale_colour_
+  ## manual(..., guide="none") are how the MANUSCRIPT itself identifies these
+  ## three lines in every mode (not a presentation-only substitute for a
+  ## legend) -- reused unchanged, just scaled.
+  pres_step1_base <- fig_cumulative_siteyears_igbp(
+    presence_df              = presence_df,
+    shuttle_meta              = shuttle_meta,
+    sites_marconi             = sites_marconi,
+    sites_la_thuile           = sites_la_thuile,
+    sites_fluxnet2015         = sites_fluxnet2015,
+    base_size                 = 9L,
+    la_thuile_year_matrix     = la_thuile_year_matrix,
+    show_current_network      = FALSE,
+    show_release_year_lines   = FALSE,
+    marconi_colour            = "#404040"
+  ) + nature_theme(base_size = NATURE_BASE_PT)
+  pres_step1 <- presentation_scale_ggplot(pres_step1_base)
+  ## plot.margin is a fixed-pt spacing value, not a theme text/line size --
+  ## presentation_scale_ggplot() does not touch it. Scaled here by the same
+  ## PRESENTATION_SCALE factor so the right margin (sized in the manuscript
+  ## to clear the "2025" tick label at 7pt) keeps pace with the 2.5x-larger
+  ## tick text; without this the last x-axis tick label clips at the image's
+  ## right edge (found on first render -- see SESSION_LOG.md).
+  pres_step1 <- pres_step1 + ggplot2::theme(
+    plot.margin = ggplot2::margin(t = 5.5 * PRESENTATION_SCALE, r = 14 * PRESENTATION_SCALE,
+                                   b = 5.5 * PRESENTATION_SCALE, l = 5.5 * PRESENTATION_SCALE, unit = "pt")
   )
-  pres_step3 <- pres_rl$plot + presentation_theme()
-  save_presentation_figure(pres_step3, file.path(SLIDE_DIR, "fig02_step3_record_length_histogram"))
+  save_presentation_figure(pres_step1, file.path(SLIDE_DIR, "fig02_1_historical_lines"),
+                            aspect_w = 120, aspect_h = 120)
 
-  msg("Presentation slides saved: fig02_step1/2/3 -> ", SLIDE_DIR)
+  ## Step 2: + IGBP-stacked areas, no inset -- the function's own internal
+  ## "inside" top-left IGBP legend (legend.position="inside"), not moved or
+  ## restyled. Same axes as step 1 (fig_cumulative_siteyears_igbp() keeps the
+  ## y-range identical either way via its internal geom_blank() mechanism).
+  pres_step2_base <- fig_cumulative_siteyears_igbp(
+    presence_df              = presence_df,
+    shuttle_meta              = shuttle_meta,
+    sites_marconi             = sites_marconi,
+    sites_la_thuile           = sites_la_thuile,
+    sites_fluxnet2015         = sites_fluxnet2015,
+    base_size                 = 9L,
+    la_thuile_year_matrix     = la_thuile_year_matrix,
+    show_current_network      = TRUE,
+    show_release_year_lines   = FALSE,
+    marconi_colour            = "#404040"
+  ) + nature_theme(base_size = NATURE_BASE_PT)
+  pres_step2 <- presentation_scale_ggplot(pres_step2_base)
+  pres_step2 <- pres_step2 + ggplot2::theme(
+    plot.margin = ggplot2::margin(t = 5.5 * PRESENTATION_SCALE, r = 14 * PRESENTATION_SCALE,
+                                   b = 5.5 * PRESENTATION_SCALE, l = 5.5 * PRESENTATION_SCALE, unit = "pt")
+  )
+  save_presentation_figure(pres_step2, file.path(SLIDE_DIR, "fig02_2_igbp_areas"),
+                            aspect_w = 120, aspect_h = 120)
+
+  ## Step 3: the FULL manuscript `combined` object (main panel + framed inset
+  ## histogram + its own inset legend), reusing the exact manuscript
+  ## composition code (same INSET_*/LEGEND_* npc fractions -- relative
+  ## positions, unaffected by text-size scaling) with each constituent panel
+  ## scaled individually BEFORE the inset_element() composition.
+  pres_main   <- presentation_scale_ggplot(main_panel)
+  pres_main   <- pres_main + ggplot2::theme(
+    plot.margin = ggplot2::margin(t = 5.5 * PRESENTATION_SCALE, r = 14 * PRESENTATION_SCALE,
+                                   b = 5.5 * PRESENTATION_SCALE, l = 5.5 * PRESENTATION_SCALE, unit = "pt")
+  )
+  ## The inset's own IGBP legend has 14 rows and sits inside a fixed NPC
+  ## sub-box of the inset (same box the manuscript uses, at the manuscript's
+  ## own relative size -- a presentation-scale inset just occupies more
+  ## ABSOLUTE space on the bigger canvas, same as every other element, so
+  ## the box itself is not resized). At the full PRESENTATION_SCALE (2.5x,
+  ## ~17.5pt) 14 rows do not fit the box height, and the inset_panel's own
+  ## bigger axis text/title ("Record length (years)", the "30" tick) reaches
+  ## further into the same upper-right corner the legend occupies -- both
+  ## found on first render. Both the inset panel's own text AND its legend
+  ## are scaled instead to exactly PRESENTATION_MIN_PT (12pt) -- the same
+  ## "dense/secondary text" treatment already used for the manuscript's
+  ## small-text elements -- which clears both collisions within the
+  ## unchanged box.
+  legend_scale <- PRESENTATION_MIN_PT / NATURE_BASE_PT
+  pres_inset  <- presentation_scale_ggplot(build_inset_panel(NATURE_BASE_PT), scale = legend_scale)
+  pres_legend <- presentation_scale_ggplot(legend_panel(NATURE_BASE_PT), scale = legend_scale)
+  pres_legend <- pres_legend + ggplot2::theme(
+    legend.key.size      = grid::unit(NATURE_BASE_PT * 0.37 * legend_scale, "mm"),
+    legend.key.spacing.y = grid::unit(NATURE_BASE_PT * 0.37 * 0.15 * legend_scale, "mm")
+  )
+  ## KNOWN MINOR RESIDUAL (reported, not fixed): the inset's own "30" x-axis
+  ## tick (bottom-right of the inset bar chart) lightly touches the legend's
+  ## bottom ("SNO") row at presentation scale. Tried raising the legend
+  ## inset_element()'s "bottom" NPC bound to give the tick more clearance --
+  ## confirmed by re-render + pixel-identical crop comparison that this has
+  ## NO visible effect, so patchwork::inset_element() is not reflowing
+  ## legend_panel()'s own rendered legend height to the requested box here;
+  ## the legend's effective vertical extent is set elsewhere (its own
+  ## natural/intrinsic size), not by LEGEND_BOTTOM. Left as the manuscript's
+  ## own LEGEND_BOTTOM/INSET_BOTTOM values (unchanged) rather than leave a
+  ## no-op "fix" in place. Both labels stay legible; not pursued further.
+  pres_step3 <- pres_main +
+    patchwork::inset_element(
+      pres_inset, left = INSET_LEFT, bottom = INSET_BOTTOM, right = INSET_RIGHT, top = INSET_TOP,
+      align_to = "panel"
+    ) +
+    patchwork::inset_element(
+      pres_legend, left = LEGEND_LEFT, bottom = LEGEND_BOTTOM, right = LEGEND_RIGHT, top = LEGEND_TOP,
+      align_to = "panel"
+    )
+  save_presentation_figure(pres_step3, file.path(SLIDE_DIR, "fig02_3_full_with_inset"),
+                            aspect_w = 120, aspect_h = 120)
+
+  msg("Presentation slides saved: fig02_1/2/3 -> ", SLIDE_DIR)
 }
 
 msg("=== Done ===")

@@ -334,64 +334,50 @@ write_output_metadata(
 )
 
 ## ==============================================================================
-## Presentation mode: one large-format slide PNG per panel (talk deck)
+## Presentation mode (v2, 2026-10-13): one full-figure slide (talk deck)
 ## ==============================================================================
+## Same layout/legend/panel-letters/colours as the manuscript figure, text/
+## lines scaled up uniformly (R/presentation_format.R). Each panel is scaled
+## individually, BEFORE composing, so the manuscript's own composition line
+## is reused unchanged on the pre-scaled panels; the patchwork `plot.tag`
+## (panel letters a/b/c, set via tv_tag_theme()) is a composition-level
+## theme element, not a per-panel layer, so it is scaled separately after
+## composing.
 presentation_mode <- identical(Sys.getenv("FLUXNET_PRESENTATION_MODE"), "1")
 if (presentation_mode) {
-  msg("--- Presentation mode: building slide PNGs ---")
+  msg("--- Presentation mode: Figure 6 full-figure slide ---")
   PRES_DIR <- "review/figures/presentation_figures/slides"
   fs::dir_create(PRES_DIR)
-  pres_ticks <- theme(axis.ticks.length = grid::unit(-8, "pt"))
 
-  ## Step 1: panel a, QC ECDF. NEE_VUT and NEE_CUT track each other closely
-  ## at every x (confirmed: at x=0.92 their ECDF values are 0.466 vs 0.478,
-  ## too close for separate end-of-curve text labels without collision) --
-  ## direct labels don't fit cleanly here, so this slide keeps one compact
-  ## legend, sized up to presentation scale, same top-left placement as the
-  ## manuscript panel.
-  pres_panel_a <- ggplot(annual_qc, aes(x = qc, colour = variable)) +
-    stat_ecdf(geom = "step", linewidth = presentation_lwd(2.5)) +
-    scale_colour_manual(values = FOUR_VAR_COLOURS, name = NULL, labels = VAR_LABELS) +
-    scale_x_continuous(breaks = c(0.5, 0.75, 1)) +
-    coord_cartesian(xlim = c(0.5, 1)) +
-    scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1)) +
-    labs(x = "Annual QC flag (fraction measured or good-quality gap-filled)", y = "Cumulative share") +
-    theme_classic(base_size = PRESENTATION_AXIS_TITLE_PT) +
-    theme(axis.text = element_text(colour = "black"), axis.ticks = element_line(colour = "black")) +
-    presentation_theme() + pres_ticks +
-    theme(legend.position = c(0.02, 0.98), legend.justification = c(0, 1),
-          legend.background = element_rect(fill = "white", colour = NA),
-          legend.key.size = grid::unit(22, "pt")) +
-    guides(colour = guide_legend(ncol = 1))
-  save_presentation_figure(pres_panel_a, file.path(PRES_DIR, "fig06_step1_qc_distribution"))
+  pres_a <- presentation_scale_ggplot(panel_a)
+  ## panel b's three x-axis category labels ("random", "u*-threshold",
+  ## "joint") touched with no gap at presentation scale -- "u*-threshold" is
+  ## long relative to its 1/3 share of the panel width once text is 17.5pt
+  ## (confirmed by direct render). Wrapping it onto two lines at its hyphen
+  ## (a label-text line-break, not a font-size or design change -- same kind
+  ## of fix as the atop() two-line axis titles used elsewhere in this task)
+  ## clears it; "random"/"joint" have no hyphen and are unaffected.
+  pres_b <- presentation_scale_ggplot(panel_b) +
+    ggplot2::scale_x_discrete(labels = function(x) gsub("-", "-\n", x, fixed = TRUE))
+  ## Panel c is the rightmost of the three composed panels, with no neighbour
+  ## to its right to bleed into -- at presentation scale its x-axis title
+  ## ("NEE_VUT - NEE_CUT (g C m^-2 yr^-1)", centred under the panel) is wide
+  ## enough to overflow the default 5.5pt right margin and clip against the
+  ## image's own right edge (confirmed by direct render). Panels a/b have the
+  ## same default margin but don't clip, since any overflow there lands on
+  ## the next panel, still inside the image. Extra right margin only, same
+  ## mechanism as other presentation-mode clipping fixes in this task.
+  pres_c <- presentation_scale_ggplot(panel_c) +
+    ggplot2::theme(plot.margin = ggplot2::margin(5.5, 60, 5.5, 5.5, "pt"))
 
-  ## Step 2: panel b, uncertainty terms. One legend (VUT/CUT).
-  pres_panel_b <- ggplot(box_long, aes(x = term, y = value, fill = carbon_type)) +
-    geom_boxplot(outlier.size = 1.2, outlier.alpha = 0.3, linewidth = presentation_lwd(2.2), width = 0.6) +
-    scale_fill_manual(values = VUT_CUT_COLOURS, name = NULL) +
-    scale_y_log10(labels = log_labels()) +
-    labs(x = "Uncertainty term", y = expression("Uncertainty (g C "*m^{-2}*" "*yr^{-1}*", log"[10]*")")) +
-    theme_classic(base_size = PRESENTATION_AXIS_TITLE_PT) +
-    theme(axis.text = element_text(colour = "black"), axis.ticks = element_line(colour = "black")) +
-    presentation_theme() + pres_ticks +
-    theme(legend.position = c(0.02, 0.98), legend.justification = c(0, 1),
-          legend.background = element_rect(fill = "white", colour = NA),
-          legend.key.size = grid::unit(22, "pt"))
-  save_presentation_figure(pres_panel_b, file.path(PRES_DIR, "fig06_step2_uncertainty_terms"))
+  pres_fig6 <- (pres_a | pres_b | pres_c) +
+    plot_annotation(tag_levels = "a") &
+    tv_tag_theme() &
+    theme(plot.tag = element_text(size = 8 * PRESENTATION_SCALE))
 
-  ## Step 3: panel c, VUT-CUT histogram. No in-panel text (manuscript already
-  ## has none; kept that way here).
-  pres_panel_c <- ggplot(stage3 |> dplyr::filter(abs(diff) <= CLIP), aes(x = diff)) +
-    geom_histogram(binwidth = 5, fill = "grey60", colour = "white", linewidth = presentation_lwd(1.0)) +
-    scale_x_continuous(limits = c(-CLIP, CLIP), labels = nature_minus_labels()) +
-    scale_y_continuous(limits = c(0, 1490), expand = expansion(mult = c(0, 0))) +
-    labs(x = expression("NEE"["VUT"]*" - NEE"["CUT"]*" (g C "*m^{-2}*" "*yr^{-1}*")"), y = "Site-years") +
-    theme_classic(base_size = PRESENTATION_AXIS_TITLE_PT) +
-    theme(axis.text = element_text(colour = "black"), axis.ticks = element_line(colour = "black")) +
-    presentation_theme() + pres_ticks
-  save_presentation_figure(pres_panel_c, file.path(PRES_DIR, "fig06_step3_vut_minus_cut"))
-
-  msg("Presentation slides saved: fig06_step1_qc_distribution.png, fig06_step2_uncertainty_terms.png, fig06_step3_vut_minus_cut.png")
+  out <- save_presentation_figure(pres_fig6, file.path(PRES_DIR, "fig06_1_full"),
+                                   aspect_w = NATURE_WIDTH_DOUBLE_MM, aspect_h = 78)
+  msg("Presentation slide saved: ", out)
 }
 
 msg("=== Done ===")

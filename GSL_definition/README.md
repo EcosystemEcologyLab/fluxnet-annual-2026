@@ -50,6 +50,16 @@ least-relaxed option that recovers every recoverable long-record site while stil
 `code/11_selection_audit.R`'s Steps 8-10, `tables/selection_audit_rule_options_*.csv`). Stops for
 a decision; no rule has been applied to the 62-site analysis.
 
+That rule was then applied to build a full, standalone **expanded-site analysis** (2026-10-30)
+under `GSL_definition/expanded/` (own `code/`, `tables/`, `figures/`, `docs/` — **the 62-site
+analysis above is untouched**, verified by rerunning its driver and diffing outputs). 151 sites,
+all 505 GSL-62 site-years included; every derived quantity recomputed (P99, skewness with
+expanded-set terciles, Z17/T95, season start/end/gap days, a QC-failing-day bounds check,
+carbon-gain and temperature-sensitivity slopes, and trend detection with mixed models and the
+Weatherhead et al. 1998 years-to-detect formula), 6 main figures and 7 supplementary figures in
+the PeerJ style, and full QA checks — see `GSL_definition/expanded/docs/report_back_2026-10-30.md`
+and this directory's own `docs/methods_memo.md`'s "Expanded-site analysis (2026-10-30)" section.
+
 The Stage 2 open decisions (year screening, negative-GPP treatment, `>` vs. `>=`, GPP variant)
 were made by Dave without Tash's input, recorded in `docs/framework.md`'s "Open decisions
 (resolved)" section and as named switches in `code/00_config.R` — subject to revision if Tash's

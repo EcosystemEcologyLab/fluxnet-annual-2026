@@ -659,3 +659,169 @@ This does not affect CH-Dav's supplementary DT-variant run (`GPP_DT_VUT_REF` is 
 - All of Figures 1-4 and all four supplementary figures were regenerated and inspected at full
   size after every code change in this section — this is how the panel-c tick-label overlap
   (item 3) was caught.
+
+## Expanded-site analysis (2026-10-30)
+
+A separate, standalone analysis under `GSL_definition/expanded/` (own `code/`, `tables/`,
+`figures/`, `docs/`), per `logs/prompts/2026-10-30_gsl_expanded.md`. Reuses this directory's
+`code/00_config.R`, `code/03_derive.R` and `code/fig_helpers.R` **by sourcing**, not copying —
+see `expanded/code/00_config.R`'s header. **Does not touch** the 62-site analysis above; every
+shared-code edit this required was verified byte-identical against the 62-site driver's own
+output before being committed (see "Shared-code changes" below).
+
+### Selection rule
+
+Dave's choice from `docs/selection_rule_options_2026-10-30.md`: manuscript rule 1 (IGBP
+exclusion) + the per-site VUT/CUT QC/GPP fallback (`scripts/04_qc.R`'s own rule, never mixed
+within a site) + rule 4 (>=5 years) evaluated under **R2, N=14** (a year passes if it has at
+most 14 failing days, 0.25 daily threshold, NA fails) + rule 5 unchanged (<=10% of daily GPP
+below -1 gC/m2/d, whole-site) + an explicit new rule: drop any site with zero non-NA GPP values
+at all (can't derive anything for it). Tropical sites get no special casing. Result: **151
+sites**, all 505 GSL-62 site-years included, US-Ha1 keeps 17 years (`expanded/code/01_select.R`,
+reusing the already-committed `tables/selection_audit_population.csv`,
+`selection_audit_rule_options_qc_fallback.csv` and `selection_audit_rule_options_site_year.csv`
+rather than re-screening the whole network from scratch).
+
+**Deviation from the prompt's stated expectation**: 9 sites were dropped for zero GPP data, not
+the expected 5. The extra 4 (AU-Cow, AU-Rob, GF-Guy, ID-PaB) have non-NA VUT QC but entirely
+NULL `GPP_NT_VUT_REF` (confirmed by a direct DuckDB query); recorded in SESSION_LOG as a
+"something went wrong" entry and in `expanded/docs/report_back_2026-10-30.md`.
+
+### Definitions, as implemented
+
+- **Settings**: negative daily GPP -> 0 (main run); GSL counts `GPP > T` (strict); GSL counted
+  on the full gap-filled daily series; P99/skewness/Z17/T95 exactly as `03_derive.R::derive_one()`
+  already computes them (reused unmodified, aside from the shared-code fixes below). NEP = -NEE,
+  using each site's own resolved NEE column (`NEE_VUT_REF` or `NEE_CUT_REF`).
+- **Skewness thirds recomputed on the expanded set**: terciles (`quantile(skew, c(1/3,2/3))`) of
+  this set's own distribution, separately per GPP variant (main: low<=0.679, middle<=0.91;
+  GPP_DT_REF: its own, separate breaks) — explicitly NOT the 62-site project's fixed 0.63/0.88
+  cutoffs, which were themselves terciles of a different (smaller, differently-selected)
+  population and would not be terciles of this one.
+- **Share of annual GPP outside the season** = `1 - mean F` at Z17/T95; T95's is ~5% by
+  construction (`t95_mean_f`, newly exposed from `derive_one()` — see below).
+- **Season start/end/gap days**: start = first day of the first run of >=5 consecutive days with
+  `gpp_use > T`; end = last day of the last such run; gap days = days below `T` strictly between
+  start and end. A day with no gap-filled GPP value counts as "below" (same NA-as-failing
+  convention used throughout this project). Computed at 5%, 10% (Z17), 20% of P99 and at each
+  site's own T95. **Southern-hemisphere sites** (`location_lat < 0`) use a season-year running 1
+  July (year Y) - 30 June (Y+1), labelled Y, and are only computed for a season-year when BOTH
+  calendar years Y and Y+1 are in that site's own passing-year list; this is a deliberate
+  simplification at record edges, not a data error. Sites with no day below threshold all year
+  are flagged (`above_threshold_all_year`) rather than given an undefined start/end.
+- **Bounds check**: `gsl_lower` = GSL if every QC-failing day (the fallback's own 0.25 test) is
+  forced to count as below threshold regardless of its real GPP value; `gsl_upper` = the same,
+  forced above. `spread = gsl_upper - gsl_lower` is, by construction, algebraically exactly
+  `n_fail_days` (checked directly with `stopifnot`, not assumed) — and therefore **identical
+  at Z17 and T95 for a given site-year**, since QC pass/fail does not depend on which GPP
+  threshold is being tested. This is why Supplemental Figure S2a's two lines coincide exactly;
+  documented in that figure's own legend so it does not read as a missing-series bug.
+- **Carbon gain**: per-site OLS (trend sites, >=10yr) and pooled mixed models (`nlme::lme`,
+  random site intercept + slope, REML) of annual GPP/NEP on GSL, on season start day-of-year, and
+  on end day-of-year, by skewness third and by functional group, at Z17 and T95. For
+  start/end-date regressions at Southern-hemisphere sites, the season-year label is joined to
+  the SAME-NUMBERED calendar year's annual GPP/NEP/TA_F — a documented simplification, not an
+  exact calendar match, affecting only the 14 Southern-hemisphere sites' start/end (not GSL)
+  carbon-gain and temperature-sensitivity numbers.
+- **Temperature sensitivity**: slope of GSL on annual mean `TA_F` (calendar-year mean); slope of
+  start/end day-of-year on the mean `TA_F` over a **fixed, site-level** 60-day window ending the
+  day before that site's own MEAN start/end date (averaged across its years) — the same window
+  (by day-of-year) is re-evaluated against each year's own `TA_F` data, not that year's own
+  particular start/end date, to avoid circularity. Per-site OLS and pooled mixed models as above.
+- **Trends**: per-site OLS (trend sites) across a 5-20% of P99 sweep (1% steps, 16 points) plus
+  T95 (via each site's own per-year `gsl_t95`, not a sweep). Pooled trends: `nlme::lme`, random
+  site slope **+ AR(1) residuals** (`corAR1`), by third and by group, at every sweep point and at
+  T95. **Years-to-detect each pooled trend**: Weatherhead et al. (1998)'s formula, generalised
+  from their own 95%-confidence/90%-power "3.3" constant to this task's 95%/80% combination
+  (`qnorm(0.975) + qnorm(0.80) = 2.801585`, replacing 3.3): `n* = [(Z * sigma_N / |slope|) *
+  sqrt((1+phi)/(1-phi))]^(2/3)`. Per the prompt's "using each site's residual SD and lag-1
+  autocorrelation" instruction, this is computed **per site within the pool, using the POOLED
+  slope with that site's own sigma_N/phi** (from its own OLS year-residuals), then the figures
+  and report show the **median** across the pool's sites — a specific interpretive choice for an
+  otherwise underspecified instruction (a single pooled model has no one obvious "residual SD",
+  since the pooled random-slope model already absorbs between-site variation into the random
+  effect, not the residual), documented here rather than left implicit.
+- **Aridity**: `data/snapshots/site_aridity.csv`'s `ai_value` (CGIAR Aridity Index), joined by
+  `site_id`; all 151 sites have a value (none omitted from Figure 2b).
+
+### Shared-code changes (`GSL_definition/code/03_derive.R`), each verified harmless
+
+All four changes were verified by rerunning the unmodified 62-site driver (default
+`gsl.skip_driver` unset) and diffing `tables/derived_site*.csv` against a pre-change copy —
+byte-identical for the first three; the fourth only adds a new column, with every pre-existing
+column confirmed byte-identical.
+
+1. Wrapped the whole variant-grid driver (daily_extract.rds load + the 4-variant loop +
+   every `write_csv`/`write_meta` call) in `if (!isTRUE(getOption("gsl.skip_driver")))`, so a
+   caller can `options(gsl.skip_driver = TRUE); source(...)` to get `derive_one()` and its helper
+   functions without re-running or overwriting the 62-site tables.
+2. Added a `trend_site_ids` argument to `derive_one()` (default `GSL_SITES_GE10YR`, the 62-site
+   project's own fixed 21-site list) — it was previously hardcoded, so a caller with a different
+   >=10-year population (the expanded set's own 67) would have silently gotten the wrong CI
+   inclusion decision.
+3. **Bug fix**: `kelly_skewness()` crashed (`"missing value where TRUE/FALSE needed"`) on a site
+   with zero non-NA input values, because `quantile(numeric(0), ...)` returns `NA` rather than
+   erroring, and the function's `if (denom == 0)` check then received `NA`. None of the 62 sites
+   hit this (CA-TP1 has `GPP_NT_VUT_REF` data but zero non-NA `GPP_DT_VUT_REF` — found running
+   the expanded set's `dt` variant). Added the same `length(x) == 0` guard `g1_adjusted()` and
+   `l_skewness()` already had.
+4. **Bug fix**: the Z17 trend's `lm()` call could reach `lm.fit()` with 0 non-NA cases (same
+   CA-TP1/`GPP_DT_REF` case: >=3 years on record but zero non-NA `gsl_z17` values), erroring
+   `"0 (non-NA) cases"`. Added `sum(!is.na(gsl_z17_byyear)) >= 3` to the existing guard.
+5. **Additive**: exposed `t95_mean_f` in `derive_one()`'s site-level output tibble (it was
+   computed as a local variable, `t95_mean_gsl`'s sibling, but never returned) — needed for the
+   expanded analysis's "share of annual GPP outside the season" at T95.
+
+### Other bugs found and fixed during this analysis (expanded/code/ only)
+
+- `pivot_wider()` with `values_from` naming only some of the non-key columns silently pulls every
+  OTHER column into the implicit `id_cols`, splitting rows that should merge. Hit twice:
+  `expanded/code/04_figures_main.R`'s Figure 4a date-shift panel (`mean_gap_days` left unlisted,
+  unselected first — collapsed ~300 points down to 2, since gap days differ between the 5%/20%
+  rows for the same site); the `season_wide` construction in `03_models.R` already avoided this
+  by selecting only the exact columns needed first, which is now the standing pattern for every
+  `pivot_wider()` call in `expanded/code/`.
+- `bind_cols(tibble(), x)` with a **literal empty** `tibble()` (0 rows, 0 cols) forces the result
+  to 0 rows — not a no-op, as it looks. Hit in `03_models.R`'s `trend_per_site` computation
+  (`group_modify(~ bind_cols(tibble(), ols_site(...)))`), silently producing a 0-row table and a
+  "0 of 0 trend sites have a sign change" message that looked like a (wrong) real finding rather
+  than an empty result. Fixed by returning `ols_site()`'s tibble directly.
+- `GSL_MARKER_COLORS`' names are `"Z17"`/`"T95"` (uppercase, the convention used everywhere in
+  the 62-site figures), but `bounds_check.csv`'s `threshold_name` column is lowercase
+  `"z17"`/`"t95"` (a different table's own convention, from `02_derive.R`'s `bounds_one()`).
+  Passing the lowercase column straight into `scale_fill_manual(values = GSL_MARKER_COLORS)` in
+  Supplemental Figure S2a had no matching names, so ggplot silently fell back to a single
+  unmatched fill colour — caught only by the warning text ("No shared levels found...") and by
+  the two overlapping, blended-colour histogram series looking wrong on inspection. Fixed by
+  relabelling to uppercase before plotting. Separately, overlapping `geom_histogram(position =
+  "identity")` fill is visually ambiguous even with matched colours (two semi-transparent series
+  blend into a third colour); switched to `geom_freqpoly` (unfilled step lines), the standard fix
+  for comparing two overlapping distributions.
+- Found (not a bug, a genuine data property): the bounds-check spread is mathematically identical
+  at Z17 and T95 for a given site-year, since it depends only on QC pass/fail, not the GPP
+  threshold — Supplemental Figure S2a's two lines coincide exactly by construction; its legend
+  text says so explicitly.
+- `trend_per_site`/`trend_sweep`'s threshold labels are `"5pct"`...`"20pct"`/`"t95pct"` (no
+  literal `"z17"` string); Supplemental Figure S4 and S5 originally filtered for
+  `threshold_name == "z17"`, matching nothing, so every per-site Z17 point was silently `NA`
+  (invisible in S4's forest plot — no black dots anywhere). Fixed to filter `"10pct"`.
+
+### Scope reductions, documented rather than silently skipped
+
+- **Supplemental Figure S5** ("Figures 3 and 6 with GPP_DT, and the thirds under GPP_DT") does
+  not include a full GPP_DT_REF AR(1) pooled-trend refit (Figure 6's exact analogue — another
+  ~136 `nlme::lme(..., correlation = corAR1(...))` fits). Implemented instead: the Figure-3
+  analogue in full (sensitivity at Z17 vs. skewness, GPP_DT_REF's own recomputed thirds), and a
+  check of whether each trend site's main-variant Z17 trend groups consistently by its
+  GPP_DT_REF-variant third (i.e. whether the GPP variant changes which third a site falls into) —
+  a cheaper but still substantive robustness check, with the gap stated explicitly in the figure's
+  own legend and `notes`.
+- **Trend pooled models' AR(1) + random-slope combination initially failed to converge for 95 of
+  136 fits** (far more than the carbon-gain/temperature-sensitivity pooled models, which had zero
+  failures) using a single optimizer and a 2-tier fallback (random slope -> random intercept,
+  both still with AR1). Added a 6-tier fallback ladder (random slope/intercept x nlminb/optim x
+  with/without AR1, most-faithful-to-the-request first), which brought non-convergence down to
+  17 of 136 — every one of those 17 is the mixed-forest group's 2-trend-site shortfall (below the
+  >=3-site floor for any pooled model, not a numerical failure). Each fit's `model_tier` and
+  `note` record which tier succeeded, so a silently-degraded model is never indistinguishable
+  from the one actually requested.

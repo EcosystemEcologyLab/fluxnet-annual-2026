@@ -33,7 +33,9 @@ FLUXNET_DELETE_ZIPS <- isTRUE(as.logical(
 ))
 
 # QC threshold constants — change here to adjust pipeline-wide filtering.
-# DD/WW/MM/YY thresholds: keep records where _QC > threshold.
+# DD/WW/MM/YY thresholds: keep records where _QC >= threshold (qc_passes(),
+# R/qc.R) — raising a threshold must always be stricter. Do not reimplement
+# this as (1 - QC) <= threshold, which is only equivalent at threshold = 0.50.
 # Lowered from 0.75 to 0.50 to match FLUXNET published convention — to be revisited with co-authors
 
 #' @export

@@ -44,6 +44,7 @@ source("R/pipeline_config.R")
 source("R/plot_constants.R")
 source("R/units.R")
 source("R/site_annual_fluxes.R")
+source("R/qc.R")
 source("R/nature_format.R")
 check_pipeline_config()
 

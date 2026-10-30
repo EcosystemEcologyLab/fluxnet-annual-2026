@@ -8,7 +8,7 @@
 ## DuckDB table (dataset = 'FLUXMET') only.
 ##
 ## For site-years with a qualifying annual NEE under the paper's own rule
-## ((1 - QC) <= QC_THRESHOLD_YY), applied separately to VUT and CUT (each
+## (qc_passes(QC, QC_THRESHOLD_YY), R/qc.R), applied separately to VUT and CUT (each
 ## variable gated on its own QC column, not the single per-site VUT/CUT
 ## fallback 04_qc.R uses for row exclusion -- Stage 3 needs both sides
 ## independently qualified at the same site-year, which the per-site
@@ -28,6 +28,7 @@ if (file.exists(".env")) {
 }
 source("R/pipeline_config.R")
 check_pipeline_config()
+source("R/qc.R")
 
 suppressPackageStartupMessages({
   library(DBI); library(duckdb); library(dplyr); library(readr)
@@ -101,7 +102,7 @@ build_carbon_type <- function(df, type) {
       joint    = .data[[joint_col]],
       ustar_term = (.data[[p84_col]] - .data[[p16_col]]) / 2
     ) |>
-    filter(!is.na(QC), !is.na(NEE), (1 - QC) <= QC_THRESHOLD_YY) |>
+    filter(!is.na(QC), !is.na(NEE), qc_passes(QC, QC_THRESHOLD_YY)) |>
     mutate(
       rss = sqrt(random^2 + ustar_term^2),
       joint_minus_rss = joint - rss,
@@ -124,7 +125,7 @@ write_meta(
   input_sources = db_path,
   notes = paste0(
     "One row per (site_id, year, carbon_type in {VUT, CUT}) for site-years qualifying ",
-    "under the paper's own rule, applied separately to VUT and CUT: (1 - QC) <= ",
+    "under the paper's own rule, applied separately to VUT and CUT: QC >= ",
     "QC_THRESHOLD_YY (=", QC_THRESHOLD_YY, "). random = NEE_{VUT,CUT}_REF_RANDUNC, ",
     "ustar_term = (NEE_{VUT,CUT}_84 - NEE_{VUT,CUT}_16)/2, joint = ",
     "NEE_{VUT,CUT}_REF_JOINTUNC, all in gC m-2 yr-1 (annual YY carbon passes through ",
@@ -219,10 +220,10 @@ print(summary_overall |> select(carbon_type, n, median_random, median_ustar, med
 ## per Stage 0). No ustar ensemble, no JOINTUNC for the uncorrected value.
 ## ---------------------------------------------------------------------------
 le_h_unc <- bind_rows(
-  annual |> filter(!is.na(LE_F_MDS_QC), !is.na(LE_F_MDS), (1 - LE_F_MDS_QC) <= QC_THRESHOLD_YY) |>
+  annual |> filter(!is.na(LE_F_MDS_QC), !is.na(LE_F_MDS), qc_passes(LE_F_MDS_QC, QC_THRESHOLD_YY)) |>
     transmute(site_id, year, igbp, data_hub, variable = "LE", value = LE_F_MDS,
               random = LE_RANDUNC, corr_value = LE_CORR),
-  annual |> filter(!is.na(H_F_MDS_QC), !is.na(H_F_MDS), (1 - H_F_MDS_QC) <= QC_THRESHOLD_YY) |>
+  annual |> filter(!is.na(H_F_MDS_QC), !is.na(H_F_MDS), qc_passes(H_F_MDS_QC, QC_THRESHOLD_YY)) |>
     transmute(site_id, year, igbp, data_hub, variable = "H", value = H_F_MDS,
               random = H_RANDUNC, corr_value = H_CORR)
 )
@@ -317,7 +318,7 @@ status_entry <- c(
   "",
   paste0("Completed ", format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"), "."),
   "",
-  paste0("- Qualifying site-years ((1-QC)<=QC_THRESHOLD_YY=", QC_THRESHOLD_YY, "), own-QC-gated per variable: VUT=",
+  paste0("- Qualifying site-years (QC>=QC_THRESHOLD_YY=", QC_THRESHOLD_YY, "), own-QC-gated per variable: VUT=",
          vut_row$n, ", CUT=", cut_row$n, "."),
   paste0("- Joint vs RSS(random, ustar_term) test: VUT median|diff|=", round(jt_vut$median_abs_diff, 3),
          " gC/m2/yr (", round(jt_vut$median_pct_diff, 2), "% of joint, cor=", round(jt_vut$cor_joint_rss, 5),

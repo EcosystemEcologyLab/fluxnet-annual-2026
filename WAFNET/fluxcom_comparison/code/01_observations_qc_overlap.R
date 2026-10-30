@@ -73,13 +73,13 @@ build_overlap_table <- function(resolution) {
 
     nee_val <- if (!is.na(src) && src == "VUT") d$NEE_VUT_REF else if (!is.na(src) && src == "CUT") d$NEE_CUT_REF else rep(NA_real_, nrow(d))
     nee_qc  <- if (!is.na(src) && src == "VUT") d$NEE_VUT_REF_QC else if (!is.na(src) && src == "CUT") d$NEE_CUT_REF_QC else rep(NA_real_, nrow(d))
-    nee_qualifies <- !is.na(nee_val) & !is.na(nee_qc) & (1 - nee_qc) <= thresh
+    nee_qualifies <- !is.na(nee_val) & !is.na(nee_qc) & qc_passes(nee_qc, thresh)
 
     gpp_dt_val  <- if (!is.na(src) && src == "VUT") d$GPP_DT_VUT_REF else if (!is.na(src) && src == "CUT") d$GPP_DT_CUT_REF else rep(NA_real_, nrow(d))
     reco_dt_val <- if (!is.na(src) && src == "VUT") d$RECO_DT_VUT_REF else if (!is.na(src) && src == "CUT") d$RECO_DT_CUT_REF else rep(NA_real_, nrow(d))
 
-    le_qualifies <- !is.na(d$LE_F_MDS) & !is.na(d$LE_F_MDS_QC) & (1 - d$LE_F_MDS_QC) <= thresh
-    h_qualifies  <- !is.na(d$H_F_MDS)  & !is.na(d$H_F_MDS_QC)  & (1 - d$H_F_MDS_QC)  <= thresh
+    le_qualifies <- !is.na(d$LE_F_MDS) & !is.na(d$LE_F_MDS_QC) & qc_passes(d$LE_F_MDS_QC, thresh)
+    h_qualifies  <- !is.na(d$H_F_MDS)  & !is.na(d$H_F_MDS_QC)  & qc_passes(d$H_F_MDS_QC, thresh)
 
     qualifying <- list(
       NEE     = nee_qualifies,

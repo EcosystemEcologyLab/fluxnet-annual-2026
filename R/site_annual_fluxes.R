@@ -14,10 +14,10 @@
 #' - H: `H_F_MDS_QC`, independent of the NEE gate.
 #'
 #' A row qualifies when its gating QC value is non-NA and
-#' `(1 - QC) <= QC_THRESHOLD_YY` -- the identical `p_gapfilled`/`threshold`
-#' comparison `scripts/04_qc.R` applies, not a hardcoded QC cutoff.
+#' `QC >= QC_THRESHOLD_YY` (via [qc_passes()], `R/qc.R`) -- the identical
+#' rule `scripts/04_qc.R` applies, not a hardcoded QC cutoff.
 #' `QC_THRESHOLD_YY` must already be in scope (via
-#' `source("R/pipeline_config.R")`).
+#' `source("R/pipeline_config.R")`), and `R/qc.R` must already be sourced.
 #'
 #' GPP and RECO additionally use a per-site, per-flux NT-preferred/DT-fallback
 #' partitioning rule -- DT is used only when NT yields zero qualifying years
@@ -129,10 +129,11 @@ compute_site_annual_fluxes_from_df <- function(annual_df, h_unit = c("MJ_m2_yr",
       nee_qc = dplyr::case_when(
         carbon_src == "VUT" ~ NEE_VUT_REF_QC, carbon_src == "CUT" ~ NEE_CUT_REF_QC, TRUE ~ NA_real_
       ),
-      ## Identical p_gapfilled/threshold comparison as scripts/04_qc.R, not a
-      ## literal "QC >= 0.5" -- only numerically equivalent to that at the
-      ## current QC_THRESHOLD_YY=0.50.
-      nee_qualifies = !is.na(nee_qc) & !is.na(nee_val) & (1 - nee_qc) <= QC_THRESHOLD_YY,
+      ## qc_passes() is the single implementation of "QC >= threshold",
+      ## identical rule to scripts/04_qc.R. NA QC does not qualify here
+      ## (per-variable gates treat NA as not qualifying, unlike 04_qc.R's
+      ## row-level qc_unknown/kept handling).
+      nee_qualifies = !is.na(nee_qc) & !is.na(nee_val) & qc_passes(nee_qc, QC_THRESHOLD_YY),
       nee_gC = dplyr::if_else(nee_qualifies, nee_val, NA_real_),
 
       ## GPP/RECO have no annual QC of their own -- gated on the same
@@ -155,9 +156,9 @@ compute_site_annual_fluxes_from_df <- function(annual_df, h_unit = c("MJ_m2_yr",
       reco_dt_gC = dplyr::if_else(nee_qualifies, reco_dt_val, NA_real_),
 
       ## ET and H: gated on their own QC column, independent of the NEE gate.
-      et_qualifies = !is.na(LE_F_MDS) & !is.na(LE_F_MDS_QC) & (1 - LE_F_MDS_QC) <= QC_THRESHOLD_YY,
+      et_qualifies = !is.na(LE_F_MDS) & !is.na(LE_F_MDS_QC) & qc_passes(LE_F_MDS_QC, QC_THRESHOLD_YY),
       le_Wm2 = dplyr::if_else(et_qualifies, LE_F_MDS, NA_real_),
-      h_qualifies = !is.na(H_F_MDS) & !is.na(H_F_MDS_QC) & (1 - H_F_MDS_QC) <= QC_THRESHOLD_YY,
+      h_qualifies = !is.na(H_F_MDS) & !is.na(H_F_MDS_QC) & qc_passes(H_F_MDS_QC, QC_THRESHOLD_YY),
       h_Wm2 = dplyr::if_else(h_qualifies, H_F_MDS, NA_real_)
     )
 

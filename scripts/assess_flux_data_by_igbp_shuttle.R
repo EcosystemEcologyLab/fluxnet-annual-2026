@@ -34,7 +34,7 @@
 ##   has any non-NA NEE_VUT_REF_QC, else CUT -- the same rule scripts/04_qc.R
 ##   applies, never mixed within a site across years (the retired loose-file
 ##   version decided VUT/CUT per ROW, which could mix the two within one site).
-##   A row qualifies when (1 - QC) <= QC_THRESHOLD_YY. LE and H are gated on
+##   A row qualifies when QC >= QC_THRESHOLD_YY. LE and H are gated on
 ##   their own QC columns independently of the NEE gate.
 ##
 ## NT/DT partitioning fallback (per site, GPP and TER only):
@@ -63,6 +63,7 @@ if (file.exists(".env")) {
 source("R/pipeline_config.R")
 source("R/units.R")
 source("R/site_annual_fluxes.R")
+source("R/qc.R")
 check_pipeline_config()
 
 # ---- Constants ---------------------------------------------------------------
@@ -95,7 +96,7 @@ write_meta <- function(output_path, notes = "") {
       "Computed by R/site_annual_fluxes.R::compute_site_annual_fluxes()."),
     vut_cut_policy    = paste0(
       "Per-site (not per-row) VUT/CUT choice via compute_site_annual_fluxes(): VUT if the site ",
-      "has any non-NA NEE_VUT_REF_QC, else CUT. A year qualifies when (1 - QC) <= ",
+      "has any non-NA NEE_VUT_REF_QC, else CUT. A year qualifies when QC >= ",
       "QC_THRESHOLD_YY=", QC_THRESHOLD_YY, " on the chosen column (scripts/04_qc.R's rule)."),
     unit_nep_gpp_ter  = "gC m-2 yr-1 (pre-integrated YY product; NEP = -NEE)",
     unit_et           = "mm yr-1, via compute_site_annual_fluxes()'s fluxnet_convert_units() (R/units.R)",

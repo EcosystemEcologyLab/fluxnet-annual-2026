@@ -63,6 +63,7 @@ if (file.exists(".env")) {
 source("R/pipeline_config.R")
 source("R/units.R")
 source("R/site_annual_fluxes.R")
+source("R/qc.R")
 check_pipeline_config()
 
 # ---- Constants ---------------------------------------------------------------
@@ -114,7 +115,7 @@ write_meta <- function(output_path, notes = "") {
       "site_flux_medians_shuttle.csv for direct comparability."),
     vut_cut_policy = paste0(
       "Per-site (not per-row) VUT/CUT choice: VUT if the site has any non-NA ",
-      "NEE_VUT_REF_QC, else CUT. A year qualifies when (1 - QC) <= QC_THRESHOLD_YY=",
+      "NEE_VUT_REF_QC, else CUT. A year qualifies when QC >= QC_THRESHOLD_YY=",
       QC_THRESHOLD_YY, " on the chosen column (scripts/04_qc.R's rule)."),
     unit_nep_gpp_ter = "gC m-2 yr-1 (pre-integrated YY product; NEP = -NEE)",
     unit_et = "mm yr-1, via compute_site_annual_fluxes_from_df()'s fluxnet_convert_units() (R/units.R)",

@@ -147,7 +147,7 @@ legend_lines <- c(
   "availability category: both VUT and CUT usable, VUT only, CUT only, or neither --",
   "'neither' split into 'no annual NEE in the product' (neither NEE_VUT_REF nor NEE_CUT_REF",
   "has a raw value for that site-year) and 'below quality rule' (a raw value exists but does",
-  "not clear QC_THRESHOLD_YY=0.50). 'Usable' = (1-QC) <=",
+  "not clear QC_THRESHOLD_YY=0.50). 'Usable' = QC >=",
   "QC_THRESHOLD_YY, own QC column per side. No in-bar count labels -- each category's exact",
   "count is given in its own legend entry instead, '<category> (<n> site-years, <n> sites)':",
   paste0("  ", fmt_counts("both usable")), paste0("  ", fmt_counts("VUT only usable")),

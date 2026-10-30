@@ -1,0 +1,4 @@
+Figure 2. Share of annual GPP outside the Z17 growing season (1 - F at 10% of P99), against
+skewness (a) and the CGIAR aridity index (b; higher = more humid, lower = more arid),
+coloured by functional group.
+0 of 151 sites have no aridity index value and are omitted from panel b.

@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-30T18:32:04Z",
+  "pipeline_version": "92907fb",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds",
+    "GSL_definition/expanded/data/fine_grid_main.rds",
+    "GSL_definition/expanded/tables/derived_site.csv"
+  ],
+  "notes": "Illustrative sites chosen for contrast, not by a selection rule."
+}

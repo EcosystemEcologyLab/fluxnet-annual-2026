@@ -1,0 +1,5 @@
+Figure 5. Carbon gain (expanded set, main run).
+Panel a: pooled slope of annual GPP and NEP on GSL (gC/m2 per day of GSL), by skewness third,
+for Z17 and T95; faint points behind are individual trend-site (>=10yr) slopes.
+Panel b: the same, on season start date and end date (gC/m2 per day of date shift), faceted
+by GPP/NEP (rows) and start/end (columns).

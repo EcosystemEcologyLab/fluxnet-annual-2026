@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:32:08Z",
+  "pipeline_version": "92907fb",
+  "input_sources": [
+    "GSL_definition/expanded/tables/trend_pooled.csv"
+  ],
+  "notes": "0 pooled estimate(s) converged but had an undefined (NA) years-to-detect (zero slope)."
+}

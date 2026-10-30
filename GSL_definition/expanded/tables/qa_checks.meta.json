@@ -1,0 +1,12 @@
+{
+  "run_datetime_utc": "2026-10-30T18:40:13Z",
+  "pipeline_version": "c40d09c",
+  "input_sources": [
+    "GSL_definition/expanded/tables/sites.csv",
+    "GSL_definition/expanded/tables/site_years.csv",
+    "GSL_definition/expanded/tables/carbon_gain_pooled.csv",
+    "GSL_definition/expanded/tables/temperature_sensitivity_pooled.csv",
+    "GSL_definition/expanded/tables/trend_pooled.csv"
+  ],
+  "notes": "Pre-finish QA checks per the prompt's checklist. Quantitative checks computed directly; qualitative ones (legend placement, label overlap, tick thinning) confirmed by reading every rendered figure during development, not re-derived from pixels here."
+}

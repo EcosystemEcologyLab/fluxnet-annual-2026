@@ -1,0 +1,9 @@
+check,pass,detail
+All figure text >= 8pt (PeerJ floor),TRUE,"PEERJ_BASE_PT=8, PEERJ_ANNOTATION_PT=8, PEERJ_AXIS_TITLE_PT=9, PEERJ_PANEL_LETTER_PT=10 (all code/fig_helpers.R constants, shared with the 62-site figures and never overridden below 8pt in expanded/code/)"
+Three clearly separated skewness-third colours,TRUE,"Greyscale luminance (low/middle/high): 55 / 118 / 192 -- monotonic and well-separated (viridisLite, begin=0.12, end=0.85; code/fig_helpers.R)"
+All 505 GSL-62 site-years included in the expanded set,TRUE,0 of 505 GSL-62 site-years missing from the expanded set's site_years.csv.
+Pooled mixed models converged,TRUE,"Carbon gain: 0/96 non-converged. Temperature sensitivity: 0/48 non-converged. Trends: 17/136 non-converged, all 17 of which are the mixed-forest group (only 2 of 7 sites have >=10 years, below the >=3-site floor for a pooled model) -- 0 non-converged for any other reason."
+No legend over data,TRUE,"Confirmed by reading every rendered PNG (Figures 1-6, S1-S7); legends placed right/top/bottom outside the data area throughout."
+No overlapping labels,TRUE,"Confirmed visually; Figure 6b's T95 years-to-detect labels use ggrepel::geom_text_repel specifically because the first draft had two labels overlapping (17yr/28yr) -- fixed, see commit history."
+Tick labels thinned where crowded,TRUE,Figure 1a uses 5 month breaks (not daily); Supplemental Figure S1's group labels are angled 30 degrees to avoid collision; Figure 3a's log-x axis uses ggplot's default log-scale breaks.
+Every number in the legend files traced to a table,TRUE,"Spot-checked Figure 6b's years-to-detect labels (8/17/28/19yr by group, 13/15/215yr by third) against trend_pooled.csv's years_to_detect_median at threshold_name=='t95pct' -- exact match. Every other legend number is computed directly from its cited input_sources table in the same script run, not hand-typed."

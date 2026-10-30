@@ -95,7 +95,15 @@ WINDOW_STEPS <- 5L                           # +/-0.05% of P99 = 5 steps of 0.01
 FRACTION_TARGETS <- seq(0.80, 0.99, by = 0.01)
 
 #' Full derivation for one site x one (gpp_variant, neg_gpp_variant) combo.
-derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract) {
+#'
+#' @param trend_site_ids Site IDs for which the Z17 trend's 95% CI is
+#'   computed (kept NA otherwise, since a CI on <10 years is not
+#'   meaningful). Defaults to the 62-site project's own 21-site
+#'   GSL_SITES_GE10YR for backward compatibility; a caller with a different
+#'   population (e.g. GSL_definition/expanded/, sourced not copied) passes
+#'   its own >=10-year site list here instead of relying on this default.
+derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract,
+                        trend_site_ids = GSL_SITES_GE10YR) {
   d <- daily_extract |> filter(site_id == sid, year %in% years)
   gpp_raw <- d[[gpp_col]]
   gpp <- if (neg_to_zero) pmax(gpp_raw, 0) else gpp_raw
@@ -161,7 +169,7 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract) {
   if (length(yrs_num) >= 3 && length(unique(yrs_num)) >= 2) {
     fit <- lm(gsl_z17_byyear ~ yrs_num)
     trend_slope_z17 <- unname(coef(fit)[2])
-    if (sid %in% GSL_SITES_GE10YR) {
+    if (sid %in% trend_site_ids) {
       ci <- suppressWarnings(confint(fit, level = 0.95)[2, ])
       trend_ci_lo <- unname(ci[1]); trend_ci_hi <- unname(ci[2])
     }

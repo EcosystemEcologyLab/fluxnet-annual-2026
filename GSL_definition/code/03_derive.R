@@ -13,11 +13,17 @@ suppressPackageStartupMessages({
   library(dplyr); library(tidyr); library(readr); library(lubridate); library(purrr)
 })
 
-daily_extract <- readRDS(file.path(GSL_ROOT, "data", "daily_extract.rds"))
-daily_extract$TIMESTAMP <- as.Date(as.character(daily_extract$TIMESTAMP))
-daily_extract$year <- lubridate::year(daily_extract$TIMESTAMP)
-
 ## ---- Helper functions ------------------------------------------------------
+##
+## Reused directly by GSL_definition/expanded/ (sourced, not copied -- see
+## logs/prompts/2026-10-30_gsl_expanded.md): derive_one() already takes
+## gpp_col/neg_to_zero/years/daily_extract as arguments, so a caller with its
+## own resolved GPP column and site/year list needs no changes to this
+## function. Everything below the function definitions -- the 62-site-only
+## daily_extract.rds load and the full variant_grid driver that writes
+## GSL_definition/tables/derived_site*.csv -- is guarded by
+## options(gsl.skip_driver = TRUE) so a caller can source this file for the
+## functions alone without re-running or overwriting the 62-site outputs.
 
 #' Adjusted Fisher-Pearson skewness (scipy.stats.skew, bias = FALSE).
 g1_adjusted <- function(x) {
@@ -203,6 +209,11 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract) {
 }
 
 ## ---- Run across all 4 (gpp_variant x neg_gpp_variant) combinations --------
+if (!isTRUE(getOption("gsl.skip_driver"))) {
+
+daily_extract <- readRDS(file.path(GSL_ROOT, "data", "daily_extract.rds"))
+daily_extract$TIMESTAMP <- as.Date(as.character(daily_extract$TIMESTAMP))
+daily_extract$year <- lubridate::year(daily_extract$TIMESTAMP)
 
 variant_grid <- expand.grid(
   gpp_variant = names(GSL_GPP_VARIANTS),
@@ -311,3 +322,5 @@ message(
   "derived_site: ", nrow(derived_site), " rows (", n_distinct(derived_site$site_id), " sites x ",
   nrow(variant_grid), " variants)"
 )
+
+} # if (!isTRUE(getOption("gsl.skip_driver")))

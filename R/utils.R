@@ -63,11 +63,16 @@ write_output_metadata <- function(output_path, input_sources, notes = "") {
 #' @param reason Human-readable reason (e.g. `"QC_THRESHOLD_YY=0.75 not met"`).
 #' @param threshold The threshold or rule applied (e.g. `"QC_THRESHOLD_YY=0.75"`).
 #' @param excluded_by Script name that performed the exclusion (e.g. `"04_qc.R"`).
+#' @param log_path Path to the exclusion log. Defaults to the pipeline's own
+#'   `outputs/exclusion_log.csv` — pass a different path for a side project
+#'   that must not write into the repo-root `outputs/` directory (e.g.
+#'   `GSL_definition/logs/exclusion_log.csv`).
 #'
 #' @return Invisibly returns the path to the exclusion log.
-log_exclusion <- function(site_id, variable, timestamp, reason, threshold, excluded_by) {
-  log_path <- file.path("outputs", "exclusion_log.csv")
-  if (!dir.exists("outputs")) dir.create("outputs", recursive = TRUE)
+log_exclusion <- function(site_id, variable, timestamp, reason, threshold, excluded_by,
+                           log_path = file.path("outputs", "exclusion_log.csv")) {
+  log_dir <- dirname(log_path)
+  if (!dir.exists(log_dir)) dir.create(log_dir, recursive = TRUE)
 
   row <- data.frame(
     site_id     = as.character(site_id),
@@ -94,11 +99,16 @@ log_exclusion <- function(site_id, variable, timestamp, reason, threshold, exclu
 #' @param record_id Site ID or record identifier.
 #' @param reason Why the record could not be assessed.
 #' @param logged_by Script name (e.g. `"04_qc.R"`).
+#' @param log_path Path to the unknown log. Defaults to the pipeline's own
+#'   `outputs/unknown_log.csv` — pass a different path for a side project
+#'   that must not write into the repo-root `outputs/` directory (e.g.
+#'   `GSL_definition/logs/unknown_log.csv`).
 #'
 #' @return Invisibly returns the path to the unknown log.
-log_unknown <- function(record_id, reason, logged_by) {
-  log_path <- file.path("outputs", "unknown_log.csv")
-  if (!dir.exists("outputs")) dir.create("outputs", recursive = TRUE)
+log_unknown <- function(record_id, reason, logged_by,
+                         log_path = file.path("outputs", "unknown_log.csv")) {
+  log_dir <- dirname(log_path)
+  if (!dir.exists(log_dir)) dir.create(log_dir, recursive = TRUE)
 
   row <- data.frame(
     record_id = as.character(record_id),

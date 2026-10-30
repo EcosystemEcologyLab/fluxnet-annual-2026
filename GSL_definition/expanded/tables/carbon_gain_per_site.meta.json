@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:23:07Z",
+  "pipeline_version": "2b4258b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/carbon_gain_data.csv"
+  ],
+  "notes": "Per-site OLS slope of annual GPP/NEP on GSL/start-day/end-day, trend sites only (>=10 passing years, n=67)."
+}

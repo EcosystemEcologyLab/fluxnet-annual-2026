@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:23:09Z",
+  "pipeline_version": "2b4258b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/carbon_gain_data.csv"
+  ],
+  "notes": "Pooled slope of annual GPP/NEP (gC/m2/yr) on GSL/start-day/end-day (days), by skewness third and functional group, random site intercept+slope (nlme::lme), REML. 0 of 96 did not converge (random-intercept-only fallback also failed) -- see the note column; these are NA, not silently dropped."
+}

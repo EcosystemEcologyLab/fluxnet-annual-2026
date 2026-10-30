@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:23:44Z",
+  "pipeline_version": "2b4258b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/trend_sweep.csv"
+  ],
+  "notes": "Per-site OLS trend of GSL on year, at 16 common thresholds (5-20% of P99) and at T95, for the 67 expanded trend sites."
+}

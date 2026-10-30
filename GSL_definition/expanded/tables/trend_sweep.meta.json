@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:23:43Z",
+  "pipeline_version": "2b4258b",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds"
+  ],
+  "notes": "Per trend-site-year GSL at 16 common thresholds (5-20% of P99, 1% steps) and at each site's own T95, for the trend models below. Trend sites = expanded set's own >=10-year sites (n=67), not the 62-site project's fixed 21."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T18:23:40Z",
+  "pipeline_version": "2b4258b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/carbon_gain_data.csv",
+    "GSL_definition/expanded/tables/annual_inputs.csv"
+  ],
+  "notes": "annual_mean_ta = calendar-year mean TA_F. ta_pre_start_*/ta_pre_end_* = mean TA_F over the fixed 60 days ending the day before the SITE'S OWN MEAN start/end date (not that year's own date), evaluated within each year's timeline."
+}

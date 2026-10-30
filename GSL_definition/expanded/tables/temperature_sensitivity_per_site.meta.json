@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:23:41Z",
+  "pipeline_version": "2b4258b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/temperature_sensitivity_data.csv"
+  ],
+  "notes": "Per-site OLS temperature-sensitivity slopes, trend sites only (>=10 passing years, n=67)."
+}

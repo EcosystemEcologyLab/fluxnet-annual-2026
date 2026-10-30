@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-30T18:23:06Z",
+  "pipeline_version": "2b4258b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/derived_site_year.csv",
+    "GSL_definition/expanded/tables/annual_inputs.csv",
+    "GSL_definition/expanded/tables/season_boundaries.csv"
+  ],
+  "notes": "Per site-year regression inputs for carbon-gain and temperature-sensitivity models (main variant). Southern-hemisphere season_year (Jul-Jun) is joined to the same-numbered calendar year's annual GPP/NEP/TA_F -- a documented simplification, not an exact calendar match."
+}

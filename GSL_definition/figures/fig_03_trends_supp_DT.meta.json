@@ -1,9 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T04:45:46Z",
-  "pipeline_version": "db76687",
-  "input_sources": [
-    "GSL_definition/tables/derived_site.csv",
-    "GSL_definition/data/daily_extract.rds"
-  ],
-  "notes": "Supplementary Figure 3, GPP_DT_VUT_REF, negative GPP zero-floored. Sign changes: 6; significance changes: 7; either: 13."
-}

@@ -4,6 +4,55 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL figure rebuild, PeerJ restyle: done
+
+Follow-up to the "start" entry below (same task). Full prompt:
+`logs/prompts/2026-10-30_gsl_peerj_restyle.md`. Full results:
+`GSL_definition/docs/report_back_2026-10-30_peerj_restyle.md`; full methods record:
+`GSL_definition/docs/methods_memo.md`'s "PeerJ restyle" section.
+
+**Style**: all GSL figures (`fig_helpers.R`) switched from `R/nature_format.R`'s Nature
+conventions to PeerJ's own author instructions — 170mm width, >=8pt text (9pt axis titles, 10pt
+bold panel letters), 1.5-2pt data lines, ~1pt reference lines, roughly doubled point/marker
+sizes, one PNG+PDF pair per figure named `"Figure 1"`…`"Figure 4"` and `"Supplemental Figure
+S1"`…`"S4"` (S-numbers in citation order). The old `"fig_0N_..."`-named files were removed, fully
+superseded. The continuous, capped-at-2 viridis skewness scale was replaced everywhere by a
+discrete, colourblind-safe three-colour skewness-third palette (confirmed monotonic in
+greyscale), used consistently in Figure 1b, Figure 2a/2d, and Figure 4a/b.
+
+**Item 1 (Figure 1b labels)**: panel b's two lines now labelled/coloured by site name
+(`JP-Fjy`/`US-Ton`), not `"low third"`/`"high third"` — Figure 4 panel a changed the same way for
+consistency.
+
+**Item 2 (Figure 2b)**: colour scale now capped at the 95th percentile of each run's own plotted
+values (main 24.3 days/%P99, DT 28.8, as-delivered 24.3), top colour labelled `">= <cap>"`;
+x-axis now starts at 0.5% of P99. Low-threshold structure confirmed still visible.
+
+**Item 3 (Figure 2c/2d)**: both now plot `|value|`, matching panel b; panel d's three lines are
+thicker and use the shared skewness-third palette. The floating "Z17"/"T95" text in panel c was
+already removed in the original Stage 3 pass — confirmed via grep, no new fix needed. Found and
+fixed a side effect: PeerJ's larger tick text overlapped panel c's default breaks in the
+wider-range supplementary variants; limited to 3 breaks.
+
+**Item 4 (CH-Dav 2008)**: confirmed, documented, and swept for recurrence. `GPP_NT_VUT_REF` is
+entirely missing for CH-Dav 2008 (366/366 `NA`) while `GPP_DT_VUT_REF` and QC flags are complete,
+matching Tash's Table S1 listing it as usable. No other site-year in the network shows this
+pattern. With the Stage 3 all-NA-year fix already in place, CH-Dav correctly has 14 usable years
+(of 15 screened) for every NT-based quantity; unaffected for the DT-variant supplementary
+figures.
+
+**New**: `docs/data_and_code_availability.md` — identifies the primary FLUXNET Shuttle snapshot
+(20 September 2026) and per-site product DOI source, proposes four candidate Supplemental Data
+groupings (~840KB total, well within PeerJ's limits), and flags that `GSL_definition/` still
+needs a Zenodo DOI before submission.
+
+All of Figures 1-4 and all four supplementary figures were regenerated and inspected at full size
+after every code change — sign/significance-change counts unchanged from the Stage 3 report
+(main 6/6/11, DT 6/7/13, as-delivered 6/6/11); the 21-site trend consistency check still passes
+in all three variants.
+
+---
+
 ## 2026-10-30 — GSL figure rebuild, PeerJ restyle: start
 
 Starting `logs/prompts/2026-10-30_gsl_peerj_restyle.md`: restyle all GSL figures to PeerJ's

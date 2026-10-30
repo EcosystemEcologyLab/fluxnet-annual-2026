@@ -1,7 +1,0 @@
-Figure 4. The fraction-of-annual-GPP method and its own sensitivity (main run:
-GPP_NT_VUT_REF, negative GPP set to 0, year screening d80, GSL counts GPP > T).
-Panel a sites (same as Figure 1): low third = JP-Fjy, high third = US-Ton.
-Panel a: included fraction of annual GPP vs. days above threshold, each year faint, multi-year mean bold, for the two Figure 1 sites. Grey band 0.90-0.99, dashed line at 0.95, x marker at each site's Z17 (10% of P99).
-Panel b: all 62 sites, mean GSL vs. target fraction (0.80-0.99), coloured by skewness; x marker at each site's own Z17-implied fraction.
-Panel c: common-unit sensitivity (days per 1% change in included fraction) at Z17 (black circle, 10% of P99) and at T95 (red triangle; the threshold where mean F first drops to <=0.95, i.e. F=0.95 by definition), vs. skewness -- same marker convention as panels 2b, 2c, 3a.
-Median common-unit sensitivity: Z17 = 11.085, T95 = 8.290 (days per 1% change in F).

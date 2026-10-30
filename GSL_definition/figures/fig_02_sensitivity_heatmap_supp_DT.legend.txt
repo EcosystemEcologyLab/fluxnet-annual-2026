@@ -1,4 +1,0 @@
-Figure 2 (supplementary: GPP_DT_VUT_REF, negative GPP zero-floored). Same specification as the main Figure 2, this variant only --
-|local sensitivity| (absolute value, darker = more sensitive), log-binned thresholds (35 bins),
-Z17 (black circle) and T95 (red triangle) marker convention, same as the main Figure 2.
-Sites per skewness third: low = 13, middle = 17, high = 32 (total 62).

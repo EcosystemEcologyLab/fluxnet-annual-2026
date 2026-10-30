@@ -1,9 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T04:47:00Z",
-  "pipeline_version": "db76687",
-  "input_sources": [
-    "GSL_definition/tables/derived_site.csv",
-    "GSL_definition/data/daily_extract.rds"
-  ],
-  "notes": "21 trend sites, 5-20% of P99 threshold range. Sign changes: 6; significance changes: 6; either: 11."
-}

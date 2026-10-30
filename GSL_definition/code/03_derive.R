@@ -151,6 +151,7 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract,
   t95_idx <- which(f_rounded <= 0.95)[1]
   t95_pct <- if (!is.na(t95_idx)) FINE_GRID_PCT[t95_idx] else NA_real_
   t95_mean_gsl <- if (!is.na(t95_idx)) mean_gsl_grid[t95_idx] else NA_real_
+  t95_mean_f   <- if (!is.na(t95_idx)) mean_f_grid[t95_idx] else NA_real_
   t95_sensitivity <- if (!is.na(t95_idx)) sensitivity[t95_idx] else NA_real_
 
   common_unit_sens <- function(idx) {
@@ -205,7 +206,7 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract,
       pct_days_below_20pctP99 = pct_below_20,
       z17_pct = 10, z17_mean_gsl = z17_mean_gsl, z17_mean_f = z17_mean_f,
       z17_sensitivity = z17_sensitivity, z17_common_unit_sensitivity = cus_z17,
-      t95_pct = t95_pct, t95_mean_gsl = t95_mean_gsl, t95_sensitivity = t95_sensitivity,
+      t95_pct = t95_pct, t95_mean_gsl = t95_mean_gsl, t95_mean_f = t95_mean_f, t95_sensitivity = t95_sensitivity,
       t95_common_unit_sensitivity = cus_t95,
       mean_gsl_z17 = mean_gsl_z17, sd_gsl_z17 = sd_gsl_z17,
       trend_gsl_z17_days_per_yr = trend_slope_z17,

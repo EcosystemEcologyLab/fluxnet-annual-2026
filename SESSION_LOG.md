@@ -4,6 +4,41 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 3 revisions: done
+
+Follow-up to the "(start)" entry below (same task). All 6 items from
+`logs/prompts/2026-10-29_gsl_stage3_revisions.md` done: Figures 1-4 and all 4 supplementary
+figures regenerated and inspected at full size. Full results:
+`GSL_definition/docs/report_back_2026-10-29_stage3_revisions.md`; full methods record:
+`GSL_definition/docs/methods_memo.md`'s "Stage 3 revisions" section.
+
+**Item 1 (Figure 3a bug) confirmed real and fixed.** `sum(gy > T_abs, na.rm = TRUE)` over an
+all-NA year silently returns `0`, not `NA` — CH-Dav's all-NA 2008 fabricated a fake "GSL = 0"
+year that distorted its 5-20%-of-P99 trend regression, pushing the Z17 dot outside its own range
+bar. Checked all 21 trend sites; only CH-Dav affected. Fixed with a `stopifnot()` regression
+guard now permanent in `07_fig3.R` and `10_supplementary.R`. **The headline count is unchanged
+by the fix**: 6 sign changes, 6 significance changes, 11 either, of 21 trend sites.
+
+**Item 2: Figure 1's high-third site changed** from CA-Ca2 to **US-Ton** (woody-grass mosaic),
+under the new rule (nearest the high third's own median skewness, restricted to woody-grass
+mosaic/grassland sites, never AU-ASM). Low third unchanged (JP-Fjy). Figure 4 panel a reuses the
+same two sites, now consistent with Figure 1.
+
+**A second instance of a known bug was found while re-rendering for this section**:
+`panel_letter("d")`'s default `x = -Inf` is `NaN` under `scale_x_log10()`, which had silently
+dropped Figure 2 panel d's letter from every variant, including the already-committed main run,
+since the original Stage 3 pass. Found via the "NaNs produced" / "Removed 1 row" warnings on
+`10_supplementary.R`'s rerun; fixed in both `06_fig2.R` and `10_supplementary.R`.
+
+Items 3-6 (one Z17/T95 marker convention across Figures 2b/2c/3a/4c; Figure 2's log-binned
+heat map with absolute-value/darker-=-more-sensitive shading and a smoothed, labelled panel d;
+a skewness colour scale capped at 2, shared across every figure; and legend cleanup — dropping
+"mixed forest" where absent, anchoring Figure 4's legends inside their panel borders) all
+verified by direct visual inspection of the regenerated figures, not just by re-running the
+scripts.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 3 revisions (start)
 
 Full prompt: `logs/prompts/2026-10-29_gsl_stage3_revisions.md`. Dave reviewed Stage 3's figures and

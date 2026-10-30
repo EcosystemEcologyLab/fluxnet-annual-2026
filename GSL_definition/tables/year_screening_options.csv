@@ -1,0 +1,6 @@
+option,sites_kept,site_years_kept,sites_ge10yr,trend_sites_dropped_below_10yr,n_trend_sites_dropped,sites_ge5yr
+(b) every day passes 0.50,55,276,3,AU-Cpr; AU-Cum; AU-How; CA-TP4; CH-Cha; CH-Dav; CH-Rtb; DE-Gri; DE-Tha; FR-Pue; JP-Fhk; NL-Loo; US-CMW; US-Mpj; US-Seg; US-SRM; US-Ton; US-UMd,18,30
+(d) >=80% of days pass 0.50,62,505,21,,0,62
+(d) >=70% of days pass 0.50,62,505,21,,0,62
+(d) >=90% of days pass 0.50,62,505,21,,0,62
+(a) >=80% of days pass 0.50 (flag level for scaling),62,505,21,,0,62

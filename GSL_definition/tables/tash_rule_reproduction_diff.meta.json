@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T03:02:42Z",
+  "pipeline_version": "ddd3265",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (daily table, dataset = 'FLUXMET', whole network)",
+    "GSL_definition/docs/framework.md (Sites table, 62 sites / 505 site-years target)"
+  ],
+  "notes": "Network-wide reproduction of Tash's screening rule (NEE_VUT_REF_QC >= 0.25 on every day of a 'complete' year [all 365/366 calendar days present and passing], >= 5 complete years, US-Aud excluded). Reproduced 87 sites / 715 site-years vs. the framework's 62/505. Not tuned to force a match. 'Complete year' is interpreted as full calendar-day coverage (no missing days), not just all delivered days passing -- see docs/methods_memo.md."
+}

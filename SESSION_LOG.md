@@ -4,6 +4,60 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 1: framework received, steps 1-3 done
+
+Follow-up to the entry below (same task, now unblocked — the corrected framework document was
+received and saved verbatim to `GSL_definition/docs/framework.md`, superseding
+`docs/corrections_20261029.md`, which is kept for the record). Resumed from step 2 of
+`logs/prompts/2026-10-29_gsl_stage1.md`, following the framework's run-order steps 1-3, and
+stopped before step 4 (`03_derive.R`, Stage 2) as instructed. Full detail:
+`GSL_definition/docs/methods_memo.md`.
+
+**Step 1 (00_config.R):** the 62-site/505-site-year Sites table is parsed at runtime directly out
+of `docs/framework.md` (not hand-transcribed), with build-time `stop()` checks against every
+number the framework states. All confirmed: 505 site-years, groups 17/20/12/12/1, 21 sites with
+≥10 years.
+
+**Step 2 (01_extract_sites.R):** 403,244 daily FLUXMET rows extracted for all 62 sites
+(`dataset = 'FLUXMET'` filter applied, read-only connection). All 62 are VUT-gated — zero
+CUT-only, zero ungated sites. `product_id` changed between the 1 and 20 September snapshots at
+exactly the 3 sites the framework predicted (FR-Mej, IT-Tor, NL-Vkp). Comparison against Tash's
+17 August snapshot is pending (file not yet provided) — recorded as `NA`, not computed or
+assumed.
+
+**Step 3 (02_screen.R):** `tables/site_year_screening.csv` (505 rows): zero NA-QC days across
+the whole 62-site table (a consequence of Tash's own selection rule); `share_qc_ge_050` ranges
+94-100%. `tables/year_screening_options.csv`: option (b) (every day passes 0.50) keeps 55 sites /
+276 site-years (only 3 of 21 trend sites survive); every (d)/(a) variant at 70/80/90% keeps all
+62 sites / 505 site-years (0 trend sites drop). No option chosen — counts only, per the
+framework's open decision.
+
+**Tash-rule network-wide reproduction** (`tables/tash_rule_reproduction_diff.csv`): applied to
+all 781 network sites with daily FLUXMET data. Reproduced 87 sites / 715 site-years vs. the
+framework's 62/505 — **0 sites lost** (every one of the 62 reproduced), 25 extra sites found
+(not overlapping the 62, reason not determinable from our side — flagged as an open question for
+Tash/Dave), 1 site-year lost (IT-Tor 2012, plausibly linked to that site's known product-ID
+change), 211 extra site-years. Not tuned to force a match, per the framework's instruction.
+
+**A second un-anticipated repo-root write was found and avoided.** `R/utils.R::write_output_metadata()`
+(required by the framework for every table) always appends to the repo-root
+`outputs/session_info.txt`, with no path argument — a second write outside `GSL_definition/`
+beyond the one R/utils.R change the task authorized (the step-1 `log_path` argument). Caught
+before committing (the stray append to `outputs/session_info.txt` was reverted, never pushed).
+Fixed by following an existing precedent already in this repo for the identical problem
+(`TowerTango/code/update_cards.R`'s local `write_meta()`), rather than extending
+`write_output_metadata()` itself: added a local `write_meta()` to `GSL_definition/code/00_config.R`
+that writes only the `.meta.json`, with no session-info side effect. `R/utils.R` was not touched
+a second time.
+
+**Not done / next step:** everything from framework run-order step 4 onward (derived quantities,
+match checks, figures) is Stage 2/3, explicitly out of scope here — waiting on Tash's snapshot,
+screened daily table/code, her negative-GPP and `>`/`>=` answers, her two sensitivity site lists,
+and the year-screening decision (reported, not made, in this stage). The 25-extra-site and
+IT-Tor-2012 discrepancies in the Tash-rule reproduction are also open, carried to Stage 2.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 1: started, blocked on the framework document
 
 New side project for the MacBean and Moore growing season length (GSL) manuscript, requested via

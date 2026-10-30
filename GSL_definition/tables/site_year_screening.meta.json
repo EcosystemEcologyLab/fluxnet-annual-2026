@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T03:02:42Z",
+  "pipeline_version": "ddd3265",
+  "input_sources": [
+    "GSL_definition/data/daily_extract.rds"
+  ],
+  "notes": "Days with an NA QC flag count as not passing at both the 0.25 and 0.50 levels (framework.md correction). share_qc_ge_025/050 are computed over days_present (NA days in the denominator, not excluded)."
+}

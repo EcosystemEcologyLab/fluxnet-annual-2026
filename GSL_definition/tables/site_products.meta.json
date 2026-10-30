@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-30T03:02:30Z",
+  "pipeline_version": "ddd3265",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "Tash's 17 Aug snapshot: not yet received"
+  ],
+  "notes": "product_id comparison for the framework's 62 sites across the repo's 1 and 20 September 2026 snapshots (comparison against Tash's 17 August 2026 snapshot is pending -- not yet received). carbon_src (VUT/CUT/ungated, per-site 04_qc.R rule): 62 VUT, 0 CUT-only (), 0 ungated ()."
+}

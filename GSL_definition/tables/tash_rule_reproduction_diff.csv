@@ -1,0 +1,238 @@
+type,key
+site_added,AU-Cow
+site_added,AU-Rob
+site_added,BE-Lon
+site_added,CA-DB2
+site_added,CH-Oe2
+site_added,CN-Dmn
+site_added,CZ-KrP
+site_added,CZ-wet
+site_added,DE-Kli
+site_added,DE-SfS
+site_added,FR-Aur
+site_added,GF-Guy
+site_added,ID-PaB
+site_added,IT-BFt
+site_added,JP-Mse
+site_added,KR-CRK
+site_added,UK-AMo
+site_added,US-ARM
+site_added,US-Esm
+site_added,US-MN1
+site_added,US-MN2
+site_added,US-Ne1
+site_added,US-Ne2
+site_added,US-Ne3
+site_added,US-Ro1
+site_year_added,AU-Cow 2013
+site_year_added,AU-Cow 2015
+site_year_added,AU-Cow 2016
+site_year_added,AU-Cow 2018
+site_year_added,AU-Cow 2021
+site_year_added,AU-Cow 2024
+site_year_added,AU-Rob 2014
+site_year_added,AU-Rob 2015
+site_year_added,AU-Rob 2016
+site_year_added,AU-Rob 2017
+site_year_added,AU-Rob 2018
+site_year_added,AU-Rob 2023
+site_year_added,AU-Rob 2024
+site_year_added,BE-Lon 2007
+site_year_added,BE-Lon 2011
+site_year_added,BE-Lon 2014
+site_year_added,BE-Lon 2015
+site_year_added,BE-Lon 2016
+site_year_added,BE-Lon 2017
+site_year_added,BE-Lon 2020
+site_year_added,BE-Lon 2021
+site_year_added,CA-Ca1 2004
+site_year_added,CA-Ca1 2010
+site_year_added,CA-DB2 2020
+site_year_added,CA-DB2 2021
+site_year_added,CA-DB2 2022
+site_year_added,CA-DB2 2023
+site_year_added,CA-DB2 2024
+site_year_added,CH-Dav 2011
+site_year_added,CH-Oe2 2005
+site_year_added,CH-Oe2 2009
+site_year_added,CH-Oe2 2011
+site_year_added,CH-Oe2 2012
+site_year_added,CH-Oe2 2015
+site_year_added,CH-Oe2 2016
+site_year_added,CH-Oe2 2017
+site_year_added,CH-Oe2 2018
+site_year_added,CH-Oe2 2021
+site_year_added,CH-Oe2 2023
+site_year_added,CH-Oe2 2024
+site_year_added,CN-Dmn 2013
+site_year_added,CN-Dmn 2015
+site_year_added,CN-Dmn 2018
+site_year_added,CN-Dmn 2019
+site_year_added,CN-Dmn 2020
+site_year_added,CN-Dmn 2024
+site_year_added,CZ-KrP 2014
+site_year_added,CZ-KrP 2015
+site_year_added,CZ-KrP 2016
+site_year_added,CZ-KrP 2018
+site_year_added,CZ-KrP 2020
+site_year_added,CZ-KrP 2021
+site_year_added,CZ-KrP 2022
+site_year_added,CZ-wet 2007
+site_year_added,CZ-wet 2008
+site_year_added,CZ-wet 2009
+site_year_added,CZ-wet 2011
+site_year_added,CZ-wet 2015
+site_year_added,CZ-wet 2016
+site_year_added,CZ-wet 2017
+site_year_added,CZ-wet 2018
+site_year_added,CZ-wet 2019
+site_year_added,CZ-wet 2020
+site_year_added,CZ-wet 2021
+site_year_added,CZ-wet 2023
+site_year_added,CZ-wet 2024
+site_year_added,DE-Kli 2012
+site_year_added,DE-Kli 2014
+site_year_added,DE-Kli 2020
+site_year_added,DE-Kli 2023
+site_year_added,DE-Kli 2025
+site_year_added,DE-SfS 2011
+site_year_added,DE-SfS 2012
+site_year_added,DE-SfS 2013
+site_year_added,DE-SfS 2014
+site_year_added,DE-SfS 2015
+site_year_added,DE-SfS 2016
+site_year_added,DE-SfS 2018
+site_year_added,DE-SfS 2019
+site_year_added,DE-Tha 2025
+site_year_added,FR-Aur 2007
+site_year_added,FR-Aur 2010
+site_year_added,FR-Aur 2011
+site_year_added,FR-Aur 2012
+site_year_added,FR-Aur 2013
+site_year_added,FR-Aur 2016
+site_year_added,FR-Aur 2017
+site_year_added,FR-Aur 2018
+site_year_added,FR-Aur 2024
+site_year_added,FR-Aur 2025
+site_year_added,GF-Guy 2004
+site_year_added,GF-Guy 2008
+site_year_added,GF-Guy 2010
+site_year_added,GF-Guy 2014
+site_year_added,GF-Guy 2016
+site_year_added,GF-Guy 2017
+site_year_added,GF-Guy 2018
+site_year_added,GF-Guy 2022
+site_year_added,ID-PaB 2007
+site_year_added,ID-PaB 2008
+site_year_added,ID-PaB 2010
+site_year_added,ID-PaB 2012
+site_year_added,ID-PaB 2013
+site_year_added,ID-PaB 2014
+site_year_added,IT-BFt 2019
+site_year_added,IT-BFt 2020
+site_year_added,IT-BFt 2021
+site_year_added,IT-BFt 2022
+site_year_added,IT-BFt 2023
+site_year_added,JP-Mse 2002
+site_year_added,JP-Mse 2003
+site_year_added,JP-Mse 2004
+site_year_added,JP-Mse 2006
+site_year_added,JP-Mse 2007
+site_year_added,JP-Mse 2009
+site_year_added,KR-CRK 2017
+site_year_added,KR-CRK 2018
+site_year_added,KR-CRK 2019
+site_year_added,KR-CRK 2020
+site_year_added,KR-CRK 2021
+site_year_added,NL-Vkp 2025
+site_year_added,UK-AMo 2004
+site_year_added,UK-AMo 2007
+site_year_added,UK-AMo 2008
+site_year_added,UK-AMo 2015
+site_year_added,UK-AMo 2016
+site_year_added,UK-AMo 2017
+site_year_added,UK-AMo 2019
+site_year_added,US-ARM 2006
+site_year_added,US-ARM 2011
+site_year_added,US-ARM 2017
+site_year_added,US-ARM 2020
+site_year_added,US-ARM 2024
+site_year_added,US-Esm 2008
+site_year_added,US-Esm 2009
+site_year_added,US-Esm 2010
+site_year_added,US-Esm 2018
+site_year_added,US-Esm 2020
+site_year_added,US-MN1 2018
+site_year_added,US-MN1 2019
+site_year_added,US-MN1 2020
+site_year_added,US-MN1 2022
+site_year_added,US-MN1 2023
+site_year_added,US-MN1 2024
+site_year_added,US-MN2 2018
+site_year_added,US-MN2 2019
+site_year_added,US-MN2 2020
+site_year_added,US-MN2 2021
+site_year_added,US-MN2 2022
+site_year_added,US-MN2 2023
+site_year_added,US-MN2 2024
+site_year_added,US-Ne1 2002
+site_year_added,US-Ne1 2003
+site_year_added,US-Ne1 2004
+site_year_added,US-Ne1 2005
+site_year_added,US-Ne1 2006
+site_year_added,US-Ne1 2007
+site_year_added,US-Ne1 2008
+site_year_added,US-Ne1 2009
+site_year_added,US-Ne1 2011
+site_year_added,US-Ne1 2012
+site_year_added,US-Ne1 2013
+site_year_added,US-Ne1 2014
+site_year_added,US-Ne1 2016
+site_year_added,US-Ne1 2017
+site_year_added,US-Ne1 2018
+site_year_added,US-Ne1 2020
+site_year_added,US-Ne1 2021
+site_year_added,US-Ne1 2023
+site_year_added,US-Ne1 2024
+site_year_added,US-Ne2 2005
+site_year_added,US-Ne2 2006
+site_year_added,US-Ne2 2008
+site_year_added,US-Ne2 2009
+site_year_added,US-Ne2 2011
+site_year_added,US-Ne2 2012
+site_year_added,US-Ne2 2013
+site_year_added,US-Ne2 2016
+site_year_added,US-Ne2 2017
+site_year_added,US-Ne2 2018
+site_year_added,US-Ne2 2019
+site_year_added,US-Ne2 2020
+site_year_added,US-Ne2 2021
+site_year_added,US-Ne2 2024
+site_year_added,US-Ne3 2002
+site_year_added,US-Ne3 2003
+site_year_added,US-Ne3 2004
+site_year_added,US-Ne3 2005
+site_year_added,US-Ne3 2006
+site_year_added,US-Ne3 2007
+site_year_added,US-Ne3 2008
+site_year_added,US-Ne3 2010
+site_year_added,US-Ne3 2011
+site_year_added,US-Ne3 2012
+site_year_added,US-Ne3 2013
+site_year_added,US-Ne3 2014
+site_year_added,US-Ne3 2018
+site_year_added,US-Ne3 2019
+site_year_added,US-Ne3 2020
+site_year_added,US-Ne3 2021
+site_year_added,US-Ne3 2023
+site_year_added,US-Ne3 2024
+site_year_added,US-Ro1 2004
+site_year_added,US-Ro1 2005
+site_year_added,US-Ro1 2006
+site_year_added,US-Ro1 2007
+site_year_added,US-Ro1 2008
+site_year_added,US-Ro1 2009
+site_year_added,US-Ro1 2012
+site_year_added,US-Ro1 2013
+site_year_added,US-Ro1 2016
+site_year_lost,IT-Tor 2012

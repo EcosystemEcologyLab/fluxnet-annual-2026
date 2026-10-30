@@ -4,6 +4,21 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 2 (start)
+
+Full prompt: `logs/prompts/2026-10-29_gsl_stage2.md`. Proceeding from Stage 1 (`a1633a8`) to
+framework run-order steps 4 (`03_derive.R`) and 5 (`04_reproduce.R`), stopping before any figure.
+Dave made the open-decision calls without Tash's input, explicitly accepting the risk of a rerun
+if an assumption proves wrong: year screening (d) at 80%, negative GPP set to 0 for the main run
+(as-delivered alongside), GSL counts `GPP > T` (strict), the fixed Sites table (keep IT-Tor 2012,
+don't add the 5 extra qualifying years Stage 1 found at already-included sites), `GPP_NT_VUT_REF`
+main / `GPP_DT_VUT_REF` supplementary. Each goes into `00_config.R` as a named switch; `docs/framework.md`'s
+"Open decisions" list is being replaced with these, recording when and how they were made.
+A second message in the same turn pasted the framework again as "updated" — diffed byte-for-byte
+identical to what Stage 1 already saved; no resave of the body needed.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 1: framework received, steps 1-3 done
 
 Follow-up to the entry below (same task, now unblocked — the corrected framework document was

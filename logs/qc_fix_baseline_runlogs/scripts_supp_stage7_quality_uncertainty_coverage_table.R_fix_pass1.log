@@ -1,0 +1,16 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:23:36] === Supplementary Table S3: quality and uncertainty variables by time step ===
+[2026-10-29 18:23:37] Loaded 64 rows from review/technical_validation_interim/tables/table_tv1_column_coverage_by_site.csv
+[2026-10-29 18:23:37] Relabelled 78 NA cells (column absent at that resolution) as 'not provided'.
+[2026-10-29 18:23:37] Saved: review/figures/draft_manuscript_v1/SupTables/tableS3_quality_uncertainty_coverage.csv
+[2026-10-29 18:23:37] === Done ===

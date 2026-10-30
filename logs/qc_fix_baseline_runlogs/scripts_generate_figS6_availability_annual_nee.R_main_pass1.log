@@ -1,0 +1,16 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:12:06] === Supplementary Figure S6: availability of annual NEE ===
+[2026-10-29 18:12:06] Site-years (FLUXMET annual rows): 6336; sites: 781
+[2026-10-29 18:12:07] Saved: review/figures/draft_manuscript_v1/SupFigs/figS6_availability_annual_nee.png, review/figures/draft_manuscript_v1/SupFigs/figS6_availability_annual_nee.pdf
+[2026-10-29 18:12:07] Saved: review/figures/draft_manuscript_v1/SupFigs/figS6_availability_annual_nee.legend.txt
+[2026-10-29 18:12:07] === Done ===

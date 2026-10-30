@@ -1,0 +1,56 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:20:39] === Main-text Figure: five-panel network map (world + 4 regions) ===
+Spherical geometry (s2) switched off
+[2026-10-29 18:20:39] Loaded 781 sites (data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv)
+[2026-10-29 18:20:39] Towers outside all four regional extents (panel a only): 65 of 781
+[2026-10-29 18:20:39] Region 'North America': lat [15, 72], lon [-170, -50] -- 362 towers
+[2026-10-29 18:20:39] Region 'Europe': lat [34, 72], lon [-12, 42] -- 198 towers
+[2026-10-29 18:20:39] Region 'East and Southeast Asia': lat [-10, 51.5], lon [95, 146] -- 103 towers
+[2026-10-29 18:20:39] Region 'Australia and New Zealand': lat [-48, -10], lon [110, 180] -- 53 towers
+[2026-10-29 18:20:39] Building panel a (world overview) ...
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+[2026-10-29 18:20:39] Panel a height at 183mm wide: 79.13mm
+[2026-10-29 18:20:39] Building regional panels (b-e) ...
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+[2026-10-29 18:20:39]   panel b scale bar: candidate (x=0.07,y=0.07, dist 0.01 from default) is clear of land -- used.
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+[2026-10-29 18:20:41]   panel c scale bar: candidate (x=0.03,y=0.67, dist 0.59 from default) is clear of land -- used.
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+[2026-10-29 18:20:43]   panel d scale bar: candidate (x=0.55,y=0.39, dist 0.58 from default) is clear of land -- used.
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+[2026-10-29 18:20:43]   panel e scale bar: candidate (x=0.07,y=0.07, dist 0.01 from default) is clear of land -- used.
+[2026-10-29 18:20:43]   Panel b (North America): n = 362 towers, LAEA, span ~12205km, scale bar 3000km, aspect 1.722
+[2026-10-29 18:20:43]   Panel c (Europe): n = 198 towers, LAEA, span ~4941km, scale bar 1000km, aspect 1.124
+[2026-10-29 18:20:43]   Panel d (East and Southeast Asia): n = 103 towers, LAEA, span ~5753km, scale bar 1500km, aspect 0.83
+[2026-10-29 18:20:43]   Panel e (Australia and New Zealand): n = 53 towers, LAEA, span ~7616km, scale bar 2000km, aspect 1.641
+[2026-10-29 18:20:43] Row 1 (b|c) height: 64.3mm (b 110.7mm + c 72.3mm)
+[2026-10-29 18:20:43] Row 2 (d|e) height: 74.06mm (d 61.5mm + e 121.5mm)
+[2026-10-29 18:20:43] Combined height: 217.49mm (target <=200mm, hard limit 247mm)
+[2026-10-29 18:20:45] Saved: review/figures/draft_manuscript_v1/fig_01_map_network.png, review/figures/draft_manuscript_v1/fig_01_map_network.pdf
+[2026-10-29 18:20:45] Saved: review/figures/draft_manuscript_v1/fig_01_map_network.legend.txt
+[2026-10-29 18:20:45] === Done ===

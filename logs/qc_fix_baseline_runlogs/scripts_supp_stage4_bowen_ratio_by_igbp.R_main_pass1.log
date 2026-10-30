@@ -1,0 +1,39 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:12:44] === Stage 4: Bowen ratio by IGBP class ===
+[2026-10-29 18:12:44] H_CORR column present in annual table: TRUE (437 / 781 current-network sites have >=1 non-NA value; NOT used below)
+[2026-10-29 18:12:44] LE_CORR column present in annual table: TRUE (436 / 781 current-network sites have >=1 non-NA value; NOT used below)
+[2026-10-29 18:12:44] Annual FLUXMET rows (current network): 6336 (781 sites)
+[2026-10-29 18:12:44] Site-years qualifying on BOTH H_F_MDS_QC and LE_F_MDS_QC (QC_THRESHOLD_YY=0.5): 4487 / 6336
+[2026-10-29 18:12:44] Dropping 0 site-year(s) with LE_F_MDS <= 0 (Bowen ratio undefined/not meaningful with non-positive LE).
+[2026-10-29 18:12:44] Site-years used for Bowen ratio: 4487 (665 sites)
+# A tibble: 16 × 7
+   igbp_class n_sites n_site_years bowen_median bowen_p25 bowen_p75 flag_small_n
+   <chr>        <int>        <int>        <dbl>     <dbl>     <dbl> <lgl>       
+ 1 ENF            103          963        0.890     0.542     1.13  FALSE       
+ 2 EBF             40          282        0.417     0.250     0.858 FALSE       
+ 3 DNF              7           63        1.46      0.815     1.51  FALSE       
+ 4 DBF             64          593        0.560     0.418     0.776 FALSE       
+ 5 MF              23          150        0.629     0.407     0.910 FALSE       
+ 6 CSH             11           57        0.738     0.347     1.14  FALSE       
+ 7 OSH             34          239        1.21      0.458     3.16  FALSE       
+ 8 WSA             17          155        1.22      0.733     1.92  FALSE       
+ 9 SAV             13           88        1.35      1.05      2.10  FALSE       
+10 GRA            130          761        0.463     0.190     0.826 FALSE       
+11 WET             95          479        0.357     0.176     0.615 FALSE       
+12 CRO            113          598        0.327     0.208     0.439 FALSE       
+13 CVM              7           26        0.419     0.339     0.818 FALSE       
+14 BSV              7           30        2.23      1.46      7.58  FALSE       
+15 SNO              1            3       -0.470    -0.470    -0.470 TRUE        
+16 Total          665         4487        0.521     0.292     0.936 FALSE       
+[2026-10-29 18:12:45] Saved: review/figures/draft_manuscript_v1/SupTables/tableS4_bowen_ratio_by_igbp.csv
+[2026-10-29 18:12:45] === Stage 4 done ===

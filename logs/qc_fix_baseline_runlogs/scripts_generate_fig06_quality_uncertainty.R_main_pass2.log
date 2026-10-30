@@ -1,0 +1,41 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:15:14] === Main Figure 6: quality and uncertainty of annual fluxes ===
+[2026-10-29 18:15:14] --- Gates ---
+# A tibble: 5 × 4
+  item                                          expected actual ok   
+  <chr>                                            <int>  <int> <lgl>
+1 annual rows (table_stage4 master)                 6336   6336 TRUE 
+2 site-years with both VUT and CUT usable           3960   3960 TRUE 
+3 usable VUT site-years                             4017   4017 TRUE 
+4 usable CUT site-years                             4320   4320 TRUE 
+5 site-years missing the joint term on >=1 side       20     20 TRUE 
+[2026-10-29 18:15:14] All gates passed.
+[2026-10-29 18:15:14] --- Panel a: annual QC ECDF (direct DuckDB read) ---
+[2026-10-29 18:15:14] Panel a: 17532 annual QC values pulled (4 variables).
+[2026-10-29 18:15:14] Panel a: annual QC < 0.5 (below the plotted x-axis range), by variable: NEE_VUT=16/4033, NEE_CUT=32/4352, LE=8/4509, H=7/4638
+[2026-10-29 18:15:14] --- Panel b: uncertainty terms (random, u*-threshold, joint), VUT vs CUT ---
+[2026-10-29 18:15:14] --- Panel c: VUT - CUT histogram ---
+[2026-10-29 18:15:14] Panel c: 152 of 3960 exceed combined uncertainty; 20 lack the joint term; 86 beyond +/-100; 34 beyond +/-150 (clipped from view).
+[2026-10-29 18:15:14] --- Composing figure ---
+Warning messages:
+1: Removed 156 rows containing non-finite outside the scale range
+(`stat_boxplot()`). 
+2: Removed 2 rows containing missing values or values outside the scale range
+(`geom_bar()`). 
+3: Removed 156 rows containing non-finite outside the scale range
+(`stat_boxplot()`). 
+4: Removed 2 rows containing missing values or values outside the scale range
+(`geom_bar()`). 
+[2026-10-29 18:15:15] Saved: review/figures/draft_manuscript_v1/fig_06_quality_uncertainty.png, review/figures/draft_manuscript_v1/fig_06_quality_uncertainty.pdf
+[2026-10-29 18:15:15] Saved: review/figures/draft_manuscript_v1/fig_06_quality_uncertainty.legend.txt
+[2026-10-29 18:15:15] === Done ===

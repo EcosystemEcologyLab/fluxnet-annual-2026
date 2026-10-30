@@ -1,0 +1,45 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:11:44] === Extended Data: FLUXNET2015 vs Shuttle, matched site-years ===
+[2026-10-29 18:11:44] Querying DuckDB `annual` table for Shuttle site-years ...
+read_bifvarinfo_units(): reading 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv'
+Warning message:
+In read_bifvarinfo_units(extracted_dir) :
+  BIFVARINFO file 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv' is missing columns: VAR_INFO_VARNAME, VAR_INFO_UNIT. Using hardcoded fallback.
+[2026-10-29 18:11:44]   Shuttle: 6336 site-year rows, 781 sites
+[2026-10-29 18:11:44] Reading already-extracted FLUXNET2015 YY files under data/fluxnet2015_comparison
+[2026-10-29 18:11:44]   FLUXNET2015 sites with an extracted YY file: 206
+[2026-10-29 18:11:45]   Reading FLUXNET2015 site 50 / 206
+[2026-10-29 18:11:46]   Reading FLUXNET2015 site 100 / 206
+[2026-10-29 18:11:48]   Reading FLUXNET2015 site 150 / 206
+[2026-10-29 18:11:48]   Reading FLUXNET2015 site 200 / 206
+[2026-10-29 18:11:49]   FLUXNET2015: 1493 site-year rows, 206 sites
+[2026-10-29 18:11:49]   Sites present in both datasets (any year): 159
+[2026-10-29 18:11:49] 
+=== Matching years per site per flux ===
+[2026-10-29 18:11:49]   Site-flux rows with >=1 matched year: 401
+[2026-10-29 18:11:49] 
+=== Class-level stats ===
+[2026-10-29 18:11:49]   NEP: 9 classes plotted (n_sites range 6-27); total matched sites = 131, site-years = 821
+[2026-10-29 18:11:49]     Excluded (n>0 but below threshold): CSH(n=1), SAV(n=3)
+[2026-10-29 18:11:49]   ET: 9 classes plotted (n_sites range 6-29); total matched sites = 135, site-years = 839
+[2026-10-29 18:11:49]     Excluded (n>0 but below threshold): CSH(n=1), SAV(n=4)
+[2026-10-29 18:11:49]   H: 9 classes plotted (n_sites range 6-29); total matched sites = 135, site-years = 861
+[2026-10-29 18:11:49]     Excluded (n>0 but below threshold): CSH(n=1), SAV(n=4)
+[2026-10-29 18:11:49] Saved: data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv
+[2026-10-29 18:11:49] Saved: data/snapshots/flux_comparison_fluxnet2015_vs_shuttle_common_siteyears.csv.meta.json
+[2026-10-29 18:11:49] 
+=== Building ED combo figure ===
+[2026-10-29 18:11:50] Saved: review/figures/draft_manuscript_v1/SupFigs/figS3_flux_comparison_matched_siteyears.png, review/figures/draft_manuscript_v1/SupFigs/figS3_flux_comparison_matched_siteyears.pdf, review/figures/draft_manuscript_v1/SupFigs/figS3_flux_comparison_matched_siteyears.jpg
+[2026-10-29 18:11:50] Saved: review/figures/draft_manuscript_v1/SupFigs/figS3_flux_comparison_matched_siteyears.legend.txt
+[2026-10-29 18:11:50] 
+=== ED combo figure complete ===

@@ -1,0 +1,60 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:22:33] === Extended Data: Whittaker NEE/GPP/RECO three-flux figure ===
+read_bifvarinfo_units(): reading 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv'
+Warning message:
+In read_bifvarinfo_units(extracted_dir) :
+  BIFVARINFO file 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv' is missing columns: VAR_INFO_VARNAME, VAR_INFO_UNIT. Using hardcoded fallback.
+[2026-10-29 18:22:34] compute_site_annual_fluxes(): 781 sites; qualifying NEE/GPP/RECO = 656/651/651
+[2026-10-29 18:22:34] Panel a (NEE): n = 656 sites
+[2026-10-29 18:22:34] Panel b (GPP): n = 651 sites; panel c (TER): n = 651 sites
+[2026-10-29 18:22:34] GPP hexagons per step: 0 to 500 = 15; 500 to 1000 = 15; 1000 to 1500 = 18; 1500 to 2000 = 24; 2000 to 2500 = 8; 2500 to 3000 = 4; above 3000 = 5
+Warning message:
+Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+[2026-10-29 18:22:34] RECO hexagons per step: 0 to 500 = 17; 500 to 1000 = 19; 1000 to 1500 = 31; 1500 to 2000 = 13; 2000 to 2500 = 2; 2500 to 3000 = 3; above 3000 = 4
+Warning message:
+Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+Warning messages:
+1: Removed 125 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+2: Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+3: Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+4: Removed 125 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+5: Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+6: Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+7: Removed 125 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+8: Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+9: Removed 130 rows containing non-finite outside the scale range
+(`stat_summary_hex()`). 
+[2026-10-29 18:22:35] Saved: review/figures/draft_manuscript_v1/SupFigs/figS2_whittaker_nee_gpp_reco.png, review/figures/draft_manuscript_v1/SupFigs/figS2_whittaker_nee_gpp_reco.pdf, review/figures/draft_manuscript_v1/SupFigs/figS2_whittaker_nee_gpp_reco.jpg
+[2026-10-29 18:22:35] Saved: review/figures/draft_manuscript_v1/SupFigs/figS2_whittaker_nee_gpp_reco.legend.txt
+[2026-10-29 18:22:35] === Done ===

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T04:12:16Z",
+  "pipeline_version": "9721b01",
+  "input_sources": [
+    "GSL_definition/tables/benchmark_site_correlations.csv"
+  ],
+  "notes": "Correlation (Pearson) of annual GSL with annual GPP sum, across each site's own years, for Z17 (fixed threshold, 10% of P99) and the new method (T95, the threshold where mean included fraction of annual GPP first drops to <=0.95). Both definitions count days above a fixed threshold, so neither is favoured by construction (framework.md, Benchmark table). 21 sites with >= 10 years after d80 screening."
+}

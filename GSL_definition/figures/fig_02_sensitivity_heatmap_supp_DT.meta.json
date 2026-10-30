@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T04:13:27Z",
+  "pipeline_version": "9721b01",
+  "input_sources": [
+    "GSL_definition/tables/derived_site.csv",
+    "GSL_definition/data/fine_grid.rds"
+  ],
+  "notes": "Supplementary Figure 2, GPP_DT_VUT_REF, negative GPP zero-floored. Terciles: low=13, middle=17, high=32."
+}

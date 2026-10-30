@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T21:20:13Z",
+  "pipeline_version": "08f655d",
+  "input_sources": [
+    "GSL_definition/expanded/tables/checks_c2_dbf_per_site.csv",
+    "GSL_definition/expanded/tables/season_boundaries.csv"
+  ],
+  "notes": "DBF per-site slope outliers (Tukey 1.5*IQR), with record length and window-edge/missing-boundary diagnostics where visible."
+}

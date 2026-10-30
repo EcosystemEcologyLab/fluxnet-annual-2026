@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T21:20:13Z",
+  "pipeline_version": "08f655d",
+  "input_sources": [
+    "GSL_definition/expanded/tables/carbon_gain_per_site.csv"
+  ],
+  "notes": "Per-site OLS slope of annual GPP on start/end DOY (Z17, T95), DBF trend sites (>=10 yr) only. is_outlier = beyond 1.5*IQR of this predictor's own DBF slope distribution (Tukey rule)."
+}

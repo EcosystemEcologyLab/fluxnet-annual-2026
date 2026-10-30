@@ -4,6 +4,29 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL selection rule options: start
+
+Full prompt: `logs/prompts/2026-10-30_gsl_selection_rule_options.md`. Follow-on to the
+site-selection audit (previous entry below). Extends `GSL_definition/code/11_selection_audit.R`
+and its tables — read-only on the repo-root DuckDB store (FLUXMET daily rows only). Does **not**
+rerun or alter the 62-site GSL analysis.
+
+Question: starting from the manuscript's own rule (IGBP exclusions, daily `qc_passes(... ,
+0.25)` with NA as failing, >= 5 passing years, rule 5 negative-GPP cap), what is the
+least-relaxed set of changes that recovers the long-record sites the audit found excluded,
+while keeping all 505 site-years of the existing GSL 62 intact? Evaluates a per-site VUT/CUT QC
+fallback (as already used in `scripts/04_qc.R`, with `GPP_NT_CUT_REF` for CUT sites) crossed
+with four year-passing rules: R0 (the manuscript baseline, VUT-only), R1 (R0 plus the CUT
+fallback), R2 (R1 plus a flat allowance of 3/7/14 failing days per year), and R3 (R1 plus
+ignoring failing days whose gap-filled GPP falls in a low-GPP band near the site's P99, with a
+small residual allowance). Reports sites/site-years/trend-sites per rule, which of the 37
+non-GSL-62 long-record sites each rule recovers (and why any are still lost), confirms the GSL
+62 remains a strict subset under every rule, and re-checks rule 5 for every newly added site.
+Produces a recommendation and a summary table in `GSL_definition/docs/selection_rule_options_2026-10-30.md`,
+then stops for a decision — no rule is applied to the 62-site analysis in this task.
+
+---
+
 ## 2026-10-30 — GSL site-selection audit: start
 
 Full prompt: `logs/prompts/2026-10-30_gsl_selection_audit.md`. New task, read-only on the

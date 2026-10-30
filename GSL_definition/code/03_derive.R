@@ -172,7 +172,13 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract,
   mean_gsl_z17 <- mean(gsl_z17_byyear, na.rm = TRUE)
   sd_gsl_z17 <- sd(gsl_z17_byyear, na.rm = TRUE)
   trend_slope_z17 <- NA_real_; trend_ci_lo <- NA_real_; trend_ci_hi <- NA_real_
-  if (length(yrs_num) >= 3 && length(unique(yrs_num)) >= 2) {
+  ## sum(!is.na(...)) >= 3, not just length(yrs_num) >= 3: a site can have
+  ## >=3 years on record but zero non-NA gsl_z17_byyear values (e.g. a GPP
+  ## variant with no data at all for that site -- CA-TP1 has GPP_NT_REF but
+  ## zero non-NA GPP_DT_REF), which previously reached lm.fit() with 0
+  ## non-NA cases and errored ("0 (non-NA) cases"), found via
+  ## GSL_definition/expanded/.
+  if (length(yrs_num) >= 3 && length(unique(yrs_num)) >= 2 && sum(!is.na(gsl_z17_byyear)) >= 3) {
     fit <- lm(gsl_z17_byyear ~ yrs_num)
     trend_slope_z17 <- unname(coef(fit)[2])
     if (sid %in% trend_site_ids) {

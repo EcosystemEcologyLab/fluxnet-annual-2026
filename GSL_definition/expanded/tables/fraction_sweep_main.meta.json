@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:33:24Z",
+  "pipeline_version": "1fd076a",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds"
+  ],
+  "notes": "Per-site mean GSL at each of 20 target included-GPP fractions (0.80-0.99), main variant -- the threshold needed to include that fraction of annual GPP, for Supplemental Figure S7."
+}

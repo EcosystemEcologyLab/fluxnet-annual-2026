@@ -47,7 +47,8 @@ run_variant <- function(vname) {
   list(
     site      = bind_rows(purrr::map(out, "site")) |> mutate(variant = vname, .before = 1),
     site_year = bind_rows(purrr::map(out, "site_year")) |> mutate(variant = vname, .before = 1),
-    fine_grid = bind_rows(purrr::map(out, "fine_grid")) |> mutate(variant = vname, .before = 1)
+    fine_grid = bind_rows(purrr::map(out, "fine_grid")) |> mutate(variant = vname, .before = 1),
+    fraction_sweep = bind_rows(purrr::map(out, "fraction_sweep")) |> mutate(variant = vname, .before = 1)
   )
 }
 
@@ -113,6 +114,13 @@ write_meta(
   file.path(EXP_TABLES, "derived_site_year.csv"),
   input_sources = file.path(EXP_DATA, "daily_extract.rds"),
   notes = "Annual GSL(y) and F(y) at Z17 (10% of P99) and T95, per site x variant x year."
+)
+
+write_csv(res_main$fraction_sweep, file.path(EXP_TABLES, "fraction_sweep_main.csv"))
+write_meta(
+  file.path(EXP_TABLES, "fraction_sweep_main.csv"),
+  input_sources = file.path(EXP_DATA, "daily_extract.rds"),
+  notes = "Per-site mean GSL at each of 20 target included-GPP fractions (0.80-0.99), main variant -- the threshold needed to include that fraction of annual GPP, for Supplemental Figure S7."
 )
 
 saveRDS(fine_grid_main, file.path(EXP_DATA, "fine_grid_main.rds"))

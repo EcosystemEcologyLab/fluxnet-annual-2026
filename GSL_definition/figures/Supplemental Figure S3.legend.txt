@@ -1,0 +1,3 @@
+Supplemental Figure S3. Same specification as the main Figure 3, this variant only.
+GPP variant: GPP_DT_VUT_REF, negative GPP zero-floored.
+Of the 21 trend sites: 6 sign changes, 7 significance changes, 13 either, across 5-20% of P99.

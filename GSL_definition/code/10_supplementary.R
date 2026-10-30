@@ -33,7 +33,7 @@ trend_sites <- GSL_SITES_GE10YR
 build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   derived_site <- derived_site_all |> filter(gpp_variant == !!gpp_variant, neg_gpp_variant == !!neg_variant)
   fine_grid <- fine_grid_all |> filter(gpp_variant == !!gpp_variant, neg_gpp_variant == !!neg_variant,
-                                         pct_of_P99 >= 0.1, pct_of_P99 <= 35)
+                                         pct_of_P99 >= 0.5, pct_of_P99 <= 35)
   site_order <- derived_site |> arrange(skewness) |> pull(site_id)
   derived_site$site_id <- factor(derived_site$site_id, levels = site_order)
   fine_grid$site_id <- factor(fine_grid$site_id, levels = site_order)
@@ -41,9 +41,10 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
 
   ## Same log-uniform binning as 06_fig2.R, shared by the heatmap and the
   ## bottom panel -- see that script for why (fixes low-threshold striping,
-  ## doubles as the smoothed bottom-panel view).
+  ## doubles as the smoothed bottom-panel view). x-axis starts at 0.5% of
+  ## P99, not 0.1% (PeerJ restyle).
   N_BINS <- 35
-  log_edges <- 10^seq(log10(0.1), log10(35), length.out = N_BINS + 1)
+  log_edges <- 10^seq(log10(0.5), log10(35), length.out = N_BINS + 1)
   bin_of <- function(pct) pmin(findInterval(pct, log_edges, all.inside = TRUE), N_BINS)
   fine_grid <- fine_grid |>
     mutate(bin = bin_of(pct_of_P99), bin_lo = log_edges[bin], bin_hi = log_edges[bin + 1],
@@ -52,28 +53,29 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   heat_data <- fine_grid |>
     group_by(site_id, bin, bin_mid, bin_width) |>
     summarise(abs_sensitivity = mean(abs(local_sensitivity), na.rm = TRUE), .groups = "drop")
+  sensitivity_cap <- unname(quantile(heat_data$abs_sensitivity, 0.95, na.rm = TRUE))
 
   p_heat <- ggplot(heat_data, aes(x = bin_mid, y = site_id, fill = abs_sensitivity)) +
     geom_tile(aes(width = bin_width), height = 1) +
-    scale_fill_distiller(palette = "Blues", direction = 1, name = "Sensitivity\n(days/%P99,\nabs. value)") +
-    geom_vline(xintercept = 10, colour = "grey30", linewidth = nature_lwd(0.25)) +
+    scale_fill_gsl_sensitivity(heat_data$abs_sensitivity) +
+    geom_vline(xintercept = 10, colour = "grey30", linewidth = nature_lwd(PEERJ_LWD_REF)) +
     geom_point(data = derived_site, aes(x = 10, y = site_id, shape = "Z17"), inherit.aes = FALSE,
-               colour = GSL_MARKER_COLORS[["Z17"]], size = 0.5) +
+               colour = GSL_MARKER_COLORS[["Z17"]], size = 1) +
     geom_point(data = derived_site, aes(x = t95_pct, y = site_id, shape = "T95"), inherit.aes = FALSE,
-               colour = GSL_MARKER_COLORS[["T95"]], size = 0.5) +
+               colour = GSL_MARKER_COLORS[["T95"]], size = 1) +
     scale_shape_gsl_marker() +
     scale_x_log10(name = "Threshold (% of P99)", expand = c(0, 0)) +
-    coord_cartesian(xlim = c(0.1, 35)) +
+    coord_cartesian(xlim = c(0.5, 35)) +
     scale_y_discrete(expand = c(0, 0)) +
     theme_gsl() +
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.title.y = element_blank(),
-          legend.key.height = unit(3, "mm"), legend.key.width = unit(2.5, "mm")) +
-    panel_letter("b", x = 0.15, hjust = 0)
+          legend.key.height = unit(4, "mm"), legend.key.width = unit(3, "mm")) +
+    gsl_panel_letter("b", x = 0.55, hjust = 0)
 
-  strip_data <- derived_site |> select(site_id, skewness, group)
+  strip_data <- derived_site |> select(site_id, skewness, skewness_third, group)
   p_strip <- ggplot(strip_data, aes(y = site_id)) +
-    geom_tile(aes(x = 1, fill = skewness), width = 1) +
-    scale_fill_gsl_skew() +
+    geom_tile(aes(x = 1, fill = skewness_third), width = 1) +
+    scale_fill_gsl_skew_third() +
     new_scale_fill() +
     geom_tile(aes(x = 2, fill = group), width = 1) +
     scale_fill_gsl_group(name = "Group") +
@@ -83,39 +85,43 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
     theme_gsl() +
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
           axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
-          legend.key.height = unit(3, "mm"), legend.key.width = unit(2.5, "mm")) +
-    panel_letter("a")
+          legend.key.height = unit(4, "mm"), legend.key.width = unit(3, "mm")) +
+    gsl_panel_letter("a")
 
-  right_data <- derived_site |> select(site_id, z17_sensitivity, t95_sensitivity)
+  right_data <- derived_site |> select(site_id, z17_sensitivity, t95_sensitivity) |>
+    mutate(z17_sensitivity = abs(z17_sensitivity), t95_sensitivity = abs(t95_sensitivity))
   p_right <- ggplot(right_data, aes(y = site_id)) +
     geom_segment(aes(x = z17_sensitivity, xend = t95_sensitivity, yend = site_id),
-                 colour = "grey60", linewidth = nature_lwd(0.3)) +
-    geom_point(aes(x = z17_sensitivity, shape = "Z17"), size = 0.7, colour = GSL_MARKER_COLORS[["Z17"]]) +
-    geom_point(aes(x = t95_sensitivity, shape = "T95"), size = 0.7, colour = GSL_MARKER_COLORS[["T95"]]) +
+                 colour = "grey60", linewidth = nature_lwd(PEERJ_LWD_REF)) +
+    geom_point(aes(x = z17_sensitivity, shape = "Z17"), size = 1.4, colour = GSL_MARKER_COLORS[["Z17"]]) +
+    geom_point(aes(x = t95_sensitivity, shape = "T95"), size = 1.4, colour = GSL_MARKER_COLORS[["T95"]]) +
     scale_shape_gsl_marker() +
-    labs(x = "Sensitivity\n(days/%P99)", y = NULL) +
+    labs(x = "Sensitivity\n(days/%P99,\nabs. value)", y = NULL) +
+    ## Panel is narrow -- with PeerJ's larger tick text, the default 4-5
+    ## breaks overlap; 3 keeps them legible (see 06_fig2.R).
+    scale_x_continuous(breaks = scales::breaks_pretty(n = 3)) +
     theme_gsl() +
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-          legend.position = c(0.68, 0.9), legend.key.width = unit(1, "mm"),
-          legend.text = element_text(size = NATURE_SMALL_PT),
+          legend.position = c(0.68, 0.9), legend.key.width = unit(2, "mm"),
+          legend.text = element_text(size = PEERJ_BASE_PT),
           legend.background = element_rect(fill = "white", colour = NA), legend.key = element_blank()) +
-    panel_letter("c")
+    gsl_panel_letter("c")
 
   bottom_data <- fine_grid |>
     left_join(derived_site |> select(site_id, skewness_third), by = "site_id") |>
     group_by(skewness_third, bin, bin_mid) |>
-    summarise(median_sensitivity = median(local_sensitivity, na.rm = TRUE), .groups = "drop") |>
-    mutate(skewness_third = factor(skewness_third, levels = c("low", "middle", "high")))
+    summarise(median_sensitivity = median(abs(local_sensitivity), na.rm = TRUE), .groups = "drop") |>
+    mutate(skewness_third = factor(skewness_third, levels = GSL_SKEW_THIRD_LEVELS))
   p_bottom <- ggplot(bottom_data, aes(x = bin_mid, y = median_sensitivity, colour = skewness_third)) +
-    geom_line(linewidth = nature_lwd(0.5)) +
-    geom_vline(xintercept = 10, colour = "grey50", linewidth = nature_lwd(0.25), linetype = "dashed") +
-    scale_colour_manual(values = c(low = "#1b7837", middle = "#b2abd2", high = "#762a83"), name = "Skewness third") +
+    geom_line(linewidth = nature_lwd(PEERJ_LWD_DATA)) +
+    geom_vline(xintercept = 10, colour = "grey50", linewidth = nature_lwd(PEERJ_LWD_REF), linetype = "dashed") +
+    scale_color_gsl_skew_third() +
     scale_x_log10(name = "Threshold (% of P99)", expand = c(0, 0)) +
-    coord_cartesian(xlim = c(0.1, 35)) +
-    labs(y = "Median local\nsensitivity (days/%P99)") +
+    coord_cartesian(xlim = c(0.5, 35)) +
+    labs(y = "Median local sensitivity,\nabs. value (days/%P99)") +
     theme_gsl() +
     ## Same panel_letter() x=-Inf/log-scale fix as 06_fig2.R.
-    panel_letter("d", x = 0.15, hjust = 0)
+    gsl_panel_letter("d", x = 0.55, hjust = 0)
 
   top_row <- p_strip + p_heat + p_right + plot_layout(widths = c(0.5, 3, 1), guides = "keep")
   fig <- top_row / p_bottom + plot_layout(heights = c(3, 1), guides = "keep")
@@ -125,15 +131,21 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   n_high <- sum(derived_site$skewness_third == "high")
 
   save_gsl_figure(
-    fig, stem, width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 220,
+    fig, stem, width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 220,
     legend_lines = c(
-      sprintf("Figure 2 (supplementary: %s). Same specification as the main Figure 2, this variant only --", variant_label),
-      sprintf("|local sensitivity| (absolute value, darker = more sensitive), log-binned thresholds (%d bins),", N_BINS),
+      sprintf("%s. Same specification as the main Figure 2, this variant only --", stem),
+      sprintf("GPP variant: %s.", variant_label),
+      sprintf(
+        "|local sensitivity| (absolute value, darker = more sensitive), log-binned thresholds (%d bins, 0.5-35%% of P99),",
+        N_BINS
+      ),
+      sprintf("colour scale capped at the 95th percentile of the plotted values (%.1f days/%%P99; top colour '>= %.1f').", sensitivity_cap, sensitivity_cap),
       "Z17 (black circle) and T95 (red triangle) marker convention, same as the main Figure 2.",
+      "Panel a skewness third / panel d line colours: same discrete palette as the main Figure 2.",
       sprintf("Sites per skewness third: low = %d, middle = %d, high = %d (total %d).", n_low, n_mid, n_high, nrow(derived_site))
     ),
     input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"), file.path(GSL_ROOT, "data", "fine_grid.rds")),
-    notes = sprintf("Supplementary Figure 2, %s. Terciles: low=%d, middle=%d, high=%d. Sensitivity shown as |value|, log-binned (%d bins).", variant_label, n_low, n_mid, n_high, N_BINS)
+    notes = sprintf("%s. %s. Terciles: low=%d, middle=%d, high=%d. Sensitivity shown as |value|, log-binned (%d bins, 0.5-35%% of P99), colour scale capped at the 95th percentile (%.2f days/%%P99).", stem, variant_label, n_low, n_mid, n_high, N_BINS, sensitivity_cap)
   )
   invisible(NULL)
 }
@@ -202,17 +214,17 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
   stopifnot(all(consistency_check$within_range))
 
   p3a <- ggplot(panel_a_data, aes(y = site_id)) +
-    geom_vline(xintercept = 0, colour = "grey50", linewidth = nature_lwd(0.25)) +
-    geom_segment(aes(x = trend_ci_lo, xend = trend_ci_hi, yend = site_id), colour = "grey75", linewidth = nature_lwd(1)) +
-    geom_segment(aes(x = range_lo, xend = range_hi, yend = site_id, colour = group), linewidth = nature_lwd(0.5)) +
-    geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 1, colour = GSL_MARKER_COLORS[["Z17"]]) +
-    geom_point(aes(x = slope_t95, shape = "T95"), size = 1, colour = GSL_MARKER_COLORS[["T95"]]) +
+    geom_vline(xintercept = 0, colour = "grey50", linewidth = nature_lwd(PEERJ_LWD_REF)) +
+    geom_segment(aes(x = trend_ci_lo, xend = trend_ci_hi, yend = site_id), colour = "grey75", linewidth = nature_lwd(PEERJ_LWD_DATA)) +
+    geom_segment(aes(x = range_lo, xend = range_hi, yend = site_id, colour = group), linewidth = nature_lwd(PEERJ_LWD_REF)) +
+    geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 2, colour = GSL_MARKER_COLORS[["Z17"]]) +
+    geom_point(aes(x = slope_t95, shape = "T95"), size = 2, colour = GSL_MARKER_COLORS[["T95"]]) +
     scale_shape_gsl_marker() +
     scale_color_gsl_group(name = "Group") +
     labs(x = "GSL trend (days/yr)", y = NULL) +
     theme_gsl() +
-    theme(legend.position = "right", legend.box = "vertical", legend.key.height = unit(3, "mm")) +
-    panel_letter("a")
+    theme(legend.position = "right", legend.box = "vertical", legend.key.height = unit(4, "mm")) +
+    gsl_panel_letter("a")
 
   panel_b_data <- panel_a_data |> mutate(
     threshold_range = range_hi - range_lo, ci_width = trend_ci_hi - trend_ci_lo,
@@ -226,36 +238,39 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
   n_sig <- sum(sign_sig_changes$sig_changes)
 
   p3b <- ggplot(panel_b_data, aes(x = skewness, y = ratio, colour = group)) +
-    geom_point(size = 1) +
+    geom_point(size = 2) +
     scale_color_gsl_group(name = "Group") +
     labs(x = "Skewness", y = "Threshold range / CI width") +
     theme_gsl() +
-    theme(legend.position = "right", legend.key.height = unit(3, "mm")) +
-    panel_letter("b")
+    theme(legend.position = "right", legend.key.height = unit(4, "mm")) +
+    gsl_panel_letter("b")
 
   fig <- p3a / p3b + plot_layout(heights = c(2, 1), guides = "keep")
 
   save_gsl_figure(
-    fig, stem, width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 200,
+    fig, stem, width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 220,
     legend_lines = c(
-      sprintf("Figure 3 (supplementary: %s). Same specification as the main Figure 3, this variant only.", variant_label),
+      sprintf("%s. Same specification as the main Figure 3, this variant only.", stem),
+      sprintf("GPP variant: %s.", variant_label),
       sprintf("Of the %d trend sites: %d sign changes, %d significance changes, %d either, across 5-20%% of P99.",
               length(trend_sites), n_sign, n_sig, n_sign_or_sig)
     ),
     input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"), file.path(GSL_ROOT, "data", "daily_extract.rds")),
-    notes = sprintf("Supplementary Figure 3, %s. Sign changes: %d; significance changes: %d; either: %d.",
-                     variant_label, n_sign, n_sig, n_sign_or_sig)
+    notes = sprintf("%s. %s. Sign changes: %d; significance changes: %d; either: %d.",
+                     stem, variant_label, n_sign, n_sig, n_sign_or_sig)
   )
   invisible(list(n_sign = n_sign, n_sig = n_sig, n_either = n_sign_or_sig))
 }
 
 ## ============================================================================
-## Build the 4 supplementary figures.
+## Build the 4 supplementary figures. S-numbers assigned in citation order
+## (the order built here, matching docs/data_and_code_availability.md and
+## the GSL_definition/README) -- PeerJ naming: "Supplemental Figure SN".
 ## ============================================================================
-build_fig2("supplementary", "main", "fig_02_sensitivity_heatmap_supp_DT", "GPP_DT_VUT_REF, negative GPP zero-floored")
-build_fig2("main", "as_delivered", "fig_02_sensitivity_heatmap_supp_asDelivered", "GPP_NT_VUT_REF, negative GPP as-delivered")
-r3_dt <- build_fig3("supplementary", "main", "fig_03_trends_supp_DT", "GPP_DT_VUT_REF, negative GPP zero-floored")
-r3_asdel <- build_fig3("main", "as_delivered", "fig_03_trends_supp_asDelivered", "GPP_NT_VUT_REF, negative GPP as-delivered")
+build_fig2("supplementary", "main", "Supplemental Figure S1", "GPP_DT_VUT_REF, negative GPP zero-floored")
+build_fig2("main", "as_delivered", "Supplemental Figure S2", "GPP_NT_VUT_REF, negative GPP as-delivered")
+r3_dt <- build_fig3("supplementary", "main", "Supplemental Figure S3", "GPP_DT_VUT_REF, negative GPP zero-floored")
+r3_asdel <- build_fig3("main", "as_delivered", "Supplemental Figure S4", "GPP_NT_VUT_REF, negative GPP as-delivered")
 
 message("--- 10_supplementary.R: done ---")
 message("Fig3 supp DT: sign=", r3_dt$n_sign, " sig=", r3_dt$n_sig, " either=", r3_dt$n_either)

@@ -1,0 +1,7 @@
+Figure 2. Where threshold sensitivity sits across all 62 sites (main run: GPP_NT_VUT_REF,
+negative GPP set to 0, year screening d80, GSL counts GPP > T).
+Panel a: skewness third (low/middle/high, boundaries 0.63 and 0.88 per docs/framework.md; colourblind-safe discrete palette, fig_helpers.R::GSL_SKEW_THIRD_COLORS, used in every figure that colours by skewness) and functional group (categorical) per site, same row order as panels b/c (ascending skewness bottom to top). Exact per-site skewness values are in tables/derived_site.csv (this figure's input source), not repeated here.
+Panel b: heat map of |local sensitivity| (days of GSL lost per 1% of P99, absolute value; darker = more sensitive), 62 sites x log-binned thresholds (0.5-35% of P99, 35 bins). Colour scale capped at the 95th percentile of the plotted values (24.3 days/%P99); top colour labelled '>= 24.3'. Z17 (black circle) and T95 (red triangle) marked per row -- same convention as panels c and 4c.
+Panel c: |sensitivity| at Z17 (black circle) and at T95 (red triangle), joined by a segment.
+Panel d: median |local sensitivity| per threshold bin (same 35 log-spaced bins as panel b), by skewness third (low/middle/high, same palette as panel a). Dashed line at 10% of P99 (Z17).
+Sites per skewness third: low = 21, middle = 20, high = 21 (total 62).

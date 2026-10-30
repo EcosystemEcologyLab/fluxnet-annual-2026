@@ -507,3 +507,155 @@ everywhere skewness is coloured: Figures 1, 2 and 4.
 - `10_supplementary.R`'s `build_fig2()`/`build_fig3()` — near-duplicate copies of `06_fig2.R`/
   `07_fig3.R`'s plotting code, not shared functions — were manually re-synced with every fix in
   this section; they do not pick up future `06_fig2.R`/`07_fig3.R` changes automatically.
+
+---
+
+## PeerJ restyle (2026-10-30)
+
+Full prompt: `logs/prompts/2026-10-30_gsl_peerj_restyle.md`, written after Dave read PeerJ's
+author instructions on 2026-10-30. No `logs/prompts/*_gsl_fig2_fixes.md` was found, so this is a
+fresh task, not a reconciliation with an earlier unsent prompt.
+
+### Style: PeerJ conventions replace R/nature_format.R's Nature conventions
+
+`GSL_definition/code/fig_helpers.R` no longer calls `nature_theme()` or `save_nature_figure()`
+(both enforce Nature-specific limits — 5-7pt text, <=1pt lines, fixed 89/183mm widths — that
+PeerJ does not share and that are now too small/narrow for PeerJ's own floor). It defines its
+own independent `theme_gsl()` and `save_gsl_figure()` with PeerJ's constants instead:
+
+- Figure width 170mm (PeerJ's "about 170mm"); height as needed, capped at 240mm to leave margin
+  on an 8.5x11in (215.9x279.4mm) page.
+- Text: tick labels/legend >=8pt (`PEERJ_BASE_PT`), axis titles 9pt (`PEERJ_AXIS_TITLE_PT`),
+  panel letters 10pt bold (`PEERJ_PANEL_LETTER_PT`, applied via a new `gsl_panel_letter()`
+  wrapper around `R/nature_format.R::panel_letter()` — that function's own `annotate("text",...)`
+  placement logic is generic, not Nature-specific, so it is reused, just with PeerJ's size
+  substituted for Nature's 8pt default).
+- Lines: main data 1.8pt (`PEERJ_LWD_DATA`, within the requested 1.5-2pt range), reference/
+  threshold lines ~1pt (`PEERJ_LWD_REF`), Figure 1's "other years" lines 0.6pt and `grey55` (up
+  from 0.25pt/`grey75` — darker and thicker, but still visibly behind the highlighted year's
+  1.8pt black line). `nature_lwd()`'s ggplot-linewidth-to-rendered-pt conversion is reused as-is
+  (pure unit math, not a Nature-specific limit).
+- Points/markers roughly doubled at every call site (e.g. Figure 2 panel b's Z17/T95 markers
+  0.5pt -> 1pt; Figure 3's trend-range points 1pt -> 2pt; Figure 4 panel a's x-marker 1.5pt ->
+  3pt).
+- >=300dpi: `PEERJ_DPI <- 600` (unchanged from the Nature-era setting, already well above
+  PeerJ's floor).
+- One file per figure, named `"Figure 1.png"`/`"Figure 1.pdf"` … `"Figure 4"`, and
+  `"Supplemental Figure S1"` … `"S4"` for the four `10_supplementary.R` figures (S-numbers
+  assigned in citation order — the order `10_supplementary.R` builds them in: Figure 2's DT
+  variant, Figure 2's as-delivered variant, Figure 3's DT variant, Figure 3's as-delivered
+  variant — also the order listed in `GSL_definition/README.md` and
+  `docs/data_and_code_availability.md`). `save_gsl_figure()`'s `stem` argument is now this
+  literal display name, not the old `"fig_0N_..."` internal name; the old-named files were
+  removed from `GSL_definition/figures/` in this commit (fully superseded, not kept alongside).
+
+### Skewness colour: discrete three-way palette, replacing the continuous viridis scale
+
+`fig_helpers.R`'s `scale_color_gsl_skew()`/`scale_fill_gsl_skew()` (continuous viridis, capped at
+2) are removed, replaced by `scale_color_gsl_skew_third()`/`scale_fill_gsl_skew_third()`: three
+discrete viridis stops (`viridisLite::viridis(3, begin = 0.12, end = 0.85)`), one per skewness
+third (low/middle/high; same tercile boundaries as before, 0.63 and 0.88 — see
+`docs/framework.md`). `begin`/`end` keep clear of viridis's near-black and near-yellow extremes
+so all three colours stay visually distinct; confirmed monotonic greyscale luminance
+(~60/109/180 of 255, computed via the standard 0.299R+0.587G+0.114B weighting) so the palette
+also reads correctly in greyscale/print. Used everywhere skewness is shown by colour: Figure 1
+panel b (the two representative sites' density/mean-GSL lines, now coloured by their own
+low/high skewness-third colour rather than an ad hoc green/purple pair), Figure 2 panel a (the
+skewness strip, now categorical instead of a continuous tile gradient) and panel d (the
+low/middle/high median-sensitivity lines, previously an inconsistent ad hoc
+green/light-purple/dark-purple scheme — now the same palette as panel a), and Figure 4 panels a
+(same two representative sites, same convention as Figure 1b) and b (all 62 sites, now coloured
+by skewness third instead of continuous skewness).
+
+Exact numeric skewness values are not lost — they remain in every affected figure's
+`.legend.txt` (Figures 1 and 4 state each representative site's own value; Figure 2's panel a
+restates the tercile boundaries) and in `tables/derived_site.csv`, already cited as an input
+source by every figure that uses this table.
+
+### Item 1: Figure 1b density lines labelled by site name
+
+`05_fig1.R`'s panel b previously coloured/labelled its two lines `"low third"`/`"high third"`
+via an ad hoc `role` column. Replaced with direct `site_id` colouring/labelling (`JP-Fjy`,
+`US-Ton`), using the skewness-third palette's low/high colours (the same two colours Figure 4
+panel a now also uses for these same two sites, via a `site_colours` vector built from
+`GSL_SKEW_THIRD_COLORS[["low"]]`/`[["high"]]`). Figure 4 panel a's own `role`-based legend
+(previously also `"low third"`/`"high third"`) was changed the same way for consistency, even
+though only Figure 1b was explicitly requested — both panels show the identical two sites under
+the identical color mapping, so leaving one relabelled and the other not would have produced a
+visibly inconsistent pair of figures.
+
+### Item 2: Figure 2b colour-scale cap and x-axis start
+
+- **Colour scale capped near the 95th percentile of the plotted values**, not a fixed number —
+  `fig_helpers.R::scale_fill_gsl_sensitivity(values, cap_quantile = 0.95, ...)` computes
+  `quantile(values, 0.95)` from whatever vector is actually being plotted (each figure's own
+  `heat_data$abs_sensitivity`), builds `pretty()` breaks below the cap plus the cap itself, and
+  squishes (`scales::squish`) anything above it into the top colour, labelled `">= <cap>"` (ASCII
+  `>=`, not the U+2265 glyph — the base `pdf()` device's PostScript Helvetica cannot encode it and
+  silently substitutes ASCII back in with an `mbcsToSbcs` warning, the same glyph-availability gap
+  `R/nature_format.R::nature_minus_labels()` documents for the minus sign). Computed caps: main
+  Figure 2 (NT, zero-floored) 24.3 days/%P99; Supplemental S1 (DT, zero-floored) 28.8; S2 (NT,
+  as-delivered) 24.3.
+- **x-axis now starts at 0.5% of P99**, not 0.1% — the log-uniform bin edges
+  (`10^seq(log10(0.5), log10(35), length.out = N_BINS + 1)`), the `fine_grid` filter, and
+  `coord_cartesian(xlim = c(0.5, 35))` all moved together (panels b and d share the same bins, as
+  before).
+- **Low-threshold structure remains visible** after both changes — confirmed by direct visual
+  inspection of the regenerated heat map: tile shading still varies clearly across the 0.5-3%
+  range rather than saturating to one flat colour, in both the main run and both supplementary
+  variants.
+
+### Item 3: Figure 2c/2d absolute values; floating Z17/T95 text; line distinguishability
+
+- **Panels c and d now plot `|value|`**, matching panel b. Panel c (`z17_sensitivity`/
+  `t95_sensitivity`, previously signed — both are negative in `tables/derived_site.csv`, since
+  GSL shrinks as the threshold rises) is wrapped in `abs()`. Panel d's per-bin median was already
+  computed from `local_sensitivity`; now `median(abs(local_sensitivity), ...)`, consistent with
+  panel b's `mean(abs(local_sensitivity), ...)`.
+- **The floating "Z17"/"T95" text inside panel c was already removed** in the original Stage 3
+  pass (2026-10-29) — confirmed by grep across every `GSL_definition/code/*.R` file for
+  `annotate("text", ... label = "Z17"` or `"T95"` style calls: none remain outside Figure 1's
+  genuinely different site-name/bracket annotations. This item was a no-op confirmation, not a
+  new fix.
+- **Panel d's three lines are now thicker** (`PEERJ_LWD_DATA`, 1.8pt, up from 0.5pt) **and use
+  the shared skewness-third palette** (replacing the ad hoc green/light-purple/dark-purple
+  scheme) — both changes make the low/middle/high lines clearly distinguishable without relying
+  on a legend lookup.
+- A side effect found while re-rendering: with PeerJ's larger (>=8pt) tick text, panel c's
+  default 4-5 x-axis breaks overlapped in the narrower-panel, wider-range supplementary variants
+  (e.g. Supplemental Figure S1's 0/10/20/30/40). Fixed with an explicit
+  `scale_x_continuous(breaks = scales::breaks_pretty(n = 3))` in both `06_fig2.R` and
+  `10_supplementary.R`'s `build_fig2()`.
+
+### Item 4: CH-Dav 2008 — GPP_NT_VUT_REF entirely missing
+
+Checked every site-year (all 62 sites, all screened years in `GSL_SITES`) for a site-year where
+one GPP variant (`GPP_NT_VUT_REF` or `GPP_DT_VUT_REF`) is entirely `NA` across every daily row
+while the other is complete. **Exactly one**: **CH-Dav 2008** — 366 daily rows, `GPP_NT_VUT_REF`
+`NA` on all 366, `GPP_DT_VUT_REF` `NA` on 0. No other site-year in the network shows this
+pattern. This is a genuine data gap in the FLUXNET Shuttle snapshot used for this analysis, not a
+QC exclusion (the year passes d80 screening — see `GSL_SITES`/`03_derive.R` — and Tash's Table
+S1 lists CH-Dav 2008 as a usable year, consistent with the fact that `GPP_DT_VUT_REF` and the QC
+flags are complete for that year; only `GPP_NT_VUT_REF` itself is missing in our data).
+
+**How it is handled**: this is the same root cause already documented above under "1. CH-Dav bug
+in Figure 3a" (`sum(gy > T_abs, na.rm = TRUE)` over an all-NA vector silently returning `0`
+instead of `NA`, now fixed everywhere GSL is counted per site-year). With that fix in place,
+CH-Dav 2008 correctly contributes `NA_real_`, not a fabricated `GSL = 0`, to every NT-based
+quantity (`derived_site_year.csv`'s `gsl_z17` for CH-Dav/2008 is `NA`; confirmed directly).
+**CH-Dav therefore has 15 screened years but 14 usable years for every NT-based quantity** (mean
+GSL, the trend regression, sensitivity, etc.) — the 2008 row is excluded, not silently zeroed.
+This does not affect CH-Dav's supplementary DT-variant run (`GPP_DT_VUT_REF` is complete for
+2008, so Supplemental Figures S1/S3 use all 15 years for CH-Dav).
+
+### Re-verification after the PeerJ restyle
+
+- `07_fig3.R`'s and `10_supplementary.R`'s `stopifnot()` consistency check (Z17's trend within
+  its own 5-20% range bar) still passes for all 21 trend sites in all three variants.
+- Sign/significance-change counts are unchanged from the Stage 3 report: main 6/6/11, DT 6/7/13,
+  as-delivered 6/6/11.
+- Figure 1's representative-site numbers are unchanged (JP-Fjy/US-Ton, same skewness and GSL-
+  change figures as the Stage 3 report); Figure 4 panel a continues to reuse the same pair.
+- All of Figures 1-4 and all four supplementary figures were regenerated and inspected at full
+  size after every code change in this section — this is how the panel-c tick-label overlap
+  (item 3) was caught.

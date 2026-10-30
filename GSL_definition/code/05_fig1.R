@@ -86,20 +86,22 @@ make_panel_a <- function(sid, label) {
     geom_rect(data = tibble(xmin = -Inf, xmax = Inf, ymin = 0, ymax = 0.10 * P99),
               aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
               inherit.aes = FALSE, fill = "grey90", alpha = 0.5) +
-    geom_line(data = d |> filter(!is_median_year), colour = "grey75", linewidth = nature_lwd(0.25)) +
-    geom_line(data = d |> filter(is_median_year), colour = "black", linewidth = nature_lwd(0.6)) +
+    ## "Other years" darker/thicker than before (grey75/0.25pt), but still
+    ## clearly behind the highlighted median-GSL year (PEERJ_LWD_DATA, black).
+    geom_line(data = d |> filter(!is_median_year), colour = "grey55", linewidth = nature_lwd(PEERJ_LWD_OTHERYEARS)) +
+    geom_line(data = d |> filter(is_median_year), colour = "black", linewidth = nature_lwd(PEERJ_LWD_DATA)) +
     geom_hline(data = fixed_lines, aes(yintercept = gpp), colour = "grey40",
-               linewidth = nature_lwd(0.25), linetype = "dashed") +
+               linewidth = nature_lwd(PEERJ_LWD_REF), linetype = "dashed") +
     geom_hline(data = t95_line, aes(yintercept = gpp), colour = "firebrick",
-               linewidth = nature_lwd(0.3), linetype = "dotted") +
+               linewidth = nature_lwd(PEERJ_LWD_REF), linetype = "dotted") +
     annotate("text", x = 366, y = Inf, label = sprintf("%s (skew = %.2f)", sid, skew),
-              hjust = 1, vjust = 1.4, size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "black") +
+              hjust = 1, vjust = 1.4, size = PEERJ_ANNOTATION_PT / .pt, family = NATURE_FONT, colour = "black") +
     scale_x_continuous(limits = c(1, 366), breaks = c(1, 91, 182, 274, 366),
                         labels = c("Jan", "Apr", "Jul", "Oct", "Jan")) +
     labs(x = NULL, y = expression("GPP"["NT"]~"(gC m"^-2~"d"^-1*")"),
          title = NULL) +
     theme_gsl() +
-    if (nzchar(label)) panel_letter(label) else NULL
+    if (nzchar(label)) gsl_panel_letter(label) else NULL
 }
 
 p1a <- make_panel_a(site_low, "a")
@@ -133,9 +135,6 @@ hist_data <- bind_rows(lapply(fig1_sites, function(sid) {
   P99 <- derived_site$P99[derived_site$site_id == sid]
   tibble(site_id = sid, pct_of_P99 = 100 * d$gpp / P99) # uncapped -- the view, not the data, is limited
 }))
-site_role <- setNames(c("low third", "high third"), fig1_sites)
-hist_data$role <- site_role[hist_data$site_id]
-mean_gsl_curves$role <- site_role[mean_gsl_curves$site_id]
 
 ## Scale mean_gsl onto the density axis for the right-hand axis
 hist_max_density <- max(density(hist_data$pct_of_P99[hist_data$site_id == fig1_sites[1]], na.rm = TRUE)$y,
@@ -163,26 +162,30 @@ bracket_data <- bind_rows(lapply(fig1_sites, function(sid) {
          label = sprintf("%+.0f d", g10 - g5))
 }))
 
-role_colours <- setNames(c("#1b7837", "#762a83"), c("low third", "high third"))
+## Density/mean-GSL lines labelled and coloured by site name (not "low
+## third"/"high third"), using the shared low/high colours from the
+## skewness-third palette (fig_helpers.R) -- the same two colours Figure 4
+## panel a uses for these same two sites.
+site_colours <- setNames(c(GSL_SKEW_THIRD_COLORS[["low"]], GSL_SKEW_THIRD_COLORS[["high"]]), unname(fig1_sites))
 p1b <- ggplot() +
-  geom_density(data = hist_data, aes(x = pct_of_P99, colour = role, linetype = "Daily GPP density"),
-               linewidth = nature_lwd(0.5), fill = NA, key_glyph = "path") +
+  geom_density(data = hist_data, aes(x = pct_of_P99, colour = site_id, linetype = "Daily GPP density"),
+               linewidth = nature_lwd(PEERJ_LWD_DATA), fill = NA, key_glyph = "path") +
   geom_line(data = mean_gsl_curves,
-            aes(x = pct_of_P99, y = mean_gsl * sec_scale, colour = role, linetype = "Mean GSL"),
-            linewidth = nature_lwd(0.4)) +
-  geom_vline(xintercept = c(5, 10, 20), colour = "grey40", linewidth = nature_lwd(0.25), linetype = "dashed") +
+            aes(x = pct_of_P99, y = mean_gsl * sec_scale, colour = site_id, linetype = "Mean GSL"),
+            linewidth = nature_lwd(PEERJ_LWD_DATA)) +
+  geom_vline(xintercept = c(5, 10, 20), colour = "grey40", linewidth = nature_lwd(PEERJ_LWD_REF), linetype = "dashed") +
   geom_segment(data = bracket_data, aes(x = x, xend = x, y = y0, yend = y1), colour = "black",
-               linewidth = nature_lwd(0.25)) +
+               linewidth = nature_lwd(PEERJ_LWD_REF)) +
   geom_text(data = bracket_data, aes(x = x, y = (y0 + y1) / 2, label = label), hjust = -0.15,
-            size = NATURE_SMALL_PT / .pt, family = NATURE_FONT, colour = "black") +
-  scale_colour_manual(values = role_colours, name = NULL) +
+            size = PEERJ_ANNOTATION_PT / .pt, family = NATURE_FONT, colour = "black") +
+  scale_colour_manual(values = site_colours, breaks = unname(fig1_sites), name = NULL) +
   scale_linetype_manual(values = c("Daily GPP density" = "solid", "Mean GSL" = "dotted"), name = NULL) +
   scale_y_continuous(name = "Density",
                       sec.axis = sec_axis(~ . / sec_scale, name = "Mean GSL (days above threshold)")) +
   scale_x_continuous(name = "Threshold (% of P99)") +
   coord_cartesian(xlim = c(0, 100)) +
   theme_gsl() +
-  panel_letter("b") +
+  gsl_panel_letter("b") +
   theme(legend.position = c(0.8, 0.82), legend.key.width = unit(5, "mm"),
         legend.background = element_blank(), legend.box = "vertical")
 
@@ -211,7 +214,10 @@ legend_lines <- c(
   paste0(
     "Panel b: overlaid daily-GPP density (solid, left axis, % of P99, view limited to 0-100% -- ",
     "the underlying density estimate itself is not truncated) and mean GSL vs. threshold ",
-    "(dotted, right axis) for both sites. Vertical bracket at 7.5% of P99 shows the change in ",
+    "(dotted, right axis) for both sites, each line labelled and coloured by site name (not ",
+    "'low third'/'high third'); low-third site in the skewness-third palette's low colour, ",
+    "high-third site in its high colour (fig_helpers.R::GSL_SKEW_THIRD_COLORS, same two colours ",
+    "Figure 4 panel a uses for these sites). Vertical bracket at 7.5% of P99 shows the change in ",
     "mean GSL between 5% and 10% of P99 for each site (also stated below)."
   ),
   sprintf(
@@ -221,7 +227,7 @@ legend_lines <- c(
 )
 
 save_gsl_figure(
-  fig1, "fig_01_mechanism", width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 150,
+  fig1, "Figure 1", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 170,
   legend_lines = legend_lines,
   input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"),
                      file.path(GSL_ROOT, "tables", "derived_site_year.csv"),

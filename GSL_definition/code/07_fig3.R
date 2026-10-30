@@ -110,21 +110,21 @@ message("Consistency check passed: Z17's trend is within its own 5-20% range bar
         nrow(consistency_check), " trend sites.")
 
 p3a <- ggplot(panel_a_data, aes(y = site_id)) +
-  geom_vline(xintercept = 0, colour = "grey50", linewidth = nature_lwd(0.25)) +
+  geom_vline(xintercept = 0, colour = "grey50", linewidth = nature_lwd(PEERJ_LWD_REF)) +
   geom_segment(aes(x = trend_ci_lo, xend = trend_ci_hi, yend = site_id),
-               colour = "grey75", linewidth = nature_lwd(1)) +
+               colour = "grey75", linewidth = nature_lwd(PEERJ_LWD_DATA)) +
   geom_segment(aes(x = range_lo, xend = range_hi, yend = site_id, colour = group),
-               linewidth = nature_lwd(0.5)) +
-  geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 1, colour = GSL_MARKER_COLORS[["Z17"]]) +
-  geom_point(aes(x = slope_t95, shape = "T95"), size = 1, colour = GSL_MARKER_COLORS[["T95"]]) +
+               linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 2, colour = GSL_MARKER_COLORS[["Z17"]]) +
+  geom_point(aes(x = slope_t95, shape = "T95"), size = 2, colour = GSL_MARKER_COLORS[["T95"]]) +
   ## Z17/T95 points use a fixed colour= (not aes-mapped), so they never
   ## touch the colour scale below -- only the group-coloured range bar does.
   scale_shape_gsl_marker() +
   scale_color_gsl_group(name = "Group") +
   labs(x = "GSL trend (days/yr)", y = NULL) +
   theme_gsl() +
-  theme(legend.position = "right", legend.box = "vertical", legend.key.height = unit(3, "mm")) +
-  panel_letter("a")
+  theme(legend.position = "right", legend.box = "vertical", legend.key.height = unit(4, "mm")) +
+  gsl_panel_letter("a")
 
 ## ---- Panel b: ratio of threshold range to CI width vs. skewness ----------
 panel_b_data <- panel_a_data |>
@@ -149,12 +149,12 @@ n_sign_change <- sum(sign_sig_changes$sign_changes)
 n_sig_change <- sum(sign_sig_changes$sig_changes)
 
 p3b <- ggplot(panel_b_data, aes(x = skewness, y = ratio, colour = group)) +
-  geom_point(size = 1) +
+  geom_point(size = 2) +
   scale_color_gsl_group(name = "Group") +
   labs(x = "Skewness", y = "Threshold range / CI width") +
   theme_gsl() +
-  theme(legend.position = "right", legend.key.height = unit(3, "mm")) +
-  panel_letter("b")
+  theme(legend.position = "right", legend.key.height = unit(4, "mm")) +
+  gsl_panel_letter("b")
 
 ## ---- Assemble -------------------------------------------------------------
 fig3 <- p3a / p3b + plot_layout(heights = c(2, 1), guides = "keep")
@@ -180,7 +180,7 @@ legend_lines <- c(
 )
 
 save_gsl_figure(
-  fig3, "fig_03_trends", width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 200,
+  fig3, "Figure 3", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 220,
   legend_lines = legend_lines,
   input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"),
                      file.path(GSL_ROOT, "data", "daily_extract.rds")),

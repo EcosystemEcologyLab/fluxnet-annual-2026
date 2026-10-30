@@ -69,23 +69,24 @@ site_f_gsl_curve <- function(sid) {
 curves <- lapply(fig1_sites, site_f_gsl_curve)
 per_year_all <- bind_rows(lapply(curves, `[[`, "per_year"))
 mean_all <- bind_rows(lapply(curves, `[[`, "mean_curve"))
-site_role <- setNames(c("low third", "high third"), fig1_sites)
-per_year_all$role <- site_role[per_year_all$site_id]
-mean_all$role <- site_role[mean_all$site_id]
 
 z17_marker <- derived_site |> filter(site_id %in% fig1_sites) |>
-  select(site_id, gsl = z17_mean_gsl, f = z17_mean_f) |>
-  mutate(role = site_role[site_id])
+  select(site_id, gsl = z17_mean_gsl, f = z17_mean_f)
+
+## Lines/points coloured and labelled by site name (not "low third"/"high
+## third" -- same convention as Figure 1 panel b, PeerJ restyle), using the
+## same two colours from the shared skewness-third palette.
+site_colours <- setNames(c(GSL_SKEW_THIRD_COLORS[["low"]], GSL_SKEW_THIRD_COLORS[["high"]]), unname(fig1_sites))
 
 p4a <- ggplot() +
   annotate("rect", xmin = -Inf, xmax = Inf, ymin = 0.90, ymax = 0.99, fill = "grey90", alpha = 0.6) +
-  geom_hline(yintercept = 0.95, colour = "grey50", linewidth = nature_lwd(0.25), linetype = "dashed") +
-  geom_line(data = per_year_all, aes(x = gsl, y = f, group = interaction(site_id, year), colour = role),
-            alpha = 0.3, linewidth = nature_lwd(0.25)) +
-  geom_line(data = mean_all, aes(x = gsl, y = f, colour = role), linewidth = nature_lwd(0.6)) +
-  geom_point(data = z17_marker, aes(x = gsl, y = f, colour = role), shape = 4, size = 1.5,
-             stroke = nature_lwd(0.6)) +
-  scale_colour_manual(values = setNames(c("#1b7837", "#762a83"), c("low third", "high third")), name = NULL) +
+  geom_hline(yintercept = 0.95, colour = "grey50", linewidth = nature_lwd(PEERJ_LWD_REF), linetype = "dashed") +
+  geom_line(data = per_year_all, aes(x = gsl, y = f, group = interaction(site_id, year), colour = site_id),
+            alpha = 0.3, linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_line(data = mean_all, aes(x = gsl, y = f, colour = site_id), linewidth = nature_lwd(PEERJ_LWD_DATA)) +
+  geom_point(data = z17_marker, aes(x = gsl, y = f, colour = site_id), shape = 4, size = 3,
+             stroke = nature_lwd(PEERJ_LWD_DATA)) +
+  scale_colour_manual(values = site_colours, breaks = unname(fig1_sites), name = NULL) +
   labs(x = "Days above threshold", y = "Included fraction of annual GPP") +
   theme_gsl() +
   ## legend.justification anchors the legend BOX's own corner (not its
@@ -95,24 +96,25 @@ p4a <- ggplot() +
   ## extend past the right/bottom panel border.
   theme(legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
         legend.background = element_rect(fill = "white", colour = NA),
-        legend.key = element_blank(), legend.text = element_text(size = NATURE_SMALL_PT)) +
-  panel_letter("a")
+        legend.key = element_blank(), legend.text = element_text(size = PEERJ_BASE_PT)) +
+  gsl_panel_letter("a")
 
-## ---- Panel b: all 62 sites, GSL vs. target fraction, coloured by skewness,
-## marker at each site's Z17 implied fraction. ----
+## ---- Panel b: all 62 sites, GSL vs. target fraction, coloured by
+## skewness third (shared discrete palette, PeerJ restyle), marker at each
+## site's Z17 implied fraction. ----
 fraction_sweep_main <- fraction_sweep |>
-  left_join(derived_site |> select(site_id, skewness), by = "site_id")
-z17_pts <- derived_site |> select(site_id, skewness, z17_mean_f, z17_mean_gsl)
+  left_join(derived_site |> select(site_id, skewness, skewness_third), by = "site_id")
+z17_pts <- derived_site |> select(site_id, skewness, skewness_third, z17_mean_f, z17_mean_gsl)
 
-p4b <- ggplot(fraction_sweep_main, aes(x = target_fraction, y = gsl, group = site_id, colour = skewness)) +
-  geom_line(linewidth = nature_lwd(0.25)) +
-  geom_point(data = z17_pts, aes(x = z17_mean_f, y = z17_mean_gsl, colour = skewness),
-             inherit.aes = FALSE, shape = 4, size = 1, stroke = nature_lwd(0.5)) +
-  scale_color_gsl_skew() +
+p4b <- ggplot(fraction_sweep_main, aes(x = target_fraction, y = gsl, group = site_id, colour = skewness_third)) +
+  geom_line(linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_point(data = z17_pts, aes(x = z17_mean_f, y = z17_mean_gsl, colour = skewness_third),
+             inherit.aes = FALSE, shape = 4, size = 2, stroke = nature_lwd(PEERJ_LWD_REF)) +
+  scale_color_gsl_skew_third() +
   labs(x = "Target fraction of annual GPP", y = "GSL (days above threshold)") +
   theme_gsl() +
-  theme(legend.key.height = unit(3, "mm"), legend.key.width = unit(2.5, "mm")) +
-  panel_letter("b")
+  theme(legend.key.height = unit(4, "mm"), legend.key.width = unit(3, "mm")) +
+  gsl_panel_letter("b")
 
 ## ---- Panel c: common-unit sensitivity at Z17 and at T95 (=0.95 by
 ## definition) vs. skewness. One marker convention (fig_helpers.R): Z17 =
@@ -126,7 +128,7 @@ panel_c_data <- derived_site |>
 median_c <- panel_c_data |> group_by(at) |> summarise(median_sens = median(sensitivity, na.rm = TRUE), .groups = "drop")
 
 p4c <- ggplot(panel_c_data, aes(x = skewness, y = sensitivity, shape = at, colour = at)) +
-  geom_point(size = 0.8) +
+  geom_point(size = 1.6) +
   scale_shape_gsl_marker() +
   scale_colour_manual(values = GSL_MARKER_COLORS, breaks = c("Z17", "T95"), guide = "none") +
   labs(x = "Skewness", y = "Common-unit sensitivity\n(days per 1% change in F)") +
@@ -135,9 +137,9 @@ p4c <- ggplot(panel_c_data, aes(x = skewness, y = sensitivity, shape = at, colou
   ## the top-right corner instead of spilling past the panel border.
   theme(legend.position = c(0.97, 0.97), legend.justification = c(1, 1),
         legend.background = element_rect(fill = "white", colour = NA),
-        legend.key = element_blank(), legend.text = element_text(size = NATURE_SMALL_PT),
-        legend.key.height = unit(3, "mm")) +
-  panel_letter("c")
+        legend.key = element_blank(), legend.text = element_text(size = PEERJ_BASE_PT),
+        legend.key.height = unit(4, "mm")) +
+  gsl_panel_letter("c")
 
 ## ---- Assemble --------------------------------------------------------------
 fig4 <- (p4a | p4b | p4c) + plot_layout(guides = "keep")
@@ -145,15 +147,21 @@ fig4 <- (p4a | p4b | p4c) + plot_layout(guides = "keep")
 legend_lines <- c(
   "Figure 4. The fraction-of-annual-GPP method and its own sensitivity (main run:",
   "GPP_NT_VUT_REF, negative GPP set to 0, year screening d80, GSL counts GPP > T).",
-  sprintf("Panel a sites (same as Figure 1): low third = %s, high third = %s.", fig1_sites[1], fig1_sites[2]),
-  paste0(
-    "Panel a: included fraction of annual GPP vs. days above threshold, each year faint, ",
-    "multi-year mean bold, for the two Figure 1 sites. Grey band 0.90-0.99, dashed line at 0.95, ",
-    "x marker at each site's Z17 (10% of P99)."
+  sprintf(
+    "Panel a sites (same as Figure 1): %s (low third, skewness = %.4f), %s (high third, skewness = %.4f).",
+    fig1_sites[1], derived_site$skewness[derived_site$site_id == fig1_sites[1]],
+    fig1_sites[2], derived_site$skewness[derived_site$site_id == fig1_sites[2]]
   ),
   paste0(
-    "Panel b: all 62 sites, mean GSL vs. target fraction (0.80-0.99), coloured by skewness; x ",
-    "marker at each site's own Z17-implied fraction."
+    "Panel a: included fraction of annual GPP vs. days above threshold, each year faint, ",
+    "multi-year mean bold, for the two Figure 1 sites, each labelled and coloured by site name ",
+    "(not 'low third'/'high third') using the same two skewness-third-palette colours as Figure ",
+    "1 panel b. Grey band 0.90-0.99, dashed line at 0.95, x marker at each site's Z17 (10% of P99)."
+  ),
+  paste0(
+    "Panel b: all 62 sites, mean GSL vs. target fraction (0.80-0.99), coloured by skewness third ",
+    "(low/middle/high, same palette as Figure 1 and Figure 2a/2d); x marker at each site's own ",
+    "Z17-implied fraction."
   ),
   paste0(
     "Panel c: common-unit sensitivity (days per 1% change in included fraction) at Z17 (black ",
@@ -166,7 +174,7 @@ legend_lines <- c(
 )
 
 save_gsl_figure(
-  fig4, "fig_04_fraction_method", width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 90,
+  fig4, "Figure 4", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 110,
   legend_lines = legend_lines,
   input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"),
                      file.path(GSL_ROOT, "data", "fraction_sweep.rds"),

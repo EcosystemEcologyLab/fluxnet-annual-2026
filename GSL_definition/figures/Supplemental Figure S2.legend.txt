@@ -1,0 +1,7 @@
+Supplemental Figure S2. Same specification as the main Figure 2, this variant only --
+GPP variant: GPP_NT_VUT_REF, negative GPP as-delivered.
+|local sensitivity| (absolute value, darker = more sensitive), log-binned thresholds (35 bins, 0.5-35% of P99),
+colour scale capped at the 95th percentile of the plotted values (24.3 days/%P99; top colour '>= 24.3').
+Z17 (black circle) and T95 (red triangle) marker convention, same as the main Figure 2.
+Panel a skewness third / panel d line colours: same discrete palette as the main Figure 2.
+Sites per skewness third: low = 24, middle = 18, high = 20 (total 62).

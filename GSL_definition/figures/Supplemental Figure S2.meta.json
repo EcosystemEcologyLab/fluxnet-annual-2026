@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T13:51:29Z",
+  "pipeline_version": "b04e86f",
+  "input_sources": [
+    "GSL_definition/tables/derived_site.csv",
+    "GSL_definition/data/fine_grid.rds"
+  ],
+  "notes": "Supplemental Figure S2. GPP_NT_VUT_REF, negative GPP as-delivered. Terciles: low=24, middle=18, high=20. Sensitivity shown as |value|, log-binned (35 bins, 0.5-35% of P99), colour scale capped at the 95th percentile (24.25 days/%P99)."
+}

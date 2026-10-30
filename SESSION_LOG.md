@@ -4,6 +4,18 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — QC threshold semantics fix: finishing the task (start)
+
+Full prompt: `logs/prompts/2026-10-29_qc_semantics_fix_finish.md`. Continuing the same task
+(branch `qc-semantics-fix`) from the status update below. Starting now: step 2 (count
+`qc_unknown` rows/sites by resolution), two cleanups to `scripts/04_qc.R` and
+`R/site_annual_fluxes.R`, a single rerun of the branch passes only (the main baseline in
+`logs/qc_fix_baseline_20261029.csv` stands, not rerun), step 6c (0.75 dry run), steps 6d/6e,
+and an investigation into the unexplained exclusion-log row-count drop flagged in the previous
+entry. Merge to `main` only if everything passes.
+
+---
+
 ## 2026-10-29 — QC threshold semantics fix: baseline results + status update
 
 Follow-up to the entry below, same session/task (`logs/prompts/2026-10-29_qc_semantics_fix.md`,

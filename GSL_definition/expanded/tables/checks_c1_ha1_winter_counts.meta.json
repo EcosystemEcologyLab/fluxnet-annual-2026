@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:13Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/data/daily_extract.rds"
-  ],
-  "notes": "US-Ha1, per year: days in Dec/Jan/Feb/Mar of that SAME calendar year with gap-filled daily GPP_NT_REF (zero-floored) above 10% of P99 (Z17) and above T95's own threshold. Matches Figure 1 panel a's winter tiles."
-}

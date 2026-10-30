@@ -5,5 +5,5 @@ Panel b: each trend site's main-variant (GPP_NT_REF) Z17 trend, grouped by the s
 it falls into under GPP_DT_REF -- a full GPP_DT_REF AR(1) pooled-trend refit (Figure 6's
 analogue) was out of scope for this check; this instead asks whether the GPP variant changes
 which third a site falls into.
-81% of sites keep the same skewness third under GPP_DT_REF as under GPP_NT_REF.
-As-delivered negative GPP (one line): mean skewness 0.802 (main: 0.858), mean Z17 GSL 251.4 d (main: 251.4 d).
+80% of sites keep the same skewness third under GPP_DT_REF as under GPP_NT_REF.
+As-delivered negative GPP (one line): mean skewness 0.800 (main: 0.854), mean Z17 GSL 250.1 d (main: 250.1 d).

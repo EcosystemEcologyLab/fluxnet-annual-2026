@@ -94,8 +94,10 @@ year**: **11 sites, 49 site-years**:
 | US-Dk2 | deciduous forest | 8 (2004) | 2004, 2005, 2007, 2008 |
 | JP-SMF | mixed forest | 7 (2013) | 2013 |
 
-**CH-Lae (the project's one mixed-forest site, already a single-site group with no replication)
-and CN-HeM are the most affected** — CN-HeM loses up to 72 days of GSL (roughly a quarter of its
+**CH-Lae and CN-HeM are the most affected** — [Correction, session 2a, 2026-10-30: mixed forest
+has 7 sites (CA-Gro, US-Syv, JP-SMF, JP-Kzw, BE-Vie, CH-Lae, CN-BeO), not one; CH-Lae is simply
+the one with the most winter-screened days and one of only 2 (with BE-Vie) that have >=10 years
+of record. See docs/report_back_2026-10-30-session2a.md, item 9.] CN-HeM loses up to 72 days of GSL (roughly a quarter of its
 ~280–335-day mean GSL) in its worst year, and CH-Lae is flagged (|ΔGSL|>5) in **17 of its 18
 total passing years** — essentially every year it has on record. This is the same mechanism
 found at US-Ha1 (sub-freezing days with implausibly high `GPP_NT`), occurring at scale in
@@ -289,8 +291,8 @@ run** (the prompt asks for it only "if no combination matches").
    (50%) is a genuine mix of artifact days and plausible thaw-season uptake. Excluding the
    flagged winter days shifts US-Ha1's mean GSL by only 3–4 days but cuts its interannual s.d. by
    ~20%. The same mechanism recurs at scale elsewhere in the network: **11 DBF/MF sites, 49
-   site-years**, with CN-HeM (up to 72 days/year) and CH-Lae (the sole mixed-forest site,
-   affected in most of its years on record) the most exposed.
+   site-years**, with CN-HeM (up to 72 days/year) and CH-Lae (one of 7 mixed-forest sites, but the
+   one affected in most of its years on record — see session 2a correction above) the most exposed.
 2. **Figure 5b's start/end-date carbon-gain slopes are robust for DBF**: the 17 DBF trend sites'
    per-site slopes contain zero Tukey outliers for any of the 4 predictors, so the "with vs.
    without outliers" pooled comparison is moot — there is nothing to remove, and no near-zero

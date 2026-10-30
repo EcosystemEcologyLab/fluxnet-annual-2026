@@ -1,11 +1,2 @@
 site_id,n_days_gpp_present,n_days_gpp_below_neg1,share_gpp_below_neg1,fails_rule5,no_gpp_data,reason
-AU-Cow,0,0,NA,NA,TRUE,no non-NA GPP values at all
-AU-Rob,0,0,NA,NA,TRUE,no non-NA GPP values at all
-AU-Stp,0,0,NA,NA,TRUE,no non-NA GPP values at all
-ES-LJu,0,0,NA,NA,TRUE,no non-NA GPP values at all
-GF-Guy,0,0,NA,NA,TRUE,no non-NA GPP values at all
-ID-PaB,0,0,NA,NA,TRUE,no non-NA GPP values at all
-ID-PaD,0,0,NA,NA,TRUE,no non-NA GPP values at all
-JP-Khw,0,0,NA,NA,TRUE,no non-NA GPP values at all
-JP-Ta2,0,0,NA,NA,TRUE,no non-NA GPP values at all
 US-Aud,7369,1314,0.17831456099877865,TRUE,FALSE,rule 5: 17.83% of daily GPP < -1 (> 10% cutoff)

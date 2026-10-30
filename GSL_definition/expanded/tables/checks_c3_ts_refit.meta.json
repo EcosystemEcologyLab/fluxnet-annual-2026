@@ -1,9 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:17Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/tables/temperature_sensitivity_data.csv",
-    "GSL_definition/expanded/tables/checks_c3_sh_siteyear_compare.csv"
-  ],
-  "notes": "Pooled temperature-sensitivity slopes (gsl_on_ta combos only -- the only ones using annual_mean_ta; start_on_ta/end_on_ta use the fixed 60-day pre-window, not annual_mean_ta, so are unaffected by this mismatch), subsets containing >=1 SH site, original vs. SH season-year annual_mean_ta substituted. Main outputs (temperature_sensitivity_pooled.csv) are untouched."
-}

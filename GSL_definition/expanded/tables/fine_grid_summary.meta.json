@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-10-30T18:33:25Z",
-  "pipeline_version": "1fd076a",
+  "run_datetime_utc": "2026-10-30T23:44:17Z",
+  "pipeline_version": "ab5090b",
   "input_sources": [
     "GSL_definition/expanded/data/fine_grid_main.rds",
     "GSL_definition/expanded/data/fine_grid_dt.rds"
   ],
-  "notes": "Per-site local sensitivity (d(mean GSL)/d(% of P99), centered difference over +/-0.05% of P99) at 5/10/20% of P99, main and dt variants. Full fine grid (5000 points, 0.01-50% of P99) in expanded/data/fine_grid_*.rds (gitignored)."
+  "notes": "Per-site local sensitivity (d(mean GSL)/d(% of P99), centered difference over +/-1% of P99 -- item 6, widened from a22e893's +/-0.05%) at 5/10/20% of P99, main and dt variants. Full fine grid (5000 points, 0.01-50% of P99) in expanded/data/fine_grid_*.rds (gitignored)."
 }

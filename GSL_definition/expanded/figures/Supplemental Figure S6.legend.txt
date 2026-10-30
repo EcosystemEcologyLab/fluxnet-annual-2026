@@ -1,4 +1,4 @@
 Supplemental Figure S6. The headline carbon-gain result (pooled GPP~GSL slope at Z17, by
-skewness third) with vs without the 12 CUT-fallback sites, to check the VUT/CUT fallback
+skewness third) with vs without the CUT-fallback sites, to check the VUT/CUT fallback
 itself is not driving the main result.
-12 of 151 sites are CUT-fallback.
+14 of 153 sites are CUT-fallback.

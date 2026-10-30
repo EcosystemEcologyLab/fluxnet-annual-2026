@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:13Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/tables/checks_c2_dbf_per_site.csv"
-  ],
-  "notes": "Median/IQR/n of DBF per-site OLS slopes (annual GPP on start/end DOY), with and without the Tukey-outlier sites for that predictor."
-}

@@ -2,4 +2,5 @@ Figure 4. Season timing (expanded set, main run).
 Panel a: shift in mean start and end date between the 5% and 20% of P99 thresholds, against
 skewness (positive = date moves later in the year as the threshold loosens from 5% to 20%).
 Panel b: mean within-season gap days (days below threshold between season start and end),
-against skewness, at Z17 and T95.
+against skewness, at Z17 and T95; the two site x threshold points with 140-160 gap days are
+labelled by site ID.

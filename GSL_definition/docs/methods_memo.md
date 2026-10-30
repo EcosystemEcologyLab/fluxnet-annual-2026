@@ -825,3 +825,112 @@ column confirmed byte-identical.
   >=3-site floor for any pooled model, not a numerical failure). Each fit's `model_tier` and
   `note` record which tier succeeded, so a silently-degraded model is never indistinguishable
   from the one actually requested.
+
+## Expanded-site analysis, session 2a (2026-10-30)
+
+Full prompt: `logs/prompts/2026-10-30_gsl_expanded_session2a.md`; full report:
+`expanded/docs/report_back_2026-10-30-session2a.md`. Implements Dave's decisions on the session 1
+checks report (`expanded/docs/checks_report_2026-10-30.md`). Every change is scoped to
+`GSL_definition/expanded/code/00_config.R` through `06_checks.R` -- `GSL_definition/code/` (the
+62-site reproduction) was not touched this session. Each change is a named `EXP_CFG_*` switch in
+`00_config.R`, defaulting to the new/decided behaviour (`a22e893` keeps the pre-session-2a state
+for comparison).
+
+**1. CUT fallback keyed to GPP, not just QC** (`EXP_CFG_CUT_FALLBACK_USE_GPP`): recomputed from
+scratch in `01_select.R` (not patched onto the committed `selection_audit_rule_options_qc_fallback.csv`,
+which is QC-only and out of scope to edit) -- `COUNT()` aggregates pulled directly from DuckDB per
+population site, VUT chosen only if both `NEE_VUT_REF_QC` and `GPP_NT_VUT_REF` have >=1 non-NA
+value, else CUT under the same test, else the site is dropped outright (a new, explicit category
+a22e893 never had -- it always picked a column, even an unusable one). Rule 4 (R2, N=14) passing-
+year counts are reused unchanged for every site whose fallback column didn't change (identical
+column -> identical per-day pass/fail by construction); recomputed via a fresh calendar-grid pass
+only for the 7 sites whose column flipped. Net effect: 153 sites (was 151); see item-1 table in
+the report-back for the full recovered/changed/dropped list.
+
+**2. Winter partitioning-artifact screen** (`EXP_CFG_WINTER_SCREEN`,
+`EXP_CFG_WINTER_SCREEN_DT_PCT=10`): `GPP_NT_REF>0 & NEE_REF>=0 & TA_F<0 & GPP_DT_REF <
+0.10*unscreened_P99` (all four non-missing) sets that day's `GPP_NT_REF` to 0 before every
+downstream quantity in the `'main'` variant. `unscreened_P99` is each site's P99 computed from
+the ORIGINAL, unscreened GPP_NT_REF -- a fixed reference, not recomputed after screening (avoids a
+circular definition). A 4th `derive_one()` variant, `'main_unscreened'`, reruns the identical
+pipeline on the unmodified column, kept alongside `'main'`/`'dt'`/`'negdelivered'` in every table
+with a `variant` column -- this is how a22e893's numbers remain directly reproducible without a
+second pipeline. Season boundaries, the bounds check and annual GPP (`02_derive.R` Steps B-D) all
+switch their `daily_main` source to the screened extract when `EXP_CFG_WINTER_SCREEN=TRUE`, so
+the screen is genuinely applied "before every derived quantity," not just in `derive_one()`'s own
+GSL/skewness/P99 outputs.
+
+**3. Skewness thirds**: recomputed on the final (item-1 site set, item-2 screened) `'main'`
+distribution -- 0.666/0.907, vs session 1's 0.68/0.91 (computed before both changes). A dedicated
+comparison table (`skewness_thirds_breaks.csv`) reports this delta for all three variants.
+
+**4. Southern-Hemisphere season-year join** (`EXP_CFG_SH_SEASON_YEAR`): a new block in
+`02_derive.R`'s Step D computes `annual_gpp`/`annual_nep`/`annual_mean_ta` over the Jul(y)-Jun(y+1)
+window for the 16 SH sites (`location_lat<0`), replacing the calendar-year sums for those sites
+only, using the identical inclusion rule as Step B's `season_for_site()` SH branch (both calendar
+years must be in the site's own passing-year list). `03_models.R`'s `cg_data`/`ts_data` need no
+change at all -- they already join `annual_inputs` by `(site_id, year)`, and `year` now correctly
+means "season year" for SH rows without any special-casing downstream. 134 calendar-year SH
+site-year rows become 86 season-year rows (48 dropped at record edges).
+
+**5. Temperature sensitivity, GSL predictor** (no separate switch -- a direct data change in
+`03_models.R`'s `ts_data`): `ta_window_avg_z17/t95 = (ta_pre_start + ta_pre_end) / 2`, replacing
+`annual_mean_ta` as `TS_COMBOS`'s `gsl_on_ta_*` predictor. The annual-mean version is preserved as
+`TS_COMBOS_ANNUAL`, fit with the same `fit_pooled_slope()` machinery, written to
+`temperature_sensitivity_pooled_annualta.csv`/data column `annual_mean_ta` -- never plotted. Start/
+end's own 60-day pre-window predictors are unchanged (the item said "existing window" for both).
+
+**6. Local sensitivity window** (`EXP_CFG_LOCAL_SENS_HALFWIDTH_PCT=1.0`): `02_derive.R` recomputes
+`local_sensitivity` directly from `fine_grid_main`/`fine_grid_dt`'s `mean_gsl` column (5000-point,
+0.01%-step fine grid, already computed by the shared `derive_one()`) via its own centred-difference
+loop (`sens_steps <- round(1.0/0.01) = 100` grid steps each side), overwriting the column in place
+so every downstream consumer (Figure 3, `fine_grid_summary.csv`, Supplemental S3/S5) picks up the
+wider window automatically. `GSL_definition/code/03_derive.R`'s own `WINDOW_STEPS=5`
+(+/-0.05%) constant is untouched -- it is shared with the 62-site reproduction and out of scope.
+
+**7. Trends**: `trend_pooled.csv` gains `mean_gsl_subset`/`slope_pct_per_decade` (`100 * slope *
+10 / mean_gsl_subset`, each subset's own mean GSL as the denominator, not a network constant). A
+new `years_to_detect_sweep.csv` sweeps `EXP_CFG_DETECT_TREND_GRID` (`seq(0.1, 1.0, by=0.1)`
+days/yr) through the existing `weatherhead_years()` helper, at Z17/T95 by third/group -- reusing
+`noise_by_site_threshold`'s already-computed per-site sigma_n/phi, no new per-site fitting
+required. The years-to-detect-the-*observed*-trend column (`years_to_detect_median`, keyed to the
+pooled slope itself) stays in `trend_pooled.csv` for reference but is no longer read by any figure
+script.
+
+**8. Bounds check redesign** (`EXP_CFG_BOUNDS_NEAR_PCT=0.02`): `bounds_one()` in `02_derive.R`
+now computes `is_near = is_fail & abs(gpp_use - T_abs) <= 0.02*P99` per day; `gsl_lower` counts
+all non-near days by their real value plus near days as below; `gsl_upper` is the same with near
+days counted above. `spread = n_near_threshold_days` exactly (checked via `stopifnot`, replacing
+a22e893's `spread = n_fail_days` identity check). `n_fail_days` (every QC-failing day, not just
+near-threshold ones) is kept as a separate column for reference/continuity.
+
+**9. Mixed forest excluded from trend subsets** (`EXP_CFG_TREND_DROP_GROUPS = c("mixed forest")`):
+a new `TREND_SUBSET_DEFS <- SUBSET_DEFS[!(...)]` in `03_models.R`, used only by the trend-pooled
+loop (`names(TREND_SUBSET_DEFS)` in place of `names(SUBSET_DEFS)`) and the new detectability
+sweep -- carbon-gain and temperature-sensitivity pooled models still iterate the full
+`SUBSET_DEFS` (including mixed forest, which already clears their >=3-site floor independent of
+trend-site count). One bug found and fixed while wiring the sweep's inner `purrr::map_dfr(...,
+.id="subset")`: passing `names(TREND_SUBSET_DEFS)` (an unnamed character vector) with `.id=`
+makes purrr fall back to the integer row index as the id column (purrr's own documented behaviour
+for an unnamed `.x`), silently producing a numeric `subset` column that then failed to `recode()`
+against `SUBSET_LABELS` (a `recode.numeric()` "NAs introduced by coercion" warning, and every row
+losing its subset label). Fixed with `purrr::set_names(names(TREND_SUBSET_DEFS))`.
+
+### Figure bugs found while implementing the figure-spec changes
+
+- **A `geom_text()` panel-letter layer in a second data frame, whose facet-variable column was a
+  plain character rather than a factor matching the main layer's factor levels, silently
+  re-sorted the WHOLE figure's facets alphabetically** (confirmed by rendering: Figure 6a's
+  "GSL/Start date/End date" column order became "End date/GSL/Start date"; Figure 6c's
+  thirds-then-groups order became fully A-Z; Figure 5b's "Start date/End date" columns swapped).
+  ggplot2 reconciles a faceting variable's level order across every layer sharing that aesthetic;
+  a character value in one layer forces the union back to default (alphabetical) ordering even
+  though the other, larger layer explicitly set `levels=`. Fixed everywhere this pattern was used
+  (Figures 1a, 5a/5b, 6a, 6c) by constructing each single-row "letter" data frame's facet column
+  as an explicit factor with the SAME levels as the main plotting data, not a bare string.
+- Figure 5b's first outlier-clamping design used the pooled model's own 95% CI range (padded 1.5x)
+  as the "bulk" bound, which clamped 79 of 136 points (58%) -- far too aggressive, since per-site
+  OLS slopes are inherently noisier than a pooled random-slope model's CI. Redefined "bulk" as the
+  Tukey 1.5xIQR range of the PER-SITE slopes themselves (the same outlier convention session 1's
+  check 2 already used), which clamps 58 of 536 points (~11%) across the full 4-predictor set --
+  a much more defensible "most sites, a few flagged outliers" split.

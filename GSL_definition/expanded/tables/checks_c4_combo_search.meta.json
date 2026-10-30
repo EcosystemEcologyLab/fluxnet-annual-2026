@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:20Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/tables/checks_c4_full_table.csv"
-  ],
-  "notes": "Every (variant x grid x spread_measure x site_scope x correlation_type) combination, applied uniformly to all three metrics (mean/sd/trend), sorted by max_abs_diff from the three target r values (0.63/0.49/0.34). all_within_0.02 = TRUE means that single combination reproduces all three simultaneously within 0.02."
-}

@@ -143,6 +143,16 @@ subset_filter <- function(d, subset_name) {
   else d[d$group == val & !is.na(d$group), ]
 }
 
+## Item 9: trend-specific subset list, excluding groups with too few
+## trend sites (>=10yr) for a meaningful pooled trend (EXP_CFG_TREND_DROP_
+## GROUPS -- mixed forest, 2 of 7 sites). Carbon-gain and temperature-
+## sensitivity pooled models are unaffected (SUBSET_DEFS, unchanged) --
+## those already use a >=3-site floor per subset via fit_pooled_slope().
+TREND_SUBSET_DEFS <- SUBSET_DEFS[!(startsWith(names(SUBSET_DEFS), "group_") &
+                                     unname(SUBSET_DEFS) %in% EXP_CFG_TREND_DROP_GROUPS)]
+message("Item 9: trend subsets exclude ", paste(EXP_CFG_TREND_DROP_GROUPS, collapse = ", "),
+        " (", length(SUBSET_DEFS) - length(TREND_SUBSET_DEFS), " of ", length(SUBSET_DEFS), " dropped).")
+
 ## ============================================================================
 ## Step A: carbon gain -- slopes of annual GPP/NEP on GSL, start, end --------
 ## ============================================================================
@@ -265,22 +275,42 @@ ts_data <- cg_data |>
             by = c("site_id", "year")) |>
   left_join(ta_windows |> filter(threshold_name == "t95") |>
               select(site_id, year, ta_pre_start_t95 = mean_ta_pre_start, ta_pre_end_t95 = mean_ta_pre_end),
-            by = c("site_id", "year"))
+            by = c("site_id", "year")) |>
+  ## Item 5: GSL's temperature-sensitivity predictor is the AVERAGE of the
+  ## start-window and end-window means (not the calendar/season-year annual
+  ## mean, which is kept below as a table-only comparison).
+  mutate(
+    ta_window_avg_z17 = (ta_pre_start_z17 + ta_pre_end_z17) / 2,
+    ta_window_avg_t95 = (ta_pre_start_t95 + ta_pre_end_t95) / 2
+  )
 
 write_csv(ts_data, file.path(EXP_TABLES, "temperature_sensitivity_data.csv"))
 write_meta(
   file.path(EXP_TABLES, "temperature_sensitivity_data.csv"),
   input_sources = c(file.path(EXP_TABLES, "carbon_gain_data.csv"), file.path(EXP_TABLES, "annual_inputs.csv")),
-  notes = "annual_mean_ta = calendar-year mean TA_F. ta_pre_start_*/ta_pre_end_* = mean TA_F over the fixed 60 days ending the day before the SITE'S OWN MEAN start/end date (not that year's own date), evaluated within each year's timeline."
+  notes = paste0(
+    "annual_mean_ta = calendar-year (or, for Southern-Hemisphere sites, Jul-Jun season-year -- item ",
+    "4) mean TA_F, kept for the table-only comparison (item 5). ta_pre_start_*/ta_pre_end_* = mean ",
+    "TA_F over the fixed 60 days ending the day before the SITE'S OWN MEAN start/end date (not that ",
+    "year's own date), evaluated within each year's timeline. ta_window_avg_* = average of ",
+    "ta_pre_start_* and ta_pre_end_* -- item 5's GSL temperature-sensitivity predictor (Figure 6a), ",
+    "replacing annual_mean_ta."
+  )
 )
 
 TS_COMBOS <- list(
-  list(y = "gsl_z17", x = "annual_mean_ta", label = "gsl_on_ta_z17"),
-  list(y = "gsl_t95", x = "annual_mean_ta", label = "gsl_on_ta_t95"),
+  list(y = "gsl_z17", x = "ta_window_avg_z17", label = "gsl_on_ta_z17"),
+  list(y = "gsl_t95", x = "ta_window_avg_t95", label = "gsl_on_ta_t95"),
   list(y = "start_doy_z17", x = "ta_pre_start_z17", label = "start_on_ta_z17"),
   list(y = "start_doy_t95", x = "ta_pre_start_t95", label = "start_on_ta_t95"),
   list(y = "end_doy_z17", x = "ta_pre_end_z17", label = "end_on_ta_z17"),
   list(y = "end_doy_t95", x = "ta_pre_end_t95", label = "end_on_ta_t95")
+)
+## Item 5: "write the annual-mean-temperature versions to a table only" --
+## the calendar/season-year annual-mean GSL~TA combo, NOT plotted in Figure 6a.
+TS_COMBOS_ANNUAL <- list(
+  list(y = "gsl_z17", x = "annual_mean_ta", label = "gsl_on_annualta_z17"),
+  list(y = "gsl_t95", x = "annual_mean_ta", label = "gsl_on_annualta_t95")
 )
 
 message("Temperature sensitivity: per-site OLS (trend sites) ...")
@@ -309,13 +339,35 @@ write_meta(
   file.path(EXP_TABLES, "temperature_sensitivity_pooled.csv"),
   input_sources = file.path(EXP_TABLES, "temperature_sensitivity_data.csv"),
   notes = paste0(
-    "Pooled slope (days/degC) of GSL/start-day/end-day on annual mean TA_F (GSL) or the 60-day ",
-    "pre-window mean TA_F (start/end), by skewness third and functional group, random site ",
-    "intercept+slope (nlme::lme), REML. ", sum(!ts_pooled$converged), " of ", nrow(ts_pooled),
-    " did not converge."
+    "Pooled slope (days/degC), by skewness third and functional group, random site intercept+slope ",
+    "(nlme::lme), REML. Item 5: GSL's predictor is ta_window_avg_* (average of the start- and end-",
+    "window 60-day pre-means), NOT the annual mean (see temperature_sensitivity_pooled_annualta.csv ",
+    "for that table-only comparison); start/end use the 60-day pre-window mean as before. ",
+    sum(!ts_pooled$converged), " of ", nrow(ts_pooled), " did not converge."
   )
 )
 message("Saved: temperature_sensitivity_*.csv. Non-converged: ", sum(!ts_pooled$converged), " of ", nrow(ts_pooled))
+
+## ---- Item 5: annual-mean-temperature GSL~TA combo, table only (not
+## plotted in Figure 6a) -- same pooled fit machinery, separate table. -----
+ts_pooled_annualta <- purrr::map_dfr(TS_COMBOS_ANNUAL, function(cb) {
+  purrr::map_dfr(names(SUBSET_DEFS), function(sn) {
+    d <- subset_filter(ts_data, sn)
+    bind_cols(tibble(combo = cb$label, subset = sn), fit_pooled_slope(d, cb$x, cb$y))
+  })
+})
+write_csv(ts_pooled_annualta, file.path(EXP_TABLES, "temperature_sensitivity_pooled_annualta.csv"))
+write_meta(
+  file.path(EXP_TABLES, "temperature_sensitivity_pooled_annualta.csv"),
+  input_sources = file.path(EXP_TABLES, "temperature_sensitivity_data.csv"),
+  notes = paste0(
+    "Item 5: GSL~annual-mean-TA_F pooled slope (days/degC), by third and group -- a table-only ",
+    "comparison against temperature_sensitivity_pooled.csv's GSL~ta_window_avg_* (the version ",
+    "actually plotted in Figure 6a). ", sum(!ts_pooled_annualta$converged), " of ",
+    nrow(ts_pooled_annualta), " did not converge."
+  )
+)
+message("Saved: temperature_sensitivity_pooled_annualta.csv (table-only, item 5).")
 
 message("--- 03_models.R Steps A-B done ---")
 
@@ -392,16 +444,20 @@ message(sum(sign_sig$sign_changes), " of ", nrow(sign_sig), " trend sites have a
 ## ---- Pooled mixed-model trends (random site slopes + AR(1)), by third
 ## and by group, at each threshold -- plus Weatherhead years-to-detect. ----
 message("Pooled trend models (", length(unique(trend_sweep_all$threshold_name)), " thresholds x ",
-        length(SUBSET_DEFS), " subsets) -- this takes a few minutes (AR1 residuals)...")
+        length(TREND_SUBSET_DEFS), " subsets) -- this takes a few minutes (AR1 residuals)...")
 
 noise_by_site_threshold <- trend_sweep_all |>
   group_by(site_id, threshold_name) |>
   group_modify(~ site_noise_params(.x, "gsl")) |>
   ungroup()
 
+## Item 9: mixed forest (EXP_CFG_TREND_DROP_GROUPS) is excluded from the
+## trend loop entirely (TREND_SUBSET_DEFS), not fit-and-NA'd -- it never
+## appears as a row in trend_pooled.csv, so Figure 6b/c need no further
+## filtering to keep it off the trend panels.
 trend_pooled <- purrr::map_dfr(unique(trend_sweep_all$threshold_name), function(th) {
   d_th <- trend_sweep_all |> filter(threshold_name == th)
-  purrr::map_dfr(names(SUBSET_DEFS), function(sn) {
+  purrr::map_dfr(names(TREND_SUBSET_DEFS), function(sn) {
     d <- subset_filter(d_th, sn)
     fit <- fit_pooled_slope(d, "year", "gsl", use_ar1 = TRUE)
     noise <- noise_by_site_threshold |> filter(threshold_name == th, site_id %in% unique(d$site_id))
@@ -409,8 +465,16 @@ trend_pooled <- purrr::map_dfr(unique(trend_sweep_all$threshold_name), function(
       vapply(seq_len(nrow(noise)), function(i)
         weatherhead_years(noise$sigma_n[i], noise$phi[i], fit$slope), numeric(1))
     } else NA_real_
+    ## Item 7: pooled trend expressed as % of this subset's mean GSL per
+    ## decade, as well as days/yr -- mean GSL = this subset's own mean of
+    ## `gsl` at this threshold (not a network-wide constant).
+    mean_gsl_subset <- mean(d$gsl, na.rm = TRUE)
+    slope_pct_per_decade <- if (isTRUE(fit$converged) && !is.na(fit$slope) && mean_gsl_subset > 0) {
+      100 * (fit$slope * 10) / mean_gsl_subset
+    } else NA_real_
     bind_cols(tibble(threshold_name = th, subset = sn), fit,
-              tibble(years_to_detect_median = suppressWarnings(median(yrs_needed, na.rm = TRUE)),
+              tibble(mean_gsl_subset = mean_gsl_subset, slope_pct_per_decade = slope_pct_per_decade,
+                     years_to_detect_median = suppressWarnings(median(yrs_needed, na.rm = TRUE)),
                      years_to_detect_n_sites = sum(!is.na(yrs_needed))))
   })
 })
@@ -421,12 +485,15 @@ write_meta(
   file.path(EXP_TABLES, "trend_pooled.csv"),
   input_sources = c(file.path(EXP_TABLES, "trend_sweep.csv")),
   notes = paste0(
-    "Pooled trend of GSL on year (days/yr), random site intercept+slope + AR(1) residuals ",
-    "(nlme::lme, corAR1), by skewness third and functional group, at 16 common thresholds ",
-    "(5-20% of P99) and at each site's own T95. years_to_detect_median = median, across that ",
-    "subset's sites, of the Weatherhead et al. (1998) years-to-detect-this-POOLED-trend-at-95%-",
-    "confidence/80%-power, each using the pooled slope with that SITE'S OWN residual SD and ",
-    "lag-1 autocorrelation (not the site's own trend estimate). ", n_nonconv, " of ", nrow(trend_pooled),
+    "Pooled trend of GSL on year (days/yr, and slope_pct_per_decade = % of this subset's own mean ",
+    "GSL per decade -- item 7), random site intercept+slope + AR(1) residuals (nlme::lme, corAR1), ",
+    "by skewness third and functional group (mixed forest EXCLUDED from the trend loop entirely -- ",
+    "item 9, ", paste(EXP_CFG_TREND_DROP_GROUPS, collapse = ", "), ", too few >=10yr sites for a ",
+    "pooled model), at 16 common thresholds (5-20% of P99) and at each site's own T95. ",
+    "years_to_detect_median = median, across that subset's sites, of the Weatherhead et al. (1998) ",
+    "years-to-detect-this-POOLED-trend-at-95%-confidence/80%-power for the OBSERVED pooled slope ",
+    "(kept for reference; item 7 drops its use as a Figure 6 label -- see years_to_detect_sweep.csv ",
+    "for the trend-SIZE sweep now plotted instead). ", n_nonconv, " of ", nrow(trend_pooled),
     " model(s) did not converge even with the random-intercept-only fallback -- NA, not dropped."
   )
 )
@@ -435,5 +502,45 @@ message("Saved: trend_sweep.csv, trend_per_site.csv, trend_pooled.csv. Non-conve
 if (n_nonconv > 0) {
   print(trend_pooled |> filter(!converged) |> select(threshold_name, subset, n_sites, note))
 }
+
+## ============================================================================
+## Item 7: years-to-detect-a-trend-of-SIZE sweep (0.1-1.0 days/yr, Z17 and
+## T95, by third and group -- EXP_CFG_DETECT_TREND_GRID), replacing the
+## dropped years-to-detect-the-OBSERVED-trend labels on Figure 6b. Uses each
+## subset's sites' own noise params (noise_by_site_threshold) at Z17 (10pct)
+## and T95 (t95pct) -- the same two thresholds Figure 1/2/4 highlight.
+## ============================================================================
+message("Years-to-detect-trend sweep (", length(EXP_CFG_DETECT_TREND_GRID), " trend sizes x 2 thresholds x ",
+        length(TREND_SUBSET_DEFS), " subsets) ...")
+years_to_detect_sweep <- purrr::map_dfr(c(z17 = "10pct", t95 = "t95pct"), function(th) {
+  noise <- noise_by_site_threshold |> filter(threshold_name == th)
+  purrr::map_dfr(purrr::set_names(names(TREND_SUBSET_DEFS)), function(sn) {
+    sites_in_subset <- subset_filter(trend_sweep_all |> filter(threshold_name == th), sn)$site_id |> unique()
+    noise_sub <- noise |> filter(site_id %in% sites_in_subset)
+    purrr::map_dfr(EXP_CFG_DETECT_TREND_GRID, function(trend_size) {
+      yrs_needed <- vapply(seq_len(nrow(noise_sub)), function(i)
+        weatherhead_years(noise_sub$sigma_n[i], noise_sub$phi[i], trend_size), numeric(1))
+      tibble(trend_size_days_per_yr = trend_size,
+             years_to_detect_median = suppressWarnings(median(yrs_needed, na.rm = TRUE)),
+             n_sites = sum(!is.na(yrs_needed)))
+    })
+  }, .id = "subset")
+}, .id = "threshold_name")
+
+write_csv(years_to_detect_sweep, file.path(EXP_TABLES, "years_to_detect_sweep.csv"))
+write_meta(
+  file.path(EXP_TABLES, "years_to_detect_sweep.csv"),
+  input_sources = file.path(EXP_TABLES, "trend_sweep.csv"),
+  notes = paste0(
+    "Item 7: Weatherhead et al. (1998) years-to-detect-a-trend-of-SIZE (95% confidence/80% power), ",
+    "for trend sizes ", min(EXP_CFG_DETECT_TREND_GRID), "-", max(EXP_CFG_DETECT_TREND_GRID),
+    " days/yr (", EXP_CFG_DETECT_MARK_TYPICAL, "=typical, ", EXP_CFG_DETECT_MARK_STRONG, "=strong), ",
+    "at Z17 and T95, by skewness third and functional group (mixed forest excluded, item 9) -- ",
+    "median across that subset's sites, each using its own residual SD/lag-1 autocorrelation from ",
+    "an OLS fit of GSL on year. Replaces the dropped years-to-detect-the-OBSERVED-trend labels on ",
+    "Figure 6b with a trend-SIZE sweep (Figure 6c)."
+  )
+)
+message("Saved: years_to_detect_sweep.csv (", nrow(years_to_detect_sweep), " rows)")
 
 message("--- 03_models.R: done ---")

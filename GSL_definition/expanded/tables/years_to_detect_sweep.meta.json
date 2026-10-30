@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T23:45:19Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/trend_sweep.csv"
+  ],
+  "notes": "Item 7: Weatherhead et al. (1998) years-to-detect-a-trend-of-SIZE (95% confidence/80% power), for trend sizes 0.1-1 days/yr (0.25=typical, 0.5=strong), at Z17 and T95, by skewness third and functional group (mixed forest excluded, item 9) -- median across that subset's sites, each using its own residual SD/lag-1 autocorrelation from an OLS fit of GSL on year. Replaces the dropped years-to-detect-the-OBSERVED-trend labels on Figure 6b with a trend-SIZE sweep (Figure 6c)."
+}

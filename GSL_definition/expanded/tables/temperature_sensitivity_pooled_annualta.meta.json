@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T23:45:06Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/temperature_sensitivity_data.csv"
+  ],
+  "notes": "Item 5: GSL~annual-mean-TA_F pooled slope (days/degC), by third and group -- a table-only comparison against temperature_sensitivity_pooled.csv's GSL~ta_window_avg_* (the version actually plotted in Figure 6a). 0 of 16 did not converge."
+}

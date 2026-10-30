@@ -1,0 +1,8 @@
+Supplemental Figure S8 (new, session 2a). Main results of Figures 2, 5a and 6, WITH (screened,
+'main', blue) vs WITHOUT (unscreened, grey) the winter partitioning-artifact screen (item 2).
+Panel a: share of annual GPP outside the Z17 season vs skewness (Figure 2a analogue).
+Panel b: per-site OLS slope of annual GPP on GSL at Z17, by skewness third (trend sites only,
+Figure 5a analogue) -- the unscreened slopes use a light-weight per-site OLS refit
+(annual_gpp_unscreened.csv), not the full pooled mixed model carbon_gain_pooled.csv uses.
+Panel c: per-site Z17 GSL trend (days/yr), by skewness third (trend sites only, Figure 6
+analogue) -- derive_one()'s own trend_gsl_z17_days_per_yr, already computed for both variants.

@@ -60,6 +60,21 @@ Weatherhead et al. 1998 years-to-detect formula), 6 main figures and 7 supplemen
 the PeerJ style, and full QA checks — see `GSL_definition/expanded/docs/report_back_2026-10-30.md`
 and this directory's own `docs/methods_memo.md`'s "Expanded-site analysis (2026-10-30)" section.
 
+Four read-only checks on that run (session 1, `GSL_definition/expanded/docs/checks_report_2026-10-30.md`)
+led to a **session 2a methods/figure revision pass** (2026-10-30): a CUT fallback keyed to GPP
+availability as well as QC (153 sites, up from 151), a winter partitioning-artifact screen (an
+unscreened variant kept alongside for comparison), Southern-Hemisphere carbon-gain/temperature
+models switched from calendar-year to season-year joins, a window-average (not annual-mean)
+temperature predictor for GSL's temperature sensitivity, a wider (±1%, was ±0.05%) local-
+sensitivity window with absolute-value plotting, trends expressed as %/decade plus a
+trend-SIZE detectability sweep (replacing observed-trend-only labels), a redesigned bounds
+check restricted to genuinely near-threshold QC failures, and mixed forest dropped from trend
+panels (2 of 7 sites have ≥10 years). Figures 1/3/4/5/6 updated to match, plus a new
+Supplemental Figure S8 (screened vs unscreened). Every change is a named `EXP_CFG_*` switch in
+`code/00_config.R` — see `GSL_definition/expanded/docs/report_back_2026-10-30-session2a.md` and
+this directory's own `docs/methods_memo.md`'s "Expanded-site analysis, session 2a (2026-10-30)"
+section.
+
 The Stage 2 open decisions (year screening, negative-GPP treatment, `>` vs. `>=`, GPP variant)
 were made by Dave without Tash's input, recorded in `docs/framework.md`'s "Open decisions
 (resolved)" section and as named switches in `code/00_config.R` — subject to revision if Tash's

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T23:44:06Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds"
+  ],
+  "notes": "Item 2: every day screened as a winter GPP-partitioning artifact (GPP_NT_REF set to 0 before every derived quantity in the 'main' variant below) -- GPP_NT_REF>0, NEE_REF>=0, TA_F<0 and GPP_DT_REF < 10% of the site's UNSCREENED P99, all four non-missing. 45236 day(s) total."
+}

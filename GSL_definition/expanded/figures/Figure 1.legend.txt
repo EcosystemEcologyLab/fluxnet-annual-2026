@@ -1,6 +1,7 @@
 Figure 1. Mechanism at two illustrative sites, US-Ha1 and US-SRM -- chosen to illustrate
 contrasting phenology, NOT selected by any rule (one deciduous forest, one woody-grass
-mosaic; see docs/report_back_2026-10-30.md for why these two).
+mosaic; see docs/report_back_2026-10-30.md for why these two). Winter-screened days (item 2)
+are shown as 'neither' (GPP_NT_REF forced to 0).
 Panel a: each day of each passing year, coloured by whether it is included in the growing
 season under both Z17 and T95, one only, or neither.
 Panel b: mean GSL against threshold (% of P99, 0-50%) for both sites; black circle/red

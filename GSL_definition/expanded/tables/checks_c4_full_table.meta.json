@@ -1,9 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:20Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/data/daily_extract.rds",
-    "GSL_definition/tables/derived_site.csv"
-  ],
-  "notes": "62-site reproduction run (GSL_SITES, main GPP_NT_VUT_REF). Per site: annual GSL at each of 22 thresholds on Tash's % of P99 grid (0.1,0.5,1-20) and on a FIXED grid (0.0001-2.5 gC/m2/d, ASSUMED spacing -- see report); then mean, s.d. and OLS trend of annual GSL across years, at each threshold; then the IQR/range/s.d. of that 22-value vector = 'spread'. target_r assumes the manuscript's r=0.63/0.49/0.34 map to mean/s.d./trend spread respectively, per the check prompt. This is the FULL table -- every variant x grid x metric x spread_measure x scope combination, not a filtered subset."
-}

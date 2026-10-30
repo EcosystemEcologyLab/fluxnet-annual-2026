@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-30T18:34:55Z",
-  "pipeline_version": "dfc6983",
+  "run_datetime_utc": "2026-10-30T23:45:19Z",
+  "pipeline_version": "ab5090b",
   "input_sources": [
     "GSL_definition/expanded/tables/trend_sweep.csv"
   ],
-  "notes": "Pooled trend of GSL on year (days/yr), random site intercept+slope + AR(1) residuals (nlme::lme, corAR1), by skewness third and functional group, at 16 common thresholds (5-20% of P99) and at each site's own T95. years_to_detect_median = median, across that subset's sites, of the Weatherhead et al. (1998) years-to-detect-this-POOLED-trend-at-95%-confidence/80%-power, each using the pooled slope with that SITE'S OWN residual SD and lag-1 autocorrelation (not the site's own trend estimate). 17 of 136 model(s) did not converge even with the random-intercept-only fallback -- NA, not dropped."
+  "notes": "Pooled trend of GSL on year (days/yr, and slope_pct_per_decade = % of this subset's own mean GSL per decade -- item 7), random site intercept+slope + AR(1) residuals (nlme::lme, corAR1), by skewness third and functional group (mixed forest EXCLUDED from the trend loop entirely -- item 9, mixed forest, too few >=10yr sites for a pooled model), at 16 common thresholds (5-20% of P99) and at each site's own T95. years_to_detect_median = median, across that subset's sites, of the Weatherhead et al. (1998) years-to-detect-this-POOLED-trend-at-95%-confidence/80%-power for the OBSERVED pooled slope (kept for reference; item 7 drops its use as a Figure 6 label -- see years_to_detect_sweep.csv for the trend-SIZE sweep now plotted instead). 0 of 119 model(s) did not converge even with the random-intercept-only fallback -- NA, not dropped."
 }

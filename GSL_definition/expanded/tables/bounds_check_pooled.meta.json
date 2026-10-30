@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T23:44:22Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/bounds_check.csv"
+  ],
+  "notes": "Item 8: pooled (network-wide) summary of the redesigned bounds check, at Z17 and T95."
+}

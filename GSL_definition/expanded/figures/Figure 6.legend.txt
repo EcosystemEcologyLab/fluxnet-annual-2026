@@ -1,10 +1,16 @@
 Figure 6. Climate fingerprints (expanded set, main run).
 Panel a: temperature sensitivity (days/degC) of GSL, season start and end, by skewness third,
-Z17 and T95 (pooled mixed model; error bars = 95% CI).
+Z17 and T95 (pooled mixed model; error bars = 95% CI). Item 5: GSL's predictor is the average
+of the start- and end-window 60-day pre-means (NOT the annual mean -- that version is in
+tables/temperature_sensitivity_pooled_annualta.csv only).
 Panel b: pooled GSL trend (days/yr) across 5-20% of P99 (line + 95% CI ribbon, circle marks
-Z17 at 10%), by skewness third (top) and functional group (bottom); T95's own pooled trend is
-plotted at the right edge (triangle), labelled with the Weatherhead et al. (1998) years needed
-to detect that pooled trend at 95% confidence / 80% power (median across that subset's sites,
-each using its own residual SD and lag-1 autocorrelation with the pooled slope).
-Mixed-forest's trend is not shown (only 2 of its 7 sites have >=10 years, below the >=3-site
-floor for a pooled model); any other NA years-to-detect reflects a near-zero pooled slope.
+Z17 at 10%), by skewness third (top) and functional group (bottom) -- SEPARATE legends for
+thirds and groups (item 7); T95's own pooled trend is plotted at the right edge (triangle).
+Mixed forest is excluded from both (only 2 of its 7 sites have >=10 years, below the >=3-site
+floor for a pooled model -- item 9).
+Panel c: years needed to detect a trend of a given SIZE (0.1-1.0 days/yr, Weatherhead et al.
+1998, 95% confidence/80% power), at Z17 and T95, one facet per subset (mixed forest excluded);
+dashed/dotted lines mark 0.25 (typical) and 0.5 (strong) days/yr. Replaces the dropped years-
+to-detect-the-OBSERVED-trend labels (kept in trend_pooled.csv for reference, not plotted).
+Pooled trends are also expressed as % of each subset's own mean GSL per decade in
+tables/trend_pooled.csv (slope_pct_per_decade), not shown as a separate axis here.

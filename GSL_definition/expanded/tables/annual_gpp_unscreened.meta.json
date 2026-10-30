@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T23:44:23Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds"
+  ],
+  "notes": "Annual GPP (gC/m2/yr, zero-floored, calendar year, NOT winter-screened) per passing site-year -- support table for the winter-screen on/off supplementary figure (Figure 2/5a/6 comparison) only, not used by any main-run table."
+}

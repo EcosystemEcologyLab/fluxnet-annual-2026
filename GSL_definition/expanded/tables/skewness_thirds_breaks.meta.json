@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T23:44:15Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/derived_site.csv"
+  ],
+  "notes": "Item 3: skewness tercile breaks recomputed on the final (post item-1 fallback, post item-2 screen) site set, per variant, against session 1's checks_report_2026-10-30.md breaks (0.68/0.91, computed on the pre-session-2a 151-site screened-free set)."
+}

@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-30T18:33:31Z",
-  "pipeline_version": "1fd076a",
+  "run_datetime_utc": "2026-10-30T23:44:23Z",
+  "pipeline_version": "ab5090b",
   "input_sources": [
     "GSL_definition/expanded/data/daily_extract.rds"
   ],
-  "notes": "Annual GPP (gC/m2/yr, zero-floored, main variant), NEP = -NEE_REF, and mean TA_F per passing site-year. Sums/means use na.rm=TRUE over available days; n_days_* columns report coverage for transparency."
+  "notes": "Annual GPP (gC/m2/yr, zero-floored, main variant), NEP = -NEE_REF, and mean TA_F per passing site-year. Sums/means use na.rm=TRUE over available days; n_days_* columns report coverage. Item 4: for the 16 Southern-Hemisphere sites (location_lat<0), 'year' is the Jul(year)-Jun(year+1) SEASON year and the sums/means are taken over that window (not the calendar year) -- a22e893 used the calendar year for every site; EXP_CFG_SH_SEASON_YEAR=TRUE."
 }

@@ -1,9 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:13Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/data/daily_extract.rds",
-    "GSL_definition/expanded/tables/derived_site_year.csv"
-  ],
-  "notes": "Every DBF/MF site-year with >=1 day in Dec/Jan/Feb/Mar (NH) or Jun/Jul/Aug/Sep (SH, location_lat<0) with zero-floored daily GPP_NT_REF > 10% of P99 AND TA_F < 0 degC, same calendar-year attribution as the US-Ha1 check. delta = GSL at Z17 with those days excluded minus the original. 49 site-year(s) across 11 site(s) have |delta| > 5 days (see checks_c1_dbf_mf_sweep.csv, filter abs(delta)>5)."
-}

@@ -1,11 +1,9 @@
-Figure 3. Threshold sensitivity in two units (expanded set, main run).
-Panel a: median sensitivity (days lost per 1% of P99), 0.1-35% of P99 (log axis), by skewness third.
-Panel b: sensitivity at Z17 specifically, against skewness (one point per site; r = 
--0.30).
-Panel c: 'days per 1% of included GPP' (the common-unit sensitivity dGSL/dF x 0.01), Z17 and
-T95, against skewness.
-Panels b and c run in opposite directions (b: r = -0.30; c, Z17: r = -0.79) because panel c 
-normalises by how much the included-GPP fraction F changes per % of P99 -- at high-skewness
-sites a small threshold change corresponds to a LARGE change in F (GPP is concentrated near
-zero for much of the year), so the same day-count sensitivity becomes a SMALLER per-unit-F
-sensitivity; panel b has no such normalisation.
+Figure 3. Threshold sensitivity in two units (expanded set, main run). Item 6: local
+sensitivity is a +/-1% of P99 centred difference (widened from +/-0.05%); all three panels
+plot ABSOLUTE VALUES (signed values are in fine_grid_summary.csv/derived_site.csv).
+Panel a: median |sensitivity| (days lost per 1% of P99), 0.1-35% of P99 (log axis), by skewness third.
+Panel b: |sensitivity| at Z17 specifically, against skewness (one point per site; r = 
+0.42).
+Panel c: |days per 1% of included GPP| (the common-unit sensitivity |dGSL/dF x 0.01|), Z17 and
+T95, against skewness (r, Z17 = 
+-0.78).

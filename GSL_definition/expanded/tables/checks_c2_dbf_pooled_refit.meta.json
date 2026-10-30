@@ -1,9 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:13Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/tables/carbon_gain_data.csv",
-    "GSL_definition/expanded/tables/checks_c2_dbf_outlier_sites.csv"
-  ],
-  "notes": "Pooled mixed-model slope of annual GPP on start/end DOY, all DBF site-years, with vs. without the outlier site(s) for that predictor (all of that site's years removed, not just the flagged year)."
-}

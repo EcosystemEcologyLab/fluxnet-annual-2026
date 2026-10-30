@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:13Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/data/daily_extract.rds"
-  ],
-  "notes": "US-Ha1 winter (Dec/Jan/Feb/Mar) days above Z17 and/or T95's threshold, with GPP_NT_REF, GPP_DT_REF, NEE_REF, TA_F, QC_REF (the per-site VUT/CUT-resolved NEE QC fraction at DD resolution) and gap_filled (QC_REF < 1). artifact_label flags GPP_NT_REF > 0 AND NEE_REF >= 0 AND TA_F < 0 AND GPP_DT_REF < 10% of P99 (NT shows uptake the ecosystem-scale carbon balance and the DT partitioning method both disagree with, at a sub-freezing temperature) as a likely partitioning artifact, per the check prompt's own example rule -- not a claim about every day."
-}

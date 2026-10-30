@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-30T18:32:06Z",
-  "pipeline_version": "92907fb",
+  "run_datetime_utc": "2026-10-30T23:45:27Z",
+  "pipeline_version": "ab5090b",
   "input_sources": [
     "GSL_definition/expanded/tables/season_boundaries.csv"
   ],

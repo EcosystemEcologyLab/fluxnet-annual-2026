@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-30T18:34:42Z",
-  "pipeline_version": "dfc6983",
+  "run_datetime_utc": "2026-10-30T23:45:05Z",
+  "pipeline_version": "ab5090b",
   "input_sources": [
     "GSL_definition/expanded/tables/temperature_sensitivity_data.csv"
   ],
-  "notes": "Pooled slope (days/degC) of GSL/start-day/end-day on annual mean TA_F (GSL) or the 60-day pre-window mean TA_F (start/end), by skewness third and functional group, random site intercept+slope (nlme::lme), REML. 0 of 48 did not converge."
+  "notes": "Pooled slope (days/degC), by skewness third and functional group, random site intercept+slope (nlme::lme), REML. Item 5: GSL's predictor is ta_window_avg_* (average of the start- and end-window 60-day pre-means), NOT the annual mean (see temperature_sensitivity_pooled_annualta.csv for that table-only comparison); start/end use the 60-day pre-window mean as before. 0 of 48 did not converge."
 }

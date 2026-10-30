@@ -4,6 +4,59 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL expanded-site analysis, session 2a: done
+
+Full prompt: `logs/prompts/2026-10-30_gsl_expanded_session2a.md`. Full results:
+`GSL_definition/expanded/docs/report_back_2026-10-30-session2a.md` (named with a `-session2a`
+suffix, not `report_back_2026-10-30.md`, so it does not overwrite the earlier same-day report
+from the original expanded-analysis session). All nine of Dave's decisions on the session 1
+checks report implemented as named `EXP_CFG_*` switches in
+`GSL_definition/expanded/code/00_config.R`, with `01_select.R` through `06_checks.R` modified in
+place and rerun end to end (`GSL_definition/code/`, the 62-site reproduction, untouched — checked
+directly via `git status`). All 11 QA checks in `tables/qa_checks.csv` pass, including 3 new ones
+added this session (no VUT/CUT mixing, screened days are 0-GPP in every derived table, Southern
+Hemisphere models use season-year values).
+
+**Selection (item 1)**: the VUT/CUT fallback is now keyed to GPP availability as well as QC —
+**153 sites, up from 151** (AU-Cow and AU-Stp recovered; 41 population sites newly and explicitly
+dropped for having no usable VUT or CUT column at all, vs. silently resolving to an unusable
+column before). **Winter screen (item 2)**: 45,236 days screened as partitioning artifacts across
+120 of 153 sites (GPP_NT_REF forced to 0 before every derived quantity) — far more than session
+1's US-Ha1/DBF-MF-focused estimate, since this screen has no month or GSL-threshold restriction;
+mean per-site Z17 GSL effect is small (-1.0 d mean, -0.17 d median among affected sites), only 2
+sites change skewness third. An unscreened variant is kept alongside throughout, and a new
+Supplemental Figure S8 compares Figures 2/5a/6 screened vs. unscreened directly.
+
+**Southern Hemisphere (item 4)**: carbon-gain/temperature models now join season-year (Jul-Jun),
+not calendar-year, GPP/NEP/TA_F for the 16 SH sites — confirms session 1's finding that this
+matters only marginally for pooled slopes. **Temperature sensitivity (item 5)**: GSL's
+predictor is now the average of the start/end 60-day pre-windows, not the annual mean — **this is
+the session's most consequential single change**: the high-skewness-third GSL~temperature slope
+flips sign (3.42 -> -1.99 days/degC), flagged explicitly in the report as worth independent
+scrutiny before treating it as a finding, not asserted as a confirmed result. **Local sensitivity
+(item 6)**: +/-1% of P99 window (was +/-0.05%), Figure 3 now plots absolute values throughout.
+**Trends (item 7)**: `trend_pooled.csv` gains %-of-mean-GSL-per-decade; a new
+`years_to_detect_sweep.csv`/Figure 6c sweeps trend SIZE (0.1-1.0 days/yr) instead of showing
+years-to-detect-the-observed-trend labels (dropped). **Bounds check (item 8)**: redesigned to
+only treat QC-failing days within +/-2% of P99 of the threshold as ambiguous — spread drops from
+a 0-14-day range (identical at Z17/T95 by construction) to 0-9 days, mean ~0.15 d, and Z17/T95 no
+longer coincide exactly. **Mixed forest (item 9)**: excluded from trend panels/subsets entirely
+(2 of its 7 sites have >=10 years); the session 1 checks report's "CH-Lae is the sole/only
+mixed-forest site" claim was wrong and is corrected in place in that file.
+
+Figures 1, 3, 4, 5, 6 updated to match (panel-letter de-duplication across facets, Figure 1's
+corrected Z17/T95 marker colours, Figure 4's 140-160-gap-day labels — both points turn out to be
+one site, AU-Ync, at two thresholds, not two distinct sites as the prompt's wording suggested —
+Figure 5b's Tukey-IQR outlier clamping, Figure 6's new split-legend trend panels and detectability
+sweep). One cross-cutting figure bug found and fixed: a `geom_text()` panel-letter layer whose
+facet-variable column was a plain character (not a factor matching the main layer's levels)
+silently re-sorted several figures' facets alphabetically across the WHOLE plot, not just that
+layer — fixed everywhere it occurred (Figures 1a, 5a/5b, 6a, 6c). Full methods record in
+`GSL_definition/docs/methods_memo.md`'s "Expanded-site analysis, session 2a" section; `README.md`
+updated.
+
+---
+
 ## 2026-10-30 — GSL expanded-site analysis, session 2a: started
 
 Full prompt: `logs/prompts/2026-10-30_gsl_expanded_session2a.md`. Implementing Dave's decisions

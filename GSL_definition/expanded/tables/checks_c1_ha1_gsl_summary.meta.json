@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:13Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/tables/checks_c1_ha1_gsl_recompute.csv"
-  ],
-  "notes": "Mean, s.d. and OLS trend (days/yr) of US-Ha1 annual GSL at Z17/T95, original vs. winter-days-excluded."
-}

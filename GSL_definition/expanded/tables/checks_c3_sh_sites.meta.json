@@ -1,8 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:13Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/tables/sites.csv"
-  ],
-  "notes": "14 Southern Hemisphere site(s) (location_lat<0) in the expanded set, with skewness third, functional group, and total passing site-years."
-}

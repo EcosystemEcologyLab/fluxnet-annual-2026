@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T23:44:06Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/expanded/tables/winter_screen_days.csv"
+  ],
+  "notes": "Count of winter-screened days per passing site-year (rows with zero screened days omitted)."
+}

@@ -1,0 +1,49 @@
+site_id,igbp,in_gsl62,qc_col_used_old,qc_col_used_new,status,in_expanded_set
+AU-Cow,EBF,FALSE,NEE_VUT_REF_QC,NEE_CUT_REF_QC,recovered into the expanded set,TRUE
+AU-Ctr,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+AU-DaP,GRA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+AU-Fog,GRA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+AU-RDF,WSA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+AU-Rob,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+AU-Stp,GRA,FALSE,NEE_VUT_REF_QC,NEE_CUT_REF_QC,recovered into the expanded set,TRUE
+BR-CST,DNF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+BR-Ji3,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+BR-Ma2,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+BR-Npw,WSA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+BR-Sa1,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+BR-Sa3,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+BW-Nxr,GRA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+CD-Ygb,MF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+CL-SDF,EBF,FALSE,NEE_VUT_REF_QC,NEE_CUT_REF_QC,"fallback column changed, but still not in the expanded set (other rule)",FALSE
+CN-Jng,GRA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+CN-Mxn,MF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+CN-Qng,DNF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+CN-You,GRA,FALSE,NEE_VUT_REF_QC,NEE_CUT_REF_QC,"fallback column changed, but still not in the expanded set (other rule)",FALSE
+CR-AqC,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+ES-Amo,OSH,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+ES-Cnd,WSA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+ES-LJu,OSH,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+GF-Guy,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+GH-Ank,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+ID-JOP,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+ID-PaB,OSH,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+ID-PaD,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+ID-Pag,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+JP-Fmt,MF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+JP-Khw,ENF,FALSE,NEE_CUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+JP-Ta2,ENF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+KR-SmM,MF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+MX-Tes,DBF,FALSE,NEE_VUT_REF_QC,NEE_CUT_REF_QC,"fallback column changed, but still not in the expanded set (other rule)",FALSE
+MY-LHP,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+PA-SPn,DBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+PA-SPs,GRA,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+PR-xGU,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+RU-SkP,DNF,FALSE,NEE_VUT_REF_QC,NEE_CUT_REF_QC,"fallback column changed, but still not in the expanded set (other rule)",FALSE
+TH-Kog,EBF,FALSE,NEE_CUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+TH-Mae,DBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+US-SRC,OSH,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+US-Sta,OSH,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+US-xPU,EBF,FALSE,NEE_VUT_REF_QC,NEE_CUT_REF_QC,"fallback column changed, but still not in the expanded set (other rule)",FALSE
+US-xSP,ENF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+US-xTE,ENF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE
+VU-Coc,EBF,FALSE,NEE_VUT_REF_QC,NA,dropped (no usable VUT or CUT column),FALSE

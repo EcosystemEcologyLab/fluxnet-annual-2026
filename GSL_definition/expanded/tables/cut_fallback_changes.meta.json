@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T23:44:00Z",
+  "pipeline_version": "ab5090b",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_rule_options_qc_fallback.csv",
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')"
+  ],
+  "notes": "Session 2a item 1: every population site whose VUT/CUT fallback column changed, or that is newly dropped, once the fallback is keyed to GPP availability as well as QC availability (vs a22e893's QC-only rule, selection_audit_rule_options_qc_fallback.csv). 48 site(s) affected."
+}

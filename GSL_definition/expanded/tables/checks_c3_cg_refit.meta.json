@@ -1,9 +1,0 @@
-{
-  "run_datetime_utc": "2026-10-30T21:20:17Z",
-  "pipeline_version": "08f655d",
-  "input_sources": [
-    "GSL_definition/expanded/tables/carbon_gain_data.csv",
-    "GSL_definition/expanded/tables/checks_c3_sh_siteyear_compare.csv"
-  ],
-  "notes": "Pooled carbon-gain slopes (start/end DOY predictors only -- gsl_z17/gsl_t95 predictors are already calendar-year-consistent, see report), subsets containing >=1 SH site, original vs. SH season-year annual GPP/NEP substituted. Main outputs (carbon_gain_pooled.csv) are untouched."
-}

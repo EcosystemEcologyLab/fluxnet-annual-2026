@@ -9,9 +9,11 @@ suppressPackageStartupMessages({
 exp_sites    <- read_csv(file.path(EXP_TABLES, "sites.csv"), show_col_types = FALSE)
 exp_site_years <- read_csv(file.path(EXP_TABLES, "site_years.csv"), show_col_types = FALSE)
 derived_site <- read_csv(file.path(EXP_TABLES, "derived_site.csv"), show_col_types = FALSE)
-derived_site_main <- derived_site |> filter(variant == "main")
-derived_site_dt   <- derived_site |> filter(variant == "dt")
-derived_site_neg  <- derived_site |> filter(variant == "negdelivered")
+derived_site_main  <- derived_site |> filter(variant == "main")
+derived_site_mainu <- derived_site |> filter(variant == "main_unscreened")
+derived_site_dt    <- derived_site |> filter(variant == "dt")
+derived_site_neg   <- derived_site |> filter(variant == "negdelivered")
+derived_site_year  <- read_csv(file.path(EXP_TABLES, "derived_site_year.csv"), show_col_types = FALSE)
 bounds_check <- read_csv(file.path(EXP_TABLES, "bounds_check.csv"), show_col_types = FALSE)
 fine_grid_summary <- read_csv(file.path(EXP_TABLES, "fine_grid_summary.csv"), show_col_types = FALSE)
 cg_pooled    <- read_csv(file.path(EXP_TABLES, "carbon_gain_pooled.csv"), show_col_types = FALSE)
@@ -23,27 +25,30 @@ trend_site_ids  <- names(Filter(function(y) length(y) >= 10L, site_years_list))
 ## ============================================================================
 ## S1 -- site/site-year counts by group, Tash's 62 vs the expanded set
 ## ============================================================================
+n_exp_sites <- nrow(exp_sites)
+exp_set_lab <- sprintf("Expanded (%d)", n_exp_sites)
 counts_sites <- bind_rows(
   exp_sites |> filter(in_gsl62) |> count(group, name = "n") |> mutate(set = "GSL 62"),
-  exp_sites |> count(group, name = "n") |> mutate(set = "Expanded (151)")
+  exp_sites |> count(group, name = "n") |> mutate(set = exp_set_lab)
 )
 counts_site_years <- bind_rows(
   exp_site_years |> inner_join(exp_sites |> filter(in_gsl62) |> select(site_id, group), by = "site_id") |>
     count(group, name = "n") |> mutate(set = "GSL 62"),
   exp_site_years |> left_join(exp_sites |> select(site_id, group), by = "site_id") |>
-    count(group, name = "n") |> mutate(set = "Expanded (151)")
+    count(group, name = "n") |> mutate(set = exp_set_lab)
 )
+s1_fill_values <- setNames(c("grey40", "#2C7BB6"), c("GSL 62", exp_set_lab))
 
 ps1a <- ggplot(counts_sites, aes(x = group, y = n, fill = set)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.65) +
-  scale_fill_manual(values = c("GSL 62" = "grey40", "Expanded (151)" = "#2C7BB6"), name = NULL) +
+  scale_fill_manual(values = s1_fill_values, name = NULL) +
   labs(x = NULL, y = "N sites") +
   theme_gsl() + theme(axis.text.x = element_text(angle = 30, hjust = 1), legend.position = "top") +
   gsl_panel_letter("a")
 
 ps1b <- ggplot(counts_site_years, aes(x = group, y = n, fill = set)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.65) +
-  scale_fill_manual(values = c("GSL 62" = "grey40", "Expanded (151)" = "#2C7BB6"), name = NULL) +
+  scale_fill_manual(values = s1_fill_values, name = NULL) +
   labs(x = NULL, y = "N site-years") +
   theme_gsl() + theme(axis.text.x = element_text(angle = 30, hjust = 1), legend.position = "top") +
   gsl_panel_letter("b")
@@ -55,9 +60,10 @@ save_gsl_figure(
   figS1, "Supplemental Figure S1", height_mm = 140,
   legend_lines = c(
     "Supplemental Figure S1. Site (a) and site-year (b) counts by functional group, GSL 62 vs",
-    "the expanded set (151 sites).",
-    sprintf("%d of 151 expanded sites are gated on the CUT QC/GPP fallback (never VUT): %s.",
-            length(cut_sites), paste(sort(cut_sites), collapse = ", ")),
+    sprintf("the expanded set (%d sites -- item 1's GPP-aware VUT/CUT fallback changed this from", n_exp_sites),
+    "a22e893's 151; see tables/cut_fallback_changes.csv for every site recovered/changed).",
+    sprintf("%d of %d expanded sites are gated on the CUT QC/GPP fallback (never VUT): %s.",
+            length(cut_sites), n_exp_sites, paste(sort(cut_sites), collapse = ", ")),
     sprintf("%d long-record sites (>=15yr, 12 months/yr) not in the GSL 62 are recovered: %s.",
             length(recovered_lr), paste(sort(recovered_lr), collapse = ", "))
   ),
@@ -72,11 +78,16 @@ message("--- S1 done ---")
 ## geom_histogram(position="identity") with two heavily overlapping series
 ## blends their fill colours into an indistinguishable third colour --
 ## geom_freqpoly (step outlines, no fill) keeps Z17 and T95 visually distinct.
+## Item 8 redesign: spread is now n_near_threshold_days (failing days within
+## +/-EXP_CFG_BOUNDS_NEAR_PCT of P99 of the THRESHOLD), which DOES depend on
+## the threshold being tested (Z17 vs T95 have different T_abs) -- unlike
+## a22e893's n_fail_days-based spread, the two lines are no longer expected
+## to coincide exactly.
 ps2a_data <- bounds_check |> mutate(threshold_lab = ifelse(threshold_name == "z17", "Z17", "T95"))
 ps2a <- ggplot(ps2a_data, aes(x = spread, colour = threshold_lab)) +
   geom_freqpoly(binwidth = 1, boundary = -0.5, linewidth = nature_lwd(PEERJ_LWD_DATA)) +
   scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z17", "T95")) +
-  labs(x = "Bounds-check spread (days; gsl_upper - gsl_lower = n_fail_days)", y = "N site-years") +
+  labs(x = "Bounds-check spread (days; gsl_upper - gsl_lower = n_near_threshold_days)", y = "N site-years") +
   theme_gsl() + theme(legend.position = "top") + gsl_panel_letter("a")
 
 site_spread <- bounds_check |> group_by(site_id, threshold_name) |>
@@ -93,17 +104,21 @@ ps2b <- ggplot(large_spread_sites, aes(x = mean_spread, y = site_id, fill = grou
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("b")
 
 figS2 <- ps2a / ps2b + plot_layout(heights = c(1, 1.3))
+pct_any_near <- 100 * mean(bounds_check$n_near_threshold_days > 0)
 save_gsl_figure(
   figS2, "Supplemental Figure S2", height_mm = 190,
   legend_lines = c(
-    "Supplemental Figure S2. Bounds-check spread (GSL if every QC-failing day is forced above",
-    "threshold, minus GSL if every such day is forced below -- algebraically exactly n_fail_days,",
-    "0-14 by rule 4's R2 N=14 construction), at Z17 and T95, across all expanded-set site-years.",
-    "Panel a: frequency polygon (Z17 black, T95 red) -- the two lines coincide exactly, because",
-    "n_fail_days (QC pass/fail) does not depend on which GPP threshold is being tested, so the",
-    "spread distribution is identical at Z17 and T95 by construction, not a plotting error.",
-    "Panel b: the 15 sites with the largest MEAN spread at Z17, by group (flagged as most",
-    "sensitive to the QC-failing-day treatment)."
+    "Supplemental Figure S2 (item 8 redesign). Bounds-check spread = GSL if every NEAR-THRESHOLD",
+    "QC-failing day is forced above the threshold, minus GSL if every such day is forced below.",
+    "A failing day (fallback QC < 0.25 or NA, in a passing year) is 'near-threshold' only if its",
+    sprintf("gap-filled GPP lies within +/-%.0f%% of P99 of the threshold being tested -- unlike",
+            EXP_CFG_BOUNDS_NEAR_PCT * 100),
+    "a22e893's n_fail_days-based spread, this DOES depend on the threshold (Z17 vs T95 have",
+    "different absolute thresholds), so the two lines in panel a are no longer expected to coincide.",
+    sprintf("%.1f%% of site-years have at least one near-threshold day at either threshold.", pct_any_near),
+    "Panel a: frequency polygon (Z17 black, T95 red), across all expanded-set site-years.",
+    "Panel b: the 15 sites with the largest MEAN spread at Z17, by group (flagged as most sensitive",
+    "to the near-threshold QC-failing-day treatment)."
   ),
   input_sources = file.path(EXP_TABLES, "bounds_check.csv"), notes = ""
 )
@@ -278,16 +293,17 @@ refit_nocut <- purrr::map_dfr(GSL_SKEW_THIRD_LEVELS, function(th) {
   tibble(third = th, slope = unname(co["gsl_z17", "Value"]), se = unname(co["gsl_z17", "Std.Error"]))
 })
 
+all_set_lab <- sprintf("All %d (with CUT)", n_exp_sites)
 compare_cut <- bind_rows(
   cg_pooled |> filter(predictor == "gsl_z17", response == "annual_gpp", subset %in% paste0("third_", GSL_SKEW_THIRD_LEVELS)) |>
-    mutate(third = sub("third_", "", subset)) |> select(third, slope, se) |> mutate(set = "All 151 (with CUT)"),
+    mutate(third = sub("third_", "", subset)) |> select(third, slope, se) |> mutate(set = all_set_lab),
   refit_nocut |> mutate(set = "Without CUT-fallback sites")
 ) |> mutate(third = factor(third, levels = GSL_SKEW_THIRD_LEVELS))
 
 figS6 <- ggplot(compare_cut, aes(x = third, y = slope, colour = set)) +
   geom_errorbar(aes(ymin = slope - 1.96 * se, ymax = slope + 1.96 * se), position = position_dodge(width = 0.4), width = 0.15) +
   geom_point(position = position_dodge(width = 0.4), size = 2) +
-  scale_color_manual(values = c("All 151 (with CUT)" = "#2C7BB6", "Without CUT-fallback sites" = "#D55E00"), name = NULL) +
+  scale_color_manual(values = setNames(c("#2C7BB6", "#D55E00"), c(all_set_lab, "Without CUT-fallback sites")), name = NULL) +
   labs(x = "Skewness third", y = "Pooled GPP~GSL slope at Z17\n(gC/m2 per day)") +
   theme_gsl() + theme(legend.position = "top") + gsl_panel_letter("")
 
@@ -295,9 +311,9 @@ save_gsl_figure(
   figS6, "Supplemental Figure S6", height_mm = 130,
   legend_lines = c(
     "Supplemental Figure S6. The headline carbon-gain result (pooled GPP~GSL slope at Z17, by",
-    "skewness third) with vs without the 12 CUT-fallback sites, to check the VUT/CUT fallback",
+    "skewness third) with vs without the CUT-fallback sites, to check the VUT/CUT fallback",
     "itself is not driving the main result.",
-    sprintf("%d of 151 sites are CUT-fallback.", length(cut_sites))
+    sprintf("%d of %d sites are CUT-fallback.", length(cut_sites), n_exp_sites)
   ),
   input_sources = c(file.path(EXP_TABLES, "carbon_gain_pooled.csv"), file.path(EXP_TABLES, "carbon_gain_data.csv")),
   notes = ""
@@ -318,10 +334,102 @@ save_gsl_figure(
   figS7, "Supplemental Figure S7", height_mm = 140,
   legend_lines = c(
     "Supplemental Figure S7. GSL against the target included-GPP fraction (0.80-0.99), one line",
-    "per site (all 151, main variant), coloured by functional group."
+    sprintf("per site (all %d, main variant), coloured by functional group.", n_exp_sites)
   ),
   input_sources = file.path(EXP_TABLES, "fraction_sweep_main.csv"), notes = ""
 )
 message("--- S7 done ---")
 
-message("--- 05_figures_supp.R: S1-S7 done ---")
+## ============================================================================
+## S8 (new, session 2a): main results of Figures 2, 5a and 6 WITH vs WITHOUT
+## the winter partitioning-artifact screen (item 2) -- 'main' (screened) vs
+## 'main_unscreened' variant, already both in derived_site.csv/
+## derived_site_year.csv from 02_derive.R. Panel b needs one extra per-site
+## OLS refit (annual GPP ~ GSL at Z17, unscreened) since the main pipeline's
+## carbon_gain_pooled.csv/per_site.csv are screened-variant only -- uses
+## annual_gpp_unscreened.csv (02_derive.R, built for this figure alone).
+## ============================================================================
+
+## ---- Panel a (Figure 2 proxy): share of annual GPP outside the Z17 season
+## vs skewness, screened vs unscreened. ----
+screen_compare_site <- bind_rows(
+  derived_site_main  |> mutate(screen = "Screened (main)"),
+  derived_site_mainu |> mutate(screen = "Unscreened")
+)
+ps8a <- ggplot(screen_compare_site, aes(x = skewness, y = share_outside_season_z17, colour = screen)) +
+  geom_point(size = 1.4, alpha = 0.6) +
+  scale_color_manual(values = c("Screened (main)" = "#2C7BB6", "Unscreened" = "grey50"), name = NULL) +
+  labs(x = "Skewness", y = "Share of annual GPP\noutside Z17 season") +
+  theme_gsl() + theme(legend.position = "top") + gsl_panel_letter("a")
+
+## ---- Panel b (Figure 5a proxy): per-site OLS slope of annual GPP on GSL
+## at Z17, by skewness third, screened vs unscreened (trend sites only). ----
+annual_gpp_unscreened <- read_csv(file.path(EXP_TABLES, "annual_gpp_unscreened.csv"), show_col_types = FALSE)
+gsl_z17_mainu <- derived_site_year |> filter(variant == "main_unscreened") |> select(site_id, year, gsl_z17)
+cg_data_unscreened <- gsl_z17_mainu |>
+  inner_join(annual_gpp_unscreened, by = c("site_id", "year")) |>
+  left_join(derived_site_mainu |> select(site_id, skewness_third), by = "site_id")
+
+cg_site_screened <- read_csv(file.path(EXP_TABLES, "carbon_gain_per_site.csv"), show_col_types = FALSE) |>
+  filter(predictor == "gsl_z17", response == "annual_gpp") |>
+  left_join(derived_site_main |> select(site_id, skewness_third), by = "site_id") |>
+  select(site_id, slope, skewness_third) |> mutate(screen = "Screened (main)")
+
+ols_slope_only <- function(d, xcol, ycol) {
+  d <- d[!is.na(d[[xcol]]) & !is.na(d[[ycol]]), ]
+  if (nrow(d) < 3 || length(unique(d[[xcol]])) < 2) return(NA_real_)
+  unname(coef(lm(d[[ycol]] ~ d[[xcol]]))[2])
+}
+cg_site_unscreened <- purrr::map_dfr(trend_site_ids, function(sid) {
+  d <- cg_data_unscreened |> filter(site_id == sid)
+  tibble(site_id = sid, slope = ols_slope_only(d, "gsl_z17", "annual_gpp_unscreened"),
+         skewness_third = unique(d$skewness_third)[1], screen = "Unscreened")
+})
+
+cg_compare <- bind_rows(cg_site_screened, cg_site_unscreened) |>
+  filter(!is.na(skewness_third)) |>
+  mutate(skewness_third = factor(skewness_third, levels = GSL_SKEW_THIRD_LEVELS))
+
+ps8b <- ggplot(cg_compare, aes(x = skewness_third, y = slope, colour = screen)) +
+  geom_boxplot(outlier.size = 0.8, linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  scale_color_manual(values = c("Screened (main)" = "#2C7BB6", "Unscreened" = "grey50"), name = NULL) +
+  labs(x = "Skewness third", y = "Per-site slope, annual GPP ~ GSL\nat Z17 (gC m-2 d-1 per day)") +
+  theme_gsl() + theme(legend.position = "top") + gsl_panel_letter("b")
+
+## ---- Panel c (Figure 6 proxy): per-site Z17 GSL trend, by skewness third,
+## screened vs unscreened (derive_one()'s own trend_gsl_z17_days_per_yr,
+## already computed for every variant -- no extra model fit needed). ----
+trend_compare <- bind_rows(
+  derived_site_main  |> filter(site_id %in% trend_site_ids) |>
+    select(site_id, skewness_third, trend_gsl_z17_days_per_yr) |> mutate(screen = "Screened (main)"),
+  derived_site_mainu |> filter(site_id %in% trend_site_ids) |>
+    select(site_id, skewness_third, trend_gsl_z17_days_per_yr) |> mutate(screen = "Unscreened")
+) |> filter(!is.na(skewness_third)) |> mutate(skewness_third = factor(skewness_third, levels = GSL_SKEW_THIRD_LEVELS))
+
+ps8c <- ggplot(trend_compare, aes(x = skewness_third, y = trend_gsl_z17_days_per_yr, colour = screen)) +
+  geom_boxplot(outlier.size = 0.8, linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_hline(yintercept = 0, colour = "grey70", linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  scale_color_manual(values = c("Screened (main)" = "#2C7BB6", "Unscreened" = "grey50"), name = NULL) +
+  labs(x = "Skewness third", y = "Per-site Z17 GSL trend\n(days/yr, trend sites)") +
+  theme_gsl() + theme(legend.position = "top") + gsl_panel_letter("c")
+
+figS8 <- ps8a / ps8b / ps8c
+save_gsl_figure(
+  figS8, "Supplemental Figure S8", height_mm = 230,
+  legend_lines = c(
+    "Supplemental Figure S8 (new, session 2a). Main results of Figures 2, 5a and 6, WITH (screened,",
+    "'main', blue) vs WITHOUT (unscreened, grey) the winter partitioning-artifact screen (item 2).",
+    "Panel a: share of annual GPP outside the Z17 season vs skewness (Figure 2a analogue).",
+    "Panel b: per-site OLS slope of annual GPP on GSL at Z17, by skewness third (trend sites only,",
+    "Figure 5a analogue) -- the unscreened slopes use a light-weight per-site OLS refit",
+    "(annual_gpp_unscreened.csv), not the full pooled mixed model carbon_gain_pooled.csv uses.",
+    "Panel c: per-site Z17 GSL trend (days/yr), by skewness third (trend sites only, Figure 6",
+    "analogue) -- derive_one()'s own trend_gsl_z17_days_per_yr, already computed for both variants."
+  ),
+  input_sources = c(file.path(EXP_TABLES, "derived_site.csv"), file.path(EXP_TABLES, "derived_site_year.csv"),
+                     file.path(EXP_TABLES, "annual_gpp_unscreened.csv"), file.path(EXP_TABLES, "carbon_gain_per_site.csv")),
+  notes = "Panel b's unscreened refit is a per-site OLS summary, not the full AR(1)/random-slope pooled model used elsewhere -- a scope reduction for this comparison figure, documented here and in docs/methods_memo.md."
+)
+message("--- S8 done ---")
+
+message("--- 05_figures_supp.R: S1-S8 done ---")

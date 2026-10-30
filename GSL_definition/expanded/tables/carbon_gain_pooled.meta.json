@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-30T18:34:08Z",
-  "pipeline_version": "dfc6983",
+  "run_datetime_utc": "2026-10-30T23:44:31Z",
+  "pipeline_version": "ab5090b",
   "input_sources": [
     "GSL_definition/expanded/tables/carbon_gain_data.csv"
   ],

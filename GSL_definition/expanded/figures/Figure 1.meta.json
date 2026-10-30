@@ -1,10 +1,11 @@
 {
-  "run_datetime_utc": "2026-10-30T18:32:04Z",
-  "pipeline_version": "92907fb",
+  "run_datetime_utc": "2026-10-30T23:45:25Z",
+  "pipeline_version": "ab5090b",
   "input_sources": [
     "GSL_definition/expanded/data/daily_extract.rds",
     "GSL_definition/expanded/data/fine_grid_main.rds",
-    "GSL_definition/expanded/tables/derived_site.csv"
+    "GSL_definition/expanded/tables/derived_site.csv",
+    "GSL_definition/expanded/tables/winter_screen_days.csv"
   ],
   "notes": "Illustrative sites chosen for contrast, not by a selection rule."
 }

@@ -547,6 +547,18 @@ Both files must be written even if empty (zero-row CSV with headers).
 A summary of exclusion and unknown counts must be printed to the console
 at the end of each QC script run.
 
+**Both files are append-only within a run** (`log_exclusion()`/`log_unknown()`, `R/utils.R`,
+always `append = TRUE` once a file exists) **and `scripts/04_qc.R` clears both at the start of
+every run**, rather than leaving a prior run's rows in place. This was chosen over an
+alternative (adding a `run_id` column and keeping cross-run history) because `outputs/` is
+already documented above as gitignored and "regenerated each run" — a persistent, ever-growing
+log cuts against that design, and a single `04_qc.R` run against the full network can add
+millions of rows to `outputs/exclusion_log.csv` (one row per excluded record at DD resolution);
+left unbounded across repeated development runs this reached 2.8 GB and caused real investigation
+time to be spent on its row-count history in one session (see `SESSION_LOG.md`, 2026-10-29, "QC
+unknown follow-up"). If a cross-run audit trail is ever needed, add a `run_id` column instead of
+reverting this — don't let the file grow unbounded again.
+
 **Exclusion vs Unknown:**
 - Failed QC threshold → exclusion log
 - Missing data, failed download, or unassessable record → unknown log

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:10Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')"
+  ],
+  "notes": "Rule 5 (>10% of daily GPP < -1 gC/m2/d) checked over every available daily row, using each site's own fallback GPP column (GPP_NT_VUT_REF or GPP_NT_CUT_REF, per qc_fallback), for every site newly kept under any of R1/R2/R3 that was not already kept under the manuscript rule (R0). No newly-added site fails rule 5. 5 site(s) have no GPP data at all, so rule 5 is undetermined (NA) for them: AU-Stp, ES-LJu, ID-PaD, JP-Khw, JP-Ta2."
+}

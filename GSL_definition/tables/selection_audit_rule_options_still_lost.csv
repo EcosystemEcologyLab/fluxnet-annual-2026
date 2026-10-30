@@ -1,0 +1,4 @@
+site_id,n_passing_years_r1,n_passing_years_r2_g14,n_passing_years_r3_m3,reason
+BR-Ma2,0,2,0,still < 5 passing years even with the VUT/CUT fallback and the loosest tolerance tried (R1: 0 yr; R2 gap<=14d: 2 yr; R3 M<=3: 0 yr)
+US-ICh,0,0,2,still < 5 passing years even with the VUT/CUT fallback and the loosest tolerance tried (R1: 0 yr; R2 gap<=14d: 0 yr; R3 M<=3: 2 yr)
+US-WCr,0,3,2,still < 5 passing years even with the VUT/CUT fallback and the loosest tolerance tried (R1: 0 yr; R2 gap<=14d: 3 yr; R3 M<=3: 2 yr)

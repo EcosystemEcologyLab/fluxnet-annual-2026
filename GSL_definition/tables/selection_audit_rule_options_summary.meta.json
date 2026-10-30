@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:09Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_rule_options_site_rule.csv"
+  ],
+  "notes": "sites_kept/site_years_kept/trend_sites_kept are gated on >=5 / >=10 passing years respectively. non_gsl62_long_record_* is relative to the fixed 37-site population of long-record sites not already in the GSL 62 (selection_audit_population.csv)."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:09Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_population.csv"
+  ],
+  "notes": "Per-site P99 of gap-filled daily GPP (VUT or CUT, per qc_fallback's gpp_col_used), computed from days passing the fallback 0.25 daily test, in years passing R1; if a site has no R1-passing year, computed from all its passing days instead (p99_basis states which). 224 of 507 population sites have no R1-passing year and fall back to the all-passing-days basis."
+}

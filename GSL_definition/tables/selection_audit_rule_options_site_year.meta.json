@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:09Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_site_year_screen.csv",
+    "GSL_definition/tables/selection_audit_rule_options_qc_fallback.csv",
+    "GSL_definition/tables/selection_audit_rule_options_p99.csv"
+  ],
+  "notes": "One row per population site-year (same 4562 as selection_audit_site_year_screen.csv -- rule 1 is unchanged). pass_r0 = the manuscript baseline (VUT only, no fallback; identical to that table's pass_i_manuscript). pass_r1 = R0 + per-site VUT/CUT fallback. pass_r2_g3/g7/g14 = R1 + a flat allowance of up to 3/7/14 failing days per year. pass_r3_m0/m3 = R1 + ignoring failing days outside the P99 band, allowing up to 0/3 remaining (inside-band) failing days."
+}

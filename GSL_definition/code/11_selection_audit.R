@@ -61,7 +61,7 @@ message("Snapshot sites: ", nrow(snapshot), "; passing IGBP rule 1: ", length(ig
 
 con <- dbConnect(duckdb(), "data/duckdb/fluxnet.duckdb", read_only = TRUE)
 network_daily <- dbGetQuery(con, "
-  SELECT site_id, TIMESTAMP, NEE_VUT_REF_QC, NEE_CUT_REF_QC, GPP_NT_VUT_REF
+  SELECT site_id, TIMESTAMP, NEE_VUT_REF_QC, NEE_CUT_REF_QC, GPP_NT_VUT_REF, GPP_NT_CUT_REF
   FROM daily WHERE dataset = 'FLUXMET'
 ")
 dbDisconnect(con, shutdown = TRUE)
@@ -588,4 +588,377 @@ write_meta(
 )
 message("Saved: ", audit_fig_stem, ".png/.pdf/.legend.txt/.meta.json (", n_rows, " long-record site rows)")
 
-message("--- 11_selection_audit.R: done ---")
+## ============================================================================
+## Step 8 (2026-10-30, selection-rule-options follow-on task -- see
+## logs/prompts/2026-10-30_gsl_selection_rule_options.md and
+## docs/selection_rule_options_2026-10-30.md): evaluate a per-site VUT/CUT QC
+## fallback, exactly as scripts/04_qc.R already does for the 62-site
+## analysis, crossed with four year-passing rules (R0 manuscript baseline,
+## R1 = R0 + fallback, R2 = R1 + a flat daily-failure allowance, R3 = R1 +
+## ignoring failing days whose gap-filled GPP falls outside a low-GPP band
+## near the site's P99). Read-only, additive only -- does NOT alter
+## anything written by Steps 1-7 above, and does NOT touch the 62-site GSL
+## analysis.
+##
+## Unchanged from the manuscript throughout this step: rule 1 (IGBP, already
+## applied to `population`), the 0.25 daily threshold, NA-as-failing, the
+## >=5-year rule 4 threshold, and rule 5's >10% share cutoff.
+## ============================================================================
+
+## ---- Per-site QC/GPP column choice, exactly as scripts/04_qc.R: VUT if the
+## site has any non-NA VUT QC, else CUT (never mixed within a site). Checked
+## above (has_vut) that every population site has at least one of the two --
+## there is no "neither" case to handle here.
+qc_fallback <- has_vut |>
+  mutate(
+    qc_col_used  = ifelse(any_vut_qc, "NEE_VUT_REF_QC", "NEE_CUT_REF_QC"),
+    gpp_col_used = ifelse(any_vut_qc, "GPP_NT_VUT_REF", "GPP_NT_CUT_REF")
+  )
+stopifnot(all(qc_fallback$any_vut_qc | qc_fallback$any_cut_qc))
+message(sum(!qc_fallback$any_vut_qc), " population site(s) are gated on the CUT fallback ",
+        "(no non-NA VUT QC at all); all of them have CUT data, so none is left fully ungated.")
+
+write_csv(qc_fallback, file.path(TABLES_DIR, "selection_audit_rule_options_qc_fallback.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_qc_fallback.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit_population.csv"),
+  notes = "Per-site QC/GPP column choice for the R1-R3 rule options: NEE_VUT_REF_QC/GPP_NT_VUT_REF if the site has any non-NA NEE_VUT_REF_QC, else NEE_CUT_REF_QC/GPP_NT_CUT_REF -- the same per-site (not per-row) priority scripts/04_qc.R already uses for the 62-site analysis."
+)
+
+## ---- Full calendar-grid day table under the fallback QC column, for every
+## population site-year with >=1 day of data (same 4562 site-years as Step
+## 2 -- rule 1 is unchanged, so the population and its site-years are
+## unchanged). Kept in memory only (not written as a table -- ~1.6M rows,
+## and every number the prompt asks for is an aggregate of it).
+pop_daily_fb <- pop_daily |>
+  left_join(qc_fallback |> select(site_id, qc_col_used, gpp_col_used), by = "site_id") |>
+  mutate(
+    qc_fb  = ifelse(qc_col_used == "NEE_VUT_REF_QC", NEE_VUT_REF_QC, NEE_CUT_REF_QC),
+    gpp_fb = ifelse(gpp_col_used == "GPP_NT_VUT_REF", GPP_NT_VUT_REF, GPP_NT_CUT_REF)
+  )
+
+build_day_fb <- function(sid, yr) {
+  d <- pop_daily_fb |> filter(site_id == sid, year == yr) |> select(TIMESTAMP, qc_fb, gpp_fb)
+  grid <- tibble(TIMESTAMP = seq(as.Date(sprintf("%d-01-01", yr)), as.Date(sprintf("%d-12-31", yr)), by = "day"))
+  g <- grid |> left_join(d, by = "TIMESTAMP")
+  pass_raw <- qc_passes(g$qc_fb, RULE_QC_DAY)
+  is_fail <- ifelse(is.na(pass_raw), TRUE, !pass_raw) # NA counts as failing, same convention as Step 2
+  tibble(site_id = sid, year = yr, date = g$TIMESTAMP, is_fail = is_fail, gpp_value = g$gpp_fb)
+}
+
+message("Building the fallback-QC full-calendar day grid for ", nrow(site_years_present),
+        " population site-years (R1 basis) -- this takes a minute...")
+day_fb <- purrr::pmap_dfr(site_years_present, function(site_id, year) build_day_fb(site_id, year))
+message("day_fb: ", nrow(day_fb), " rows (site-year x calendar day).")
+
+## ---- R0 (manuscript baseline, VUT only -- the existing i_manuscript column
+## from Step 3) and R1 (R0 + fallback) and R2 (R1 + flat daily allowance).
+site_year_screen_fb <- day_fb |>
+  group_by(site_id, year) |>
+  summarise(
+    expected_days = n(),
+    n_fail_fb = sum(is_fail),
+    longest_fail_run_fb = {
+      r <- rle(is_fail); fr <- r$lengths[r$values]
+      if (length(fr) == 0) 0L else max(fr)
+    },
+    .groups = "drop"
+  ) |>
+  mutate(
+    pass_r1     = n_fail_fb == 0L,
+    pass_r2_g3  = n_fail_fb <= 3L,
+    pass_r2_g7  = n_fail_fb <= 7L,
+    pass_r2_g14 = n_fail_fb <= 14L
+  )
+
+## ---- P99 per site for R3's band, computed from days that pass the daily
+## test (is_fail == FALSE), restricted to years that pass R1; if a site has
+## no R1-passing year at all, computed from all its passing days instead
+## (state which -- p99_basis column below, per the prompt's instruction).
+day_fb_r1 <- day_fb |> left_join(site_year_screen_fb |> select(site_id, year, pass_r1), by = c("site_id", "year"))
+sites_with_r1_year <- site_year_screen_fb |> filter(pass_r1) |> distinct(site_id) |> pull(site_id)
+
+safe_p99 <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) return(NA_real_)
+  as.numeric(quantile(x, 0.99, type = 7))
+}
+
+p99_from_r1_years <- day_fb_r1 |>
+  filter(!is_fail, pass_r1) |>
+  group_by(site_id) |>
+  summarise(p99_r1 = safe_p99(gpp_value), n_r1 = sum(!is.na(gpp_value)), .groups = "drop")
+p99_from_all_passing <- day_fb_r1 |>
+  filter(!is_fail) |>
+  group_by(site_id) |>
+  summarise(p99_all = safe_p99(gpp_value), n_all = sum(!is.na(gpp_value)), .groups = "drop")
+
+p99_tbl <- population |>
+  select(site_id) |>
+  left_join(p99_from_r1_years, by = "site_id") |>
+  left_join(p99_from_all_passing, by = "site_id") |>
+  mutate(
+    has_r1_year = site_id %in% sites_with_r1_year,
+    p99_gpp              = ifelse(has_r1_year, p99_r1, p99_all),
+    n_days_used_for_p99  = ifelse(has_r1_year, n_r1, n_all),
+    p99_basis = ifelse(has_r1_year, "R1-passing years", "all passing days (no R1-passing year available)")
+  ) |>
+  select(site_id, p99_gpp, n_days_used_for_p99, p99_basis)
+
+write_csv(p99_tbl, file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit_population.csv"),
+  notes = sprintf(
+    paste0(
+      "Per-site P99 of gap-filled daily GPP (VUT or CUT, per qc_fallback's gpp_col_used), computed ",
+      "from days passing the fallback 0.25 daily test, in years passing R1; if a site has no ",
+      "R1-passing year, computed from all its passing days instead (p99_basis states which). ",
+      "%d of %d population sites have no R1-passing year and fall back to the all-passing-days basis."
+    ), sum(!p99_tbl$site_id %in% sites_with_r1_year), nrow(p99_tbl)
+  )
+)
+message("Saved: selection_audit_rule_options_p99.csv -- ", length(sites_with_r1_year),
+        " site(s) have >=1 R1-passing year; ", nrow(p99_tbl) - length(sites_with_r1_year),
+        " fall back to the all-passing-days P99 basis.")
+
+## ---- R3: a failing day is "inside the band" (consequential, capped at M)
+## if its gap-filled GPP lies in [0, 25% of site P99]; "outside the band"
+## (always forgiven, unlimited) otherwise. A failing day with NO gpp value
+## at all (missing calendar day) is conservatively treated as inside the
+## band (counts toward M), consistent with this audit's NA-as-failing
+## convention -- we cannot tell whether it would have been near the
+## season-boundary-defining threshold range, so it is not given the benefit
+## of the doubt.
+day_fb_band <- day_fb |>
+  left_join(p99_tbl |> select(site_id, p99_gpp), by = "site_id") |>
+  mutate(
+    in_band_fail  = is_fail & (is.na(gpp_value) | (gpp_value >= 0 & gpp_value <= 0.25 * p99_gpp)),
+    out_band_fail = is_fail & !in_band_fail
+  )
+
+r3_summary <- day_fb_band |>
+  group_by(site_id, year) |>
+  summarise(
+    n_fail_inside_band  = sum(in_band_fail),
+    n_fail_outside_band = sum(out_band_fail),
+    .groups = "drop"
+  ) |>
+  mutate(
+    pass_r3_m0 = n_fail_inside_band <= 0L,
+    pass_r3_m3 = n_fail_inside_band <= 3L
+  )
+
+band_by_month <- day_fb_band |>
+  filter(is_fail) |>
+  mutate(month = lubridate::month(date)) |>
+  group_by(month) |>
+  summarise(n_fail_inside_band = sum(in_band_fail), n_fail_outside_band = sum(out_band_fail), .groups = "drop") |>
+  arrange(month)
+
+write_csv(band_by_month, file.path(TABLES_DIR, "selection_audit_rule_options_r3_band_by_month.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_r3_band_by_month.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv")),
+  notes = "Among ALL failing days (fallback 0.25 daily test) across the population, counted by calendar month: how many fall inside the R3 band (GPP in [0, 25% of site P99], or GPP missing -- consequential, capped at M) vs. outside it (always forgiven)."
+)
+message("Saved: selection_audit_rule_options_r3_band_by_month.csv")
+print(band_by_month)
+
+## ---- Assemble all 7 rule-option pass/fail columns on one per-site-year
+## table: R0 (reuse Step 3's i_manuscript, VUT-only, no fallback), R1, R2 at
+## N=3/7/14, R3 at M=0/3.
+site_year_rule_options <- site_year_screen |>
+  select(site_id, year, pass_r0 = pass_i_manuscript) |>
+  left_join(site_year_screen_fb, by = c("site_id", "year")) |>
+  left_join(r3_summary, by = c("site_id", "year"))
+
+write_csv(site_year_rule_options, file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"),
+                     file.path(TABLES_DIR, "selection_audit_rule_options_qc_fallback.csv"),
+                     file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv")),
+  notes = paste0(
+    "One row per population site-year (same 4562 as selection_audit_site_year_screen.csv -- rule 1 ",
+    "is unchanged). pass_r0 = the manuscript baseline (VUT only, no fallback; identical to that ",
+    "table's pass_i_manuscript). pass_r1 = R0 + per-site VUT/CUT fallback. pass_r2_g3/g7/g14 = R1 ",
+    "+ a flat allowance of up to 3/7/14 failing days per year. pass_r3_m0/m3 = R1 + ignoring ",
+    "failing days outside the P99 band, allowing up to 0/3 remaining (inside-band) failing days."
+  )
+)
+message("Saved: selection_audit_rule_options_site_year.csv")
+
+## ---- Per-site, per-rule: n passing years and the >=5-year gate (rule 4,
+## unchanged), same pattern as Step 3's site_variant.
+rule_cols <- c("pass_r0", "pass_r1", "pass_r2_g3", "pass_r2_g7", "pass_r2_g14", "pass_r3_m0", "pass_r3_m3")
+
+site_rule_option <- site_year_rule_options |>
+  select(site_id, year, all_of(rule_cols)) |>
+  pivot_longer(all_of(rule_cols), names_to = "rule", names_prefix = "pass_", values_to = "pass") |>
+  group_by(site_id, rule) |>
+  summarise(n_passing_years = sum(pass), .groups = "drop") |>
+  mutate(ge5 = n_passing_years >= RULE_MIN_YEARS, ge10_trend = n_passing_years >= 10L) |>
+  left_join(population |> select(site_id, is_long_record, in_gsl62), by = "site_id")
+
+write_csv(site_rule_option, file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv"),
+  notes = "One row per population site x rule option (r0/r1/r2_g3/r2_g7/r2_g14/r3_m0/r3_m3): n_passing_years, the >=5-year gate (rule 4), and a >=10-year 'trend site' flag."
+)
+
+kept_sites_by_rule <- function(r) site_rule_option$site_id[site_rule_option$rule == r & site_rule_option$ge5]
+kept_site_years_by_rule <- function(r) {
+  kept <- kept_sites_by_rule(r)
+  sum(site_year_rule_options[[paste0("pass_", r)]] & site_year_rule_options$site_id %in% kept)
+}
+trend_sites_by_rule <- function(r) site_rule_option$site_id[site_rule_option$rule == r & site_rule_option$ge10_trend]
+
+sites_kept_r0 <- kept_sites_by_rule("r0")
+stopifnot(setequal(sites_kept_r0, sites_kept_i)) # r0 must reproduce Step 3's manuscript rule exactly
+
+non_gsl62_lr_ids <- long_record_pop$site_id[!long_record_pop$in_gsl62]
+stopifnot(length(non_gsl62_lr_ids) == 37L)
+
+rule_option_summary <- purrr::map_dfr(sub("^pass_", "", rule_cols), function(r) {
+  kept <- kept_sites_by_rule(r)
+  recovered_lr <- intersect(kept, non_gsl62_lr_ids)
+  still_lost_lr <- setdiff(non_gsl62_lr_ids, kept)
+  tibble(
+    rule = r,
+    sites_kept = length(kept),
+    site_years_kept = kept_site_years_by_rule(r),
+    trend_sites_kept = length(trend_sites_by_rule(r)),
+    non_gsl62_long_record_recovered = length(recovered_lr),
+    non_gsl62_long_record_recovered_list = paste(sort(recovered_lr), collapse = "; "),
+    non_gsl62_long_record_still_lost = length(still_lost_lr),
+    non_gsl62_long_record_still_lost_list = paste(sort(still_lost_lr), collapse = "; ")
+  )
+})
+
+write_csv(rule_option_summary, file.path(TABLES_DIR, "selection_audit_rule_options_summary.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_summary.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"),
+  notes = "sites_kept/site_years_kept/trend_sites_kept are gated on >=5 / >=10 passing years respectively. non_gsl62_long_record_* is relative to the fixed 37-site population of long-record sites not already in the GSL 62 (selection_audit_population.csv)."
+)
+message("Saved: selection_audit_rule_options_summary.csv")
+print(rule_option_summary |> select(rule, sites_kept, site_years_kept, trend_sites_kept,
+                                     non_gsl62_long_record_recovered, non_gsl62_long_record_still_lost))
+
+## ---- Reasons for long-record sites still lost under every rule tried
+## (loosest = r3_m3 and r2_g14 -- report both since neither strictly nests
+## the other).
+still_lost_everywhere <- Reduce(intersect, list(
+  setdiff(non_gsl62_lr_ids, kept_sites_by_rule("r2_g14")),
+  setdiff(non_gsl62_lr_ids, kept_sites_by_rule("r3_m3"))
+))
+
+still_lost_reason <- purrr::map_dfr(still_lost_everywhere, function(sid) {
+  n_r1  <- site_rule_option$n_passing_years[site_rule_option$site_id == sid & site_rule_option$rule == "r1"]
+  n_g14 <- site_rule_option$n_passing_years[site_rule_option$site_id == sid & site_rule_option$rule == "r2_g14"]
+  n_m3  <- site_rule_option$n_passing_years[site_rule_option$site_id == sid & site_rule_option$rule == "r3_m3"]
+  tibble(
+    site_id = sid, n_passing_years_r1 = n_r1, n_passing_years_r2_g14 = n_g14, n_passing_years_r3_m3 = n_m3,
+    reason = sprintf(
+      "still < %d passing years even with the VUT/CUT fallback and the loosest tolerance tried (R1: %d yr; R2 gap<=14d: %d yr; R3 M<=3: %d yr)",
+      RULE_MIN_YEARS, n_r1, n_g14, n_m3
+    )
+  )
+})
+
+write_csv(still_lost_reason, file.path(TABLES_DIR, "selection_audit_rule_options_still_lost.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_still_lost.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"),
+  notes = "Non-GSL-62 long-record sites that are NOT recovered (not kept at >=5 passing years) under EITHER of the two loosest rules tried (r2_g14, r3_m3)."
+)
+message("Saved: selection_audit_rule_options_still_lost.csv -- ", length(still_lost_everywhere),
+        " long-record site(s) still lost under every rule tried: ",
+        paste(sort(still_lost_everywhere), collapse = ", "))
+
+## ============================================================================
+## Step 9: confirm the GSL 62's own 505 site-years still pass every rule
+## (each rule must CONTAIN the manuscript's set -- the prompt's explicit
+## check, not assumed from the rules' nesting).
+## ============================================================================
+
+gsl62_expanded <- GSL_SITES |>
+  select(site_id, years) |>
+  tidyr::unnest(years) |>
+  rename(year = years)
+stopifnot(nrow(gsl62_expanded) == 505L)
+stopifnot(all(gsl62_expanded$site_id %in% population$site_id))
+
+gsl62_check <- gsl62_expanded |>
+  left_join(site_year_rule_options, by = c("site_id", "year"))
+
+gsl62_check_summary <- tibble(
+  rule = sub("^pass_", "", rule_cols),
+  n_site_years_checked = 505L,
+  n_passing = purrr::map_int(rule_cols, function(rc) sum(gsl62_check[[rc]], na.rm = TRUE)),
+  n_missing_or_failing = purrr::map_int(rule_cols, function(rc) sum(is.na(gsl62_check[[rc]]) | !gsl62_check[[rc]]))
+)
+
+write_csv(gsl62_check_summary, file.path(TABLES_DIR, "selection_audit_rule_options_gsl62_check.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_gsl62_check.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv")),
+  notes = "Confirms all 505 GSL-62 site-years (docs/framework.md's Sites table, via 00_config.R::GSL_SITES) pass each rule option -- i.e. each rule's kept set contains the manuscript's. n_missing_or_failing should be 0 for every rule; if not, this audit's SESSION_LOG entry says so explicitly."
+)
+message("GSL-62 containment check (all should be 0 missing/failing): ")
+print(gsl62_check_summary)
+if (any(gsl62_check_summary$n_missing_or_failing > 0)) {
+  bad_rules <- gsl62_check_summary$rule[gsl62_check_summary$n_missing_or_failing > 0]
+  warning("GSL-62 containment FAILS for rule(s): ", paste(bad_rules, collapse = ", "),
+          " -- see selection_audit_rule_options_gsl62_check.csv and investigate before trusting any recommendation.")
+}
+
+## ============================================================================
+## Step 10: rule 5 (negative GPP) check for every site newly added (relative
+## to the manuscript rule, sites_kept_i/sites_kept_r0) under ANY of the R1-R3
+## rules, using that site's own fallback GPP column.
+## ============================================================================
+
+newly_added_any_rule <- sort(unique(unlist(lapply(
+  sub("^pass_", "", rule_cols)[-1], # all except r0
+  function(r) setdiff(kept_sites_by_rule(r), sites_kept_r0)
+))))
+
+neggpp_check_ro <- pop_daily |>
+  left_join(qc_fallback |> select(site_id, gpp_col_used), by = "site_id") |>
+  filter(site_id %in% newly_added_any_rule) |>
+  mutate(gpp_val = ifelse(gpp_col_used == "GPP_NT_VUT_REF", GPP_NT_VUT_REF, GPP_NT_CUT_REF)) |>
+  group_by(site_id) |>
+  summarise(
+    gpp_col_used = first(gpp_col_used),
+    n_days_gpp_present = sum(!is.na(gpp_val)),
+    n_days_gpp_below_neg1 = sum(gpp_val < RULE_NEGGPP_VAL, na.rm = TRUE),
+    share_gpp_below_neg1 = ifelse(n_days_gpp_present > 0, n_days_gpp_below_neg1 / n_days_gpp_present, NA_real_),
+    fails_rule5 = share_gpp_below_neg1 > RULE_NEGGPP_SHR,
+    .groups = "drop"
+  )
+
+write_csv(neggpp_check_ro, file.path(TABLES_DIR, "selection_audit_rule_options_rule5_check.csv"))
+write_meta(
+  file.path(TABLES_DIR, "selection_audit_rule_options_rule5_check.csv"),
+  input_sources = "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
+  notes = paste0(
+    "Rule 5 (>10% of daily GPP < -1 gC/m2/d) checked over every available daily row, using each ",
+    "site's own fallback GPP column (GPP_NT_VUT_REF or GPP_NT_CUT_REF, per qc_fallback), for every ",
+    "site newly kept under any of R1/R2/R3 that was not already kept under the manuscript rule (R0). ",
+    if (isTRUE(any(neggpp_check_ro$fails_rule5, na.rm = TRUE)))
+      paste0(sum(neggpp_check_ro$fails_rule5, na.rm = TRUE), " site(s) WOULD fail rule 5.")
+    else "No newly-added site fails rule 5.",
+    if (any(is.na(neggpp_check_ro$fails_rule5)))
+      paste0(" ", sum(is.na(neggpp_check_ro$fails_rule5)), " site(s) have no GPP data at all, so rule 5 is undetermined (NA) for them: ",
+             paste(neggpp_check_ro$site_id[is.na(neggpp_check_ro$fails_rule5)], collapse = ", "), ".")
+    else ""
+  )
+)
+message("Saved: selection_audit_rule_options_rule5_check.csv -- ", length(newly_added_any_rule),
+        " newly-added site(s) checked; ", sum(neggpp_check_ro$fails_rule5, na.rm = TRUE), " would fail rule 5.")
+print(neggpp_check_ro)
+
+message("--- 11_selection_audit.R: done (incl. 2026-10-30 selection-rule-options extension) ---")

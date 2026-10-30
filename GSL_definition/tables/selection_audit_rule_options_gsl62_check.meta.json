@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:09Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_rule_options_site_year.csv"
+  ],
+  "notes": "Confirms all 505 GSL-62 site-years (docs/framework.md's Sites table, via 00_config.R::GSL_SITES) pass each rule option -- i.e. each rule's kept set contains the manuscript's. n_missing_or_failing should be 0 for every rule; if not, this audit's SESSION_LOG entry says so explicitly."
+}

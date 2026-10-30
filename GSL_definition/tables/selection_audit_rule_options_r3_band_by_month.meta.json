@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:09Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_rule_options_p99.csv"
+  ],
+  "notes": "Among ALL failing days (fallback 0.25 daily test) across the population, counted by calendar month: how many fall inside the R3 band (GPP in [0, 25% of site P99], or GPP missing -- consequential, capped at M) vs. outside it (always forgiven)."
+}

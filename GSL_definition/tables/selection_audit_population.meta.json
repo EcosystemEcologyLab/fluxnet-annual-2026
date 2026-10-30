@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-30T15:43:15Z",
-  "pipeline_version": "ce33495",
+  "run_datetime_utc": "2026-10-30T17:01:50Z",
+  "pipeline_version": "492e349",
   "input_sources": [
     "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
     "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",

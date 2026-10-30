@@ -1,0 +1,8 @@
+rule,n_site_years_checked,n_passing,n_missing_or_failing
+r0,505,504,1
+r1,505,504,1
+r2_g3,505,505,0
+r2_g7,505,505,0
+r2_g14,505,505,0
+r3_m0,505,505,0
+r3_m3,505,505,0

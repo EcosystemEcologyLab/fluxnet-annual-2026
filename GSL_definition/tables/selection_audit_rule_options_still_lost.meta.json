@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:09Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_rule_options_site_rule.csv"
+  ],
+  "notes": "Non-GSL-62 long-record sites that are NOT recovered (not kept at >=5 passing years) under EITHER of the two loosest rules tried (r2_g14, r3_m3)."
+}

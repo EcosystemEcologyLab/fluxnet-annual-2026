@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-30T15:43:57Z",
-  "pipeline_version": "ce33495",
+  "run_datetime_utc": "2026-10-30T17:02:32Z",
+  "pipeline_version": "492e349",
   "input_sources": [
     "GSL_definition/tables/selection_audit_site_year_screen.csv",
     "GSL_definition/tables/selection_audit_population.csv"

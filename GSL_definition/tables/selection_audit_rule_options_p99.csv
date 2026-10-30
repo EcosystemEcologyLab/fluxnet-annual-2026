@@ -1,0 +1,508 @@
+site_id,p99_gpp,n_days_used_for_p99,p99_basis
+AR-CCg,13.717665,366,R1-passing years
+BR-CST,NA,0,all passing days (no R1-passing year available)
+BR-ITA,9.0355165,1178,all passing days (no R1-passing year available)
+BR-Ji3,NA,0,all passing days (no R1-passing year available)
+BR-Ma2,NA,0,all passing days (no R1-passing year available)
+BR-Npw,NA,0,all passing days (no R1-passing year available)
+BR-Sa1,NA,0,all passing days (no R1-passing year available)
+BR-Sa3,NA,0,all passing days (no R1-passing year available)
+BR-Xpw,9.369630000000004,731,R1-passing years
+CA-Ca1,21.385379999999998,2191,R1-passing years
+CA-Ca2,11.375572000000005,2557,R1-passing years
+CA-Ca3,10.860035,366,R1-passing years
+CA-Cbo,20.34328199999999,1095,R1-passing years
+CA-Gro,11.929348000000001,365,R1-passing years
+CA-HPC,6.599992399999999,222,all passing days (no R1-passing year available)
+CA-LP1,6.257918000000002,365,R1-passing years
+CA-LU1,3.0805713999999984,907,all passing days (no R1-passing year available)
+CA-LU2,3.731160100000001,744,all passing days (no R1-passing year available)
+CA-MA3,10.941282000000001,619,all passing days (no R1-passing year available)
+CA-Man,7.136700999999993,3708,all passing days (no R1-passing year available)
+CA-Mtk,2.4286888,129,all passing days (no R1-passing year available)
+CA-Na1,11.47705999999999,786,all passing days (no R1-passing year available)
+CA-Ojp,6.359240999999999,1096,R1-passing years
+CA-Qc2,11.147622000000002,1055,all passing days (no R1-passing year available)
+CA-Qfo,6.334209600000005,730,R1-passing years
+CA-SCC,5.1323032,2382,all passing days (no R1-passing year available)
+CA-SF1,10.42501499999999,560,all passing days (no R1-passing year available)
+CA-SF2,14.875619999999996,736,all passing days (no R1-passing year available)
+CA-SF3,5.578967099999998,924,all passing days (no R1-passing year available)
+CA-SJ2,2.4851760000000027,731,R1-passing years
+CA-SMC,6.1819068,224,all passing days (no R1-passing year available)
+CA-TP1,9.638888300000005,730,R1-passing years
+CA-TP2,18.674760000000017,843,all passing days (no R1-passing year available)
+CA-TP3,14.098913999999994,3287,R1-passing years
+CA-TP4,14.366144,3653,R1-passing years
+CA-TPD,15.2801,1826,R1-passing years
+CA-TVC,4.5923985,220,all passing days (no R1-passing year available)
+CL-ACF,13.938860000000018,953,all passing days (no R1-passing year available)
+CL-SDF,NA,0,all passing days (no R1-passing year available)
+MX-Aog,12.921224000000002,365,R1-passing years
+MX-Tes,NA,0,R1-passing years
+PR-xGU,NA,0,R1-passing years
+PR-xLA,15.076904000000004,604,all passing days (no R1-passing year available)
+US-A32,17.325300000000006,577,all passing days (no R1-passing year available)
+US-ABa,8.595000200000007,730,R1-passing years
+US-ABb,9.963951999999999,865,all passing days (no R1-passing year available)
+US-ABc,8.7779268,365,R1-passing years
+US-ABd,11.77495,876,all passing days (no R1-passing year available)
+US-Akn,8.456547200000003,365,R1-passing years
+US-AR1,8.708642400000006,730,R1-passing years
+US-AR2,3.595603600000013,365,R1-passing years
+US-ARb,14.656100000000002,591,all passing days (no R1-passing year available)
+US-ARc,12.188685000000001,604,all passing days (no R1-passing year available)
+US-ASH,5.717105999999999,82,all passing days (no R1-passing year available)
+US-ASM,5.8279547,92,all passing days (no R1-passing year available)
+US-Aud,8.135073600000002,2923,R1-passing years
+US-Bar,13.138964000000005,6409,all passing days (no R1-passing year available)
+US-BRG,16.051088,1075,all passing days (no R1-passing year available)
+US-CAK,4.044913299999998,292,all passing days (no R1-passing year available)
+US-CdM,3.1307556000000027,1909,all passing days (no R1-passing year available)
+US-Ced,11.943690000000004,731,R1-passing years
+US-CGG,6.261950800000004,365,R1-passing years
+US-ChR,12.857701000000002,730,R1-passing years
+US-CMW,9.553238299999956,5478,R1-passing years
+US-Cop,1.718674,1443,all passing days (no R1-passing year available)
+US-CRK,13.545359999999963,1113,all passing days (no R1-passing year available)
+US-CS2,16.162331,912,all passing days (no R1-passing year available)
+US-Cst,13.386700000000001,1451,all passing days (no R1-passing year available)
+US-Cwt,22.663264999999992,660,all passing days (no R1-passing year available)
+US-Dix,9.659473199999988,1145,all passing days (no R1-passing year available)
+US-Dk1,8.796568,365,R1-passing years
+US-Dk2,15.28091,1827,R1-passing years
+US-Dk3,15.44887,1096,R1-passing years
+US-EA4,9.452309,1323,all passing days (no R1-passing year available)
+US-EA5,8.712378000000001,615,all passing days (no R1-passing year available)
+US-EA6,3.326805500000001,158,all passing days (no R1-passing year available)
+US-EML,7.278601600000004,4213,all passing days (no R1-passing year available)
+US-Fcr,3.8902225,850,all passing days (no R1-passing year available)
+US-Fmf,6.8798816,365,R1-passing years
+US-Fuf,5.945494400000003,365,R1-passing years
+US-Fwf,4.191087999999998,1095,R1-passing years
+US-GLE,7.939767700000001,730,R1-passing years
+US-Ha1,13.822569999999999,1096,R1-passing years
+US-HB2,12.033669000000003,1462,R1-passing years
+US-HB3,12.094724000000001,1827,R1-passing years
+US-HBK,16.531356000000013,365,R1-passing years
+US-Hn2,3.3928647000000005,802,all passing days (no R1-passing year available)
+US-Hn3,4.264133999999999,304,all passing days (no R1-passing year available)
+US-Ho2,12.355427000000002,1462,R1-passing years
+US-Ho3,13.344587,2982,all passing days (no R1-passing year available)
+US-ICh,4.385781799999998,5678,all passing days (no R1-passing year available)
+US-ICt,5.426245700000001,4608,all passing days (no R1-passing year available)
+US-Jo1,2.490101000000001,1462,R1-passing years
+US-Jo2,3.147898000000001,365,R1-passing years
+US-KFS,8.933674000000005,366,R1-passing years
+US-KLS,16.95282400000001,365,R1-passing years
+US-Kon,19.801797,730,R1-passing years
+US-KS1,8.5992736,330,all passing days (no R1-passing year available)
+US-KS2,9.01694330000001,730,R1-passing years
+US-LS1,8.359422000000002,1461,R1-passing years
+US-LS2,7.4282895,1096,R1-passing years
+US-Me1,3.727536399999998,304,all passing days (no R1-passing year available)
+US-Me3,5.7269892,1775,all passing days (no R1-passing year available)
+US-Me5,6.086228600000002,955,all passing days (no R1-passing year available)
+US-Me6,6.098626800000001,365,R1-passing years
+US-Me7,0.8099129800000004,555,all passing days (no R1-passing year available)
+US-MEF,6.898533500000001,366,R1-passing years
+US-MMS,15.367204000000001,2557,R1-passing years
+US-Mo2,15.361155000000004,366,R1-passing years
+US-MOz,13.780937999999999,2922,R1-passing years
+US-Mpj,4.048354800000003,4017,R1-passing years
+US-MtB,6.787504799999996,4023,all passing days (no R1-passing year available)
+US-NC1,21.784620000000015,731,R1-passing years
+US-NC2,16.977024,365,R1-passing years
+US-NC3,12.856340000000003,731,R1-passing years
+US-NC5,17.065019999999997,231,all passing days (no R1-passing year available)
+US-NGC,5.751387800000009,1135,all passing days (no R1-passing year available)
+US-NR1,7.562729600000003,2557,R1-passing years
+US-NR3,3.159882199999992,3150,all passing days (no R1-passing year available)
+US-Oho,15.138580000000001,731,R1-passing years
+US-ONA,9.096020499999998,1096,R1-passing years
+US-PAS,15.847824999999997,646,all passing days (no R1-passing year available)
+US-PFb,15.095520999999998,110,all passing days (no R1-passing year available)
+US-PFc,6.064388699999999,110,all passing days (no R1-passing year available)
+US-PFf,9.064586799999997,113,all passing days (no R1-passing year available)
+US-PFg,16.03212,91,all passing days (no R1-passing year available)
+US-PFh,23.339199999999998,105,all passing days (no R1-passing year available)
+US-PFi,17.673939999999984,91,all passing days (no R1-passing year available)
+US-PFj,16.64478799999999,108,all passing days (no R1-passing year available)
+US-PFk,14.378975000000002,106,all passing days (no R1-passing year available)
+US-PFL,17.337656,107,all passing days (no R1-passing year available)
+US-PFm,16.707105,116,all passing days (no R1-passing year available)
+US-PFn,17.622,114,all passing days (no R1-passing year available)
+US-PFp,14.823239999999998,116,all passing days (no R1-passing year available)
+US-PFq,15.492476,113,all passing days (no R1-passing year available)
+US-PFt,15.488071999999999,115,all passing days (no R1-passing year available)
+US-Prr,5.4084068,365,R1-passing years
+US-PSH,2.7639501999999996,79,all passing days (no R1-passing year available)
+US-PSL,7.8380714000000005,92,all passing days (no R1-passing year available)
+US-Rls,6.504145200000001,365,R1-passing years
+US-Rms,11.868610000000004,731,R1-passing years
+US-Ro4,16.32638000000001,1461,R1-passing years
+US-Rpf,6.2051788000000005,365,R1-passing years
+US-Rwe,6.645587600000001,1633,all passing days (no R1-passing year available)
+US-Rwf,10.377650000000004,731,R1-passing years
+US-Rws,4.1795476,2192,R1-passing years
+US-Seg,3.5574978000000055,4383,R1-passing years
+US-Ses,1.5795073000000022,2192,R1-passing years
+US-SHC,14.141332000000002,365,R1-passing years
+US-Slt,13.321664,1827,R1-passing years
+US-Sne,6.587707000000001,731,R1-passing years
+US-Snf,10.714306000000002,667,all passing days (no R1-passing year available)
+US-SP1,9.006333,1095,R1-passing years
+US-SRC,NA,0,all passing days (no R1-passing year available)
+US-SRG,7.6835819999999995,2922,R1-passing years
+US-SRM,6.279069800000007,5479,R1-passing years
+US-SRS,5.7405625,2506,all passing days (no R1-passing year available)
+US-SSH,10.977308000000004,1610,all passing days (no R1-passing year available)
+US-Sta,NA,0,all passing days (no R1-passing year available)
+US-Syv,14.915884,6022,all passing days (no R1-passing year available)
+US-TKs,7.429726399999997,2379,all passing days (no R1-passing year available)
+US-TLR,18.80194199999999,292,all passing days (no R1-passing year available)
+US-Ton,9.085723199999993,3654,R1-passing years
+US-Uaf,7.788187200000001,365,R1-passing years
+US-UiD,15.311820000000008,730,R1-passing years
+US-UMd,13.899344000000001,4019,R1-passing years
+US-Var,10.091290000000004,5479,R1-passing years
+US-Vcm,3.9294104,365,R1-passing years
+US-Vcp,8.3603425,1826,R1-passing years
+US-WCr,15.488086000000012,6508,all passing days (no R1-passing year available)
+US-Whs,2.897421600000002,5479,R1-passing years
+US-Wjs,4.8829559999999965,2191,R1-passing years
+US-Wkg,4.893472,7305,R1-passing years
+US-xAB,14.979300000000002,365,R1-passing years
+US-xAE,7.810389200000001,1977,all passing days (no R1-passing year available)
+US-xBL,13.464972000000003,1655,all passing days (no R1-passing year available)
+US-xBN,7.183273799999998,1870,all passing days (no R1-passing year available)
+US-xBR,12.395932000000002,365,R1-passing years
+US-xCL,10.912624000000001,365,R1-passing years
+US-xCP,6.448205199999947,1740,all passing days (no R1-passing year available)
+US-xDC,11.391135999999973,2069,all passing days (no R1-passing year available)
+US-xDJ,5.802144999999999,1992,all passing days (no R1-passing year available)
+US-xDL,15.616245,1532,all passing days (no R1-passing year available)
+US-xGR,19.726214000000002,1783,all passing days (no R1-passing year available)
+US-xHA,15.214012000000002,365,R1-passing years
+US-xHE,5.681282000000007,1711,all passing days (no R1-passing year available)
+US-xJE,11.576380000000013,731,R1-passing years
+US-xJR,2.0265584,365,R1-passing years
+US-xKA,12.130630000000014,731,R1-passing years
+US-xKZ,16.141685000000003,366,R1-passing years
+US-xLE,17.239355,1052,all passing days (no R1-passing year available)
+US-xMB,2.194812,731,R1-passing years
+US-xML,12.425706,1578,all passing days (no R1-passing year available)
+US-xNG,8.488222,1802,all passing days (no R1-passing year available)
+US-xNQ,1.9727915000000003,366,R1-passing years
+US-xNW,5.0397948,1177,all passing days (no R1-passing year available)
+US-xPU,NA,0,all passing days (no R1-passing year available)
+US-xRM,5.7191790000000005,366,R1-passing years
+US-xRN,20.016125000000002,1726,all passing days (no R1-passing year available)
+US-xSB,7.732425400000002,1634,all passing days (no R1-passing year available)
+US-xSC,14.009758000000001,1355,all passing days (no R1-passing year available)
+US-xSE,15.682991999999999,365,R1-passing years
+US-xSJ,9.142327499999993,1666,all passing days (no R1-passing year available)
+US-xSP,NA,0,all passing days (no R1-passing year available)
+US-xSR,3.8954895999999795,1689,all passing days (no R1-passing year available)
+US-xST,13.366512,365,R1-passing years
+US-xTA,14.886335999999993,1447,all passing days (no R1-passing year available)
+US-xTE,NA,0,all passing days (no R1-passing year available)
+US-xTR,16.168161,730,R1-passing years
+US-xUK,14.319465000000001,366,R1-passing years
+US-xUN,13.935925000000001,366,R1-passing years
+US-xWD,9.3288275,1876,all passing days (no R1-passing year available)
+US-xWR,10.657704000000006,365,R1-passing years
+US-xYE,7.6248,1501,all passing days (no R1-passing year available)
+ZA-Uby,10.410085,366,R1-passing years
+ZA-Spk,13.430554000000006,619,all passing days (no R1-passing year available)
+ZA-Jks,9.644327000000002,340,all passing days (no R1-passing year available)
+ZA-BfS,9.31880939999999,1415,all passing days (no R1-passing year available)
+ZA-BfK,7.912605500000001,1606,all passing days (no R1-passing year available)
+KR-WdE,14.108687999999997,1315,all passing days (no R1-passing year available)
+KR-TwC,11.399078,343,all passing days (no R1-passing year available)
+KR-TwB,17.446596,289,all passing days (no R1-passing year available)
+KR-SmM,NA,0,R1-passing years
+KR-ScC,18.562703999999997,1449,all passing days (no R1-passing year available)
+KR-PcD,22.050840000000015,1411,all passing days (no R1-passing year available)
+KR-Kw2,12.191624999999993,1096,R1-passing years
+KR-Kw1,11.892464999999978,1096,R1-passing years
+KR-JjM,15.390640000000001,1381,all passing days (no R1-passing year available)
+KR-HcM,15.120608000000015,365,R1-passing years
+KR-AdC,13.450725999999996,1243,all passing days (no R1-passing year available)
+TH-Mae,NA,0,R1-passing years
+TH-Kog,NA,0,R1-passing years
+RU-Tur,4.38893,101,all passing days (no R1-passing year available)
+RU-SkP,NA,0,all passing days (no R1-passing year available)
+RU-Sk2,9.60899,851,all passing days (no R1-passing year available)
+RU-NeF,12.883820000000004,1061,all passing days (no R1-passing year available)
+RU-NeC,8.449519599999995,944,all passing days (no R1-passing year available)
+RU-NeB,2.7736600000000022,224,all passing days (no R1-passing year available)
+RU-Ege,11.366726,1447,all passing days (no R1-passing year available)
+MY-LHP,NA,0,R1-passing years
+MN-Udg,10.11745860000001,743,all passing days (no R1-passing year available)
+MN-Nkh,7.969087999999999,1096,R1-passing years
+MN-Kbu,4.963204399999999,1097,R1-passing years
+MN-Hst,7.1566924,365,R1-passing years
+KH-Kmp,19.569329,482,all passing days (no R1-passing year available)
+JP-Ynf,12.824240000000005,366,R1-passing years
+JP-Yms,15.436,7801,all passing days (no R1-passing year available)
+JP-Toc,15.502748000000004,365,R1-passing years
+JP-Tmk,19.713232000000005,365,R1-passing years
+JP-Tmd,12.910795999999994,4873,all passing days (no R1-passing year available)
+JP-Tkb,16.526932000000002,357,all passing days (no R1-passing year available)
+JP-Tgf,26.079829000000018,942,all passing days (no R1-passing year available)
+JP-Tef,13.024163000000001,1460,R1-passing years
+JP-Tak,12.704335000000004,1460,R1-passing years
+JP-Ta2,NA,0,R1-passing years
+JP-Srk,14.963459,878,all passing days (no R1-passing year available)
+JP-Spp,13.819807999999998,2922,R1-passing years
+JP-Shn,12.494165000000002,1286,all passing days (no R1-passing year available)
+JP-SMF,14.466944000000005,365,R1-passing years
+JP-Om2,18.194523999999994,1317,all passing days (no R1-passing year available)
+JP-Nuf,15.759617999999996,720,all passing days (no R1-passing year available)
+JP-NsM,16.61088800000001,2192,R1-passing years
+JP-NsC,16.5451,1826,R1-passing years
+JP-Nkm,7.9218907000000005,1300,all passing days (no R1-passing year available)
+JP-MMF,14.86655,731,R1-passing years
+JP-MBF,14.360164,2347,all passing days (no R1-passing year available)
+JP-Kzw,9.676979000000001,366,R1-passing years
+JP-Khw,NA,0,R1-passing years
+JP-Fmt,NA,0,all passing days (no R1-passing year available)
+JP-Fjy,14.368954000000002,5479,R1-passing years
+JP-Fhk,17.68055,3651,R1-passing years
+JP-Api,14.355395999999995,1095,R1-passing years
+ID-Pag,NA,0,R1-passing years
+ID-PaD,NA,0,R1-passing years
+ID-PaB,NA,0,R1-passing years
+CN-Lsh,16.000384000000007,1460,all passing days (no R1-passing year available)
+CN-HaM,9.060195499999999,1096,R1-passing years
+SE-Svb,12.881240000000014,731,R1-passing years
+SE-Nor,13.105139999999999,1096,R1-passing years
+SE-Htm,21.825704999999992,1096,R1-passing years
+NO-Hur,11.150956,432,all passing days (no R1-passing year available)
+NL-Loo,10.808866999999996,3652,R1-passing years
+IT-TrF,10.177711,730,R1-passing years
+IT-Tor,9.083434999999996,2191,R1-passing years
+IT-SR2,15.255694999999992,1096,R1-passing years
+IT-Ren,13.896724000000003,365,R1-passing years
+IT-Noe,9.160110000000007,366,R1-passing years
+IT-Niv,5.181440799999999,725,all passing days (no R1-passing year available)
+IT-MBo,14.604800000000001,1826,R1-passing years
+IT-Lsn,10.571280000000002,1461,R1-passing years
+IT-Cp2,13.468943999999999,3437,all passing days (no R1-passing year available)
+IT-BFt,13.927125,1826,R1-passing years
+GL-ZaH,2.5019111999999986,487,all passing days (no R1-passing year available)
+GL-Dsk,6.137879000000002,366,R1-passing years
+GF-Guy,NA,0,R1-passing years
+FR-Tou,10.438057999999995,1095,R1-passing years
+FR-Pue,9.560428099999978,3652,R1-passing years
+FR-Mej,15.300790000000001,1827,R1-passing years
+FR-Lus,17.92648,365,R1-passing years
+FR-Lqu,12.989130000000007,366,R1-passing years
+FR-Hes,17.867723999999995,3287,R1-passing years
+FR-Fon,14.178590000000005,731,R1-passing years
+FR-FBn,10.993860000000002,1461,R1-passing years
+FR-CLt,12.767112,1817,all passing days (no R1-passing year available)
+FR-Bil,14.376407999999994,732,R1-passing years
+FI-Var,7.045794900000004,2192,R1-passing years
+FI-Sod,8.2746254,599,all passing days (no R1-passing year available)
+FI-Let,13.351653999999998,4810,all passing days (no R1-passing year available)
+FI-Ken,6.9918280000000035,366,R1-passing years
+FI-Hyy,11.187319999999993,2191,R1-passing years
+FI-Ant,16.343211999999998,355,all passing days (no R1-passing year available)
+ES-LMa,8.821506200000007,1462,R1-passing years
+DK-Sor,19.861639999999987,3287,R1-passing years
+DK-RCW,15.704248000000002,365,R1-passing years
+DK-Gds,12.550190000000004,590,all passing days (no R1-passing year available)
+DE-Tha,12.131832,4747,R1-passing years
+DE-RuR,17.561370000000025,731,R1-passing years
+DE-Msr,17.120576000000014,365,R1-passing years
+DE-RuW,20.775228000000006,4159,all passing days (no R1-passing year available)
+DE-Hzd,17.726680000000002,365,R1-passing years
+DE-HoH,20.95051000000006,1460,R1-passing years
+DE-Har,12.927328000000001,365,R1-passing years
+DE-Hai,15.310934999999997,2558,R1-passing years
+DE-Gwg,19.196812,789,all passing days (no R1-passing year available)
+DE-GsB,13.496222,1827,R1-passing years
+DE-Gri,15.57187899999997,3652,R1-passing years
+DE-Fen,16.433120000000052,366,R1-passing years
+CZ-Lnz,16.574019000000018,2192,R1-passing years
+CZ-BK1,18.43714000000003,731,R1-passing years
+CH-Dav,11.56179800000002,5112,R1-passing years
+CD-Ygb,NA,0,all passing days (no R1-passing year available)
+BE-Vie,13.365156000000004,365,R1-passing years
+BE-Maa,8.569412800000002,2557,R1-passing years
+BE-Dor,16.576985000000004,2192,R1-passing years
+BE-Bra,13.07556399999999,1095,R1-passing years
+VU-Coc,NA,0,R1-passing years
+ML-Kem,14.680330000000005,366,R1-passing years
+KE-Kpt,12.134314000000003,1462,all passing days (no R1-passing year available)
+KE-Chk,4.987258999999998,418,all passing days (no R1-passing year available)
+ID-JOP,NA,0,all passing days (no R1-passing year available)
+HK-MPM,11.87268,916,all passing days (no R1-passing year available)
+CR-AqC,NA,0,R1-passing years
+CN-Sb2,17.04424999999999,1095,R1-passing years
+CN-Sb1,20.304222,1095,R1-passing years
+BW-Nxr,NA,0,all passing days (no R1-passing year available)
+BJ-Nhu,11.463,731,R1-passing years
+BJ-Bfg,14.066182000000005,2238,all passing days (no R1-passing year available)
+ZM-Mon,9.032067399999995,670,all passing days (no R1-passing year available)
+UK-HgF,16.75259,591,all passing days (no R1-passing year available)
+UK-Gwr,8.8993856,365,R1-passing years
+UK-Gnn,4.7587812000000005,365,R1-passing years
+UK-GaB,5.765758400000001,365,R1-passing years
+UK-Cvn,13.141490000000005,471,all passing days (no R1-passing year available)
+UK-CCr,7.627940899999998,1024,all passing days (no R1-passing year available)
+UK-BnB,4.603918800000001,365,R1-passing years
+UK-Ags,12.152487999999996,505,all passing days (no R1-passing year available)
+SN-Dhr,11.809316000000003,365,R1-passing years
+SE-Ros,9.149843500000003,366,R1-passing years
+SD-Dem,7.770819000000003,831,all passing days (no R1-passing year available)
+RU-Ha1,7.183957600000001,605,all passing days (no R1-passing year available)
+RU-Fyo,12.95928,1461,R1-passing years
+RU-Fy3,19.846635,614,all passing days (no R1-passing year available)
+RU-Fy2,13.566550000000003,366,R1-passing years
+PA-SPs,NA,0,R1-passing years
+PA-SPn,NA,0,all passing days (no R1-passing year available)
+NL-Vkp,13.652318000000001,2923,R1-passing years
+NL-Hrw,15.489063999999999,2693,all passing days (no R1-passing year available)
+IT-SRo,9.8478852,365,R1-passing years
+IT-Ro2,14.762463999999998,1095,R1-passing years
+IT-Ro1,11.70832,730,R1-passing years
+IT-PT1,15.195555999999993,945,all passing days (no R1-passing year available)
+IT-NiG,7.224256500000008,730,R1-passing years
+IT-MtP,8.327547500000016,366,R1-passing years
+IT-MtM,13.010780000000004,731,R1-passing years
+IT-Lav,15.152587999999998,2558,R1-passing years
+IT-Cpz,10.85400000000001,365,R1-passing years
+IT-CA3,15.362328000000002,989,all passing days (no R1-passing year available)
+IT-CA1,12.603204999999992,1164,all passing days (no R1-passing year available)
+IT-Bsn,16.359755999999997,394,all passing days (no R1-passing year available)
+IT-BsB,19.987027999999995,1313,all passing days (no R1-passing year available)
+IT-Arz,13.565667999999993,2687,all passing days (no R1-passing year available)
+IL-Yat,5.249643,1827,R1-passing years
+IL-RmH,18.699757999999996,298,all passing days (no R1-passing year available)
+GH-Ank,NA,0,all passing days (no R1-passing year available)
+FR-Nzn,15.90768,3029,all passing days (no R1-passing year available)
+FR-Mau,10.063112,365,R1-passing years
+FR-LBr,12.340587999999999,1825,R1-passing years
+FI-Rk2,15.016072999999995,1320,all passing days (no R1-passing year available)
+ES-Yst,7.121618799999999,1700,all passing days (no R1-passing year available)
+ES-VDA,8.52565559999999,857,all passing days (no R1-passing year available)
+ES-TzM,11.714740000000003,1128,all passing days (no R1-passing year available)
+ES-Srn,5.275517499999999,366,R1-passing years
+ES-Pzb,7.109208800000001,365,R1-passing years
+ES-Mzn,6.986808000000001,579,all passing days (no R1-passing year available)
+ES-MtN,6.906536000000002,211,all passing days (no R1-passing year available)
+ES-MtB,5.948717000000001,731,R1-passing years
+ES-Mcd,11.409709999999993,1096,R1-passing years
+ES-Ln2,0.5921845800000002,192,all passing days (no R1-passing year available)
+ES-LgS,4.040840800000003,365,R1-passing years
+ES-LM2,9.69598399999999,1097,R1-passing years
+ES-LM1,9.625737300000006,1462,R1-passing years
+ES-LJu,NA,0,R1-passing years
+ES-Hen,7.397556500000003,366,R1-passing years
+ES-HeB,6.9452616000000065,365,R1-passing years
+ES-HdD,15.93107799999997,279,all passing days (no R1-passing year available)
+ES-Gdn,7.2498098,552,all passing days (no R1-passing year available)
+ES-Dnn,3.530520299999999,160,all passing days (no R1-passing year available)
+ES-Crg,8.3418638,1027,all passing days (no R1-passing year available)
+ES-Cnd,NA,0,all passing days (no R1-passing year available)
+ES-Amo,NA,0,R1-passing years
+ES-Agu,1.9058564000000002,365,R1-passing years
+ES-Abr,8.080501300000002,730,R1-passing years
+EE-Stg,11.939400000000004,365,R1-passing years
+DK-Eng,7.775575999999998,1120,all passing days (no R1-passing year available)
+DE-RuC,11.012851999999995,1095,R1-passing years
+DE-Obe,15.056200000000002,365,R1-passing years
+DE-Lnf,16.305243999999995,3289,R1-passing years
+DE-Lkb,5.9595195000000025,1356,all passing days (no R1-passing year available)
+DE-Etn,18.884807,230,all passing days (no R1-passing year available)
+CZ-Stn,15.844074999999993,1096,R1-passing years
+CZ-RAJ,11.7789,1827,R1-passing years
+CZ-LnG,15.452927999999993,1097,R1-passing years
+CZ-BK2,12.201851999999999,2099,all passing days (no R1-passing year available)
+CH-Rtb,12.649822999999998,3652,R1-passing years
+CH-Rh2,19.627120000000016,366,R1-passing years
+CH-Rh1,15.240000000000002,731,R1-passing years
+CH-Oe3,15.267775,1826,R1-passing years
+CH-Oe1,15.915304,730,R1-passing years
+CH-Lae,14.413279999999995,2191,R1-passing years
+CH-Fru,17.949306000000004,730,R1-passing years
+CH-Frk,7.9962558999999995,482,all passing days (no R1-passing year available)
+CH-Crs,15.783510000000003,366,R1-passing years
+CH-Cha,20.06225,3651,R1-passing years
+CH-Aws,17.43276000000001,1461,R1-passing years
+CG-Tch,10.196449999999999,851,all passing days (no R1-passing year available)
+BE-Lcr,16.458612000000002,365,R1-passing years
+AT-Zoe,11.369646000000003,2288,all passing days (no R1-passing year available)
+AT-Neu,23.36334000000001,2921,R1-passing years
+AT-Mmg,9.467162500000004,1284,all passing days (no R1-passing year available)
+CN-You,NA,0,R1-passing years
+CN-Yan,5.6931728,848,all passing days (no R1-passing year available)
+CN-YaS,5.505442499999998,1096,R1-passing years
+CN-Xi2,6.756715500000004,366,R1-passing years
+CN-Sdq,6.887102500000001,1826,R1-passing years
+CN-Qng,NA,0,all passing days (no R1-passing year available)
+CN-Mxn,NA,0,all passing days (no R1-passing year available)
+CN-Jng,NA,0,R1-passing years
+CN-HeM,6.8168650000000035,731,R1-passing years
+CN-Ha2,8.764325200000014,2365,all passing days (no R1-passing year available)
+CN-GuT,7.050950099999989,958,all passing days (no R1-passing year available)
+CN-Erg,6.8185448000000015,365,R1-passing years
+CN-Dzo,11.564712,365,R1-passing years
+CN-Du2,7.726573000000003,366,R1-passing years
+CN-Dsh,6.849218300000003,2982,all passing days (no R1-passing year available)
+CN-Din,12.000160000000022,2638,all passing days (no R1-passing year available)
+CN-Dda,2.4359412000000007,365,R1-passing years
+CN-Dan,4.483186000000006,731,R1-passing years
+CN-BeO,13.365441,730,R1-passing years
+CN-Ash,12.050290000000007,2192,R1-passing years
+CN-Aro,9.392376000000002,1461,R1-passing years
+AU-Ya1,11.291610000000006,366,R1-passing years
+NZ-ADw,16.823220000000013,1461,R1-passing years
+AU-Lox,14.139664,295,all passing days (no R1-passing year available)
+AU-GWW,3.9129883000000003,1828,R1-passing years
+AU-Boy,5.421814000000001,366,R1-passing years
+NZ-ScF,13.328204999999999,1096,R1-passing years
+AU-Wgt,8.4833679,382,all passing days (no R1-passing year available)
+NZ-Lau,15.132740000000002,366,R1-passing years
+AU-Sam,11.513718000000004,730,R1-passing years
+NZ-Oxf,11.082519999999999,1096,R1-passing years
+AU-Whr,5.719796800000001,365,R1-passing years
+NZ-BFm,15.856539000000001,730,R1-passing years
+AU-Col,7.388269500000003,778,all passing days (no R1-passing year available)
+AU-RDF,NA,0,all passing days (no R1-passing year available)
+AU-Tum,17.296032,6600,all passing days (no R1-passing year available)
+NZ-Cla,19.704146,855,all passing days (no R1-passing year available)
+AU-Otw,14.877456000000002,1128,all passing days (no R1-passing year available)
+AU-Ade,10.636410999999988,560,all passing days (no R1-passing year available)
+AU-ASM,4.853179199999999,3287,R1-passing years
+AU-Lit,10.584055000000019,730,R1-passing years
+AU-Rig,8.166416000000005,731,R1-passing years
+AU-Fog,NA,0,all passing days (no R1-passing year available)
+AU-Rob,NA,0,R1-passing years
+AU-DaS,10.608621999999999,1827,R1-passing years
+AU-DaP,NA,0,R1-passing years
+AU-Dry,8.177662000000012,1461,R1-passing years
+AU-TTE,4.038924499999992,2556,R1-passing years
+AU-Wel,10.9661,701,all passing days (no R1-passing year available)
+AU-Emr,5.4409096,865,all passing days (no R1-passing year available)
+AU-Ya2,13.071100000000015,366,R1-passing years
+AU-Gin,4.278195,366,R1-passing years
+AU-Lon,5.578562000000016,731,R1-passing years
+AU-Stp,NA,0,R1-passing years
+NZ-ADd,18.613585999999955,1095,R1-passing years
+AU-Cow,NA,0,R1-passing years
+AU-How,11.68886400000001,4019,R1-passing years
+AU-Ctr,NA,0,R1-passing years
+AU-Cum,9.855163200000002,3653,R1-passing years
+AU-Sil,9.259300000000003,365,R1-passing years
+AU-Wom,13.051820999999993,3862,all passing days (no R1-passing year available)
+AU-Ync,5.5785560000000025,1461,R1-passing years
+AU-Wac,12.345496000000011,1057,all passing days (no R1-passing year available)
+NZ-BFu,14.121646000000002,724,all passing days (no R1-passing year available)
+AU-Sno,12.45184800000002,453,all passing days (no R1-passing year available)
+AU-Fle,8.432032499999998,1096,R1-passing years
+AU-Wrr,17.449800999999997,2274,all passing days (no R1-passing year available)
+AU-Cpr,3.6338544000000006,3653,R1-passing years

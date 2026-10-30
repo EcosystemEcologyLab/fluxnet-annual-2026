@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T17:03:09Z",
+  "pipeline_version": "492e349",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_rule_options_site_year.csv"
+  ],
+  "notes": "One row per population site x rule option (r0/r1/r2_g3/r2_g7/r2_g14/r3_m0/r3_m3): n_passing_years, the >=5-year gate (rule 4), and a >=10-year 'trend site' flag."
+}

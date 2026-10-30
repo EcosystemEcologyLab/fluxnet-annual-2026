@@ -42,6 +42,14 @@ years rather than the whole site — `docs/selection_audit_2026-10-30.md`
 `figures/selection_audit_long_record_variants.png`). It does not change the 62-site analysis
 above.
 
+A follow-on, also read-only, **selection rule options** task (2026-10-30) picks a specific
+candidate rule: a per-site VUT/CUT QC fallback (as `scripts/04_qc.R` already uses) crossed with
+a flat per-year failing-day allowance or a GPP-band-based allowance, recommending the
+least-relaxed option that recovers every recoverable long-record site while still containing all
+505 GSL-62 site-years — `docs/selection_rule_options_2026-10-30.md` (extends
+`code/11_selection_audit.R`'s Steps 8-10, `tables/selection_audit_rule_options_*.csv`). Stops for
+a decision; no rule has been applied to the 62-site analysis.
+
 The Stage 2 open decisions (year screening, negative-GPP treatment, `>` vs. `>=`, GPP variant)
 were made by Dave without Tash's input, recorded in `docs/framework.md`'s "Open decisions
 (resolved)" section and as named switches in `code/00_config.R` — subject to revision if Tash's
@@ -77,6 +85,7 @@ the order `code/10_supplementary.R` builds them in:
 - `docs/` — `framework.md` (verbatim), `methods_memo.md` (every stage's record),
   `reproduction_report.md` (Stage 2's match checks), `report_back_*.md` (per-pass results),
   `data_and_code_availability.md` (snapshot/DOI/Supplemental Data notes for submission),
-  `selection_audit_*.md` (site-selection audit reports, independent of the 62-site analysis)
+  `selection_audit_*.md`/`selection_rule_options_*.md` (site-selection audit and rule-options
+  reports, independent of the 62-site analysis)
 - `logs/` — `exclusion_log.csv`/`unknown_log.csv` for this side project (gitignored, same
   convention as repo-root `outputs/`)

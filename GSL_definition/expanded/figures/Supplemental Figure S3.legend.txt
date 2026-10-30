@@ -1,0 +1,3 @@
+Supplemental Figure S3. The nested comparison: skewness (a), T95 (b), and sensitivity at Z17
+(c) for the GSL 62 (grey) overlaid on the rest of the expanded set (blue, non-62 sites only).
+Headline numbers for both sets are in tables/S3_headline.csv.

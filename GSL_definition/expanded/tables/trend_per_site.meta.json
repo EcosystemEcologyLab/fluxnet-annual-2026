@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-30T18:23:44Z",
-  "pipeline_version": "2b4258b",
+  "run_datetime_utc": "2026-10-30T18:34:43Z",
+  "pipeline_version": "dfc6983",
   "input_sources": [
     "GSL_definition/expanded/tables/trend_sweep.csv"
   ],

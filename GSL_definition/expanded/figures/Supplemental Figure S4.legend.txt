@@ -1,0 +1,4 @@
+Supplemental Figure S4. Per-site GSL trends, expanded trend sites (>=10 years, n = 67), sorted
+by skewness (the expanded-set analogue of the main-paper Figure 3a). Grey bar = 95% CI of the
+trend at Z17; coloured bar (by group) = range of trend estimates across 5-20% of P99; black
+circle = trend at Z17; red triangle = trend at T95.

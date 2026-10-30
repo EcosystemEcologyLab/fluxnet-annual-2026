@@ -32,11 +32,13 @@ site_meta <- exp_sites |> select(site_id, group, location_lat) |>
 ols_site <- function(d, xcol, ycol) {
   d <- d[!is.na(d[[xcol]]) & !is.na(d[[ycol]]), ]
   if (nrow(d) < 3 || length(unique(d[[xcol]])) < 2) {
-    return(tibble(slope = NA_real_, se = NA_real_, p_value = NA_real_, n = nrow(d)))
+    return(tibble(slope = NA_real_, se = NA_real_, p_value = NA_real_, ci_lo = NA_real_, ci_hi = NA_real_, n = nrow(d)))
   }
   fit <- lm(d[[ycol]] ~ d[[xcol]])
   co <- summary(fit)$coefficients
-  tibble(slope = unname(co[2, 1]), se = unname(co[2, 2]), p_value = unname(co[2, 4]), n = nrow(d))
+  ci <- suppressWarnings(confint(fit, level = 0.95)[2, ])
+  tibble(slope = unname(co[2, 1]), se = unname(co[2, 2]), p_value = unname(co[2, 4]),
+         ci_lo = unname(ci[1]), ci_hi = unname(ci[2]), n = nrow(d))
 }
 
 #' Pooled mixed-model slope of y on x across sites, random intercept+slope

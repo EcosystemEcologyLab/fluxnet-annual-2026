@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-30T18:38:47Z",
+  "pipeline_version": "dfc6983",
+  "input_sources": [
+    "GSL_definition/expanded/tables/fine_grid_summary.csv",
+    "GSL_definition/expanded/tables/derived_site.csv",
+    "GSL_definition/expanded/tables/trend_per_site.csv"
+  ],
+  "notes": "Scope reduction documented: no full GPP_DT_REF AR(1) pooled-trend refit (see docs/methods_memo.md)."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T18:38:44Z",
+  "pipeline_version": "dfc6983",
+  "input_sources": [
+    "GSL_definition/expanded/tables/sites.csv",
+    "GSL_definition/expanded/tables/site_years.csv"
+  ],
+  "notes": ""
+}

@@ -1,0 +1,8 @@
+Supplemental Figure S2. Bounds-check spread (GSL if every QC-failing day is forced above
+threshold, minus GSL if every such day is forced below -- algebraically exactly n_fail_days,
+0-14 by rule 4's R2 N=14 construction), at Z17 and T95, across all expanded-set site-years.
+Panel a: frequency polygon (Z17 black, T95 red) -- the two lines coincide exactly, because
+n_fail_days (QC pass/fail) does not depend on which GPP threshold is being tested, so the
+spread distribution is identical at Z17 and T95 by construction, not a plotting error.
+Panel b: the 15 sites with the largest MEAN spread at Z17, by group (flagged as most
+sensitive to the QC-failing-day treatment).

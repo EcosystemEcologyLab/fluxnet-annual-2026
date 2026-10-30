@@ -1,0 +1,4 @@
+Supplemental Figure S1. Site (a) and site-year (b) counts by functional group, GSL 62 vs
+the expanded set (151 sites).
+12 of 151 expanded sites are gated on the CUT QC/GPP fallback (never VUT): AU-TTE, AU-Tum, CA-Ca3, CA-LP1, CA-Ojp, DE-Lnf, FR-Hes, US-Ho2, US-NR1, US-Syv, US-Uaf, US-Whs.
+32 long-record sites (>=15yr, 12 months/yr) not in the GSL 62 are recovered: AU-Tum, BE-Bra, BE-Vie, CA-Ca3, CA-Cbo, CA-LP1, CA-TP1, CH-Fru, CZ-BK1, CZ-Stn, DE-Lnf, DE-Obe, FR-FBn, FR-Hes, IT-Ren, JP-Api, JP-Tak, JP-Tef, JP-Yms, RU-Fyo, US-Bar, US-GLE, US-Ha1, US-Ho2, US-Kon, US-NC2, US-NR1, US-SP1, US-Syv, US-Uaf, US-Vcm, US-Whs.

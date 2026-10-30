@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-30T18:23:06Z",
-  "pipeline_version": "2b4258b",
+  "run_datetime_utc": "2026-10-30T18:34:05Z",
+  "pipeline_version": "dfc6983",
   "input_sources": [
     "GSL_definition/expanded/tables/derived_site_year.csv",
     "GSL_definition/expanded/tables/annual_inputs.csv",

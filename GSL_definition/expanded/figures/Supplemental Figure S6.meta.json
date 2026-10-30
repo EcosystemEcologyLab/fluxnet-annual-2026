@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T18:38:47Z",
+  "pipeline_version": "dfc6983",
+  "input_sources": [
+    "GSL_definition/expanded/tables/carbon_gain_pooled.csv",
+    "GSL_definition/expanded/tables/carbon_gain_data.csv"
+  ],
+  "notes": ""
+}

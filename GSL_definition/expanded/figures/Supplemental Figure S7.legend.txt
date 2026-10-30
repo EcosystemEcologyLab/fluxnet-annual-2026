@@ -1,0 +1,2 @@
+Supplemental Figure S7. GSL against the target included-GPP fraction (0.80-0.99), one line
+per site (all 151, main variant), coloured by functional group.

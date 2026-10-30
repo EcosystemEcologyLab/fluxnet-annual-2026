@@ -56,6 +56,12 @@ l_skewness <- function(x) {
 #' Kelly's coefficient of skewness: (P90 + P10 - 2*P50) / (P90 - P10).
 kelly_skewness <- function(x) {
   x <- x[!is.na(x)]
+  if (length(x) == 0) return(NA_real_) # quantile() on an empty vector returns NA, not an error --
+                                         # denom would then be NA and `if (denom == 0)` would abort
+                                         # with "missing value where TRUE/FALSE needed". Found via
+                                         # GSL_definition/expanded/ (CA-TP1 has GPP_NT_REF data but
+                                         # zero non-NA GPP_DT_REF); none of the 62-site project's own
+                                         # sites hit this, so it was previously unguarded.
   q <- quantile(x, c(0.10, 0.50, 0.90), type = 7, names = FALSE)
   denom <- q[3] - q[1]
   if (denom == 0) return(NA_real_)

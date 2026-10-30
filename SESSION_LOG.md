@@ -4,6 +4,19 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL expanded-site analysis, session 2a: something went wrong (fixed)
+
+After the session 2a "done" commit below, a clean-room full-pipeline rerun (`rm -rf tables/` before
+regenerating `01_select.R` through `06_checks.R`) was found to have deleted
+`07_checks_session1.R`'s own output tables (`checks_c1_*`/`c2_*`/`c3_*`/`c4_*`, 17 CSVs + their
+`.meta.json` companions) — that script is a separate, standalone deliverable from the prior
+session and was correctly left out of this session's rerun scope, but the directory wipe removed
+its outputs as an unintended side effect. Restored byte-identical from the pre-session-2a commit
+(`ab5090b`) and committed separately (`28a467b`). No other files were affected — confirmed via
+`git status` that the rest of the restore touched only those 34 files.
+
+---
+
 ## 2026-10-30 — GSL expanded-site analysis, session 2a: done
 
 Full prompt: `logs/prompts/2026-10-30_gsl_expanded_session2a.md`. Full results:

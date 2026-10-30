@@ -1,0 +1,9 @@
+Figure 3. Consequences for GSL trends vs. sampling uncertainty (main run: GPP_NT_VUT_REF,
+negative GPP set to 0, year screening d80, GSL counts GPP > T).
+Trend sites: 21 sites with >= 10 years after screening (unchanged from the 
+framework's 21, since d80 screening keeps all 505 site-years -- see docs/methods_memo.md).
+Threshold range: 5-20% of P99 (framework default).
+Panel a: one row per site, sorted by skewness. Pale grey bar = 95% CI of the trend at Z17's threshold (10% of P99); colored bar (by functional group) = range of trend estimates across 5-20% of P99; circle = trend at Z17; diamond = trend at T95; vertical line at zero.
+Panel b: ratio of the threshold-range bar's width to the Z17 CI's width, vs. skewness, by group.
+Of the 21 trend sites: 6 have a sign change in the trend across 5-20% of P99, 6 have a 
+significance change (p<0.05 threshold), 11 have either.

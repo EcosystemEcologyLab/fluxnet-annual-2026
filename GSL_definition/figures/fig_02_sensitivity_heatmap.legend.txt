@@ -1,0 +1,7 @@
+Figure 2. Where threshold sensitivity sits across all 62 sites (main run: GPP_NT_VUT_REF,
+negative GPP set to 0, year screening d80, GSL counts GPP > T).
+Panel a: skewness (continuous, viridis) and functional group (categorical) per site, same row order as panels b/c (ascending skewness bottom to top).
+Panel b: heat map of local sensitivity (change in mean GSL per 1% of P99, centered difference over +/-0.05% of P99), 62 sites x fine-grid thresholds (0.1-35% of P99, log axis). Vertical black line at 10% of P99 (Z17); black dot per row at that site's own T95.
+Panel c: sensitivity at Z17's threshold (circle) and at T95 (triangle), joined by a segment.
+Panel d: median local sensitivity per threshold, by skewness third (low/middle/high, boundaries 0.63 and 0.88 per docs/framework.md). Dashed line at 10% of P99 (Z17).
+Sites per skewness third: low = 21, middle = 20, high = 21 (total 62).

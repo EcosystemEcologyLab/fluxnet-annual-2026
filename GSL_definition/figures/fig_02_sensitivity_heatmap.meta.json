@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T04:08:07Z",
+  "pipeline_version": "76482da",
+  "input_sources": [
+    "GSL_definition/tables/derived_site.csv",
+    "GSL_definition/data/fine_grid.rds"
+  ],
+  "notes": "62 sites, skewness order. Terciles: low=21, middle=20, high=21."
+}

@@ -1,0 +1,10 @@
+Figure 1. Mechanism at two representative sites (main run: GPP_NT_VUT_REF, negative GPP
+set to 0, year screening d80, GSL counts GPP > T).
+Low-third site: JP-Fjy, skewness = 0.5123.
+High-third site: CA-Ca2, skewness = 1.3043.
+AU-ASM was excluded from consideration, per the framework.
+Panel a: daily GPP_NT_VUT_REF (negative values set to 0) for each site's median-GSL year (dark line; GSL = days with GPP > threshold at 10% of P99), other screened years in grey. Dashed lines at 5%, 10% (Z17) and 20% of P99, and at each site's own T95.
+JP-Fjy T95 = 15.4% of P99.
+CA-Ca2 T95 = 6.4% of P99.
+Panel b: overlaid daily-GPP density (solid, left axis, % of P99) and mean GSL vs. threshold (dotted, right axis) for both sites, capped at 60% of P99 for display.
+Change in mean GSL from 5% to 10% of P99 (negative = fewer days qualify at the higher threshold): JP-Fjy = -26.47 days, CA-Ca2 = -53.43 days.

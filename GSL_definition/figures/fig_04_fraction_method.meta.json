@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-30T04:11:10Z",
+  "pipeline_version": "76482da",
+  "input_sources": [
+    "GSL_definition/tables/derived_site.csv",
+    "GSL_definition/data/fraction_sweep.rds",
+    "GSL_definition/data/daily_extract.rds"
+  ],
+  "notes": "Median common-unit sensitivity: Z17=11.085, T95=8.290."
+}

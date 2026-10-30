@@ -4,6 +4,105 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — QC threshold semantics fix: finished, merged to main
+
+Closes out the task (`logs/prompts/2026-10-29_qc_semantics_fix.md`,
+`logs/prompts/2026-10-29_qc_semantics_fix_finish.md`). Branch `qc-semantics-fix` merged to
+`main` (merge commit `09e621c`, fast-forward-free merge, no conflicts) after every check 6
+item passed.
+
+### Step 2 — `qc_unknown` rows and site coverage, by resolution
+
+From the post-cleanup `*_qc` tables (counts below are also the final, merged ones):
+
+| Resolution | Total kept rows | `qc_unknown` rows | % unknown | Sites covered |
+|---|---|---|---|---|
+| annual | 41,303 | 36,928 | 89.4% | 781 |
+| monthly | 491,578 | 430,113 | 87.5% | 781 |
+| weekly | 3,603 | 2,340 | 65.0% | 1 |
+| daily | 14,884,819 | 13,047,328 | 87.7% | 781 |
+
+Sanity-checked against the raw pre-filter tables: only ~20% of annual rows (and similarly low
+shares at monthly/daily) have a non-NA value in *either* `NEE_VUT_REF_QC` or `NEE_CUT_REF_QC` at
+all — most individual records at a QC-bearing site still lack a QC value for that specific
+row/year/day. The high `qc_unknown` share is a real property of the extracted data's row-level
+sparsity, not an artefact of the fix. Weekly's single-site coverage reflects weekly not being in
+`FLUXNET_EXTRACT_RESOLUTIONS`'s default extraction list (`y m d`) — weekly data is barely present
+at all, independent of this fix.
+
+### Cleanups (step 2a/2b of the finish prompt)
+
+- `scripts/04_qc.R`: replaced the inlined `p_gapfilled > (1 - threshold)` comparison with a
+  direct `qc_val < threshold` (selecting the row's own gating QC value via the existing
+  `case_when`), dropping `p_gapfilled` — confirmed by `command grep` that nothing downstream
+  reads it. Re-verified against the same synthetic-table smoke test as the original fix: identical
+  `qc_unknown`/`qc_flagged` output.
+- `R/site_annual_fluxes.R` now sources `R/qc.R` itself (guarded with
+  `if (!exists("qc_passes", mode = "function"))`), so no caller can break this file by forgetting
+  to source `R/qc.R`. Doc comment updated to match.
+- Tests re-run after both changes: pass (`qc_passes: .....`).
+
+### Step 3 / 6b — single rerun on the branch after cleanup, vs. the stored main baseline
+
+Did **not** rerun `main` (the stored `logs/qc_fix_baseline_20261029.csv` stands). Backed aside
+the accumulated `outputs/exclusion_log.csv`/`unknown_log.csv` first (see below), then ran the
+21-script list once more on `qc-semantics-fix` (`logs/qc_fix_verify_rerun_20261029.csv`). Result:
+identical to the original 4-pass comparison — every `*_qc` row count matches `main` exactly
+(41,303 / 491,578 / 3,603 / 14,884,819 / 527,439), and every hashed PNG/CSV/`.legend.txt` matches
+`main` byte-for-byte except the two legend files reworded for the QC rule text and the two
+known-nondeterministic log files.
+
+### Step 4 / 6c — dry run at threshold 0.75 (read-only, no outputs saved)
+
+| Resolution | kept @ 0.50 | kept @ 0.75 | rows kept@0.75 but not kept@0.50 |
+|---|---|---|---|
+| annual | 41,303 | 40,992 | 0 |
+| monthly | 491,578 | 486,632 | 0 |
+| weekly | 3,603 | 3,495 | 0 |
+| daily | 14,884,819 | 14,791,551 | 0 |
+
+Counts fall at every resolution; the 0.75 kept-set is confirmed a strict subset of the 0.50
+kept-set at every resolution (anti-join count 0 in all four cases). The `kept@0.50` figures match
+the `*_qc` table row counts exactly, cross-checking that the dry-run logic matches `04_qc.R`'s own.
+
+### Step 5 — 6d/6e
+
+- 6d: fresh `command grep` sweep (post-cleanup) for `(1 - QC) <= threshold`/`p_gapfilled`-based
+  gates outside `legacy/`: none found — only the cautionary doc comments in `R/qc.R` and
+  `R/pipeline_config.R` quoting the old (wrong) form as something *not* to do.
+  `legacy/*.R`'s own `QC_THRESH_MM` copies are untouched, as intended.
+- 6e: `scripts/check_figure_format.R`: 14/14 figures PASS (6 main-text + 8 Extended Data).
+
+### Step 6 — `outputs/exclusion_log.csv` path/size investigation
+
+Only one git worktree exists (`git worktree list`); `outputs/exclusion_log.csv` is not a symlink;
+`normalizePath()` resolved to the identical absolute path
+(`/Users/setanta/Research/R/fluxnet-annual-2026/outputs/exclusion_log.csv`) both immediately
+before and immediately after `04_qc.R` ran in the fresh verification pass — there is **one**
+file, not two (rules out the "main worktree vs. repo root" hypothesis). Measured directly: a
+single fresh `04_qc.R` run appends **~13.8M rows** to this log (daily resolution dominates it),
+matching the +13.8M growth seen between the original `main` pass 1 (15.6M) and pass 2 (29.5M) —
+consistent with pure, expected accumulation (the file is never truncated by
+`R/utils.R::write_log_row()` or `04_qc.R`, and it's gitignored/never cleared between runs). The
+drop from 29.5M (end of `main` pass 2) to 1.5M (start of the branch passes) in the *original*
+4-pass run remains **unexplained** — no concurrent process, symlink, disk exhaustion (76 GB free
+throughout), or code-level truncation was found, and it is not reproducible after the fact since
+that file state no longer exists. Does not change the correctness verdict: the authoritative
+`*_qc` DuckDB row counts (not this log) matched exactly across every pass regardless, and the
+task's own instructions already flag this file as a likely-nondeterministic output.
+
+### Outcome
+
+All of task step 6 passed (6a tests, 6b hash/row-count comparison, 6c monotonic 0.75 dry run, 6d
+grep sweep, 6e figure-format check). Merged `qc-semantics-fix` to `main` and pushed
+(`09e621c`). **Not done / left as open follow-ups, none blocking:** the exact cause of the
+one-time 29.5M→1.5M exclusion-log drop in the original 4-pass run; whether a ~1.3 GB-per-run
+exclusion log at daily resolution is itself worth a design change (not part of this task's scope,
+flagging for awareness); and the duplicated-request anomaly noted in the previous entry, still
+unexplained.
+
+---
+
 ## 2026-10-29 — QC threshold semantics fix: finishing the task (start)
 
 Full prompt: `logs/prompts/2026-10-29_qc_semantics_fix_finish.md`. Continuing the same task

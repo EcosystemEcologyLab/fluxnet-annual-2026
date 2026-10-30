@@ -4,6 +4,27 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL expanded-site analysis: start
+
+Full prompt: `logs/prompts/2026-10-30_gsl_expanded.md`. New, large follow-on to the selection-rule
+work (previous entries below). Applies the recommended rule (R2, N=14, with the per-site
+VUT/CUT fallback) from `docs/selection_rule_options_2026-10-30.md` to build a parallel,
+~156-site GSL analysis under a new subfolder, `GSL_definition/expanded/` (`code/`, `tables/`,
+`figures/`, `docs/`), reusing `GSL_definition/code/` by sourcing it rather than copying. The
+existing 62-site analysis, its code, and its outputs are untouched. Read-only on
+`data/duckdb/fluxnet.duckdb` (FLUXMET rows only); flux data only, no PhenoCam or other external
+data besides the already-snapshotted WorldClim/aridity products.
+
+Scope: selection (manuscript rules + VUT/CUT fallback + <=14 failing days/year + drop
+no-GPP-data sites); every derived quantity from `03_derive.R` recomputed on the expanded set
+(P99, skewness thirds, GSL, season start/end/gap days, bounds check, carbon-gain slopes,
+temperature sensitivity, trend detection with mixed models and the Weatherhead et al. 1998
+years-to-detect formula); 6 main figures + 7 supplementary figures in the PeerJ style; a
+report-back doc and a `methods_memo.md` update recording the selection rule and every
+definition. Expect ~156 sites, all 505 GSL-62 site-years included, US-Ha1 keeping 17 years.
+
+---
+
 ## 2026-10-30 — GSL selection rule options: done
 
 Full prompt: `logs/prompts/2026-10-30_gsl_selection_rule_options.md`. Full results:

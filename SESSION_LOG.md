@@ -4,6 +4,55 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL expanded-site analysis: done
+
+Full prompt: `logs/prompts/2026-10-30_gsl_expanded.md`. Full results:
+`GSL_definition/expanded/docs/report_back_2026-10-30.md`; methods record:
+`GSL_definition/docs/methods_memo.md`'s "Expanded-site analysis (2026-10-30)" section. Built
+entirely under the new `GSL_definition/expanded/` subfolder (own `code/`, `tables/`, `figures/`,
+`docs/`), reusing `GSL_definition/code/00_config.R`, `03_derive.R` and `fig_helpers.R` by
+sourcing, not copying. **The 62-site analysis is untouched** — every shared-code edit this
+required (5 changes to `03_derive.R`: a `gsl.skip_driver` guard, a `trend_site_ids` parameter,
+two crash fixes, one additive column) was verified by rerunning the 62-site driver and diffing
+`derived_site*.csv` byte-for-byte before committing.
+
+**Selection**: the rule chosen in `docs/selection_rule_options_2026-10-30.md` (manuscript rules
++ per-site VUT/CUT fallback + rule 4 under R2 N=14 + rule 5 + drop zero-GPP-data sites) gives
+**151 sites** (not the prompt's "about 156"), all 505 GSL-62 site-years included, US-Ha1 keeps 17
+years. **Deviation flagged mid-task** (separate SESSION_LOG entry below): 9 sites dropped for
+zero GPP data, not the expected 5 — the extra 4 (AU-Cow, AU-Rob, GF-Guy, ID-PaB) have VUT QC data
+but entirely NULL `GPP_NT_VUT_REF`, diagnosed as a genuine data gap, not a bug.
+
+**Derived quantities**: every `03_derive.R` quantity (P99, skewness with expanded-set-specific
+terciles, Z17, T95), plus every quantity this task newly specified: share of annual GPP outside
+season; season start/end/gap days (with a documented Southern-hemisphere July-June window
+simplification); a QC-failing-day bounds check (spread is, by construction, identical at Z17 and
+T95 — documented explicitly so it doesn't read as a figure bug); carbon-gain and
+temperature-sensitivity slopes (per-site OLS + pooled `nlme::lme` mixed models, 0 of 144
+non-converged); and trend detection (pooled `nlme::lme` with AR(1) residuals across a 5-20% of
+P99 sweep and at T95, plus the Weatherhead et al. 1998 years-to-detect formula at 95%
+confidence/80% power) — a 6-tier convergence fallback ladder was needed here specifically (95 of
+136 fits failed with a single optimizer; 17 of 136 remain non-converged after the ladder, every
+one of them the mixed-forest group's 2-trend-site shortfall, not a numerical failure).
+
+**Figures**: 6 main (PeerJ style) + 7 supplementary, every one inspected at full render size.
+Three real bugs were found and fixed this way: a `pivot_wider()` call that silently corrupted
+row-matching by pulling an unlisted column into its implicit id_cols (collapsed ~300 points to 2
+in Figure 4a before the fix); a literal `bind_cols(tibble(), x)` no-op that actually forces a
+0-row result (silently zeroed out the per-site trend table); and a case-mismatched colour-scale
+lookup (`"Z17"/"T95"` vs. `"z17"/"t95"`) that blended two overlapping histogram series into one
+indistinguishable colour.
+
+**Checks**: all 8 of the prompt's pre-finish checks pass (`tables/qa_checks.csv`), including
+direct re-verification of GSL-62 containment and full convergence reporting.
+
+**Scope reductions, documented not hidden**: Supplemental Figure S5 does not include a full
+GPP_DT_REF AR(1) pooled-trend refit (Figure 6's exact analogue, ~136 more fits) — implemented
+instead a lighter but still substantive robustness check (per-site Z17 trend by GPP_DT_REF-third
+grouping), with the gap stated in the figure's own legend.
+
+---
+
 ## 2026-10-30 — GSL expanded-site analysis: selection check deviates from the prompt's expectation
 
 During `expanded/code/01_select.R` (selection step), the "drop sites with no GPP values" check

@@ -4,6 +4,69 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — QC unknown follow-up: finished, merged to main
+
+Closes `logs/prompts/2026-10-29_qc_unknown_followup.md`. Branch `qc-unknown-followup` merged to
+`main`.
+
+### 1. Correction to the previous entry's `qc_unknown` table
+
+**The 87-89% unknown figures reported in "QC threshold semantics fix: finished, merged to main"
+were misleading — they are dominated by `dataset = 'ERA5'` rows, not FLUXMET row-level
+sparsity.** `04_qc.R`'s gate does not filter by `dataset`, and every `*_qc` table carries both
+`FLUXMET` and `ERA5` rows (ERA5 outnumbers FLUXMET in every table, e.g. `daily_qc`: 12.78M ERA5
+vs. 2.10M FLUXMET). ERA5 rows never carry `NEE_VUT_REF_QC`/`NEE_CUT_REF_QC` at all, so every
+single ERA5 row is `qc_unknown` by construction — this is not a meaningful "unknown" in the sense
+the original step 2 question meant. Split by dataset:
+
+| Resolution | ERA5 unknown/total | FLUXMET unknown/total | FLUXMET % | FLUXMET sites affected (of 781) |
+|---|---|---|---|---|
+| annual | 34,993 / 34,993 (100%) | 1,935 / 6,310 | 30.7% | 700 |
+| monthly | 419,916 / 419,916 (100%) | 10,197 / 71,662 | 14.2% | 700 |
+| weekly | 2,340 / 2,340 (100%) | 0 / 1,263 | **0%** | **0** |
+| daily | 12,781,036 / 12,781,036 (100%) | 266,292 / 2,103,783 | 12.7% | 700 |
+
+The true FLUXMET-only picture is much better than previously reported: 13-31% unknown, not
+87-89%, and weekly FLUXMET has **zero** unknown rows (the "65% unknown, 1 site" previously
+reported was entirely an ERA5 artifact of that one site's weekly table). The previous entry's
+explanation ("real property of the extracted data's row-level sparsity... not an artefact of the
+fix") is corrected here rather than edited in place, per this file's own convention — it was half
+right (FLUXMET genuinely does have row-level sparsity, ~13-31% of it) but understated how much
+of the headline number was ERA5 rows that were never eligible for an NEE QC gate in the first
+place. Consistently 700 of 781 sites (not 781) show any FLUXMET unknown rows at annual/monthly/
+daily — 81 sites have zero FLUXMET unknowns at those resolutions, not investigated further here.
+
+### 2. `scripts/04_qc.R`: per-site/resolution/dataset logging, not per-record
+
+The row-by-row "QC unknown (NA), kept" logging added ~13.8M entries to
+`outputs/exclusion_log.csv` per run at daily resolution alone (almost all ERA5). Replaced with
+one `log_exclusion()` call per site, giving the kept-unknown-row count, restricted to `dataset =
+'FLUXMET'` (confirmed zero `dataset=ERA5` entries land in the log now). Verified: `*_qc` table
+row counts unchanged (41,303 / 491,578 / 3,603 / 14,884,819 / 527,439 — identical to every prior
+measurement in this task), only the log's own size changed (13.8M rows -> 303k for a full run,
+now dominated by genuine per-record threshold exclusions rather than unknown-row bookkeeping).
+Tests re-run: pass.
+
+### 3. CLAUDE.md note on `outputs/exclusion_log.csv` growth
+
+Documented in the "Exclusion Logging" section: the log is append-only within a run, and
+`04_qc.R` now clears both log files at the start of every run rather than only initializing them
+if missing. Chose "clear at start" over adding a `run_id` column, because `outputs/` is already
+documented elsewhere in CLAUDE.md as gitignored and "regenerated each run" — a persistent,
+ever-growing cross-run log cuts against that existing design intent, and the file had reached
+2.8 GB and cost real investigation time in the previous entry's session before its growth
+pattern was understood. If a cross-run audit trail is ever needed, add `run_id` then — don't
+let unbounded growth resume.
+
+### Outcome
+
+All three requested items done, verified (table-row-count equality, test suite, a fresh
+`command grep` sweep clean), committed, and merged to `main`. No outstanding follow-ups from this
+task; the 81-site FLUXMET-zero-unknown question and the still-unexplained duplicated-request
+anomaly from the prior entries remain open curiosities, not blockers.
+
+---
+
 ## 2026-10-29 — QC unknown follow-up (start)
 
 Full prompt: `logs/prompts/2026-10-29_qc_unknown_followup.md`. Follow-up to the merged QC

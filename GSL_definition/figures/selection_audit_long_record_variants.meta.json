@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:57Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_site_year_screen.csv",
+    "GSL_definition/tables/selection_audit_population.csv"
+  ],
+  "notes": "Diagnostic figure for the selection audit, not a manuscript figure; uses the shared GSL PeerJ style for consistency only."
+}

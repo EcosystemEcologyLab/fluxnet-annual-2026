@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:57Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')"
+  ],
+  "notes": "Rule 5 (>10% of daily GPP_NT_VUT_REF < -1 gC/m2/d) checked over EVERY available daily row for each site recovered by at least one looser variant (step 3), across its whole record, not just the years that pass a given variant. No recovered site fails rule 5. 1 site(s) have no GPP_NT_VUT_REF data at all, so rule 5 is undetermined (NA), not FALSE, for them: BR-Ma2."
+}

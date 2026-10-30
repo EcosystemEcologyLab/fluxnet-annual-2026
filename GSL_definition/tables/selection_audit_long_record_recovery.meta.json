@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:57Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_site_variant.csv",
+    "GSL_definition/tables/selection_audit_population.csv"
+  ],
+  "notes": "74 long-record population sites: 68 already kept under the manuscript rule, 24 recovered by at least one looser variant, 11 still excluded under every variant tried."
+}

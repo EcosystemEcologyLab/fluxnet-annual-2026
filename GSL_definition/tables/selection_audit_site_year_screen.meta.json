@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:56Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET', population sites)"
+  ],
+  "notes": "One row per population site-year with >=1 day of data. share_pass_0*/n_fail_0*/longest_fail_run_0* computed over the FULL Jan1-Dec31 calendar grid for that year (expected_days = 365 or 366) -- a calendar day with no row, or an NA NEE_VUT_REF_QC, both count as failing, per the audit prompt. No CUT fallback (literal rule 2: NEE_VUT_REF_QC only)."
+}

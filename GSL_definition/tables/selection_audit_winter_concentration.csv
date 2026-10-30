@@ -1,0 +1,3 @@
+temp_group,n_fail_days_total,n_fail_days_local_winter,share_fail_days_in_local_winter
+cold (below median MAT),237899,71252,0.2995052522288871
+warm (at/above median MAT),178954,47398,0.26486136102015045

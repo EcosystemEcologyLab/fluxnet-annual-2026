@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:57Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_site_variant.csv"
+  ],
+  "notes": "sites_kept/site_years_kept are gated on the >=5-passing-year threshold (rule 4) -- a site with 1-4 passing years under a variant is not counted as 'kept'. *_vs_manuscript columns compare against the 'i_manuscript' row (share_pass_025==1 every year). site_years_added_by_newly_recovered_sites counts only the passing years of sites not kept under the manuscript rule at all; site_years_added_total_vs_manuscript also includes extra qualifying years gained at sites already kept under the manuscript rule."
+}

@@ -35,6 +35,13 @@ full results in `docs/report_back_2026-10-30_peerj_restyle.md`; full methods rec
 rebuilt for direct comparison, remain **deferred** (not enough detail in the framework to
 reproduce without the manuscript itself).
 
+A separate, read-only **site-selection audit** (2026-10-30) asks whether long-running network
+sites excluded by the manuscript's selection rule could be recovered by a rule that drops days or
+years rather than the whole site — `docs/selection_audit_2026-10-30.md`
+(`code/11_selection_audit.R`, `tables/selection_audit_*.csv`,
+`figures/selection_audit_long_record_variants.png`). It does not change the 62-site analysis
+above.
+
 The Stage 2 open decisions (year screening, negative-GPP treatment, `>` vs. `>=`, GPP variant)
 were made by Dave without Tash's input, recorded in `docs/framework.md`'s "Open decisions
 (resolved)" section and as named switches in `code/00_config.R` — subject to revision if Tash's
@@ -69,6 +76,7 @@ the order `code/10_supplementary.R` builds them in:
   `.meta.json` each)
 - `docs/` — `framework.md` (verbatim), `methods_memo.md` (every stage's record),
   `reproduction_report.md` (Stage 2's match checks), `report_back_*.md` (per-pass results),
-  `data_and_code_availability.md` (snapshot/DOI/Supplemental Data notes for submission)
+  `data_and_code_availability.md` (snapshot/DOI/Supplemental Data notes for submission),
+  `selection_audit_*.md` (site-selection audit reports, independent of the 62-site analysis)
 - `logs/` — `exclusion_log.csv`/`unknown_log.csv` for this side project (gitignored, same
   convention as repo-root `outputs/`)

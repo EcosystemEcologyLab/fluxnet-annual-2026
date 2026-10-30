@@ -1,0 +1,15 @@
+Selection audit: long-record sites by year, coloured by the strictest rule variant each year passes.
+Rows: long-record sites (>=15 years with 12 months of data in site_year_data_presence.csv).
+* after the site name marks a site that is one of the GSL 62.
+Grey tiles fail every variant tried, including the loosest (iv_gap14: tolerate failing runs up to 14 days).
+Strictness order (strictest to loosest; not a formally proven total order -- see methods memo):
+  1. i: manuscript (0.25, every day)
+  2. iii: 0.50, >=95%
+  3. ii: 0.25, >=95%
+  4. iv: gaps<=3d
+  5. iii: 0.50, >=90%
+  6. ii: 0.25, >=90%
+  7. iv: gaps<=7d
+  8. iii: 0.50, >=80%
+  9. ii: 0.25, >=80%
+  10. iv: gaps<=14d

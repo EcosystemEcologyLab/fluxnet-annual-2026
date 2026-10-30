@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:57Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_kept_vs_lost.csv"
+  ],
+  "notes": "Population sites passing the manuscript rule (i_manuscript, >=5 years) on our data that are not among the GSL 62. Listed only -- not resolved (may reflect a manuscript-side exclusion reason not modelled here, e.g. rule 5, a data-vintage difference, or a reason outside this audit's scope)."
+}

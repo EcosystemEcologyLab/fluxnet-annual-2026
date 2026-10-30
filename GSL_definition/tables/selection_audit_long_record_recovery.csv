@@ -1,0 +1,75 @@
+site_id,igbp,network,location_lat,in_gsl62,any_vut_qc,any_cut_qc,kept_under_manuscript_rule,recovered_by_variant,recovered_by,reason
+AT-Neu,GRA,CarboEuropeIP;European Fluxes Database;GHG-Europe,47.116318,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+AU-DaS,WSA,OzFlux,-14.1592,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+AU-How,WSA,OzFlux,-12.4952,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+CA-TP3,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,42.7068,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+CA-TP4,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,42.7102,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+CH-Cha,GRA,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,47.21022,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+CH-Dav,ENF,European Fluxes Database;ICOS,46.81533,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+CH-Lae,MF,CarboEuropeIP;European Fluxes Database;GHG-Europe;Swiss FluxNet,47.478333,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+DE-Gri,GRA,European Fluxes Database;ICOS,50.950005,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+DE-Hai,DBF,European Fluxes Database;ICOS,51.079212,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+DE-Tha,ENF,European Fluxes Database;ICOS,50.962597,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+DK-Sor,DBF,European Fluxes Database;ICOS,55.48587,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+FI-Hyy,ENF,European Fluxes Database;ICOS,61.847410000000004,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+FR-Pue,EBF,European Fluxes Database;ICOS,43.7413,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+GF-Guy,EBF,European Fluxes Database;ICOS,5.2787,FALSE,TRUE,TRUE,TRUE,FALSE,NA,NA
+IL-Yat,ENF,CarboEuroFlux;CarboEuropeIP;European Fluxes Database,31.345045,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+IT-Lav,ENF,CarboEuroFlux;CarboEuropeIP;CarboItaly;European Fluxes Database;GHG-Europe,45.9562,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+IT-MBo,GRA,European Fluxes Database;ICOS,46.01468,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+IT-Tor,GRA,European Fluxes Database;ICOS,45.84444,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+JP-Fhk,DNF,AsiaFlux;JapanFlux,35.443554,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+JP-Fjy,ENF,AsiaFlux;JapanFlux,35.45454,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+JP-Spp,DBF,AsiaFlux;JapanFlux,42.986843,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+NL-Loo,ENF,European Fluxes Database;ICOS,52.166447,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Aud,GRA,AmeriFlux,31.5907,FALSE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-CMW,DBF,AmeriFlux,31.6637,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-MMS,DBF,AmeriFlux;Phenocam,39.3232,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-MOz,DBF,AmeriFlux;Phenocam,38.7441,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Mpj,WSA,AmeriFlux;Phenocam,34.4382,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-SRG,GRA,AmeriFlux;LTAR;Phenocam,31.7894,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-SRM,WSA,AmeriFlux;LTAR;Phenocam,31.8214,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Seg,GRA,AmeriFlux;Phenocam,34.3603,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Ses,OSH,AmeriFlux;Phenocam,34.335,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Slt,DBF,AmeriFlux;Phenocam,39.9138,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Ton,WSA,AmeriFlux;Phenocam,38.4309,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-UMd,DBF,AmeriFlux;Phenocam,45.5625,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Var,GRA,AmeriFlux;Phenocam,38.4133,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Vcp,ENF,AmeriFlux,35.8641,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Wjs,SAV,AmeriFlux,34.4258,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+US-Wkg,GRA,AmeriFlux;LTAR;Phenocam,31.7365,TRUE,TRUE,TRUE,TRUE,FALSE,NA,NA
+BE-Bra,ENF,European Fluxes Database;ICOS,51.30761,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+BE-Vie,MF,European Fluxes Database;ICOS,50.304962,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+BR-Ma2,EBF,AmeriFlux;LBA,-2.6091,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; iii_050_ge80,NA
+CA-Cbo,DBF,AmeriFlux;Fluxnet-Canada,44.3184,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+CA-TP1,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,42.6609,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+CH-Fru,GRA,CarboExtreme;European Fluxes Database;GHG-Europe;Swiss FluxNet,47.115833,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+CZ-BK1,ENF,European Fluxes Database;ICOS,49.502075,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+CZ-Stn,DBF,European Fluxes Database,49.035976,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+DE-Obe,ENF,CarboEuropeIP;European Fluxes Database,50.7864,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+FR-FBn,ENF,European Fluxes Database;ICOS,43.24079,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+IT-Ren,ENF,European Fluxes Database;ICOS,46.58686,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+JP-Api,DBF,AsiaFlux;JapanFlux,40.001358,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+JP-Tak,DBF,AsiaFlux;JapanFlux,36.146168,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+JP-Tef,DNF,AsiaFlux;JapanFlux,45.05581,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+JP-Yms,DBF,AsiaFlux;JapanFlux,34.79028,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iv_gap14; iv_gap7,NA
+RU-Fyo,ENF,European Fluxes Database;GHG-Europe;InGOS;TCOS-Siberia,56.46153,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+US-Bar,DBF,AmeriFlux;Phenocam,44.0646,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+US-GLE,ENF,AmeriFlux,41.3665,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+US-Ha1,DBF,AmeriFlux;LTER;Phenocam,42.5378,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+US-ICh,OSH,AmeriFlux;Phenocam,68.6068,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; iii_050_ge80; iv_gap14,NA
+US-Kon,GRA,AmeriFlux;Phenocam,39.0824,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iv_gap14; iv_gap7,NA
+US-NC2,ENF,AmeriFlux;Phenocam;USCCC,35.803,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap7,NA
+US-SP1,ENF,AmeriFlux;Phenocam,29.7381,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iii_050_ge95; iv_gap14; iv_gap3; iv_gap7,NA
+US-Vcm,ENF,AmeriFlux,35.8885,FALSE,TRUE,TRUE,FALSE,TRUE,ii_025_ge80; ii_025_ge90; ii_025_ge95; iii_050_ge80; iii_050_ge90; iv_gap14; iv_gap7,NA
+AU-Tum,EBF,OzFlux,-35.6566,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+CA-Ca3,ENF,AmeriFlux;Fluxnet-Canada;Phenocam,49.5346,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+CA-LP1,ENF,AmeriFlux,55.1119,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+DE-Lnf,DBF,European Fluxes Database;GHG-Europe;InGOS,51.328217,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+FR-Hes,DBF,European Fluxes Database;ICOS,48.6741,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+US-Ho2,ENF,AmeriFlux,45.209,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+US-NR1,ENF,AmeriFlux;Phenocam,40.0329,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+US-Syv,MF,AmeriFlux;Phenocam,46.2421,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+US-Uaf,ENF,AmeriFlux,64.8663,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+US-WCr,DBF,AmeriFlux;Phenocam,45.8058,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"
+US-Whs,OSH,AmeriFlux;LTAR;Phenocam,31.7438,FALSE,FALSE,TRUE,FALSE,FALSE,NA,"no non-NA NEE_VUT_REF_QC at all -- CUT-only in our FLUXMET data; rule 2 as stated has no CUT fallback, so no day ever passes regardless of variant"

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:57Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_site_year_month_fail.csv",
+    "data/snapshots/site_worldclim.csv"
+  ],
+  "notes": "Local winter = Dec/Jan/Feb for Northern-hemisphere sites (location_lat >= 0), Jun/Jul/Aug for Southern. Cold/warm split at the population median mat_worldclim (10.12 degC). A uniform (non-concentrated) distribution across 3 of 12 months would give a 25% share; numbers reported as-is, no further interpretation."
+}

@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:15Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
+    "data/snapshots/site_year_data_presence.csv"
+  ],
+  "notes": "Population = snapshot sites not in IGBP {CRO,CVM,WET,SNO,BSV} AND with >=1 daily FLUXMET row. 507 sites, of which 74 are long-record (>=15 yr w/ 12 months data) and 62 are in the GSL 62. 33 population site(s) have no non-NA NEE_VUT_REF_QC at all and so fail rule 2 on every day by construction, per the literal, no-fallback rule stated in the prompt -- of these, 33 have substantial NEE_CUT_REF_QC data instead (CUT-only) and 0 have neither (fully ungated)."
+}

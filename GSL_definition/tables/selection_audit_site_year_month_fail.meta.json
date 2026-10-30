@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T15:43:56Z",
+  "pipeline_version": "ce33495",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_site_year_screen.csv"
+  ],
+  "notes": "Failing-day (0.25 threshold) counts by calendar month, long format; months with zero failing days are omitted."
+}

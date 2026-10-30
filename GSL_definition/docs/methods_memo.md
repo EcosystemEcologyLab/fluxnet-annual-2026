@@ -287,3 +287,91 @@ are explicitly subject to revision if any later prove wrong.
 
 Stopped after `docs/reproduction_report.md`, per the Stage 2 prompt ("Stop after step 5 for PI
 sign-off"). No figure has been drawn.
+
+---
+
+# Stage 3 methods memo (framework run-order step 6: figures + benchmark table)
+
+Full prompt: `logs/prompts/2026-10-29_gsl_stage3.md`. Dave signed off Stage 2
+(`docs/reproduction_report.md`, checks 1/2/4 pass on the main run). Full results:
+`docs/report_back_2026-10-29.md`.
+
+## New quantities computed (not in 03_derive.R's output)
+
+`03_derive.R` (Stage 2) only persisted *pooled* quantities across the fine grid (mean GSL, mean
+F, local sensitivity, all already averaged across years) — not per-year values at arbitrary
+thresholds. Three figure scripts needed per-year detail 03_derive.R didn't keep, computed fresh
+here, always reusing already-computed scalars (P99, skewness, T95 etc.) rather than
+re-deriving them:
+
+- **Figure 3 / supplementary Figure 3** (`07_fig3.R`, `10_supplementary.R`): per-year GSL at a
+  0.1%-step grid across 5-20% of P99 (plus each site's own T95 point), for the 21 trend sites,
+  to fit an OLS trend slope + p-value at every threshold.
+- **Figure 4 panel a** (`08_fig4.R`): per-year F(y,T)/GSL(y,T) pairs across a coarser 0.5%-step
+  grid (0.1-60% of P99), for the two Figure 1 sites only.
+- **Benchmark table** (`09_benchmark.R`): annual GPP sum per site-year, a simple aggregation not
+  previously computed, for the 21 trend sites.
+
+Figure 4 panels b and c, by contrast, needed **no new computation at all**: panel b reuses
+`fraction_sweep.rds` and `derived_site.csv`'s `z17_mean_f`/`z17_mean_gsl` directly; panel c
+reuses `z17_common_unit_sensitivity` and `t95_common_unit_sensitivity` directly — "common-unit
+sensitivity at 0.95" is, by the Stage 2 definition of T95 (the threshold where mean F first
+drops to <=0.95), exactly the sensitivity already computed at T95.
+
+## Rendering bugs found and fixed by inspecting each figure at full size
+
+1. **`geom_raster()` + `scale_x_log10()` silently rendered Figure 2's heat map as near-blank**,
+   with thin vertical stripes instead of a continuous image. `geom_raster()` assumes a grid that
+   is uniform *after* the scale transform; the fine grid is uniform in untransformed %P99 (0.01
+   steps), not in log space. Fixed with `geom_tile(width = 0.01)` — tile width specified in
+   untransformed data units renders correctly under a log coordinate transform, unlike raster.
+2. **`scale_x_log10(limits = ...)` dropped ~2/3 of the low-threshold tile columns**, not just
+   points outside the stated range — `limits=` on a scale drops any row whose data value (or, for
+   tiles, apparently its rendered extent) falls outside, which removed far more than intended.
+   Fixed with `coord_cartesian(xlim = ...)`, which clips the *view* without discarding data — the
+   documented correct pattern for "zooming" vs. "filtering" in ggplot2.
+3. **`geom_density()`'s default legend key glyph (a bordered box) collided with `geom_line()`'s
+   glyph** when both were mapped to the same colour aesthetic in Figure 1 panel b, rendering as a
+   visually broken combined key. Fixed with `key_glyph = "path"` on the density layer, plus
+   separating the density/GSL distinction into its own `linetype` aesthetic with its own legend,
+   rather than overloading colour for two different things.
+4. **`panel_letter()`'s default `x = -Inf` is undefined under `scale_x_log10()`** (`log(-Inf)` is
+   `NaN`), which silently dropped the panel letter in Figure 2 panel b. Fixed by passing an
+   explicit `x` within the panel's actual range.
+5. **patchwork auto-collected an individual panel's `legend.position = "top"` to the top of the
+   whole composite figure**, not just above that one panel, in Figure 2 panel c. Fixed by placing
+   the legend *inside* the panel with explicit `legend.position = c(x, y)` coordinates instead of
+   relying on patchwork's automatic collection (also added `plot_layout(guides = "keep")`
+   explicitly at both composition levels, to be safe against any other auto-collection).
+
+None of these would have been caught without opening the rendered PNGs — all passed `ggsave()`
+silently. Per the Stage 3 prompt's own checks requirement, every figure was inspected at full
+size, not just confirmed to exist.
+
+## No in-panel explanatory text
+
+`R/nature_format.R`'s own header documents the rule ("no caption or explanatory text drawn
+inside the figure itself — put it in the `.legend.txt` file instead"). The first draft of Figure
+1 panel a violated this (text labels on each threshold line); removed in favour of unlabelled
+dashed reference lines, with the thresholds named in `.legend.txt` instead.
+
+## Verification
+
+Every number quoted in `docs/report_back_2026-10-29.md` was independently re-derived from the
+underlying tables (not just copied from script console output) and matched exactly — see that
+document's "Checks performed" section.
+
+## Departures from the framework (Stage 3)
+
+- Supplementary Figures 2/3's second variant is "negative GPP as-delivered," not "with Tash's
+  screening" as the original framework text specified — per the Stage 3 prompt's own instruction,
+  because Tash's screening selects the identical 505 site-years as the main d80-screened run.
+- The current manuscript's own Figures 1-4 (framework "Supplementary outputs," rebuilt for
+  direct comparison) are deferred, not built — explicitly instructed in the Stage 3 prompt, since
+  the framework doesn't describe their current form in enough detail to reproduce without the
+  manuscript itself.
+
+## Stop (Stage 3)
+
+Stopped after `docs/report_back_2026-10-29.md` and this update, per the Stage 3 prompt. No work
+beyond framework run-order step 6 (figures + benchmark table) has been done.

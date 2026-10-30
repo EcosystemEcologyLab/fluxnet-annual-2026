@@ -21,11 +21,15 @@ read-only, filtered to `dataset = 'FLUXMET'` (the pre-QC daily table also carrie
 
 ## Status
 
-**Stage 1 and 2 done.** Stage 1: scaffold, logging fix, site extraction, both screenings,
+**Stages 1, 2 and 3 done.** Stage 1: scaffold, logging fix, site extraction, both screenings,
 year-screening option counts, Tash-rule reproduction across the whole network. Stage 2: every
 derived quantity (P99, skewness, GSL, T95, etc.) for the main run and sensitivity variants, and
-the match checks against the manuscript's published values — see
-`docs/reproduction_report.md`. **Stopped for PI sign-off before any figure** (Stage 3).
+the match checks against the manuscript's published values — `docs/reproduction_report.md`.
+Stage 3: Figures 1-4, the benchmark table, and 4 supplementary figures (Figures 2/3 with
+`GPP_DT_VUT_REF` and with as-delivered negative GPP) — full results in
+`docs/report_back_2026-10-29.md`. The current manuscript's own Figures 1-4, rebuilt for direct
+comparison, remain **deferred** (not enough detail in the framework to reproduce without the
+manuscript itself).
 
 The Stage 2 open decisions (year screening, negative-GPP treatment, `>` vs. `>=`, GPP variant)
 were made by Dave without Tash's input, recorded in `docs/framework.md`'s "Open decisions

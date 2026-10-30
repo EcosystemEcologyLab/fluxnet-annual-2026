@@ -4,6 +4,56 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 3: done
+
+Follow-up to the entry below (same task). Framework run-order step 6 done: Figures 1-4, the
+benchmark table, and 4 supplementary figures. Full results:
+`GSL_definition/docs/report_back_2026-10-29.md`; full methods record:
+`GSL_definition/docs/methods_memo.md` (Stage 3 section).
+
+**Headline numbers:**
+- Figure 1 sites: JP-Fjy (low third, skewness 0.5123) and CA-Ca2 (high third, skewness 1.3043).
+  Mean GSL changes -26.5 days (JP-Fjy) and -53.4 days (CA-Ca2) between 5% and 10% of P99.
+- Figure 2: 62/62 sites, terciles 21/20/21 — exact match to the framework's stated counts.
+- Figure 3: of the 21 trend sites (unchanged from the framework's 21), **11 of 21** change the
+  GSL trend's sign or significance somewhere across the 5-20% of P99 threshold range.
+- Figure 4: median common-unit sensitivity is lower for the new T95-based method (8.29) than for
+  the fixed Z17 threshold (11.09) — about 25% less sensitive in common units.
+- Benchmark: the new method's median correlation with annual GPP (0.683) is modestly higher than
+  Z17's (0.612) across the 21 trend sites, though the comparison is mixed by functional group.
+
+**Two real rendering bugs caught by inspecting every figure at full size** (not just confirming
+`ggsave()` succeeded): `geom_raster()` silently rendered Figure 2's heat map as near-blank under
+a log-x scale (fixed: `geom_tile()` with explicit untransformed width, plus
+`coord_cartesian(xlim=)` instead of `scale_x_log10(limits=)`, which was separately found to be
+*dropping* ~2/3 of the low-threshold columns rather than just zooming); `geom_density()`'s
+default legend key glyph collided with `geom_line()`'s in Figure 1 panel b (fixed:
+`key_glyph="path"`). Also caught and fixed: `panel_letter()`'s default `x=-Inf` is undefined
+under a log scale (silently dropped Figure 2's panel-b letter); patchwork auto-collecting an
+individual panel's legend to the whole composite figure's top instead of keeping it with its own
+panel. All in-panel explanatory text (a first draft of Figure 1 panel a) was removed per
+`R/nature_format.R`'s own documented rule — captions belong in `.legend.txt`, not on the figure.
+
+**Verification**: every number in the report-back doc was independently re-derived from the
+underlying tables and matched exactly (to the decimals shown) against each figure's
+`.legend.txt`/`.meta.json`. Figure 2 confirmed 62 rows in skewness order; Figure 3's 21-site
+count confirmed against the screening table — both via `stopifnot()` in the scripts themselves,
+not just eyeballing.
+
+**Departures from the framework, both explicitly instructed by the Stage 3 prompt**: the second
+supplementary variant is "negative GPP as-delivered," not "with Tash's screening" (which would
+select the identical 505 site-years as the main run, per Stage 1); the current manuscript's own
+Figures 1-4 (for direct comparison) are deferred, not built — the framework doesn't describe
+their current form in enough detail to reproduce without the manuscript.
+
+**Not done / remaining**: check 3 (the three Figure 1 correlations) still has no definition to
+check against; the deferred manuscript-figure rebuild; Tash's two sensitivity site-year lists and
+her other still-unreceived materials. Stage 3 is the end of the originally planned work (stages
+1-3); any further work (e.g. acting on Tash's materials once received, or the deferred
+manuscript-figure comparison) would need a new prompt.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 3 (start)
 
 Full prompt: `logs/prompts/2026-10-29_gsl_stage3.md`. Dave signed off Stage 2

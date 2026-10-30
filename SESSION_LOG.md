@@ -4,6 +4,21 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL figure rebuild, PeerJ restyle: start
+
+Starting `logs/prompts/2026-10-30_gsl_peerj_restyle.md`: restyle all GSL figures to PeerJ's
+author instructions (one PNG+PDF per figure, named "Figure 1.png" etc./"Supplemental Figure
+S1.png" etc., >=300 dpi, 8.5x11in page, >=8pt text, 170mm width) in place of
+`R/nature_format.R`'s Nature conventions; fix the still-pending Figure 2 items (colour-scale cap,
+x-axis start, absolute-value panels c/d, line distinguishability); replace the continuous
+viridis skewness scale with a colourblind-safe 3-colour (low/middle/high) discrete palette used
+everywhere skewness is shown by colour; label Figure 1b's density lines by site name; and record
+the CH-Dav 2008 GPP_NT_VUT_REF data gap in the methods memo. Also write
+`docs/data_and_code_availability.md`. No pending `*_gsl_fig2_fixes.md` prompt was found, so this
+is a fresh task, not a reconciliation. Full prompt saved at the path above.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 3 revisions: done
 
 Follow-up to the "(start)" entry below (same task). All 6 items from

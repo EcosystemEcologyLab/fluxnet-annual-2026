@@ -22,6 +22,53 @@ long-record sites each variant would add back, cross-checked against the negativ
 separately so no recovered site is one the manuscript would still drop for that reason.
 
 ---
+
+## 2026-10-30 — GSL site-selection audit: done
+
+Full prompt: `logs/prompts/2026-10-30_gsl_selection_audit.md`. Full results:
+`GSL_definition/docs/selection_audit_2026-10-30.md`. Read-only on `data/duckdb/fluxnet.duckdb`
+(`dataset = 'FLUXMET'` only); does not touch the 62-site GSL analysis, its code, or its existing
+outputs — new files only (`code/11_selection_audit.R`, `tables/selection_audit_*.csv`,
+`figures/selection_audit_long_record_variants.*`).
+
+**Population**: 507 of 781 network sites pass the manuscript's IGBP rule and have daily FLUXMET
+data. 74 are "long record" (>= 15 yr with 12 months of data); 37 of those are already in the GSL
+62, 37 are not.
+
+**Manuscript rule** (every day of a year passes `NEE_VUT_REF_QC >= 0.25`, literal — no CUT
+fallback, unlike `04_qc.R`'s per-site fallback) keeps 68 of the 507 population sites (549
+site-years). Every one of 10 looser variants tested (0.25/0.50 thresholds at >=95/90/80%; allowed
+QC-failure gaps of <=3/7/14 days) recovers more sites, long-record sites, and site-years than the
+manuscript rule, from `iv_gap3` (+46 sites, +18 long-record) to `ii_025_ge80` (+157 sites, +24
+long-record).
+
+**24 of 37** non-GSL-62 long-record sites are recovered by at least one variant (BE-Bra, BE-Vie,
+BR-Ma2, CA-Cbo, CA-TP1, CH-Fru, CZ-BK1, CZ-Stn, DE-Obe, FR-FBn, IT-Ren, JP-Api, JP-Tak, JP-Tef,
+JP-Yms, RU-Fyo, US-Bar, US-GLE, US-Ha1, US-ICh, US-Kon, US-NC2, US-SP1, US-Vcm), none of them at
+risk of instead failing the negative-GPP rule (shares 0.02%-3.05%, all far under the 10% cutoff;
+BR-Ma2 has no GPP data at all, left undetermined rather than passed). 2 more (GF-Guy, US-Aud)
+already pass the manuscript rule on our data without any loosening.
+
+**11 long-record sites fail every variant tried**, including the loosest: AU-Tum, CA-Ca3, CA-LP1,
+DE-Lnf, FR-Hes, US-Ho2, US-NR1, US-Syv, US-Uaf, US-WCr, US-Whs. All 11 — with no exception — have
+*zero* non-NA `NEE_VUT_REF_QC` anywhere in our FLUXMET extract, so no day/year-tolerance variant
+can ever help them (every one is still built on `NEE_VUT_REF_QC` only); all 11 do have substantial
+`NEE_CUT_REF_QC` data instead. This is a VUT data-coverage gap, not the bursty/sparse-QC pattern
+the variants were designed to test — a VUT/CUT fallback (not one of the tested variants) is the
+more direct lever for this group, including the two sites the prompt specifically flagged as
+expected recoveries that this audit did not recover (US-NR1, US-Ho2).
+
+**Kept vs. lost** (rule i) sites differ sharply in record length (median 18 vs. 6 yr) but not
+clearly in median WorldClim MAT or latitude. Failing days are somewhat more concentrated in local
+winter months at colder sites (30.0% of failing days, vs. 26.5% at warmer sites, vs. a 25% uniform
+baseline) — numbers only, no further interpretation.
+
+**6 population sites pass the manuscript rule on our data but are not in the GSL 62** (AU-Cow,
+AU-Rob, GF-Guy, ID-PaB, IT-BFt, US-Aud) — listed, not resolved, matching 5 of the sites Stage 1's
+independently-scoped Tash-rule reproduction already flagged, plus US-Aud (which that earlier check
+excluded by name rather than finding it unqualifying).
+
+---
 ## 2026-10-30 — GSL figure rebuild, PeerJ restyle: done
 
 Follow-up to the "start" entry below (same task). Full prompt:

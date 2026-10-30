@@ -4,6 +4,21 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — QC unknown follow-up (start)
+
+Full prompt: `logs/prompts/2026-10-29_qc_unknown_followup.md`. Follow-up to the merged QC
+semantics fix (`09e621c`), on new branch `qc-unknown-followup`. A quick check before starting:
+the `*_qc` tables carry both `dataset = 'FLUXMET'` and `dataset = 'ERA5'` rows, and `04_qc.R`'s
+gate does not filter by `dataset` — meaning the high `qc_unknown` shares reported in the previous
+entry almost certainly include a large number of ERA5 rows, which structurally never carry NEE
+QC. Confirmed by a quick row count: ERA5 outnumbers FLUXMET in every table (e.g. `daily_qc`:
+12.78M ERA5 vs. 2.10M FLUXMET). Starting now: split the qc_unknown counts by dataset and
+resolution, correct the prior entry's explanation, reduce the per-row "QC unknown" exclusion-log
+entries to one row per site/resolution/dataset (FLUXMET only), and add a CLAUDE.md note about
+`outputs/exclusion_log.csv` growing unbounded, with a chosen fix.
+
+---
+
 ## 2026-10-29 — QC threshold semantics fix: finished, merged to main
 
 Closes out the task (`logs/prompts/2026-10-29_qc_semantics_fix.md`,

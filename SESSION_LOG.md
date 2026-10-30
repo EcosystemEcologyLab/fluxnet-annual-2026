@@ -4,6 +4,44 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 1: started, blocked on the framework document
+
+New side project for the MacBean and Moore growing season length (GSL) manuscript, requested via
+David Moore. Full prompt: `logs/prompts/2026-10-29_gsl_stage1.md`. Working directly on `main`
+(an additive, isolated side-project folder, same precedent as `WAFNET/`), not a feature branch.
+
+**Blocked:** the prompt says "the full framework is pasted below this prompt; save it verbatim
+as `GSL_definition/docs/framework.md`," but the message actually received contained only a
+"corrections to the framework" memo (saved as `GSL_definition/docs/corrections_20261029.md`) —
+not the "GSL Figure Rebuild: Analysis Framework" document itself, which is supposed to carry the
+Sites table (the 62 sites, their groups, and their years) that `00_config.R` (step 2) and
+everything after it depends on. `GSL_definition/docs/framework.md` was not fabricated. Flagged
+to David in-conversation; steps 2-7 of the stage-1 prompt cannot proceed until that document is
+provided.
+
+**Done in the meantime, independent of the missing document:**
+- Scaffolded `GSL_definition/` (`README.md`, `.gitignore`, `code/`, `data/` gitignored,
+  `tables/`, `figures/`, `docs/`, `logs/` gitignored), following the `WAFNET/fluxcom_comparison/`
+  pattern.
+- Step 1 (fully self-contained, no framework dependency): added an optional `log_path` argument
+  to `R/utils.R::log_exclusion()`/`log_unknown()`, defaulting to the existing
+  `outputs/exclusion_log.csv`/`outputs/unknown_log.csv` paths. Verified every existing call site
+  (`R/climate_classification.R`, `scripts/04_qc.R`, `scripts/step5_compute_koppen_era5.R`,
+  `scripts/investigate_badm_management.R`, `scripts/figure4_representativeness.R`,
+  `scripts/figure_representativeness_trajectory.R`) uses named arguments, or positional
+  arguments matching the original parameter order exactly, so none are affected by the new
+  trailing parameter. Added `tests/testthat/test-log_exclusion_log_unknown.R` (4 tests: default
+  path still works for both functions; a custom path is used instead and `outputs/` is never
+  created when one is given). Full test suite passes. Committed on its own (`3c38ec7`), as the
+  prompt required.
+
+**Not done / next step:** everything from step 2 onward (`00_config.R`'s 62-site table, site
+extraction, both screenings, year-screening option counts, the Tash-rule network-wide
+reproduction, `docs/methods_memo.md`) is blocked on the framework document. Once it arrives,
+resume from step 2.
+
+---
+
 ## 2026-10-29 — QC unknown follow-up: finished, merged to main
 
 Closes `logs/prompts/2026-10-29_qc_unknown_followup.md`. Branch `qc-unknown-followup` merged to

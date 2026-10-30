@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T03:49:11Z",
+  "pipeline_version": "2fe7112",
+  "input_sources": [
+    "GSL_definition/tables/derived_site.csv"
+  ],
+  "notes": "Published range 0.19-3.88 (framework.md, Sites). FR-Mej/IT-Tor/NL-Vkp flagged for product_id change; reported with and without."
+}

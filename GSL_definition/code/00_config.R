@@ -143,3 +143,56 @@ message(
   GSL_TOTAL_SITE_YEARS, " site-years, ", length(GSL_SITES_GE10YR),
   " sites with >= 10 years (confirmed against docs/framework.md)."
 )
+
+## ============================================================================
+## Stage 2 decisions (2026-10-29, made after Stage 1 at a1633a8, without
+## Tash's input -- Dave accepted the risk of a rerun if an assumption proves
+## wrong). Each is a named switch with the stated default, not hard-coded
+## inline at each use. See docs/framework.md's "Open decisions (resolved)"
+## section and docs/methods_memo.md for the reasoning behind each.
+## ============================================================================
+
+#' Year screening: option (d) at 80%. GSL is counted on the full gap-filled
+#' daily series (GPP_NT_VUT_REF has a value every day); a year is kept when
+#' >= 80% of its days pass QC_THRESHOLD_DD via qc_passes(). Stage 1 showed
+#' this keeps all 62 sites / 505 site-years -- the project-standard run and
+#' Tash's own selection cover the same site-years, so only one run is
+#' carried through Stage 2 (not two). "d80" is the only value implemented;
+#' kept as a named switch (not a boolean) so a different option can be
+#' substituted without restructuring the code that reads it.
+GSL_YEAR_SCREEN <- "d80"
+
+#' Negative daily GPP set to 0 for the main run. The as-delivered version is
+#' computed alongside for every quantity (not skipped), per the Stage 2
+#' instruction, so NEG_GPP_TO_ZERO is a per-run flag passed explicitly to
+#' every derivation function in 03_derive.R rather than a single global
+#' toggle that silently picks one and discards the other.
+GSL_NEG_GPP_TO_ZERO_MAIN <- TRUE
+GSL_NEG_GPP_VARIANTS <- c(main = TRUE, as_delivered = FALSE)
+
+#' GSL counts days with GPP > T (strict), not GPP >= T.
+GSL_STRICT_GT <- TRUE
+
+#' GPP variable: GPP_NT_VUT_REF for the main run, GPP_DT_VUT_REF for the
+#' supplementary version.
+GSL_GPP_VARIANTS <- c(main = "GPP_NT_VUT_REF", supplementary = "GPP_DT_VUT_REF")
+
+#' Site/year list: the fixed Sites table (GSL_SITES, already enforced
+#' above), not the Tash-rule network-wide reproduction from Stage 1. IT-Tor
+#' 2012 is kept (it is already in GSL_SITES's own year list for IT-Tor, and
+#' is not removed despite failing Stage 1's "complete year" reproduction
+#' check). The 5 extra site-years Stage 1 found passing Tash's rule at
+#' already-included sites (CA-Ca1 2004/2010, CH-Dav 2011, DE-Tha 2025,
+#' NL-Vkp 2025) are deliberately NOT added -- GSL_SITES is not modified here.
+
+#' Sites flagged for a product_id change between the repo's 1 and 20
+#' September snapshots (Stage 1, tables/site_products.csv) -- reported
+#' alongside every match-check statistic in Stage 2, with and without them,
+#' not silently dropped.
+GSL_FLAGGED_PRODUCT_SITES <- c("FR-Mej", "IT-Tor", "NL-Vkp")
+
+message(
+  "Stage 2 decisions: YEAR_SCREEN=", GSL_YEAR_SCREEN, ", NEG_GPP_TO_ZERO(main)=",
+  GSL_NEG_GPP_TO_ZERO_MAIN, ", STRICT_GT=", GSL_STRICT_GT, ", GPP main=",
+  GSL_GPP_VARIANTS["main"], ", GPP supplementary=", GSL_GPP_VARIANTS["supplementary"]
+)

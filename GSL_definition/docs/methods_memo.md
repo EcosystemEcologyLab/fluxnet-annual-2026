@@ -172,7 +172,118 @@ The rule was not adjusted to close either gap, per the framework's instruction.
 - The year-screening decision itself (options reported above; not chosen here).
 - The 25-extra-site and IT-Tor-2012 discrepancies above.
 
-## Stop
+## Stop (Stage 1)
 
 Stopped after this memo, per the resume instruction ("stopping before step 4" = framework
 run-order step 4, `03_derive.R`, Stage 2).
+
+---
+
+# Stage 2 methods memo (framework run-order steps 4-5)
+
+Full prompt: `logs/prompts/2026-10-29_gsl_stage2.md`. Covers `code/03_derive.R` and
+`code/04_reproduce.R`. No figures (Stage 3).
+
+## Decisions (made 2026-10-29, after Stage 1 at `a1633a8`, without Tash's input)
+
+Dave made the following calls, explicitly accepting the risk of a rerun if an assumption later
+proves wrong. Each is a named switch in `code/00_config.R`, and `docs/framework.md`'s "Open
+decisions" list has been replaced with these (recording that they were resolved after Stage 1,
+not derived from Tash's own materials):
+
+- **`GSL_YEAR_SCREEN = "d80"`**: GSL counted on the full gap-filled daily series; a year is kept
+  when ≥80% of its days pass `QC_THRESHOLD_DD`. Stage 1 showed this keeps all 62 sites/505
+  site-years, so the project-standard run and Tash's own selection cover identical site-years —
+  only one run is carried through Stage 2's outputs. Option (b) (every day passes 0.50) is
+  **not** carried through the derived-quantity tables; its Stage 1 counts (55 sites, 276
+  site-years, 3 trend sites) are the strict alternative, reported only here and in the Stage 1
+  section above.
+- **`GSL_NEG_GPP_TO_ZERO_MAIN = TRUE`**: negative daily GPP set to 0 for the main run. The
+  as-delivered version is computed for every quantity (`GSL_NEG_GPP_VARIANTS`), not dropped.
+- **`GSL_STRICT_GT = TRUE`**: GSL counts `GPP > T`, not `GPP >= T`.
+- **Site/year list**: the fixed 505-row Sites table, unchanged. IT-Tor 2012 is kept despite
+  failing Stage 1's Tash-rule reproduction check; the 5 extra site-years Stage 1 found at
+  already-included sites (CA-Ca1 2004/2010, CH-Dav 2011, DE-Tha 2025, NL-Vkp 2025) are not added.
+- **`GSL_GPP_VARIANTS`**: `GPP_NT_VUT_REF` main, `GPP_DT_VUT_REF` supplementary.
+
+## Step 4 (03_derive.R)
+
+Computes every quantity in `docs/framework.md`'s "Derived quantities" table, per site, for all
+4 combinations of `{main, supplementary} GPP variant x {zero-floored, as-delivered} negative-GPP
+treatment` (248 rows = 62 sites x 4 variants in `tables/derived_site.csv`).
+
+**Formulas used** (none specified down to the implementation level by the framework, so stated
+here explicitly):
+- **Skewness**: adjusted Fisher-Pearson G1 (matches `scipy.stats.skew(bias=False)`), implemented
+  directly — `g1 = m3/m2^1.5`, `G1 = g1 * sqrt(n(n-1))/(n-2)`, no package.
+- **L-skewness**: Hosking (1990) unbiased sample L-moment ratio `l3/l2`, via the standard
+  order-statistic L-moment estimators.
+- **Kelly's skewness**: `(P90 + P10 - 2*P50) / (P90 - P10)`, quantile type 7 (R's default,
+  matching numpy's default linear interpolation closely but not guaranteed identically — flagged
+  as a possible source of small differences, not tested against Tash's own values since her code
+  isn't available).
+- **P99**: 99th percentile, type 7, over the full gap-filled daily series across the site's
+  `GSL_YEAR_SCREEN`-passing years (not just QC-passing individual days within those years — see
+  Stage 1's `GSL_YEAR_SCREEN="d80"` rule: once a year qualifies, all its days are used).
+- **T95**: first point on the fine grid (0.01-50% of P99, 0.01% steps, 5000 points) where the
+  multi-year mean of F(y,T) rounds to ≤0.95.
+- **Local sensitivity**: centered difference of mean GSL over ±0.05% of P99 (5 fine-grid steps),
+  expressed as days per 1% of P99.
+- **Common-unit sensitivity**: the same centered-difference approach applied to mean GSL vs. mean
+  F directly (not via T), scaled to "per 1% change in F" (×0.01, since F is a 0-1 fraction).
+- **Trend CI**: `confint()` on `lm(GSL ~ year)`, computed only for the 21 sites with ≥10 years
+  (`GSL_SITES_GE10YR`), per the framework; the trend slope itself is computed for every site
+  regardless of year count.
+
+**Performance**: per-year GSL(T)/F(T) across the full fine grid uses `findInterval()` on each
+year's sorted daily series (O(log n) per threshold via one vectorized call), not a loop over
+5000 grid points — the whole script (62 sites x 4 variants) runs in ~9 seconds.
+
+**Large outputs**: the fine grid (5000 points x 62 sites x 4 variants = 1,240,000 rows) and the
+fraction sweep (20 target fractions x years x sites x variants) go to `data/fine_grid.rds` /
+`data/fraction_sweep.rds` (gitignored), with summaries in `tables/fine_grid_summary.csv` /
+`tables/fraction_sweep_summary.csv` (git-tracked).
+
+## Step 5 (04_reproduce.R) — see `docs/reproduction_report.md` for the full report
+
+**Checks 1, 2 and 4 all pass on the main run** (zero-floored `GPP_NT_VUT_REF`):
+- Skewness range: 0.1932-3.8757, matching the published 0.19-3.88 to 2 decimals.
+- Tercile counts at the published 0.63/0.88 boundaries: exactly 21/20/21 (all 62 sites).
+- T95-vs-skewness correlation: r = -0.6781 vs. published -0.68 (difference 0.0019).
+
+**The as-delivered (no zero-flooring) version is a materially worse match** on every checkable
+statistic — most strikingly check 4's correlation weakens to r = -0.5524 (vs. -0.68 published).
+This is the strongest evidence gathered in Stage 2 that `GSL_NEG_GPP_TO_ZERO_MAIN = TRUE` is the
+right call, though it remains an inference (Tash's own code was not available to confirm
+directly) consistent with, not proof of, the framework's own note that the manuscript's text
+suggests she zeroed negative GPP.
+
+**Check 3 (three Figure 1 correlations, r = 0.63/0.49/0.34) could not be attempted.** Neither the
+Stage 2 prompt nor `docs/framework.md` states what two quantities each of the three values
+correlates — the prompt itself left this blank (`[definition: ________]`). Reported as not
+checkable in `docs/reproduction_report.md`, with what's needed to attempt it stated there, per
+the Stage 2 instruction's own fallback.
+
+**Check 5 (Tash's 22-point grid vs. the fine grid) is an internal consistency check only, not a
+match to a published value** — Tash's own screened daily table/code has not been received, so
+there is nothing external to compare against yet. Confirmed the two grids agree exactly
+(difference 0 to the precision shown) when computed from the same data, which is a
+code-correctness check on the fine-grid implementation, not independent validation.
+
+**FR-Mej/IT-Tor/NL-Vkp (product_id changed between snapshots)**: every match-check table reports
+each statistic with and without these 3 sites. Excluding them changes results only slightly
+(e.g. check 4's r shifts from -0.6781 to -0.6790) — the product change does not appear to be
+driving any of the checked statistics materially, though this was only tested on these four
+specific checks, not on every derived quantity.
+
+## Pending (carried from Stage 1, still not resolved)
+
+Tash's 17 August snapshot, screened daily table/code, her negative-GPP and `>`/`>=` answers, her
+two sensitivity site-year lists, and the three-correlation definition for check 3 above — all
+still requested, not yet received. Stage 2's decisions were made without them, by design, and
+are explicitly subject to revision if any later prove wrong.
+
+## Stop (Stage 2)
+
+Stopped after `docs/reproduction_report.md`, per the Stage 2 prompt ("Stop after step 5 for PI
+sign-off"). No figure has been drawn.

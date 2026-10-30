@@ -242,10 +242,30 @@ Stages:
 - Stage 2, after Tash's files and answers arrive and the year-screening decision is made: steps 4 and 5.
 - Stage 3, after PI sign-off on the reproduction report: step 6.
 
-Open decisions:
+Open decisions (resolved 2026-10-29, after Stage 1 at commit `a1633a8`):
 
-- [ ] Year screening for the project-standard run, decided from the stage 1 counts. Options: (a) treat failing days as missing, scale annual GSL by 365 over valid days, and flag years under 80% valid; (b) keep only years in which every day passes 0.50 (Tash's 0.50 and 100% rule left 30 sites); (c) keep all days and only report the count; (d) count GSL on the full gap-filled daily series, which has a GPP value every day, and keep a year when at least 80% of its days pass 0.50 (stage 1 also reports 70% and 90%). Recommended: (d) for the main run and (b) as a sensitivity check. Option (a) is not advised: QC failures cluster by season (snow, wet seasons, winter), and GSL is itself a count of seasonal days, so scaling by valid days biases it.
-- [ ] Negative daily GPP: as delivered or set to 0 (ask Tash which she used).
-- [ ] Whether GSL counts days with GPP > T or >= T (ask Tash).
-- [ ] Threshold range for Figure 3 (default 5-20% of P99).
-- [x] The `04_qc.R` threshold direction was fixed in the main pipeline on 29 October 2026 (`qc_passes()`, merge 09e621c); no action needed here.
+Dave made the following calls without input from Tash, explicitly accepting the risk of a rerun
+if an assumption later proves wrong. Each is implemented as a named switch in
+`GSL_definition/code/00_config.R` (not hard-coded inline at each point of use) — see that file
+and `docs/methods_memo.md` for the reasoning.
+
+- [x] **Year screening: option (d) at 80%** (`GSL_YEAR_SCREEN = "d80"`). GSL is counted on the
+  full gap-filled daily series; a year is kept when ≥80% of its days pass `QC_THRESHOLD_DD`
+  (`qc_passes()`). Stage 1 showed this keeps all 62 sites and 505 site-years — the
+  project-standard run and Tash's own selection cover the same site-years — so only this one run
+  is carried through Stage 2, not two. Option (b) (every day passes 0.50) is reported once in
+  `docs/methods_memo.md` as the strict alternative (55 sites, 276 site-years, 3 trend sites),
+  not carried through the derived-quantity outputs.
+- [x] **Negative daily GPP set to 0 for the main run** (`GSL_NEG_GPP_TO_ZERO_MAIN = TRUE`). The
+  as-delivered version is computed alongside, for every quantity, not dropped.
+- [x] **GSL counts days with `GPP > T`** (strict; `GSL_STRICT_GT = TRUE`), not `GPP >= T`.
+- [x] **Site and year list: the fixed Sites table above**, unchanged. IT-Tor 2012 is kept even
+  though it failed Stage 1's Tash-rule "complete year" reproduction check. The 5 extra
+  site-years Stage 1 found passing Tash's rule at already-included sites (CA-Ca1 2004/2010,
+  CH-Dav 2011, DE-Tha 2025, NL-Vkp 2025) are not added.
+- [x] **GPP variable: `GPP_NT_VUT_REF` for the main run, `GPP_DT_VUT_REF` for the supplementary
+  version** (`GSL_GPP_VARIANTS` in `00_config.R`).
+- [ ] Threshold range for Figure 3 (default 5-20% of P99) — not yet needed; Stage 2 stops before
+  any figure.
+- [x] The `04_qc.R` threshold direction was fixed in the main pipeline on 29 October 2026
+  (`qc_passes()`, merge `09e621c`); no action needed here.

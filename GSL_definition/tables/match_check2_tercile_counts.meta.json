@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T03:49:11Z",
+  "pipeline_version": "2fe7112",
+  "input_sources": [
+    "GSL_definition/tables/derived_site.csv"
+  ],
+  "notes": "Published boundaries 0.63/0.88, counts 21/20/21 (framework.md, Derived quantities)."
+}

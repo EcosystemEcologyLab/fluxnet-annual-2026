@@ -1,0 +1,5 @@
+negative_gpp,scope,low,middle,high,published_low,published_middle,published_high
+zero-floored (main),all 62,21,20,21,21,20,21
+zero-floored (main),excl. flagged (59),20,19,20,21,20,21
+as-delivered,all 62,24,18,20,21,20,21
+as-delivered,excl. flagged (59),23,17,19,21,20,21

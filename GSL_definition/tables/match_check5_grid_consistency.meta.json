@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T03:49:11Z",
+  "pipeline_version": "2fe7112",
+  "input_sources": [
+    "GSL_definition/tables/tash_grid.csv",
+    "GSL_definition/data/fine_grid.rds"
+  ],
+  "notes": "Internal consistency check (not a published-value match): Tash's 22-point grid vs. the nearest fine-grid point, both computed from our own screened data."
+}

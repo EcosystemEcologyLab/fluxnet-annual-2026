@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T03:47:11Z",
+  "pipeline_version": "2fe7112",
+  "input_sources": [
+    "GSL_definition/data/fraction_sweep.rds"
+  ],
+  "notes": "Per-site GSL at 4 representative target fractions (0.80/0.90/0.95/0.99) out of the full 0.80-0.99 sweep in data/fraction_sweep.rds."
+}

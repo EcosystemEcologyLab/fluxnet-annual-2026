@@ -4,6 +4,50 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 2: done, stopped for PI sign-off
+
+Follow-up to the entry below (same task). Framework run-order steps 4 (`03_derive.R`) and 5
+(`04_reproduce.R`) done; stopped before any figure, per the prompt. Full detail:
+`GSL_definition/docs/methods_memo.md` (Stage 2 section) and `GSL_definition/docs/reproduction_report.md`.
+
+**Decisions recorded** in `docs/framework.md`'s "Open decisions (resolved)" section and as named
+switches in `code/00_config.R`: year screening (d) at 80% (`GSL_YEAR_SCREEN="d80"`), negative GPP
+zero-floored for the main run (`GSL_NEG_GPP_TO_ZERO_MAIN=TRUE`, as-delivered computed alongside),
+GSL strict `>` (`GSL_STRICT_GT=TRUE`), the fixed Sites table (IT-Tor 2012 kept, the 5 extra
+Tash-rule years not added), `GPP_NT_VUT_REF` main / `GPP_DT_VUT_REF` supplementary.
+
+**Step 4:** every quantity in the framework's Derived quantities table, for 62 sites x 4 variants
+(248 rows, `tables/derived_site.csv`) — ran in ~9 seconds using `findInterval()` on each year's
+sorted daily series rather than looping over the 5000-point fine grid. Formulas stated explicitly
+in the memo (adjusted Fisher-Pearson G1 skewness, Hosking L-skewness, Kelly's skewness, etc.) —
+none were specified down to implementation level by the framework.
+
+**Step 5 — match checks (main run, zero-floored `GPP_NT_VUT_REF`), all against published values:**
+- Skewness range 0.1932-3.8757 vs. published 0.19-3.88 — **PASS**.
+- Tercile counts at 0.63/0.88: exactly 21/20/21 — **PASS**.
+- T95-vs-skewness correlation: r = -0.6781 vs. published -0.68 — **PASS**.
+- The as-delivered (no zero-flooring) version is a materially worse match on every one of these
+  (T95 correlation weakens to r = -0.5524) — the strongest evidence gathered that
+  `NEG_GPP_TO_ZERO_MAIN=TRUE` was the right call, though still an inference, not a confirmation
+  from Tash's own code.
+- The three Figure 1 correlations (r = 0.63/0.49/0.34) **could not be checked** — neither the
+  prompt nor the framework states what two quantities each one correlates; reported as not
+  checkable, with what's needed stated in the report, per the prompt's own fallback instruction.
+- Tash's 22-point grid vs. the fine grid: exact internal agreement (not a published-value check —
+  her own screened data/code still hasn't arrived).
+- `FR-Mej`/`IT-Tor`/`NL-Vkp` (product_id changed between snapshots, Stage 1) flagged throughout;
+  excluding them changed results only slightly.
+
+**Process note:** a second message in the same turn re-pasted the framework document as
+"updated" — diffed byte-for-byte identical to Stage 1's saved copy, so only the Open Decisions
+section needed replacing, not the whole document.
+
+**Not done / next step:** no figure has been drawn (Stage 3, pending PI sign-off on
+`docs/reproduction_report.md`). Still pending from Stage 1: Tash's snapshot/code/answers, her two
+sensitivity site lists, and now also the Figure-1-correlation definitions needed for check 3.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 2 (start)
 
 Full prompt: `logs/prompts/2026-10-29_gsl_stage2.md`. Proceeding from Stage 1 (`a1633a8`) to

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T03:47:11Z",
+  "pipeline_version": "2fe7112",
+  "input_sources": [
+    "GSL_definition/data/fine_grid.rds"
+  ],
+  "notes": "Per-site summary of the full fine-grid local-sensitivity curve (5000 points, 0.01-50% of P99, in data/fine_grid.rds); local sensitivity = d(mean GSL)/d(% of P99), centered difference over +/-0.05% of P99."
+}

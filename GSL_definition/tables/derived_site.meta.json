@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T03:47:09Z",
+  "pipeline_version": "2fe7112",
+  "input_sources": [
+    "GSL_definition/data/daily_extract.rds"
+  ],
+  "notes": "One row per site x gpp_variant x neg_gpp_variant (248 total). Main run = gpp_variant='main' (GPP_NT_VUT_REF), neg_gpp_variant='main' (negative GPP set to 0). GSL_STRICT_GT=TRUE (GSL counts GPP > T). Skewness = adjusted Fisher-Pearson G1 (scipy.stats.skew, bias=False), implemented directly (no package). L-skewness = Hosking unbiased sample L-moment ratio l3/l2. Kelly's skewness = (P90+P10-2*P50)/(P90-P10), quantile type 7. Z17 = mean F at T = 10% of P99 (fixed). T95 = first fine-grid point (0.01-50% of P99, 0.01% steps) where mean F rounds to <= 0.95. Trend CI only computed for the 21 sites with >= 10 years (GSL_SITES_GE10YR)."
+}

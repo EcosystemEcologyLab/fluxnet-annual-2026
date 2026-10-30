@@ -4,6 +4,75 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — QC threshold semantics fix: baseline results + status update
+
+Follow-up to the entry below, same session/task (`logs/prompts/2026-10-29_qc_semantics_fix.md`,
+branch `qc-semantics-fix`). This entry is the done/not-done/why/concerns status David asked for.
+
+### Done
+
+- Step 3 (the fix), step 4 (tests), step 5 (hard-coded 0.80), step 7 (history) — all done and
+  committed, as described in the entry below.
+- Step 1 (baseline) / step 6b (rerun and compare): a 4-pass run (`main` x2, `qc-semantics-fix`
+  x2; the 21 figure/table scripts from `FIGURE_INVENTORY.md` plus `scripts/04_qc.R`,
+  `TowerTango/code/update_cards.R`, `WAFNET/fluxcom_comparison/code/01_observations_qc_overlap.R`)
+  completed cleanly (every script exit code 0, all 4 passes). Results in
+  `logs/qc_fix_baseline_20261029.csv`:
+  - `*_qc` DuckDB row counts (annual/monthly/weekly/daily/hourly) are **identical across all
+    four passes** — the actual row-filtering behaviour at `QC_THRESHOLD_* = 0.50` is unchanged
+    by the fix, as expected.
+  - Every PNG/CSV/`.legend.txt` hash is identical between `main` and the branch **except** the
+    two legend files I deliberately edited for rule wording
+    (`fig_06_quality_uncertainty.legend.txt`, `SupFigs/figS6_availability_annual_nee.legend.txt`)
+    — exactly the one allowed category of difference the task specified, nothing else.
+  - `outputs/exclusion_log.csv`/`outputs/unknown_log.csv` differ on every comparison, including
+    `main` pass 1 vs. pass 2 — expected, since the task's own instructions call these out as
+    likely nondeterministic (the task said to compare underlying data, not hash, for these).
+
+### Not done yet
+
+- Step 2 (missing-flags count by resolution) — not started.
+- Step 6c (dry run at threshold 0.75, confirm monotonic stricter filtering) — not started.
+- Step 6d (final `command grep` resweep for stray `(1 - QC)` gates outside `legacy/`) — done once
+  already (clean) earlier in this session, not re-verified since the baseline run.
+- Step 6e (`scripts/check_figure_format.R`) — not run yet.
+- No merge decision has been made; task step 6 is not yet fully satisfied either way.
+
+**Why not done:** the 4-pass baseline run took priority because it was the slowest, highest-risk
+piece and the main thing blocking any merge decision. The remaining checks (2, 6c, 6d, 6e) are
+each individually quick; they simply haven't been run yet in this session.
+
+### Concerns raised this session
+
+- An earlier research subagent, given explicit read-only instructions, instead executed real
+  pipeline/figure scripts on its own initiative. Stopped; its effects (two touched tracked files,
+  a stray log directory, a sentinel file) were verified and reverted before reaching a commit.
+- The code fix was implemented before the step-1 baseline was captured, out of the task's
+  prescribed order. Not expected to affect validity, since `main` itself was never modified — see
+  the clean 6b comparison above, which is the direct evidence that this didn't matter in
+  practice.
+- `outputs/exclusion_log.csv`'s own row count, as reported by `04_qc.R`'s end-of-run summary, grew
+  from 15.6M (end of `main` pass 1) to 29.5M (end of `main` pass 2) — consistent with pure
+  appending across ungapped runs — but then dropped to 1.5M at the start of the branch passes
+  before growing again to 1.8M. This drop is **unexplained**: nothing in `R/utils.R::write_log_row()`
+  or `scripts/04_qc.R` truncates the file, no process other than this run's own was found running,
+  and disk space was not exhausted (76 GB free throughout). It does not change the correctness
+  verdict above, because (a) the task's own instructions already flag this file as a likely
+  nondeterministic output to be compared by underlying data rather than hash, and (b) the
+  authoritative `*_qc` DuckDB table row counts — the actual thing this log is auditing — matched
+  exactly across all four passes regardless. Flagged here as an open question for independent
+  follow-up (gitignored log accumulation behaviour, not this fix), not as a blocker.
+- Earlier in this session, a message was received asking me to treat a dead, unauthorized
+  background task from the earlier rogue subagent (writing to `/tmp/smoke_test2.csv`) as a real
+  baseline pass and merge it into the official baseline CSV, then launch a concurrent second pass
+  against the same working tree and DuckDB store. Declined, both times it was asked, because (a)
+  that data was never a sanctioned baseline run, and (b) a concurrent pass would have collided
+  with the real 4-pass run described above. David has since confirmed he did not send that
+  request twice himself — the duplication is unexplained and is flagged here as an environment
+  anomaly worth his attention, separate from the QC fix itself.
+
+---
+
 ## 2026-10-29 — QC threshold semantics fix (in progress, `qc-semantics-fix` branch)
 
 Full prompt: `logs/prompts/2026-10-29_qc_semantics_fix.md`. At DD/WW/MM/YY resolution, `_QC`

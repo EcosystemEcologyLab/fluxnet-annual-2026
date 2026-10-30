@@ -4,6 +4,23 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 3 (start)
+
+Full prompt: `logs/prompts/2026-10-29_gsl_stage3.md`. Dave signed off Stage 2
+(`docs/reproduction_report.md`, `8e6a82a`): checks 1/2/4 pass on the main run; check 3 waits for
+a definition and does not block this stage. Proceeding to framework run-order step 6 — Figures
+1-4, the benchmark table, and a supplementary set (Figures 2/3 repeated with `GPP_DT_VUT_REF` and
+with as-delivered negative GPP). Rebuilding the current manuscript's own Figures 1-4 for direct
+comparison is explicitly deferred — the framework doesn't describe them in enough detail to
+rebuild without the manuscript itself. Added `GSL_definition/code/fig_helpers.R` (shared
+functional-group palette, skewness colour scale, `save_gsl_figure()` wrapping
+`R/nature_format.R::save_nature_figure()` + a `.legend.txt`/`.meta.json` writer) — reusing
+`save_nature_figure()` directly is safe (no side effect outside the `path_stem` the caller gives
+it), unlike `write_output_metadata()` (Stage 1), which is why only the latter needed a local
+reimplementation.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 2: done, stopped for PI sign-off
 
 Follow-up to the entry below (same task). Framework run-order steps 4 (`03_derive.R`) and 5

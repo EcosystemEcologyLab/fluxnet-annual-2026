@@ -4,6 +4,23 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL expanded-site analysis, session 2a: started
+
+Full prompt: `logs/prompts/2026-10-30_gsl_expanded_session2a.md`. Implementing Dave's decisions
+from the session 1 checks report (`GSL_definition/expanded/docs/checks_report_2026-10-30.md`):
+CUT fallback keyed to GPP as well as QC, a winter partitioning-artifact screen (with an
+unscreened variant kept alongside), skewness-thirds recompute, Southern Hemisphere season-year
+joins for the carbon-gain/temperature models, a temperature-sensitivity window change, a local
+sensitivity window change (±1% of P99) with absolute values in Figure 3, trend output in %
+of mean GSL per decade plus a years-to-detect-trend sweep, a redesigned bounds check (S2), and
+dropping mixed forest from trend panels (too few long-record sites). Each change goes behind a
+config switch in the existing `00_config.R`-`06_checks.R` scripts, which are modified in place
+and rerun end to end, overwriting the expanded tables and figures (git history keeps `a22e893`
+as the pre-change state). Report to follow at
+`GSL_definition/expanded/docs/report_back_2026-10-30.md`.
+
+---
+
 ## 2026-10-30 — GSL expanded-site analysis, checks session 1: done
 
 Full prompt: `logs/prompts/2026-10-30_gsl_expanded_checks_session1.md`. Full results:

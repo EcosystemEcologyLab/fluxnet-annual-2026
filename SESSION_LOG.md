@@ -4,6 +4,54 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL selection rule options: done
+
+Full prompt: `logs/prompts/2026-10-30_gsl_selection_rule_options.md`. Full results:
+`GSL_definition/docs/selection_rule_options_2026-10-30.md`. Read-only on
+`data/duckdb/fluxnet.duckdb` (`dataset = 'FLUXMET'` only); extends
+`GSL_definition/code/11_selection_audit.R` (Steps 8-10) and its tables
+(`tables/selection_audit_rule_options_*.csv`) — does **not** change the 62-site GSL analysis,
+its code, or its outputs. Stops for Dave's decision; no rule has been applied.
+
+**Rules**: R0 = the manuscript baseline (VUT-only, every day passes). R1 = R0 + the per-site
+VUT/CUT QC fallback `scripts/04_qc.R` already uses for the 62-site analysis (never mixed within
+a site; every population site has at least one of the two columns). R2 = R1 + a flat allowance
+of up to N = 3/7/14 failing days per year. R3 = R1 + ignoring failing days whose gap-filled GPP
+falls outside a low-GPP band (0-25% of the site's own P99, computed from R1-passing years, or
+all passing days if none exist), allowing up to M = 0/3 remaining (inside-band) failing days per
+year; a failing day with no GPP value at all is conservatively treated as inside the band.
+
+**Totals**: R0 keeps 68 sites/549 site-years/21 trend sites; R1 74/603/22; R2 at N=3/7/14 keeps
+118/1,050/45, 133/1,314/56, 161/1,658/70; R3 at M=0/3 keeps 118/1,052/36, 160/1,593/72.
+
+**GSL-62 containment**: checked directly (not assumed). R2 (any N tested) and R3 (any M tested)
+fully contain all 505 GSL-62 site-years. **R0 and R1 do not** — both are missing exactly one:
+IT-Tor 2012 (1 failing day), the exact anomaly `00_config.R` already documents and deliberately
+keeps despite it failing Tash's own "complete year" check. This confirms R1 alone (fallback, no
+tolerance) is not viable regardless of the long-record question; some nonzero tolerance is
+required either way.
+
+**Long-record recovery** (of the 37 non-GSL-62 long-record sites): R1 recovers 7 (5 new via the
+CUT fallback, on top of 2 — GF-Guy, US-Aud — that already pass R0). R2 at N=14 recovers 34 of
+37, the most of any rule/setting tested and a strict superset of every other rule's recovered
+set, including 10 of the 11 sites the first audit found permanently excluded by the VUT-only
+rule (AU-Tum, CA-Ca3, CA-LP1, DE-Lnf, FR-Hes, US-Ho2, US-NR1, US-Syv, US-Uaf, US-Whs). **3 sites
+are unrecoverable under every rule/setting tested**: BR-Ma2 (zero non-NA GPP values across its
+whole 18-year record — R3's band test cannot function for it), US-ICh and US-WCr (too many
+failing days in too many years even at the loosest tolerance tried; best case 2-3 passing years,
+short of 5).
+
+**Rule 5**: re-checked for every one of the 104 sites newly kept under any rule relative to R0,
+using each site's own fallback GPP column. None fails; 5 are undetermined (no GPP data at all),
+none of them among the recovered long-record sites.
+
+**Recommendation**: R2 at N=14. It recovers every long-record site recoverable at all, and at
+every long-record-recovery level matched against R3 it adds fewer collateral (non-target) sites
+while being the simpler rule (no per-site P99, no degenerate no-GPP-data case). R3 is not
+preferred at any setting tested.
+
+---
+
 ## 2026-10-30 — GSL selection rule options: start
 
 Full prompt: `logs/prompts/2026-10-30_gsl_selection_rule_options.md`. Follow-on to the

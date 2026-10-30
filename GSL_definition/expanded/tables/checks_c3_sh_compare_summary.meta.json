@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T21:20:14Z",
+  "pipeline_version": "08f655d",
+  "input_sources": [
+    "GSL_definition/expanded/tables/checks_c3_sh_siteyear_compare.csv"
+  ],
+  "notes": "Correlation, median |absolute difference| and median |percent difference| (season-year vs. calendar-year), across all compared SH site-years, for annual GPP, annual NEP and mean TA_F."
+}

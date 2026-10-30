@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T21:20:13Z",
+  "pipeline_version": "08f655d",
+  "input_sources": [
+    "GSL_definition/expanded/tables/carbon_gain_pooled.csv"
+  ],
+  "notes": "Figure 5b's own numbers (start_z17/start_t95/end_z17/end_t95 x annual_gpp/annual_nep, by skewness third and functional group), pulled unchanged from carbon_gain_pooled.csv -- no recomputation. n_obs = site-years. Season-boundary rule (02_derive.R season_one()): start = first day of the first run of >=5 consecutive days with zero-floored daily GPP_NT_REF above threshold; end = last day of the last such run; NA GPP counts as below threshold; NH sites use the calendar year, SH sites (location_lat<0) use 1 Jul(y)-30 Jun(y+1), included only when both calendar years are in that site's own passing-year list. Model (03_models.R fit_pooled_slope()): nlme::lme(annual_gpp_or_nep ~ start_or_end_doy, random = ~ start_or_end_doy | site_id, method='REML'), falling back to a random-intercept-only model if the random-slope model fails to converge (see model_tier/note columns)."
+}

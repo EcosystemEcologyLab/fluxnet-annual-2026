@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T21:20:14Z",
+  "pipeline_version": "08f655d",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds",
+    "GSL_definition/expanded/tables/annual_inputs.csv"
+  ],
+  "notes": "Per SH site-year: annual GPP/NEP (sum) and mean TA_F over the 1 Jul(y)-30 Jun(y+1) season year vs. the calendar-year(y) values 03_models.R actually joins to that season year's start/end dates. Only site-years where BOTH y and y+1 pass the selection rule are included (same windowing as 02_derive.R Step B); 14 of 14 SH sites have >=1 such site-year."
+}

@@ -4,19 +4,51 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
-## 2026-10-30 — GSL expanded-site analysis, checks session 1: started
+## 2026-10-30 — GSL expanded-site analysis, checks session 1: done
 
-Full prompt: `logs/prompts/2026-10-30_gsl_expanded_checks_session1.md`. Four read-only checks on the
-expanded-site run (commit `a22e893`): (1) US-Ha1 winter GPP days and whether they are a
-partitioning artifact, with a DBF/MF network-wide sweep; (2) Figure 5b carbon-effect numbers plus
-a DBF-only outlier analysis of start/end-date slopes; (3) the Southern Hemisphere season-year vs.
-calendar-year mismatch in `03_models.R`'s join; (4) an attempt to reproduce Tash's three
-unexplained Figure 1 correlations (r = 0.63/0.49/0.34) on the 62-site reproduction run, under an
-explicit new assumption (mean GSL / GSL s.d. / GSL trend, in that order) that a prior session
-(`docs/reproduction_report.md`, Check 3) had marked not checkable for lack of a definition.
-New code only, at `GSL_definition/expanded/code/07_checks_session1.R`; no existing script, table
-or figure is touched. Report to follow at
-`GSL_definition/expanded/docs/checks_report_2026-10-30.md`.
+Full prompt: `logs/prompts/2026-10-30_gsl_expanded_checks_session1.md`. Full results:
+`GSL_definition/expanded/docs/checks_report_2026-10-30.md`. Four read-only checks on the
+expanded-site run (commit `a22e893`), all in new code at
+`GSL_definition/expanded/code/07_checks_session1.R` — confirmed by `git status` that no existing
+script, table or figure was touched; only new `checks_*.csv`/`.meta.json` tables were added.
+
+**Check 1 (US-Ha1 winter GPP)**: of 65 US-Ha1 winter (Dec/Jan/Feb/Mar) days above Z17 and/or T95
+since 1996, 29 (45%) match a partitioning-artifact signature (positive `GPP_NT_REF`, `NEE_REF`
+≥0, `TA_F`<0°C, `GPP_DT_REF`≈0) — but the two clusters Figure 1 shows differ sharply: 2015 is 88%
+artifact (a near-continuous sub-freezing run where NT and DT disagree by an order of magnitude),
+2010 is only 50% (half above-freezing days with NT/DT broadly agreeing, half the same artifact
+signature). Excluding those days moves US-Ha1's mean GSL by only 3-4 days but cuts its
+interannual s.d. by ~20%. The same mechanism recurs at scale: **11 DBF/MF sites, 49 site-years**
+change annual GSL by >5 days from winter cold-GPP days alone, worst at CN-HeM (up to 72
+days/year) and CH-Lae (flagged in 17 of its 18 years — effectively the network's entire
+mixed-forest representation).
+
+**Check 2 (carbon effect of start/end dates)**: Figure 5b's annual-GPP effect is strong and
+consistent (14-15 of 16 subset×definition cells have a 95% CI excluding zero, same sign
+throughout); annual-NEP's effect is much weaker (only 2-5 of 16 cells exclude zero). For the 17
+DBF trend sites, **zero** per-site slopes are Tukey outliers on any of the 4 start/end
+predictors, so the requested "with vs. without outliers" pooled refit is identical by
+construction — there was nothing to remove, and no near-zero slope was hiding underneath one.
+
+**Check 3 (Southern Hemisphere season-year mismatch)**: 14 SH sites (grassland/evergreen
+forest/woody-grass mosaic only, none in DBF/MF). Season-year (Jul-Jun) vs. calendar-year values
+correlate at r=0.97 (GPP), 0.92 (NEP), 0.995 (TA_F). Refitting the 6 affected pooled subsets with
+season-year values changes no carbon-gain or temperature-sensitivity slope materially or in
+sign; the largest nominal shift (woody-grass mosaic temperature-sensitivity) was already
+statistically indistinguishable from zero before and after.
+
+**Check 4 (Tash's three Figure 1 correlations, r=0.63/0.49/0.34)**: previously marked "NOT
+CHECKABLE" in `docs/reproduction_report.md` for lack of a definition; this session's prompt
+supplied one (mean GSL / GSL s.d. / GSL trend spread, in order) and it reproduces cleanly. Of 48
+combinations tried (2 grids × 3 spread measures × 2 negative-GPP treatments × 2 site scopes × 2
+correlation types), exactly 4 — all **% of P99 grid, IQR spread, Pearson correlation** — match
+all three target values within 0.004-0.018 (next-best combination misses by 10x more; the fixed
+0.0001-2.5 gC/m2/d grid never comes within 0.02 on any variant). Flagged clearly in the report:
+the fixed grid's own interior spacing was an assumption (only its two endpoints were given), but
+since no fixed-grid combination matched anyway, that assumption did not end up mattering to the
+conclusion.
+
+No recommendations were made beyond what the report states; fixes are session 2.
 
 ---
 

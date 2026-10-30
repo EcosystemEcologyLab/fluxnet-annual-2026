@@ -1,0 +1,15 @@
+site_id,igbp,group,location_lat,skewness_third,n_site_years
+NZ-ADw,GRA,grassland,-43.64935,middle,6
+AU-GWW,EBF,evergreen forest,-30.1914,middle,9
+NZ-Lau,GRA,grassland,-45.038904,middle,5
+AU-Whr,EBF,evergreen forest,-36.6732,low,5
+AU-Tum,EBF,evergreen forest,-35.6566,low,11
+AU-ASM,SAV,woody-grass mosaic,-22.283,high,11
+AU-DaS,WSA,woody-grass mosaic,-14.1592,middle,10
+AU-Dry,WSA,woody-grass mosaic,-15.2588,low,5
+AU-TTE,SAV,woody-grass mosaic,-22.287,high,8
+AU-Gin,EBF,evergreen forest,-31.376351,low,6
+AU-How,WSA,woody-grass mosaic,-12.4952,low,13
+AU-Cum,EBF,evergreen forest,-33.615278000000004,low,11
+AU-Ync,GRA,grassland,-34.9878,high,8
+AU-Cpr,WSA,woody-grass mosaic,-34.0027,middle,12

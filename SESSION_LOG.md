@@ -4,6 +4,36 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL expanded-site analysis: selection check deviates from the prompt's expectation
+
+During `expanded/code/01_select.R` (selection step), the "drop sites with no GPP values" check
+produced **9** sites, not the prompt's expected 5 (AU-Stp, ES-LJu, ID-PaD, JP-Khw, JP-Ta2). The
+other 4 — **AU-Cow, AU-Rob, GF-Guy, ID-PaB** — are not a code bug: queried directly from DuckDB,
+all four have non-NA `NEE_VUT_REF_QC` (i.e. correctly classified "VUT" by the stated per-site
+fallback rule, keyed to QC availability) but `GPP_NT_VUT_REF` is **entirely NULL** for all four.
+Three of the four (AU-Rob, GF-Guy, ID-PaB) also have `GPP_NT_CUT_REF` entirely NULL, so no GPP
+value exists under either variable for them regardless of fallback policy. The fourth, **AU-Cow**,
+does have 603 non-NA `GPP_NT_CUT_REF` values — but the prompt's own fallback rule is keyed to QC
+availability, not GPP availability, and AU-Cow's QC is VUT, so the stated rule does not reach
+the CUT GPP column for it. All 4 are candidates that already pass the manuscript rule (not newly
+added by R2 N=14) — this is a genuine gap in scope, not a prior-audit error: the first audit's
+rule 5 / GPP-availability checks only ever covered sites newly added relative to the manuscript
+rule, never the already-passing ones, so this is the first time these 4 sites' GPP availability
+has been checked at all.
+
+One further site, **US-Aud**, fails rule 5 cleanly on this run: 17.83% of its daily GPP is below
+-1 gC/m2/d, well over the 10% cutoff. This is also newly surfaced here, not a prior-audit miss —
+US-Aud was one of the sites that already passed the manuscript's VUT-only rule, and rule 5 was
+never checked for it before either, for the same reason as AU-Cow/AU-Rob/GF-Guy/ID-PaB above.
+
+Net effect: the expanded set has **151 sites** (not the prompt's "about 156"), all 505 GSL-62
+site-years are confirmed included, and US-Ha1 keeps 17 years as expected. Diagnosed fully, not a
+bug — proceeding with the analysis on the actual, correct 151-site result rather than forcing
+the prompt's assumed count. Full detail: `GSL_definition/expanded/tables/selection_exclusions.csv`
+and the final report.
+
+---
+
 ## 2026-10-30 — GSL expanded-site analysis: start
 
 Full prompt: `logs/prompts/2026-10-30_gsl_expanded.md`. New, large follow-on to the selection-rule

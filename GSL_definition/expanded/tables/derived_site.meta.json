@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-10-30T18:11:43Z",
+  "pipeline_version": "eede667",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds",
+    "GSL_definition/expanded/tables/sites.csv"
+  ],
+  "notes": "One row per site x variant (main=GPP_NT_REF zero-floored, dt=GPP_DT_REF zero-floored, negdelivered=GPP_NT_REF as-delivered negative GPP), 151 sites. derive_one() reused by sourcing code/03_derive.R (gsl.skip_driver=TRUE). Skewness thirds are TERCILES OF THIS EXPANDED SET'S OWN skewness distribution, recomputed per variant (main breaks: low<=0.6789, middle<=0.9099; dt breaks: low<=0.7632, middle<=1.0305) -- NOT the 62-site project's fixed 0.63/0.88 cutoffs. share_outside_season_* = 1 - mean F at that threshold (T95's is ~5% by construction)."
+}

@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-10-30T18:03:13Z",
+  "pipeline_version": "2f0a68e",
+  "input_sources": [
+    "GSL_definition/tables/selection_audit_population.csv",
+    "GSL_definition/tables/selection_audit_rule_options_qc_fallback.csv",
+    "GSL_definition/tables/selection_audit_rule_options_site_year.csv",
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')"
+  ],
+  "notes": "Expanded GSL site list: manuscript rule 1 (IGBP) + per-site VUT/CUT QC fallback (as scripts/04_qc.R) + rule 4 (>=5 years) under R2 N=14 (<=14 failing days/year, 0.25 daily threshold, NA fails) + rule 5 (<=10% of daily GPP < -1, whole-site) + drop if zero non-NA GPP values at all. 151 sites kept, 9 dropped for no GPP data (AU-Cow, AU-Rob, AU-Stp, ES-LJu, GF-Guy, ID-PaB, ID-PaD, JP-Khw, JP-Ta2), 1 dropped for rule 5. All 62 GSL sites and all 505 of their site-years are included (checked directly)."
+}

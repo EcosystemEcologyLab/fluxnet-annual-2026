@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:11:50Z",
+  "pipeline_version": "eede667",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds"
+  ],
+  "notes": "Per site-year, at Z17 and T95: gsl_lower = GSL if every QC-failing day (fallback QC < 0.25, or NA) is forced to count as BELOW threshold regardless of its own gap-filled GPP value; gsl_upper = GSL if every such day is forced ABOVE threshold; gsl_actual = the GSL actually reported elsewhere (uses each day's own real gap-filled value, including failing-QC days). spread = gsl_upper - gsl_lower, which is algebraically exactly n_fail_days (0-14 by rule 4's R2 N=14 construction) -- checked directly (stopifnot), not assumed. gsl_actual always lies in [gsl_lower, gsl_upper] (checked)."
+}

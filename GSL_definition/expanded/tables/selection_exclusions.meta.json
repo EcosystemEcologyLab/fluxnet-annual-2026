@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:03:13Z",
+  "pipeline_version": "2f0a68e",
+  "input_sources": [
+    "GSL_definition/expanded/tables/sites.csv"
+  ],
+  "notes": "Candidate sites (passed rule 1 + rule 4 under R2 N=14) dropped by rule 5 or the no-GPP-data rule, with reason."
+}

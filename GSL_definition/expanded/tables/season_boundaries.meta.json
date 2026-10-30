@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:11:47Z",
+  "pipeline_version": "eede667",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds"
+  ],
+  "notes": "Season start = first day of the first run of >=5 consecutive days with gpp_use > threshold; end = last day of the last such run; gap_days = days below threshold strictly between start and end (inclusive range). NA gpp_use counts as 'below'. Northern-hemisphere sites use the calendar year; Southern-hemisphere sites (location_lat<0) use 1 Jul (season_year) - 30 Jun (season_year+1), included only when BOTH calendar years are in that site's own passing-year list. threshold_name: 5pct/20pct = 5%/20% of P99 (Figure 4a); z17 = 10% of P99; t95 = the site's own T95 %. above_threshold_all_year flags a site-year with no day below threshold at all (start=day 1, end=last day, gap_days=0 trivially). 31 such combination(s)."
+}

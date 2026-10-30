@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:03:13Z",
+  "pipeline_version": "2f0a68e",
+  "input_sources": [
+    "GSL_definition/expanded/tables/sites.csv"
+  ],
+  "notes": "1573 site-years across 151 sites, passing R2 N=14."
+}

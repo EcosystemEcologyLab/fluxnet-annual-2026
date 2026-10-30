@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-10-30T18:11:50Z",
+  "pipeline_version": "eede667",
+  "input_sources": [
+    "GSL_definition/expanded/data/daily_extract.rds"
+  ],
+  "notes": "Annual GPP (gC/m2/yr, zero-floored, main variant), NEP = -NEE_REF, and mean TA_F per passing site-year. Sums/means use na.rm=TRUE over available days; n_days_* columns report coverage for transparency."
+}

@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-30T04:13:32Z",
-  "pipeline_version": "9721b01",
+  "run_datetime_utc": "2026-10-30T04:45:48Z",
+  "pipeline_version": "db76687",
   "input_sources": [
     "GSL_definition/tables/derived_site.csv",
     "GSL_definition/data/daily_extract.rds"

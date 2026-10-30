@@ -23,15 +23,23 @@ daily_extract$TIMESTAMP <- as.Date(as.character(daily_extract$TIMESTAMP))
 daily_extract$year <- lubridate::year(daily_extract$TIMESTAMP)
 gpp_col <- GSL_GPP_VARIANTS[["main"]]
 
-## ---- Figure 1 sites (same selection rule as 05_fig1.R -- not persisted
-## anywhere, so reapplied here; the skewness VALUES themselves are reused,
-## not recomputed). ----
-pick_tercile_site <- function(third) {
-  sub <- derived_site |> filter(skewness_third == third, site_id != "AU-ASM")
+## ---- Figure 1 sites (same selection rule as 05_fig1.R, including the
+## Stage 3 revision restricting the high-third pick to woody-grass mosaic/
+## grassland sites -- not persisted anywhere, so reapplied here; the
+## skewness VALUES themselves are reused, not recomputed). ----
+derived_site_grp <- derived_site |> left_join(GSL_SITES |> select(site_id, group), by = "site_id")
+pick_low_site <- function() {
+  sub <- derived_site_grp |> filter(skewness_third == "low", site_id != "AU-ASM")
   med <- median(sub$skewness)
   sub$site_id[which.min(abs(sub$skewness - med))]
 }
-fig1_sites <- c(low = pick_tercile_site("low"), high = pick_tercile_site("high"))
+pick_high_dryland_site <- function() {
+  high_all <- derived_site_grp |> filter(skewness_third == "high", site_id != "AU-ASM")
+  med <- median(high_all$skewness)
+  dryland <- high_all |> filter(group %in% c("woody-grass mosaic", "grassland"))
+  dryland$site_id[which.min(abs(dryland$skewness - med))]
+}
+fig1_sites <- c(low = pick_low_site(), high = pick_high_dryland_site())
 
 ## ---- Panel a: per-year F(y,T) vs. GSL(y,T) for the two Figure 1 sites ----
 threshold_grid_pct <- seq(0.1, 60, by = 0.5)
@@ -80,7 +88,14 @@ p4a <- ggplot() +
   scale_colour_manual(values = setNames(c("#1b7837", "#762a83"), c("low third", "high third")), name = NULL) +
   labs(x = "Days above threshold", y = "Included fraction of annual GPP") +
   theme_gsl() +
-  theme(legend.position = c(0.82, 0.18)) +
+  ## legend.justification anchors the legend BOX's own corner (not its
+  ## center) to legend.position, so a wide legend box grows inward rather
+  ## than spilling past the panel edge and cutting the border -- the bare
+  ## legend.position = c(0.82, 0.18) used before this revision let the box
+  ## extend past the right/bottom panel border.
+  theme(legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
+        legend.background = element_rect(fill = "white", colour = NA),
+        legend.key = element_blank(), legend.text = element_text(size = NATURE_SMALL_PT)) +
   panel_letter("a")
 
 ## ---- Panel b: all 62 sites, GSL vs. target fraction, coloured by skewness,
@@ -100,22 +115,28 @@ p4b <- ggplot(fraction_sweep_main, aes(x = target_fraction, y = gsl, group = sit
   panel_letter("b")
 
 ## ---- Panel c: common-unit sensitivity at Z17 and at T95 (=0.95 by
-## definition) vs. skewness. ----
+## definition) vs. skewness. One marker convention (fig_helpers.R): Z17 =
+## black circle, T95 = red triangle, same as panels 2b/2c/3a. ----
 panel_c_data <- derived_site |>
   select(site_id, skewness, z17_common_unit_sensitivity, t95_common_unit_sensitivity) |>
   pivot_longer(c(z17_common_unit_sensitivity, t95_common_unit_sensitivity),
                names_to = "at", values_to = "sensitivity") |>
-  mutate(at = recode(at, z17_common_unit_sensitivity = "Z17 (10% of P99)",
-                      t95_common_unit_sensitivity = "T95 (F=0.95)"))
+  mutate(at = recode(at, z17_common_unit_sensitivity = "Z17", t95_common_unit_sensitivity = "T95"))
 
 median_c <- panel_c_data |> group_by(at) |> summarise(median_sens = median(sensitivity, na.rm = TRUE), .groups = "drop")
 
-p4c <- ggplot(panel_c_data, aes(x = skewness, y = sensitivity, colour = at)) +
+p4c <- ggplot(panel_c_data, aes(x = skewness, y = sensitivity, shape = at, colour = at)) +
   geom_point(size = 0.8) +
-  scale_colour_manual(values = c("Z17 (10% of P99)" = "black", "T95 (F=0.95)" = "firebrick"), name = NULL) +
+  scale_shape_gsl_marker() +
+  scale_colour_manual(values = GSL_MARKER_COLORS, breaks = c("Z17", "T95"), guide = "none") +
   labs(x = "Skewness", y = "Common-unit sensitivity\n(days per 1% change in F)") +
   theme_gsl() +
-  theme(legend.position = c(0.75, 0.9)) +
+  ## Same box-corner anchoring as panel a, so the legend grows inward from
+  ## the top-right corner instead of spilling past the panel border.
+  theme(legend.position = c(0.97, 0.97), legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = NA),
+        legend.key = element_blank(), legend.text = element_text(size = NATURE_SMALL_PT),
+        legend.key.height = unit(3, "mm")) +
   panel_letter("c")
 
 ## ---- Assemble --------------------------------------------------------------
@@ -134,11 +155,14 @@ legend_lines <- c(
     "Panel b: all 62 sites, mean GSL vs. target fraction (0.80-0.99), coloured by skewness; x ",
     "marker at each site's own Z17-implied fraction."
   ),
-  "Panel c: common-unit sensitivity (days per 1% change in included fraction) at Z17 and at",
-  "T95 (the threshold where mean F first drops to <=0.95, i.e. F=0.95 by definition), vs. skewness.",
+  paste0(
+    "Panel c: common-unit sensitivity (days per 1% change in included fraction) at Z17 (black ",
+    "circle, 10% of P99) and at T95 (red triangle; the threshold where mean F first drops to ",
+    "<=0.95, i.e. F=0.95 by definition), vs. skewness -- same marker convention as panels 2b, 2c, 3a."
+  ),
   sprintf("Median common-unit sensitivity: Z17 = %.3f, T95 = %.3f (days per 1%% change in F).",
-          median_c$median_sens[median_c$at == "Z17 (10% of P99)"],
-          median_c$median_sens[median_c$at == "T95 (F=0.95)"])
+          median_c$median_sens[median_c$at == "Z17"],
+          median_c$median_sens[median_c$at == "T95"])
 )
 
 save_gsl_figure(
@@ -148,8 +172,8 @@ save_gsl_figure(
                      file.path(GSL_ROOT, "data", "fraction_sweep.rds"),
                      file.path(GSL_ROOT, "data", "daily_extract.rds")),
   notes = sprintf("Median common-unit sensitivity: Z17=%.3f, T95=%.3f.",
-                   median_c$median_sens[median_c$at == "Z17 (10% of P99)"],
-                   median_c$median_sens[median_c$at == "T95 (F=0.95)"])
+                   median_c$median_sens[median_c$at == "Z17"],
+                   median_c$median_sens[median_c$at == "T95"])
 )
 
 message("--- 08_fig4.R: done ---")

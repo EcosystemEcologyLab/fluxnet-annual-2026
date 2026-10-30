@@ -375,3 +375,135 @@ document's "Checks performed" section.
 
 Stopped after `docs/report_back_2026-10-29.md` and this update, per the Stage 3 prompt. No work
 beyond framework run-order step 6 (figures + benchmark table) has been done.
+
+---
+
+## Stage 3 revisions (2026-10-29)
+
+Dave reviewed Stage 3's figures and requested six fixes (full prompt saved verbatim at
+`logs/prompts/2026-10-29_gsl_stage3_revisions.md`). Affected scripts: `05_fig1.R`, `06_fig2.R`,
+`07_fig3.R`, `08_fig4.R`, `10_supplementary.R`, `fig_helpers.R`.
+
+### 1. CH-Dav bug in Figure 3a (real data-correctness bug, fixed)
+
+Flagged: at CH-Dav, the Z17 (10% of P99) dot sat *outside* its own coloured bar for the 5-20%
+threshold-range trend, which should always contain it (10% is itself a point in the 5-20% sweep).
+
+Root cause, confirmed directly: `07_fig3.R`'s per-threshold trend function used
+`sum(gy > T_abs, na.rm = TRUE)` to count days above threshold per year. `sum(..., na.rm = TRUE)`
+over a vector that is **entirely NA** silently returns `0`, not `NA`. CH-Dav 2008 has 366 daily
+rows but zero non-NA GPP values for the whole year — so that year contributed a fabricated
+"GSL = 0" data point to the trend regression at every threshold in the sweep, badly distorting
+the fitted slope relative to the slope reported by `03_derive.R` (which correctly excludes
+all-NA years via `lm()`'s default `na.omit`, the same pattern used in its own
+`year_threshold_matrices()`).
+
+Checked every site in the trend set for the same failure mode (not just CH-Dav) — only CH-Dav is
+affected; no other trend site has an all-NA year within its screened years. Fixed in `07_fig3.R`
+and its duplicate in `10_supplementary.R`'s `build_fig3()` by marking an all-NA year's GSL as
+`NA_real_` (not `0`) and letting `lm()`'s default exclusion handle it, matching `03_derive.R`.
+Added a permanent `stopifnot()` regression guard in both files: Z17's trend (from
+`derived_site.csv`) must lie within `[range_lo - eps, range_hi + eps]` of the sweep's own 5-20%
+range, for every trend site, on every run.
+
+**The headline count is unchanged by the fix**: of the 21 trend sites, 6 have a sign change and 6
+have a significance change across 5-20% of P99 (11 either), identical before and after.
+
+### 2. Figure 1 revisions
+
+- **High-third site-selection rule changed.** Previously: nearest the high-third median skewness
+  among all sites (excluding AU-ASM). Now: nearest the high-third median skewness **restricted to
+  woody-grass mosaic and grassland sites** (the drylands groups the figure's takeaway is actually
+  about), still excluding AU-ASM. New high-third site: **US-Ton** (woody-grass mosaic, skewness =
+  1.212), replacing the previous selection. Low-third site is unchanged: **JP-Fjy** (skewness =
+  0.512) — the rule change does not affect the low third, which was never restricted by group.
+  This selection rule is reused as-is (not recomputed independently) everywhere Figure 1's two
+  sites reappear, i.e. Figure 4 panel a.
+- Panel a: each row now labelled with its site name and skewness.
+- T95 drawn as a dotted firebrick line, visually distinct from the dashed 5/10/20%-of-P99
+  reference lines (T95's threshold varies by site, so it can't share their fixed positions
+  anyway).
+- Panel b: a labelled vertical bracket at 7.5% of P99 shows the change in mean GSL between 5%
+  and 10% of P99 for each site, in addition to being stated in `.legend.txt` (JP-Fjy = -26.40
+  days, US-Ton = -34.70 days for the current site pair).
+- Panel b's x-axis now covers 0-100% of P99 (`fine_grid.rds` only persists to 50%, so a new
+  `site_mean_gsl_curve()` helper recomputes the mean-GSL-vs-threshold curve directly from
+  `daily_extract.rds` out to 100%); y-axis labelled "Density".
+
+### 3. One marker convention (Z17 = black circle, T95 = red triangle)
+
+Centralised in `fig_helpers.R` as `GSL_MARKER_SHAPES`/`GSL_MARKER_COLORS`/
+`scale_shape_gsl_marker()`, applied identically in Figures 2b, 2c, 3a and 4c (and their
+`10_supplementary.R` duplicates for 2b/2c and 3a). The floating "T95"/"Z17" text labels
+previously drawn inside Figure 2c are removed in favour of a proper `guide_legend()`.
+
+One bug found while wiring this up: `guide_legend(override.aes = list(colour = ...))` matches its
+`colour` vector to the legend's rows *positionally*, but ggplot2's default legend order is an
+alphabetical sort of the aesthetic's string values ("T95" sorts before "Z17") — silently swapping
+the override colours onto the wrong rows even though the shapes (driven by a named `values=`
+vector) were correct. Fixed by giving `scale_shape_gsl_marker()` an explicit
+`breaks = c("Z17", "T95")`, so the legend's row order always matches the colour vector's assumed
+order.
+
+### 4. Figure 2 heat map
+
+- **Vertical striping at low thresholds removed.** The fine grid is uniform in *linear* %P99
+  (0.01 steps); on a log-x axis that packs far too many raw columns into too few screen pixels at
+  the low-threshold end, aliasing into stripes. Fixed with log-uniform binning (35 bins across
+  0.1-35% of P99, `findInterval()` against log-spaced edges), shared between the heat map (panel
+  b) and the bottom panel (panel d) so both read off the same bins. Bin count was tuned down from
+  120 to 35 empirically — at higher bin counts, some bins near the low-threshold end became
+  narrower than the fine grid's own 0.01% sampling resolution and contained zero raw points,
+  reintroducing the same striping at a finer scale.
+- **Sensitivity now shown as `|local_sensitivity|`** (days of GSL lost per 1% of P99, absolute
+  value), with darker = more sensitive — previously the signed value was plotted, which is harder
+  to read as a "how sensitive is this site" map since sign flips don't change how much a site's
+  GSL estimate moves per percentage point. The signed value is still used in panel d (the
+  low/middle/high skewness-third median curves), where the sign is informative (days lost, not
+  just magnitude).
+- **Panel d (bottom panel) is now explicitly smoothed**: same log-uniform bins as panel b, taking
+  the median `local_sensitivity` per bin per skewness third, rather than the raw per-0.01%-step
+  curve.
+- **Found while re-rendering for this section**: panel d's `panel_letter("d")` call used the
+  default `x = -Inf`, which (like item 4 above) is undefined (`NaN`) under `scale_x_log10()` —
+  this silently dropped the "d" label from *every* Figure 2 variant, including the already-
+  committed main run, without raising a warning that reached the console in the original Stage 3
+  run. Found by directly reproducing the "NaNs produced" / "Removed 1 row ... geom_text()"
+  warnings emitted by `10_supplementary.R`'s rerun during this revision pass, isolating them to a
+  minimal `panel_letter("d")` + `scale_x_log10()` repro. Fixed in both `06_fig2.R` and
+  `10_supplementary.R` with an explicit `x = 0.15, hjust = 0`, matching panel b's own fix from the
+  original Stage 3 pass (see "Rendering bugs found and fixed" above) — the same bug, in the one
+  panel that fix wasn't applied to.
+
+### 5. Skewness colour scale capped at 2
+
+`scale_color_gsl_skew()`/`scale_fill_gsl_skew()` in `fig_helpers.R`: fixed `limits = c(0, 2)`,
+breaks at 0/0.5/1/1.5/2, with values above 2 squished to the top colour (`scales::squish`) and
+labelled ">2" rather than greyed out as out-of-range. Most sites sit in 0.2-1.5; without the cap,
+the handful of sites above 2 compressed that whole working range into a narrow, hard-to-read
+sliver of the viridis palette. The same fixed scale (same limits/breaks/labels/palette) is used
+everywhere skewness is coloured: Figures 1, 2 and 4.
+
+### 6. Legend cleanup
+
+- "mixed forest" is omitted from a figure's group legend whenever no plotted site belongs to that
+  group — `scale_color/fill_gsl_group()` sets `drop = TRUE` with `breaks = GSL_GROUP_ORDER` (not
+  `limits=`), so the colour→name mapping stays fixed across every figure while each legend only
+  lists the groups actually present in its own data (e.g. Figure 3's 21 trend sites have no
+  mixed-forest member).
+- Figure 4 panels a and c had legends overlapping/cutting their panel borders. Fixed by anchoring
+  each legend box's own corner (not its center) to its `legend.position` via
+  `legend.justification` — e.g. `legend.position = c(0.97, 0.03), legend.justification = c(1, 0)`
+  anchors the box's bottom-right corner just inside the panel's bottom-right corner, so the box
+  grows inward instead of spilling past the edge — plus a white `legend.background` and smaller
+  legend text/key sizing to keep the box compact.
+
+### Re-verification after the revisions
+
+- `07_fig3.R`'s `stopifnot()` consistency check passes for all 21 trend sites (main run) and all
+  21 sites in both `10_supplementary.R` variants.
+- All of Figures 1-4 and all four supplementary figures were regenerated and inspected at full
+  size (not just confirmed to exist) after every code change in this section.
+- `10_supplementary.R`'s `build_fig2()`/`build_fig3()` — near-duplicate copies of `06_fig2.R`/
+  `07_fig3.R`'s plotting code, not shared functions — were manually re-synced with every fix in
+  this section; they do not pick up future `06_fig2.R`/`07_fig3.R` changes automatically.

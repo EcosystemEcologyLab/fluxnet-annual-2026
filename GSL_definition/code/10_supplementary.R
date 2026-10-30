@@ -25,8 +25,10 @@ daily_extract$year <- lubridate::year(daily_extract$TIMESTAMP)
 trend_sites <- GSL_SITES_GE10YR
 
 ## ============================================================================
-## Figure 2 builder (identical structure/fixes to 06_fig2.R), parameterized
-## by variant.
+## Figure 2 builder (identical structure/fixes to 06_fig2.R -- log-uniform
+## binning to remove low-threshold striping, |local_sensitivity| with
+## darker = more sensitive, shared Z17/T95 marker convention via
+## fig_helpers.R), parameterized by variant.
 ## ============================================================================
 build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   derived_site <- derived_site_all |> filter(gpp_variant == !!gpp_variant, neg_gpp_variant == !!neg_variant)
@@ -35,13 +37,31 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   site_order <- derived_site |> arrange(skewness) |> pull(site_id)
   derived_site$site_id <- factor(derived_site$site_id, levels = site_order)
   fine_grid$site_id <- factor(fine_grid$site_id, levels = site_order)
+  stopifnot(nlevels(derived_site$site_id) == nrow(derived_site))
 
-  p_heat <- ggplot(fine_grid, aes(x = pct_of_P99, y = site_id, fill = local_sensitivity)) +
-    geom_tile(width = 0.01, height = 1) +
-    scale_fill_distiller(palette = "Blues", direction = 1, name = "Local\nsensitivity\n(days/%P99)") +
-    geom_vline(xintercept = 10, colour = "black", linewidth = nature_lwd(0.4)) +
-    geom_point(data = derived_site, aes(x = t95_pct, y = site_id), inherit.aes = FALSE,
-               colour = "black", size = 0.5) +
+  ## Same log-uniform binning as 06_fig2.R, shared by the heatmap and the
+  ## bottom panel -- see that script for why (fixes low-threshold striping,
+  ## doubles as the smoothed bottom-panel view).
+  N_BINS <- 35
+  log_edges <- 10^seq(log10(0.1), log10(35), length.out = N_BINS + 1)
+  bin_of <- function(pct) pmin(findInterval(pct, log_edges, all.inside = TRUE), N_BINS)
+  fine_grid <- fine_grid |>
+    mutate(bin = bin_of(pct_of_P99), bin_lo = log_edges[bin], bin_hi = log_edges[bin + 1],
+           bin_mid = sqrt(bin_lo * bin_hi), bin_width = bin_hi - bin_lo)
+
+  heat_data <- fine_grid |>
+    group_by(site_id, bin, bin_mid, bin_width) |>
+    summarise(abs_sensitivity = mean(abs(local_sensitivity), na.rm = TRUE), .groups = "drop")
+
+  p_heat <- ggplot(heat_data, aes(x = bin_mid, y = site_id, fill = abs_sensitivity)) +
+    geom_tile(aes(width = bin_width), height = 1) +
+    scale_fill_distiller(palette = "Blues", direction = 1, name = "Sensitivity\n(days/%P99,\nabs. value)") +
+    geom_vline(xintercept = 10, colour = "grey30", linewidth = nature_lwd(0.25)) +
+    geom_point(data = derived_site, aes(x = 10, y = site_id, shape = "Z17"), inherit.aes = FALSE,
+               colour = GSL_MARKER_COLORS[["Z17"]], size = 0.5) +
+    geom_point(data = derived_site, aes(x = t95_pct, y = site_id, shape = "T95"), inherit.aes = FALSE,
+               colour = GSL_MARKER_COLORS[["T95"]], size = 0.5) +
+    scale_shape_gsl_marker() +
     scale_x_log10(name = "Threshold (% of P99)", expand = c(0, 0)) +
     coord_cartesian(xlim = c(0.1, 35)) +
     scale_y_discrete(expand = c(0, 0)) +
@@ -70,23 +90,23 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   p_right <- ggplot(right_data, aes(y = site_id)) +
     geom_segment(aes(x = z17_sensitivity, xend = t95_sensitivity, yend = site_id),
                  colour = "grey60", linewidth = nature_lwd(0.3)) +
-    geom_point(aes(x = z17_sensitivity, shape = "Z17 (10% of P99)"), size = 0.7, colour = "black") +
-    geom_point(aes(x = t95_sensitivity, shape = "T95"), size = 0.7, colour = "firebrick") +
-    scale_shape_manual(values = c("Z17 (10% of P99)" = 16, "T95" = 17), name = NULL) +
+    geom_point(aes(x = z17_sensitivity, shape = "Z17"), size = 0.7, colour = GSL_MARKER_COLORS[["Z17"]]) +
+    geom_point(aes(x = t95_sensitivity, shape = "T95"), size = 0.7, colour = GSL_MARKER_COLORS[["T95"]]) +
+    scale_shape_gsl_marker() +
     labs(x = "Sensitivity\n(days/%P99)", y = NULL) +
     theme_gsl() +
     theme(axis.text.y = element_blank(), axis.ticks.y = element_blank(),
-          legend.position = c(0.7, 0.88), legend.key.width = unit(1, "mm"),
+          legend.position = c(0.68, 0.9), legend.key.width = unit(1, "mm"),
           legend.text = element_text(size = NATURE_SMALL_PT),
-          legend.background = element_blank(), legend.key = element_blank()) +
+          legend.background = element_rect(fill = "white", colour = NA), legend.key = element_blank()) +
     panel_letter("c")
 
   bottom_data <- fine_grid |>
     left_join(derived_site |> select(site_id, skewness_third), by = "site_id") |>
-    group_by(skewness_third, pct_of_P99) |>
+    group_by(skewness_third, bin, bin_mid) |>
     summarise(median_sensitivity = median(local_sensitivity, na.rm = TRUE), .groups = "drop") |>
     mutate(skewness_third = factor(skewness_third, levels = c("low", "middle", "high")))
-  p_bottom <- ggplot(bottom_data, aes(x = pct_of_P99, y = median_sensitivity, colour = skewness_third)) +
+  p_bottom <- ggplot(bottom_data, aes(x = bin_mid, y = median_sensitivity, colour = skewness_third)) +
     geom_line(linewidth = nature_lwd(0.5)) +
     geom_vline(xintercept = 10, colour = "grey50", linewidth = nature_lwd(0.25), linetype = "dashed") +
     scale_colour_manual(values = c(low = "#1b7837", middle = "#b2abd2", high = "#762a83"), name = "Skewness third") +
@@ -94,7 +114,8 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
     coord_cartesian(xlim = c(0.1, 35)) +
     labs(y = "Median local\nsensitivity (days/%P99)") +
     theme_gsl() +
-    panel_letter("d")
+    ## Same panel_letter() x=-Inf/log-scale fix as 06_fig2.R.
+    panel_letter("d", x = 0.15, hjust = 0)
 
   top_row <- p_strip + p_heat + p_right + plot_layout(widths = c(0.5, 3, 1), guides = "keep")
   fig <- top_row / p_bottom + plot_layout(heights = c(3, 1), guides = "keep")
@@ -106,11 +127,13 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   save_gsl_figure(
     fig, stem, width_mm = NATURE_WIDTH_DOUBLE_MM, height_mm = 220,
     legend_lines = c(
-      sprintf("Figure 2 (supplementary: %s). Same specification as the main Figure 2, this variant only.", variant_label),
+      sprintf("Figure 2 (supplementary: %s). Same specification as the main Figure 2, this variant only --", variant_label),
+      sprintf("|local sensitivity| (absolute value, darker = more sensitive), log-binned thresholds (%d bins),", N_BINS),
+      "Z17 (black circle) and T95 (red triangle) marker convention, same as the main Figure 2.",
       sprintf("Sites per skewness third: low = %d, middle = %d, high = %d (total %d).", n_low, n_mid, n_high, nrow(derived_site))
     ),
     input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"), file.path(GSL_ROOT, "data", "fine_grid.rds")),
-    notes = sprintf("Supplementary Figure 2, %s. Terciles: low=%d, middle=%d, high=%d.", variant_label, n_low, n_mid, n_high)
+    notes = sprintf("Supplementary Figure 2, %s. Terciles: low=%d, middle=%d, high=%d. Sensitivity shown as |value|, log-binned (%d bins).", variant_label, n_low, n_mid, n_high, N_BINS)
   )
   invisible(NULL)
 }
@@ -134,7 +157,13 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
     gpp_by_year <- split(d$gpp, as.character(d$year))
     out <- lapply(thresholds_pct, function(pct) {
       T_abs <- pct / 100 * P99
-      gsl_by_year <- vapply(gpp_by_year, function(gy) sum(gy > T_abs, na.rm = TRUE), numeric(1))
+      ## See 07_fig3.R: a year with zero non-NA daily GPP must contribute NA,
+      ## not a fabricated GSL=0 (sum(..., na.rm=TRUE) over an all-NA vector
+      ## silently returns 0) -- fixed here identically (CH-Dav 2008 bug).
+      gsl_by_year <- vapply(gpp_by_year, function(gy) {
+        gy <- gy[!is.na(gy)]
+        if (length(gy) == 0) NA_real_ else sum(gy > T_abs)
+      }, numeric(1))
       yrs_num <- as.integer(names(gsl_by_year))
       fit <- lm(gsl_by_year ~ yrs_num)
       co <- summary(fit)$coefficients
@@ -160,13 +189,25 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
     ) |>
     arrange(skewness) |> mutate(site_id = factor(site_id, levels = site_id))
 
+  ## Same consistency check as 07_fig3.R: Z17's trend must lie within the
+  ## sweep's own [range_lo, range_hi] for every trend site.
+  eps <- 1e-6
+  consistency_check <- panel_a_data |>
+    mutate(within_range = trend_gsl_z17_days_per_yr >= (range_lo - eps) &
+             trend_gsl_z17_days_per_yr <= (range_hi + eps))
+  if (!all(consistency_check$within_range)) {
+    message("Z17 trend outside its own range bar (", variant_label, "): ",
+            paste(consistency_check$site_id[!consistency_check$within_range], collapse = ", "))
+  }
+  stopifnot(all(consistency_check$within_range))
+
   p3a <- ggplot(panel_a_data, aes(y = site_id)) +
     geom_vline(xintercept = 0, colour = "grey50", linewidth = nature_lwd(0.25)) +
     geom_segment(aes(x = trend_ci_lo, xend = trend_ci_hi, yend = site_id), colour = "grey75", linewidth = nature_lwd(1)) +
     geom_segment(aes(x = range_lo, xend = range_hi, yend = site_id, colour = group), linewidth = nature_lwd(0.5)) +
-    geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 1, colour = "black") +
-    geom_point(aes(x = slope_t95, shape = "T95"), size = 1, colour = "black") +
-    scale_shape_manual(values = c("Z17" = 16, "T95" = 18), name = NULL) +
+    geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 1, colour = GSL_MARKER_COLORS[["Z17"]]) +
+    geom_point(aes(x = slope_t95, shape = "T95"), size = 1, colour = GSL_MARKER_COLORS[["T95"]]) +
+    scale_shape_gsl_marker() +
     scale_color_gsl_group(name = "Group") +
     labs(x = "GSL trend (days/yr)", y = NULL) +
     theme_gsl() +

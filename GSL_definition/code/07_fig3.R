@@ -44,7 +44,17 @@ site_threshold_trend <- function(sid) {
 
   out <- lapply(thresholds_pct, function(pct) {
     T_abs <- pct / 100 * P99
-    gsl_by_year <- vapply(gpp_by_year, function(gy) sum(gy > T_abs, na.rm = TRUE), numeric(1))
+    ## A year with zero non-NA daily GPP values (e.g. CH-Dav 2008: 366 rows,
+    ## all NA) must contribute NA here, not a fabricated GSL=0 -- sum(...,
+    ## na.rm=TRUE) over an all-NA vector silently returns 0, which previously
+    ## fed a fake "zero growing season" year into the trend regression and
+    ## badly distorted the slope (found via the Z17-dot-outside-its-own-bar
+    ## check below). NA is then excluded by lm()'s default na.omit, matching
+    ## 03_derive.R::year_threshold_matrices()'s behaviour exactly.
+    gsl_by_year <- vapply(gpp_by_year, function(gy) {
+      gy <- gy[!is.na(gy)]
+      if (length(gy) == 0) NA_real_ else sum(gy > T_abs)
+    }, numeric(1))
     yrs_num <- as.integer(names(gsl_by_year))
     fit <- lm(gsl_by_year ~ yrs_num)
     co <- summary(fit)$coefficients
@@ -76,15 +86,40 @@ panel_a_data <- derived_site |>
   arrange(skewness) |>
   mutate(site_id = factor(site_id, levels = site_id))
 
+## ---- Consistency check (prompted by the CH-Dav bug): Z17's trend, from
+## derived_site.csv (03_derive.R), must lie within the 5-20% sweep's own
+## [range_lo, range_hi] for every trend site -- 10% of P99 is itself a point
+## on the sweep grid (seq(5, 20, by = 0.1)), so the slope at exactly 10%
+## cannot fall outside the range of slopes the sweep computed. A small
+## floating-point tolerance (1e-6) is allowed; anything larger means the two
+## computations disagree for a real reason (as CH-Dav's all-NA 2008 did). ----
+eps <- 1e-6
+consistency_check <- panel_a_data |>
+  mutate(
+    within_range = trend_gsl_z17_days_per_yr >= (range_lo - eps) &
+                    trend_gsl_z17_days_per_yr <= (range_hi + eps)
+  )
+if (!all(consistency_check$within_range)) {
+  bad_sites <- consistency_check$site_id[!consistency_check$within_range]
+  message(
+    "Z17 trend falls outside its own 5-20% range bar for: ", paste(bad_sites, collapse = ", ")
+  )
+}
+stopifnot(all(consistency_check$within_range))
+message("Consistency check passed: Z17's trend is within its own 5-20% range bar for all ",
+        nrow(consistency_check), " trend sites.")
+
 p3a <- ggplot(panel_a_data, aes(y = site_id)) +
   geom_vline(xintercept = 0, colour = "grey50", linewidth = nature_lwd(0.25)) +
   geom_segment(aes(x = trend_ci_lo, xend = trend_ci_hi, yend = site_id),
                colour = "grey75", linewidth = nature_lwd(1)) +
   geom_segment(aes(x = range_lo, xend = range_hi, yend = site_id, colour = group),
                linewidth = nature_lwd(0.5)) +
-  geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 1, colour = "black") +
-  geom_point(aes(x = slope_t95, shape = "T95"), size = 1, colour = "black") +
-  scale_shape_manual(values = c("Z17" = 16, "T95" = 18), name = NULL) +
+  geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 1, colour = GSL_MARKER_COLORS[["Z17"]]) +
+  geom_point(aes(x = slope_t95, shape = "T95"), size = 1, colour = GSL_MARKER_COLORS[["T95"]]) +
+  ## Z17/T95 points use a fixed colour= (not aes-mapped), so they never
+  ## touch the colour scale below -- only the group-coloured range bar does.
+  scale_shape_gsl_marker() +
   scale_color_gsl_group(name = "Group") +
   labs(x = "GSL trend (days/yr)", y = NULL) +
   theme_gsl() +
@@ -133,7 +168,8 @@ legend_lines <- c(
   paste0(
     "Panel a: one row per site, sorted by skewness. Pale grey bar = 95% CI of the trend at Z17's ",
     "threshold (10% of P99); colored bar (by functional group) = range of trend estimates across ",
-    "5-20% of P99; circle = trend at Z17; diamond = trend at T95; vertical line at zero."
+    "5-20% of P99; black circle = trend at Z17; red triangle = trend at T95 (same marker convention ",
+    "as Figures 2b, 2c and 4c); vertical line at zero."
   ),
   "Panel b: ratio of the threshold-range bar's width to the Z17 CI's width, vs. skewness, by group.",
   sprintf(

@@ -4,6 +4,17 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — GSL figure rebuild, Stage 3 revisions (start)
+
+Full prompt: `logs/prompts/2026-10-29_gsl_stage3_revisions.md`. Dave reviewed Stage 3's figures and
+flagged 6 items: a possible real bug in Figure 3a (CH-Dav's Z17 dot outside its own trend-range
+bar), a Figure 1 site-selection rule change (high third restricted to dryland groups), several
+Figure 1/2/4 marker-convention and readability fixes, a skewness colour-scale rescale, and
+legend cleanup. Starting with item 1 (the possible bug) as a genuine diagnosis before touching
+anything else, per the prompt's own instruction to find the cause before fixing it.
+
+---
+
 ## 2026-10-29 — GSL figure rebuild, Stage 3: done
 
 Follow-up to the entry below (same task). Framework run-order step 6 done: Figures 1-4, the

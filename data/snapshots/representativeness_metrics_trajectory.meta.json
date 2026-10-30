@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-10-03T05:19:02Z",
-  "pipeline_version": "dead406",
+  "run_datetime_utc": "2026-10-12T20:54:36Z",
+  "pipeline_version": "1714520",
   "input_sources": [
     "data/snapshots/representativeness_metrics_fig4.csv",
     "data/snapshots/koppen_beck2023_global_distribution.csv",

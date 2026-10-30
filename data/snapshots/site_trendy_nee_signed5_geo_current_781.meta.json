@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-09-28T22:54:08Z",
-  "pipeline_version": "2d9623f",
+  "run_datetime_utc": "2026-09-28T23:02:24Z",
+  "pipeline_version": "53352ed",
   "input_sources": [
     "data/external/trendy/derived/trendy_nee_fluxbased_median.tif",
     "data/snapshots/site_biomass_cci_v7.csv"

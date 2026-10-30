@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-09-26T10:56:35Z",
-  "pipeline_version": "fcf48bf",
+  "run_datetime_utc": "2026-09-28T22:40:54Z",
+  "pipeline_version": "936b47e",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb (monthly_converted), data/snapshots/site_biomass_cci_v7.csv"
   ],
-  "notes": "QC threshold NEE_VUT_REF_QC >= 0.8 per month. Unit conversion (umol CO2 m-2 s-1 -> gC m-2 month-1) applied explicitly by this script, NOT via fluxnet_convert_units() -- see report.md Section 3 for the monthly-carbon-unit discrepancy this diagnostic found in the DuckDB tables. VUT_25/VUT_75 use the SAME QC-qualifying months as VUT_REF (not filtered by their own _25_QC/_75_QC columns) so REF and the uncertainty band are directly comparable on one measured record. VUT only, no CUT fallback, per task instruction. 50 current-network sites excluded for zero VUT rows."
+  "notes": "QC threshold NEE_VUT_REF_QC >= 0.8 per month. monthly_converted's NEE_VUT_REF/_25/_75 are gC m-2 month-1 totals as of the 2026-09-28 05_units.R fix (daily-rate x days-in-month) -- used directly, no conversion applied in this script. See SESSION_LOG.md 2026-09-28 for the closure test that established the fix. VUT_25/VUT_75 use the SAME QC-qualifying months as VUT_REF (not filtered by their own _25_QC/_75_QC columns) so REF and the uncertainty band are directly comparable on one measured record. VUT only, no CUT fallback, per task instruction. 50 current-network sites excluded for zero VUT rows."
 }

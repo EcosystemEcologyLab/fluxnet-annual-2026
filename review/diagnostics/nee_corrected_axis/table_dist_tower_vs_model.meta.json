@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-09-26T11:46:18Z",
-  "pipeline_version": "7454c82",
+  "run_datetime_utc": "2026-09-28T22:43:10Z",
+  "pipeline_version": "936b47e",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb (monthly_converted)",
     "data/snapshots/site_biomass_cci_v7.csv",

@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-09-26T10:57:43Z",
-  "pipeline_version": "fcf48bf",
+  "run_datetime_utc": "2026-09-28T22:42:02Z",
+  "pipeline_version": "936b47e",
   "input_sources": [
     "table_step3_tower_annual_nee.csv",
     "trendy_nee_fluxbased_per_model_mean.tif"

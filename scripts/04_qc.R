@@ -7,15 +7,14 @@
 ## Two-stage QC strategy:
 ##   Stage 1: at DD/MM/WW/YY resolution, _QC values are fractions 0–1. The
 ##     rule is "keep when QC >= threshold" (qc_passes(), R/qc.R) -- raising
-##     threshold must always be stricter. `qc_flagged` (TRUE when the row's
-##     QC value is below threshold), `qc_unknown` (TRUE when no QC value was
-##     available to gate this row) and `p_gapfilled` (1 - QC, descriptive
-##     only, not used for the gate) columns are added; flagged rows are
-##     dropped and logged as exclusions. Rows with qc_unknown == TRUE are
-##     kept (dropping them would remove the whole row -- LE, H, meteorology
-##     -- at sites with no NEE QC column) and their counts are logged to the
-##     exclusion log as "QC unknown (NA), kept". Stage 1 is skipped for
-##     HH/HR data.
+##     threshold must always be stricter. `qc_val` (the row's gating QC
+##     value), `qc_flagged` (TRUE when qc_val is below threshold) and
+##     `qc_unknown` (TRUE when no QC value was available to gate this row)
+##     columns are added; flagged rows are dropped and logged as exclusions.
+##     Rows with qc_unknown == TRUE are kept (dropping them would remove the
+##     whole row -- LE, H, meteorology -- at sites with no NEE QC column) and
+##     their counts are logged to the exclusion log as "QC unknown (NA),
+##     kept". Stage 1 is skipped for HH/HR data.
 ##
 ##     Row exclusion uses VUT QC for sites that have NEE_VUT_REF (the majority),
 ##     and CUT QC for the ~36 sites where NEE_VUT_REF is absent (CUT-only sites).
@@ -145,9 +144,9 @@ for (table in stage_1_tables) {
   data_qc <- data |>
     dplyr::left_join(site_qc_flag, by = "site_id", copy = TRUE) |>
     dplyr::mutate(
-      p_gapfilled = dplyr::case_when(
-        qc_col_used == "NEE_VUT_REF_QC" ~ 1 - NEE_VUT_REF_QC,
-        qc_col_used == "NEE_CUT_REF_QC" ~ 1 - NEE_CUT_REF_QC,
+      qc_val = dplyr::case_when(
+        qc_col_used == "NEE_VUT_REF_QC" ~ NEE_VUT_REF_QC,
+        qc_col_used == "NEE_CUT_REF_QC" ~ NEE_CUT_REF_QC,
         TRUE                            ~ NA_real_
       )
     ) |>
@@ -155,14 +154,14 @@ for (table in stage_1_tables) {
       # qc_unknown: no QC value was available to gate this row (no
       # qualifying column for the site, or an NA value in a qualifying
       # column for this row). These rows are kept, not excluded.
-      qc_unknown = is.na(p_gapfilled),
-      # qc_passes()'s rule (R/qc.R) -- "keep when QC >= threshold" -- is
-      # equivalent to "p_gapfilled <= 1 - threshold", NOT to
-      # "p_gapfilled <= threshold" (only identical to that at
-      # threshold = 0.50). dbplyr cannot translate a call to a
-      # user-defined R function (qc_passes()) on this lazy DuckDB table,
-      # so the rule is inlined here against (1 - threshold) instead.
-      qc_flagged = !qc_unknown & p_gapfilled > (1 - threshold)
+      qc_unknown = is.na(qc_val),
+      # qc_passes()'s rule (R/qc.R) -- "keep when QC >= threshold" --
+      # inlined directly as qc_val < threshold rather than a literal
+      # qc_passes() call, because dbplyr cannot translate a call to a
+      # user-defined R function on this lazy DuckDB table. No other
+      # script reads this table's p_gapfilled/qc_val column, so there is
+      # no compatibility reason to keep p_gapfilled around.
+      qc_flagged = !qc_unknown & qc_val < threshold
     )
 
   # If the _qc table already exists, drop it before recomputing.

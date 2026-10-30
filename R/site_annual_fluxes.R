@@ -1,3 +1,11 @@
+## qc_passes() (R/qc.R) is required below. Sourced here directly, rather than
+## left to each caller, so a caller cannot break this file by forgetting to
+## source R/qc.R itself. Guarded so sourcing it twice (once here, once again
+## by a caller that also sources it) is harmless.
+if (!exists("qc_passes", mode = "function")) {
+  source("R/qc.R")
+}
+
 #' Per-site-year NEE, GPP, RECO, ET and H under the paper's QC gate
 #'
 #' Reads the pre-QC `annual` FLUXMET rows directly from the DuckDB store --
@@ -17,7 +25,8 @@
 #' `QC >= QC_THRESHOLD_YY` (via [qc_passes()], `R/qc.R`) -- the identical
 #' rule `scripts/04_qc.R` applies, not a hardcoded QC cutoff.
 #' `QC_THRESHOLD_YY` must already be in scope (via
-#' `source("R/pipeline_config.R")`), and `R/qc.R` must already be sourced.
+#' `source("R/pipeline_config.R")`). `R/qc.R` (for [qc_passes()]) is sourced
+#' by this file itself and does not need to be sourced by the caller.
 #'
 #' GPP and RECO additionally use a per-site, per-flux NT-preferred/DT-fallback
 #' partitioning rule -- DT is used only when NT yields zero qualifying years

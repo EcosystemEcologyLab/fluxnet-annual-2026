@@ -4,6 +4,24 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL site-selection audit: start
+
+Full prompt: `logs/prompts/2026-10-30_gsl_selection_audit.md`. New task, read-only on the
+repo-root DuckDB store (FLUXMET daily rows only) — produces diagnostic tables under
+`GSL_definition/tables/selection_audit_*`, one figure under `GSL_definition/figures/`, and a
+report at `GSL_definition/docs/selection_audit_2026-10-30.md`. Does not touch the 62-site
+GSL analysis, its code, or its existing outputs.
+
+Question: among long-running FLUXNET sites, which ones does the manuscript's selection rule
+(drop certain IGBP classes; require every day of a year to pass `NEE_VUT_REF_QC >= 0.25`; need
+>= 5 such years; drop sites with too much negative GPP) exclude, and would a softer rule that
+tolerates some failing days or years — rather than dropping a site outright — recover any of
+them. Builds the population from the 20 September snapshot, screens the whole network's daily
+FLUXMET data against the manuscript rule and several looser variants, and reports which
+long-record sites each variant would add back, cross-checked against the negative-GPP rule
+separately so no recovered site is one the manuscript would still drop for that reason.
+
+---
 ## 2026-10-30 — GSL figure rebuild, PeerJ restyle: done
 
 Follow-up to the "start" entry below (same task). Full prompt:

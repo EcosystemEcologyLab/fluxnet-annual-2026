@@ -4,6 +4,22 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-30 — GSL expanded-site analysis, checks session 1: started
+
+Full prompt: `logs/prompts/2026-10-30_gsl_expanded_checks_session1.md`. Four read-only checks on the
+expanded-site run (commit `a22e893`): (1) US-Ha1 winter GPP days and whether they are a
+partitioning artifact, with a DBF/MF network-wide sweep; (2) Figure 5b carbon-effect numbers plus
+a DBF-only outlier analysis of start/end-date slopes; (3) the Southern Hemisphere season-year vs.
+calendar-year mismatch in `03_models.R`'s join; (4) an attempt to reproduce Tash's three
+unexplained Figure 1 correlations (r = 0.63/0.49/0.34) on the 62-site reproduction run, under an
+explicit new assumption (mean GSL / GSL s.d. / GSL trend, in that order) that a prior session
+(`docs/reproduction_report.md`, Check 3) had marked not checkable for lack of a definition.
+New code only, at `GSL_definition/expanded/code/07_checks_session1.R`; no existing script, table
+or figure is touched. Report to follow at
+`GSL_definition/expanded/docs/checks_report_2026-10-30.md`.
+
+---
+
 ## 2026-10-30 — GSL expanded-site analysis: done
 
 Full prompt: `logs/prompts/2026-10-30_gsl_expanded.md`. Full results:

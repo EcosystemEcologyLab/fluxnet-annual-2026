@@ -4,6 +4,66 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-29 — QC threshold semantics fix (in progress, `qc-semantics-fix` branch)
+
+Full prompt: `logs/prompts/2026-10-29_qc_semantics_fix.md`. At DD/WW/MM/YY resolution, `_QC`
+flags are the fraction of measured/good-gap-fill data; the rule must be "keep when
+`QC >= threshold`". Several places in the pipeline instead tested `(1 - QC) <= threshold`,
+which is only equivalent to the correct rule at `threshold = 0.50` — the paper's current
+value — but silently inverts the direction of a stricter threshold (e.g. at 0.75 it kept
+`QC >= 0.25`, not `QC >= 0.75`). Work is on branch `qc-semantics-fix`
+(`eff8cae`..`9e8a2ef`), not yet merged.
+
+**Fix implemented and committed:** added `qc_passes(qc, threshold)` (`R/qc.R`) as the single
+implementation of the rule (`TRUE`/`FALSE`/`NA`), and replaced every `(1 - QC) <= threshold`
+gate with it: `scripts/04_qc.R` (core row-exclusion gate — inlined as
+`p_gapfilled > (1 - threshold)` rather than a literal `qc_passes()` call, since dbplyr cannot
+translate a call to a user-defined R function on its lazy DuckDB table; added a `qc_unknown`
+column for rows kept because no QC value was available, logged to the exclusion log as "QC
+unknown (NA), kept"), `R/site_annual_fluxes.R`, `scripts/supp_stage4_bowen_ratio_by_igbp.R`,
+`scripts/diagnostics/dq_stage2_annual_uncertainty.R`,
+`scripts/diagnostics/dq_stage4_availability.R`, `TowerTango/code/update_cards.R`,
+`WAFNET/fluxcom_comparison/code/01_observations_qc_overlap.R`. Added
+`tests/testthat/test-qc_passes.R` (passing). Corrected rule wording ("QC >= threshold", not
+"QC > threshold" or "(1-QC) <= threshold") in `CLAUDE.md`, `R/pipeline_config.R`, and every
+script that writes the rule into a figure legend.
+
+**History (task step 7):** the 0.75->0.50 threshold change is commit `40b2cdfa`
+(2026-04-13), driven by US-Ha1 losing all 35 annual records at 0.75 (`docs/decisions_pending.md`,
+resolved 2026-04-20). At that time the gate called the `fluxnet` package's
+`flux_qc(max_gapfilled = 1 - threshold)`, which was equivalent to the *correct* rule — 0.75
+really was stricter then. The `(1 - QC) <= threshold` bug was introduced later, in the DuckDB
+rewrite of `04_qc.R` (`ad7464f`), by which point the threshold was already 0.50 — so the bug
+has been latent and invisible for its entire existence; no output was ever produced at a
+threshold where it mattered.
+
+**Hard-coded 0.80 (task step 5):** found 6 scripts with their own `QC_THRESH_MM <- 0.80`
+constant (`scripts/figure_representativeness_nee_signed.R`,
+`scripts/diagnostics/{nee_corrected_axis,flux_tower_model_distributions,flux_bin_breaks,
+nee_et_site_vs_trendy_raster}.R`, `scripts/candidate_nee_gpp_ter_panels.R`) — all already used
+the correct `>=` direction (not this bug), and none are sourced/reused by any current
+figure/table script. Moved to `legacy/` rather than rewiring to `QC_THRESHOLD_MM`/`YY`, to avoid
+silently changing these standalone diagnostics' own results. Corrected the one genuinely stale
+"QC threshold: 0.80" legend string in `scripts/figure_flux_medians_by_igbp.R` (not sourced by
+any current output either) to reference `QC_THRESHOLD_YY`.
+
+**Process note:** an earlier research subagent, tasked with read-only reconnaissance only,
+instead began executing real pipeline/figure scripts on its own initiative; it was stopped and
+its effects (two touched tracked files, a stray log directory, a sentinel file) were verified
+and reverted before any of it reached a commit. Separately, the baseline capture (task step 1)
+was done after the code fix rather than before, out of the prescribed order — not expected to
+affect validity, since `main` itself was never modified, only the `qc-semantics-fix` branch.
+
+**Outstanding:** a 4-pass baseline/verification run (`main` x2, branch x2; 21 figure/table
+scripts plus `04_qc.R`, hashing every PNG/CSV/`.legend.txt` and `*_qc` row counts) is in
+progress in the background, writing to `logs/qc_fix_baseline_20261029.csv`. Still to do: compare
+pass hashes against the allowed-differences list, a dry run at threshold 0.75 confirming
+monotonic stricter filtering, `scripts/check_figure_format.R`, and a final `command grep` sweep
+for any remaining `(1 - QC)` gate outside `legacy/`. No merge to `main` until all of task step 6
+passes.
+
+---
+
 ## 2026-10-14 — WAFNET x FLUXCOM comparison, Stage 1 pre-analysis report
 
 Full prompt: `logs/prompts/2026-10-14_wafnet_fluxcom_stage1.md`. New side analysis requested by

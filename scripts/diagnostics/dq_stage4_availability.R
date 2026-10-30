@@ -9,7 +9,7 @@
 ## data/extracted/ -- never *_qc/*_converted.
 ##
 ## "Qualifying" throughout means the paper's own rule, applied to each
-## carbon type on its own QC column: (1 - QC) <= QC_THRESHOLD_YY. A
+## carbon type on its own QC column: qc_passes(QC, QC_THRESHOLD_YY) (R/qc.R). A
 ## site-year/site is categorised both/VUT_only/CUT_only/neither by which
 ## of NEE_VUT_REF/NEE_CUT_REF qualify. "neither" is further split into
 ## no_value (NEE_VUT_REF and NEE_CUT_REF both NA -- nothing to gate) vs
@@ -24,6 +24,7 @@ if (file.exists(".env")) {
 }
 source("R/pipeline_config.R")
 check_pipeline_config()
+source("R/qc.R")
 
 suppressPackageStartupMessages({
   library(DBI); library(duckdb); library(dplyr); library(readr)
@@ -77,8 +78,8 @@ msg("Annual FLUXMET rows: ", nrow(annual), "; sites: ", n_distinct(annual$site_i
 ## ---------------------------------------------------------------------------
 master <- annual |>
   mutate(
-    qualifies_VUT = !is.na(NEE_VUT_REF) & !is.na(NEE_VUT_REF_QC) & (1 - NEE_VUT_REF_QC) <= QC_THRESHOLD_YY,
-    qualifies_CUT = !is.na(NEE_CUT_REF) & !is.na(NEE_CUT_REF_QC) & (1 - NEE_CUT_REF_QC) <= QC_THRESHOLD_YY,
+    qualifies_VUT = !is.na(NEE_VUT_REF) & !is.na(NEE_VUT_REF_QC) & qc_passes(NEE_VUT_REF_QC, QC_THRESHOLD_YY),
+    qualifies_CUT = !is.na(NEE_CUT_REF) & !is.na(NEE_CUT_REF_QC) & qc_passes(NEE_CUT_REF_QC, QC_THRESHOLD_YY),
     ustar_term_VUT = (NEE_VUT_84 - NEE_VUT_16) / 2,
     ustar_term_CUT = (NEE_CUT_84 - NEE_CUT_16) / 2,
     VUT_minus_CUT = if_else(!is.na(NEE_VUT_REF) & !is.na(NEE_CUT_REF), NEE_VUT_REF - NEE_CUT_REF, NA_real_),

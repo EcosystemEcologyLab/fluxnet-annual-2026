@@ -1,0 +1,37 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:17:31] === Supplementary Table S1: regional networks ===
+[2026-10-29 18:17:31] Loaded: 781 sites from data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+[2026-10-29 18:17:31] Loaded: 6336 site-year rows from data/snapshots/site_year_data_presence.csv
+# A tibble: 9 × 5
+  network_code network_name                  processing_hub n_sites n_site_years
+  <chr>        <chr>                         <chr>            <int>        <int>
+1 AMF          AmeriFlux                     AmeriFlux          381         2891
+2 EUF          European Fluxes Database      ICOS               138          959
+3 ICOS         ICOS                          ICOS                80          983
+4 JPF          JapanFlux                     ICOS                54          507
+5 TERN         TERN                          TERN                52          430
+6 CNF          ChinaFLUX                     ICOS                32          246
+7 KOF          KoFlux                        ICOS                21           82
+8 FLX          not affiliated with a region… ICOS                18           87
+9 SAEON        South African Environmental … ICOS                 5           15
+# A tibble: 5 × 4
+  check                     expected actual ok   
+  <chr>                        <int>  <int> <lgl>
+1 sites sum to 781               781    781 TRUE 
+2 site-years sum to 6200        6200   6200 TRUE 
+3 AmeriFlux hub sites = 381      381    381 TRUE 
+4 ICOS hub sites = 348           348    348 TRUE 
+5 TERN hub sites = 52             52     52 TRUE 
+[2026-10-29 18:17:31] All checks passed: sites=781, site-years=6200, hub totals AmeriFlux=381/ICOS=348/TERN=52.
+[2026-10-29 18:17:31] Saved: review/figures/draft_manuscript_v1/SupTables/tableS1_regional_networks.csv (9 rows)
+[2026-10-29 18:17:31] === Done ===

@@ -28,6 +28,7 @@ FLUXCOM_ROOT <- "WAFNET/fluxcom_comparison"
 
 source("R/pipeline_config.R")
 source("R/units.R")
+source("R/qc.R")
 check_pipeline_config()
 
 # Six-site filter — same sites as WAFNET/energy_partitioning (see README.md).

@@ -1,0 +1,90 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[WAFNET/fluxcom_comparison] Sites: GH-Ank, BJ-Db1, BJ-Nhu, BJ-Bfg, SN-Nkr, SN-Dhr
+[WAFNET/fluxcom_comparison] Reading repo-root data/extracted/ (read-only)
+
+[WAFNET/fluxcom_comparison] carbon_src per site:
+  site_id n_vut_years_nonNA_qc n_cut_years_nonNA_qc carbon_src
+1  GH-Ank                    1                    1        VUT
+2  BJ-Db1                    2                    2        VUT
+3  BJ-Nhu                    6                    6        VUT
+4  BJ-Bfg                    3                    3        VUT
+5  SN-Nkr                    6                    6        VUT
+6  SN-Dhr                    3                    3        VUT
+
+[WAFNET/fluxcom_comparison] YY qualifying-year counts:
+   site_id variable n_qualifying first_period last_period native_unit
+1   GH-Ank      NEE            1         2014        2014  gC m-2 y-1
+2   GH-Ank   GPP_DT            1         2014        2014  gC m-2 y-1
+3   GH-Ank  RECO_DT            1         2014        2014  gC m-2 y-1
+4   GH-Ank       LE            1         2012        2012       W m-2
+5   GH-Ank        H            3         2011        2014       W m-2
+6   BJ-Db1      NEE            2         2023        2024  gC m-2 y-1
+7   BJ-Db1   GPP_DT            2         2023        2024  gC m-2 y-1
+8   BJ-Db1  RECO_DT            2         2023        2024  gC m-2 y-1
+9   BJ-Db1       LE            2         2023        2024       W m-2
+10  BJ-Db1        H            2         2023        2024       W m-2
+11  BJ-Nhu      NEE            6         2008        2017  gC m-2 y-1
+12  BJ-Nhu   GPP_DT            6         2008        2017  gC m-2 y-1
+13  BJ-Nhu  RECO_DT            6         2008        2017  gC m-2 y-1
+14  BJ-Nhu       LE            6         2008        2017       W m-2
+15  BJ-Nhu        H            7         2008        2017       W m-2
+16  BJ-Bfg      NEE            3         2009        2014  gC m-2 y-1
+17  BJ-Bfg   GPP_DT            3         2009        2014  gC m-2 y-1
+18  BJ-Bfg  RECO_DT            3         2009        2014  gC m-2 y-1
+19  BJ-Bfg       LE            4         2009        2017       W m-2
+20  BJ-Bfg        H            4         2009        2017       W m-2
+21  SN-Nkr      NEE            6         2019        2024  gC m-2 y-1
+22  SN-Nkr   GPP_DT            6         2019        2024  gC m-2 y-1
+23  SN-Nkr  RECO_DT            6         2019        2024  gC m-2 y-1
+24  SN-Nkr       LE            6         2019        2024       W m-2
+25  SN-Nkr        H            6         2019        2024       W m-2
+26  SN-Dhr      NEE            3         2012        2022  gC m-2 y-1
+27  SN-Dhr   GPP_DT            3         2012        2022  gC m-2 y-1
+28  SN-Dhr  RECO_DT            3         2012        2022  gC m-2 y-1
+29  SN-Dhr       LE            4         2012        2022       W m-2
+30  SN-Dhr        H            4         2012        2022       W m-2
+
+[WAFNET/fluxcom_comparison] MM qualifying-month counts:
+   site_id variable n_qualifying first_period last_period native_unit
+1   GH-Ank      NEE           22       201102      201411  gC m-2 d-1
+2   GH-Ank   GPP_DT           22       201102      201411  gC m-2 d-1
+3   GH-Ank  RECO_DT           22       201102      201411  gC m-2 d-1
+4   GH-Ank       LE           24       201102      201411       W m-2
+5   GH-Ank        H           28       201101      201412       W m-2
+6   BJ-Db1      NEE           32       202205      202412  gC m-2 d-1
+7   BJ-Db1   GPP_DT           32       202205      202412  gC m-2 d-1
+8   BJ-Db1  RECO_DT           32       202205      202412  gC m-2 d-1
+9   BJ-Db1       LE           32       202205      202412       W m-2
+10  BJ-Db1        H           32       202205      202412       W m-2
+11  BJ-Nhu      NEE           86       200801      201711  gC m-2 d-1
+12  BJ-Nhu   GPP_DT           86       200801      201711  gC m-2 d-1
+13  BJ-Nhu  RECO_DT           86       200801      201711  gC m-2 d-1
+14  BJ-Nhu       LE          100       200801      201711       W m-2
+15  BJ-Nhu        H          106       200801      201711       W m-2
+16  BJ-Bfg      NEE           70       200807      201710  gC m-2 d-1
+17  BJ-Bfg   GPP_DT           69       200807      201710  gC m-2 d-1
+18  BJ-Bfg  RECO_DT           69       200807      201710  gC m-2 d-1
+19  BJ-Bfg       LE           84       200807      201711       W m-2
+20  BJ-Bfg        H           84       200807      201711       W m-2
+21  SN-Nkr      NEE           80       201803      202412  gC m-2 d-1
+22  SN-Nkr   GPP_DT           80       201803      202412  gC m-2 d-1
+23  SN-Nkr  RECO_DT           80       201803      202412  gC m-2 d-1
+24  SN-Nkr       LE           80       201803      202412       W m-2
+25  SN-Nkr        H           80       201803      202412       W m-2
+26  SN-Dhr      NEE           82       201008      202212  gC m-2 d-1
+27  SN-Dhr   GPP_DT           82       201008      202212  gC m-2 d-1
+28  SN-Dhr  RECO_DT           82       201008      202212  gC m-2 d-1
+29  SN-Dhr       LE           89       201008      202212       W m-2
+30  SN-Dhr        H           90       201008      202212       W m-2
+
+Wrote tables/site_carbon_source.csv, tables/site_variable_qc_overlap_yy.csv, tables/site_variable_qc_overlap_mm.csv

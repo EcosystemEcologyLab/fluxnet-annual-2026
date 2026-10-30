@@ -1,0 +1,35 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+Loading required package: DBI
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+  YY QC: 616 VUT-gated, 40 CUT-gated, 125 no-QC sites
+  DD QC: 732 VUT-gated, 49 CUT-gated, 0 no-QC sites
+  MM QC: 732 VUT-gated, 49 CUT-gated, 0 no-QC sites
+  WW QC: 1 VUT-gated, 0 CUT-gated, 0 no-QC sites
+Warning message:
+Missing values are always removed in SQL aggregation functions.
+Use `na.rm = TRUE` to silence this warning
+This warning is displayed once every 8 hours. 
+
+--- 04_qc.R: log file summary ---
+exclusion_log.csv: outputs/exclusion_log.csv (written, 15643937 row(s)) 
+unknown_log.csv:   outputs/unknown_log.csv (written, 299 row(s)) 

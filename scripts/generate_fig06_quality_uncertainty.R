@@ -281,7 +281,7 @@ legend_lines <- c(
   "longer right tail than the random term's.",
   sprintf("(c) Differences cluster near zero; %s of %s site-years (%.1f%%) exceed the combined", n_exceeds, nrow(stage3), 100*n_exceeds/nrow(stage3)),
   sprintf("uncertainty, and %s lack a joint-uncertainty value on at least one side.", n_no_joint), "",
-  "QUALIFICATION RULE (panels b, c): 'usable' = (1 - QC) <= QC_THRESHOLD_YY (0.50), applied",
+  "QUALIFICATION RULE (panels b, c): 'usable' = QC >= QC_THRESHOLD_YY (0.50), applied",
   "separately to VUT (own NEE_VUT_REF_QC) and CUT (own NEE_CUT_REF_QC) -- not the single",
   "per-site VUT/CUT fallback scripts/04_qc.R uses for row exclusion elsewhere in the paper.",
   sprintf("n = %s usable VUT site-years, %s usable CUT site-years, %s site-years where both are",

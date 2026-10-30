@@ -1,0 +1,40 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:17:36] === Stage 1: record length by IGBP class ===
+[2026-10-29 18:17:36] Current network: 781 sites
+[2026-10-29 18:17:36] Measure 1 (years with data): computed for 781 sites, range 1-35
+read_bifvarinfo_units(): reading 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv'
+Warning message:
+In read_bifvarinfo_units(extracted_dir) :
+  BIFVARINFO file 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv' is missing columns: VAR_INFO_VARNAME, VAR_INFO_UNIT. Using hardcoded fallback.
+[2026-10-29 18:17:36] Measure 2 (years with qualifying annual NEE): computed for 781 sites, range 0-33
+# A tibble: 16 × 8
+   igbp_class n_sites data_ge5 nee_ge5 data_ge10 nee_ge10 data_ge20 nee_ge20
+   <chr>        <int>    <int>   <int>     <int>    <int>     <int>    <int>
+ 1 ENF            114       88      69        46       36        19       12
+ 2 EBF             44       34      23        17       10         3        2
+ 3 DNF             13        8       3         4        3         1        1
+ 4 DBF             81       53      41        30       25        13        9
+ 5 MF              24       18       9         9        4         3        2
+ 6 CSH             12        7       6         5        0         0        0
+ 7 OSH             41       30      20        16        9         1        0
+ 8 WSA             18       12      11         8        6         3        3
+ 9 SAV             14       11       8         6        3         0        0
+10 GRA            146       86      58        35       25         6        3
+11 WET            117       61      32        23       14         4        2
+12 CRO            139       63      41        21       16        10        6
+13 CVM              9        5       3         2        0         0        0
+14 BSV              7        5       2         2        0         0        0
+15 SNO              2        2       0         1        0         0        0
+16 Total          781      483     326       225      151        63       40
+[2026-10-29 18:17:36] Saved: review/figures/draft_manuscript_v1/SupTables/tableS2_record_length_by_igbp.csv
+[2026-10-29 18:17:36] === Stage 1 done ===

@@ -440,25 +440,37 @@ QC_THRESHOLD_YY <- 0.50   # annual
 ```
 
 - HH/HR analysis: keep records where `_QC <= 1`
-- DD/WW/MM/YY: keep records where `_QC > QC_THRESHOLD_*`
+- DD/WW/MM/YY: keep records where `_QC >= QC_THRESHOLD_*` (via `qc_passes()`,
+  `R/qc.R` — raising a threshold must always be stricter; do not reimplement
+  this as `(1 - QC) <= threshold`, which is only equivalent at `threshold =
+  0.50`)
 - ERA-Interim fills: flag but do not drop by default (`_F_QC == 2` is marked)
 - USTAR filtering: already applied in the distributed data — do not re-apply
 
-The FLUXNET published convention for coarse resolutions is `> 0.5`. The default
+The FLUXNET published convention for coarse resolutions is `>= 0.5`. The default
 for this synthesis paper is also `0.50`. Row exclusion is per-site:
 - Sites with any non-NA `NEE_VUT_REF_QC` values: gated on `NEE_VUT_REF_QC >= 0.50`
 - CUT-only sites (where `NEE_VUT_REF_QC` is entirely NA across all of that site's
   rows): gated on `NEE_CUT_REF_QC >= 0.50` as a fallback
+- Sites/rows with no qualifying QC value at all (neither column has a non-NA
+  value): kept, not excluded — `scripts/04_qc.R` marks these rows
+  `qc_unknown = TRUE` and logs their counts to the exclusion log as "QC
+  unknown (NA), kept". Per-variable gates elsewhere (e.g.
+  `R/site_annual_fluxes.R::compute_site_annual_fluxes()`) instead treat an
+  NA QC value as **not** qualifying — the two contexts have different NA
+  handling by design (04_qc.R gates whole rows across all variables; the
+  per-variable gates gate one flux at a time).
 
 The fallback is **per-site, not per-row** — VUT and CUT QC are not mixed within
 a single site. Exclusion logs record which QC column drove each exclusion
 (`NEE_VUT_REF_QC` or `NEE_CUT_REF_QC`). Secondary variable QC columns (GPP, RECO,
 LE, H) are retained in output tables but do not drive row exclusion. Implementation
-in `scripts/04_qc.R` (commit ad7464f). The decision to use 0.50 rather than 0.75
-is documented in `docs/decisions_pending.md` (resolved 2026-04-20) and confirmed in
-`docs/methods_requirements.md` §5.3. To reproduce FLUXNET2015 published figures,
-no threshold change is needed; to apply a stricter filter, raise all thresholds
-to `0.75` in `R/pipeline_config.R`.
+in `scripts/04_qc.R` (commit ad7464f; threshold-comparison direction corrected
+in the `qc-semantics-fix` branch/PR, 2026-10-29 — see `logs/prompts/2026-10-29_qc_semantics_fix.md`).
+The decision to use 0.50 rather than 0.75 is documented in `docs/decisions_pending.md`
+(resolved 2026-04-20) and confirmed in `docs/methods_requirements.md` §5.3. To
+reproduce FLUXNET2015 published figures, no threshold change is needed; to
+apply a stricter filter, raise all thresholds to `0.75` in `R/pipeline_config.R`.
 
 ---
 

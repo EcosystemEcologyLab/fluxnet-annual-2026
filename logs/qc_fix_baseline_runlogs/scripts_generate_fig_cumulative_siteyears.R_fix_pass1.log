@@ -1,0 +1,25 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:20:50] === Figure 2: cumulative site-years by IGBP, with framed record-length inset ===
+[2026-10-29 18:20:50] Using snapshot (latest): data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+[2026-10-29 18:20:50] Loaded presence_df: 6336 rows
+New names:
+• `` -> `...2`
+[2026-10-29 18:20:50] Loaded La Thuile year-indicator matrix: 965 site-years (expect 965)
+[2026-10-29 18:20:50] Main panel total site-years (1991-2025): 6200
+[2026-10-29 18:20:50] Inset sites: 781; threshold counts (>=5,>=10,>=20): 483, 225, 63
+[2026-10-29 18:20:50] Gate checks PASSED: 6200 main-panel site-years; 781 inset sites; thresholds 483/225/63.
+[2026-10-29 18:20:51] Inset footprint (npc): left=0.039 right=0.615 bottom=0.314 top=0.984 (57.7% width x 67% height of the panel)
+[2026-10-29 18:20:51] Saved: review/figures/draft_manuscript_v1/fig_02_cumulative_siteyears_igbp.png, review/figures/draft_manuscript_v1/fig_02_cumulative_siteyears_igbp.pdf
+[2026-10-29 18:20:51] Historical line end points -- Marconi: 96, La Thuile: 965, FLUXNET2015: 1532
+[2026-10-29 18:20:51] Saved: review/figures/draft_manuscript_v1/fig_02_cumulative_siteyears_igbp.legend.txt
+[2026-10-29 18:20:51] === Done ===

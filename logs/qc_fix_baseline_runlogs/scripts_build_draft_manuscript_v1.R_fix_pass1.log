@@ -1,0 +1,12 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+Copied: review/figures/candidates/ALT_fig_02_whittaker_current.png -> review/figures/draft_manuscript_v1/fig_03_whittaker_current.png
+Copied: review/figures/candidates/ALT_fig_02_whittaker_current.pdf -> review/figures/draft_manuscript_v1/fig_03_whittaker_current.pdf
+Copied: review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png -> review/figures/draft_manuscript_v1/fig_04_flux_comparison_combo_nep_et_h.png
+Copied: review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.pdf -> review/figures/draft_manuscript_v1/fig_04_flux_comparison_combo_nep_et_h.pdf
+Copied: review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.legend.txt -> review/figures/draft_manuscript_v1/fig_04_flux_comparison_combo_nep_et_h.legend.txt
+Wrote: review/figures/draft_manuscript_v1/fig_03_whittaker_current.legend.txt (hardcoded, not copied)
+
+Done. draft_manuscript_v1/ contains 2 figures and 2 legends.

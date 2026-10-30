@@ -1,0 +1,17 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:22:52] === Supplementary Figure S5: quality flags ===
+[2026-10-29 18:22:53] Panel a: 8269598 QC values pulled (daily/monthly x 4 variables).
+[2026-10-29 18:22:58] Saved: review/figures/draft_manuscript_v1/SupFigs/figS5_quality_flags.png, review/figures/draft_manuscript_v1/SupFigs/figS5_quality_flags.pdf
+[2026-10-29 18:22:58] Sub-daily 31-site subset: 23 of 31 are ICOS sites (74.2%). US-MMS resolution: HR (extracted 2026-05-25, confirmed from data/extracted/AMF_US-MMS_FLUXNET_1999-2023_v1.3_r1/ file dates).
+[2026-10-29 18:22:58] Saved: review/figures/draft_manuscript_v1/SupFigs/figS5_quality_flags.legend.txt
+[2026-10-29 18:22:58] === Done ===

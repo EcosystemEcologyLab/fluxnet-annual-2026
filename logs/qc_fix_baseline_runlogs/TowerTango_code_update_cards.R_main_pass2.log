@@ -1,0 +1,82 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:20:15] [TowerTango] === Update Cards ===
+[2026-10-29 18:20:15] [TowerTango] Using snapshot (latest, by filename timestamp, not folder order): data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+[2026-10-29 18:20:15] [TowerTango] Gate passed: 781 sites, site_id unique.
+[2026-10-29 18:20:15] [TowerTango] --- card_year_established: compute_site_year_presence() on monthly FLUXMET ---
+[2026-10-29 18:20:15] [TowerTango] Monthly FLUXMET rows pulled: 76032 for 781 of 781 sites.
+compute_site_year_presence: 6200 / 6336 site-years have data (12 flux vars, any non-NA). Written to: /var/folders/zd/gkpzz5z90cq2vf61qnq6mcwr0000gn/T//Rtmp0IrruR/file1460d647e17ff.csv
+[2026-10-29 18:20:16] [TowerTango] --- card_sink_strength_nep / card_et: compute_site_annual_fluxes() ---
+read_bifvarinfo_units(): reading 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv'
+Warning message:
+In read_bifvarinfo_units(extracted_dir) :
+  BIFVARINFO file 'AMF_AR-Bal_FLUXNET_BIFVARINFO_YY_2012-2013_v1.3_r1.csv' is missing columns: VAR_INFO_VARNAME, VAR_INFO_UNIT. Using hardcoded fallback.
+[2026-10-29 18:20:16] [TowerTango] compute_site_annual_fluxes(): 6336 site-year rows; 656 sites with a usable NEP median; 665 sites with a usable ET median.
+[2026-10-29 18:20:16] [TowerTango] --- BADM: resolving one BIF file per site via flux_discover_files() ---
+DD / ERA5 → 781 sites, 34993 site-years across 781 files
+DD / FLUXMET → 781 sites, 6336 site-years across 781 files
+HH / ERA5 → 30 sites, 1346 site-years across 30 files
+HH / FLUXMET → 30 sites, 281 site-years across 30 files
+HR / ERA5 → 1 site, 45 site-years across 1 file
+HR / FLUXMET → 1 site, 25 site-years across 1 file
+MM / ERA5 → 781 sites, 34993 site-years across 781 files
+MM / FLUXMET → 781 sites, 6336 site-years across 781 files
+WW / ERA5 → 1 site, 45 site-years across 1 file
+WW / FLUXMET → 1 site, 25 site-years across 1 file
+YY / ERA5 → 781 sites, 34993 site-years across 781 files
+YY / FLUXMET → 781 sites, 6336 site-years across 781 files
+Warning message:
+560 duplicate files removed:
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_BIF_2016-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_BIFVARINFO_DD_2016-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_BIFVARINFO_MM_2016-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_BIFVARINFO_YY_2016-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_ERA5_DD_1981-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_ERA5_MM_1981-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_ERA5_YY_1981-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_FLUXMET_DD_2016-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_FLUXMET_MM_2016-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Maa_FLUXNET_2016-2024_v1.3_r1/ICOS_BE-Maa_FLUXNET_FLUXMET_YY_2016-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_BIF_1996-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_BIFVARINFO_DD_1996-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_BIFVARINFO_MM_1996-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_BIFVARINFO_YY_1996-2024_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_ERA5_DD_1981-2025_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_ERA5_MM_1981-2025_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_ERA5_YY_1981-2025_v1.3_r1.csv',
+'data/extracted/ICOS_BE-Vie_FLUXNET_1996-2024_v1.3_r1/ICOS_BE-Vie_FLUXNET_FLUXMET_DD_1996-2024_v1.3_r1.csv',
+…,
+'data/extracted/EUF_ZM-Mon_FLUXNET_2007-2009_v1.3_r1/EUF_ZM-Mon_FLUXNET_FLUXMET_MM_2007-2009_v1.3_r1.csv',
+and
+'data/extracted/EUF_ZM-Mon_FLUXNET_2007-2009_v1.3_r1/EUF_ZM-Mon_FLUXNET_FLUXMET_YY_2007-2009_v1.3_r1.csv' 
+[2026-10-29 18:20:16] [TowerTango] BIF files resolved: 781 of 781 sites.
+[2026-10-29 18:20:19] [TowerTango] BADM rows read (deduplicated, one file per site): 3158866 for 781 sites.
+[2026-10-29 18:20:19] [TowerTango] SITE_DESC: 624 sites with at least one entry; 1 site(s) with several entries.
+[2026-10-29 18:20:19] [TowerTango] --- VAR_INFO: resolving one BIFVARINFO_YY file per site via flux_discover_files() ---
+[2026-10-29 18:20:19] [TowerTango] BIFVARINFO_YY files resolved: 781 of 781 sites.
+[2026-10-29 18:20:20] [TowerTango] VAR_INFO rows read (deduplicated, one file per site): 1874733 for 780 sites.
+[2026-10-29 18:20:24] [TowerTango] card_tower_height_m: 777 of 781 sites have a VAR_INFO_HEIGHT for NEE_VUT_REF/NEE_CUT_REF/USTAR; 88 site(s) have more than one distinct height value over time.
+[2026-10-29 18:20:24] [TowerTango] --- card_canopy_height_*: HEIGHTC (canopy height), GRP_HEIGHTC/HEIGHTC + JP-Shn's own group ---
+[2026-10-29 18:20:24] [TowerTango] NOTE: 6 HEIGHTC record(s) have a non-numeric DATAVALUE (e.g. 'variable') -- counted in card_canopy_height_n_records, excluded from the max.
+[2026-10-29 18:20:24] [TowerTango] card_canopy_height_*: 483 of 781 sites have at least one HEIGHTC record (477 with a usable numeric maximum).
+[2026-10-29 18:20:24] [TowerTango] --- card_height_check: flag unusual recorded heights for a by-hand check ---
+[2026-10-29 18:20:24] [TowerTango] card_height_check: 102 of 781 sites (with either height column) flagged for a by-hand check.
+[2026-10-29 18:20:24] [TowerTango] --- card_map_mm_yr / card_mat_degC: WorldClim 2.1 (bio12, bio1) ---
+[2026-10-29 18:20:24] [TowerTango] All 781 sites present in site_worldclim.csv; raster fallback not needed this run.
+[2026-10-29 18:20:24] [TowerTango] --- Assembling card table ---
+[2026-10-29 18:20:24] [TowerTango] Gate passed on final table: 781 rows, site_id unique, 40 columns (18 snapshot + 22 card).
+[2026-10-29 18:20:24] [TowerTango] Saved: TowerTango/tables/towertango_cards_20260920T102211.csv
+[2026-10-29 18:20:24] [TowerTango] --- Running checks ---
+[2026-10-29 18:20:24] [TowerTango] Canopy height coverage: 483 of 781 sites with any HEIGHTC record (477 with a usable numeric maximum) -- 2026-10-08 BADM search reported 482.
+[2026-10-29 18:20:24] [TowerTango] card_height_check: 102 of 781 sites flagged -- canopy height above 60 m=4, canopy height of 0 m=2, canopy height greater than tower height=26, instrument height changed over the record=88
+[2026-10-29 18:20:24] [TowerTango] Saved: TowerTango/docs/update_cards_report.md
+[2026-10-29 18:20:24] [TowerTango] === Update Cards done ===

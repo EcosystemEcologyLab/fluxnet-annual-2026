@@ -1,14 +1,20 @@
 ## 04_qc.R — Apply QC filtering per resolution
 ## See CLAUDE.md QC Flag Reference for flag definitions.
-## 
-## Creates a copy of each resolution's table with rows filtered out by QC 
+##
+## Creates a copy of each resolution's table with rows filtered out by QC
 ## variable(s).
 ##
 ## Two-stage QC strategy:
-##   Stage 1: at DD/MM/WW/YY resolution, _QC values are fractions 0–1.
-##     `qc_flagged` (TRUE if p_gapfilled > 1-threshold) and `p_gapfilled` columns
-##     are added; flagged rows are dropped and logged as exclusions. Rows with
-##     qc_flagged == NA are kept. Stage 1 is skipped for HH/HR data.
+##   Stage 1: at DD/MM/WW/YY resolution, _QC values are fractions 0–1. The
+##     rule is "keep when QC >= threshold" (qc_passes(), R/qc.R) -- raising
+##     threshold must always be stricter. `qc_val` (the row's gating QC
+##     value), `qc_flagged` (TRUE when qc_val is below threshold) and
+##     `qc_unknown` (TRUE when no QC value was available to gate this row)
+##     columns are added; flagged rows are dropped and logged as exclusions.
+##     Rows with qc_unknown == TRUE are kept (dropping them would remove the
+##     whole row -- LE, H, meteorology -- at sites with no NEE QC column) and
+##     their counts are logged to the exclusion log as "QC unknown (NA),
+##     kept". Stage 1 is skipped for HH/HR data.
 ##
 ##     Row exclusion uses VUT QC for sites that have NEE_VUT_REF (the majority),
 ##     and CUT QC for the ~36 sites where NEE_VUT_REF is absent (CUT-only sites).
@@ -138,13 +144,25 @@ for (table in stage_1_tables) {
   data_qc <- data |>
     dplyr::left_join(site_qc_flag, by = "site_id", copy = TRUE) |>
     dplyr::mutate(
-      p_gapfilled = dplyr::case_when(
-        qc_col_used == "NEE_VUT_REF_QC" ~ 1 - NEE_VUT_REF_QC,
-        qc_col_used == "NEE_CUT_REF_QC" ~ 1 - NEE_CUT_REF_QC,
+      qc_val = dplyr::case_when(
+        qc_col_used == "NEE_VUT_REF_QC" ~ NEE_VUT_REF_QC,
+        qc_col_used == "NEE_CUT_REF_QC" ~ NEE_CUT_REF_QC,
         TRUE                            ~ NA_real_
       )
     ) |>
-    dplyr::mutate(qc_flagged = p_gapfilled > threshold)
+    dplyr::mutate(
+      # qc_unknown: no QC value was available to gate this row (no
+      # qualifying column for the site, or an NA value in a qualifying
+      # column for this row). These rows are kept, not excluded.
+      qc_unknown = is.na(qc_val),
+      # qc_passes()'s rule (R/qc.R) -- "keep when QC >= threshold" --
+      # inlined directly as qc_val < threshold rather than a literal
+      # qc_passes() call, because dbplyr cannot translate a call to a
+      # user-defined R function on this lazy DuckDB table. No other
+      # script reads this table's p_gapfilled/qc_val column, so there is
+      # no compatibility reason to keep p_gapfilled around.
+      qc_flagged = !qc_unknown & qc_val < threshold
+    )
 
   # If the _qc table already exists, drop it before recomputing.
   qc_name <- glue::glue("{table}_qc")
@@ -153,7 +171,7 @@ for (table in stage_1_tables) {
     dbExecute(con, glue::glue("DROP TABLE {qc_name}"))
   }
   data_qc |>
-    dplyr::filter(is.na(qc_flagged) | !qc_flagged) |>
+    dplyr::filter(!qc_flagged) |>
     dplyr::compute(name = qc_name, temporary = FALSE)
 
   # Exclusion log — group by qc_col_used so the audit trail records whether
@@ -173,13 +191,33 @@ for (table in stage_1_tables) {
         variable    = qc_col,
         timestamp   = excl_sub[[ts_col]],
         reason      = glue::glue(
-          "{qc_col} p_gapfilled > {round(1 - threshold, 2)} ",
-          "(QC_THRESHOLD_{suffix}={threshold})"
+          "{qc_col} < QC_THRESHOLD_{suffix}={threshold}"
         ),
         threshold   = glue::glue("QC_THRESHOLD_{suffix}={threshold}"),
         excluded_by = "04_qc.R"
       )
     }
+  }
+
+  # "QC unknown (NA), kept" — these rows are KEPT (no qualifying QC column
+  # for the site, or an NA value in a qualifying column for this row), but
+  # their counts are logged to the exclusion log so the audit trail shows
+  # how many rows passed only because no QC flag was available to gate on.
+  unknown_rows <- data_qc |>
+    dplyr::filter(qc_unknown) |>
+    dplyr::select(site_id, qc_col_used, dplyr::starts_with("TIMESTAMP")) |>
+    collect()
+
+  if (nrow(unknown_rows) > 0L) {
+    ts_col <- grep("^TIMESTAMP", names(unknown_rows), value = TRUE)[1]
+    log_exclusion(
+      site_id     = unknown_rows$site_id,
+      variable    = dplyr::coalesce(unknown_rows$qc_col_used, "ALL"),
+      timestamp   = unknown_rows[[ts_col]],
+      reason      = "QC unknown (NA), kept",
+      threshold   = glue::glue("QC_THRESHOLD_{suffix}={threshold}"),
+      excluded_by = "04_qc.R"
+    )
   }
 }
 

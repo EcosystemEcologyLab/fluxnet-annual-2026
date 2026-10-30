@@ -17,6 +17,25 @@
 ## _QC columns because at sub-daily resolution all flux variables are
 ## independent measurements, not derived/partitioned quantities.
 
+#' Test whether a fractional QC value passes a threshold
+#'
+#' At DD/WW/MM/YY resolution, `_QC` flags are the fraction of underlying
+#' HH/HR records that were measured or good-quality gap-fill (Pastorello et
+#' al. 2020, SM1). The rule is "keep when `QC >= threshold`" -- raising the
+#' threshold must always be stricter. This is the single implementation of
+#' that rule; callers must not reimplement it as `(1 - QC) <= threshold`,
+#' which is only equivalent at `threshold = 0.50`.
+#'
+#' @param qc Numeric vector of fractional QC values (0-1), or `NA`.
+#' @param threshold Numeric threshold to compare against (e.g.
+#'   `QC_THRESHOLD_YY`).
+#' @return A logical vector: `TRUE` when `qc >= threshold`, `FALSE` when
+#'   `qc < threshold`, `NA` when `qc` is `NA`.
+#' @export
+qc_passes <- function(qc, threshold) {
+  ifelse(is.na(qc), NA, qc >= threshold)
+}
+
 #' Apply QC filtering to half-hourly (HH) or hourly (HR) FLUXNET data
 #'
 #' Filters rows based on the `*_QC` flag system used at HH/HR resolution:

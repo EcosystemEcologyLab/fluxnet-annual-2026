@@ -213,7 +213,7 @@ write_table <- function(tbl, flux_key, unit_str, csv_file, source_priority) {
     "Source: FLUXNET Shuttle snapshot ", basename(SNAPSHOT_CSV),
     " (767 sites). Data product: FLUXMET YY v1.3_r1. ",
     "Variable: ", toupper(flux_key), ". Source priority: ", source_priority, " ",
-    "QC threshold: 0.80 (governing QC flag must be >= 0.80 for a site-year to ",
+    "QC threshold: ", QC_THRESHOLD_YY, " (governing QC flag must be >= ", QC_THRESHOLD_YY, " for a site-year to ",
     "qualify; NEE_VUT_REF_QC/NEE_CUT_REF_QC gates NEP/GPP/TER, LE_F_MDS_QC ",
     "gates ET, H_F_MDS_QC gates H). ",
     "Per-site aggregation: median across qualifying years, computed per site. ",

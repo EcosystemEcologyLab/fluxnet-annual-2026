@@ -1,0 +1,30 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[2026-10-29 18:28:47] === Stage 2: record length per collection -- Figure S1 ===
+[2026-10-29 18:28:47] Marconi: 35 sites, 96 site-years (span sum)
+New names:
+• `` -> `...2`
+[2026-10-29 18:28:47] La Thuile: 252 sites, 965 site-years (indicator-column count)
+[2026-10-29 18:28:47] FLUXNET2015: 212 sites, 1532 site-years (non-NA two-digit-year-column count; '+' and 'Tier 2' both count)
+[2026-10-29 18:28:47] Current: 781 sites, 6200 site-years (has_data count)
+# A tibble: 4 × 4
+  collection  computed expected ok   
+  <chr>          <int>    <dbl> <lgl>
+1 Marconi           96       96 TRUE 
+2 La Thuile        965      965 TRUE 
+3 FLUXNET2015     1532     1532 TRUE 
+4 Current         6200     6200 TRUE 
+[2026-10-29 18:28:47] Validation PASSED: all four collection totals match collection_sites_siteyears.csv / the task's stated checks.
+[2026-10-29 18:28:47] --- Building Figure S1 ---
+[2026-10-29 18:28:47] Saved: review/figures/draft_manuscript_v1/SupFigs/figS1_record_length_collections.png, review/figures/draft_manuscript_v1/SupFigs/figS1_record_length_collections.pdf, review/figures/draft_manuscript_v1/SupFigs/figS1_record_length_collections.jpg
+[2026-10-29 18:28:48] Saved: review/figures/draft_manuscript_v1/SupFigs/figS1_record_length_collections.legend.txt
+[2026-10-29 18:28:48] === Stage 2 done ===

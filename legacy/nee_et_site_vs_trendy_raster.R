@@ -1,3 +1,9 @@
+## Moved to legacy/ 2026-10-29 (qc-semantics-fix, logs/prompts/2026-10-29_qc_semantics_fix.md):
+## hardcodes its own QC_THRESH_MM/QC>=0.80 cutoff (already correct >= direction,
+## not the (1-QC) bug), not reused by any current figure/table script -- not
+## rewired to QC_THRESHOLD_MM/YY to avoid changing this exploratory analysis'
+## own results. Comments below may still refer to its old scripts/ path.
+##
 ## nee_et_site_vs_trendy_raster.R
 ##
 ## Raster-heavy half of the NEE/ET site-vs-TRENDY diagnostic: T1's

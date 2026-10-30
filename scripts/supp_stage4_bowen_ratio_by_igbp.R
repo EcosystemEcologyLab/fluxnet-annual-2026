@@ -8,8 +8,8 @@
 ## perfectly good H_F_MDS_QC/LE_F_MDS_QC even when its NEE QC column fails,
 ## and annual_qc drops the whole row on the NEE gate). Each variable is
 ## gated on its OWN QC column (the paper's rule): a site-year qualifies for
-## H when H_F_MDS_QC is non-NA and (1 - H_F_MDS_QC) <= QC_THRESHOLD_YY,
-## independently for LE_F_MDS/LE_F_MDS_QC -- identical formula to
+## H when H_F_MDS_QC is non-NA and qc_passes(H_F_MDS_QC, QC_THRESHOLD_YY)
+## (R/qc.R), independently for LE_F_MDS/LE_F_MDS_QC -- identical rule to
 ## .compute_site_annual_fluxes_core()'s et_qualifies/h_qualifies, not
 ## reimplemented differently. A site-year is used for Bowen ratio only when
 ## BOTH qualify.
@@ -28,6 +28,7 @@ if (file.exists(".env")) {
 }
 source("R/pipeline_config.R")
 check_pipeline_config()
+source("R/qc.R")
 source("R/utils.R")
 source("R/plot_constants.R")
 
@@ -78,8 +79,8 @@ msg("Annual FLUXMET rows (current network): ", nrow(annual), " (",
 
 d <- annual |>
   mutate(
-    h_qualifies  = !is.na(H_F_MDS)  & !is.na(H_F_MDS_QC)  & (1 - H_F_MDS_QC)  <= QC_THRESHOLD_YY,
-    le_qualifies = !is.na(LE_F_MDS) & !is.na(LE_F_MDS_QC) & (1 - LE_F_MDS_QC) <= QC_THRESHOLD_YY,
+    h_qualifies  = !is.na(H_F_MDS)  & !is.na(H_F_MDS_QC)  & qc_passes(H_F_MDS_QC, QC_THRESHOLD_YY),
+    le_qualifies = !is.na(LE_F_MDS) & !is.na(LE_F_MDS_QC) & qc_passes(LE_F_MDS_QC, QC_THRESHOLD_YY),
     both_qualify = h_qualifies & le_qualifies
   )
 n_both <- sum(d$both_qualify)

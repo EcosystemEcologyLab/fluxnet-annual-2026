@@ -1,0 +1,13 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+[2026-10-29 18:10:08] === FLUXNET2015 vs Shuttle: NEP/ET/H combo figure ===
+[2026-10-29 18:10:08] Loading: data/snapshots/flux_comparison_fluxnet2015_vs_shuttle.csv
+[2026-10-29 18:10:08] Building panels: NEP, ET, H
+[2026-10-29 18:10:08]   Panel a (NEP): n=10
+[2026-10-29 18:10:08]   Panel b (ET): n=10
+[2026-10-29 18:10:08]   Panel c (H): n=10
+[2026-10-29 18:10:09] Saved: review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.png and review/figures/flux_medians/fig_flux_comparison_combo_nep_et_h.pdf (89 x 228 mm, 600 dpi)
+[2026-10-29 18:10:09] 
+=== Combo figure complete ===

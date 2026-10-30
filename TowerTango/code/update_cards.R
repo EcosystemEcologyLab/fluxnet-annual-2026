@@ -33,6 +33,7 @@ check_pipeline_config()
 source("R/utils.R")       # compute_site_year_presence() -- functions only, no writes on source
 source("R/units.R")       # fluxnet_convert_units(), required by compute_site_annual_fluxes()
 source("R/site_annual_fluxes.R")
+source("R/qc.R")
 
 suppressPackageStartupMessages({
   library(dplyr); library(tidyr); library(readr); library(stringr)
@@ -608,9 +609,9 @@ hand_check <- lapply(names(spot_candidates), function(hub) {
   src <- if (n_vut > 0L) "VUT" else if (n_cut > 0L) "CUT" else NA_character_
   nee_val <- if (identical(src, "VUT")) ann$NEE_VUT_REF else if (identical(src, "CUT")) ann$NEE_CUT_REF else NA_real_
   nee_qc  <- if (identical(src, "VUT")) ann$NEE_VUT_REF_QC else if (identical(src, "CUT")) ann$NEE_CUT_REF_QC else NA_real_
-  nee_ok  <- !is.na(nee_qc) & !is.na(nee_val) & (1 - nee_qc) <= QC_THRESHOLD_YY
+  nee_ok  <- !is.na(nee_qc) & !is.na(nee_val) & qc_passes(nee_qc, QC_THRESHOLD_YY)
   hand_nep <- if (any(nee_ok)) -stats::median(nee_val[nee_ok]) else NA_real_
-  et_ok   <- !is.na(ann$LE_F_MDS) & !is.na(ann$LE_F_MDS_QC) & (1 - ann$LE_F_MDS_QC) <= QC_THRESHOLD_YY
+  et_ok   <- !is.na(ann$LE_F_MDS) & !is.na(ann$LE_F_MDS_QC) & qc_passes(ann$LE_F_MDS_QC, QC_THRESHOLD_YY)
   sec_per_yr <- ifelse(lubridate::leap_year(ann$year), 366L, 365L) * 86400L
   hand_et <- if (any(et_ok)) stats::median((ann$LE_F_MDS[et_ok] * sec_per_yr[et_ok]) / 2.45e6) else NA_real_
 
@@ -845,7 +846,7 @@ report_lines <- c(
   "",
   "Hand computation re-derives NEP and ET directly from the `annual` table's raw NEE_VUT_REF/",
   "NEE_CUT_REF/LE_F_MDS columns with the same VUT-with-CUT-fallback and",
-  "`(1 - QC) <= QC_THRESHOLD_YY` gate as `compute_site_annual_fluxes()`, independently of that",
+  "`QC >= QC_THRESHOLD_YY` gate as `compute_site_annual_fluxes()`, independently of that",
   "function's own code path. Tower height is re-read directly from the site's `VAR_INFO_HEIGHT`",
   "groups (see the dedicated tower-height spot-check above for CA-TP1/US-Ha1/DE-Tha). Canopy",
   "height max/n are re-read directly from the site's raw HEIGHTC rows in the BIF file",

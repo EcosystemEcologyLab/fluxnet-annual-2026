@@ -35,6 +35,7 @@ check_pipeline_config()
 source("R/utils.R")
 source("R/units.R")
 source("R/site_annual_fluxes.R")
+source("R/qc.R")
 source("R/plot_constants.R")
 
 suppressPackageStartupMessages({

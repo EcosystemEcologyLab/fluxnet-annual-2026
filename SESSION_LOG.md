@@ -16,6 +16,45 @@ already-extracted `expanded/data/daily_extract.rds`, itself pulled `dataset = 'F
 local `write_meta()`.
 
 ---
+
+## 2026-10-31 — GSL expanded Figure 1 two-site redesign: done
+
+Full results: `GSL_definition/docs/methods_memo.md`'s "Expanded-site analysis, session 2b" section.
+Replaced the Figure 1 section of `GSL_definition/expanded/code/04_figures_main.R` with Dave's
+two-site design — US-SRM (WSA, skewness 2.41) and AU-How (WSA, skewness 0.37), US-SRM left,
+panels a-c as rows. Only `figures/Figure 1.{png,pdf,legend.txt,meta.json}` and the new
+`tables/figure1_values.{csv,meta.json}` changed — verified via `git status` that every other
+expanded-run figure and table is byte-identical to before this session.
+
+**Winter-screened days** (item 2, session 2a; expected near zero): US-SRM 3, AU-How 0, both
+already in the committed `winter_screen_site_effect.csv` — confirmed, not recomputed.
+
+**Common years: 7, not the 11 the prompt expected** — flagged as the prompt itself asked for. The
+prompt's 11-year list was a naive intersection of `site_years.csv`'s year LABELS. AU-How's labels
+are Jul-Jun Southern-Hemisphere season years everywhere else in this run (`annual_inputs.csv`/
+`season_boundaries.csv`, session 2a item 4): a label is only a valid season year when BOTH its
+calendar halves are themselves R2/N=14 passing years for AU-How. Applying that same rule here
+(confirmed, via `stopifnot`, identical to the year set already in `annual_inputs.csv`) drops
+2008/2017/2019/2024 from AU-How's list and leaves **7 common years with US-SRM: 2010, 2011, 2012,
+2014, 2015, 2016, 2022**. Both lists are logged to the console and in `figure1_values.csv`'s
+`.meta.json`; the figure and table use the 7-year list.
+
+**Panel a** (distribution, each site's own full passing years — US-SRM 20, AU-How 13, matching
+`derived_site.csv`'s own pooling exactly): skewness/P99/n printed per panel match the prompt's
+stated 2.41/0.37 exactly. **Panel b** (one representative year per site, closest to that site's
+own median Z17 GSL over the 7 common years): US-SRM 2010 (Z17 = 191 d, T95 = 242 d), AU-How 2016
+(Z17 = 363 d, T95 = 338 d) — both ties resolved trivially since the median was an observed value
+at both sites. US-SRM's values independently checked against the existing `derived_site_year.csv`
+(exact match). **Panel c** (GPP summed over the 7 common years): US-SRM — Z17 season 91.3% of
+total GPP (1276 d), T95 season 96.8% (1612 d); AU-How — Z17 season 99.9% (2539 d), T95 season
+95.5% (2235 d). T95's % of P99 sits below Z17's at the high-skew site (US-SRM) and above it at
+the low-skew site (AU-How), which is why the T95 bar is taller than Z17's at US-SRM and shorter
+at AU-How — a direct, visible illustration of what the two-site skewness contrast was chosen to
+show.
+
+Figure 1 caption, `GSL_definition/README.md`, and `docs/methods_memo.md` all updated to match.
+
+---
 ## 2026-10-30 — GSL expanded-site analysis, session 2a: something went wrong (fixed)
 
 After the session 2a "done" commit below, a clean-room full-pipeline rerun (`rm -rf tables/` before

@@ -75,6 +75,13 @@ Supplemental Figure S8 (screened vs unscreened). Every change is a named `EXP_CF
 this directory's own `docs/methods_memo.md`'s "Expanded-site analysis, session 2a (2026-10-30)"
 section.
 
+A **session 2b Figure 1 redesign** (2026-10-31, Dave's own design) replaced the expanded set's
+Figure 1 (previously US-Ha1/US-SRM, a raster of included/excluded days plus a mean-GSL-vs-
+threshold curve) with a simpler two-site, three-panel figure: US-SRM and AU-How, both woody-grass
+mosaic (WSA) but at opposite ends of the skewness range (2.41 vs. 0.37). Nothing else in the
+expanded run changed — see `docs/methods_memo.md`'s "Expanded-site analysis, session 2b" section
+and `logs/prompts/2026-10-31_gsl_figure1_two_sites.md`.
+
 The Stage 2 open decisions (year screening, negative-GPP treatment, `>` vs. `>=`, GPP variant)
 were made by Dave without Tash's input, recorded in `docs/framework.md`'s "Open decisions
 (resolved)" section and as named switches in `code/00_config.R` — subject to revision if Tash's

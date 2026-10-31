@@ -934,3 +934,102 @@ losing its subset label). Fixed with `purrr::set_names(names(TREND_SUBSET_DEFS))
   Tukey 1.5xIQR range of the PER-SITE slopes themselves (the same outlier convention session 1's
   check 2 already used), which clamps 58 of 536 points (~11%) across the full 4-predictor set --
   a much more defensible "most sites, a few flagged outliers" split.
+
+## Expanded-site analysis, session 2b — Figure 1 two-site redesign (2026-10-31)
+
+Full prompt: `logs/prompts/2026-10-31_gsl_figure1_two_sites.md`. Dave's own design, replacing
+session 2a's Figure 1 (US-Ha1/US-SRM: a raster of included/excluded days plus a mean-GSL-vs-
+threshold curve) with a simpler two-site, three-panel figure built entirely from the already-
+committed session 2a tables (`derived_site.csv`, `site_years.csv`, `annual_inputs.csv`,
+`winter_screen_days.csv`) and the existing `expanded/data/daily_extract.rds` extract (itself
+pulled `dataset = 'FLUXMET'` only, read-only, in `01_select.R`). Only the Figure 1 section of
+`expanded/code/04_figures_main.R` changed; every other figure and table in the expanded run is
+untouched (checked via `git status` after regenerating -- only `Figure 1.png/.pdf/.legend.txt/
+.meta.json` and the new `tables/figure1_values.csv/.meta.json` differ).
+
+### Sites
+
+US-SRM and AU-How: both IGBP WSA (woody-grass mosaic group), at opposite ends of the expanded
+set's skewness range (US-SRM 2.41, AU-How 0.37, both from `derived_site.csv`'s "main" variant).
+Winter-screened days (item 2, session 2a): US-SRM 3, AU-How 0, both already in
+`winter_screen_site_effect.csv` -- near zero at both sites as expected (neither is a cold-climate
+site where the GPP-partitioning winter artifact mainly occurs).
+
+### Common years: 7, not the 11 given in the prompt (discrepancy reported, as the prompt asked)
+
+The prompt's own expected common-years list (11: 2008, 2010-2012, 2014-2017, 2019, 2022, 2024)
+was a naive intersection of `site_years.csv`'s year LABELS for the two sites. AU-How's year
+labels are Southern-Hemisphere Jul(year)-Jun(year+1) season years everywhere else in this run
+(`season_boundaries.csv`/`annual_inputs.csv`, session 2a item 4) -- a label y is only a VALID
+season year when both calendar years y and y+1 are themselves R2/N=14 passing years for AU-How
+(`site_years.csv`), since the window spans parts of both. Applying that same validity rule here
+(`auhow_years_raw[(auhow_years_raw + 1) %in% auhow_years_raw]`) gives 9 valid AU-How season years
+(2010-2016, 2022-2023, dropping 2008/2017/2019/2024 -- each of those labels' following calendar
+year is itself not a passing year for AU-How) -- independently confirmed identical to the set of
+years already present for AU-How in the committed `annual_inputs.csv` (`stopifnot`, in-script).
+Intersecting THAT list with US-SRM's calendar years gives **7 common years: 2010, 2011, 2012,
+2014, 2015, 2016, 2022** -- not 11. (2013 and 2023 are valid AU-How season years but US-SRM has
+no data/no passing year at either label, so they drop out of the intersection too.) Both the
+naive 11-year list and the correct 7-year list are logged to the console and to
+`figure1_values.csv`'s own `.meta.json` notes; the 7-year list is what the figure and
+`figure1_values.csv` actually use.
+
+### Panel definitions, as implemented
+
+- **Panel a** (distribution): each site's OWN full passing-year pool -- US-SRM's 20 calendar
+  years, AU-How's 13 R2/N=14 calendar-LABEL years (Jan-Dec pooled, NOT the stricter 9-year
+  season-year-valid set) -- the same day-set `derive_one()` used to compute `derived_site.csv`'s
+  P99/skewness/n_years, so the numbers printed in-panel match that table exactly (confirmed:
+  skewness 2.41/0.37, matching the prompt's own stated values). GPP_NT_REF winter-screened and
+  zero-floored (same as the "main" variant), plotted as % of the site's own P99; vertical lines
+  at Z17 (10%, fixed) and the site's own T95 % (5.24% for US-SRM, 25.37% for AU-How -- T95's %
+  is BELOW Z17's for the high-skew site and ABOVE it for the low-skew site, which is also why
+  panel c's T95 bar is taller than its Z17 bar at US-SRM and shorter at AU-How).
+- **Panel b** (one representative year): per (site, common year), GSL/GPP computed fresh from the
+  screened daily series over that site's own annual window (calendar Jan-Dec for US-SRM; Jul-Jun
+  for AU-How, `day_idx` = day of that window, 1 = 1 Jul for AU-How). Cross-checked against
+  `derived_site_year.csv`'s existing `gsl_z17`/`gsl_t95`/`f_z17`/`f_t95` for US-SRM's 7 common
+  years (calendar year, no window ambiguity) -- exact match (`stopifnot`, in a throwaway draft
+  script, not left in the committed code). The representative year is the common year whose
+  `gsl_z17` is closest to that site's own median `gsl_z17` across the 7 common years: **US-SRM
+  2010** (gsl_z17 = 191 d, exactly the median) and **AU-How 2016** (gsl_z17 = 363 d, exactly the
+  median) -- both ties resolved trivially since the median itself was an observed value.
+- **Panel c** (summed over the 7 common years): `gpp_z17`/`gpp_t95` = GPP summed only on days
+  above that site's Z17/T95 absolute threshold (not `annual_gpp * f`, though the two are
+  equivalent by construction); bar labels are `share_z17_pct`/`share_t95_pct` (% of total) and
+  `gsl_z17_days`/`gsl_t95_days` (summed day counts across the 7 years). Fill colours: grey (Total),
+  black (Z17 season), red (T95 season) -- the project's standing Z17/T95 colour convention
+  (`GSL_MARKER_COLORS`), per Dave's explicit instruction, reused for bars here rather than points.
+
+### `site_id` factor levels, not bare characters, in every faceted layer
+
+"AU-How" < "US-SRM" alphabetically, so a bare character `site_id` column would put AU-How in the
+LEFT facet column under `facet_wrap()`'s default ordering, contradicting "US-SRM left" -- the
+same bug already documented above under "Figure bugs found while implementing the figure-spec
+changes" for panel-letter layers. Every data frame feeding a faceted ggplot layer in the new
+Figure 1 (`fig1a_pool`, `fig1_thresholds`, the panel-letter/annotation one-row frames, `fig1b_series`,
+`fig1c_long`) sets `site_id <- factor(site_id, levels = c("US-SRM", "AU-How"))` explicitly, not
+just at the top-level plotting data frame.
+
+### In-panel numeric annotations: a deliberate, scoped exception to "no in-panel explanatory text"
+
+The project's standing rule (this file, "No in-panel explanatory text", Stage 3) is that
+DESCRIPTIVE/caption-style text never goes inside a panel -- it goes in `.legend.txt`. Panel a's
+skewness/P99/n printed per facet, panel b's year/Z17/T95 printed per facet, and panel c's bar
+labels are numeric DATA labels Dave explicitly asked for in the prompt (same category as, e.g.,
+Figure 4b's `ggrepel` site-ID labels or Figure 5/6's error-bar values) -- not a restatement of
+what the panel already shows in words, and not re-added to `.legend.txt` redundantly beyond
+noting that the numbers are also in `tables/figure1_values.csv`.
+
+### Re-verification after this pass
+
+- `git status` after regenerating: only `GSL_definition/expanded/code/04_figures_main.R`,
+  `figures/Figure 1.{png,pdf,legend.txt,meta.json}`, and the new
+  `tables/figure1_values.{csv,meta.json}` differ from the pre-session-2b commit -- every other
+  expanded-run figure and table byte-identical, confirming the "leave every other figure and
+  table unchanged" instruction held.
+- The AU-How season-year validity recomputation was checked against `annual_inputs.csv`'s own
+  AU-How year set with an in-script `stopifnot` (passes).
+- US-SRM's panel-b/c `gsl_z17`/`gsl_t95` values were checked against `derived_site_year.csv`'s
+  existing per-year values for the same 7 years (exact match, by construction -- same screened
+  series, same calendar-year window, same Z17/T95 absolute thresholds).

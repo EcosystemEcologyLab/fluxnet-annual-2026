@@ -31,97 +31,265 @@ SUBSET_LABELS <- c(third_low = "Low", third_middle = "Middle", third_high = "Hig
                     `group_woody-grass_mosaic` = "Woody-grass mosaic", group_mixed_forest = "Mixed forest")
 
 ## ============================================================================
-## Figure 1 -- US-Ha1 and US-SRM, illustrations (not rule-selected)
+## Figure 1 -- US-SRM and AU-How, two-site illustration (Dave's design,
+## 2026-10-31, replacing the earlier raster/threshold-curve version -- see
+## logs/prompts/2026-10-31_gsl_figure1_two_sites.md and
+## docs/methods_memo.md's "session 2b" section). Same IGBP (WSA) and group
+## (woody-grass mosaic), opposite ends of the skewness range (US-SRM 2.41,
+## AU-How 0.37). One column per site (US-SRM left), one row per panel (a-c).
 ## ============================================================================
-FIG1_SITES <- c("US-Ha1", "US-SRM")
+FIG1_SITES <- c("US-SRM", "AU-How")
 
-## Item 2: classify days using the SCREENED GPP_NT_REF (winter-screened days
-## forced to 0, same as the 'main' variant) -- join against
+## Item 2: classify/screen days using the SCREENED GPP_NT_REF (winter-
+## screened days forced to 0, same as the 'main' variant) -- join against
 ## winter_screen_days.csv rather than recomputing the screen's own
 ## criterion here. daily_extract (loaded above) is the UNSCREENED extract.
 winter_screen_days <- read_csv(file.path(EXP_TABLES, "winter_screen_days.csv"), show_col_types = FALSE) |>
   mutate(is_screened = TRUE) |> select(site_id, TIMESTAMP, is_screened)
 
-day_class_one <- function(sid) {
-  P99 <- derived_site$P99[derived_site$site_id == sid]
-  t95pct <- derived_site$t95_pct[derived_site$site_id == sid]
-  d <- daily_extract |> filter(site_id == sid, year %in% site_years_list[[sid]]) |>
-    left_join(winter_screen_days, by = c("site_id", "TIMESTAMP")) |>
-    mutate(gpp_use = ifelse(coalesce(is_screened, FALSE), 0, pmax(GPP_NT_REF, 0)),
-           above_z17 = !is.na(gpp_use) & gpp_use > 0.10 * P99,
-           above_t95 = !is.na(gpp_use) & gpp_use > (t95pct / 100) * P99,
-           category = case_when(
-             above_z17 & above_t95 ~ "both", above_z17 & !above_t95 ~ "Z17 only",
-             !above_z17 & above_t95 ~ "T95 only", TRUE ~ "neither"
-           ), doy = lubridate::yday(TIMESTAMP))
-  d |> select(site_id, year, doy, category)
+fig1_screened <- daily_extract |>
+  filter(site_id %in% FIG1_SITES) |>
+  left_join(winter_screen_days, by = c("site_id", "TIMESTAMP")) |>
+  mutate(gpp_use = ifelse(coalesce(is_screened, FALSE), 0, pmax(GPP_NT_REF, 0))) |>
+  select(site_id, TIMESTAMP, year, gpp_use)
+
+n_screened_fig1 <- daily_extract |> filter(site_id %in% FIG1_SITES) |>
+  inner_join(winter_screen_days, by = c("site_id", "TIMESTAMP")) |> count(site_id, name = "n_screened_days")
+for (sid in FIG1_SITES) {
+  n_s <- n_screened_fig1$n_screened_days[n_screened_fig1$site_id == sid]
+  message("Figure 1: ", sid, " has ", if (length(n_s) == 0) 0L else n_s,
+          " winter-screened day(s) across its own passing years (expected near zero).")
 }
-fig1a_data <- bind_rows(lapply(FIG1_SITES, day_class_one)) |>
-  mutate(category = factor(category, levels = c("both", "Z17 only", "T95 only", "neither")))
 
-FIG1_CAT_COLORS <- c(both = "#1B7837", `Z17 only` = GSL_MARKER_COLORS[["Z17"]],
-                      `T95 only` = GSL_MARKER_COLORS[["T95"]], neither = "grey85")
+## site_id kept as an explicit factor (US-SRM then AU-How) in every data
+## frame that feeds a faceted layer below -- "AU-How" < "US-SRM"
+## alphabetically, so a bare character column would put AU-How left,
+## contradicting "US-SRM left" (same gotcha already documented in
+## docs/methods_memo.md's "Figure bugs" section for panel-letter layers).
+SITE_LEVELS <- FIG1_SITES
 
-## Panel-letter fix: restrict the "a" annotation to a single facet (the
-## first site) instead of annotate()'s default of repeating it in every
-## facet panel -- a one-row data frame with an explicit site_id, drawn via
-## geom_text (facet-aware), not annotate() (facet-naive).
-fig1a_letter <- tibble(site_id = FIG1_SITES[1], doy = 10, year = factor(max(fig1a_data$year[fig1a_data$site_id == FIG1_SITES[1]])))
+fig1_thresholds <- derived_site |> filter(site_id %in% FIG1_SITES) |>
+  select(site_id, P99, skewness, t95_pct, n_years) |>
+  mutate(z17_abs = 0.10 * P99, t95_abs = t95_pct / 100 * P99,
+         site_id = factor(site_id, levels = SITE_LEVELS))
 
-p1a <- ggplot(fig1a_data, aes(x = doy, y = factor(year), fill = category)) +
-  geom_tile() +
-  facet_wrap(~ site_id, ncol = 1, scales = "free_y") +
-  scale_fill_manual(values = FIG1_CAT_COLORS, name = "Included by") + # drop=TRUE (default): "Z17 only" is
-  ## structurally empty at both illustrative sites (T95's % <= Z17's here, so above_z17 implies
-  ## above_t95) and no longer shows an empty legend entry.
-  scale_x_continuous(breaks = c(1, 91, 182, 274, 366), labels = c("Jan", "Apr", "Jul", "Oct", "Jan")) +
-  labs(x = "Day of year", y = NULL) +
-  theme_gsl() +
-  theme(legend.position = "bottom", strip.text = element_text(face = "bold")) +
-  geom_text(data = fig1a_letter, aes(x = 5, y = year, label = "a"), inherit.aes = FALSE,
-            fontface = "bold", size = PEERJ_PANEL_LETTER_PT / .pt, hjust = 0, vjust = 1)
+## ---- Common years: the years that pass at BOTH sites, by year label.
+## AU-How's years are Jul(year)-Jun(year+1) SOUTHERN-HEMISPHERE SEASON
+## years, same convention as season_boundaries.csv/annual_inputs.csv
+## (Step B/D in 02_derive.R) -- a season-year label y is only valid when
+## BOTH calendar years y and y+1 are in AU-How's own R2/N=14 passing-year
+## list (site_years.csv), since the window spans parts of both. This is
+## STRICTER than a naive label-intersection of site_years.csv (which would
+## include 2008, 2017, 2019 and 2024 -- labels whose following calendar
+## year is not itself a passing year, so the second half of that Jul-Jun
+## window is undefined/unverified). Recomputed directly here (not
+## re-reading annual_inputs.csv) but cross-checked against it below.
+auhow_years_raw    <- site_years_list[["AU-How"]]
+auhow_season_years <- auhow_years_raw[(auhow_years_raw + 1L) %in% auhow_years_raw]
+annual_inputs_check <- read_csv(file.path(EXP_TABLES, "annual_inputs.csv"), show_col_types = FALSE)
+stopifnot(identical(sort(auhow_season_years),
+                     sort(unique(annual_inputs_check$year[annual_inputs_check$site_id == "AU-How"]))))
 
-fig1b_data <- fine_grid_main |> filter(site_id %in% FIG1_SITES, pct_of_P99 <= 50)
-fig1b_marks <- derived_site |> filter(site_id %in% FIG1_SITES) |>
-  select(site_id, z17_pct, z17_mean_gsl, t95_pct, t95_mean_gsl) |>
-  pivot_longer(c(z17_pct, t95_pct), names_to = "which", values_to = "pct") |>
-  mutate(gsl = ifelse(which == "z17_pct", z17_mean_gsl, t95_mean_gsl),
-         marker = ifelse(which == "z17_pct", "Z17", "T95")) |>
-  select(site_id, pct, gsl, marker)
+common_years_naive <- sort(intersect(site_years_list[["US-SRM"]], auhow_years_raw))
+common_years        <- sort(intersect(site_years_list[["US-SRM"]], auhow_season_years))
+message("Figure 1: common years (Jul-Jun-valid, ", length(common_years), "): ",
+        paste(common_years, collapse = ", "))
+if (!identical(common_years, common_years_naive)) {
+  message("Figure 1: naive calendar-label intersection would have given ", length(common_years_naive),
+          " years (", paste(common_years_naive, collapse = ", "), ") -- differs from the Jul-Jun-valid ",
+          "list above because AU-How's season-year validity rule drops a label whenever its following ",
+          "calendar year is not itself an R2/N=14 passing year for AU-How; see docs/methods_memo.md.")
+}
 
-p1b <- ggplot(fig1b_data, aes(x = pct_of_P99, y = mean_gsl, colour = site_id)) +
-  geom_line(linewidth = nature_lwd(PEERJ_LWD_DATA)) +
-  ## T95/Z17 marks drawn as two literal-colour layers (not an aes(colour=)
-  ## mapping, which would need a second colour scale via ggnewscale since
-  ## `colour` already maps to site_id above) -- GSL_MARKER_COLORS[["Z17"]]
-  ## is black, ["T95"] is red, matching scale_shape_gsl_marker()'s legend
-  ## override.aes exactly (previously both marks were hard-coded black).
-  geom_point(data = fig1b_marks |> filter(marker == "Z17"), aes(x = pct, y = gsl, shape = marker),
-             colour = GSL_MARKER_COLORS[["Z17"]], size = 2, inherit.aes = FALSE) +
-  geom_point(data = fig1b_marks |> filter(marker == "T95"), aes(x = pct, y = gsl, shape = marker),
-             colour = GSL_MARKER_COLORS[["T95"]], size = 2, inherit.aes = FALSE) +
-  scale_shape_gsl_marker() +
-  scale_color_manual(values = c(`US-Ha1` = "#56B4E9", `US-SRM` = "#D55E00"), name = "Site") +
-  labs(x = "Threshold (% of P99)", y = "Mean GSL (days)") +
-  theme_gsl() + theme(legend.position = "right") +
-  gsl_panel_letter("b")
+## ---- Panel a pool: each site's own full passing years (US-SRM: 20
+## calendar years; AU-How: its 13 R2/N=14 calendar-label passing years,
+## Jan-Dec pooled -- the SAME day-set derive_one()/derived_site.csv used,
+## so the skewness/P99/n_years printed in-panel match that table exactly;
+## NOT the stricter 9-year Jul-Jun-valid set, which only matters for
+## defining a single annual unit in panels b/c). ----------------------------
+fig1a_pool <- fig1_screened |>
+  filter((site_id == "US-SRM" & year %in% site_years_list[["US-SRM"]]) |
+         (site_id == "AU-How" & year %in% auhow_years_raw)) |>
+  left_join(fig1_thresholds |> select(site_id, P99) |> mutate(site_id = as.character(site_id)), by = "site_id") |>
+  mutate(pct_of_P99 = 100 * gpp_use / P99, site_id = factor(site_id, levels = SITE_LEVELS))
 
-fig1 <- p1a / p1b + plot_layout(heights = c(2.2, 1))
+fig1a_letter <- tibble(site_id = factor(SITE_LEVELS[1], levels = SITE_LEVELS), x = -Inf, y = Inf)
+fig1a_annot <- fig1_thresholds |>
+  mutate(label = sprintf("skewness = %.2f\nP99 = %.2f\nn = %d yr", skewness, P99, n_years))
+
+p1a <- ggplot(fig1a_pool, aes(x = pct_of_P99)) +
+  geom_histogram(binwidth = 5, boundary = 0, fill = "grey70", colour = "grey40", linewidth = nature_lwd(0.3)) +
+  geom_vline(xintercept = 10, colour = GSL_MARKER_COLORS[["Z17"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_vline(data = fig1_thresholds, aes(xintercept = t95_pct), colour = GSL_MARKER_COLORS[["T95"]],
+             linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_text(data = fig1a_annot, aes(x = Inf, y = Inf, label = label), inherit.aes = FALSE,
+            hjust = 1.05, vjust = 1.2, size = PEERJ_ANNOTATION_PT / .pt, lineheight = 0.9) +
+  coord_cartesian(xlim = c(0, 150)) +
+  facet_wrap(~ site_id, ncol = 2, scales = "free_y") +
+  labs(x = "Daily GPP (% of site's P99)", y = "Days") +
+  theme_gsl() + theme(strip.text = element_text(face = "bold")) +
+  geom_text(data = fig1a_letter, aes(x = x, y = y, label = "a"), inherit.aes = FALSE,
+            fontface = "bold", size = PEERJ_PANEL_LETTER_PT / .pt, hjust = -0.4, vjust = 1.3)
+
+## ---- Shared per-(site, common year) window series/summary: Jul-Jun
+## window for AU-How (day_idx 1 = 1 Jul), Jan-Dec for US-SRM (day_idx =
+## ordinary day-of-year). gsl_z17/gsl_t95 = count of days with gpp_use
+## above the site's own Z17/T95 absolute threshold; gpp_z17/gpp_t95 = GPP
+## summed on those days only. ------------------------------------------------
+fig1_window_dates <- function(sid, y) {
+  if (sid == "AU-How") seq(as.Date(sprintf("%d-07-01", y)), as.Date(sprintf("%d-06-30", y + 1L)), by = "day")
+  else                 seq(as.Date(sprintf("%d-01-01", y)), as.Date(sprintf("%d-12-31", y)), by = "day")
+}
+fig1_year_series <- function(sid, y) {
+  dates <- fig1_window_dates(sid, y)
+  d <- fig1_screened |> filter(site_id == sid)
+  g <- tibble(TIMESTAMP = dates) |> left_join(d |> select(TIMESTAMP, gpp_use), by = "TIMESTAMP")
+  g$site_id <- sid; g$season_year <- y; g$day_idx <- seq_along(dates)
+  g
+}
+fig1_year_summary <- function(sid, y) {
+  g <- fig1_year_series(sid, y)
+  th <- fig1_thresholds[as.character(fig1_thresholds$site_id) == sid, ]
+  above_z17 <- !is.na(g$gpp_use) & g$gpp_use > th$z17_abs
+  above_t95 <- !is.na(g$gpp_use) & g$gpp_use > th$t95_abs
+  annual_gpp <- sum(g$gpp_use, na.rm = TRUE)
+  tibble(site_id = sid, season_year = y, annual_gpp = annual_gpp,
+         gsl_z17 = sum(above_z17), gsl_t95 = sum(above_t95),
+         gpp_z17 = sum(g$gpp_use[above_z17], na.rm = TRUE), gpp_t95 = sum(g$gpp_use[above_t95], na.rm = TRUE))
+}
+fig1_year_tbl <- bind_rows(lapply(FIG1_SITES, function(sid) bind_rows(lapply(common_years, function(y) fig1_year_summary(sid, y)))))
+
+## ---- Panel b: for each site, the common year whose Z17 GSL is closest
+## to that site's own median Z17 GSL across the common years. ----
+rep_year_tbl <- fig1_year_tbl |> group_by(site_id) |>
+  mutate(med_gsl_z17 = median(gsl_z17)) |>
+  slice_min(abs(gsl_z17 - med_gsl_z17), n = 1, with_ties = FALSE) |>
+  ungroup() |>
+  select(site_id, rep_year = season_year, rep_gsl_z17 = gsl_z17, rep_gsl_t95 = gsl_t95, med_gsl_z17)
+message("Figure 1b representative year(s): ",
+        paste(sprintf("%s=%d (Z17=%d d, T95=%d d)", rep_year_tbl$site_id, rep_year_tbl$rep_year,
+                       rep_year_tbl$rep_gsl_z17, rep_year_tbl$rep_gsl_t95), collapse = "; "))
+
+fig1b_series <- bind_rows(lapply(seq_len(nrow(rep_year_tbl)), function(i) {
+  fig1_year_series(rep_year_tbl$site_id[i], rep_year_tbl$rep_year[i])
+})) |>
+  left_join(fig1_thresholds |> select(site_id, z17_abs, t95_abs) |> mutate(site_id = as.character(site_id)),
+             by = "site_id") |>
+  mutate(site_id = factor(site_id, levels = SITE_LEVELS))
+
+fig1b_annot <- rep_year_tbl |>
+  mutate(site_id = factor(site_id, levels = SITE_LEVELS),
+         label = sprintf("%d\nZ17 = %d d\nT95 = %d d", rep_year, rep_gsl_z17, rep_gsl_t95))
+fig1b_letter <- tibble(site_id = factor(SITE_LEVELS[1], levels = SITE_LEVELS), x = -Inf, y = Inf)
+
+p1b <- ggplot(fig1b_series, aes(x = day_idx, y = gpp_use)) +
+  geom_line(linewidth = nature_lwd(PEERJ_LWD_DATA), colour = "grey30") +
+  geom_hline(aes(yintercept = z17_abs), colour = GSL_MARKER_COLORS[["Z17"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_hline(aes(yintercept = t95_abs), colour = GSL_MARKER_COLORS[["T95"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_text(data = fig1b_annot, aes(x = Inf, y = Inf, label = label), inherit.aes = FALSE,
+            hjust = 1.05, vjust = 1.2, size = PEERJ_ANNOTATION_PT / .pt, lineheight = 0.9) +
+  facet_wrap(~ site_id, ncol = 2, scales = "free_y") +
+  labs(x = "Day of year (day of season year for AU-How)", y = "GPP (gC m-2 d-1)") +
+  theme_gsl() + theme(strip.text = element_text(face = "bold")) +
+  geom_text(data = fig1b_letter, aes(x = x, y = y, label = "b"), inherit.aes = FALSE,
+            fontface = "bold", size = PEERJ_PANEL_LETTER_PT / .pt, hjust = -0.4, vjust = 1.3)
+
+## ---- Panel c: GPP summed over the common years -- total, on Z17-season
+## days, and on T95-season days. ----
+fig1c_summary <- fig1_year_tbl |> group_by(site_id) |>
+  summarise(total_gpp = sum(annual_gpp), gpp_z17 = sum(gpp_z17), gpp_t95 = sum(gpp_t95),
+            gsl_z17_days = sum(gsl_z17), gsl_t95_days = sum(gsl_t95), .groups = "drop") |>
+  mutate(share_z17_pct = 100 * gpp_z17 / total_gpp, share_t95_pct = 100 * gpp_t95 / total_gpp)
+
+fig1c_long <- bind_rows(
+  fig1c_summary |> transmute(site_id, bar = "Total", gpp_sum = total_gpp, label = NA_character_),
+  fig1c_summary |> transmute(site_id, bar = "Z17 season", gpp_sum = gpp_z17,
+                               label = sprintf("%.1f%%\n%d d", share_z17_pct, gsl_z17_days)),
+  fig1c_summary |> transmute(site_id, bar = "T95 season", gpp_sum = gpp_t95,
+                               label = sprintf("%.1f%%\n%d d", share_t95_pct, gsl_t95_days))
+) |> mutate(bar = factor(bar, levels = c("Total", "Z17 season", "T95 season")),
+            site_id = factor(site_id, levels = SITE_LEVELS))
+
+FIG1C_BAR_COLORS <- c(Total = "grey60", `Z17 season` = unname(GSL_MARKER_COLORS[["Z17"]]),
+                       `T95 season` = unname(GSL_MARKER_COLORS[["T95"]]))
+fig1c_letter <- tibble(site_id = factor(SITE_LEVELS[1], levels = SITE_LEVELS), bar = "Total", y = Inf)
+
+p1c <- ggplot(fig1c_long, aes(x = bar, y = gpp_sum, fill = bar)) +
+  geom_col(width = 0.65) +
+  geom_text(aes(label = label), vjust = -0.3, size = PEERJ_ANNOTATION_PT / .pt, na.rm = TRUE, lineheight = 0.9) +
+  facet_wrap(~ site_id, ncol = 2, scales = "free_y") +
+  scale_fill_manual(values = FIG1C_BAR_COLORS, guide = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0.02, 0.2))) +
+  labs(x = NULL, y = sprintf("GPP summed over %d common years\n(gC m-2)", length(common_years))) +
+  theme_gsl() + theme(strip.text = element_text(face = "bold")) +
+  geom_text(data = fig1c_letter, aes(x = bar, y = y, label = "c"), inherit.aes = FALSE,
+            fontface = "bold", size = PEERJ_PANEL_LETTER_PT / .pt, hjust = -0.3, vjust = 1.3)
+
+## ---- Write the numbers behind panels b and c -----------------------------
+figure1_values <- fig1c_summary |>
+  left_join(rep_year_tbl, by = "site_id") |>
+  left_join(fig1_thresholds |> mutate(site_id = as.character(site_id)) |> select(site_id, z17_abs, t95_abs), by = "site_id") |>
+  mutate(n_common_years = length(common_years), common_years = paste(common_years, collapse = ";")) |>
+  select(site_id, n_common_years, common_years, rep_year, rep_gsl_z17, rep_gsl_t95, med_gsl_z17,
+         z17_abs, t95_abs, total_gpp, gpp_z17, gpp_t95, share_z17_pct, share_t95_pct,
+         gsl_z17_days, gsl_t95_days)
+write_csv(figure1_values, file.path(EXP_TABLES, "figure1_values.csv"))
+write_meta(
+  file.path(EXP_TABLES, "figure1_values.csv"),
+  input_sources = c(file.path(EXP_DATA, "daily_extract.rds"), file.path(EXP_TABLES, "winter_screen_days.csv"),
+                     file.path(EXP_TABLES, "derived_site.csv"), file.path(EXP_TABLES, "site_years.csv"),
+                     file.path(EXP_TABLES, "annual_inputs.csv")),
+  notes = paste0(
+    "Numbers behind Figure 1 panels b and c (US-SRM, AU-How), computed over ", length(common_years),
+    " common years (", paste(common_years, collapse = ", "), "). AU-How's years are Jul-Jun ",
+    "Southern-Hemisphere season years (both calendar halves must be R2/N=14 passing years for ",
+    "AU-How, same rule as annual_inputs.csv/season_boundaries.csv) -- this is 7 years, not the 11 ",
+    "a naive calendar-label intersection of site_years.csv would give (which would wrongly include ",
+    "2008/2017/2019/2024, whose following calendar year is not itself a passing year for AU-How). ",
+    "rep_year/rep_gsl_z17/rep_gsl_t95 = panel b's chosen year per site (closest to that site's own ",
+    "median Z17 GSL across the common years) and its Z17/T95 day counts. total_gpp/gpp_z17/gpp_t95 ",
+    "= panel c's three bars (GPP summed over all common years; gpp_z17/gpp_t95 = GPP on days above ",
+    "the Z17/T95 threshold only). gsl_z17_days/gsl_t95_days = summed day counts across the common ",
+    "years (panel c's bar labels)."
+  )
+)
+
+fig1 <- p1a / p1b / p1c + plot_layout(heights = c(1, 1, 1.1))
 save_gsl_figure(
-  fig1, "Figure 1", height_mm = 200,
+  fig1, "Figure 1", height_mm = 230,
   legend_lines = c(
-    "Figure 1. Mechanism at two illustrative sites, US-Ha1 and US-SRM -- chosen to illustrate",
-    "contrasting phenology, NOT selected by any rule (one deciduous forest, one woody-grass",
-    "mosaic; see docs/report_back_2026-10-30.md for why these two). Winter-screened days (item 2)",
-    "are shown as 'neither' (GPP_NT_REF forced to 0).",
-    "Panel a: each day of each passing year, coloured by whether it is included in the growing",
-    "season under both Z17 and T95, one only, or neither.",
-    "Panel b: mean GSL against threshold (% of P99, 0-50%) for both sites; black circle/red",
-    "triangle mark each site's own Z17/T95 point on its curve."
+    "Figure 1. Mechanism at two illustrative sites of the same IGBP class (WSA, woody-grass",
+    "mosaic) at opposite ends of the skewness range: US-SRM (skewness 2.41, left) and AU-How",
+    "(skewness 0.37, right). Dave's two-site design, replacing the earlier raster/threshold-curve",
+    "version (docs/methods_memo.md's 'session 2b' section). Z17 (10% of P99) in black, T95 in red,",
+    "as in the other figures. AU-How's years are Jul-Jun Southern-Hemisphere season years.",
+    sprintf("Winter-screened days (item 2, GPP_NT_REF forced to 0): US-SRM %d, AU-How %d -- near zero",
+            ifelse("US-SRM" %in% n_screened_fig1$site_id, n_screened_fig1$n_screened_days[n_screened_fig1$site_id == "US-SRM"], 0L),
+            ifelse("AU-How" %in% n_screened_fig1$site_id, n_screened_fig1$n_screened_days[n_screened_fig1$site_id == "AU-How"], 0L)),
+    "at both sites as expected.",
+    "Panel a: distribution of daily GPP over each site's own full passing years (US-SRM 20 years,",
+    "AU-How 13 years), x = % of the site's own P99 so the shapes are comparable; vertical lines at",
+    "Z17 and T95; skewness, P99 and number of years printed per panel.",
+    sprintf("Panel b: daily GPP for one representative year at each site (the %d common years' year",
+            length(common_years)),
+    "closest to that site's own median Z17 GSL: US-SRM 2010, AU-How 2016); x = day of year (day of",
+    "season year for AU-How); horizontal lines at the Z17/T95 thresholds in absolute units; year and",
+    "both GSL values printed per panel.",
+    sprintf("Panel c: GPP summed over the %d common years (2010, 2011, 2012, 2014, 2015, 2016, 2022 --",
+            length(common_years)),
+    "see docs/methods_memo.md for why this is 7 years, not a naive 11-year label intersection): total",
+    "GPP, GPP on Z17-season days, and GPP on T95-season days; each season bar labelled with its share",
+    "of the total (%) and the summed GSL in days. Numbers behind panels b and c: tables/figure1_values.csv."
   ),
-  input_sources = c(file.path(EXP_DATA, "daily_extract.rds"), file.path(EXP_DATA, "fine_grid_main.rds"),
-                     file.path(EXP_TABLES, "derived_site.csv"), file.path(EXP_TABLES, "winter_screen_days.csv")),
-  notes = "Illustrative sites chosen for contrast, not by a selection rule."
+  input_sources = c(file.path(EXP_DATA, "daily_extract.rds"), file.path(EXP_TABLES, "derived_site.csv"),
+                     file.path(EXP_TABLES, "winter_screen_days.csv"), file.path(EXP_TABLES, "site_years.csv"),
+                     file.path(EXP_TABLES, "annual_inputs.csv"), file.path(EXP_TABLES, "figure1_values.csv")),
+  notes = paste0(
+    "Two-site illustration (Dave's design, 2026-10-31), replacing the earlier US-Ha1/US-SRM raster+",
+    "threshold-curve version. Common years = ", length(common_years), " (", paste(common_years, collapse = ", "),
+    "), not the 11 a naive site_years.csv label intersection would give -- see figure1_values.csv's ",
+    "own notes and docs/methods_memo.md."
+  )
 )
 
 ## ============================================================================

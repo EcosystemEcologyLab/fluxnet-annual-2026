@@ -1,11 +1,13 @@
 {
-  "run_datetime_utc": "2026-10-30T23:45:25Z",
-  "pipeline_version": "ab5090b",
+  "run_datetime_utc": "2026-10-31T23:11:43Z",
+  "pipeline_version": "8fe0cca",
   "input_sources": [
     "GSL_definition/expanded/data/daily_extract.rds",
-    "GSL_definition/expanded/data/fine_grid_main.rds",
     "GSL_definition/expanded/tables/derived_site.csv",
-    "GSL_definition/expanded/tables/winter_screen_days.csv"
+    "GSL_definition/expanded/tables/winter_screen_days.csv",
+    "GSL_definition/expanded/tables/site_years.csv",
+    "GSL_definition/expanded/tables/annual_inputs.csv",
+    "GSL_definition/expanded/tables/figure1_values.csv"
   ],
-  "notes": "Illustrative sites chosen for contrast, not by a selection rule."
+  "notes": "Two-site illustration (Dave's design, 2026-10-31), replacing the earlier US-Ha1/US-SRM raster+threshold-curve version. Common years = 7 (2010, 2011, 2012, 2014, 2015, 2016, 2022), not the 11 a naive site_years.csv label intersection would give -- see figure1_values.csv's own notes and docs/methods_memo.md."
 }

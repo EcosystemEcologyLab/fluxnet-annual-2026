@@ -4,6 +4,18 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-31 — GSL expanded Figure 1 two-site redesign: started
+
+Full prompt: `logs/prompts/2026-10-31_gsl_figure1_two_sites.md`. Replacing the Figure 1 section of
+`GSL_definition/expanded/code/04_figures_main.R` (US-Ha1/US-SRM raster + threshold-curve design)
+with a simpler two-site figure to Dave's own spec: US-SRM and AU-How (same IGBP class WSA,
+opposite ends of the skewness range), one column per site, panels a-c as rows. Regenerating only
+`Figure 1.png`/`.pdf`/`.legend.txt`/`.meta.json` and the new `tables/figure1_values.csv` — every
+other figure and table left untouched. Read-only against the repo-root DuckDB store (via the
+already-extracted `expanded/data/daily_extract.rds`, itself pulled `dataset = 'FLUXMET'` only),
+local `write_meta()`.
+
+---
 ## 2026-10-30 — GSL expanded-site analysis, session 2a: something went wrong (fixed)
 
 After the session 2a "done" commit below, a clean-room full-pipeline rerun (`rm -rf tables/` before

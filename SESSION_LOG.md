@@ -4,6 +4,18 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-10-31 — GSL expanded IAV draft figure, 15 sites: started
+
+Full prompt: `logs/prompts/2026-10-31_gsl_figure_iav_15sites.md`. New, standalone
+`GSL_definition/expanded/code/09_figure_iav_15sites.R` — a draft figure on missed GPP and
+interannual variability (IAV) across 15 sites spanning the expanded set's skewness range (Dave's
+design): panel a, fraction of annual GPP outside the Z17 GSL vs. skewness; panel b, detrended
+Z17/T95-vs-GPP correlations vs. skewness, plus a Steiger's-test table (`tables/iav_15sites.csv`).
+Read-only against the already-committed session 2a tables (`carbon_gain_data.csv`,
+`derived_site_year.csv`) — no existing script, table, or figure touched. Output goes to
+`figures/drafts/"Figure GSL-IAV draft.png"` only, not the numbered figure sequence.
+
+---
 ## 2026-10-31 — GSL expanded Figure 1 two-site redesign: started
 
 Full prompt: `logs/prompts/2026-10-31_gsl_figure1_two_sites.md`. Replacing the Figure 1 section of

@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-11-01T00:10:50Z",
+  "pipeline_version": "3ee96d7",
+  "input_sources": [
+    "GSL_definition/expanded/tables/sites.csv",
+    "GSL_definition/expanded/tables/derived_site.csv",
+    "GSL_definition/expanded/tables/derived_site_year.csv",
+    "GSL_definition/expanded/tables/carbon_gain_data.csv"
+  ],
+  "notes": "15-site draft IAV table (Dave's design). n_years = R2/N=14 passing years (sites.csv); n_years_used = years with non-NA annual_gpp/annual_nep/gsl_z17/gsl_t95 actually used for the detrended correlations and Steiger's test -- less than n_years for AU-How (9 of 13: the Jul-Jun season-year join already documented in carbon_gain_data.csv's own .meta.json), CH-Dav (24 of 27) and IL-Yat (12 of 13) (genuine empty site-years -- gsl_z17/gsl_t95 NA, annual_gpp a trivial 0 not NA for the same year; see the script's own comments). missed_frac_* = 1 - f_z17 per year (fraction of that year's annual GPP outside the Z17 GSL), mean/Q1/Q3/IQR across n_years. r_*/p_* = Pearson correlation/p-value between OLS-on-year residuals of GSL (at Z17 or T95) and of GPP or NEP. r_gsl_z17_t95 = correlation between the two detrended GSL series (the 'shared-variable' correlation Steiger's test needs). steiger_z/steiger_p = Steiger (1980) Z1* test for r_gpp_z17 vs. r_gpp_t95 (dependent, overlapping, GPP in common), using r_gsl_z17_t95."
+}

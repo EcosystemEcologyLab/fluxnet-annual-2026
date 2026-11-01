@@ -16,6 +16,38 @@ Read-only against the already-committed session 2a tables (`carbon_gain_data.csv
 `figures/drafts/"Figure GSL-IAV draft.png"` only, not the numbered figure sequence.
 
 ---
+
+## 2026-10-31 — GSL expanded IAV draft figure, 15 sites: done
+
+Full results: `GSL_definition/docs/figure_gsl_iav_2026-10-31.md`. New
+`GSL_definition/expanded/code/09_figure_iav_15sites.R` — standalone, read-only against the
+already-committed session 2a tables; no existing script, table, or figure modified (confirmed via
+`git status`: only the new script, `figures/drafts/`, and `tables/iav_15sites.{csv,meta.json}`
+are new). All 15 requested sites present with ≥12 R2/N=14 passing years (13–27 years, skewness
+0.37–2.41) — the `stop()`-and-report guard did not trigger.
+
+**Panel a** (fraction of annual GPP outside the Z17 GSL vs. skewness, mean + IQR bar per site):
+Pearson r = 0.91 (p = 1.8e-06), n = 15 — skewness very strongly predicts the missed-GPP fraction.
+Only US-Wkg and US-SRM (skewness ≥ 2.1) clear the 5% (T95's by-construction) line on their mean;
+IL-Yat's IQR reaches it on interannual spread alone despite a lower mean.
+
+**Panel b** (detrended GSL-vs-GPP Pearson r at Z17/T95, against skewness): every site's
+correlation is positive; 12 of 15 sites are significant (p < 0.05) at both thresholds (same 3
+exceptions both times: AU-How, US-MMS, AT-Neu). Steiger's (1980) Z1* test (implemented directly —
+neither `cocor` nor `psych` is in this project's renv lockfile) finds **only FR-Pue's Z17-vs-T95
+difference significant** (z = −3.42, p = 0.0006; T95 r = 0.942 vs. Z17 r = 0.766 there); every
+other site's two thresholds track GPP about equally well.
+
+**Data-quality note surfaced, not introduced**: the detrended correlations/Steiger's test use a
+smaller complete-case n than the full passing-year count at 3 sites — AU-How (9 of 13, the
+already-documented Jul-Jun `annual_inputs.csv` join gap) and, newly surfaced here, CH-Dav (24 of
+27) and IL-Yat (12 of 13), both genuine empty site-years where `derived_site_year.csv`'s
+`gsl_z17`/`gsl_t95` are correctly `NA` but `annual_inputs.csv`'s `annual_gpp` for the same year is
+a trivial `0` rather than `NA` — an inconsistency between those two already-committed tables for
+an empty year, not something this script introduces; its complete-case filter correctly excludes
+those years either way. Full table: `tables/iav_15sites.csv`.
+
+---
 ## 2026-10-31 — GSL expanded Figure 1 two-site redesign: started
 
 Full prompt: `logs/prompts/2026-10-31_gsl_figure1_two_sites.md`. Replacing the Figure 1 section of

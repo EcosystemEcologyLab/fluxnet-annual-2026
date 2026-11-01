@@ -1,0 +1,15 @@
+Figure GSL-IAV (draft). Missed GPP and interannual variability (IAV) across 15 sites spanning
+the expanded set's skewness range (0.37-2.41), each with >=12 R2/N=14 passing years, every
+passing year used (AU-How: Jul-Jun Southern-Hemisphere season years, as in carbon_gain_data.csv).
+The detrended correlations/Steiger's test use a smaller, complete-case n at 3 sites -- AU-How (9
+of 13, Jul-Jun join gap), CH-Dav (24 of 27) and IL-Yat (12 of 13, genuine empty site-years) -- see
+tables/iav_15sites.csv's own notes.
+Panel a: fraction of annual GPP outside the Z17 GSL (1 - F at 10% of P99), one point per site at
+its across-year mean, bar = interannual IQR; dashed line at 5% (the share T95 excludes by
+construction); Pearson r and n printed in-panel.
+Panel b: the interannual link between annual GSL and annual GPP -- annual GSL and annual GPP each
+detrended (OLS on year) separately, then Pearson r between the residuals, at Z17 (black) and T95
+(red); the two points for a site joined by a thin vertical segment; filled = p < 0.05, open
+otherwise. Numbers behind both panels, plus NEP correlations and Steiger's (1980) Z1* test for
+each site's Z17- vs. T95-GPP correlation (sharing GPP; r between the detrended GSL series used as
+the required third correlation): tables/iav_15sites.csv.

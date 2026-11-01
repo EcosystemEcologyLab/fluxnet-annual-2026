@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-11-01T00:10:51Z",
+  "pipeline_version": "3ee96d7",
+  "input_sources": [
+    "GSL_definition/expanded/tables/iav_15sites.csv",
+    "GSL_definition/expanded/tables/carbon_gain_data.csv",
+    "GSL_definition/expanded/tables/derived_site_year.csv",
+    "GSL_definition/expanded/tables/sites.csv"
+  ],
+  "notes": "Draft figure (Dave's design) -- not a numbered manuscript figure. PNG only, PeerJ sizing/dpi."
+}

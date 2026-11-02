@@ -1,17 +1,20 @@
-## 10_figure1_alts.R — GSL expanded analysis: two new two-site Figure 1
-## variants (Dave's prompt, 2026-11-02). Does NOT modify or overwrite the
-## existing Figure 1/2 or any existing script/table/figure -- a brand-new
-## script writing only to figures/"Figure 1_alt1".*, figures/"Figure
-## 2_alt2".* and a new tables/figure1_alts_years.csv.
+## 10_figure1_alts.R — GSL expanded analysis: Figure 1_alt1 two-site variant
+## (Dave's prompt, 2026-11-02; revised 2026-11-02 -- see SESSION_LOG.md).
+##
+## Figure 2_alt2 (the deciduous-forest min/max-skewness pair) was retired in
+## the revision and its code path removed -- this script now produces only
+## Figure 1_alt1 (AU-How vs US-SRM). Does NOT modify or overwrite the
+## existing Figure 1/2 or any other existing script/table/figure -- writes
+## only to figures/"Figure 1_alt1".*  and tables/figure1_alts_years.csv.
 ##
 ## Reads only the already-committed "main"-variant tables (sites.csv,
 ## site_years.csv, derived_site.csv, winter_screen_days.csv) and a
 ## read-only pull from the repo-root DuckDB store (dataset = 'FLUXMET') for
-## the handful of sites actually used here -- no data/*.rds extract is
-## read. Same daily GPP series, winter screen and negative-GPP handling as
-## the main run: GPP_NT_REF (per-site VUT/CUT, sites.csv$gpp_col_used),
-## winter-screened days (winter_screen_days.csv) forced to 0, then
-## zero-floored (neg_to_zero = TRUE, as in 02_derive.R's "main" variant).
+## the two sites used here -- no data/*.rds extract is read. Same daily
+## GPP series, winter screen and negative-GPP handling as the main run:
+## GPP_NT_REF (per-site VUT/CUT, sites.csv$gpp_col_used), winter-screened
+## days (winter_screen_days.csv) forced to 0, then zero-floored
+## (neg_to_zero = TRUE, as in 02_derive.R's "main" variant).
 
 source("GSL_definition/expanded/code/00_config.R")
 options(gsl.skip_driver = TRUE)
@@ -29,21 +32,13 @@ derived_site       <- read_csv(file.path(EXP_TABLES, "derived_site.csv"), show_c
 winter_screen_days <- read_csv(file.path(EXP_TABLES, "winter_screen_days.csv"), show_col_types = FALSE) |>
   mutate(is_screened = TRUE) |> select(site_id, TIMESTAMP, is_screened)
 
-## ---- Deciduous-forest pair for Figure 2_alt2: min- and max-skewness
-## sites in derived_site.csv's own (main variant) group == "deciduous
-## forest" subset -- computed, not hard-coded. ----
-dbf <- derived_site |> filter(group == "deciduous forest") |> arrange(skewness)
-DBF_LO <- dbf$site_id[1]; DBF_HI <- dbf$site_id[nrow(dbf)]
-message(sprintf("Figure 2_alt2 deciduous-forest pair (computed): lower skewness = %s (%.2f), higher skewness = %s (%.2f), of %d deciduous-forest sites.",
-                 DBF_LO, dbf$skewness[1], DBF_HI, dbf$skewness[nrow(dbf)], nrow(dbf)))
-
-## ---- Raw daily GPP for exactly the sites used below (read-only,
-## dataset = 'FLUXMET'), with each site's own main-run VUT/CUT fallback
-## column (sites.csv$gpp_col_used) resolved into one GPP_NT_REF column,
-## then the committed winter screen applied and negative GPP floored to 0
-## -- the "main" variant's own handling (02_derive.R), recomputed fresh
-## here rather than re-reading the gitignored data/daily_extract.rds. -----
-ALT_SITES <- unique(c("US-SRM", "AU-How", DBF_LO, DBF_HI))
+## ---- Raw daily GPP for AU-How and US-SRM (read-only, dataset =
+## 'FLUXMET'), with each site's own main-run VUT/CUT fallback column
+## (sites.csv$gpp_col_used) resolved into one GPP_NT_REF column, then the
+## committed winter screen applied and negative GPP floored to 0 -- the
+## "main" variant's own handling (02_derive.R), recomputed fresh here
+## rather than re-reading the gitignored data/daily_extract.rds. ----------
+ALT_SITES <- c("US-SRM", "AU-How")
 site_meta <- exp_sites |> filter(site_id %in% ALT_SITES) |>
   select(site_id, igbp, group, location_lat, gpp_col_used)
 stopifnot(all(ALT_SITES %in% site_meta$site_id))
@@ -101,9 +96,9 @@ year_series <- function(sid, y) {
 }
 
 ## ============================================================================
-## Shared builder: identical 2x2 layout for both figures. `lo`/`hi` = the
-## lower-/higher-skewness site (left/right columns; panels a/c = lo, b/d =
-## hi). Returns the per-site years-used rows for the companion table.
+## Builder: 2x2 layout. `lo`/`hi` = the lower-/higher-skewness site (left/
+## right columns; panels a/c = lo, b/d = hi). Returns the per-site
+## years-used rows for the companion table.
 ## ============================================================================
 build_alt_figure <- function(stem, lo, hi, pair_label) {
   site_levels <- c(lo, hi)
@@ -157,18 +152,31 @@ build_alt_figure <- function(stem, lo, hi, pair_label) {
     labs(x = "Daily GPP (% of site's own P99)", y = "Days") +
     theme_gsl() + theme(strip.text = element_text(face = "bold"))
 
-  ## ---- Bottom row: one thin line per year, coloured by year (viridis). --
+  ## ---- Bottom row (revised 2026-11-02): per day of year (day of season
+  ## year for a Southern-Hemisphere site), the MEDIAN daily GPP across the
+  ## N years used, with a shaded band from the min to the max across those
+  ## same years -- replaces the earlier one-thin-line-per-year-by-colour
+  ## design (no year colour legend now). ----
+  band_data <- series_all |>
+    group_by(site_id, day_idx) |>
+    summarise(
+      median_gpp = median(gpp_use, na.rm = TRUE),
+      min_gpp = if (all(is.na(gpp_use))) NA_real_ else min(gpp_use, na.rm = TRUE),
+      max_gpp = if (all(is.na(gpp_use))) NA_real_ else max(gpp_use, na.rm = TRUE),
+      .groups = "drop"
+    )
+
   x_lab <- if (any_sh) "Day of year (day of season year, 1 = 1 Jul, for Southern Hemisphere sites)" else "Day of year"
   letter_bottom <- tibble(site_id = factor(site_levels, levels = site_levels), letter = c("c", "d"))
 
-  p_bottom <- ggplot(series_all, aes(x = day_idx, y = gpp_use, colour = year, group = year)) +
-    geom_line(linewidth = nature_lwd(PEERJ_LWD_OTHERYEARS), alpha = 0.75) +
-    scale_colour_viridis_c(name = "Year") +
+  p_bottom <- ggplot(band_data, aes(x = day_idx)) +
+    geom_ribbon(aes(ymin = min_gpp, ymax = max_gpp), fill = "grey70", alpha = 0.5) +
+    geom_line(aes(y = median_gpp), colour = "grey20", linewidth = nature_lwd(PEERJ_LWD_DATA)) +
     geom_text(data = letter_bottom, aes(x = -Inf, y = Inf, label = letter), inherit.aes = FALSE,
               fontface = "bold", size = PEERJ_PANEL_LETTER_PT / .pt, hjust = -0.4, vjust = 1.3) +
     facet_wrap(~ site_id, ncol = 2, scales = "free_y") +
     labs(x = x_lab, y = "Daily GPP (gC m-2 d-1)") +
-    theme_gsl() + theme(strip.text = element_text(face = "bold"), legend.position = "right")
+    theme_gsl() + theme(strip.text = element_text(face = "bold"))
 
   fig <- p_top / p_bottom + plot_layout(heights = c(1, 1.1))
 
@@ -179,16 +187,17 @@ build_alt_figure <- function(stem, lo, hi, pair_label) {
     "passing-year counts; for a Southern-Hemisphere site this counts only years with a valid",
     "Jul-Jun window, i.e. both that calendar year and the next are themselves passing years --",
     "see the script's own comment on effective_years()). Each site's N MOST RECENT such years are",
-    "used, identically, in both the histogram above it and the time-series line plot below it.",
+    "used, identically, in both the histogram above it and the median/range panel below it.",
     sprintf("%s years used: %s.", lo, paste(years_lo, collapse = ", ")),
     sprintf("%s years used: %s.", hi, paste(years_hi, collapse = ", ")),
     "Panels a, b: histogram of daily GPP (main-variant GPP_NT_REF, winter-screened to 0 and",
     "zero-floored, as in the main run) as % of that site's own P99 -- P99, skewness and n computed",
     "fresh from exactly the years used (not derived_site.csv's full-record values). Same bin width",
     sprintf("(%d%% of P99) and x-axis range (0-%d%%) in both panels.", BINWIDTH, xmax),
-    "Panels c, d: daily GPP (gC m-2 d-1) against day of year, one thin line per year, coloured by",
-    "year, for every year used in the histogram above it. No threshold lines, no GPP-summed-by-",
-    "season panel (removed, per the prompt).",
+    "Panels c, d: for each day of year (day of season year for a Southern-Hemisphere site), the",
+    "MEDIAN daily GPP (gC m-2 d-1) across the N years used (line), with a shaded band from the",
+    "minimum to the maximum across those same years. No threshold lines, no GPP-summed-by-season",
+    "panel, no year colour legend.",
     sprintf("Years used per site and this figure's N: tables/figure1_alts_years.csv.")
   )
 
@@ -216,37 +225,29 @@ build_alt_figure <- function(stem, lo, hi, pair_label) {
 
 ## ============================================================================
 ## Figure 1_alt1 -- US-SRM (higher skewness) vs AU-How (lower skewness),
-## both woody-grass mosaic (prompt-specified pair).
+## both woody-grass mosaic (prompt-specified pair). Figure 2_alt2 (the
+## deciduous-forest min/max-skewness pair) was retired 2026-11-02 -- see
+## SESSION_LOG.md -- and its code path removed from this script.
 ## ============================================================================
-rows_fig1 <- build_alt_figure(
+years_tbl <- build_alt_figure(
   "Figure 1_alt1", lo = "AU-How", hi = "US-SRM",
   pair_label = "both woody-grass mosaic (WSA)"
 )
 
-## ============================================================================
-## Figure 2_alt2 -- the computed deciduous-forest pair (min/max skewness).
-## ============================================================================
-rows_fig2 <- build_alt_figure(
-  "Figure 2_alt2", lo = DBF_LO, hi = DBF_HI,
-  pair_label = "both deciduous forest (min/max skewness in that group, computed)"
-)
-
-years_tbl <- bind_rows(rows_fig1, rows_fig2)
 write_csv(years_tbl, file.path(EXP_TABLES, "figure1_alts_years.csv"))
 write_meta(
   file.path(EXP_TABLES, "figure1_alts_years.csv"),
   input_sources = c(file.path(EXP_TABLES, "sites.csv"), file.path(EXP_TABLES, "site_years.csv"),
                      file.path(EXP_TABLES, "derived_site.csv"), "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')"),
   notes = paste0(
-    "Years used per site for Figure 1_alt1 (AU-How/US-SRM) and Figure 2_alt2 (", DBF_LO, "/", DBF_HI,
-    ", the computed min/max-skewness deciduous-forest pair). n_years_used = N = the smaller of the ",
-    "two sites' usable-passing-year counts in that figure (Southern-Hemisphere counts restricted to ",
-    "Jul-Jun-window-valid years -- see 10_figure1_alts.R's effective_years()). skewness_fresh/P99_fresh ",
-    "are computed fresh from exactly those N years' daily GPP (main-variant handling), not ",
+    "Years used per site for Figure 1_alt1 (AU-How/US-SRM) only -- Figure 2_alt2 (the deciduous-",
+    "forest min/max-skewness pair) was retired 2026-11-02 and its rows removed. n_years_used = N = ",
+    "the smaller of the two sites' usable-passing-year counts (Southern-Hemisphere counts restricted ",
+    "to Jul-Jun-window-valid years -- see 10_figure1_alts.R's effective_years()). skewness_fresh/",
+    "P99_fresh are computed fresh from exactly those N years' daily GPP (main-variant handling), not ",
     "derived_site.csv's full-record values."
   )
 )
 message("Saved: ", file.path(EXP_TABLES, "figure1_alts_years.csv"))
 
-message("--- 10_figure1_alts.R: done --- Figure 1_alt1 (AU-How/US-SRM) and Figure 2_alt2 (",
-        DBF_LO, "/", DBF_HI, ") written.")
+message("--- 10_figure1_alts.R: done --- Figure 1_alt1 (AU-How/US-SRM) written.")

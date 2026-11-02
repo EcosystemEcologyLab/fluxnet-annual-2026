@@ -4,6 +4,29 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL expanded: Figure 2_alt2 retired; Figure 1_alt1 panels c/d revised to median/range
+
+Follow-up to the entry below. `GSL_definition/expanded/code/10_figure1_alts.R` revised per Dave's
+instruction:
+
+1. **Figure 2_alt2 (IT-BFt vs JP-Tak) retired.** `figures/"Figure 2_alt2".png/.pdf/.legend.txt/
+   .meta.json` deleted (`git rm`) and its rows removed from `tables/figure1_alts_years.csv`; the
+   deciduous-pair code path (computing the min/max-skewness deciduous-forest pair, and the second
+   `build_alt_figure()` call) removed from the script. The script now produces only Figure 1_alt1.
+2. **Figure 1_alt1 panels c/d redesigned.** The one-thin-line-per-year-by-colour design is
+   replaced with, for each day of year (day of season year, Jul-Jun, for AU-How), the MEDIAN daily
+   GPP across the years used (line) and a shaded band from the minimum to the maximum across those
+   same years; the year colour legend is removed. Panels a/b (histograms, same bins/range,
+   skewness/P99/n annotations), panel letters a-d, site titles, and the absence of any Z17/T95
+   threshold reference are all unchanged. N and years used are unchanged from the original run
+   (nothing about year selection changed): **N = 9** for both sites — AU-How 2010-2016, 2022-2023;
+   US-SRM 2016-2022, 2024-2025. Regenerated: `figures/"Figure 1_alt1".png/.pdf` (+ `.legend.txt`/
+   `.meta.json` via the subproject's local `write_meta()`, same as every other GSL expanded figure
+   — not `R/utils.R::write_output_metadata()`, which this side project must never call; see the
+   entry below for why).
+
+---
+
 ## 2026-11-02 — GSL expanded: two Figure 1 alt-variants (Figure 1_alt1, Figure 2_alt2)
 
 New, standalone `GSL_definition/expanded/code/10_figure1_alts.R`. Does not modify or overwrite

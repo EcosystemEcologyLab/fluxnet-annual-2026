@@ -4,6 +4,32 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL_definition: Z17 → Z16 rename, started
+
+Dave's instruction: the 10%-of-P99 threshold's name, "Z17", was carried over from Tash's draft
+and is wrong — the definition comes from Zscheischler et al. (2016, *JGR Biogeosciences*), not a
+2017 paper. Renaming `Z17`/`z17` → `Z16`/`z16` throughout `GSL_definition/` (both the 62-site code
+and `expanded/`): code, variable/column names, figure labels/legends/captions, `.meta.json`
+`notes` fields, `README.md`, and `docs/methods_memo.md`. Historical report docs (`report_back_*`,
+`checks_report_*`, and the figure note `docs/figure_gsl_iav_2026-10-31.md`) are left untouched in
+body text per instruction, each gaining a one-line note at the top instead. Also fixing
+`docs/framework.md`, which still tells this side project to use `R/utils.R::write_output_metadata()`
+for `.meta.json` — the code has always used the local `write_meta()` instead (deliberately, to
+avoid writing to the repo-root `outputs/session_info.txt`; documented in `methods_memo.md` and
+`README.md` already) — the framework text was simply never corrected to match.
+
+Full prompt saved to `logs/prompts/2026-11-02_gsl_rename_z16.md`.
+
+Before any edit: copied every current table under `GSL_definition/tables/` (72 files) and
+`GSL_definition/expanded/tables/` (100 files) to a scratch directory outside the repo. Plan: make
+the rename, rerun every 62-site script (`00_config.R`-`11_selection_audit.R`) and every expanded
+script (`00_config.R`-`10_figure1_alts.R`, including the standalone 07/09/10 scripts), then diff
+every regenerated table against its backed-up copy (mapping renamed columns) for exact numeric
+equality. Any difference found will be reported and the run stopped before proceeding further; a
+follow-up log entry will record the outcome either way.
+
+---
+
 ## 2026-11-02 — GSL expanded: Figure 2_alt2 retired; Figure 1_alt1 panels c/d revised to median/range
 
 Follow-up to the entry below. `GSL_definition/expanded/code/10_figure1_alts.R` revised per Dave's

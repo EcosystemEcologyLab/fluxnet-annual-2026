@@ -4,6 +4,48 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GPP/RECO uncertainty inventory, done
+
+Read-only inventory completed; `review/diagnostics/gpp_uncertainty_inventory/` (`report.md` +
+`table1_column_inventory`, `table2_raw_vs_duckdb_check`, `table3_coverage`,
+`table4_bifvarinfo_definitions`, each `.csv` + `.meta.json`). Nothing in `R/`, `scripts/`, or any
+existing output touched; no analysis performed.
+
+**Column inventory:** GPP and RECO carry a full u*-threshold ensemble (`REF`, `USTAR50`, `MEAN`,
+`SE`, 7-point percentiles) for both NT/DT methods and both VUT/CUT variants, at every DuckDB
+resolution including daily (146 matching columns at annual/daily/monthly/weekly; 126 at hourly,
+which drops the DAY/NIGHT split but adds `RANDUNC_METHOD`/`RANDUNC_N`). `_qc` tables keep the
+identical set; `_converted` tables add only an unconverted `_native` backup of each column, not a
+new ensemble member. GPP/RECO have **no** `RANDUNC`/`JOINTUNC` columns anywhere — unlike NEE,
+their random uncertainty is never separately quantified.
+
+**Raw vs. DuckDB:** checked 3 sites (US-MMS VUT+CUT/HR, FI-Hyy VUT+CUT/HH, JP-Nkm CUT-only/NT-only/HH)
+at DD and sub-daily. Zero ingest drops in any case; the only DuckDB-vs-raw differences (JP-Nkm,
+73 cols at DD / 63 at HH) are genuine per-site absences in the raw product itself (no VUT-family
+NEE, no DT-partitioned GPP/RECO for that site), not something ingest dropped.
+
+**Coverage:** computed per-column (annual/daily/hourly × network-wide/153 GSL-expanded sites).
+-9999 is already NULL by ingest time (confirmed directly, no column holds any value ≤ -9000).
+Daily `GPP_NT_VUT_REF`/`MEAN`/`SE`/percentiles: 666/781 sites (85.3%) network-wide, 139/153 (90.8%)
+in the GSL set; the single-point `USTAR50` estimate covers more sites than the full ensemble for
+the same family (701/781, 89.8%). 30 of 781 sites (5 of 153) have no DT-partitioned GPP at all;
+49 of 781 (12 of 153) are CUT-only.
+
+**Definitions:** pulled from BIFVARINFO (`GRP_VAR_INFO`), all 146 daily-table columns documented
+(0 missing). Confirmed by the definitions themselves: GPP's percentile ensemble is explicitly "each
+from corresponding NEE_VUT version" — the same up-to-40 u*-threshold NEE realizations, not an
+independent resampling. One upstream wording typo noted and quoted as-is, not corrected
+(`NEE_VUT_USTAR50`'s own definition text says "(CUT)").
+
+**Biggest practical limiter for a planned ensemble-based GPP-uncertainty utility:** the DuckDB
+`hourly` table currently holds sub-daily data for only 1 of 781 sites (US-MMS, HR), even though
+raw HH/HR FLUXMET files are extracted on disk for 31 sites — any sub-daily use of the ensemble
+for the other 30 would need to read raw CSVs directly, bypassing the DuckDB store this repo's
+other pipeline code relies on. Daily resolution itself is unaffected by this (same ensemble
+members, not sub-daily-only).
+
+---
+
 ## 2026-11-02 — GPP/RECO uncertainty inventory, started
 
 Read-only inventory of GPP and RECO uncertainty information held in the DuckDB store and raw

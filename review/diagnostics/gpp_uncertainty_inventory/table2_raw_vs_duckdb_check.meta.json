@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-11-02T23:50:31Z",
+  "pipeline_version": "e0124a7",
+  "input_sources": {
+    "duckdb": "data/duckdb/fluxnet.duckdb (read-only, dataset = 'FLUXMET')",
+    "raw_extracted": "data/extracted/*/*_FLUXMET_<RES>_*.csv and *_BIFVARINFO_<RES>_*.csv (read-only)",
+    "gsl153_sites": "GSL_definition/expanded/tables/sites.csv"
+  },
+  "notes": "Header diff between each site's raw FLUXMET (='FULLSET') CSV and the corresponding DuckDB table, restricted to the GPP/RECO/NEE-uncertainty-family column patterns. Zero true ingest drops found at either resolution for any of the 3 sites checked (US-MMS: VUT+CUT, HR-native; FI-Hyy: VUT+CUT, HH; JP-Nkm: CUT-only and NT-only, HH) -- every DuckDB-vs-raw difference found is a genuine per-site absence in the raw FLUXNET product itself (JP-Nkm has no VUT-threshold NEE and no DT-partitioned GPP/RECO at all), not something ingest dropped."
+}

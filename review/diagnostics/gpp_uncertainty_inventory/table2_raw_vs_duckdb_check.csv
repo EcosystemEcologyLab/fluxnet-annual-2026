@@ -1,0 +1,7 @@
+site_id,resolution,carbon_src_note,duckdb_table,n_matching_cols_in_raw_header,n_matching_cols_in_duckdb,cols_in_raw_missing_from_duckdb,cols_in_duckdb_not_in_raw,cols_in_duckdb_not_in_raw_explanation
+US-MMS,DD,VUT+CUT,daily,146,146,0,0,
+US-MMS,HR,VUT+CUT,hourly,126,126,0,0,
+FI-Hyy,DD,VUT+CUT,daily,146,146,0,0,
+FI-Hyy,HH,VUT+CUT,hourly,126,126,0,0,
+JP-Nkm,DD,"CUT-only, NT-only (no VUT, no DT)",daily,73,146,0,73,"all 73 are GPP_DT_*/RECO_DT_* (VUT+CUT) and the entire NEE_VUT_* uncertainty family -- this site's raw FULLSET file has no VUT columns for NEE and no DT-partitioned GPP/RECO at all; DuckDB's unioned schema still carries these columns (NULL for this site), which is not an ingest drop"
+JP-Nkm,HH,"CUT-only, NT-only (no VUT, no DT)",hourly,63,126,0,63,"same 63-column subset of the above, at HH resolution"

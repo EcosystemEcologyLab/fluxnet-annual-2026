@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-11-02T23:50:31Z",
+  "pipeline_version": "e0124a7",
+  "input_sources": {
+    "duckdb": "data/duckdb/fluxnet.duckdb (read-only, dataset = 'FLUXMET')",
+    "raw_extracted": "data/extracted/*/*_FLUXMET_<RES>_*.csv and *_BIFVARINFO_<RES>_*.csv (read-only)",
+    "gsl153_sites": "GSL_definition/expanded/tables/sites.csv"
+  },
+  "notes": "Per-column coverage (site count and site-count share with >=1 non-missing value; row count and row share non-missing) for annual, daily and hourly DuckDB tables, each computed network-wide (781 sites) and restricted to the 153 sites in GSL_definition/expanded/tables/sites.csv. Monthly and weekly are not separately tabulated: Table 1 confirms they carry the identical GPP/RECO/NEE-uncertainty column set as daily/annual (same ONEFlux aggregation, different binning), so they add no new information about which ensemble members exist. -9999 handling: the DuckDB ingest (flux_read(), scripts/03_read.R) already converts FLUXNET's -9999 missing-value sentinel to SQL NULL before loading; confirmed directly (no column in this family holds any value <= -9000 anywhere in the daily table). 'Non-missing' here is therefore simply IS NOT NULL."
+}

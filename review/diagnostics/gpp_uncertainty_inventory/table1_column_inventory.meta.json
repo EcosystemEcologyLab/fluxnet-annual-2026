@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-11-02T23:50:31Z",
+  "pipeline_version": "e0124a7",
+  "input_sources": {
+    "duckdb": "data/duckdb/fluxnet.duckdb (read-only, dataset = 'FLUXMET')",
+    "raw_extracted": "data/extracted/*/*_FLUXMET_<RES>_*.csv and *_BIFVARINFO_<RES>_*.csv (read-only)",
+    "gsl153_sites": "GSL_definition/expanded/tables/sites.csv"
+  },
+  "notes": "Every DuckDB column matching GPP_*, RECO_*, NEE_*_RANDUNC*, NEE_*_JOINTUNC*, NEE_*_USTAR50, NEE_*_MEAN, NEE_*_SE, NEE_VUT/CUT_<percentile> across all 5 base resolutions (annual/daily/hourly/monthly/weekly). The _qc and _converted variants of each table were checked separately and carry an identical column set (converted tables additionally carry an unconverted _native backup of each column, confirmed for annual/daily/weekly/monthly/hourly -- not itself a new ensemble member, so not listed as a separate row here)."
+}

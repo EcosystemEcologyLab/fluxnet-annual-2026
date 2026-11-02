@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-11-02T23:50:31Z",
+  "pipeline_version": "e0124a7",
+  "input_sources": {
+    "duckdb": "data/duckdb/fluxnet.duckdb (read-only, dataset = 'FLUXMET')",
+    "raw_extracted": "data/extracted/*/*_FLUXMET_<RES>_*.csv and *_BIFVARINFO_<RES>_*.csv (read-only)",
+    "gsl153_sites": "GSL_definition/expanded/tables/sites.csv"
+  },
+  "notes": "Verbatim VAR_INFO_DEFINITION text from one site's (US-MMS) BIFVARINFO_DD file's GRP_VAR_INFO group, for every one of the 146 daily-resolution GPP/RECO/NEE-uncertainty-family columns -- all 146 had a definition (0 missing). The fluxnet R package exposes an equivalent flux_varinfo() reader over the same BIFVARINFO source; reading the CSV directly was equivalent and avoided an extra dependency for a one-off lookup. Definitions use ONEFlux's own template language per family (method x VUT/CUT x REF/MEAN/SE/USTAR50/percentile) and are reproduced verbatim including one upstream wording inconsistency (NEE_VUT_USTAR50's own definition text says '(CUT)' where context makes clear it means VUT -- quoted as-is, not corrected)."
+}

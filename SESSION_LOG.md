@@ -4,6 +4,43 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL expanded: two Figure 1 alt-variants (Figure 1_alt1, Figure 2_alt2)
+
+New, standalone `GSL_definition/expanded/code/10_figure1_alts.R`. Does not modify or overwrite
+the existing Figure 1/2 or any existing script, table, or figure (confirmed via `git status`:
+only the new script, `figures/"Figure 1_alt1".*`, `figures/"Figure 2_alt2".*`, and
+`tables/figure1_alts_years.{csv,meta.json}` are new). Reads only committed "main"-variant tables
+(`sites.csv`, `site_years.csv`, `derived_site.csv`, `winter_screen_days.csv`) and a read-only pull
+from the repo-root DuckDB store (`dataset = 'FLUXMET'`) — no `data/*.rds` extract is read.
+
+**Deciduous-forest pair for Figure 2_alt2** (computed, not hard-coded): of 29 deciduous-forest
+sites in `derived_site.csv`'s main variant, the minimum-skewness site is **IT-BFt (0.22)** and the
+maximum is **JP-Tak (1.10)** — matching the prompt's own expected values exactly.
+
+**Layout** (identical for both figures, 2×2): top row = histograms of daily GPP as % of each
+site's own P99 (same bin width and x-axis range within a figure; skewness/P99/n printed per
+panel); bottom row = daily GPP vs. day of year, one thin line per year (coloured by year),
+for every year used in the histogram above it. No threshold lines, no GPP-by-season panel.
+
+**Years (N = the smaller of the two sites' usable passing-year counts, each site's N most recent
+years, identical set used in both panels per site):**
+- Figure 1_alt1 (US-SRM vs. AU-How, both woody-grass mosaic): N = **9**. AU-How 2010–2016,
+  2022–2023; US-SRM 2016–2022, 2024–2025.
+- Figure 2_alt2 (IT-BFt vs. JP-Tak): N = **6**. IT-BFt 2019–2024; JP-Tak 2010, 2012, 2014, 2015,
+  2019, 2021.
+
+**Deviation from the prompt, reported as asked:** AU-How's raw R2/N=14 passing-year count is 13,
+not 9. For the bottom-row time-series panel, a Southern-Hemisphere calendar-year label is only a
+well-defined Jul–Jun window when both that year and the next are themselves passing years (the
+same rule `02_derive.R`'s SH season-year handling and the original Figure 1 already use) — only 9
+of AU-How's 13 labels qualify. Since the prompt requires the histogram and time-series panels to
+use *exactly* the same year set, and the histogram's own skewness/P99/n are now computed fresh
+from that matched set (not `derived_site.csv`'s full-record values, which pool whichever years
+happened to pass per site), N for Figure 1_alt1 is 9 (`min(20, 9)`), not `min(20, 13) = 13`. Full
+reasoning in the script's own `effective_years()` comment and in `figure1_alts_years.csv`'s notes.
+
+---
+
 ## 2026-10-31 — GSL expanded IAV draft figure, 15 sites: started
 
 Full prompt: `logs/prompts/2026-10-31_gsl_figure_iav_15sites.md`. New, standalone

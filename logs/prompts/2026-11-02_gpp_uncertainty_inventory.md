@@ -1,0 +1,9 @@
+Read-only inventory of GPP and RECO uncertainty information in the data we hold. It informs a planned utility, R/gpp_uncertainty.R (not written yet), that will treat GPP as an ensemble of estimates: partitioning method (NT, DT), u* threshold (REF and percentiles), VUT and CUT. No analysis, no changes to R/, scripts/ or any existing output. Write to review/diagnostics/gpp_uncertainty_inventory/ following the CLAUDE.md conventions for diagnostics.
+
+1. Every table in data/duckdb/fluxnet.duckdb (read-only; FLUXMET rows only where a dataset column exists): list each column matching GPP_*, RECO_*, NEE_*_RANDUNC*, NEE_*_JOINTUNC*, NEE_*_USTAR50, NEE_*_MEAN, NEE_*_SE and NEE_*_<percentile>, with its resolution.
+2. Check whether ingest dropped columns: compare the DuckDB columns with the headers of one raw FULLSET file per resolution (DD, and HH or HR where we hold sub-daily extracts) for a few sites, VUT and CUT. List any GPP, RECO or u*-ensemble column present in the raw files but absent from DuckDB.
+3. Coverage per column: number of sites with any non-missing value, and share of site-days (or site-time steps) non-missing, for the whole network and for the 153 sites in GSL_definition/expanded/tables/sites.csv. Note -9999 handling.
+4. Definitions: for each column family (REF, USTAR50, MEAN, SE, percentiles), quote the definition from the BIFVARINFO files or the fluxnet package if present; otherwise say none was found. Note whether the GPP percentiles come from the same 40 u* versions as NEE.
+5. Report in report.md: which ensemble members exist at daily resolution for GPP (NT and DT, VUT and CUT, REF and percentiles), which exist only sub-daily, which are missing, and anything that limits an ensemble-based GPP uncertainty.
+
+Write SESSION_LOG entries at the start, if anything goes wrong, and at the end, committing and pushing each. Save this prompt as logs/prompts/<date>_gpp_uncertainty_inventory.md. Log, commit and push per CLAUDE.md.

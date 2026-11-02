@@ -4,6 +4,27 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GPP/RECO uncertainty inventory, started
+
+Read-only inventory of GPP and RECO uncertainty information held in the DuckDB store and raw
+extracted files, to inform a planned (not-yet-written) `R/gpp_uncertainty.R` utility that will
+treat GPP as an ensemble across partitioning method (NT/DT), u* threshold (REF and percentiles)
+and VUT/CUT. No analysis performed, nothing in `R/`, `scripts/`, or any existing output touched.
+Output goes to `review/diagnostics/gpp_uncertainty_inventory/` (table/`.meta.json`/`report.md`
+convention, matching the existing `review/diagnostics/data_quality_uncertainty/` diagnostic,
+which covered the equivalent ground for NEE/LE/H and is being used as a methodological
+reference rather than duplicated). Full prompt saved to
+`logs/prompts/2026-11-02_gpp_uncertainty_inventory.md`.
+
+Plan: (1) list every DuckDB column matching GPP_*/RECO_*/the NEE uncertainty-family patterns,
+per table/resolution; (2) diff against raw FULLSET headers (DD and HH/HR where held) for a few
+VUT/CUT sites to catch any ingest drop; (3) per-column coverage (sites, site-days/time-steps),
+network-wide and for the 153 `GSL_definition/expanded/tables/sites.csv` sites; (4) pull
+definitions from BIFVARINFO files or the `fluxnet` package; (5) write up which GPP ensemble
+members exist at daily resolution, which are sub-daily-only, which are missing, in `report.md`.
+
+---
+
 ## 2026-11-02 — GSL_definition: Z17 → Z16 rename, started
 
 Dave's instruction: the 10%-of-P99 threshold's name, "Z17", was carried over from Tash's draft

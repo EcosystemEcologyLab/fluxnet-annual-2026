@@ -61,6 +61,42 @@ that resolved to an exact match once sorted by `site_id`/`TIMESTAMP`. No other m
 count changes, or site-membership changes were found anywhere else in either `GSL_definition/tables/`
 or `GSL_definition/expanded/tables/`.
 
+---
+
+## 2026-11-02 — GSL_definition Z17 → Z16 rename, done
+
+Completed per Dave's instruction (`logs/prompts/2026-11-02_gsl_rename_z16.md`). Summary (see the
+entry above for the one substantive finding along the way):
+
+- **Renamed** `Z17`/`z17` -> `Z16`/`z16` everywhere in `GSL_definition/` (62-site `code/` and
+  `expanded/code/`, 22 scripts; table columns and values; figure labels/legends/captions;
+  `.meta.json` notes; `README.md`; `docs/methods_memo.md`, which gained a dedicated "Z17 -> Z16
+  rename" section citing Zscheischler et al. (2016, *JGR Biogeosciences*) as the actual source of
+  the 10%-of-P99 definition).
+- **Fixed** `docs/framework.md`'s stale instruction to use `R/utils.R::write_output_metadata()`
+  for `.meta.json` -- replaced with the local `write_meta()` the code has always actually used
+  (to avoid writing to the repo-root `outputs/session_info.txt`).
+- **Historical docs left body-unchanged**, each gaining a one-line "Z17 here means Z16" note at
+  the top instead: `docs/report_back_2026-10-29.md`, `docs/report_back_2026-10-29_stage3_revisions.md`,
+  `docs/report_back_2026-10-30_peerj_restyle.md`, `docs/figure_gsl_iav_2026-10-31.md`,
+  `expanded/docs/checks_report_2026-10-30.md`, `expanded/docs/report_back_2026-10-30-session2a.md`,
+  `expanded/docs/report_back_2026-10-30.md`.
+- **Verified**: every table under `tables/` and `expanded/tables/` backed up before any change;
+  every 62-site script (`01_extract_sites.R` through `11_selection_audit.R`) and every expanded
+  script (`01_select.R` through `10_figure1_alts.R`, including standalones 06/07/09/10) rerun
+  cleanly (exit 0, no new warnings beyond pre-existing ones); every regenerated table diffed
+  against its backup. Only three categories of difference found network-wide: the intended
+  rename, pre-existing cross-run floating-point noise (confirmed not rename-related via a
+  controlled rerun), and non-deterministic row order in one table (resolves after sorting) --
+  plus the one genuine, pre-existing, unrelated staleness issue in `07_checks_session1.R`'s
+  output family, handled as described in the entry above (relabelled in place, not regenerated).
+- **Committed**: `3db5cb5` (staleness finding), `d43ae22` (the rename itself: 231 files, every
+  code/doc/table/figure change), both pushed to `origin/main`.
+
+No open items. If Dave wants `07_checks_session1.R`'s `checks_c1_*`/`checks_c2_*`/`checks_c3_*`/
+`checks_c4_*` tables refreshed against the current 153-site pipeline state, that is a separate,
+unrelated task.
+
 Before any edit: copied every current table under `GSL_definition/tables/` (72 files) and
 `GSL_definition/expanded/tables/` (100 files) to a scratch directory outside the repo. Plan: make
 the rename, rerun every 62-site script (`00_config.R`-`11_selection_audit.R`) and every expanded

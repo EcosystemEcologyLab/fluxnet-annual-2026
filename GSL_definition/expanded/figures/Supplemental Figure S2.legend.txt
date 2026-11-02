@@ -2,9 +2,9 @@ Supplemental Figure S2 (item 8 redesign). Bounds-check spread = GSL if every NEA
 QC-failing day is forced above the threshold, minus GSL if every such day is forced below.
 A failing day (fallback QC < 0.25 or NA, in a passing year) is 'near-threshold' only if its
 gap-filled GPP lies within +/-2% of P99 of the threshold being tested -- unlike
-a22e893's n_fail_days-based spread, this DOES depend on the threshold (Z17 vs T95 have
+a22e893's n_fail_days-based spread, this DOES depend on the threshold (Z16 vs T95 have
 different absolute thresholds), so the two lines in panel a are no longer expected to coincide.
 9.0% of site-years have at least one near-threshold day at either threshold.
-Panel a: frequency polygon (Z17 black, T95 red), across all expanded-set site-years.
-Panel b: the 15 sites with the largest MEAN spread at Z17, by group (flagged as most sensitive
+Panel a: frequency polygon (Z16 black, T95 red), across all expanded-set site-years.
+Panel b: the 15 sites with the largest MEAN spread at Z16, by group (flagged as most sensitive
 to the near-threshold QC-failing-day treatment).

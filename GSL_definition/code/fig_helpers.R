@@ -93,17 +93,17 @@ scale_fill_gsl_skew_third <- function(..., name = "Skewness third", labels = c("
 }
 
 ## ---- One marker convention, used everywhere a figure distinguishes the
-## Z17 (10% of P99) and T95 thresholds with a point: Z17 = black circle,
+## Z16 (10% of P99) and T95 thresholds with a point: Z16 = black circle,
 ## T95 = red triangle (Figures 2b, 2c, 3a, 4c). `breaks=` is set explicitly
-## (not left to ggplot's default alphabetical sort of "T95"/"Z17", which
+## (not left to ggplot's default alphabetical sort of "T95"/"Z16", which
 ## would put T95 first and silently swap override.aes's colours onto the
 ## wrong legend row -- found by inspecting Figure 2's first render). ----
-GSL_MARKER_SHAPES <- c("Z17" = 16, "T95" = 17)
-GSL_MARKER_COLORS <- c("Z17" = "black", "T95" = "red")
+GSL_MARKER_SHAPES <- c("Z16" = 16, "T95" = 17)
+GSL_MARKER_COLORS <- c("Z16" = "black", "T95" = "red")
 scale_shape_gsl_marker <- function(...) {
   scale_shape_manual(
-    values = GSL_MARKER_SHAPES, breaks = c("Z17", "T95"), name = NULL,
-    guide = guide_legend(override.aes = list(colour = unname(GSL_MARKER_COLORS[c("Z17", "T95")]))),
+    values = GSL_MARKER_SHAPES, breaks = c("Z16", "T95"), name = NULL,
+    guide = guide_legend(override.aes = list(colour = unname(GSL_MARKER_COLORS[c("Z16", "T95")]))),
     ...
   )
 }

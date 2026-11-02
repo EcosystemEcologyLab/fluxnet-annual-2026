@@ -61,8 +61,8 @@ p_heat <- ggplot(heat_data, aes(x = bin_mid, y = site_id, fill = abs_sensitivity
   ## (not a fixed number) -- see fig_helpers.R.
   scale_fill_gsl_sensitivity(heat_data$abs_sensitivity) +
   geom_vline(xintercept = 10, colour = "grey30", linewidth = nature_lwd(PEERJ_LWD_REF)) +
-  geom_point(data = derived_site, aes(x = 10, y = site_id, shape = "Z17"), inherit.aes = FALSE,
-             colour = GSL_MARKER_COLORS[["Z17"]], size = 1) +
+  geom_point(data = derived_site, aes(x = 10, y = site_id, shape = "Z16"), inherit.aes = FALSE,
+             colour = GSL_MARKER_COLORS[["Z16"]], size = 1) +
   geom_point(data = derived_site, aes(x = t95_pct, y = site_id, shape = "T95"), inherit.aes = FALSE,
              colour = GSL_MARKER_COLORS[["T95"]], size = 1) +
   scale_shape_gsl_marker() +
@@ -97,16 +97,16 @@ p_strip <- ggplot(strip_data, aes(y = site_id)) +
         legend.key.height = unit(4, "mm"), legend.key.width = unit(3, "mm")) +
   gsl_panel_letter("a")
 
-## ---- Right panel: |sensitivity| at Z17's T and at T95, joined by a
+## ---- Right panel: |sensitivity| at Z16's T and at T95, joined by a
 ## segment (absolute value, matching panel b -- PeerJ restyle). One marker
-## convention (GSL_MARKER_SHAPES/COLORS, fig_helpers.R): Z17 = black
+## convention (GSL_MARKER_SHAPES/COLORS, fig_helpers.R): Z16 = black
 ## circle, T95 = red triangle, same as panels b/c/4c. ----
-right_data <- derived_site |> select(site_id, z17_sensitivity, t95_sensitivity) |>
-  mutate(z17_sensitivity = abs(z17_sensitivity), t95_sensitivity = abs(t95_sensitivity))
+right_data <- derived_site |> select(site_id, z16_sensitivity, t95_sensitivity) |>
+  mutate(z16_sensitivity = abs(z16_sensitivity), t95_sensitivity = abs(t95_sensitivity))
 p_right <- ggplot(right_data, aes(y = site_id)) +
-  geom_segment(aes(x = z17_sensitivity, xend = t95_sensitivity, yend = site_id),
+  geom_segment(aes(x = z16_sensitivity, xend = t95_sensitivity, yend = site_id),
                colour = "grey60", linewidth = nature_lwd(PEERJ_LWD_REF)) +
-  geom_point(aes(x = z17_sensitivity, shape = "Z17"), size = 1.4, colour = GSL_MARKER_COLORS[["Z17"]]) +
+  geom_point(aes(x = z16_sensitivity, shape = "Z16"), size = 1.4, colour = GSL_MARKER_COLORS[["Z16"]]) +
   geom_point(aes(x = t95_sensitivity, shape = "T95"), size = 1.4, colour = GSL_MARKER_COLORS[["T95"]]) +
   scale_shape_gsl_marker() +
   labs(x = "Sensitivity\n(days/%P99,\nabs. value)", y = NULL) +
@@ -165,15 +165,15 @@ legend_lines <- c(
       "Panel b: heat map of |local sensitivity| (days of GSL lost per 1%% of P99, absolute value; ",
       "darker = more sensitive), 62 sites x log-binned thresholds (0.5-35%% of P99, %d bins). Colour ",
       "scale capped at the 95th percentile of the plotted values (%.1f days/%%P99); top colour ",
-      "labelled '>= %.1f'. Z17 (black circle) and T95 (red triangle) marked per row -- same ",
+      "labelled '>= %.1f'. Z16 (black circle) and T95 (red triangle) marked per row -- same ",
       "convention as panels c and 4c."
     ), N_BINS, sensitivity_cap, sensitivity_cap
   ),
-  "Panel c: |sensitivity| at Z17 (black circle) and at T95 (red triangle), joined by a segment.",
+  "Panel c: |sensitivity| at Z16 (black circle) and at T95 (red triangle), joined by a segment.",
   sprintf(
     paste0(
       "Panel d: median |local sensitivity| per threshold bin (same %d log-spaced bins as panel b), ",
-      "by skewness third (low/middle/high, same palette as panel a). Dashed line at 10%% of P99 (Z17)."
+      "by skewness third (low/middle/high, same palette as panel a). Dashed line at 10%% of P99 (Z16)."
     ), N_BINS
   ),
   sprintf("Sites per skewness third: low = %d, middle = %d, high = %d (total 62).", n_low, n_mid, n_high)

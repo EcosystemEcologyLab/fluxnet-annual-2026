@@ -1,5 +1,7 @@
 # GSL figure rebuild — PeerJ restyle report back (2026-10-30)
 
+**Note (2026-11-02):** "Z17" in this document means "Z16" — see `docs/methods_memo.md`'s "Z17 -> Z16 rename" section. The body below is left as originally written.
+
 Full prompt: `logs/prompts/2026-10-30_gsl_peerj_restyle.md`. Full detail (exact code changes,
 root causes) is in `docs/methods_memo.md`'s "PeerJ restyle" section; this document gives the
 headline results only. No pending `*_gsl_fig2_fixes.md` prompt was found, so this was a fresh

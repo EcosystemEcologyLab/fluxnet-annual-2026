@@ -1,5 +1,7 @@
 # Figure GSL-IAV (draft): missed GPP and interannual variability, 15 sites
 
+**Note (2026-11-02):** "Z17" in this document means "Z16" — see `docs/methods_memo.md`'s "Z17 -> Z16 rename" section. The body below is left as originally written.
+
 2026-10-31. Full prompt: `logs/prompts/2026-10-31_gsl_figure_iav_15sites.md`. Dave's design.
 Script: `GSL_definition/expanded/code/09_figure_iav_15sites.R` (new, standalone — does not modify
 any existing script, table, or figure). Output: `figures/drafts/"Figure GSL-IAV draft.png"` (not

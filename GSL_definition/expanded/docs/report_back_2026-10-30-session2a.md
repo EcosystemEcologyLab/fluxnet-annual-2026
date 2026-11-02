@@ -1,5 +1,7 @@
 # GSL expanded-site analysis — session 2a report back (2026-10-30)
 
+**Note (2026-11-02):** "Z17" in this document means "Z16" — see `docs/methods_memo.md`'s "Z17 -> Z16 rename" section. The body below is left as originally written.
+
 Full prompt: `../../logs/prompts/2026-10-30_gsl_expanded_session2a.md`. Implements Dave's
 decisions on the session 1 checks report (`docs/checks_report_2026-10-30.md`). Code changed:
 `code/00_config.R` through `06_checks.R` (all under `GSL_definition/expanded/code/`); the 62-site

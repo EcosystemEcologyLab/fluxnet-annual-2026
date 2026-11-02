@@ -136,7 +136,10 @@ Required project practice, whatever the decision:
 - Days with an NA QC flag count as not passing under every rule, ours and Tash's. Record this in the methods memo.
 - Log every excluded day with `log_exclusion()` and every unassessable record with `log_unknown()` from `R/utils.R`, passing `log_path = "GSL_definition/logs/exclusion_log.csv"` and `"GSL_definition/logs/unknown_log.csv"`. Never write to the repo-root `outputs/` logs, which `scripts/04_qc.R` clears on every run.
 - Call `check_pipeline_config()` at the start of every script and leave its warnings visible.
-- Write a `.meta.json` companion with `write_output_metadata()` for every table and figure.
+- Write a `.meta.json` companion for every table and figure with the local `write_meta()`
+  (`GSL_definition/code/00_config.R`), logging to `GSL_definition/logs/` paths as above — not
+  `R/utils.R::write_output_metadata()`, which always appends to the repo-root tracked
+  `outputs/session_info.txt`, outside this side project's scope.
 
 Run Tash's screening as well, once, as a reproduction check. Apply it to every site in the 20 September snapshot that has daily data, not only the 62: NEE\_VUT\_REF\_QC >= 0.25 on every day of a year, at least 5 complete years, US-Aud excluded. It should return exactly the 62 sites and 505 site-years in the Sites table. Report every site or year added or lost, with the reason; do not tune the rule to force a match.
 
@@ -158,9 +161,9 @@ Compute everything per site from screened daily GPP\_NT\_VUT\_REF over that site
 | Included fraction F(y, T) | Sum of GPP on days above T divided by annual GPP sum, using the same negative-GPP handling as everything else | - |
 | Selected threshold T95 | Tash's rule: step up the fine grid until the multi-year mean of F falls to 0.95 or below (rounded to 6 decimals) | match |
 | Fraction sweep | GSL for target fractions 0.80 to 0.99 in 0.01 steps | - |
-| Z17 implied fraction | Mean F at T = 10% of P99 | - |
-| Common-unit sensitivity | Change in mean GSL per 1% change in included fraction, at Z17's T and at T95 | - |
-| Trend uncertainty | 95% confidence interval of the OLS GSL trend at Z17's T; sites with 10 or more years only | - |
+| Z16 implied fraction | Mean F at T = 10% of P99 | - |
+| Common-unit sensitivity | Change in mean GSL per 1% change in included fraction, at Z16's T and at T95 | - |
+| Trend uncertainty | 95% confidence interval of the OLS GSL trend at Z16's T; sites with 10 or more years only | - |
 
 The match checks run on the reproduction run with Tash's screening, not the project-standard run, and exclude sites flagged for product changes. They are: P99 and skewness for all matched sites, the tercile boundaries, the three Figure 1 correlations (r = 0.63, 0.49, 0.34), and T95 against Figure 4 (r = -0.68 with skewness).
 
@@ -173,7 +176,7 @@ All figures use the project-standard run unless noted. Express thresholds as % o
 Takeaway: GSL changes fastest where days pile up near the threshold, and at dryland sites they pile up where conventional thresholds sit.
 
 - Sites: the site nearest the median skewness of the low third and of the high third (never AU-ASM). Record both names and skewness values in the figure's metadata notes.
-- Panel a, one row per site: daily GPP for the median-GSL year as a dark line, other years faint grey. Horizontal lines at 5%, 10% (Z17) and 20% of P99 and at the site's T95. Shade days between 0 and 10% of P99.
+- Panel a, one row per site: daily GPP for the median-GSL year as a dark line, other years faint grey. Horizontal lines at 5%, 10% (Z16) and 20% of P99 and at the site's T95. Shade days between 0 and 10% of P99.
 - Panel b, shared: histograms of daily GPP (x = % of P99) for both sites as overlaid outlines, the same thresholds as vertical lines, and mean GSL against threshold on a right-hand axis.
 - Annotate each site with the change in mean GSL between 5% and 10% of P99, in days.
 
@@ -182,8 +185,8 @@ Takeaway: GSL changes fastest where days pile up near the threshold, and at dryl
 Takeaway: sensitivity concentrates at the low end of the distribution and rises with skewness.
 
 - Main panel: heat map, rows = 62 sites sorted by skewness, columns = fine-grid thresholds 0.1-35% of P99 on a log axis, cell color = local sensitivity (days per 1% of P99), single-hue scale. Left strip: skewness value and functional group color.
-- Overlays: a vertical line at 10% (Z17) and a black dot on each row at that site's T95.
-- Right panel, row-aligned: sensitivity at Z17's T and at T95, joined by a segment.
+- Overlays: a vertical line at 10% (Z16) and a black dot on each row at that site's T95.
+- Right panel, row-aligned: sensitivity at Z16's T and at T95, joined by a segment.
 - Bottom panel: median sensitivity per column for each skewness third, as three lines.
 
 ### Figure 3. Consequences for GSL trends
@@ -191,20 +194,20 @@ Takeaway: sensitivity concentrates at the low end of the distribution and rises 
 Takeaway: whether threshold choice changes trend conclusions more than ordinary sampling uncertainty does, and where.
 
 - Sites: those with 10 or more years after screening (21 before screening). Thresholds: 5-20% of P99 only, unless the methods memo justifies a different range from published studies.
-- Panel a, one row per site sorted by skewness: a pale grey bar for the 95% CI of the trend at Z17's T, a colored bar for the range of trend estimates across 5-20% of P99, a dot for Z17, a diamond for T95, and a zero line.
+- Panel a, one row per site sorted by skewness: a pale grey bar for the 95% CI of the trend at Z16's T, a colored bar for the range of trend estimates across 5-20% of P99, a dot for Z16, a diamond for T95, and a zero line.
 - Panel b: ratio of threshold range to CI width against skewness, colored by functional group. Annotate the count of sites where threshold choice changes the sign of the trend or whether it is significant.
 
 ### Figure 4. The fraction-of-annual-GPP method and its own sensitivity
 
 Takeaway: the method fixes the share of annual GPP inside GSL across sites; panel c shows whether that also reduces sensitivity.
 
-- Panel a: for the two Figure 1 sites, included fraction (y) against days above threshold (x), each year faint and the multi-year mean bold. A band from 0.90 to 0.99, a line at 0.95, and a marker where Z17 falls on each curve.
-- Panel b: all 62 sites as lines of GSL against target fraction (0.80-0.99), colored by skewness, with a marker on each line at the site's Z17 implied fraction.
-- Panel c: common-unit sensitivity at Z17 and at 0.95 against skewness, two point series.
+- Panel a: for the two Figure 1 sites, included fraction (y) against days above threshold (x), each year faint and the multi-year mean bold. A band from 0.90 to 0.99, a line at 0.95, and a marker where Z16 falls on each curve.
+- Panel b: all 62 sites as lines of GSL against target fraction (0.80-0.99), colored by skewness, with a marker on each line at the site's Z16 implied fraction.
+- Panel c: common-unit sensitivity at Z16 and at 0.95 against skewness, two point series.
 
 ### Benchmark table
 
-For each site with 10 or more years, the correlation between annual GSL and annual GPP across years, for Z17 and for the new method, plus the median across sites by functional group. Both definitions count days above a fixed threshold, so neither is favored by construction, but say so in the table note. PhenoCam comparisons, if added, go in a separate labelled table.
+For each site with 10 or more years, the correlation between annual GSL and annual GPP across years, for Z16 and for the new method, plus the median across sites by functional group. Both definitions count days above a fixed threshold, so neither is favored by construction, but say so in the table note. PhenoCam comparisons, if added, go in a separate labelled table.
 
 ### Supplementary outputs
 

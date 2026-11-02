@@ -45,9 +45,9 @@ verification" notes on deferred manuscript figures):
 
 | Candidate | Files | Combined size | Content |
 |---|---|---|---|
-| Supplemental Data S1 | `derived_site.csv`, `derived_site_year.csv` | 234KB | Core per-site and per-site-year results underlying Figures 1-4: P99, skewness (continuous and tercile), GSL/sensitivity/trend at Z17 and T95, per-site-year GSL(Z17). |
+| Supplemental Data S1 | `derived_site.csv`, `derived_site_year.csv` | 234KB | Core per-site and per-site-year results underlying Figures 1-4: P99, skewness (continuous and tercile), GSL/sensitivity/trend at Z16 and T95, per-site-year GSL(Z16). |
 | Supplemental Data S2 | `fine_grid_summary.csv`, `fraction_sweep_summary.csv`, `tash_grid.csv` | 339KB | Threshold-sweep summaries underlying Figure 2's heat map/sensitivity curves and Figure 4's fraction-of-GPP sweep; `tash_grid.csv` is the 22-point grid used for the internal consistency check (methods_memo.md, "Check 5"). |
-| Supplemental Data S3 | `benchmark_group_medians.csv`, `benchmark_site_correlations.csv` | 2KB | Figure 4/benchmark-table numbers (median common-unit sensitivity by group; per-site Z17/T95 correlations against the manuscript's published values). |
+| Supplemental Data S3 | `benchmark_group_medians.csv`, `benchmark_site_correlations.csv` | 2KB | Figure 4/benchmark-table numbers (median common-unit sensitivity by group; per-site Z16/T95 correlations against the manuscript's published values). |
 | Supplemental Data S4 | `match_check1_skewness_range.csv`, `match_check2_tercile_counts.csv`, `match_check4_t95_skew_correlation.csv`, `match_check5_grid_consistency.csv`, `tash_rule_reproduction_diff.csv`, `year_screening_options.csv`, `site_year_screening.csv`, `site_products.csv` | 149KB | Reproducibility/QA tables (Stage 1/2 match checks against the manuscript's published values, year-screening option comparison, product-ID drift flags) — supports the methods memo's reproduction checks but is not needed to read Figures 1-4 on their own. |
 
 **Not proposed as Supplemental Data**: the large intermediate working files in

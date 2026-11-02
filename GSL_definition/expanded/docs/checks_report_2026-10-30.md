@@ -1,5 +1,7 @@
 # GSL expanded-site analysis — checks session 1
 
+**Note (2026-11-02):** "Z17" in this document means "Z16" — see `docs/methods_memo.md`'s "Z17 -> Z16 rename" section. The body below is left as originally written.
+
 2026-10-30. Four read-only checks on the expanded-site run (commit `a22e893`), per
 `logs/prompts/2026-10-30_gsl_expanded_checks_session1.md`. New code only, at
 `GSL_definition/expanded/code/07_checks_session1.R`; no existing script, table or figure was

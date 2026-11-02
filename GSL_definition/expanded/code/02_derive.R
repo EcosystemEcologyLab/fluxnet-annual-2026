@@ -2,7 +2,7 @@
 ## docs/framework.md's derived-quantities table (reusing derive_one() etc.
 ## from code/03_derive.R by sourcing, not copying -- see
 ## logs/prompts/2026-10-30_gsl_expanded.md), plus the new quantities this
-## task asks for: 1-F at Z17/T95, season start/end/gap days, the bounds
+## task asks for: 1-F at Z16/T95, season start/end/gap days, the bounds
 ## check, and inputs the modelling step (03_models.R) needs (annual GPP/NEP,
 ## annual mean TA_F). Three GPP/neg-GPP variants: main (GPP_NT_REF, negative
 ## GPP -> 0), dt (GPP_DT_REF, negative GPP -> 0, for Supplemental S5), and
@@ -129,16 +129,16 @@ fine_grid_dt           <- res_dt$fine_grid
 ## (recompute_thirds truncates below); joined back in after. ----------------
 winter_screen_site_effect <- res_main$site |>
   select(site_id, P99_screened = P99, skewness_screened = skewness,
-         z17_mean_gsl_screened = z17_mean_gsl, t95_mean_gsl_screened = t95_mean_gsl) |>
+         z16_mean_gsl_screened = z16_mean_gsl, t95_mean_gsl_screened = t95_mean_gsl) |>
   left_join(
     res_mainu$site |> select(site_id, P99_unscreened = P99, skewness_unscreened = skewness,
-                               z17_mean_gsl_unscreened = z17_mean_gsl, t95_mean_gsl_unscreened = t95_mean_gsl),
+                               z16_mean_gsl_unscreened = z16_mean_gsl, t95_mean_gsl_unscreened = t95_mean_gsl),
     by = "site_id"
   ) |>
   mutate(
     delta_P99 = P99_screened - P99_unscreened,
     delta_skewness = skewness_screened - skewness_unscreened,
-    delta_z17_mean_gsl = z17_mean_gsl_screened - z17_mean_gsl_unscreened,
+    delta_z16_mean_gsl = z16_mean_gsl_screened - z16_mean_gsl_unscreened,
     delta_t95_mean_gsl = t95_mean_gsl_screened - t95_mean_gsl_unscreened
   ) |>
   left_join(winter_screen_days |> count(site_id, name = "n_screened_days"), by = "site_id") |>
@@ -188,7 +188,7 @@ write_meta(
   input_sources = file.path(EXP_TABLES, "winter_screen_days.csv"),
   notes = paste0(
     "Item 2: per-site effect of the winter partitioning-artifact screen -- P99, skewness, skewness ",
-    "third (each under its own run's self-consistent tercile breaks) and mean GSL at Z17/T95, ",
+    "third (each under its own run's self-consistent tercile breaks) and mean GSL at Z16/T95, ",
     "screened ('main') vs unscreened ('main_unscreened') variant. ",
     sum(winter_screen_site_effect$n_screened_days > 0), " of ", nrow(winter_screen_site_effect),
     " sites have >=1 screened day; ", sum(winter_screen_site_effect$third_changed, na.rm = TRUE),
@@ -200,12 +200,12 @@ message(sum(winter_screen_site_effect$n_screened_days > 0), " site(s) affected b
 
 derived_site_all <- bind_rows(derived_site_main, derived_site_mainu, derived_site_dt, derived_site_neg)
 
-## ---- Join group/IGBP/network/lat and add 1-F at Z17 and T95 --------------
+## ---- Join group/IGBP/network/lat and add 1-F at Z16 and T95 --------------
 derived_site_all <- derived_site_all |>
   left_join(exp_sites |> select(site_id, igbp, group, network, location_lat, location_long,
                                   carbon_src, in_gsl62, is_long_record), by = "site_id") |>
   mutate(
-    share_outside_season_z17 = 1 - z17_mean_f,
+    share_outside_season_z16 = 1 - z16_mean_f,
     share_outside_season_t95 = 1 - t95_mean_f
   )
 
@@ -249,7 +249,7 @@ write_csv(derived_site_year_all, file.path(EXP_TABLES, "derived_site_year.csv"))
 write_meta(
   file.path(EXP_TABLES, "derived_site_year.csv"),
   input_sources = file.path(EXP_DATA, "daily_extract.rds"),
-  notes = "Annual GSL(y) and F(y) at Z17 (10% of P99) and T95, per site x variant x year."
+  notes = "Annual GSL(y) and F(y) at Z16 (10% of P99) and T95, per site x variant x year."
 )
 
 write_csv(res_main$fraction_sweep, file.path(EXP_TABLES, "fraction_sweep_main.csv"))
@@ -314,7 +314,7 @@ message("--- Step A done: derived_site (", nrow(derived_site_all), " rows), deri
 
 ## ============================================================================
 ## Step B: season start/end/gap days (main variant only), at 4 threshold
-## points per site -- 5%, 10% (Z17), 20% of P99, and T95's own %.
+## points per site -- 5%, 10% (Z16), 20% of P99, and T95's own %.
 ## ============================================================================
 
 ## Item 2: season boundaries, the bounds check and annual GPP (Step D) are
@@ -329,7 +329,7 @@ P99_by_site  <- setNames(derived_site_main$P99, derived_site_main$site_id)
 T95_by_site  <- setNames(derived_site_main$t95_pct, derived_site_main$site_id)
 sh_sites     <- exp_sites$site_id[exp_sites$location_lat < 0]
 
-SEASON_PCTS <- c("5pct" = 5, "z17" = 10, "20pct" = 20, "t95" = NA) # t95's % filled in per site
+SEASON_PCTS <- c("5pct" = 5, "z16" = 10, "20pct" = 20, "t95" = NA) # t95's % filled in per site
 
 #' Season start/end/gap days for one (site, season_year, threshold).
 #' `d` is that site's full daily record (gpp_use, NA-safe); `window` is the
@@ -418,7 +418,7 @@ write_meta(
     "and end (inclusive range). NA gpp_use counts as 'below'. Northern-hemisphere sites use the ",
     "calendar year; Southern-hemisphere sites (location_lat<0) use 1 Jul (season_year) - 30 Jun ",
     "(season_year+1), included only when BOTH calendar years are in that site's own passing-year ",
-    "list. threshold_name: 5pct/20pct = 5%/20% of P99 (Figure 4a); z17 = 10% of P99; t95 = the ",
+    "list. threshold_name: 5pct/20pct = 5%/20% of P99 (Figure 4a); z16 = 10% of P99; t95 = the ",
     "site's own T95 %. above_threshold_all_year flags a site-year with no day below threshold at ",
     "all (start=day 1, end=last day, gap_days=0 trivially). ", n_all_year, " such combination(s)."
   )
@@ -447,7 +447,7 @@ bounds_one <- function(sid) {
   yrs <- site_years_list[[sid]]
   purrr::map_dfr(yrs, function(y) {
     dy <- d |> filter(year == y)
-    purrr::map_dfr(list(z17 = 10, t95 = t95pct), function(pct) {
+    purrr::map_dfr(list(z16 = 10, t95 = t95pct), function(pct) {
       T_abs <- pct / 100 * P99
       is_near <- dy$is_fail & !is.na(dy$gpp_use) & abs(dy$gpp_use - T_abs) <= near_abs
       is_near[is.na(is_near)] <- FALSE # failing day with NA gpp_use: not "near" (no value to compare), keeps its reported (NA->below) classification
@@ -474,7 +474,7 @@ write_meta(
   file.path(EXP_TABLES, "bounds_check.csv"),
   input_sources = file.path(EXP_DATA, "daily_extract.rds"),
   notes = paste0(
-    "Item 8 redesign. Per site-year, at Z17 and T95: a failing day (fallback QC < ", EXP_RULE_QC_DAY,
+    "Item 8 redesign. Per site-year, at Z16 and T95: a failing day (fallback QC < ", EXP_RULE_QC_DAY,
     " or NA, in a passing year) is 'near-threshold' (ambiguous) only if its gap-filled GPP lies ",
     "within +/-", EXP_CFG_BOUNDS_NEAR_PCT * 100, "% of P99 of the threshold -- gsl_lower counts ALL ",
     "near-threshold failing days as BELOW; gsl_upper counts ALL of them as ABOVE; every other day ",
@@ -500,7 +500,7 @@ write_csv(bounds_check_pooled, file.path(EXP_TABLES, "bounds_check_pooled.csv"))
 write_meta(
   file.path(EXP_TABLES, "bounds_check_pooled.csv"),
   input_sources = file.path(EXP_TABLES, "bounds_check.csv"),
-  notes = "Item 8: pooled (network-wide) summary of the redesigned bounds check, at Z17 and T95."
+  notes = "Item 8: pooled (network-wide) summary of the redesigned bounds check, at Z16 and T95."
 )
 
 ## ============================================================================

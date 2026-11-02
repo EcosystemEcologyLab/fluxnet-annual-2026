@@ -4,5 +4,5 @@
   "input_sources": [
     "GSL_definition/expanded/tables/checks_c1_ha1_gsl_recompute.csv"
   ],
-  "notes": "Mean, s.d. and OLS trend (days/yr) of US-Ha1 annual GSL at Z17/T95, original vs. winter-days-excluded."
+  "notes": "Mean, s.d. and OLS trend (days/yr) of US-Ha1 annual GSL at Z16/T95, original vs. winter-days-excluded."
 }

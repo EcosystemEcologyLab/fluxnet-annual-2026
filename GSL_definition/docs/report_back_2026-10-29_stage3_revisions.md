@@ -1,5 +1,7 @@
 # GSL figure rebuild — Stage 3 revisions report back (2026-10-29)
 
+**Note (2026-11-02):** "Z17" in this document means "Z16" — see `docs/methods_memo.md`'s "Z17 -> Z16 rename" section. The body below is left as originally written.
+
 Six revisions to Stage 3's figures, requested after Dave reviewed `docs/report_back_2026-10-29.md`.
 Full prompt: `logs/prompts/2026-10-29_gsl_stage3_revisions.md`. Full detail (root causes, exact
 fixes) is in `docs/methods_memo.md`'s "Stage 3 revisions" section; this document gives the

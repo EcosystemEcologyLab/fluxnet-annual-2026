@@ -27,7 +27,7 @@ trend_sites <- GSL_SITES_GE10YR
 ## ============================================================================
 ## Figure 2 builder (identical structure/fixes to 06_fig2.R -- log-uniform
 ## binning to remove low-threshold striping, |local_sensitivity| with
-## darker = more sensitive, shared Z17/T95 marker convention via
+## darker = more sensitive, shared Z16/T95 marker convention via
 ## fig_helpers.R), parameterized by variant.
 ## ============================================================================
 build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
@@ -59,8 +59,8 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
     geom_tile(aes(width = bin_width), height = 1) +
     scale_fill_gsl_sensitivity(heat_data$abs_sensitivity) +
     geom_vline(xintercept = 10, colour = "grey30", linewidth = nature_lwd(PEERJ_LWD_REF)) +
-    geom_point(data = derived_site, aes(x = 10, y = site_id, shape = "Z17"), inherit.aes = FALSE,
-               colour = GSL_MARKER_COLORS[["Z17"]], size = 1) +
+    geom_point(data = derived_site, aes(x = 10, y = site_id, shape = "Z16"), inherit.aes = FALSE,
+               colour = GSL_MARKER_COLORS[["Z16"]], size = 1) +
     geom_point(data = derived_site, aes(x = t95_pct, y = site_id, shape = "T95"), inherit.aes = FALSE,
                colour = GSL_MARKER_COLORS[["T95"]], size = 1) +
     scale_shape_gsl_marker() +
@@ -88,12 +88,12 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
           legend.key.height = unit(4, "mm"), legend.key.width = unit(3, "mm")) +
     gsl_panel_letter("a")
 
-  right_data <- derived_site |> select(site_id, z17_sensitivity, t95_sensitivity) |>
-    mutate(z17_sensitivity = abs(z17_sensitivity), t95_sensitivity = abs(t95_sensitivity))
+  right_data <- derived_site |> select(site_id, z16_sensitivity, t95_sensitivity) |>
+    mutate(z16_sensitivity = abs(z16_sensitivity), t95_sensitivity = abs(t95_sensitivity))
   p_right <- ggplot(right_data, aes(y = site_id)) +
-    geom_segment(aes(x = z17_sensitivity, xend = t95_sensitivity, yend = site_id),
+    geom_segment(aes(x = z16_sensitivity, xend = t95_sensitivity, yend = site_id),
                  colour = "grey60", linewidth = nature_lwd(PEERJ_LWD_REF)) +
-    geom_point(aes(x = z17_sensitivity, shape = "Z17"), size = 1.4, colour = GSL_MARKER_COLORS[["Z17"]]) +
+    geom_point(aes(x = z16_sensitivity, shape = "Z16"), size = 1.4, colour = GSL_MARKER_COLORS[["Z16"]]) +
     geom_point(aes(x = t95_sensitivity, shape = "T95"), size = 1.4, colour = GSL_MARKER_COLORS[["T95"]]) +
     scale_shape_gsl_marker() +
     labs(x = "Sensitivity\n(days/%P99,\nabs. value)", y = NULL) +
@@ -140,7 +140,7 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
         N_BINS
       ),
       sprintf("colour scale capped at the 95th percentile of the plotted values (%.1f days/%%P99; top colour '>= %.1f').", sensitivity_cap, sensitivity_cap),
-      "Z17 (black circle) and T95 (red triangle) marker convention, same as the main Figure 2.",
+      "Z16 (black circle) and T95 (red triangle) marker convention, same as the main Figure 2.",
       "Panel a skewness third / panel d line colours: same discrete palette as the main Figure 2.",
       sprintf("Sites per skewness third: low = %d, middle = %d, high = %d (total %d).", n_low, n_mid, n_high, nrow(derived_site))
     ),
@@ -187,7 +187,7 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
 
   panel_a_data <- derived_site |>
     filter(site_id %in% trend_sites) |>
-    select(site_id, skewness, group, t95_pct, trend_gsl_z17_days_per_yr, trend_ci_lo, trend_ci_hi) |>
+    select(site_id, skewness, group, t95_pct, trend_gsl_z16_days_per_yr, trend_ci_lo, trend_ci_hi) |>
     left_join(
       trend_sweep |> filter(pct_of_P99 >= 5, pct_of_P99 <= 20) |>
         group_by(site_id) |> summarise(range_lo = min(slope), range_hi = max(slope), .groups = "drop"),
@@ -201,14 +201,14 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
     ) |>
     arrange(skewness) |> mutate(site_id = factor(site_id, levels = site_id))
 
-  ## Same consistency check as 07_fig3.R: Z17's trend must lie within the
+  ## Same consistency check as 07_fig3.R: Z16's trend must lie within the
   ## sweep's own [range_lo, range_hi] for every trend site.
   eps <- 1e-6
   consistency_check <- panel_a_data |>
-    mutate(within_range = trend_gsl_z17_days_per_yr >= (range_lo - eps) &
-             trend_gsl_z17_days_per_yr <= (range_hi + eps))
+    mutate(within_range = trend_gsl_z16_days_per_yr >= (range_lo - eps) &
+             trend_gsl_z16_days_per_yr <= (range_hi + eps))
   if (!all(consistency_check$within_range)) {
-    message("Z17 trend outside its own range bar (", variant_label, "): ",
+    message("Z16 trend outside its own range bar (", variant_label, "): ",
             paste(consistency_check$site_id[!consistency_check$within_range], collapse = ", "))
   }
   stopifnot(all(consistency_check$within_range))
@@ -217,7 +217,7 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
     geom_vline(xintercept = 0, colour = "grey50", linewidth = nature_lwd(PEERJ_LWD_REF)) +
     geom_segment(aes(x = trend_ci_lo, xend = trend_ci_hi, yend = site_id), colour = "grey75", linewidth = nature_lwd(PEERJ_LWD_DATA)) +
     geom_segment(aes(x = range_lo, xend = range_hi, yend = site_id, colour = group), linewidth = nature_lwd(PEERJ_LWD_REF)) +
-    geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 2, colour = GSL_MARKER_COLORS[["Z17"]]) +
+    geom_point(aes(x = trend_gsl_z16_days_per_yr, shape = "Z16"), size = 2, colour = GSL_MARKER_COLORS[["Z16"]]) +
     geom_point(aes(x = slope_t95, shape = "T95"), size = 2, colour = GSL_MARKER_COLORS[["T95"]]) +
     scale_shape_gsl_marker() +
     scale_color_gsl_group(name = "Group") +

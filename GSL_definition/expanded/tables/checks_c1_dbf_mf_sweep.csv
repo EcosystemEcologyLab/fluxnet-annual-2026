@@ -1,4 +1,4 @@
-site_id,year,n_winter_cold_above_z17,gsl_z17,group,gsl_z17_excl,delta
+site_id,year,n_winter_cold_above_z16,gsl_z16,group,gsl_z16_excl,delta
 CN-HeM,2019,72,335,deciduous forest,263,-72
 CN-HeM,2024,64,301,deciduous forest,237,-64
 CN-HeM,2018,57,286,deciduous forest,229,-57

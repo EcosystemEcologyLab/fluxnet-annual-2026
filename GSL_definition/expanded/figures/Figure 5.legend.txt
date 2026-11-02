@@ -1,5 +1,5 @@
 Figure 5. Carbon gain (expanded set, main run). Units: gC m-2 d-1 per day of GSL/date shift.
-Panel a: pooled slope of annual GPP and NEP on GSL, by skewness third, for Z17 and T95; faint
+Panel a: pooled slope of annual GPP and NEP on GSL, by skewness third, for Z16 and T95; faint
 points behind are individual trend-site (>=10yr) slopes.
 Panel b: the same, on season start date and end date, faceted by GPP/NEP (rows) and start/end
 (columns); axes are limited to 1.5x the pooled 95% CI range per facet -- per-site slopes beyond

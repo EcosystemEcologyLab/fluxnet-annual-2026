@@ -48,7 +48,7 @@ site_threshold_trend <- function(sid) {
     ## all NA) must contribute NA here, not a fabricated GSL=0 -- sum(...,
     ## na.rm=TRUE) over an all-NA vector silently returns 0, which previously
     ## fed a fake "zero growing season" year into the trend regression and
-    ## badly distorted the slope (found via the Z17-dot-outside-its-own-bar
+    ## badly distorted the slope (found via the Z16-dot-outside-its-own-bar
     ## check below). NA is then excluded by lm()'s default na.omit, matching
     ## 03_derive.R::year_threshold_matrices()'s behaviour exactly.
     gsl_by_year <- vapply(gpp_by_year, function(gy) {
@@ -65,10 +65,10 @@ site_threshold_trend <- function(sid) {
 
 trend_sweep <- bind_rows(lapply(trend_sites, site_threshold_trend))
 
-## ---- Panel a data: per-site trend range (5-20%), Z17 CI, Z17 and T95 dots -
+## ---- Panel a data: per-site trend range (5-20%), Z16 CI, Z16 and T95 dots -
 panel_a_data <- derived_site |>
   filter(site_id %in% trend_sites) |>
-  select(site_id, skewness, group, t95_pct, mean_gsl_z17, trend_gsl_z17_days_per_yr,
+  select(site_id, skewness, group, t95_pct, mean_gsl_z16, trend_gsl_z16_days_per_yr,
          trend_ci_lo, trend_ci_hi) |>
   left_join(
     trend_sweep |> filter(pct_of_P99 >= 5, pct_of_P99 <= 20) |>
@@ -86,7 +86,7 @@ panel_a_data <- derived_site |>
   arrange(skewness) |>
   mutate(site_id = factor(site_id, levels = site_id))
 
-## ---- Consistency check (prompted by the CH-Dav bug): Z17's trend, from
+## ---- Consistency check (prompted by the CH-Dav bug): Z16's trend, from
 ## derived_site.csv (03_derive.R), must lie within the 5-20% sweep's own
 ## [range_lo, range_hi] for every trend site -- 10% of P99 is itself a point
 ## on the sweep grid (seq(5, 20, by = 0.1)), so the slope at exactly 10%
@@ -96,17 +96,17 @@ panel_a_data <- derived_site |>
 eps <- 1e-6
 consistency_check <- panel_a_data |>
   mutate(
-    within_range = trend_gsl_z17_days_per_yr >= (range_lo - eps) &
-                    trend_gsl_z17_days_per_yr <= (range_hi + eps)
+    within_range = trend_gsl_z16_days_per_yr >= (range_lo - eps) &
+                    trend_gsl_z16_days_per_yr <= (range_hi + eps)
   )
 if (!all(consistency_check$within_range)) {
   bad_sites <- consistency_check$site_id[!consistency_check$within_range]
   message(
-    "Z17 trend falls outside its own 5-20% range bar for: ", paste(bad_sites, collapse = ", ")
+    "Z16 trend falls outside its own 5-20% range bar for: ", paste(bad_sites, collapse = ", ")
   )
 }
 stopifnot(all(consistency_check$within_range))
-message("Consistency check passed: Z17's trend is within its own 5-20% range bar for all ",
+message("Consistency check passed: Z16's trend is within its own 5-20% range bar for all ",
         nrow(consistency_check), " trend sites.")
 
 p3a <- ggplot(panel_a_data, aes(y = site_id)) +
@@ -115,9 +115,9 @@ p3a <- ggplot(panel_a_data, aes(y = site_id)) +
                colour = "grey75", linewidth = nature_lwd(PEERJ_LWD_DATA)) +
   geom_segment(aes(x = range_lo, xend = range_hi, yend = site_id, colour = group),
                linewidth = nature_lwd(PEERJ_LWD_REF)) +
-  geom_point(aes(x = trend_gsl_z17_days_per_yr, shape = "Z17"), size = 2, colour = GSL_MARKER_COLORS[["Z17"]]) +
+  geom_point(aes(x = trend_gsl_z16_days_per_yr, shape = "Z16"), size = 2, colour = GSL_MARKER_COLORS[["Z16"]]) +
   geom_point(aes(x = slope_t95, shape = "T95"), size = 2, colour = GSL_MARKER_COLORS[["T95"]]) +
-  ## Z17/T95 points use a fixed colour= (not aes-mapped), so they never
+  ## Z16/T95 points use a fixed colour= (not aes-mapped), so they never
   ## touch the colour scale below -- only the group-coloured range bar does.
   scale_shape_gsl_marker() +
   scale_color_gsl_group(name = "Group") +
@@ -166,12 +166,12 @@ legend_lines <- c(
   "framework's 21, since d80 screening keeps all 505 site-years -- see docs/methods_memo.md).",
   "Threshold range: 5-20% of P99 (framework default).",
   paste0(
-    "Panel a: one row per site, sorted by skewness. Pale grey bar = 95% CI of the trend at Z17's ",
+    "Panel a: one row per site, sorted by skewness. Pale grey bar = 95% CI of the trend at Z16's ",
     "threshold (10% of P99); colored bar (by functional group) = range of trend estimates across ",
-    "5-20% of P99; black circle = trend at Z17; red triangle = trend at T95 (same marker convention ",
+    "5-20% of P99; black circle = trend at Z16; red triangle = trend at T95 (same marker convention ",
     "as Figures 2b, 2c and 4c); vertical line at zero."
   ),
-  "Panel b: ratio of the threshold-range bar's width to the Z17 CI's width, vs. skewness, by group.",
+  "Panel b: ratio of the threshold-range bar's width to the Z16 CI's width, vs. skewness, by group.",
   sprintf(
     "Of the %d trend sites: %d have a sign change in the trend across 5-20%% of P99, %d have a ",
     length(trend_sites), n_sign_change, n_sig_change

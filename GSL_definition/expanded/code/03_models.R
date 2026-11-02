@@ -1,7 +1,7 @@
 ## 03_models.R — GSL expanded analysis, step 3: carbon-gain slopes,
 ## temperature sensitivity, and trends -- per-site OLS (sites with >=10
 ## years) and pooled mixed models (random site intercepts/slopes, nlme),
-## by skewness third and by functional group, at Z17 and T95 (and, for
+## by skewness third and by functional group, at Z16 and T95 (and, for
 ## trends, across the 5-20% of P99 sweep too). Years-to-detect each pooled
 ## trend: Weatherhead et al. (1998)'s formula at 95% confidence / 80% power.
 
@@ -157,16 +157,16 @@ message("Item 9: trend subsets exclude ", paste(EXP_CFG_TREND_DROP_GROUPS, colla
 ## Step A: carbon gain -- slopes of annual GPP/NEP on GSL, start, end --------
 ## ============================================================================
 
-## Season start/end (Z17, T95), keyed by (site_id, season_year); joined to
+## Season start/end (Z16, T95), keyed by (site_id, season_year); joined to
 ## annual_inputs by treating season_year as the calendar year (documented
 ## simplification for the 14 Southern-hemisphere sites -- see methods_memo).
 season_wide <- season_boundaries |>
-  filter(threshold_name %in% c("z17", "t95")) |>
+  filter(threshold_name %in% c("z16", "t95")) |>
   select(site_id, year = season_year, threshold_name, start_doy, end_doy, gap_days) |>
   pivot_wider(names_from = threshold_name, values_from = c(start_doy, end_doy, gap_days))
 
 cg_data <- derived_site_year |>
-  select(site_id, year, gsl_z17, gsl_t95) |>
+  select(site_id, year, gsl_z16, gsl_t95) |>
   left_join(annual_inputs |> select(site_id, year, annual_gpp, annual_nep), by = c("site_id", "year")) |>
   left_join(season_wide, by = c("site_id", "year")) |>
   left_join(site_meta, by = "site_id")
@@ -179,9 +179,9 @@ write_meta(
   notes = "Per site-year regression inputs for carbon-gain and temperature-sensitivity models (main variant). Southern-hemisphere season_year (Jul-Jun) is joined to the same-numbered calendar year's annual GPP/NEP/TA_F -- a documented simplification, not an exact calendar match."
 )
 
-CG_PREDICTORS <- list(gsl_z17 = "gsl_z17", gsl_t95 = "gsl_t95",
-                       start_z17 = "start_doy_z17", start_t95 = "start_doy_t95",
-                       end_z17 = "end_doy_z17", end_t95 = "end_doy_t95")
+CG_PREDICTORS <- list(gsl_z16 = "gsl_z16", gsl_t95 = "gsl_t95",
+                       start_z16 = "start_doy_z16", start_t95 = "start_doy_t95",
+                       end_z16 = "end_doy_z16", end_t95 = "end_doy_t95")
 CG_RESPONSES <- c("annual_gpp", "annual_nep")
 
 message("Carbon gain: per-site OLS (trend sites, >=10yr) ...")
@@ -231,11 +231,11 @@ message("Saved: carbon_gain_per_site.csv, carbon_gain_pooled.csv. Non-converged:
 
 daily_ta <- daily_extract |> select(site_id, TIMESTAMP, TA_F)
 
-## Fixed, site-level mean start/end DOY (Z17 and T95), from the per-site-year
+## Fixed, site-level mean start/end DOY (Z16 and T95), from the per-site-year
 ## season boundaries, averaged across years -- the ANCHOR for each site's
 ## fixed 60-day pre-window (same window every year, not that year's own date).
 mean_doy <- season_boundaries |>
-  filter(threshold_name %in% c("z17", "t95")) |>
+  filter(threshold_name %in% c("z16", "t95")) |>
   group_by(site_id, threshold_name) |>
   summarise(mean_start_doy = mean(start_doy, na.rm = TRUE), mean_end_doy = mean(end_doy, na.rm = TRUE), .groups = "drop")
 
@@ -255,7 +255,7 @@ message("Computing 60-day pre-start/pre-end TA_F windows ...")
 ta_windows <- purrr::map_dfr(exp_sites$site_id, function(sid) {
   yrs <- site_years_list[[sid]]
   md <- mean_doy |> filter(site_id == sid)
-  purrr::map_dfr(c("z17", "t95"), function(th) {
+  purrr::map_dfr(c("z16", "t95"), function(th) {
     row <- md |> filter(threshold_name == th)
     if (nrow(row) == 0) return(tibble())
     purrr::map_dfr(yrs, function(y) tibble(
@@ -267,11 +267,11 @@ ta_windows <- purrr::map_dfr(exp_sites$site_id, function(sid) {
 })
 
 ts_data <- cg_data |>
-  select(site_id, year, group, skewness_third, gsl_z17, gsl_t95, start_doy_z17, start_doy_t95,
-         end_doy_z17, end_doy_t95) |>
+  select(site_id, year, group, skewness_third, gsl_z16, gsl_t95, start_doy_z16, start_doy_t95,
+         end_doy_z16, end_doy_t95) |>
   left_join(annual_inputs |> select(site_id, year, annual_mean_ta), by = c("site_id", "year")) |>
-  left_join(ta_windows |> filter(threshold_name == "z17") |>
-              select(site_id, year, ta_pre_start_z17 = mean_ta_pre_start, ta_pre_end_z17 = mean_ta_pre_end),
+  left_join(ta_windows |> filter(threshold_name == "z16") |>
+              select(site_id, year, ta_pre_start_z16 = mean_ta_pre_start, ta_pre_end_z16 = mean_ta_pre_end),
             by = c("site_id", "year")) |>
   left_join(ta_windows |> filter(threshold_name == "t95") |>
               select(site_id, year, ta_pre_start_t95 = mean_ta_pre_start, ta_pre_end_t95 = mean_ta_pre_end),
@@ -280,7 +280,7 @@ ts_data <- cg_data |>
   ## start-window and end-window means (not the calendar/season-year annual
   ## mean, which is kept below as a table-only comparison).
   mutate(
-    ta_window_avg_z17 = (ta_pre_start_z17 + ta_pre_end_z17) / 2,
+    ta_window_avg_z16 = (ta_pre_start_z16 + ta_pre_end_z16) / 2,
     ta_window_avg_t95 = (ta_pre_start_t95 + ta_pre_end_t95) / 2
   )
 
@@ -299,17 +299,17 @@ write_meta(
 )
 
 TS_COMBOS <- list(
-  list(y = "gsl_z17", x = "ta_window_avg_z17", label = "gsl_on_ta_z17"),
+  list(y = "gsl_z16", x = "ta_window_avg_z16", label = "gsl_on_ta_z16"),
   list(y = "gsl_t95", x = "ta_window_avg_t95", label = "gsl_on_ta_t95"),
-  list(y = "start_doy_z17", x = "ta_pre_start_z17", label = "start_on_ta_z17"),
+  list(y = "start_doy_z16", x = "ta_pre_start_z16", label = "start_on_ta_z16"),
   list(y = "start_doy_t95", x = "ta_pre_start_t95", label = "start_on_ta_t95"),
-  list(y = "end_doy_z17", x = "ta_pre_end_z17", label = "end_on_ta_z17"),
+  list(y = "end_doy_z16", x = "ta_pre_end_z16", label = "end_on_ta_z16"),
   list(y = "end_doy_t95", x = "ta_pre_end_t95", label = "end_on_ta_t95")
 )
 ## Item 5: "write the annual-mean-temperature versions to a table only" --
 ## the calendar/season-year annual-mean GSL~TA combo, NOT plotted in Figure 6a.
 TS_COMBOS_ANNUAL <- list(
-  list(y = "gsl_z17", x = "annual_mean_ta", label = "gsl_on_annualta_z17"),
+  list(y = "gsl_z16", x = "annual_mean_ta", label = "gsl_on_annualta_z16"),
   list(y = "gsl_t95", x = "annual_mean_ta", label = "gsl_on_annualta_t95")
 )
 
@@ -504,15 +504,15 @@ if (n_nonconv > 0) {
 }
 
 ## ============================================================================
-## Item 7: years-to-detect-a-trend-of-SIZE sweep (0.1-1.0 days/yr, Z17 and
+## Item 7: years-to-detect-a-trend-of-SIZE sweep (0.1-1.0 days/yr, Z16 and
 ## T95, by third and group -- EXP_CFG_DETECT_TREND_GRID), replacing the
 ## dropped years-to-detect-the-OBSERVED-trend labels on Figure 6b. Uses each
-## subset's sites' own noise params (noise_by_site_threshold) at Z17 (10pct)
+## subset's sites' own noise params (noise_by_site_threshold) at Z16 (10pct)
 ## and T95 (t95pct) -- the same two thresholds Figure 1/2/4 highlight.
 ## ============================================================================
 message("Years-to-detect-trend sweep (", length(EXP_CFG_DETECT_TREND_GRID), " trend sizes x 2 thresholds x ",
         length(TREND_SUBSET_DEFS), " subsets) ...")
-years_to_detect_sweep <- purrr::map_dfr(c(z17 = "10pct", t95 = "t95pct"), function(th) {
+years_to_detect_sweep <- purrr::map_dfr(c(z16 = "10pct", t95 = "t95pct"), function(th) {
   noise <- noise_by_site_threshold |> filter(threshold_name == th)
   purrr::map_dfr(purrr::set_names(names(TREND_SUBSET_DEFS)), function(sn) {
     sites_in_subset <- subset_filter(trend_sweep_all |> filter(threshold_name == th), sn)$site_id |> unique()
@@ -535,7 +535,7 @@ write_meta(
     "Item 7: Weatherhead et al. (1998) years-to-detect-a-trend-of-SIZE (95% confidence/80% power), ",
     "for trend sizes ", min(EXP_CFG_DETECT_TREND_GRID), "-", max(EXP_CFG_DETECT_TREND_GRID),
     " days/yr (", EXP_CFG_DETECT_MARK_TYPICAL, "=typical, ", EXP_CFG_DETECT_MARK_STRONG, "=strong), ",
-    "at Z17 and T95, by skewness third and functional group (mixed forest excluded, item 9) -- ",
+    "at Z16 and T95, by skewness third and functional group (mixed forest excluded, item 9) -- ",
     "median across that subset's sites, each using its own residual SD/lag-1 autocorrelation from ",
     "an OLS fit of GSL on year. Replaces the dropped years-to-detect-the-OBSERVED-trend labels on ",
     "Figure 6b with a trend-SIZE sweep (Figure 6c)."

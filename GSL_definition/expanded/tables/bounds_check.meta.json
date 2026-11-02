@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-30T23:44:22Z",
-  "pipeline_version": "ab5090b",
+  "run_datetime_utc": "2026-11-02T23:03:10Z",
+  "pipeline_version": "f5545e3",
   "input_sources": [
     "GSL_definition/expanded/data/daily_extract.rds"
   ],
-  "notes": "Item 8 redesign. Per site-year, at Z17 and T95: a failing day (fallback QC < 0.25 or NA, in a passing year) is 'near-threshold' (ambiguous) only if its gap-filled GPP lies within +/-2% of P99 of the threshold -- gsl_lower counts ALL near-threshold failing days as BELOW; gsl_upper counts ALL of them as ABOVE; every other day (passing QC, or failing but far from the threshold) keeps its own reported value in both. gsl_actual = the GSL actually reported elsewhere (every day's own real gap-filled value). spread = gsl_upper - gsl_lower = n_near_threshold_days exactly (checked). n_fail_days is kept for reference (all QC-failing days, not just the near-threshold ones -- a22e893's definition of 'spread', now narrower and more realistic than n_fail_days alone)."
+  "notes": "Item 8 redesign. Per site-year, at Z16 and T95: a failing day (fallback QC < 0.25 or NA, in a passing year) is 'near-threshold' (ambiguous) only if its gap-filled GPP lies within +/-2% of P99 of the threshold -- gsl_lower counts ALL near-threshold failing days as BELOW; gsl_upper counts ALL of them as ABOVE; every other day (passing QC, or failing but far from the threshold) keeps its own reported value in both. gsl_actual = the GSL actually reported elsewhere (every day's own real gap-filled value). spread = gsl_upper - gsl_lower = n_near_threshold_days exactly (checked). n_fail_days is kept for reference (all QC-failing days, not just the near-threshold ones -- a22e893's definition of 'spread', now narrower and more realistic than n_fail_days alone)."
 }

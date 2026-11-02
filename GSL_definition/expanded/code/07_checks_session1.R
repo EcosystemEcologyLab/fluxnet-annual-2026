@@ -138,7 +138,7 @@ ha1_daily <- daily_extract |>
     gpp_use = pmax(GPP_NT_REF, 0),
     month = lubridate::month(TIMESTAMP),
     is_winter = month %in% c(12, 1, 2, 3),
-    above_z17 = !is.na(gpp_use) & gpp_use > 0.10 * ha1_P99,
+    above_z16 = !is.na(gpp_use) & gpp_use > 0.10 * ha1_P99,
     above_t95 = !is.na(gpp_use) & gpp_use > (ha1_t95pct / 100) * ha1_P99,
     gap_filled = !is.na(QC_REF) & QC_REF < 1 # DD-resolution QC_REF is a FRACTION (System 1,
                                                # CLAUDE.md "QC Flag Reference") -- <1 means some
@@ -154,7 +154,7 @@ ha1_winter_counts <- ha1_daily |> filter(is_winter) |>
   group_by(year) |>
   summarise(
     n_winter_days_present = sum(!is.na(gpp_use)),
-    n_above_z17 = sum(above_z17, na.rm = TRUE),
+    n_above_z16 = sum(above_z16, na.rm = TRUE),
     n_above_t95 = sum(above_t95, na.rm = TRUE),
     .groups = "drop"
   ) |>
@@ -165,16 +165,16 @@ ha1_winter_counts <- ha1_daily |> filter(is_winter) |>
 write_csv(ha1_winter_counts, file.path(CHK_TABLES, "checks_c1_ha1_winter_counts.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c1_ha1_winter_counts.csv"),
   input_sources = file.path(EXP_DATA, "daily_extract.rds"),
-  notes = "US-Ha1, per year: days in Dec/Jan/Feb/Mar of that SAME calendar year with gap-filled daily GPP_NT_REF (zero-floored) above 10% of P99 (Z17) and above T95's own threshold. Matches Figure 1 panel a's winter tiles.")
+  notes = "US-Ha1, per year: days in Dec/Jan/Feb/Mar of that SAME calendar year with gap-filled daily GPP_NT_REF (zero-floored) above 10% of P99 (Z16) and above T95's own threshold. Matches Figure 1 panel a's winter tiles.")
 
 ## ---- Day-level detail for every winter day above EITHER threshold --------
-ha1_winter_detail <- ha1_daily |> filter(is_winter, above_z17 | above_t95) |>
+ha1_winter_detail <- ha1_daily |> filter(is_winter, above_z16 | above_t95) |>
   mutate(
     doy = lubridate::yday(TIMESTAMP),
     is_artifact = GPP_NT_REF > 0 & NEE_REF >= 0 & TA_F < 0 & GPP_DT_REF < 0.10 * ha1_P99,
     artifact_label = ifelse(is_artifact, "likely partitioning artifact", "not flagged as artifact by this rule")
   ) |>
-  select(year, TIMESTAMP, doy, above_z17, above_t95, GPP_NT_REF, GPP_DT_REF, NEE_REF, TA_F,
+  select(year, TIMESTAMP, doy, above_z16, above_t95, GPP_NT_REF, GPP_DT_REF, NEE_REF, TA_F,
          QC_REF, gap_filled, artifact_label) |>
   arrange(TIMESTAMP)
 
@@ -182,7 +182,7 @@ write_csv(ha1_winter_detail, file.path(CHK_TABLES, "checks_c1_ha1_winter_days.cs
 write_meta(file.path(CHK_TABLES, "checks_c1_ha1_winter_days.csv"),
   input_sources = file.path(EXP_DATA, "daily_extract.rds"),
   notes = paste0(
-    "US-Ha1 winter (Dec/Jan/Feb/Mar) days above Z17 and/or T95's threshold, with GPP_NT_REF, ",
+    "US-Ha1 winter (Dec/Jan/Feb/Mar) days above Z16 and/or T95's threshold, with GPP_NT_REF, ",
     "GPP_DT_REF, NEE_REF, TA_F, QC_REF (the per-site VUT/CUT-resolved NEE QC fraction at DD ",
     "resolution) and gap_filled (QC_REF < 1). artifact_label flags GPP_NT_REF > 0 AND NEE_REF >= 0 ",
     "AND TA_F < 0 AND GPP_DT_REF < 10% of P99 (NT shows uptake the ecosystem-scale carbon balance ",
@@ -191,17 +191,17 @@ write_meta(file.path(CHK_TABLES, "checks_c1_ha1_winter_days.csv"),
   ))
 
 n_artifact <- sum(ha1_winter_detail$artifact_label == "likely partitioning artifact")
-message(nrow(ha1_winter_detail), " US-Ha1 winter day(s) above Z17 and/or T95; ", n_artifact, " flagged as likely artifacts.")
+message(nrow(ha1_winter_detail), " US-Ha1 winter day(s) above Z16 and/or T95; ", n_artifact, " flagged as likely artifacts.")
 
-## ---- Recompute US-Ha1 annual GSL at Z17 and T95 excluding winter days ----
+## ---- Recompute US-Ha1 annual GSL at Z16 and T95 excluding winter days ----
 ha1_gsl_recompute <- derived_site_year |>
   filter(site_id == "US-Ha1") |>
-  select(year, gsl_z17_orig = gsl_z17, gsl_t95_orig = gsl_t95) |>
-  left_join(ha1_winter_counts |> select(year, n_above_z17, n_above_t95), by = "year") |>
+  select(year, gsl_z16_orig = gsl_z16, gsl_t95_orig = gsl_t95) |>
+  left_join(ha1_winter_counts |> select(year, n_above_z16, n_above_t95), by = "year") |>
   mutate(
-    gsl_z17_excl_winter = gsl_z17_orig - n_above_z17,
+    gsl_z16_excl_winter = gsl_z16_orig - n_above_z16,
     gsl_t95_excl_winter = gsl_t95_orig - n_above_t95,
-    delta_z17 = gsl_z17_excl_winter - gsl_z17_orig,
+    delta_z16 = gsl_z16_excl_winter - gsl_z16_orig,
     delta_t95 = gsl_t95_excl_winter - gsl_t95_orig
   ) |>
   arrange(year)
@@ -212,24 +212,24 @@ trend_lm <- function(y, x) {
 }
 ha1_gsl_summary <- tibble(
   metric = c("mean", "sd", "trend_days_per_yr"),
-  z17_orig = c(mean(ha1_gsl_recompute$gsl_z17_orig), sd(ha1_gsl_recompute$gsl_z17_orig),
-               trend_lm(ha1_gsl_recompute$gsl_z17_orig, ha1_gsl_recompute$year)),
-  z17_excl_winter = c(mean(ha1_gsl_recompute$gsl_z17_excl_winter), sd(ha1_gsl_recompute$gsl_z17_excl_winter),
-               trend_lm(ha1_gsl_recompute$gsl_z17_excl_winter, ha1_gsl_recompute$year)),
+  z16_orig = c(mean(ha1_gsl_recompute$gsl_z16_orig), sd(ha1_gsl_recompute$gsl_z16_orig),
+               trend_lm(ha1_gsl_recompute$gsl_z16_orig, ha1_gsl_recompute$year)),
+  z16_excl_winter = c(mean(ha1_gsl_recompute$gsl_z16_excl_winter), sd(ha1_gsl_recompute$gsl_z16_excl_winter),
+               trend_lm(ha1_gsl_recompute$gsl_z16_excl_winter, ha1_gsl_recompute$year)),
   t95_orig = c(mean(ha1_gsl_recompute$gsl_t95_orig), sd(ha1_gsl_recompute$gsl_t95_orig),
                trend_lm(ha1_gsl_recompute$gsl_t95_orig, ha1_gsl_recompute$year)),
   t95_excl_winter = c(mean(ha1_gsl_recompute$gsl_t95_excl_winter), sd(ha1_gsl_recompute$gsl_t95_excl_winter),
                trend_lm(ha1_gsl_recompute$gsl_t95_excl_winter, ha1_gsl_recompute$year))
-) |> mutate(delta_z17 = z17_excl_winter - z17_orig, delta_t95 = t95_excl_winter - t95_orig)
+) |> mutate(delta_z16 = z16_excl_winter - z16_orig, delta_t95 = t95_excl_winter - t95_orig)
 
 write_csv(ha1_gsl_recompute, file.path(CHK_TABLES, "checks_c1_ha1_gsl_recompute.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c1_ha1_gsl_recompute.csv"),
   input_sources = c(file.path(EXP_TABLES, "derived_site_year.csv"), file.path(CHK_TABLES, "checks_c1_ha1_winter_counts.csv")),
-  notes = "Per-year US-Ha1 annual GSL at Z17/T95, original vs. recomputed with Dec/Jan/Feb/Mar days above that threshold removed from the count (subtraction, not a full re-derivation -- exact because GSL is a simple day count).")
+  notes = "Per-year US-Ha1 annual GSL at Z16/T95, original vs. recomputed with Dec/Jan/Feb/Mar days above that threshold removed from the count (subtraction, not a full re-derivation -- exact because GSL is a simple day count).")
 write_csv(ha1_gsl_summary, file.path(CHK_TABLES, "checks_c1_ha1_gsl_summary.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c1_ha1_gsl_summary.csv"),
   input_sources = file.path(CHK_TABLES, "checks_c1_ha1_gsl_recompute.csv"),
-  notes = "Mean, s.d. and OLS trend (days/yr) of US-Ha1 annual GSL at Z17/T95, original vs. winter-days-excluded.")
+  notes = "Mean, s.d. and OLS trend (days/yr) of US-Ha1 annual GSL at Z16/T95, original vs. winter-days-excluded.")
 
 ## ---- DBF/MF network-wide sweep: Dec-Mar (NH) / Jun-Sep (SH), GPP > 10% of
 ## P99 AND TA_F < 0, same calendar-year attribution rule as above. ----------
@@ -247,17 +247,17 @@ dbf_mf_daily <- daily_extract |>
     is_sh = site_id %in% sh_sites_all,
     is_winter = ifelse(is_sh, month %in% 6:9, month %in% c(12, 1, 2, 3)),
     P99 = P99_by_site[site_id],
-    above_z17_cold = !is.na(gpp_use) & gpp_use > 0.10 * P99 & !is.na(TA_F) & TA_F < 0
+    above_z16_cold = !is.na(gpp_use) & gpp_use > 0.10 * P99 & !is.na(TA_F) & TA_F < 0
   )
 
 dbf_mf_winter <- dbf_mf_daily |> filter(is_winter) |>
   group_by(site_id, year) |>
-  summarise(n_winter_cold_above_z17 = sum(above_z17_cold, na.rm = TRUE), .groups = "drop") |>
+  summarise(n_winter_cold_above_z16 = sum(above_z16_cold, na.rm = TRUE), .groups = "drop") |>
   left_join(derived_site_year |> filter(site_id %in% dbf_mf_sites$site_id) |>
-              select(site_id, year, gsl_z17), by = c("site_id", "year")) |>
+              select(site_id, year, gsl_z16), by = c("site_id", "year")) |>
   left_join(exp_sites |> select(site_id, group), by = "site_id") |>
-  mutate(gsl_z17_excl = gsl_z17 - n_winter_cold_above_z17, delta = gsl_z17_excl - gsl_z17) |>
-  filter(n_winter_cold_above_z17 > 0) |>
+  mutate(gsl_z16_excl = gsl_z16 - n_winter_cold_above_z16, delta = gsl_z16_excl - gsl_z16) |>
+  filter(n_winter_cold_above_z16 > 0) |>
   arrange(desc(abs(delta)))
 
 dbf_mf_flagged <- dbf_mf_winter |> filter(abs(delta) > 5)
@@ -268,7 +268,7 @@ write_meta(file.path(CHK_TABLES, "checks_c1_dbf_mf_sweep.csv"),
   notes = paste0(
     "Every DBF/MF site-year with >=1 day in Dec/Jan/Feb/Mar (NH) or Jun/Jul/Aug/Sep (SH, ",
     "location_lat<0) with zero-floored daily GPP_NT_REF > 10% of P99 AND TA_F < 0 degC, same ",
-    "calendar-year attribution as the US-Ha1 check. delta = GSL at Z17 with those days excluded ",
+    "calendar-year attribution as the US-Ha1 check. delta = GSL at Z16 with those days excluded ",
     "minus the original. ", nrow(dbf_mf_flagged), " site-year(s) across ",
     n_distinct(dbf_mf_flagged$site_id), " site(s) have |delta| > 5 days (see checks_c1_dbf_mf_sweep.csv, ",
     "filter abs(delta)>5)."
@@ -284,17 +284,17 @@ message("--- Check 1 done ---")
 ## ============================================================================
 message("=== Check 2: carbon effect of start/end dates ===")
 
-fig5b_predictors <- c("start_z17", "start_t95", "end_z17", "end_t95")
+fig5b_predictors <- c("start_z16", "start_t95", "end_z16", "end_t95")
 ## carbon_gain_data.csv's actual column names behind each predictor LABEL
 ## (same mapping as 03_models.R's CG_PREDICTORS; the "predictor" values in
 ## carbon_gain_pooled.csv/carbon_gain_per_site.csv are the labels, not the
 ## column names).
-CG_PREDICTOR_COLS <- c(start_z17 = "start_doy_z17", start_t95 = "start_doy_t95",
-                        end_z17 = "end_doy_z17", end_t95 = "end_doy_t95")
+CG_PREDICTOR_COLS <- c(start_z16 = "start_doy_z16", start_t95 = "start_doy_t95",
+                        end_z16 = "end_doy_z16", end_t95 = "end_doy_t95")
 fig5b <- cg_pooled |>
   filter(predictor %in% fig5b_predictors, response %in% c("annual_gpp", "annual_nep")) |>
   mutate(
-    definition = ifelse(grepl("z17$", predictor), "Z17", "T95"),
+    definition = ifelse(grepl("z16$", predictor), "Z16", "T95"),
     which_date = ifelse(grepl("^start", predictor), "start", "end"),
     subset_type = ifelse(startsWith(subset, "third_"), "skewness third", "functional group"),
     subset_label = sub("^(third_|group_)", "", subset)
@@ -307,7 +307,7 @@ write_csv(fig5b, file.path(CHK_TABLES, "checks_c2_fig5b_summary.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c2_fig5b_summary.csv"),
   input_sources = file.path(EXP_TABLES, "carbon_gain_pooled.csv"),
   notes = paste0(
-    "Figure 5b's own numbers (start_z17/start_t95/end_z17/end_t95 x annual_gpp/annual_nep, by ",
+    "Figure 5b's own numbers (start_z16/start_t95/end_z16/end_t95 x annual_gpp/annual_nep, by ",
     "skewness third and functional group), pulled unchanged from carbon_gain_pooled.csv -- no ",
     "recomputation. n_obs = site-years. Season-boundary rule (02_derive.R season_one()): start = ",
     "first day of the first run of >=5 consecutive days with zero-floored daily GPP_NT_REF above ",
@@ -345,17 +345,17 @@ dbf_per_site <- dbf_per_site |>
 ## (above_threshold_all_year, from season_boundaries.csv), any NA-boundary
 ## (missing-data) year.
 site_diag <- season_boundaries |>
-  filter(site_id %in% dbf_trend_ids, threshold_name %in% c("z17", "t95")) |>
+  filter(site_id %in% dbf_trend_ids, threshold_name %in% c("z16", "t95")) |>
   group_by(site_id, threshold_name) |>
   summarise(
     n_years_at_window_edge = sum(above_threshold_all_year, na.rm = TRUE),
     n_years_missing_boundary = sum(is.na(start_date)),
     .groups = "drop"
   ) |>
-  mutate(definition = ifelse(threshold_name == "z17", "Z17", "T95"))
+  mutate(definition = ifelse(threshold_name == "z16", "Z16", "T95"))
 
 outlier_sites <- dbf_per_site |> filter(is_outlier) |>
-  mutate(definition = as.character(ifelse(grepl("z17$", predictor), "Z17", "T95"))) |>
+  mutate(definition = as.character(ifelse(grepl("z16$", predictor), "Z16", "T95"))) |>
   left_join(site_diag, by = c("site_id", "definition")) |>
   mutate(reason = case_when(
     n < 7 ~ paste0("short record (n=", n, " site-years in the OLS)"),
@@ -369,7 +369,7 @@ outlier_sites <- dbf_per_site |> filter(is_outlier) |>
 write_csv(dbf_per_site, file.path(CHK_TABLES, "checks_c2_dbf_per_site.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c2_dbf_per_site.csv"),
   input_sources = file.path(EXP_TABLES, "carbon_gain_per_site.csv"),
-  notes = "Per-site OLS slope of annual GPP on start/end DOY (Z17, T95), DBF trend sites (>=10 yr) only. is_outlier = beyond 1.5*IQR of this predictor's own DBF slope distribution (Tukey rule).")
+  notes = "Per-site OLS slope of annual GPP on start/end DOY (Z16, T95), DBF trend sites (>=10 yr) only. is_outlier = beyond 1.5*IQR of this predictor's own DBF slope distribution (Tukey rule).")
 write_csv(outlier_sites, file.path(CHK_TABLES, "checks_c2_dbf_outlier_sites.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c2_dbf_outlier_sites.csv"),
   input_sources = c(file.path(CHK_TABLES, "checks_c2_dbf_per_site.csv"), file.path(EXP_TABLES, "season_boundaries.csv")),
@@ -524,7 +524,7 @@ cg_refit <- purrr::map_dfr(fig5b_predictors, function(pn) {
   })
 })
 
-ts_refit <- purrr::map_dfr(c("gsl_z17", "gsl_t95"), function(yc) {
+ts_refit <- purrr::map_dfr(c("gsl_z16", "gsl_t95"), function(yc) {
   purrr::map_dfr(subsets_with_sh, function(sn) {
     d_orig <- subset_filter(ts_data, sn)
     d_sy   <- subset_filter(ts_data_sy, sn)
@@ -545,7 +545,7 @@ ts_refit_wide <- ts_refit |> select(combo, subset, source, slope, se, n_sites, n
 write_csv(cg_refit_wide, file.path(CHK_TABLES, "checks_c3_cg_refit.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c3_cg_refit.csv"),
   input_sources = c(file.path(EXP_TABLES, "carbon_gain_data.csv"), file.path(CHK_TABLES, "checks_c3_sh_siteyear_compare.csv")),
-  notes = "Pooled carbon-gain slopes (start/end DOY predictors only -- gsl_z17/gsl_t95 predictors are already calendar-year-consistent, see report), subsets containing >=1 SH site, original vs. SH season-year annual GPP/NEP substituted. Main outputs (carbon_gain_pooled.csv) are untouched.")
+  notes = "Pooled carbon-gain slopes (start/end DOY predictors only -- gsl_z16/gsl_t95 predictors are already calendar-year-consistent, see report), subsets containing >=1 SH site, original vs. SH season-year annual GPP/NEP substituted. Main outputs (carbon_gain_pooled.csv) are untouched.")
 write_csv(ts_refit_wide, file.path(CHK_TABLES, "checks_c3_ts_refit.csv"))
 write_meta(file.path(CHK_TABLES, "checks_c3_ts_refit.csv"),
   input_sources = c(file.path(EXP_TABLES, "temperature_sensitivity_data.csv"), file.path(CHK_TABLES, "checks_c3_sh_siteyear_compare.csv")),

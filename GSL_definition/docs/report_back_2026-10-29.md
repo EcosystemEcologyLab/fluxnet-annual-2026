@@ -1,5 +1,7 @@
 # GSL figure rebuild — Stage 3 report back (2026-10-29)
 
+**Note (2026-11-02):** "Z17" in this document means "Z16" — see `docs/methods_memo.md`'s "Z17 -> Z16 rename" section. The body below is left as originally written.
+
 Framework run-order step 6 (figures + benchmark table). Full prompt:
 `logs/prompts/2026-10-29_gsl_stage3.md`. Main run throughout unless noted: `GPP_NT_VUT_REF`,
 negative GPP set to 0, year screening d80, GSL counts `GPP > T` (strict). Scripts:

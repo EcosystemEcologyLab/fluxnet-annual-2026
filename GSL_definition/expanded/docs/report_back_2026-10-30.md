@@ -1,5 +1,7 @@
 # GSL expanded-site analysis — report back (2026-10-30)
 
+**Note (2026-11-02):** "Z17" in this document means "Z16" — see `docs/methods_memo.md`'s "Z17 -> Z16 rename" section. The body below is left as originally written.
+
 Full prompt: `../../logs/prompts/2026-10-30_gsl_expanded.md`. Code: `code/00_config.R` through
 `06_checks.R`. Tables: `tables/*.csv`. Figures: `figures/Figure *`, `figures/Supplemental Figure
 S*`. This is a new, standalone analysis under `GSL_definition/expanded/`; **the existing 62-site

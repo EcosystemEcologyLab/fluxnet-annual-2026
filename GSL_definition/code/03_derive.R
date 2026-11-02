@@ -102,7 +102,7 @@ FRACTION_TARGETS <- seq(0.80, 0.99, by = 0.01)
 
 #' Full derivation for one site x one (gpp_variant, neg_gpp_variant) combo.
 #'
-#' @param trend_site_ids Site IDs for which the Z17 trend's 95% CI is
+#' @param trend_site_ids Site IDs for which the Z16 trend's 95% CI is
 #'   computed (kept NA otherwise, since a CI on <10 years is not
 #'   meaningful). Defaults to the 62-site project's own 21-site
 #'   GSL_SITES_GE10YR for backward compatibility; a caller with a different
@@ -142,10 +142,10 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract,
   lo <- (WINDOW_STEPS + 1):(n_grid - WINDOW_STEPS)
   sensitivity[lo] <- (mean_gsl_grid[lo + WINDOW_STEPS] - mean_gsl_grid[lo - WINDOW_STEPS]) / (2 * 0.05)
 
-  z17_idx <- which.min(abs(FINE_GRID_PCT - 10))
-  z17_mean_gsl <- mean_gsl_grid[z17_idx]
-  z17_mean_f   <- mean_f_grid[z17_idx]
-  z17_sensitivity <- sensitivity[z17_idx]
+  z16_idx <- which.min(abs(FINE_GRID_PCT - 10))
+  z16_mean_gsl <- mean_gsl_grid[z16_idx]
+  z16_mean_f   <- mean_f_grid[z16_idx]
+  z16_sensitivity <- sensitivity[z16_idx]
 
   f_rounded <- round(mean_f_grid, 6)
   t95_idx <- which(f_rounded <= 0.95)[1]
@@ -161,27 +161,27 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract,
     if (is.na(dF) || dF == 0) return(NA_real_)
     (dGSL / dF) * 0.01
   }
-  cus_z17 <- common_unit_sens(z17_idx)
+  cus_z16 <- common_unit_sens(z16_idx)
   cus_t95 <- common_unit_sens(t95_idx)
 
-  gsl_z17_byyear <- fine$gsl[, z17_idx]
+  gsl_z16_byyear <- fine$gsl[, z16_idx]
   gsl_t95_byyear <- if (!is.na(t95_idx)) fine$gsl[, t95_idx] else rep(NA_real_, length(years))
-  f_z17_byyear   <- fine$f[, z17_idx]
+  f_z16_byyear   <- fine$f[, z16_idx]
   f_t95_byyear   <- if (!is.na(t95_idx)) fine$f[, t95_idx] else rep(NA_real_, length(years))
 
   yrs_num <- as.integer(names(gpp_by_year))
-  mean_gsl_z17 <- mean(gsl_z17_byyear, na.rm = TRUE)
-  sd_gsl_z17 <- sd(gsl_z17_byyear, na.rm = TRUE)
-  trend_slope_z17 <- NA_real_; trend_ci_lo <- NA_real_; trend_ci_hi <- NA_real_
+  mean_gsl_z16 <- mean(gsl_z16_byyear, na.rm = TRUE)
+  sd_gsl_z16 <- sd(gsl_z16_byyear, na.rm = TRUE)
+  trend_slope_z16 <- NA_real_; trend_ci_lo <- NA_real_; trend_ci_hi <- NA_real_
   ## sum(!is.na(...)) >= 3, not just length(yrs_num) >= 3: a site can have
-  ## >=3 years on record but zero non-NA gsl_z17_byyear values (e.g. a GPP
+  ## >=3 years on record but zero non-NA gsl_z16_byyear values (e.g. a GPP
   ## variant with no data at all for that site -- CA-TP1 has GPP_NT_REF but
   ## zero non-NA GPP_DT_REF), which previously reached lm.fit() with 0
   ## non-NA cases and errored ("0 (non-NA) cases"), found via
   ## GSL_definition/expanded/.
-  if (length(yrs_num) >= 3 && length(unique(yrs_num)) >= 2 && sum(!is.na(gsl_z17_byyear)) >= 3) {
-    fit <- lm(gsl_z17_byyear ~ yrs_num)
-    trend_slope_z17 <- unname(coef(fit)[2])
+  if (length(yrs_num) >= 3 && length(unique(yrs_num)) >= 2 && sum(!is.na(gsl_z16_byyear)) >= 3) {
+    fit <- lm(gsl_z16_byyear ~ yrs_num)
+    trend_slope_z16 <- unname(coef(fit)[2])
     if (sid %in% trend_site_ids) {
       ci <- suppressWarnings(confint(fit, level = 0.95)[2, ])
       trend_ci_lo <- unname(ci[1]); trend_ci_hi <- unname(ci[2])
@@ -204,17 +204,17 @@ derive_one <- function(sid, gpp_col, neg_to_zero, years, daily_extract,
       skewness = skew, skewness_third = skew_third, l_skewness = lskew, kelly_skewness = kskew,
       pct_days_below_5pctP99 = pct_below_5, pct_days_below_10pctP99 = pct_below_10,
       pct_days_below_20pctP99 = pct_below_20,
-      z17_pct = 10, z17_mean_gsl = z17_mean_gsl, z17_mean_f = z17_mean_f,
-      z17_sensitivity = z17_sensitivity, z17_common_unit_sensitivity = cus_z17,
+      z16_pct = 10, z16_mean_gsl = z16_mean_gsl, z16_mean_f = z16_mean_f,
+      z16_sensitivity = z16_sensitivity, z16_common_unit_sensitivity = cus_z16,
       t95_pct = t95_pct, t95_mean_gsl = t95_mean_gsl, t95_mean_f = t95_mean_f, t95_sensitivity = t95_sensitivity,
       t95_common_unit_sensitivity = cus_t95,
-      mean_gsl_z17 = mean_gsl_z17, sd_gsl_z17 = sd_gsl_z17,
-      trend_gsl_z17_days_per_yr = trend_slope_z17,
+      mean_gsl_z16 = mean_gsl_z16, sd_gsl_z16 = sd_gsl_z16,
+      trend_gsl_z16_days_per_yr = trend_slope_z16,
       trend_ci_lo = trend_ci_lo, trend_ci_hi = trend_ci_hi
     ),
     site_year = tibble(
-      site_id = sid, year = yrs_num, gsl_z17 = gsl_z17_byyear, gsl_t95 = gsl_t95_byyear,
-      f_z17 = f_z17_byyear, f_t95 = f_t95_byyear
+      site_id = sid, year = yrs_num, gsl_z16 = gsl_z16_byyear, gsl_t95 = gsl_t95_byyear,
+      f_z16 = f_z16_byyear, f_t95 = f_t95_byyear
     ),
     fine_grid = tibble(
       site_id = sid, pct_of_P99 = FINE_GRID_PCT, mean_gsl = mean_gsl_grid,
@@ -287,7 +287,7 @@ write_meta(
     "to 0). GSL_STRICT_GT=TRUE (GSL counts GPP > T). Skewness = adjusted Fisher-Pearson G1 ",
     "(scipy.stats.skew, bias=False), implemented directly (no package). L-skewness = Hosking ",
     "unbiased sample L-moment ratio l3/l2. Kelly's skewness = (P90+P10-2*P50)/(P90-P10), ",
-    "quantile type 7. Z17 = mean F at T = 10% of P99 (fixed). T95 = first fine-grid point ",
+    "quantile type 7. Z16 = mean F at T = 10% of P99 (fixed). T95 = first fine-grid point ",
     "(0.01-50% of P99, 0.01% steps) where mean F rounds to <= 0.95. Trend CI only computed for ",
     "the 21 sites with >= 10 years (GSL_SITES_GE10YR)."
   )
@@ -297,7 +297,7 @@ write_csv(derived_site_year, file.path(GSL_ROOT, "tables", "derived_site_year.cs
 write_meta(
   file.path(GSL_ROOT, "tables", "derived_site_year.csv"),
   input_sources = file.path(GSL_ROOT, "data", "daily_extract.rds"),
-  notes = "Annual GSL(y) and included fraction F(y) at Z17's T (10% of P99) and at T95, per site x gpp_variant x neg_gpp_variant."
+  notes = "Annual GSL(y) and included fraction F(y) at Z16's T (10% of P99) and at T95, per site x gpp_variant x neg_gpp_variant."
 )
 
 saveRDS(fine_grid_all, file.path(GSL_ROOT, "data", "fine_grid.rds"))

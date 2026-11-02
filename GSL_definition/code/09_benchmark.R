@@ -1,12 +1,12 @@
 ## 09_benchmark.R — GSL figure rebuild, Benchmark table.
 ##
 ## For each site with >= 10 years, the correlation between annual GSL and
-## annual GPP across years, for Z17 (fixed 10% of P99) and "the new method"
+## annual GPP across years, for Z16 (fixed 10% of P99) and "the new method"
 ## (T95, the fraction-of-annual-GPP-based threshold selection -- framework
 ## "Derived quantities"/Figure 4), plus the median across sites by
 ## functional group. Annual GPP sum per site-year is a new, simple
 ## aggregation (not persisted by 03_derive.R) computed here from
-## daily_extract.rds; gsl_z17/gsl_t95 per site-year are reused directly from
+## daily_extract.rds; gsl_z16/gsl_t95 per site-year are reused directly from
 ## derived_site_year.csv, not recomputed.
 
 source("GSL_definition/code/00_config.R")
@@ -41,7 +41,7 @@ site_correlations <- benchmark_data |>
   group_by(site_id) |>
   summarise(
     n_years = n(),
-    cor_z17 = cor(gsl_z17, annual_gpp_sum, use = "complete.obs"),
+    cor_z16 = cor(gsl_z16, annual_gpp_sum, use = "complete.obs"),
     cor_t95 = cor(gsl_t95, annual_gpp_sum, use = "complete.obs"),
     .groups = "drop"
   ) |>
@@ -51,12 +51,12 @@ site_correlations <- benchmark_data |>
 group_medians <- site_correlations |>
   group_by(group) |>
   summarise(
-    n_sites = n(), median_cor_z17 = median(cor_z17, na.rm = TRUE),
+    n_sites = n(), median_cor_z16 = median(cor_z16, na.rm = TRUE),
     median_cor_t95 = median(cor_t95, na.rm = TRUE), .groups = "drop"
   )
 overall_median <- tibble(
   group = "ALL (21 sites)", n_sites = nrow(site_correlations),
-  median_cor_z17 = median(site_correlations$cor_z17, na.rm = TRUE),
+  median_cor_z16 = median(site_correlations$cor_z16, na.rm = TRUE),
   median_cor_t95 = median(site_correlations$cor_t95, na.rm = TRUE)
 )
 group_medians <- bind_rows(group_medians, overall_median)
@@ -67,7 +67,7 @@ write_csv(group_medians, file.path(GSL_ROOT, "tables", "benchmark_group_medians.
 
 note_text <- paste0(
   "Correlation (Pearson) of annual GSL with annual GPP sum, across each site's own years, for ",
-  "Z17 (fixed threshold, 10% of P99) and the new method (T95, the threshold where mean included ",
+  "Z16 (fixed threshold, 10% of P99) and the new method (T95, the threshold where mean included ",
   "fraction of annual GPP first drops to <=0.95). Both definitions count days above a fixed ",
   "threshold, so neither is favoured by construction (framework.md, Benchmark table). 21 sites ",
   "with >= 10 years after d80 screening."
@@ -85,6 +85,6 @@ write_meta(
 )
 
 message("--- 09_benchmark.R: done ---")
-message("Overall median correlation: Z17 = ", round(overall_median$median_cor_z17, 4),
+message("Overall median correlation: Z16 = ", round(overall_median$median_cor_z16, 4),
         ", T95 (new method) = ", round(overall_median$median_cor_t95, 4))
 print(group_medians)

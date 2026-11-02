@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-10-30T23:44:15Z",
-  "pipeline_version": "ab5090b",
+  "run_datetime_utc": "2026-11-02T23:03:03Z",
+  "pipeline_version": "f5545e3",
   "input_sources": [
     "GSL_definition/expanded/data/daily_extract.rds"
   ],
-  "notes": "Annual GSL(y) and F(y) at Z17 (10% of P99) and T95, per site x variant x year."
+  "notes": "Annual GSL(y) and F(y) at Z16 (10% of P99) and T95, per site x variant x year."
 }

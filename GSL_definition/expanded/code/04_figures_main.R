@@ -1,5 +1,5 @@
 ## 04_figures_main.R — GSL expanded analysis, Figures 1-6 (PeerJ style,
-## reusing code/fig_helpers.R by sourcing). Z17 and T95 shown as two series
+## reusing code/fig_helpers.R by sourcing). Z16 and T95 shown as two series
 ## in every relevant panel; at most 3 panels per figure.
 
 source("GSL_definition/expanded/code/00_config.R")
@@ -70,7 +70,7 @@ SITE_LEVELS <- FIG1_SITES
 
 fig1_thresholds <- derived_site |> filter(site_id %in% FIG1_SITES) |>
   select(site_id, P99, skewness, t95_pct, n_years) |>
-  mutate(z17_abs = 0.10 * P99, t95_abs = t95_pct / 100 * P99,
+  mutate(z16_abs = 0.10 * P99, t95_abs = t95_pct / 100 * P99,
          site_id = factor(site_id, levels = SITE_LEVELS))
 
 ## ---- Common years: the years that pass at BOTH sites, by year label.
@@ -119,7 +119,7 @@ fig1a_annot <- fig1_thresholds |>
 
 p1a <- ggplot(fig1a_pool, aes(x = pct_of_P99)) +
   geom_histogram(binwidth = 5, boundary = 0, fill = "grey70", colour = "grey40", linewidth = nature_lwd(0.3)) +
-  geom_vline(xintercept = 10, colour = GSL_MARKER_COLORS[["Z17"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_vline(xintercept = 10, colour = GSL_MARKER_COLORS[["Z16"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
   geom_vline(data = fig1_thresholds, aes(xintercept = t95_pct), colour = GSL_MARKER_COLORS[["T95"]],
              linewidth = nature_lwd(PEERJ_LWD_REF)) +
   geom_text(data = fig1a_annot, aes(x = Inf, y = Inf, label = label), inherit.aes = FALSE,
@@ -133,8 +133,8 @@ p1a <- ggplot(fig1a_pool, aes(x = pct_of_P99)) +
 
 ## ---- Shared per-(site, common year) window series/summary: Jul-Jun
 ## window for AU-How (day_idx 1 = 1 Jul), Jan-Dec for US-SRM (day_idx =
-## ordinary day-of-year). gsl_z17/gsl_t95 = count of days with gpp_use
-## above the site's own Z17/T95 absolute threshold; gpp_z17/gpp_t95 = GPP
+## ordinary day-of-year). gsl_z16/gsl_t95 = count of days with gpp_use
+## above the site's own Z16/T95 absolute threshold; gpp_z16/gpp_t95 = GPP
 ## summed on those days only. ------------------------------------------------
 fig1_window_dates <- function(sid, y) {
   if (sid == "AU-How") seq(as.Date(sprintf("%d-07-01", y)), as.Date(sprintf("%d-06-30", y + 1L)), by = "day")
@@ -150,41 +150,41 @@ fig1_year_series <- function(sid, y) {
 fig1_year_summary <- function(sid, y) {
   g <- fig1_year_series(sid, y)
   th <- fig1_thresholds[as.character(fig1_thresholds$site_id) == sid, ]
-  above_z17 <- !is.na(g$gpp_use) & g$gpp_use > th$z17_abs
+  above_z16 <- !is.na(g$gpp_use) & g$gpp_use > th$z16_abs
   above_t95 <- !is.na(g$gpp_use) & g$gpp_use > th$t95_abs
   annual_gpp <- sum(g$gpp_use, na.rm = TRUE)
   tibble(site_id = sid, season_year = y, annual_gpp = annual_gpp,
-         gsl_z17 = sum(above_z17), gsl_t95 = sum(above_t95),
-         gpp_z17 = sum(g$gpp_use[above_z17], na.rm = TRUE), gpp_t95 = sum(g$gpp_use[above_t95], na.rm = TRUE))
+         gsl_z16 = sum(above_z16), gsl_t95 = sum(above_t95),
+         gpp_z16 = sum(g$gpp_use[above_z16], na.rm = TRUE), gpp_t95 = sum(g$gpp_use[above_t95], na.rm = TRUE))
 }
 fig1_year_tbl <- bind_rows(lapply(FIG1_SITES, function(sid) bind_rows(lapply(common_years, function(y) fig1_year_summary(sid, y)))))
 
-## ---- Panel b: for each site, the common year whose Z17 GSL is closest
-## to that site's own median Z17 GSL across the common years. ----
+## ---- Panel b: for each site, the common year whose Z16 GSL is closest
+## to that site's own median Z16 GSL across the common years. ----
 rep_year_tbl <- fig1_year_tbl |> group_by(site_id) |>
-  mutate(med_gsl_z17 = median(gsl_z17)) |>
-  slice_min(abs(gsl_z17 - med_gsl_z17), n = 1, with_ties = FALSE) |>
+  mutate(med_gsl_z16 = median(gsl_z16)) |>
+  slice_min(abs(gsl_z16 - med_gsl_z16), n = 1, with_ties = FALSE) |>
   ungroup() |>
-  select(site_id, rep_year = season_year, rep_gsl_z17 = gsl_z17, rep_gsl_t95 = gsl_t95, med_gsl_z17)
+  select(site_id, rep_year = season_year, rep_gsl_z16 = gsl_z16, rep_gsl_t95 = gsl_t95, med_gsl_z16)
 message("Figure 1b representative year(s): ",
-        paste(sprintf("%s=%d (Z17=%d d, T95=%d d)", rep_year_tbl$site_id, rep_year_tbl$rep_year,
-                       rep_year_tbl$rep_gsl_z17, rep_year_tbl$rep_gsl_t95), collapse = "; "))
+        paste(sprintf("%s=%d (Z16=%d d, T95=%d d)", rep_year_tbl$site_id, rep_year_tbl$rep_year,
+                       rep_year_tbl$rep_gsl_z16, rep_year_tbl$rep_gsl_t95), collapse = "; "))
 
 fig1b_series <- bind_rows(lapply(seq_len(nrow(rep_year_tbl)), function(i) {
   fig1_year_series(rep_year_tbl$site_id[i], rep_year_tbl$rep_year[i])
 })) |>
-  left_join(fig1_thresholds |> select(site_id, z17_abs, t95_abs) |> mutate(site_id = as.character(site_id)),
+  left_join(fig1_thresholds |> select(site_id, z16_abs, t95_abs) |> mutate(site_id = as.character(site_id)),
              by = "site_id") |>
   mutate(site_id = factor(site_id, levels = SITE_LEVELS))
 
 fig1b_annot <- rep_year_tbl |>
   mutate(site_id = factor(site_id, levels = SITE_LEVELS),
-         label = sprintf("%d\nZ17 = %d d\nT95 = %d d", rep_year, rep_gsl_z17, rep_gsl_t95))
+         label = sprintf("%d\nZ16 = %d d\nT95 = %d d", rep_year, rep_gsl_z16, rep_gsl_t95))
 fig1b_letter <- tibble(site_id = factor(SITE_LEVELS[1], levels = SITE_LEVELS), x = -Inf, y = Inf)
 
 p1b <- ggplot(fig1b_series, aes(x = day_idx, y = gpp_use)) +
   geom_line(linewidth = nature_lwd(PEERJ_LWD_DATA), colour = "grey30") +
-  geom_hline(aes(yintercept = z17_abs), colour = GSL_MARKER_COLORS[["Z17"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_hline(aes(yintercept = z16_abs), colour = GSL_MARKER_COLORS[["Z16"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
   geom_hline(aes(yintercept = t95_abs), colour = GSL_MARKER_COLORS[["T95"]], linewidth = nature_lwd(PEERJ_LWD_REF)) +
   geom_text(data = fig1b_annot, aes(x = Inf, y = Inf, label = label), inherit.aes = FALSE,
             hjust = 1.05, vjust = 1.2, size = PEERJ_ANNOTATION_PT / .pt, lineheight = 0.9) +
@@ -194,23 +194,23 @@ p1b <- ggplot(fig1b_series, aes(x = day_idx, y = gpp_use)) +
   geom_text(data = fig1b_letter, aes(x = x, y = y, label = "b"), inherit.aes = FALSE,
             fontface = "bold", size = PEERJ_PANEL_LETTER_PT / .pt, hjust = -0.4, vjust = 1.3)
 
-## ---- Panel c: GPP summed over the common years -- total, on Z17-season
+## ---- Panel c: GPP summed over the common years -- total, on Z16-season
 ## days, and on T95-season days. ----
 fig1c_summary <- fig1_year_tbl |> group_by(site_id) |>
-  summarise(total_gpp = sum(annual_gpp), gpp_z17 = sum(gpp_z17), gpp_t95 = sum(gpp_t95),
-            gsl_z17_days = sum(gsl_z17), gsl_t95_days = sum(gsl_t95), .groups = "drop") |>
-  mutate(share_z17_pct = 100 * gpp_z17 / total_gpp, share_t95_pct = 100 * gpp_t95 / total_gpp)
+  summarise(total_gpp = sum(annual_gpp), gpp_z16 = sum(gpp_z16), gpp_t95 = sum(gpp_t95),
+            gsl_z16_days = sum(gsl_z16), gsl_t95_days = sum(gsl_t95), .groups = "drop") |>
+  mutate(share_z16_pct = 100 * gpp_z16 / total_gpp, share_t95_pct = 100 * gpp_t95 / total_gpp)
 
 fig1c_long <- bind_rows(
   fig1c_summary |> transmute(site_id, bar = "Total", gpp_sum = total_gpp, label = NA_character_),
-  fig1c_summary |> transmute(site_id, bar = "Z17 season", gpp_sum = gpp_z17,
-                               label = sprintf("%.1f%%\n%d d", share_z17_pct, gsl_z17_days)),
+  fig1c_summary |> transmute(site_id, bar = "Z16 season", gpp_sum = gpp_z16,
+                               label = sprintf("%.1f%%\n%d d", share_z16_pct, gsl_z16_days)),
   fig1c_summary |> transmute(site_id, bar = "T95 season", gpp_sum = gpp_t95,
                                label = sprintf("%.1f%%\n%d d", share_t95_pct, gsl_t95_days))
-) |> mutate(bar = factor(bar, levels = c("Total", "Z17 season", "T95 season")),
+) |> mutate(bar = factor(bar, levels = c("Total", "Z16 season", "T95 season")),
             site_id = factor(site_id, levels = SITE_LEVELS))
 
-FIG1C_BAR_COLORS <- c(Total = "grey60", `Z17 season` = unname(GSL_MARKER_COLORS[["Z17"]]),
+FIG1C_BAR_COLORS <- c(Total = "grey60", `Z16 season` = unname(GSL_MARKER_COLORS[["Z16"]]),
                        `T95 season` = unname(GSL_MARKER_COLORS[["T95"]]))
 fig1c_letter <- tibble(site_id = factor(SITE_LEVELS[1], levels = SITE_LEVELS), bar = "Total", y = Inf)
 
@@ -228,11 +228,11 @@ p1c <- ggplot(fig1c_long, aes(x = bar, y = gpp_sum, fill = bar)) +
 ## ---- Write the numbers behind panels b and c -----------------------------
 figure1_values <- fig1c_summary |>
   left_join(rep_year_tbl, by = "site_id") |>
-  left_join(fig1_thresholds |> mutate(site_id = as.character(site_id)) |> select(site_id, z17_abs, t95_abs), by = "site_id") |>
+  left_join(fig1_thresholds |> mutate(site_id = as.character(site_id)) |> select(site_id, z16_abs, t95_abs), by = "site_id") |>
   mutate(n_common_years = length(common_years), common_years = paste(common_years, collapse = ";")) |>
-  select(site_id, n_common_years, common_years, rep_year, rep_gsl_z17, rep_gsl_t95, med_gsl_z17,
-         z17_abs, t95_abs, total_gpp, gpp_z17, gpp_t95, share_z17_pct, share_t95_pct,
-         gsl_z17_days, gsl_t95_days)
+  select(site_id, n_common_years, common_years, rep_year, rep_gsl_z16, rep_gsl_t95, med_gsl_z16,
+         z16_abs, t95_abs, total_gpp, gpp_z16, gpp_t95, share_z16_pct, share_t95_pct,
+         gsl_z16_days, gsl_t95_days)
 write_csv(figure1_values, file.path(EXP_TABLES, "figure1_values.csv"))
 write_meta(
   file.path(EXP_TABLES, "figure1_values.csv"),
@@ -246,10 +246,10 @@ write_meta(
     "AU-How, same rule as annual_inputs.csv/season_boundaries.csv) -- this is 7 years, not the 11 ",
     "a naive calendar-label intersection of site_years.csv would give (which would wrongly include ",
     "2008/2017/2019/2024, whose following calendar year is not itself a passing year for AU-How). ",
-    "rep_year/rep_gsl_z17/rep_gsl_t95 = panel b's chosen year per site (closest to that site's own ",
-    "median Z17 GSL across the common years) and its Z17/T95 day counts. total_gpp/gpp_z17/gpp_t95 ",
-    "= panel c's three bars (GPP summed over all common years; gpp_z17/gpp_t95 = GPP on days above ",
-    "the Z17/T95 threshold only). gsl_z17_days/gsl_t95_days = summed day counts across the common ",
+    "rep_year/rep_gsl_z16/rep_gsl_t95 = panel b's chosen year per site (closest to that site's own ",
+    "median Z16 GSL across the common years) and its Z16/T95 day counts. total_gpp/gpp_z16/gpp_t95 ",
+    "= panel c's three bars (GPP summed over all common years; gpp_z16/gpp_t95 = GPP on days above ",
+    "the Z16/T95 threshold only). gsl_z16_days/gsl_t95_days = summed day counts across the common ",
     "years (panel c's bar labels)."
   )
 )
@@ -261,7 +261,7 @@ save_gsl_figure(
     "Figure 1. Mechanism at two illustrative sites of the same IGBP class (WSA, woody-grass",
     "mosaic) at opposite ends of the skewness range: US-SRM (skewness 2.41, left) and AU-How",
     "(skewness 0.37, right). Dave's two-site design, replacing the earlier raster/threshold-curve",
-    "version (docs/methods_memo.md's 'session 2b' section). Z17 (10% of P99) in black, T95 in red,",
+    "version (docs/methods_memo.md's 'session 2b' section). Z16 (10% of P99) in black, T95 in red,",
     "as in the other figures. AU-How's years are Jul-Jun Southern-Hemisphere season years.",
     sprintf("Winter-screened days (item 2, GPP_NT_REF forced to 0): US-SRM %d, AU-How %d -- near zero",
             ifelse("US-SRM" %in% n_screened_fig1$site_id, n_screened_fig1$n_screened_days[n_screened_fig1$site_id == "US-SRM"], 0L),
@@ -269,16 +269,16 @@ save_gsl_figure(
     "at both sites as expected.",
     "Panel a: distribution of daily GPP over each site's own full passing years (US-SRM 20 years,",
     "AU-How 13 years), x = % of the site's own P99 so the shapes are comparable; vertical lines at",
-    "Z17 and T95; skewness, P99 and number of years printed per panel.",
+    "Z16 and T95; skewness, P99 and number of years printed per panel.",
     sprintf("Panel b: daily GPP for one representative year at each site (the %d common years' year",
             length(common_years)),
-    "closest to that site's own median Z17 GSL: US-SRM 2010, AU-How 2016); x = day of year (day of",
-    "season year for AU-How); horizontal lines at the Z17/T95 thresholds in absolute units; year and",
+    "closest to that site's own median Z16 GSL: US-SRM 2010, AU-How 2016); x = day of year (day of",
+    "season year for AU-How); horizontal lines at the Z16/T95 thresholds in absolute units; year and",
     "both GSL values printed per panel.",
     sprintf("Panel c: GPP summed over the %d common years (2010, 2011, 2012, 2014, 2015, 2016, 2022 --",
             length(common_years)),
     "see docs/methods_memo.md for why this is 7 years, not a naive 11-year label intersection): total",
-    "GPP, GPP on Z17-season days, and GPP on T95-season days; each season bar labelled with its share",
+    "GPP, GPP on Z16-season days, and GPP on T95-season days; each season bar labelled with its share",
     "of the total (%) and the summed GSL in days. Numbers behind panels b and c: tables/figure1_values.csv."
   ),
   input_sources = c(file.path(EXP_DATA, "daily_extract.rds"), file.path(EXP_TABLES, "derived_site.csv"),
@@ -293,18 +293,18 @@ save_gsl_figure(
 )
 
 ## ============================================================================
-## Figure 2 -- share of annual GPP outside the Z17 season vs skewness, aridity
+## Figure 2 -- share of annual GPP outside the Z16 season vs skewness, aridity
 ## ============================================================================
-p2a <- ggplot(derived_site, aes(x = skewness, y = share_outside_season_z17, colour = group)) +
+p2a <- ggplot(derived_site, aes(x = skewness, y = share_outside_season_z16, colour = group)) +
   geom_point(size = 1.8, alpha = 0.85) +
   scale_color_gsl_group(name = "Group") +
-  labs(x = "Skewness", y = "Share of annual GPP\noutside Z17 season") +
+  labs(x = "Skewness", y = "Share of annual GPP\noutside Z16 season") +
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("a")
 
-p2b <- ggplot(derived_site, aes(x = ai_value, y = share_outside_season_z17, colour = group)) +
+p2b <- ggplot(derived_site, aes(x = ai_value, y = share_outside_season_z16, colour = group)) +
   geom_point(size = 1.8, alpha = 0.85) +
   scale_color_gsl_group(name = "Group") +
-  labs(x = "Aridity index (CGIAR; higher = more humid)", y = "Share of annual GPP\noutside Z17 season") +
+  labs(x = "Aridity index (CGIAR; higher = more humid)", y = "Share of annual GPP\noutside Z16 season") +
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("b")
 
 fig2 <- p2a / p2b
@@ -312,7 +312,7 @@ n_no_aridity <- sum(is.na(derived_site$ai_value))
 save_gsl_figure(
   fig2, "Figure 2", height_mm = 170,
   legend_lines = c(
-    "Figure 2. Share of annual GPP outside the Z17 growing season (1 - F at 10% of P99), against",
+    "Figure 2. Share of annual GPP outside the Z16 growing season (1 - F at 10% of P99), against",
     "skewness (a) and the CGIAR aridity index (b; higher = more humid, lower = more arid),",
     "coloured by functional group.",
     sprintf("%d of %d sites have no aridity index value and are omitted from panel b.",
@@ -351,23 +351,23 @@ p3a <- ggplot(fg_third, aes(x = pct_of_P99, y = median_sensitivity, colour = ske
 p3b <- ggplot(fine_grid_summary, aes(x = skewness, y = abs(sensitivity_at_10pct), colour = skewness_third)) +
   geom_point(size = 1.8, alpha = 0.85) +
   scale_color_gsl_skew_third() +
-  labs(x = "Skewness", y = "|Sensitivity| at Z17\n(days / 1% of P99)") +
+  labs(x = "Skewness", y = "|Sensitivity| at Z16\n(days / 1% of P99)") +
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("b")
 
-cus_data <- derived_site |> select(site_id, skewness, z17_common_unit_sensitivity, t95_common_unit_sensitivity) |>
-  pivot_longer(c(z17_common_unit_sensitivity, t95_common_unit_sensitivity), names_to = "which", values_to = "cus") |>
-  mutate(marker = ifelse(which == "z17_common_unit_sensitivity", "Z17", "T95"), cus = abs(cus))
+cus_data <- derived_site |> select(site_id, skewness, z16_common_unit_sensitivity, t95_common_unit_sensitivity) |>
+  pivot_longer(c(z16_common_unit_sensitivity, t95_common_unit_sensitivity), names_to = "which", values_to = "cus") |>
+  mutate(marker = ifelse(which == "z16_common_unit_sensitivity", "Z16", "T95"), cus = abs(cus))
 
 p3c <- ggplot(cus_data, aes(x = skewness, y = cus, colour = marker, shape = marker)) +
   geom_point(size = 1.8, alpha = 0.85) +
-  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z17", "T95")) +
+  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z16", "T95")) +
   scale_shape_gsl_marker() +
   labs(x = "Skewness", y = "|Days / 1% of\nincluded GPP|") +
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("c")
 
 fig3 <- p3a / p3b / p3c
 cor_b <- cor(fine_grid_summary$skewness, abs(fine_grid_summary$sensitivity_at_10pct), use = "complete.obs")
-cor_c_z17 <- cor(derived_site$skewness, abs(derived_site$z17_common_unit_sensitivity), use = "complete.obs")
+cor_c_z16 <- cor(derived_site$skewness, abs(derived_site$z16_common_unit_sensitivity), use = "complete.obs")
 save_gsl_figure(
   fig3, "Figure 3", height_mm = 230,
   legend_lines = c(
@@ -375,14 +375,14 @@ save_gsl_figure(
     "sensitivity is a +/-1% of P99 centred difference (widened from +/-0.05%); all three panels",
     "plot ABSOLUTE VALUES (signed values are in fine_grid_summary.csv/derived_site.csv).",
     "Panel a: median |sensitivity| (days lost per 1% of P99), 0.1-35% of P99 (log axis), by skewness third.",
-    "Panel b: |sensitivity| at Z17 specifically, against skewness (one point per site; r = ",
+    "Panel b: |sensitivity| at Z16 specifically, against skewness (one point per site; r = ",
     sprintf("%.2f).", cor_b),
-    "Panel c: |days per 1% of included GPP| (the common-unit sensitivity |dGSL/dF x 0.01|), Z17 and",
-    "T95, against skewness (r, Z17 = ", sprintf("%.2f).", cor_c_z17)
+    "Panel c: |days per 1% of included GPP| (the common-unit sensitivity |dGSL/dF x 0.01|), Z16 and",
+    "T95, against skewness (r, Z16 = ", sprintf("%.2f).", cor_c_z16)
   ),
   input_sources = c(file.path(EXP_DATA, "fine_grid_main.rds"), file.path(EXP_TABLES, "fine_grid_summary.csv"),
                      file.path(EXP_TABLES, "derived_site.csv")),
-  notes = sprintf("cor(skewness, sensitivity_at_Z17) = %.3f; cor(skewness, common_unit_sensitivity_Z17) = %.3f", cor_b, cor_c_z17)
+  notes = sprintf("cor(skewness, sensitivity_at_Z16) = %.3f; cor(skewness, common_unit_sensitivity_Z16) = %.3f", cor_b, cor_c_z16)
 )
 
 message("--- Figure 3 done ---")
@@ -391,7 +391,7 @@ message("--- Figure 3 done ---")
 ## Figure 4 -- season timing
 ## ============================================================================
 sb_wide <- season_boundaries |>
-  filter(threshold_name %in% c("5pct", "20pct", "z17", "t95")) |>
+  filter(threshold_name %in% c("5pct", "20pct", "z16", "t95")) |>
   group_by(site_id, threshold_name) |>
   summarise(mean_start_doy = mean(start_doy, na.rm = TRUE), mean_end_doy = mean(end_doy, na.rm = TRUE),
             mean_gap_days = mean(gap_days, na.rm = TRUE), .groups = "drop")
@@ -416,11 +416,11 @@ p4a <- ggplot(shift_data, aes(x = skewness, y = shift_days, colour = which)) +
   labs(x = "Skewness", y = "Shift, 5% to 20% of P99\n(days; end - start convention)") +
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("a")
 
-gap_data <- sb_wide |> filter(threshold_name %in% c("z17", "t95")) |>
-  mutate(marker = ifelse(threshold_name == "z17", "Z17", "T95")) |>
+gap_data <- sb_wide |> filter(threshold_name %in% c("z16", "t95")) |>
+  mutate(marker = ifelse(threshold_name == "z16", "Z16", "T95")) |>
   left_join(derived_site |> select(site_id, skewness), by = "site_id")
 
-## Item: label the two sites with 140-160 gap days (either Z17 or T95).
+## Item: label the two sites with 140-160 gap days (either Z16 or T95).
 gap_label_data <- gap_data |> filter(mean_gap_days >= 140, mean_gap_days <= 160)
 message("Figure 4b: ", nrow(gap_label_data), " site x threshold point(s) in the 140-160 gap-day range: ",
         paste(sprintf("%s (%s, %.0f d)", gap_label_data$site_id, gap_label_data$marker, gap_label_data$mean_gap_days), collapse = "; "))
@@ -431,7 +431,7 @@ p4b <- ggplot(gap_data, aes(x = skewness, y = mean_gap_days, colour = marker, sh
     data = gap_label_data, aes(label = site_id), inherit.aes = TRUE, show.legend = FALSE,
     size = PEERJ_ANNOTATION_PT / .pt, seed = 1, min.segment.length = 0, colour = "grey20"
   ) +
-  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z17", "T95")) +
+  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z16", "T95")) +
   scale_shape_gsl_marker() +
   labs(x = "Skewness", y = "Mean gap days\nwithin season") +
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("b")
@@ -444,7 +444,7 @@ save_gsl_figure(
     "Panel a: shift in mean start and end date between the 5% and 20% of P99 thresholds, against",
     "skewness (positive = date moves later in the year as the threshold loosens from 5% to 20%).",
     "Panel b: mean within-season gap days (days below threshold between season start and end),",
-    "against skewness, at Z17 and T95; the two site x threshold points with 140-160 gap days are",
+    "against skewness, at Z16 and T95; the two site x threshold points with 140-160 gap days are",
     "labelled by site ID."
   ),
   input_sources = file.path(EXP_TABLES, "season_boundaries.csv"), notes = ""
@@ -457,7 +457,7 @@ message("--- Figure 4 done ---")
 ## ============================================================================
 site_meta_cg <- derived_site |> select(site_id, skewness_third)
 
-#' Build a forest-plot panel: x = skewness third, colour = Z17/T95,
+#' Build a forest-plot panel: x = skewness third, colour = Z16/T95,
 #' facet_grid(response_lab ~ date_lab) -- date_lab is a single level ("GSL")
 #' for panel a, or "Start date"/"End date" for panel b, so both panels share
 #' one function with a clear facet structure instead of merging predictors
@@ -474,7 +474,7 @@ pred_to_date_lab <- function(predictor) {
 ## gsl_panel_letter()/annotate(), which repeats in every facet panel).
 make_fig5_panel <- function(predictors, ylab, panel_letter, date_levels, clamp_outliers = FALSE) {
   tag <- function(df) df |> mutate(
-    threshold = ifelse(grepl("z17$", predictor), "Z17", "T95"),
+    threshold = ifelse(grepl("z16$", predictor), "Z16", "T95"),
     date_lab = factor(pred_to_date_lab(predictor), levels = date_levels),
     response_lab = recode(response, annual_gpp = "GPP", annual_nep = "NEP")
   )
@@ -523,15 +523,15 @@ make_fig5_panel <- function(predictors, ylab, panel_letter, date_levels, clamp_o
                   linewidth = nature_lwd(PEERJ_LWD_REF)) +
     geom_point(position = position_dodge(width = 0.5), size = 2) +
     facet_grid(response_lab ~ date_lab, scales = "free_y") +
-    scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z17", "T95")) +
+    scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z16", "T95")) +
     labs(x = "Skewness third", y = ylab) +
     theme_gsl() + theme(legend.position = "right", strip.text = element_text(face = "bold")) +
     geom_text(data = letter_data, aes(x = third, y = Inf, label = panel_letter), inherit.aes = FALSE,
               fontface = "bold", size = PEERJ_PANEL_LETTER_PT / .pt, hjust = -0.3, vjust = 1.3)
 }
 
-p5a <- make_fig5_panel(c("gsl_z17", "gsl_t95"), "Pooled slope (gC m-2 d-1 per day of GSL);\nfaint points = per-site slopes", "a", "GSL")
-p5b <- make_fig5_panel(c("start_z17", "start_t95", "end_z17", "end_t95"),
+p5a <- make_fig5_panel(c("gsl_z16", "gsl_t95"), "Pooled slope (gC m-2 d-1 per day of GSL);\nfaint points = per-site slopes", "a", "GSL")
+p5b <- make_fig5_panel(c("start_z16", "start_t95", "end_z16", "end_t95"),
                         "Pooled slope (gC m-2 d-1 per day\nshift in start/end date)", "b",
                         c("Start date", "End date"), clamp_outliers = TRUE)
 
@@ -540,7 +540,7 @@ save_gsl_figure(
   fig5, "Figure 5", height_mm = 230,
   legend_lines = c(
     "Figure 5. Carbon gain (expanded set, main run). Units: gC m-2 d-1 per day of GSL/date shift.",
-    "Panel a: pooled slope of annual GPP and NEP on GSL, by skewness third, for Z17 and T95; faint",
+    "Panel a: pooled slope of annual GPP and NEP on GSL, by skewness third, for Z16 and T95; faint",
     "points behind are individual trend-site (>=10yr) slopes.",
     "Panel b: the same, on season start date and end date, faceted by GPP/NEP (rows) and start/end",
     "(columns); axes are limited to 1.5x the pooled 95% CI range per facet -- per-site slopes beyond",
@@ -560,7 +560,7 @@ message("--- Figure 5 done ---")
 ts_pooled_third <- ts_pooled |>
   filter(subset %in% paste0("third_", GSL_SKEW_THIRD_LEVELS)) |>
   mutate(third = factor(sub("third_", "", subset), levels = GSL_SKEW_THIRD_LEVELS),
-         threshold = ifelse(grepl("_z17$", combo), "Z17", "T95"),
+         threshold = ifelse(grepl("_z16$", combo), "Z16", "T95"),
          var = factor(case_when(
            grepl("^gsl_", combo) ~ "GSL", grepl("^start_", combo) ~ "Start date", TRUE ~ "End date"
          ), levels = c("GSL", "Start date", "End date")))
@@ -576,7 +576,7 @@ p6a <- ggplot(ts_pooled_third, aes(x = third, y = slope, colour = threshold)) +
   geom_point(position = position_dodge(width = 0.5), size = 2) +
   geom_hline(yintercept = 0, colour = "grey70", linewidth = nature_lwd(PEERJ_LWD_REF)) +
   facet_wrap(~ var, nrow = 1, scales = "free_y") +
-  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z17", "T95")) +
+  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z16", "T95")) +
   labs(x = "Skewness third", y = "Temperature sensitivity\n(days / degC)") +
   theme_gsl() + theme(legend.position = "right", strip.text = element_text(face = "bold")) +
   geom_text(data = p6a_letter, aes(x = third, y = Inf, label = "a"), inherit.aes = FALSE,
@@ -596,7 +596,7 @@ trend_numeric <- trend_pooled |> filter(threshold_name != "t95pct") |>
 trend_t95 <- trend_pooled |> filter(threshold_name == "t95pct") |>
   mutate(subset_type = ifelse(startsWith(subset, "third_"), "By skewness third", "By functional group"),
          subset_lab = recode(subset, !!!SUBSET_LABELS))
-trend_z17_pts <- trend_numeric |> filter(threshold_pct == 10)
+trend_z16_pts <- trend_numeric |> filter(threshold_pct == 10)
 
 subset_colors_third <- GSL_SKEW_THIRD_COLORS
 subset_colors_group <- GSL_GROUP_COLORS
@@ -605,7 +605,7 @@ names(subset_colors_group) <- SUBSET_LABELS[paste0("group_", gsub(" ", "_", name
 
 make_fig6b_panel <- function(subtype, colours, panel_letter) {
   tn <- trend_numeric |> filter(subset_type == subtype)
-  tz <- trend_z17_pts |> filter(subset_type == subtype)
+  tz <- trend_z16_pts |> filter(subset_type == subtype)
   t95 <- trend_t95 |> filter(subset_type == subtype)
   ggplot(tn, aes(x = threshold_pct, y = slope, colour = subset_lab, group = subset_lab)) +
     geom_hline(yintercept = 0, colour = "grey70", linewidth = nature_lwd(PEERJ_LWD_REF)) +
@@ -625,11 +625,11 @@ p6b_third <- make_fig6b_panel("By skewness third", subset_colors_third, "b")
 p6b_group <- make_fig6b_panel("By functional group", subset_colors_group, NULL)
 
 ## ---- Panel c (item 7): years to detect a trend of a given SIZE
-## (0.1-1.0 days/yr -- EXP_CFG_DETECT_TREND_GRID), Z17 and T95 (colour),
+## (0.1-1.0 days/yr -- EXP_CFG_DETECT_TREND_GRID), Z16 and T95 (colour),
 ## one facet per subset (third or group) -- replaces the dropped observed-
 ## trend labels. Marks 0.25 (typical) and 0.5 (strong) with vertical lines.
 ytd_sweep <- read_csv(file.path(EXP_TABLES, "years_to_detect_sweep.csv"), show_col_types = FALSE) |>
-  mutate(threshold_lab = ifelse(threshold_name == "z17", "Z17", "T95"),
+  mutate(threshold_lab = ifelse(threshold_name == "z16", "Z16", "T95"),
          subset_lab = factor(recode(subset, !!!SUBSET_LABELS),
                                levels = SUBSET_LABELS[names(SUBSET_LABELS) != "group_mixed_forest"]))
 
@@ -648,7 +648,7 @@ p6c <- ggplot(ytd_sweep, aes(x = trend_size_days_per_yr, y = years_to_detect_med
              linewidth = nature_lwd(PEERJ_LWD_REF)) +
   geom_line(linewidth = nature_lwd(PEERJ_LWD_DATA)) +
   facet_wrap(~ subset_lab, ncol = 4) +
-  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z17", "T95")) +
+  scale_color_manual(values = GSL_MARKER_COLORS, name = NULL, breaks = c("Z16", "T95")) +
   scale_y_log10() +
   labs(x = "Trend size (days/yr; dashed = 0.25 typical, dotted = 0.5 strong)",
        y = "Years to detect\n(95% conf./80% power, log scale)") +
@@ -662,16 +662,16 @@ save_gsl_figure(
   legend_lines = c(
     "Figure 6. Climate fingerprints (expanded set, main run).",
     "Panel a: temperature sensitivity (days/degC) of GSL, season start and end, by skewness third,",
-    "Z17 and T95 (pooled mixed model; error bars = 95% CI). Item 5: GSL's predictor is the average",
+    "Z16 and T95 (pooled mixed model; error bars = 95% CI). Item 5: GSL's predictor is the average",
     "of the start- and end-window 60-day pre-means (NOT the annual mean -- that version is in",
     "tables/temperature_sensitivity_pooled_annualta.csv only).",
     "Panel b: pooled GSL trend (days/yr) across 5-20% of P99 (line + 95% CI ribbon, circle marks",
-    "Z17 at 10%), by skewness third (top) and functional group (bottom) -- SEPARATE legends for",
+    "Z16 at 10%), by skewness third (top) and functional group (bottom) -- SEPARATE legends for",
     "thirds and groups (item 7); T95's own pooled trend is plotted at the right edge (triangle).",
     "Mixed forest is excluded from both (only 2 of its 7 sites have >=10 years, below the >=3-site",
     "floor for a pooled model -- item 9).",
     "Panel c: years needed to detect a trend of a given SIZE (0.1-1.0 days/yr, Weatherhead et al.",
-    "1998, 95% confidence/80% power), at Z17 and T95, one facet per subset (mixed forest excluded);",
+    "1998, 95% confidence/80% power), at Z16 and T95, one facet per subset (mixed forest excluded);",
     "dashed/dotted lines mark 0.25 (typical) and 0.5 (strong) days/yr. Replaces the dropped years-",
     "to-detect-the-OBSERVED-trend labels (kept in trend_pooled.csv for reference, not plotted).",
     "Pooled trends are also expressed as % of each subset's own mean GSL per decade in",

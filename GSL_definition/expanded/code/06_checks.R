@@ -115,7 +115,7 @@ checks$no_vut_cut_mix <- tibble(
 ## confirm it reproduces winter_screen_days.csv exactly (not just trust the
 ## table 02_derive.R itself wrote), then confirm derived_site_year's annual
 ## GPP-derived quantities are consistent with screening having been applied
-## (spot check: a site with the most screened days must show mean_gsl_z17
+## (spot check: a site with the most screened days must show mean_gsl_z16
 ## lower in 'main' than 'main_unscreened', since forcing days to 0 cannot
 ## increase the included-day count).
 daily_extract_chk <- readRDS(file.path(EXP_DATA, "daily_extract.rds"))
@@ -130,16 +130,16 @@ screen_set_matches <- nrow(dplyr::setdiff(recomputed_screen, winter_screen_days_
   nrow(dplyr::setdiff(winter_screen_days_chk |> select(site_id, TIMESTAMP), recomputed_screen)) == 0
 winter_screen_site_effect_chk <- read_csv(file.path(EXP_TABLES, "winter_screen_site_effect.csv"), show_col_types = FALSE)
 worst_site <- winter_screen_site_effect_chk |> filter(n_screened_days > 0) |> slice_max(n_screened_days, n = 1)
-gsl_moved_down <- nrow(worst_site) == 0 || worst_site$z17_mean_gsl_screened[1] <= worst_site$z17_mean_gsl_unscreened[1]
+gsl_moved_down <- nrow(worst_site) == 0 || worst_site$z16_mean_gsl_screened[1] <= worst_site$z16_mean_gsl_unscreened[1]
 checks$winter_screen_applied <- tibble(
   check = "Screened days are 0-GPP in every derived table (item 2)",
   pass = EXP_CFG_WINTER_SCREEN && screen_set_matches && gsl_moved_down,
   detail = sprintf(
-    "Recomputing the screen criterion directly from daily_extract.rds reproduces winter_screen_days.csv exactly: %s. The most-screened site (%s, %d screened days) has mean Z17 GSL screened<=unscreened: %s (%.1f vs %.1f).",
+    "Recomputing the screen criterion directly from daily_extract.rds reproduces winter_screen_days.csv exactly: %s. The most-screened site (%s, %d screened days) has mean Z16 GSL screened<=unscreened: %s (%.1f vs %.1f).",
     screen_set_matches, if (nrow(worst_site) > 0) worst_site$site_id[1] else "none",
     if (nrow(worst_site) > 0) worst_site$n_screened_days[1] else 0L, gsl_moved_down,
-    if (nrow(worst_site) > 0) worst_site$z17_mean_gsl_screened[1] else NA_real_,
-    if (nrow(worst_site) > 0) worst_site$z17_mean_gsl_unscreened[1] else NA_real_
+    if (nrow(worst_site) > 0) worst_site$z16_mean_gsl_screened[1] else NA_real_,
+    if (nrow(worst_site) > 0) worst_site$z16_mean_gsl_unscreened[1] else NA_real_
   )
 )
 

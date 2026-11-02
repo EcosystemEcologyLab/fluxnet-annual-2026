@@ -54,7 +54,7 @@ That rule was then applied to build a full, standalone **expanded-site analysis*
 under `GSL_definition/expanded/` (own `code/`, `tables/`, `figures/`, `docs/` — **the 62-site
 analysis above is untouched**, verified by rerunning its driver and diffing outputs). 151 sites,
 all 505 GSL-62 site-years included; every derived quantity recomputed (P99, skewness with
-expanded-set terciles, Z17/T95, season start/end/gap days, a QC-failing-day bounds check,
+expanded-set terciles, Z16/T95, season start/end/gap days, a QC-failing-day bounds check,
 carbon-gain and temperature-sensitivity slopes, and trend detection with mixed models and the
 Weatherhead et al. 1998 years-to-detect formula), 6 main figures and 7 supplementary figures in
 the PeerJ style, and full QA checks — see `GSL_definition/expanded/docs/report_back_2026-10-30.md`

@@ -56,11 +56,11 @@ site_daily <- function(sid) {
 }
 
 ## Median-GSL year: the year (among the site's own screened years) whose
-## GSL(Z17) is closest to the median of this site's own GSL(Z17) values.
+## GSL(Z16) is closest to the median of this site's own GSL(Z16) values.
 median_gsl_year <- function(sid) {
   sy <- derived_site_year |> filter(site_id == sid)
-  med <- median(sy$gsl_z17, na.rm = TRUE)
-  sy$year[which.min(abs(sy$gsl_z17 - med))]
+  med <- median(sy$gsl_z16, na.rm = TRUE)
+  sy$year[which.min(abs(sy$gsl_z16 - med))]
 }
 
 panel_a_data <- function(sid) {
@@ -70,7 +70,7 @@ panel_a_data <- function(sid) {
 }
 
 ## ---- Panel a: daily GPP by day-of-year, median-GSL year dark, other years
-## faint grey. Dashed lines at 5%/10%(Z17)/20% of P99; T95 in a distinct
+## faint grey. Dashed lines at 5%/10%(Z16)/20% of P99; T95 in a distinct
 ## (dotted) linetype so it reads as a different kind of reference. Each row
 ## names its site and skewness (identifying which data is shown -- not an
 ## explanatory caption, so not covered by R/nature_format.R's "no in-panel
@@ -206,7 +206,7 @@ legend_lines <- c(
   paste0(
     "Panel a: daily GPP_NT_VUT_REF (negative values set to 0) for each site's median-GSL ",
     "year (dark line; GSL = days with GPP > threshold at 10% of P99), other screened years in ",
-    "grey, site name and skewness labelled on each row. Dashed lines at 5%, 10% (Z17) and 20% ",
+    "grey, site name and skewness labelled on each row. Dashed lines at 5%, 10% (Z16) and 20% ",
     "of P99; dotted red line at each site's own T95 (a different linetype, since T95 varies by site)."
   ),
   sprintf("%s T95 = %.1f%% of P99.", site_low, derived_site$t95_pct[derived_site$site_id == site_low]),

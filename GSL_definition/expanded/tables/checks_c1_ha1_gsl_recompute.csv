@@ -1,4 +1,4 @@
-year,gsl_z17_orig,gsl_t95_orig,n_above_z17,n_above_t95,gsl_z17_excl_winter,gsl_t95_excl_winter,delta_z17,delta_t95
+year,gsl_z16_orig,gsl_t95_orig,n_above_z16,n_above_t95,gsl_z16_excl_winter,gsl_t95_excl_winter,delta_z16,delta_t95
 1996,160,161,1,1,159,160,-1,-1
 1998,169,176,0,1,169,175,0,-1
 2004,196,201,3,3,193,198,-3,-3

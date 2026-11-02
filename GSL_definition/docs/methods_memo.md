@@ -313,8 +313,8 @@ re-deriving them:
   previously computed, for the 21 trend sites.
 
 Figure 4 panels b and c, by contrast, needed **no new computation at all**: panel b reuses
-`fraction_sweep.rds` and `derived_site.csv`'s `z17_mean_f`/`z17_mean_gsl` directly; panel c
-reuses `z17_common_unit_sensitivity` and `t95_common_unit_sensitivity` directly — "common-unit
+`fraction_sweep.rds` and `derived_site.csv`'s `z16_mean_f`/`z16_mean_gsl` directly; panel c
+reuses `z16_common_unit_sensitivity` and `t95_common_unit_sensitivity` directly — "common-unit
 sensitivity at 0.95" is, by the Stage 2 definition of T95 (the threshold where mean F first
 drops to <=0.95), exactly the sensitivity already computed at T95.
 
@@ -386,7 +386,7 @@ Dave reviewed Stage 3's figures and requested six fixes (full prompt saved verba
 
 ### 1. CH-Dav bug in Figure 3a (real data-correctness bug, fixed)
 
-Flagged: at CH-Dav, the Z17 (10% of P99) dot sat *outside* its own coloured bar for the 5-20%
+Flagged: at CH-Dav, the Z16 (10% of P99) dot sat *outside* its own coloured bar for the 5-20%
 threshold-range trend, which should always contain it (10% is itself a point in the 5-20% sweep).
 
 Root cause, confirmed directly: `07_fig3.R`'s per-threshold trend function used
@@ -402,7 +402,7 @@ Checked every site in the trend set for the same failure mode (not just CH-Dav) 
 affected; no other trend site has an all-NA year within its screened years. Fixed in `07_fig3.R`
 and its duplicate in `10_supplementary.R`'s `build_fig3()` by marking an all-NA year's GSL as
 `NA_real_` (not `0`) and letting `lm()`'s default exclusion handle it, matching `03_derive.R`.
-Added a permanent `stopifnot()` regression guard in both files: Z17's trend (from
+Added a permanent `stopifnot()` regression guard in both files: Z16's trend (from
 `derived_site.csv`) must lie within `[range_lo - eps, range_hi + eps]` of the sweep's own 5-20%
 range, for every trend site, on every run.
 
@@ -430,19 +430,19 @@ have a significance change across 5-20% of P99 (11 either), identical before and
   `site_mean_gsl_curve()` helper recomputes the mean-GSL-vs-threshold curve directly from
   `daily_extract.rds` out to 100%); y-axis labelled "Density".
 
-### 3. One marker convention (Z17 = black circle, T95 = red triangle)
+### 3. One marker convention (Z16 = black circle, T95 = red triangle)
 
 Centralised in `fig_helpers.R` as `GSL_MARKER_SHAPES`/`GSL_MARKER_COLORS`/
 `scale_shape_gsl_marker()`, applied identically in Figures 2b, 2c, 3a and 4c (and their
-`10_supplementary.R` duplicates for 2b/2c and 3a). The floating "T95"/"Z17" text labels
+`10_supplementary.R` duplicates for 2b/2c and 3a). The floating "T95"/"Z16" text labels
 previously drawn inside Figure 2c are removed in favour of a proper `guide_legend()`.
 
 One bug found while wiring this up: `guide_legend(override.aes = list(colour = ...))` matches its
 `colour` vector to the legend's rows *positionally*, but ggplot2's default legend order is an
-alphabetical sort of the aesthetic's string values ("T95" sorts before "Z17") — silently swapping
+alphabetical sort of the aesthetic's string values ("T95" sorts before "Z16") — silently swapping
 the override colours onto the wrong rows even though the shapes (driven by a named `values=`
 vector) were correct. Fixed by giving `scale_shape_gsl_marker()` an explicit
-`breaks = c("Z17", "T95")`, so the legend's row order always matches the colour vector's assumed
+`breaks = c("Z16", "T95")`, so the legend's row order always matches the colour vector's assumed
 order.
 
 ### 4. Figure 2 heat map
@@ -535,7 +535,7 @@ own independent `theme_gsl()` and `save_gsl_figure()` with PeerJ's constants ins
   from 0.25pt/`grey75` — darker and thicker, but still visibly behind the highlighted year's
   1.8pt black line). `nature_lwd()`'s ggplot-linewidth-to-rendered-pt conversion is reused as-is
   (pure unit math, not a Nature-specific limit).
-- Points/markers roughly doubled at every call site (e.g. Figure 2 panel b's Z17/T95 markers
+- Points/markers roughly doubled at every call site (e.g. Figure 2 panel b's Z16/T95 markers
   0.5pt -> 1pt; Figure 3's trend-range points 1pt -> 2pt; Figure 4 panel a's x-marker 1.5pt ->
   3pt).
 - >=300dpi: `PEERJ_DPI <- 600` (unchanged from the Nature-era setting, already well above
@@ -605,16 +605,16 @@ visibly inconsistent pair of figures.
   range rather than saturating to one flat colour, in both the main run and both supplementary
   variants.
 
-### Item 3: Figure 2c/2d absolute values; floating Z17/T95 text; line distinguishability
+### Item 3: Figure 2c/2d absolute values; floating Z16/T95 text; line distinguishability
 
-- **Panels c and d now plot `|value|`**, matching panel b. Panel c (`z17_sensitivity`/
+- **Panels c and d now plot `|value|`**, matching panel b. Panel c (`z16_sensitivity`/
   `t95_sensitivity`, previously signed — both are negative in `tables/derived_site.csv`, since
   GSL shrinks as the threshold rises) is wrapped in `abs()`. Panel d's per-bin median was already
   computed from `local_sensitivity`; now `median(abs(local_sensitivity), ...)`, consistent with
   panel b's `mean(abs(local_sensitivity), ...)`.
-- **The floating "Z17"/"T95" text inside panel c was already removed** in the original Stage 3
+- **The floating "Z16"/"T95" text inside panel c was already removed** in the original Stage 3
   pass (2026-10-29) — confirmed by grep across every `GSL_definition/code/*.R` file for
-  `annotate("text", ... label = "Z17"` or `"T95"` style calls: none remain outside Figure 1's
+  `annotate("text", ... label = "Z16"` or `"T95"` style calls: none remain outside Figure 1's
   genuinely different site-name/bracket annotations. This item was a no-op confirmation, not a
   new fix.
 - **Panel d's three lines are now thicker** (`PEERJ_LWD_DATA`, 1.8pt, up from 0.5pt) **and use
@@ -642,7 +642,7 @@ flags are complete for that year; only `GPP_NT_VUT_REF` itself is missing in our
 in Figure 3a" (`sum(gy > T_abs, na.rm = TRUE)` over an all-NA vector silently returning `0`
 instead of `NA`, now fixed everywhere GSL is counted per site-year). With that fix in place,
 CH-Dav 2008 correctly contributes `NA_real_`, not a fabricated `GSL = 0`, to every NT-based
-quantity (`derived_site_year.csv`'s `gsl_z17` for CH-Dav/2008 is `NA`; confirmed directly).
+quantity (`derived_site_year.csv`'s `gsl_z16` for CH-Dav/2008 is `NA`; confirmed directly).
 **CH-Dav therefore has 15 screened years but 14 usable years for every NT-based quantity** (mean
 GSL, the trend regression, sensitivity, etc.) — the 2008 row is excluded, not silently zeroed.
 This does not affect CH-Dav's supplementary DT-variant run (`GPP_DT_VUT_REF` is complete for
@@ -650,7 +650,7 @@ This does not affect CH-Dav's supplementary DT-variant run (`GPP_DT_VUT_REF` is 
 
 ### Re-verification after the PeerJ restyle
 
-- `07_fig3.R`'s and `10_supplementary.R`'s `stopifnot()` consistency check (Z17's trend within
+- `07_fig3.R`'s and `10_supplementary.R`'s `stopifnot()` consistency check (Z16's trend within
   its own 5-20% range bar) still passes for all 21 trend sites in all three variants.
 - Sign/significance-change counts are unchanged from the Stage 3 report: main 6/6/11, DT 6/7/13,
   as-delivered 6/6/11.
@@ -690,7 +690,7 @@ NULL `GPP_NT_VUT_REF` (confirmed by a direct DuckDB query); recorded in SESSION_
 ### Definitions, as implemented
 
 - **Settings**: negative daily GPP -> 0 (main run); GSL counts `GPP > T` (strict); GSL counted
-  on the full gap-filled daily series; P99/skewness/Z17/T95 exactly as `03_derive.R::derive_one()`
+  on the full gap-filled daily series; P99/skewness/Z16/T95 exactly as `03_derive.R::derive_one()`
   already computes them (reused unmodified, aside from the shared-code fixes below). NEP = -NEE,
   using each site's own resolved NEE column (`NEE_VUT_REF` or `NEE_CUT_REF`).
 - **Skewness thirds recomputed on the expanded set**: terciles (`quantile(skew, c(1/3,2/3))`) of
@@ -698,12 +698,12 @@ NULL `GPP_NT_VUT_REF` (confirmed by a direct DuckDB query); recorded in SESSION_
   GPP_DT_REF: its own, separate breaks) — explicitly NOT the 62-site project's fixed 0.63/0.88
   cutoffs, which were themselves terciles of a different (smaller, differently-selected)
   population and would not be terciles of this one.
-- **Share of annual GPP outside the season** = `1 - mean F` at Z17/T95; T95's is ~5% by
+- **Share of annual GPP outside the season** = `1 - mean F` at Z16/T95; T95's is ~5% by
   construction (`t95_mean_f`, newly exposed from `derive_one()` — see below).
 - **Season start/end/gap days**: start = first day of the first run of >=5 consecutive days with
   `gpp_use > T`; end = last day of the last such run; gap days = days below `T` strictly between
   start and end. A day with no gap-filled GPP value counts as "below" (same NA-as-failing
-  convention used throughout this project). Computed at 5%, 10% (Z17), 20% of P99 and at each
+  convention used throughout this project). Computed at 5%, 10% (Z16), 20% of P99 and at each
   site's own T95. **Southern-hemisphere sites** (`location_lat < 0`) use a season-year running 1
   July (year Y) - 30 June (Y+1), labelled Y, and are only computed for a season-year when BOTH
   calendar years Y and Y+1 are in that site's own passing-year list; this is a deliberate
@@ -713,12 +713,12 @@ NULL `GPP_NT_VUT_REF` (confirmed by a direct DuckDB query); recorded in SESSION_
   forced to count as below threshold regardless of its real GPP value; `gsl_upper` = the same,
   forced above. `spread = gsl_upper - gsl_lower` is, by construction, algebraically exactly
   `n_fail_days` (checked directly with `stopifnot`, not assumed) — and therefore **identical
-  at Z17 and T95 for a given site-year**, since QC pass/fail does not depend on which GPP
+  at Z16 and T95 for a given site-year**, since QC pass/fail does not depend on which GPP
   threshold is being tested. This is why Supplemental Figure S2a's two lines coincide exactly;
   documented in that figure's own legend so it does not read as a missing-series bug.
 - **Carbon gain**: per-site OLS (trend sites, >=10yr) and pooled mixed models (`nlme::lme`,
   random site intercept + slope, REML) of annual GPP/NEP on GSL, on season start day-of-year, and
-  on end day-of-year, by skewness third and by functional group, at Z17 and T95. For
+  on end day-of-year, by skewness third and by functional group, at Z16 and T95. For
   start/end-date regressions at Southern-hemisphere sites, the season-year label is joined to
   the SAME-NUMBERED calendar year's annual GPP/NEP/TA_F — a documented simplification, not an
   exact calendar match, affecting only the 14 Southern-hemisphere sites' start/end (not GSL)
@@ -765,9 +765,9 @@ column confirmed byte-identical.
    hit this (CA-TP1 has `GPP_NT_VUT_REF` data but zero non-NA `GPP_DT_VUT_REF` — found running
    the expanded set's `dt` variant). Added the same `length(x) == 0` guard `g1_adjusted()` and
    `l_skewness()` already had.
-4. **Bug fix**: the Z17 trend's `lm()` call could reach `lm.fit()` with 0 non-NA cases (same
-   CA-TP1/`GPP_DT_REF` case: >=3 years on record but zero non-NA `gsl_z17` values), erroring
-   `"0 (non-NA) cases"`. Added `sum(!is.na(gsl_z17_byyear)) >= 3` to the existing guard.
+4. **Bug fix**: the Z16 trend's `lm()` call could reach `lm.fit()` with 0 non-NA cases (same
+   CA-TP1/`GPP_DT_REF` case: >=3 years on record but zero non-NA `gsl_z16` values), erroring
+   `"0 (non-NA) cases"`. Added `sum(!is.na(gsl_z16_byyear)) >= 3` to the existing guard.
 5. **Additive**: exposed `t95_mean_f` in `derive_one()`'s site-level output tibble (it was
    computed as a local variable, `t95_mean_gsl`'s sibling, but never returned) — needed for the
    expanded analysis's "share of annual GPP outside the season" at T95.
@@ -786,9 +786,9 @@ column confirmed byte-identical.
   (`group_modify(~ bind_cols(tibble(), ols_site(...)))`), silently producing a 0-row table and a
   "0 of 0 trend sites have a sign change" message that looked like a (wrong) real finding rather
   than an empty result. Fixed by returning `ols_site()`'s tibble directly.
-- `GSL_MARKER_COLORS`' names are `"Z17"`/`"T95"` (uppercase, the convention used everywhere in
+- `GSL_MARKER_COLORS`' names are `"Z16"`/`"T95"` (uppercase, the convention used everywhere in
   the 62-site figures), but `bounds_check.csv`'s `threshold_name` column is lowercase
-  `"z17"`/`"t95"` (a different table's own convention, from `02_derive.R`'s `bounds_one()`).
+  `"z16"`/`"t95"` (a different table's own convention, from `02_derive.R`'s `bounds_one()`).
   Passing the lowercase column straight into `scale_fill_manual(values = GSL_MARKER_COLORS)` in
   Supplemental Figure S2a had no matching names, so ggplot silently fell back to a single
   unmatched fill colour — caught only by the warning text ("No shared levels found...") and by
@@ -798,12 +798,12 @@ column confirmed byte-identical.
   blend into a third colour); switched to `geom_freqpoly` (unfilled step lines), the standard fix
   for comparing two overlapping distributions.
 - Found (not a bug, a genuine data property): the bounds-check spread is mathematically identical
-  at Z17 and T95 for a given site-year, since it depends only on QC pass/fail, not the GPP
+  at Z16 and T95 for a given site-year, since it depends only on QC pass/fail, not the GPP
   threshold — Supplemental Figure S2a's two lines coincide exactly by construction; its legend
   text says so explicitly.
 - `trend_per_site`/`trend_sweep`'s threshold labels are `"5pct"`...`"20pct"`/`"t95pct"` (no
-  literal `"z17"` string); Supplemental Figure S4 and S5 originally filtered for
-  `threshold_name == "z17"`, matching nothing, so every per-site Z17 point was silently `NA`
+  literal `"z16"` string); Supplemental Figure S4 and S5 originally filtered for
+  `threshold_name == "z16"`, matching nothing, so every per-site Z16 point was silently `NA`
   (invisible in S4's forest plot — no black dots anywhere). Fixed to filter `"10pct"`.
 
 ### Scope reductions, documented rather than silently skipped
@@ -811,8 +811,8 @@ column confirmed byte-identical.
 - **Supplemental Figure S5** ("Figures 3 and 6 with GPP_DT, and the thirds under GPP_DT") does
   not include a full GPP_DT_REF AR(1) pooled-trend refit (Figure 6's exact analogue — another
   ~136 `nlme::lme(..., correlation = corAR1(...))` fits). Implemented instead: the Figure-3
-  analogue in full (sensitivity at Z17 vs. skewness, GPP_DT_REF's own recomputed thirds), and a
-  check of whether each trend site's main-variant Z17 trend groups consistently by its
+  analogue in full (sensitivity at Z16 vs. skewness, GPP_DT_REF's own recomputed thirds), and a
+  check of whether each trend site's main-variant Z16 trend groups consistently by its
   GPP_DT_REF-variant third (i.e. whether the GPP variant changes which third a site falls into) —
   a cheaper but still substantive robustness check, with the gap stated explicitly in the figure's
   own legend and `notes`.
@@ -874,7 +874,7 @@ means "season year" for SH rows without any special-casing downstream. 134 calen
 site-year rows become 86 season-year rows (48 dropped at record edges).
 
 **5. Temperature sensitivity, GSL predictor** (no separate switch -- a direct data change in
-`03_models.R`'s `ts_data`): `ta_window_avg_z17/t95 = (ta_pre_start + ta_pre_end) / 2`, replacing
+`03_models.R`'s `ts_data`): `ta_window_avg_z16/t95 = (ta_pre_start + ta_pre_end) / 2`, replacing
 `annual_mean_ta` as `TS_COMBOS`'s `gsl_on_ta_*` predictor. The annual-mean version is preserved as
 `TS_COMBOS_ANNUAL`, fit with the same `fit_pooled_slope()` machinery, written to
 `temperature_sensitivity_pooled_annualta.csv`/data column `annual_mean_ta` -- never plotted. Start/
@@ -891,7 +891,7 @@ wider window automatically. `GSL_definition/code/03_derive.R`'s own `WINDOW_STEP
 **7. Trends**: `trend_pooled.csv` gains `mean_gsl_subset`/`slope_pct_per_decade` (`100 * slope *
 10 / mean_gsl_subset`, each subset's own mean GSL as the denominator, not a network constant). A
 new `years_to_detect_sweep.csv` sweeps `EXP_CFG_DETECT_TREND_GRID` (`seq(0.1, 1.0, by=0.1)`
-days/yr) through the existing `weatherhead_years()` helper, at Z17/T95 by third/group -- reusing
+days/yr) through the existing `weatherhead_years()` helper, at Z16/T95 by third/group -- reusing
 `noise_by_site_threshold`'s already-computed per-site sigma_n/phi, no new per-site fitting
 required. The years-to-detect-the-*observed*-trend column (`years_to_detect_median`, keyed to the
 pooled slope itself) stays in `trend_pooled.csv` for reference but is no longer read by any figure
@@ -982,23 +982,23 @@ naive 11-year list and the correct 7-year list are logged to the console and to
   P99/skewness/n_years, so the numbers printed in-panel match that table exactly (confirmed:
   skewness 2.41/0.37, matching the prompt's own stated values). GPP_NT_REF winter-screened and
   zero-floored (same as the "main" variant), plotted as % of the site's own P99; vertical lines
-  at Z17 (10%, fixed) and the site's own T95 % (5.24% for US-SRM, 25.37% for AU-How -- T95's %
-  is BELOW Z17's for the high-skew site and ABOVE it for the low-skew site, which is also why
-  panel c's T95 bar is taller than its Z17 bar at US-SRM and shorter at AU-How).
+  at Z16 (10%, fixed) and the site's own T95 % (5.24% for US-SRM, 25.37% for AU-How -- T95's %
+  is BELOW Z16's for the high-skew site and ABOVE it for the low-skew site, which is also why
+  panel c's T95 bar is taller than its Z16 bar at US-SRM and shorter at AU-How).
 - **Panel b** (one representative year): per (site, common year), GSL/GPP computed fresh from the
   screened daily series over that site's own annual window (calendar Jan-Dec for US-SRM; Jul-Jun
   for AU-How, `day_idx` = day of that window, 1 = 1 Jul for AU-How). Cross-checked against
-  `derived_site_year.csv`'s existing `gsl_z17`/`gsl_t95`/`f_z17`/`f_t95` for US-SRM's 7 common
+  `derived_site_year.csv`'s existing `gsl_z16`/`gsl_t95`/`f_z16`/`f_t95` for US-SRM's 7 common
   years (calendar year, no window ambiguity) -- exact match (`stopifnot`, in a throwaway draft
   script, not left in the committed code). The representative year is the common year whose
-  `gsl_z17` is closest to that site's own median `gsl_z17` across the 7 common years: **US-SRM
-  2010** (gsl_z17 = 191 d, exactly the median) and **AU-How 2016** (gsl_z17 = 363 d, exactly the
+  `gsl_z16` is closest to that site's own median `gsl_z16` across the 7 common years: **US-SRM
+  2010** (gsl_z16 = 191 d, exactly the median) and **AU-How 2016** (gsl_z16 = 363 d, exactly the
   median) -- both ties resolved trivially since the median itself was an observed value.
-- **Panel c** (summed over the 7 common years): `gpp_z17`/`gpp_t95` = GPP summed only on days
-  above that site's Z17/T95 absolute threshold (not `annual_gpp * f`, though the two are
-  equivalent by construction); bar labels are `share_z17_pct`/`share_t95_pct` (% of total) and
-  `gsl_z17_days`/`gsl_t95_days` (summed day counts across the 7 years). Fill colours: grey (Total),
-  black (Z17 season), red (T95 season) -- the project's standing Z17/T95 colour convention
+- **Panel c** (summed over the 7 common years): `gpp_z16`/`gpp_t95` = GPP summed only on days
+  above that site's Z16/T95 absolute threshold (not `annual_gpp * f`, though the two are
+  equivalent by construction); bar labels are `share_z16_pct`/`share_t95_pct` (% of total) and
+  `gsl_z16_days`/`gsl_t95_days` (summed day counts across the 7 years). Fill colours: grey (Total),
+  black (Z16 season), red (T95 season) -- the project's standing Z16/T95 colour convention
   (`GSL_MARKER_COLORS`), per Dave's explicit instruction, reused for bars here rather than points.
 
 ### `site_id` factor levels, not bare characters, in every faceted layer
@@ -1015,7 +1015,7 @@ just at the top-level plotting data frame.
 
 The project's standing rule (this file, "No in-panel explanatory text", Stage 3) is that
 DESCRIPTIVE/caption-style text never goes inside a panel -- it goes in `.legend.txt`. Panel a's
-skewness/P99/n printed per facet, panel b's year/Z17/T95 printed per facet, and panel c's bar
+skewness/P99/n printed per facet, panel b's year/Z16/T95 printed per facet, and panel c's bar
 labels are numeric DATA labels Dave explicitly asked for in the prompt (same category as, e.g.,
 Figure 4b's `ggrepel` site-ID labels or Figure 5/6's error-bar values) -- not a restatement of
 what the panel already shows in words, and not re-added to `.legend.txt` redundantly beyond
@@ -1030,6 +1030,30 @@ noting that the numbers are also in `tables/figure1_values.csv`.
   table unchanged" instruction held.
 - The AU-How season-year validity recomputation was checked against `annual_inputs.csv`'s own
   AU-How year set with an in-script `stopifnot` (passes).
-- US-SRM's panel-b/c `gsl_z17`/`gsl_t95` values were checked against `derived_site_year.csv`'s
+- US-SRM's panel-b/c `gsl_z16`/`gsl_t95` values were checked against `derived_site_year.csv`'s
   existing per-year values for the same 7 years (exact match, by construction -- same screened
-  series, same calendar-year window, same Z17/T95 absolute thresholds).
+  series, same calendar-year window, same Z16/T95 absolute thresholds).
+
+## Z17 -> Z16 rename (2026-11-02)
+
+Every "Z17" / "z17" in this project -- code (variable/column/object names), table columns,
+figure labels/legends/captions, `.meta.json` `notes` fields, `README.md` and this memo -- is
+renamed to "Z16" / "z16". The 10%-of-P99 threshold definition is from Zscheischler et al. (2016,
+*Journal of Geophysical Research: Biogeosciences*); no 2017 paper defines it. "Z17" was a
+mislabel carried over from Tash's draft and never corrected. This is a pure rename: the
+underlying quantity (10% of P99, same fixed-threshold definition, same colour/marker convention
+in `fig_helpers.R`) is completely unchanged, only its name is different.
+
+Historical documents that describe past sessions -- `docs/report_back_*.md`,
+`docs/figure_gsl_iav_2026-10-31.md`, and `GSL_definition/expanded/docs/{report_back_*,
+checks_report_*}.md` -- are left untouched in their body text (they describe what was true at
+the time, under the old name) and instead each gained a one-line note at the top: "Z17 in this
+document means Z16." `docs/framework.md` additionally had its `write_output_metadata()`
+instruction corrected to the local `write_meta()`, which the code has used all along (see the
+"second, un-anticipated repo-root write" note above) -- an unrelated pre-existing documentation
+bug fixed in the same pass, not part of the rename itself.
+
+Every table under `GSL_definition/tables/` and `GSL_definition/expanded/tables/` was backed up
+before this change, every script that produces a Z17/Z16-labelled output was rerun afterward, and
+every regenerated table was diffed against its backup (column names mapped) for exact numeric
+equality -- see the SESSION_LOG.md entry dated 2026-11-02 for the result.

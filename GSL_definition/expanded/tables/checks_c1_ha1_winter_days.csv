@@ -1,4 +1,4 @@
-year,TIMESTAMP,doy,above_z17,above_t95,GPP_NT_REF,GPP_DT_REF,NEE_REF,TA_F,QC_REF,gap_filled,artifact_label
+year,TIMESTAMP,doy,above_z16,above_t95,GPP_NT_REF,GPP_DT_REF,NEE_REF,TA_F,QC_REF,gap_filled,artifact_label
 1996,1996-02-21,52,TRUE,TRUE,2.17864,0,-0.0960042,7.3,1,FALSE,not flagged as artifact by this rule
 1998,1998-02-12,43,FALSE,TRUE,1.60901,0,1.44314,5.812,0.958333,TRUE,not flagged as artifact by this rule
 2004,2004-01-05,5,TRUE,TRUE,3.05402,0,-0.645513,-2.758,0,TRUE,not flagged as artifact by this rule

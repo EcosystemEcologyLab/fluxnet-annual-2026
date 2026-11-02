@@ -20,6 +20,47 @@ avoid writing to the repo-root `outputs/session_info.txt`; documented in `method
 
 Full prompt saved to `logs/prompts/2026-11-02_gsl_rename_z16.md`.
 
+---
+
+## 2026-11-02 — GSL_definition Z17 → Z16 rename: pre-existing table staleness found, not propagated
+
+While verifying regenerated tables against the pre-rename backup (per the rename task's own
+instruction), rerunning `GSL_definition/expanded/code/07_checks_session1.R` surfaced that its
+entire output table family (`checks_c1_*`, `checks_c2_*`, `checks_c3_*`, `checks_c4_*`, 22
+CSV/`.meta.json` files) had been **already stale before this task started**, unrelated to the
+rename. Those tables were restored byte-identical from commit `ab5090b` (session 1's
+pre-session-2a state) by commit `28a467b` on 2026-10-30, whose message explicitly says they are
+"a separate, standalone deliverable from the prior session and should not have been removed as a
+side effect of re-deriving session 2a's own tables" -- i.e. deliberately frozen, not meant to
+track the live pipeline. Session 2a's site-selection change (a GPP-aware CUT fallback, recovering
+AU-Cow/AU-Stp among others, 151 -> 153 sites) was never reflected in these tables. Rerunning
+`07_checks_session1.R` against the *current* pipeline, as this task's own instruction asked for
+all scripts, would have silently replaced these frozen numbers with different ones (e.g. Check
+3's "14 SH sites" becoming "16", real slope/SE changes in the DBF carbon-gain checks) --
+contradicting `docs/checks_report_2026-10-30.md`'s still-unedited narrative (left as-is per this
+rename's own "historical reports" rule) and going beyond a pure rename.
+
+Resolution: did not commit the freshly regenerated versions of these 22 files. Instead, restored
+each from the pre-task backup and applied only the textual `Z17`/`z17` -> `Z16`/`z16` substitution
+directly to that restored content (verified column-by-column against the backup: identical except
+for the renamed strings). `checks_c4_*` (Tash's fixed 62-site reproduction run, not site-selection-
+dependent) showed no real drift, only immaterial rerun noise, but was treated the same way for
+consistency with the rest of the family. Net effect: these 22 files keep their original
+(session-1-era) numbers, now spelled with "Z16", matching `checks_report_2026-10-30.md` exactly as
+before. Flagging for Dave: whether `07_checks_session1.R` should eventually be rerun for real
+against the current 153-site pipeline state is a separate decision, independent of this rename.
+
+Also confirmed, via a controlled back-to-back rerun of `02_derive.R`/`03_models.R` with no code
+change in between, that the pipeline is not bit-for-bit reproducible across reruns (small
+floating-point drift, roughly 1e-6 to 1e-15 relative, in `nlme::lme` REML-fitted quantities and a
+few pooled sums/correlations) -- this is a pre-existing property of the pipeline, not introduced
+by the rename, and every other table/column difference found while comparing against the backup
+was one of: this noise, the intended value-level `z17`->`z16` relabelling (e.g. `threshold_name`,
+`predictor`, `combo` column values), or (for `winter_screen_days.csv`) non-deterministic row order
+that resolved to an exact match once sorted by `site_id`/`TIMESTAMP`. No other missing tables, row-
+count changes, or site-membership changes were found anywhere else in either `GSL_definition/tables/`
+or `GSL_definition/expanded/tables/`.
+
 Before any edit: copied every current table under `GSL_definition/tables/` (72 files) and
 `GSL_definition/expanded/tables/` (100 files) to a scratch directory outside the repo. Plan: make
 the rename, rerun every 62-site script (`00_config.R`-`11_selection_audit.R`) and every expanded

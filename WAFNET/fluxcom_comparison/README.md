@@ -96,3 +96,15 @@ numbers, every unit conversion, and what X-BASE cannot compare (H, measured
 respiration). `docs/methods_memo.md` has the running log of filtering and
 derivation decisions. Pending Ossénatou's sign-off: whether to formally add
 `SN-Nkr` to the agreed site set now that it has FLUXCOM-X-BASE overlap.
+
+**Stage 2 fixes and climatology figures, done** (`docs/report_back_2026-11-03.md`
+section 8): a wording error (RECO's derivation was mis-stated in the report
+as "GPP minus NEE"; the code always computed GPP + NEE) and three figure
+issues (inconsistent site colours across figures, overlapping site-map
+symbols at `BJ-Nhu`/`BJ-Bfg` and `SN-Dhr`/`SN-Nkr`, and a clipped Taylor
+diagram reference label) were found and fixed. New: one mean-seasonal-cycle
+(climatology) figure per site, tower vs. X-BASE by calendar month, built from
+the exact site-months used in the Stage 2 statistics
+(`figures/draft_climatology_<site>.png`, `tables/xbase_climatology.csv`) —
+X-BASE's seasonal amplitude is smaller than the tower's at every site and
+flux checked, most severely at `ML-Kem`.

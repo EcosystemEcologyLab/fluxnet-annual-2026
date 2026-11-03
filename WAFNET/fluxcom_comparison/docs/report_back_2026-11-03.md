@@ -291,9 +291,114 @@ colour/label in every figure; the training-site triangle marker and
 pending-site square marker are visible and legible in all three figure
 types; no overlapping labels. The site-map figure specifically needed a
 second pass — the shared-scale issue above was caught on first view and
-fixed (see figure captions/this section). The Taylor diagrams' "tower"
-reference-point label is partly clipped by the x-axis line but remains
-readable.
+fixed (see figure captions/this section). **Three further issues were found
+on this same review pass and fixed in a 2026-11-03 follow-up — see section 8.**
+
+## 8. Fixes and new figures (2026-11-03 follow-up)
+
+Four issues found on review of the Stage 2 outputs above, fixed in place
+(`logs/prompts/2026-11-03_wafnet_fluxcom_x_stage2_fixes.md`); no new
+downloads, same data/sites/rules as Stage 2:
+
+1. **Wording error.** This report and `docs/methods_memo.md` said RECO was
+   derived as "GPP minus net ecosystem exchange." The code (and the rest of
+   this report, e.g. section 4's formula) always computed `GPP + NEE` — with
+   NEE negative during net uptake (section 4's sign-convention check), `GPP +
+   NEE` is GPP **minus the uptake magnitude**, not "GPP minus NEE" directly.
+   Fixed in section 4 above, in the plain methods paragraph below, and in
+   `08_extract_statistics.R`'s header comment (`methods_memo.md`'s own RECO
+   entry was already correct and needed no change).
+2. **One shared site colour palette** (`STAGE2_SITE_COLORS`, `00_config.R`)
+   now used by the scatter, site-bias map, Taylor diagrams, and the new
+   climatology figures below — previously each figure picked its own colours
+   independently, so a site's colour changed between figures.
+3. **Site map overlap.** `BJ-Nhu`/`BJ-Bfg` (0.12° apart) and `SN-Dhr`/`SN-Nkr`
+   (~1.0–1.4° apart, but still overlapping at this map's original scale) had
+   symbols sitting on top of each other. Both pairs are now nudged apart by a
+   small fixed offset with a thin dashed leader line (site colour) back to
+   the true coordinate; the map switched to fill-capable symbols (circle/
+   square/triangle with a border) so the **border colour carries site
+   identity** (shared palette) while the **fill still carries bias**. The
+   map's extent is now trimmed to the sites' own footprint (±2–2.5°) instead
+   of a fixed West-Africa-wide box, removing most of the empty margin above
+   and below the panels.
+4. **Taylor diagram "tower" label.** It sits just below the x-axis (y
+   slightly less than 0), which is outside the default R graphics clip
+   region — that is what clipped it, not a small-font/overlap issue. Fixed by
+   drawing that one annotation with `par(xpd = NA)`.
+
+### New figures: mean seasonal cycle (climatology)
+
+`code/10_climatology.R`, one figure per site (`figures/draft_climatology_<site>.png`,
+titled DRAFT): the five agreed sites plus `SN-Nkr` (labelled "pending
+Ossénatou" in its own title); `BJ-Db1` has zero X-BASE-overlapping
+site-months (section 5) and has no figure. One panel per flux (NEE, GPP,
+RECO — titled "RECO (derived)", LE); `GH-Ank`'s GPP and RECO panels are
+left out, with the reason given in that figure's caption (no NT-partitioned
+tower data at all, section 4). Each panel: tower (shared site colour) and
+X-BASE (one fixed colour, all sites) monthly means, built from **exactly the
+same QC-passing/2001–2021 site-months already used for the Stage 2
+statistics** (both series are columns of the same filtered row set, not
+independently filtered — they cover identical months by construction).
+Months with ≥ 3 contributing years get a mean ± 1 SD ribbon; thinner months
+show the individual years as open points instead of a ribbon. The number of
+contributing years is printed along the bottom of every panel. Monthly
+means, SDs, and year counts: `tables/xbase_climatology.csv`.
+
+**How the X-BASE seasonal cycle differs from the tower's, one sentence per
+site (numbers from `tables/xbase_climatology.csv`):**
+
+- **`GH-Ank`** (training site; NEE/LE only): X-BASE's NEE seasonal cycle is
+  far flatter than the tower's (amplitude 1.21 vs. 3.60 gC m⁻² d⁻¹) and its
+  LE is both flatter (amplitude 29.6 vs. 54.1 W m⁻²) and consistently higher
+  than the tower across the year (X-BASE 78–108 W m⁻² vs. tower 32–86 W m⁻²),
+  consistent with this site's strong positive LE bias in section 6.
+- **`BJ-Nhu`**: X-BASE's GPP/RECO peak one month earlier than the tower's
+  (August vs. September) and both are damped (GPP amplitude 4.78 vs. 7.34,
+  RECO 2.34 vs. 3.83 gC m⁻² d⁻¹); X-BASE's LE seasonal cycle peaks in **May**
+  while the tower's peaks in **September** — a clearly different shape, not
+  just a damped version of the same one — and is damped overall (amplitude
+  57.0 vs. 77.0 W m⁻²).
+- **`BJ-Bfg`**: same August-vs-September GPP/RECO peak shift as `BJ-Nhu`
+  (GPP amplitude 4.85 vs. 6.01 gC m⁻² d⁻¹); LE again peaks far earlier in
+  X-BASE (May) than the tower (October), damped (58.1 vs. 65.7 W m⁻²).
+- **`SN-Dhr`** (training site): the only site where GPP, RECO, and LE all
+  peak in the **same month** (September) in both series, but every
+  amplitude is still roughly half the tower's (GPP 4.69 vs. 8.92, RECO 3.81
+  vs. 5.68 gC m⁻² d⁻¹; LE 73.9 vs. 99.2 W m⁻²) — X-BASE tracks the timing
+  well here but under-states the swing.
+- **`ML-Kem`**: the largest damping of any site — X-BASE's NEE amplitude is
+  0.84 gC m⁻² d⁻¹ against the tower's 7.39 (about **11%** of the tower's
+  swing), and its GPP amplitude (3.11) is about 26% of the tower's (11.79);
+  peak timing is also off by one to two months for GPP/RECO (August vs.
+  September/October). The dry-season (Jan–Mar) GPP/RECO/LE values are
+  broadly comparable between the two series; nearly the entire discrepancy
+  is in how much each series rises in the wet season.
+- **`SN-Nkr`** (pending Ossénatou): GPP/RECO/LE peak month matches (September)
+  as at `SN-Dhr`, with the same damped-amplitude pattern (GPP 4.14 vs. 6.51,
+  RECO 3.18 vs. 4.65 gC m⁻² d⁻¹; LE 62.2 vs. 81.5 W m⁻²).
+
+**Pattern across sites:** X-BASE's seasonal amplitude is smaller than the
+tower's at every site and flux checked here — this is the dominant, most
+consistent difference, more consistent across sites than any peak-timing
+shift. Peak-month timing matches at the two training sites and `SN-Nkr`
+(all September) but is one to two months early at the two Bénin sites and
+`ML-Kem`, and LE's seasonal *shape* (not just amplitude) differs outright at
+`BJ-Nhu`/`BJ-Bfg`, where X-BASE peaks in May against the tower's
+September/October peak.
+
+**Figures checked before committing:** every regenerated and new PNG was
+opened and checked for: symbols/labels not overlapping (including the
+nudged map pairs and the climatology panels' per-month year counts, all
+legible at the saved resolution), both series and their bands visible in
+every climatology panel (including the all-thin-month case, `ML-Kem`, where
+every month falls back to individual-year points rather than a band), and
+site colours matching across the scatter, map, Taylor, and climatology
+figures (spot-checked directly against each other, not just against the
+palette definition). One further issue was caught and fixed during this
+check: the climatology figures' bottom caption text ran off the right edge
+of the image on the first render (no automatic wrapping) — fixed with
+`stringr::str_wrap()`.
 
 ## How the product change affects the comparison
 
@@ -353,6 +458,12 @@ decisions-needed list it left open):
   answers (sections 3).
 - Figures opened and checked for legibility before committing; one real
   issue (shared bias scale across panels) was found and fixed (section 7).
+- **2026-11-03 follow-up:** every regenerated figure (scatter, map, four
+  Taylor diagrams) and every new climatology figure (six sites) opened and
+  checked again after the fixes in section 8 — site colours cross-checked
+  against each other across all four figure types, map leader-line
+  separation and climatology panel/caption legibility confirmed, one further
+  caption-wrapping issue found and fixed in the same pass (section 8).
 
 ---
 

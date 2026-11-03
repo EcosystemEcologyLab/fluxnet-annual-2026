@@ -100,7 +100,7 @@ into a period *total*, which this comparison does not need).
   distinct symbol (triangle) in every figure; pending sites (`BJ-Db1`,
   `SN-Nkr`) with another (square) and a `site_status` column in every table.
 
-## Figure fix (2026-11-03)
+## Figure fix, first pass (2026-11-03)
 
 `code/09_figures_draft.R`'s site-bias map initially used one shared
 colour/size scale across all four flux panels — carbon fluxes (O(1–5)
@@ -109,6 +109,91 @@ the carbon panels' bubbles were nearly invisible next to LE's. Fixed by
 giving each flux panel its own independent colour/size scale
 (`patchwork::wrap_plots()` of four separately-scaled `ggplot`s, not
 `facet_wrap()` with a single shared scale) before committing.
+
+## Figure fixes, follow-up pass (2026-11-03)
+
+Four more issues found on a later review
+(`logs/prompts/2026-11-03_wafnet_fluxcom_x_stage2_fixes.md`), fixed without
+any new download:
+
+- **RECO-derivation wording error**, not a code bug: this memo's own RECO
+  entry above was already correct (`GPP + NEE`), but `report_back_2026-11-03.md`
+  and `08_extract_statistics.R`'s header comment said "GPP minus net
+  ecosystem exchange" in two places — wrong, since the code has always
+  computed `GPP + NEE`. With NEE negative during uptake, `GPP + NEE` is "GPP
+  minus the uptake magnitude," not "GPP minus NEE." Fixed in both places.
+- **One shared site palette.** `STAGE2_SITE_COLORS` (00_config.R, keyed by
+  `STAGE2_ALL_SITES`) is now the single source of site colour for every
+  Stage 2 figure (scatter, map, Taylor, climatology) — previously each
+  figure computed its own colours independently (the Taylor diagrams already
+  used `hcl.colors(..., "Dark 3")`; the scatter plot used ggplot's default
+  hue scale; the map had no site-identity colour at all). `site_coords_for()`
+  and `site_igbp_for()` (BIF reads) also moved into `00_config.R` so
+  `08`/`09`/`10` share one implementation instead of three.
+- **Site map: nudge + leader line for near-overlapping sites.** `BJ-Nhu`/
+  `BJ-Bfg` (0.12° apart) and `SN-Dhr`/`SN-Nkr` (~1.0–1.4° apart) had
+  genuinely overlapping symbols at the map's original fixed West-Africa-wide
+  extent. Fixed with a small hardcoded per-site `(dlon, dlat)` nudge for just
+  those four sites, plus a thin dashed `geom_segment` leader line (site
+  colour) from the nudged plotting position back to the true
+  `(lon_true, lat_true)`. This also required switching the point shapes from
+  solid (15/16/17) to fill-capable (21/22/24), so the border colour could
+  carry site identity (new palette) while the fill still carries the
+  continuous bias value — two encodings on one symbol. Map extent trimmed
+  from a fixed `(-20, 15) x (0, 20)` box to the sites' own coordinate range
+  ± 2–2.5°, which incidentally also reduced how much the fixed-size nudge
+  mattered relative to the panel's zoom level.
+- **Taylor diagram "tower" label clipping.** Root cause: the label is placed
+  at y = -0.09, just below the x-axis, which is **outside R's default plot
+  clip region** (`ylim` starts at 0) — not a font-size or overlap problem.
+  Fixed with `par(xpd = NA)` around that one `text()` call, restored
+  immediately after via `par(op)`.
+
+### New: mean seasonal cycle (climatology) figures (2026-11-03)
+
+`code/10_climatology.R`. Built entirely from `tables/xbase_monthly_values.csv`
+(08's output) grouped by `site_id`/`flux`/`month` — this is deliberate: it
+guarantees the tower and X-BASE climatology series cover **exactly** the
+same site-months as the Stage 2 statistics, because they're two columns of
+the same already-QC-filtered row set, not two independently-aggregated
+series that might drift apart in coverage.
+
+- Ribbon vs. points threshold: `n_years >= 3` per month (same threshold used
+  for the annual secondary statistics, for consistency) gets a mean ± 1 SD
+  ribbon (`geom_ribbon`, `na.rm = TRUE` so months below the threshold leave a
+  gap rather than erroring); months below it get the individual years
+  plotted as open points instead, via an `inner_join` of the raw monthly
+  values against the thin-month `(site_id, flux, month)` keys. The mean
+  *line* is still drawn through every month regardless (always well-defined
+  from however many years exist) — only the ribbon/points choice depends on
+  `n_years`.
+- `ML-Kem` (2007-2009, at most 2 calendar years of QC-passing data per
+  month) never clears the `n_years >= 3` threshold at any month in any flux
+  — its figure is individual-year points throughout, by design, not a bug.
+- `GH-Ank`'s GPP/RECO panels are omitted (not blanked/greyed) by returning
+  `NULL` from `one_flux_panel()` when there are zero rows for that site x
+  flux, filtered out of the panel list before `patchwork::wrap_plots()`. The
+  reason is stated in the figure's own caption (`excluded_note()`), not left
+  for the reader to infer from a missing panel.
+- `patchwork::plot_layout(guides = "collect")` + `& theme(legend.position =
+  "bottom")` merges each site's up-to-4 per-panel Tower/X-BASE legends into
+  one shared legend at the bottom of the figure — safe here because every
+  panel within one site's figure uses the identical two-colour scale (that
+  site's palette colour + the fixed X-BASE colour), so there's no
+  cross-panel scale conflict for `guides = "collect"` to paper over.
+- The bottom caption text ran off the image's right edge on first render (no
+  automatic line-wrapping in a ggplot caption) — fixed with
+  `stringr::str_wrap()`, caught on the same visual-check pass that verified
+  everything else.
+- **Cross-site pattern, not just per-site noise:** X-BASE's seasonal
+  amplitude is smaller than the tower's at every site and flux checked
+  (`tables/xbase_climatology.csv`), most severely at `ML-Kem` (NEE amplitude
+  ~11% of the tower's, GPP ~26%). Peak-month timing matches the tower at the
+  two training sites and `SN-Nkr` (all September) but is 1-2 months early at
+  the two Bénin sites and `ML-Kem`; LE's seasonal *shape* (not just
+  amplitude) differs outright at `BJ-Nhu`/`BJ-Bfg`, where X-BASE peaks in
+  May against the tower's September/October peak. Full numbers in
+  `report_back_2026-11-03.md` section 8.
 
 ## Open items
 

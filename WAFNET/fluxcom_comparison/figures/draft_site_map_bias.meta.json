@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:37:58Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_monthly_stats.csv"
+  ],
+  "notes": "Per-site bias is the mean monthly bias (X-BASE minus tower) across that site's own QC-passing site-months. BJ-Nhu/BJ-Bfg and SN-Dhr/SN-Nkr plotting positions are nudged by a small fixed (dlon,dlat) offset for visibility; true coordinates are shown via the leader line and are the ones used for the underlying grid-cell extraction (08_extract_statistics.R), not the nudge."
+}

@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T20:34:50Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/energy_partitioning/data/processed/flux_hh_all_sites.rds",
+    "data/extracted/*_BIF_*.csv (read-only)"
+  ],
+  "notes": "g_columns_in_hh_data from the HH header directly; badm_heatflux_group_found/badm_note from the repo-root data/extracted/ BIF files (GRP_HEATFLUX/GRP_SOILHEATFLUX groups), read-only, per the users 2026-09-08 choice to reuse the Annual Papers existing metadata rather than a separate ancillary download."
+}

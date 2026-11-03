@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:34:50Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/energy_partitioning/data/processed/flux_hh_all_sites.rds"
+  ],
+  "notes": "A site-year = at least one half-hourly record in that calendar year with non-NA LE_F_MDS or NETRAD -- deliberately stricter than the repo-root DD/MM/YY n_months_present convention, evaluated directly against the HH data this analysis uses."
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:33Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_monthly_values.csv"
+  ],
+  "notes": "One row per site x flux x calendar year with all 12 QC-passing months present (a stricter requirement than the Stage 2 monthly statistics, which use every qualifying month regardless of year completeness). Annual totals for NEE/GPP/RECO = sum(monthly_value * days_in_month); annual LE = days-in-month-weighted mean (a rate, not a total). Secondary look only -- see xbase_annual_stats.csv for which site x flux combinations reach the >=3-year threshold to be reported."
+}

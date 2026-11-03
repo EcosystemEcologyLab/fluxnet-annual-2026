@@ -100,6 +100,11 @@ write.csv(
   file.path(WAFNET_ROOT, "tables", "variable_availability.csv"),
   row.names = FALSE
 )
+write_meta(
+  file.path(WAFNET_ROOT, "tables", "variable_availability.csv"),
+  input_sources = combined_path,
+  notes = "Percent non-NA per variable within each site's half-hourly record (not bare column presence); n_replicate_* counts *_1_1_1/*_2_1_1-style replicate columns."
+)
 
 # ── 2. Site-years ────────────────────────────────────────────────────────────
 # A "site-year" here means: at least one half-hourly record in that calendar
@@ -119,6 +124,11 @@ write.csv(
   site_years,
   file.path(WAFNET_ROOT, "tables", "site_years.csv"),
   row.names = FALSE
+)
+write_meta(
+  file.path(WAFNET_ROOT, "tables", "site_years.csv"),
+  input_sources = combined_path,
+  notes = "A site-year = at least one half-hourly record in that calendar year with non-NA LE_F_MDS or NETRAD -- deliberately stricter than the repo-root DD/MM/YY n_months_present convention, evaluated directly against the HH data this analysis uses."
 )
 
 site_year_summary <- if (nrow(site_years) == 0) {
@@ -225,6 +235,11 @@ write.csv(
   file.path(WAFNET_ROOT, "tables", "energy_balance_closure.csv"),
   row.names = FALSE
 )
+write_meta(
+  file.path(WAFNET_ROOT, "tables", "energy_balance_closure.csv"),
+  input_sources = combined_path,
+  notes = "OLS of (LE_F_MDS + H_F_MDS) ~ (NETRAD - G_F_MDS), measured half-hours only (LE_F_MDS_QC==0 AND H_F_MDS_QC==0) -- MDS gap-filled half-hours excluded since MDS gap-filling itself draws on nearby measured energy-balance terms. Sites with <30 qualifying half-hours or R2<0.1 (n>=30) are flagged in the note column, not silently regressed/presented as usable."
+)
 
 # ── 4. How G was measured ───────────────────────────────────────────────────
 # Two sources, both disclosed: (a) which G-like columns actually exist in the
@@ -289,6 +304,11 @@ write.csv(
   g_measurement_notes,
   file.path(WAFNET_ROOT, "tables", "g_measurement_notes.csv"),
   row.names = FALSE
+)
+write_meta(
+  file.path(WAFNET_ROOT, "tables", "g_measurement_notes.csv"),
+  input_sources = c(combined_path, paste0(ANNUAL_PAPER_EXTRACTED_DIR, "/*_BIF_*.csv (read-only)")),
+  notes = "g_columns_in_hh_data from the HH header directly; badm_heatflux_group_found/badm_note from the repo-root data/extracted/ BIF files (GRP_HEATFLUX/GRP_SOILHEATFLUX groups), read-only, per the user's 2026-09-08 choice to reuse the Annual Paper's existing metadata rather than a separate ancillary download."
 )
 
 # ── Human-readable report ───────────────────────────────────────────────────

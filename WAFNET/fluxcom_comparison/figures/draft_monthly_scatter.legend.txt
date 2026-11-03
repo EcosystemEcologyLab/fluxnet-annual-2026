@@ -1,0 +1,11 @@
+Figure (DRAFT). Monthly FLUXCOM-X-BASE values plotted against tower values, one panel per flux (NEE, GPP, RECO, LE). Each point is one site-month; the dashed line is the 1:1 line (points above it are X-BASE higher than the tower, below it lower). Colour identifies site (fixed palette, consistent across every Stage 2 figure); point shape identifies site status (circle = agreed, triangle = agreed and a confirmed X-BASE training site, square = pending Ossenatou).
+
+Sites: BJ-Bfg, BJ-Nhu, GH-Ank, ML-Kem, SN-Dhr, SN-Nkr. Site-months per flux: NEE n=316, GPP n=285, RECO n=285, LE n=354 (per-site breakdown: tables/xbase_monthly_stats.csv).
+
+Units: NEE, GPP, RECO in gC m-2 d-1; LE in W m-2.
+
+Tower data: FLUXNET Shuttle snapshot of 20 September 2026 (data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv), QC-passing monthly values (QC >= 0.50, qc_passes()/QC_THRESHOLD_MM), VUT where available else CUT per site. Comparison data: FLUXCOM-X-BASE (Nelson et al. 2024, Biogeosciences 21:5079-5115, doi:10.5194/bg-21-5079-2024; ICOS Carbon Portal, doi:10.18160/5NZG-JMJE; CC BY 4.0), 0.5 degree, monthly, 2001-2021 -- non-Shuttle comparison data (CLAUDE.md Hard Rule 1), used only as a labelled comparison, never as Annual Paper data.
+
+Bias = X-BASE minus tower. NEE is negative for net uptake by the ecosystem, positive for net release (confirmed empirically against X-BASE; matches the tower's own convention). X-BASE has no respiration variable; RECO shown here is derived as GPP + NEE (both from X-BASE, same sign convention) and labelled "derived" wherever shown. X-BASE trains its GPP on the nighttime-partitioning method only; tower GPP and respiration are matched to it (GPP_NT/RECO_NT, not GPP_DT/RECO_DT) -- GH-Ank has no nighttime-partitioned tower data at all and is omitted from any GPP/RECO panel. X-BASE has no sensible-heat (H) variable; H is never shown.
+
+GH-Ank and SN-Dhr are confirmed in FLUXCOM-X-BASE's own 294-site training set (Nelson et al. 2024 Table 1, direct match) -- marked with a distinct symbol. SN-Nkr is shown pending Ossenatou Mamadou's decision on whether to add it to the agreed site set (FLUXCOM-X-BASE's longer period gives it overlap the original FLUXCOM product did not) -- marked separately. BJ-Db1 has zero overlapping site-months with FLUXCOM-X-BASE and does not appear in any Stage 2 figure.

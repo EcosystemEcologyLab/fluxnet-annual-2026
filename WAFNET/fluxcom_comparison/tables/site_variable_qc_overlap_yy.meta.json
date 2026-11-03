@@ -1,0 +1,14 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:21Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "data/extracted/EUF_GH-Ank_FLUXNET_2011-2014_v1.3_r1/*_FLUXMET_YY_*.csv (read-only)",
+    "data/extracted/FLX_BJ-Nhu_FLUXNET_2008-2017_v1.3_r1/*_FLUXMET_YY_*.csv (read-only)",
+    "data/extracted/FLX_BJ-Bfg_FLUXNET_2008-2017_v1.3_r1/*_FLUXMET_YY_*.csv (read-only)",
+    "data/extracted/EUF_SN-Dhr_FLUXNET_2010-2022_v1.3_r1/*_FLUXMET_YY_*.csv (read-only)",
+    "data/extracted/FLX_ML-Kem_FLUXNET_2007-2009_v1.3_r1/*_FLUXMET_YY_*.csv (read-only)",
+    "data/extracted/FLX_BJ-Db1_FLUXNET_2022-2024_v1.3_r1/*_FLUXMET_YY_*.csv (read-only)",
+    "data/extracted/EUF_SN-Nkr_FLUXNET_2018-2024_v1.3_r1/*_FLUXMET_YY_*.csv (read-only)"
+  ],
+  "notes": "Stage 2: extends the Stage 1 (01_observations_qc_overlap.R) version of this same file to a superset -- adds ML-Kem and the two pending-Ossenatou sites (site_status column), and adds GPP_NT/RECO_NT variable rows alongside the existing GPP_DT/RECO_DT rows (X-BASE's own GPP training uses the nighttime partition only; the DT rows are kept, not removed, for any future DT-partitioned product comparison). qc_passes() at QC_THRESHOLD_YY (0.50); GPP_NT/RECO_NT and GPP_DT/RECO_DT gated on the site's NEE QC column (neither partition has a QC column of its own at this resolution)."
+}

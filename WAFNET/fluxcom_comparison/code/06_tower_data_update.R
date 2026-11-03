@@ -69,6 +69,11 @@ carbon_src_rows <- lapply(STAGE2_ALL_SITES, function(site_id) {
 })
 carbon_src_df <- do.call(rbind, carbon_src_rows)
 write.csv(carbon_src_df, file.path(FLUXCOM_ROOT, "tables", "site_carbon_source.csv"), row.names = FALSE)
+write_meta(
+  file.path(FLUXCOM_ROOT, "tables", "site_carbon_source.csv"),
+  input_sources = file.path(ANNUAL_PAPER_EXTRACTED_DIR, WAFNET_SITE_DIRS[STAGE2_ALL_SITES], "*_FLUXMET_YY_*.csv (read-only)"),
+  notes = "Stage 2: five agreed sites + two pending Ossenatou (site_status column), superseding the Stage 1 six-site version 01_observations_qc_overlap.R wrote to this same file. carbon_src = VUT if the site has any non-NA NEE_VUT_REF_QC in its YY extract, else CUT (same rule as R/site_annual_fluxes.R). All seven sites resolve to VUT."
+)
 
 carbon_src_for <- function(site_id) carbon_src_df$carbon_src[carbon_src_df$site_id == site_id]
 
@@ -135,6 +140,21 @@ overlap_mm <- build_overlap_table("MM")
 
 write.csv(overlap_yy, file.path(FLUXCOM_ROOT, "tables", "site_variable_qc_overlap_yy.csv"), row.names = FALSE)
 write.csv(overlap_mm, file.path(FLUXCOM_ROOT, "tables", "site_variable_qc_overlap_mm.csv"), row.names = FALSE)
+for (res in c("yy", "mm")) {
+  write_meta(
+    file.path(FLUXCOM_ROOT, "tables", paste0("site_variable_qc_overlap_", res, ".csv")),
+    input_sources = file.path(ANNUAL_PAPER_EXTRACTED_DIR, WAFNET_SITE_DIRS[STAGE2_ALL_SITES], paste0("*_FLUXMET_", toupper(res), "_*.csv (read-only)")),
+    notes = paste0(
+      "Stage 2: extends the Stage 1 (01_observations_qc_overlap.R) version of this same file to a ",
+      "superset -- adds ML-Kem and the two pending-Ossenatou sites (site_status column), and adds ",
+      "GPP_NT/RECO_NT variable rows alongside the existing GPP_DT/RECO_DT rows (X-BASE's own GPP ",
+      "training uses the nighttime partition only; the DT rows are kept, not removed, for any future ",
+      "DT-partitioned product comparison). qc_passes() at QC_THRESHOLD_", toupper(res), " (0.50); ",
+      "GPP_NT/RECO_NT and GPP_DT/RECO_DT gated on the site's NEE QC column (neither partition has a ",
+      "QC column of its own at this resolution)."
+    )
+  )
+}
 
 cat("\n[WAFNET/fluxcom_comparison] Stage 2 carbon_src per site (STAGE2_ALL_SITES):\n")
 print(carbon_src_df)

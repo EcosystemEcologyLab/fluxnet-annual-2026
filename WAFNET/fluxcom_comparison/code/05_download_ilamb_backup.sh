@@ -92,6 +92,21 @@ done
 log "=== DOWNLOAD COMPLETE === OK: ${n_ok}  Skipped: ${n_skip}  Failed: ${n_fail}"
 log "Manifest written: ${MANIFEST}"
 
+# --- .meta.json companion (CLAUDE.md "Output Metadata"; pure bash, same
+# fields as WAFNET/write_meta.R's R helper) ----------------------------------
+META_PATH="${MANIFEST%.csv}.meta.json"
+RUN_DT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+cat > "${META_PATH}" <<EOF
+{
+  "run_datetime_utc": "${RUN_DT}",
+  "pipeline_version": "${GIT_SHA}",
+  "input_sources": ["${BASE_URL}/gpp/FLUXCOM/gpp.nc", "${BASE_URL}/reco/FLUXCOM/reco.nc", "${BASE_URL}/hfls/FLUXCOM/le.nc", "${BASE_URL}/hfss/FLUXCOM/sh.nc"],
+  "notes": "Documentation-only backup copy of the ORIGINAL FLUXCOM ensemble (non-Shuttle comparison data, CLAUDE.md Hard Rule 1) -- NOT used in the WAFNET x FLUXCOM-X-BASE comparison. gpp.nc/reco.nc: FLUXCOM RS+METEO, CRUNCEPv6 forcing, ANN method, 1979-12 to 2013-11, g m-2 day-1, 0.5deg. le.nc/sh.nc: FLUXCOM Energy RS+METEO, GSWP3v1 forcing, 1979-12 to 2014-11, watt/m2 (converted from native MJ/m2/day), 0.5deg. See docs/report_back_2026-11-03.md section 2 for the gpp.nc/reco.nc references-attribute quirk (cites the energy product papers, not Jung et al. 2020 -- likely an ILAMB packaging artefact, reported as observed not resolved)."
+}
+EOF
+log "Metadata written: ${META_PATH}"
+
 if [[ "${n_fail}" -gt 0 ]]; then
   exit 1
 fi

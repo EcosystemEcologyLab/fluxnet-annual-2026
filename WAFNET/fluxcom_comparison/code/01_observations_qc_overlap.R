@@ -57,6 +57,11 @@ carbon_src_rows <- lapply(WAFNET_SITES, function(site_id) {
 })
 carbon_src_df <- do.call(rbind, carbon_src_rows)
 write.csv(carbon_src_df, file.path(FLUXCOM_ROOT, "tables", "site_carbon_source.csv"), row.names = FALSE)
+write_meta(
+  file.path(FLUXCOM_ROOT, "tables", "site_carbon_source.csv"),
+  input_sources = file.path(ANNUAL_PAPER_EXTRACTED_DIR, WAFNET_SITE_DIRS[WAFNET_SITES], "*_FLUXMET_YY_*.csv (read-only)"),
+  notes = "Stage 1, six original WAFNET sites only. carbon_src = VUT if the site has any non-NA NEE_VUT_REF_QC in its YY extract, else CUT (same rule as R/site_annual_fluxes.R). Superseded for the current Stage 2 site set (five agreed + two pending Ossenatou) by 06_tower_data_update.R, which overwrites this same file with a site_status column added."
+)
 
 carbon_src_for <- function(site_id) carbon_src_df$carbon_src[carbon_src_df$site_id == site_id]
 
@@ -115,6 +120,19 @@ overlap_mm <- build_overlap_table("MM")
 
 write.csv(overlap_yy, file.path(FLUXCOM_ROOT, "tables", "site_variable_qc_overlap_yy.csv"), row.names = FALSE)
 write.csv(overlap_mm, file.path(FLUXCOM_ROOT, "tables", "site_variable_qc_overlap_mm.csv"), row.names = FALSE)
+for (res in c("yy", "mm")) {
+  write_meta(
+    file.path(FLUXCOM_ROOT, "tables", paste0("site_variable_qc_overlap_", res, ".csv")),
+    input_sources = file.path(ANNUAL_PAPER_EXTRACTED_DIR, WAFNET_SITE_DIRS[WAFNET_SITES], paste0("*_FLUXMET_", toupper(res), "_*.csv (read-only)")),
+    notes = paste0(
+      "Stage 1, six original WAFNET sites, NEE/GPP_DT/RECO_DT/LE/H only. qc_passes() at QC_THRESHOLD_",
+      toupper(res), " (0.50); GPP_DT/RECO_DT gated on the site's NEE QC column (neither has a QC column ",
+      "of its own at this resolution). Superseded for the current Stage 2 site set (five agreed + two ",
+      "pending Ossenatou, plus GPP_NT/RECO_NT rows) by 06_tower_data_update.R, which overwrites this ",
+      "same file as a superset, not a replacement -- these Stage 1 DT rows are unchanged."
+    )
+  )
+}
 
 cat("\n[WAFNET/fluxcom_comparison] carbon_src per site:\n")
 print(carbon_src_df)

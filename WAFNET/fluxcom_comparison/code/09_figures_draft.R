@@ -81,6 +81,26 @@ p_scatter <- ggplot(monthly_df, aes(x = tower_value, y = xbase_value, color = si
 ggsave(file.path(FLUXCOM_ROOT, "figures", "draft_monthly_scatter.png"), p_scatter,
        width = 10, height = 8, dpi = 200, bg = "white")
 
+scatter_png <- file.path(FLUXCOM_ROOT, "figures", "draft_monthly_scatter.png")
+n_by_flux <- table(monthly_df$flux)
+write_caption(scatter_png, c(
+  "Figure (DRAFT). Monthly FLUXCOM-X-BASE values plotted against tower values, one panel per flux (NEE, GPP, RECO, LE). Each point is one site-month; the dashed line is the 1:1 line (points above it are X-BASE higher than the tower, below it lower). Colour identifies site (fixed palette, consistent across every Stage 2 figure); point shape identifies site status (circle = agreed, triangle = agreed and a confirmed X-BASE training site, square = pending Ossenatou).",
+  paste0(
+    "Sites: ", paste(sort(unique(monthly_df$site_id)), collapse = ", "), ". Site-months per flux: ",
+    "NEE n=", n_by_flux[["NEE"]], ", GPP n=", n_by_flux[["GPP"]], ", RECO n=", n_by_flux[["RECO"]],
+    ", LE n=", n_by_flux[["LE"]], " (per-site breakdown: tables/xbase_monthly_stats.csv)."
+  ),
+  "Units: NEE, GPP, RECO in gC m-2 d-1; LE in W m-2.",
+  STAGE2_CAPTION_DATA,
+  STAGE2_CAPTION_CONVENTION,
+  STAGE2_CAPTION_SITES
+))
+write_meta(
+  scatter_png,
+  input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"),
+  notes = "Bias = X-BASE minus tower (see tables/xbase_monthly_stats.csv for per-site/flux bias, RMSE, R2). RECO is derived (GPP + NEE, X-BASE series). GH-Ank omitted from GPP/RECO panels (no nighttime-partitioned tower data)."
+)
+
 ## ---- (b) Site map, symbols sized/coloured by monthly bias, per flux ------
 world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
 
@@ -124,6 +144,8 @@ MAP_YLIM <- range(bias_df$lat) + c(-2.5, 2.5)
 ## panels made the carbon panels' points nearly invisible; checked visually
 ## and fixed 2026-11-03, see docs/report_back_2026-11-03.md).
 one_flux_map <- function(fx) {
+  set.seed(42)  # ggrepel's label placement is stochastic; fixed seed so re-running this
+                # script for metadata-only purposes doesn't produce a byte-different PNG
   sub <- bias_df[bias_df$flux == fx, ]
   nsub <- nudged_df[nudged_df$flux == fx, ]
   ggplot() +
@@ -159,6 +181,25 @@ p_map <- patchwork::wrap_plots(lapply(flux_order, one_flux_map), ncol = 2) +
 
 ggsave(file.path(FLUXCOM_ROOT, "figures", "draft_site_map_bias.png"), p_map,
        width = 13, height = 12, dpi = 200, bg = "white")
+
+map_png <- file.path(FLUXCOM_ROOT, "figures", "draft_site_map_bias.png")
+write_caption(map_png, c(
+  "Figure (DRAFT). Map of mean monthly bias (FLUXCOM-X-BASE minus tower) by site, one panel per flux (NEE, GPP, RECO, LE). Each site is one symbol: the border colour identifies the site (fixed palette, consistent across every Stage 2 figure), the fill colour and size both encode the mean bias for that flux (positive = X-BASE higher than tower, shown red; negative = X-BASE lower, shown blue). Symbol shape identifies site status (circle = agreed, triangle = agreed and a confirmed X-BASE training site, square = pending Ossenatou). Each panel has its own fill/size scale, since the fluxes are on different magnitude scales -- bubble sizes are not comparable across panels.",
+  "BJ-Nhu/BJ-Bfg and SN-Dhr/SN-Nkr are close enough that their symbols would overlap at this map's scale; both pairs are nudged apart by a small fixed offset, with a thin dashed line (site colour) back to the true coordinate.",
+  paste0(
+    "Sites: ", paste(sort(unique(bias_df$site_id)), collapse = ", "),
+    ". Each site's bias is the mean over its own QC-passing site-months within 2001-2021 (tables/xbase_monthly_stats.csv has the exact n per site and flux)."
+  ),
+  "Units: NEE, GPP, RECO bias in gC m-2 d-1; LE bias in W m-2.",
+  STAGE2_CAPTION_DATA,
+  STAGE2_CAPTION_CONVENTION,
+  STAGE2_CAPTION_SITES
+))
+write_meta(
+  map_png,
+  input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_stats.csv"),
+  notes = "Per-site bias is the mean monthly bias (X-BASE minus tower) across that site's own QC-passing site-months. BJ-Nhu/BJ-Bfg and SN-Dhr/SN-Nkr plotting positions are nudged by a small fixed (dlon,dlat) offset for visibility; true coordinates are shown via the leader line and are the ones used for the underlying grid-cell extraction (08_extract_statistics.R), not the nudge."
+)
 
 ## ---- (c) Taylor diagram per flux, monthly scale, multi-site --------------
 ## No Taylor-diagram package is in the renv lockfile (openair/plotrix); per
@@ -219,6 +260,39 @@ for (fx in flux_order) {
   mtext(paste0(fx, " [", flux_units[fx], "]; radius = sd(X-BASE)/sd(tower); angle = correlation; * = tower reference"),
         side = 1, line = 3, cex = 0.7)
   dev.off()
+
+  taylor_png <- file.path(FLUXCOM_ROOT, "figures", flux_png_names[fx])
+  write_caption(taylor_png, c(
+    paste0(
+      "Figure (DRAFT). Taylor diagram for ", fx, " (monthly), comparing FLUXCOM-X-BASE against ",
+      "the tower at each site. Each point's distance from the origin is the ratio of X-BASE's ",
+      "standard deviation to the tower's (sd(X-BASE)/sd(tower)) over that site's own monthly ",
+      "values; its angle from the x-axis is the Pearson correlation between the two series (labelled ",
+      "arcs at r = 0.1 to 0.99). The asterisk at (1, 0), labelled \"tower\", is the reference point a ",
+      "perfect match would sit on. Colour identifies site (fixed palette, consistent across every ",
+      "Stage 2 figure); point shape identifies site status (circle = agreed, triangle = agreed and a ",
+      "confirmed X-BASE training site, square = pending Ossenatou)."
+    ),
+    paste0(
+      "Sites shown (n=", length(sites_here), "): ", paste(sort(sites_here), collapse = ", "),
+      ". n site-months per site: tables/xbase_monthly_stats.csv."
+    ),
+    paste0("Units: ", flux_units[fx], "."),
+    if (fx %in% c("GPP", "RECO")) "GH-Ank is not shown: it has no nighttime-partitioned tower data." else NULL,
+    STAGE2_CAPTION_DATA,
+    STAGE2_CAPTION_CONVENTION,
+    STAGE2_CAPTION_SITES
+  ))
+  write_meta(
+    taylor_png,
+    input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"),
+    notes = paste0(
+      "Taylor diagram computed per site from that site's monthly ", fx, " site-months (",
+      length(sites_here), " sites shown). sd ratio and correlation computed with stats::sd()/stats::cor() ",
+      "on the tower/X-BASE value pairs. No Taylor-diagram package (openair/plotrix) is in the renv ",
+      "lockfile; this is a self-contained base-R implementation per CLAUDE.md's no-new-dependency rule."
+    )
+  )
 }
 
 cat("\n[WAFNET/fluxcom_comparison] Wrote figures/draft_monthly_scatter.png, draft_site_map_bias.png, draft_taylor_diagram_{NEE,GPP,RECO,LE}.png\n")

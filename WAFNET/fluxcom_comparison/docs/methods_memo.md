@@ -212,3 +212,20 @@ series that might drift apart in coverage.
   becomes possible again and this memo's "no Reco/H, NT-only" constraints
   would need revisiting, not necessarily discarding (X-BASE may still be
   worth reporting alongside it for its longer period).
+
+## Output metadata and figure captions (2026-11-03)
+
+Every table and figure in this directory now has a `.meta.json` (CLAUDE.md "Output Metadata")
+and, for figures, a `.legend.txt` caption written as a journal figure caption for Ossénatou's
+paper. Shared helper: `WAFNET/write_meta.R` (`write_meta()`/`write_caption()`, same fields as
+`R/utils.R::write_output_metadata()` without the repo-root `outputs/session_info.txt` append —
+the `GSL_definition/` pattern), sourced once from `00_config.R`. The three boilerplate caption
+paragraphs every FLUXCOM-X-BASE figure shares (data/period, sign convention, training/pending
+sites) are `STAGE2_CAPTION_DATA`/`STAGE2_CAPTION_CONVENTION`/`STAGE2_CAPTION_SITES` in
+`00_config.R`, so they read identically everywhere rather than being retyped per figure. All 12
+captions are also compiled, in figure order, into `docs/figure_captions.md`. `04`/`05` (bash, no
+R process) write their `.meta.json` with an equivalent pure-bash block instead. No table or
+figure content changed in this pass — `report_back_2026-11-03.md` section 9 has the full
+coverage check (every script was re-run and diffed byte-for-byte against the committed output;
+the one figure using stochastic `ggrepel` label placement, `draft_site_map_bias.png`, was
+reverted to the committed PNG and given a fixed seed for future reproducibility).

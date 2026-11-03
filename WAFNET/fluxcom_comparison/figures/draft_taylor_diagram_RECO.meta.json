@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:37:58Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_monthly_values.csv"
+  ],
+  "notes": "Taylor diagram computed per site from that site's monthly RECO site-months (5 sites shown). sd ratio and correlation computed with stats::sd()/stats::cor() on the tower/X-BASE value pairs. No Taylor-diagram package (openair/plotrix) is in the renv lockfile; this is a self-contained base-R implementation per CLAUDE.md's no-new-dependency rule."
+}

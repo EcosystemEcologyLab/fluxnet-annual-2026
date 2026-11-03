@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:39:28Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_monthly_values.csv"
+  ],
+  "notes": "Per site x flux x calendar month: n_years = number of QC-passing site-years contributing to that month within 2001-2021 (same site-months as the Stage 2 statistics); tower_mean/xbase_mean = mean across those years; tower_sd/xbase_sd = SD across those years, NA when n_years < 3 (not enough years to characterise a spread -- see figures/draft_climatology_<site>.png, which plots individual years instead of a ribbon for those months). Bias = X-BASE minus tower; NEE negative for uptake; RECO is X-BASE-derived (GPP + NEE)."
+}

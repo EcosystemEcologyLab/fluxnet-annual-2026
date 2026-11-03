@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:16Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/site_variable_qc_overlap_yy.csv",
+    "docs/report_back_20261014.md section 1 (product periods, from literature/portal research, no data downloaded)"
+  ],
+  "notes": "Stage 1 -- pure date-range intersection of each site's QC-qualifying periods against each FLUXCOM product line's LITERATURE-STATED period (no FLUXCOM file was downloaded or read for this table). fluxcom_x_base's period here (2001-2021) uses the more generous ICOS-archive bound; see docs/report_back_2026-11-03.md section 1 for the Stage 2 confirmation that all 21 years through 2021 actually exist in the downloaded files."
+}

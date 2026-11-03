@@ -218,6 +218,10 @@ caption <- c(
   )
 )
 
-save_figure(fig2, "figure2_g_diagnostic_snnkr", caption, width = 11, height = 13)
+save_figure(
+  fig2, "figure2_g_diagnostic_snnkr", caption, width = 11, height = 13,
+  input_sources = combined_path,
+  notes = "Raw diagnostic, no QC filtering or completeness threshold applied to G_F_MDS/NETRAD (MDS gap-filled half-hours included; only NA rows dropped). BJ-Nhu excluded from every panel (G_F_MDS present in header but 100% NA for that site). Panel (d) colour scale capped at +-300 W/m2 (oob = scales::squish)."
+)
 
 message("[WAFNET] 04_figure2_g_diagnostic.R complete.")

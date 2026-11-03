@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:33Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_annual_values.csv"
+  ],
+  "notes": "Secondary look: only site x flux combinations with >= 3 overlapping complete annual values (Stage 1/Ossenatou decision) are included -- other combinations are absent from this table, not reported with a thin n. Same bias/RMSE/R2 definitions as xbase_monthly_stats.csv, computed on annual instead of monthly values."
+}

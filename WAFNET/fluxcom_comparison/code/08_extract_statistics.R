@@ -153,6 +153,14 @@ monthly_df$bias_product_minus_tower <- monthly_df$xbase_value - monthly_df$tower
 monthly_df$is_training_site <- monthly_df$site_id %in% c("GH-Ank", "SN-Dhr")
 
 write.csv(monthly_df, file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"), row.names = FALSE)
+write_meta(
+  file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"),
+  input_sources = c(
+    file.path(ANNUAL_PAPER_EXTRACTED_DIR, WAFNET_SITE_DIRS[STAGE2_ALL_SITES], "*_FLUXMET_MM_*.csv (read-only)"),
+    list.files(FLUXCOM_XBASE_DIR, pattern = "_050_monthly\\.nc$", full.names = TRUE)
+  ),
+  notes = "One row per QC-passing tower site-month (2001-2021) matched to the FLUXCOM-X-BASE 0.5deg grid cell at that site's coordinate. tower_value/xbase_value already in matching units (gC m-2 d-1 for NEE/GPP/RECO, W m-2 for LE -- no days-in-month conversion applied, X-BASE's own monthly files are already mean daily/hourly rates). RECO is derived (GPP + NEE, both X-BASE, same sign convention as NEE: negative = net uptake). GPP/RECO use the tower's NT partition (GPP_NT/RECO_NT), matching X-BASE's own nighttime-only GPP training; GH-Ank has no NT tower data and contributes no GPP/RECO rows. bias_product_minus_tower = xbase_value - tower_value."
+)
 
 ## ---- Monthly statistics per site x flux -----------------------------------
 r2_fn <- function(x, y) if (length(x) < 2 || stats::sd(x) == 0 || stats::sd(y) == 0) NA_real_ else stats::cor(x, y)^2
@@ -179,6 +187,11 @@ for (site_id in unique(monthly_df$site_id)) {
 monthly_stats <- do.call(rbind, stats_rows)
 monthly_stats <- monthly_stats[order(monthly_stats$flux, monthly_stats$site_id), ]
 write.csv(monthly_stats, file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_stats.csv"), row.names = FALSE)
+write_meta(
+  file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_stats.csv"),
+  input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"),
+  notes = "Per site x flux: n_months, bias (mean of xbase_value - tower_value), RMSE (sqrt(mean(bias^2))), R2 (squared Pearson correlation between tower_value and xbase_value). This is the Stage 2 primary comparison result (monthly, not annual)."
+)
 
 ## ---- Annual secondary look (>= 3 overlapping annual values only) ---------
 monthly_df$days_in_month <- lubridate::days_in_month(as.Date(paste0(monthly_df$year, "-", monthly_df$month, "-01")))
@@ -210,6 +223,11 @@ annual_df <- do.call(rbind, annual_rows)
 if (!is.null(annual_df)) {
   annual_df$bias_product_minus_tower <- annual_df$xbase_value - annual_df$tower_value
   write.csv(annual_df, file.path(FLUXCOM_ROOT, "tables", "xbase_annual_values.csv"), row.names = FALSE)
+  write_meta(
+    file.path(FLUXCOM_ROOT, "tables", "xbase_annual_values.csv"),
+    input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"),
+    notes = "One row per site x flux x calendar year with all 12 QC-passing months present (a stricter requirement than the Stage 2 monthly statistics, which use every qualifying month regardless of year completeness). Annual totals for NEE/GPP/RECO = sum(monthly_value * days_in_month); annual LE = days-in-month-weighted mean (a rate, not a total). Secondary look only -- see xbase_annual_stats.csv for which site x flux combinations reach the >=3-year threshold to be reported."
+  )
 
   ann_stats_rows <- list()
   for (site_id in unique(annual_df$site_id)) {
@@ -232,9 +250,16 @@ if (!is.null(annual_df)) {
     rmse = numeric(0), r2 = numeric(0)
   )
   write.csv(annual_stats, file.path(FLUXCOM_ROOT, "tables", "xbase_annual_stats.csv"), row.names = FALSE)
+  write_meta(
+    file.path(FLUXCOM_ROOT, "tables", "xbase_annual_stats.csv"),
+    input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_annual_values.csv"),
+    notes = "Secondary look: only site x flux combinations with >= 3 overlapping complete annual values (Stage 1/Ossenatou decision) are included -- other combinations are absent from this table, not reported with a thin n. Same bias/RMSE/R2 definitions as xbase_monthly_stats.csv, computed on annual instead of monthly values."
+  )
 } else {
   write.csv(data.frame(), file.path(FLUXCOM_ROOT, "tables", "xbase_annual_values.csv"), row.names = FALSE)
   write.csv(data.frame(), file.path(FLUXCOM_ROOT, "tables", "xbase_annual_stats.csv"), row.names = FALSE)
+  write_meta(file.path(FLUXCOM_ROOT, "tables", "xbase_annual_values.csv"), input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"), notes = "Empty: no site x flux x year had all 12 QC-passing months present.")
+  write_meta(file.path(FLUXCOM_ROOT, "tables", "xbase_annual_stats.csv"), input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_annual_values.csv"), notes = "Empty: no site x flux combination reached the >=3-year threshold.")
 }
 
 cat("\n[WAFNET/fluxcom_comparison] Monthly stats (bias = X-BASE minus tower):\n")

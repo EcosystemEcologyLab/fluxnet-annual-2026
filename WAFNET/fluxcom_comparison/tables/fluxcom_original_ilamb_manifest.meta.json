@@ -1,0 +1,6 @@
+{
+  "run_datetime_utc": "2026-11-03T20:42:44Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": ["https://www.ilamb.org/ILAMB-Data/DATA/gpp/FLUXCOM/gpp.nc", "https://www.ilamb.org/ILAMB-Data/DATA/reco/FLUXCOM/reco.nc", "https://www.ilamb.org/ILAMB-Data/DATA/hfls/FLUXCOM/le.nc", "https://www.ilamb.org/ILAMB-Data/DATA/hfss/FLUXCOM/sh.nc"],
+  "notes": "Documentation-only backup copy of the ORIGINAL FLUXCOM ensemble (non-Shuttle comparison data, CLAUDE.md Hard Rule 1) -- NOT used in the WAFNET x FLUXCOM-X-BASE comparison. gpp.nc/reco.nc: FLUXCOM RS+METEO, CRUNCEPv6 forcing, ANN method, 1979-12 to 2013-11, g m-2 day-1, 0.5deg. le.nc/sh.nc: FLUXCOM Energy RS+METEO, GSWP3v1 forcing, 1979-12 to 2014-11, watt/m2 (converted from native MJ/m2/day), 0.5deg. See docs/report_back_2026-11-03.md section 2 for the gpp.nc/reco.nc references-attribute quirk (cites the energy product papers, not Jung et al. 2020 -- likely an ILAMB packaging artefact, reported as observed not resolved)."
+}

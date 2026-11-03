@@ -467,6 +467,63 @@ decisions-needed list it left open):
 
 ---
 
+## 9. Output metadata and figure captions (2026-11-03)
+
+(`logs/prompts/2026-11-03_wafnet_captions_metadata.md`.) No figure, table, or
+analysis content changed in this pass — every table/figure below was
+verified byte-for-byte unchanged (`git diff`/`git status`) after adding the
+metadata/caption calls and re-running the producing script; the one
+exception (`draft_site_map_bias.png`, whose `ggrepel` label layout is
+stochastic) was regenerated once, diffed, found cosmetically different
+(label jitter only), and reverted to the committed PNG before committing
+this pass — only its new `.meta.json`/`.legend.txt` were kept. A
+`set.seed(42)` was added before that figure's `ggrepel` call so a future
+re-run reproduces the same layout.
+
+**`WAFNET/write_meta.R`** (new, shared by both WAFNET subprojects): a local
+`write_meta()` — same fields as `R/utils.R::write_output_metadata()`
+(`run_datetime_utc`, `pipeline_version`, `input_sources`, `notes`) without
+touching the repo-root `outputs/session_info.txt`, which no WAFNET side
+analysis may write to (the `GSL_definition/` pattern) — plus a
+`write_caption()` companion that writes a figure's `.legend.txt`. Sourced
+once by each subproject's `00_config.R`. `04_download_xbase.sh`/
+`05_download_ilamb_backup.sh` have no R process running, so their
+`.meta.json` is written by an equivalent pure-bash block added at the end of
+each script instead.
+
+**Coverage — every existing WAFNET output now has its companion file(s):**
+
+| Location | Tables (.csv) | `.meta.json` | Figures | `.meta.json` | `.legend.txt` |
+|---|---:|---:|---:|---:|---:|
+| `fluxcom_comparison/tables/` + `figures/` | 16 | 16 | 12 | 12 | 12 |
+| `energy_partitioning/tables/` + `figures/` | 4 | 4 | 1 | 1 | 1 |
+
+Two `fluxcom_comparison` tables (`fluxcom_products.csv`,
+`fluxcom_training_sites.csv`) were hand-compiled during Stage 1 web research,
+not produced by any script — their `.meta.json` `input_sources` cite the
+research sources (papers/portal pages) instead of a file path, and `notes`
+says so explicitly, including that `fluxcom_training_sites.csv`'s
+FLUXCOM-X-BASE answer is superseded by
+`fluxcom_x_base_training_sites_stage2.csv` (section 3) for that product line
+specifically. `notes` throughout records the non-Shuttle status of
+FLUXCOM-X-BASE and the ILAMB backup copy, the sign convention (bias = X-BASE
+minus tower; NEE negative for uptake), the derived-RECO formula, the
+nighttime-partitioning match, and any other deviation from the Annual
+Paper's own defaults (e.g. the DT→NT partition switch, section 3/8).
+
+Every `fluxcom_comparison` figure caption (journal-caption style, for
+Ossénatou's paper) states: what is plotted and how to read it (axes,
+symbols, colours, bands); the tower data source (FLUXNET Shuttle snapshot of
+20 September 2026) and FLUXCOM-X-BASE (Nelson et al. 2024, 0.5°, monthly,
+2001–2021); the sites shown and their site-month counts; units; the sign
+convention and derived-RECO formula; the nighttime-partitioning match
+(and that `GH-Ank` lacks it); that `GH-Ank`/`SN-Dhr` are X-BASE training
+sites; and that `SN-Nkr` is shown pending Ossénatou's decision. All 12
+captions are compiled, in figure order, into
+`docs/figure_captions.md`.
+
+---
+
 ## Sources consulted (Stage 2, in addition to Stage 1's list)
 
 ICOS Carbon Portal metadata SPARQL endpoint (`meta.icos-cp.eu/sparql`) and

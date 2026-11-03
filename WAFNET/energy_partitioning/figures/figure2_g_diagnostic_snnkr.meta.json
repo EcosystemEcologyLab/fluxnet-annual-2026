@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:35:41Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/energy_partitioning/data/processed/flux_hh_all_sites.rds"
+  ],
+  "notes": "Raw diagnostic, no QC filtering or completeness threshold applied to G_F_MDS/NETRAD (MDS gap-filled half-hours included; only NA rows dropped). BJ-Nhu excluded from every panel (G_F_MDS present in header but 100% NA for that site). Panel (d) colour scale capped at +-300 W/m2 (oob = scales::squish)."
+}

@@ -31,6 +31,10 @@ source("R/units.R")
 source("R/qc.R")
 check_pipeline_config()
 
+# Local write_meta()/write_caption() -- shared with energy_partitioning/, see
+# WAFNET/write_meta.R for why this is not R/utils.R::write_output_metadata().
+source("WAFNET/write_meta.R")
+
 # Six-site filter — same sites as WAFNET/energy_partitioning (see README.md).
 # Retained as-is for Stage 1 scripts (01-03); Stage 2 (04+) uses the two sets
 # below instead, per Dave's decision carried from Ossenatou Mamadou's 16
@@ -108,6 +112,39 @@ site_coords_for <- function(site_id) {
 }
 
 site_igbp_for <- function(site_id) site_bif_value(site_id, "IGBP")
+
+# Shared caption boilerplate for every Stage 2 FLUXCOM-X-BASE figure
+# (09_figures_draft.R, 10_climatology.R) -- one copy so the data/period,
+# sign-convention, and training-site statements read identically everywhere,
+# per the 2026-11-03 captions/metadata prompt
+# (logs/prompts/2026-11-03_wafnet_captions_metadata.md).
+STAGE2_CAPTION_DATA <- paste0(
+  "Tower data: FLUXNET Shuttle snapshot of 20 September 2026 ",
+  "(data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv), QC-passing monthly values ",
+  "(QC >= 0.50, qc_passes()/QC_THRESHOLD_MM), VUT where available else CUT per site. Comparison ",
+  "data: FLUXCOM-X-BASE (Nelson et al. 2024, Biogeosciences 21:5079-5115, ",
+  "doi:10.5194/bg-21-5079-2024; ICOS Carbon Portal, doi:10.18160/5NZG-JMJE; CC BY 4.0), 0.5 degree, ",
+  "monthly, 2001-2021 -- non-Shuttle comparison data (CLAUDE.md Hard Rule 1), used only as a ",
+  "labelled comparison, never as Annual Paper data."
+)
+
+STAGE2_CAPTION_CONVENTION <- paste0(
+  "Bias = X-BASE minus tower. NEE is negative for net uptake by the ecosystem, positive for net ",
+  "release (confirmed empirically against X-BASE; matches the tower's own convention). X-BASE has ",
+  "no respiration variable; RECO shown here is derived as GPP + NEE (both from X-BASE, same sign ",
+  "convention) and labelled \"derived\" wherever shown. X-BASE trains its GPP on the ",
+  "nighttime-partitioning method only; tower GPP and respiration are matched to it ",
+  "(GPP_NT/RECO_NT, not GPP_DT/RECO_DT) -- GH-Ank has no nighttime-partitioned tower data at all ",
+  "and is omitted from any GPP/RECO panel. X-BASE has no sensible-heat (H) variable; H is never shown."
+)
+
+STAGE2_CAPTION_SITES <- paste0(
+  "GH-Ank and SN-Dhr are confirmed in FLUXCOM-X-BASE's own 294-site training set (Nelson et al. ",
+  "2024 Table 1, direct match) -- marked with a distinct symbol. SN-Nkr is shown pending Ossenatou ",
+  "Mamadou's decision on whether to add it to the agreed site set (FLUXCOM-X-BASE's longer period ",
+  "gives it overlap the original FLUXCOM product did not) -- marked separately. BJ-Db1 has zero ",
+  "overlapping site-months with FLUXCOM-X-BASE and does not appear in any Stage 2 figure."
+)
 
 wafnet_fluxmet_path <- function(site_id, resolution = c("YY", "MM")) {
   resolution <- match.arg(resolution)

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:55Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "Stage 1 web research: Nelson et al. (2024) doi:10.5194/bg-21-5079-2024; ICOS Carbon Portal FLUXCOM-X-BASE collection doi:10.18160/5NZG-JMJE; Jung et al. (2019) doi:10.1038/s41597-019-0076-8; Tramontana et al. (2016) doi:10.5194/bg-13-4291-2016; Jung et al. (2020) doi:10.5194/bg-17-1343-2020; fluxcom.org product/download pages (see docs/report_back_20261014.md, \"Sources consulted\")"
+  ],
+  "notes": "Hand-compiled during Stage 1 research, not produced by any script -- no FLUXCOM file was downloaded or read for this table. Summarises each FLUXCOM product lines variables/period/resolution/partitioning/access/licence/citation, with confidence/not-found noted per cell. Stage 2 (report_back_2026-11-03.md) downloaded and read FLUXCOM-X-BASE directly, which confirmed and superseded some of this tables FLUXCOM-X-BASE entries (e.g. GPP partitioning, period) -- see that report for the higher-confidence answers."
+}

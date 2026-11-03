@@ -77,6 +77,14 @@ overlap_product_mm <- build(overlap_mm, count_overlap_mm)
 
 write.csv(overlap_product_yy, file.path(FLUXCOM_ROOT, "tables", "site_variable_product_overlap_yy.csv"), row.names = FALSE)
 write.csv(overlap_product_mm, file.path(FLUXCOM_ROOT, "tables", "site_variable_product_overlap_mm.csv"), row.names = FALSE)
+for (res in c("yy", "mm")) {
+  write_meta(
+    file.path(FLUXCOM_ROOT, "tables", paste0("site_variable_product_overlap_", res, ".csv")),
+    input_sources = c(file.path(FLUXCOM_ROOT, "tables", paste0("site_variable_qc_overlap_", res, ".csv")),
+                       "docs/report_back_20261014.md section 1 (product periods, from literature/portal research, no data downloaded)"),
+    notes = "Stage 1 -- pure date-range intersection of each site's QC-qualifying periods against each FLUXCOM product line's LITERATURE-STATED period (no FLUXCOM file was downloaded or read for this table). fluxcom_x_base's period here (2001-2021) uses the more generous ICOS-archive bound; see docs/report_back_2026-11-03.md section 1 for the Stage 2 confirmation that all 21 years through 2021 actually exist in the downloaded files."
+  )
+}
 
 cat("\n[WAFNET/fluxcom_comparison] Annual (YY) overlap, NEE only, all products:\n")
 print(overlap_product_yy[overlap_product_yy$variable == "NEE", ])

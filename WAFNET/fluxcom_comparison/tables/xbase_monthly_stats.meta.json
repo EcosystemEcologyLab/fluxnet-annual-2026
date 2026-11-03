@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:33Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_monthly_values.csv"
+  ],
+  "notes": "Per site x flux: n_months, bias (mean of xbase_value - tower_value), RMSE (sqrt(mean(bias^2))), R2 (squared Pearson correlation between tower_value and xbase_value). This is the Stage 2 primary comparison result (monthly, not annual)."
+}

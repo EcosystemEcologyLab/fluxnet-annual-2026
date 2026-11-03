@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:34:50Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/energy_partitioning/data/processed/flux_hh_all_sites.rds"
+  ],
+  "notes": "Percent non-NA per variable within each sites half-hourly record (not bare column presence); n_replicate_* counts *_1_1_1/*_2_1_1-style replicate columns."
+}

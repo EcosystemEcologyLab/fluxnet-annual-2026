@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:34:50Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/energy_partitioning/data/processed/flux_hh_all_sites.rds"
+  ],
+  "notes": "OLS of (LE_F_MDS + H_F_MDS) ~ (NETRAD - G_F_MDS), measured half-hours only (LE_F_MDS_QC==0 AND H_F_MDS_QC==0) -- MDS gap-filled half-hours excluded since MDS gap-filling itself draws on nearby measured energy-balance terms. Sites with <30 qualifying half-hours or R2<0.1 (n>=30) are flagged in the note column, not silently regressed/presented as usable."
+}

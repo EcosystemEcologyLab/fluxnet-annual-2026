@@ -38,9 +38,14 @@ register_figure <- function(id, caption) {
 #'
 #' @param plot ggplot/patchwork object
 #' @param id figure id, e.g. "figure1a_wilson_fixed_window"
-#' @param caption character vector; each element is one paragraph
+#' @param caption character vector; each element is one paragraph. Also
+#'   written out as a standalone `<id>.legend.txt` (CLAUDE.md-style figure
+#'   caption file), one per figure, alongside the PDF/PNG.
 #' @param width,height inches
-save_figure <- function(plot, id, caption, width = 9, height = 6.5) {
+#' @param input_sources,notes Passed to write_meta() (WAFNET/write_meta.R) to
+#'   write `<id>.meta.json` alongside the figure (CLAUDE.md "Output Metadata").
+save_figure <- function(plot, id, caption, width = 9, height = 6.5,
+                         input_sources = character(0), notes = "") {
   fig_dir <- file.path(WAFNET_ROOT, "figures")
   pdf_path <- file.path(fig_dir, paste0(id, ".pdf"))
   png_path <- file.path(fig_dir, paste0(id, ".png"))
@@ -60,6 +65,8 @@ save_figure <- function(plot, id, caption, width = 9, height = 6.5) {
   ggplot2::ggsave(png_path, plot = plot, width = width, height = height,
                    dpi = 300, bg = "white")
   register_figure(id, caption)
-  message("[WAFNET] Saved figure: ", id, " (", pdf_path, ", ", png_path, ")")
+  write_caption(png_path, caption)
+  write_meta(png_path, input_sources = input_sources, notes = notes)
+  message("[WAFNET] Saved figure: ", id, " (", pdf_path, ", ", png_path, ", .legend.txt, .meta.json)")
   invisible(list(pdf = pdf_path, png = png_path))
 }

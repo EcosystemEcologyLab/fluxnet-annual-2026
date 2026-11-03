@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:37:57Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_monthly_values.csv"
+  ],
+  "notes": "Bias = X-BASE minus tower (see tables/xbase_monthly_stats.csv for per-site/flux bias, RMSE, R2). RECO is derived (GPP + NEE, X-BASE series). GH-Ank omitted from GPP/RECO panels (no nighttime-partitioned tower data)."
+}

@@ -56,6 +56,11 @@ clim_summary <- monthly_df %>%
   )
 
 write.csv(clim_summary, file.path(FLUXCOM_ROOT, "tables", "xbase_climatology.csv"), row.names = FALSE)
+write_meta(
+  file.path(FLUXCOM_ROOT, "tables", "xbase_climatology.csv"),
+  input_sources = file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"),
+  notes = "Per site x flux x calendar month: n_years = number of QC-passing site-years contributing to that month within 2001-2021 (same site-months as the Stage 2 statistics); tower_mean/xbase_mean = mean across those years; tower_sd/xbase_sd = SD across those years, NA when n_years < 3 (not enough years to characterise a spread -- see figures/draft_climatology_<site>.png, which plots individual years instead of a ribbon for those months). Bias = X-BASE minus tower; NEE negative for uptake; RECO is X-BASE-derived (GPP + NEE)."
+)
 
 ## Individual-year points for months with < 3 contributing years (shown
 ## instead of a ribbon at those months).
@@ -121,8 +126,10 @@ excluded_note <- function(site_id) {
 
 for (site_id in sites_to_plot) {
   site_color <- STAGE2_SITE_COLORS[[site_id]]
-  panels <- lapply(flux_order, one_flux_panel, site_id = site_id, site_color = site_color)
-  panels <- Filter(Negate(is.null), panels)
+  panel_list <- stats::setNames(lapply(flux_order, one_flux_panel, site_id = site_id, site_color = site_color), flux_order)
+  panel_list <- Filter(Negate(is.null), panel_list)
+  panels <- unname(panel_list)
+  fluxes_shown <- names(panel_list)
   if (length(panels) == 0) {
     message("[WAFNET/fluxcom_comparison] No X-BASE-overlapping months for ", site_id, " -- skipping climatology figure.")
     next
@@ -153,6 +160,41 @@ for (site_id in sites_to_plot) {
   fig_height <- if (length(panels) > 2) 9 else 5
   ggsave(out_file, p, width = 10, height = fig_height, dpi = 200, bg = "white")
   cat("[WAFNET/fluxcom_comparison] Wrote", out_file, "\n")
+
+  site_status <- if (site_id %in% STAGE2_PENDING_SITES) "pending Ossenatou" else "agreed"
+  n_by_flux_site <- table(monthly_df$flux[monthly_df$site_id == site_id])
+  write_caption(out_file, c(
+    paste0(
+      "Figure (DRAFT). Mean seasonal cycle at ", site_id, " (", site_igbp_for(site_id), "), tower vs. ",
+      "FLUXCOM-X-BASE, one panel per flux (", paste(fluxes_shown, collapse = ", "), "). ",
+      if (!is.null(excluded_note(site_id))) excluded_note(site_id) else NULL,
+      " X-axis: calendar month (Jan-Dec). Line and points: mean value across the contributing years ",
+      "for that month (tower in ", site_id, "'s colour -- fixed palette, consistent across every ",
+      "Stage 2 figure; X-BASE in a single fixed colour used for every site). Shaded band: mean +/- 1 ",
+      "SD across years, shown only for months with >= 3 contributing years; open circles: the ",
+      "individual years' values instead, shown for months with fewer than 3. The number printed ",
+      "along the bottom of each panel is the count of contributing years for that month."
+    ),
+    paste0(
+      "Years used: ", paste(sort(unique(monthly_df$year[monthly_df$site_id == site_id])), collapse = ", "),
+      ". Site-months per flux: ", paste(paste0(names(n_by_flux_site), "=", as.integer(n_by_flux_site)), collapse = ", "), "."
+    ),
+    "Units: NEE, GPP, RECO in gC m-2 d-1; LE in W m-2.",
+    STAGE2_CAPTION_DATA,
+    STAGE2_CAPTION_CONVENTION,
+    STAGE2_CAPTION_SITES
+  ))
+  write_meta(
+    out_file,
+    input_sources = c(file.path(FLUXCOM_ROOT, "tables", "xbase_monthly_values.csv"),
+                       file.path(FLUXCOM_ROOT, "tables", "xbase_climatology.csv")),
+    notes = paste0(
+      "Site status: ", site_status, ". Fluxes shown: ", paste(fluxes_shown, collapse = ", "), ". ",
+      if (!is.null(excluded_note(site_id))) excluded_note(site_id) else "",
+      " Ribbon vs. individual-year-points threshold: n_years >= 3 per month (same threshold as the ",
+      "annual secondary statistics in 08_extract_statistics.R)."
+    )
+  )
 }
 
 cat("\n[WAFNET/fluxcom_comparison] Wrote tables/xbase_climatology.csv and figures/draft_climatology_<site>.png\n")

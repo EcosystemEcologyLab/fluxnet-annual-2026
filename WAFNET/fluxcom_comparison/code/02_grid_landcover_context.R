@@ -51,6 +51,12 @@ merged$note <- paste0(
 )
 
 write.csv(merged, file.path(FLUXCOM_ROOT, "tables", "site_landcover_context.csv"), row.names = FALSE)
+write_meta(
+  file.path(FLUXCOM_ROOT, "tables", "site_landcover_context.csv"),
+  input_sources = c("data/snapshots/site_igbp_fig4.csv", "data/snapshots/site_landcover_cci.csv",
+                     "data/snapshots/site_landcover_cci_current_767.csv"),
+  notes = "Stage 1, six original WAFNET sites. Read-only from repo-root committed snapshots; no new raster extraction or FLUXCOM-grid aggregation performed (none of these snapshots are pre-aggregated to a FLUXCOM-native grid cell -- see the note column and docs/report_back_20261014.md section 5/6)."
+)
 cat("\n[WAFNET/fluxcom_comparison] Land-cover context per site:\n")
 print(merged[, c("site_id", "igbp_pi", "igbp_modis_class", "agree",
                   "cci_v2.0.7_2015_native_class", "cci_v2.1.1_2022_native_class")])

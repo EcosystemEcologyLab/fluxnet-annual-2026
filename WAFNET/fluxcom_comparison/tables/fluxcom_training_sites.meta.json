@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:55Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "Stage 1 web research: Tramontana et al. (2016) supplement Table S1 (direct text search, original FLUXCOM); Nelson et al. (2024) reference-list proxy (FLUXCOM-X-BASE, Table 1 rendered as an un-OCRd image at the time)"
+  ],
+  "notes": "Hand-compiled during Stage 1 research, not produced by any script. For FLUXCOM-X-BASE specifically, SUPERSEDED by tables/fluxcom_x_base_training_sites_stage2.csv (07_training_site_check.R), which reads Nelson et al. (2024) Table 1 directly from the publishers XLSX -- a direct, high-confidence match, not the reference-list proxy used here. This tables original-FLUXCOM (carbon/energy RS and RS+METEO) answers are unaffected and remain the current answer for those product lines."
+}

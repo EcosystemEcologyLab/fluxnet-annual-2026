@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:25Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "data/external/fluxcom_x_base_supplement/bg-21-5079-2024-t01.xlsx"
+  ],
+  "notes": "Direct match of all seven Stage 2 site IDs against Nelson et al. (2024) Table 1's full 294-site list, read from the publisher's own XLSX download -- supersedes Stage 1's tables/fluxcom_training_sites.csv for FLUXCOM-X-BASE specifically, which only had a reference-list proxy (the paper's HTML Table 1 rendered as an un-OCR'd image). GH-Ank and SN-Dhr confirmed; the other five sites (including both pending-Ossenatou sites) are not in the training set."
+}

@@ -49,6 +49,11 @@ result <- data.frame(
 )
 
 write.csv(result, file.path(FLUXCOM_ROOT, "tables", "fluxcom_x_base_training_sites_stage2.csv"), row.names = FALSE)
+write_meta(
+  file.path(FLUXCOM_ROOT, "tables", "fluxcom_x_base_training_sites_stage2.csv"),
+  input_sources = XLSX_PATH,
+  notes = "Direct match of all seven Stage 2 site IDs against Nelson et al. (2024) Table 1's full 294-site list, read from the publisher's own XLSX download -- supersedes Stage 1's tables/fluxcom_training_sites.csv for FLUXCOM-X-BASE specifically, which only had a reference-list proxy (the paper's HTML Table 1 rendered as an un-OCR'd image). GH-Ank and SN-Dhr confirmed; the other five sites (including both pending-Ossenatou sites) are not in the training set."
+)
 
 cat("\n[WAFNET/fluxcom_comparison] FLUXCOM-X-BASE training-site check (Stage 2, direct Table 1 match):\n")
 print(result[, c("site_id", "site_status", "in_fluxcom_x_base_training_set")])

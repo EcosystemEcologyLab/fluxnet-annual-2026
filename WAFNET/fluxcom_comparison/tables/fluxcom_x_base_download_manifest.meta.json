@@ -1,0 +1,6 @@
+{
+  "run_datetime_utc": "2026-11-03T20:42:21Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": ["https://meta.icos-cp.eu/sparql (ICOS metadata SPARQL endpoint)", "https://data.icos-cp.eu/objects/<hash> (per-file download, after licence_accept)"],
+  "notes": "FLUXCOM-X-BASE is non-Shuttle comparison data (CLAUDE.md Hard Rule 1). File list discovered dynamically via SPARQL, filtered on the _050_monthly.nc filename suffix (0.5deg monthly). Each row sha256-verified against the checksum SPARQL itself reports; see sha256_verified column (FALSE rows, if any, were not written to data/external/fluxcom_x_base/ with mismatched content -- see the script log for details). Download requires an anonymous CC BY 4.0 licence click-through (no account/credential) -- confirmed interactively before this script was first run, see SESSION_LOG.md 2026-11-03."
+}

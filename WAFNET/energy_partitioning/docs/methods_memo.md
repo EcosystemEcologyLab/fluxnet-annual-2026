@@ -164,3 +164,17 @@ script.
   including MDS gap-filled records — worth knowing when Task 2's variance
   decomposition needs enough site-years; see `tables/site_years.csv` for
   per-site-year half-hour counts before committing to aggregation windows.
+
+## Output metadata and figure captions (2026-11-03)
+
+Every table (`tables/*.csv`) and the one figure (`figures/figure2_g_diagnostic_snnkr.{png,pdf}`)
+now has a `.meta.json` companion (CLAUDE.md "Output Metadata"), written by a shared
+`write_meta()` sourced from `WAFNET/write_meta.R` (same fields as
+`R/utils.R::write_output_metadata()`, minus the repo-root `outputs/session_info.txt` append,
+which no WAFNET analysis may do — same pattern `GSL_definition/` already uses). The figure also
+has a `.legend.txt`, written by the new `write_caption()` in that same shared file from
+`save_figure()`'s existing `caption` argument (which was already being accumulated into
+`data/processed/fig_registry.rds` for a future figure-pack assembly step, just never written out
+as a standalone per-figure file until now). No table or figure content changed in this pass —
+see `WAFNET/fluxcom_comparison/docs/report_back_2026-11-03.md` section 9 for the full prompt and
+coverage check across both WAFNET subprojects.

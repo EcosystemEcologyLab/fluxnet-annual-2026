@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T20:39:29Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_monthly_values.csv",
+    "WAFNET/fluxcom_comparison/tables/xbase_climatology.csv"
+  ],
+  "notes": "Site status: agreed. Fluxes shown: NEE, GPP, RECO, LE.  Ribbon vs. individual-year-points threshold: n_years >= 3 per month (same threshold as the annual secondary statistics in 08_extract_statistics.R)."
+}

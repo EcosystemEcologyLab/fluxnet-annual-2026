@@ -159,6 +159,22 @@ log "=== DOWNLOAD COMPLETE ==="
 log "OK: ${n_ok}  Skipped (already present): ${n_skip}  Failed: ${n_fail}"
 log "Manifest written: ${MANIFEST}"
 
+# --- .meta.json companion (CLAUDE.md "Output Metadata"; same fields as
+# WAFNET/write_meta.R's R helper, written here in pure bash since this
+# script has no R process running) ------------------------------------------
+META_PATH="${MANIFEST%.csv}.meta.json"
+RUN_DT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+cat > "${META_PATH}" <<EOF
+{
+  "run_datetime_utc": "${RUN_DT}",
+  "pipeline_version": "${GIT_SHA}",
+  "input_sources": ["https://meta.icos-cp.eu/sparql (ICOS metadata SPARQL endpoint)", "https://data.icos-cp.eu/objects/<hash> (per-file download, after licence_accept)"],
+  "notes": "FLUXCOM-X-BASE is non-Shuttle comparison data (CLAUDE.md Hard Rule 1). File list discovered dynamically via SPARQL, filtered on the _050_monthly.nc filename suffix (0.5deg monthly). Each row sha256-verified against the checksum SPARQL itself reports; see sha256_verified column (FALSE rows, if any, were not written to data/external/fluxcom_x_base/ with mismatched content -- see the script log for details). Download requires an anonymous CC BY 4.0 licence click-through (no account/credential) -- confirmed interactively before this script was first run, see SESSION_LOG.md 2026-11-03."
+}
+EOF
+log "Metadata written: ${META_PATH}"
+
 if [[ "${n_fail}" -gt 0 ]]; then
   exit 1
 fi

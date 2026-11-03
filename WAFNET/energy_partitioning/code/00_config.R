@@ -40,6 +40,10 @@ source("R/pipeline_config.R")
 source("R/credentials.R")
 check_pipeline_config()
 
+# Local write_meta()/write_caption() -- shared with fluxcom_comparison/, see
+# WAFNET/write_meta.R for why this is not R/utils.R::write_output_metadata().
+source("WAFNET/write_meta.R")
+
 library(fluxnet)
 
 for (sub in c("raw", "extracted", "processed")) {

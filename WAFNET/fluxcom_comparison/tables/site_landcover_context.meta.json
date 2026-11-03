@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-11-03T20:41:12Z",
+  "pipeline_version": "a7f8041",
+  "input_sources": [
+    "data/snapshots/site_igbp_fig4.csv",
+    "data/snapshots/site_landcover_cci.csv",
+    "data/snapshots/site_landcover_cci_current_767.csv"
+  ],
+  "notes": "Stage 1, six original WAFNET sites. Read-only from repo-root committed snapshots; no new raster extraction or FLUXCOM-grid aggregation performed (none of these snapshots are pre-aggregated to a FLUXCOM-native grid cell -- see the note column and docs/report_back_20261014.md section 5/6)."
+}

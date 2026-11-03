@@ -4,6 +4,32 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — GSL methods comparison: review figures for discussion, started
+
+New script `GSL_definition/expanded/code/12_methods_review_figures.R`, read-only against version 4's
+outputs (commit `4965af6`) plus a small amount of fresh daily-data pull for figure B. Full prompt saved
+to `logs/prompts/2026-11-03_gsl_methods_review_figures.md`. Does not change `11_gsl_methods_compare.R`
+or any of its existing tables/figures.
+
+Four draft figures for Dave and Tash to discuss, written to `figures/drafts/methods_review/`, each
+titled "Draft for discussion", NT series, calendar year_rule as the main view (min_gpp_month as a
+stated companion where requested): (A) range of all 8 published/derived methods' mean GSL across the
+15 sites, sorted by skewness, with a light M2 22-value-grid band and the three framing choices (Z16 =
+10% of P99; 85% and 95% of annual GPP) drawn larger -- plus a min_gpp_month companion; (B) a
+threshold-dependence raster (day x year, shaded by the share of the 22 M2 thresholds that count that
+day as in-season) for AU-ASM-vs-AU-How and US-SRM-vs-AU-How, with a daily-GPP-in-%-of-P99 histogram
+beside each raster (AU-ASM is not one of the 15 sites -- computed fresh, same rules, from its own
+passing years); (C) per-method season placement (median daily NT GPP + IQR, with each method's
+median start/end bar) at US-Ha1, US-Wkg, US-Var, AU-How (calendar), plus US-Var again under
+min_gpp_month to show the January-boundary split; (D) skewness vs. cross-method GSL range, both year
+rules, with AU-How annotated.
+
+Sources for the three labelled choices and the method-family shape grouping: the version-4 script's
+own FIG_METHODS/M2_PCTS_GRID/M4_TARGETS objects and Tash's framing (no two-way comparison; continuous
+skewness colour scale, not forest-vs-open).
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M8), version 3, started
 
 Revising `GSL_definition/expanded/code/11_gsl_methods_compare.R` in place per Dave's follow-up

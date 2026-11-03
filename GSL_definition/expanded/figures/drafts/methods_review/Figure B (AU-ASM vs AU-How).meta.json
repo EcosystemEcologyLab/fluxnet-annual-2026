@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-11-03T15:09:01Z",
+  "pipeline_version": "bb746e0",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
+    "GSL_definition/expanded/tables/derived_site.csv",
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+  ],
+  "notes": "Draft for Dave/Tash discussion. AU-ASM computed fresh (not one of the 15 sites)."
+}

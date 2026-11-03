@@ -1,0 +1,8 @@
+Draft for discussion. Figure A companion: same as Figure A, but every site's year starts on its own
+lowest-mean-NT-GPP calendar month (min_gpp_month year_rule) instead of the calendar year.
+Sites where this differs from the calendar-year figure (lowest-GPP month != January): AU-How, FR-Pue, AT-Neu, IL-Yat, US-Ton, US-Var.
+At every other site, the two figures are identical (lowest-GPP month = January = the calendar rule's
+own start month). M2's 22-value-grid band is recomputed fresh for this rule (not in any committed
+table); every other element is read from tables/gsl_methods_site_summary.csv etc.
+Numbers behind this figure: tables/gsl_methods_site_summary.csv, tables/gsl_methods_year_rule_range.csv,
+tables/derived_site.csv; M2 band computed fresh in this script (not persisted).

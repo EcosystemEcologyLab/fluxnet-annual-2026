@@ -1,0 +1,12 @@
+Draft for discussion. Figure B (AU-ASM vs AU-How), calendar year_rule (Jul-Jun, Southern Hemisphere).
+NT series. (a,c) Each day shaded by the share of Tash's 22 %-of-P99 thresholds at which that day's NT
+GPP counts as in-season (dark = in season at every threshold; white = at none). Coloured brackets:
+the day-span counted in-season by each of the three labelled choices (10% of P99 = Z16; 85%/95% of
+annual GPP), using the first/last-qualifying-day rule. (b,d) Histogram of daily NT GPP, as % of P99,
+pooled over each site's own passing years; light blue = the 22-threshold grid's own range (0.1-20%
+of P99); vertical lines = the same three labelled choices, in %-of-P99 units.
+AU-ASM is not one of the 15 comparison sites; computed fresh here from its own passing years, same
+rules as the 15 sites (P99 = 5.22 gC/m2/d, M4 85%/95% thresholds = 7.31%/4.92% of P99).
+AU-How: P99 = 11.70 gC/m2/d, M4 85%/95% thresholds = 33.74%/24.84% of P99.
+Numbers behind this figure: this script's own fresh daily-data computation (not persisted to a table;
+AU-How's M4 thresholds are also in tables/gsl_methods_site_year.csv).

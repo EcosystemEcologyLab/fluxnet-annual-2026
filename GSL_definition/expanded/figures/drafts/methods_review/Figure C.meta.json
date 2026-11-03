@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T15:09:03Z",
+  "pipeline_version": "bb746e0",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv",
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')"
+  ],
+  "notes": "Draft for Dave/Tash discussion. Count methods use the 5-day-run start/end rule."
+}

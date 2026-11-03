@@ -1,0 +1,11 @@
+Draft for discussion. Figure C: where each method puts the season, NT series. (a) US-Ha1, (b) US-Wkg,
+(c) US-Var, (d) AU-How -- all calendar year_rule (NH = Jan-Dec; AU-How = Jul-Jun). (e) US-Var again
+under the min_gpp_month year_rule (starts in August, its own lowest-mean-NT-GPP month) -- compare
+with (c) to see how the calendar-year (January) boundary splits US-Var's winter-spring season.
+Top of each panel: median daily NT GPP across years (black line) with interquartile range across
+years (grey ribbon), by day-of-window. Bottom: one bar per method (M1-M8, same order/family shapes
+as Figure A) from its median start to median end across years, with thin black whiskers for the
+interquartile range of start/end across years. Count methods (M2/M3/M4) use the 5-day-run start/end
+rule (start_date_run5/end_date_run5), not the first/last-qualifying-day rule.
+Numbers behind this figure: tables/gsl_methods_site_year.csv (method bars) plus this script's own
+fresh daily-data computation (median/IQR curves, not persisted to a table).

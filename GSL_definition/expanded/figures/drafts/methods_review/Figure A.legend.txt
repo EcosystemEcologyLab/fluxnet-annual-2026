@@ -1,0 +1,10 @@
+Draft for discussion. Figure A: range of all 8 GSL methods' mean GSL (days), 15 sites, calendar
+year_rule (NH = Jan-Dec, AU-How = Jul-Jun). NT series only. Sites sorted by skewness (ascending,
+printed and coloured continuously at left -- never by vegetation/forest-vs-open). Grey bar = min-to-
+max mean GSL across the 8 headline methods (same subs as tables/gsl_methods_year_rule_range.csv).
+Light blue band = M2's full 22-value %-of-P99 grid. Small shapes = one marker per method, shaped by
+method family (threshold count: M2/M3; fraction of annual GPP: M4; span of smoothed GPP: M1; NEP-
+based: M5/M6; derivative/normalized: M7/M8). Large coloured points = the three framing choices: 10%
+of P99 (Z16, = M2), 85% and 95% of annual GPP (= M4; Tash's own target between these is not settled).
+Numbers behind this figure: tables/gsl_methods_site_summary.csv, tables/gsl_methods_m2_grid22.csv,
+tables/gsl_methods_year_rule_range.csv, tables/derived_site.csv.

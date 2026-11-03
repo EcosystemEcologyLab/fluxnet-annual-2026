@@ -1,6 +1,8 @@
-GSL methods dotplot (draft, v2). Mean GSL (NT series) with interannual SD, by method, for each of
-the 15 sites, sorted bottom-to-top by ascending skewness (main-variant). One sub-threshold per
-method: M1-summer, M2 10% of P99 (= Z16), M3 1 gC m-2 d-1, M4 0.95 of annual GPP (= T95), M5-span
-(NEP>0, >=5-day runs), M6 (Hu et al. 2010 NEP rate-of-change, median across k=3-9, M5-span-anchored
-search windows). Net-source years excluded from M5/M6's own mean/SD.
-Numbers behind this figure: tables/gsl_methods_site_summary.csv.
+GSL methods dotplot (draft, v3). Mean GSL by method, for each of the 15 sites, sorted bottom-to-top
+by ascending skewness (main-variant). M1-summer, M2 (shown as its full range across Tash's 22-value,
+0.1-20%-of-P99 grid -- no single point, per the prompt), M3 1 gC m-2 d-1, M4 0.85 of annual GPP (one
+of 4 reported targets; chosen here only as a representative display value, not as 'the' method), M5-
+span, M6 (anchored form), M7 (amplitude/derivative), M8 (normalized 0.25). Net-source years excluded
+from M5/M6's own mean/SD. This figure deliberately shows 8 methods spanning a wide range of
+thresholds/rules -- it is not a comparison of any one method against a single reference.
+Numbers behind this figure: tables/gsl_methods_site_summary.csv, tables/gsl_methods_m2_grid22.csv.

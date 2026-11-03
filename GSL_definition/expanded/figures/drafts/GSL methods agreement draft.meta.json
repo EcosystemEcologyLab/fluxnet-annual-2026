@@ -1,8 +1,9 @@
 {
-  "run_datetime_utc": "2026-11-03T03:41:30Z",
-  "pipeline_version": "3fd0dba",
+  "run_datetime_utc": "2026-11-03T05:02:43Z",
+  "pipeline_version": "33efba0",
   "input_sources": [
-    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv",
+    "GSL_definition/expanded/tables/gsl_methods_agreement.csv"
   ],
-  "notes": "VERSION 2. Draft figure, not a numbered manuscript figure. Site-year anomalies, pairwise-complete Spearman correlation."
+  "notes": "VERSION 3. Draft figure. M6 = anchored form only; caption notes its agreement with M5 is partly built in by construction."
 }

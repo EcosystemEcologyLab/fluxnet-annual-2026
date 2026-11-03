@@ -1,8 +1,9 @@
 {
-  "run_datetime_utc": "2026-11-03T03:41:29Z",
-  "pipeline_version": "3fd0dba",
+  "run_datetime_utc": "2026-11-03T05:02:42Z",
+  "pipeline_version": "33efba0",
   "input_sources": [
-    "GSL_definition/expanded/tables/gsl_methods_site_summary.csv"
+    "GSL_definition/expanded/tables/gsl_methods_site_summary.csv",
+    "GSL_definition/expanded/tables/gsl_methods_m2_grid22.csv"
   ],
-  "notes": "VERSION 2. Draft figure, not a numbered manuscript figure. NT series; one sub-threshold per method."
+  "notes": "VERSION 3. Draft figure. NT/NEP-only series; M2 shown as a range, not a point; explicit numeric y-offsets (not position_dodge) keep the M2 range bar aligned with the other methods' point+errorbar glyphs at the same site."
 }

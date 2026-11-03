@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T05:02:42Z",
+  "pipeline_version": "33efba0",
+  "input_sources": [
+    "data/snapshots/badm_management_coverage.csv",
+    "review/figures/methods_badm_management.md"
+  ],
+  "notes": "VERSION 3, item 7. Per site, management/disturbance type (mown, grazed, burned, other, unknown), dated detail where known, and source. Multiple rows per site where BADM records more than one category (e.g. IL-Yat: grazed, burned, other/irrigation). BADM itself has no dated management-event records anywhere in the FLUXNET Shuttle network (confirmed in methods_badm_management.md) -- the only dated detail here is from the literature (AT-Neu, Hammerle et al. 2008). US-SRM/US-Wkg grazing is BADM-confirmed, not left as 'unconfirmed' per the prompt's conditional."
+}

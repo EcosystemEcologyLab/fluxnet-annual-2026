@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T05:02:42Z",
+  "pipeline_version": "33efba0",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+  ],
+  "notes": "VERSION 3, item 3. For M2-M4 (NT series), MEDIAN absolute start/end-date shift (days) between rule (a) first/last qualifying day and rule (b) first/last >=5-day run [_ab], and between (a) and rule (c) Panwar's smoothed-crossing-nearest-peak [_ac], per site across all methods/subs/years (median preferred over mean -- a handful of site-years with isolated far-from-peak qualifying days under M3's crude absolute threshold produce extreme outliers that dominate a mean; mean_shift_*_ac kept alongside for transparency)."
+}

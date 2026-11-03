@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T05:02:42Z",
+  "pipeline_version": "33efba0",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+  ],
+  "notes": "VERSION 3, item 8. For every AT-Neu site-year flagged two-season (M5-span, TIMESAT), the number of days between the secondary smoothed-GPP peak and the end of each of AT-Neu's 3 recurring cut windows (Hammerle et al. 2008); consistent_with_mowing = TRUE if that gap is 14-28 days (2-4 weeks)."
+}

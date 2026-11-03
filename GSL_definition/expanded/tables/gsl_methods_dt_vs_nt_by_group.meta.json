@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T05:02:42Z",
+  "pipeline_version": "33efba0",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_dt_vs_nt.csv"
+  ],
+  "notes": "VERSION 3, item 6. Mean signed DT-minus-NT start/end shift (days), pooled by vegetation group (deciduous forest, evergreen forest, grassland, woody-grass mosaic)."
+}

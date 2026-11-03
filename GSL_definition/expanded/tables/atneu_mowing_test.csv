@@ -1,0 +1,13 @@
+year,secondary_peak_date,cut,cut_end_date,days_after_cut_end,consistent_with_mowing
+2010,2010-05-28,cut1_jun,2010-06-16,-19,FALSE
+2010,2010-05-28,cut2_jul_aug,2010-08-12,-76,FALSE
+2010,2010-05-28,cut3_sep_oct,2010-10-28,-153,FALSE
+2018,2018-07-25,cut1_jun,2018-06-16,39,FALSE
+2018,2018-07-25,cut2_jul_aug,2018-08-12,-18,FALSE
+2018,2018-07-25,cut3_sep_oct,2018-10-28,-95,FALSE
+2019,2019-05-21,cut1_jun,2019-06-16,-26,FALSE
+2019,2019-05-21,cut2_jul_aug,2019-08-12,-83,FALSE
+2019,2019-05-21,cut3_sep_oct,2019-10-28,-160,FALSE
+2020,2020-08-14,cut1_jun,2020-06-16,59,FALSE
+2020,2020-08-14,cut2_jul_aug,2020-08-12,2,FALSE
+2020,2020-08-14,cut3_sep_oct,2020-10-28,-75,FALSE

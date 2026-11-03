@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-11-03T03:41:29Z",
-  "pipeline_version": "3fd0dba",
+  "run_datetime_utc": "2026-11-03T05:02:42Z",
+  "pipeline_version": "33efba0",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
     "GSL_definition/expanded/tables/sites.csv",
@@ -8,5 +8,5 @@
     "GSL_definition/expanded/tables/derived_site.csv",
     "GSL_definition/expanded/tables/derived_site_year.csv"
   ],
-  "notes": "VERSION 2 (supersedes v1, 15dc51f -- see docs/gsl_methods_compare_2026-11-02_v2.md). Preliminary comparison of 6 published GSL methods (M1-M6) at the 15 'Figure GSL-IAV' sites. Two independent GPP series, never mixed within a method: nt = zero-floored GPP_NT_REF (no winter screen), dt = zero-floored GPP_DT_REF, each with its own P99/fine grid. M5/M6 use NEP only (variant='all'). Southern-Hemisphere (AU-How) uses Jul-Jun season years in EVERY method including M2-M4 and for P99, with a fresh day-count passing rule (<=14 failing days under the existing 0.25 daily-QC rule), not the v1 'both bracketing calendar years pass' proxy. M6 searches for start/end only within +/-30 days of M5-span's own start/end (k=3-9 day OLS slope on UNSMOOTHED NEP, median across k; no alternate-end). Two-season flag (M5-span/M6 only) uses the TIMESAT secondary-peak rule (Wang et al. 2020) on 15-day-smoothed NT GPP, not a slope-run rule. Checks (NH sites only, all passed exactly): NT-series M2@10%/M4@0.95 == derived_site_year.csv's main_unscreened gsl_z16/gsl_t95/f_z16/f_t95; every row has a value or an explanatory flag. See SESSION_LOG.md and the methods doc for AU-How's before/after comparison, DT-vs-NT partitioning uncertainty, and M6-vs-v1."
+  "notes": "VERSION 3 (supersedes v2, e0348a5 -- see docs/gsl_methods_compare_2026-11-02_v3.md). Eight GSL methods (M1-M8) at the 15 'Figure GSL-IAV' sites, on two independent GPP series (nt, dt), never mixed. M2 kept at 5/10/20% of P99 (full 22-value grid in gsl_methods_m2_grid22.csv, NT only); M4 at 0.85/0.90/0.95/0.99 of annual GPP via the fine grid. M2-M4 carry 3 start/end rules: first/last qualifying day (start_date/end_date), first/last >=5-day run (start_date_run5/end_date_run5), and the smoothed-threshold-crossing closest to the peak (start_date_smpeak/end_date_smpeak, Panwar et al. 2023's rule). M6 has two forms (sub='anchored'/'unanchored'); figures use 'anchored' only. M7 (Ma et al. 2013 amplitude/derivative) and M8 (Panwar et al. 2023 normalized threshold, 0.10/0.25/ 0.50) are new, on 15-day-smoothed GPP. Two-season flag (M5-span/M6 only) via the TIMESAT secondary- peak rule on smoothed NT GPP. Checks (NH sites only, all passed exactly): NT-series M2@10%/M4@0.95 == derived_site_year.csv's main_unscreened gsl_z16/gsl_t95/f_z16/f_t95; every row has a value or an explanatory flag. M4@0.85-vs-fraction-sweep check is NOT APPLICABLE: fraction_sweep_main.csv only holds the winter-screened 'main' variant, not 'main_unscreened'/NT. This comparison deliberately does not frame any method as 'the reference' -- see the methods doc for the full rationale."
 }

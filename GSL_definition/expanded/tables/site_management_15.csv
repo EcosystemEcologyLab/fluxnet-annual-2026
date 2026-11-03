@@ -1,0 +1,19 @@
+site_id,igbp,group,management_type,date_detail,source
+AT-Neu,GRA,grassland,mown,"Cuts: 2-16 Jun; 24 Jul-12 Aug; 21 Sep-28 Oct (recurring annual pattern, year not specified)",Hammerle et al. (2008); BADM SITE_DESC keyword 'harvest' (mgmt_harvest=TRUE)
+AT-Neu,GRA,grassland,other,"Manure application, late autumn (no exact date given)",Hammerle et al. (2008)
+AU-How,WSA,woody-grass mosaic,unknown,NA,"BADM: no DOM_DIST_MGMT tag, no SITE_DESC management keyword hit"
+CH-Dav,ENF,evergreen forest,other,NA,"BADM SITE_DESC keyword 'till/plow/disk' (mgmt_tillage=TRUE) -- plausible historical/non-forest land-use mention at this ENF site, not independently verified as current active management"
+DE-Tha,ENF,evergreen forest,unknown,NA,BADM: no management/disturbance record found
+FR-Pue,EBF,evergreen forest,unknown,NA,BADM: no management/disturbance record found
+IL-Yat,ENF,evergreen forest,grazed,NA,BADM SITE_DESC/DOM_DIST_MGMT (mgmt_grazing=TRUE)
+IL-Yat,ENF,evergreen forest,burned,NA,BADM SITE_DESC keyword 'burn/fire' (mgmt_burning=TRUE)
+IL-Yat,ENF,evergreen forest,other,NA,BADM SITE_DESC keyword 'irrigat' (mgmt_irrigation=TRUE) -- planted pine afforestation
+JP-Api,DBF,deciduous forest,unknown,NA,BADM: no management/disturbance record found
+NL-Loo,ENF,evergreen forest,unknown,NA,BADM: no management/disturbance record found
+US-Ha1,DBF,deciduous forest,other,NA,"BADM DOM_DIST_MGMT = 'Undisturbed' -- an explicit no-active-management tag, distinct from 'unknown' (no record at all)"
+US-MMS,DBF,deciduous forest,other,NA,"BADM DOM_DIST_MGMT = 'Forestry' (mgmt_forestry_unspecified=TRUE) -- silvicultural management present, harvest vs. thinning not resolved by BADM"
+US-Mpj,WSA,woody-grass mosaic,other,NA,"BADM DOM_DIST_MGMT = 'Drought; Pests and disease' -- natural disturbance, not active management"
+US-SRM,WSA,woody-grass mosaic,grazed,NA,"BADM DOM_DIST_MGMT = 'Grazing; Land cover change' (mgmt_grazing=TRUE) -- BADM confirms grazing, so reported as confirmed (not 'unconfirmed')"
+US-Ton,WSA,woody-grass mosaic,grazed,NA,BADM DOM_DIST_MGMT = 'Grazing' (mgmt_grazing=TRUE)
+US-Var,GRA,grassland,grazed,Brush removed for cattle grazing (no dates given),BADM DOM_DIST_MGMT = 'Grazing' (mgmt_grazing=TRUE); FLUXNET site page
+US-Wkg,GRA,grassland,grazed,NA,"BADM DOM_DIST_MGMT = 'Grazing' (mgmt_grazing=TRUE) -- BADM confirms grazing, so reported as confirmed (not 'unconfirmed')"

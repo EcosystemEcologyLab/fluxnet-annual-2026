@@ -1,0 +1,7 @@
+GSL methods agreement (draft). Spearman correlation between pairs of methods' annual GSL (left
+panel), start date (middle) and end date (right), pooled across all 15 sites x years as SITE-YEAR
+ANOMALIES (each site's own across-year mean subtracted first, per method, before pooling) --
+agreement variant for M1-M4, NEP-only ('all') for M5/M6. One sub-threshold per method: M1-summer,
+M2 10%, M3 1 gC m-2 d-1, M4 0.95, M5-span, M6. Pairwise-complete Spearman correlation (a site-year
+flagged for one method but not another drops from that pair only, not from every pair).
+Numbers behind this figure: tables/gsl_methods_site_year.csv.

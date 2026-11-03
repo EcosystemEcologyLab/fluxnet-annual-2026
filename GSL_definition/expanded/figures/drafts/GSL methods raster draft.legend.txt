@@ -1,0 +1,6 @@
+GSL methods raster (draft). US-Ha1, US-Wkg, US-SRM (columns); each row block is one method
+(M1-summer, M2 10%, M4 0.95, M5-span, M6 top to bottom); each horizontal bar is one year's
+detected season, start day-of-year to end day-of-year (agreement variant for M1/M2/M4, NEP-only
+for M5/M6). A missing bar for a given year/method means no season was detected (flag_no_season) --
+see tables/gsl_methods_site_year.csv for exact dates and flags.
+Numbers behind this figure: tables/gsl_methods_site_year.csv.

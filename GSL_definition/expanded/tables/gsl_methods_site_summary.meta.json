@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T00:42:42Z",
+  "pipeline_version": "c472aa3",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+  ],
+  "notes": "Per site x variant x method x sub-threshold: mean GSL, interannual SD, mean start/end day-of-window, mean share of annual GPP inside the season, flag counts, and detrended Pearson r (with p, n) of annual GSL against annual GPP and against annual NEP -- each series detrended by OLS on year first, as in iav_15sites.csv. Net-source years (flag_net_source) are excluded from M5/M6 means and their own r (prompt's instruction); not excluded elsewhere (the flag never applies to M1-M4 rows). Annual GPP/NEP reference for every r is the season-year-aware total (Jul-Jun for AU-How), matching carbon_gain_data.csv's / iav_15sites.csv's own convention -- NOT the calendar-year 'annual_gpp' column in gsl_methods_site_year.csv (that one is only F(T)'s own denominator)."
+}

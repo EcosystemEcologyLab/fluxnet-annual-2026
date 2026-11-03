@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T00:42:44Z",
+  "pipeline_version": "c472aa3",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+  ],
+  "notes": "Draft figure, not a numbered manuscript figure. Segments (start_doy-end_doy), not a filled day-by-day grid; all 3 sites are Northern Hemisphere."
+}

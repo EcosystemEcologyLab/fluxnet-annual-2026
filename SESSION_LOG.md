@@ -4,6 +4,30 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL methods comparison (M1-M6), started
+
+New, standalone `GSL_definition/expanded/code/11_gsl_methods_compare.R`: preliminary comparison
+of six published GSL definitions at the 15 sites of the draft "Figure GSL-IAV"
+(`tables/iav_15sites.csv`). Exploratory, does not modify any existing script, table or figure.
+Uses the post-Z16-rename (`d43ae22`) column names. Full prompt saved to
+`logs/prompts/2026-11-02_gsl_methods_compare.md`.
+
+Methods: M1 (Zscheischler 2016 crossing-span, 3 thresholds: summer/peak/annual P99), M2 (day
+count > X% of P99, X=5/10/20 -- 10% is Z16), M3 (day count > fixed GPP, 0.5/1/2 gC), M4
+(cumulative-GPP-fraction fine-grid rule, 0.90/0.95/0.99 -- 0.95 is T95), M5 (carbon-uptake period
+from smoothed NEP>0, count and span), M6 (Hu et al. 2010 NEP rate-of-change, k=3-9 day OLS
+slopes). Three GPP variants per GPP-based method (screened/unscreened/agreement = min of
+zero-floored NT and DT GPP, NT-only+flag where no DT). 15-day centred smoothing for M1/M5 and
+M6's search-window bounds; M6 itself runs on unsmoothed NEP per Hu's original method.
+
+Plan: implement and test each method's logic incrementally against a couple of sites before
+running the full 15-site x N-year x 3-variant grid; verify M2@10%/M4@0.95 reproduce
+`derived_site_year.csv`'s Z16/T95 values and `iav_15sites.csv`'s detrended-r values as a
+correctness check; write `tables/gsl_methods_site_year.csv`, `tables/gsl_methods_site_summary.csv`,
+three draft figures (dotplot, agreement, raster) and `docs/gsl_methods_compare_2026-11-02.md`.
+
+---
+
 ## 2026-11-02 — GPP/RECO uncertainty inventory, done
 
 Read-only inventory completed; `review/diagnostics/gpp_uncertainty_inventory/` (`report.md` +

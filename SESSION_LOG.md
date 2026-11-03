@@ -4,6 +4,36 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL methods comparison (M1-M8), version 3, started
+
+Revising `GSL_definition/expanded/code/11_gsl_methods_compare.R` in place per Dave's follow-up
+decisions (full prompt saved to `logs/prompts/2026-11-02_gsl_methods_compare_v3.md`; version 2
+stays in git history at `e0348a5`). Purpose, per Tash: show published GSL definitions span a wide
+range of low thresholds/rules so no single definition (Z16 included) is the reference -- figures
+and the report must not frame this as a Z16-vs-T85/T95 comparison.
+
+Planned changes: (1) M4 thresholds 0.85/0.90/0.95/0.99 (0.85 = Tash's T85); M2 on Tash's full
+22-value grid (0.1%, 0.5%, 1-20% of P99), keeping 5/10/20% in tables, shown as a range (not a point)
+in the dot plot; (2) two new methods on 15-day-smoothed GPP per series (NT, DT): M7
+amplitude-and-derivative (Ma et al. 2013) and M8 normalized threshold (Panwar et al. 2023); (3) for
+M2-M4, report three start/end rules side by side (first/last qualifying day; first/last run of >=5
+consecutive days, our own choice; Panwar's smoothed-threshold-crossing-nearest-peak rule) and how
+far start/end move between them, by site; (4) M6 reported in both anchored (v2, +/-30 d of M5-span)
+and unanchored (v1 window) forms -- figures use anchored, with a caption noting the agreement with
+M5 is partly built in; (5) method-agreement table adds median absolute start/end-date difference per
+method pair alongside Spearman; (6) NT-vs-DT start/end shifts (signed) by site and vegetation group,
+checked against Keenan et al. (2019)'s forest early-spring NT-overestimate prediction; (7) new
+`tables/site_management_15.csv` (BADM + literature: AT-Neu mowing per Hammerle et al. 2008, US-Var
+grazing, US-SRM/US-Wkg grazing unconfirmed); (8) AT-Neu two-season years tested against the mowing
+calendar, attribution text rewritten to match the result, managed-site two-season years reported
+separately; (9) AU-How M7 GSL vs. Ma et al. (2013)'s 244-275 d, wet-season GPP/amplitude IAV, and a
+stated SD of AU-How's GSL across methods (threshold GSL carries no interannual signal there).
+
+Sources: Hammerle et al. 2008, Keenan et al. 2019, Panwar et al. 2023, Ma et al. 2013, Moore et al.
+2017 (via the user's context agent).
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M6), version 2, done
 
 Completed the version-2 revision of `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the

@@ -4,6 +4,21 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — WAFNET x FLUXCOM-X-BASE comparison: Stage 2 fixes, started
+
+Fixing four issues in the Stage 2 outputs (commit `402101b`; full prompt:
+`logs/prompts/2026-11-03_wafnet_fluxcom_x_stage2_fixes.md`): (1) a wording error in the
+RECO-derivation sentence in the report and methods memo (says "GPP minus NEE", code computes
+GPP + NEE — these differ because NEE is negative for uptake); (2) a single shared site colour
+palette across all figures (currently inconsistent between figures); (3) overlapping site-map
+symbols at `BJ-Nhu`/`BJ-Bfg` and `SN-Dhr`/`SN-Nkr` need a small offset and leader line; (4) the
+Taylor diagrams' "tower" reference label is clipped by the axis. Also adding one new figure per
+site: a mean seasonal-cycle (climatology) panel set per flux, tower vs. X-BASE, same
+QC-passing/2001-2021 site-months as the Stage 2 statistics. No new downloads; same data, sites,
+and conventions as Stage 2. FLUXCOM-X-BASE remains non-Shuttle comparison data (Hard Rule 1).
+
+---
+
 ## 2026-11-03 — WAFNET x FLUXCOM-X-BASE comparison: Stage 2, started
 
 Starting Stage 2 of `WAFNET/fluxcom_comparison/` (full prompt:

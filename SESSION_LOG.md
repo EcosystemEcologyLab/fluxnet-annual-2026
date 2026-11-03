@@ -4,6 +4,54 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL methods comparison (M1-M6), version 2, done
+
+Completed the version-2 revision of `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the
+entry below. Confirmed via `git status`: only this script, its own 2 tables + 1 new table + 3 draft
+figures (regenerated in place under the same filenames, except the new `gsl_methods_dt_vs_nt.csv`),
+the new `_v2`-suffixed methods doc, and `logs/prompts/2026-11-02_gsl_methods_compare_v2.md` changed
+— v1's content lives on in git history at `15dc51f`.
+
+**Checks (both passed exactly)**: NH sites only (AU-How excluded -- its windows are now Jul-Jun
+season years with no calendar-year counterpart), NT-series M2@10%/M4@0.95 match
+`derived_site_year.csv`'s `main_unscreened` `gsl_z16`/`gsl_t95`/`f_z16`/`f_t95` exactly, all 276 NH
+site-year rows; every one of 7,857 `gsl_methods_site_year.csv` rows has a GSL value or an
+explanatory flag. 0 of 15 sites lack DT GPP.
+
+**Four changes from v1**: (1) two independent GPP series (NT = zero-floored `GPP_NT_REF`, no winter
+screen; DT = zero-floored `GPP_DT_REF`), never mixed, replacing the three screened/
+unscreened/agreement variants; (2) AU-How now uses Jul-Jun season years in every method including
+M2-M4 and for P99, under a fresh day-count passing rule (<=14 failing days per Jul-Jun window,
+tested directly rather than via the v1 "both bracketing calendar years pass" proxy) -- recovers 2
+more AU-How years (2004, 2021) than the old rule, 15 vs. 13; (3) M6's start/end search windows are
+now M5-span's own start/end +/-30 days (drops the v1 global-seasonal-peak device and the
+alternate-end column); (4) the two-season flag uses the TIMESAT secondary-peak rule (Wang et al.
+2020) on smoothed NT GPP, not v1's slope-run rule, which had saturated (~99% flagged) -- v2 flags 9
+of 291 M5-span site-years, concentrated at AT-Neu (4), US-SRM (2), US-Mpj/US-Var/US-Wkg (1 each),
+all physically plausible bimodal-growing-season sites.
+
+**M6 is now much better behaved**: anchoring its search windows to M5-span raised its Spearman
+agreement with M5 from 0.09 (v1) to 0.89, and with M1-M4 from 0.03-0.07 to 0.17-0.22; mean GSL rose
+from an implausibly short 116.7 d (v1) to 220.8 d, in the same range as the other methods; the k=3-9
+uncertainty range also shrank despite the tighter window (median start 23.5->17 d, end 54->39.5 d).
+
+**NT-vs-DT partitioning uncertainty** (new `tables/gsl_methods_dt_vs_nt.csv`): for the span method
+(M1), the DT-NT GSL difference is, by construction, entirely a start/end boundary shift. For the
+count methods (M2-M4), the mean *interior* contribution (~27 d, i.e. GSL difference NOT explained by
+a start/end shift) exceeds the mean boundary-explained shift (~14-16 d) -- most of the DT-vs-NT
+disagreement is scattered interior-day ("winter") disagreement, not a clean season-boundary shift.
+Largest per-site uncertainty: CH-Dav (41-57 d), IL-Yat (16-39 d), AT-Neu (15-28 d); smallest: AU-How
+(<7 d), JP-Api, FR-Pue, DE-Tha (3-10 d).
+
+**Three to five largest method differences** (NT series, per-site range across the six headline
+sub-thresholds): IL-Yat (207 d, M1-summer vs. M3), US-Var (202 d, M1-summer vs. M4), US-Ton (178 d,
+M1-summer vs. M6), AT-Neu (141 d, M3 vs. M6), US-Wkg (139 d, M5-span vs. M3). M1-summer's
+Mediterranean-climate overestimate (IL-Yat/US-Var/US-Ton) persists unchanged from v1.
+
+Full reasoning, the TIMESAT rule as implemented, and every other number: `docs/gsl_methods_compare_2026-11-02_v2.md`.
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M6), version 2, started
 
 Revising `GSL_definition/expanded/code/11_gsl_methods_compare.R` in place per Dave's follow-up

@@ -4,6 +4,23 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — GSL duration curve and target-share sweep, started
+
+Three proposed analyses on Tash's 62-site reproduction run, for discussion with her (proposed by
+the context agent, approved by Dave; full prompt:
+`logs/prompts/2026-11-03_gsl_duration_curve_target_sweep.md`). New script only —
+`GSL_definition/code/12_duration_curve_and_target_sweep.R` — no existing script, table, or figure
+is changed. Reuses the main run's existing `fine_grid.rds`/`fraction_sweep.rds`/`derived_site.csv`
+(gpp_variant="main", neg_gpp_variant="main", calendar years, no winter screen) and recomputes only
+what's missing: (1) the 0.85 share-crossing threshold and a GPP-duration-curve view of the existing
+GSL(T)/F(T) pairs; (2) each site's selected threshold at target shares 0.80–0.98 (not just the
+existing 0.95/T95), regressed on skewness, checked against Tash's published r=-0.68/adjusted
+R²=0.57 at 0.95; (3) a near-zero-day share and an above-1%-of-P99 partial skewness per site, tested
+against sensitivity metrics and selected thresholds, to see which better explains Dave's
+forest-dormancy-vs-dryland-crossing distinction. Draft figures go to
+`GSL_definition/figures/drafts/proposal/`, each with a short plain-English `.legend.txt`.
+
+---
 ## 2026-11-03 — WAFNET output metadata and figure captions, started
 
 Adding `.meta.json` (CLAUDE.md "Output Metadata") and `.legend.txt` figure-caption files to every

@@ -34,6 +34,61 @@ Sources: Hammerle et al. 2008, Keenan et al. 2019, Panwar et al. 2023, Ma et al.
 
 ---
 
+## 2026-11-02 — GSL methods comparison (M1-M8), version 3, done
+
+Completed the version-3 revision of `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the
+entry below. Confirmed via `git status`: only this script, its own regenerated tables/figures (plus
+7 new tables), the new `_v3`-suffixed methods doc, and `logs/prompts/2026-11-02_gsl_methods_compare_v3.md`
+changed (33 files) -- v2's content lives on in git history at `e0348a5`.
+
+**Checks**: both passed exactly, as v2 (NH-site NT M2@10%/M4@0.95 == `derived_site_year.csv`
+`main_unscreened` values, 276 rows; every one of 11,058 rows has a value or flag). The new M4@0.85-
+vs-fraction-sweep check is **not applicable**: `tables/fraction_sweep_main.csv` only holds the
+winter-screened `"main"` variant, not `"main_unscreained"`/NT -- no comparable NT-series 0.85 sweep
+exists anywhere in the repo, exactly the case the prompt's "if that table holds it" anticipated.
+
+**Nine items**: (1) M4 now targets 0.85/0.90/0.95/0.99; M2 on Tash's full 22-value grid (5/10/20%
+kept in tables; dot plot shows M2 as a min-max range, not a point -- required building explicit
+numeric y-offsets per method rather than ggplot's `position_dodge()`, which computes dodge slots
+per-layer and would have misaligned the range bar against the other methods' point+errorbar glyphs).
+(2) Two new methods on 15-day-smoothed GPP (NT, DT): M7 (Ma et al. 2013 amplitude/derivative) and M8
+(Panwar et al. 2023 normalized threshold, 0.10/0.25/0.50). (3) M2-M4 now report 3 start/end rules
+side by side (first/last qualifying day; first/last >=5-day run, our own choice; Panwar's smoothed-
+crossing-nearest-peak) -- `tables/gsl_methods_rule_shifts.csv` shows rule (a)-vs-(c) median shifts up
+to 88-114 d at episodic sites (US-SRM/US-Wkg), traced to isolated post-monsoon rain-pulse days
+extending rule (a)'s "last qualifying day" to December while rule (c) stays anchored to the smoothed
+peak -- a real methodological difference, not a bug. (4) M6 now has anchored (v2) and unanchored
+(v1, ported verbatim from `15dc51f`) forms; figures use anchored only, with the caption noting its
+0.89 Spearman agreement with M5 is partly built in by the anchoring itself. (5) New
+`tables/gsl_methods_agreement.csv`: Spearman r + median absolute start/end-date difference for every
+method pair -- caught and fixed a bug where Start/End-date Spearman was computed on raw pooled dates
+(spuriously ~1.00 for every pair, dominated by which site/year a row belongs to) instead of within-
+site day-of-year anomalies; fixed to match the already-correct GSL-anomaly approach. (6) NT-vs-DT
+start/end shifts by vegetation group: deciduous forest (+9.6 d) and grassland (+10.6 d) show the
+Keenan et al. (2019) early-spring-NT-overestimate direction; evergreen forest (+0.7 d) does not --
+partial support, biologically sensible given the mechanism is specifically about leaf-out phenology.
+(7) New `tables/site_management_15.csv` from BADM (`data/snapshots/badm_management_coverage.csv`,
+confirmed: no dated management-event records exist anywhere in the network) + literature (AT-Neu
+mowing, Hammerle et al. 2008); US-SRM/US-Wkg grazing is BADM-confirmed, so reported as confirmed not
+unconfirmed. (8) AT-Neu mowing test: 0 of 4 two-season years fall in the 2-4-week post-cut window
+tested (closest: 2020, +2 d after a cut -- faster than assumed, not absent); attribution rewritten
+to note the specific mowing-calendar mechanism is not confirmed, though two-season flags ARE
+concentrated at managed sites generally (8 of 9 network-wide). (9) AU-How: M7 gives 171.3 d mean GSL
+vs. Ma et al. (2013)'s 244-275 d; cross-method SD of mean GSL at AU-How is 73.6 d (range 171-365 d)
+with most individual methods showing no significant GSL-vs-annual-GPP/NEP correlation -- AU-How
+flagged as a site where threshold-based GSL carries no interannual signal, even though its wet-
+season GPP (SD 114.4 gC/m2, 8.1% CV) and seasonal amplitude (SD 1.25 gC/m2/d, 15.3% CV) do vary
+year to year.
+
+**Largest cross-method differences** (updated for v3, per-site range across all 8 headline subs):
+US-Var (255.8 d), IL-Yat (246.2 d), US-Ton (212.6 d), FR-Pue (197.9 d), AU-How (193.9 d) -- M1-summer
+(Mediterranean-climate near-year-round overestimate) is the largest value at 4 of 5; the new M8 is
+consistently the shortest.
+
+Full reasoning, every number, and the rewritten AT-Neu attribution: `docs/gsl_methods_compare_2026-11-02_v3.md`.
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M6), version 2, done
 
 Completed the version-2 revision of `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the

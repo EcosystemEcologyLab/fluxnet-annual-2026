@@ -32,7 +32,21 @@ source("R/qc.R")
 check_pipeline_config()
 
 # Six-site filter — same sites as WAFNET/energy_partitioning (see README.md).
+# Retained as-is for Stage 1 scripts (01-03); Stage 2 (04+) uses the two sets
+# below instead, per Dave's decision carried from Ossenatou Mamadou's 16
+# October reply (see docs/report_back_2026-11-03.md):
+#   - STAGE2_SITES: the five agreed comparison sites. ML-Kem was added at
+#     Ossenatou's request (Mali, WSA, 2007-2009); BJ-Db1 and SN-Nkr were
+#     dropped from the agreed set in Stage 1 because they did not overlap the
+#     original FLUXCOM product, NOT because of any data-quality concern.
+#   - STAGE2_PENDING_SITES: BJ-Db1 and SN-Nkr, re-checked against
+#     FLUXCOM-X-BASE's longer period. Kept separate from STAGE2_SITES in every
+#     Stage 2 table and figure, flagged "pending Ossenatou", pending her
+#     sign-off before being folded into the agreed set.
 WAFNET_SITES <- c("GH-Ank", "BJ-Db1", "BJ-Nhu", "BJ-Bfg", "SN-Nkr", "SN-Dhr")
+STAGE2_SITES <- c("GH-Ank", "BJ-Nhu", "BJ-Bfg", "SN-Dhr", "ML-Kem")
+STAGE2_PENDING_SITES <- c("BJ-Db1", "SN-Nkr")
+STAGE2_ALL_SITES <- c(STAGE2_SITES, STAGE2_PENDING_SITES)
 
 for (sub in c("raw", "extracted", "processed")) {
   dir.create(file.path(FLUXCOM_ROOT, "data", sub), recursive = TRUE, showWarnings = FALSE)
@@ -54,8 +68,14 @@ WAFNET_SITE_DIRS <- c(
   "BJ-Nhu" = "FLX_BJ-Nhu_FLUXNET_2008-2017_v1.3_r1",
   "BJ-Bfg" = "FLX_BJ-Bfg_FLUXNET_2008-2017_v1.3_r1",
   "SN-Nkr" = "EUF_SN-Nkr_FLUXNET_2018-2024_v1.3_r1",
-  "SN-Dhr" = "EUF_SN-Dhr_FLUXNET_2010-2022_v1.3_r1"
+  "SN-Dhr" = "EUF_SN-Dhr_FLUXNET_2010-2022_v1.3_r1",
+  "ML-Kem" = "FLX_ML-Kem_FLUXNET_2007-2009_v1.3_r1"
 )
+
+# Stage 2 (non-Shuttle FLUXCOM-X-BASE comparison data) locations — gitignored,
+# shared at repo root since the raw grids are reusable across any analysis.
+FLUXCOM_XBASE_DIR <- file.path("data", "external", "fluxcom_x_base")
+FLUXCOM_ORIGINAL_ILAMB_DIR <- file.path("data", "external", "fluxcom_original_ilamb")
 
 wafnet_fluxmet_path <- function(site_id, resolution = c("YY", "MM")) {
   resolution <- match.arg(resolution)

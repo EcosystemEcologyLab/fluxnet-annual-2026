@@ -1,0 +1,8 @@
+"site_id","site_status","in_fluxcom_x_base_training_set","n_training_sites_in_table","source"
+"GH-Ank","agreed",TRUE,294,"Nelson et al. (2024) Table 1 XLSX, direct match (high confidence)"
+"BJ-Nhu","agreed",FALSE,294,"Nelson et al. (2024) Table 1 XLSX, direct match (high confidence)"
+"BJ-Bfg","agreed",FALSE,294,"Nelson et al. (2024) Table 1 XLSX, direct match (high confidence)"
+"SN-Dhr","agreed",TRUE,294,"Nelson et al. (2024) Table 1 XLSX, direct match (high confidence)"
+"ML-Kem","agreed",FALSE,294,"Nelson et al. (2024) Table 1 XLSX, direct match (high confidence)"
+"BJ-Db1","pending Ossenatou",FALSE,294,"Nelson et al. (2024) Table 1 XLSX, direct match (high confidence)"
+"SN-Nkr","pending Ossenatou",FALSE,294,"Nelson et al. (2024) Table 1 XLSX, direct match (high confidence)"

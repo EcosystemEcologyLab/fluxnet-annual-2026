@@ -4,6 +4,46 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL methods comparison (M1-M6), done
+
+Completed `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the entry below. Does not
+modify any existing script, table or figure (confirmed via `git status`: only the new script, two
+new tables, three new draft figures and the new methods doc are untracked/new).
+
+**Checks (all passed exactly, not approximately)**: fresh P99 (screened/unscreened) matches
+`derived_site.csv` for all 15 sites; M2@10%/M4@0.95 match `derived_site_year.csv`'s `gsl_z16`/
+`gsl_t95`/`f_z16`/`f_t95` exactly for screened and unscreened, all 578 site-year rows;
+screened-variant detrended r (M2@10%, M4@0.95) vs. annual GPP matches `iav_15sites.csv`'s
+`r_gpp_z16`/`r_gpp_t95` exactly for all 15 sites; every one of 11,223 `gsl_methods_site_year.csv`
+rows has a GSL value or an explanatory flag. All 15 sites have DT-partitioned GPP (0 flagged for
+the no-DT fallback).
+
+**Central interpretation choice**: M2/M3/M4 use calendar-year windows throughout (required to
+match `derived_site_year.csv` exactly); M1/M5/M6 use Jul-Jun season years for AU-How (the one
+Southern-Hemisphere site) -- the prompt's own "as the main run" and "SH on Jul-Jun season years"
+instructions are not otherwise reconcilable, since `derive_one()` (the literal main run) never
+uses season years itself. Full reasoning, every other implementation choice (M1's 3 thresholds,
+M5/M6's two-season rule, M6's seasonal-peak and search-window definitions), and two genuine
+findings from trying to implement the prompt exactly as written -- the "two-season" rule
+saturates (flags ~99% of site-years) with the only available shared slope definition, and M6's
+literal rate-of-change search window lets short-term weather noise in unsmoothed NEP dominate the
+true spring/fall phenological signal, making M6 markedly shorter and uncorrelated with every
+other method (Spearman r = 0.03-0.09 vs. 0.52-0.93 among M1-M4) -- are in
+`docs/gsl_methods_compare_2026-11-02.md`.
+
+**Headline cross-method result** (agreement variant): M1-peak/annual, M2, M3, M4 agree closely
+with each other at every site (pairwise Spearman r 0.52-0.93 for GSL); M5 agrees weakly
+(r 0.15-0.24); M6 agrees with none of them (r 0.03-0.09). M1-summer (fixed Jun-Aug/Dec-Feb
+calendar months) badly overestimates GSL at the 3 water-limited/Mediterranean-climate sites in
+this set (US-Var, IL-Yat, US-Ton -- real growing-season peak is Feb-Jun, not Jun-Aug), up to 142
+days longer than M1-peak at the same site.
+
+Outputs: `tables/gsl_methods_site_year.csv` (11,223 rows), `tables/gsl_methods_site_summary.csv`
+(585 rows), three draft figures (`figures/drafts/"GSL methods dotplot/agreement/raster draft".png`
++ `.legend.txt`/`.meta.json`), `docs/gsl_methods_compare_2026-11-02.md`.
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M6), started
 
 New, standalone `GSL_definition/expanded/code/11_gsl_methods_compare.R`: preliminary comparison

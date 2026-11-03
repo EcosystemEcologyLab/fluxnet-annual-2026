@@ -1,0 +1,11 @@
+WAFNET: add figure captions and output metadata. No figure, table or analysis changes.
+
+None of the WAFNET figures (fluxcom_comparison/figures/, and energy_partitioning/ if it has any) has a caption file or a .meta.json companion, and the WAFNET tables have no .meta.json either. CLAUDE.md requires a .meta.json for every output. Side projects must not write to the repo-root outputs/session_info.txt, so follow the pattern GSL_definition/ uses: a local write_meta() helper that writes the same fields as write_output_metadata() (run_datetime_utc, pipeline_version, input_sources, notes) and keeps session info inside the WAFNET folder.
+
+1. Add the local helper for WAFNET (one shared file, sourced by the existing scripts) and write a .meta.json for every existing WAFNET table and figure. In notes, record the non-Shuttle comparison data (FLUXCOM-X-BASE, the ILAMB copy of the original FLUXCOM), the sign convention, and any deviation from defaults. Change the scripts so future runs write these automatically.
+2. For every figure, write a caption file with the same base name (.legend.txt), written as a journal figure caption for Ossenatou's paper: what is plotted and how to read it (axes, symbols, colours, bands), the data and period (tower data from the FLUXNET Shuttle snapshot of 20 September 2026; FLUXCOM-X-BASE, Nelson et al. 2024, 0.5 degree, monthly, 2001 to 2021), the sites and number of site-months, units, the sign convention (bias = X-BASE minus tower; NEE negative for uptake), that respiration from X-BASE is derived as GPP plus NEE, that X-BASE GPP is trained on nighttime partitioning and tower GPP and respiration are nighttime-partitioned to match, that GH-Ank and SN-Dhr are in the X-BASE training set, and that SN-Nkr is pending Ossenatou's decision. Keep each caption to what a reader needs; no results interpretation beyond what the figure shows.
+3. Compile all captions, in figure order, into fluxcom_comparison/docs/figure_captions.md, with the file name of each figure.
+
+Check that every figure and table has its .meta.json and every figure its .legend.txt, and list them in the report.
+
+Write SESSION_LOG entries at the start, if anything goes wrong, and at the end, committing and pushing each. Save this prompt as logs/prompts/<date>_wafnet_captions_metadata.md. Log, commit and push per CLAUDE.md.

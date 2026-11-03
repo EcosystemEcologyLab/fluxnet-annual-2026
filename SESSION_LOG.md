@@ -4,6 +4,23 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — WAFNET output metadata and figure captions, started
+
+Adding `.meta.json` (CLAUDE.md "Output Metadata") and `.legend.txt` figure-caption files to every
+existing WAFNET output (full prompt: `logs/prompts/2026-11-03_wafnet_captions_metadata.md`) —
+`WAFNET/energy_partitioning/` (1 figure, 4 tables) and `WAFNET/fluxcom_comparison/` (12 figures, 16
+tables). No figure, table, or analysis changes. Following the `GSL_definition/` pattern (a local
+`write_meta()` that writes the same fields as `R/utils.R::write_output_metadata()` without touching
+the repo-root `outputs/session_info.txt`, which side projects must not write to) rather than
+modifying the shared `R/utils.R` function. A single shared `WAFNET/write_meta.R` will hold
+`write_meta()` and a `write_caption()` companion, sourced by both subprojects' `00_config.R`.
+Captions for the FLUXCOM-X-BASE figures will state the data/period, sites and site-month counts,
+units, sign convention (bias = X-BASE minus tower; NEE negative for uptake), the derived-RECO
+formula, the nighttime-partitioning match, and each figure's training/pending site markers; compiled
+into `WAFNET/fluxcom_comparison/docs/figure_captions.md` in figure order.
+
+---
+
 ## 2026-11-03 — WAFNET x FLUXCOM-X-BASE comparison: Stage 2 fixes, started
 
 Fixing four issues in the Stage 2 outputs (commit `402101b`; full prompt:

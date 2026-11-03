@@ -4,6 +4,28 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — WAFNET x FLUXCOM-X-BASE comparison: Stage 2, started
+
+Starting Stage 2 of `WAFNET/fluxcom_comparison/` (full prompt:
+`logs/prompts/2026-11-03_wafnet_fluxcom_x_stage2.md`). Dave has decided to proceed with
+FLUXCOM-X-BASE (Nelson et al. 2024, *Biogeosciences* 21:5079-5115, doi:10.5194/bg-21-5079-2024;
+dataset doi:10.18160/5NZG-JMJE, ICOS Carbon Portal, CC BY 4.0, 2001-2021) rather than the original
+FLUXCOM product identified in the Stage 1 report (`docs/report_back_20261014.md`), because the
+MPI-BGC data portal link for the original product returns HTTP 404 and is no longer listed on the
+institute's data products page. The original product is kept as an option if it becomes available
+again, and a backup copy of its ILAMB-hosted reference files is being fetched separately for
+documentation purposes only (not used in the comparison).
+
+Sites: the five agreed sites (`GH-Ank`, `BJ-Nhu`, `BJ-Bfg`, `SN-Dhr`, `ML-Kem` — the last added at
+Ossénatou Mamadou's request, Mali, WSA, 2007-2009) plus `BJ-Db1`/`SN-Nkr` re-checked against
+X-BASE's longer period and tracked separately as "pending Ossénatou" if they overlap. This is
+non-Shuttle comparison data under CLAUDE.md Hard Rule 1 — labelled as such throughout.
+
+This entry will be followed by a "done" entry (or an interim entry if a download/access blocker is
+hit) once Stage 2's download, product-detail, statistics, figures and report steps are complete.
+
+---
+
 ## 2026-11-03 — GSL methods review figures: fixes, done
 
 Revised `GSL_definition/expanded/code/12_methods_review_figures.R` in place (first pass stays in git

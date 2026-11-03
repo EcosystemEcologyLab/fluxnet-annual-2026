@@ -4,6 +4,33 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — GSL methods review figures: fixes, done
+
+Revised `GSL_definition/expanded/code/12_methods_review_figures.R` in place (first pass stays in git
+history at `a4880b2`); regenerated only `figures/drafts/methods_review/` and
+`docs/methods_review_figures_2026-11-03.md`. Full report has the numbers; summary:
+
+1. Skewness (Figures A and D) switched from the winter-screened `main` variant to the unscreened
+   `main_unscreened` variant. Only US-MMS and CH-Dav swap rank order (US-MMS now sorts just below
+   CH-Dav); 5 of 15 sites are identical between variants; every other site's value shifts slightly
+   with no further order change.
+2. Figure B: replaced the first-to-last-qualifying-day brackets (which hid the raster) with three
+   thin, non-overlapping per-day strips below each year's raster row, one per labelled choice,
+   ticking each individual in-season day. Caught and fixed a further problem while checking this:
+   the Z16 strip's original colour (black) was visually indistinguishable from the raster's own black
+   "in season at every threshold" shading directly above it — changed Z16 to blue (consistently,
+   across all 4 figures that use the labelled-choice colour scheme). Each histogram's x-axis is now
+   fixed at 0-120% of P99 for every site, with an in-panel count of days above 120% (AU-ASM: 4;
+   AU-How: 7; US-SRM: 27).
+3. Figure C: every method row now carries a name+variant label (e.g. "M6, Hu, anchored", "M7, Ma"),
+   and M4 is shown as two separate rows (85%/95% of annual GPP) instead of one — 9 rows, not 8.
+
+Checked, per the prompt: Figure B's raster is visible at every site in both pairs, and the three
+strips show individually broken day-by-day patterns (most visible at AU-ASM); Figure C's 9 row labels
+are all readable with no overlap across all 5 panels at the figure's 200 mm width.
+
+---
+
 ## 2026-11-03 — GSL methods review figures: fixes, started
 
 Revising `GSL_definition/expanded/code/12_methods_review_figures.R` in place per Dave's follow-up

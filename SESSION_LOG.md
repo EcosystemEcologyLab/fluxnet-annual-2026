@@ -4,6 +4,24 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-02 — GSL methods comparison (M1-M6), version 2, started
+
+Revising `GSL_definition/expanded/code/11_gsl_methods_compare.R` in place per Dave's follow-up
+decisions (full prompt saved to `logs/prompts/2026-11-02_gsl_methods_compare_v2.md`; version 1
+stays in git history at `15dc51f`). Four changes: (1) replace the screened/unscreened/agreement
+GPP variants with two independent series, NT (zero-floored `GPP_NT_REF`, no winter screen) and DT
+(zero-floored `GPP_DT_REF`), each method run on each series separately with its own P99/fine grid,
+never mixed; (2) Southern-Hemisphere (AU-How) now uses Jul-Jun season years in *every* method
+including M2-M4 and for P99, with a new day-count passing rule (a Jul-Jun year passes with at most
+14 failing days under the existing 0.25 daily-QC rule) rather than the old "both bracketing
+calendar years pass" proxy; (3) M6's start/end search windows become M5-span's start/end each
++/-30 days (drops the global-seasonal-peak simplification and the alternate-end column entirely);
+(4) the two-season flag switches from the v1 slope-run rule (which saturated near-universally) to
+the TIMESAT secondary-peak rule (Wang et al. 2020) on smoothed GPP. Tables and draft figures are
+regenerated in place under the same filenames; only the doc gets a `_v2` suffix.
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M6), done
 
 Completed `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the entry below. Does not

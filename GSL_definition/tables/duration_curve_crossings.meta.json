@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T21:46:16Z",
+  "pipeline_version": "3869614",
+  "input_sources": [
+    "GSL_definition/data/fine_grid.rds",
+    "GSL_definition/tables/derived_site.csv"
+  ],
+  "notes": "Main run (GPP_NT_VUT_REF, negative GPP set to 0, calendar years, no winter screen). Per site: Z16 = mean GSL/F at 10% of P99 (z16_mean_gsl/z16_mean_f, from derived_site.csv). t85/t95 = the GPP-duration curve's crossing of mean F = 0.85/0.95 -- the first fine-grid threshold (ascending, 0.01-50% of P99) where mean F rounds (6 d.p.) to <= that share; t95 recomputed here from fine_grid.rds and checked to match derived_site.csv's own t95_pct exactly. NA where a site's curve never reaches that share (mean F's maximum stays above it even at 50% of P99, or drops below it before the grid starts)."
+}

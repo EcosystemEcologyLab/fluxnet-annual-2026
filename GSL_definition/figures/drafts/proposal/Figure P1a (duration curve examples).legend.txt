@@ -1,0 +1,8 @@
+Draft for discussion. How much of a site's annual photosynthesis falls inside the growing season
+depends on where the threshold is set. Each panel traces that trade-off for one site: as the
+threshold rises (fewer days counted, moving left), the share of the year's total photosynthesis
+those days still capture falls (moving down). The blue stretch of the curve is the range Tash's own
+22-value grid covers; the circle, triangle, and square mark three specific ways of choosing a
+threshold (a fixed small value, or a point chosen to capture 85% or 95% of the year's photosynthesis).
+AU-ASM (highly skewed photosynthesis, dominated by a short wet season) and AU-How (far less skewed)
+show how differently those three choices behave depending on the site.

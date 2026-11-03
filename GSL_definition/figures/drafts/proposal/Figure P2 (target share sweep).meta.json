@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T21:46:19Z",
+  "pipeline_version": "3869614",
+  "input_sources": [
+    "GSL_definition/tables/target_sweep_thresholds.csv",
+    "GSL_definition/tables/target_sweep_fits.csv"
+  ],
+  "notes": "Draft for discussion (proposal). Panel a: small multiples at target shares 0.80/0.85/0.90/0.95/0.98, solid/dashed fit lines with/without AU-ASM, star=AU-ASM. Panel b: Pearson r (with 95% CI ribbon) vs. target share, with/without AU-ASM; dotted vertical line at 0.95."
+}

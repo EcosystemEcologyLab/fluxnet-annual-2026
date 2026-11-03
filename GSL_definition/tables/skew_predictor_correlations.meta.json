@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T21:46:20Z",
+  "pipeline_version": "3869614",
+  "input_sources": [
+    "GSL_definition/tables/skew_predictors.csv"
+  ],
+  "notes": "Pearson r (cor.test(), complete.obs) of each predictor (near_zero_share, partial_skewness at that same cut, full_skewness for comparison) against each outcome, at each near-zero cut (0.5/1/2% of P99). p = two-sided p-value; n = sites with non-NA values for both variables."
+}

@@ -1,0 +1,7 @@
+Draft for discussion. Panel a: at five different target shares of annual photosynthesis (shown in
+each strip), the threshold each site needs to capture that share, plotted against how skewed the
+site's daily photosynthesis is. Dashed and solid lines show the fitted relationship with and without
+AU-ASM (star), the most extreme site; circles are the other sites. Panel b: the strength of that
+relationship (Pearson correlation, with its 95% confidence band) across every target share from 80%
+to 98%, again with and without AU-ASM; the dotted line marks the 95% target used in the original
+analysis.

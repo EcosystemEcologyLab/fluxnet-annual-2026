@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T21:46:16Z",
+  "pipeline_version": "3869614",
+  "input_sources": [
+    "GSL_definition/data/fine_grid.rds",
+    "GSL_definition/tables/duration_curve_crossings.csv"
+  ],
+  "notes": "Draft for discussion (proposal). Panels a=AU-ASM, b=AU-How. Blue segment = 0.1-20% of P99 (Tash's 22-value grid range). Markers: circle=Z16 (10% of P99), triangle=0.85 crossing, square=0.95 crossing."
+}

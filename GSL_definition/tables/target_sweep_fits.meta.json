@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T21:46:18Z",
+  "pipeline_version": "3869614",
+  "input_sources": [
+    "GSL_definition/tables/target_sweep_thresholds.csv"
+  ],
+  "notes": "Per target_fraction x au_asm (included/excluded): Pearson r (threshold_pct vs. skewness) with cor.test()'s Fisher-z 95% CI; linear fit lm(threshold_pct ~ skewness) adjusted R2 and AIC; quadratic fit lm(threshold_pct ~ skewness + skewness^2), raw (not orthogonal) terms, adjusted R2, AIC, and the quadratic term's own coefficient (quad_b2) with its t-statistic/p-value (quad_b2_t/quad_b2_p). At target_fraction = 0.95, compare r and lin_adj_r2/quad_adj_r2 against Tash's published r = -0.68, adjusted R2 = 0.57 (0.56 excluding AU-ASM)."
+}

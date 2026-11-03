@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T21:46:17Z",
+  "pipeline_version": "3869614",
+  "input_sources": [
+    "GSL_definition/data/fine_grid.rds",
+    "GSL_definition/tables/derived_site.csv"
+  ],
+  "notes": "Draft for discussion (proposal). All 62 sites' GPP-duration curves, continuous skewness colour scale (viridis), Z16 points marked."
+}

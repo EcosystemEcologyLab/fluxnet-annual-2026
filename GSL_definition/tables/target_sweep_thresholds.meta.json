@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T21:46:18Z",
+  "pipeline_version": "3869614",
+  "input_sources": [
+    "GSL_definition/data/fine_grid.rds"
+  ],
+  "notes": "Per site x target_fraction (0.80-0.98, step 0.01): the selected threshold (% of P99), same share-crossing rule as T95 (03_derive.R), recomputed from fine_grid.rds for every target in the sweep, not just 0.95."
+}

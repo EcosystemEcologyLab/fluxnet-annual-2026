@@ -1,25 +1,42 @@
 ## 11_gsl_methods_compare.R — GSL expanded analysis: preliminary comparison
 ## of six published GSL definitions (M1-M6) at the 15 sites of the draft
-## "Figure GSL-IAV" (tables/iav_15sites.csv). Dave's prompt, 2026-11-02 --
-## see logs/prompts/2026-11-02_gsl_methods_compare.md.
+## "Figure GSL-IAV" (tables/iav_15sites.csv). VERSION 2 -- revises version 1
+## (committed at 15dc51f; see logs/prompts/2026-11-02_gsl_methods_compare.md)
+## per Dave's follow-up decisions, logs/prompts/2026-11-02_gsl_methods_compare_v2.md:
+##   1. Two GPP series (NT, DT), not three variants -- no winter screen, no
+##      agreement/min-of-both series. Each method run on each series
+##      separately, thresholds from that series' own P99/fine grid, never
+##      mixed. DT-minus-NT reported as partitioning uncertainty.
+##   2. Southern Hemisphere (AU-How) uses Jul-Jun season years in EVERY
+##      method (including M2-M4, and for P99), with a fresh day-count
+##      passing rule (<=14 failing days under the existing 0.25 daily-QC
+##      rule) -- not the v1 "both bracketing calendar years pass" proxy.
+##   3. M6 search windows = M5-span's own start/end +/-30 days; drops the
+##      global-seasonal-peak device and the alternate-end column entirely.
+##   4. Two-season flag uses the TIMESAT secondary-peak rule (Wang et al.
+##      2020) on smoothed GPP, not the v1 slope-run rule (which saturated).
 ##
-## Exploratory. Does NOT modify any existing script, table or figure -- a
-## brand-new, standalone script writing only to tables/gsl_methods_site_year.csv,
-## tables/gsl_methods_site_summary.csv, figures/drafts/"GSL methods *.png",
-## docs/gsl_methods_compare_2026-11-02.md, and this side project's own
-## expanded/logs/ (log_exclusion()/log_unknown(), never the repo-root
-## outputs/ logs, which scripts/04_qc.R clears on every run).
+## Exploratory. Does NOT modify any existing script, table or figure other
+## than this script's OWN previous outputs (tables/gsl_methods_site_year.csv,
+## tables/gsl_methods_site_summary.csv, figures/drafts/"GSL methods *.png"),
+## which this version regenerates in place under the same filenames -- v1's
+## content lives on in git history at 15dc51f. The methods doc gets a new,
+## `_v2`-suffixed filename per the prompt, alongside v1's doc (not replacing
+## it). Writes only to this side project's own expanded/logs/
+## (log_exclusion()/log_unknown()), never the repo-root outputs/ logs.
 ##
 ## Read-only: a fresh DBI pull from the repo-root DuckDB store (dataset =
 ## 'FLUXMET' only) for exactly these 15 sites, plus the already-committed
 ## expanded tables (sites.csv, site_years.csv, derived_site.csv,
-## derived_site_year.csv, winter_screen_days.csv, iav_15sites.csv) used
-## read-only, for context and for the correctness checks below -- none are
-## modified. Post-Z16-rename (commit d43ae22) column names used throughout.
+## derived_site_year.csv, winter_screen_days.csv [read only for the
+## DT-vs-NT "winter days" diagnostic below, not used to build any series],
+## iav_15sites.csv) used read-only, for context and for the checks below --
+## none are modified. Post-Z16-rename (commit d43ae22) column names used
+## throughout.
 
 source("GSL_definition/expanded/code/00_config.R")
 options(gsl.skip_driver = TRUE)
-source("GSL_definition/code/03_derive.R") # g1_adjusted() only, reused for reference
+source("GSL_definition/code/03_derive.R") # FINE_GRID_PCT only, reused for M4
 options(gsl.skip_driver = FALSE)
 
 suppressPackageStartupMessages({
@@ -44,12 +61,15 @@ exp_sites          <- read_csv(file.path(EXP_TABLES, "sites.csv"), show_col_type
 exp_site_years      <- read_csv(file.path(EXP_TABLES, "site_years.csv"), show_col_types = FALSE)
 derived_site_all    <- read_csv(file.path(EXP_TABLES, "derived_site.csv"), show_col_types = FALSE)
 derived_site_year_all <- read_csv(file.path(EXP_TABLES, "derived_site_year.csv"), show_col_types = FALSE)
+## Read-only diagnostic cross-reference for "where the DT-NT difference
+## concentrates" (winter days); NOT used to build the NT/DT series (v2 has
+## no winter screen at all).
 winter_screen_days  <- read_csv(file.path(EXP_TABLES, "winter_screen_days.csv"), show_col_types = FALSE) |>
-  mutate(is_screened = TRUE) |> select(site_id, TIMESTAMP, is_screened)
+  mutate(is_winter_screen_day = TRUE) |> select(site_id, TIMESTAMP, is_winter_screen_day)
 iav_tbl             <- read_csv(file.path(EXP_TABLES, "iav_15sites.csv"), show_col_types = FALSE)
 
 site_meta <- exp_sites |> filter(site_id %in% IAV_SITES) |>
-  select(site_id, igbp, group, location_lat, gpp_col_used)
+  select(site_id, igbp, group, location_lat, first_year, last_year, gpp_col_used, qc_col_used)
 stopifnot(all(IAV_SITES %in% site_meta$site_id))
 
 is_sh <- function(sid) site_meta$location_lat[site_meta$site_id == sid] < 0
@@ -59,38 +79,29 @@ message("Southern-Hemisphere site(s) among the 15: ", paste(sh_sites, collapse =
 raw_years_list <- split(exp_site_years$year[exp_site_years$site_id %in% IAV_SITES],
                           exp_site_years$site_id[exp_site_years$site_id %in% IAV_SITES])
 
-#' A site's R2/N=14 passing years usable as a Jul-Jun SEASON year (SH only):
-#' calendar label y is usable when BOTH y and y+1 are themselves passing
-#' years (same rule as 02_derive.R's item 4 / 10_figure1_alts.R's
-#' effective_years()). For a NH site this is simply all passing years.
-season_years_for <- function(sid) {
-  yrs <- sort(raw_years_list[[sid]])
-  if (is_sh(sid)) yrs[(yrs + 1L) %in% yrs] else yrs
-}
-
 #' One site's annual window for "year" y -- calendar Jan-Dec for NH,
-#' Jul(y)-Jun(y+1) for SH (season year), used for M1/M5/M6 (span/
-#' continuous-NEP methods) and for annual GPP/NEP aggregates. NOT used for
-#' M2/M3/M4, which use the literal calendar year (see the note below).
+#' Jul(y)-Jun(y+1) for SH (season year). Unchanged from v1.
 window_dates <- function(sid, y) {
   if (is_sh(sid)) seq(as.Date(sprintf("%d-07-01", y)), as.Date(sprintf("%d-06-30", y + 1L)), by = "day")
   else            seq(as.Date(sprintf("%d-01-01", y)), as.Date(sprintf("%d-12-31", y)), by = "day")
 }
 
 message("Site(s): ", paste(IAV_SITES, collapse = ", "))
-message("Passing calendar years per site: ", paste(sprintf("%s=%d", names(raw_years_list), lengths(raw_years_list)), collapse = ", "))
+message("Passing CALENDAR years per site (site_years.csv, used as-is for NH; superseded for AU-How below): ",
+        paste(sprintf("%s=%d", names(raw_years_list), lengths(raw_years_list)), collapse = ", "))
 
 ## ============================================================================
-## Raw daily pull (read-only, dataset = 'FLUXMET'), GPP_NT/DT and NEE, both
-## VUT and CUT columns pulled and then resolved per site via sites.csv's own
-## gpp_col_used (all 15 sites are VUT here, confirmed; CUT branch kept for
-## robustness/documentation, not exercised by this site set). ---------------
+## Raw daily pull (read-only, dataset = 'FLUXMET'), GPP_NT/DT, NEE and the
+## matching NEE QC columns (needed for AU-How's new Jul-Jun day-count rule,
+## item 2) -- VUT and CUT pulled, resolved per site via sites.csv's own
+## gpp_col_used/qc_col_used (all 15 sites are VUT here, confirmed in v1; CUT
+## branch kept for robustness/documentation, not exercised by this site set).
 ## ============================================================================
 con <- dbConnect(duckdb(), "data/duckdb/fluxnet.duckdb", read_only = TRUE)
 site_list_sql <- paste(sprintf("'%s'", IAV_SITES), collapse = ", ")
 daily_raw <- dbGetQuery(con, sprintf("
   SELECT site_id, TIMESTAMP, GPP_NT_VUT_REF, GPP_NT_CUT_REF, GPP_DT_VUT_REF, GPP_DT_CUT_REF,
-         NEE_VUT_REF, NEE_CUT_REF
+         NEE_VUT_REF, NEE_CUT_REF, NEE_VUT_REF_QC, NEE_CUT_REF_QC
   FROM daily
   WHERE dataset = 'FLUXMET' AND site_id IN (%s)
 ", site_list_sql))
@@ -99,28 +110,20 @@ daily_raw$TIMESTAMP <- as.Date(as.character(daily_raw$TIMESTAMP))
 message("Pulled ", nrow(daily_raw), " daily FLUXMET row(s) for ", length(IAV_SITES), " site(s).")
 
 daily0 <- daily_raw |>
-  left_join(site_meta |> select(site_id, gpp_col_used), by = "site_id") |>
+  left_join(site_meta |> select(site_id, gpp_col_used, qc_col_used), by = "site_id") |>
   mutate(
     is_vut = gpp_col_used == "GPP_NT_VUT_REF",
     GPP_NT_REF = ifelse(is_vut, GPP_NT_VUT_REF, GPP_NT_CUT_REF),
     GPP_DT_REF = ifelse(is_vut, GPP_DT_VUT_REF, GPP_DT_CUT_REF),
-    NEE_REF    = ifelse(is_vut, NEE_VUT_REF, NEE_CUT_REF)
+    NEE_REF    = ifelse(is_vut, NEE_VUT_REF, NEE_CUT_REF),
+    QC_REF     = ifelse(qc_col_used == "NEE_VUT_REF_QC", NEE_VUT_REF_QC, NEE_CUT_REF_QC),
+    year       = lubridate::year(TIMESTAMP)
   ) |>
-  select(site_id, TIMESTAMP, GPP_NT_REF, GPP_DT_REF, NEE_REF)
-
-## ---- Winter screen (main run's rule, already computed and committed) --
-## applied to GPP_NT_REF only, exactly as 02_derive.R's "main" variant. ----
-daily0 <- daily0 |>
-  left_join(winter_screen_days, by = c("site_id", "TIMESTAMP")) |>
-  mutate(
-    year = lubridate::year(TIMESTAMP),
-    GPP_NT_REF_screened = ifelse(coalesce(is_screened, FALSE), 0, GPP_NT_REF)
-  )
+  select(site_id, TIMESTAMP, year, GPP_NT_REF, GPP_DT_REF, NEE_REF, QC_REF)
 
 ## ---- DT availability per site: a site "has no DT GPP" if GPP_DT_REF is
-## NA for every row across its ENTIRE pulled record (not just passing
-## years) -- the agreement variant then falls back to NT alone for that
-## site, flagged. ----
+## NA for every row across its ENTIRE pulled record. Such a site contributes
+## no "dt"-variant rows at all (flagged flag_no_dt, see below). ----
 dt_availability <- daily0 |> group_by(site_id) |>
   summarise(n_dt_nonNA = sum(!is.na(GPP_DT_REF)), .groups = "drop") |>
   mutate(has_dt = n_dt_nonNA > 0)
@@ -129,44 +132,34 @@ message(length(sites_no_dt), " of ", length(IAV_SITES), " site(s) have NO DT-par
         if (length(sites_no_dt) > 0) paste(sites_no_dt, collapse = ", ") else "(none)")
 if (length(sites_no_dt) > 0) {
   for (sid in sites_no_dt) {
-    log_unknown(record_id = sid, reason = "No DT-partitioned GPP (GPP_DT_REF) at any resolution; agreement variant falls back to NT-only GPP for this site.",
+    log_unknown(record_id = sid, reason = "No DT-partitioned GPP (GPP_DT_REF) at any resolution; this site has no 'dt'-series rows (flag_no_dt = TRUE).",
                 logged_by = "11_gsl_methods_compare.R", log_path = EXP_UNKNOWN_LOG)
   }
 }
 
 ## ============================================================================
-## Three GPP variants (zero-floored throughout) + NEP (same for all three,
-## NOT zero-floored -- NEP is legitimately negative, needed by M5/M6).
-##   screened   = winter-screened GPP_NT_REF, zero-floored (main run).
-##   unscreened = GPP_NT_REF as-pulled (no winter screen), zero-floored.
-##   agreement  = pmin(zero-floored screened-or-unscreened? ...) -- see
-##     below: Dave's prompt defines it as pmin(zero-floored GPP_NT_REF,
-##     zero-floored GPP_DT_REF) -- i.e. the UNSCREENED NT series (the winter
-##     screen is explicitly a REPLACEMENT for this variant, so it uses the
-##     as-delivered NT, not the already-screened NT) -- confirmed against
-##     the prompt's own framing ("agreement... Dave's chosen REPLACEMENT for
-##     the winter screen"): the two are alternative ways of handling the
-##     same artifact, not stacked. Falls back to NT alone (no min taken)
-##     where a site has no DT, per sites_no_dt above.
+## Two GPP series (zero-floored, item 1) + NEP (shared, NOT zero-floored --
+## NEP is legitimately negative, needed by M5/M6). No winter screen, no
+## agreement/min-of-both series.
+##   gpp_nt = zero-floored GPP_NT_REF (the main series, as-delivered, no
+##            winter screen -- "Tash's analysis").
+##   gpp_dt = zero-floored GPP_DT_REF (same VUT/CUT family as NT).
 ## ============================================================================
 daily <- daily0 |>
   mutate(
-    gpp_screened   = pmax(GPP_NT_REF_screened, 0),
-    gpp_unscreened = pmax(GPP_NT_REF, 0),
-    gpp_dt_floor   = pmax(GPP_DT_REF, 0),
-    gpp_agreement  = ifelse(site_id %in% sites_no_dt, gpp_unscreened, pmin(gpp_unscreened, gpp_dt_floor)),
-    nep            = -NEE_REF
+    gpp_nt = pmax(GPP_NT_REF, 0),
+    gpp_dt = pmax(GPP_DT_REF, 0),
+    nep    = -NEE_REF
   ) |>
-  select(site_id, TIMESTAMP, year, gpp_screened, gpp_unscreened, gpp_agreement, nep)
+  select(site_id, TIMESTAMP, year, gpp_nt, gpp_dt, nep, QC_REF)
 
-message("Variant series built: screened, unscreened, agreement (= min(unscreened NT, DT), NT-only for ",
-        length(sites_no_dt), " no-DT site(s)); NEP shared across all three.")
+message("Variant series built: nt (zero-floored GPP_NT_REF, no winter screen), dt (zero-floored GPP_DT_REF); NEP shared.")
 
 ## ============================================================================
 ## Continuous per-site daily sequence (fill any calendar-day gaps with NA --
 ## confirmed none exist for these 15 sites, kept as a safety net) -- needed
-## for 15-day smoothing across year boundaries using whatever neighbour-year
-## data exists, even in a non-passing year (prompt's own instruction).
+## for 15-day smoothing across year boundaries, and carries QC_REF through
+## for AU-How's Jul-Jun day-count rule below.
 ## ============================================================================
 make_continuous <- function(sid) {
   d <- daily |> filter(site_id == sid) |> arrange(TIMESTAMP)
@@ -180,10 +173,8 @@ n_gap_days <- sum(daily_cont$site_id %in% IAV_SITES) - nrow(daily)
 message("Continuous daily sequence built per site; ", n_gap_days, " calendar-day gap(s) filled with NA (0 expected).")
 
 #' 15-day centred rolling mean with a PARTIAL window at the true start/end
-#' of the vector `x` (no padding/reflection) -- "use days from the
-#' neighbouring year where data exist... otherwise use the partial window."
-#' NA values within a window are dropped (na.rm), consistent with this
-#' project's convention elsewhere of simple-mean-of-available-days.
+#' of the vector `x` (no padding/reflection). NA values within a window are
+#' dropped (na.rm). Unchanged from v1.
 roll_mean_centred <- function(x, half_width = 7L) {
   n <- length(x)
   out <- rep(NA_real_, n)
@@ -195,77 +186,111 @@ roll_mean_centred <- function(x, half_width = 7L) {
   out
 }
 
-## ---- Smooth gpp_screened/gpp_unscreened/gpp_agreement and nep, per site,
-## over the FULL continuous record (so cross-year-boundary smoothing can
-## see neighbour-year data regardless of that year's passing status). -----
 daily_cont <- daily_cont |>
   group_by(site_id) |>
   arrange(TIMESTAMP, .by_group = TRUE) |>
   mutate(
-    gpp_screened_sm   = roll_mean_centred(gpp_screened),
-    gpp_unscreened_sm = roll_mean_centred(gpp_unscreened),
-    gpp_agreement_sm  = roll_mean_centred(gpp_agreement),
-    nep_sm            = roll_mean_centred(nep)
+    gpp_nt_sm = roll_mean_centred(gpp_nt),
+    gpp_dt_sm = roll_mean_centred(gpp_dt),
+    nep_sm    = roll_mean_centred(nep)
   ) |>
   ungroup()
-message("15-day centred smoothing applied (gpp x3 variants, nep) over each site's full continuous record.")
+message("15-day centred smoothing applied (gpp_nt, gpp_dt, nep) over each site's full continuous record.")
 
 ## ============================================================================
-## Per-site, per-variant P99 and threshold grids. "The main run's rule" for
-## P99/GSL-counting (03_derive.R's derive_one()) pools CALENDAR-YEAR
-## windows (year %in% passing years), NOT Jul-Jun season-year windows, for
-## P99/skewness/GSL(T)/F(T) -- confirmed by reading derive_one() directly
-## (it filters `year %in% years` on the literal calendar-year column).
-## M2/M3/M4 therefore ALSO use calendar-year windows (needed to exactly
-## reproduce derived_site_year.csv's gsl_z16/gsl_t95/f_z16/f_t95 for the
-## correctness checks below); M1/M5/M6 (span/continuous-NEP methods) use
-## Jul-Jun SEASON years for the one Southern-Hemisphere site (AU-How), per
-## the prompt's explicit "Southern Hemisphere sites on Jul-Jun season
-## years" instruction -- see docs/gsl_methods_compare_2026-11-02.md for the
-## full reasoning; this is the single most consequential interpretation
-## choice in this script, since the prompt does not resolve the tension
-## between "same as the main run" (calendar-year, for P99/M2/M4) and "SH on
-## season years" (for the span methods) explicitly itself.
+## Item 2: Southern-Hemisphere (AU-How) Jul-Jun season years, EVERY method
+## (M1-M6, including M2-M4, and P99), with a fresh day-count passing rule: a
+## Jul(y)-Jun(y+1) window passes iff it has <=EXP_RULE_MAX_FAIL_DAYS failing
+## days under the existing per-day QC rule (qc_passes(QC_REF, EXP_RULE_QC_DAY),
+## NA counts as failing) -- NOT the v1 proxy ("both bracketing calendar years
+## independently pass R2/N=14"), which is a coarser, different test. For NH
+## sites `season_years_for()` is unchanged: the site's own calendar years
+## from site_years.csv (already R2/N=14-passing). EXP_RULE_QC_DAY (0.25) and
+## EXP_RULE_MAX_FAIL_DAYS (14) are both defined in 00_config.R (sourced
+## above) and are the SAME constants scripts/04_qc.R and 01_select.R use for
+## the calendar-year rule -- "the existing QC rule", per the prompt.
 ## ============================================================================
-calendar_pool <- function(sid, gcol) {
-  yrs <- raw_years_list[[sid]]
-  v <- daily_cont[[gcol]][daily_cont$site_id == sid & daily_cont$year %in% yrs]
-  v[!is.na(v)]
+season_years_sh <- function(sid) {
+  rng_lo <- site_meta$first_year[site_meta$site_id == sid] - 1L
+  rng_hi <- site_meta$last_year[site_meta$site_id == sid]
+  d <- daily_cont |> filter(site_id == sid)
+  keep <- integer(0)
+  for (y in rng_lo:rng_hi) {
+    win <- seq(as.Date(sprintf("%d-07-01", y)), as.Date(sprintf("%d-06-30", y + 1L)), by = "day")
+    qc_vals <- d$QC_REF[match(win, d$TIMESTAMP)]
+    pass_raw <- qc_passes(qc_vals, EXP_RULE_QC_DAY)
+    n_fail <- sum(is.na(pass_raw) | !pass_raw)
+    if (n_fail <= EXP_RULE_MAX_FAIL_DAYS) keep <- c(keep, y)
+  }
+  keep
 }
 
-P99_screened   <- setNames(sapply(IAV_SITES, function(s) as.numeric(quantile(calendar_pool(s, "gpp_screened"),   0.99, type = 7))), IAV_SITES)
-P99_unscreened <- setNames(sapply(IAV_SITES, function(s) as.numeric(quantile(calendar_pool(s, "gpp_unscreened"), 0.99, type = 7))), IAV_SITES)
-## Agreement variant reuses the UNSCREENED P99 (prompt: "thresholds ... stay
-## as in the unscreened variant; only the series compared changes").
-P99_agreement <- P99_unscreened
+season_years_for <- function(sid) if (is_sh(sid)) season_years_sh(sid) else raw_years_list[[sid]]
 
-## ---- Sanity check: P99_screened/P99_unscreened must equal derived_site.csv's
-## own P99 (variant main / main_unscreened) for these 15 sites, confirming
-## the calendar-year-pooling interpretation above is correct. ---------------
-chk_P99 <- derived_site_all |> filter(site_id %in% IAV_SITES, variant %in% c("main", "main_unscreened")) |>
-  select(site_id, variant, P99) |>
-  mutate(P99_fresh = ifelse(variant == "main", P99_screened[site_id], P99_unscreened[site_id]),
-         diff = P99 - P99_fresh)
+auhow_new_years <- season_years_sh("AU-How")
+auhow_old_years <- sort(raw_years_list[["AU-How"]])
+message("AU-How: ", length(auhow_old_years), " calendar (R2/N=14) year(s) [", paste(auhow_old_years, collapse = ", "),
+        "] vs ", length(auhow_new_years), " new Jul-Jun (<=14-failing-day) season year(s) [",
+        paste(auhow_new_years, collapse = ", "), "] under item 2's rule.")
+
+#' All of a site's passing-year windows, concatenated as one Date vector
+#' (season_years_for()-aware; never overlaps across years by construction).
+pooled_window_dates <- function(sid) do.call(c, lapply(season_years_for(sid), function(y) window_dates(sid, y)))
+
+#' A (date, month, value) table over a site's pooled passing-year windows,
+#' for `gcol` -- the single building block for P99/summer-P99/peak-P99/
+#' peak-month selection below (uniformly season-year-aware for AU-How, item 2).
+pool_tbl <- function(sid, gcol) {
+  dts <- pooled_window_dates(sid)
+  d <- daily_cont |> filter(site_id == sid)
+  tibble(date = dts, month = lubridate::month(dts), value = d[[gcol]][match(dts, d$TIMESTAMP)])
+}
+pool_values <- function(sid, gcol) { v <- pool_tbl(sid, gcol)$value; v[!is.na(v)] }
+
+message("Site(s) x years to be processed (season_years_for(), post-item-2): ",
+        paste(sprintf("%s=%d", IAV_SITES, sapply(IAV_SITES, function(s) length(season_years_for(s)))), collapse = ", "))
+
+## ============================================================================
+## Per-site, per-series P99 (item 1: NT and DT, each from its own series;
+## item 2: AU-How pooled over Jul-Jun season years via pool_values()). A
+## site with no DT gets P99_dt = NA (sites_no_dt).
+## ============================================================================
+P99_nt <- setNames(sapply(IAV_SITES, function(s) as.numeric(quantile(pool_values(s, "gpp_nt"), 0.99, type = 7))), IAV_SITES)
+P99_dt <- setNames(sapply(IAV_SITES, function(s) {
+  v <- pool_values(s, "gpp_dt")
+  if (length(v) == 0) NA_real_ else as.numeric(quantile(v, 0.99, type = 7))
+}), IAV_SITES)
+
+## ---- Internal sanity check (NH sites only): fresh NT P99, pooled over
+## calendar-year windows (unchanged for NH under item 2), must equal
+## derived_site.csv's own P99 (variant main_unscreened) -- NT is exactly
+## v1's "unscreened" series (zero-floored GPP_NT_REF, no winter screen), and
+## derive_one() pools calendar-year windows, so for NH sites this MUST match
+## exactly. AU-How is excluded (its P99 is now season-year-pooled, item 2,
+## and will legitimately differ from derived_site.csv's calendar-year P99 --
+## see the AU-How comparison below). ----
+nh_sites <- setdiff(IAV_SITES, sh_sites)
+chk_P99 <- derived_site_all |> filter(site_id %in% nh_sites, variant == "main_unscreened") |>
+  select(site_id, P99) |> mutate(P99_fresh = P99_nt[site_id], diff = P99 - P99_fresh)
 if (any(abs(chk_P99$diff) > 1e-9)) {
   print(chk_P99[abs(chk_P99$diff) > 1e-9, ])
-  stop("11_gsl_methods_compare.R: freshly computed P99 does not match derived_site.csv -- stopping (per the prompt's own checks).")
+  stop("11_gsl_methods_compare.R: freshly computed NT P99 does not match derived_site.csv for a NH site -- stopping.")
 }
-message("Check passed: fresh P99 (screened & unscreened) exactly matches derived_site.csv for all 15 sites.")
+message("Check passed: fresh NT P99 exactly matches derived_site.csv's main_unscreened P99 for all ", length(nh_sites), " NH sites.")
+
+auhow_P99_old <- derived_site_all$P99[derived_site_all$site_id == "AU-How" & derived_site_all$variant == "main_unscreened"]
+message("AU-How P99 (zero-floored GPP_NT_REF): old calendar-year pooling = ", round(auhow_P99_old, 3),
+        "; new Jul-Jun season-year pooling (item 2) = ", round(P99_nt["AU-How"], 3))
 
 ## ============================================================================
-## M2/M3/M4 (count/fraction methods): calendar-year windows throughout (see
-## the note above). For "agreement", the series compared to the threshold
-## is gpp_agreement, but the GPP summed for the numerator/denominator of
-## "share of annual GPP" (and for the annual-GPP correlation check) is the
-## UNSCREENED series -- consistent with "annual GPP for shares ... stay as
-## in the unscreened variant" (documented interpretation: the agreement
-## variant only changes WHICH days qualify, not which GPP values are
-## totalled once they do).
+## M2/M3/M4 (count/fraction methods). Item 1: thresh_col == value_col ==
+## gcol always (nt or dt), never mixed. Item 2: windows = window_dates(sid,y)
+## for y in season_years_for(sid) -- calendar for NH, Jul-Jun for AU-How, in
+## EVERY method now (no more calendar-only carve-out for M2-M4).
 ## ============================================================================
 
-#' One (site, calendar year, threshold) count-method result.
-#' `thresh_vals` = the series compared against T (named by date);
-#' `value_vals` = the series summed for GPP totals (same dates).
+#' One (site, year, threshold) count-method result. Unchanged from v1;
+#' thresh_vals and value_vals are always the SAME series now (item 1).
 count_method_one <- function(dates, thresh_vals, value_vals, T_abs) {
   ok <- !is.na(thresh_vals) & !is.na(value_vals)
   above <- ok & thresh_vals > T_abs
@@ -274,47 +299,48 @@ count_method_one <- function(dates, thresh_vals, value_vals, T_abs) {
   if (n == 0) {
     return(tibble(gsl = 0L, start_date = as.Date(NA), end_date = as.Date(NA),
                   gpp_in_season = 0, annual_gpp = annual_gpp, share = NA_real_,
-                  flag_no_season = TRUE, flag_whole_year = FALSE))
+                  flag_no_season = TRUE, flag_whole_year = FALSE, flag_no_dt = FALSE))
   }
   idx_above <- which(above)
   gpp_in_season <- sum(value_vals[idx_above], na.rm = TRUE)
   tibble(gsl = n, start_date = dates[idx_above[1]], end_date = dates[idx_above[length(idx_above)]],
          gpp_in_season = gpp_in_season, annual_gpp = annual_gpp,
          share = if (annual_gpp != 0) gpp_in_season / annual_gpp else NA_real_,
-         flag_no_season = FALSE, flag_whole_year = (n == length(dates)))
+         flag_no_season = FALSE, flag_whole_year = (n == length(dates)), flag_no_dt = FALSE)
 }
+no_dt_row <- function() tibble(gsl = NA_integer_, start_date = as.Date(NA), end_date = as.Date(NA),
+                                gpp_in_season = NA_real_, annual_gpp = NA_real_, share = NA_real_,
+                                flag_no_season = FALSE, flag_whole_year = FALSE, flag_no_dt = TRUE)
 
-#' Run M2 (pct-of-P99 thresholds) and M4 (fine-grid fraction-target rule)
-#' for one GPP variant, across all 15 sites x calendar years.
-run_count_methods <- function(variant, thresh_col, value_col, P99_vec) {
+#' Run M2 (pct-of-P99), M3 (fixed abs.) and M4 (fine-grid fraction target)
+#' for ONE series ("nt" or "dt"), across all 15 sites x their own years.
+run_count_methods <- function(variant, gcol, P99_vec) {
   m2_pcts <- c(5, 10, 20)
   m4_targets <- c(0.90, 0.95, 0.99)
   m3_abs <- c(0.5, 1, 2) # gC m-2 d-1, fixed, no P99 scaling
 
   out <- list()
   for (sid in IAV_SITES) {
+    yrs <- season_years_for(sid)
+    if (variant == "dt" && sid %in% sites_no_dt) {
+      for (y in yrs) {
+        for (pct in m2_pcts) out[[length(out) + 1]] <- no_dt_row() |> mutate(site_id = sid, year = y, variant = variant, method = "M2", sub = sprintf("%dpct", pct))
+        for (abs_t in m3_abs) out[[length(out) + 1]] <- no_dt_row() |> mutate(site_id = sid, year = y, variant = variant, method = "M3", sub = sprintf("%sgC", format(abs_t)))
+        for (target in m4_targets) out[[length(out) + 1]] <- no_dt_row() |> mutate(site_id = sid, year = y, variant = variant, method = "M4", sub = sprintf("%.2f", target), threshold_pct_of_P99 = NA_real_)
+      }
+      next
+    }
     d <- daily_cont |> filter(site_id == sid)
     P99 <- P99_vec[[sid]]
-    yrs <- raw_years_list[[sid]]
 
     ## ---- M4's fine-grid rule: mean F(T) across ALL this site's passing
-    ## calendar years, at every fine-grid point, exactly mirroring
-    ## derive_one() (03_derive.R) but restricted to this script's own
-    ## variant-specific gpp_by_year. -----------------------------------------
-    gpp_by_year <- split(d[[value_col]][d$year %in% yrs], as.character(d$year[d$year %in% yrs]))
-    thresh_by_year <- split(d[[thresh_col]][d$year %in% yrs], as.character(d$year[d$year %in% yrs]))
-    ## year_threshold_matrices() needs ONE series for both GSL-counting and
-    ## F-weighting; for screened/unscreened these are identical
-    ## (thresh_col==value_col). For "agreement" they differ (thresh_col =
-    ## gpp_agreement, value_col = gpp_unscreened) -- year_threshold_matrices()
-    ## itself cannot take two series, so M4's fine-grid GSL/F for
-    ## "agreement" is computed directly below (count_method_one(), looped
-    ## over the fine grid) rather than via that shared helper.
+    ## years (season_years_for()-aware), at every fine-grid point. --------
+    windows_by_year <- setNames(lapply(yrs, function(y) window_dates(sid, y)), as.character(yrs))
+    gpp_by_year <- lapply(windows_by_year, function(win) d[[gcol]][match(win, d$TIMESTAMP)])
     fine_abs <- FINE_GRID_PCT / 100 * P99
     f_mean_grid <- vapply(fine_abs, function(T_abs) {
-      per_yr <- vapply(names(gpp_by_year), function(yr) {
-        tv <- thresh_by_year[[yr]]; vv <- gpp_by_year[[yr]]
-        ok <- !is.na(tv) & !is.na(vv); above <- ok & tv > T_abs
+      per_yr <- vapply(gpp_by_year, function(vv) {
+        ok <- !is.na(vv); above <- ok & vv > T_abs
         tot <- sum(vv, na.rm = TRUE)
         if (tot == 0) return(NA_real_)
         sum(vv[above], na.rm = TRUE) / tot
@@ -324,39 +350,29 @@ run_count_methods <- function(variant, thresh_col, value_col, P99_vec) {
     f_rounded <- round(f_mean_grid, 6)
 
     for (y in yrs) {
-      win <- window_dates_calendar <- seq(as.Date(sprintf("%d-01-01", y)), as.Date(sprintf("%d-12-31", y)), by = "day")
-      dy <- d |> filter(TIMESTAMP %in% win)
-      thresh_vals <- dy[[thresh_col]][match(win, dy$TIMESTAMP)]
-      value_vals  <- dy[[value_col]][match(win, dy$TIMESTAMP)]
+      win <- window_dates(sid, y)
+      vals <- d[[gcol]][match(win, d$TIMESTAMP)]
 
-      ## M2
       for (pct in m2_pcts) {
         T_abs <- pct / 100 * P99
-        r <- count_method_one(win, thresh_vals, value_vals, T_abs)
-        out[[length(out) + 1]] <- r |> mutate(site_id = sid, year = y, variant = variant,
-                                                method = "M2", sub = sprintf("%dpct", pct))
+        r <- count_method_one(win, vals, vals, T_abs)
+        out[[length(out) + 1]] <- r |> mutate(site_id = sid, year = y, variant = variant, method = "M2", sub = sprintf("%dpct", pct))
       }
-      ## M3 (fixed absolute thresholds, no P99 scaling)
       for (abs_t in m3_abs) {
-        r <- count_method_one(win, thresh_vals, value_vals, abs_t)
-        out[[length(out) + 1]] <- r |> mutate(site_id = sid, year = y, variant = variant,
-                                                method = "M3", sub = sprintf("%sgC", format(abs_t)))
+        r <- count_method_one(win, vals, vals, abs_t)
+        out[[length(out) + 1]] <- r |> mutate(site_id = sid, year = y, variant = variant, method = "M3", sub = sprintf("%sgC", format(abs_t)))
       }
-      ## M4: pick the fine-grid threshold hitting each target fraction, then
-      ## apply IT to this specific year.
       for (target in m4_targets) {
         idx <- which(f_rounded <= round(target, 6))[1]
         if (is.na(idx)) {
           r <- tibble(gsl = NA_integer_, start_date = as.Date(NA), end_date = as.Date(NA),
-                      gpp_in_season = NA_real_, annual_gpp = sum(value_vals, na.rm = TRUE), share = NA_real_,
-                      flag_no_season = TRUE, flag_whole_year = FALSE)
+                      gpp_in_season = NA_real_, annual_gpp = sum(vals, na.rm = TRUE), share = NA_real_,
+                      flag_no_season = TRUE, flag_whole_year = FALSE, flag_no_dt = FALSE)
         } else {
           T_abs <- fine_abs[idx]
-          r <- count_method_one(win, thresh_vals, value_vals, T_abs)
-          attr(r, "threshold_pct") <- FINE_GRID_PCT[idx]
+          r <- count_method_one(win, vals, vals, T_abs)
         }
-        out[[length(out) + 1]] <- r |> mutate(site_id = sid, year = y, variant = variant,
-                                                method = "M4", sub = sprintf("%.2f", target),
+        out[[length(out) + 1]] <- r |> mutate(site_id = sid, year = y, variant = variant, method = "M4", sub = sprintf("%.2f", target),
                                                 threshold_pct_of_P99 = if (!is.na(idx)) FINE_GRID_PCT[idx] else NA_real_)
       }
     }
@@ -364,28 +380,29 @@ run_count_methods <- function(variant, thresh_col, value_col, P99_vec) {
   bind_rows(out)
 }
 
-message("Running M2/M3/M4 for 3 variants x 15 sites...")
-m234_screened   <- run_count_methods("screened",   "gpp_screened",   "gpp_screened",   P99_screened)
-m234_unscreened <- run_count_methods("unscreened", "gpp_unscreened", "gpp_unscreened", P99_unscreened)
-m234_agreement  <- run_count_methods("agreement",  "gpp_agreement",  "gpp_unscreened", P99_agreement)
-m234_all <- bind_rows(m234_screened, m234_unscreened, m234_agreement)
-message("M2/M3/M4: ", nrow(m234_all), " site x year x variant x method-threshold rows.")
+message("Running M2/M3/M4 for 2 series (nt, dt) x 15 sites...")
+m234_nt <- run_count_methods("nt", "gpp_nt", P99_nt)
+m234_dt <- run_count_methods("dt", "gpp_dt", P99_dt)
+m234_all <- bind_rows(m234_nt, m234_dt)
+message("M2/M3/M4: ", nrow(m234_all), " site x year x series x method-threshold rows.")
 
 ## ============================================================================
-## Check 1: M2 at 10% and M4 at 0.95 must equal derived_site_year.csv's
-## gsl_z16/gsl_t95 (and f_z16/f_t95), for the screened and unscreened
-## variants.
+## Check (NH sites only): M2 at 10% and M4 at 0.95 on the NT series must
+## equal derived_site_year.csv's main_unscreened gsl_z16/gsl_t95 (and
+## f_z16/f_t95). AU-How is excluded -- its windows are now Jul-Jun season
+## years (item 2), which do not correspond to derived_site_year.csv's
+## calendar-year rows at all (see the AU-How comparison section below for
+## its own, separate before/after numbers).
 ## ============================================================================
-dsy_check <- derived_site_year_all |> filter(site_id %in% IAV_SITES, variant %in% c("main", "main_unscreened")) |>
-  select(site_id, year, variant, gsl_z16, gsl_t95, f_z16, f_t95) |>
-  mutate(variant = ifelse(variant == "main", "screened", "unscreened"))
+dsy_check <- derived_site_year_all |> filter(site_id %in% nh_sites, variant == "main_unscreened") |>
+  select(site_id, year, gsl_z16, gsl_t95, f_z16, f_t95)
 
-m2_10 <- m234_all |> filter(method == "M2", sub == "10pct") |> select(site_id, year, variant, gsl, share)
-m4_95 <- m234_all |> filter(method == "M4", sub == "0.95") |> select(site_id, year, variant, gsl, share)
+m2_10_nt <- m234_all |> filter(variant == "nt", method == "M2", sub == "10pct") |> select(site_id, year, gsl, share)
+m4_95_nt <- m234_all |> filter(variant == "nt", method == "M4", sub == "0.95") |> select(site_id, year, gsl, share)
 
 chk1 <- dsy_check |>
-  left_join(m2_10 |> rename(gsl_m2_10 = gsl, share_m2_10 = share), by = c("site_id", "year", "variant")) |>
-  left_join(m4_95 |> rename(gsl_m4_95 = gsl, share_m4_95 = share), by = c("site_id", "year", "variant")) |>
+  left_join(m2_10_nt |> rename(gsl_m2_10 = gsl, share_m2_10 = share), by = c("site_id", "year")) |>
+  left_join(m4_95_nt |> rename(gsl_m4_95 = gsl, share_m4_95 = share), by = c("site_id", "year")) |>
   mutate(
     diff_gsl_z16 = gsl_z16 - gsl_m2_10, diff_f_z16 = f_z16 - share_m2_10,
     diff_gsl_t95 = gsl_t95 - gsl_m4_95, diff_f_t95 = f_t95 - share_m4_95
@@ -395,27 +412,32 @@ bad_gsl_t95 <- chk1 |> filter(!is.na(diff_gsl_t95) & abs(diff_gsl_t95) > 0)
 bad_f_z16   <- chk1 |> filter(!is.na(diff_f_z16) & abs(diff_f_z16) > 1e-9)
 bad_f_t95   <- chk1 |> filter(!is.na(diff_f_t95) & abs(diff_f_t95) > 1e-9)
 if (nrow(bad_gsl_z16) + nrow(bad_gsl_t95) + nrow(bad_f_z16) + nrow(bad_f_t95) > 0) {
-  cat("--- M2@10%/M4@0.95 CHECK FAILURES ---\n")
+  cat("--- M2@10%/M4@0.95 (NT) CHECK FAILURES (NH sites) ---\n")
   print(bad_gsl_z16); print(bad_gsl_t95); print(bad_f_z16); print(bad_f_t95)
-  stop("11_gsl_methods_compare.R: M2@10%/M4@0.95 do not exactly match derived_site_year.csv's gsl_z16/gsl_t95/f_z16/f_t95 -- stopping.")
+  stop("11_gsl_methods_compare.R: NT-series M2@10%/M4@0.95 do not exactly match derived_site_year.csv's main_unscreened gsl_z16/gsl_t95/f_z16/f_t95 for a NH site -- stopping.")
 }
-message("Check passed: M2@10% == gsl_z16/f_z16 and M4@0.95 == gsl_t95/f_t95, exactly, for screened & unscreened, all ",
-        nrow(chk1), " site-year rows.")
+message("Check passed: NT-series M2@10% == gsl_z16/f_z16 and M4@0.95 == gsl_t95/f_t95 (main_unscreened), exactly, for all ",
+        nrow(chk1), " NH site-year rows.")
+
+## ---- AU-How: M2@10%/M4@0.95 on the NT series, new Jul-Jun season years,
+## vs. the OLD calendar-year main_unscreened values -- "report how AU-How's
+## years and GSL change against the calendar-year version" (item 2). -------
+auhow_old_gsl <- derived_site_year_all |> filter(site_id == "AU-How", variant == "main_unscreened") |>
+  select(year, gsl_z16_old = gsl_z16, gsl_t95_old = gsl_t95)
+auhow_new_gsl <- m234_all |> filter(site_id == "AU-How", variant == "nt", method == "M2", sub == "10pct") |>
+  select(year, gsl_z16_new = gsl) |>
+  left_join(m234_all |> filter(site_id == "AU-How", variant == "nt", method == "M4", sub == "0.95") |> select(year, gsl_t95_new = gsl), by = "year")
+message("AU-How GSL, old (calendar year) vs new (Jul-Jun season year, item 2):")
+print(as.data.frame(auhow_old_gsl))
+print(as.data.frame(auhow_new_gsl))
 
 ## ============================================================================
-## Annual GPP/NEP for the detrended-r CORRELATION checks and for the summary
-## table's own r_gpp/r_nep -- NOT the same "annual_gpp" column used just
-## above as F(T)'s denominator (that one is calendar-year, matching
-## derived_site_year.csv's f_z16/f_t95 exactly, confirmed). This one follows
-## carbon_gain_data.csv's / 09_figure_iav_15sites.R's own convention: NH =
-## calendar-year sum; Southern Hemisphere (AU-How) = Jul(y)-Jun(y+1)
-## SEASON-year sum, using window_dates() (already defined above) and only
-## for AU-How's season_years_for() (Jul-Jun-valid) years -- needed to
-## reproduce iav_15sites.csv's r_gpp_z16/r_gpp_t95 exactly for the check
-## below, and used uniformly for every method's site-level correlation in
-## the summary table (not just M2/M4).
+## Annual GPP/NEP for the detrended-r correlation used in the summary table
+## (season_years_for()/window_dates()-aware -- uniformly handles AU-How's
+## new Jul-Jun years now, item 2). This is NOT the same "annual_gpp" column
+## used above as F(T)'s own denominator.
 ## ============================================================================
-annual_gpp_nep_corr_for <- function(sid, gpp_col) {
+annual_gpp_nep_for <- function(sid, gpp_col) {
   yrs <- season_years_for(sid)
   purrr::map_dfr(yrs, function(y) {
     win <- window_dates(sid, y)
@@ -424,10 +446,8 @@ annual_gpp_nep_corr_for <- function(sid, gpp_col) {
            annual_nep = sum(d$nep, na.rm = TRUE))
   })
 }
-annual_corr_screened   <- bind_rows(lapply(IAV_SITES, annual_gpp_nep_corr_for, gpp_col = "gpp_screened"))
-annual_corr_unscreened <- bind_rows(lapply(IAV_SITES, annual_gpp_nep_corr_for, gpp_col = "gpp_unscreened"))
-## Agreement's annual_gpp/nep for correlations = unscreened's (prompt rule).
-annual_corr_agreement  <- annual_corr_unscreened
+annual_corr_nt <- bind_rows(lapply(IAV_SITES, annual_gpp_nep_for, gpp_col = "gpp_nt"))
+annual_corr_dt <- bind_rows(lapply(setdiff(IAV_SITES, sites_no_dt), annual_gpp_nep_for, gpp_col = "gpp_dt"))
 
 detrend_cor <- function(gsl, annual, year) {
   ok <- !is.na(gsl) & !is.na(annual) & !is.na(year)
@@ -438,78 +458,48 @@ detrend_cor <- function(gsl, annual, year) {
   c(r = unname(ct$estimate), p = ct$p.value, n = sum(ok))
 }
 
-## ---- Check 2: screened-variant M2@10%/M4@0.95 detrended r vs annual GPP
-## must equal iav_15sites.csv's r_gpp_z16/r_gpp_t95, per site. --------------
-chk2_data <- derived_site_year_all |> filter(site_id %in% IAV_SITES, variant == "main") |>
-  select(site_id, year, gsl_z16, gsl_t95) |>
-  inner_join(annual_corr_screened, by = c("site_id", "year"))
-
-chk2 <- chk2_data |> group_by(site_id) |> summarise(
-  r_m2_10 = detrend_cor(gsl_z16, annual_gpp, year)["r"],
-  r_m4_95 = detrend_cor(gsl_t95, annual_gpp, year)["r"],
-  .groups = "drop"
-) |> left_join(iav_tbl |> select(site_id, r_gpp_z16, r_gpp_t95), by = "site_id") |>
-  mutate(diff_z16 = r_m2_10 - r_gpp_z16, diff_t95 = r_m4_95 - r_gpp_t95)
-
-bad2 <- chk2 |> filter(abs(diff_z16) > 1e-9 | abs(diff_t95) > 1e-9)
-if (nrow(bad2) > 0) {
-  print(chk2)
-  stop("11_gsl_methods_compare.R: screened-variant detrended r (M2@10%/M4@0.95 vs annual GPP) does not match iav_15sites.csv -- stopping.")
-}
-message("Check passed: screened-variant detrended r (M2@10% and M4@0.95 vs annual GPP) exactly matches iav_15sites.csv's r_gpp_z16/r_gpp_t95 for all 15 sites.")
-
 ## ============================================================================
-## M1 (Zscheischler et al. 2016 crossing-span). Three thresholds, all 10% of
-## a P99: summer (Jun-Aug NH / Dec-Feb SH, pooled across passing CALENDAR
-## years), peak (the 3 consecutive wrapping calendar months with the
-## highest mean GPP, pooled the same way), annual (the same per-variant P99
-## used throughout M2/M4 above). M1 ITSELF (the span detection) uses
-## SEASON-YEAR windows (Jul-Jun for AU-How) -- the one place in this script
-## where "Southern Hemisphere sites on Jul-Jun season years" governs a
-## threshold-crossing computation rather than a simple calendar-year count.
+## M1 (Zscheischler et al. 2016 crossing-span). Item 1: thresholds (summer,
+## peak, annual P99) computed from EACH series' own pooled values
+## (pool_tbl()/pool_values(), already season_years_for()-aware for AU-How,
+## item 2). M1's span detection itself also uses season_years_for()/
+## window_dates() per site.
 ## ============================================================================
 summer_months <- function(sid) if (is_sh(sid)) c(12, 1, 2) else c(6, 7, 8)
 
-#' The 3 consecutive (wrapping) calendar months with the highest mean daily
-#' GPP, pooled over this site's passing CALENDAR years, for column `gcol`.
+#' The 3 consecutive (wrapping) calendar months with the highest mean GPP,
+#' pooled over this site's passing years, for series `gcol`.
 peak_months_for <- function(sid, gcol) {
-  yrs <- raw_years_list[[sid]]
-  d <- daily_cont |> filter(site_id == sid, year %in% yrs)
-  d$month <- lubridate::month(d$TIMESTAMP)
-  month_mean <- vapply(1:12, function(m) mean(d[[gcol]][d$month == m], na.rm = TRUE), numeric(1))
+  pt <- pool_tbl(sid, gcol)
+  month_mean <- vapply(1:12, function(m) mean(pt$value[pt$month == m], na.rm = TRUE), numeric(1))
   starts <- 1:12
   score <- vapply(starts, function(s) sum(month_mean[((s - 1):(s + 1)) %% 12 + 1]), numeric(1))
   best_start <- starts[which.max(score)]
   ((best_start - 1):(best_start + 1)) %% 12 + 1
 }
 
-#' P99 of zero-floored GPP (`gcol`), pooled over this site's passing
-#' calendar years, restricted to calendar months in `months`.
+#' P99 of zero-floored GPP (`gcol`), pooled over this site's passing years,
+#' restricted to calendar months in `months`.
 P99_for_months <- function(sid, gcol, months) {
-  yrs <- raw_years_list[[sid]]
-  d <- daily_cont |> filter(site_id == sid, year %in% yrs)
-  d$month <- lubridate::month(d$TIMESTAMP)
-  v <- d[[gcol]][d$month %in% months]
+  pt <- pool_tbl(sid, gcol)
+  v <- pt$value[pt$month %in% months]
+  if (all(is.na(v))) return(NA_real_)
   as.numeric(quantile(v, 0.99, type = 7, na.rm = TRUE))
 }
 
-peak_months_screened   <- setNames(lapply(IAV_SITES, peak_months_for, gcol = "gpp_screened"), IAV_SITES)
-peak_months_unscreened <- setNames(lapply(IAV_SITES, peak_months_for, gcol = "gpp_unscreened"), IAV_SITES)
-peak_months_agreement  <- peak_months_unscreened # agreement reuses unscreened's threshold machinery
+peak_months_nt <- setNames(lapply(IAV_SITES, peak_months_for, gcol = "gpp_nt"), IAV_SITES)
+peak_months_dt <- setNames(lapply(setdiff(IAV_SITES, sites_no_dt), peak_months_for, gcol = "gpp_dt"), setdiff(IAV_SITES, sites_no_dt))
 
-P99_summer_screened   <- setNames(sapply(IAV_SITES, function(s) P99_for_months(s, "gpp_screened",   summer_months(s))), IAV_SITES)
-P99_summer_unscreened <- setNames(sapply(IAV_SITES, function(s) P99_for_months(s, "gpp_unscreened", summer_months(s))), IAV_SITES)
-P99_summer_agreement  <- P99_summer_unscreened
+P99_summer_nt <- setNames(sapply(IAV_SITES, function(s) P99_for_months(s, "gpp_nt", summer_months(s))), IAV_SITES)
+P99_summer_dt <- setNames(sapply(IAV_SITES, function(s) if (s %in% sites_no_dt) NA_real_ else P99_for_months(s, "gpp_dt", summer_months(s))), IAV_SITES)
 
-P99_peak_screened   <- setNames(sapply(IAV_SITES, function(s) P99_for_months(s, "gpp_screened",   peak_months_screened[[s]])), IAV_SITES)
-P99_peak_unscreened <- setNames(sapply(IAV_SITES, function(s) P99_for_months(s, "gpp_unscreened", peak_months_unscreened[[s]])), IAV_SITES)
-P99_peak_agreement  <- P99_peak_unscreened
+P99_peak_nt <- setNames(sapply(IAV_SITES, function(s) P99_for_months(s, "gpp_nt", peak_months_nt[[s]])), IAV_SITES)
+P99_peak_dt <- setNames(sapply(IAV_SITES, function(s) if (s %in% sites_no_dt) NA_real_ else P99_for_months(s, "gpp_dt", peak_months_dt[[s]])), IAV_SITES)
 
-message("Peak 3-month window per site (unscreened GPP): ",
-        paste(sprintf("%s=%s", IAV_SITES, sapply(peak_months_unscreened, paste, collapse = "-")), collapse = "; "))
+message("Peak 3-month window per site, NT series: ", paste(sprintf("%s=%s", IAV_SITES, sapply(peak_months_nt, paste, collapse = "-")), collapse = "; "))
+message("Peak 3-month window per site, DT series: ", paste(sprintf("%s=%s", names(peak_months_dt), sapply(peak_months_dt, paste, collapse = "-")), collapse = "; "))
 
-#' One (site, season/calendar year, threshold) span-crossing result on a
-#' SMOOTHED series. `thresh_vals`/`value_vals` aligned to `dates`.
+#' One (site, year, threshold) span-crossing result on a SMOOTHED series.
 crossing_method_one <- function(dates, thresh_vals, value_vals, T_abs) {
   above <- !is.na(thresh_vals) & thresh_vals > T_abs
   n <- length(above)
@@ -518,7 +508,7 @@ crossing_method_one <- function(dates, thresh_vals, value_vals, T_abs) {
     return(tibble(gsl = NA_integer_, start_date = as.Date(NA), end_date = as.Date(NA),
                   gpp_in_season = 0, annual_gpp = annual_gpp, share = NA_real_,
                   flag_no_season = TRUE, flag_whole_year = FALSE,
-                  flag_no_start_crossing = FALSE, flag_no_end_crossing = FALSE))
+                  flag_no_start_crossing = FALSE, flag_no_end_crossing = FALSE, flag_no_dt = FALSE))
   }
   idx_above <- which(above)
   s_idx <- idx_above[1]; e_idx <- idx_above[length(idx_above)]
@@ -528,27 +518,34 @@ crossing_method_one <- function(dates, thresh_vals, value_vals, T_abs) {
          gpp_in_season = gpp_in_season, annual_gpp = annual_gpp,
          share = if (annual_gpp != 0) gpp_in_season / annual_gpp else NA_real_,
          flag_no_season = FALSE, flag_whole_year = all(above),
-         flag_no_start_crossing = (s_idx == 1), flag_no_end_crossing = (e_idx == n))
+         flag_no_start_crossing = (s_idx == 1), flag_no_end_crossing = (e_idx == n), flag_no_dt = FALSE)
 }
+no_dt_row_m1 <- function() tibble(gsl = NA_integer_, start_date = as.Date(NA), end_date = as.Date(NA),
+                                   gpp_in_season = NA_real_, annual_gpp = NA_real_, share = NA_real_,
+                                   flag_no_season = FALSE, flag_whole_year = FALSE,
+                                   flag_no_start_crossing = FALSE, flag_no_end_crossing = FALSE, flag_no_dt = TRUE)
 
-run_m1 <- function(variant, thresh_col_sm, value_col, P99_annual_vec, P99_summer_vec, P99_peak_vec, annual_corr_tbl) {
+run_m1 <- function(variant, gcol_sm, gcol, P99_annual_vec, P99_summer_vec, P99_peak_vec, annual_corr_tbl) {
   out <- list()
   for (sid in IAV_SITES) {
     yrs <- season_years_for(sid)
+    if (variant == "dt" && sid %in% sites_no_dt) {
+      for (y in yrs) for (sub in c("summer", "peak", "annual"))
+        out[[length(out) + 1]] <- no_dt_row_m1() |> mutate(site_id = sid, year = y, variant = variant, method = "M1", sub = sub)
+      next
+    }
     d <- daily_cont |> filter(site_id == sid)
     subs <- list(summer = P99_summer_vec[[sid]], peak = P99_peak_vec[[sid]], annual = P99_annual_vec[[sid]])
     for (y in yrs) {
       win <- window_dates(sid, y)
       dy <- d |> filter(TIMESTAMP %in% win)
-      thresh_vals <- dy[[thresh_col_sm]][match(win, dy$TIMESTAMP)]
-      value_vals  <- dy[[value_col]][match(win, dy$TIMESTAMP)]
-      ## use the SAME window's annual GPP as the correlation table (season-
-      ## year-aware for AU-How) rather than re-summing here, for consistency.
+      thresh_vals <- dy[[gcol_sm]][match(win, dy$TIMESTAMP)]
+      value_vals  <- dy[[gcol]][match(win, dy$TIMESTAMP)]
       ag <- annual_corr_tbl$annual_gpp[annual_corr_tbl$site_id == sid & annual_corr_tbl$year == y]
       for (sub in names(subs)) {
         T_abs <- 0.10 * subs[[sub]]
         r <- crossing_method_one(win, thresh_vals, value_vals, T_abs)
-        if (length(ag) == 1) r$annual_gpp <- ag # override with the season-year-aware total
+        if (length(ag) == 1) r$annual_gpp <- ag
         r$share <- if (!is.na(r$annual_gpp) && r$annual_gpp != 0) r$gpp_in_season / r$annual_gpp else NA_real_
         out[[length(out) + 1]] <- r |> mutate(site_id = sid, year = y, variant = variant, method = "M1", sub = sub)
       }
@@ -557,45 +554,75 @@ run_m1 <- function(variant, thresh_col_sm, value_col, P99_annual_vec, P99_summer
   bind_rows(out)
 }
 
-message("Running M1 for 3 variants x 3 thresholds x 15 sites...")
-m1_screened   <- run_m1("screened",   "gpp_screened_sm",   "gpp_screened",   P99_screened,   P99_summer_screened,   P99_peak_screened,   annual_corr_screened)
-m1_unscreened <- run_m1("unscreened", "gpp_unscreened_sm", "gpp_unscreened", P99_unscreened, P99_summer_unscreened, P99_peak_unscreened, annual_corr_unscreened)
-m1_agreement  <- run_m1("agreement",  "gpp_agreement_sm",  "gpp_unscreened", P99_agreement,  P99_summer_agreement,  P99_peak_agreement,  annual_corr_agreement)
-m1_all <- bind_rows(m1_screened, m1_unscreened, m1_agreement)
-message("M1: ", nrow(m1_all), " site x year x variant x sub-threshold rows. No-season flags: ", sum(m1_all$flag_no_season),
-        "; whole-year flags: ", sum(m1_all$flag_whole_year))
+message("Running M1 for 2 series x 3 thresholds x 15 sites...")
+m1_nt <- run_m1("nt", "gpp_nt_sm", "gpp_nt", P99_nt, P99_summer_nt, P99_peak_nt, annual_corr_nt)
+m1_dt <- run_m1("dt", "gpp_dt_sm", "gpp_dt", P99_dt, P99_summer_dt, P99_peak_dt, annual_corr_dt)
+m1_all <- bind_rows(m1_nt, m1_dt)
+message("M1: ", nrow(m1_all), " site x year x series x sub-threshold rows. No-season flags: ", sum(m1_all$flag_no_season),
+        "; whole-year flags: ", sum(m1_all$flag_whole_year), "; no-DT flags: ", sum(m1_all$flag_no_dt))
 
 ## ============================================================================
-## NEP is the SAME across all three GPP variants, so M5/M6 are computed
-## ONCE per site-year (not x3) -- the output tables still carry a
-## `variant` value for these rows (set to "all" below) so every row in
-## gsl_methods_site_year.csv has a variant, per the output spec, without
-## implying NEP actually differs by GPP variant.
+## Item 4: two-season flag via the TIMESAT secondary-peak rule (Wang et al.
+## 2020), applied to 15-day SMOOTHED GPP -- replaces v1's slope-run rule on
+## NEP (which saturated near-universally). M5/M6 have no GPP series of
+## their own (NEP is shared, variant="all"), so this flag uses the NT
+## series as a single default (same convention as the GPP-share default
+## below) -- documented, not implied to differ by variant.
+##
+## As implemented: within one site-year window, find all STRICT local
+## maxima of smoothed GPP (g[i] > both neighbours, NA-safe). The PRIMARY
+## peak is the single global maximum. If there is no other (secondary)
+## local maximum, there is one season (flag = FALSE). Otherwise the
+## SECONDARY peak is the highest-valued other local maximum; flag TRUE iff
+## (a) secondary >= 0.5 x primary, AND (b) the minimum of smoothed GPP
+## strictly between the two peaks is < 0.5 x the LOWER of the two peaks
+## (the "fall below half the lower peak" requirement -- this is what keeps
+## a small wiggle immediately next to the main peak from counting: such a
+## wiggle's between-peaks minimum stays close to the (high) primary peak,
+## not down near half of itself). `two_season_ratio` = secondary/primary
+## (NA if no secondary local max exists at all) is reported alongside the
+## boolean flag as the "number" requested by the prompt.
 ## ============================================================================
-
-#' Two-season check shared by M5-span and M6 (prompt: "for M5-span and M6,
-## use the first rise and the last decline... flag every site-year with
-## more than one distinct rise or decline (separate runs where the slope
-## exceeds 50% of that year's maximum)"). Slope = first difference of
-## SMOOTHED NEP (the simplest series available to both methods without
-## picking one of M6's own k=3-9 windows) -- an explicit, documented
-## interpretation choice (the prompt does not itself define "slope" for
-## this shared check). Rise-runs: slope > 0.5*max(slope); decline-runs:
-## slope < 0.5*min(slope) (most negative half), each within one year window.
-two_season_check <- function(nep_sm_vals) {
-  slope <- diff(nep_sm_vals) # length n-1, slope[i] = nep_sm[i+1]-nep_sm[i]
-  if (all(is.na(slope))) return(list(n_rise = 0L, n_decline = 0L))
-  mx <- suppressWarnings(max(slope, na.rm = TRUE)); mn <- suppressWarnings(min(slope, na.rm = TRUE))
-  rise  <- !is.na(slope) & mx > 0 & slope > 0.5 * mx
-  decl  <- !is.na(slope) & mn < 0 & slope < 0.5 * mn
-  count_runs <- function(x) { if (!any(x)) return(0L); r <- rle(x); sum(r$values) }
-  list(n_rise = count_runs(rise), n_decline = count_runs(decl))
+local_maxima_idx <- function(x) {
+  n <- length(x)
+  if (n < 3) return(integer(0))
+  idx <- integer(0)
+  for (i in 2:(n - 1)) {
+    if (is.na(x[i])) next
+    lo <- x[i - 1]; hi <- x[i + 1]
+    left_ok  <- is.na(lo) || x[i] > lo
+    right_ok <- is.na(hi) || x[i] > hi
+    if (left_ok && right_ok && (!is.na(lo) || !is.na(hi))) idx <- c(idx, i)
+  }
+  idx
 }
 
-#' M5: carbon-uptake period from smoothed NEP > 0. count = n days > 0;
-## span = first day of the first >=5-day run to the last day of the last
-## such run. Net-source flag: fewer than 5 days with smoothed NEP > 0
-## (excluded from M5/M6 site means downstream, per the prompt).
+timesat_two_season <- function(gpp_sm_vals) {
+  if (all(is.na(gpp_sm_vals))) return(list(flag = FALSE, ratio = NA_real_))
+  maxima <- local_maxima_idx(gpp_sm_vals)
+  if (length(maxima) < 1) return(list(flag = FALSE, ratio = NA_real_))
+  primary_idx <- maxima[which.max(gpp_sm_vals[maxima])]
+  primary_val <- gpp_sm_vals[primary_idx]
+  others <- setdiff(maxima, primary_idx)
+  if (length(others) == 0) return(list(flag = FALSE, ratio = NA_real_))
+  secondary_idx <- others[which.max(gpp_sm_vals[others])]
+  secondary_val <- gpp_sm_vals[secondary_idx]
+  ratio <- secondary_val / primary_val
+  lo_idx <- min(primary_idx, secondary_idx); hi_idx <- max(primary_idx, secondary_idx)
+  between <- gpp_sm_vals[(lo_idx + 1):(hi_idx - 1)]
+  valley <- if (length(between) == 0 || all(is.na(between))) NA_real_ else min(between, na.rm = TRUE)
+  lower_peak <- min(primary_val, secondary_val)
+  flag <- !is.na(ratio) && ratio >= 0.5 && !is.na(valley) && valley < 0.5 * lower_peak
+  list(flag = flag, ratio = ratio)
+}
+
+## ============================================================================
+## M5: carbon-uptake period from smoothed NEP > 0 (unchanged from v1's
+## definitions). count = n days > 0; span = first day of the first >=5-day
+## run to the last day of the last such run. Net-source flag unchanged.
+## Two-season flag now computed via timesat_two_season() on the NT series'
+## smoothed GPP for this site-year window (item 4).
+## ============================================================================
 run_m5 <- function() {
   out <- list()
   for (sid in IAV_SITES) {
@@ -605,18 +632,17 @@ run_m5 <- function() {
       win <- window_dates(sid, y)
       dy <- d |> filter(TIMESTAMP %in% win)
       nep_sm <- dy$nep_sm[match(win, dy$TIMESTAMP)]
+      gpp_nt_sm_win <- dy$gpp_nt_sm[match(win, dy$TIMESTAMP)]
       above <- !is.na(nep_sm) & nep_sm > 0
       n_above <- sum(above)
       net_source <- n_above < 5L
 
-      ts <- two_season_check(nep_sm)
+      ts <- timesat_two_season(gpp_nt_sm_win)
 
-      ## M5-count
       count_row <- tibble(gsl = n_above, start_date = if (n_above > 0) win[which(above)[1]] else as.Date(NA),
                            end_date = if (n_above > 0) win[which(above)[n_above]] else as.Date(NA),
                            sub = "count")
 
-      ## M5-span: runs of >=5 consecutive TRUE
       if (!any(above)) {
         span_row <- tibble(gsl = NA_integer_, start_date = as.Date(NA), end_date = as.Date(NA),
                             flag_no_season = TRUE, flag_whole_year = FALSE, sub = "span")
@@ -637,10 +663,8 @@ run_m5 <- function() {
 
       for (rowd in list(count_row, span_row)) {
         rowd$flag_net_source <- net_source
-        rowd$flag_two_season_rise <- ts$n_rise > 1
-        rowd$flag_two_season_decline <- ts$n_decline > 1
-        rowd$n_rise_runs <- ts$n_rise
-        rowd$n_decline_runs <- ts$n_decline
+        rowd$flag_two_season <- ts$flag
+        rowd$two_season_ratio <- ts$ratio
         out[[length(out) + 1]] <- rowd |> mutate(site_id = sid, year = y, variant = "all", method = "M5")
       }
     }
@@ -651,40 +675,18 @@ run_m5 <- function() {
 message("Running M5 (count + span) for 15 sites...")
 m5_all <- run_m5()
 message("M5: ", nrow(m5_all), " site x year x sub rows. Net-source years: ", sum(m5_all$flag_net_source[m5_all$sub == "span"]),
-        " of ", sum(m5_all$sub == "span"), ". Two-season rise flags: ", sum(m5_all$flag_two_season_rise[m5_all$sub == "span"]),
-        "; decline flags: ", sum(m5_all$flag_two_season_decline[m5_all$sub == "span"]))
+        " of ", sum(m5_all$sub == "span"), ". Two-season (TIMESAT, item 4) flags: ",
+        sum(m5_all$flag_two_season[m5_all$sub == "span"]), " of ", sum(m5_all$sub == "span"))
 
 ## ============================================================================
-## M6 (Hu et al. 2010 rate-of-change of NEP), on UNSMOOTHED daily NEP (an
-## agreed exception to the shared 15-day smoothing). Interpretation choices
-## made explicit here (see docs/gsl_methods_compare_2026-11-02.md for the
-## full reasoning and the empirical finding that motivated them):
-##
-## 1. "First/last seasonal peak of smoothed NEP": tested several local-
-##    maxima + prominence/valley definitions (0.5x-of-max threshold, with
-##    and without a minimum-distance or saddle-depth requirement) and found
-##    all of them flagged the large majority of site-years as having
-##    "multiple peaks" -- smoothed NEP (unlike smoothed GPP) is not reliably
-##    unimodal; short dry spells/cloudy spells create many local maxima
-##    that satisfy any reasonably permissive prominence threshold. Rather
-##    than report a "first vs last peak" distinction that is mostly noise,
-##    this script uses the SINGLE GLOBAL MAXIMUM of smoothed NEP in the
-##    window as both "first" and "last" seasonal peak -- a simplification,
-##    not a claim that these sites are all strictly unimodal.
-## 2. The k-day OLS slope is computed on UNSMOOTHED daily NEP, which has
-##    substantial day-to-day weather-driven scatter (a cloudy day
-##    immediately before/after a sunny one can swing NEP several gC/m2/d).
-##    Because the Start search window spans from 30 days before the first
-##    >=5-day NEP>0 run to the (single) seasonal peak -- often 2-3 months --
-##    the steepest k-day slope within that window is sometimes a short
-##    weather-driven swing well after the true spring green-up, not the
-##    green-up itself. This is reported, not hidden -- see the k-range
-##    ("does k matter") summary below and the methods doc.
+## M6 (Hu et al. 2010 rate-of-change of NEP), on UNSMOOTHED daily NEP. Item
+## 3: start search window = M5-span's own start +/-30 days; end search
+## window = M5-span's own end +/-30 days (steepest positive / shallowest
+## negative slope, as in v1; k = 3-9; drops the global-seasonal-peak device
+## and the alternate-end column entirely). A site-year with no M5-span
+## (flag_no_season on M5-span, which includes net-source years) gets NO M6
+## value and is flagged (no_m5_span), per the prompt.
 ## ============================================================================
-
-#' Centred k-day OLS slope of `y` on day, at every index of a full
-#' continuous vector; NA near either true record edge (not partial -- a
-#' slope needs the full k points, unlike the smoothing mean above).
 slope_at <- function(y, k) {
   before <- floor((k - 1) / 2); after <- k - 1 - before
   n <- length(y)
@@ -705,36 +707,21 @@ slope_at <- function(y, k) {
 }
 
 #' M6 for one site-year window, one k: returns start/end (date) indices
-#' (within `win`), the alternate end, and the (single) seasonal peak.
-m6_one_k <- function(win, nep_raw_win, nep_sm_win, k, first_rise_idx) {
+#' (within `win`), given the M5-span start/end indices.
+m6_one_k <- function(win, nep_raw_win, k, m5_start_idx, m5_end_idx) {
   n <- length(win)
   slope <- slope_at(nep_raw_win, k)
-  peak_idx <- which.max(nep_sm_win) # single global max -- see note above
 
-  s_lo <- max(1, first_rise_idx - 30); s_hi <- peak_idx
-  start_idx <- if (s_hi < s_lo || all(is.na(slope[s_lo:s_hi]))) NA_integer_ else s_lo - 1L + which.max(slope[s_lo:s_hi])
+  s_lo <- max(1, m5_start_idx - 30); s_hi <- min(n, m5_start_idx + 30)
+  seg_s <- slope[s_lo:s_hi]
+  start_idx <- if (all(is.na(seg_s))) NA_integer_ else s_lo - 1L + which.max(seg_s)
 
-  e_lo <- peak_idx; e_hi <- n
-  seg2 <- slope[e_lo:e_hi]
-  steep_idx <- if (all(is.na(seg2)) || all(seg2[!is.na(seg2)] >= 0)) NA_integer_ else e_lo - 1L + which.min(seg2)
+  e_lo <- max(1, m5_end_idx - 30); e_hi <- min(n, m5_end_idx + 30)
+  seg_e <- slope[e_lo:e_hi]
+  neg_e <- seg_e; neg_e[!is.na(neg_e) & neg_e >= 0] <- NA
+  end_idx <- if (all(is.na(neg_e))) NA_integer_ else e_lo - 1L + which.max(neg_e) # shallowest (closest to 0) negative slope
 
-  end_idx <- NA_integer_
-  if (!is.na(steep_idx)) {
-    after_steep <- (steep_idx + 1):n
-    below0 <- which(nep_sm_win[after_steep] < 0)
-    zero_idx <- if (length(below0) > 0) after_steep[below0[1]] else n
-    seg3 <- slope[steep_idx:zero_idx]
-    neg3 <- seg3; neg3[!is.na(neg3) & neg3 >= 0] <- NA
-    if (!all(is.na(neg3))) end_idx <- steep_idx - 1L + which.max(neg3) # shallowest (closest to 0) negative slope
-  }
-
-  below0b <- which(nep_sm_win[peak_idx:n] < 0)
-  zero_idx_b <- if (length(below0b) > 0) peak_idx - 1L + below0b[1] else n
-  segb <- slope[peak_idx:zero_idx_b]
-  negb <- segb; negb[!is.na(negb) & negb >= 0] <- NA
-  end_alt_idx <- if (all(is.na(negb))) NA_integer_ else peak_idx - 1L + which.max(negb)
-
-  list(start = start_idx, end = end_idx, end_alt = end_alt_idx, peak = peak_idx)
+  list(start = start_idx, end = end_idx)
 }
 
 run_m6 <- function() {
@@ -746,68 +733,65 @@ run_m6 <- function() {
       win <- window_dates(sid, y)
       dy <- d |> filter(TIMESTAMP %in% win)
       nep_raw_win <- dy$nep[match(win, dy$TIMESTAMP)]
-      nep_sm_win  <- dy$nep_sm[match(win, dy$TIMESTAMP)]
 
-      first_rise_date <- m5_all$start_date[m5_all$site_id == sid & m5_all$year == y & m5_all$sub == "span"]
-      net_source <- isTRUE(m5_all$flag_net_source[m5_all$site_id == sid & m5_all$year == y & m5_all$sub == "span"][1])
-      if (length(first_rise_date) != 1 || is.na(first_rise_date)) {
+      m5_span <- m5_all |> filter(site_id == sid, year == y, sub == "span")
+      no_span <- nrow(m5_span) != 1 || isTRUE(m5_span$flag_no_season[1]) || is.na(m5_span$start_date[1]) || is.na(m5_span$end_date[1])
+      net_source <- nrow(m5_span) == 1 && isTRUE(m5_span$flag_net_source[1])
+      two_season <- nrow(m5_span) == 1 && isTRUE(m5_span$flag_two_season[1])
+
+      if (no_span) {
         out[[length(out) + 1]] <- tibble(site_id = sid, year = y, variant = "all", method = "M6", sub = "span",
                                            gsl = NA_integer_, start_date = as.Date(NA), end_date = as.Date(NA),
-                                           start_date_alt_end = as.Date(NA), k_range_start_days = NA_integer_,
-                                           k_range_end_days = NA_integer_, flag_no_season = TRUE, flag_net_source = net_source,
-                                           flag_two_season_rise = isTRUE(m5_all$flag_two_season_rise[m5_all$site_id == sid & m5_all$year == y & m5_all$sub == "span"][1]),
-                                           flag_two_season_decline = isTRUE(m5_all$flag_two_season_decline[m5_all$site_id == sid & m5_all$year == y & m5_all$sub == "span"][1]))
+                                           k_range_start_days = NA_integer_, k_range_end_days = NA_integer_,
+                                           flag_no_season = TRUE, flag_no_m5_span = TRUE, flag_net_source = net_source,
+                                           flag_two_season = two_season)
         next
       }
-      first_rise_idx <- which(win == first_rise_date)[1]
+      m5_start_idx <- which(win == m5_span$start_date[1])[1]
+      m5_end_idx   <- which(win == m5_span$end_date[1])[1]
 
-      starts <- integer(0); ends <- integer(0); ends_alt <- integer(0)
+      starts <- integer(0); ends <- integer(0)
       for (k in 3:9) {
-        r <- m6_one_k(win, nep_raw_win, nep_sm_win, k, first_rise_idx)
+        r <- m6_one_k(win, nep_raw_win, k, m5_start_idx, m5_end_idx)
         if (!is.na(r$start)) starts <- c(starts, r$start)
         if (!is.na(r$end)) ends <- c(ends, r$end)
-        if (!is.na(r$end_alt)) ends_alt <- c(ends_alt, r$end_alt)
       }
       no_season <- length(starts) == 0 || length(ends) == 0
       start_med <- if (length(starts) > 0) win[round(median(starts))] else as.Date(NA)
       end_med   <- if (length(ends) > 0) win[round(median(ends))] else as.Date(NA)
-      end_alt_med <- if (length(ends_alt) > 0) win[round(median(ends_alt))] else as.Date(NA)
       gsl <- if (!no_season) as.integer(end_med - start_med + 1L) else NA_integer_
 
       out[[length(out) + 1]] <- tibble(
         site_id = sid, year = y, variant = "all", method = "M6", sub = "span",
-        gsl = gsl, start_date = start_med, end_date = end_med, start_date_alt_end = end_alt_med,
+        gsl = gsl, start_date = start_med, end_date = end_med,
         k_range_start_days = if (length(starts) > 1) max(starts) - min(starts) else 0L,
         k_range_end_days = if (length(ends) > 1) max(ends) - min(ends) else 0L,
-        flag_no_season = no_season, flag_net_source = net_source,
-        flag_two_season_rise = isTRUE(m5_all$flag_two_season_rise[m5_all$site_id == sid & m5_all$year == y & m5_all$sub == "span"][1]),
-        flag_two_season_decline = isTRUE(m5_all$flag_two_season_decline[m5_all$site_id == sid & m5_all$year == y & m5_all$sub == "span"][1])
+        flag_no_season = no_season, flag_no_m5_span = FALSE, flag_net_source = net_source,
+        flag_two_season = two_season
       )
     }
   }
   bind_rows(out)
 }
 
-message("Running M6 (k=3-9 slopes) for 15 sites -- this is the slowest step...")
+message("Running M6 (k=3-9 slopes, M5-span +/-30-day windows, item 3) for 15 sites...")
 m6_all <- run_m6()
-message("M6: ", nrow(m6_all), " site-year rows. No-season flags: ", sum(m6_all$flag_no_season),
+message("M6: ", nrow(m6_all), " site-year rows. No-M5-span flags: ", sum(m6_all$flag_no_m5_span),
+        "; other no-season flags: ", sum(m6_all$flag_no_season & !m6_all$flag_no_m5_span),
         ". Median k-range (start): ", median(m6_all$k_range_start_days, na.rm = TRUE), " days; (end): ",
         median(m6_all$k_range_end_days, na.rm = TRUE), " days. Max k-range (start): ", max(m6_all$k_range_start_days, na.rm = TRUE),
         "; (end): ", max(m6_all$k_range_end_days, na.rm = TRUE))
-message("Alternate-end (search from last peak directly) vs primary end, median |difference| (days): ",
-        median(abs(as.numeric(m6_all$start_date_alt_end - m6_all$end_date)), na.rm = TRUE))
 
 ## ============================================================================
-## M5/M6 have no GPP "variant" of their own (NEP is shared) -- "share of
-## annual GPP inside the season" for these two methods uses the SCREENED
-## (main-run) GPP series as the single default, consistent with
-## annual_corr_screened's own convention (season-year-aware for AU-How).
+## M5/M6 have no GPP series of their own (NEP is shared) -- "share of annual
+## GPP inside the season" uses the NT series as the single default
+## (unchanged convention from v1, "screened" renamed to "nt").
 ## ============================================================================
 gpp_share_for_span <- function(sid, start_date, end_date, y) {
   if (is.na(start_date) || is.na(end_date)) return(c(gpp_in_season = NA_real_, annual_gpp = NA_real_, share = NA_real_))
   d <- daily_cont |> filter(site_id == sid, TIMESTAMP >= start_date, TIMESTAMP <= end_date)
-  gpp_in_season <- sum(d$gpp_screened, na.rm = TRUE)
-  ag <- annual_corr_screened$annual_gpp[annual_corr_screened$site_id == sid & annual_corr_screened$year == y]
+  gpp_in_season <- sum(d$gpp_nt, na.rm = TRUE)
+  ag <- annual_corr_nt$annual_gpp[annual_corr_nt$site_id == sid & annual_corr_nt$year == y]
   ag <- if (length(ag) == 1) ag else NA_real_
   c(gpp_in_season = gpp_in_season, annual_gpp = ag, share = if (!is.na(ag) && ag != 0) gpp_in_season / ag else NA_real_)
 }
@@ -820,17 +804,16 @@ add_gpp_share <- function(tbl) {
 }
 m5_all <- add_gpp_share(m5_all)
 m6_all <- add_gpp_share(m6_all)
-message("Added share-of-annual-GPP (screened-variant GPP, season-year-aware) to M5/M6 rows.")
+message("Added share-of-annual-GPP (NT-series GPP) to M5/M6 rows.")
 
 ## ============================================================================
 ## Assemble the unified site-year table (one row per site x year x variant
 ## x method x sub). Harmonise columns across all 6 methods' outputs into
 ## one superset schema; unused flags/fields are NA/FALSE for a given row.
 ## ============================================================================
-flag_cols <- c("flag_no_season", "flag_whole_year", "flag_net_source", "flag_two_season_rise",
-               "flag_two_season_decline", "flag_no_start_crossing", "flag_no_end_crossing")
-extra_cols <- c("threshold_pct_of_P99", "k_range_start_days", "k_range_end_days", "start_date_alt_end",
-                "n_rise_runs", "n_decline_runs")
+flag_cols <- c("flag_no_season", "flag_whole_year", "flag_net_source", "flag_two_season",
+               "flag_no_start_crossing", "flag_no_end_crossing", "flag_no_dt", "flag_no_m5_span")
+extra_cols <- c("threshold_pct_of_P99", "k_range_start_days", "k_range_end_days", "two_season_ratio")
 
 harmonise <- function(tbl) {
   for (fc in flag_cols) if (!fc %in% names(tbl)) tbl[[fc]] <- FALSE
@@ -844,31 +827,20 @@ gsl_methods_site_year <- bind_rows(
 ) |> arrange(site_id, year, method, variant, sub)
 
 message("Assembled gsl_methods_site_year: ", nrow(gsl_methods_site_year), " rows.")
-## Every row must have either a non-NA gsl OR a TRUE no-season/net-source
-## flag (prompt's own check: "every site-year has a value or a flag for
-## every method").
-unaccounted <- gsl_methods_site_year |> filter(is.na(gsl) & !flag_no_season & !flag_net_source)
+## Every row must have either a non-NA gsl OR a TRUE explanatory flag.
+unaccounted <- gsl_methods_site_year |> filter(is.na(gsl) & !flag_no_season & !flag_net_source & !flag_no_dt)
 if (nrow(unaccounted) > 0) {
   print(unaccounted)
-  stop("11_gsl_methods_compare.R: ", nrow(unaccounted), " row(s) have neither a GSL value nor a no-season/net-source flag -- stopping.")
+  stop("11_gsl_methods_compare.R: ", nrow(unaccounted), " row(s) have neither a GSL value nor an explanatory flag -- stopping.")
 }
-message("Check passed: every row has a GSL value or an explanatory flag (", nrow(unaccounted), " unaccounted rows).")
+message("Check passed: every row (every method and series) has a GSL value or an explanatory flag (", nrow(unaccounted), " unaccounted rows).")
 
 ## ============================================================================
 ## Per-site summary (mean GSL, interannual SD, mean start/end, flag counts,
-## detrended r vs annual GPP/NEP). The detrended-r reference annual GPP/NEP
-## is ALWAYS the season-year-aware annual_corr_* table (never the calendar-
-## year "annual_gpp" column carried in gsl_methods_site_year, which exists
-## only as F(T)'s own denominator for M2/M4) -- screened for screened-
-## variant rows AND for M5/M6 (which have no GPP variant of their own, see
-## the share-of-GPP note above); unscreened for unscreened; unscreened
-## (reused) for agreement.
-## Net-source years (flag_net_source) are EXCLUDED from M5/M6 site means
-## and from their own detrended-r (prompt's own instruction); they are
-## NOT excluded from M1-M4 means (the flag does not apply to those rows).
+## detrended r vs annual GPP/NEP). Net-source years are excluded from M5/M6
+## site means and detrended-r (unchanged from v1); not excluded for M1-M4.
 ## ============================================================================
-annual_corr_by_variant <- list(screened = annual_corr_screened, unscreened = annual_corr_unscreened,
-                                 agreement = annual_corr_agreement, all = annual_corr_screened)
+annual_corr_by_variant <- list(nt = annual_corr_nt, dt = annual_corr_dt, all = annual_corr_nt)
 
 mean_doy <- function(dates) {
   ok <- dates[!is.na(dates)]
@@ -879,7 +851,7 @@ mean_doy <- function(dates) {
 summarise_group <- function(g) {
   sid <- g$site_id[1]; variant <- g$variant[1]
   ac <- annual_corr_by_variant[[variant]]
-  gj <- g |> filter(!flag_net_source) |> # no-op unless method is M5/M6, but harmless elsewhere (flag_net_source is always FALSE for M1-M4)
+  gj <- g |> filter(!flag_net_source) |>
     left_join(ac, by = c("site_id", "year"), suffix = c("", "_corr"))
 
   rg <- detrend_cor(gj$gsl, gj$annual_gpp_corr, gj$year)
@@ -893,10 +865,10 @@ summarise_group <- function(g) {
     mean_share = mean(g$share[!g$flag_net_source], na.rm = TRUE),
     n_flag_no_season = sum(g$flag_no_season, na.rm = TRUE), n_flag_whole_year = sum(g$flag_whole_year, na.rm = TRUE),
     n_flag_net_source = sum(g$flag_net_source, na.rm = TRUE),
-    n_flag_two_season_rise = sum(g$flag_two_season_rise, na.rm = TRUE),
-    n_flag_two_season_decline = sum(g$flag_two_season_decline, na.rm = TRUE),
+    n_flag_two_season = sum(g$flag_two_season, na.rm = TRUE),
     n_flag_no_start_crossing = sum(g$flag_no_start_crossing, na.rm = TRUE),
     n_flag_no_end_crossing = sum(g$flag_no_end_crossing, na.rm = TRUE),
+    n_flag_no_dt = sum(g$flag_no_dt, na.rm = TRUE), n_flag_no_m5_span = sum(g$flag_no_m5_span, na.rm = TRUE),
     r_gpp = unname(rg["r"]), p_gpp = unname(rg["p"]), n_gpp = unname(rg["n"]),
     r_nep = unname(rn["r"]), p_nep = unname(rn["p"]), n_nep = unname(rn["n"])
   )
@@ -912,8 +884,7 @@ gsl_methods_site_summary <- bind_rows(lapply(groups, summarise_group)) |>
 message("Assembled gsl_methods_site_summary: ", nrow(gsl_methods_site_summary), " rows.")
 
 ## ============================================================================
-## Net-source and no-DT exclusions/unknowns -> this side project's own logs
-## (never the repo-root outputs/ logs).
+## Net-source and no-DT exclusions/unknowns -> this side project's own logs.
 ## ============================================================================
 net_source_rows <- gsl_methods_site_year |> filter(method %in% c("M5", "M6"), flag_net_source)
 for (i in seq_len(nrow(net_source_rows))) {
@@ -921,40 +892,41 @@ for (i in seq_len(nrow(net_source_rows))) {
                 timestamp = net_source_rows$year[i], reason = "Net-source year: fewer than 5 days of smoothed NEP > 0; excluded from M5/M6 site means and detrended-r",
                 threshold = "5 days", excluded_by = "11_gsl_methods_compare.R", log_path = EXP_EXCLUSION_LOG)
 }
-no_season_rows <- gsl_methods_site_year |> filter(flag_no_season, !flag_net_source)
+no_season_rows <- gsl_methods_site_year |> filter(flag_no_season, !flag_net_source, !flag_no_dt)
 for (i in seq_len(nrow(no_season_rows))) {
   log_unknown(record_id = sprintf("%s-%d-%s-%s-%s", no_season_rows$site_id[i], no_season_rows$year[i],
                                     no_season_rows$variant[i], no_season_rows$method[i], no_season_rows$sub[i]),
-              reason = "No season detected (no day/run above threshold within this method's window)",
+              reason = "No season detected (no day/run above threshold, or no M5-span to anchor M6's search windows, within this method's window)",
               logged_by = "11_gsl_methods_compare.R", log_path = EXP_UNKNOWN_LOG)
 }
 message("Logged ", nrow(net_source_rows), " net-source exclusion(s) and ", nrow(no_season_rows), " no-season unknown(s) to ",
         EXP_EXCLUSION_LOG, " / ", EXP_UNKNOWN_LOG, ".")
 
 ## ============================================================================
-## Write output tables.
+## Write output tables (overwrite v1's, in place, per the v2 prompt -- v1's
+## content lives on in git history at 15dc51f).
 ## ============================================================================
 write_csv(gsl_methods_site_year, file.path(EXP_TABLES, "gsl_methods_site_year.csv"))
 write_meta(
   file.path(EXP_TABLES, "gsl_methods_site_year.csv"),
   input_sources = c("data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')", file.path(EXP_TABLES, "sites.csv"),
-                      file.path(EXP_TABLES, "site_years.csv"), file.path(EXP_TABLES, "winter_screen_days.csv"),
-                      file.path(EXP_TABLES, "derived_site.csv"), file.path(EXP_TABLES, "derived_site_year.csv")),
+                      file.path(EXP_TABLES, "site_years.csv"), file.path(EXP_TABLES, "derived_site.csv"),
+                      file.path(EXP_TABLES, "derived_site_year.csv")),
   notes = paste0(
-    "Preliminary comparison of 6 published GSL methods (M1-M6) at the 15 'Figure GSL-IAV' sites. ",
-    "M1 = Zscheischler et al. (2016) crossing-span (summer/peak/annual P99 thresholds, all at 10%); ",
-    "M2 = day count > X% of P99 (X=5/10/20 -- 10% is this project's Z16); M3 = day count > fixed GPP ",
-    "(0.5/1/2 gC m-2 d-1); M4 = cumulative-GPP-fraction fine-grid rule (0.90/0.95/0.99 -- 0.95 is T95); ",
-    "M5 = carbon-uptake period from smoothed NEP>0 (count/span); M6 = Hu et al. (2010) NEP rate-of-",
-    "change (k=3-9 day OLS slopes on UNSMOOTHED NEP, start/end = median across k, see ",
-    "docs/gsl_methods_compare_2026-11-02.md for k_range_start_days/k_range_end_days and the found ",
-    "noise-sensitivity). 3 GPP variants (screened/unscreened/agreement = min of zero-floored NT and ",
-    "DT GPP) for M1-M4; M5/M6 use NEP only (variant='all'), with GPP-share computed from the screened ",
-    "variant as a single default. M2/M3/M4 use CALENDAR-year windows throughout (matches ",
-    "derived_site_year.csv exactly, checked); M1/M5/M6 use Jul-Jun SEASON years for AU-How (the one ",
-    "Southern-Hemisphere site). All checks in the prompt passed exactly (see SESSION_LOG.md and the ",
-    "methods doc): M2@10%/M4@0.95 == derived_site_year.csv's gsl_z16/gsl_t95/f_z16/f_t95 for screened ",
-    "and unscreened; screened-variant detrended r vs annual GPP == iav_15sites.csv's r_gpp_z16/r_gpp_t95."
+    "VERSION 2 (supersedes v1, 15dc51f -- see docs/gsl_methods_compare_2026-11-02_v2.md). Preliminary ",
+    "comparison of 6 published GSL methods (M1-M6) at the 15 'Figure GSL-IAV' sites. Two independent ",
+    "GPP series, never mixed within a method: nt = zero-floored GPP_NT_REF (no winter screen), dt = ",
+    "zero-floored GPP_DT_REF, each with its own P99/fine grid. M5/M6 use NEP only (variant='all'). ",
+    "Southern-Hemisphere (AU-How) uses Jul-Jun season years in EVERY method including M2-M4 and for ",
+    "P99, with a fresh day-count passing rule (<=14 failing days under the existing 0.25 daily-QC ",
+    "rule), not the v1 'both bracketing calendar years pass' proxy. M6 searches for start/end only ",
+    "within +/-30 days of M5-span's own start/end (k=3-9 day OLS slope on UNSMOOTHED NEP, median ",
+    "across k; no alternate-end). Two-season flag (M5-span/M6 only) uses the TIMESAT secondary-peak ",
+    "rule (Wang et al. 2020) on 15-day-smoothed NT GPP, not a slope-run rule. Checks (NH sites only, ",
+    "all passed exactly): NT-series M2@10%/M4@0.95 == derived_site_year.csv's main_unscreened ",
+    "gsl_z16/gsl_t95/f_z16/f_t95; every row has a value or an explanatory flag. See SESSION_LOG.md ",
+    "and the methods doc for AU-How's before/after comparison, DT-vs-NT partitioning uncertainty, ",
+    "and M6-vs-v1."
   )
 )
 
@@ -963,22 +935,55 @@ write_meta(
   file.path(EXP_TABLES, "gsl_methods_site_summary.csv"),
   input_sources = file.path(EXP_TABLES, "gsl_methods_site_year.csv"),
   notes = paste0(
-    "Per site x variant x method x sub-threshold: mean GSL, interannual SD, mean start/end day-of-",
-    "window, mean share of annual GPP inside the season, flag counts, and detrended Pearson r (with p, ",
-    "n) of annual GSL against annual GPP and against annual NEP -- each series detrended by OLS on ",
-    "year first, as in iav_15sites.csv. Net-source years (flag_net_source) are excluded from M5/M6 ",
-    "means and their own r (prompt's instruction); not excluded elsewhere (the flag never applies to ",
-    "M1-M4 rows). Annual GPP/NEP reference for every r is the season-year-aware total (Jul-Jun for ",
-    "AU-How), matching carbon_gain_data.csv's / iav_15sites.csv's own convention -- NOT the calendar-",
-    "year 'annual_gpp' column in gsl_methods_site_year.csv (that one is only F(T)'s own denominator)."
+    "VERSION 2. Per site x series x method x sub-threshold: mean GSL, interannual SD, mean start/end ",
+    "day-of-window, mean share of annual GPP inside the season, flag counts, and detrended Pearson r ",
+    "(with p, n) of annual GSL against annual GPP and against annual NEP -- each series detrended by ",
+    "OLS on year first. Net-source years excluded from M5/M6 means/r; not excluded elsewhere. Annual ",
+    "GPP/NEP reference for every r is the season_years_for()-aware total (Jul-Jun for AU-How, item 2)."
   )
 )
 message("Saved: gsl_methods_site_year.csv (", nrow(gsl_methods_site_year), " rows), gsl_methods_site_summary.csv (",
         nrow(gsl_methods_site_summary), " rows).")
 
 ## ============================================================================
-## Figures (agreement variant throughout; one sub-variant per method, per
-## the prompt: M1-summer, M2 10%, M3 1 gC, M4 0.95, M5-span, M6). -----------
+## Item 1 report data: DT minus NT, per site-year x method x sub (the
+## "partitioning uncertainty"), plus a per-site aggregate and a decomposition
+## of whether the GSL difference is explained by the start/end shift (span
+## methods, where it must be, by construction) or by interior/"winter" day
+## disagreement (count methods, where it need not be).
+## ============================================================================
+dt_vs_nt <- gsl_methods_site_year |> filter(variant %in% c("nt", "dt"), !flag_no_dt) |>
+  select(site_id, year, method, sub, variant, gsl, start_date, end_date) |>
+  pivot_wider(names_from = variant, values_from = c(gsl, start_date, end_date)) |>
+  filter(!is.na(gsl_nt) | !is.na(gsl_dt)) |>
+  mutate(
+    dt_minus_nt_gsl = gsl_dt - gsl_nt,
+    dt_minus_nt_start_days = as.numeric(start_date_dt - start_date_nt),
+    dt_minus_nt_end_days = as.numeric(end_date_dt - end_date_nt),
+    boundary_explained = dt_minus_nt_end_days - dt_minus_nt_start_days,
+    interior_contribution = dt_minus_nt_gsl - boundary_explained
+  )
+write_csv(dt_vs_nt, file.path(EXP_TABLES, "gsl_methods_dt_vs_nt.csv"))
+write_meta(
+  file.path(EXP_TABLES, "gsl_methods_dt_vs_nt.csv"),
+  input_sources = file.path(EXP_TABLES, "gsl_methods_site_year.csv"),
+  notes = paste0(
+    "VERSION 2, item 1. DT-minus-NT difference in GSL/start/end, per site x year x method x sub, for ",
+    "every row where both series have a value (flag_no_dt excluded). boundary_explained = the GSL ",
+    "difference implied purely by the start/end shift (= dt_minus_nt_end_days - dt_minus_nt_start_days); ",
+    "for span methods (M1) this equals dt_minus_nt_gsl exactly, by construction (GSL = end-start+1). ",
+    "interior_contribution = dt_minus_nt_gsl - boundary_explained; non-zero only for count methods ",
+    "(M2/M3/M4), where it measures GSL difference NOT explained by a start/end shift -- i.e. scattered ",
+    "interior ('winter') day disagreement between the two partitioning methods. See the methods doc's ",
+    "'NT vs DT' section for the per-site summary and interpretation."
+  )
+)
+message("Saved: gsl_methods_dt_vs_nt.csv (", nrow(dt_vs_nt), " rows).")
+
+## ============================================================================
+## Figures (NT series throughout -- the main default series, item 1 -- for
+## M1-M4; M5/M6 remain NEP-only ('all'). Same 3 drafts as v1, same filenames
+## (regenerated in place).
 ## ============================================================================
 FIG_METHODS <- tibble(
   method = c("M1", "M2", "M3", "M4", "M5", "M6"),
@@ -993,7 +998,7 @@ skew_tbl <- derived_site_all |> filter(site_id %in% IAV_SITES, variant == "main"
 
 fig_data <- gsl_methods_site_summary |>
   inner_join(FIG_METHODS, by = c("method", "sub")) |>
-  filter(variant %in% c("agreement", "all")) |>
+  filter(variant %in% c("nt", "all")) |>
   left_join(skew_tbl, by = "site_id") |>
   mutate(method_f = factor(label, levels = FIG_METHODS$label))
 
@@ -1007,37 +1012,35 @@ p_dotplot <- ggplot(fig_data, aes(x = mean_gsl, y = site_id, colour = method_f))
                 position = position_dodge(width = 0.7)) +
   geom_point(size = 1.8, position = position_dodge(width = 0.7)) +
   scale_colour_brewer(palette = "Dark2", name = "Method") +
-  labs(x = "Mean GSL (days, agreement variant; +/- interannual SD)", y = NULL,
-       title = "GSL methods dotplot (draft)") +
+  labs(x = "Mean GSL (days, NT series; +/- interannual SD)", y = NULL,
+       title = "GSL methods dotplot (draft, v2)") +
   theme_gsl() + theme(legend.position = "right")
 
 ggsave(file.path(drafts_dir, "GSL methods dotplot draft.png"), p_dotplot, width = PEERJ_FIG_WIDTH_MM * 1.3,
        height = 150, units = "mm", dpi = PEERJ_DPI, device = ragg::agg_png, bg = "white")
 writeLines(c(
-  "GSL methods dotplot (draft). Mean GSL (agreement variant) with interannual SD, by method, for each",
-  "of the 15 sites, sorted bottom-to-top by ascending skewness (main-variant). One sub-threshold per",
+  "GSL methods dotplot (draft, v2). Mean GSL (NT series) with interannual SD, by method, for each of",
+  "the 15 sites, sorted bottom-to-top by ascending skewness (main-variant). One sub-threshold per",
   "method: M1-summer, M2 10% of P99 (= Z16), M3 1 gC m-2 d-1, M4 0.95 of annual GPP (= T95), M5-span",
-  "(NEP>0, >=5-day runs), M6 (Hu et al. 2010 NEP rate-of-change, median across k=3-9). Net-source",
-  "years excluded from M5/M6's own mean/SD (see tables/gsl_methods_site_summary.csv).",
+  "(NEP>0, >=5-day runs), M6 (Hu et al. 2010 NEP rate-of-change, median across k=3-9, M5-span-anchored",
+  "search windows). Net-source years excluded from M5/M6's own mean/SD.",
   "Numbers behind this figure: tables/gsl_methods_site_summary.csv."
 ), file.path(drafts_dir, "GSL methods dotplot draft.legend.txt"))
 write_meta(
   file.path(drafts_dir, "GSL methods dotplot draft.png"),
   input_sources = file.path(EXP_TABLES, "gsl_methods_site_summary.csv"),
-  notes = "Draft figure, not a numbered manuscript figure. Agreement variant; one sub-threshold per method."
+  notes = "VERSION 2. Draft figure, not a numbered manuscript figure. NT series; one sub-threshold per method."
 )
 message("Saved: 'GSL methods dotplot draft'.png/.legend.txt/.meta.json")
 
 ## ============================================================================
 ## Figure B: method agreement -- Spearman correlation between methods'
-## annual GSL (and separately start, end), pooled across sites as SITE-YEAR
-## ANOMALIES (value minus that site's own across-year mean), so sites with
-## systematically different absolute GSL don't dominate/confound the
-## cross-method agreement signal.
+## annual GSL (and separately start, end), pooled across sites as site-year
+## anomalies.
 ## ============================================================================
 wide_base <- gsl_methods_site_year |>
   inner_join(FIG_METHODS, by = c("method", "sub")) |>
-  filter(variant %in% c("agreement", "all")) |>
+  filter(variant %in% c("nt", "all")) |>
   mutate(start_doy = lubridate::yday(start_date), end_doy = lubridate::yday(end_date)) |>
   select(site_id, year, label, gsl, start_doy, end_doy)
 
@@ -1067,41 +1070,35 @@ p_agree <- ggplot(cor_long, aes(x = row, y = col, fill = r)) +
   geom_text(aes(label = sprintf("%.2f", r)), size = PEERJ_ANNOTATION_PT / .pt * 0.8) +
   scale_fill_gradient2(low = "#b2182b", mid = "white", high = "#2166ac", midpoint = 0, limits = c(-1, 1), name = "Spearman r") +
   facet_wrap(~ which, nrow = 1) +
-  labs(x = NULL, y = NULL, title = "GSL methods agreement (draft)") +
+  labs(x = NULL, y = NULL, title = "GSL methods agreement (draft, v2)") +
   theme_gsl() + theme(axis.text.x = element_text(angle = 40, hjust = 1), legend.position = "right")
 
 ggsave(file.path(drafts_dir, "GSL methods agreement draft.png"), p_agree, width = PEERJ_FIG_WIDTH_MM * 1.8,
        height = 130, units = "mm", dpi = PEERJ_DPI, device = ragg::agg_png, bg = "white")
 writeLines(c(
-  "GSL methods agreement (draft). Spearman correlation between pairs of methods' annual GSL (left",
-  "panel), start date (middle) and end date (right), pooled across all 15 sites x years as SITE-YEAR",
-  "ANOMALIES (each site's own across-year mean subtracted first, per method, before pooling) --",
-  "agreement variant for M1-M4, NEP-only ('all') for M5/M6. One sub-threshold per method: M1-summer,",
-  "M2 10%, M3 1 gC m-2 d-1, M4 0.95, M5-span, M6. Pairwise-complete Spearman correlation (a site-year",
-  "flagged for one method but not another drops from that pair only, not from every pair).",
+  "GSL methods agreement (draft, v2). Spearman correlation between pairs of methods' annual GSL (left",
+  "panel), start date (middle) and end date (right), pooled across all 15 sites x years as site-year",
+  "anomalies -- NT series for M1-M4, NEP-only ('all') for M5/M6. One sub-threshold per method:",
+  "M1-summer, M2 10%, M3 1 gC m-2 d-1, M4 0.95, M5-span, M6. Pairwise-complete Spearman correlation.",
   "Numbers behind this figure: tables/gsl_methods_site_year.csv."
 ), file.path(drafts_dir, "GSL methods agreement draft.legend.txt"))
 write_meta(
   file.path(drafts_dir, "GSL methods agreement draft.png"),
   input_sources = file.path(EXP_TABLES, "gsl_methods_site_year.csv"),
-  notes = "Draft figure, not a numbered manuscript figure. Site-year anomalies (site's own mean subtracted), pairwise-complete Spearman correlation."
+  notes = "VERSION 2. Draft figure, not a numbered manuscript figure. Site-year anomalies, pairwise-complete Spearman correlation."
 )
 message("Saved: 'GSL methods agreement draft'.png/.legend.txt/.meta.json")
 
 ## ============================================================================
 ## Figure C: "raster" -- US-Ha1, US-Wkg, US-SRM, years (y) by day-of-year
 ## (x), the detected season (start-end) as one horizontal bar per site-year,
-## one row BLOCK per method (M1-summer, M2 10%, M4 0.95, M5-span, M6).
-## Implemented as segments (start_doy to end_doy per year) rather than a
-## filled day-by-day grid -- equivalent information, much simpler to get
-## right, and all 3 sites are Northern-Hemisphere so day-of-year is
-## unambiguous (no SH season-year axis issue here).
+## one row BLOCK per method.
 ## ============================================================================
 RASTER_SITES <- c("US-Ha1", "US-Wkg", "US-SRM")
 RASTER_METHODS <- FIG_METHODS |> filter(!(method == "M3"))
 
 raster_data <- gsl_methods_site_year |>
-  filter(site_id %in% RASTER_SITES, variant %in% c("agreement", "all")) |>
+  filter(site_id %in% RASTER_SITES, variant %in% c("nt", "all")) |>
   inner_join(RASTER_METHODS, by = c("method", "sub")) |>
   mutate(start_doy = lubridate::yday(start_date), end_doy = lubridate::yday(end_date),
          label = factor(label, levels = RASTER_METHODS$label), site_id = factor(site_id, levels = RASTER_SITES))
@@ -1110,24 +1107,23 @@ p_raster <- ggplot(raster_data) +
   geom_segment(aes(x = start_doy, xend = end_doy, y = year, yend = year), colour = "grey20",
                linewidth = nature_lwd(1.2), na.rm = TRUE) +
   facet_grid(label ~ site_id, scales = "free_y") +
-  labs(x = "Day of year", y = "Year", title = "GSL methods raster (draft)") +
+  labs(x = "Day of year", y = "Year", title = "GSL methods raster (draft, v2)") +
   theme_gsl() + theme(strip.text.y = element_text(angle = 0, size = 7), strip.text.x = element_text(face = "bold"))
 
 ggsave(file.path(drafts_dir, "GSL methods raster draft.png"), p_raster, width = PEERJ_FIG_WIDTH_MM * 1.3,
        height = 230, units = "mm", dpi = PEERJ_DPI, device = ragg::agg_png, bg = "white")
 writeLines(c(
-  "GSL methods raster (draft). US-Ha1, US-Wkg, US-SRM (columns); each row block is one method",
+  "GSL methods raster (draft, v2). US-Ha1, US-Wkg, US-SRM (columns); each row block is one method",
   "(M1-summer, M2 10%, M4 0.95, M5-span, M6 top to bottom); each horizontal bar is one year's",
-  "detected season, start day-of-year to end day-of-year (agreement variant for M1/M2/M4, NEP-only",
-  "for M5/M6). A missing bar for a given year/method means no season was detected (flag_no_season) --",
-  "see tables/gsl_methods_site_year.csv for exact dates and flags.",
+  "detected season, start day-of-year to end day-of-year (NT series for M1/M2/M4, NEP-only for",
+  "M5/M6). A missing bar means no season was detected -- see tables/gsl_methods_site_year.csv.",
   "Numbers behind this figure: tables/gsl_methods_site_year.csv."
 ), file.path(drafts_dir, "GSL methods raster draft.legend.txt"))
 write_meta(
   file.path(drafts_dir, "GSL methods raster draft.png"),
   input_sources = file.path(EXP_TABLES, "gsl_methods_site_year.csv"),
-  notes = "Draft figure, not a numbered manuscript figure. Segments (start_doy-end_doy), not a filled day-by-day grid; all 3 sites are Northern Hemisphere."
+  notes = "VERSION 2. Draft figure, not a numbered manuscript figure. Segments (start_doy-end_doy); all 3 sites are Northern Hemisphere."
 )
 message("Saved: 'GSL methods raster draft'.png/.legend.txt/.meta.json")
 
-message("--- 11_gsl_methods_compare.R: done ---")
+message("--- 11_gsl_methods_compare.R: done (version 2) ---")

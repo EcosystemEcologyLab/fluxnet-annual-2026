@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-11-03T00:42:43Z",
-  "pipeline_version": "c472aa3",
+  "run_datetime_utc": "2026-11-03T03:41:29Z",
+  "pipeline_version": "3fd0dba",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_site_summary.csv"
   ],
-  "notes": "Draft figure, not a numbered manuscript figure. Agreement variant; one sub-threshold per method."
+  "notes": "VERSION 2. Draft figure, not a numbered manuscript figure. NT series; one sub-threshold per method."
 }

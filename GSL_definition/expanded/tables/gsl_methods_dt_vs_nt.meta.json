@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T03:41:29Z",
+  "pipeline_version": "3fd0dba",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+  ],
+  "notes": "VERSION 2, item 1. DT-minus-NT difference in GSL/start/end, per site x year x method x sub, for every row where both series have a value (flag_no_dt excluded). boundary_explained = the GSL difference implied purely by the start/end shift (= dt_minus_nt_end_days - dt_minus_nt_start_days); for span methods (M1) this equals dt_minus_nt_gsl exactly, by construction (GSL = end-start+1). interior_contribution = dt_minus_nt_gsl - boundary_explained; non-zero only for count methods (M2/M3/M4), where it measures GSL difference NOT explained by a start/end shift -- i.e. scattered interior ('winter') day disagreement between the two partitioning methods. See the methods doc's 'NT vs DT' section for the per-site summary and interpretation."
+}

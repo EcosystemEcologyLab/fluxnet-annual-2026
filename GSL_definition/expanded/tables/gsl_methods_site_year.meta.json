@@ -1,13 +1,12 @@
 {
-  "run_datetime_utc": "2026-11-03T00:42:42Z",
-  "pipeline_version": "c472aa3",
+  "run_datetime_utc": "2026-11-03T03:41:29Z",
+  "pipeline_version": "3fd0dba",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
     "GSL_definition/expanded/tables/sites.csv",
     "GSL_definition/expanded/tables/site_years.csv",
-    "GSL_definition/expanded/tables/winter_screen_days.csv",
     "GSL_definition/expanded/tables/derived_site.csv",
     "GSL_definition/expanded/tables/derived_site_year.csv"
   ],
-  "notes": "Preliminary comparison of 6 published GSL methods (M1-M6) at the 15 'Figure GSL-IAV' sites. M1 = Zscheischler et al. (2016) crossing-span (summer/peak/annual P99 thresholds, all at 10%); M2 = day count > X% of P99 (X=5/10/20 -- 10% is this project's Z16); M3 = day count > fixed GPP (0.5/1/2 gC m-2 d-1); M4 = cumulative-GPP-fraction fine-grid rule (0.90/0.95/0.99 -- 0.95 is T95); M5 = carbon-uptake period from smoothed NEP>0 (count/span); M6 = Hu et al. (2010) NEP rate-of-change (k=3-9 day OLS slopes on UNSMOOTHED NEP, start/end = median across k, see docs/gsl_methods_compare_2026-11-02.md for k_range_start_days/k_range_end_days and the found noise-sensitivity). 3 GPP variants (screened/unscreened/agreement = min of zero-floored NT and DT GPP) for M1-M4; M5/M6 use NEP only (variant='all'), with GPP-share computed from the screened variant as a single default. M2/M3/M4 use CALENDAR-year windows throughout (matches derived_site_year.csv exactly, checked); M1/M5/M6 use Jul-Jun SEASON years for AU-How (the one Southern-Hemisphere site). All checks in the prompt passed exactly (see SESSION_LOG.md and the methods doc): M2@10%/M4@0.95 == derived_site_year.csv's gsl_z16/gsl_t95/f_z16/f_t95 for screened and unscreened; screened-variant detrended r vs annual GPP == iav_15sites.csv's r_gpp_z16/r_gpp_t95."
+  "notes": "VERSION 2 (supersedes v1, 15dc51f -- see docs/gsl_methods_compare_2026-11-02_v2.md). Preliminary comparison of 6 published GSL methods (M1-M6) at the 15 'Figure GSL-IAV' sites. Two independent GPP series, never mixed within a method: nt = zero-floored GPP_NT_REF (no winter screen), dt = zero-floored GPP_DT_REF, each with its own P99/fine grid. M5/M6 use NEP only (variant='all'). Southern-Hemisphere (AU-How) uses Jul-Jun season years in EVERY method including M2-M4 and for P99, with a fresh day-count passing rule (<=14 failing days under the existing 0.25 daily-QC rule), not the v1 'both bracketing calendar years pass' proxy. M6 searches for start/end only within +/-30 days of M5-span's own start/end (k=3-9 day OLS slope on UNSMOOTHED NEP, median across k; no alternate-end). Two-season flag (M5-span/M6 only) uses the TIMESAT secondary-peak rule (Wang et al. 2020) on 15-day-smoothed NT GPP, not a slope-run rule. Checks (NH sites only, all passed exactly): NT-series M2@10%/M4@0.95 == derived_site_year.csv's main_unscreened gsl_z16/gsl_t95/f_z16/f_t95; every row has a value or an explanatory flag. See SESSION_LOG.md and the methods doc for AU-How's before/after comparison, DT-vs-NT partitioning uncertainty, and M6-vs-v1."
 }

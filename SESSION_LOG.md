@@ -19,6 +19,44 @@ and conventions as Stage 2. FLUXCOM-X-BASE remains non-Shuttle comparison data (
 
 ---
 
+## 2026-11-03 — WAFNET x FLUXCOM-X-BASE comparison: Stage 2 fixes, done
+
+Full report section: `WAFNET/fluxcom_comparison/docs/report_back_2026-11-03.md` section 8;
+running decision log: `docs/methods_memo.md`. Summary:
+
+1. **Wording fix.** The report and `08_extract_statistics.R`'s header comment said RECO was
+   derived as "GPP minus net ecosystem exchange" — wrong; the code has always computed
+   `GPP + NEE`. With NEE negative during net uptake, that is "GPP minus the uptake magnitude,"
+   not "GPP minus NEE." Fixed in both places (the methods memo's own RECO entry was already
+   correct and needed no change).
+2. **One shared site colour palette** (`STAGE2_SITE_COLORS`, `00_config.R`) now used by every
+   Stage 2 figure (scatter, map, Taylor diagrams, and the new climatology figures) — previously
+   each figure picked its own colours independently.
+3. **Site map overlap fixed.** `BJ-Nhu`/`BJ-Bfg` and `SN-Dhr`/`SN-Nkr` symbols, which sat on top
+   of each other, are now nudged apart with a dashed leader line to their true coordinate;
+   switched to fill-capable shapes so the border carries site identity and the fill still carries
+   bias; map extent trimmed to the sites' own footprint, removing most of the empty margin.
+4. **Taylor diagram "tower" label fixed.** Root cause: it sits at y slightly below 0, outside R's
+   default plot clip region (not a font/overlap issue) — fixed with `par(xpd = NA)`.
+5. **New: mean seasonal cycle (climatology) figures**, one per site (five agreed + `SN-Nkr`
+   pending Ossenatou; `BJ-Db1` has zero overlapping site-months and has none), one panel per flux,
+   built from the exact same QC-passing/2001-2021 site-months already used in the Stage 2
+   statistics. Months with >=3 years get a mean +/-1 SD ribbon; thinner months show individual
+   years as points, with the year count printed along the bottom of each panel. `GH-Ank`'s
+   GPP/RECO panels are omitted with the reason stated in the caption (no NT tower data).
+   Cross-site finding: X-BASE's seasonal amplitude is smaller than the tower's at every site and
+   flux checked, most severely at `ML-Kem` (NEE amplitude ~11% of the tower's, GPP ~26%);
+   peak-month timing matches at the two training sites and `SN-Nkr` (all September) but is 1-2
+   months early at the two Benin sites and `ML-Kem`; LE's seasonal shape differs outright at
+   `BJ-Nhu`/`BJ-Bfg`, where X-BASE peaks in May against the tower's September/October peak.
+6. **Checked before committing:** every regenerated and new PNG opened and checked for
+   overlapping symbols/labels, both series and bands visible in every panel (including `ML-Kem`,
+   where every month falls back to individual-year points), and site colours matching across all
+   four figure types. One further issue caught on this pass: the climatology figures' caption
+   text ran off the image edge (no auto-wrap) — fixed with `stringr::str_wrap()`.
+
+---
+
 ## 2026-11-03 — WAFNET x FLUXCOM-X-BASE comparison: Stage 2, started
 
 Starting Stage 2 of `WAFNET/fluxcom_comparison/` (full prompt:

@@ -21,6 +21,39 @@ forest-dormancy-vs-dryland-crossing distinction. Draft figures go to
 `GSL_definition/figures/drafts/proposal/`, each with a short plain-English `.legend.txt`.
 
 ---
+
+## 2026-11-03 — GSL duration curve and target-share sweep, done
+
+Full report: `GSL_definition/docs/duration_curve_and_target_sweep_2026-11-03.md`. New script only
+(`code/12_duration_curve_and_target_sweep.R`); no existing script, table, or figure changed
+(confirmed via `git status`). Summary:
+
+1. **GPP-duration curve.** Z16 and the 0.95 crossing reused from `derived_site.csv`; only the 0.85
+   crossing was missing and was recomputed from `fine_grid.rds`, checked to match the existing
+   0.95/T95 exactly before trusting it. All 62 sites reach both crossings (no NAs). AU-ASM (skewness
+   3.88) needs only 5.2% of P99 to capture 95% of annual GPP, in 298 days, vs. 75% captured at its
+   fixed Z16 point; AU-How (skewness 0.36) needs 25.0% of P99 for the same 95% share, and its Z16
+   point already captures 99.9% — the mechanism the whole proposal is about.
+2. **Target-share sweep (0.80-0.98).** At 0.95: r = -0.6781 matches Tash's published -0.68 almost
+   exactly (already known). New finding: her published "adjusted R2 = 0.57 (0.56 without AU-ASM)"
+   matches a QUADRATIC fit (0.5725 / 0.5581), not the linear fit (0.4508 / 0.5146) -- the quadratic
+   term is itself significant (p=7.6e-5 with AU-ASM). The relationship holds in sign and moderate-to-
+   strong strength across the whole 0.80-0.98 sweep but weakens from r~-0.75 (0.80-0.93) to r~-0.53
+   to -0.58 by 0.98. Excluding AU-ASM makes r at 0.95 STRONGER (-0.72), not weaker -- flagged for
+   Tash rather than assumed to be an error.
+3. **Two kinds of skew.** Above-threshold partial skewness beats both near-zero-day share and full
+   skewness as a predictor of every sensitivity/threshold outcome tested, at all three near-zero cuts
+   checked (0.5/1/2% of P99) -- near-zero share alone is not even statistically significant for 3 of
+   5 outcomes, and loses its (already weak) significance in a two-predictor regression once partial
+   skewness is held constant. Suggests Dave's forest-dormancy-vs-dryland-crossing framing needs
+   reframing: the useful signal is the shape of the above-threshold distribution, not simply the
+   near-zero-day share, in both site types.
+4. **Figures checked before committing:** Figure P2 (target-share sweep) needed one fix on review --
+   its faceted panel (a) was getting the panel letter "a" repeated once per facet (an in-panel
+   annotation draws per facet, not once per figure); switched to patchwork's figure-level tag
+   mechanism, confirmed one "a" and one "b" only. Figures P1a/P1b checked clean on first render.
+
+---
 ## 2026-11-03 — WAFNET output metadata and figure captions, started
 
 Adding `.meta.json` (CLAUDE.md "Output Metadata") and `.legend.txt` figure-caption files to every

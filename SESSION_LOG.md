@@ -26,6 +26,54 @@ hit) once Stage 2's download, product-detail, statistics, figures and report ste
 
 ---
 
+## 2026-11-03 — WAFNET x FLUXCOM-X-BASE comparison: Stage 2, done
+
+Full report: `WAFNET/fluxcom_comparison/docs/report_back_2026-11-03.md`. Running decision log (new
+file): `WAFNET/fluxcom_comparison/docs/methods_memo.md`. Summary:
+
+1. **Download.** FLUXCOM-X-BASE (ICOS Carbon Portal, doi:10.18160/5NZG-JMJE), 0.5deg monthly, all
+   four distributed variables (GPP, NEE, ET, ET_T), 2001-2021 — 84 files discovered via the ICOS
+   metadata SPARQL endpoint (not hardcoded) and sha256-verified, into `data/external/fluxcom_x_base/`
+   (gitignored). Confirms the 2001-2021 ICOS-archive bound Stage 1 left unresolved (all 21 years
+   downloaded successfully). The download sits behind an anonymous CC BY 4.0 licence click-through —
+   flagged to Dave before running per the prompt's instruction, confirmed not a credential/login
+   gate, approved to proceed. A documentation-only backup copy of the original FLUXCOM ensemble
+   (gpp/reco/le/sh) was also pulled from the ILAMB reference collection into
+   `data/external/fluxcom_original_ilamb/` — explicitly not used in the comparison.
+2. **Product switch.** The originally-chosen product (original FLUXCOM RS+METEO, Ossenatou's 16 Oct
+   reply) is currently unobtainable (MPI-BGC portal link 404). Dave decided to proceed with
+   FLUXCOM-X-BASE instead and keep the original as an option if it resurfaces.
+3. **Product details.** X-BASE's GPP training uses the **nighttime partition only** (confirmed
+   directly from ICOS product metadata, high confidence — supersedes Stage 1's "NOT FOUND"). Training
+   sites checked against the paper's full 294-site Table 1 (publisher XLSX, direct match, high
+   confidence — supersedes Stage 1's image-table reference-list proxy): `GH-Ank` and `SN-Dhr`
+   confirmed training sites; `BJ-Nhu`, `BJ-Bfg`, `ML-Kem`, `BJ-Db1`, `SN-Nkr` are not.
+4. **Variables.** NEE sign convention checked empirically (not assumed) against a known carbon-sink
+   site — same atmospheric convention as the tower, no flip needed. RECO derived as GPP + NEE
+   (labelled `derived` everywhere). ET converted to LE with lambda = 2.45e6 J/kg (matches
+   `R/units.R`). H has no X-BASE equivalent and is never compared. GPP/RECO matched to the tower's
+   NT partition (not Stage 1's DT default) — found along the way that `GH-Ank` has **no NT-partitioned
+   GPP/RECO at all** in its FLUXMET extract, so it is skipped for GPP/RECO only (NEE/LE unaffected).
+5. **Tower data.** `ML-Kem` (Mali, WSA, 2007-2009) added to the agreed site set at Ossenatou's
+   request; resolves to VUT. `BJ-Db1`/`SN-Nkr` re-checked against X-BASE's longer period and kept
+   flagged "pending Ossenatou" throughout: `BJ-Db1` still has zero overlap with any FLUXCOM release
+   (its record postdates 2021); `SN-Nkr` now has 46/80 overlapping months (3/6 overlapping years),
+   which it never had against the original product.
+6. **Statistics.** Monthly bias/RMSE/R2 (bias = X-BASE minus tower) computed per site x flux for
+   NEE, GPP, RECO (derived), and LE across the five agreed + `SN-Nkr`; annual secondary stats only
+   where >=3 complete overlapping years exist (6 site x flux combinations qualified). `BJ-Nhu`'s LE
+   bias flips sign between the full monthly sample and the 3-year annual subset — flagged as a
+   different-sample effect, not a contradiction, in the report.
+7. **Figures.** Draft monthly scatter, bias site-map, and per-flux Taylor diagrams (self-implemented
+   in base R — no Taylor-diagram package is in the renv lockfile). Checked before committing: the
+   site-map figure's first version used one shared bias colour/size scale across all four flux
+   panels, making the carbon panels' bubbles nearly invisible next to LE's larger magnitude — caught
+   on review and fixed (independent per-panel scales) before committing.
+8. **Docs.** Report, methods memo, and README all updated; prompt saved to
+   `logs/prompts/2026-11-03_wafnet_fluxcom_x_stage2.md`.
+
+---
+
 ## 2026-11-03 — GSL methods review figures: fixes, done
 
 Revised `GSL_definition/expanded/code/12_methods_review_figures.R` in place (first pass stays in git

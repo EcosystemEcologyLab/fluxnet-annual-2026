@@ -4,6 +4,42 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — GSL methods comparison: review figures for discussion, done
+
+New script `GSL_definition/expanded/code/12_methods_review_figures.R` (read-only against version 4's
+tables, commit `4965af6`, plus a fresh daily-data pull for AU-ASM, which is not one of the 15 sites).
+Full report: `docs/methods_review_figures_2026-11-03.md`. Five draft figures written to
+`figures/drafts/methods_review/`, each titled "Draft for discussion", NT series throughout, calendar
+year_rule as the main view with min_gpp_month as a stated companion/overlay where requested:
+
+- **Figure A** (+ min_gpp_month companion): all 8 methods' mean GSL, 15 sites sorted by skewness
+  (continuous colour, never vegetation group), with M2's 22-value-grid band and the three framing
+  choices (Z16 = 10% of P99; 85%/95% of annual GPP) drawn larger. Companion differs from the main
+  view at the 6 sites whose lowest-GPP month isn't January (AU-How, FR-Pue, AT-Neu, IL-Yat, US-Ton,
+  US-Var); US-Var shows the clearest change.
+- **Figure B**: threshold-dependence raster + histogram, AU-ASM-vs-AU-How and US-SRM-vs-AU-How.
+  AU-ASM computed fresh (P99 = 5.22 gC/m2/d; M4 85%/95% thresholds = 7.31%/4.92% of P99) and shows
+  much more day-to-day threshold sensitivity (rapid flickering) than AU-How or US-SRM's cleaner
+  single-season blocks.
+- **Figure C**: per-method season placement at US-Ha1/US-Wkg/US-Var/AU-How (calendar) plus US-Var
+  again under min_gpp_month — panel (c) shows the calendar-split artifact directly (count methods'
+  bars span nearly the full Jan-Dec window at US-Var), and panel (e) resolves it.
+- **Figure D**: skewness vs. cross-method GSL range, both year_rules; AU-How annotated (range =
+  139 d despite skewness = 0.37, among the largest range/lowest-skewness combinations in the set).
+  Largest min_gpp_month-vs-calendar range drop: US-Var (255.8 d to 133.5 d).
+
+Two rendering bugs were caught and fixed by opening every PNG before finalizing the report: (1) the
+three labelled-choice points in Figure A initially used a plain circle regardless of method, now fixed
+to each choice's own method-family shape (circle for Z16/M2, triangle for M4); (2) Figure B/C's
+month-axis tick labels initially overlapped, fixed with 45-degree rotation; Figure C's first,
+single-column draft also compressed each site's 8 method rows into an unreadable block, fixed by a
+2-column x 3-row grid; and `patchwork`'s `+` operator was found to apply a title only to the last
+sub-plot added (not the whole composite) unless routed through `plot_annotation()`, which was the
+actual cause of the "Draft for discussion" title appearing in the wrong place on the first renders of
+B and C.
+
+---
+
 ## 2026-11-03 — GSL methods comparison: review figures for discussion, started
 
 New script `GSL_definition/expanded/code/12_methods_review_figures.R`, read-only against version 4's

@@ -1,0 +1,5 @@
+year,two_season_secondary_date,two_season_trough_date,nearest_cut,days_to_nearest_cut,coincides_with_cut
+2010,2010-05-28,2010-06-08,2010-08-02,-55,FALSE
+2018,2018-07-25,2018-07-09,2018-07-05,4,TRUE
+2019,2019-05-21,2019-06-09,2019-06-12,-3,TRUE
+2020,2020-08-14,2020-06-12,2020-06-14,-2,TRUE

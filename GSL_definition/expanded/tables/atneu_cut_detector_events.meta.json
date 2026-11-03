@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T06:00:44Z",
+  "pipeline_version": "4e32ce9",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')"
+  ],
+  "notes": "VERSION 4, item 3. All cut-like events detected by detect_cuts() over AT-Neu's full record (unsmoothed daily NT GPP): >=50% drop within 1-3 days, followed by >=30% regrowth 14-28 days after the trough."
+}

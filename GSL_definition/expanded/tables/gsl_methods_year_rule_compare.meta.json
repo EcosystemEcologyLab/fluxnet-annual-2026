@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T06:00:43Z",
+  "pipeline_version": "4e32ce9",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_summary.csv"
+  ],
+  "notes": "VERSION 4, item 1. Mean GSL/start-doy/end-doy per site x method x sub under each year_rule, plus min_gpp_month-minus-calendar shifts."
+}

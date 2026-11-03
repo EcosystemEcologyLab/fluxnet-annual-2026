@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:43Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:45Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
   ],
-  "notes": "VERSION 3. Draft figure. Segments (start_doy-end_doy); all 3 sites are Northern Hemisphere; M6 = anchored form."
+  "notes": "VERSION 4. Draft figure. Calendar year_rule only."
 }

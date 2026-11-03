@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:42Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:43Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
     "GSL_definition/expanded/tables/sites.csv",
@@ -8,5 +8,5 @@
     "GSL_definition/expanded/tables/derived_site.csv",
     "GSL_definition/expanded/tables/derived_site_year.csv"
   ],
-  "notes": "VERSION 3 (supersedes v2, e0348a5 -- see docs/gsl_methods_compare_2026-11-02_v3.md). Eight GSL methods (M1-M8) at the 15 'Figure GSL-IAV' sites, on two independent GPP series (nt, dt), never mixed. M2 kept at 5/10/20% of P99 (full 22-value grid in gsl_methods_m2_grid22.csv, NT only); M4 at 0.85/0.90/0.95/0.99 of annual GPP via the fine grid. M2-M4 carry 3 start/end rules: first/last qualifying day (start_date/end_date), first/last >=5-day run (start_date_run5/end_date_run5), and the smoothed-threshold-crossing closest to the peak (start_date_smpeak/end_date_smpeak, Panwar et al. 2023's rule). M6 has two forms (sub='anchored'/'unanchored'); figures use 'anchored' only. M7 (Ma et al. 2013 amplitude/derivative) and M8 (Panwar et al. 2023 normalized threshold, 0.10/0.25/ 0.50) are new, on 15-day-smoothed GPP. Two-season flag (M5-span/M6 only) via the TIMESAT secondary- peak rule on smoothed NT GPP. Checks (NH sites only, all passed exactly): NT-series M2@10%/M4@0.95 == derived_site_year.csv's main_unscreened gsl_z16/gsl_t95/f_z16/f_t95; every row has a value or an explanatory flag. M4@0.85-vs-fraction-sweep check is NOT APPLICABLE: fraction_sweep_main.csv only holds the winter-screened 'main' variant, not 'main_unscreened'/NT. This comparison deliberately does not frame any method as 'the reference' -- see the methods doc for the full rationale."
+  "notes": "VERSION 4 (supersedes v3, cd7e547 -- see docs/gsl_methods_compare_2026-11-02_v4.md). Adds a `year_rule` column: 'calendar' (v1-v3's rule, NH=Jan-Dec/AU-How=Jul-Jun) and 'min_gpp_month' (each site's year starts on the 1st of its own lowest-mean-NT-GPP calendar month, determined from the calendar rule's pooled years). Both rules use the same <=14-failing-day QC passing-year test. Figures/checks use 'calendar' only, matching v1-v3. M7 now uses a 3-harmonic fit to 16-day GPP composites per site-year (Rssa not installed; per-the-prompt fallback), replacing the 15-day rolling mean used for M1-M5/M8. Checks (NH sites, calendar rule, all passed exactly): NT-series M2@10%/M4@0.95 == derived_site_year.csv's main_unscreened values; every row (both year_rules) has a value or an explanatory flag. M4@0.85-vs-fraction-sweep check remains not applicable."
 }

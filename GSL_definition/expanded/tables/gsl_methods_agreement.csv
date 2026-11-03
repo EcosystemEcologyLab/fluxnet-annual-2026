@@ -4,278 +4,278 @@ row,col,value,which,metric
 "M1 (crossing, summer P99)",M4 (0.85 of annual GPP),0.5194942980371998,GSL,spearman_r
 "M1 (crossing, summer P99)",M5 (NEP>0 span),0.22576219394574742,GSL,spearman_r
 "M1 (crossing, summer P99)",M6 (Hu NEP rate-of-change),0.1700292249218454,GSL,spearman_r
-"M1 (crossing, summer P99)",M7 (amplitude/derivative),-0.08453535838378319,GSL,spearman_r
+"M1 (crossing, summer P99)",M7 (amplitude/derivative),0.23677923148662763,GSL,spearman_r
 "M1 (crossing, summer P99)",M8 (normalized 0.25),0.22021465069756546,GSL,spearman_r
 M2 (10% of P99),"M1 (crossing, summer P99)",0.6440644344532576,GSL,spearman_r
 M2 (10% of P99),M3 (1 gC m-2 d-1),0.9391703348967707,GSL,spearman_r
 M2 (10% of P99),M4 (0.85 of annual GPP),0.8298925444442413,GSL,spearman_r
 M2 (10% of P99),M5 (NEP>0 span),0.2514368779682877,GSL,spearman_r
 M2 (10% of P99),M6 (Hu NEP rate-of-change),0.21568123112448515,GSL,spearman_r
-M2 (10% of P99),M7 (amplitude/derivative),0.14442580126795918,GSL,spearman_r
+M2 (10% of P99),M7 (amplitude/derivative),0.3405057485517194,GSL,spearman_r
 M2 (10% of P99),M8 (normalized 0.25),0.45021200834227243,GSL,spearman_r
 M3 (1 gC m-2 d-1),"M1 (crossing, summer P99)",0.5868936031558478,GSL,spearman_r
 M3 (1 gC m-2 d-1),M2 (10% of P99),0.9391703348967707,GSL,spearman_r
 M3 (1 gC m-2 d-1),M4 (0.85 of annual GPP),0.8352753486800626,GSL,spearman_r
 M3 (1 gC m-2 d-1),M5 (NEP>0 span),0.21466563879856299,GSL,spearman_r
 M3 (1 gC m-2 d-1),M6 (Hu NEP rate-of-change),0.186826498901303,GSL,spearman_r
-M3 (1 gC m-2 d-1),M7 (amplitude/derivative),0.17930734365315512,GSL,spearman_r
+M3 (1 gC m-2 d-1),M7 (amplitude/derivative),0.33372649471433735,GSL,spearman_r
 M3 (1 gC m-2 d-1),M8 (normalized 0.25),0.460243336300836,GSL,spearman_r
 M4 (0.85 of annual GPP),"M1 (crossing, summer P99)",0.5194942980371998,GSL,spearman_r
 M4 (0.85 of annual GPP),M2 (10% of P99),0.8298925444442413,GSL,spearman_r
 M4 (0.85 of annual GPP),M3 (1 gC m-2 d-1),0.8352753486800626,GSL,spearman_r
 M4 (0.85 of annual GPP),M5 (NEP>0 span),0.1610372075929683,GSL,spearman_r
 M4 (0.85 of annual GPP),M6 (Hu NEP rate-of-change),0.15115180141305143,GSL,spearman_r
-M4 (0.85 of annual GPP),M7 (amplitude/derivative),0.19600192504014236,GSL,spearman_r
+M4 (0.85 of annual GPP),M7 (amplitude/derivative),0.39375371680216564,GSL,spearman_r
 M4 (0.85 of annual GPP),M8 (normalized 0.25),0.5047763171037761,GSL,spearman_r
 M5 (NEP>0 span),"M1 (crossing, summer P99)",0.22576219394574742,GSL,spearman_r
 M5 (NEP>0 span),M2 (10% of P99),0.2514368779682877,GSL,spearman_r
 M5 (NEP>0 span),M3 (1 gC m-2 d-1),0.21466563879856299,GSL,spearman_r
 M5 (NEP>0 span),M4 (0.85 of annual GPP),0.1610372075929683,GSL,spearman_r
 M5 (NEP>0 span),M6 (Hu NEP rate-of-change),0.8900281403823231,GSL,spearman_r
-M5 (NEP>0 span),M7 (amplitude/derivative),0.05108794753559235,GSL,spearman_r
+M5 (NEP>0 span),M7 (amplitude/derivative),0.05277981797101652,GSL,spearman_r
 M5 (NEP>0 span),M8 (normalized 0.25),0.01895402349232059,GSL,spearman_r
 M6 (Hu NEP rate-of-change),"M1 (crossing, summer P99)",0.1700292249218454,GSL,spearman_r
 M6 (Hu NEP rate-of-change),M2 (10% of P99),0.21568123112448515,GSL,spearman_r
 M6 (Hu NEP rate-of-change),M3 (1 gC m-2 d-1),0.186826498901303,GSL,spearman_r
 M6 (Hu NEP rate-of-change),M4 (0.85 of annual GPP),0.15115180141305143,GSL,spearman_r
 M6 (Hu NEP rate-of-change),M5 (NEP>0 span),0.8900281403823231,GSL,spearman_r
-M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),0.09393880555354935,GSL,spearman_r
+M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),0.0783417005458697,GSL,spearman_r
 M6 (Hu NEP rate-of-change),M8 (normalized 0.25),0.05399473054735874,GSL,spearman_r
-M7 (amplitude/derivative),"M1 (crossing, summer P99)",-0.08453535838378319,GSL,spearman_r
-M7 (amplitude/derivative),M2 (10% of P99),0.14442580126795918,GSL,spearman_r
-M7 (amplitude/derivative),M3 (1 gC m-2 d-1),0.17930734365315512,GSL,spearman_r
-M7 (amplitude/derivative),M4 (0.85 of annual GPP),0.19600192504014236,GSL,spearman_r
-M7 (amplitude/derivative),M5 (NEP>0 span),0.05108794753559235,GSL,spearman_r
-M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),0.09393880555354935,GSL,spearman_r
-M7 (amplitude/derivative),M8 (normalized 0.25),0.14331769784725729,GSL,spearman_r
+M7 (amplitude/derivative),"M1 (crossing, summer P99)",0.23677923148662763,GSL,spearman_r
+M7 (amplitude/derivative),M2 (10% of P99),0.3405057485517194,GSL,spearman_r
+M7 (amplitude/derivative),M3 (1 gC m-2 d-1),0.33372649471433735,GSL,spearman_r
+M7 (amplitude/derivative),M4 (0.85 of annual GPP),0.39375371680216564,GSL,spearman_r
+M7 (amplitude/derivative),M5 (NEP>0 span),0.05277981797101652,GSL,spearman_r
+M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),0.0783417005458697,GSL,spearman_r
+M7 (amplitude/derivative),M8 (normalized 0.25),0.462975120211088,GSL,spearman_r
 M8 (normalized 0.25),"M1 (crossing, summer P99)",0.22021465069756546,GSL,spearman_r
 M8 (normalized 0.25),M2 (10% of P99),0.45021200834227243,GSL,spearman_r
 M8 (normalized 0.25),M3 (1 gC m-2 d-1),0.460243336300836,GSL,spearman_r
 M8 (normalized 0.25),M4 (0.85 of annual GPP),0.5047763171037761,GSL,spearman_r
 M8 (normalized 0.25),M5 (NEP>0 span),0.01895402349232059,GSL,spearman_r
 M8 (normalized 0.25),M6 (Hu NEP rate-of-change),0.05399473054735874,GSL,spearman_r
-M8 (normalized 0.25),M7 (amplitude/derivative),0.14331769784725729,GSL,spearman_r
+M8 (normalized 0.25),M7 (amplitude/derivative),0.462975120211088,GSL,spearman_r
 "M1 (crossing, summer P99)",M2 (10% of P99),0.4365307712528449,Start date,spearman_r
 "M1 (crossing, summer P99)",M3 (1 gC m-2 d-1),0.48653800789405477,Start date,spearman_r
 "M1 (crossing, summer P99)",M4 (0.85 of annual GPP),0.6401061871057124,Start date,spearman_r
 "M1 (crossing, summer P99)",M5 (NEP>0 span),0.42900132743972597,Start date,spearman_r
 "M1 (crossing, summer P99)",M6 (Hu NEP rate-of-change),0.3684578853598584,Start date,spearman_r
-"M1 (crossing, summer P99)",M7 (amplitude/derivative),-0.05975124667306364,Start date,spearman_r
+"M1 (crossing, summer P99)",M7 (amplitude/derivative),0.3008044752859352,Start date,spearman_r
 "M1 (crossing, summer P99)",M8 (normalized 0.25),0.19940052700298855,Start date,spearman_r
 M2 (10% of P99),"M1 (crossing, summer P99)",0.4365307712528449,Start date,spearman_r
 M2 (10% of P99),M3 (1 gC m-2 d-1),0.6295839392095333,Start date,spearman_r
 M2 (10% of P99),M4 (0.85 of annual GPP),0.5080982752772805,Start date,spearman_r
 M2 (10% of P99),M5 (NEP>0 span),0.30625520452018185,Start date,spearman_r
 M2 (10% of P99),M6 (Hu NEP rate-of-change),0.31076518942816234,Start date,spearman_r
-M2 (10% of P99),M7 (amplitude/derivative),-0.02267333824219723,Start date,spearman_r
+M2 (10% of P99),M7 (amplitude/derivative),0.15688639106849359,Start date,spearman_r
 M2 (10% of P99),M8 (normalized 0.25),0.1693043598348773,Start date,spearman_r
 M3 (1 gC m-2 d-1),"M1 (crossing, summer P99)",0.48653800789405477,Start date,spearman_r
 M3 (1 gC m-2 d-1),M2 (10% of P99),0.6295839392095333,Start date,spearman_r
 M3 (1 gC m-2 d-1),M4 (0.85 of annual GPP),0.407300091827973,Start date,spearman_r
 M3 (1 gC m-2 d-1),M5 (NEP>0 span),0.2838869724453113,Start date,spearman_r
 M3 (1 gC m-2 d-1),M6 (Hu NEP rate-of-change),0.23375177039483258,Start date,spearman_r
-M3 (1 gC m-2 d-1),M7 (amplitude/derivative),0.006874551469804114,Start date,spearman_r
+M3 (1 gC m-2 d-1),M7 (amplitude/derivative),0.217951744101447,Start date,spearman_r
 M3 (1 gC m-2 d-1),M8 (normalized 0.25),0.1766535866372056,Start date,spearman_r
 M4 (0.85 of annual GPP),"M1 (crossing, summer P99)",0.6401061871057124,Start date,spearman_r
 M4 (0.85 of annual GPP),M2 (10% of P99),0.5080982752772805,Start date,spearman_r
 M4 (0.85 of annual GPP),M3 (1 gC m-2 d-1),0.407300091827973,Start date,spearman_r
 M4 (0.85 of annual GPP),M5 (NEP>0 span),0.358031601567845,Start date,spearman_r
 M4 (0.85 of annual GPP),M6 (Hu NEP rate-of-change),0.33783243954561126,Start date,spearman_r
-M4 (0.85 of annual GPP),M7 (amplitude/derivative),0.007756786259337638,Start date,spearman_r
+M4 (0.85 of annual GPP),M7 (amplitude/derivative),0.1848233909741369,Start date,spearman_r
 M4 (0.85 of annual GPP),M8 (normalized 0.25),0.20496418608015796,Start date,spearman_r
 M5 (NEP>0 span),"M1 (crossing, summer P99)",0.42900132743972597,Start date,spearman_r
 M5 (NEP>0 span),M2 (10% of P99),0.30625520452018185,Start date,spearman_r
 M5 (NEP>0 span),M3 (1 gC m-2 d-1),0.2838869724453113,Start date,spearman_r
 M5 (NEP>0 span),M4 (0.85 of annual GPP),0.358031601567845,Start date,spearman_r
 M5 (NEP>0 span),M6 (Hu NEP rate-of-change),0.8027790240274985,Start date,spearman_r
-M5 (NEP>0 span),M7 (amplitude/derivative),-0.014874949586558347,Start date,spearman_r
+M5 (NEP>0 span),M7 (amplitude/derivative),0.19056442306007498,Start date,spearman_r
 M5 (NEP>0 span),M8 (normalized 0.25),0.1975307474979833,Start date,spearman_r
 M6 (Hu NEP rate-of-change),"M1 (crossing, summer P99)",0.3684578853598584,Start date,spearman_r
 M6 (Hu NEP rate-of-change),M2 (10% of P99),0.31076518942816234,Start date,spearman_r
 M6 (Hu NEP rate-of-change),M3 (1 gC m-2 d-1),0.23375177039483258,Start date,spearman_r
 M6 (Hu NEP rate-of-change),M4 (0.85 of annual GPP),0.33783243954561126,Start date,spearman_r
 M6 (Hu NEP rate-of-change),M5 (NEP>0 span),0.8027790240274985,Start date,spearman_r
-M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),0.03136761156955068,Start date,spearman_r
+M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),0.2103421362235945,Start date,spearman_r
 M6 (Hu NEP rate-of-change),M8 (normalized 0.25),0.19276858411070366,Start date,spearman_r
-M7 (amplitude/derivative),"M1 (crossing, summer P99)",-0.05975124667306364,Start date,spearman_r
-M7 (amplitude/derivative),M2 (10% of P99),-0.02267333824219723,Start date,spearman_r
-M7 (amplitude/derivative),M3 (1 gC m-2 d-1),0.006874551469804114,Start date,spearman_r
-M7 (amplitude/derivative),M4 (0.85 of annual GPP),0.007756786259337638,Start date,spearman_r
-M7 (amplitude/derivative),M5 (NEP>0 span),-0.014874949586558347,Start date,spearman_r
-M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),0.03136761156955068,Start date,spearman_r
-M7 (amplitude/derivative),M8 (normalized 0.25),0.14379156219220487,Start date,spearman_r
+M7 (amplitude/derivative),"M1 (crossing, summer P99)",0.3008044752859352,Start date,spearman_r
+M7 (amplitude/derivative),M2 (10% of P99),0.15688639106849359,Start date,spearman_r
+M7 (amplitude/derivative),M3 (1 gC m-2 d-1),0.217951744101447,Start date,spearman_r
+M7 (amplitude/derivative),M4 (0.85 of annual GPP),0.1848233909741369,Start date,spearman_r
+M7 (amplitude/derivative),M5 (NEP>0 span),0.19056442306007498,Start date,spearman_r
+M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),0.2103421362235945,Start date,spearman_r
+M7 (amplitude/derivative),M8 (normalized 0.25),0.48397193914217995,Start date,spearman_r
 M8 (normalized 0.25),"M1 (crossing, summer P99)",0.19940052700298855,Start date,spearman_r
 M8 (normalized 0.25),M2 (10% of P99),0.1693043598348773,Start date,spearman_r
 M8 (normalized 0.25),M3 (1 gC m-2 d-1),0.1766535866372056,Start date,spearman_r
 M8 (normalized 0.25),M4 (0.85 of annual GPP),0.20496418608015796,Start date,spearman_r
 M8 (normalized 0.25),M5 (NEP>0 span),0.1975307474979833,Start date,spearman_r
 M8 (normalized 0.25),M6 (Hu NEP rate-of-change),0.19276858411070366,Start date,spearman_r
-M8 (normalized 0.25),M7 (amplitude/derivative),0.14379156219220487,Start date,spearman_r
+M8 (normalized 0.25),M7 (amplitude/derivative),0.48397193914217995,Start date,spearman_r
 "M1 (crossing, summer P99)",M2 (10% of P99),0.4086139464824878,End date,spearman_r
 "M1 (crossing, summer P99)",M3 (1 gC m-2 d-1),0.3786249910568309,End date,spearman_r
 "M1 (crossing, summer P99)",M4 (0.85 of annual GPP),0.48797886906421384,End date,spearman_r
 "M1 (crossing, summer P99)",M5 (NEP>0 span),0.1564068547072105,End date,spearman_r
 "M1 (crossing, summer P99)",M6 (Hu NEP rate-of-change),0.12871220067236766,End date,spearman_r
-"M1 (crossing, summer P99)",M7 (amplitude/derivative),0.07454539029207077,End date,spearman_r
+"M1 (crossing, summer P99)",M7 (amplitude/derivative),0.31733969429596315,End date,spearman_r
 "M1 (crossing, summer P99)",M8 (normalized 0.25),0.38449620742866986,End date,spearman_r
 M2 (10% of P99),"M1 (crossing, summer P99)",0.4086139464824878,End date,spearman_r
 M2 (10% of P99),M3 (1 gC m-2 d-1),0.6743184004594738,End date,spearman_r
 M2 (10% of P99),M4 (0.85 of annual GPP),0.4689431622825334,End date,spearman_r
 M2 (10% of P99),M5 (NEP>0 span),0.1416879675674264,End date,spearman_r
 M2 (10% of P99),M6 (Hu NEP rate-of-change),0.11817200963105709,End date,spearman_r
-M2 (10% of P99),M7 (amplitude/derivative),-0.00464627952764833,End date,spearman_r
+M2 (10% of P99),M7 (amplitude/derivative),0.16994479809980614,End date,spearman_r
 M2 (10% of P99),M8 (normalized 0.25),0.22106305963524522,End date,spearman_r
 M3 (1 gC m-2 d-1),"M1 (crossing, summer P99)",0.3786249910568309,End date,spearman_r
 M3 (1 gC m-2 d-1),M2 (10% of P99),0.6743184004594738,End date,spearman_r
 M3 (1 gC m-2 d-1),M4 (0.85 of annual GPP),0.41564909122150895,End date,spearman_r
 M3 (1 gC m-2 d-1),M5 (NEP>0 span),0.19077906150966426,End date,spearman_r
 M3 (1 gC m-2 d-1),M6 (Hu NEP rate-of-change),0.15680594038753515,End date,spearman_r
-M3 (1 gC m-2 d-1),M7 (amplitude/derivative),0.011936279507833047,End date,spearman_r
+M3 (1 gC m-2 d-1),M7 (amplitude/derivative),0.1772702642980455,End date,spearman_r
 M3 (1 gC m-2 d-1),M8 (normalized 0.25),0.30085618334186587,End date,spearman_r
 M4 (0.85 of annual GPP),"M1 (crossing, summer P99)",0.48797886906421384,End date,spearman_r
 M4 (0.85 of annual GPP),M2 (10% of P99),0.4689431622825334,End date,spearman_r
 M4 (0.85 of annual GPP),M3 (1 gC m-2 d-1),0.41564909122150895,End date,spearman_r
 M4 (0.85 of annual GPP),M5 (NEP>0 span),0.11374776224445869,End date,spearman_r
 M4 (0.85 of annual GPP),M6 (Hu NEP rate-of-change),0.08885780812289845,End date,spearman_r
-M4 (0.85 of annual GPP),M7 (amplitude/derivative),0.007807179742681359,End date,spearman_r
+M4 (0.85 of annual GPP),M7 (amplitude/derivative),0.14811700358322505,End date,spearman_r
 M4 (0.85 of annual GPP),M8 (normalized 0.25),0.20554024327085116,End date,spearman_r
 M5 (NEP>0 span),"M1 (crossing, summer P99)",0.1564068547072105,End date,spearman_r
 M5 (NEP>0 span),M2 (10% of P99),0.1416879675674264,End date,spearman_r
 M5 (NEP>0 span),M3 (1 gC m-2 d-1),0.19077906150966426,End date,spearman_r
 M5 (NEP>0 span),M4 (0.85 of annual GPP),0.11374776224445869,End date,spearman_r
 M5 (NEP>0 span),M6 (Hu NEP rate-of-change),0.8886471959528268,End date,spearman_r
-M5 (NEP>0 span),M7 (amplitude/derivative),0.12041736648347766,End date,spearman_r
+M5 (NEP>0 span),M7 (amplitude/derivative),0.1298390138921981,End date,spearman_r
 M5 (NEP>0 span),M8 (normalized 0.25),0.12548734896806388,End date,spearman_r
 M6 (Hu NEP rate-of-change),"M1 (crossing, summer P99)",0.12871220067236766,End date,spearman_r
 M6 (Hu NEP rate-of-change),M2 (10% of P99),0.11817200963105709,End date,spearman_r
 M6 (Hu NEP rate-of-change),M3 (1 gC m-2 d-1),0.15680594038753515,End date,spearman_r
 M6 (Hu NEP rate-of-change),M4 (0.85 of annual GPP),0.08885780812289845,End date,spearman_r
 M6 (Hu NEP rate-of-change),M5 (NEP>0 span),0.8886471959528268,End date,spearman_r
-M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),0.10572867410771662,End date,spearman_r
+M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),0.13905756541490952,End date,spearman_r
 M6 (Hu NEP rate-of-change),M8 (normalized 0.25),0.11479318516985712,End date,spearman_r
-M7 (amplitude/derivative),"M1 (crossing, summer P99)",0.07454539029207077,End date,spearman_r
-M7 (amplitude/derivative),M2 (10% of P99),-0.00464627952764833,End date,spearman_r
-M7 (amplitude/derivative),M3 (1 gC m-2 d-1),0.011936279507833047,End date,spearman_r
-M7 (amplitude/derivative),M4 (0.85 of annual GPP),0.007807179742681359,End date,spearman_r
-M7 (amplitude/derivative),M5 (NEP>0 span),0.12041736648347766,End date,spearman_r
-M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),0.10572867410771662,End date,spearman_r
-M7 (amplitude/derivative),M8 (normalized 0.25),0.3162585144061159,End date,spearman_r
+M7 (amplitude/derivative),"M1 (crossing, summer P99)",0.31733969429596315,End date,spearman_r
+M7 (amplitude/derivative),M2 (10% of P99),0.16994479809980614,End date,spearman_r
+M7 (amplitude/derivative),M3 (1 gC m-2 d-1),0.1772702642980455,End date,spearman_r
+M7 (amplitude/derivative),M4 (0.85 of annual GPP),0.14811700358322505,End date,spearman_r
+M7 (amplitude/derivative),M5 (NEP>0 span),0.1298390138921981,End date,spearman_r
+M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),0.13905756541490952,End date,spearman_r
+M7 (amplitude/derivative),M8 (normalized 0.25),0.5440555738066846,End date,spearman_r
 M8 (normalized 0.25),"M1 (crossing, summer P99)",0.38449620742866986,End date,spearman_r
 M8 (normalized 0.25),M2 (10% of P99),0.22106305963524522,End date,spearman_r
 M8 (normalized 0.25),M3 (1 gC m-2 d-1),0.30085618334186587,End date,spearman_r
 M8 (normalized 0.25),M4 (0.85 of annual GPP),0.20554024327085116,End date,spearman_r
 M8 (normalized 0.25),M5 (NEP>0 span),0.12548734896806388,End date,spearman_r
 M8 (normalized 0.25),M6 (Hu NEP rate-of-change),0.11479318516985712,End date,spearman_r
-M8 (normalized 0.25),M7 (amplitude/derivative),0.3162585144061159,End date,spearman_r
+M8 (normalized 0.25),M7 (amplitude/derivative),0.5440555738066846,End date,spearman_r
 "M1 (crossing, summer P99)",M2 (10% of P99),4,Start date,median_abs_diff_days
 "M1 (crossing, summer P99)",M3 (1 gC m-2 d-1),5,Start date,median_abs_diff_days
 "M1 (crossing, summer P99)",M4 (0.85 of annual GPP),9,Start date,median_abs_diff_days
 "M1 (crossing, summer P99)",M5 (NEP>0 span),10,Start date,median_abs_diff_days
 "M1 (crossing, summer P99)",M6 (Hu NEP rate-of-change),25,Start date,median_abs_diff_days
-"M1 (crossing, summer P99)",M7 (amplitude/derivative),41,Start date,median_abs_diff_days
+"M1 (crossing, summer P99)",M7 (amplitude/derivative),23,Start date,median_abs_diff_days
 "M1 (crossing, summer P99)",M8 (normalized 0.25),25,Start date,median_abs_diff_days
 M2 (10% of P99),"M1 (crossing, summer P99)",4,Start date,median_abs_diff_days
 M2 (10% of P99),M3 (1 gC m-2 d-1),0,Start date,median_abs_diff_days
 M2 (10% of P99),M4 (0.85 of annual GPP),11,Start date,median_abs_diff_days
 M2 (10% of P99),M5 (NEP>0 span),17,Start date,median_abs_diff_days
 M2 (10% of P99),M6 (Hu NEP rate-of-change),31,Start date,median_abs_diff_days
-M2 (10% of P99),M7 (amplitude/derivative),55,Start date,median_abs_diff_days
+M2 (10% of P99),M7 (amplitude/derivative),39,Start date,median_abs_diff_days
 M2 (10% of P99),M8 (normalized 0.25),56,Start date,median_abs_diff_days
 M3 (1 gC m-2 d-1),"M1 (crossing, summer P99)",5,Start date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M2 (10% of P99),0,Start date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M4 (0.85 of annual GPP),15,Start date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M5 (NEP>0 span),27,Start date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M6 (Hu NEP rate-of-change),37,Start date,median_abs_diff_days
-M3 (1 gC m-2 d-1),M7 (amplitude/derivative),58,Start date,median_abs_diff_days
+M3 (1 gC m-2 d-1),M7 (amplitude/derivative),41,Start date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M8 (normalized 0.25),60,Start date,median_abs_diff_days
 M4 (0.85 of annual GPP),"M1 (crossing, summer P99)",9,Start date,median_abs_diff_days
 M4 (0.85 of annual GPP),M2 (10% of P99),11,Start date,median_abs_diff_days
 M4 (0.85 of annual GPP),M3 (1 gC m-2 d-1),15,Start date,median_abs_diff_days
 M4 (0.85 of annual GPP),M5 (NEP>0 span),9,Start date,median_abs_diff_days
 M4 (0.85 of annual GPP),M6 (Hu NEP rate-of-change),19,Start date,median_abs_diff_days
-M4 (0.85 of annual GPP),M7 (amplitude/derivative),37,Start date,median_abs_diff_days
+M4 (0.85 of annual GPP),M7 (amplitude/derivative),27,Start date,median_abs_diff_days
 M4 (0.85 of annual GPP),M8 (normalized 0.25),16,Start date,median_abs_diff_days
 M5 (NEP>0 span),"M1 (crossing, summer P99)",10,Start date,median_abs_diff_days
 M5 (NEP>0 span),M2 (10% of P99),17,Start date,median_abs_diff_days
 M5 (NEP>0 span),M3 (1 gC m-2 d-1),27,Start date,median_abs_diff_days
 M5 (NEP>0 span),M4 (0.85 of annual GPP),9,Start date,median_abs_diff_days
 M5 (NEP>0 span),M6 (Hu NEP rate-of-change),15,Start date,median_abs_diff_days
-M5 (NEP>0 span),M7 (amplitude/derivative),40,Start date,median_abs_diff_days
+M5 (NEP>0 span),M7 (amplitude/derivative),27.5,Start date,median_abs_diff_days
 M5 (NEP>0 span),M8 (normalized 0.25),18.5,Start date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),"M1 (crossing, summer P99)",25,Start date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M2 (10% of P99),31,Start date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M3 (1 gC m-2 d-1),37,Start date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M4 (0.85 of annual GPP),19,Start date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M5 (NEP>0 span),15,Start date,median_abs_diff_days
-M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),41,Start date,median_abs_diff_days
+M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),36.5,Start date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M8 (normalized 0.25),26.5,Start date,median_abs_diff_days
-M7 (amplitude/derivative),"M1 (crossing, summer P99)",41,Start date,median_abs_diff_days
-M7 (amplitude/derivative),M2 (10% of P99),55,Start date,median_abs_diff_days
-M7 (amplitude/derivative),M3 (1 gC m-2 d-1),58,Start date,median_abs_diff_days
-M7 (amplitude/derivative),M4 (0.85 of annual GPP),37,Start date,median_abs_diff_days
-M7 (amplitude/derivative),M5 (NEP>0 span),40,Start date,median_abs_diff_days
-M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),41,Start date,median_abs_diff_days
-M7 (amplitude/derivative),M8 (normalized 0.25),25,Start date,median_abs_diff_days
+M7 (amplitude/derivative),"M1 (crossing, summer P99)",23,Start date,median_abs_diff_days
+M7 (amplitude/derivative),M2 (10% of P99),39,Start date,median_abs_diff_days
+M7 (amplitude/derivative),M3 (1 gC m-2 d-1),41,Start date,median_abs_diff_days
+M7 (amplitude/derivative),M4 (0.85 of annual GPP),27,Start date,median_abs_diff_days
+M7 (amplitude/derivative),M5 (NEP>0 span),27.5,Start date,median_abs_diff_days
+M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),36.5,Start date,median_abs_diff_days
+M7 (amplitude/derivative),M8 (normalized 0.25),21,Start date,median_abs_diff_days
 M8 (normalized 0.25),"M1 (crossing, summer P99)",25,Start date,median_abs_diff_days
 M8 (normalized 0.25),M2 (10% of P99),56,Start date,median_abs_diff_days
 M8 (normalized 0.25),M3 (1 gC m-2 d-1),60,Start date,median_abs_diff_days
 M8 (normalized 0.25),M4 (0.85 of annual GPP),16,Start date,median_abs_diff_days
 M8 (normalized 0.25),M5 (NEP>0 span),18.5,Start date,median_abs_diff_days
 M8 (normalized 0.25),M6 (Hu NEP rate-of-change),26.5,Start date,median_abs_diff_days
-M8 (normalized 0.25),M7 (amplitude/derivative),25,Start date,median_abs_diff_days
+M8 (normalized 0.25),M7 (amplitude/derivative),21,Start date,median_abs_diff_days
 "M1 (crossing, summer P99)",M2 (10% of P99),4,End date,median_abs_diff_days
 "M1 (crossing, summer P99)",M3 (1 gC m-2 d-1),5,End date,median_abs_diff_days
 "M1 (crossing, summer P99)",M4 (0.85 of annual GPP),13,End date,median_abs_diff_days
 "M1 (crossing, summer P99)",M5 (NEP>0 span),11,End date,median_abs_diff_days
 "M1 (crossing, summer P99)",M6 (Hu NEP rate-of-change),18,End date,median_abs_diff_days
-"M1 (crossing, summer P99)",M7 (amplitude/derivative),44,End date,median_abs_diff_days
+"M1 (crossing, summer P99)",M7 (amplitude/derivative),20,End date,median_abs_diff_days
 "M1 (crossing, summer P99)",M8 (normalized 0.25),25.5,End date,median_abs_diff_days
 M2 (10% of P99),"M1 (crossing, summer P99)",4,End date,median_abs_diff_days
 M2 (10% of P99),M3 (1 gC m-2 d-1),0,End date,median_abs_diff_days
 M2 (10% of P99),M4 (0.85 of annual GPP),16,End date,median_abs_diff_days
 M2 (10% of P99),M5 (NEP>0 span),23,End date,median_abs_diff_days
 M2 (10% of P99),M6 (Hu NEP rate-of-change),26,End date,median_abs_diff_days
-M2 (10% of P99),M7 (amplitude/derivative),65,End date,median_abs_diff_days
+M2 (10% of P99),M7 (amplitude/derivative),43,End date,median_abs_diff_days
 M2 (10% of P99),M8 (normalized 0.25),55,End date,median_abs_diff_days
 M3 (1 gC m-2 d-1),"M1 (crossing, summer P99)",5,End date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M2 (10% of P99),0,End date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M4 (0.85 of annual GPP),23,End date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M5 (NEP>0 span),36,End date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M6 (Hu NEP rate-of-change),31.5,End date,median_abs_diff_days
-M3 (1 gC m-2 d-1),M7 (amplitude/derivative),69,End date,median_abs_diff_days
+M3 (1 gC m-2 d-1),M7 (amplitude/derivative),44,End date,median_abs_diff_days
 M3 (1 gC m-2 d-1),M8 (normalized 0.25),57,End date,median_abs_diff_days
 M4 (0.85 of annual GPP),"M1 (crossing, summer P99)",13,End date,median_abs_diff_days
 M4 (0.85 of annual GPP),M2 (10% of P99),16,End date,median_abs_diff_days
 M4 (0.85 of annual GPP),M3 (1 gC m-2 d-1),23,End date,median_abs_diff_days
 M4 (0.85 of annual GPP),M5 (NEP>0 span),17.5,End date,median_abs_diff_days
 M4 (0.85 of annual GPP),M6 (Hu NEP rate-of-change),23,End date,median_abs_diff_days
-M4 (0.85 of annual GPP),M7 (amplitude/derivative),33,End date,median_abs_diff_days
+M4 (0.85 of annual GPP),M7 (amplitude/derivative),30,End date,median_abs_diff_days
 M4 (0.85 of annual GPP),M8 (normalized 0.25),18,End date,median_abs_diff_days
 M5 (NEP>0 span),"M1 (crossing, summer P99)",11,End date,median_abs_diff_days
 M5 (NEP>0 span),M2 (10% of P99),23,End date,median_abs_diff_days
 M5 (NEP>0 span),M3 (1 gC m-2 d-1),36,End date,median_abs_diff_days
 M5 (NEP>0 span),M4 (0.85 of annual GPP),17.5,End date,median_abs_diff_days
 M5 (NEP>0 span),M6 (Hu NEP rate-of-change),11,End date,median_abs_diff_days
-M5 (NEP>0 span),M7 (amplitude/derivative),38,End date,median_abs_diff_days
+M5 (NEP>0 span),M7 (amplitude/derivative),31.5,End date,median_abs_diff_days
 M5 (NEP>0 span),M8 (normalized 0.25),25,End date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),"M1 (crossing, summer P99)",18,End date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M2 (10% of P99),26,End date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M3 (1 gC m-2 d-1),31.5,End date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M4 (0.85 of annual GPP),23,End date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M5 (NEP>0 span),11,End date,median_abs_diff_days
-M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),37,End date,median_abs_diff_days
+M6 (Hu NEP rate-of-change),M7 (amplitude/derivative),28,End date,median_abs_diff_days
 M6 (Hu NEP rate-of-change),M8 (normalized 0.25),27,End date,median_abs_diff_days
-M7 (amplitude/derivative),"M1 (crossing, summer P99)",44,End date,median_abs_diff_days
-M7 (amplitude/derivative),M2 (10% of P99),65,End date,median_abs_diff_days
-M7 (amplitude/derivative),M3 (1 gC m-2 d-1),69,End date,median_abs_diff_days
-M7 (amplitude/derivative),M4 (0.85 of annual GPP),33,End date,median_abs_diff_days
-M7 (amplitude/derivative),M5 (NEP>0 span),38,End date,median_abs_diff_days
-M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),37,End date,median_abs_diff_days
-M7 (amplitude/derivative),M8 (normalized 0.25),19,End date,median_abs_diff_days
+M7 (amplitude/derivative),"M1 (crossing, summer P99)",20,End date,median_abs_diff_days
+M7 (amplitude/derivative),M2 (10% of P99),43,End date,median_abs_diff_days
+M7 (amplitude/derivative),M3 (1 gC m-2 d-1),44,End date,median_abs_diff_days
+M7 (amplitude/derivative),M4 (0.85 of annual GPP),30,End date,median_abs_diff_days
+M7 (amplitude/derivative),M5 (NEP>0 span),31.5,End date,median_abs_diff_days
+M7 (amplitude/derivative),M6 (Hu NEP rate-of-change),28,End date,median_abs_diff_days
+M7 (amplitude/derivative),M8 (normalized 0.25),20,End date,median_abs_diff_days
 M8 (normalized 0.25),"M1 (crossing, summer P99)",25.5,End date,median_abs_diff_days
 M8 (normalized 0.25),M2 (10% of P99),55,End date,median_abs_diff_days
 M8 (normalized 0.25),M3 (1 gC m-2 d-1),57,End date,median_abs_diff_days
 M8 (normalized 0.25),M4 (0.85 of annual GPP),18,End date,median_abs_diff_days
 M8 (normalized 0.25),M5 (NEP>0 span),25,End date,median_abs_diff_days
 M8 (normalized 0.25),M6 (Hu NEP rate-of-change),27,End date,median_abs_diff_days
-M8 (normalized 0.25),M7 (amplitude/derivative),19,End date,median_abs_diff_days
+M8 (normalized 0.25),M7 (amplitude/derivative),20,End date,median_abs_diff_days

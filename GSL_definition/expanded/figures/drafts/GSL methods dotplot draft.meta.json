@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:42Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:44Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_site_summary.csv",
     "GSL_definition/expanded/tables/gsl_methods_m2_grid22.csv"
   ],
-  "notes": "VERSION 3. Draft figure. NT/NEP-only series; M2 shown as a range, not a point; explicit numeric y-offsets (not position_dodge) keep the M2 range bar aligned with the other methods' point+errorbar glyphs at the same site."
+  "notes": "VERSION 4. Draft figure. Calendar year_rule only; M7 now harmonic-smoothed."
 }

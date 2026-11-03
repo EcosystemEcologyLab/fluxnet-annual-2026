@@ -1,7 +1,5 @@
-GSL methods agreement (draft, v3). Spearman correlation between pairs of methods' annual GSL (left
-panel; site-year anomalies), start date (middle) and end date (right; raw dates), pooled across all
-15 sites x years -- NT series for M1-M4/M7/M8, NEP-only ('all') for M5/M6 (anchored form only --
-M6's agreement with M5 is partly BUILT IN by its anchoring to M5's own span, not an independent
-confirmation). Median absolute start/end-date differences (days) for every pair are in
+GSL methods agreement (draft, v4). Calendar year_rule only. Spearman correlation between pairs of
+methods' annual GSL/start/end (site-demeaned anomalies), M6='anchored' only (its agreement with M5
+is partly built in by its own anchoring). Median absolute start/end-date differences are in
 tables/gsl_methods_agreement.csv, not shown on this tile plot.
 Numbers behind this figure: tables/gsl_methods_site_year.csv, tables/gsl_methods_agreement.csv.

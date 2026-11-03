@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:42Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:43Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
   ],
-  "notes": "VERSION 3. DT-minus-NT difference in GSL/start/end (signed), per site x year x method x sub, now including M7/M8, with the site's vegetation `group`/`igbp` attached for item 6's by-group aggregation."
+  "notes": "VERSION 4 (calendar rule only). Unchanged methodology from v3; see docs/gsl_methods_compare_2026-11-02_v4.md item 5 for the rewritten Keenan et al. (2019) interpretation."
 }

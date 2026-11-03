@@ -1,19 +1,16 @@
 site_id,igbp,group,management_type,date_detail,source
-AT-Neu,GRA,grassland,mown,"Cuts: 2-16 Jun; 24 Jul-12 Aug; 21 Sep-28 Oct (recurring annual pattern, year not specified)",Hammerle et al. (2008); BADM SITE_DESC keyword 'harvest' (mgmt_harvest=TRUE)
-AT-Neu,GRA,grassland,other,"Manure application, late autumn (no exact date given)",Hammerle et al. (2008)
-AU-How,WSA,woody-grass mosaic,unknown,NA,"BADM: no DOM_DIST_MGMT tag, no SITE_DESC management keyword hit"
-CH-Dav,ENF,evergreen forest,other,NA,"BADM SITE_DESC keyword 'till/plow/disk' (mgmt_tillage=TRUE) -- plausible historical/non-forest land-use mention at this ENF site, not independently verified as current active management"
-DE-Tha,ENF,evergreen forest,unknown,NA,BADM: no management/disturbance record found
-FR-Pue,EBF,evergreen forest,unknown,NA,BADM: no management/disturbance record found
-IL-Yat,ENF,evergreen forest,grazed,NA,BADM SITE_DESC/DOM_DIST_MGMT (mgmt_grazing=TRUE)
-IL-Yat,ENF,evergreen forest,burned,NA,BADM SITE_DESC keyword 'burn/fire' (mgmt_burning=TRUE)
-IL-Yat,ENF,evergreen forest,other,NA,BADM SITE_DESC keyword 'irrigat' (mgmt_irrigation=TRUE) -- planted pine afforestation
-JP-Api,DBF,deciduous forest,unknown,NA,BADM: no management/disturbance record found
-NL-Loo,ENF,evergreen forest,unknown,NA,BADM: no management/disturbance record found
-US-Ha1,DBF,deciduous forest,other,NA,"BADM DOM_DIST_MGMT = 'Undisturbed' -- an explicit no-active-management tag, distinct from 'unknown' (no record at all)"
-US-MMS,DBF,deciduous forest,other,NA,"BADM DOM_DIST_MGMT = 'Forestry' (mgmt_forestry_unspecified=TRUE) -- silvicultural management present, harvest vs. thinning not resolved by BADM"
-US-Mpj,WSA,woody-grass mosaic,other,NA,"BADM DOM_DIST_MGMT = 'Drought; Pests and disease' -- natural disturbance, not active management"
-US-SRM,WSA,woody-grass mosaic,grazed,NA,"BADM DOM_DIST_MGMT = 'Grazing; Land cover change' (mgmt_grazing=TRUE) -- BADM confirms grazing, so reported as confirmed (not 'unconfirmed')"
-US-Ton,WSA,woody-grass mosaic,grazed,NA,BADM DOM_DIST_MGMT = 'Grazing' (mgmt_grazing=TRUE)
-US-Var,GRA,grassland,grazed,Brush removed for cattle grazing (no dates given),BADM DOM_DIST_MGMT = 'Grazing' (mgmt_grazing=TRUE); FLUXNET site page
-US-Wkg,GRA,grassland,grazed,NA,"BADM DOM_DIST_MGMT = 'Grazing' (mgmt_grazing=TRUE) -- BADM confirms grazing, so reported as confirmed (not 'unconfirmed')"
+AU-How,WSA,woody-grass mosaic,burned,"Controlled burns, every 1-3 years, early in the dry season",TERN Howard Springs site page
+NL-Loo,ENF,evergreen forest,other,Scots pine planted c. 1909; very little management since,ICOS Loobos station page
+DE-Tha,ENF,evergreen forest,other,"Spruce sown 1887; thinned April 2002 (~30% of trees); 2 ha windthrow 300 m from the tower, January 2007",Bernhofer et al. (2011)
+FR-Pue,EBF,evergreen forest,other,"Holm oak coppice, last clear-cut 1942; throughfall-exclusion and thinning experiments since 2003",DEIMS site page
+CH-Dav,ENF,evergreen forest,other,Research plots never thinned; harvest occurs in the surrounding (non-footprint) forest; no tillage,WSL Davos site page
+US-MMS,DBF,deciduous forest,other,"Selective logging, since ended (year not given)",AmeriFlux/OSTI site page
+US-Mpj,WSA,woody-grass mosaic,other,"Drought and bark-beetle pinon die-off, 2013-2015; no grazing reported",AmeriFlux/OSTI site page
+AT-Neu,GRA,grassland,mown,"Hay meadow, cut 3-4 times/year and manured; 2010 cuts 5 Jun/31 Jul/20 Sep, manure 18-22 Oct; 2011 cuts 6 Jun/1 Aug/26 Sep (no published dates 2018-2020)",Hortnagl & Wohlfahrt (2014); FLUXNET site page
+US-Ha1,DBF,deciduous forest,other,Cleared for farming in the 1600s-1700s; overstorey uprooted by the 1938 hurricane; no recent management,AmeriFlux/OSTI site page
+JP-Api,DBF,deciduous forest,unknown,"Beech forest, c. 70 years old; no management reported",AsiaFlux site page
+IL-Yat,ENF,evergreen forest,grazed,"Aleppo pine planted 1964; fire-protected (not burned); grazed by sheep/goats in late spring; irrigation experiment plot in the south of the site, footprint overlap unknown",ICOS/FLUXNET Yatir station page
+US-Ton,WSA,woody-grass mosaic,grazed,Cattle grazing; brush periodically removed; season/intensity not found,AmeriFlux/OSTI site page
+US-Var,GRA,grassland,grazed,Cattle grazing; brush periodically removed; season/intensity not found,AmeriFlux/OSTI site page
+US-Wkg,GRA,grassland,grazed,Light to moderate grazing throughout the flux record,Scott et al. (2010)
+US-SRM,WSA,woody-grass mosaic,grazed,Cattle grazing year-round 1957-2005; minimal grazing 2006; none from 2007,Scott et al. (2009)

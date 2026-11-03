@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T06:00:44Z",
+  "pipeline_version": "4e32ce9",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
+  ],
+  "notes": "VERSION 4, item 3. Two-season (M5-span, TIMESAT) site-years grouped as AT-Neu (mowing) vs. US Southwest dryland (winter/monsoon rainfall) vs. other -- replaces v3's single 'managed sites' grouping/claim."
+}

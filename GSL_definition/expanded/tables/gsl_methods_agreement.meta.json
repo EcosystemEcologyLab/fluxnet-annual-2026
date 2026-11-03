@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:42Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:43Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
   ],
-  "notes": "VERSION 3, item 5. Every method pair (M1-M8, M6='anchored'), Spearman r (site-year anomalies for GSL; raw dates for start/end) and median absolute start/end-date difference (days), pooled across all 15 sites x years, pairwise-complete."
+  "notes": "VERSION 4 (calendar rule only, as v3 item 5). Every method pair (M6='anchored'), Spearman r (site-demeaned anomalies) and median absolute start/end-date difference (days)."
 }

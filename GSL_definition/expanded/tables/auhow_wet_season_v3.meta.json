@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:42Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:44Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
   ],
-  "notes": "VERSION 3, item 9. AU-How, per Jul-Jun season year: wet-season (15 Oct-15 Apr, Moore et al. 2017) total NT GPP, and the seasonal amplitude (max-min) of 15-day-smoothed NT GPP over the full season-year window."
+  "notes": "VERSION 4 (table name unchanged from v3; content recomputed with v4's calendar rule, numerically identical to v3). AU-How wet-season GPP (15 Oct-15 Apr) and smoothed-GPP seasonal amplitude, per Jul-Jun season-year."
 }

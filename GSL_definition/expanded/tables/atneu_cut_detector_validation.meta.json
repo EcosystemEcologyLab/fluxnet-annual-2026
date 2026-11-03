@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-03T06:00:44Z",
+  "pipeline_version": "4e32ce9",
+  "input_sources": [
+    "GSL_definition/expanded/tables/atneu_cut_detector_events.csv"
+  ],
+  "notes": "VERSION 4, item 3. Validation of detect_cuts() against Hortnagl & Wohlfahrt (2014)'s 6 published 2010/2011 cut dates, +/-10-day match tolerance. hit = TRUE if a detected event falls within tolerance; 24 detected 2010/2011 event(s) did not match any published cut (false alarms)."
+}

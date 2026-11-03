@@ -1,5 +1,3 @@
-GSL methods raster (draft, v3). US-Ha1, US-Wkg, US-SRM (columns); each row block is one method
-(M1-summer, M2 10%, M4 0.85, M5-span, M6 anchored, M7, M8 0.25 of normalized range, top to bottom);
-each horizontal bar is one year's detected season, start day-of-year to end day-of-year. A missing
-bar means no season was detected -- see tables/gsl_methods_site_year.csv.
+GSL methods raster (draft, v4). Calendar year_rule only. US-Ha1, US-Wkg, US-SRM (columns); each row
+block is one method; each horizontal bar is one year's detected season.
 Numbers behind this figure: tables/gsl_methods_site_year.csv.

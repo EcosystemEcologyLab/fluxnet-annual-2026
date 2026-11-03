@@ -1,8 +1,6 @@
-GSL methods dotplot (draft, v3). Mean GSL by method, for each of the 15 sites, sorted bottom-to-top
-by ascending skewness (main-variant). M1-summer, M2 (shown as its full range across Tash's 22-value,
-0.1-20%-of-P99 grid -- no single point, per the prompt), M3 1 gC m-2 d-1, M4 0.85 of annual GPP (one
-of 4 reported targets; chosen here only as a representative display value, not as 'the' method), M5-
-span, M6 (anchored form), M7 (amplitude/derivative), M8 (normalized 0.25). Net-source years excluded
-from M5/M6's own mean/SD. This figure deliberately shows 8 methods spanning a wide range of
-thresholds/rules -- it is not a comparison of any one method against a single reference.
+GSL methods dotplot (draft, v4). Calendar year_rule only (see tables/gsl_methods_year_rule_compare.csv
+for the min_gpp_month comparison). Mean GSL by method, 15 sites, sorted by ascending skewness. M2
+shown as its full 22-value-grid range, not a point. M7 now uses a harmonic-fit (not 15-day rolling
+mean) smoothed curve, after Ma et al. (2013); Rssa was not available, so a per-site-year harmonic
+fit is used instead (see the methods doc for the K chosen and why).
 Numbers behind this figure: tables/gsl_methods_site_summary.csv, tables/gsl_methods_m2_grid22.csv.

@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:42Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:43Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_site_year.csv"
   ],
-  "notes": "VERSION 3. Per site x series x method x sub-threshold: mean GSL, interannual SD, mean start/end day-of-window, mean share of annual GPP inside the season, flag counts, and detrended Pearson r (GPP, NEP). Net-source years excluded from M5/M6 means/r."
+  "notes": "VERSION 4. Per site x year_rule x series x method x sub-threshold summary (mean GSL, SD, start/end day-of-window, share, flags, detrended r). See gsl_methods_site_year.csv's notes for year_rule/M7 changes."
 }

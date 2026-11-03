@@ -1,8 +1,8 @@
 {
-  "run_datetime_utc": "2026-11-03T05:02:42Z",
-  "pipeline_version": "33efba0",
+  "run_datetime_utc": "2026-11-03T06:00:43Z",
+  "pipeline_version": "4e32ce9",
   "input_sources": [
     "GSL_definition/expanded/tables/gsl_methods_dt_vs_nt.csv"
   ],
-  "notes": "VERSION 3, item 6. Mean signed DT-minus-NT start/end shift (days), PER SITE, with its vegetation group attached. Positive start shift = DT starts later than NT (NT season begins earlier) -- the direction Keenan et al. (2019) predicts for forests, from NT's early-spring GPP overestimate."
+  "notes": "VERSION 4 (calendar rule). Per-site signed DT-minus-NT shift with vegetation group."
 }

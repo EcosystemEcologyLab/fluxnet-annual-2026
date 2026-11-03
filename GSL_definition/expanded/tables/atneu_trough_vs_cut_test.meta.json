@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-03T06:00:44Z",
+  "pipeline_version": "4e32ce9",
+  "input_sources": [
+    "GSL_definition/expanded/tables/gsl_methods_site_year.csv",
+    "GSL_definition/expanded/tables/atneu_cut_detector_events.csv"
+  ],
+  "notes": "VERSION 4, item 3. For every AT-Neu two-season year (calendar rule), the TIMESAT between-peaks trough date vs. the nearest detect_cuts() event, +/-10-day coincidence tolerance."
+}

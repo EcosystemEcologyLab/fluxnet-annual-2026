@@ -4,6 +4,21 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — GSL methods review figures: fixes, started
+
+Revising `GSL_definition/expanded/code/12_methods_review_figures.R` in place per Dave's follow-up
+(full prompt: `logs/prompts/2026-11-03_gsl_methods_review_figures_fix.md`; first run stays in git
+history at `a4880b2`). Three items: (1) switch skewness (sorting/colour in Figures A and D) from the
+winter-screened `main` variant to the unscreened `main_unscreened` variant — pre-checked: only US-MMS
+and CH-Dav swap rank-order (5th/6th), all other sites' order is unchanged, and 5 of 15 sites have
+identical skewness between the two variants (no winter-screened days removed at those sites). (2)
+Figure B: replace the first/last-qualifying-day horizontal brackets (which hid the raster) with thin
+per-day strips under each year's row, one per labelled choice; cap each histogram's x-axis at 0-120%
+of P99 with a note of the count above. (3) Figure C: label each method row with its name AND the
+variant plotted, and split M4 into two separate rows (85% and 95% of annual GPP).
+
+---
+
 ## 2026-11-03 — GSL methods comparison: review figures for discussion, done
 
 New script `GSL_definition/expanded/code/12_methods_review_figures.R` (read-only against version 4's

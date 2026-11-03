@@ -1,11 +1,13 @@
 Draft for discussion. Figure B (US-SRM vs AU-How), calendar year_rule (US-SRM: Jan-Dec; AU-How: Jul-Jun,
-Southern Hemisphere). NT series. (a,c) Each day shaded by the share of Tash's 22 %-of-P99 thresholds at
-which that day's NT GPP counts as in-season (dark = in season at every threshold; white = at none).
-Coloured brackets: the day-span counted in-season by each of the three labelled choices (10% of P99 =
-Z16; 85%/95% of annual GPP), using the first/last-qualifying-day rule. (b,d) Histogram of daily NT GPP,
-as % of P99, pooled over each site's own passing years; light blue = the 22-threshold grid's own range
-(0.1-20% of P99); vertical lines = the same three labelled choices, in %-of-P99 units.
-US-SRM: P99 = 5.98 gC/m2/d, M4 85%/95% thresholds = 10.52%/5.24% of P99.
-AU-How: P99 = 11.70 gC/m2/d, M4 85%/95% thresholds = 33.74%/24.84% of P99.
+Southern Hemisphere). NT series. (a,c) Raster (top part of each year's row): each day shaded by the
+share of Tash's 22 %-of-P99 thresholds at which that day's NT GPP counts as in-season (dark = in
+season at every threshold; white = at none). Below the raster, 3 thin coloured strips per year (not
+overlapping the raster): the INDIVIDUAL days counted in-season by each of the three labelled choices
+(10% of P99 = Z16; 85%/95% of annual GPP) -- a tick for each such day, not a first-to-last-day bracket.
+(b,d) Histogram of daily NT GPP, as % of P99, x-axis capped at 0-120% of P99 for every site (days
+above 120% are counted, not plotted -- see each panel's in-panel note); light blue = the 22-threshold
+grid's own range (0.1-20% of P99); vertical lines = the same three labelled choices, in %-of-P99 units.
+US-SRM: P99 = 5.98 gC/m2/d, M4 85%/95% thresholds = 10.52%/5.24% of P99; 27 day(s) above 120% of P99.
+AU-How: P99 = 11.70 gC/m2/d, M4 85%/95% thresholds = 33.74%/24.84% of P99; 7 day(s) above 120% of P99.
 Numbers behind this figure: tables/gsl_methods_site_year.csv (both sites' M4 thresholds) plus this
 script's own fresh daily-data computation for the raster/histogram.

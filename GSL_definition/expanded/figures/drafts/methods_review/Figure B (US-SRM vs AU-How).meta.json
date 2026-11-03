@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-11-03T15:09:01Z",
-  "pipeline_version": "bb746e0",
+  "run_datetime_utc": "2026-11-03T15:27:46Z",
+  "pipeline_version": "5c6276b",
   "input_sources": [
     "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
     "GSL_definition/expanded/tables/gsl_methods_site_year.csv"

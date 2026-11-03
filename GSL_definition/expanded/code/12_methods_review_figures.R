@@ -52,7 +52,12 @@ stopifnot(all(ALL16 %in% site_meta$site_id))
 is_sh <- function(sid) site_meta$location_lat[site_meta$site_id == sid] < 0
 message("Southern-Hemisphere site(s): ", paste(ALL16[sapply(ALL16, is_sh)], collapse = ", "))
 
-skew_tbl <- derived_site_all |> filter(site_id %in% IAV_SITES, variant == "main") |> select(site_id, skewness)
+## FIX (2026-11-03): skewness now from the unscreened NT series (main_unscreened),
+## not the winter-screened main variant, which is no longer used anywhere in this
+## script's 8 methods. Only US-MMS and CH-Dav swap rank order between the two
+## variants (5th/6th, ascending); 5 of 15 sites (AU-How, IL-Yat, US-Ton, US-Var,
+## US-SRM) have identical skewness under both (no days are winter-screened there).
+skew_tbl <- derived_site_all |> filter(site_id %in% IAV_SITES, variant == "main_unscreened") |> select(site_id, skewness)
 site_order <- skew_tbl |> arrange(skewness) |> pull(site_id)
 
 ## ============================================================================
@@ -177,7 +182,10 @@ HEADLINE_ALL <- tibble::tribble(
 FAMILY_SHAPES <- c("threshold count" = 16, "fraction of annual GPP" = 17, "span (smoothed GPP)" = 15,
                    "NEP-based" = 18, "derivative or normalized" = 8)
 FAMILY_ORDER <- c("span (smoothed GPP)", "threshold count", "fraction of annual GPP", "NEP-based", "derivative or normalized")
-CHOICE_COLORS <- c("10% of P99 (Z16)" = "black", "85% of annual GPP" = "#1b9e77", "95% of annual GPP" = "#d95f02")
+## FIX (2026-11-03): Z16 changed from black to blue -- in Figure B, a black
+## Z16 strip was visually indistinguishable from the raster's own black ("1.00
+## share") shading directly above it (both render as solid black at a glance).
+CHOICE_COLORS <- c("10% of P99 (Z16)" = "#377eb8", "85% of annual GPP" = "#1b9e77", "95% of annual GPP" = "#d95f02")
 M2_PCTS_GRID <- c(0.1, 0.5, 1:20) # Tash's full 22-value grid, as v4
 
 ## patchwork intercepts `+ labs()/theme()` and applies it only to the LAST
@@ -355,14 +363,14 @@ build_raster_site <- function(sid) {
     m95 <- compute_m4_threshold_pct(sid, sm, years, P99, 0.95)
   }
   crit <- tibble(choice = names(CHOICE_COLORS), pct_p99 = c(10, m85, m95))
-  bounds <- purrr::pmap_dfr(crit, function(choice, pct_p99) {
+  ## FIX (2026-11-03): individual in-season DAYS per choice, not a first-to-
+  ## last-qualifying-day bracket (which ran the full Z16/85%/95% span and hid
+  ## the raster underneath it).
+  member <- purrr::pmap_dfr(crit, function(choice, pct_p99) {
     T_abs <- pct_p99 / 100 * P99
-    rows |> group_by(year) |> summarise(
-      start_pos = { idx <- which(!is.na(value) & value > T_abs); if (length(idx) == 0) NA_integer_ else min(idx) },
-      end_pos   = { idx <- which(!is.na(value) & value > T_abs); if (length(idx) == 0) NA_integer_ else max(idx) },
-      .groups = "drop") |> mutate(choice = choice)
+    rows |> dplyr::filter(!is.na(value), value > T_abs) |> dplyr::transmute(year, day_pos, choice = choice)
   })
-  list(rows = rows, bounds = bounds, years = years, sm = sm, P99 = P99, m85 = m85, m95 = m95)
+  list(rows = rows, member = member, years = years, sm = sm, P99 = P99, m85 = m85, m95 = m95)
 }
 
 month_breaks_g <- function(sid, sm, years) {
@@ -374,17 +382,30 @@ month_breaks_g <- function(sid, sm, years) {
   tibble(pos = match(starts, win0), label = format(starts, "%b"))
 }
 
+## FIX (2026-11-03): the raster now occupies only the TOP part of each year's
+## row (RASTER_YOFF/RASTER_H), and each of the 3 labelled choices gets its own
+## thin strip stacked below it (STRIP_YOFF/STRIP_H) -- geometrically
+## non-overlapping (checked by construction below), so the strips mark
+## individual in-season days without ever covering the raster.
+RASTER_YOFF <- 0.20; RASTER_H <- 0.50
+STRIP_YOFF <- c("10% of P99 (Z16)" = -0.125, "85% of annual GPP" = -0.245, "95% of annual GPP" = -0.365)
+STRIP_H <- 0.11
+
 plot_raster_panel <- function(sid, dat, letter) {
   mb <- month_breaks_g(sid, dat$sm, dat$years)
-  bounds <- dat$bounds |> mutate(yoff = case_when(
-    choice == "10% of P99 (Z16)" ~ -0.30, choice == "85% of annual GPP" ~ 0, choice == "95% of annual GPP" ~ 0.30),
-    choice = factor(choice, levels = names(CHOICE_COLORS)))
+  member <- dat$member |> mutate(choice = factor(choice, levels = names(CHOICE_COLORS)),
+                                   y0 = year + STRIP_YOFF[as.character(choice)])
+  ## geom_segment (not geom_tile) for the strips: geom_tile's fill aesthetic
+  ## would need a second, discrete fill scale alongside the raster's continuous
+  ## one, which ggplot cannot do in one plot without an extra package (not
+  ## added, per CLAUDE.md). geom_segment's stroke is `colour`, a genuinely
+  ## separate aesthetic from `fill`, so it coexists with the raster cleanly.
   p <- ggplot() +
-    geom_tile(data = dat$rows, aes(x = day_pos, y = year, fill = share)) +
-    geom_segment(data = bounds, aes(x = start_pos, xend = end_pos, y = year + yoff, yend = year + yoff, colour = choice),
-                 linewidth = 1.1, na.rm = TRUE) +
+    geom_tile(data = dat$rows, aes(x = day_pos, y = year + RASTER_YOFF, fill = share), height = RASTER_H) +
+    geom_segment(data = member, aes(x = day_pos, xend = day_pos, y = y0 - STRIP_H / 2, yend = y0 + STRIP_H / 2, colour = choice),
+                 linewidth = 0.45, na.rm = TRUE) +
     scale_fill_distiller(palette = "Greys", direction = 1, limits = c(0, 1), name = "Share of 22\nthresholds\nin-season") +
-    scale_colour_manual(values = CHOICE_COLORS, name = "Labelled choice") +
+    scale_colour_manual(values = CHOICE_COLORS, name = "Labelled choice\n(individual days)") +
     scale_x_continuous(breaks = mb$pos, labels = mb$label, expand = expansion(add = 2)) +
     scale_y_continuous(breaks = dat$years) +
     labs(x = NULL, y = "Year", title = sprintf("%s (calendar year_rule)", sid)) +
@@ -392,43 +413,53 @@ plot_raster_panel <- function(sid, dat, letter) {
                           axis.text.x = element_text(angle = 45, hjust = 1, size = PEERJ_BASE_PT - 1))
   p + gsl_panel_letter(letter, x = -Inf, y = Inf)
 }
+## FIX (2026-11-03): x-axis capped at 0-120% of P99 for every site (comparable
+## across panels); days above 120% are dropped from the histogram bars and
+## counted in an in-panel annotation instead of stretching the axis.
 plot_hist_panel <- function(sid, dat, letter) {
   hd <- dat$rows |> filter(!is.na(value)) |> mutate(pct_p99 = value / dat$P99 * 100)
+  n_above <- sum(hd$pct_p99 > 120)
+  hd_capped <- hd |> filter(pct_p99 <= 120)
   vlines <- tibble(choice = names(CHOICE_COLORS), pct_p99 = c(10, dat$m85, dat$m95))
-  p <- ggplot(hd, aes(x = pct_p99)) +
+  p <- ggplot(hd_capped, aes(x = pct_p99)) +
     annotate("rect", xmin = min(M2_PCTS_GRID), xmax = max(M2_PCTS_GRID), ymin = 0, ymax = Inf, fill = "#6baed6", alpha = 0.25) +
-    geom_histogram(bins = 40, fill = "grey50", colour = "white", linewidth = 0.1) +
+    geom_histogram(binwidth = 3, boundary = 0, fill = "grey50", colour = "white", linewidth = 0.1) +
     geom_vline(data = vlines, aes(xintercept = pct_p99, colour = choice), linewidth = 1.0, na.rm = TRUE) +
     scale_colour_manual(values = CHOICE_COLORS, guide = "none") +
+    scale_x_continuous(limits = c(0, 120)) +
+    annotate("text", x = 118, y = Inf, label = sprintf("%d d > 120%%\nof P99 (not shown)", n_above),
+              hjust = 1, vjust = 1.3, size = PEERJ_ANNOTATION_PT / .pt * 0.8, colour = "grey30") +
     labs(x = "Daily NT GPP (% of P99)", y = "Days") +
     theme_gsl()
-  p + gsl_panel_letter(letter, x = -Inf, y = Inf)
+  list(plot = p + gsl_panel_letter(letter, x = -Inf, y = Inf), n_above = n_above)
 }
 
 make_fig_b <- function(site_x, letters) {
   dat_x <- build_raster_site(site_x)
   dat_how <- build_raster_site("AU-How")
   p1 <- plot_raster_panel(site_x, dat_x, letters[1])
-  p2 <- plot_hist_panel(site_x, dat_x, letters[2])
+  h2 <- plot_hist_panel(site_x, dat_x, letters[2])
   p3 <- plot_raster_panel("AU-How", dat_how, letters[3])
-  p4 <- plot_hist_panel("AU-How", dat_how, letters[4])
-  combo <- (p1 | p2) / (p3 | p4) + patchwork::plot_layout(widths = c(2.2, 1), guides = "collect")
-  list(plot = extra_title(combo), dat_x = dat_x, dat_how = dat_how)
+  h4 <- plot_hist_panel("AU-How", dat_how, letters[4])
+  combo <- (p1 | h2$plot) / (p3 | h4$plot) + patchwork::plot_layout(widths = c(2.2, 1), guides = "collect")
+  list(plot = extra_title(combo), dat_x = dat_x, dat_how = dat_how, n_above_x = h2$n_above, n_above_how = h4$n_above)
 }
 
 fb1 <- make_fig_b("AU-ASM", c("a", "b", "c", "d"))
 save_gsl_figure(fb1$plot, "drafts/methods_review/Figure B (AU-ASM vs AU-How)", width_mm = 190, height_mm = 190,
   legend_lines = c(
     "Draft for discussion. Figure B (AU-ASM vs AU-How), calendar year_rule (Jul-Jun, Southern Hemisphere).",
-    "NT series. (a,c) Each day shaded by the share of Tash's 22 %-of-P99 thresholds at which that day's NT",
-    "GPP counts as in-season (dark = in season at every threshold; white = at none). Coloured brackets:",
-    "the day-span counted in-season by each of the three labelled choices (10% of P99 = Z16; 85%/95% of",
-    "annual GPP), using the first/last-qualifying-day rule. (b,d) Histogram of daily NT GPP, as % of P99,",
-    "pooled over each site's own passing years; light blue = the 22-threshold grid's own range (0.1-20%",
-    "of P99); vertical lines = the same three labelled choices, in %-of-P99 units.",
+    "NT series. (a,c) Raster (top part of each year's row): each day shaded by the share of Tash's 22",
+    "%-of-P99 thresholds at which that day's NT GPP counts as in-season (dark = in season at every",
+    "threshold; white = at none). Below the raster, 3 thin coloured strips per year (not overlapping the",
+    "raster): the INDIVIDUAL days counted in-season by each of the three labelled choices (10% of P99 =",
+    "Z16; 85%/95% of annual GPP) -- a tick for each such day, not a first-to-last-day bracket. (b,d)",
+    "Histogram of daily NT GPP, as % of P99, x-axis capped at 0-120% of P99 for every site (days above",
+    "120% are counted, not plotted -- see each panel's in-panel note); light blue = the 22-threshold",
+    "grid's own range (0.1-20% of P99); vertical lines = the same three labelled choices, in %-of-P99 units.",
     "AU-ASM is not one of the 15 comparison sites; computed fresh here from its own passing years, same",
-    sprintf("rules as the 15 sites (P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99).", fb1$dat_x$P99, fb1$dat_x$m85, fb1$dat_x$m95),
-    sprintf("AU-How: P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99.", fb1$dat_how$P99, fb1$dat_how$m85, fb1$dat_how$m95),
+    sprintf("rules as the 15 sites (P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99; %d day(s) above 120%% of P99).", fb1$dat_x$P99, fb1$dat_x$m85, fb1$dat_x$m95, fb1$n_above_x),
+    sprintf("AU-How: P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99; %d day(s) above 120%% of P99.", fb1$dat_how$P99, fb1$dat_how$m85, fb1$dat_how$m95, fb1$n_above_how),
     "Numbers behind this figure: this script's own fresh daily-data computation (not persisted to a table;",
     "AU-How's M4 thresholds are also in tables/gsl_methods_site_year.csv)."
   ),
@@ -439,14 +470,16 @@ fb2 <- make_fig_b("US-SRM", c("a", "b", "c", "d"))
 save_gsl_figure(fb2$plot, "drafts/methods_review/Figure B (US-SRM vs AU-How)", width_mm = 190, height_mm = 190,
   legend_lines = c(
     "Draft for discussion. Figure B (US-SRM vs AU-How), calendar year_rule (US-SRM: Jan-Dec; AU-How: Jul-Jun,",
-    "Southern Hemisphere). NT series. (a,c) Each day shaded by the share of Tash's 22 %-of-P99 thresholds at",
-    "which that day's NT GPP counts as in-season (dark = in season at every threshold; white = at none).",
-    "Coloured brackets: the day-span counted in-season by each of the three labelled choices (10% of P99 =",
-    "Z16; 85%/95% of annual GPP), using the first/last-qualifying-day rule. (b,d) Histogram of daily NT GPP,",
-    "as % of P99, pooled over each site's own passing years; light blue = the 22-threshold grid's own range",
-    "(0.1-20% of P99); vertical lines = the same three labelled choices, in %-of-P99 units.",
-    sprintf("US-SRM: P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99.", fb2$dat_x$P99, fb2$dat_x$m85, fb2$dat_x$m95),
-    sprintf("AU-How: P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99.", fb2$dat_how$P99, fb2$dat_how$m85, fb2$dat_how$m95),
+    "Southern Hemisphere). NT series. (a,c) Raster (top part of each year's row): each day shaded by the",
+    "share of Tash's 22 %-of-P99 thresholds at which that day's NT GPP counts as in-season (dark = in",
+    "season at every threshold; white = at none). Below the raster, 3 thin coloured strips per year (not",
+    "overlapping the raster): the INDIVIDUAL days counted in-season by each of the three labelled choices",
+    "(10% of P99 = Z16; 85%/95% of annual GPP) -- a tick for each such day, not a first-to-last-day bracket.",
+    "(b,d) Histogram of daily NT GPP, as % of P99, x-axis capped at 0-120% of P99 for every site (days",
+    "above 120% are counted, not plotted -- see each panel's in-panel note); light blue = the 22-threshold",
+    "grid's own range (0.1-20% of P99); vertical lines = the same three labelled choices, in %-of-P99 units.",
+    sprintf("US-SRM: P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99; %d day(s) above 120%% of P99.", fb2$dat_x$P99, fb2$dat_x$m85, fb2$dat_x$m95, fb2$n_above_x),
+    sprintf("AU-How: P99 = %.2f gC/m2/d, M4 85%%/95%% thresholds = %.2f%%/%.2f%% of P99; %d day(s) above 120%% of P99.", fb2$dat_how$P99, fb2$dat_how$m85, fb2$dat_how$m95, fb2$n_above_how),
     "Numbers behind this figure: tables/gsl_methods_site_year.csv (both sites' M4 thresholds) plus this",
     "script's own fresh daily-data computation for the raster/histogram."
   ),
@@ -470,12 +503,29 @@ build_curve_c <- function(sid, rule) {
   rows |> group_by(day_pos) |> summarise(med = median(value, na.rm = TRUE), q25 = quantile(value, 0.25, na.rm = TRUE),
                                            q75 = quantile(value, 0.75, na.rm = TRUE), .groups = "drop")
 }
+## FIX (2026-11-03): Figure C's own roster -- same 8 methods as HEADLINE_ALL,
+## but (a) each row carries a name+variant label, not a bare "M1".."M8", and
+## (b) M4 is split into its two labelled-choice rows (85%/95% of annual GPP)
+## instead of one row at its 0.85 headline, per the prompt's examples.
+HEADLINE_C <- tibble::tribble(
+  ~row_label,                  ~method, ~sub,    ~family,                    ~use_run5,
+  "M1 span, summer P99",       "M1",    "summer", "span (smoothed GPP)",      FALSE,
+  "M2, 10% of P99",            "M2",    "10pct",  "threshold count",          TRUE,
+  "M3, 1 gC m-2 d-1",          "M3",    "1gC",    "threshold count",          TRUE,
+  "M4, 85% of annual GPP",     "M4",    "0.85",   "fraction of annual GPP",   TRUE,
+  "M4, 95% of annual GPP",     "M4",    "0.95",   "fraction of annual GPP",   TRUE,
+  "M5, NEP > 0 span",          "M5",    "span",   "NEP-based",                FALSE,
+  "M6, Hu, anchored",          "M6",    "anchored","NEP-based",               FALSE,
+  "M7, Ma",                    "M7",    "span",   "derivative or normalized", FALSE,
+  "M8, Panwar 0.25",           "M8",    "0.25",   "derivative or normalized", FALSE
+)
+
 ## purrr::pmap_dfr's function args would shadow dplyr's data-mask columns of
 ## the same name inside filter() -- args renamed (mth/sb/...) to avoid that trap.
 build_bars_c <- function(sid, rule) {
   sm <- start_month_for_rule(sid, rule)
   gy <- gsl_site_year |> filter(site_id == sid, year_rule == rule, variant %in% c("nt", "all"))
-  purrr::pmap_dfr(HEADLINE_ALL, function(method, sub, family, use_run5) {
+  purrr::pmap_dfr(HEADLINE_C, function(row_label, method, sub, family, use_run5) {
     mth <- method; sb <- sub; r5 <- use_run5
     g <- gy |> filter(method == mth, sub == sb)
     if (nrow(g) == 0) return(NULL)
@@ -483,7 +533,7 @@ build_bars_c <- function(sid, rule) {
     edate <- if (r5) g$end_date_run5 else g$end_date
     pos_s <- mapply(function(y, dt) date_to_pos(y, sm, dt), g$year, sdate)
     pos_e <- mapply(function(y, dt) date_to_pos(y, sm, dt), g$year, edate)
-    tibble(method = mth, family = family,
+    tibble(row_label = row_label, family = family,
            med_s = median(pos_s, na.rm = TRUE), q25_s = quantile(pos_s, 0.25, na.rm = TRUE), q75_s = quantile(pos_s, 0.75, na.rm = TRUE),
            med_e = median(pos_e, na.rm = TRUE), q25_e = quantile(pos_e, 0.25, na.rm = TRUE), q75_e = quantile(pos_e, 0.75, na.rm = TRUE))
   })
@@ -498,7 +548,7 @@ build_bars_c <- function(sid, rule) {
 plot_panel_c <- function(sid, rule, letter) {
   sm <- start_month_for_rule(sid, rule); ys <- years_for_rule(sid, rule)
   curve <- build_curve_c(sid, rule)
-  bars <- build_bars_c(sid, rule) |> mutate(method = factor(method, levels = HEADLINE_ALL$method))
+  bars <- build_bars_c(sid, rule) |> mutate(row_label = factor(row_label, levels = HEADLINE_C$row_label))
   mb <- month_breaks_g(sid, sm, ys)
   xlims <- c(1, 366)
   p_curve <- ggplot(curve, aes(x = day_pos)) +
@@ -510,17 +560,17 @@ plot_panel_c <- function(sid, rule, letter) {
   p_curve <- p_curve + gsl_panel_letter(letter, x = -Inf, y = Inf)
 
   p_bars <- ggplot(bars) +
-    geom_segment(aes(x = med_s, xend = med_e, y = method, yend = method), colour = "grey40", linewidth = 2.0) +
-    geom_segment(aes(x = q25_s, xend = q75_s, y = method, yend = method), colour = "black", linewidth = 0.6) +
-    geom_segment(aes(x = q25_e, xend = q75_e, y = method, yend = method), colour = "black", linewidth = 0.6) +
-    geom_point(aes(x = med_s, y = method, shape = family), size = 1.6) +
-    geom_point(aes(x = med_e, y = method, shape = family), size = 1.6) +
+    geom_segment(aes(x = med_s, xend = med_e, y = row_label, yend = row_label), colour = "grey40", linewidth = 2.0) +
+    geom_segment(aes(x = q25_s, xend = q75_s, y = row_label, yend = row_label), colour = "black", linewidth = 0.6) +
+    geom_segment(aes(x = q25_e, xend = q75_e, y = row_label, yend = row_label), colour = "black", linewidth = 0.6) +
+    geom_point(aes(x = med_s, y = row_label, shape = family), size = 1.6) +
+    geom_point(aes(x = med_e, y = row_label, shape = family), size = 1.6) +
     scale_x_continuous(limits = xlims, breaks = mb$pos, labels = mb$label) +
-    scale_y_discrete(limits = rev(HEADLINE_ALL$method)) +
+    scale_y_discrete(limits = rev(HEADLINE_C$row_label)) +
     scale_shape_manual(values = FAMILY_SHAPES, name = "Method family", guide = "none") +
     labs(x = NULL, y = NULL) +
     theme_gsl() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = PEERJ_BASE_PT - 1),
-                          axis.text.y = element_text(size = PEERJ_BASE_PT - 1))
+                          axis.text.y = element_text(size = PEERJ_BASE_PT - 1.5))
   (p_curve / p_bars) + patchwork::plot_layout(heights = c(1, 1.5))
 }
 
@@ -536,8 +586,10 @@ save_gsl_figure(p_fig_c, "drafts/methods_review/Figure C", width_mm = 200, heigh
     "under the min_gpp_month year_rule (starts in August, its own lowest-mean-NT-GPP month) -- compare",
     "with (c) to see how the calendar-year (January) boundary splits US-Var's winter-spring season.",
     "Top of each panel: median daily NT GPP across years (black line) with interquartile range across",
-    "years (grey ribbon), by day-of-window. Bottom: one bar per method (M1-M8, same order/family shapes",
-    "as Figure A) from its median start to median end across years, with thin black whiskers for the",
+    "years (grey ribbon), by day-of-window. Bottom: one bar per method x variant (9 rows -- M4 shown as",
+    "two separate rows, 85% and 95% of annual GPP, instead of one; every row labelled with its method",
+    "name AND the variant plotted, e.g. 'M6, Hu, anchored', 'M7, Ma'; same order/family shapes as",
+    "Figure A) from its median start to median end across years, with thin black whiskers for the",
     "interquartile range of start/end across years. Count methods (M2/M3/M4) use the 5-day-run start/end",
     "rule (start_date_run5/end_date_run5), not the first/last-qualifying-day rule.",
     "Numbers behind this figure: tables/gsl_methods_site_year.csv (method bars) plus this script's own",
@@ -561,7 +613,7 @@ p_fig_d <- ggplot(fd, aes(x = skewness, y = range_days, colour = rule)) +
   ggrepel::geom_text_repel(aes(label = site_id), size = PEERJ_ANNOTATION_PT / .pt, show.legend = FALSE, max.overlaps = 30, seed = 1) +
   geom_point(data = dplyr::filter(fd, site_id == "AU-How", rule == "calendar"), shape = 1, size = 6, colour = "black", stroke = 1.1) +
   scale_colour_manual(values = c(calendar = "#377eb8", min_gpp_month = "#e41a1c"), name = "Year rule") +
-  labs(x = "Skewness (NT series, 'main' variant)", y = "Range of mean GSL across methods (days)") +
+  labs(x = "Skewness (NT series, 'main_unscreened' variant)", y = "Range of mean GSL across methods (days)") +
   theme_gsl() + theme(legend.position = "right")
 p_fig_d <- extra_title(p_fig_d)
 auhow_range_cal <- fd$range_days[fd$site_id == "AU-How" & fd$rule == "calendar"]
@@ -570,7 +622,7 @@ auhow_skew <- fd$skewness[fd$site_id == "AU-How" & fd$rule == "calendar"][1]
 save_gsl_figure(p_fig_d, "drafts/methods_review/Figure D", width_mm = 150, height_mm = 150,
   legend_lines = c(
     "Draft for discussion. Figure D: spread across methods vs. skewness, 15 sites, NT series. x =",
-    "skewness (derived_site.csv, 'main' variant); y = range of mean GSL (days) across the 8 headline",
+    "skewness (derived_site.csv, 'main_unscreened' variant); y = range of mean GSL (days) across the 8 headline",
     "methods (same subs as Figure A/tables/gsl_methods_year_rule_range.csv), one point per site, for",
     "both year_rules (blue = calendar, red = min_gpp_month).",
     sprintf("AU-How is circled: its cross-method range under the calendar rule is %.0f days despite a low", auhow_range_cal),

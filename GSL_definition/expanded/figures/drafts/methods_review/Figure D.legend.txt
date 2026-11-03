@@ -1,5 +1,5 @@
 Draft for discussion. Figure D: spread across methods vs. skewness, 15 sites, NT series. x =
-skewness (derived_site.csv, 'main' variant); y = range of mean GSL (days) across the 8 headline
+skewness (derived_site.csv, 'main_unscreened' variant); y = range of mean GSL (days) across the 8 headline
 methods (same subs as Figure A/tables/gsl_methods_year_rule_range.csv), one point per site, for
 both year_rules (blue = calendar, red = min_gpp_month).
 AU-How is circled: its cross-method range under the calendar rule is 139 days despite a low

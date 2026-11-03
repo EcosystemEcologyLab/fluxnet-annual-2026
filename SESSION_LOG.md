@@ -34,6 +34,40 @@ Sources: Hammerle et al. 2008, Keenan et al. 2019, Panwar et al. 2023, Ma et al.
 
 ---
 
+## 2026-11-02 — GSL methods comparison (M1-M8), version 4, started
+
+Revising `GSL_definition/expanded/code/11_gsl_methods_compare.R` in place per Dave's follow-up
+decisions, drawn from a context agent's literature read (full prompt saved to
+`logs/prompts/2026-11-02_gsl_methods_compare_v4.md`; version 3 stays in git history at `cd7e547`).
+
+Five items planned: (1) run every method under TWO year definitions -- calendar (v3's rule, carried
+forward unchanged) and a new `min_gpp_month` rule (each site's year starts on the 1st of its lowest-
+mean-NT-GPP calendar month, determined once from the calendar rule's own pooled years to avoid
+circularity), both tagged by a new `year_rule` column; a <=14-failing-day QC test applies to year-
+windows under either rule. Report how years/GSL/start/end/rule-shifts/M8/largest-differences change
+between the two rules, by site. (2) M7 resmoothing after Ma et al. (2013): GPP aggregated to 16-day
+composites, 4-component SSA over the full record, interpolated to daily. `Rssa` is NOT installed
+(`requireNamespace("Rssa")` = FALSE) and CLAUDE.md requires discussion before adding a new package
+dependency or touching renv.lock -- per the prompt's own fallback, this uses a 2- or 3-harmonic
+per-site-year fit instead (choice to be reported, not assumed). Recheck AU-How (Jul-Jun) against
+Ma et al.'s 244-275 d. (3) AT-Neu: rerun the 2010 mowing test with the real published cut dates
+(Hortnagl & Wohlfahrt 2014); build and validate (against 2010/2011) a cut detector on unsmoothed
+daily NT GPP (>=50% drop in 1-3 days + 2-4-week regrowth); apply network-wide at AT-Neu; test every
+two-season year's trough against a detected cut; remove v3's "management is the main correlate"
+claim and report AT-Neu (cuts) separately from the US Southwest dryland two-season sites (likely
+winter/monsoon bimodal rainfall, not an event-like cut). (4) Replace `site_management_15.csv`
+entirely with a literature-sourced table (drops v3's BADM keyword mining, which produced false
+positives) covering all 15 sites with type/dates/source. (5) Rewrite v3's NT-vs-DT item-6 conclusion:
+Keenan et al. (2019) DID include grasslands (1 of 11 ecosystem types; inhibition highest in open
+shrublands/savannas/wetlands, lowest in EBF, tracking fAPAR green-up speed) -- predicts an earlier NT
+start wherever green-up is fast, consistent with both AT-Neu and US-Wkg, with the caveat that
+Keenan's inhibition estimate is itself flux-derived, checked against isotopes only at Harvard Forest,
+and described by the authors as conservative.
+
+Checks as v3, run under the calendar rule only.
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M8), version 3, done
 
 Completed the version-3 revision of `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the

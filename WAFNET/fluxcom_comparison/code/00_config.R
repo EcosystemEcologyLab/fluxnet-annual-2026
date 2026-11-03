@@ -77,6 +77,38 @@ WAFNET_SITE_DIRS <- c(
 FLUXCOM_XBASE_DIR <- file.path("data", "external", "fluxcom_x_base")
 FLUXCOM_ORIGINAL_ILAMB_DIR <- file.path("data", "external", "fluxcom_original_ilamb")
 
+# One colour per site, shared across every Stage 2 figure (scatter, map,
+# Taylor diagrams, climatology) so a site is the same colour everywhere --
+# fixed here, not recomputed per-script, per the 2026-11-03 fixes prompt.
+# Order is STAGE2_ALL_SITES (five agreed, then the two pending) so the
+# palette assignment is stable regardless of which subset a given figure uses.
+STAGE2_SITE_COLORS <- stats::setNames(
+  grDevices::hcl.colors(length(STAGE2_ALL_SITES), palette = "Dark 3"),
+  STAGE2_ALL_SITES
+)
+# Single fixed colour for the X-BASE series wherever it appears alongside a
+# tower series (climatology figures) -- deliberately NOT a site colour, so it
+# reads as "the product" rather than "a site" in every panel.
+XBASE_SERIES_COLOR <- "#444444"
+
+# Read-only site coordinates/IGBP, from each site's own BIF file. Shared
+# helper so 08_extract_statistics.R, 09_figures_draft.R, and
+# 10_climatology.R don't each re-implement the same BIF read.
+site_bif_value <- function(site_id, variable) {
+  site_dir <- file.path(ANNUAL_PAPER_EXTRACTED_DIR, WAFNET_SITE_DIRS[[site_id]])
+  f <- list.files(site_dir, pattern = "_BIF_.*\\.csv$", full.names = TRUE)
+  stopifnot(length(f) == 1)
+  bif <- utils::read.csv(f, stringsAsFactors = FALSE, check.names = FALSE)
+  bif$DATAVALUE[bif$VARIABLE == variable][1]
+}
+
+site_coords_for <- function(site_id) {
+  c(lon = as.numeric(site_bif_value(site_id, "LOCATION_LONG")),
+    lat = as.numeric(site_bif_value(site_id, "LOCATION_LAT")))
+}
+
+site_igbp_for <- function(site_id) site_bif_value(site_id, "IGBP")
+
 wafnet_fluxmet_path <- function(site_id, resolution = c("YY", "MM")) {
   resolution <- match.arg(resolution)
   site_dir <- WAFNET_SITE_DIRS[[site_id]]

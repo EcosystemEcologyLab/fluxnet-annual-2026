@@ -152,8 +152,10 @@ flip is needed** between X-BASE and tower NEE.
 
 **RECO — derived, labelled as such everywhere.** X-BASE has no respiration
 variable. `RECO_derived = GPP_xbase + NEE_xbase`, consistent with the shared
-atmospheric sign convention above (algebraically, this is GPP minus the
-uptake magnitude). Every table/figure that shows RECO marks it `derived`.
+atmospheric sign convention above: in a month of net uptake, NEE is negative,
+so adding it to GPP subtracts the uptake magnitude (GPP + NEE = GPP − |NEE|);
+in a month of net release, NEE is positive and adding it increases RECO above
+GPP. Every table/figure that shows RECO marks it `derived`.
 
 **H — never compared.** X-BASE has no sensible-heat variable at all. Stated
 here and in every output that touches energy fluxes.
@@ -326,9 +328,10 @@ decisions-needed list it left open):
 > respiration were matched to the product's nighttime-partitioning method,
 > since X-BASE's own documentation states its GPP training targets came
 > from nighttime partitioning only; X-BASE has no respiration variable of
-> its own, so its respiration was derived as GPP minus net ecosystem
-> exchange (in the standard sign convention, confirmed empirically to match
-> the tower's own convention). Evapotranspiration was converted to latent
+> its own, so its respiration was derived as GPP plus net ecosystem
+> exchange (equivalently, GPP minus net uptake, since net ecosystem
+> exchange is negative during net uptake in the sign convention used here,
+> confirmed empirically to match the tower's own convention). Evapotranspiration was converted to latent
 > heat flux using a standard latent heat of vaporization
 > (2.45 × 10⁶ J kg⁻¹); sensible heat flux has no equivalent in X-BASE and
 > was not compared. Bias (product minus tower), RMSE, and R² were computed

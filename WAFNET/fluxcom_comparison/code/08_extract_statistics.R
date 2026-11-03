@@ -24,8 +24,9 @@
 ##     GPP/RECO only, not for NEE or LE.
 ##   - RECO: X-BASE has no respiration variable. Derived here as
 ##     GPP_xbase + NEE_xbase (both in the atmospheric sign convention above,
-##     so this is algebraically GPP minus the uptake magnitude) and labelled
-##     "derived" in every output, per the Stage 2 prompt.
+##     where NEE is negative during net uptake -- so this is GPP plus NEE,
+##     equivalently GPP minus the uptake magnitude in months of net uptake)
+##     and labelled "derived" in every output, per the Stage 2 prompt.
 ##   - LE: X-BASE distributes ET (mm/hr, a mean rate, not an integrated total,
 ##     even in the monthly file) and ET_T (transpiration, mm/hr) but no energy
 ##     variable. Converted to LE (W/m2) using the same latent heat of
@@ -62,16 +63,8 @@ LAMBDA_J_PER_KG <- 2.45e6   # same as R/units.R LE conversion; rho_water = 1000 
 
 XBASE_YEARS <- 2001:2021
 
-## ---- Site coordinates, read from each site's own BIF file (read-only) ----
-site_coords_for <- function(site_id) {
-  site_dir <- file.path(ANNUAL_PAPER_EXTRACTED_DIR, WAFNET_SITE_DIRS[[site_id]])
-  f <- list.files(site_dir, pattern = "_BIF_.*\\.csv$", full.names = TRUE)
-  stopifnot(length(f) == 1)
-  bif <- utils::read.csv(f, stringsAsFactors = FALSE, check.names = FALSE)
-  lat <- as.numeric(bif$DATAVALUE[bif$VARIABLE == "LOCATION_LAT"][1])
-  lon <- as.numeric(bif$DATAVALUE[bif$VARIABLE == "LOCATION_LONG"][1])
-  c(lon = lon, lat = lat)
-}
+## Site coordinates: site_coords_for() is now shared in 00_config.R (used by
+## 08/09/10) so every script reads the same BIF-derived lon/lat.
 
 ## ---- X-BASE monthly extraction at a point, one (variable, year) file -----
 .xbase_cache <- new.env(parent = emptyenv())

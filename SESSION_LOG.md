@@ -68,6 +68,60 @@ Checks as v3, run under the calendar rule only.
 
 ---
 
+## 2026-11-02 — GSL methods comparison (M1-M8), version 4, done
+
+Completed the version-4 revision of `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the
+entry below. Confirmed via `git status`: only this script, its own regenerated tables/figures (plus
+11 new tables), the new `_v4`-suffixed methods doc, and `logs/prompts/2026-11-02_gsl_methods_compare_v4.md`
+changed -- v3's content lives on in git history at `cd7e547`.
+
+**Checks**: both passed exactly, as v3, run under the calendar `year_rule` (NH-site NT M2@10%/
+M4@0.95 == `derived_site_year.csv` main_unscreened values, 276 rows; every one of 22,116 rows --
+both year_rules -- has a value or flag). Runtime ~82s (up from v3's ~41s: every method now runs
+twice, once per year_rule).
+
+**Item 1 (year_rule)**: every method now runs under both `calendar` (unchanged) and `min_gpp_month`
+(each site's year starts on the 1st of its own lowest-mean-NT-GPP month, found once from the
+calendar rule's pooled years). Implemented via a module-level `.YEAR_RULE` switch read by
+`window_dates()`/`season_years_for()` on every call, rather than threading a `rule` parameter through
+every downstream function -- minimal, surgical change since every method already called only those
+two primitives. The 4 sites flagged "probably winter-growing" (IL-Yat, US-Var, US-Ton, FR-Pue) all
+have a non-January min-GPP month (Aug/Aug/Oct/Dec), as does AT-Neu (Feb). A window-relative
+(days-since-window-start) recheck confirms the prompt's expectation STRONGLY for US-Var and IL-Yat
+(count-method "last qualifying day" collapses from ~360d-into-window to ~300d, and the rule(a)-vs-(c)
+end-shift collapses from 193-217d to 2-15d -- both were calendar-boundary artifacts) but NOT for
+FR-Pue/US-Ton, whose count-method seasons were never boundary-truncated despite also having
+non-January minimums -- a genuine site-specific finding, not a blanket "calendar is wrong" result.
+
+**Item 2 (M7 resmoothing)**: `Rssa` confirmed NOT installed; used the prompt's own fallback (per-
+site-year harmonic fit to 16-day GPP composites, K=3 chosen over K=2 by mean R^2, 0.919 vs 0.863).
+AU-How's M7 GSL rose from v3's 171.3d to 226.1d (+55d from smoothing alone), closing most but not
+all of the gap to Ma et al. (2013)'s 244-275d (now 17.9d short vs. 73-104d in v3) -- reported as a
+real, smaller, difference.
+
+**Item 3 (AT-Neu cuts)**: 2010's real cut dates (Hortnagl & Wohlfahrt 2014) all come AFTER the
+TIMESAT secondary peak (28 May) by 8-115 days -- rules out mowing as 2010's driver outright. Built
+and validated a cut detector (5/6 hits on 2010/2011, 5.4d mean timing error, but 24 false alarms in
+just those 2 years -- ~15.4 events/year, a ~59% chance-level coincidence rate that makes the
+trough-vs-cut test only weakly informative). v3's "management is the main correlate" claim removed;
+two-season years now reported as AT-Neu (mowing, unconfirmed at any specific cut) vs. US Southwest
+dryland (US-SRM/US-Var/US-Wkg/US-Mpj, plausibly winter/monsoon rainfall) separately.
+
+**Item 4**: `site_management_15.csv` fully replaced with a literature-sourced table (BADM keyword
+mining dropped -- it produced false positives, e.g. CH-Dav "tillage" at a never-tilled forest).
+
+**Item 5**: v3's NT-vs-DT conclusion rewritten -- Keenan et al. (2019) DID include grasslands, with
+inhibition highest in open shrublands/savannas/wetlands and tracking each ecosystem's fAPAR green-up
+speed, not a forest-only effect. Data now read as confirming the shift at BOTH AT-Neu (grassland,
++19.7d) and US-Ha1/US-MMS (deciduous forest, +13.7 to +16.3d), with evergreen forest correctly near
+zero (+0.7d) and woody-grass mosaic an unresolved open question (near zero, despite Keenan et al.
+reporting savannas among the highest-inhibition types) -- with the caveat that Keenan's own estimate
+is flux-derived, isotope-checked at only one site, and described by its authors as conservative.
+
+Full reasoning and every number: `docs/gsl_methods_compare_2026-11-02_v4.md`.
+
+---
+
 ## 2026-11-02 — GSL methods comparison (M1-M8), version 3, done
 
 Completed the version-3 revision of `GSL_definition/expanded/code/11_gsl_methods_compare.R` per the

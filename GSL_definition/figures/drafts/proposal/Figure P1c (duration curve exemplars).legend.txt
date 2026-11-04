@@ -1,0 +1,10 @@
+Draft for discussion. Each site's days are ranked from highest to lowest photosynthesis (GPP);
+the x-axis is how many of those top-ranked days are counted per year, the y-axis is the share of
+the year's total photosynthesis found on those days, both averaged over years. A curve stops short
+of 365 days where the remaining, lowest-ranked days contribute zero. Five sites are shown in colour,
+spanning different shapes of skew -- from almost no near-zero days (AU-How) to many near-zero days
+followed by a short burst (US-Wkg) to a long tail of low but nonzero days (AU-ASM) -- with all other
+57 sites as thin grey background; the thicker segment of each coloured curve is the range covered by
+Tash's own 22-value threshold grid, and the three markers show where a fixed 10%-of-P99 threshold
+(circle) and two fixed shares of annual photosynthesis, 85% (triangle) and 95% (square), fall on that
+curve.

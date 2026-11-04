@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-04T00:26:18Z",
+  "pipeline_version": "246f9e3",
+  "input_sources": [
+    "GSL_definition/tables/duration_curve_crossings.csv",
+    "GSL_definition/tables/skew_predictors.csv"
+  ],
+  "notes": "Draft for discussion (proposal). Panels a/b share the x-axis (full-distribution skewness); panel c uses partial skewness (days >= 1% of P99) instead, included after a visual check that it reads clearly alongside a/b (see report). Colour = near_zero_share_1pct (share of days < 1% of P99), collected into one legend via patchwork guides='collect'. Exemplar sites (same five as Figure P1c) labelled with ggrepel, seed=42."
+}

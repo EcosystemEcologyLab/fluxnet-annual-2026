@@ -1,9 +1,9 @@
 {
-  "run_datetime_utc": "2026-11-03T21:46:19Z",
-  "pipeline_version": "3869614",
+  "run_datetime_utc": "2026-11-04T00:26:20Z",
+  "pipeline_version": "246f9e3",
   "input_sources": [
     "GSL_definition/tables/target_sweep_thresholds.csv",
     "GSL_definition/tables/target_sweep_fits.csv"
   ],
-  "notes": "Draft for discussion (proposal). Panel a: small multiples at target shares 0.80/0.85/0.90/0.95/0.98, solid/dashed fit lines with/without AU-ASM, star=AU-ASM. Panel b: Pearson r (with 95% CI ribbon) vs. target share, with/without AU-ASM; dotted vertical line at 0.95."
+  "notes": "Draft for discussion (proposal). Fixed 2026-11-03 (redraw/fixes prompt): panel a now draws quadratic (not linear) fit lines, matching the fit Tash's published adjusted R2 actually comes from; panel b's legend moved from an inside bottom-left corner (which covered the 0.80-0.83 lines/bands) to outside the panel (legend.position='right'); caption corrected -- solid=with AU-ASM included, dashed=with it excluded (previously ambiguous wording read as reversed). Panel a: small multiples at target shares 0.80/0.85/0.90/0.95/0.98, quadratic fit lines with/without AU-ASM, star=AU-ASM. Panel b: Pearson r (with 95% CI ribbon) vs. target share, with/without AU-ASM; dotted vertical line at 0.95."
 }

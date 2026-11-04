@@ -35,7 +35,19 @@
 ##   tables/skew_predictor_two_predictor_regression.csv
 ##   figures/drafts/proposal/Figure P1a (duration curve examples).{png,pdf,legend.txt,meta.json}
 ##   figures/drafts/proposal/Figure P1b (duration curve all sites).{png,pdf,legend.txt,meta.json}
+##   figures/drafts/proposal/Figure P1c (duration curve exemplars).{png,pdf,legend.txt,meta.json}
+##   figures/drafts/proposal/Figure P1d (sensitivity and Z16 capture vs skewness).{png,pdf,legend.txt,meta.json}
 ##   figures/drafts/proposal/Figure P2 (target share sweep).{png,pdf,legend.txt,meta.json}
+##
+## 2026-11-03 redraw/fixes (logs/prompts/2026-11-03_gsl_duration_curve_redraw_fixes.md):
+## added Figures P1c/P1d (P1b's all-62-site continuous-skewness colour scale
+## does not order these curves, since the two kinds of skew pull curves in
+## opposite directions -- see P1c's caption); fixed Figure P2's reversed
+## solid/dashed caption wording, switched panel (a) to quadratic fit lines,
+## and moved panel (b)'s legend off the data. P1a and P1b themselves are
+## unchanged, per that prompt's instruction. No existing table recomputed;
+## built from duration_curve_crossings.csv/skew_predictors.csv/fine_grid.rds,
+## already loaded above.
 
 source("GSL_definition/code/00_config.R")
 options(gsl.skip_driver = TRUE)
@@ -72,6 +84,16 @@ daily_extract <- readRDS(file.path(GSL_ROOT, "data", "daily_extract.rds"))
 daily_extract$TIMESTAMP <- as.Date(as.character(daily_extract$TIMESTAMP))
 daily_extract$year <- lubridate::year(daily_extract$TIMESTAMP)
 gpp_col <- GSL_GPP_VARIANTS[["main"]]
+
+## skew_predictors.csv (2026-11-03, commit cc1809b) read here, ahead of
+## Section 3 below which recomputes and re-writes it, so Figure P1d (Section
+## 1, redraw/fixes prompt) can reuse near_zero_share_1pct/partial_skew_ge_1pct
+## without duplicating that computation -- per "build from the existing
+## tables/skew_predictors.csv... no new data processing" in that prompt.
+## Section 3's own recomputation is deterministic from the same main-run
+## inputs and overwrites this object later with an identical result; nothing
+## downstream of that point depends on which copy is used.
+skew_predictors <- read_csv(file.path(GSL_ROOT, "tables", "skew_predictors.csv"), show_col_types = FALSE)
 
 AU_ASM <- "AU-ASM"
 
@@ -217,14 +239,176 @@ legend_p1b <- c(
   "photosynthesis captured), shown for all 62 sites at once, each as one curve coloured by how skewed",
   "its daily photosynthesis is (darker/purple = more evenly spread across the year, brighter/yellow =",
   "more concentrated in a short burst). The dots mark each site's Z16 point (a fixed 10%-of-P99",
-  "threshold). Curves for low-skew sites sit higher and further right; high-skew sites drop away",
-  "quickly as the threshold rises."
-)
+  "threshold). Skewness alone does not order these curves cleanly -- a short burst of photosynthesis",
+  "after many near-zero days and a long tail of low but nonzero days can both raise skewness while",
+  "pulling a curve in different directions; see Figure P1c for named examples of both kinds."
+)  ## wording fixed 2026-11-03 (redraw/fixes prompt): removed the incorrect "low-skew curves sit
+   ## higher... high-skew sites drop away" monotone-ordering claim. The PNG/PDF image itself is
+   ## unchanged (same plot object, same save_gsl_figure() call) -- only this caption text changed.
 save_gsl_figure(
   fig_p1b, "drafts/proposal/Figure P1b (duration curve all sites)",
   width_mm = 150, height_mm = 130, legend_lines = legend_p1b,
   input_sources = c(file.path(GSL_ROOT, "data", "fine_grid.rds"), file.path(GSL_ROOT, "tables", "derived_site.csv")),
   notes = "Draft for discussion (proposal). All 62 sites' GPP-duration curves, continuous skewness colour scale (viridis), Z16 points marked."
+)
+
+## ---- Figure P1c: five exemplar duration curves, replacing P1b's continuous
+## skewness colour scale for a readable view of individual curve SHAPES.
+## Skewness alone does not order these curves -- a short burst of GPP after
+## many near-zero days (US-Wkg) and a long tail of low-but-nonzero days
+## (US-SRG) both raise skewness but pull the curve in opposite directions
+## (steep-then-flat vs. a smooth decline), so a single colour scale cannot
+## convey which kind of skew a site has. Five sites spanning that range are
+## picked out in distinct (non-ordered) colours; all other 57 sites are thin
+## grey background. Reuses fine_grid.rds/duration_curve_crossings.csv --
+## P1a/P1b themselves are unchanged. ----
+EXEMPLAR_SITES <- c("AU-How", "US-MMS", "US-Wkg", "US-SRG", "AU-ASM")
+EXEMPLAR_COLORS <- c(
+  "AU-How" = "#0072B2", "US-MMS" = "#009E73", "US-Wkg" = "#E69F00",
+  "US-SRG" = "#CC79A7", "AU-ASM" = "#D55E00"
+)
+stopifnot(all(EXEMPLAR_SITES %in% fine_grid$site_id))
+
+fine_grid_bg <- fine_grid |> filter(!site_id %in% EXEMPLAR_SITES)
+fine_grid_ex <- fine_grid |> filter(site_id %in% EXEMPLAR_SITES) |> arrange(site_id, pct_of_P99)
+tash_seg_ex <- fine_grid_ex |> filter(pct_of_P99 >= 0.1, pct_of_P99 <= 20)
+
+markers_ex <- bind_rows(
+  duration_curve_table |> filter(site_id %in% EXEMPLAR_SITES) |>
+    transmute(site_id, label = "Z16", gsl = z16_mean_gsl, f = z16_mean_f),
+  duration_curve_table |> filter(site_id %in% EXEMPLAR_SITES) |>
+    transmute(site_id, label = "0.85", gsl = t85_gsl, f = t85_f),
+  duration_curve_table |> filter(site_id %in% EXEMPLAR_SITES) |>
+    transmute(site_id, label = "0.95", gsl = t95_gsl, f = t95_f)
+)
+
+## Direct end-of-line labels (no colour legend), placed at each curve's
+## terminal (highest-threshold) point and repelled apart with ggrepel --
+## already used elsewhere in the repo (WAFNET/fluxcom_comparison/code/
+## 09_figures_draft.R) via the same namespaced call, not a new dependency.
+## ggrepel's placement is stochastic without a fixed seed (the reason an
+## earlier WAFNET figure's PNG drifted cosmetically on re-run) -- seeded here.
+end_points_ex <- fine_grid_ex |> group_by(site_id) |> slice_max(pct_of_P99, n = 1) |> ungroup() |>
+  left_join(duration_curve_table |> select(site_id, skewness), by = "site_id") |>
+  mutate(end_label = sprintf("%s (%.2f)", site_id, skewness))
+
+p1c <- ggplot() +
+  geom_path(data = fine_grid_bg, aes(x = mean_gsl, y = mean_f, group = site_id),
+            colour = "grey85", linewidth = nature_lwd(PEERJ_LWD_OTHERYEARS)) +
+  geom_path(data = fine_grid_ex, aes(x = mean_gsl, y = mean_f, group = site_id, colour = site_id),
+            linewidth = nature_lwd(PEERJ_LWD_REF)) +
+  geom_path(data = tash_seg_ex, aes(x = mean_gsl, y = mean_f, group = site_id, colour = site_id),
+            linewidth = nature_lwd(PEERJ_LWD_DATA)) +
+  geom_point(data = markers_ex, aes(x = gsl, y = f, shape = label), colour = "black",
+             size = 2.1, stroke = nature_lwd(PEERJ_LWD_DATA), na.rm = TRUE) +
+  ggrepel::geom_text_repel(
+    data = end_points_ex, aes(x = mean_gsl, y = mean_f, label = end_label, colour = site_id),
+    size = PEERJ_ANNOTATION_PT / .pt, fontface = "bold", show.legend = FALSE,
+    segment.size = nature_lwd(0.4), segment.colour = "grey40", min.segment.length = 0, seed = 42
+  ) +
+  scale_colour_manual(values = EXEMPLAR_COLORS, guide = "none") +
+  scale_shape_manual(values = c("Z16" = 16, "0.85" = 17, "0.95" = 15), name = NULL) +
+  labs(x = "Mean days above threshold (GSL)", y = "Mean included fraction of annual GPP") +
+  theme_gsl() +
+  theme(legend.position = c(0.97, 0.78), legend.justification = c(1, 1),
+        legend.background = element_rect(fill = "white", colour = NA), legend.key = element_blank(),
+        legend.text = element_text(size = PEERJ_BASE_PT))
+
+fig_p1c <- draft_title(p1c)  ## single panel -- no panel letter (only multi-panel figures get one)
+
+legend_p1c <- c(
+  "Draft for discussion. Each site's days are ranked from highest to lowest photosynthesis (GPP);",
+  "the x-axis is how many of those top-ranked days are counted per year, the y-axis is the share of",
+  "the year's total photosynthesis found on those days, both averaged over years. A curve stops short",
+  "of 365 days where the remaining, lowest-ranked days contribute zero. Five sites are shown in colour,",
+  "spanning different shapes of skew -- from almost no near-zero days (AU-How) to many near-zero days",
+  "followed by a short burst (US-Wkg) to a long tail of low but nonzero days (AU-ASM) -- with all other",
+  "57 sites as thin grey background; the thicker segment of each coloured curve is the range covered by",
+  "Tash's own 22-value threshold grid, and the three markers show where a fixed 10%-of-P99 threshold",
+  "(circle) and two fixed shares of annual photosynthesis, 85% (triangle) and 95% (square), fall on that",
+  "curve."
+)
+save_gsl_figure(
+  fig_p1c, "drafts/proposal/Figure P1c (duration curve exemplars)",
+  width_mm = 170, height_mm = 150, legend_lines = legend_p1c,
+  input_sources = c(file.path(GSL_ROOT, "data", "fine_grid.rds"), file.path(GSL_ROOT, "tables", "duration_curve_crossings.csv")),
+  notes = paste0(
+    "Draft for discussion (proposal). Replaces Figure P1b's continuous skewness colour scale for a ",
+    "readable view of curve shape (skewness does not order these curves -- see legend). Exemplar sites: ",
+    "AU-How (skewness 0.36), US-MMS (0.58), US-Wkg (2.07), US-SRG (1.92), AU-ASM (3.88); all other 57 ",
+    "sites as thin grey background. Thick segment = 0.1-20% of P99 (Tash's 22-value grid range). ",
+    "Markers: circle=Z16 (10% of P99), triangle=0.85 crossing, square=0.95 crossing. End-of-line labels ",
+    "placed with ggrepel, seed=42 for reproducibility."
+  )
+)
+
+## ---- Figure P1d: one point per site, two kinds of skew shown separately --
+## colour (near-zero-day share) vs. the x-axis skewness/sensitivity
+## relationship itself -- so this figure and P1c connect through the same
+## five exemplar sites. Panel (a): Tash's sensitivity measure (IQR of mean
+## GSL across her 22-point grid) vs. skewness. Panel (b): the share of
+## annual GPP inside the fixed Z16 season vs. skewness. Panel (c), added
+## after checking it reads clearly (see docs/duration_curve_and_target_
+## sweep_2026-11-03.md): panel (a) repeated against the skewness of only the
+## above-1%-of-P99 days (partial skewness) instead of full skewness. ----
+p1d_data <- duration_curve_table |> select(site_id, skewness, z16_mean_f) |>
+  left_join(skew_predictors |> select(site_id, sensitivity_iqr_mean_gsl, near_zero_share_1pct, partial_skew_ge_1pct),
+             by = "site_id") |>
+  mutate(is_exemplar = site_id %in% EXEMPLAR_SITES)
+exemplar_labels_p1d <- p1d_data |> filter(is_exemplar)
+
+one_p1d_panel <- function(xvar, yvar, xlab, ylab, letter) {
+  ggplot(p1d_data, aes(x = .data[[xvar]], y = .data[[yvar]])) +
+    geom_point(aes(colour = near_zero_share_1pct, shape = is_exemplar, size = is_exemplar), na.rm = TRUE) +
+    ggrepel::geom_text_repel(
+      data = exemplar_labels_p1d, aes(x = .data[[xvar]], y = .data[[yvar]], label = site_id),
+      colour = "grey20", size = PEERJ_ANNOTATION_PT / .pt, fontface = "bold",
+      segment.size = nature_lwd(0.4), segment.colour = "grey40", min.segment.length = 0, seed = 42,
+      force = 6, force_pull = 0.5, box.padding = 0.6, point.padding = 0.3, max.overlaps = Inf
+      ## AU-How and US-MMS sit almost on top of each other in panel b (both
+      ## near x=0.3-0.6, y=0.98-1.0) -- the default repel force left their
+      ## labels overlapping there (caught on this review); a stronger force
+      ## and larger padding separates them cleanly without affecting panels
+      ## a/c, where the five points were already well spread out.
+    ) +
+    scale_colour_viridis_c(name = "Share of days with\nnear-zero GPP") +
+    scale_shape_manual(values = c("FALSE" = 16, "TRUE" = 17), guide = "none") +
+    scale_size_manual(values = c("FALSE" = 1.3, "TRUE" = 2.3), guide = "none") +
+    labs(x = xlab, y = ylab) +
+    theme_gsl() +
+    gsl_panel_letter(letter)
+}
+
+p1d_a <- one_p1d_panel("skewness", "sensitivity_iqr_mean_gsl",
+                        "Skewness (full distribution)", "Sensitivity (IQR of mean GSL\nacross Tash's grid, days)", "a")
+p1d_b <- one_p1d_panel("skewness", "z16_mean_f",
+                        "Skewness (full distribution)", "Share of annual GPP\ninside the Z16 season", "b")
+p1d_c <- one_p1d_panel("partial_skew_ge_1pct", "sensitivity_iqr_mean_gsl",
+                        "Skewness of days >= 1% of P99 (partial)", "Sensitivity (IQR of mean GSL\nacross Tash's grid, days)", "c")
+
+fig_p1d <- draft_title((p1d_a / p1d_b / p1d_c) + plot_layout(guides = "collect") &
+                          theme(legend.position = "right"))
+
+legend_p1d <- c(
+  "Draft for discussion. One point per site. Panel a: how much a site's growing-season length moves",
+  "across Tash's 22 threshold choices (interquartile range of the mean), against full-distribution",
+  "skewness. Panel b: the share of annual photosynthesis already captured by a fixed 10%-of-P99",
+  "threshold, against the same skewness. Panel c repeats panel a against the skewness of only the",
+  "days with more than 1% of P99 worth of photosynthesis -- the kind of skew that actually crosses",
+  "thresholds. Points are coloured by the share of days with near-zero photosynthesis; the five sites",
+  "from the previous figure are labelled so the two figures connect."
+)
+save_gsl_figure(
+  fig_p1d, "drafts/proposal/Figure P1d (sensitivity and Z16 capture vs skewness)",
+  width_mm = 170, height_mm = 220, legend_lines = legend_p1d,
+  input_sources = c(file.path(GSL_ROOT, "tables", "duration_curve_crossings.csv"), file.path(GSL_ROOT, "tables", "skew_predictors.csv")),
+  notes = paste0(
+    "Draft for discussion (proposal). Panels a/b share the x-axis (full-distribution skewness); panel c ",
+    "uses partial skewness (days >= 1% of P99) instead, included after a visual check that it reads ",
+    "clearly alongside a/b (see report). Colour = near_zero_share_1pct (share of days < 1% of P99), ",
+    "collected into one legend via patchwork guides='collect'. Exemplar sites (same five as Figure P1c) ",
+    "labelled with ggrepel, seed=42."
+  )
 )
 
 ## ============================================================================
@@ -326,15 +510,23 @@ multiples_df <- target_sweep_thresholds |> filter(target_fraction %in% multiples
   mutate(is_au_asm = site_id == AU_ASM,
          panel_lab = sprintf("%.2f", target_fraction))
 
+## Quadratic (not linear) fit lines -- Tash's own published adjusted R2 at
+## 0.95 only matches a quadratic fit (section 2's fit_one()/check above), so
+## the small-multiples panel should show the curve actually being fit, not a
+## straight line. Raw (not orthogonal) squared term, same convention as
+## fit_one() above.
 fit_lines <- map_dfr(multiples_targets, function(target) {
-  df <- multiples_df |> filter(target_fraction == target, !is.na(threshold_pct))
+  df <- multiples_df |> filter(target_fraction == target, !is.na(threshold_pct)) |>
+    mutate(skew_sq = skewness^2)
   xr <- range(df$skewness, na.rm = TRUE)
   xs <- seq(xr[1], xr[2], length.out = 50)
-  with_fit <- lm(threshold_pct ~ skewness, data = df)
-  without_fit <- lm(threshold_pct ~ skewness, data = df |> filter(site_id != AU_ASM))
+  with_fit <- lm(threshold_pct ~ skewness + skew_sq, data = df)
+  without_fit <- lm(threshold_pct ~ skewness + skew_sq, data = df |> filter(site_id != AU_ASM))
   bind_rows(
-    tibble(target_fraction = target, skewness = xs, threshold_pct = predict(with_fit, newdata = tibble(skewness = xs)), au_asm = "included"),
-    tibble(target_fraction = target, skewness = xs, threshold_pct = predict(without_fit, newdata = tibble(skewness = xs)), au_asm = "excluded")
+    tibble(target_fraction = target, skewness = xs,
+           threshold_pct = predict(with_fit, newdata = tibble(skewness = xs, skew_sq = xs^2)), au_asm = "included"),
+    tibble(target_fraction = target, skewness = xs,
+           threshold_pct = predict(without_fit, newdata = tibble(skewness = xs, skew_sq = xs^2)), au_asm = "excluded")
   )
 }) |> mutate(panel_lab = sprintf("%.2f", target_fraction))
 
@@ -364,8 +556,13 @@ p2b <- ggplot(r_by_target, aes(x = target_fraction, y = r, colour = au_asm, fill
   scale_fill_manual(values = c("included" = "#0072B2", "excluded" = "#D55E00"), name = "AU-ASM") +
   labs(x = "Target share of annual GPP", y = "Pearson r (threshold vs. skewness)") +
   theme_gsl() +
-  theme(legend.position = c(0.03, 0.03), legend.justification = c(0, 0),
-        legend.background = element_rect(fill = "white", colour = NA), legend.key = element_blank())
+  theme(legend.position = "right")
+  ## Moved from an inside bottom-left corner (legend.position = c(0.03, 0.03))
+  ## -- that corner sat on top of the lines/CI bands for target shares
+  ## 0.80-0.83, where both series' confidence bands are at their widest and
+  ## most negative. "right" places the legend entirely in the plot margin,
+  ## outside the panel, so it cannot cover any data regardless of where the
+  ## curves sit.
 
 fig_p2 <- (p2a / p2b) + plot_layout(heights = c(1.3, 1)) +
   plot_annotation(
@@ -380,17 +577,27 @@ fig_p2 <- (p2a / p2b) + plot_layout(heights = c(1.3, 1)) +
 legend_p2 <- c(
   "Draft for discussion. Panel a: at five different target shares of annual photosynthesis (shown in",
   "each strip), the threshold each site needs to capture that share, plotted against how skewed the",
-  "site's daily photosynthesis is. Dashed and solid lines show the fitted relationship with and without",
-  "AU-ASM (star), the most extreme site; circles are the other sites. Panel b: the strength of that",
-  "relationship (Pearson correlation, with its 95% confidence band) across every target share from 80%",
-  "to 98%, again with and without AU-ASM; the dotted line marks the 95% target used in the original",
+  "site's daily photosynthesis is, with curved (quadratic) fits -- the shape that matches the original",
+  "published statistic. Solid curves show the fit with AU-ASM (star), the most extreme site, included;",
+  "dashed curves show the fit with it excluded; circles are the other sites. Panel b: the strength of",
+  "that relationship (Pearson correlation, with its 95% confidence band) across every target share from",
+  "80% to 98%, again with and without AU-ASM; the dotted line marks the 95% target used in the original",
   "analysis."
 )
 save_gsl_figure(
   fig_p2, "drafts/proposal/Figure P2 (target share sweep)",
   width_mm = 170, height_mm = 190, legend_lines = legend_p2,
   input_sources = c(file.path(GSL_ROOT, "tables", "target_sweep_thresholds.csv"), file.path(GSL_ROOT, "tables", "target_sweep_fits.csv")),
-  notes = "Draft for discussion (proposal). Panel a: small multiples at target shares 0.80/0.85/0.90/0.95/0.98, solid/dashed fit lines with/without AU-ASM, star=AU-ASM. Panel b: Pearson r (with 95% CI ribbon) vs. target share, with/without AU-ASM; dotted vertical line at 0.95."
+  notes = paste0(
+    "Draft for discussion (proposal). Fixed 2026-11-03 (redraw/fixes prompt): panel a now draws ",
+    "quadratic (not linear) fit lines, matching the fit Tash's published adjusted R2 actually comes ",
+    "from; panel b's legend moved from an inside bottom-left corner (which covered the 0.80-0.83 ",
+    "lines/bands) to outside the panel (legend.position='right'); caption corrected -- solid=with ",
+    "AU-ASM included, dashed=with it excluded (previously ambiguous wording read as reversed). Panel ",
+    "a: small multiples at target shares 0.80/0.85/0.90/0.95/0.98, quadratic fit lines with/without ",
+    "AU-ASM, star=AU-ASM. Panel b: Pearson r (with 95% CI ribbon) vs. target share, with/without ",
+    "AU-ASM; dotted vertical line at 0.95."
+  )
 )
 
 ## ============================================================================
@@ -551,4 +758,4 @@ write_meta(
 message("=== 12_duration_curve_and_target_sweep.R: done ===")
 message("Tables: duration_curve_crossings.csv, target_sweep_thresholds.csv, target_sweep_fits.csv, ",
         "skew_predictors.csv, skew_predictor_correlations.csv, skew_predictor_two_predictor_regression.csv")
-message("Figures: drafts/proposal/Figure P1a/P1b/P2")
+message("Figures: drafts/proposal/Figure P1a/P1b/P1c/P1d/P2")

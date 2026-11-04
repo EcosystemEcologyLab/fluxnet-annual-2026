@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-04T00:26:17Z",
+  "pipeline_version": "246f9e3",
+  "input_sources": [
+    "GSL_definition/data/fine_grid.rds",
+    "GSL_definition/tables/duration_curve_crossings.csv"
+  ],
+  "notes": "Draft for discussion (proposal). Replaces Figure P1b's continuous skewness colour scale for a readable view of curve shape (skewness does not order these curves -- see legend). Exemplar sites: AU-How (skewness 0.36), US-MMS (0.58), US-Wkg (2.07), US-SRG (1.92), AU-ASM (3.88); all other 57 sites as thin grey background. Thick segment = 0.1-20% of P99 (Tash's 22-value grid range). Markers: circle=Z16 (10% of P99), triangle=0.85 crossing, square=0.95 crossing. End-of-line labels placed with ggrepel, seed=42 for reproducibility."
+}

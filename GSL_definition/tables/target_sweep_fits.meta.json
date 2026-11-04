@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-11-03T21:46:18Z",
-  "pipeline_version": "3869614",
+  "run_datetime_utc": "2026-11-04T00:26:19Z",
+  "pipeline_version": "246f9e3",
   "input_sources": [
     "GSL_definition/tables/target_sweep_thresholds.csv"
   ],

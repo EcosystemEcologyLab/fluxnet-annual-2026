@@ -2,5 +2,6 @@ Draft for discussion. The same trade-off as Figure P1a (days counted vs. share o
 photosynthesis captured), shown for all 62 sites at once, each as one curve coloured by how skewed
 its daily photosynthesis is (darker/purple = more evenly spread across the year, brighter/yellow =
 more concentrated in a short burst). The dots mark each site's Z16 point (a fixed 10%-of-P99
-threshold). Curves for low-skew sites sit higher and further right; high-skew sites drop away
-quickly as the threshold rises.
+threshold). Skewness alone does not order these curves cleanly -- a short burst of photosynthesis
+after many near-zero days and a long tail of low but nonzero days can both raise skewness while
+pulling a curve in different directions; see Figure P1c for named examples of both kinds.

@@ -1,0 +1,7 @@
+Draft for discussion. One point per site. Panel a: how much a site's growing-season length moves
+across Tash's 22 threshold choices (interquartile range of the mean), against full-distribution
+skewness. Panel b: the share of annual photosynthesis already captured by a fixed 10%-of-P99
+threshold, against the same skewness. Panel c repeats panel a against the skewness of only the
+days with more than 1% of P99 worth of photosynthesis -- the kind of skew that actually crosses
+thresholds. Points are coloured by the share of days with near-zero photosynthesis; the five sites
+from the previous figure are labelled so the two figures connect.

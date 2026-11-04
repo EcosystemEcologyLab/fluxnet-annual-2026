@@ -4,6 +4,22 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-03 — GSL duration curve redraw and target-sweep fixes, started
+
+Replacing Figure P1b's all-sites view and fixing three issues in the 3 November duration-curve
+outputs (commit cc1809b), for the same discussion with Tash (full prompt:
+`logs/prompts/2026-11-03_gsl_duration_curve_redraw_fixes.md`). Extending
+`GSL_definition/code/12_duration_curve_and_target_sweep.R` only — no new data processing, built from
+the existing `duration_curve_crossings.csv`, `skew_predictors.csv`, and cached fine grid. Figure P1a
+and the existing P1b are kept unchanged; two new figures (P1c: five exemplar duration curves with the
+rest as grey background; P1d: sensitivity/Z16-capture vs. skewness, coloured by near-zero share) are
+added. Fixes: Figure P2's reversed solid/dashed line key, quadratic (not linear) fit lines in panel
+(a), and panel (b)'s legend moved off the 0.80–0.83 band; plus four report-wording corrections
+(quadratic-match framing, AU-How's actual divergence, sites selecting above the grid's 20%-of-P99
+top at 0.85/0.95, and the near-zero-share/partial-skewness conclusion reframed as consistent with,
+not contradicting, Dave's forest-dormancy point).
+
+---
 ## 2026-11-03 — GSL duration curve and target-share sweep, started
 
 Three proposed analyses on Tash's 62-site reproduction run, for discussion with her (proposed by

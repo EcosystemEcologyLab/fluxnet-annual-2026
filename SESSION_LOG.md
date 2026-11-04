@@ -20,6 +20,42 @@ top at 0.85/0.95, and the near-zero-share/partial-skewness conclusion reframed a
 not contradicting, Dave's forest-dormancy point).
 
 ---
+
+## 2026-11-03 — GSL duration curve redraw and target-sweep fixes, done
+
+Full report updated: `GSL_definition/docs/duration_curve_and_target_sweep_2026-11-03.md`. Extended
+`code/12_duration_curve_and_target_sweep.R` only; confirmed via `git status` that no table CSV content
+changed (only `.meta.json` run timestamps) and that Figure P1a's and Figure P1b's PNG/PDF are
+byte-identical to commit cc1809b -- restored both after each script re-run. Summary:
+
+1. **Figure P1c (duration curve exemplars), new.** Replaces Figure P1b's continuous-skewness colour
+   scale, which does not order 62 overlapping curves usefully, with five named sites (AU-How, US-MMS,
+   US-Wkg, US-SRG, AU-ASM) in distinct colours against the other 57 as grey background, each
+   direct-labelled with site and skewness, Tash's grid range thickened, Z16/0.85/0.95 markers.
+2. **Figure P1d (sensitivity and Z16 capture vs. skewness), new.** Three panels, one point per site:
+   (a) sensitivity vs. skewness, (b) Z16-season GPP share vs. skewness, (c) panel (a) repeated against
+   partial (above-1%-of-P99) skewness -- included, since it reads at least as clearly as (a)/(b) and
+   shows a visually tighter relationship, matching its higher Pearson r (0.69 vs. 0.63) from section 3.
+   Caught on review: panel (b) initially had "AU-How" and "US-MMS" labels overlapping (both sites sit
+   almost on top of each other there) -- fixed by increasing `ggrepel`'s force/padding for that panel.
+3. **Figure P2 fixes.** Panel (a) now draws quadratic, not linear, fit lines (matching the fit Tash's
+   published adjusted R2 actually comes from); panel (b)'s legend moved from an inside corner that
+   covered the 0.80-0.83 lines/bands to fully outside the panel; caption corrected (solid = AU-ASM
+   included, dashed = excluded -- was ambiguously worded).
+4. **Report corrections**, per the prompt: the quadratic-R2 match is now framed as confirming the
+   reproduction (Tash's own Figure 4 already uses a quadratic), not as new information -- and a new
+   finding added in its place, that *without* AU-ASM the quadratic term is not significant for target
+   shares 0.80-0.91 (AIC favours the simpler linear fit over most of that range too). AU-How's actual
+   divergence from Z16 corrected (Z16 keeps 362 days vs. 317.5 for the 0.95 target and 258 for 0.85 --
+   AU-How *over*-admits relative to both targets, the mirror image of AU-ASM's *under*-admission, not
+   a case of agreement). Added: 51/62 sites select a threshold above 20% of P99 (outside Tash's own
+   22-point grid) at the 0.85 target, vs. only 5/62 at 0.95. Section 3's conclusion rewritten: since
+   zero-GPP days are structurally never counted above any positive threshold, near-zero share cannot
+   itself drive threshold choice, so partial skewness beating it is consistent with, not a rejection
+   of, Dave's dormant-day point -- full skewness simply dilutes the useful (above-threshold) signal
+   with structurally-inert near-zero days.
+
+---
 ## 2026-11-03 — GSL duration curve and target-share sweep, started
 
 Three proposed analyses on Tash's 62-site reproduction run, for discussion with her (proposed by

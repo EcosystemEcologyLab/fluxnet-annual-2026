@@ -1,0 +1,16 @@
+{
+  "run_datetime_utc": "2026-11-05T17:36:17Z",
+  "pipeline_version": "05508b4",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/snapshots/site_year_data_presence.csv",
+    "data/snapshots/sites_marconi_clean.csv",
+    "data/snapshots/years_marconi.csv",
+    "data/snapshots/sites_la_thuile_clean.csv",
+    "data/snapshots/years_la_thuile.csv",
+    "data/lists/LaThuileList.xlsx",
+    "data/snapshots/sites_fluxnet2015_clean.csv",
+    "data/snapshots/years_fluxnet2015.csv"
+  ],
+  "notes": "AGU26 poster version of Figure 2 (not a manuscript/SI figure). Same data/gates as draft_manuscript_v1/fig_02_cumulative_siteyears_igbp (6200 site-years, 781 inset sites, thresholds 483/225/63). 20x15in, text scaled x4.6, lines x3 from the manuscript figure; measured min text 23pt. See .legend.txt."
+}

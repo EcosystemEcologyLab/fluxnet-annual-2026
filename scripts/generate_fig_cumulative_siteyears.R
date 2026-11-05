@@ -43,6 +43,7 @@ source("R/plot_constants.R")
 source("R/figures/fig_network_growth.R")
 source("R/nature_format.R")
 source("R/presentation_format.R")
+source("R/poster_format.R")
 check_pipeline_config()
 
 suppressPackageStartupMessages({
@@ -532,6 +533,146 @@ if (presentation_mode) {
                             aspect_w = 120, aspect_h = 120)
 
   msg("Presentation slides saved: fig02_1/2/3 -> ", SLIDE_DIR)
+}
+
+## =============================================================================
+## Poster mode (AGU26, 10 December 2026) -- additive, gated by an env var;
+## does not touch anything above (same data/gates/colours/geometry as the
+## manuscript figure -- only sizes change, plus moving the IGBP legend
+## outside the inset to a column at the right of the whole plot). Default
+## (unset) behaviour is unaffected -- see R/poster_format.R. Full task:
+## logs/prompts/2026-11-05_agu26_poster_figures.md.
+## =============================================================================
+poster_mode <- identical(Sys.getenv("FLUXNET_POSTER_MODE"), "1")
+if (poster_mode) {
+  msg("--- Poster mode: building AGU26 poster Figure 2 ---")
+  POSTER_DIR  <- file.path("review", "figures", "poster_agu26")
+  POSTER_STEM <- file.path(POSTER_DIR, "fig02_poster_cumulative_siteyears_igbp")
+  fs::dir_create(POSTER_DIR)
+
+  ## ---- Main panel: the manuscript's own object, unchanged -- same data,
+  ## same direct end-of-line historical labels (already unconditional in
+  ## fig_cumulative_siteyears_igbp(), not a poster-only addition), same "no
+  ## panel letter". Scaled only (text + line weight); right margin rescaled
+  ## with it, same reason the presentation-mode block above rescales it: at
+  ## the larger tick-label size the fixed 14pt margin no longer clears the
+  ## "2025" label.
+  poster_main <- agu_poster_scale_ggplot(main_panel)
+  poster_main <- poster_main + ggplot2::theme(
+    plot.margin = ggplot2::margin(t = 5.5 * AGU_POSTER_TEXT_SCALE, r = 14 * AGU_POSTER_TEXT_SCALE,
+                                   b = 5.5 * AGU_POSTER_TEXT_SCALE, l = 5.5 * AGU_POSTER_TEXT_SCALE,
+                                   unit = "pt")
+  )
+
+  ## ---- Inset: build_inset_panel(), the same NATURE_BASE_PT paper-scale
+  ## object the manuscript inset uses, scaled only -- no internal legend
+  ## this time (see legend note below), so the box fills with the
+  ## histogram alone: "scaled up to fill the open space" the manuscript's
+  ## internal legend sub-box used to occupy inside the same frame.
+  poster_inset <- agu_poster_scale_ggplot(build_inset_panel(NATURE_BASE_PT))
+
+  ## ---- IGBP legend: moved OUTSIDE the inset, to a single column at the
+  ## right of the whole plot (task spec), not inside the inset's own frame
+  ## as the manuscript draws it. Same legend_panel() helper, same palette/
+  ## order (scale_fill_paper_igbp() -> PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS).
+  ## Key size recomputed at poster scale -- legend.key.size is a grid::unit,
+  ## not a theme text/line size agu_poster_scale_ggplot() walks -- same
+  ## technique the presentation-mode block above uses for this same helper.
+  poster_legend <- agu_poster_scale_ggplot(legend_panel(NATURE_BASE_PT))
+  poster_legend <- poster_legend + ggplot2::theme(
+    legend.key.size      = grid::unit(NATURE_BASE_PT * 0.37 * AGU_POSTER_TEXT_SCALE, "mm"),
+    legend.key.spacing.y = grid::unit(NATURE_BASE_PT * 0.37 * 0.15 * AGU_POSTER_TEXT_SCALE, "mm")
+  )
+
+  ## ---- Compose: inset overlaid on the main panel at the manuscript's own
+  ## NPC footprint (INSET_LEFT/RIGHT/BOTTOM/TOP, computed above from the
+  ## main panel's own data coordinates) -- "paper's position", unchanged;
+  ## it reads as bigger only because the whole canvas is bigger. The
+  ## external legend column sits beside that composite via plot_layout
+  ## widths (5:1 -- main plot : legend column).
+  main_with_inset <- poster_main +
+    patchwork::inset_element(
+      poster_inset,
+      left = INSET_LEFT, bottom = INSET_BOTTOM, right = INSET_RIGHT, top = INSET_TOP,
+      align_to = "panel"
+    )
+  poster_combined <- main_with_inset + poster_legend +
+    patchwork::plot_layout(ncol = 2, widths = c(5, 1))
+
+  ## ---- Measured text-size gate ("measure from the built plot, not by
+  ## eye") -- stop, do not save, if anything renders below the 22pt floor.
+  measured_pt <- agu_poster_measure_fontsizes(poster_combined)
+  msg("Poster Figure 2 measured text sizes (pt): min=", round(min(measured_pt), 2),
+      ", max=", round(max(measured_pt), 2), ", n=", length(measured_pt))
+  if (min(measured_pt) < AGU_POSTER_FLOOR_PT) {
+    stop("Poster Figure 2 gate check FAILED -- measured minimum text size ",
+         round(min(measured_pt), 2), "pt is below the ", AGU_POSTER_FLOOR_PT,
+         "pt floor. Not saving.", call. = FALSE)
+  }
+
+  saved_poster <- save_agu_poster_figure(poster_combined, POSTER_STEM, width_in = 20, height_in = 15)
+  msg("Saved: ", saved_poster$png, ", ", saved_poster$pdf)
+
+  poster_legend_lines <- c(
+    "FIGURE LEGEND -- fig02_poster_cumulative_siteyears_igbp.png (AGU26 poster version)",
+    strrep("=", 60), "",
+    "NOT a numbered manuscript or Supplementary Information figure. Built for Dave's AGU",
+    "2026 poster (10 December 2026) -- see logs/prompts/2026-11-05_agu26_poster_figures.md.",
+    "",
+    "TITLE: Cumulative site-years of the FLUXNET Shuttle network through time, by IGBP",
+    "land-cover class, with a record-length inset (poster version of manuscript Figure 2).",
+    "",
+    "DESCRIPTION:",
+    "Identical data, gates, and processing to the manuscript Figure 2",
+    "(draft_manuscript_v1/fig_02_cumulative_siteyears_igbp.png) -- same snapshot, same",
+    paste0("6,200 main-panel site-years (", window$first_year, "-", window$last_year, "), same 781-site"),
+    "inset, same thresholds (n=483/225/63 at >=5/>=10/>=20 years), same IGBP palette and",
+    "order (R/plot_constants.R::PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS). Marconi, La Thuile and",
+    "FLUXNET2015 cumulative site-year lines are comparison data only, not primary data --",
+    "see CLAUDE.md Hard Rule 1 -- and are labelled directly at their right-hand ends (the",
+    "manuscript figure's own geom_label() mechanism, unchanged, not a poster-only addition),",
+    "not via a legend. No figure title or panel letter drawn in the image.",
+    "",
+    "DIFFERENCES FROM THE MANUSCRIPT FIGURE (poster-only; nothing above this line changed):",
+    "  - Print size 20 x 15in (vs. 120 x 120mm), all text scaled x4.6 from the manuscript's",
+    "    5-7pt range (measured minimum in the rendered figure: see below), lines x3.",
+    "  - The IGBP legend is drawn in a single column to the RIGHT of the whole plot, not",
+    "    inside the inset's own frame -- the inset therefore fills its full box (same NPC",
+    "    position/footprint as the manuscript) with the histogram alone.",
+    "  - Vector PDF: fonts embedded via Ghostscript (brew-installed for this task; see",
+    "    SESSION_LOG.md 2026-11-05) -- the manuscript PDF does not embed fonts.",
+    "",
+    paste0("MEASURED TEXT SIZES (pt, from the rendered plot, not estimated): min=",
+           round(min(measured_pt), 2), ", max=", round(max(measured_pt), 2),
+           " (floor is ", AGU_POSTER_FLOOR_PT, "pt; axis titles/tick labels/legend text are",
+           " all built from the manuscript's uniform 7pt base, scaled to ",
+           round(7 * AGU_POSTER_TEXT_SCALE, 1), "pt)."),
+    "",
+    paste0("DATA: ", SNAP_FILE),
+    "",
+    "SOURCE: scripts/generate_fig_cumulative_siteyears.R, FLUXNET_POSTER_MODE=1 block, reusing",
+    "main_panel/build_inset_panel()/legend_panel() built above for the manuscript figure, via",
+    "R/poster_format.R::agu_poster_scale_ggplot()/save_agu_poster_figure()."
+  )
+  writeLines(poster_legend_lines, paste0(POSTER_STEM, ".legend.txt"))
+  msg("Saved: ", paste0(POSTER_STEM, ".legend.txt"))
+
+  write_output_metadata(
+    saved_poster$png,
+    input_sources = c(SNAP_FILE,
+                       "data/snapshots/site_year_data_presence.csv",
+                       "data/snapshots/sites_marconi_clean.csv", "data/snapshots/years_marconi.csv",
+                       "data/snapshots/sites_la_thuile_clean.csv", "data/snapshots/years_la_thuile.csv",
+                       "data/lists/LaThuileList.xlsx",
+                       "data/snapshots/sites_fluxnet2015_clean.csv", "data/snapshots/years_fluxnet2015.csv"),
+    notes = paste0("AGU26 poster version of Figure 2 (not a manuscript/SI figure). Same data/gates ",
+                    "as draft_manuscript_v1/fig_02_cumulative_siteyears_igbp (6200 site-years, 781 ",
+                    "inset sites, thresholds 483/225/63). 20x15in, text scaled x", AGU_POSTER_TEXT_SCALE,
+                    ", lines x", AGU_POSTER_LINE_SCALE, " from the manuscript figure; measured min text ",
+                    round(min(measured_pt), 2), "pt. See .legend.txt.")
+  )
+
+  msg("=== Poster mode: Figure 2 complete ===")
 }
 
 msg("=== Done ===")

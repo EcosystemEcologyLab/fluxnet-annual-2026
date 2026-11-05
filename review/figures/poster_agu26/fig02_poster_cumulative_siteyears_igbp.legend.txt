@@ -1,0 +1,36 @@
+FIGURE LEGEND -- fig02_poster_cumulative_siteyears_igbp.png (AGU26 poster version)
+============================================================
+
+NOT a numbered manuscript or Supplementary Information figure. Built for Dave's AGU
+2026 poster (10 December 2026) -- see logs/prompts/2026-11-05_agu26_poster_figures.md.
+
+TITLE: Cumulative site-years of the FLUXNET Shuttle network through time, by IGBP
+land-cover class, with a record-length inset (poster version of manuscript Figure 2).
+
+DESCRIPTION:
+Identical data, gates, and processing to the manuscript Figure 2
+(draft_manuscript_v1/fig_02_cumulative_siteyears_igbp.png) -- same snapshot, same
+6,200 main-panel site-years (1991-2025), same 781-site
+inset, same thresholds (n=483/225/63 at >=5/>=10/>=20 years), same IGBP palette and
+order (R/plot_constants.R::PAPER_IGBP_ORDER/PAPER_IGBP_COLOURS). Marconi, La Thuile and
+FLUXNET2015 cumulative site-year lines are comparison data only, not primary data --
+see CLAUDE.md Hard Rule 1 -- and are labelled directly at their right-hand ends (the
+manuscript figure's own geom_label() mechanism, unchanged, not a poster-only addition),
+not via a legend. No figure title or panel letter drawn in the image.
+
+DIFFERENCES FROM THE MANUSCRIPT FIGURE (poster-only; nothing above this line changed):
+  - Print size 20 x 15in (vs. 120 x 120mm), all text scaled x4.6 from the manuscript's
+    5-7pt range (measured minimum in the rendered figure: see below), lines x3.
+  - The IGBP legend is drawn in a single column to the RIGHT of the whole plot, not
+    inside the inset's own frame -- the inset therefore fills its full box (same NPC
+    position/footprint as the manuscript) with the histogram alone.
+  - Vector PDF: fonts embedded via Ghostscript (brew-installed for this task; see
+    SESSION_LOG.md 2026-11-05) -- the manuscript PDF does not embed fonts.
+
+MEASURED TEXT SIZES (pt, from the rendered plot, not estimated): min=23, max=32.2 (floor is 22pt; axis titles/tick labels/legend text are all built from the manuscript's uniform 7pt base, scaled to 32.2pt).
+
+DATA: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+
+SOURCE: scripts/generate_fig_cumulative_siteyears.R, FLUXNET_POSTER_MODE=1 block, reusing
+main_panel/build_inset_panel()/legend_panel() built above for the manuscript figure, via
+R/poster_format.R::agu_poster_scale_ggplot()/save_agu_poster_figure().

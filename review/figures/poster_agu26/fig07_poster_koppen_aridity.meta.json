@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-05T17:37:29Z",
+  "pipeline_version": "05508b4",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260901T094522.csv",
+    "review/figures/draft_manuscript_v1/SupTables/supplementary_data_2_sampling_ratios.csv"
+  ],
+  "notes": "AGU26 poster version of Figure 7 (not a manuscript/SI figure), simplified to Koppen-Geiger + Aridity only. Same data/gates as the manuscript panels a/c; verified against review/figures/draft_manuscript_v1/SupTables/supplementary_data_2_sampling_ratios.csv (koppen all_match=TRUE, aridity all_match=TRUE). 16.57x22.22in, text scaled x4.6, lines x3; measured min text 32.2pt. See .legend.txt."
+}

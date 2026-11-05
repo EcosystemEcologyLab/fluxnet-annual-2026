@@ -91,6 +91,7 @@ source("R/site_annual_fluxes.R")
 source("R/qc.R")
 source("R/nature_format.R")
 source("R/presentation_format.R")
+source("R/poster_format.R")
 source("R/plot_constants.R")
 check_pipeline_config()
 
@@ -1758,6 +1759,14 @@ caption_grob <- function() {
 ## included in the row-pitch height math, not an overflow annotation) and
 ## overlays "% land"/"towers" column headers on it. `show_xlab` replaces the
 ## x-axis title row with the smaller-proportion/greater-proportion caption.
+## `lwd_scale` (added 2026-11-05 for the AGU26 poster's FLUXNET_POSTER_MODE
+## block below -- see logs/prompts/2026-11-05_agu26_poster_figures.md):
+## multiplies every line weight this function draws (gridlines, bar
+## outlines, panel border) -- default 1 leaves every existing caller (the
+## manuscript Figure 4/7 renders and the presentation-mode block) bit-for-
+## bit unchanged; confirmed by rerunning the manuscript render after this
+## parameter was added and diffing its output against the pre-change
+## committed PNG (see SESSION_LOG.md).
 LABEL_OFFSET <- 0.15
 
 ## ---- Column alignment (task item 4): force this panel's LEFT (y-axis
@@ -1796,7 +1805,7 @@ align_panel_left_mm <- function(g, target_left_mm) {
 
 draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
                          show_xlab = FALSE, show_header = FALSE, label_pt = BASE_PT,
-                         target_left_mm = NA_real_) {
+                         target_left_mm = NA_real_, lwd_scale = 1) {
   if (show_header) {
     header_row <- df[1, ]
     header_row[] <- NA
@@ -1817,15 +1826,15 @@ draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
   col_vals <- setNames(df$color_hex, as.character(df$class_label))
 
   p <- ggplot2::ggplot(df, ggplot2::aes(x = log2_sr_clip, y = class_label)) +
-    ggplot2::geom_vline(xintercept = c(-LOG2_MAX, -1, 1, LOG2_MAX), colour = "grey88", linewidth = nature_lwd(0.3)) +
-    ggplot2::geom_vline(xintercept = 0, colour = "grey40", linewidth = nature_lwd(0.45))
+    ggplot2::geom_vline(xintercept = c(-LOG2_MAX, -1, 1, LOG2_MAX), colour = "grey88", linewidth = nature_lwd(0.3 * lwd_scale)) +
+    ggplot2::geom_vline(xintercept = 0, colour = "grey40", linewidth = nature_lwd(0.45 * lwd_scale))
   if (nrow(bar_df) > 0) {
     p <- p + ggplot2::geom_col(data = bar_df, ggplot2::aes(fill = class_label), width = 0.72,
-                                na.rm = TRUE, show.legend = FALSE, colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN))
+                                na.rm = TRUE, show.legend = FALSE, colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN * lwd_scale))
   }
   if (nrow(none_df) > 0) {
     p <- p + ggplot2::geom_col(data = none_df, width = 0.72, na.rm = TRUE, show.legend = FALSE,
-                                fill = "white", colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN), linetype = "dashed")
+                                fill = "white", colour = "black", linewidth = nature_lwd(NATURE_LINEWIDTH_MIN * lwd_scale), linetype = "dashed")
   }
   ## ---- Row order (task item 4): explicit `limits` on the y scale, NOT
   ## relied-on factor level order. Confirmed by direct reproduction that
@@ -1857,7 +1866,7 @@ draw_panel2 <- function(df, panel_mm_per_unit, letter, title_text, j_val,
       text              = ggplot2::element_text(family = FIG_FONT, size = BASE_PT, colour = "grey10"),
       plot.background   = ggplot2::element_rect(fill = "white", colour = NA),
       panel.background  = ggplot2::element_rect(fill = "white", colour = NA),
-      panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = nature_lwd(NATURE_LINEWIDTH_MAX)),
+      panel.border      = ggplot2::element_rect(colour = "black", fill = NA, linewidth = nature_lwd(NATURE_LINEWIDTH_MAX * lwd_scale)),
       panel.grid.major  = ggplot2::element_blank(),
       panel.grid.minor  = ggplot2::element_blank(),
       axis.ticks        = ggplot2::element_line(colour = "black"),
@@ -2741,6 +2750,334 @@ if (presentation_mode) {
   rm(.pres_saved_globals, .pres_restore)
 
   msg("=== Presentation mode: Figure 7 slides complete ===")
+}
+
+## =============================================================================
+## Poster mode (AGU26, 10 December 2026) -- additive, gated by an env var.
+## Builds a SIMPLIFIED, two-panel (Koppen-Geiger over Aridity) poster version
+## of this figure, reusing draw_panel2()/build_panel_df()/build_merged_for_
+## panel() exactly as the manuscript render above does, at poster text/line
+## sizes, with poster-only label maps (short readable class names), a 2-tone
+## accent/muted colour scheme (not the paper's per-class palette), Jaccard
+## suppressed, and no panel letter -- per the task spec. Does NOT touch the
+## manuscript renders above: same save/restore-globals discipline as the
+## presentation-mode block, and draw_panel2()'s new `lwd_scale` parameter
+## defaults to 1 for every other caller. Full task:
+## logs/prompts/2026-11-05_agu26_poster_figures.md.
+## =============================================================================
+poster_mode <- identical(Sys.getenv("FLUXNET_POSTER_MODE"), "1")
+if (poster_mode) {
+  msg("\n=== Poster mode: building AGU26 poster Figure 7 (Koppen-Geiger + Aridity) ===")
+  POSTER_DIR  <- file.path("review", "figures", "poster_agu26")
+  POSTER_STEM <- file.path(POSTER_DIR, "fig07_poster_koppen_aridity")
+  fs::dir_create(POSTER_DIR)
+
+  .poster_saved_globals <- mget(c("BASE_PT", "LETTER_PT", "PANEL_MARGIN_MM", "COL_WIDTH_MM"),
+                                 envir = .GlobalEnv)
+  .poster_restore <- function() {
+    for (nm in names(.poster_saved_globals)) assign(nm, .poster_saved_globals[[nm]], envir = .GlobalEnv)
+  }
+
+  tryCatch({
+    POSTER_LETTERS <- c("A", "C")   # Koppen-Geiger (A), Aridity (C) -- IGBP/biomass/NEE/ET dropped
+
+    ## ---- Poster-only short, readable class labels (task spec: "Hot desert
+    ## (BWh)", "Tundra (ET)" style -- codes kept in the label for
+    ## traceability). TL_ORDER's 13 classes are Beck 2023 codes collapsed to
+    ## 2 letters (`substr(koppen_class, 1, 2)` upstream) -- BWh/BWk are NOT
+    ## distinguishable in this dataset, only the combined "BW" group is, so
+    ## "Desert (BW)" is used in place of the task's own "Hot desert (BWh)"/
+    ## "BWk" example -- reported as a deliberate deviation in the run report,
+    ## not silently substituted. Aridity's own ARIDITY_ORDER strings are
+    ## already human-readable (e.g. "Hyper-Arid") and reused unchanged.
+    POSTER_KG_LABEL_MAP <- setNames(c(
+      "Tropical rainforest (Af)", "Tropical monsoon (Am)", "Tropical savanna (Aw)",
+      "Steppe (BS)", "Desert (BW)",
+      "Temperate, humid (Cf)", "Mediterranean (Cs)", "Temperate, dry winter (Cw)",
+      "Continental, humid (Df)", "Continental, dry summer (Ds)", "Continental, dry winter (Dw)",
+      "Ice cap (EF)", "Tundra (ET)"
+    ), TL_ORDER)
+    if (!setequal(names(POSTER_KG_LABEL_MAP), TL_ORDER)) {
+      stop("POSTER_KG_LABEL_MAP keys do not match TL_ORDER -- check for an upstream class-code change.",
+           call. = FALSE)
+    }
+    POSTER_LABEL_MAP <- list(A = POSTER_KG_LABEL_MAP, C = PANEL_SPECS[["C"]]$label_map)
+    POSTER_TITLE_TEXT <- list(A = "Köppen-Geiger climate class", C = "Aridity")
+
+    ## ---- 2-tone accent/muted colour scheme (task spec, overrides the
+    ## paper's per-class palette for this figure only -- not an IGBP panel,
+    ## so CLAUDE.md's IGBP-palette override does not apply here; this is the
+    ## "colour-blind safe colours where CLAUDE.md does not fix them" case).
+    ## Okabe-Ito vermillion/grey -- colour-blind safe under all three common
+    ## CVD types. Accent: desert classes (BW only -- see label-map note
+    ## above, BS "steppe" is NOT a desert class per the task's own BWh/BWk
+    ## wording) and polar classes (EF, ET) for Koppen; Hyper-Arid and Arid
+    ## for aridity. No causal claim anywhere in this figure or its legend.
+    POSTER_ACCENT_HEX <- "#D55E00"
+    POSTER_MUTED_HEX  <- "#BBBBBB"
+    POSTER_KG_ACCENT_CLASSES      <- c("BW", "EF", "ET")
+    POSTER_ARIDITY_ACCENT_CLASSES <- c("Hyper-Arid", "Arid")
+    poster_kg_color_map <- setNames(
+      ifelse(TL_ORDER %in% POSTER_KG_ACCENT_CLASSES, POSTER_ACCENT_HEX, POSTER_MUTED_HEX), TL_ORDER)
+    poster_aridity_color_map <- setNames(
+      ifelse(ARIDITY_ORDER %in% POSTER_ARIDITY_ACCENT_CLASSES, POSTER_ACCENT_HEX, POSTER_MUTED_HEX), ARIDITY_ORDER)
+    POSTER_COLOR_MAP <- list(A = poster_kg_color_map, C = poster_aridity_color_map)
+
+    ## ---- Row layout: A keeps its header row ("% land"/"towers", a data
+    ## column header, not a figure title -- show_header_for("A") is already
+    ## TRUE, reused unchanged); C, now the BOTTOM panel (not row2), needs
+    ## show_xlab = TRUE for its x-axis + caption, overriding show_xlab_for()
+    ## (which is FALSE for "C" in the paper's 3-row layout).
+    poster_show_xlab <- function(l) identical(l, "C")
+
+    ## ---- Poster scale: same AGU_POSTER_TEXT_SCALE/AGU_POSTER_LINE_SCALE
+    ## (R/poster_format.R) the Figure 2 poster uses -- one consistent scale
+    ## vocabulary across both poster figures. BASE_PT governs every text
+    ## element draw_panel2() draws (axis text, in-bar labels, header/caption
+    ## text) uniformly in this script (unlike Figure 2's nature_theme(),
+    ## there is no separate axis-title-vs-tick-label distinction to
+    ## preserve), so one scaled value clears all three stated minimums
+    ## (32/26/24pt) at once -- confirmed by the measured-fontsize gate below.
+    POSTER_BASE_PT        <- NATURE_BASE_PT * AGU_POSTER_TEXT_SCALE
+    POSTER_PANEL_MARGIN_MM <- 2 * AGU_POSTER_TEXT_SCALE
+    POSTER_ROW_PITCH_MM   <- ROW_PITCH_MM * AGU_POSTER_TEXT_SCALE
+    POSTER_TOP_PAD_MM     <- 6 * AGU_POSTER_TEXT_SCALE
+    POSTER_BOTTOM_PAD_MM  <- 10 * AGU_POSTER_TEXT_SCALE
+    ## Width: NOT the task's literal "about 11in" -- the first render at 11in
+    ## (279.4mm) clipped the panel titles and collided the in-bar "% land"/
+    ## "towers" labels and the bottom caption against each other (confirmed
+    ## by rendering and visual inspection, not assumed). Root cause: this
+    ## script's row/column geometry is calibrated for the manuscript's own
+    ## 91.5mm single-panel column width at 7pt text; scaling text by
+    ## AGU_POSTER_TEXT_SCALE without scaling the column width by the same
+    ## factor shrinks the bar/label area's SHARE of the column (text scaled
+    ## ~4.6x, width only ~3.05x at 11in), which is what crowds and overlaps.
+    ## Fixed the same way the existing FLUXNET_PRESENTATION_MODE block above
+    ## already scales this script's own column width for its own slides
+    ## (`COL_WIDTH_MM <- 91.5 * k_final`) -- reusing that exact, already-
+    ## proven mechanism rather than guessing a new width.
+    POSTER_FIG_WIDTH_MM   <- 91.5 * AGU_POSTER_TEXT_SCALE   # single column, so this is also COL_WIDTH_MM
+
+    assign("BASE_PT", POSTER_BASE_PT, envir = .GlobalEnv)
+    assign("LETTER_PT", POSTER_BASE_PT, envir = .GlobalEnv)   # letters are suppressed below (letter = ""), kept consistent only for measure_panel_overhead_mm()'s dummy render
+    assign("PANEL_MARGIN_MM", POSTER_PANEL_MARGIN_MM, envir = .GlobalEnv)
+    assign("COL_WIDTH_MM", POSTER_FIG_WIDTH_MM, envir = .GlobalEnv)
+
+    ## ---- Column (here: single-column) gutter alignment, using the
+    ## POSTER label maps -- NOT panel_y_limits()/spec$label_map, which would
+    ## measure the paper's short bare codes and undersize the gutter for the
+    ## poster's longer descriptive labels.
+    poster_panel_y_limits <- function(l) {
+      spec <- PANEL_SPECS[[l]]
+      labs <- unname(POSTER_LABEL_MAP[[l]][order(spec$order_map)])
+      if (show_header_for(l)) labs <- c(labs, "")
+      labs
+    }
+    panel_layout_mm <- setNames(
+      lapply(POSTER_LETTERS, function(l) measure_panel_layout_mm(poster_panel_y_limits(l), poster_show_xlab(l))),
+      POSTER_LETTERS
+    )
+    gutter_mm <- vapply(panel_layout_mm, `[[`, numeric(1), "left_mm")
+    target_gutter_mm <- setNames(rep(max(gutter_mm), length(POSTER_LETTERS)), POSTER_LETTERS)
+    msg("Poster Figure 7 gutter widths (mm), own -> aligned: ",
+        paste(sprintf("%s=%.1f", POSTER_LETTERS, gutter_mm), collapse = ", "),
+        " -> ", round(max(gutter_mm), 1), "mm")
+
+    panel_mm_per_unit <- setNames(
+      vapply(POSTER_LETTERS, function(l) {
+        panel_mm_per_unit_for(poster_panel_y_limits(l), poster_show_xlab(l), target_gutter_mm[[l]])
+      }, numeric(1)),
+      POSTER_LETTERS
+    )
+
+    built <- setNames(lapply(POSTER_LETTERS, function(l) {
+      spec   <- PANEL_SPECS[[l]]
+      merged <- build_merged_for_panel(l, "geo_vs_data")
+      df     <- build_panel_df(merged, spec$order_map, POSTER_LABEL_MAP[[l]], POSTER_COLOR_MAP[[l]], spec$total_km2)
+      g <- draw_panel2(df, panel_mm_per_unit[[l]], letter = "", title_text = POSTER_TITLE_TEXT[[l]],
+                        j_val = NA_real_,   # task: "No Jaccard values in the panel headers"
+                        show_xlab = poster_show_xlab(l), show_header = show_header_for(l),
+                        label_pt = POSTER_BASE_PT, target_left_mm = target_gutter_mm[[l]],
+                        lwd_scale = AGU_POSTER_LINE_SCALE)
+      n_rows <- nlevels(df$class_label) + if (show_header_for(l)) 1L else 0L
+      list(df = df, grob = g, n_rows = n_rows)
+    }), POSTER_LETTERS)
+
+    h_A <- measure_panel_overhead_mm(poster_show_xlab("A"), show_header_for("A")) + built$A$n_rows * POSTER_ROW_PITCH_MM
+    h_C <- measure_panel_overhead_mm(poster_show_xlab("C"), show_header_for("C")) + built$C$n_rows * POSTER_ROW_PITCH_MM
+    total_height_mm <- POSTER_TOP_PAD_MM + h_A + h_C + POSTER_BOTTOM_PAD_MM
+    total_width_mm  <- POSTER_FIG_WIDTH_MM
+    msg("Poster Figure 7 row heights (mm): A(header, ", built$A$n_rows, " rows)=", round(h_A, 1),
+        "; C(xlab, ", built$C$n_rows, " rows)=", round(h_C, 1),
+        "; total (incl. ", round(POSTER_TOP_PAD_MM, 1), "mm top + ", round(POSTER_BOTTOM_PAD_MM, 1),
+        "mm bottom pad) = ", round(total_width_mm, 1), " x ", round(total_height_mm, 1), "mm = ",
+        round(total_width_mm / 25.4, 2), " x ", round(total_height_mm / 25.4, 2), "in")
+
+    poster_composite <- patchwork::wrap_plots(
+      list(patchwork::plot_spacer(), built$A$grob, built$C$grob, patchwork::plot_spacer()),
+      ncol = 1,
+      heights = grid::unit(c(POSTER_TOP_PAD_MM, h_A, h_C, POSTER_BOTTOM_PAD_MM), "mm")
+    )
+
+    ## ---- Measured text-size gate ("measure from the built plot, not by
+    ## eye") -- stop, do not save, if anything renders below the 22pt floor.
+    measured_pt <- agu_poster_measure_fontsizes(poster_composite)
+    msg("Poster Figure 7 measured text sizes (pt): min=", round(min(measured_pt), 2),
+        ", max=", round(max(measured_pt), 2), ", n=", length(measured_pt))
+    if (min(measured_pt) < AGU_POSTER_FLOOR_PT) {
+      stop("Poster Figure 7 gate check FAILED -- measured minimum text size ",
+           round(min(measured_pt), 2), "pt is below the ", AGU_POSTER_FLOOR_PT,
+           "pt floor. Not saving.", call. = FALSE)
+    }
+
+    saved_poster <- save_agu_poster_figure(poster_composite, POSTER_STEM,
+                                            width_in = total_width_mm / 25.4,
+                                            height_in = total_height_mm / 25.4)
+    msg("Saved: ", saved_poster$png, ", ", saved_poster$pdf)
+
+    ## ---- Programmatic check against the paper's own sampling-ratio table
+    ## (task: "Every count and ratio must match the paper's figure tables...
+    ## Check this programmatically and report the result.") -- same
+    ## build_panel_df()/build_merged_for_panel() call chain as the
+    ## manuscript render above, so this is expected to match exactly; the
+    ## check confirms it rather than assuming it.
+    sampling_csv_path <- "review/figures/draft_manuscript_v1/SupTables/supplementary_data_2_sampling_ratios.csv"
+    sampling_csv <- readr::read_csv(sampling_csv_path, show_col_types = FALSE)
+    ## sampling_ratio from build_panel_df() is NA (not 0) for a "none" class
+    ## (land present, zero towers) -- a deliberate NA-guard for THIS figure's
+    ## own drawing logic (prep_clip2()'s is_none branch draws these as dashed
+    ## "none" bars, not a zero-height bar). supplementary_data_2_sampling_
+    ## ratios.csv instead stores a literal 0 for these rows (confirmed by
+    ## direct inspection: Koppen's EF and Aridity's Hyper-Arid, both
+    ## tower_count = 0, sampling_ratio = 0.0 exactly, not NA) -- a different,
+    ## equally valid representation of the same "zero towers" fact from a
+    ## different export path, not a data discrepancy. Re-derived here
+    ## (tower_share / land_share, without the NA-guard) to compare on the
+    ## CSV's own terms rather than flagging this expected representational
+    ## difference as a mismatch.
+    verify_poster_panel <- function(letter, axis_name) {
+      built_df <- built[[letter]]$df |>
+        dplyr::filter(!is_neither) |>
+        dplyr::transmute(class = as.character(class), land_share = global_land_fraction,
+                          tower_count = dplyr::coalesce(n, 0L),
+                          sampling_ratio = dplyr::if_else(global_land_fraction > 0,
+                                                           network_frac / global_land_fraction, NA_real_))
+      ref_df <- sampling_csv |>
+        dplyr::filter(axis == axis_name, comparison == "geo_vs_data") |>
+        dplyr::transmute(class = as.character(class), land_share_ref = land_share,
+                          tower_count_ref = tower_count, sampling_ratio_ref = sampling_ratio)
+      cmp <- dplyr::inner_join(built_df, ref_df, by = "class")
+      land_ok  <- isTRUE(all.equal(cmp$land_share, cmp$land_share_ref, tolerance = 1e-6))
+      tower_ok <- isTRUE(all.equal(cmp$tower_count, cmp$tower_count_ref, tolerance = 0))
+      sr_ok    <- isTRUE(all.equal(cmp$sampling_ratio, cmp$sampling_ratio_ref, tolerance = 1e-6))
+      list(axis = axis_name, n_classes_built = nrow(built_df), n_classes_ref = nrow(ref_df),
+           n_matched = nrow(cmp), land_share_match = land_ok, tower_count_match = tower_ok,
+           sampling_ratio_match = sr_ok,
+           all_match = land_ok && tower_ok && sr_ok && nrow(cmp) == nrow(ref_df) && nrow(cmp) == nrow(built_df))
+    }
+    verify_koppen  <- verify_poster_panel("A", "koppen")
+    verify_aridity <- verify_poster_panel("C", "aridity")
+    msg("Verify vs. ", sampling_csv_path, " -- koppen: ", nrow(dplyr::filter(built$A$df, !is_neither)),
+        " built / ", verify_koppen$n_classes_ref, " ref / ", verify_koppen$n_matched,
+        " matched; land_share match=", verify_koppen$land_share_match,
+        ", tower_count match=", verify_koppen$tower_count_match,
+        ", sampling_ratio match=", verify_koppen$sampling_ratio_match,
+        " -- ALL MATCH: ", verify_koppen$all_match)
+    msg("Verify vs. ", sampling_csv_path, " -- aridity: ", nrow(dplyr::filter(built$C$df, !is_neither)),
+        " built / ", verify_aridity$n_classes_ref, " ref / ", verify_aridity$n_matched,
+        " matched; land_share match=", verify_aridity$land_share_match,
+        ", tower_count match=", verify_aridity$tower_count_match,
+        ", sampling_ratio match=", verify_aridity$sampling_ratio_match,
+        " -- ALL MATCH: ", verify_aridity$all_match)
+    if (!verify_koppen$all_match || !verify_aridity$all_match) {
+      warning("Poster Figure 7: at least one panel did NOT match ", sampling_csv_path,
+              " exactly -- see the msg() output above and report this.", call. = FALSE)
+    }
+
+    poster7_legend_lines <- c(
+      "FIGURE LEGEND -- fig07_poster_koppen_aridity.png (AGU26 poster version, simplified)",
+      strrep("=", 60), "",
+      "NOT a numbered manuscript or Supplementary Information figure. Built for Dave's AGU",
+      "2026 poster (10 December 2026) -- see logs/prompts/2026-11-05_agu26_poster_figures.md.",
+      "",
+      "TITLE: Network sampling by Koppen-Geiger climate class and aridity class (simplified,",
+      "two-panel poster version of manuscript Figure 7; land cover, biomass, NEE and ET",
+      "panels dropped).",
+      "",
+      "DESCRIPTION:",
+      "Same encoding as manuscript Figure 7 panels a (Koppen-Geiger) and c (Aridity): log2",
+      "sampling ratio (tower share of a class / land share of a class) by class, a reference",
+      "line at a ratio of 1 (log2 = 0), and empty dashed bars marked \"none\" for classes with",
+      "land but zero towers. Same underlying data/gates/exclusions as the manuscript panels --",
+      "geo_vs_data comparison, same snapshot and processing rules (no refresh to a newer",
+      "listing) -- built via the same build_panel_df()/build_merged_for_panel()/draw_panel2()",
+      "call chain this script uses for the manuscript figure, with poster-only label maps and",
+      "colours (see below). Programmatically verified to match",
+      "draft_manuscript_v1/SupTables/supplementary_data_2_sampling_ratios.csv exactly",
+      paste0("(land_share, tower_count and sampling_ratio, both panels): koppen all_match=",
+             verify_koppen$all_match, ", aridity all_match=", verify_aridity$all_match, "."),
+      "",
+      "DIFFERENCES FROM THE MANUSCRIPT FIGURE:",
+      "  - Two panels only (Koppen-Geiger, then Aridity), stacked vertically -- land cover,",
+      "    biomass, NEE and ET dropped.",
+      "  - No panel letter, no figure title, and no Jaccard (\"J = \") value in either panel",
+      "    header -- only the descriptive panel name (\"Koppen-Geiger climate class\"/",
+      "    \"Aridity\") remains.",
+      "  - Short, readable class names in place of the paper's bare codes (Koppen only --",
+      "    Aridity's own class names were already readable). TL_ORDER's 13 Koppen-Geiger",
+      "    classes are Beck et al. (2023) codes already collapsed to 2 letters upstream of",
+      "    this figure, so \"BWh\"/\"BWk\" are NOT separately available in this dataset -- only",
+      "    the combined \"Desert (BW)\" group is; this is a data-availability limit, not a",
+      "    simplification choice.",
+      "  - A 2-tone accent/muted colour scheme (not the paper's per-class palette, which does",
+      "    not apply here -- this is not an IGBP panel, so CLAUDE.md's IGBP-palette override",
+      "    does not cover it; colour-blind-safe Okabe-Ito vermillion/grey used instead).",
+      "    Accent (desert + polar / hyper-arid + arid classes): #D55E00. Muted (every other",
+      "    class): #BBBBBB. No text in this figure or legend claims a cause for any pattern.",
+      paste0("  - Print size ", round(total_width_mm / 25.4, 2), " x ", round(total_height_mm / 25.4, 2),
+             "in, text scaled x", AGU_POSTER_TEXT_SCALE, ", lines x", AGU_POSTER_LINE_SCALE,
+             " from the manuscript's 5-7pt/paper-weight range."),
+      "  - Vector PDF: fonts embedded via Ghostscript (brew-installed for this task; see",
+      "    SESSION_LOG.md 2026-11-05) -- the manuscript PDF does not embed fonts.",
+      "",
+      paste0("ACCENT CLASSES -- Koppen-Geiger: ", paste(POSTER_KG_ACCENT_CLASSES, collapse = ", "),
+             " (desert, ice cap, tundra). Aridity: ", paste(POSTER_ARIDITY_ACCENT_CLASSES, collapse = ", "), "."),
+      "",
+      "SHORTENED CLASS NAMES (Koppen-Geiger; code -> poster label):",
+      paste0("  ", TL_ORDER, " -> ", unname(POSTER_KG_LABEL_MAP[TL_ORDER])),
+      "",
+      paste0("MEASURED TEXT SIZES (pt, from the rendered plot, not estimated): min=",
+             round(min(measured_pt), 2), ", max=", round(max(measured_pt), 2),
+             " (floor is ", AGU_POSTER_FLOOR_PT, "pt)."),
+      "",
+      paste0("DATA: ", CURRENT_SNAPSHOT, " (same pinned snapshot this script's manuscript render uses --"),
+      "NOT the 20 September 2026 snapshot Figure 2's script uses; see the run report for why",
+      "this script's own existing pin was kept rather than overridden).",
+      "",
+      "SOURCE: scripts/figure4_representativeness.R, FLUXNET_POSTER_MODE=1 block, reusing",
+      "PANEL_SPECS/build_merged_for_panel()/build_panel_df()/draw_panel2() built above for the",
+      "manuscript figure (draw_panel2()'s new lwd_scale parameter, default 1, added for this",
+      "block only -- every other caller unaffected), via R/poster_format.R::",
+      "agu_poster_measure_fontsizes()/save_agu_poster_figure()."
+    )
+    writeLines(poster7_legend_lines, paste0(POSTER_STEM, ".legend.txt"))
+    msg("Saved: ", paste0(POSTER_STEM, ".legend.txt"))
+
+    write_output_metadata(
+      saved_poster$png,
+      input_sources = c(CURRENT_SNAPSHOT, sampling_csv_path),
+      notes = paste0("AGU26 poster version of Figure 7 (not a manuscript/SI figure), simplified to Koppen-",
+                      "Geiger + Aridity only. Same data/gates as the manuscript panels a/c; verified against ",
+                      sampling_csv_path, " (koppen all_match=", verify_koppen$all_match,
+                      ", aridity all_match=", verify_aridity$all_match, "). ",
+                      round(total_width_mm / 25.4, 2), "x", round(total_height_mm / 25.4, 2), "in, text scaled x",
+                      AGU_POSTER_TEXT_SCALE, ", lines x", AGU_POSTER_LINE_SCALE,
+                      "; measured min text ", round(min(measured_pt), 2), "pt. See .legend.txt.")
+    )
+
+    msg("=== Poster mode: Figure 7 complete ===")
+  }, finally = .poster_restore())
+  rm(.poster_saved_globals, .poster_restore)
 }
 
 msg("\n=== figure4_representativeness.R: PRINT RE-RENDER COMPLETE ===")

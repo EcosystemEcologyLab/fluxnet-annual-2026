@@ -4,6 +4,23 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-05 — AGU26 poster figures (Fig. 2 and simplified Fig. 7), started
+
+Building two poster-size figures for Dave's AGU 2026 poster (10 December 2026): a poster
+version of Fig. 2 (cumulative site-years by IGBP) and a simplified, two-panel version of
+Fig. 7 (network sampling — Köppen-Geiger and aridity only). Full prompt:
+`logs/prompts/2026-11-05_agu26_poster_figures.md`.
+
+Plan: new `R/poster_format.R` (parallel to `R/presentation_format.R`, not modifying it) plus
+env-var-gated `FLUXNET_POSTER_MODE` blocks added to `scripts/generate_fig_cumulative_siteyears.R`
+and `scripts/figure4_representativeness.R`, writing only to the new
+`review/figures/poster_agu26/` directory. Same pinned snapshot
+(`fluxnet_shuttle_snapshot_20260920T102211.csv`) and processing rules as the paper figures —
+no refresh to a newer listing. Paper figures and `review/figures/draft_manuscript_v1/` are not
+to be touched; confirmed by `git status` at the end.
+
+---
+
 ## 2026-11-05 — GSL cleanup step 1: folder tidy-up, started
 
 Reorganizing `GSL_definition/` (full prompt: `logs/prompts/2026-11-05_gsl_cleanup_step1.md`).

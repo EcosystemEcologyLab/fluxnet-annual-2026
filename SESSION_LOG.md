@@ -4,6 +4,61 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-05 — AGU26 poster figures (Fig. 2 and simplified Fig. 7), done
+
+Full report: `review/figures/poster_agu26/report_2026-11-05.md`. Prompt:
+`logs/prompts/2026-11-05_agu26_poster_figures.md`.
+
+Built two new poster-size figures, `review/figures/poster_agu26/fig02_poster_cumulative_
+siteyears_igbp.{png,pdf,legend.txt,meta.json}` (20×15in) and `fig07_poster_koppen_aridity.{png,
+pdf,legend.txt,meta.json}` (16.57×22.22in, not "about 11×16in" — see report for why), each as
+a 300dpi PNG plus a vector PDF with embedded fonts (Ghostscript installed via `brew install
+ghostscript` for this, with the user's explicit sign-off; post-process font embedding added to
+the new `R/poster_format.R`).
+
+1. **Built via an additive `FLUXNET_POSTER_MODE` env-var-gated block** in each paper script
+   (`scripts/generate_fig_cumulative_siteyears.R`, `scripts/figure4_representativeness.R`),
+   mirroring the existing `FLUXNET_PRESENTATION_MODE` blocks' structure, not a separate wrapper
+   script. New `R/poster_format.R` (parallel to, does not modify, `R/presentation_format.R`):
+   `agu_poster_scale_ggplot()`, `agu_poster_measure_fontsizes()` (renders the built plot and
+   recursively reads every `gpar(fontsize=)` — a measured, not estimated, text-size gate; both
+   scripts `stop()` rather than save if anything renders below 22pt), `agu_poster_embed_fonts()`,
+   `save_agu_poster_figure()`.
+2. **`draw_panel2()`** (inline in `figure4_representativeness.R`) got one new, default-preserving
+   parameter, `lwd_scale = 1`, to scale its hardcoded line weights for the poster only — confirmed
+   non-breaking by rerunning the manuscript's own render afterward and diffing its PNG output
+   against the pre-change committed bytes (byte-identical).
+3. **Figure 7 is simplified to Köppen-Geiger + Aridity only** (land cover/biomass/NEE/ET
+   dropped), no panel letters, no Jaccard values, short readable Köppen-Geiger class labels
+   (`BW`→"Desert (BW)" etc. — Beck 2023 codes are already collapsed to 2 letters upstream, so
+   "BWh"/"BWk" from the task's own example wording aren't separately available), and a 2-tone
+   colour-blind-safe accent/muted scheme (desert/polar/hyper-arid/arid classes accented) in
+   place of the paper's per-class palette (not an IGBP panel, so CLAUDE.md's IGBP-palette
+   override doesn't apply to it).
+4. **Verified programmatically against `draft_manuscript_v1/SupTables/
+   supplementary_data_2_sampling_ratios.csv`**: both panels match exactly (`land_share`,
+   `tower_count`, `sampling_ratio`). One representational difference found and reconciled
+   along the way, not a data bug: `build_panel_df()`'s own `sampling_ratio` is `NA` for a
+   "none" (zero-tower) class, by design, for this figure's own dashed-bar drawing logic; the
+   CSV stores a literal `0` for the same rows. The verification step re-derives the ratio
+   without that NA-guard to compare on the CSV's own terms; the figure's drawing logic itself
+   was not touched.
+5. **Figure 7's own script is pinned to the 1 September 2026 snapshot**
+   (`fluxnet_shuttle_snapshot_20260901T094522.csv`), not the 20 September snapshot the task
+   named and Figure 2's script uses. Kept the script's own existing pin rather than overriding
+   it, since the task's "every count and ratio must match the paper's figure tables" is the
+   stronger, more specific requirement — the paper's own Figure 7 and its sampling-ratio table
+   were themselves built from the 1 September pin.
+6. **Paper confirmed untouched**: `git status --short review/figures/draft_manuscript_v1/
+   review/figures/representativeness/` is empty. `figure4_representativeness.R` copies its own
+   output straight into `draft_manuscript_v1/` on every full run (not just its own working
+   directory, as first assumed) — content (PNG) came back byte-identical on every rerun needed
+   to build/debug the poster; `git checkout --` restored the timestamp-only PDF/`.meta.json`
+   diffs after each one, along with `outputs/session_info.txt` and the `data/snapshots/
+   *.meta.json` companions the script's earlier phases also touch on every run.
+
+---
+
 ## 2026-11-05 — AGU26 poster figures (Fig. 2 and simplified Fig. 7), started
 
 Building two poster-size figures for Dave's AGU 2026 poster (10 December 2026): a poster

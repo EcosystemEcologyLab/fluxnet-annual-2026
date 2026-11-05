@@ -222,6 +222,10 @@ fig_iav <- p_a / p_b + plot_layout(heights = c(1.25, 1))
 ## ---- Save: PNG only (as asked), under figures/drafts/ -- NOT
 ## save_gsl_figure() (writes PDF, and into GSL_FIG_DIR's root "Figure N"
 ## numbered sequence, which this explicitly must not touch/overwrite). ----
+## Retired 2026-11-05 (GSL cleanup step 1): this draft figure is archived to
+## archive/expanded/figures/drafts/; the table below (iav_15sites.csv) is
+## still live and unaffected. Disabled rather than deleted -- see archive/README.md.
+if (FALSE) {
 drafts_dir <- file.path(GSL_FIG_DIR, "drafts")
 if (!dir.exists(drafts_dir)) dir.create(drafts_dir, recursive = TRUE)
 draft_stem <- file.path(drafts_dir, "Figure GSL-IAV draft")
@@ -255,5 +259,6 @@ write_meta(
   notes = "Draft figure (Dave's design) -- not a numbered manuscript figure. PNG only, PeerJ sizing/dpi."
 )
 message("Saved: ", draft_stem, ".png/.legend.txt/.meta.json")
+}
 
 message("--- 09_figure_iav_15sites.R: done ---")

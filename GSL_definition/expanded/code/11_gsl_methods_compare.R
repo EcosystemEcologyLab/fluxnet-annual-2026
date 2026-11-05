@@ -1442,6 +1442,9 @@ dodge_width <- 0.8
 method_rank <- as.numeric(factor(fig_data$method_f, levels = FIG_METHODS$label))
 fig_data$y_num <- as.numeric(fig_data$site_id) + (method_rank - (n_methods + 1) / 2) * (dodge_width / n_methods)
 
+## Retired 2026-11-05 (GSL cleanup step 1): these three draft figures are archived to
+## archive/expanded/figures/drafts/; disabled rather than deleted -- see archive/README.md.
+if (FALSE) {
 p_dotplot <- ggplot(fig_data, aes(y = y_num, colour = method_f)) +
   geom_errorbar(aes(xmin = xmin, xmax = xmax), orientation = "y", width = 0, alpha = 0.6) +
   geom_point(data = dplyr::filter(fig_data, method != "M2"), aes(x = mean_gsl), size = 1.6) +
@@ -1463,11 +1466,14 @@ writeLines(c(
 write_meta(file.path(drafts_dir, "GSL methods dotplot draft.png"), input_sources = c(file.path(EXP_TABLES, "gsl_methods_site_summary.csv"), file.path(EXP_TABLES, "gsl_methods_m2_grid22.csv")),
            notes = "VERSION 4. Draft figure. Calendar year_rule only; M7 now harmonic-smoothed.")
 message("Saved: 'GSL methods dotplot draft'.png/.legend.txt/.meta.json")
+}
 
 cor_long <- bind_rows(cor_to_long(cor_gsl, "GSL"), cor_to_long(start_cor, "Start date"), cor_to_long(end_cor, "End date")) |>
   rename(r = value) |>
   mutate(row = factor(row, levels = FIG_METHODS$label), col = factor(col, levels = rev(FIG_METHODS$label)),
          which = factor(which, levels = c("GSL", "Start date", "End date")))
+## Retired 2026-11-05 (GSL cleanup step 1): archived to archive/expanded/figures/drafts/.
+if (FALSE) {
 p_agree <- ggplot(cor_long, aes(x = row, y = col, fill = r)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.2f", r)), size = PEERJ_ANNOTATION_PT / .pt * 0.7) +
@@ -1487,6 +1493,7 @@ writeLines(c(
 write_meta(file.path(drafts_dir, "GSL methods agreement draft.png"), input_sources = c(file.path(EXP_TABLES, "gsl_methods_site_year.csv"), file.path(EXP_TABLES, "gsl_methods_agreement.csv")),
            notes = "VERSION 4. Draft figure. Calendar year_rule only.")
 message("Saved: 'GSL methods agreement draft'.png/.legend.txt/.meta.json")
+}
 
 RASTER_SITES <- c("US-Ha1", "US-Wkg", "US-SRM")
 RASTER_METHODS <- FIG_METHODS |> filter(!(method == "M3"))
@@ -1495,6 +1502,8 @@ raster_data <- gy_cal |>
   inner_join(RASTER_METHODS, by = c("method", "sub")) |>
   mutate(start_doy = lubridate::yday(start_date), end_doy = lubridate::yday(end_date),
          label = factor(label, levels = RASTER_METHODS$label), site_id = factor(site_id, levels = RASTER_SITES))
+## Retired 2026-11-05 (GSL cleanup step 1): archived to archive/expanded/figures/drafts/.
+if (FALSE) {
 p_raster <- ggplot(raster_data) +
   geom_segment(aes(x = start_doy, xend = end_doy, y = year, yend = year), colour = "grey20",
                linewidth = nature_lwd(1.2), na.rm = TRUE) +
@@ -1511,5 +1520,6 @@ writeLines(c(
 write_meta(file.path(drafts_dir, "GSL methods raster draft.png"), input_sources = file.path(EXP_TABLES, "gsl_methods_site_year.csv"),
            notes = "VERSION 4. Draft figure. Calendar year_rule only.")
 message("Saved: 'GSL methods raster draft'.png/.legend.txt/.meta.json")
+}
 
 message("--- 11_gsl_methods_compare.R: done (version 4) ---")

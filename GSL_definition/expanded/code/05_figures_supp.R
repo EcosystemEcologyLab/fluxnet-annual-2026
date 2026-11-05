@@ -57,7 +57,7 @@ figS1 <- ps1a | ps1b
 cut_sites <- exp_sites$site_id[exp_sites$carbon_src == "CUT"]
 recovered_lr <- exp_sites$site_id[exp_sites$is_long_record & !exp_sites$in_gsl62]
 save_gsl_figure(
-  figS1, "Supplemental Figure S1", height_mm = 140,
+  figS1, "main/Supplemental Figure S1", height_mm = 140,
   legend_lines = c(
     "Supplemental Figure S1. Site (a) and site-year (b) counts by functional group, GSL 62 vs",
     sprintf("the expanded set (%d sites -- item 1's GPP-aware VUT/CUT fallback changed this from", n_exp_sites),
@@ -106,7 +106,7 @@ ps2b <- ggplot(large_spread_sites, aes(x = mean_spread, y = site_id, fill = grou
 figS2 <- ps2a / ps2b + plot_layout(heights = c(1, 1.3))
 pct_any_near <- 100 * mean(bounds_check$n_near_threshold_days > 0)
 save_gsl_figure(
-  figS2, "Supplemental Figure S2", height_mm = 190,
+  figS2, "main/Supplemental Figure S2", height_mm = 190,
   legend_lines = c(
     "Supplemental Figure S2 (item 8 redesign). Bounds-check spread = GSL if every NEAR-THRESHOLD",
     "QC-failing day is forced above the threshold, minus GSL if every such day is forced below.",
@@ -147,7 +147,7 @@ ps3c <- ggplot(ds3c, aes(x = sensitivity_at_10pct, fill = set)) +
 
 figS3 <- ps3a / ps3b / ps3c
 save_gsl_figure(
-  figS3, "Supplemental Figure S3", height_mm = 230,
+  figS3, "main/Supplemental Figure S3", height_mm = 230,
   legend_lines = c(
     "Supplemental Figure S3. The nested comparison: skewness (a), T95 (b), and sensitivity at Z16",
     "(c) for the GSL 62 (grey) overlaid on the rest of the expanded set (blue, non-62 sites only).",
@@ -202,7 +202,7 @@ figS4 <- ggplot(panel_a_data, aes(y = site_id)) +
   gsl_panel_letter("")
 
 save_gsl_figure(
-  figS4, "Supplemental Figure S4", height_mm = 230,
+  figS4, "main/Supplemental Figure S4", height_mm = 230,
   legend_lines = c(
     "Supplemental Figure S4. Per-site GSL trends, expanded trend sites (>=10 years, n = 67), sorted",
     "by skewness (the expanded-set analogue of the main-paper Figure 3a). Grey bar = 95% CI of the",
@@ -247,7 +247,7 @@ dt_vs_nt_third_agree <- mean(
   na.rm = TRUE
 )
 save_gsl_figure(
-  figS5, "Supplemental Figure S5", height_mm = 160,
+  figS5, "main/Supplemental Figure S5", height_mm = 160,
   legend_lines = c(
     "Supplemental Figure S5. Robustness to the GPP variant (GPP_DT_REF in place of GPP_NT_REF).",
     "Panel a: sensitivity at Z16 vs skewness, both computed under GPP_DT_REF, with skewness thirds",
@@ -308,7 +308,7 @@ figS6 <- ggplot(compare_cut, aes(x = third, y = slope, colour = set)) +
   theme_gsl() + theme(legend.position = "top") + gsl_panel_letter("")
 
 save_gsl_figure(
-  figS6, "Supplemental Figure S6", height_mm = 130,
+  figS6, "main/Supplemental Figure S6", height_mm = 130,
   legend_lines = c(
     "Supplemental Figure S6. The headline carbon-gain result (pooled GPP~GSL slope at Z16, by",
     "skewness third) with vs without the CUT-fallback sites, to check the VUT/CUT fallback",
@@ -331,7 +331,7 @@ figS7 <- ggplot(fsw, aes(x = target_fraction, y = gsl, group = site_id, colour =
   theme_gsl() + theme(legend.position = "right") + gsl_panel_letter("")
 
 save_gsl_figure(
-  figS7, "Supplemental Figure S7", height_mm = 140,
+  figS7, "main/Supplemental Figure S7", height_mm = 140,
   legend_lines = c(
     "Supplemental Figure S7. GSL against the target included-GPP fraction (0.80-0.99), one line",
     sprintf("per site (all %d, main variant), coloured by functional group.", n_exp_sites)
@@ -415,7 +415,7 @@ ps8c <- ggplot(trend_compare, aes(x = skewness_third, y = trend_gsl_z16_days_per
 
 figS8 <- ps8a / ps8b / ps8c
 save_gsl_figure(
-  figS8, "Supplemental Figure S8", height_mm = 230,
+  figS8, "main/Supplemental Figure S8", height_mm = 230,
   legend_lines = c(
     "Supplemental Figure S8 (new, session 2a). Main results of Figures 2, 5a and 6, WITH (screened,",
     "'main', blue) vs WITHOUT (unscreened, grey) the winter partitioning-artifact screen (item 2).",

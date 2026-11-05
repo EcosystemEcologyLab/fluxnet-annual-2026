@@ -256,7 +256,7 @@ write_meta(
 
 fig1 <- p1a / p1b / p1c + plot_layout(heights = c(1, 1, 1.1))
 save_gsl_figure(
-  fig1, "Figure 1", height_mm = 230,
+  fig1, "main/Figure 1", height_mm = 230,
   legend_lines = c(
     "Figure 1. Mechanism at two illustrative sites of the same IGBP class (WSA, woody-grass",
     "mosaic) at opposite ends of the skewness range: US-SRM (skewness 2.41, left) and AU-How",
@@ -310,7 +310,7 @@ p2b <- ggplot(derived_site, aes(x = ai_value, y = share_outside_season_z16, colo
 fig2 <- p2a / p2b
 n_no_aridity <- sum(is.na(derived_site$ai_value))
 save_gsl_figure(
-  fig2, "Figure 2", height_mm = 170,
+  fig2, "main/Figure 2", height_mm = 170,
   legend_lines = c(
     "Figure 2. Share of annual GPP outside the Z16 growing season (1 - F at 10% of P99), against",
     "skewness (a) and the CGIAR aridity index (b; higher = more humid, lower = more arid),",
@@ -369,7 +369,7 @@ fig3 <- p3a / p3b / p3c
 cor_b <- cor(fine_grid_summary$skewness, abs(fine_grid_summary$sensitivity_at_10pct), use = "complete.obs")
 cor_c_z16 <- cor(derived_site$skewness, abs(derived_site$z16_common_unit_sensitivity), use = "complete.obs")
 save_gsl_figure(
-  fig3, "Figure 3", height_mm = 230,
+  fig3, "main/Figure 3", height_mm = 230,
   legend_lines = c(
     "Figure 3. Threshold sensitivity in two units (expanded set, main run). Item 6: local",
     "sensitivity is a +/-1% of P99 centred difference (widened from +/-0.05%); all three panels",
@@ -438,7 +438,7 @@ p4b <- ggplot(gap_data, aes(x = skewness, y = mean_gap_days, colour = marker, sh
 
 fig4 <- p4a / p4b
 save_gsl_figure(
-  fig4, "Figure 4", height_mm = 170,
+  fig4, "main/Figure 4", height_mm = 170,
   legend_lines = c(
     "Figure 4. Season timing (expanded set, main run).",
     "Panel a: shift in mean start and end date between the 5% and 20% of P99 thresholds, against",
@@ -537,7 +537,7 @@ p5b <- make_fig5_panel(c("start_z16", "start_t95", "end_z16", "end_t95"),
 
 fig5 <- p5a / p5b + plot_layout(heights = c(1, 1))
 save_gsl_figure(
-  fig5, "Figure 5", height_mm = 230,
+  fig5, "main/Figure 5", height_mm = 230,
   legend_lines = c(
     "Figure 5. Carbon gain (expanded set, main run). Units: gC m-2 d-1 per day of GSL/date shift.",
     "Panel a: pooled slope of annual GPP and NEP on GSL, by skewness third, for Z16 and T95; faint",
@@ -658,7 +658,7 @@ p6c <- ggplot(ytd_sweep, aes(x = trend_size_days_per_yr, y = years_to_detect_med
 
 fig6 <- p6a / p6b_third / p6b_group / p6c + plot_layout(heights = c(1, 1, 1, 1.3))
 save_gsl_figure(
-  fig6, "Figure 6", height_mm = 240,
+  fig6, "main/Figure 6", height_mm = 240,
   legend_lines = c(
     "Figure 6. Climate fingerprints (expanded set, main run).",
     "Panel a: temperature sensitivity (days/degC) of GSL, season start and end, by skewness third,",

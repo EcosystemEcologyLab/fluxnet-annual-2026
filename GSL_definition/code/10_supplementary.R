@@ -31,6 +31,7 @@ trend_sites <- GSL_SITES_GE10YR
 ## fig_helpers.R), parameterized by variant.
 ## ============================================================================
 build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
+  stem_display <- basename(stem)
   derived_site <- derived_site_all |> filter(gpp_variant == !!gpp_variant, neg_gpp_variant == !!neg_variant)
   fine_grid <- fine_grid_all |> filter(gpp_variant == !!gpp_variant, neg_gpp_variant == !!neg_variant,
                                          pct_of_P99 >= 0.5, pct_of_P99 <= 35)
@@ -133,7 +134,7 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
   save_gsl_figure(
     fig, stem, width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 220,
     legend_lines = c(
-      sprintf("%s. Same specification as the main Figure 2, this variant only --", stem),
+      sprintf("%s. Same specification as the main Figure 2, this variant only --", stem_display),
       sprintf("GPP variant: %s.", variant_label),
       sprintf(
         "|local sensitivity| (absolute value, darker = more sensitive), log-binned thresholds (%d bins, 0.5-35%% of P99),",
@@ -145,7 +146,7 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
       sprintf("Sites per skewness third: low = %d, middle = %d, high = %d (total %d).", n_low, n_mid, n_high, nrow(derived_site))
     ),
     input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"), file.path(GSL_ROOT, "data", "fine_grid.rds")),
-    notes = sprintf("%s. %s. Terciles: low=%d, middle=%d, high=%d. Sensitivity shown as |value|, log-binned (%d bins, 0.5-35%% of P99), colour scale capped at the 95th percentile (%.2f days/%%P99).", stem, variant_label, n_low, n_mid, n_high, N_BINS, sensitivity_cap)
+    notes = sprintf("%s. %s. Terciles: low=%d, middle=%d, high=%d. Sensitivity shown as |value|, log-binned (%d bins, 0.5-35%% of P99), colour scale capped at the 95th percentile (%.2f days/%%P99).", stem_display, variant_label, n_low, n_mid, n_high, N_BINS, sensitivity_cap)
   )
   invisible(NULL)
 }
@@ -154,6 +155,7 @@ build_fig2 <- function(gpp_variant, neg_variant, stem, variant_label) {
 ## Figure 3 builder (identical structure to 07_fig3.R), parameterized.
 ## ============================================================================
 build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
+  stem_display <- basename(stem)
   derived_site <- derived_site_all |> filter(gpp_variant == !!gpp_variant, neg_gpp_variant == !!neg_variant)
   gpp_col <- GSL_GPP_VARIANTS[[gpp_variant]]
   neg_to_zero <- GSL_NEG_GPP_VARIANTS[[neg_variant]]
@@ -250,14 +252,14 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
   save_gsl_figure(
     fig, stem, width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 220,
     legend_lines = c(
-      sprintf("%s. Same specification as the main Figure 3, this variant only.", stem),
+      sprintf("%s. Same specification as the main Figure 3, this variant only.", stem_display),
       sprintf("GPP variant: %s.", variant_label),
       sprintf("Of the %d trend sites: %d sign changes, %d significance changes, %d either, across 5-20%% of P99.",
               length(trend_sites), n_sign, n_sig, n_sign_or_sig)
     ),
     input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"), file.path(GSL_ROOT, "data", "daily_extract.rds")),
     notes = sprintf("%s. %s. Sign changes: %d; significance changes: %d; either: %d.",
-                     stem, variant_label, n_sign, n_sig, n_sign_or_sig)
+                     stem_display, variant_label, n_sign, n_sig, n_sign_or_sig)
   )
   invisible(list(n_sign = n_sign, n_sig = n_sig, n_either = n_sign_or_sig))
 }
@@ -267,10 +269,10 @@ build_fig3 <- function(gpp_variant, neg_variant, stem, variant_label) {
 ## (the order built here, matching docs/data_and_code_availability.md and
 ## the GSL_definition/README) -- PeerJ naming: "Supplemental Figure SN".
 ## ============================================================================
-build_fig2("supplementary", "main", "Supplemental Figure S1", "GPP_DT_VUT_REF, negative GPP zero-floored")
-build_fig2("main", "as_delivered", "Supplemental Figure S2", "GPP_NT_VUT_REF, negative GPP as-delivered")
-r3_dt <- build_fig3("supplementary", "main", "Supplemental Figure S3", "GPP_DT_VUT_REF, negative GPP zero-floored")
-r3_asdel <- build_fig3("main", "as_delivered", "Supplemental Figure S4", "GPP_NT_VUT_REF, negative GPP as-delivered")
+build_fig2("supplementary", "main", "reproduction/Supplemental Figure S1", "GPP_DT_VUT_REF, negative GPP zero-floored")
+build_fig2("main", "as_delivered", "reproduction/Supplemental Figure S2", "GPP_NT_VUT_REF, negative GPP as-delivered")
+r3_dt <- build_fig3("supplementary", "main", "reproduction/Supplemental Figure S3", "GPP_DT_VUT_REF, negative GPP zero-floored")
+r3_asdel <- build_fig3("main", "as_delivered", "reproduction/Supplemental Figure S4", "GPP_NT_VUT_REF, negative GPP as-delivered")
 
 message("--- 10_supplementary.R: done ---")
 message("Fig3 supp DT: sign=", r3_dt$n_sign, " sig=", r3_dt$n_sig, " either=", r3_dt$n_either)

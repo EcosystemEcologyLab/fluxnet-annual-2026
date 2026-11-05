@@ -16,6 +16,57 @@ as an index.
 
 ---
 
+## 2026-11-05 — GSL cleanup step 1: folder tidy-up, done
+
+Full report: `GSL_definition/docs/cleanup_2026-11-05.md`; archived-item inventory with reasons:
+`GSL_definition/archive/README.md`. Everything moved with `git mv` (history kept, nothing
+deleted); no analysis logic changed.
+
+1. **Archived** (`GSL_definition/archive/`, mirroring original paths): the retired Figure P1b;
+   the pre-rerun expanded-tree Figures 1-6/1_alt1/S1-S8 (built with the dropped session-2a
+   winter-screen method); four early draft figures (GSL-IAV, methods agreement, dotplot,
+   raster); three superseded versions of `gsl_methods_compare_2026-11-02*.md` (v4 stays current);
+   the winter-screen/AT-Neu-QA/session-1-checks/`auhow_wet_season_v3`/`figure1_alts_years`
+   tables; and the whole `expanded/code/10_figure1_alts.R` script, confirmed by grep to have both
+   its outputs (Figure 1_alt1, `figure1_alts_years.csv`) retired.
+2. **Reorganized into topic folders**: 62-site reproduction figures → `figures/reproduction/`;
+   its selection-audit figure → `figures/selection_audit/`; its live proposal figures
+   (P1a/P1c/P1d/P2) up from `figures/drafts/proposal/` → `figures/proposal/`; expanded-tree
+   methods-review figures (A-D) up from `drafts/methods_review/` → `figures/methods_review/`;
+   62-site `selection_audit_*` tables → `tables/selection_audit/`. `expanded/figures/main/`
+   created empty, for the planned Figures-1-6/S1-S8 rerun.
+3. **12 scripts edited** (smallest change each — repoint a save path, or wrap an now-archived
+   draft's build-and-save block in `if (FALSE) { ... }`, confirmed by grep that nothing
+   downstream depends on the disabled objects): `code/05_fig1.R`, `06_fig2.R`, `07_fig3.R`,
+   `08_fig4.R`, `10_supplementary.R` (plus a `stem_display` fix so captions don't show the new
+   folder prefix), `11_selection_audit.R` (66 table paths), `12_duration_curve_and_target_sweep.R`
+   (P1b disabled); `expanded/code/04_figures_main.R`, `05_figures_supp.R`,
+   `09_figure_iav_15sites.R` (draft figure disabled, its live table write untouched),
+   `11_gsl_methods_compare.R` (3 draft-figure blocks disabled, its live `atneu_*`/
+   `auhow_wet_season_v3` table writes untouched), `12_methods_review_figures.R`.
+4. **Live scripts left writing an archived output, by design**: `02_derive.R`,
+   `04_figures_main.R`, `06_checks.R` (winter-screen tables), `07_checks_session1.R`
+   (`checks_c1_*`-`checks_c4_*`), `11_gsl_methods_compare.R` (`atneu_*`,
+   `auhow_wet_season_v3.csv`) — these will reappear under `expanded/tables/` the next time those
+   scripts run; that's expected, not a regression.
+5. **Path check**: both trees' `00_config.R` source cleanly from the repo root. Figure P2
+   re-rendered from its two already-committed tables only, confirming the new
+   `figures/proposal/` path resolves — PNG came back byte-identical (MD5-verified); the
+   verification run's PDF/`.meta.json` were restored to pristine committed content afterward.
+   `git status`: every moved table/figure shows as `renamed:` (no content change); the only
+   `modified:` entries are the 12 scripts above and `README.md`.
+6. **`GSL_definition/README.md` rewritten** as a map: what each tree is (sites, selection rule,
+   GPP series, year convention), a table of every current figure and current report (path,
+   description, script, status), the 5 Nov paper-allocation note, and a pointer to
+   `archive/README.md`.
+
+Judgment call, recorded in the full report: dated session-report docs (`methods_memo.md`'s
+historical sections, `duration_curve_and_target_sweep_2026-11-03.md`, most of `expanded/docs/`,
+`logs/prompts/*`) mention pre-cleanup paths in prose describing what was true on a specific past
+date — left unedited, same treatment as `SESSION_LOG.md` entries, rather than rewriting history.
+
+---
+
 ## 2026-11-03 — GSL duration curve redraw and target-sweep fixes, started
 
 Replacing Figure P1b's all-sites view and fixing three issues in the 3 November duration-curve

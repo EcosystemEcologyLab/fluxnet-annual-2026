@@ -108,9 +108,9 @@ population <- snapshot |>
     record_span_years = last_year - first_year + 1L
   )
 
-write_csv(population, file.path(TABLES_DIR, "selection_audit_population.csv"))
+write_csv(population, file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_population.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv"),
   input_sources = c(GSL_SNAPSHOT_SEP20, "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
                      "data/snapshots/site_year_data_presence.csv"),
   notes = paste0(
@@ -125,7 +125,7 @@ write_meta(
     sum(!population$any_vut_qc & !population$any_cut_qc), " have neither (fully ungated)."
   )
 )
-message("Saved: ", file.path(TABLES_DIR, "selection_audit_population.csv"))
+message("Saved: ", file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv"))
 
 ## ============================================================================
 ## Step 2: per site-year QC screening on the full Jan1-Dec31 calendar grid.
@@ -180,10 +180,10 @@ screened <- purrr::pmap(site_years_present, function(site_id, year) screen_site_
 site_year_screen <- bind_rows(purrr::map(screened, "summary"))
 site_year_month_fail <- bind_rows(purrr::map(screened, "month"))
 
-write_csv(site_year_screen, file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"))
-write_csv(site_year_month_fail, file.path(TABLES_DIR, "selection_audit_site_year_month_fail.csv"))
+write_csv(site_year_screen, file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_screen.csv"))
+write_csv(site_year_month_fail, file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_month_fail.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_screen.csv"),
   input_sources = "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET', population sites)",
   notes = paste0(
     "One row per population site-year with >=1 day of data. share_pass_0*/n_fail_0*/",
@@ -194,8 +194,8 @@ write_meta(
   )
 )
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_site_year_month_fail.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_month_fail.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_screen.csv"),
   notes = "Failing-day (0.25 threshold) counts by calendar month, long format; months with zero failing days are omitted."
 )
 message("Saved: selection_audit_site_year_screen.csv (", nrow(site_year_screen), " rows), ",
@@ -242,7 +242,7 @@ for (nm in rev(strictness_order)) {
   site_year_screen$strictest_passed[site_year_screen[[pass_col]]] <- nm
 }
 
-write_csv(site_year_screen, file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"))
+write_csv(site_year_screen, file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_screen.csv"))
 
 ## Per-site, per-variant: n passing years and >=5 flag.
 site_variant <- site_year_screen |>
@@ -253,10 +253,10 @@ site_variant <- site_year_screen |>
   mutate(ge5 = n_passing_years >= RULE_MIN_YEARS) |>
   left_join(population |> select(site_id, is_long_record, in_gsl62), by = "site_id")
 
-write_csv(site_variant, file.path(TABLES_DIR, "selection_audit_site_variant.csv"))
+write_csv(site_variant, file.path(TABLES_DIR, "selection_audit", "selection_audit_site_variant.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_site_variant.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_site_variant.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_screen.csv"),
   notes = "One row per population site x rule variant: n_passing_years and whether it reaches the >=5-year threshold (rule 4)."
 )
 
@@ -293,10 +293,10 @@ variant_summary <- purrr::map_dfr(names(variant_defs), function(v) {
   )
 })
 
-write_csv(variant_summary, file.path(TABLES_DIR, "selection_audit_variant_summary.csv"))
+write_csv(variant_summary, file.path(TABLES_DIR, "selection_audit", "selection_audit_variant_summary.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_variant_summary.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_site_variant.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_variant_summary.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_site_variant.csv"),
   notes = paste0(
     "sites_kept/site_years_kept are gated on the >=5-passing-year threshold (rule 4) -- a site ",
     "with 1-4 passing years under a variant is not counted as 'kept'. *_vs_manuscript columns ",
@@ -352,11 +352,11 @@ long_record_recovery <- long_record_pop |>
   left_join(never_recovered_reason, by = "site_id") |>
   arrange(desc(kept_under_manuscript_rule), desc(recovered_by_variant), site_id)
 
-write_csv(long_record_recovery, file.path(TABLES_DIR, "selection_audit_long_record_recovery.csv"))
+write_csv(long_record_recovery, file.path(TABLES_DIR, "selection_audit", "selection_audit_long_record_recovery.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_long_record_recovery.csv"),
-  input_sources = c(file.path(TABLES_DIR, "selection_audit_site_variant.csv"),
-                     file.path(TABLES_DIR, "selection_audit_population.csv")),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_long_record_recovery.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit", "selection_audit_site_variant.csv"),
+                     file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv")),
   notes = paste0(
     length(long_record_pop$site_id), " long-record population sites: ", length(sites_kept_i),
     " already kept under the manuscript rule, ", nrow(recovered), " recovered by at least one ",
@@ -385,7 +385,7 @@ kept_lost <- population |>
   ) |>
   mutate(kept_under_manuscript_rule = site_id %in% sites_kept_i)
 
-write_csv(kept_lost, file.path(TABLES_DIR, "selection_audit_kept_vs_lost.csv"))
+write_csv(kept_lost, file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost.csv"))
 
 kept_lost_summary <- kept_lost |>
   group_by(kept_under_manuscript_rule) |>
@@ -404,21 +404,21 @@ igbp_kept_lost <- kept_lost |> count(kept_under_manuscript_rule, igbp) |>
   pivot_wider(names_from = kept_under_manuscript_rule, values_from = n, values_fill = 0,
               names_prefix = "kept_")
 
-write_csv(kept_lost_summary, file.path(TABLES_DIR, "selection_audit_kept_vs_lost_summary.csv"))
-write_csv(igbp_kept_lost, file.path(TABLES_DIR, "selection_audit_kept_vs_lost_igbp.csv"))
+write_csv(kept_lost_summary, file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost_summary.csv"))
+write_csv(igbp_kept_lost, file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost_igbp.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_kept_vs_lost.csv"),
-  input_sources = c(file.path(TABLES_DIR, "selection_audit_population.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv"),
                      "data/snapshots/site_worldclim.csv"),
   notes = "mean annual temperature (mat_worldclim) joined from data/snapshots/site_worldclim.csv by site_id; kept = passes the manuscript rule (i_manuscript) with >=5 years."
 )
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_kept_vs_lost_summary.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_kept_vs_lost.csv"), notes = ""
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost_summary.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost.csv"), notes = ""
 )
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_kept_vs_lost_igbp.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_kept_vs_lost.csv"), notes = ""
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost_igbp.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost.csv"), notes = ""
 )
 message("Saved: selection_audit_kept_vs_lost*.csv")
 print(kept_lost_summary)
@@ -446,10 +446,10 @@ winter_concentration <- month_fail_annotated |>
     .groups = "drop"
   )
 
-write_csv(winter_concentration, file.path(TABLES_DIR, "selection_audit_winter_concentration.csv"))
+write_csv(winter_concentration, file.path(TABLES_DIR, "selection_audit", "selection_audit_winter_concentration.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_winter_concentration.csv"),
-  input_sources = c(file.path(TABLES_DIR, "selection_audit_site_year_month_fail.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_winter_concentration.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_month_fail.csv"),
                      "data/snapshots/site_worldclim.csv"),
   notes = sprintf(
     paste0(
@@ -479,9 +479,9 @@ neggpp_check <- pop_daily |>
     .groups = "drop"
   )
 
-write_csv(neggpp_check, file.path(TABLES_DIR, "selection_audit_recovered_rule5_check.csv"))
+write_csv(neggpp_check, file.path(TABLES_DIR, "selection_audit", "selection_audit_recovered_rule5_check.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_recovered_rule5_check.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_recovered_rule5_check.csv"),
   input_sources = "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
   notes = paste0(
     "Rule 5 (>10% of daily GPP_NT_VUT_REF < -1 gC/m2/d) checked over EVERY available daily row ",
@@ -509,10 +509,10 @@ passes_i_not_gsl62 <- population |>
   filter(site_id %in% sites_kept_i, !in_gsl62) |>
   select(site_id, igbp, network, location_lat, record_span_years)
 
-write_csv(passes_i_not_gsl62, file.path(TABLES_DIR, "selection_audit_passes_rule_not_gsl62.csv"))
+write_csv(passes_i_not_gsl62, file.path(TABLES_DIR, "selection_audit", "selection_audit_passes_rule_not_gsl62.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_passes_rule_not_gsl62.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_kept_vs_lost.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_passes_rule_not_gsl62.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_kept_vs_lost.csv"),
   notes = "Population sites passing the manuscript rule (i_manuscript, >=5 years) on our data that are not among the GSL 62. Listed only -- not resolved (may reflect a manuscript-side exclusion reason not modelled here, e.g. rule 5, a data-vintage difference, or a reason outside this audit's scope)."
 )
 message("Saved: selection_audit_passes_rule_not_gsl62.csv -- ", nrow(passes_i_not_gsl62),
@@ -566,8 +566,8 @@ p_audit <- ggplot(fig_data, aes(x = year, y = label, fill = strictest_passed)) +
 n_rows <- length(unique(fig_data$label))
 fig_height_mm <- max(90, min(240, 25 + n_rows * 4.2))
 
-fs::dir_create(FIG_DIR)
-audit_fig_stem <- file.path(FIG_DIR, "selection_audit_long_record_variants")
+fs::dir_create(file.path(FIG_DIR, "selection_audit"))
+audit_fig_stem <- file.path(FIG_DIR, "selection_audit", "selection_audit_long_record_variants")
 ggsave(paste0(audit_fig_stem, ".png"), p_audit, width = PEERJ_FIG_WIDTH_MM, height = fig_height_mm,
        units = "mm", dpi = PEERJ_DPI, device = ragg::agg_png, bg = "white")
 ggsave(paste0(audit_fig_stem, ".pdf"), p_audit, width = PEERJ_FIG_WIDTH_MM, height = fig_height_mm,
@@ -582,8 +582,8 @@ writeLines(c(
 ), paste0(audit_fig_stem, ".legend.txt"))
 write_meta(
   paste0(audit_fig_stem, ".png"),
-  input_sources = c(file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"),
-                     file.path(TABLES_DIR, "selection_audit_population.csv")),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_screen.csv"),
+                     file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv")),
   notes = "Diagnostic figure for the selection audit, not a manuscript figure; uses the shared GSL PeerJ style for consistency only."
 )
 message("Saved: ", audit_fig_stem, ".png/.pdf/.legend.txt/.meta.json (", n_rows, " long-record site rows)")
@@ -618,10 +618,10 @@ stopifnot(all(qc_fallback$any_vut_qc | qc_fallback$any_cut_qc))
 message(sum(!qc_fallback$any_vut_qc), " population site(s) are gated on the CUT fallback ",
         "(no non-NA VUT QC at all); all of them have CUT data, so none is left fully ungated.")
 
-write_csv(qc_fallback, file.path(TABLES_DIR, "selection_audit_rule_options_qc_fallback.csv"))
+write_csv(qc_fallback, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_qc_fallback.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_qc_fallback.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_population.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_qc_fallback.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv"),
   notes = "Per-site QC/GPP column choice for the R1-R3 rule options: NEE_VUT_REF_QC/GPP_NT_VUT_REF if the site has any non-NA NEE_VUT_REF_QC, else NEE_CUT_REF_QC/GPP_NT_CUT_REF -- the same per-site (not per-row) priority scripts/04_qc.R already uses for the 62-site analysis."
 )
 
@@ -705,10 +705,10 @@ p99_tbl <- population |>
   ) |>
   select(site_id, p99_gpp, n_days_used_for_p99, p99_basis)
 
-write_csv(p99_tbl, file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv"))
+write_csv(p99_tbl, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_p99.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_population.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_p99.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_population.csv"),
   notes = sprintf(
     paste0(
       "Per-site P99 of gap-filled daily GPP (VUT or CUT, per qc_fallback's gpp_col_used), computed ",
@@ -756,10 +756,10 @@ band_by_month <- day_fb_band |>
   summarise(n_fail_inside_band = sum(in_band_fail), n_fail_outside_band = sum(out_band_fail), .groups = "drop") |>
   arrange(month)
 
-write_csv(band_by_month, file.path(TABLES_DIR, "selection_audit_rule_options_r3_band_by_month.csv"))
+write_csv(band_by_month, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_r3_band_by_month.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_r3_band_by_month.csv"),
-  input_sources = c(file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv")),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_r3_band_by_month.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_p99.csv")),
   notes = "Among ALL failing days (fallback 0.25 daily test) across the population, counted by calendar month: how many fall inside the R3 band (GPP in [0, 25% of site P99], or GPP missing -- consequential, capped at M) vs. outside it (always forgiven)."
 )
 message("Saved: selection_audit_rule_options_r3_band_by_month.csv")
@@ -773,12 +773,12 @@ site_year_rule_options <- site_year_screen |>
   left_join(site_year_screen_fb, by = c("site_id", "year")) |>
   left_join(r3_summary, by = c("site_id", "year"))
 
-write_csv(site_year_rule_options, file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv"))
+write_csv(site_year_rule_options, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_year.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv"),
-  input_sources = c(file.path(TABLES_DIR, "selection_audit_site_year_screen.csv"),
-                     file.path(TABLES_DIR, "selection_audit_rule_options_qc_fallback.csv"),
-                     file.path(TABLES_DIR, "selection_audit_rule_options_p99.csv")),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_year.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit", "selection_audit_site_year_screen.csv"),
+                     file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_qc_fallback.csv"),
+                     file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_p99.csv")),
   notes = paste0(
     "One row per population site-year (same 4562 as selection_audit_site_year_screen.csv -- rule 1 ",
     "is unchanged). pass_r0 = the manuscript baseline (VUT only, no fallback; identical to that ",
@@ -801,10 +801,10 @@ site_rule_option <- site_year_rule_options |>
   mutate(ge5 = n_passing_years >= RULE_MIN_YEARS, ge10_trend = n_passing_years >= 10L) |>
   left_join(population |> select(site_id, is_long_record, in_gsl62), by = "site_id")
 
-write_csv(site_rule_option, file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"))
+write_csv(site_rule_option, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_rule.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_rule.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_year.csv"),
   notes = "One row per population site x rule option (r0/r1/r2_g3/r2_g7/r2_g14/r3_m0/r3_m3): n_passing_years, the >=5-year gate (rule 4), and a >=10-year 'trend site' flag."
 )
 
@@ -837,10 +837,10 @@ rule_option_summary <- purrr::map_dfr(sub("^pass_", "", rule_cols), function(r) 
   )
 })
 
-write_csv(rule_option_summary, file.path(TABLES_DIR, "selection_audit_rule_options_summary.csv"))
+write_csv(rule_option_summary, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_summary.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_summary.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_summary.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_rule.csv"),
   notes = "sites_kept/site_years_kept/trend_sites_kept are gated on >=5 / >=10 passing years respectively. non_gsl62_long_record_* is relative to the fixed 37-site population of long-record sites not already in the GSL 62 (selection_audit_population.csv)."
 )
 message("Saved: selection_audit_rule_options_summary.csv")
@@ -868,10 +868,10 @@ still_lost_reason <- purrr::map_dfr(still_lost_everywhere, function(sid) {
   )
 })
 
-write_csv(still_lost_reason, file.path(TABLES_DIR, "selection_audit_rule_options_still_lost.csv"))
+write_csv(still_lost_reason, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_still_lost.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_still_lost.csv"),
-  input_sources = file.path(TABLES_DIR, "selection_audit_rule_options_site_rule.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_still_lost.csv"),
+  input_sources = file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_rule.csv"),
   notes = "Non-GSL-62 long-record sites that are NOT recovered (not kept at >=5 passing years) under EITHER of the two loosest rules tried (r2_g14, r3_m3)."
 )
 message("Saved: selection_audit_rule_options_still_lost.csv -- ", length(still_lost_everywhere),
@@ -901,10 +901,10 @@ gsl62_check_summary <- tibble(
   n_missing_or_failing = purrr::map_int(rule_cols, function(rc) sum(is.na(gsl62_check[[rc]]) | !gsl62_check[[rc]]))
 )
 
-write_csv(gsl62_check_summary, file.path(TABLES_DIR, "selection_audit_rule_options_gsl62_check.csv"))
+write_csv(gsl62_check_summary, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_gsl62_check.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_gsl62_check.csv"),
-  input_sources = c(file.path(TABLES_DIR, "selection_audit_rule_options_site_year.csv")),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_gsl62_check.csv"),
+  input_sources = c(file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_site_year.csv")),
   notes = "Confirms all 505 GSL-62 site-years (docs/framework.md's Sites table, via 00_config.R::GSL_SITES) pass each rule option -- i.e. each rule's kept set contains the manuscript's. n_missing_or_failing should be 0 for every rule; if not, this audit's SESSION_LOG entry says so explicitly."
 )
 message("GSL-62 containment check (all should be 0 missing/failing): ")
@@ -940,9 +940,9 @@ neggpp_check_ro <- pop_daily |>
     .groups = "drop"
   )
 
-write_csv(neggpp_check_ro, file.path(TABLES_DIR, "selection_audit_rule_options_rule5_check.csv"))
+write_csv(neggpp_check_ro, file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_rule5_check.csv"))
 write_meta(
-  file.path(TABLES_DIR, "selection_audit_rule_options_rule5_check.csv"),
+  file.path(TABLES_DIR, "selection_audit", "selection_audit_rule_options_rule5_check.csv"),
   input_sources = "data/duckdb/fluxnet.duckdb (daily, dataset='FLUXMET')",
   notes = paste0(
     "Rule 5 (>10% of daily GPP < -1 gC/m2/d) checked over every available daily row, using each ",

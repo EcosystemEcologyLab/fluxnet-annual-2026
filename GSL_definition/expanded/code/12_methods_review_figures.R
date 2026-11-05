@@ -6,7 +6,8 @@
 ##
 ## Read-only against every existing table; does NOT modify 11_gsl_methods_compare.R
 ## or any of its committed tables/figures. Writes only NEW figures, under
-## figures/drafts/methods_review/. NT series only, throughout, per Tash's framing:
+## figures/methods_review/ (moved up from figures/drafts/methods_review/ in the
+## 2026-11-05 GSL cleanup step 1; see archive/README.md). NT series only, throughout, per Tash's framing:
 ## show a RANGE of thresholds/methods, never a two-way comparison; colour is
 ## reserved for skewness (continuous), never for vegetation/forest-vs-open.
 ##
@@ -283,8 +284,8 @@ p_fig_a_min <- plot_fig_a("min_gpp_month")
 differ_months <- IAV_SITES[min_gpp_month_for != 1L]
 message("Figure A: sites where calendar and min_gpp_month differ (lowest-GPP month != January): ", paste(differ_months, collapse = ", "))
 
-fs::dir_create(file.path(GSL_FIG_DIR, "drafts", "methods_review"))
-save_gsl_figure(p_fig_a_cal, "drafts/methods_review/Figure A", width_mm = 200, height_mm = 180,
+fs::dir_create(file.path(GSL_FIG_DIR, "methods_review"))
+save_gsl_figure(p_fig_a_cal, "methods_review/Figure A", width_mm = 200, height_mm = 180,
   legend_lines = c(
     "Draft for discussion. Figure A: range of all 8 GSL methods' mean GSL (days), 15 sites, calendar",
     "year_rule (NH = Jan-Dec, AU-How = Jul-Jun). NT series only. Sites sorted by skewness (ascending,",
@@ -301,7 +302,7 @@ save_gsl_figure(p_fig_a_cal, "drafts/methods_review/Figure A", width_mm = 200, h
                      file.path(EXP_TABLES, "gsl_methods_year_rule_range.csv"), file.path(EXP_TABLES, "derived_site.csv")),
   notes = "Draft for Dave/Tash discussion. Calendar year_rule. Not a Z16-vs-T85/T95 comparison -- shows the full range.")
 
-save_gsl_figure(p_fig_a_min, "drafts/methods_review/Figure A (min_gpp_month companion)", width_mm = 200, height_mm = 180,
+save_gsl_figure(p_fig_a_min, "methods_review/Figure A (min_gpp_month companion)", width_mm = 200, height_mm = 180,
   legend_lines = c(
     "Draft for discussion. Figure A companion: same as Figure A, but every site's year starts on its own",
     "lowest-mean-NT-GPP calendar month (min_gpp_month year_rule) instead of the calendar year.",
@@ -446,7 +447,7 @@ make_fig_b <- function(site_x, letters) {
 }
 
 fb1 <- make_fig_b("AU-ASM", c("a", "b", "c", "d"))
-save_gsl_figure(fb1$plot, "drafts/methods_review/Figure B (AU-ASM vs AU-How)", width_mm = 190, height_mm = 190,
+save_gsl_figure(fb1$plot, "methods_review/Figure B (AU-ASM vs AU-How)", width_mm = 190, height_mm = 190,
   legend_lines = c(
     "Draft for discussion. Figure B (AU-ASM vs AU-How), calendar year_rule (Jul-Jun, Southern Hemisphere).",
     "NT series. (a,c) Raster (top part of each year's row): each day shaded by the share of Tash's 22",
@@ -467,7 +468,7 @@ save_gsl_figure(fb1$plot, "drafts/methods_review/Figure B (AU-ASM vs AU-How)", w
   notes = "Draft for Dave/Tash discussion. AU-ASM computed fresh (not one of the 15 sites).")
 
 fb2 <- make_fig_b("US-SRM", c("a", "b", "c", "d"))
-save_gsl_figure(fb2$plot, "drafts/methods_review/Figure B (US-SRM vs AU-How)", width_mm = 190, height_mm = 190,
+save_gsl_figure(fb2$plot, "methods_review/Figure B (US-SRM vs AU-How)", width_mm = 190, height_mm = 190,
   legend_lines = c(
     "Draft for discussion. Figure B (US-SRM vs AU-How), calendar year_rule (US-SRM: Jan-Dec; AU-How: Jul-Jun,",
     "Southern Hemisphere). NT series. (a,c) Raster (top part of each year's row): each day shaded by the",
@@ -579,7 +580,7 @@ c_blocks <- Map(function(spec, letter) plot_panel_c(spec[1], spec[2], letter), C
 p_fig_c <- extra_title(patchwork::wrap_plots(c_blocks[[1]], c_blocks[[2]], c_blocks[[3]], c_blocks[[4]], c_blocks[[5]],
                                                design = "AB\nCD\nE#"))
 
-save_gsl_figure(p_fig_c, "drafts/methods_review/Figure C", width_mm = 200, height_mm = 240,
+save_gsl_figure(p_fig_c, "methods_review/Figure C", width_mm = 200, height_mm = 240,
   legend_lines = c(
     "Draft for discussion. Figure C: where each method puts the season, NT series. (a) US-Ha1, (b) US-Wkg,",
     "(c) US-Var, (d) AU-How -- all calendar year_rule (NH = Jan-Dec; AU-How = Jul-Jun). (e) US-Var again",
@@ -619,7 +620,7 @@ p_fig_d <- extra_title(p_fig_d)
 auhow_range_cal <- fd$range_days[fd$site_id == "AU-How" & fd$rule == "calendar"]
 auhow_skew <- fd$skewness[fd$site_id == "AU-How" & fd$rule == "calendar"][1]
 
-save_gsl_figure(p_fig_d, "drafts/methods_review/Figure D", width_mm = 150, height_mm = 150,
+save_gsl_figure(p_fig_d, "methods_review/Figure D", width_mm = 150, height_mm = 150,
   legend_lines = c(
     "Draft for discussion. Figure D: spread across methods vs. skewness, 15 sites, NT series. x =",
     "skewness (derived_site.csv, 'main_unscreened' variant); y = range of mean GSL (days) across the 8 headline",

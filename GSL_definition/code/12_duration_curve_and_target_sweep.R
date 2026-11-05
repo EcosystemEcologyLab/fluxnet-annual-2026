@@ -33,11 +33,12 @@
 ##   tables/skew_predictors.csv
 ##   tables/skew_predictor_correlations.csv
 ##   tables/skew_predictor_two_predictor_regression.csv
-##   figures/drafts/proposal/Figure P1a (duration curve examples).{png,pdf,legend.txt,meta.json}
-##   figures/drafts/proposal/Figure P1b (duration curve all sites).{png,pdf,legend.txt,meta.json}
-##   figures/drafts/proposal/Figure P1c (duration curve exemplars).{png,pdf,legend.txt,meta.json}
-##   figures/drafts/proposal/Figure P1d (sensitivity and Z16 capture vs skewness).{png,pdf,legend.txt,meta.json}
-##   figures/drafts/proposal/Figure P2 (target share sweep).{png,pdf,legend.txt,meta.json}
+##   figures/proposal/Figure P1a (duration curve examples).{png,pdf,legend.txt,meta.json}
+##   figures/proposal/Figure P1c (duration curve exemplars).{png,pdf,legend.txt,meta.json}
+##   figures/proposal/Figure P1d (sensitivity and Z16 capture vs skewness).{png,pdf,legend.txt,meta.json}
+##   figures/proposal/Figure P2 (target share sweep).{png,pdf,legend.txt,meta.json}
+## Figure P1b is no longer written here -- retired 2026-11-05 (GSL cleanup step 1); see
+## archive/README.md. The code that built it is disabled below, not deleted.
 ##
 ## 2026-11-03 redraw/fixes (logs/prompts/2026-11-03_gsl_duration_curve_redraw_fixes.md):
 ## added Figures P1c/P1d (P1b's all-62-site continuous-skewness colour scale
@@ -212,13 +213,16 @@ legend_p1a <- c(
   "show how differently those three choices behave depending on the site."
 )
 save_gsl_figure(
-  fig_p1a, "drafts/proposal/Figure P1a (duration curve examples)",
+  fig_p1a, "proposal/Figure P1a (duration curve examples)",
   width_mm = 170, height_mm = 95, legend_lines = legend_p1a,
   input_sources = c(file.path(GSL_ROOT, "data", "fine_grid.rds"), file.path(GSL_ROOT, "tables", "duration_curve_crossings.csv")),
   notes = "Draft for discussion (proposal). Panels a=AU-ASM, b=AU-How. Blue segment = 0.1-20% of P99 (Tash's 22-value grid range). Markers: circle=Z16 (10% of P99), triangle=0.85 crossing, square=0.95 crossing."
 )
 
 ## ---- Figure P1b: all 62 sites, coloured by skewness (continuous) ---------
+## Retired 2026-11-05 (GSL cleanup step 1): superseded by P1c/P1d, archived to
+## archive/figures/drafts/proposal/. Disabled rather than deleted -- see archive/README.md.
+if (FALSE) {
 z16_pts <- derived_site |> select(site_id, skewness, z16_mean_gsl, z16_mean_f)
 
 p1b <- ggplot(fine_grid |> left_join(derived_site |> select(site_id, skewness), by = "site_id"),
@@ -251,6 +255,7 @@ save_gsl_figure(
   input_sources = c(file.path(GSL_ROOT, "data", "fine_grid.rds"), file.path(GSL_ROOT, "tables", "derived_site.csv")),
   notes = "Draft for discussion (proposal). All 62 sites' GPP-duration curves, continuous skewness colour scale (viridis), Z16 points marked."
 )
+}
 
 ## ---- Figure P1c: five exemplar duration curves, replacing P1b's continuous
 ## skewness colour scale for a readable view of individual curve SHAPES.
@@ -329,7 +334,7 @@ legend_p1c <- c(
   "curve."
 )
 save_gsl_figure(
-  fig_p1c, "drafts/proposal/Figure P1c (duration curve exemplars)",
+  fig_p1c, "proposal/Figure P1c (duration curve exemplars)",
   width_mm = 170, height_mm = 150, legend_lines = legend_p1c,
   input_sources = c(file.path(GSL_ROOT, "data", "fine_grid.rds"), file.path(GSL_ROOT, "tables", "duration_curve_crossings.csv")),
   notes = paste0(
@@ -399,7 +404,7 @@ legend_p1d <- c(
   "from the previous figure are labelled so the two figures connect."
 )
 save_gsl_figure(
-  fig_p1d, "drafts/proposal/Figure P1d (sensitivity and Z16 capture vs skewness)",
+  fig_p1d, "proposal/Figure P1d (sensitivity and Z16 capture vs skewness)",
   width_mm = 170, height_mm = 220, legend_lines = legend_p1d,
   input_sources = c(file.path(GSL_ROOT, "tables", "duration_curve_crossings.csv"), file.path(GSL_ROOT, "tables", "skew_predictors.csv")),
   notes = paste0(
@@ -585,7 +590,7 @@ legend_p2 <- c(
   "analysis."
 )
 save_gsl_figure(
-  fig_p2, "drafts/proposal/Figure P2 (target share sweep)",
+  fig_p2, "proposal/Figure P2 (target share sweep)",
   width_mm = 170, height_mm = 190, legend_lines = legend_p2,
   input_sources = c(file.path(GSL_ROOT, "tables", "target_sweep_thresholds.csv"), file.path(GSL_ROOT, "tables", "target_sweep_fits.csv")),
   notes = paste0(
@@ -758,4 +763,4 @@ write_meta(
 message("=== 12_duration_curve_and_target_sweep.R: done ===")
 message("Tables: duration_curve_crossings.csv, target_sweep_thresholds.csv, target_sweep_fits.csv, ",
         "skew_predictors.csv, skew_predictor_correlations.csv, skew_predictor_two_predictor_regression.csv")
-message("Figures: drafts/proposal/Figure P1a/P1b/P1c/P1d/P2")
+message("Figures: proposal/Figure P1a/P1c/P1d/P2 (P1b retired, see archive/README.md)")

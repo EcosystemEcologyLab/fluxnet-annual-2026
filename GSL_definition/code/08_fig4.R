@@ -174,7 +174,7 @@ legend_lines <- c(
 )
 
 save_gsl_figure(
-  fig4, "Figure 4", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 110,
+  fig4, "reproduction/Figure 4", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 110,
   legend_lines = legend_lines,
   input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"),
                      file.path(GSL_ROOT, "data", "fraction_sweep.rds"),

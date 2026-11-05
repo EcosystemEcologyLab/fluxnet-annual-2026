@@ -227,7 +227,7 @@ legend_lines <- c(
 )
 
 save_gsl_figure(
-  fig1, "Figure 1", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 170,
+  fig1, "reproduction/Figure 1", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 170,
   legend_lines = legend_lines,
   input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"),
                      file.path(GSL_ROOT, "tables", "derived_site_year.csv"),

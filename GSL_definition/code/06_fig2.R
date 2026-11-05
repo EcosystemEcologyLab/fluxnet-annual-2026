@@ -180,7 +180,7 @@ legend_lines <- c(
 )
 
 save_gsl_figure(
-  fig2, "Figure 2", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 220,
+  fig2, "reproduction/Figure 2", width_mm = PEERJ_FIG_WIDTH_MM, height_mm = 220,
   legend_lines = legend_lines,
   input_sources = c(file.path(GSL_ROOT, "tables", "derived_site.csv"),
                      file.path(GSL_ROOT, "data", "fine_grid.rds")),

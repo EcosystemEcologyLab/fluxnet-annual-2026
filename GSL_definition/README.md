@@ -19,90 +19,125 @@ read-only, filtered to `dataset = 'FLUXMET'` (the pre-QC daily table also carrie
 'ERA5'` rows, meteorology only — every query here must filter to FLUXMET; see
 `docs/methods_memo.md`).
 
-## Status
+**On 5 November 2026, Dave and Tash agreed to write two papers from this work** — a short one on
+GSL methods that are sensitive to skewness, and a longer one on the wider methods work — but
+which figures and tables go in which paper had not been decided as of that date. This README,
+and the directory layout below, is **not** organized by that eventual paper split.
 
-**Stages 1, 2 and 3 done, plus a PeerJ restyle pass (2026-10-30).** Stage 1: scaffold, logging
-fix, site extraction, both screenings, year-screening option counts, Tash-rule reproduction
-across the whole network. Stage 2: every derived quantity (P99, skewness, GSL, T95, etc.) for the
-main run and sensitivity variants, and the match checks against the manuscript's published
-values — `docs/reproduction_report.md`. Stage 3 (+ revisions): Figures 1-4, the benchmark table,
-and 4 supplementary figures (Figures 2/3 with `GPP_DT_VUT_REF` and with as-delivered negative
-GPP) — full results in `docs/report_back_2026-10-29_stage3_revisions.md`. PeerJ restyle: all
-figures restyled to PeerJ's author instructions (170mm width, >=8pt text, one PNG+PDF per
-figure), a discrete colourblind-safe skewness-third colour palette, and several Figure 2 fixes —
-full results in `docs/report_back_2026-10-30_peerj_restyle.md`; full methods record in
-`docs/methods_memo.md`'s "PeerJ restyle" section. The current manuscript's own Figures 1-4,
-rebuilt for direct comparison, remain **deferred** (not enough detail in the framework to
-reproduce without the manuscript itself).
+## The two trees, in plain English
 
-A separate, read-only **site-selection audit** (2026-10-30) asks whether long-running network
-sites excluded by the manuscript's selection rule could be recovered by a rule that drops days or
-years rather than the whole site — `docs/selection_audit_2026-10-30.md`
-(`code/11_selection_audit.R`, `tables/selection_audit_*.csv`,
-`figures/selection_audit_long_record_variants.png`). It does not change the 62-site analysis
-above.
+There are two independent, self-contained analyses living side by side in this directory. The
+expanded tree does not replace the first — both are kept, and the 62-site tree's own figures are
+never touched when the expanded tree is rebuilt.
 
-A follow-on, also read-only, **selection rule options** task (2026-10-30) picks a specific
-candidate rule: a per-site VUT/CUT QC fallback (as `scripts/04_qc.R` already uses) crossed with
-a flat per-year failing-day allowance or a GPP-band-based allowance, recommending the
-least-relaxed option that recovers every recoverable long-record site while still containing all
-505 GSL-62 site-years — `docs/selection_rule_options_2026-10-30.md` (extends
-`code/11_selection_audit.R`'s Steps 8-10, `tables/selection_audit_rule_options_*.csv`). Stops for
-a decision; no rule has been applied to the 62-site analysis.
+### `GSL_definition/` (the 62-site tree, Tash's original site list)
 
-That rule was then applied to build a full, standalone **expanded-site analysis** (2026-10-30)
-under `GSL_definition/expanded/` (own `code/`, `tables/`, `figures/`, `docs/` — **the 62-site
-analysis above is untouched**, verified by rerunning its driver and diffing outputs). 151 sites,
-all 505 GSL-62 site-years included; every derived quantity recomputed (P99, skewness with
-expanded-set terciles, Z16/T95, season start/end/gap days, a QC-failing-day bounds check,
-carbon-gain and temperature-sensitivity slopes, and trend detection with mixed models and the
-Weatherhead et al. 1998 years-to-detect formula), 6 main figures and 7 supplementary figures in
-the PeerJ style, and full QA checks — see `GSL_definition/expanded/docs/report_back_2026-10-30.md`
-and this directory's own `docs/methods_memo.md`'s "Expanded-site analysis (2026-10-30)" section.
+- **Sites:** 62 sites, Tash's original selection — the manuscript's own site list (Table S1:
+  grassland 17, evergreen forest 20, deciduous forest 12, woody-grass mosaic 12, mixed forest 1).
+- **Selection rule:** reproduces the manuscript's rule as published — no relaxation.
+- **GPP series:** main run uses `GPP_NT_VUT_REF` with negative GPP zero-floored; the 4
+  Supplemental Figures (S1–S4) swap in `GPP_DT_VUT_REF` and/or as-delivered (non-zero-floored)
+  negative GPP as sensitivity variants.
+- **Year convention:** calendar year throughout (no Southern-Hemisphere season-year join — that
+  complication is specific to the expanded tree's extra sites).
+- **What it's for:** reproducing the manuscript's own Figures 1–4 methodology end to end, plus two
+  independent, read-only side questions (a site-selection audit and a selection-rule-options
+  recommendation) that do not change the 62-site figures themselves.
 
-Four read-only checks on that run (session 1, `GSL_definition/expanded/docs/checks_report_2026-10-30.md`)
-led to a **session 2a methods/figure revision pass** (2026-10-30): a CUT fallback keyed to GPP
-availability as well as QC (153 sites, up from 151), a winter partitioning-artifact screen (an
-unscreened variant kept alongside for comparison), Southern-Hemisphere carbon-gain/temperature
-models switched from calendar-year to season-year joins, a window-average (not annual-mean)
-temperature predictor for GSL's temperature sensitivity, a wider (±1%, was ±0.05%) local-
-sensitivity window with absolute-value plotting, trends expressed as %/decade plus a
-trend-SIZE detectability sweep (replacing observed-trend-only labels), a redesigned bounds
-check restricted to genuinely near-threshold QC failures, and mixed forest dropped from trend
-panels (2 of 7 sites have ≥10 years). Figures 1/3/4/5/6 updated to match, plus a new
-Supplemental Figure S8 (screened vs unscreened). Every change is a named `EXP_CFG_*` switch in
-`code/00_config.R` — see `GSL_definition/expanded/docs/report_back_2026-10-30-session2a.md` and
-this directory's own `docs/methods_memo.md`'s "Expanded-site analysis, session 2a (2026-10-30)"
-section.
+### `GSL_definition/expanded/` (the 153-site tree)
 
-A **session 2b Figure 1 redesign** (2026-10-31, Dave's own design) replaced the expanded set's
-Figure 1 (previously US-Ha1/US-SRM, a raster of included/excluded days plus a mean-GSL-vs-
-threshold curve) with a simpler two-site, three-panel figure: US-SRM and AU-How, both woody-grass
-mosaic (WSA) but at opposite ends of the skewness range (2.41 vs. 0.37). Nothing else in the
-expanded run changed — see `docs/methods_memo.md`'s "Expanded-site analysis, session 2b" section
-and `logs/prompts/2026-10-31_gsl_figure1_two_sites.md`.
+- **Sites:** 153 sites — the 62-site list's rule relaxed (a per-site VUT/CUT QC fallback crossed
+  with a GPP-availability-aware CUT fallback) to recover long-running network sites the original
+  rule excluded, while still containing every one of the original 505 GSL-62 site-years. See
+  `docs/selection_rule_options_2026-10-30.md` (in the 62-site tree's own `docs/`) for how that
+  rule was chosen.
+- **Selection rule:** the relaxed rule above, applied once; not revisited since 2026-10-30 session 2a's
+  CUT-fallback refinement (151 → 153 sites).
+- **GPP series:** same convention as the 62-site main run (`GPP_NT_VUT_REF`, negative GPP
+  zero-floored), with every derived quantity (P99, skewness with expanded-set terciles, Z16/T95,
+  season start/end/gap days, carbon-gain and temperature-sensitivity slopes, trend detection)
+  recomputed on the expanded population rather than copied from the 62-site run.
+- **Year convention:** calendar year, **except** Southern-Hemisphere carbon-gain/temperature
+  models and wet-season figures, which use a Jul–Jun season-year join (session 2a onward) — mixing
+  the two without the explicit join is a documented source of error; see `docs/methods_memo.md`.
+- **What it's for:** the main expanded-population analysis (6 main figures + 8 supplementary,
+  currently mid-rerun — see below) plus a separate, later methods-comparison/methods-review track
+  (8 GSL-detection methods compared against each other, `11_gsl_methods_compare.R` /
+  `12_methods_review_figures.R`) that is its own line of work, not a rebuild of the 6 main figures.
 
-The Stage 2 open decisions (year screening, negative-GPP treatment, `>` vs. `>=`, GPP variant)
-were made by Dave without Tash's input, recorded in `docs/framework.md`'s "Open decisions
-(resolved)" section and as named switches in `code/00_config.R` — subject to revision if Tash's
-own materials later contradict them.
+**Where things stand right now:** the expanded tree's 6 main figures and 8 supplementary figures
+were built with a winter-screening method that has since been dropped; those old outputs are
+retired (see `archive/README.md`) and `expanded/figures/main/` is **empty**, waiting on the
+planned rerun with the new method. Nothing below lists a current Figure 1–6 or S1–S8 for the
+expanded tree for that reason.
 
-## Figures (PeerJ naming)
+## Current figures
 
-One PNG + PDF per figure, named for direct submission (`figures/`), each with a companion
-`.legend.txt` and `.meta.json`. Supplemental Figure S-numbers are assigned in citation order —
-the order `code/10_supplementary.R` builds them in:
+One PNG + PDF per figure (PNG only for drafts that were never promoted), each with a companion
+`.legend.txt` and `.meta.json`. "Status" follows the categories used throughout this project:
+**reproduction check** (reproduces the manuscript's own analysis), **draft for discussion** (not
+a numbered manuscript figure, shown to Dave/Tash for feedback), or **internal** (a QA/audit
+figure, not intended for the manuscript at all).
 
-| File | Content |
-|---|---|
-| `Figure 1` | Mechanism at two representative sites (JP-Fjy, US-Ton) |
-| `Figure 2` | Threshold sensitivity across all 62 sites (main run) |
-| `Figure 3` | Consequences for GSL trends vs. sampling uncertainty (21 trend sites) |
-| `Figure 4` | The fraction-of-annual-GPP method and its own sensitivity |
-| `Supplemental Figure S1` | Figure 2, `GPP_DT_VUT_REF` variant |
-| `Supplemental Figure S2` | Figure 2, negative-GPP-as-delivered variant |
-| `Supplemental Figure S3` | Figure 3, `GPP_DT_VUT_REF` variant |
-| `Supplemental Figure S4` | Figure 3, negative-GPP-as-delivered variant |
+### 62-site tree (`figures/`)
+
+| Path | Description | Script | Status |
+|---|---|---|---|
+| `figures/reproduction/Figure 1.*` | Mechanism at two representative sites (JP-Fjy, US-Ton) | `code/05_fig1.R` | Reproduction check |
+| `figures/reproduction/Figure 2.*` | Threshold sensitivity across all 62 sites (main run) | `code/06_fig2.R` | Reproduction check |
+| `figures/reproduction/Figure 3.*` | GSL trends vs. sampling uncertainty (21 trend sites) | `code/07_fig3.R` | Reproduction check |
+| `figures/reproduction/Figure 4.*` | The fraction-of-annual-GPP method and its own sensitivity | `code/08_fig4.R` | Reproduction check |
+| `figures/reproduction/Supplemental Figure S1.*` | Figure 2, `GPP_DT_VUT_REF` variant | `code/10_supplementary.R` | Reproduction check |
+| `figures/reproduction/Supplemental Figure S2.*` | Figure 2, negative-GPP-as-delivered variant | `code/10_supplementary.R` | Reproduction check |
+| `figures/reproduction/Supplemental Figure S3.*` | Figure 3, `GPP_DT_VUT_REF` variant | `code/10_supplementary.R` | Reproduction check |
+| `figures/reproduction/Supplemental Figure S4.*` | Figure 3, negative-GPP-as-delivered variant | `code/10_supplementary.R` | Reproduction check |
+| `figures/selection_audit/selection_audit_long_record_variants.*` | Per-site screen results for the 37 long-record sites not already in the GSL-62, across rule variants | `code/11_selection_audit.R` | Internal (selection audit) |
+| `figures/proposal/Figure P1a (duration curve examples).*` | GPP-duration curve mechanism at two sites | `code/12_duration_curve_and_target_sweep.R` | Draft for discussion |
+| `figures/proposal/Figure P1c (duration curve exemplars).*` | Five named exemplar duration curves (replaces the retired Figure P1b) | `code/12_duration_curve_and_target_sweep.R` | Draft for discussion |
+| `figures/proposal/Figure P1d (sensitivity and Z16 capture vs skewness).*` | Local sensitivity and Z16 capture fraction vs. skewness, all 62 sites | `code/12_duration_curve_and_target_sweep.R` | Draft for discussion |
+| `figures/proposal/Figure P2 (target share sweep).*` | GSL threshold choice as a function of target included-GPP share | `code/12_duration_curve_and_target_sweep.R` | Draft for discussion |
+
+### Expanded tree (`expanded/figures/`)
+
+| Path | Description | Script | Status |
+|---|---|---|---|
+| `expanded/figures/main/` | **Empty.** Will hold the rebuilt Figures 1–6 and Supplemental S1–S8 once the planned rerun (replacing the dropped winter-screen method) is done. | `expanded/code/04_figures_main.R`, `expanded/code/05_figures_supp.R` (both already point here) | Pending rerun |
+| `expanded/figures/methods_review/Figure A.*` | Range of all 8 GSL-detection methods' mean GSL, 15 sites sorted by skewness, calendar year rule | `expanded/code/12_methods_review_figures.R` | Draft for discussion |
+| `expanded/figures/methods_review/Figure A (min_gpp_month companion).*` | Same as Figure A, `min_gpp_month` year rule | `expanded/code/12_methods_review_figures.R` | Draft for discussion |
+| `expanded/figures/methods_review/Figure B (AU-ASM vs AU-How).*` | Threshold-dependence raster + histogram, AU-ASM vs. AU-How | `expanded/code/12_methods_review_figures.R` | Draft for discussion |
+| `expanded/figures/methods_review/Figure B (US-SRM vs AU-How).*` | Threshold-dependence raster + histogram, US-SRM vs. AU-How | `expanded/code/12_methods_review_figures.R` | Draft for discussion |
+| `expanded/figures/methods_review/Figure C.*` | Per-method season placement at US-Ha1/US-Wkg/US-Var/AU-How | `expanded/code/12_methods_review_figures.R` | Draft for discussion |
+| `expanded/figures/methods_review/Figure D.*` | Skewness vs. cross-method GSL range, both year rules | `expanded/code/12_methods_review_figures.R` | Draft for discussion |
+
+Retired figures (old Figure P1b; the pre-rerun expanded Figures 1–6/S1–S8/1_alt1; four early
+methods-comparison drafts) are listed with reasons in `archive/README.md`, not here.
+
+## Current reports (`docs/`)
+
+| Path | Description | Status |
+|---|---|---|
+| `docs/framework.md` | Tash's original GSL analysis framework document (verbatim) | Internal (reference) |
+| `docs/corrections_20261029.md` | Corrections to the framework checked against the repo before work started | Internal |
+| `docs/methods_memo.md` | Full methods record across every stage and session, both trees | Internal (reference) |
+| `docs/reproduction_report.md` | Stage 2 match checks against the manuscript's published values | Reproduction check |
+| `docs/report_back_2026-10-29.md` | Stage 1 results: scaffold, site extraction, both screenings, Tash-rule reproduction | Reproduction check |
+| `docs/report_back_2026-10-29_stage3_revisions.md` | Stage 3 + revisions: Figures 1–4, benchmark table, 4 supplementary figures | Reproduction check |
+| `docs/report_back_2026-10-30_peerj_restyle.md` | PeerJ restyle pass: sizing/style, discrete skewness-tercile palette, Figure 2 fixes | Reproduction check |
+| `docs/data_and_code_availability.md` | Supplemental Data groupings, sizes, and DOI/citation notes for submission | Internal |
+| `docs/selection_audit_2026-10-30.md` | Read-only audit: can excluded long-running sites be recovered by a less strict rule? | Internal (selection audit) |
+| `docs/selection_rule_options_2026-10-30.md` | Follow-on: recommends the specific recoverable-site selection rule applied to build the expanded tree | Internal |
+| `docs/duration_curve_and_target_sweep_2026-11-03.md` | Build/redraw record for Figures P1a–P2 and the target-share sweep | Draft for discussion |
+| `docs/figure_gsl_iav_2026-10-31.md` | Design note for the expanded tree's "Figure GSL-IAV" draft (figure itself now retired — see `archive/README.md`) | Internal (figure retired) |
+
+| Path (expanded tree) | Description | Status |
+|---|---|---|
+| `expanded/docs/report_back_2026-10-30.md` | Expanded-site analysis build results: 151 sites, 6 main + 7 supplementary figures | Reproduction check |
+| `expanded/docs/checks_report_2026-10-30.md` | Session-1 QA checks on that build, leading to the session 2a revision pass | Internal |
+| `expanded/docs/report_back_2026-10-30-session2a.md` | Session 2a methods/figure revision pass (153 sites, winter screen, season-year joins, trend-detectability sweep) | Reproduction check |
+| `expanded/docs/gsl_methods_compare_2026-11-02_v4.md` | Current methods-comparison write-up (8 GSL-detection methods, version 4) | Internal |
+| `expanded/docs/methods_review_figures_2026-11-03.md` | Build record for the methods-review Figures A–D | Draft for discussion |
+
+Earlier drafts of the methods-compare write-up (v1–v3) are retired — see `archive/README.md`.
 
 ## Directory layout
 
@@ -110,14 +145,15 @@ the order `code/10_supplementary.R` builds them in:
   PeerJ figure style (text sizes, line weights, colour scales) and `save_gsl_figure()`
 - `data/` — site extracts and large derived tables (fine grid, fraction sweep) pulled from the
   repo-root DuckDB store (gitignored)
-- `tables/` — analysis output tables (git-tracked); candidate Supplemental Data groupings and
-  sizes are in `docs/data_and_code_availability.md`
-- `figures/` — Figures 1-4 and Supplemental Figures S1-S4 (PNG + PDF + `.legend.txt` +
-  `.meta.json` each)
-- `docs/` — `framework.md` (verbatim), `methods_memo.md` (every stage's record),
-  `reproduction_report.md` (Stage 2's match checks), `report_back_*.md` (per-pass results),
-  `data_and_code_availability.md` (snapshot/DOI/Supplemental Data notes for submission),
-  `selection_audit_*.md`/`selection_rule_options_*.md` (site-selection audit and rule-options
-  reports, independent of the 62-site analysis)
+- `tables/` — analysis output tables (git-tracked); `tables/selection_audit/` holds the
+  site-selection-audit tables; candidate Supplemental Data groupings and sizes are in
+  `docs/data_and_code_availability.md`
+- `figures/` — `reproduction/` (Figures 1–4, S1–S4), `proposal/` (Figures P1a/P1c/P1d/P2),
+  `selection_audit/` (the long-record-variants audit figure) — see the table above
+- `docs/` — see the table above
 - `logs/` — `exclusion_log.csv`/`unknown_log.csv` for this side project (gitignored, same
   convention as repo-root `outputs/`)
+- `archive/` — retired figures, tables, docs and one retired script, moved here (never deleted)
+  on 2026-11-05; see `archive/README.md` for what moved and why
+- `expanded/` — the 153-site tree, with its own `code/`, `data/`, `tables/`, `figures/`
+  (`main/` pending rerun, `methods_review/` as above), `docs/`, `logs/`

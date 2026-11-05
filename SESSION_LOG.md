@@ -4,6 +4,18 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-05 — GSL cleanup step 1: folder tidy-up, started
+
+Reorganizing `GSL_definition/` (full prompt: `logs/prompts/2026-11-05_gsl_cleanup_step1.md`).
+Context: on 5 November Dave and Tash agreed to write two papers from this work (a short one on
+skewness-sensitive GSL methods, a longer one on the wider methods work); paper allocation is
+undecided, so this step does not organize anything by paper. No analysis changes, no reruns —
+retiring superseded outputs to a new `archive/` (via `git mv`, history kept), giving each of the
+two trees (62-site, 153-site) one clear figure layout, and rewriting `GSL_definition/README.md`
+as an index.
+
+---
+
 ## 2026-11-03 — GSL duration curve redraw and target-sweep fixes, started
 
 Replacing Figure P1b's all-sites view and fixing three issues in the 3 November duration-curve

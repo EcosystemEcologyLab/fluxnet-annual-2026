@@ -54,6 +54,23 @@ confirmed via `git status`.
 
 ---
 
+## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3b (fully traceable package v2 for Ossenatou Mamadou), started
+
+Prompt: `logs/prompts/2026-11-21_wafnet_package_v2.md`.
+
+Building on Stage 3 (commit 2653513): rebuilding the Ossenatou Mamadou data package as a
+fully traceable release, where every value in the package can be traced back to a
+persistent identifier and an exact source file. Re-downloading the 84 FLUXCOM-X-BASE
+0.05 degree files (verifying each against the Stage 3 manifest's SHA-256 before trusting
+it), this time extracting a 3x3 block of neighbouring cells per site instead of just the
+cell containing the tower, adding `tower_provenance.csv`/`xbase_provenance.csv` provenance
+tables, adding tower meteorology (P_F, TA_F, VPD_F, SW_IN_F, SWC_F_MDS_1) and LE_CORR/
+H_CORR, and a package-level `MANIFEST.csv`. New folder `package_ossenatou_2026-11-21_v2/`;
+Stage 3's `package_ossenatou_2026-11-21/` is left unchanged but will be marked superseded.
+X-BASE remains non-Shuttle comparison data under CLAUDE.md Hard Rule #1.
+
+---
+
 ## 2026-11-05 — AGU26 poster figures (Fig. 2 and simplified Fig. 7), done
 
 Full report: `review/figures/poster_agu26/report_2026-11-05.md`. Prompt:

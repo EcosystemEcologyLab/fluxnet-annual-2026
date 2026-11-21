@@ -4,6 +4,23 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3 (0.05 degree data package for Ossenatou Mamadou), started
+
+Prompt: `logs/prompts/2026-11-21_wafnet_xbase_005_package.md`.
+
+Starting Stage 3 of `WAFNET/fluxcom_comparison/`: downloading FLUXCOM-X-BASE at its native
+0.05 degree monthly grid resolution (GPP, NEE, ET, ET_T, 2001-2021, ICOS Carbon Portal
+collection `zfwf1Ak2I7OlziGDTX8Xl6_T`) for the six WAF-Net sites used in Stage 2 (`GH-Ank`,
+`BJ-Nhu`, `BJ-Bfg`, `SN-Dhr`, `ML-Kem`, `SN-Nkr`), and packaging a self-contained data
+deliverable (CSVs + README + one check figure + zip) for Ossenatou Mamadou's own analysis.
+X-BASE is non-Shuttle comparison data under CLAUDE.md Hard Rule #1. Stage 2 outputs
+(`tables/`, `figures/`, `docs/report_back_2026-11-03.md`) are left unchanged — this is a new
+Stage 3 package, not a revision. Working one global monthly file at a time (download, extract
+the six site cells, record in the manifest, delete the global file) to keep
+`data/external/fluxcom_x_base_005/` from growing to the full global-grid size.
+
+---
+
 ## 2026-11-05 — AGU26 poster figures (Fig. 2 and simplified Fig. 7), done
 
 Full report: `review/figures/poster_agu26/report_2026-11-05.md`. Prompt:

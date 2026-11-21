@@ -21,6 +21,39 @@ the six site cells, record in the manifest, delete the global file) to keep
 
 ---
 
+## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3 (0.05 degree data package for Ossenatou Mamadou), done
+
+Report: `WAFNET/fluxcom_comparison/docs/report_back_2026-11-21.md`.
+
+Downloaded all 84 FLUXCOM-X-BASE 0.05 degree monthly files (GPP, NEE, ET, ET_T,
+2001-2021; 36.87 GB total), sha256-verified, one file at a time with immediate
+per-site extraction and deletion — `data/external/fluxcom_x_base_005/` never exceeded
+one global file (~434-447 MB) on disk and is empty now that the run has finished.
+Extracted the 0.05 degree cell containing each tower's coordinates (20 September 2026
+snapshot) for `GH-Ank`, `BJ-Nhu`, `BJ-Bfg`, `SN-Dhr`, `ML-Kem`, `SN-Nkr`; cell centres
+are 1.9-3.3 km from each tower. Confirmed the 0.05 degree cells average to the Stage 2
+0.5 degree value (`GH-Ank`/GPP/2001-01: 6.1068 vs. 6.1067 gC m-2 d-1, floating-point
+rounding only).
+
+Packaged `WAFNET/fluxcom_comparison/package_ossenatou_2026-11-21/` (0.78 MB, zipped to
+0.54 MB — well under the "stop and report" threshold): `xbase_005_monthly.csv` (1,512
+rows, full 2001-2021 grid), `tower_monthly.csv` (516 rows, each site's own QC-overlap
+period, same VUT/CUT choice and >= 0.50 QC rule as Stage 2), `sites.csv` (6 rows,
+coordinates/cell centre/training flag/citation), `summary.csv` (22 rows, 0.05 degree
+bias/RMSE/R2 alongside the existing Stage 2 0.5 degree numbers), a plain-English
+`README.md` for Ossenatou, and one check figure (NEE/GPP/LE panels, 1:1 line, training
+sites marked, labelled DRAFT) — opened and visually verified before committing: scatter
+patterns match `summary.csv`'s bias signs in all three panels, no rendering issues.
+
+One stumbling block, caught early with no data consequence: the first draft of the
+download script built its `curl` calls via `system2()` without shell-quoting the SPARQL
+query string, which broke on the first (small) metadata request before any file was
+downloaded; fixed with `shQuote()` on every `curl` argument. Stage 2's own outputs
+(`tables/`, `figures/`, `docs/report_back_2026-11-03.md`, all 0.5 degree) are unchanged,
+confirmed via `git status`.
+
+---
+
 ## 2026-11-05 — AGU26 poster figures (Fig. 2 and simplified Fig. 7), done
 
 Full report: `review/figures/poster_agu26/report_2026-11-05.md`. Prompt:

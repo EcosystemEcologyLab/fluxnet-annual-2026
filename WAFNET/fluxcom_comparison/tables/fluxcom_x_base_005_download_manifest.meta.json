@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-21T16:14:22Z",
+  "pipeline_version": "3f8c1c2",
+  "input_sources": [
+    "https://meta.icos-cp.eu/sparql (ICOS metadata SPARQL endpoint)",
+    "https://data.icos-cp.eu/objects/<hash> (per-file download, after licence_accept)"
+  ],
+  "notes": "FLUXCOM-X-BASE 0.05deg monthly grid (Stage 3), non-Shuttle comparison data (CLAUDE.md Hard Rule 1). Same DOI as Stage 2's 0.5deg manifest (fluxcom_x_base_download_manifest.csv); filtered on the _005_monthly.nc filename suffix. Each of the 84 global files was downloaded, sha256-verified, had its six WAF-Net site cells extracted (xbase_005_site_extraction_raw.csv), and was then deleted -- the global 0.05deg grid is never retained on disk. Anonymous CC BY 4.0 licence click-through, no account/credential (same mechanism as Stage 2, confirmed again here)."
+}

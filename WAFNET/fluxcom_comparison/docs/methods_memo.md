@@ -195,6 +195,29 @@ series that might drift apart in coverage.
   May against the tower's September/October peak. Full numbers in
   `report_back_2026-11-03.md` section 8.
 
+## Stage 3: 0.05 degree package for Ossénatou (2026-11-21)
+
+Deliverable, not a further analysis — see `report_back_2026-11-21.md` for full detail.
+Notes not already covered there:
+
+- Site coordinates were taken from the **20 September 2026 snapshot**
+  (`data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv`), per the Stage 3
+  task's explicit instruction, rather than the BIF reads `00_config.R`'s
+  `site_coords_for()` uses elsewhere in this directory. Checked and found identical to
+  the BIF coordinates for all six sites, so no divergence to reconcile, but the two
+  sources are not guaranteed to stay identical if the snapshot is ever regenerated.
+- `tower_monthly.csv` in the Stage 3 package is restricted to each site's own
+  QC-overlap period, *not* padded to 2001-2021 — only `xbase_005_monthly.csv` (the
+  gridded product, which exists globally for the full period) is a complete
+  2001-2021 x 12-month grid for every site.
+- Haversine great-circle distance (tower to cell centre) implemented in base R, not
+  `geosphere` (not in the renv lockfile; CLAUDE.md's "no new dependencies without
+  discussion" applies).
+- Script `code/11_download_extract_xbase_005.R` deletes each global 0.05 degree file
+  immediately after extracting the six site cells, so `data/external/fluxcom_x_base_005/`
+  never grows past one file (~434-447 MB) at a time, unlike the 0.5 degree files kept
+  on disk from Stage 2.
+
 ## Open items
 
 - `BJ-Db1` cannot currently be compared against any FLUXCOM release (zero

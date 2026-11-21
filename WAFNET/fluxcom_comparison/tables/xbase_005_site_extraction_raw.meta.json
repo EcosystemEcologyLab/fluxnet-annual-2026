@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-21T16:14:22Z",
+  "pipeline_version": "3f8c1c2",
+  "input_sources": [
+    "data/external/fluxcom_x_base_005/*.nc (consumed and deleted one at a time; see fluxcom_x_base_005_download_manifest.csv)"
+  ],
+  "notes": "One row per site x variable x year x month (STAGE3_SITES: GH-Ank, BJ-Nhu, BJ-Bfg, SN-Dhr, ML-Kem, SN-Nkr -- excludes BJ-Db1, which has zero overlap with any FLUXCOM release, Stage 2 section 5). Site coordinates from the 20 September 2026 FLUXNET Shuttle snapshot (location_long/location_lat), per the Stage 3 prompt -- not the BIF-derived site_coords_for() Stage 2 used. value is in the product's native units as distributed (gC m-2 d-1 for GPP/NEE, mm hr-1 for ET/ET_T) -- unit matching and LE conversion happen downstream in 12_package_ossenatou.R, not here. cell_lon/cell_lat is the 0.05deg grid cell centre terra reports for the tower coordinate; cell_dist_km is the great-circle distance between the tower and that cell centre (base R haversine, no geosphere dependency)."
+}

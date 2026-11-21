@@ -108,3 +108,18 @@ the exact site-months used in the Stage 2 statistics
 (`figures/draft_climatology_<site>.png`, `tables/xbase_climatology.csv`) —
 X-BASE's seasonal amplitude is smaller than the tower's at every site and
 flux checked, most severely at `ML-Kem`.
+
+**Stage 3 — 0.05 degree data package for Ossénatou Mamadou, done**
+(`docs/report_back_2026-11-21.md`): Ossénatou has agreed to use X-BASE (Martin Jung
+recommended it), so the original FLUXCOM is no longer planned, and this is a
+deliverable package rather than a further Annual-Paper-side analysis. Downloaded
+FLUXCOM-X-BASE's native 0.05 degree monthly grid (84 files, 36.87 GB, same DOI as
+Stage 2's 0.5 degree files) one file at a time, extracted the six Stage 2 agreed
+sites plus `SN-Nkr` (the Stage 3 task's explicit site list: `GH-Ank`, `BJ-Nhu`,
+`BJ-Bfg`, `SN-Dhr`, `ML-Kem`, `SN-Nkr` — the five agreed sites plus `SN-Nkr`, still
+`BJ-Db1`'s Stage 2 `pending Ossénatou` status is untouched by Stage 3), confirmed
+the 0.05 degree cells average to the Stage 2 0.5 degree value, and packaged a
+self-contained, documented data bundle
+(`package_ossenatou_2026-11-21/`, zipped alongside it) for Ossénatou to analyse and
+plot herself — four CSVs, a plain-English README, and one labelled-DRAFT check figure.
+Stage 2's own outputs are unchanged.

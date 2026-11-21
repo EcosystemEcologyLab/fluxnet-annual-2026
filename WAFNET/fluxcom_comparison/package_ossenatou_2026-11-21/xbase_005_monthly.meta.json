@@ -1,0 +1,16 @@
+{
+  "run_datetime_utc": "2026-11-21T16:14:44Z",
+  "pipeline_version": "3f8c1c2",
+  "input_sources": [
+    "WAFNET/fluxcom_comparison/tables/xbase_005_site_extraction_raw.csv",
+    "WAFNET/fluxcom_comparison/tables/site_carbon_source.csv",
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/extracted/EUF_GH-Ank_FLUXNET_2011-2014_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/FLX_BJ-Nhu_FLUXNET_2008-2017_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/FLX_BJ-Bfg_FLUXNET_2008-2017_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/EUF_SN-Dhr_FLUXNET_2010-2022_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/FLX_ML-Kem_FLUXNET_2007-2009_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/EUF_SN-Nkr_FLUXNET_2018-2024_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)"
+  ],
+  "notes": "Stage 3 data package for Ossenatou Mamadou (2026-11-21). FLUXCOM-X-BASE is non-Shuttle comparison data (CLAUDE.md Hard Rule 1). See README.md in this same folder for full column documentation."
+}

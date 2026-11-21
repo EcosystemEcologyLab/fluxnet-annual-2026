@@ -1,0 +1,2 @@
+"site_id","variable","year","month","value_050deg","mean_005deg_within_050_cell","n_005deg_cells_averaged","diff","note_050_grid_cell_centre_lon","note_050_grid_cell_centre_lat","note_005_grid_resolution_deg","note_050_grid_resolution_deg"
+"GH-Ank","GPP",2001,1,6.10665702819824,6.10676297180507,100,0.000105943606824255,-2.75,5.25,0.05,0.5

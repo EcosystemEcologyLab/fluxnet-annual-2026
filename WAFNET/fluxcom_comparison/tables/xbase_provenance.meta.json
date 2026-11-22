@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-22T00:03:26Z",
+  "pipeline_version": "f2ab03d",
+  "input_sources": [
+    "https://meta.icos-cp.eu/sparql (ICOS metadata SPARQL endpoint)",
+    "WAFNET/fluxcom_comparison/tables/fluxcom_x_base_005_download_manifest.csv"
+  ],
+  "notes": "One row per FLUXCOM-X-BASE source file (84: GPP/NEE/ET/ET_T x 2001-2021), keyed by source_key (variable_year_005), for package-level traceability. icos_object_pid_url is the object's ICOS metadata landing page (meta.icos-cp.eu/objects/<hash>, a persistent identifier); icos_access_url is the direct data download endpoint used here (data.icos-cp.eu/objects/<hash>, requires the same anonymous licence-acceptance cookie as icos_object_pid_url does not). sha256_hex is standard sha256sum/shasum -a 256-compatible; sha256_base64 is ICOS's own reported checksum encoding, kept so both can be cross-checked against a fresh download from either angle."
+}

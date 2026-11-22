@@ -1,0 +1,10 @@
+{
+  "run_datetime_utc": "2026-11-22T00:03:26Z",
+  "pipeline_version": "f2ab03d",
+  "input_sources": [
+    "https://meta.icos-cp.eu/sparql (ICOS metadata SPARQL endpoint)",
+    "https://data.icos-cp.eu/objects/<hash> (per-file download, after licence_accept)",
+    "WAFNET/fluxcom_comparison/tables/fluxcom_x_base_005_download_manifest.csv"
+  ],
+  "notes": "Stage 3b re-download of the same 84 FLUXCOM-X-BASE 0.05deg monthly files as Stage 3 (fluxcom_x_base_005_download_manifest.csv), pre-flight-verified byte-identical (filename, size, sha256) against that Stage 3 manifest before any download was attempted. This time extracts a 3x3 block of cells (9 cells: the tower's own cell plus its eight neighbours) per site instead of Stage 3's single centre cell. Adds sha256_hex (standard sha256sum/shasum -a 256-compatible hex digest, computed locally) and the corrected two-part citation (citation_dataset / citation_paper) alongside Stage 3's single combined citation field."
+}

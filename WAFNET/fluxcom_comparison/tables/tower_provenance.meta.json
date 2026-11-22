@@ -1,0 +1,14 @@
+{
+  "run_datetime_utc": "2026-11-21T21:56:26Z",
+  "pipeline_version": "f2ab03d",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv",
+    "data/extracted/EUF_GH-Ank_FLUXNET_2011-2014_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/FLX_BJ-Nhu_FLUXNET_2008-2017_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/FLX_BJ-Bfg_FLUXNET_2008-2017_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/EUF_SN-Dhr_FLUXNET_2010-2022_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/FLX_ML-Kem_FLUXNET_2007-2009_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)",
+    "data/extracted/EUF_SN-Nkr_FLUXNET_2018-2024_v1.3_r1/*_FLUXMET_MM_*.csv (read-only)"
+  ],
+  "notes": "One row per site, tracing the tower monthly data used throughout Stage 2/3/3b back to its exact source file and persistent identifier. dataset_pid/dataset_pid_url/dataset_citation are read directly from the snapshot's product_id/product_citation fields (not reconstructed). product_version is parsed from the local extracted directory name (e.g. v1.3_r1); oneflux_code_version is the snapshot's own oneflux_code_version field (v1.3 for all six sites) -- these are two different version concepts (ONEFlux processing-code version vs. the FLUXNET Archive product release/revision) that happen to share a '1.3' here. fluxmet_mm_file_sha256_hex is a standard sha256sum/shasum -a 256-compatible digest of the exact local file read throughout this analysis. local_file_mtime_utc is this repository's own copy's filesystem timestamp (all six sites: 2026-06-01), NOT necessarily the original ICOS/Shuttle download moment -- the snapshot CSV (20 September 2026) is a later metadata listing of the same, already-downloaded, immutable-by-PID product; snapshot_version_match confirms the local directory name and the snapshot's fluxnet_product_name agree (TRUE for all six sites; the script stops rather than proceeding if any site does not match)."
+}

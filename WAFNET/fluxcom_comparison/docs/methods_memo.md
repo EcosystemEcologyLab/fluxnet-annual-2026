@@ -218,6 +218,57 @@ Notes not already covered there:
   never grows past one file (~434-447 MB) at a time, unlike the 0.5 degree files kept
   on disk from Stage 2.
 
+## Stage 3b: fully traceable package v2 (2026-11-21)
+
+Deliverable, not a further analysis — see `report_back_2026-11-21b.md` (Stage 3's own
+report of the same calendar date is `report_back_2026-11-21.md`, unchanged) for full
+detail. Notes not already covered there:
+
+- **Re-download, not reuse.** Even though Stage 3's raw extraction table already held the
+  centre-cell values, Stage 3b re-downloaded all 84 files rather than reusing Stage 3's numbers,
+  so that `xbase_005_monthly.csv` and the new `xbase_005_neighbours_monthly.csv` come from the
+  exact same download/extraction code path and the exact same `source_key` provenance rows.
+  Before downloading anything, every discovered file's name/size/sha256 was checked against
+  Stage 3's own manifest; a mismatch would have stopped the script with nothing downloaded.
+  All 84 matched.
+- **Neighbour grid convention.** `row_offset`/`col_offset` in `{-1, 0, 1}` are computed from
+  `terra::rowColFromCell()`/`cellFromRowCol()`, not point re-extraction — terra's row index
+  increases southward and column index increases eastward (standard raster convention, confirmed
+  directly from the neighbour cells' own coordinates: `row_offset = -1` has a higher latitude
+  than `row_offset = 0`, `col_offset = -1` a lower longitude).
+- **VUT/CUT vs. partitioning — a terminology fix carried into the v2 README.** The v1 README
+  described `carbon_src` ("which partitioning the site's carbon fluxes use") as if VUT/CUT were
+  the same kind of choice as `GPP_NT`/`GPP_DT`. They are not: VUT/CUT is the u* (friction
+  velocity) threshold method (variable vs. constant), unrelated to the NT/DT GPP-RECO
+  partitioning method. Both choices happen to be made per-site in this analysis, which invited
+  the conflation; the v2 README states them separately.
+- **Citation DOI fix.** The v1 README's "Method/product paper" line gave the dataset's own DOI
+  (`10.18160/5NZG-JMJE`) a second time instead of the paper's DOI
+  (`10.5194/bg-21-5079-2024`) — both pointed to the same number. Fixed by splitting the citation
+  into two explicit entries (`citation_dataset` / `citation_paper` in the manifest; two separate
+  paragraphs in the README).
+- **LE_CORR/H_CORR have no QC column in this product at all** (checked directly against the
+  FLUXMET MM header, not assumed) — no `..._pass_qc` column is written for either in
+  `tower_monthly.csv`; the README says so explicitly rather than silently omitting the column.
+- **SWC_F_MDS_1 is absent from `ML-Kem`'s extract** (checked directly; present for the other five
+  sites) — filled `NA` throughout for that site, not zero, per the prompt's explicit instruction.
+- **Flagged LE values, not removed.** Four tower LE site-months that pass the QC rule but are
+  high for the season (`BJ-Bfg` 2012-03; `BJ-Nhu` 2010-08, 2011-12, 2012-01) are marked with a new
+  `LE_flagged_for_review` column in `tower_monthly.csv` — confirmed present at the values given in
+  the Stage 3b prompt (357.5, 204.6, 214.1, 213.9 W m-2) before writing the column. Left in the
+  data; not excluded from `summary.csv`.
+- **MANIFEST.csv is written last**, after the check figure, so it lists every other file in the
+  package (including its own eventual zip, written by the shell afterward) rather than needing a
+  self-referential checksum.
+- **Provenance tables must ship inside the package, not just in `tables/`.** The first build of
+  `16_package_ossenatou_v2.R` wrote `tower_provenance.csv`/`xbase_provenance.csv` only to the
+  analysis-level `tables/` directory, even though every data file in the package (`xbase_005_*`
+  via `source_key`, `tower_monthly.csv` via `site_id`) references them by key — Ossénatou would
+  have had no way to resolve those keys from the package alone. Caught before committing; fixed
+  by copying both tables (and their `.meta.json` companions) into the package directory, and the
+  package (packaging -> check figure -> MANIFEST) was rebuilt from scratch with the fix in place.
+  Final package: 17 files, 4.05 MB, under the 10 MB threshold.
+
 ## Open items
 
 - `BJ-Db1` cannot currently be compared against any FLUXCOM release (zero

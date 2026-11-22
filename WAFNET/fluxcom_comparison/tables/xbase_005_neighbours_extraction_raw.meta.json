@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-22T00:03:26Z",
+  "pipeline_version": "f2ab03d",
+  "input_sources": [
+    "data/external/fluxcom_x_base_005/*.nc (consumed and deleted one at a time; see fluxcom_x_base_005_download_manifest_v2.csv)"
+  ],
+  "notes": "One row per site x cell(3x3=9) x variable x year x month (STAGE3_SITES: GH-Ank, BJ-Nhu, BJ-Bfg, SN-Dhr, ML-Kem, SN-Nkr). row_offset/col_offset in {-1,0,1}; (0,0) is the tower's own cell (the same cell Stage 3 used for xbase_005_monthly.csv). terra's row index increases southward and column index increases eastward (standard raster convention) -- row_offset=-1 is one cell north, +1 one cell south; col_offset=-1 one cell west, +1 one cell east. Site coordinates from the 20 September 2026 FLUXNET Shuttle snapshot, same as Stage 3. value is in the product's native units as distributed (gC m-2 d-1 for GPP/NEE, mm hr-1 for ET/ET_T) -- unit matching and LE conversion happen downstream in the packaging script. source_key links every row to its exact source file in xbase_provenance.csv."
+}

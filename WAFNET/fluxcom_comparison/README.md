@@ -123,3 +123,31 @@ self-contained, documented data bundle
 (`package_ossenatou_2026-11-21/`, zipped alongside it) for Ossénatou to analyse and
 plot herself — four CSVs, a plain-English README, and one labelled-DRAFT check figure.
 Stage 2's own outputs are unchanged.
+
+**`package_ossenatou_2026-11-21/` is superseded by Stage 3b's
+`package_ossenatou_2026-11-21_v2/`** — left on disk unchanged (not deleted, not
+edited) for reference, but Ossénatou should use the v2 package instead.
+
+**Stage 3b — fully traceable package v2, done** (`docs/report_back_2026-11-21b.md`;
+Stage 3's own report of the same calendar date is `docs/report_back_2026-11-21.md`,
+unchanged): rebuilt the package so every value traces to a persistent identifier
+and an exact source file. Re-downloaded the same 84 FLUXCOM-X-BASE 0.05 degree files
+(36.87 GB), pre-flight-verified byte-identical against Stage 3's own manifest before
+downloading anything (all 84 matched), and this time extracted the 3x3 block of cells
+(9 cells) centred on each tower's cell instead of Stage 3's single centre cell. Added
+`tower_provenance.csv` and `xbase_provenance.csv` (one row per site / per source file
+respectively, with PIDs, checksums, and versions — all six sites' local FLUXMET files
+matched the snapshot, all six use VUT), extended `tower_monthly.csv` with
+`LE_CORR`/`H_CORR` and monthly meteorology (`P_F`, `TA_F`, `VPD_F`, `SW_IN_F`,
+`SWC_F_MDS_1` where available), added `xbase_005_neighbours_monthly.csv` (the 3x3
+block), dropped the 0.5 degree columns from `summary.csv` (0.05 degree only, since that
+is the actual comparison Ossénatou needs), corrected two errors in the v1 README (the
+X-BASE paper's own DOI had been given as the dataset DOI; VUT/CUT was mis-described as
+GPP/RECO partitioning), and added a package-level `MANIFEST.csv` (every file, size,
+SHA-256, git commit, script names) in `package_ossenatou_2026-11-21_v2/` (17 files,
+4.05 MB, under the 10 MB threshold), zipped alongside it. Both provenance tables are
+copied into the package itself (not just the analysis-level `tables/`), since every
+data file in the package references them by key — caught and fixed before committing.
+Three values were traced end to end (one tower, one X-BASE centre-cell, one neighbour
+value) from the package back to source file and checksum; see the report for the exact
+chain.

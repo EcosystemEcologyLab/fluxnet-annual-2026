@@ -1,0 +1,13 @@
+DRAFT check figure (v2, traceable package). FLUXCOM-X-BASE (0.05 degree monthly grid, 
+
+2001-2021) plotted against tower monthly values for the six WAF-Net sites, one panel per flux 
+
+(NEE, GPP, LE; gC m-2 d-1 for NEE/GPP, W m-2 for LE), restricted to QC-passing (>= 0.50) tower 
+
+months. GPP uses the tower's nighttime-partitioned series (GPP_NT), matching X-BASE's own 
+
+nighttime-only GPP training target. Dashed line is 1:1. Triangles mark the two sites (GH-Ank, 
+
+SN-Dhr) in FLUXCOM-X-BASE's own training set; circles are the other four sites. This is a 
+
+sanity check for the data package, not a paper figure.

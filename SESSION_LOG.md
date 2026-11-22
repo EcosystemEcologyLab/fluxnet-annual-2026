@@ -4,6 +4,69 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3b (fully traceable package v2 for Ossenatou Mamadou), started
+
+Prompt: `logs/prompts/2026-11-21_wafnet_package_v2.md`.
+
+Building on Stage 3 (commit 2653513): rebuilding the Ossenatou Mamadou data package as a
+fully traceable release, where every value in the package can be traced back to a
+persistent identifier and an exact source file. Re-downloading the 84 FLUXCOM-X-BASE
+0.05 degree files (verifying each against the Stage 3 manifest's SHA-256 before trusting
+it), this time extracting a 3x3 block of neighbouring cells per site instead of just the
+cell containing the tower, adding `tower_provenance.csv`/`xbase_provenance.csv` provenance
+tables, adding tower meteorology (P_F, TA_F, VPD_F, SW_IN_F, SWC_F_MDS_1) and LE_CORR/
+H_CORR, and a package-level `MANIFEST.csv`. New folder `package_ossenatou_2026-11-21_v2/`;
+Stage 3's `package_ossenatou_2026-11-21/` is left unchanged but will be marked superseded.
+X-BASE remains non-Shuttle comparison data under CLAUDE.md Hard Rule #1.
+
+---
+
+## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3b (fully traceable package v2 for Ossenatou Mamadou), done
+
+Report: `WAFNET/fluxcom_comparison/docs/report_back_2026-11-21b.md` (Stage 3's own report
+of the same calendar date, `report_back_2026-11-21.md`, is unchanged).
+
+Re-downloaded all 84 FLUXCOM-X-BASE 0.05 degree files (36.87 GB), pre-flight-verifying
+every discovered file's name/size/sha256 against Stage 3's own manifest before
+downloading anything — all 84 matched, so nothing stopped. Extracted the 3x3 block of
+cells (9 cells) centred on each tower's cell for all six sites instead of Stage 3's single
+centre cell (54,432-row raw extraction table, exactly as expected: 6 sites x 9 cells x 4
+variables x 21 years x 12 months). Confirmed empirically (not assumed) that
+`row_offset = -1`/`col_offset = -1` are one cell north/west respectively.
+
+Built `tower_provenance.csv` (one row per site: dataset PID, product/ONEFlux version,
+exact FLUXMET file name and SHA-256, snapshot row, VUT/CUT) and `xbase_provenance.csv`
+(one row per source file: ICOS object PID, collection DOI, SHA-256, download date,
+licence). All six sites' local FLUXMET files matched the snapshot's own product name
+(no stop condition triggered); all six use VUT.
+
+Packaged `package_ossenatou_2026-11-21_v2/` (17 files, 4.05 MB, zipped to 1.2 MB — under
+the 10 MB "stop and report" threshold): `tower_monthly.csv` (516 rows, now also with
+`LE_CORR`/`H_CORR` and monthly meteorology — `P_F`, `TA_F`, `VPD_F`, `SW_IN_F`,
+`SWC_F_MDS_1` where present; `ML-Kem` has no `SWC_F_MDS_1` at all, left `NA` rather than
+zero), `xbase_005_monthly.csv` (1,512 rows), new `xbase_005_neighbours_monthly.csv`
+(13,608 rows, the 3x3 block with offsets/cell centres/distances), `sites.csv` (6 rows),
+`summary.csv` (22 rows, 0.05 degree columns only), both provenance tables, a revised
+README, and the regenerated check figure. Two errors in the Stage 3 README were
+corrected: the X-BASE paper's own DOI had been given a second time where the dataset DOI
+belonged, and VUT/CUT had been mis-described as GPP/RECO partitioning rather than the u*
+threshold method.
+
+One gap caught and fixed before committing: the first package build wrote the two
+provenance tables only to the analysis-level `tables/` directory, not into the package
+itself, even though every data file in the package references them by key — the package
+was rebuilt from scratch (packaging, check figure, MANIFEST) with both tables copied in.
+Opened the regenerated check figure (pattern unchanged from Stage 3's, as expected since
+it uses only centre-cell values; one visible high-LE outlier matches a documented flagged
+value, not a new issue) and traced three values end to end (one tower value, one X-BASE
+centre-cell value, one neighbour-cell value) from the package through their provenance
+keys back to the source file/checksum — all matched exactly; see the report for the full
+chain. Four tower LE site-months that pass QC but look seasonally high are flagged (not
+removed) via a new `LE_flagged_for_review` column. Stage 2's outputs and Stage 3's own
+package are unchanged, confirmed via `git status`.
+
+---
+
 ## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3 (0.05 degree data package for Ossenatou Mamadou), started
 
 Prompt: `logs/prompts/2026-11-21_wafnet_xbase_005_package.md`.
@@ -51,23 +114,6 @@ query string, which broke on the first (small) metadata request before any file 
 downloaded; fixed with `shQuote()` on every `curl` argument. Stage 2's own outputs
 (`tables/`, `figures/`, `docs/report_back_2026-11-03.md`, all 0.5 degree) are unchanged,
 confirmed via `git status`.
-
----
-
-## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3b (fully traceable package v2 for Ossenatou Mamadou), started
-
-Prompt: `logs/prompts/2026-11-21_wafnet_package_v2.md`.
-
-Building on Stage 3 (commit 2653513): rebuilding the Ossenatou Mamadou data package as a
-fully traceable release, where every value in the package can be traced back to a
-persistent identifier and an exact source file. Re-downloading the 84 FLUXCOM-X-BASE
-0.05 degree files (verifying each against the Stage 3 manifest's SHA-256 before trusting
-it), this time extracting a 3x3 block of neighbouring cells per site instead of just the
-cell containing the tower, adding `tower_provenance.csv`/`xbase_provenance.csv` provenance
-tables, adding tower meteorology (P_F, TA_F, VPD_F, SW_IN_F, SWC_F_MDS_1) and LE_CORR/
-H_CORR, and a package-level `MANIFEST.csv`. New folder `package_ossenatou_2026-11-21_v2/`;
-Stage 3's `package_ossenatou_2026-11-21/` is left unchanged but will be marked superseded.
-X-BASE remains non-Shuttle comparison data under CLAUDE.md Hard Rule #1.
 
 ---
 

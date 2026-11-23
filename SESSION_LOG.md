@@ -14,6 +14,50 @@ the package README's file list updated and the zip rebuilt.
 
 ---
 
+## 2026-11-23 — RSCOTT_AGU26: site map added to the v2 package, done
+
+Added `RSCOTT_AGU26/figures/site_map_igbp_DRAFT.{png,pdf,.legend.txt,.meta.json}` (built by new
+script `RSCOTT_AGU26/code/09_site_map.R`), copied into `RSCOTT_AGU26/package_rscott_2026-11-23_v2/`,
+with the package README's file list updated and `package_rscott_2026-11-23_v2.zip` rebuilt (14
+files). No change to any selection or data — reads `sites.csv` as-is.
+
+Two-panel map of the 54 kept sites: (a) world (Equal Earth), (b) zoom on the contiguous western
+US, where 24 of 27 US sites cluster (the 3 interior-Alaska sites — `US-TKs`, `US-ICt`, `US-ICh` —
+are excluded from panel b's zoom box and shown only in panel a). Symbol shape and fill colour both
+encode IGBP class, using the paper's exact `IGBP_colours` hex values (`R/plot_constants.R`) but 5
+new filled shapes (circle/square/diamond/triangle-up/triangle-down) rather than the paper's own
+`shape_igbp`, which for these 5 classes are hollow-only and have no fill channel — documented as a
+deliberate deviation in the figure's `.legend.txt`. Land is a single dissolved polygon (plain grey,
+no internal country borders or labels). One shared legend (not one per panel — an earlier attempt
+at per-panel legends produced two different-length, overflowing legends since panel b's zoom has no
+CSH site; fixed by giving panel b `legend.position = "none"` and collecting only panel a's complete
+5-class legend).
+
+Site-ID labels in panel (b) are shown only for genuinely-overlapping clusters, determined by direct
+visual inspection rather than a single distance formula (two automatic km-threshold attempts were
+tried and rejected — one badly over-flagged well-separated sites like `US-KFS`/`US-Kon` at ~118km,
+the other under-flagged `US-Mpj`/`US-Wjs`/`US-Aud`, which a debug all-labelled render showed
+genuinely cluster with `US-Seg`/`US-Ses`/`US-SRG`/`US-SRM`/`US-SRS` at this zoom despite being
+34–56km from their nearest cluster-mate — no single threshold cleanly separated "visually
+clustered" from "visually separate" across the whole panel). Final labelled set (19 sites, 6
+clusters), confirmed against the rendered PNG: Santa Rita Experimental Range (`US-SRG`/`US-SRM`/
+`US-SRS`/`US-Whs`/`US-Wkg`/`US-Aud`), Sevilleta/Mountainair/Willard (`US-Seg`/`US-Ses`/`US-Mpj`/
+`US-Wjs`), Jornada (`US-Jo1`/`US-Jo2`/`US-xJR`), plus three pairs (`US-Ton`/`US-Var`; `US-xDC`/
+`US-xWD`; `US-Kon`/`US-xKA`). `US-KFS`, `US-KLS`, `US-Fwf`, `US-CdM`, `US-xAE` confirmed clearly
+separate and left unlabelled.
+
+One real bug found and fixed along the way (not a spec deviation, an implementation bug): an early
+version passed raw lon/lat degrees to `ggrepel::geom_text_repel()`'s x/y aesthetic in the
+LAEA-projected panel (b) — unlike `geom_sf()`, `geom_text_repel()` does not go through `coord_sf()`'s
+automatic reprojection, so every label collapsed near the projection's local origin with leader
+lines fanning out from one point. Fixed by passing the already-projected (metres) coordinates
+instead. Opened and visually checked the final PNG (full combined figure and an enlarged panel-b-only
+debug render, not shipped) before packaging: all 54 sites visible, legend complete and correctly
+coloured/shaped, land plain grey with no country borders, no symbol or label illegible overlaps
+outside the deliberately-labelled clusters.
+
+---
+
 ## 2026-11-23 — RSCOTT_AGU26 v2: widened dryland site selection for Russ Scott, done
 
 Report: `RSCOTT_AGU26/docs/report_back_2026-11-23_v2.md`. Package:

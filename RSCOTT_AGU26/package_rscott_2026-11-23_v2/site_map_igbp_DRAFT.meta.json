@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-11-23T19:14:05Z",
+  "pipeline_version": "c6e7dfd",
+  "input_sources": [
+    "RSCOTT_AGU26/package_rscott_2026-11-23_v2/sites.csv",
+    "R/plot_constants.R (IGBP_colours)",
+    "R/figures/fig_maps.R (.land_and_coast_sf, EQUAL_EARTH_CRS)",
+    "rnaturalearth::ne_countries()/ne_coastline() (scale='medium')"
+  ],
+  "notes": "DRAFT two-panel site map, no change to any selection/data. Panel (b) overlap labels: US-Aud, US-Jo1, US-Jo2, US-Kon, US-Mpj, US-Seg, US-Ses, US-SRG, US-SRM, US-SRS, US-Ton, US-Var, US-Whs, US-Wjs, US-Wkg, US-xDC, US-xJR, US-xKA, US-xWD. Filled-shape deviation from paper's shape_igbp documented in the .legend.txt caption."
+}

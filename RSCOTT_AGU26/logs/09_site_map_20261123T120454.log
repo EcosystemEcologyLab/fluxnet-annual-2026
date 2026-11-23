@@ -1,0 +1,19 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[RSCOTT_AGU26] DuckDB: data/duckdb/fluxnet.duckdb
+[RSCOTT_AGU26] Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+[09_site_map] 54 kept sites read from RSCOTT_AGU26/package_rscott_2026-11-23_v2/sites.csv
+[09_site_map] Building panel (a) world map ...
+Error in wk_handle.wk_wkb(wkb, s2_geography_writer(oriented = oriented,  : 
+  Loop 0 is not valid: Edge 0 is degenerate (duplicate vertex)
+Calls: <Anonymous> ... s2_geog_from_wkb -> <Anonymous> -> wk_handle.wk_wkb
+Execution halted

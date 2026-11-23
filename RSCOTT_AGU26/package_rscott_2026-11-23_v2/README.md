@@ -24,6 +24,13 @@ below), or to build your own cut.
 - `check_gpp_vs_precip_v2_DRAFT.png` -- a draft scatterplot, all 54 kept sites, to eyeball the
   data for obvious problems before sending it to you. Not a finished figure -- please don't use
   it as-is.
+- `site_map_igbp_DRAFT.png` / `.pdf` -- a draft two-panel map of all 54 kept sites: panel (a) is
+  the whole world, panel (b) zooms on the contiguous western United States, where most of the US
+  sites cluster (the 3 Alaska sites appear only in panel a). Symbol shape and fill colour both
+  encode IGBP class; a handful of site_id labels appear in panel (b), only where symbols are
+  close enough to visually overlap at that zoom. See `site_map_igbp_DRAFT.legend.txt` for the
+  full caption, including why these filled symbol shapes aren't the same as the paper's usual
+  IGBP shapes elsewhere. Also a draft, not a finished figure.
 
 ## What changed from v1 (the relaxed rules)
 

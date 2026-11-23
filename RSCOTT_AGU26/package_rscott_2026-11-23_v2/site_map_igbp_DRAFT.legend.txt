@@ -1,0 +1,9 @@
+DRAFT -- not for publication.
+
+Map of the 54 FLUXNET sites kept in the RSCOTT_AGU26 v2 extraction for Russ Scott's AGU26 poster. Panel (a) shows all 54 sites worldwide; panel (b) zooms on the contiguous western United States, where most of the US sites cluster (3 interior-Alaska sites -- US-TKs, US-ICt, US-ICh -- fall outside this zoom box and are shown only in panel a).
+
+Selection rule (see sites.csv/README.md for the full detail): dryland IGBP classes (Closed Shrubland, Open Shrubland, Grassland, Savanna, Woody Savanna) with mean annual precipitation below 800 mm and at least 5 years (calendar or water year) of passing GPP, ET and precipitation data, from the FLUXNET Shuttle snapshot taken 2026-09-20.
+
+Symbol shape and fill colour both encode IGBP class (legend). Note: these 5 filled shapes (circle/square/diamond/triangle-up/triangle-down) are not the paper's usual hollow shape_igbp symbols for these classes -- hollow shapes have no fill channel, so filled shapes were substituted to satisfy the 'filled in the paper's colours' request; the fill colours themselves are the paper's exact IGBP_colours hex values (R/plot_constants.R).
+
+Land is a single dissolved grey polygon with no internal country borders or labels. In panel (b), site_id labels are shown only for sites whose symbols are close enough at this zoom to visually overlap, confirmed by direct inspection of the rendered panel (see 09_site_map.R for the specific clusters and the pairwise distances behind them); all other sites are unlabelled in both panels.

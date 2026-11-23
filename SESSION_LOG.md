@@ -4,6 +4,16 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-23 — RSCOTT_AGU26: site map added to the v2 package, started
+
+Prompt: `logs/prompts/2026-11-23_rscott_site_map.md`. Adding a two-panel site map (world + western-US
+zoom, shapes/colours by IGBP class) to the already-committed v2 package (`6ef23d5`,
+`RSCOTT_AGU26/package_rscott_2026-11-23_v2/`). No change to any selection or data — a pure figure
+addition, written to `RSCOTT_AGU26/figures/site_map_igbp_DRAFT.*`, copied into the v2 package, with
+the package README's file list updated and the zip rebuilt.
+
+---
+
 ## 2026-11-23 — RSCOTT_AGU26 v2: widened dryland site selection for Russ Scott, done
 
 Report: `RSCOTT_AGU26/docs/report_back_2026-11-23_v2.md`. Package:

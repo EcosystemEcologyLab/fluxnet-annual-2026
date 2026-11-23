@@ -1,0 +1,52 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[RSCOTT_AGU26] DuckDB: data/duckdb/fluxnet.duckdb
+[RSCOTT_AGU26] Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+Spherical geometry (s2) switched off
+[09_site_map] 54 kept sites read from RSCOTT_AGU26/package_rscott_2026-11-23_v2/sites.csv
+[09_site_map] Building panel (a) world map ...
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_union assumes that they are
+planar
+[09_site_map] Building panel (b) western-US zoom ...
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_intersection assumes that they
+are planar
+although coordinates are longitude/latitude, st_union assumes that they are
+planar
+[09_site_map] 24/54 sites fall inside the western-US zoom box (excludes the 3 interior-Alaska sites: US-ICh, US-ICt, US-TKs)
+[09_site_map] US-SRG: nearest neighbour US-SRS at 3.8 km
+[09_site_map] US-SRM: nearest neighbour US-SRS at 1.5 km
+[09_site_map] US-SRS: nearest neighbour US-SRM at 1.5 km
+[09_site_map] US-Whs: nearest neighbour US-Wkg at 10.5 km
+[09_site_map] US-Wkg: nearest neighbour US-Whs at 10.5 km
+[09_site_map] US-Aud: nearest neighbour US-SRG at 37.3 km
+[09_site_map] US-Seg: nearest neighbour US-Ses at 5 km
+[09_site_map] US-Ses: nearest neighbour US-Seg at 5 km
+[09_site_map] US-Mpj: nearest neighbour US-Wjs at 34.7 km
+[09_site_map] US-Wjs: nearest neighbour US-Mpj at 34.7 km
+[09_site_map] US-Jo1: nearest neighbour US-Jo2 at 3 km
+[09_site_map] US-Jo2: nearest neighbour US-Jo1 at 3 km
+[09_site_map] US-xJR: nearest neighbour US-Jo1 at 19.5 km
+[09_site_map] US-Ton: nearest neighbour US-Var at 2.4 km
+[09_site_map] US-Var: nearest neighbour US-Ton at 2.4 km
+[09_site_map] US-xDC: nearest neighbour US-xWD at 10.9 km
+[09_site_map] US-xWD: nearest neighbour US-xDC at 10.9 km
+[09_site_map] US-Kon: nearest neighbour US-xKA at 5.5 km
+[09_site_map] US-xKA: nearest neighbour US-Kon at 5.5 km
+[09_site_map] Sites labelled for visual overlap in panel (b) (manually confirmed, see script comment): US-Aud, US-Jo1, US-Jo2, US-Kon, US-Mpj, US-Seg, US-Ses, US-SRG, US-SRM, US-SRS, US-Ton, US-Var, US-Whs, US-Wjs, US-Wkg, US-xDC, US-xJR, US-xKA, US-xWD
+[09_site_map] Saved: RSCOTT_AGU26/figures/site_map_igbp_DRAFT.png and RSCOTT_AGU26/figures/site_map_igbp_DRAFT.pdf
+[09_site_map] Done.

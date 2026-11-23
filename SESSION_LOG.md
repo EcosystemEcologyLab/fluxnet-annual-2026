@@ -4,6 +4,28 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-23 — RSCOTT_AGU26: site map leader-line fix (SRS/SRG crossing)
+
+Post-publication review of `site_map_igbp_DRAFT.png` (commit `9e44042`) found a real legibility
+bug the pre-commit check missed: in the dense Santa Rita cluster, the `US-SRS` label's ggrepel
+leader line visibly crossed through the `US-SRG` label's text. Reproduced by cropping the exact
+reported pixel region (`(2600,1150)-(3050,1430)` of the 3600×1800 PNG) with R's `png` package —
+confirmed the line slashed through the "G" in "SRG" before the fix, and that it no longer does
+after. Root cause: ggrepel's force-directed layout only avoids label/label and label/point
+bounding-box overlap — a leader line slicing through an unrelated label's text isn't something it
+optimises against directly, so it has to be avoided by giving it more room (`box.padding`,
+`point.padding`, `force` raised; `max.time`/`max.iter` increased) rather than a different
+objective. Re-verified every labelled cluster in panel (b) after the change, each by cropping the
+specific pixel region (debug crops, not shipped): Santa Rita (`US-SRG/SRM/SRS/Whs/Wkg/Aud`),
+Sevilleta/Mountainair/Willard (`US-Seg/Ses/Mpj/Wjs`), Jornada (`US-Jo1/Jo2/xJR`), and the three
+pairs (`US-Ton/Var`, `US-xDC/xWD`, `US-Kon/xKA`) — no leader line crosses any label's text in the
+new render, and the fix is deterministic (same `seed = 1`, re-run twice, identical crop both
+times). Re-exported PNG/PDF, recopied into `RSCOTT_AGU26/package_rscott_2026-11-23_v2/`
+(`write_meta()`'s timestamp/pipeline_version refreshed automatically), rebuilt the zip (14 files,
+unchanged file list).
+
+---
+
 ## 2026-11-23 — RSCOTT_AGU26: site map added to the v2 package, started
 
 Prompt: `logs/prompts/2026-11-23_rscott_site_map.md`. Adding a two-panel site map (world + western-US

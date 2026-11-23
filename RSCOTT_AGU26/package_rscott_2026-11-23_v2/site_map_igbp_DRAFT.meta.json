@@ -1,6 +1,6 @@
 {
-  "run_datetime_utc": "2026-11-23T19:14:05Z",
-  "pipeline_version": "c6e7dfd",
+  "run_datetime_utc": "2026-11-23T19:18:27Z",
+  "pipeline_version": "9e44042",
   "input_sources": [
     "RSCOTT_AGU26/package_rscott_2026-11-23_v2/sites.csv",
     "R/plot_constants.R (IGBP_colours)",

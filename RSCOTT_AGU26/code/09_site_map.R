@@ -176,7 +176,18 @@ panel_b <- ggplot2::ggplot() +
     # degree-valued x/y read as near-origin metre offsets in this CRS).
     data = sf::st_set_geometry(sites_b_sf, NULL) |> cbind(as.data.frame(pts_b_prj)),
     ggplot2::aes(x = X, y = Y, label = label),
+    # box.padding/point.padding/force raised, and max.time/max.iter given more
+    # budget, after the default settings produced a leader line (US-SRS ->
+    # its point) that visibly crossed through the neighbouring "US-SRG" label
+    # text in the dense Santa Rita cluster -- ggrepel's repulsion only avoids
+    # label/label and label/point bounding-box overlap, not a segment
+    # slicing through an unrelated label, so this had to be fixed by giving
+    # it more room and more search budget to find a layout that avoids it,
+    # not by changing what it optimises for. Re-verified by cropping the
+    # rendered PNG at pixel-exact regions for every labelled cluster after
+    # this change (not shipped; see SESSION_LOG.md for the crop coordinates).
     size = 2.4, min.segment.length = 0, segment.size = 0.25, max.overlaps = Inf,
+    box.padding = 0.5, point.padding = 0.3, force = 3, max.time = 3, max.iter = 100000,
     na.rm = TRUE, seed = 1
   ) +
   ggplot2::scale_shape_manual(values = igbp_shape_fill, name = "IGBP class",

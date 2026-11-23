@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:13:45Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Per-site VUT/CUT choice for NEE/GPP/RECO: VUT if any non-NA NEE_VUT_REF_QC, else CUT if any non-NA NEE_CUT_REF_QC, else ungated. Identical rule to scripts/04_qc.R and R/site_annual_fluxes.R."
+}

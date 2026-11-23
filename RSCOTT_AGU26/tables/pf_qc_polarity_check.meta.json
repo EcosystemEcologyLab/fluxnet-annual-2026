@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:06:01Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Independent control-site check (site_id in: IT-MBo, BE-Maa, AR-CCg) of P_F_QC polarity at MM and YY resolution, cross-checking FLUXMET P_F against ERA5 dataset's own P_ERA for bit-identity, binned by P_F_QC tier. Confirms higher P_F_QC = more measured (not the reverse), consistent with prior network-wide repo findings. IT-MBo included as a site previously examined in this repo at HH resolution (scripts/diagnostics/it_mbo_parsimony.R); remaining control sites are drawn from this project's own OSH/CSH/GRA/SAV/WSA candidate pool."
+}

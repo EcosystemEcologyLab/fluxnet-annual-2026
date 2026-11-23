@@ -4,6 +4,42 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-23 — RSCOTT_AGU26: dryland GPP-vs-precipitation extraction for Russ Scott, done
+
+Report: `RSCOTT_AGU26/docs/report_back_2026-11-23.md`. Package:
+`RSCOTT_AGU26/package_rscott_2026-11-23/` (zipped as `package_rscott_2026-11-23.zip`).
+
+231 candidate sites (IGBP OSH/CSH/GRA/SAV/WSA from the snapshot's own `igbp` column) -> 43
+kept, 188 excluded (79 with fewer than 2 years of measured precipitation to even screen, 64
+screened but mean measured P >= 800 mm, 45 passed the wetness screen but had fewer than 5
+passing years in either time step — full counts in `excluded_sites.csv`). Independently
+re-confirmed `P_F_QC` polarity at three control sites (`IT-MBo`, `BE-Maa`, `AR-CCg`), matching
+this repo's prior network-wide finding: higher `P_F_QC` = more measured (`RSCOTT_AGU26/tables/pf_qc_polarity_check.csv`).
+
+**Unexpected, repo-wide finding**: the monthly-unit check specified by the task (reconstructing
+calendar-year totals from monthly values) surfaced a previously undocumented unit bug —
+`P_F` at MM resolution is a mean DAILY rate (mm/day), not a monthly total, understating a raw
+MM-summed annual total by ~29–30x (median |%diff| vs YY = 96.7%). This is the same undocumented
+convention already known and handled for carbon fluxes (NEE/GPP/RECO) at MM/WW
+(`SESSION_LOG.md`, 2026-09-28) but **not currently documented or handled for precipitation** in
+CLAUDE.md or `R/units.R::fluxnet_convert_units()`, which deliberately leaves `P_F` untouched.
+Any other MM/WW-resolution precipitation analysis in this repo that sums raw `P_F` has the same
+bug — flagged in `RSCOTT_AGU26/docs/report_back_2026-11-23.md` for central triage, not fixed
+here (out of scope for this side project). Worked around for this project by building all
+water-year precipitation totals/shares from DAILY (DD) data instead of MM (DD sums to YY with
+no scaling needed, confirmed to 0.0001% median); water-year GPP/ET still use MM via the
+project's already-correct `*_converted` tables.
+
+Seven kept sites flagged for a water-year-boundary rainy-season-split risk (the month before
+the boundary and the boundary month both among the site's top-3 wettest): `US-Fwf`, `US-Seg`,
+`US-Jo2`, `US-Ses`, `US-Wjs`, `US-Mpj`, `ES-Agu` — all Northern Hemisphere, several (Sevilleta/
+Jornada/Willard/Mountainair) from the well-known biseasonal-precipitation New Mexico/Arizona
+cluster. Check figure (annual GPP_NT vs. annual measured P, calendar years, coloured by IGBP,
+Southern Hemisphere marked by shape, labelled DRAFT) opened and reviewed before packaging;
+shows the expected positive GPP-precipitation relationship with no obvious data errors.
+
+---
+
 ## 2026-11-23 — RSCOTT_AGU26: dryland GPP-vs-precipitation extraction for Russ Scott, started
 
 Prompt: `logs/prompts/2026-11-23_rscott_agu26_extraction.md`.

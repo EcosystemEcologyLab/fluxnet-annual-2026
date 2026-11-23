@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:13:46Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Confirms daily (DD) P_F sums to the annual (YY) P_F value with no scaling needed (full calendar years only, n_days in {365,366}), supporting this project's choice to build water-year P totals/shares from DD rather than MM data."
+}

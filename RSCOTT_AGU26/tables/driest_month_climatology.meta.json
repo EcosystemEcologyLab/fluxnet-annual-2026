@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:16:09Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Driest calendar month (by mean measured-precipitation amount, amount-weighted P_F*P_F_QC across all available years) and the rainy-season-split risk flag (TRUE if the water-year boundary month or an adjacent month is among the site's top-3 wettest months), kept sites only."
+}

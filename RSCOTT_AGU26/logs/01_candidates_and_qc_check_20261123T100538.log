@@ -1,0 +1,59 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[RSCOTT_AGU26] DuckDB: data/duckdb/fluxnet.duckdb
+[RSCOTT_AGU26] Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+
+================ Step 1: candidate sites by IGBP class ================
+Candidate sites (IGBP in OSH, CSH, GRA, SAV, WSA): 231
+# A tibble: 9 × 3
+  igbp  hemisphere     n
+  <chr> <chr>      <int>
+1 CSH   N             12
+2 GRA   N            117
+3 GRA   S             29
+4 OSH   N             38
+5 OSH   S              3
+6 SAV   N             11
+7 SAV   S              3
+8 WSA   N              8
+9 WSA   S             10
+Saved: RSCOTT_AGU26/tables/candidate_sites.csv
+
+================ Step 2: P_F_QC polarity -- control-site check ================
+Control sites: IT-MBo, BE-Maa
+   site_id            qc_tier   n frac_identical_to_era5 resolution
+1   BE-Maa 0.1 < P_F_QC < 0.9  16              0.0000000         MM
+2   BE-Maa      P_F_QC <= 0.1  12              0.8333333         MM
+3   BE-Maa      P_F_QC >= 0.9  92              0.0000000         MM
+4   IT-MBo 0.1 < P_F_QC < 0.9  22              0.0000000         MM
+5   IT-MBo      P_F_QC <= 0.1  35              1.0000000         MM
+6   IT-MBo      P_F_QC >= 0.9 219              0.0000000         MM
+7   BE-Maa 0.1 < P_F_QC < 0.9   4              0.0000000         YY
+8   BE-Maa      P_F_QC >= 0.9   6              0.0000000         YY
+9   IT-MBo 0.1 < P_F_QC < 0.9   5              0.0000000         YY
+10  IT-MBo      P_F_QC <= 0.1   1              1.0000000         YY
+11  IT-MBo      P_F_QC >= 0.9  17              0.0000000         YY
+  site_id resolution frac_identical_low_qc frac_identical_high_qc
+1  BE-Maa         MM             0.8333333                      0
+2  IT-MBo         MM             1.0000000                      0
+3  BE-Maa         YY                    NA                      0
+4  IT-MBo         YY             1.0000000                      0
+  polarity_confirmed
+1               TRUE
+2               TRUE
+3                 NA
+4               TRUE
+
+CONFIRMED: at every control site/resolution with both a low- and high-QC tier available, low P_F_QC rows are far more often bit-identical to P_ERA than high P_F_QC rows -- i.e. P_F_QC near 0 = fully ERA-filled, P_F_QC near 1 = genuinely measured (higher = more measured). This matches CLAUDE.md's System-1 fraction convention and this repo's prior network-wide findings (era5_precip_units_v3_partA.R / v4.R; review/diagnostics/precip_site_filter/report.md). Used throughout this project: measured share = P_F_QC; ERA-filled share = 1 - P_F_QC.
+Saved: RSCOTT_AGU26/tables/pf_qc_polarity_check.csv
+
+01_candidates_and_qc_check.R complete.

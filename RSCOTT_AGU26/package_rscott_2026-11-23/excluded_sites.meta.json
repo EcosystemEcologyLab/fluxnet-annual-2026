@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-23T17:17:10Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/site_screen_decision.csv",
+    "RSCOTT_AGU26/tables/candidate_sites.csv"
+  ],
+  "notes": "Every IGBP-screened candidate site not kept, with its reason and the counts behind it (fewer than 2 measured calendar years = unscreenable; mean annual measured P >= 800 mm; or fewer than 5 passing years in either time step)."
+}

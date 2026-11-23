@@ -1,0 +1,232 @@
+site_id,n_measured_years_calendar,mean_annual_measured_p_mm,screenable,screen_pass,n_calendar_years_total,n_passing_calendar_with_precip,n_passing_calendar_without_precip,n_water_years_total,n_passing_water_with_precip,n_passing_water_without_precip,keep,exclusion_reason
+AR-CCg,0,NA,FALSE,FALSE,7,0,3,8,0,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+AT-Neu,19,767.5762631578947,TRUE,TRUE,19,19,19,20,18,18,TRUE,NA
+AU-ASM,11,329.0258181818182,TRUE,TRUE,16,10,11,17,9,9,TRUE,NA
+AU-Ade,1,NA,FALSE,FALSE,3,1,1,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+AU-Cpr,14,230.14421428571427,TRUE,TRUE,16,13,13,17,11,11,TRUE,NA
+AU-DaP,3,1351.549,TRUE,FALSE,6,3,4,7,2,2,FALSE,"mean annual measured precipitation 1351.5 mm, at or above the 800 mm threshold"
+AU-DaS,12,1234.4805,TRUE,FALSE,19,11,16,20,7,9,FALSE,"mean annual measured precipitation 1234.5 mm, at or above the 800 mm threshold"
+AU-Dry,7,839.1615714285714,TRUE,FALSE,17,7,9,18,4,4,FALSE,"mean annual measured precipitation 839.2 mm, at or above the 800 mm threshold"
+AU-Emr,2,642.05,TRUE,TRUE,3,2,2,4,0,0,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 0; without the precipitation condition -- calendar: 2, water: 0)"
+AU-Fle,3,803.515,TRUE,FALSE,4,2,3,5,2,2,FALSE,"mean annual measured precipitation 803.5 mm, at or above the 800 mm threshold"
+AU-Fog,0,NA,FALSE,FALSE,3,0,1,4,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+AU-How,14,1671.82,TRUE,FALSE,24,14,20,25,16,16,FALSE,"mean annual measured precipitation 1671.8 mm, at or above the 800 mm threshold"
+AU-Lit,7,1499.1974285714286,TRUE,FALSE,11,6,6,12,5,5,FALSE,"mean annual measured precipitation 1499.2 mm, at or above the 800 mm threshold"
+AU-Lon,3,292.54133333333334,TRUE,TRUE,7,3,3,8,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 2; without the precipitation condition -- calendar: 3, water: 2)"
+AU-Otw,2,675.6289999999999,TRUE,TRUE,4,2,3,5,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 1; without the precipitation condition -- calendar: 3, water: 1)"
+AU-RDF,0,NA,FALSE,FALSE,3,0,1,4,1,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+AU-Rig,4,358.45775000000003,TRUE,TRUE,7,3,5,8,1,2,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 1; without the precipitation condition -- calendar: 5, water: 2)"
+AU-Sam,6,1086.7611666666667,TRUE,FALSE,8,5,6,9,4,4,FALSE,"mean annual measured precipitation 1086.8 mm, at or above the 800 mm threshold"
+AU-Sil,5,768.0982,TRUE,TRUE,6,5,5,7,4,4,TRUE,NA
+AU-Stp,10,734.1449,TRUE,TRUE,18,10,14,19,8,8,TRUE,NA
+AU-TTE,7,295.4858571428571,TRUE,TRUE,14,7,8,15,6,6,TRUE,NA
+AU-Wel,2,731.4925000000001,TRUE,TRUE,2,2,2,3,0,1,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 0; without the precipitation condition -- calendar: 2, water: 1)"
+AU-Wgt,0,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+AU-Ya1,2,705.0999999999999,TRUE,TRUE,3,2,2,4,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 2; without the precipitation condition -- calendar: 2, water: 2)"
+AU-Ya2,2,738.2,TRUE,TRUE,3,2,2,4,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 2; without the precipitation condition -- calendar: 2, water: 2)"
+AU-Ync,11,489.6020909090909,TRUE,TRUE,14,10,10,15,8,8,TRUE,NA
+BE-Dor,12,666.5525,TRUE,TRUE,14,4,6,15,2,4,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 2; without the precipitation condition -- calendar: 6, water: 4)"
+BE-Maa,6,768.5593333333334,TRUE,TRUE,10,6,8,11,5,8,TRUE,NA
+BJ-Nhu,10,1289.6543,TRUE,FALSE,10,6,6,11,2,2,FALSE,"mean annual measured precipitation 1289.7 mm, at or above the 800 mm threshold"
+BR-Npw,2,1381.48,TRUE,FALSE,5,2,2,6,2,2,FALSE,"mean annual measured precipitation 1381.5 mm, at or above the 800 mm threshold"
+BR-Xpw,4,1090.73925,TRUE,FALSE,6,3,3,7,3,3,FALSE,"mean annual measured precipitation 1090.7 mm, at or above the 800 mm threshold"
+BW-Nxr,0,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CA-LU1,0,NA,FALSE,FALSE,4,0,1,5,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CA-LU2,0,NA,FALSE,FALSE,4,0,0,5,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CA-MA3,1,NA,FALSE,FALSE,3,0,0,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+CA-Mtk,0,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CA-SF3,2,462.8335,TRUE,TRUE,6,0,0,7,0,0,FALSE,"fewer than 5 passing years in either time step (calendar: 0, water: 0; without the precipitation condition -- calendar: 0, water: 0)"
+CA-TVC,1,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+CG-Tch,3,1616.846,TRUE,FALSE,4,0,0,5,0,0,FALSE,"mean annual measured precipitation 1616.8 mm, at or above the 800 mm threshold"
+CH-Aws,12,1428.9698333333333,TRUE,FALSE,19,10,10,20,9,9,FALSE,"mean annual measured precipitation 1429.0 mm, at or above the 800 mm threshold"
+CH-Cha,17,1157.583294117647,TRUE,FALSE,20,17,18,21,16,16,FALSE,"mean annual measured precipitation 1157.6 mm, at or above the 800 mm threshold"
+CH-Crs,2,887.8,TRUE,FALSE,2,2,2,3,0,0,FALSE,"mean annual measured precipitation 887.8 mm, at or above the 800 mm threshold"
+CH-Frk,2,1242.3245000000002,TRUE,FALSE,2,0,0,3,0,0,FALSE,"mean annual measured precipitation 1242.3 mm, at or above the 800 mm threshold"
+CH-Fru,17,1434.446,TRUE,FALSE,20,15,17,21,14,17,FALSE,"mean annual measured precipitation 1434.4 mm, at or above the 800 mm threshold"
+CH-Oe1,10,1146.1085,TRUE,FALSE,10,10,10,11,6,6,FALSE,"mean annual measured precipitation 1146.1 mm, at or above the 800 mm threshold"
+CH-Oe3,9,1108.477111111111,TRUE,FALSE,10,9,9,11,7,7,FALSE,"mean annual measured precipitation 1108.5 mm, at or above the 800 mm threshold"
+CH-Rh1,3,1717.1999999999998,TRUE,FALSE,4,3,3,5,2,2,FALSE,"mean annual measured precipitation 1717.2 mm, at or above the 800 mm threshold"
+CH-Rh2,3,1717.1999999999998,TRUE,FALSE,4,3,3,5,2,2,FALSE,"mean annual measured precipitation 1717.2 mm, at or above the 800 mm threshold"
+CH-Rtb,14,1407.5071428571428,TRUE,FALSE,14,13,13,15,12,12,FALSE,"mean annual measured precipitation 1407.5 mm, at or above the 800 mm threshold"
+CN-Aro,0,NA,FALSE,FALSE,12,0,11,13,0,7,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CN-Dan,2,296.4625,TRUE,TRUE,10,2,6,11,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 2; without the precipitation condition -- calendar: 6, water: 2)"
+CN-Dda,0,NA,FALSE,FALSE,4,0,3,5,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CN-Dsh,0,NA,FALSE,FALSE,12,0,6,13,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CN-Du2,6,443.6211666666667,TRUE,TRUE,9,6,6,10,2,2,TRUE,NA
+CN-Erg,3,312.43833333333333,TRUE,TRUE,4,2,2,5,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 1; without the precipitation condition -- calendar: 2, water: 1)"
+CN-GuT,0,NA,FALSE,FALSE,3,0,3,4,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CN-Ha2,4,465.67775,TRUE,TRUE,7,3,5,10,2,3,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 2; without the precipitation condition -- calendar: 5, water: 3)"
+CN-HaM,0,NA,FALSE,FALSE,13,0,7,15,0,4,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CN-Jng,0,NA,FALSE,FALSE,7,0,4,8,0,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CN-Sdq,0,NA,FALSE,FALSE,12,0,10,13,0,5,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CN-Xi2,5,238.6392,TRUE,TRUE,10,1,2,11,1,2,FALSE,"fewer than 5 passing years in either time step (calendar: 1, water: 1; without the precipitation condition -- calendar: 2, water: 2)"
+CN-YaS,8,305.2875,TRUE,TRUE,10,8,9,11,7,8,TRUE,NA
+CN-Yan,1,NA,FALSE,FALSE,3,0,1,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+CN-You,0,NA,FALSE,FALSE,10,0,6,11,0,4,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+CZ-BK2,3,1131.1209999999999,TRUE,FALSE,7,3,4,8,1,2,FALSE,"mean annual measured precipitation 1131.1 mm, at or above the 800 mm threshold"
+CZ-LnG,5,546.7472,TRUE,TRUE,6,5,5,7,4,5,TRUE,NA
+DE-Fen,2,893.559,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual measured precipitation 893.6 mm, at or above the 800 mm threshold"
+DE-Gri,20,893.87605,TRUE,FALSE,22,18,20,23,12,16,FALSE,"mean annual measured precipitation 893.9 mm, at or above the 800 mm threshold"
+DE-GsB,10,509.5539,TRUE,TRUE,11,9,9,12,7,7,TRUE,NA
+DE-Gwg,2,1205.1955,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual measured precipitation 1205.2 mm, at or above the 800 mm threshold"
+DE-RuC,10,1201.9414,TRUE,FALSE,12,10,11,13,8,10,FALSE,"mean annual measured precipitation 1201.9 mm, at or above the 800 mm threshold"
+DE-RuR,14,899.7072857142857,TRUE,FALSE,15,14,14,16,12,12,FALSE,"mean annual measured precipitation 899.7 mm, at or above the 800 mm threshold"
+DK-Eng,0,NA,FALSE,FALSE,4,0,2,5,0,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-Abr,5,345.1942,TRUE,TRUE,6,5,5,7,4,4,TRUE,NA
+ES-Agu,10,273.6455,TRUE,TRUE,19,8,9,20,4,5,TRUE,NA
+ES-Amo,9,259.4853333333333,TRUE,TRUE,13,6,7,14,1,2,TRUE,NA
+ES-Cnd,0,NA,FALSE,FALSE,8,0,5,9,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-Crg,3,546.9056666666667,TRUE,TRUE,4,3,3,5,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 1; without the precipitation condition -- calendar: 3, water: 1)"
+ES-Dnn,0,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-Gdn,0,NA,FALSE,FALSE,7,0,4,9,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-HdD,0,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-LJu,12,611.492,TRUE,TRUE,21,10,12,22,5,7,TRUE,NA
+ES-LM1,10,671.9152,TRUE,TRUE,11,9,9,12,8,8,TRUE,NA
+ES-LM2,10,650.5497,TRUE,TRUE,11,10,10,12,8,8,TRUE,NA
+ES-LMa,6,741.3388333333334,TRUE,TRUE,6,6,6,7,4,5,TRUE,NA
+ES-LgS,2,429.2165,TRUE,TRUE,3,2,2,4,0,1,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 0; without the precipitation condition -- calendar: 2, water: 1)"
+ES-Ln2,0,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-MtB,0,NA,FALSE,FALSE,4,0,3,5,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-MtN,0,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ES-Pzb,3,381.60533333333336,TRUE,TRUE,5,3,4,6,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 2; without the precipitation condition -- calendar: 4, water: 2)"
+ES-VDA,2,737.4000000000001,TRUE,TRUE,3,2,2,4,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 1; without the precipitation condition -- calendar: 2, water: 1)"
+FI-Ant,1,NA,FALSE,FALSE,1,1,1,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+FR-CLt,6,1601.3671666666667,TRUE,FALSE,6,4,4,7,2,2,FALSE,"mean annual measured precipitation 1601.4 mm, at or above the 800 mm threshold"
+FR-Lqu,2,1438.4245,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual measured precipitation 1438.4 mm, at or above the 800 mm threshold"
+FR-Lus,2,938.145,TRUE,FALSE,3,2,2,4,0,0,FALSE,"mean annual measured precipitation 938.1 mm, at or above the 800 mm threshold"
+FR-Mau,6,516.4916666666667,TRUE,TRUE,7,3,4,8,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 1; without the precipitation condition -- calendar: 4, water: 1)"
+FR-Mej,6,725.4176666666667,TRUE,TRUE,7,6,7,8,4,6,TRUE,NA
+FR-Nzn,9,917.9288888888889,TRUE,FALSE,9,8,8,10,6,6,FALSE,"mean annual measured precipitation 917.9 mm, at or above the 800 mm threshold"
+FR-Tou,8,626.32725,TRUE,TRUE,8,8,8,9,7,7,TRUE,NA
+GL-Dsk,0,NA,FALSE,FALSE,6,0,6,7,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+GL-ZaH,2,687.9925,TRUE,TRUE,6,0,0,7,0,0,FALSE,"fewer than 5 passing years in either time step (calendar: 0, water: 0; without the precipitation condition -- calendar: 0, water: 0)"
+ID-PaB,12,2640.590583333333,TRUE,FALSE,13,10,10,14,8,8,FALSE,"mean annual measured precipitation 2640.6 mm, at or above the 800 mm threshold"
+IT-Arz,0,NA,FALSE,FALSE,9,0,5,10,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+IT-Bsn,1,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+IT-Lsn,7,1032.5732857142857,TRUE,FALSE,10,6,8,11,5,6,FALSE,"mean annual measured precipitation 1032.6 mm, at or above the 800 mm threshold"
+IT-MBo,17,1140.3235294117646,TRUE,FALSE,23,13,17,24,10,15,FALSE,"mean annual measured precipitation 1140.3 mm, at or above the 800 mm threshold"
+IT-MtM,5,740.8004,TRUE,TRUE,6,5,6,7,3,3,TRUE,NA
+IT-MtP,3,510.33000000000004,TRUE,TRUE,5,3,3,7,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 2; without the precipitation condition -- calendar: 3, water: 2)"
+IT-NiG,0,NA,FALSE,FALSE,5,0,3,6,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+IT-Niv,0,NA,FALSE,FALSE,7,0,0,8,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+IT-Noe,0,NA,FALSE,FALSE,3,0,2,4,1,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+IT-Tor,17,866.9791176470588,TRUE,FALSE,18,17,17,19,15,15,FALSE,"mean annual measured precipitation 867.0 mm, at or above the 800 mm threshold"
+JP-NsC,4,2150.685,TRUE,FALSE,12,3,10,13,3,9,FALSE,"mean annual measured precipitation 2150.7 mm, at or above the 800 mm threshold"
+JP-NsM,4,2150.685,TRUE,FALSE,12,3,10,13,3,9,FALSE,"mean annual measured precipitation 2150.7 mm, at or above the 800 mm threshold"
+JP-Om2,0,NA,FALSE,FALSE,4,0,3,5,0,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+JP-Tgf,2,1308.6019999999999,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual measured precipitation 1308.6 mm, at or above the 800 mm threshold"
+JP-Tmd,0,NA,FALSE,FALSE,19,0,5,20,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+KE-Chk,1,NA,FALSE,FALSE,3,0,0,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+KE-Kpt,0,NA,FALSE,FALSE,7,0,1,8,0,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+ML-Kem,0,NA,FALSE,FALSE,3,0,1,4,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+MN-Hst,0,NA,FALSE,FALSE,6,0,4,7,0,4,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+MN-Kbu,0,NA,FALSE,FALSE,6,0,5,7,0,4,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+MN-Nkh,0,NA,FALSE,FALSE,6,0,4,7,0,5,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+NL-Hrw,9,856.2321111111111,TRUE,FALSE,10,6,6,11,3,3,FALSE,"mean annual measured precipitation 856.2 mm, at or above the 800 mm threshold"
+NL-Vkp,12,850.3774999999999,TRUE,FALSE,12,11,11,13,11,11,FALSE,"mean annual measured precipitation 850.4 mm, at or above the 800 mm threshold"
+NZ-ADd,4,773.9875,TRUE,TRUE,5,4,4,6,4,4,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 4; without the precipitation condition -- calendar: 4, water: 4)"
+NZ-ADw,6,1046.6235000000001,TRUE,FALSE,8,6,6,9,7,7,FALSE,"mean annual measured precipitation 1046.6 mm, at or above the 800 mm threshold"
+NZ-BFm,2,934.3499999999999,TRUE,FALSE,4,2,2,5,2,2,FALSE,"mean annual measured precipitation 934.3 mm, at or above the 800 mm threshold"
+NZ-BFu,1,NA,FALSE,FALSE,3,1,1,4,1,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+NZ-Cla,2,1163.8600000000001,TRUE,FALSE,4,2,2,5,0,0,FALSE,"mean annual measured precipitation 1163.9 mm, at or above the 800 mm threshold"
+NZ-Lau,6,1045.5258333333334,TRUE,FALSE,7,6,6,8,4,4,FALSE,"mean annual measured precipitation 1045.5 mm, at or above the 800 mm threshold"
+NZ-Oxf,5,982.5,TRUE,FALSE,5,5,5,6,3,3,FALSE,"mean annual measured precipitation 982.5 mm, at or above the 800 mm threshold"
+NZ-ScF,4,1319.6,TRUE,FALSE,4,4,4,5,3,3,FALSE,"mean annual measured precipitation 1319.6 mm, at or above the 800 mm threshold"
+PA-SPs,2,2153.3215,TRUE,FALSE,4,2,2,5,2,2,FALSE,"mean annual measured precipitation 2153.3 mm, at or above the 800 mm threshold"
+PR-xLA,6,1076.074,TRUE,FALSE,6,2,2,7,0,0,FALSE,"mean annual measured precipitation 1076.1 mm, at or above the 800 mm threshold"
+RU-Fy3,0,NA,FALSE,FALSE,3,0,0,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+RU-Ha1,0,NA,FALSE,FALSE,3,0,0,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+RU-NeB,0,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+RU-NeC,0,NA,FALSE,FALSE,6,0,0,7,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+SD-Dem,2,265.2255,TRUE,TRUE,3,2,2,4,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 1; without the precipitation condition -- calendar: 2, water: 1)"
+SN-Dhr,9,377.0388888888889,TRUE,TRUE,13,3,3,14,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 1; without the precipitation condition -- calendar: 3, water: 1)"
+UK-Ags,1,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+UK-BnB,3,1038.9733333333334,TRUE,FALSE,4,3,3,5,1,1,FALSE,"mean annual measured precipitation 1039.0 mm, at or above the 800 mm threshold"
+UK-CCr,3,1299.3293333333334,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual measured precipitation 1299.3 mm, at or above the 800 mm threshold"
+UK-Cvn,1,NA,FALSE,FALSE,2,1,1,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+UK-GaB,2,1013.6215,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual measured precipitation 1013.6 mm, at or above the 800 mm threshold"
+UK-Gnn,2,1270.7215,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual measured precipitation 1270.7 mm, at or above the 800 mm threshold"
+UK-Gwr,2,1646.9279999999999,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual measured precipitation 1646.9 mm, at or above the 800 mm threshold"
+UK-HgF,0,NA,FALSE,FALSE,2,0,1,3,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-A32,1,NA,FALSE,FALSE,3,1,1,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+US-ABa,2,1033.35,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual measured precipitation 1033.3 mm, at or above the 800 mm threshold"
+US-ABb,2,1272.0375,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual measured precipitation 1272.0 mm, at or above the 800 mm threshold"
+US-ABc,1,NA,FALSE,FALSE,3,1,1,4,2,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+US-ABd,2,1196.5,TRUE,FALSE,3,1,1,4,2,2,FALSE,"mean annual measured precipitation 1196.5 mm, at or above the 800 mm threshold"
+US-AR1,3,516.422,TRUE,TRUE,4,2,2,5,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 2; without the precipitation condition -- calendar: 2, water: 2)"
+US-AR2,2,430.41600000000005,TRUE,TRUE,4,2,2,5,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 2; without the precipitation condition -- calendar: 2, water: 2)"
+US-ARb,0,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-ARc,0,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Aud,22,386.8244090909091,TRUE,TRUE,23,17,17,24,12,12,TRUE,NA
+US-BRG,0,NA,FALSE,FALSE,4,0,2,5,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-CAK,0,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-CGG,5,482.7322,TRUE,TRUE,6,3,3,7,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 1; without the precipitation condition -- calendar: 3, water: 1)"
+US-CdM,2,183.479,TRUE,TRUE,6,2,5,7,1,2,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 1; without the precipitation condition -- calendar: 5, water: 2)"
+US-Ced,9,1205.975222222222,TRUE,FALSE,10,9,9,11,9,9,FALSE,"mean annual measured precipitation 1206.0 mm, at or above the 800 mm threshold"
+US-Cop,3,174.0593333333333,TRUE,TRUE,7,1,2,8,0,0,FALSE,"fewer than 5 passing years in either time step (calendar: 1, water: 0; without the precipitation condition -- calendar: 2, water: 0)"
+US-Dk1,8,1054.065375,TRUE,FALSE,8,6,6,9,5,5,FALSE,"mean annual measured precipitation 1054.1 mm, at or above the 800 mm threshold"
+US-EA5,1,NA,FALSE,FALSE,2,1,1,3,1,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+US-EA6,0,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-EML,0,NA,FALSE,FALSE,16,0,8,17,0,4,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Fcr,0,NA,FALSE,FALSE,4,0,1,5,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Fwf,5,523.2456,TRUE,TRUE,6,5,5,7,3,3,TRUE,NA
+US-Hn2,3,54.260666666666665,TRUE,TRUE,4,0,0,5,0,0,FALSE,"fewer than 5 passing years in either time step (calendar: 0, water: 0; without the precipitation condition -- calendar: 0, water: 0)"
+US-Hn3,0,NA,FALSE,FALSE,2,0,0,3,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-ICh,12,217.39641666666665,TRUE,TRUE,19,12,16,20,4,7,TRUE,NA
+US-ICt,12,309.83825,TRUE,TRUE,19,10,10,20,2,2,TRUE,NA
+US-Jo1,9,206.19611111111112,TRUE,TRUE,13,9,11,14,6,6,TRUE,NA
+US-Jo2,8,308.64125,TRUE,TRUE,9,6,6,12,5,5,TRUE,NA
+US-KFS,6,626.963,TRUE,TRUE,13,5,11,14,3,4,TRUE,NA
+US-KLS,3,391.49033333333335,TRUE,TRUE,8,3,5,9,0,1,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 0; without the precipitation condition -- calendar: 5, water: 1)"
+US-KS2,4,1144.16,TRUE,FALSE,4,3,3,5,3,3,FALSE,"mean annual measured precipitation 1144.2 mm, at or above the 800 mm threshold"
+US-Kon,11,719.2744545454545,TRUE,TRUE,16,11,15,17,1,1,TRUE,NA
+US-LS1,4,298.72,TRUE,TRUE,5,4,4,6,4,4,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 4; without the precipitation condition -- calendar: 4, water: 4)"
+US-LS2,4,307.04475,TRUE,TRUE,5,4,4,6,4,4,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 4; without the precipitation condition -- calendar: 4, water: 4)"
+US-Mo2,2,800.7429999999999,TRUE,FALSE,7,2,6,8,1,4,FALSE,"mean annual measured precipitation 800.7 mm, at or above the 800 mm threshold"
+US-Mpj,18,361.0603888888889,TRUE,TRUE,18,17,17,19,15,15,TRUE,NA
+US-NGC,0,NA,FALSE,FALSE,7,0,0,8,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-NR3,0,NA,FALSE,FALSE,14,0,2,19,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-ONA,7,930.7848571428572,TRUE,FALSE,7,6,6,8,4,4,FALSE,"mean annual measured precipitation 930.8 mm, at or above the 800 mm threshold"
+US-PAS,0,NA,FALSE,FALSE,2,0,1,3,0,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-PFf,0,NA,FALSE,FALSE,1,0,0,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Rls,0,NA,FALSE,FALSE,10,0,7,11,0,6,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Rms,0,NA,FALSE,FALSE,10,0,7,11,0,7,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Ro4,9,867.5926666666667,TRUE,FALSE,12,9,11,13,8,9,FALSE,"mean annual measured precipitation 867.6 mm, at or above the 800 mm threshold"
+US-Rwe,0,NA,FALSE,FALSE,5,0,3,6,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Rwf,0,NA,FALSE,FALSE,10,0,8,11,0,6,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Rws,0,NA,FALSE,FALSE,10,0,8,11,0,8,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-SRC,5,248.5738,TRUE,TRUE,7,2,2,8,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 2; without the precipitation condition -- calendar: 2, water: 2)"
+US-SRG,17,403.46511764705883,TRUE,TRUE,18,17,17,19,16,17,TRUE,NA
+US-SRM,22,353.7912727272727,TRUE,TRUE,22,22,22,23,19,19,TRUE,NA
+US-SRS,7,406.57257142857145,TRUE,TRUE,8,7,7,9,3,3,TRUE,NA
+US-Seg,17,223.24682352941176,TRUE,TRUE,19,17,19,20,13,14,TRUE,NA
+US-Ses,17,224.28264705882353,TRUE,TRUE,19,16,18,20,13,14,TRUE,NA
+US-Sne,4,330.96625,TRUE,TRUE,5,4,4,6,3,3,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 3; without the precipitation condition -- calendar: 4, water: 3)"
+US-Snf,1,NA,FALSE,FALSE,3,1,1,4,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+US-Sta,0,NA,FALSE,FALSE,5,0,1,6,0,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-TKs,6,216.06150000000002,TRUE,TRUE,8,5,5,9,2,2,TRUE,NA
+US-Ton,5,622.0028,TRUE,TRUE,25,5,24,26,3,21,TRUE,NA
+US-UiD,0,NA,FALSE,FALSE,17,0,7,18,0,5,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-Var,25,566.8586,TRUE,TRUE,26,24,25,27,22,23,TRUE,NA
+US-Whs,18,292.0082777777778,TRUE,TRUE,19,18,18,20,18,18,TRUE,NA
+US-Wjs,15,322.45553333333334,TRUE,TRUE,19,14,16,20,12,13,TRUE,NA
+US-Wkg,21,315.998,TRUE,TRUE,22,21,21,23,21,21,TRUE,NA
+US-xAE,3,757.8603333333333,TRUE,TRUE,6,3,6,7,0,0,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 0; without the precipitation condition -- calendar: 6, water: 0)"
+US-xCL,5,841.5552,TRUE,FALSE,6,4,5,7,2,2,FALSE,"mean annual measured precipitation 841.6 mm, at or above the 800 mm threshold"
+US-xCP,0,NA,FALSE,FALSE,6,0,3,7,0,3,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=0)
+US-xDC,6,371.6623333333333,TRUE,TRUE,6,6,6,7,2,3,TRUE,NA
+US-xHE,1,NA,FALSE,FALSE,6,1,4,7,1,2,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+US-xJR,4,136.239,TRUE,TRUE,6,4,6,7,1,4,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 1; without the precipitation condition -- calendar: 6, water: 4)"
+US-xKA,3,712.5446666666667,TRUE,TRUE,6,3,5,7,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 2; without the precipitation condition -- calendar: 5, water: 2)"
+US-xKZ,5,856.8208,TRUE,FALSE,6,5,6,7,2,3,FALSE,"mean annual measured precipitation 856.8 mm, at or above the 800 mm threshold"
+US-xMB,3,201.84733333333332,TRUE,TRUE,6,3,4,7,2,3,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 2; without the precipitation condition -- calendar: 4, water: 3)"
+US-xNG,4,321.87675,TRUE,TRUE,6,4,4,7,2,2,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 2; without the precipitation condition -- calendar: 4, water: 2)"
+US-xNQ,4,259.622,TRUE,TRUE,6,3,4,7,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 1; without the precipitation condition -- calendar: 4, water: 1)"
+US-xSJ,2,392.1615,TRUE,TRUE,6,1,4,7,0,1,FALSE,"fewer than 5 passing years in either time step (calendar: 1, water: 0; without the precipitation condition -- calendar: 4, water: 1)"
+US-xSR,4,292.0315,TRUE,TRUE,6,3,3,7,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 3, water: 1; without the precipitation condition -- calendar: 3, water: 1)"
+US-xWD,4,487.996,TRUE,TRUE,6,4,5,7,2,3,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 2; without the precipitation condition -- calendar: 5, water: 3)"
+ZA-BfK,4,592.3335,TRUE,TRUE,5,4,4,6,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 4, water: 1; without the precipitation condition -- calendar: 4, water: 1)"
+ZA-BfS,2,492.75300000000004,TRUE,TRUE,5,2,2,6,1,1,FALSE,"fewer than 5 passing years in either time step (calendar: 2, water: 1; without the precipitation condition -- calendar: 2, water: 1)"
+ZA-Jks,1,NA,FALSE,FALSE,1,1,1,2,0,0,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+ZA-Spk,1,NA,FALSE,FALSE,2,1,1,3,1,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)
+ZA-Uby,1,NA,FALSE,FALSE,2,1,1,3,1,1,FALSE,fewer than 2 years of measured precipitation (calendar years with ERA-filled share <= 10%: n=1)

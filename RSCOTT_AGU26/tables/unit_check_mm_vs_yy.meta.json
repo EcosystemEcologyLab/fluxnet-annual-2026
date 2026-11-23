@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:13:46Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Reconstructs calendar-year GPP_NT (chosen VUT/CUT per site) and P_F totals by summing the 12 monthly_converted/monthly rows for that site-year and comparing to the direct annual_converted/annual YY value. GPP_NT (already converted by R/units.R) matches YY to a few percent, as expected. P_F does NOT match when summed raw (median ~97% too low) -- discovered here to be a mean-daily-rate at MM resolution needing multiplication by days-in-month (then matches to <0.01%), the same undocumented convention already known for carbon fluxes but NOT currently documented/handled for precipitation in CLAUDE.md or R/units.R. See docs/report_back_2026-11-23.md for the full write-up; this project uses DAILY (DD) P_F/P_F_QC for all water-year precipitation totals/shares as a result (DD sums to YY with no scaling, confirmed separately), not MM."
+}

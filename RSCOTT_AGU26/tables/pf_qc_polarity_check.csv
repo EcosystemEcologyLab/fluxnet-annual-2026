@@ -1,0 +1,14 @@
+site_id,qc_tier,n,frac_identical_to_era5,resolution
+AR-CCg,P_F_QC <= 0.1,84,1,MM
+BE-Maa,0.1 < P_F_QC < 0.9,16,0,MM
+BE-Maa,P_F_QC <= 0.1,12,0.8333333333333334,MM
+BE-Maa,P_F_QC >= 0.9,92,0,MM
+IT-MBo,0.1 < P_F_QC < 0.9,22,0,MM
+IT-MBo,P_F_QC <= 0.1,35,1,MM
+IT-MBo,P_F_QC >= 0.9,219,0,MM
+AR-CCg,P_F_QC <= 0.1,7,1,YY
+BE-Maa,0.1 < P_F_QC < 0.9,4,0,YY
+BE-Maa,P_F_QC >= 0.9,6,0,YY
+IT-MBo,0.1 < P_F_QC < 0.9,5,0,YY
+IT-MBo,P_F_QC <= 0.1,1,1,YY
+IT-MBo,P_F_QC >= 0.9,17,0,YY

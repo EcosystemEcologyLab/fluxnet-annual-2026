@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:06:01Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv"
+  ],
+  "notes": "Step 1 candidate list: snapshot igbp column in OSH/CSH/GRA/SAV/WSA, either hemisphere, one row per distinct site_id (first snapshot row kept if a site appears more than once)."
+}

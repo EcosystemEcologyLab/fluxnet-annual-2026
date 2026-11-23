@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:17:10Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/site_years_candidates_full.csv"
+  ],
+  "notes": "Every site-year (passing or not) of every kept site, both time steps (calendar from YY, water from MM/DD -- see README.md for which resolution backs which column). GPP in gC m-2 per period; ET and P in mm per period."
+}

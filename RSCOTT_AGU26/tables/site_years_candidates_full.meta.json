@@ -1,0 +1,9 @@
+{
+  "run_datetime_utc": "2026-11-23T17:13:46Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb",
+    "RSCOTT_AGU26/tables/candidate_sites.csv"
+  ],
+  "notes": "All candidate (IGBP-screened) sites, both time steps, every site-year (not yet restricted to kept sites -- that restriction happens in 03_screen_and_package.R). GPP units gC m-2 per period (yr for calendar, water-year total for water); ET and P in mm per period. GPP/ET at water year are built from monthly_converted (confirmed correctly unit-converted by the unit check). P at water year is built from DAILY (DD) P_F/P_F_QC, NOT monthly -- raw MM P_F was discovered to be a mean-daily-rate, not a monthly total (see unit_check_mm_vs_yy.csv and docs/report_back_2026-11-23.md); DD sums to YY with no scaling and is used instead. era_filled_share: YY = 1 - P_F_QC (single annual fraction); water year = amount-weighted across all days in the water year (1 - sum(P_F_QC_day*P_F_day)/sum(P_F_day)), NA if the water year is incomplete (n_days_present != expected_days) or P_F total is exactly 0 (undefined share). pass_gpp/pass_et at calendar year use qc_passes() at QC_THRESHOLD_YY on the single annual QC value; at water year they require all 12 months individually qc_passes() at QC_THRESHOLD_MM. nee_qc/LE_F_MDS_QC columns are NA at the water-year step because there is no single annual QC value there (n_months_*_passing reports the month count instead; n_days_present/precip_complete report daily coverage for the P_F aggregate)."
+}

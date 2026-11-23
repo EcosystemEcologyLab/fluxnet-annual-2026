@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:16:09Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/site_years_candidates_full.csv"
+  ],
+  "notes": "Step 3 screen (calendar-year measured precip, mean P < 800 mm) and step 5 keep decision (>=5 passing years, either time step, counted with and without the precipitation condition)."
+}

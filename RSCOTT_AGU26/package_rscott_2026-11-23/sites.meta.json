@@ -1,0 +1,11 @@
+{
+  "run_datetime_utc": "2026-11-23T17:17:10Z",
+  "pipeline_version": "ea96d41",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/candidate_sites.csv",
+    "RSCOTT_AGU26/tables/site_screen_decision.csv",
+    "RSCOTT_AGU26/tables/driest_month_climatology.csv",
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "One row per kept site. product_id/product_citation/oneflux_code_version from the 2026-09-20 snapshot. file_name_annual/file_name_monthly are the exact FLUXMET file names (basename of the manifest path) used for that site's YY/MM data."
+}

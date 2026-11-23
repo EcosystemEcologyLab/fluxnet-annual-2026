@@ -1,0 +1,83 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[RSCOTT_AGU26] DuckDB: data/duckdb/fluxnet.duckdb
+[RSCOTT_AGU26] Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+
+================ VUT/CUT per-site source ================
+Carbon source counts:   CUT  VUT <NA>     7  194   30 
+
+================ Unit check: MM-summed vs YY-direct ================
+Site-years with complete 12-month MM data and a YY value, used for the unit check: 873
+1 site-year(s) have p_f_yy == 0 (undefined %diff) -- excluded from the P_F summary stats below, kept in the CSV.
+GPP_NT (monthly_converted, already unit-converted): median |%diff| = 0.42%, max |%diff| = 125.15% (n=873)
+P_F raw MM sum vs YY (NO days-in-month scaling):    median |%diff| = 96.72%, max |%diff| = 96.77%
+P_F MM sum x days-in-month vs YY:                   median |%diff| = 0.0026%, max |%diff| = 0.1257%
+   site_id year gpp_nt_yy   p_f_yy n_months gpp_nt_mm_summed p_f_mm_summed_raw
+1   AR-CCg 2020   2017.36 2975.111       12         2022.782            98.089
+2   AT-Neu 2002   2000.61  984.159       12         2037.853            32.288
+3   AT-Neu 2003   1954.53  763.076       12         1989.796            24.940
+4   AT-Neu 2004   2033.54  785.904       12         2076.920            25.741
+5   AT-Neu 2005   1860.93  744.664       12         1860.665            24.313
+6   AT-Neu 2006   2093.47  581.500       12         2100.870            19.070
+7   AT-Neu 2007   2324.17  617.700       12         2386.616            20.214
+8   AT-Neu 2008   2644.12  647.900       12         2536.082            21.126
+9   AT-Neu 2009   2742.51  650.175       12         2709.373            21.345
+10  AT-Neu 2010   2140.53  527.380       12         2131.673            17.185
+11  AT-Neu 2011   2660.34  553.708       12         2638.553            18.051
+12  AT-Neu 2012   2194.54  498.600       12         2216.864            16.330
+13  AT-Neu 2013   2026.49  882.900       12         2043.952            28.958
+14  AT-Neu 2014   2442.75  894.100       12         2515.978            29.406
+15  AT-Neu 2015   2293.16  838.900       12         2312.716            27.438
+   p_f_mm_summed_scaled_by_days gpp_pct_diff p_pct_diff_raw_mm_sum
+1                      2975.138   0.26877949             -96.70301
+2                       984.103   1.86156762             -96.71923
+3                       763.055   1.80433516             -96.73165
+4                       785.889   2.13322946             -96.72466
+5                       744.637  -0.01425943             -96.73504
+6                       581.533   0.35349278             -96.72055
+7                       617.722   2.68682605             -96.72754
+8                       647.930  -4.08598325             -96.73931
+9                       650.125  -1.20827253             -96.71704
+10                      527.370  -0.41376981             -96.74144
+11                      553.694  -0.81897423             -96.73998
+12                      498.589   1.01725851             -96.72483
+13                      882.893   0.86170694             -96.72013
+14                      894.089   2.99774868             -96.71111
+15                      838.876   0.85281140             -96.72929
+   p_pct_diff_days_scaled
+1            0.0009075292
+2           -0.0056901375
+3           -0.0027520195
+4           -0.0019086301
+5           -0.0036257963
+6            0.0056749785
+7            0.0035615995
+8            0.0046303442
+9           -0.0076902372
+10          -0.0018961660
+11          -0.0025284085
+12          -0.0022061773
+13          -0.0007928418
+14          -0.0012302874
+15          -0.0028608893
+P_F DD sum (full-year, n=1719 site-years, 1 with p_f_yy==0 excluded from stats) vs YY: median |%diff| = 0.0001%, max |%diff| = 0.0085% -- DD requires no scaling.
+Saved: RSCOTT_AGU26/tables/unit_check_mm_vs_yy.csv
+Saved: RSCOTT_AGU26/tables/unit_check_dd_vs_yy.csv
+
+================ Calendar-year (YY) table ================
+Calendar-year rows (candidate sites): 1803
+
+================ Water-year table ================
+Water-year rows (candidate sites): 2045
+Saved: RSCOTT_AGU26/tables/site_years_candidates_full.csv
+
+02_build_site_years.R complete.

@@ -1,0 +1,13 @@
+DRAFT check figure (not for publication). Annual gross primary productivity partitioned by the
+
+nighttime method (GPP_NT, gC m-2 yr-1, VUT where available else CUT, never mixed within a site)
+
+plotted against annual measured precipitation (P_F, mm yr-1), for calendar years where measured
+
+precipitation passes this project's 10% ERA-filled-share rule (no additional GPP/ET QC filter is
+
+applied to these points), from the 43 kept dryland (IGBP OSH/CSH/GRA/SAV/WSA) sites.
+
+Colour = IGBP class. Triangles = Southern Hemisphere sites (calendar years split the austral
+
+summer wet season there; see README.md). Produced for internal data-quality checking only.

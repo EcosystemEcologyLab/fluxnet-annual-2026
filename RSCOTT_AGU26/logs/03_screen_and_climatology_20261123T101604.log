@@ -1,0 +1,44 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[RSCOTT_AGU26] DuckDB: data/duckdb/fluxnet.duckdb
+[RSCOTT_AGU26] Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+
+================ Step 3: site screen (calendar year) ================
+Candidate sites: 231
+  Unscreenable (< 2 measured calendar years): 79
+  Screenable but mean P >= 800 mm: 64
+  Screen passed (mean P < 800 mm): 88
+
+================ Step 5: passing-year counts ================
+Sites kept: 43
+Sites excluded: 188
+# A tibble: 3 × 2
+  `dplyr::if_else(...)`     n
+  <chr>                 <int>
+1 map_too_high             64
+2 too_few_passing_years    45
+3 unscreenable             79
+
+================ Driest-month climatology (kept sites) ================
+Kept sites with rainy-season-split risk flagged: 7
+# A tibble: 7 × 3
+  site_id boundary_month rainy_season_split_risk
+  <chr>            <int> <lgl>                  
+1 US-Fwf              10 TRUE                   
+2 US-Seg              10 TRUE                   
+3 ES-Agu              10 TRUE                   
+4 US-Jo2              10 TRUE                   
+5 US-Ses              10 TRUE                   
+6 US-Wjs              10 TRUE                   
+7 US-Mpj              10 TRUE                   
+
+03_screen_and_climatology.R complete.

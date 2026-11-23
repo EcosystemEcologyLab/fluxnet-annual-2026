@@ -4,6 +4,53 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-23 — RSCOTT_AGU26 v2: widened dryland site selection for Russ Scott, done
+
+Report: `RSCOTT_AGU26/docs/report_back_2026-11-23_v2.md`. Package:
+`RSCOTT_AGU26/package_rscott_2026-11-23_v2/` (zipped as `package_rscott_2026-11-23_v2.zip`). v1's
+package (`package_rscott_2026-11-23/`) is left unchanged; a new top-level `RSCOTT_AGU26/README.md`
+marks it superseded and points to v2.
+
+Widened the v1 selection per PI guidance ("keep as many sites as are likely to interest Russ, and
+give him columns to filter on rather than dropping sites for him"): 231 candidates (unchanged) ->
+**54 kept** (up from 43), 177 excluded (112 mean P >= 800 mm, 65 too few relaxed-passing years;
+no sites were "unscreenable" under the relaxed rule — every candidate has >=1 calendar year with
+a `P_F` value). Relaxations: (1) a site-level `precip_source` (measured/ERA5-only) replaces v1's
+hard >=2-measured-year screenability gate — 1 newly-kept site (`CN-Sdq`) came in this way, with 0
+measured calendar years on record; (2) the per-year keep condition now only requires `P_F` to be
+*present*, not measured-quality — 10 further sites (`AU-Rig`, `BE-Dor`, `CN-Dan`, `CN-Ha2`,
+`US-CdM`, `US-KLS`, `US-xAE`, `US-xJR`, `US-xKA`, `US-xWD`) came in this way. `US-Aud` was already
+kept in v1 and remains kept; confirmed no stray management/cold/mesic filter exists anywhere in
+the code. Added four sourced `sites.csv` columns (fully populated, 0 NA, for all 54 kept sites):
+mean annual `TA_F` (native degC, `data/duckdb/fluxnet.duckdb::annual`, QC-passing calendar years);
+Köppen-Geiger class exactly as used by the paper's `figure4_representativeness.R` panel A
+(PI-reported BADM class, else ERA5-local fallback — `data/snapshots/site_koppen_era5_fig4.csv`);
+aridity index exactly as used by the paper's panel C (P_ERA / FAO-56 Penman-Monteith reference ET
+from the site's own ERA5 record, **not** the CGIAR raster used elsewhere in this repo —
+`data/snapshots/site_aridity_era5_fig4.csv`); and a negative-annual-GPP site-year count (4 of 54
+kept sites have at least one: `AU-TTE`, `US-Aud`, `US-Ses`, `US-Whs`). `site_years.csv` gained a
+per-year `precip_source` column (measured/ERA-filled, distinct from `sites.csv`'s site-level
+column of the same name but different value set). Rainy-season-split-risk flag set (7 sites)
+unchanged from v1 even after recomputing the climatology for the full 54-site set. Check figure
+(all 54 kept sites, calendar years, coloured by IGBP, shaped by per-year precip_source, labelled
+DRAFT) opened and reviewed before packaging — positive GPP-precipitation relationship, no
+obvious data errors, negative-GPP points visible and expected. One spec deviation: the report
+filename uses a `_v2` suffix (`report_back_2026-11-23_v2.md`) rather than the literal
+`report_back_2026-11-23.md`, to avoid overwriting v1's existing report at that exact path.
+
+---
+
+## 2026-11-23 — RSCOTT_AGU26 v2: widened dryland site selection for Russ Scott, started
+
+Prompt: `logs/prompts/2026-11-23_rscott_agu26_v2.md`. Widening the v1 dryland GPP-vs-precipitation
+extraction (`ea96d41`/`4ab4192`) per PI guidance: relax the precipitation-source and keep-year
+rules so fewer sites are dropped, add four new PI-requested filtering columns to `sites.csv`
+(precip_source, mean TA_F, paper's own Köppen class, paper's own site-ERA5-record aridity index,
+negative-GPP count), and leave the original v1 package untouched while superseding it in a new
+top-level `RSCOTT_AGU26/README.md`. Same underlying data/DuckDB/snapshot, no new downloads.
+
+---
+
 ## 2026-11-23 — RSCOTT_AGU26: dryland GPP-vs-precipitation extraction for Russ Scott, done
 
 Report: `RSCOTT_AGU26/docs/report_back_2026-11-23.md`. Package:

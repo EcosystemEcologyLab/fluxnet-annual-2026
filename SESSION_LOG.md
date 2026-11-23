@@ -4,6 +4,35 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-23 — RSCOTT_AGU26: dryland GPP-vs-precipitation extraction for Russ Scott, started
+
+Prompt: `logs/prompts/2026-11-23_rscott_agu26_extraction.md`.
+
+New side extraction, not part of the Annual Paper pipeline, for Russ Scott's (USDA-ARS,
+Tucson) AGU26 poster on productivity against water availability across dryland sites. This
+run extracts and packages data only; Russ does the GPP-precipitation analysis himself. New
+folder `RSCOTT_AGU26/` (own `code/`, `tables/`, `figures/`, `docs/`, `logs/`, local
+`write_meta()`/`write_caption()` mirroring `WAFNET/write_meta.R`), following the
+`WAFNET/fluxcom_comparison/` and `WUE/isotope_pilot/` side-project conventions. Reads only
+the 2026-09-20 snapshot (`fluxnet_shuttle_snapshot_20260920T102211.csv`) and the main
+project's existing DuckDB store (`data/duckdb/fluxnet.duckdb`), read-only, `FLUXMET` rows
+only — no new downloads, no writes to repo-root `data/`/`outputs/`.
+
+Candidate sites: IGBP OSH/CSH/GRA/SAV/WSA from the snapshot's `igbp` column, either
+hemisphere. Before trusting `P_F_QC`, independently re-confirming its polarity at a few
+control sites (this repo's `scripts/diagnostics/era5_precip_units_v3_partA.R`,
+`era5_precip_units_v4.R`, and `review/diagnostics/precip_site_filter/report.md` already
+established, network-wide at both MM and YY resolution, that higher `P_F_QC` = more
+measured — the opposite of the raw HH-resolution System-2 integer convention that an
+earlier analysis mistakenly applied to this fractional field). Building per-site-year
+tables at two time steps (calendar year from YY, water year from MM, Oct-Sep NH / Jul-Jun
+SH by tower latitude), screening on measured-precipitation years, mean annual measured P <
+800 mm, and >=5 passing years (either time step), then packaging `site_years.csv`,
+`sites.csv`, `excluded_sites.csv`, a draft check figure, and a plain-English `README.md`
+into a dated, zipped package for handoff.
+
+---
+
 ## 2026-11-21 — WAFNET x FLUXCOM-X-BASE Stage 3b (fully traceable package v2 for Ossenatou Mamadou), started
 
 Prompt: `logs/prompts/2026-11-21_wafnet_package_v2.md`.

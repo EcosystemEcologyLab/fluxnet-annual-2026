@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:53:20Z",
+  "pipeline_version": "4ab4192",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/site_years_candidates_full.csv"
+  ],
+  "notes": "v2 relaxed screen (mean annual P < 800mm, using measured-year mean for 'measured' sites and all-year mean for 'ERA5-only' sites) and keep decision (>=5 years, either time step, with GPP+ET QC passing and P_F present -- measured-precip no longer required per-year). n_siteyears_negative_gpp counts site-years (both time steps) with GPP_NT or GPP_DT < 0, all candidate sites."
+}

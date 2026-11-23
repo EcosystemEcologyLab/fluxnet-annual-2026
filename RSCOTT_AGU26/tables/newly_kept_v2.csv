@@ -1,0 +1,12 @@
+site_id,n_measured_years_calendar,n_calendar_years_with_p,precip_source,mean_annual_p_mm,screenable,screen_pass,n_calendar_years_total,n_passing_calendar_relaxed,n_passing_calendar_relaxed_and_measured,n_water_years_total,n_passing_water_relaxed,n_passing_water_relaxed_and_measured,keep,exclusion_reason,n_siteyears_negative_gpp,v1_keep,v1_screenable,added_via
+AU-Rig,4,7,measured,358.45775000000003,TRUE,TRUE,7,5,3,8,2,1,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+BE-Dor,12,14,measured,666.5525,TRUE,TRUE,14,6,4,15,4,2,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+CN-Dan,2,10,measured,296.4625,TRUE,TRUE,10,6,2,11,2,2,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+CN-Ha2,4,7,measured,465.67775,TRUE,TRUE,7,5,3,10,3,2,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+CN-Sdq,0,12,ERA5-only,130.92591666666667,TRUE,TRUE,12,10,0,13,5,0,TRUE,NA,0,FALSE,FALSE,precip_source relaxation (unscreenable under v1's >=2-measured-calendar-year rule)
+US-CdM,2,6,measured,183.479,TRUE,TRUE,6,5,2,7,2,1,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+US-KLS,3,8,measured,391.49033333333335,TRUE,TRUE,8,5,3,9,1,0,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+US-xAE,3,6,measured,757.8603333333333,TRUE,TRUE,6,6,3,7,0,0,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+US-xJR,4,6,measured,136.239,TRUE,TRUE,6,6,4,7,4,1,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+US-xKA,3,6,measured,712.5446666666667,TRUE,TRUE,6,5,3,7,2,2,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+US-xWD,4,6,measured,487.996,TRUE,TRUE,6,5,4,7,3,2,TRUE,NA,0,FALSE,TRUE,relaxed keep-count (measured-precip condition dropped from the per-year pass test)

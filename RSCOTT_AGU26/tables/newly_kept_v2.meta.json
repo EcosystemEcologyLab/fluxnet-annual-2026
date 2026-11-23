@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:53:20Z",
+  "pipeline_version": "4ab4192",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/site_screen_decision.csv"
+  ],
+  "notes": "Sites kept under the v2 relaxed rule that were NOT kept in v1, classified by which relaxation let them in: precip_source relaxation (v1 required >=2 measured calendar years to even screen; v2 allows ERA5-only or single-measured-year sites), or the relaxed keep-count (v1 required measured precipitation in each passing year; v2 only requires P_F to be present)."
+}

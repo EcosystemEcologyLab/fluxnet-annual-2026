@@ -1,0 +1,42 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[RSCOTT_AGU26] DuckDB: data/duckdb/fluxnet.duckdb
+[RSCOTT_AGU26] Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+v2 kept sites: 54
+
+================ Mean annual TA_F (kept sites) ================
+TA_F available for 54 / 54 kept sites.
+
+================ Koppen class (paper panel A) ================
+Koppen class available for 54 / 54 kept sites.
+
+================ Aridity index (paper panel C) ================
+Aridity index available for 54 / 54 kept sites.
+
+================ Driest-month climatology (v2 kept sites) ================
+v2 kept sites with rainy-season-split risk flagged: 7
+
+================ Building v2 sites.csv ================
+v2 sites.csv rows: 54
+Saved: RSCOTT_AGU26/package_rscott_2026-11-23_v2/sites.csv
+
+================ Building v2 site_years.csv ================
+v2 site_years.csv rows: 1442
+Per-year precip_source counts:  | ERA-filled   measured       <NA>  |        338        996        108 
+Saved: RSCOTT_AGU26/package_rscott_2026-11-23_v2/site_years.csv
+
+================ Building v2 excluded_sites.csv ================
+v2 excluded_sites.csv rows: 177
+Saved: RSCOTT_AGU26/package_rscott_2026-11-23_v2/excluded_sites.csv
+
+Package directory: RSCOTT_AGU26/package_rscott_2026-11-23_v2
+07_v2_package.R complete.

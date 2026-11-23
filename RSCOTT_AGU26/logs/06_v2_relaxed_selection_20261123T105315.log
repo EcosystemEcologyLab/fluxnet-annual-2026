@@ -1,0 +1,39 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+[RSCOTT_AGU26] DuckDB: data/duckdb/fluxnet.duckdb
+[RSCOTT_AGU26] Snapshot: data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv
+
+================ v2 Step 1: precip_source per site ================
+precip_source counts:  | ERA5-only  measured  |        61       170 
+
+================ v2 site screen ================
+Unscreenable (no P_F value in any calendar year): 0
+Screenable but mean P >= 800 mm: 112
+Screen passed: 119
+
+================ v2 passing-year counts ================
+v2 sites kept: 54
+v2 sites excluded: 177
+
+US-Aud: v1 kept = TRUE; v2 keep = TRUE; v2 precip_source = measured; v2 mean_annual_p_mm = 386.8
+
+Candidate sites with >=1 negative-GPP site-year: 5
+
+Sites added by relaxation (v2 keep, v1 did not keep): 11
+                                                                                Var1
+1 precip_source relaxation (unscreenable under v1's >=2-measured-calendar-year rule)
+2 relaxed keep-count (measured-precip condition dropped from the per-year pass test)
+  Freq
+1    1
+2   10
+
+06_v2_relaxed_selection.R complete.

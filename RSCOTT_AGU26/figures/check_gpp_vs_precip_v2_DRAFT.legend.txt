@@ -1,0 +1,17 @@
+DRAFT check figure (not for publication) -- v2 widened selection. Annual gross primary
+
+productivity partitioned by the nighttime method (GPP_NT, gC m-2 yr-1, VUT where available else
+
+CUT, never mixed within a site) plotted against annual precipitation (P_F, mm yr-1), for every
+
+calendar year of every one of the 54 v2-kept dryland (IGBP OSH/CSH/GRA/SAV/WSA) sites with both
+
+values present (no GPP/ET QC filter and no measured-precipitation filter applied to these points --
+
+v2 shows all data rather than dropping it). Colour = IGBP class. Shape = this year's precipitation
+
+source (filled circle = measured, <=10% ERA-filled; triangle = ERA-filled, mostly or entirely
+
+reanalysis; x = share could not be computed for that row). Produced for internal data-quality
+
+checking only.

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:55:08Z",
+  "pipeline_version": "4ab4192",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/site_screen_decision_v2.csv"
+  ],
+  "notes": "Every IGBP-screened candidate site not kept under the v2 relaxed rule, with its reason and the counts behind it."
+}

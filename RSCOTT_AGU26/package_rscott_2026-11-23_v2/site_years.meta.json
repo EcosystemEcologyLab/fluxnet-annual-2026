@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:55:08Z",
+  "pipeline_version": "4ab4192",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/site_years_candidates_full.csv"
+  ],
+  "notes": "All 54 v2-kept sites, every site-year (passing or not), both time steps. Adds pass_precip_present (P_F non-NA, the relaxed per-year precip condition -- replaces pass_precip_measured in the v2 keep rule, though pass_precip_measured is still reported for reference) and precip_source (per year: 'measured' if era_filled_share <= 10%, 'ERA-filled' otherwise, NA if era_filled_share itself could not be computed for that row -- distinct from sites.csv's SITE-level precip_source column, which uses the values 'measured'/'ERA5-only' and is based only on whether >=1 calendar year qualifies). GPP in gC m-2 per period; ET and P in mm per period."
+}

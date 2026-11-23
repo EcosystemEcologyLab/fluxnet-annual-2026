@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:55:48Z",
+  "pipeline_version": "4ab4192",
+  "input_sources": [
+    "RSCOTT_AGU26/package_rscott_2026-11-23_v2/site_years.csv"
+  ],
+  "notes": "DRAFT check figure, v2 widened selection, not for publication; see .legend.txt"
+}

@@ -1,0 +1,8 @@
+{
+  "run_datetime_utc": "2026-11-23T17:55:08Z",
+  "pipeline_version": "4ab4192",
+  "input_sources": [
+    "data/duckdb/fluxnet.duckdb"
+  ],
+  "notes": "Recomputed for the full v2 kept-site set (54 sites), identical method to v1's driest_month_climatology.csv (03_screen_and_climatology.R)."
+}

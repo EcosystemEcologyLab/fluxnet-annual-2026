@@ -1,0 +1,232 @@
+site_id,n_measured_years_calendar,n_calendar_years_with_p,precip_source,mean_annual_p_mm,screenable,screen_pass,n_calendar_years_total,n_passing_calendar_relaxed,n_passing_calendar_relaxed_and_measured,n_water_years_total,n_passing_water_relaxed,n_passing_water_relaxed_and_measured,keep,exclusion_reason,n_siteyears_negative_gpp
+AR-CCg,0,7,ERA5-only,2795.2657142857142,TRUE,FALSE,7,3,0,8,2,0,FALSE,"mean annual precipitation 2795.3 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+AT-Neu,19,19,measured,767.5762631578947,TRUE,TRUE,19,19,19,20,18,18,TRUE,NA,0
+AU-ASM,11,16,measured,329.0258181818182,TRUE,TRUE,16,11,10,17,9,9,TRUE,NA,0
+AU-Ade,1,3,measured,1794,TRUE,FALSE,3,1,1,4,0,0,FALSE,"mean annual precipitation 1794.0 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-Cpr,14,16,measured,230.14421428571427,TRUE,TRUE,16,13,13,17,11,11,TRUE,NA,0
+AU-DaP,3,6,measured,1351.549,TRUE,FALSE,6,4,3,7,2,2,FALSE,"mean annual precipitation 1351.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-DaS,12,19,measured,1234.4805,TRUE,FALSE,19,16,11,20,9,7,FALSE,"mean annual precipitation 1234.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-Dry,7,17,measured,839.1615714285714,TRUE,FALSE,17,9,7,18,4,4,FALSE,"mean annual precipitation 839.2 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-Emr,2,3,measured,642.05,TRUE,TRUE,3,2,2,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 0; of which with measured precipitation -- calendar: 2, water: 0)",0
+AU-Fle,3,4,measured,803.515,TRUE,FALSE,4,3,2,5,2,2,FALSE,"mean annual precipitation 803.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-Fog,0,3,ERA5-only,6376.214666666667,TRUE,FALSE,3,1,0,4,1,0,FALSE,"mean annual precipitation 6376.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+AU-How,14,24,measured,1671.82,TRUE,FALSE,24,20,14,25,16,16,FALSE,"mean annual precipitation 1671.8 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-Lit,7,11,measured,1499.1974285714286,TRUE,FALSE,11,6,6,12,5,5,FALSE,"mean annual precipitation 1499.2 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-Lon,3,7,measured,292.54133333333334,TRUE,TRUE,7,3,3,8,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 2; of which with measured precipitation -- calendar: 3, water: 2)",0
+AU-Otw,2,4,measured,675.6289999999999,TRUE,TRUE,4,3,2,5,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 1; of which with measured precipitation -- calendar: 2, water: 1)",0
+AU-RDF,0,3,ERA5-only,1064.918,TRUE,FALSE,3,1,0,4,1,1,FALSE,"mean annual precipitation 1064.9 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+AU-Rig,4,7,measured,358.45775000000003,TRUE,TRUE,7,5,3,8,2,1,TRUE,NA,0
+AU-Sam,6,8,measured,1086.7611666666667,TRUE,FALSE,8,6,5,9,4,4,FALSE,"mean annual precipitation 1086.8 mm (precip_source=measured), at or above the 800 mm threshold",0
+AU-Sil,5,6,measured,768.0982,TRUE,TRUE,6,5,5,7,4,4,TRUE,NA,0
+AU-Stp,10,18,measured,734.1449,TRUE,TRUE,18,14,10,19,8,8,TRUE,NA,0
+AU-TTE,7,14,measured,295.4858571428571,TRUE,TRUE,14,8,7,15,6,6,TRUE,NA,3
+AU-Wel,2,2,measured,731.4925000000001,TRUE,TRUE,2,2,2,3,1,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 1; of which with measured precipitation -- calendar: 2, water: 0)",0
+AU-Wgt,0,2,ERA5-only,548.7484999999999,TRUE,TRUE,2,0,0,3,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+AU-Ya1,2,3,measured,705.0999999999999,TRUE,TRUE,3,2,2,4,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 2; of which with measured precipitation -- calendar: 2, water: 2)",0
+AU-Ya2,2,3,measured,738.2,TRUE,TRUE,3,2,2,4,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 2; of which with measured precipitation -- calendar: 2, water: 2)",0
+AU-Ync,11,14,measured,489.6020909090909,TRUE,TRUE,14,10,10,15,8,8,TRUE,NA,0
+BE-Dor,12,14,measured,666.5525,TRUE,TRUE,14,6,4,15,4,2,TRUE,NA,0
+BE-Maa,6,10,measured,768.5593333333334,TRUE,TRUE,10,8,6,11,8,5,TRUE,NA,0
+BJ-Nhu,10,10,measured,1289.6543,TRUE,FALSE,10,6,6,11,2,2,FALSE,"mean annual precipitation 1289.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+BR-Npw,2,5,measured,1381.48,TRUE,FALSE,5,2,2,6,2,2,FALSE,"mean annual precipitation 1381.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+BR-Xpw,4,6,measured,1090.73925,TRUE,FALSE,6,3,3,7,3,3,FALSE,"mean annual precipitation 1090.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+BW-Nxr,0,2,ERA5-only,1852.4725,TRUE,FALSE,2,0,0,3,0,0,FALSE,"mean annual precipitation 1852.5 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+CA-LU1,0,4,ERA5-only,422.12725,TRUE,TRUE,4,1,0,5,1,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 1; of which with measured precipitation -- calendar: 0, water: 0)",0
+CA-LU2,0,4,ERA5-only,393.2805,TRUE,TRUE,4,0,0,5,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+CA-MA3,1,3,measured,323.651,TRUE,TRUE,3,0,0,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+CA-Mtk,0,1,ERA5-only,288.96,TRUE,TRUE,1,0,0,2,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+CA-SF3,2,6,measured,462.8335,TRUE,TRUE,6,0,0,7,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+CA-TVC,1,1,measured,138.482,TRUE,TRUE,1,0,0,2,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+CG-Tch,3,4,measured,1616.846,TRUE,FALSE,4,0,0,5,0,0,FALSE,"mean annual precipitation 1616.8 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Aws,12,19,measured,1428.9698333333333,TRUE,FALSE,19,10,10,20,9,9,FALSE,"mean annual precipitation 1429.0 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Cha,17,20,measured,1157.583294117647,TRUE,FALSE,20,18,17,21,16,16,FALSE,"mean annual precipitation 1157.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Crs,2,2,measured,887.8,TRUE,FALSE,2,2,2,3,0,0,FALSE,"mean annual precipitation 887.8 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Frk,2,2,measured,1242.3245000000002,TRUE,FALSE,2,0,0,3,0,0,FALSE,"mean annual precipitation 1242.3 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Fru,17,20,measured,1434.446,TRUE,FALSE,20,17,15,21,17,14,FALSE,"mean annual precipitation 1434.4 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Oe1,10,10,measured,1146.1085,TRUE,FALSE,10,10,10,11,6,6,FALSE,"mean annual precipitation 1146.1 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Oe3,9,10,measured,1108.477111111111,TRUE,FALSE,10,9,9,11,7,7,FALSE,"mean annual precipitation 1108.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Rh1,3,4,measured,1717.1999999999998,TRUE,FALSE,4,3,3,5,2,2,FALSE,"mean annual precipitation 1717.2 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Rh2,3,4,measured,1717.1999999999998,TRUE,FALSE,4,3,3,5,2,2,FALSE,"mean annual precipitation 1717.2 mm (precip_source=measured), at or above the 800 mm threshold",0
+CH-Rtb,14,14,measured,1407.5071428571428,TRUE,FALSE,14,13,13,15,12,12,FALSE,"mean annual precipitation 1407.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+CN-Aro,0,12,ERA5-only,2525.1635,TRUE,FALSE,12,11,0,13,7,0,FALSE,"mean annual precipitation 2525.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+CN-Dan,2,10,measured,296.4625,TRUE,TRUE,10,6,2,11,2,2,TRUE,NA,0
+CN-Dda,0,4,ERA5-only,1010.1945,TRUE,FALSE,4,3,0,5,0,0,FALSE,"mean annual precipitation 1010.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+CN-Dsh,0,12,ERA5-only,2625.1870833333332,TRUE,FALSE,12,6,0,13,3,0,FALSE,"mean annual precipitation 2625.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+CN-Du2,6,9,measured,443.6211666666667,TRUE,TRUE,9,6,6,10,2,2,TRUE,NA,0
+CN-Erg,3,4,measured,312.43833333333333,TRUE,TRUE,4,2,2,5,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 1; of which with measured precipitation -- calendar: 2, water: 1)",0
+CN-GuT,0,3,ERA5-only,549.5566666666666,TRUE,TRUE,3,3,0,4,1,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 1; of which with measured precipitation -- calendar: 0, water: 0)",0
+CN-Ha2,4,7,measured,465.67775,TRUE,TRUE,7,5,3,10,3,2,TRUE,NA,0
+CN-HaM,0,13,ERA5-only,3038.267846153846,TRUE,FALSE,13,7,0,15,4,0,FALSE,"mean annual precipitation 3038.3 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+CN-Jng,0,7,ERA5-only,3109.089142857143,TRUE,FALSE,7,4,0,8,2,0,FALSE,"mean annual precipitation 3109.1 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+CN-Sdq,0,12,ERA5-only,130.92591666666667,TRUE,TRUE,12,10,0,13,5,0,TRUE,NA,0
+CN-Xi2,5,10,measured,238.6392,TRUE,TRUE,10,2,1,11,2,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 2; of which with measured precipitation -- calendar: 1, water: 1)",0
+CN-YaS,8,10,measured,305.2875,TRUE,TRUE,10,9,8,11,8,7,TRUE,NA,0
+CN-Yan,1,3,measured,304.78,TRUE,TRUE,3,1,0,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+CN-You,0,10,ERA5-only,2739.2118,TRUE,FALSE,10,6,0,11,4,0,FALSE,"mean annual precipitation 2739.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+CZ-BK2,3,7,measured,1131.1209999999999,TRUE,FALSE,7,4,3,8,2,1,FALSE,"mean annual precipitation 1131.1 mm (precip_source=measured), at or above the 800 mm threshold",0
+CZ-LnG,5,6,measured,546.7472,TRUE,TRUE,6,5,5,7,5,4,TRUE,NA,0
+DE-Fen,2,3,measured,893.559,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual precipitation 893.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+DE-Gri,20,22,measured,893.87605,TRUE,FALSE,22,20,18,23,16,12,FALSE,"mean annual precipitation 893.9 mm (precip_source=measured), at or above the 800 mm threshold",0
+DE-GsB,10,11,measured,509.5539,TRUE,TRUE,11,9,9,12,7,7,TRUE,NA,0
+DE-Gwg,2,3,measured,1205.1955,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual precipitation 1205.2 mm (precip_source=measured), at or above the 800 mm threshold",0
+DE-RuC,10,12,measured,1201.9414,TRUE,FALSE,12,11,10,13,10,8,FALSE,"mean annual precipitation 1201.9 mm (precip_source=measured), at or above the 800 mm threshold",0
+DE-RuR,14,15,measured,899.7072857142857,TRUE,FALSE,15,14,14,16,12,12,FALSE,"mean annual precipitation 899.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+DK-Eng,0,4,ERA5-only,2642.8275,TRUE,FALSE,4,2,0,5,2,0,FALSE,"mean annual precipitation 2642.8 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ES-Abr,5,6,measured,345.1942,TRUE,TRUE,6,5,5,7,4,4,TRUE,NA,0
+ES-Agu,10,19,measured,273.6455,TRUE,TRUE,19,9,8,20,5,4,TRUE,NA,0
+ES-Amo,9,13,measured,259.4853333333333,TRUE,TRUE,13,7,6,14,2,1,TRUE,NA,0
+ES-Cnd,0,8,ERA5-only,2139.513625,TRUE,FALSE,8,5,0,9,1,0,FALSE,"mean annual precipitation 2139.5 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ES-Crg,3,4,measured,546.9056666666667,TRUE,TRUE,4,3,3,5,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 1; of which with measured precipitation -- calendar: 3, water: 1)",0
+ES-Dnn,0,1,ERA5-only,1956.555,TRUE,FALSE,1,0,0,2,0,0,FALSE,"mean annual precipitation 1956.6 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ES-Gdn,0,7,ERA5-only,2119.8557142857144,TRUE,FALSE,7,4,0,9,1,0,FALSE,"mean annual precipitation 2119.9 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ES-HdD,0,1,ERA5-only,411.415,TRUE,TRUE,1,0,0,2,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+ES-LJu,12,21,measured,611.492,TRUE,TRUE,21,12,10,22,7,5,TRUE,NA,0
+ES-LM1,10,11,measured,671.9152,TRUE,TRUE,11,9,9,12,8,8,TRUE,NA,0
+ES-LM2,10,11,measured,650.5497,TRUE,TRUE,11,10,10,12,8,8,TRUE,NA,0
+ES-LMa,6,6,measured,741.3388333333334,TRUE,TRUE,6,6,6,7,5,4,TRUE,NA,0
+ES-LgS,2,3,measured,429.2165,TRUE,TRUE,3,2,2,4,1,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 1; of which with measured precipitation -- calendar: 2, water: 0)",0
+ES-Ln2,0,1,ERA5-only,3238.352,TRUE,FALSE,1,0,0,2,0,0,FALSE,"mean annual precipitation 3238.4 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ES-MtB,0,4,ERA5-only,1530.7775000000001,TRUE,FALSE,4,3,0,5,3,0,FALSE,"mean annual precipitation 1530.8 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ES-MtN,0,1,ERA5-only,1956.555,TRUE,FALSE,1,0,0,2,0,0,FALSE,"mean annual precipitation 1956.6 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ES-Pzb,3,5,measured,381.60533333333336,TRUE,TRUE,5,4,3,6,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 2; of which with measured precipitation -- calendar: 3, water: 2)",0
+ES-VDA,2,3,measured,737.4000000000001,TRUE,TRUE,3,2,2,4,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 1; of which with measured precipitation -- calendar: 2, water: 1)",0
+FI-Ant,1,1,measured,453.6,TRUE,TRUE,1,1,1,2,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 0; of which with measured precipitation -- calendar: 1, water: 0)",0
+FR-CLt,6,6,measured,1601.3671666666667,TRUE,FALSE,6,4,4,7,2,2,FALSE,"mean annual precipitation 1601.4 mm (precip_source=measured), at or above the 800 mm threshold",0
+FR-Lqu,2,3,measured,1438.4245,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual precipitation 1438.4 mm (precip_source=measured), at or above the 800 mm threshold",0
+FR-Lus,2,3,measured,938.145,TRUE,FALSE,3,2,2,4,0,0,FALSE,"mean annual precipitation 938.1 mm (precip_source=measured), at or above the 800 mm threshold",0
+FR-Mau,6,7,measured,516.4916666666667,TRUE,TRUE,7,4,3,8,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 1; of which with measured precipitation -- calendar: 3, water: 1)",0
+FR-Mej,6,7,measured,725.4176666666667,TRUE,TRUE,7,7,6,8,6,4,TRUE,NA,0
+FR-Nzn,9,9,measured,917.9288888888889,TRUE,FALSE,9,8,8,10,6,6,FALSE,"mean annual precipitation 917.9 mm (precip_source=measured), at or above the 800 mm threshold",0
+FR-Tou,8,8,measured,626.32725,TRUE,TRUE,8,8,8,9,7,7,TRUE,NA,0
+GL-Dsk,0,6,ERA5-only,2596.623,TRUE,FALSE,6,6,0,7,3,0,FALSE,"mean annual precipitation 2596.6 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+GL-ZaH,2,6,measured,687.9925,TRUE,TRUE,6,0,0,7,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+ID-PaB,12,13,measured,2640.590583333333,TRUE,FALSE,13,10,10,14,8,8,FALSE,"mean annual precipitation 2640.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+IT-Arz,0,9,ERA5-only,4155.997888888889,TRUE,FALSE,9,5,0,10,3,0,FALSE,"mean annual precipitation 4156.0 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+IT-Bsn,1,2,measured,565.586,TRUE,TRUE,2,0,0,3,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+IT-Lsn,7,10,measured,1032.5732857142857,TRUE,FALSE,10,8,6,11,6,5,FALSE,"mean annual precipitation 1032.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+IT-MBo,17,23,measured,1140.3235294117646,TRUE,FALSE,23,17,13,24,15,10,FALSE,"mean annual precipitation 1140.3 mm (precip_source=measured), at or above the 800 mm threshold",0
+IT-MtM,5,6,measured,740.8004,TRUE,TRUE,6,6,5,7,3,3,TRUE,NA,0
+IT-MtP,3,5,measured,510.33000000000004,TRUE,TRUE,5,3,3,7,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 2; of which with measured precipitation -- calendar: 3, water: 2)",0
+IT-NiG,0,5,ERA5-only,1014.927,TRUE,FALSE,5,3,0,6,3,0,FALSE,"mean annual precipitation 1014.9 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+IT-Niv,0,7,ERA5-only,5950.187714285715,TRUE,FALSE,7,0,0,8,0,0,FALSE,"mean annual precipitation 5950.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+IT-Noe,0,3,ERA5-only,539.0699999999999,TRUE,TRUE,3,2,0,4,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 1; of which with measured precipitation -- calendar: 0, water: 1)",0
+IT-Tor,17,18,measured,866.9791176470588,TRUE,FALSE,18,17,17,19,15,15,FALSE,"mean annual precipitation 867.0 mm (precip_source=measured), at or above the 800 mm threshold",0
+JP-NsC,4,12,measured,2150.685,TRUE,FALSE,12,10,3,13,9,3,FALSE,"mean annual precipitation 2150.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+JP-NsM,4,12,measured,2150.685,TRUE,FALSE,12,10,3,13,9,3,FALSE,"mean annual precipitation 2150.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+JP-Om2,0,4,ERA5-only,5437.081,TRUE,FALSE,4,3,0,5,2,0,FALSE,"mean annual precipitation 5437.1 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+JP-Tgf,2,3,measured,1308.6019999999999,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual precipitation 1308.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+JP-Tmd,0,19,ERA5-only,4717.368263157895,TRUE,FALSE,19,5,0,20,3,0,FALSE,"mean annual precipitation 4717.4 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+KE-Chk,1,3,measured,513.6,TRUE,TRUE,3,0,0,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+KE-Kpt,0,7,ERA5-only,3063.7955714285713,TRUE,FALSE,7,1,0,8,2,0,FALSE,"mean annual precipitation 3063.8 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+ML-Kem,0,3,ERA5-only,705.3026666666667,TRUE,TRUE,3,1,0,4,1,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 1; of which with measured precipitation -- calendar: 0, water: 0)",0
+MN-Hst,0,6,ERA5-only,883.4641666666666,TRUE,FALSE,6,4,0,7,4,0,FALSE,"mean annual precipitation 883.5 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+MN-Kbu,0,6,ERA5-only,930.0341666666666,TRUE,FALSE,6,5,0,7,4,0,FALSE,"mean annual precipitation 930.0 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+MN-Nkh,0,6,ERA5-only,1215.0886666666665,TRUE,FALSE,6,4,0,7,5,0,FALSE,"mean annual precipitation 1215.1 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+NL-Hrw,9,10,measured,856.2321111111111,TRUE,FALSE,10,6,6,11,3,3,FALSE,"mean annual precipitation 856.2 mm (precip_source=measured), at or above the 800 mm threshold",0
+NL-Vkp,12,12,measured,850.3774999999999,TRUE,FALSE,12,11,11,13,11,11,FALSE,"mean annual precipitation 850.4 mm (precip_source=measured), at or above the 800 mm threshold",0
+NZ-ADd,4,5,measured,773.9875,TRUE,TRUE,5,4,4,6,4,4,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 4; of which with measured precipitation -- calendar: 4, water: 4)",0
+NZ-ADw,6,8,measured,1046.6235000000001,TRUE,FALSE,8,6,6,9,7,7,FALSE,"mean annual precipitation 1046.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+NZ-BFm,2,4,measured,934.3499999999999,TRUE,FALSE,4,2,2,5,2,2,FALSE,"mean annual precipitation 934.3 mm (precip_source=measured), at or above the 800 mm threshold",0
+NZ-BFu,1,3,measured,1102.1,TRUE,FALSE,3,1,1,4,1,1,FALSE,"mean annual precipitation 1102.1 mm (precip_source=measured), at or above the 800 mm threshold",0
+NZ-Cla,2,4,measured,1163.8600000000001,TRUE,FALSE,4,2,2,5,0,0,FALSE,"mean annual precipitation 1163.9 mm (precip_source=measured), at or above the 800 mm threshold",0
+NZ-Lau,6,7,measured,1045.5258333333334,TRUE,FALSE,7,6,6,8,4,4,FALSE,"mean annual precipitation 1045.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+NZ-Oxf,5,5,measured,982.5,TRUE,FALSE,5,5,5,6,3,3,FALSE,"mean annual precipitation 982.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+NZ-ScF,4,4,measured,1319.6,TRUE,FALSE,4,4,4,5,3,3,FALSE,"mean annual precipitation 1319.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+PA-SPs,2,4,measured,2153.3215,TRUE,FALSE,4,2,2,5,2,2,FALSE,"mean annual precipitation 2153.3 mm (precip_source=measured), at or above the 800 mm threshold",0
+PR-xLA,6,6,measured,1076.074,TRUE,FALSE,6,2,2,7,0,0,FALSE,"mean annual precipitation 1076.1 mm (precip_source=measured), at or above the 800 mm threshold",0
+RU-Fy3,0,3,ERA5-only,710.5976666666667,TRUE,TRUE,3,0,0,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+RU-Ha1,0,3,ERA5-only,400.2456666666667,TRUE,TRUE,3,0,0,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+RU-NeB,0,2,ERA5-only,1153.0125,TRUE,FALSE,2,0,0,3,0,0,FALSE,"mean annual precipitation 1153.0 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+RU-NeC,0,6,ERA5-only,1079.2038333333335,TRUE,FALSE,6,0,0,7,0,0,FALSE,"mean annual precipitation 1079.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+SD-Dem,2,3,measured,265.2255,TRUE,TRUE,3,2,2,4,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 1; of which with measured precipitation -- calendar: 2, water: 1)",0
+SN-Dhr,9,13,measured,377.0388888888889,TRUE,TRUE,13,3,3,14,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 1; of which with measured precipitation -- calendar: 3, water: 1)",0
+UK-Ags,1,2,measured,1486.743,TRUE,FALSE,2,0,0,3,0,0,FALSE,"mean annual precipitation 1486.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+UK-BnB,3,4,measured,1038.9733333333334,TRUE,FALSE,4,3,3,5,1,1,FALSE,"mean annual precipitation 1039.0 mm (precip_source=measured), at or above the 800 mm threshold",0
+UK-CCr,3,3,measured,1299.3293333333334,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual precipitation 1299.3 mm (precip_source=measured), at or above the 800 mm threshold",0
+UK-Cvn,1,2,measured,708.217,TRUE,TRUE,2,1,1,3,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 0; of which with measured precipitation -- calendar: 1, water: 0)",0
+UK-GaB,2,3,measured,1013.6215,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual precipitation 1013.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+UK-Gnn,2,3,measured,1270.7215,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual precipitation 1270.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+UK-Gwr,2,3,measured,1646.9279999999999,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual precipitation 1646.9 mm (precip_source=measured), at or above the 800 mm threshold",0
+UK-HgF,0,2,ERA5-only,720.7395,TRUE,TRUE,2,1,0,3,1,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 1; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-A32,1,3,measured,680.772,TRUE,TRUE,3,1,1,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 0; of which with measured precipitation -- calendar: 1, water: 0)",0
+US-ABa,2,3,measured,1033.35,TRUE,FALSE,3,2,2,4,2,2,FALSE,"mean annual precipitation 1033.3 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-ABb,2,3,measured,1272.0375,TRUE,FALSE,3,2,2,4,1,1,FALSE,"mean annual precipitation 1272.0 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-ABc,1,3,measured,1201.069,TRUE,FALSE,3,1,1,4,2,2,FALSE,"mean annual precipitation 1201.1 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-ABd,2,3,measured,1196.5,TRUE,FALSE,3,1,1,4,2,2,FALSE,"mean annual precipitation 1196.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-AR1,3,4,measured,516.422,TRUE,TRUE,4,2,2,5,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 2; of which with measured precipitation -- calendar: 2, water: 2)",0
+US-AR2,2,4,measured,430.41600000000005,TRUE,TRUE,4,2,2,5,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 2; of which with measured precipitation -- calendar: 2, water: 2)",0
+US-ARb,0,2,ERA5-only,747.4559999999999,TRUE,TRUE,2,0,0,3,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-ARc,0,2,ERA5-only,794.947,TRUE,TRUE,2,0,0,3,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-Aud,22,23,measured,386.8244090909091,TRUE,TRUE,23,17,17,24,12,12,TRUE,NA,5
+US-BRG,0,4,ERA5-only,4770.376,TRUE,FALSE,4,2,0,5,0,0,FALSE,"mean annual precipitation 4770.4 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-CAK,0,2,ERA5-only,431.1395,TRUE,TRUE,2,0,0,3,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-CGG,5,6,measured,482.7322,TRUE,TRUE,6,3,3,7,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 1; of which with measured precipitation -- calendar: 3, water: 1)",0
+US-CdM,2,6,measured,183.479,TRUE,TRUE,6,5,2,7,2,1,TRUE,NA,0
+US-Ced,9,10,measured,1205.975222222222,TRUE,FALSE,10,9,9,11,9,9,FALSE,"mean annual precipitation 1206.0 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-Cop,3,7,measured,174.0593333333333,TRUE,TRUE,7,2,1,8,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 0; of which with measured precipitation -- calendar: 1, water: 0)",0
+US-Dk1,8,8,measured,1054.065375,TRUE,FALSE,8,6,6,9,5,5,FALSE,"mean annual precipitation 1054.1 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-EA5,1,2,measured,512.064,TRUE,TRUE,2,1,1,3,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 1; of which with measured precipitation -- calendar: 1, water: 1)",0
+US-EA6,0,1,ERA5-only,626.673,TRUE,TRUE,1,0,0,2,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-EML,0,16,ERA5-only,2197.4900625,TRUE,FALSE,16,8,0,17,4,0,FALSE,"mean annual precipitation 2197.5 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-Fcr,0,4,ERA5-only,253.72175,TRUE,TRUE,4,1,0,5,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-Fwf,5,6,measured,523.2456,TRUE,TRUE,6,5,5,7,3,3,TRUE,NA,0
+US-Hn2,3,4,measured,54.260666666666665,TRUE,TRUE,4,0,0,5,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-Hn3,0,2,ERA5-only,15.42,TRUE,TRUE,2,0,0,3,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 0, water: 0; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-ICh,12,19,measured,217.39641666666665,TRUE,TRUE,19,16,12,20,7,4,TRUE,NA,0
+US-ICt,12,19,measured,309.83825,TRUE,TRUE,19,10,10,20,2,2,TRUE,NA,0
+US-Jo1,9,13,measured,206.19611111111112,TRUE,TRUE,13,11,9,14,6,6,TRUE,NA,0
+US-Jo2,8,9,measured,308.64125,TRUE,TRUE,9,6,6,12,5,5,TRUE,NA,0
+US-KFS,6,13,measured,626.963,TRUE,TRUE,13,11,5,14,4,3,TRUE,NA,0
+US-KLS,3,8,measured,391.49033333333335,TRUE,TRUE,8,5,3,9,1,0,TRUE,NA,0
+US-KS2,4,4,measured,1144.16,TRUE,FALSE,4,3,3,5,3,3,FALSE,"mean annual precipitation 1144.2 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-Kon,11,16,measured,719.2744545454545,TRUE,TRUE,16,15,11,17,1,1,TRUE,NA,0
+US-LS1,4,5,measured,298.72,TRUE,TRUE,5,4,4,6,4,4,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 4; of which with measured precipitation -- calendar: 4, water: 4)",0
+US-LS2,4,5,measured,307.04475,TRUE,TRUE,5,4,4,6,4,4,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 4; of which with measured precipitation -- calendar: 4, water: 4)",0
+US-Mo2,2,7,measured,800.7429999999999,TRUE,FALSE,7,6,2,8,4,1,FALSE,"mean annual precipitation 800.7 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-Mpj,18,18,measured,361.0603888888889,TRUE,TRUE,18,17,17,19,15,15,TRUE,NA,0
+US-NGC,0,7,ERA5-only,2870.1394285714287,TRUE,FALSE,7,0,0,8,0,0,FALSE,"mean annual precipitation 2870.1 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-NR3,0,14,ERA5-only,2787.1855,TRUE,FALSE,14,2,0,19,0,0,FALSE,"mean annual precipitation 2787.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",2
+US-ONA,7,7,measured,930.7848571428572,TRUE,FALSE,7,6,6,8,4,4,FALSE,"mean annual precipitation 930.8 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-PAS,0,2,ERA5-only,5722.9400000000005,TRUE,FALSE,2,1,0,3,1,0,FALSE,"mean annual precipitation 5722.9 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-PFf,0,1,ERA5-only,3818.91,TRUE,FALSE,1,0,0,2,0,0,FALSE,"mean annual precipitation 3818.9 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-Rls,0,10,ERA5-only,1288.4633,TRUE,FALSE,10,7,0,11,6,0,FALSE,"mean annual precipitation 1288.5 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-Rms,0,10,ERA5-only,1475.1635,TRUE,FALSE,10,7,0,11,7,0,FALSE,"mean annual precipitation 1475.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-Ro4,9,12,measured,867.5926666666667,TRUE,FALSE,12,11,9,13,9,8,FALSE,"mean annual precipitation 867.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-Rwe,0,5,ERA5-only,1546.0076,TRUE,FALSE,5,3,0,6,3,0,FALSE,"mean annual precipitation 1546.0 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-Rwf,0,10,ERA5-only,1475.1635,TRUE,FALSE,10,8,0,11,6,0,FALSE,"mean annual precipitation 1475.2 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-Rws,0,10,ERA5-only,1288.4633,TRUE,FALSE,10,8,0,11,8,0,FALSE,"mean annual precipitation 1288.5 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-SRC,5,7,measured,248.5738,TRUE,TRUE,7,2,2,8,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 2; of which with measured precipitation -- calendar: 2, water: 2)",0
+US-SRG,17,18,measured,403.46511764705883,TRUE,TRUE,18,17,17,19,17,16,TRUE,NA,0
+US-SRM,22,22,measured,353.7912727272727,TRUE,TRUE,22,22,22,23,19,19,TRUE,NA,0
+US-SRS,7,8,measured,406.57257142857145,TRUE,TRUE,8,7,7,9,3,3,TRUE,NA,0
+US-Seg,17,19,measured,223.24682352941176,TRUE,TRUE,19,19,17,20,14,13,TRUE,NA,0
+US-Ses,17,19,measured,224.28264705882353,TRUE,TRUE,19,18,16,20,14,13,TRUE,NA,1
+US-Sne,4,5,measured,330.96625,TRUE,TRUE,5,4,4,6,3,3,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 3; of which with measured precipitation -- calendar: 4, water: 3)",0
+US-Snf,1,3,measured,452.273,TRUE,TRUE,3,1,1,4,0,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 0; of which with measured precipitation -- calendar: 1, water: 0)",0
+US-Sta,0,5,ERA5-only,1804.549,TRUE,FALSE,5,1,0,6,2,0,FALSE,"mean annual precipitation 1804.5 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-TKs,6,8,measured,216.06150000000002,TRUE,TRUE,8,5,5,9,2,2,TRUE,NA,0
+US-Ton,5,25,measured,622.0028,TRUE,TRUE,25,24,5,26,21,3,TRUE,NA,0
+US-UiD,0,17,ERA5-only,3922.399882352941,TRUE,FALSE,17,7,0,18,5,0,FALSE,"mean annual precipitation 3922.4 mm (precip_source=ERA5-only), at or above the 800 mm threshold",0
+US-Var,25,26,measured,566.8586,TRUE,TRUE,26,25,24,27,23,22,TRUE,NA,0
+US-Whs,18,19,measured,292.0082777777778,TRUE,TRUE,19,18,18,20,18,18,TRUE,NA,1
+US-Wjs,15,19,measured,322.45553333333334,TRUE,TRUE,19,16,14,20,13,12,TRUE,NA,0
+US-Wkg,21,22,measured,315.998,TRUE,TRUE,22,21,21,23,21,21,TRUE,NA,0
+US-xAE,3,6,measured,757.8603333333333,TRUE,TRUE,6,6,3,7,0,0,TRUE,NA,0
+US-xCL,5,6,measured,841.5552,TRUE,FALSE,6,5,4,7,2,2,FALSE,"mean annual precipitation 841.6 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-xCP,0,6,ERA5-only,282.2205,TRUE,TRUE,6,3,0,7,3,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 3; of which with measured precipitation -- calendar: 0, water: 0)",0
+US-xDC,6,6,measured,371.6623333333333,TRUE,TRUE,6,6,6,7,3,2,TRUE,NA,0
+US-xHE,1,6,measured,260.724,TRUE,TRUE,6,4,1,7,2,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 2; of which with measured precipitation -- calendar: 1, water: 1)",0
+US-xJR,4,6,measured,136.239,TRUE,TRUE,6,6,4,7,4,1,TRUE,NA,0
+US-xKA,3,6,measured,712.5446666666667,TRUE,TRUE,6,5,3,7,2,2,TRUE,NA,0
+US-xKZ,5,6,measured,856.8208,TRUE,FALSE,6,6,5,7,3,2,FALSE,"mean annual precipitation 856.8 mm (precip_source=measured), at or above the 800 mm threshold",0
+US-xMB,3,6,measured,201.84733333333332,TRUE,TRUE,6,4,3,7,3,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 3; of which with measured precipitation -- calendar: 3, water: 2)",0
+US-xNG,4,6,measured,321.87675,TRUE,TRUE,6,4,4,7,2,2,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 2; of which with measured precipitation -- calendar: 4, water: 2)",0
+US-xNQ,4,6,measured,259.622,TRUE,TRUE,6,4,3,7,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 1; of which with measured precipitation -- calendar: 3, water: 1)",0
+US-xSJ,2,6,measured,392.1615,TRUE,TRUE,6,4,1,7,1,0,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 1; of which with measured precipitation -- calendar: 1, water: 0)",0
+US-xSR,4,6,measured,292.0315,TRUE,TRUE,6,3,3,7,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 3, water: 1; of which with measured precipitation -- calendar: 3, water: 1)",0
+US-xWD,4,6,measured,487.996,TRUE,TRUE,6,5,4,7,3,2,TRUE,NA,0
+ZA-BfK,4,5,measured,592.3335,TRUE,TRUE,5,4,4,6,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 4, water: 1; of which with measured precipitation -- calendar: 4, water: 1)",0
+ZA-BfS,2,5,measured,492.75300000000004,TRUE,TRUE,5,2,2,6,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 2, water: 1; of which with measured precipitation -- calendar: 2, water: 1)",0
+ZA-Jks,1,1,measured,2041.539,TRUE,FALSE,1,1,1,2,0,0,FALSE,"mean annual precipitation 2041.5 mm (precip_source=measured), at or above the 800 mm threshold",0
+ZA-Spk,1,2,measured,498.792,TRUE,TRUE,2,1,1,3,1,1,FALSE,"fewer than 5 relaxed-passing years in either time step (calendar: 1, water: 1; of which with measured precipitation -- calendar: 1, water: 1)",0
+ZA-Uby,1,2,measured,848.264,TRUE,FALSE,2,1,1,3,1,1,FALSE,"mean annual precipitation 848.3 mm (precip_source=measured), at or above the 800 mm threshold",0

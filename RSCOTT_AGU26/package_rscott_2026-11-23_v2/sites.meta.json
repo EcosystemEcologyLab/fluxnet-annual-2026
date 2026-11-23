@@ -1,0 +1,13 @@
+{
+  "run_datetime_utc": "2026-11-23T17:55:08Z",
+  "pipeline_version": "4ab4192",
+  "input_sources": [
+    "RSCOTT_AGU26/tables/candidate_sites.csv",
+    "RSCOTT_AGU26/tables/site_screen_decision_v2.csv",
+    "RSCOTT_AGU26/tables/driest_month_climatology_v2.csv",
+    "data/duckdb/fluxnet.duckdb",
+    "data/snapshots/site_koppen_era5_fig4.csv",
+    "data/snapshots/site_aridity_era5_fig4.csv"
+  ],
+  "notes": "v2 widened package: one row per kept site under the relaxed rule (54 sites). precip_source/n_measured_years_calendar/mean_annual_p_mm from site_screen_decision_v2.csv (RSCOTT_AGU26/code/06_v2_relaxed_selection.R). mean_ta_f_degc: mean TA_F (native degC) over calendar years where qc_passes(TA_F_QC, QC_THRESHOLD_YY), from data/duckdb/fluxnet.duckdb::annual (raw, not annual_converted -- TA_F is reported here in native degC, not K). koppen_class_paper: PI-reported (BADM CLIMATE_KOEPPEN) class else ERA5-local fallback, exactly as used by scripts/figure4_representativeness.R panel A (site_koppen_era5_fig4.csv's panel_a_class_used/panel_a_eligible); NA with koppen_na_reason where panel A's own exclusion rule applies to an ERA5-fallback site (never for a PI-sourced site). aridity_index_paper: AI = 1991-2020 mean P_ERA / FAO-56 Penman-Monteith reference ET computed from the site's own ERA5 record, exactly as computed by figure4_representativeness.R panel C (fao56_et0_mm(), site_aridity_era5_fig4.csv's ai_value); NA with aridity_na_reason where the paper's own panel C exclusion rules apply (invalid ERA5 input, or P_ERA ratio screen vs BADM MAP/WorldClim BIO12). This aridity index is NOT the CGIAR Aridity Index v3.1 raster used elsewhere in this repo (data/external/aridity/) -- it is the site's-own-ERA5-record version the paper itself uses for its representativeness figure. n_siteyears_negative_gpp: count of this site's site-year rows (both time steps, from site_years_candidates_full.csv) with GPP_NT < 0 OR GPP_DT < 0."
+}

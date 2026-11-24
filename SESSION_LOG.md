@@ -4,6 +4,18 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
+## 2026-11-24 — Shuttle listing check, started
+
+Prompt: `logs/prompts/2026-11-24_shuttle_listing_check.md`. Diagnostic only: how many sites does
+the FLUXNET Shuttle list today, compared with the 20 September 2026 snapshot of record
+(`data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv`)? One live `flux_listall()` call,
+counts and a snapshot-vs-snapshot diff, no downloads, no change to the snapshot of record, no
+change to pipeline config or `FLUXNET_SNAPSHOT_MODE`. Output goes to
+`data/snapshots/check_only/` (new subfolder, kept separate from the authoritative snapshot
+directory) and `scripts/diagnostics/shuttle_listing_check_2026-11-24.{R,md}`.
+
+---
+
 ## 2026-11-23 — RSCOTT_AGU26: site map leader-line fix (SRS/SRG crossing)
 
 Post-publication review of `site_map_igbp_DRAFT.png` (commit `9e44042`) found a real legibility

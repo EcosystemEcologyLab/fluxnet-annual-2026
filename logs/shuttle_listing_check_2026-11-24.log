@@ -1,0 +1,30 @@
+renv 1.2.3 was loaded from project library, but this project is configured to use renv 1.1.2.
+- Use `renv::record("renv@1.2.3")` to record renv 1.2.3 in the lockfile.
+- Use `renv::restore(packages = "renv")` to install renv 1.1.2 into the project library.
+- The project is out-of-sync -- use `renv::status()` for details.
+virtualenv: fluxnet_annual_2026
+fluxnet-shuttle version OK: 0.3.7
+Data root: data
+Extract resolutions: y m d
+Delete ZIPs after extraction: TRUE
+Site filter: none (all sites)
+Snapshot mode: development
+! Use of data downloaded by fluxnet requires you abide by FLUXNET data
+  policies: <https://fluxnet.org/data/data-policy/>
+ℹ Citations for individual sites' datasets are returned by
+  `fluxnet::flux_listall()`
+=== shuttle_listing_check_2026-11-24.R : 2026-11-24 12:58:33.751484 ===
+virtualenv: fluxnet_annual_2026
+Installed fluxnet-shuttle version: 0.3.7
+virtualenv: fluxnet_annual_2026
+File list is expired, downloading the latest version
+flux_listall() returned 784 row(s).
+Rows per hub (data_hub):
+  AmeriFlux: 381
+  ICOS: 352
+  TERN: 51
+Hub-drop guard: all expected hubs (AmeriFlux, ICOS, TERN) present with >0 rows.
+Live listing saved to: data/snapshots/check_only/fluxnet_shuttle_snapshot_20261124T125845.csv
+Today's listing: 784 rows; 784 distinct site_id; 784 distinct product_id; 0 site_id(s) listed more than once.
+Comparison with fluxnet_shuttle_snapshot_20260920T102211.csv: 4 site(s) added, 1 site(s) removed, 58 site(s) with a product_id/oneflux_code_version change.
+=== shuttle_listing_check_2026-11-24.R complete: 2026-11-24 12:58:45.077001 ===

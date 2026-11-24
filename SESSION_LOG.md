@@ -4,15 +4,32 @@ A running record of Claude Code investigation reports, audits, and summaries for
 
 Convention: Claude Code prepends new entries at the top of this file (reverse chronological order — most recent first), then commits and pushes immediately. Prompts and back-and-forth are not logged here, only Claude Code's structured outputs (reports, audits, investigation summaries).
 
-## 2026-11-24 — Shuttle listing check, started
+## 2026-11-24 — Shuttle listing check, done
 
-Prompt: `logs/prompts/2026-11-24_shuttle_listing_check.md`. Diagnostic only: how many sites does
-the FLUXNET Shuttle list today, compared with the 20 September 2026 snapshot of record
-(`data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv`)? One live `flux_listall()` call,
-counts and a snapshot-vs-snapshot diff, no downloads, no change to the snapshot of record, no
-change to pipeline config or `FLUXNET_SNAPSHOT_MODE`. Output goes to
-`data/snapshots/check_only/` (new subfolder, kept separate from the authoritative snapshot
-directory) and `scripts/diagnostics/shuttle_listing_check_2026-11-24.{R,md}`.
+Prompt: `logs/prompts/2026-11-24_shuttle_listing_check.md`. Script:
+`scripts/diagnostics/shuttle_listing_check_2026-11-24.R`. Report:
+`scripts/diagnostics/shuttle_listing_check_2026-11-24.md`. Diagnostic only — no data downloads, and
+the snapshot of record (`data/snapshots/fluxnet_shuttle_snapshot_20260920T102211.csv`),
+`FLUXNET_SNAPSHOT_MODE`, and the pipeline config were not changed (confirmed via `git diff --stat`
+on all three — empty).
+
+`check_pipeline_config()` passed with no warnings; installed `fluxnet-shuttle` version `0.3.7`.
+`flux_listall()` called once, live; the hub-drop guard (`scripts/01_download.R`'s logic) passed —
+AmeriFlux 381, ICOS 352, TERN 51 rows, all hubs present and non-empty. Grepped the repo for every
+piece of code that globs or picks the newest file in `data/snapshots/` (`find_previous_snapshot()`
+in `R/sync.R`, `find_latest_snapshot()` in `scripts/generate_fluxnet_citations.R`, and a dozen ad
+hoc `list.files()`/`fs::dir_ls()` calls across `scripts/` and `R/`); all are non-recursive against
+the top level of `data/snapshots/`, so none reach the new `data/snapshots/check_only/` subfolder
+the live listing was saved to (`fluxnet_shuttle_snapshot_20261124T125845.csv`).
+
+Today's listing: 784 rows, 784 distinct `site_id`, 784 distinct `product_id`, no duplicate
+`site_id`. The 20 September snapshot: 781 rows, 781 distinct `site_id`, 781 distinct `product_id`,
+no duplicate `site_id`. Matched on `site_id`: 4 sites added (FI-Lom, SE-Lnn, SE-Myc, SJ-Blv — all
+`data_hub = ICOS`), 1 site removed (AU-GWW, `data_hub = TERN`), and 58 sites with a changed
+`product_id` (all with `oneflux_code_version` unchanged at `v1.3` on both sides). Full per-hub
+(`product_source_network`) counts, the added/removed site tables, and the full 58-site
+old/new `product_id` table are in the report and the accompanying CSVs in
+`scripts/diagnostics/`. No interpretation of the changes was given, per the prompt.
 
 ---
 
